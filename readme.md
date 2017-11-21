@@ -1,9 +1,9 @@
 # Inhalt
 
-1   Einleitung
-2   Installation
-3   Bibliothek
-4   Dokumentation
+1. Einleitung
+2. Installation
+3. Bibliothek
+4. Dokumentation
 
 # 1 Einleitung
 
