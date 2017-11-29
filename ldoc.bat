@@ -1,2 +1,2 @@
 @echo off
-lua ldoc\ldoc.lua src
+lua ldoc/ldoc.lua src

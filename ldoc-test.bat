@@ -1,2 +1,2 @@
 @echo off
-lua ldoc\ldoc.lua test -d doctest
+lua ldoc\ldoc.lua ldoc\tests\submodule\mylib -d doctest
