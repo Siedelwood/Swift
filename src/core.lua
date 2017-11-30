@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Synfonia Framework                                                    # --
+-- #  Synfonia Code                                                         # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
@@ -8,7 +8,7 @@
 -- Das Framework läd die einzelnen Bundles und beinhaltet alle geteilte
 -- Funktionen. Interne Spielfunktionen, die überschrieben werden, müssen
 -- ebenfalls hier definiert werden.
--- @module QsbFramework
+-- @module Core
 --
 
 API = API or {};
@@ -30,7 +30,7 @@ elseif MapEditor then
 end
 
 -- -------------------------------------------------------------------------- --
--- API-Funktionen                                                             --
+-- User Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -46,8 +46,12 @@ end
 -- @param _Dest      Zieltabelle
 -- @return table
 --
-API.InstanceTable = function(_Source, _Dest)
-    return QsbFramework:InstanceTable(_Source, _Dest);
+function API.InstanceTable(_Source, _Dest)
+    _Dest = _Dest or {};
+    for k, v in pairs(_Source) do
+        _Dest[k] = (type(v) == "table" and API.InstanceTable(v)) or v;
+    end
+    return _Dest;
 end
 CopyTableRecursive = API.InstanceTable;
 
@@ -55,14 +59,19 @@ CopyTableRecursive = API.InstanceTable;
 -- Sucht in einer Table nach einem Wert. Das erste Aufkommen des Suchwerts
 -- wird als Erfolg gewertet.
 --
--- Alias: Inside
---
 -- @param _Data     Datum, das gesucht wird
 -- @param _Table    Tabelle, die durchquert wird
 -- @return boolean
+-- @within QsbFramework Class
+-- @local
 --
-API.TraverseTable = function(_Data, _Table)
-    return QsbFramework:TraverseTable(_Data, _Table);
+function API.TraverseTable(_Data, _Table)
+    for k,v in pairs(_Table) do
+        if v == _Data then
+            return true;
+        end
+    end
+    return false;
 end
 Inside = API.TraverseTable;
 
@@ -75,8 +84,12 @@ Inside = API.TraverseTable;
 -- @param _Name     Identifier des Quest
 -- @return number
 --
-API.GetQuestID = function(_Name)
-    return QsbFramework:GetIdOfQuest(_Name);
+function API.GetQuestID(_Name)
+    for i=1, Quests[0] do
+        if Quests[i].Identifier == _Name then
+            return i;
+        end
+    end
 end
 GetQuestID = API.GetQuestID;
 
@@ -89,55 +102,66 @@ GetQuestID = API.GetQuestID;
 -- @param _QuestID   ID oder Name des Quest
 -- @return boolean
 --
-API.ValidateQuest = function(_QuestID)
-    return QsbFramework:ValidateQuest(_QuestID);
+function API.IsValidateQuest(_QuestID)
+    return Quests[_QuestID] ~= nil or Quests[self:GetQuestID(_QuestID)] ~= nil;
 end
-IsValidQuest = API.ValidateQuest;
+IsValidQuest = API.IsValidateQuest;
 
 ---
--- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
+-- Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
+-- Laden eines Spielstandes ausgeführt wird.
 --
-API.InitalizeBundles = function()
-    return QsbFramework:InitalizeBundles()
-end
-
----
--- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
+-- @param _Function Funktion, die ausgeführt werden soll
 --
--- Alias: ToBoolean
---
--- @param _Input Boolean-Darstellung
---
-API.Boolean = function(_Input)
-    local Suspicious = tostring(_Input);
-    if Suspicious == true or Suspicious == "true" or Suspicious == "Yes" or Suspicious == "On" or Suspicious == "+" then
-        return true;
-    end
-    if Suspicious == false or Suspicious == "false" or Suspicious == "No" or Suspicious == "Off" or Suspicious == "-" then
-        return false;
-    end
-    return false;
-end
-ToBoolean = API.Boolean;
-
----
---
---
-API.AddOnSaveGameCallback = function(_Function)
-    return QsbFramework:AddSaveGameCallback(_Function);
+function API.AddSaveGameAction(_Function)
+    return QsbFramework:AddSaveGameAction(_Function)
 end
 
 -- -------------------------------------------------------------------------- --
--- Framework-Funktionen                                                       --
+-- Application Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 QsbFramework = {
     Data = {
-        Overwrite = {
+        Append = {
             Functions = {},
+            Fields = {},
         }
     }
 }
+
+---
+-- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
+-- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
+-- @within QsbFramework Class
+-- @local
+--
+function QsbFramework:InitalizeBundles()
+    for k,v in pairs(self.Data.BundleInitializerList) do
+        if v.Global ~= nil and v.Global.Install ~= nil and type(v.Global.Install) == "function" and not GUI then
+            v.Global:Install();
+        end
+        if v.Local ~= nil and v.Local.Install ~= nil and type(v.Local.Install) == "function" and GUI then
+            v.Local:Install();
+        end
+    end
+end
+
+---
+-- Registiert ein Bundle, sodass es initialisiert wird.
+--
+-- @param _Bundle Name des Moduls
+-- @within QsbFramework Class
+-- @local
+--
+function QsbFramework:RegisterBundle(_Bundle)
+    if not _G[_Bundle] and not GUI then
+        local text = string.format("Error while initialize bundle '%s': does not exist!", tostring(_Bundle));
+        assert(false, text);
+        return;
+    end
+    table.insert(self.Data.BundleInitializerList, _G[_Bundle]);
+end
 
 ---
 -- Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.
@@ -189,109 +213,6 @@ function QsbFramework:CheckQuestName(_Name)
 end
 
 ---
--- Kopiert eine komplette Table und gibt die Kopie zurück. Wenn ein Ziel
--- angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
--- angegebenen Tables.
--- Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
--- Funktion kann benutzt werden, um Klassen zu instanzieren.
---
--- @param _Source    Quelltabelle
--- @param _Dest      Zieltabelle
--- @return table
--- @within QsbFramework Class
--- @local
---
-function QsbFramework:InstanceTable(_Source, _Dest)
-    _Dest = _Dest or {};
-    for k, v in pairs(_Source) do
-        _Dest[k] = (type(v) == "table" and self:InstanceTable(v)) or v;
-    end
-    return _Dest;
-end
-
----
--- Sucht in einer Table nach einem Wert. Das erste Aufkommen des Suchwerts
--- wird als Erfolg gewertet.
---
--- @param _Data     Datum, das gesucht wird
--- @param _Table    Tabelle, die durchquert wird
--- @return boolean
--- @within QsbFramework Class
--- @local
---
-function QsbFramework:TraverseTable(_Data, _Table)
-    for k,v in pairs(_Table) do
-        if v == _Data then
-            return true;
-        end
-    end
-    return false;
-end
-
----
--- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der
--- Quest nicht, wird nil zurückgegeben.
---
--- @param _Name     Identifier des Quest
--- @return number
--- @within QsbFramework Class
--- @local
---
-function QsbFramework:GetIdOfQuest(_Name)
-    for i=1, Quests[0] do
-        if Quests[i].Identifier == _Name then
-            return i;
-        end
-    end
-end
-
----
--- Prüft, ob die ID zu einem Quest gehört bzw. der Quest existiert. Es kann
--- auch ein Questname angegeben werden.
---
--- @param _QuestID   ID des Quest
--- @return boolean
--- @within QsbFramework Class
--- @local
---
-function QsbFramework:ValidateQuest(_QuestID)
-    return Quests[_QuestID] ~= nil or Quests[self:GetQuestID(_QuestID)] ~= nil;
-end
-
----
--- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
--- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
--- @within QsbFramework Class
--- @local
---
-function QsbFramework:InitalizeBundles()
-    for k,v in pairs(self.Data.BundleInitializerList) do
-        if v.Global ~= nil and v.Global.Install ~= nil and type(v.Global.Install) == "function" and not GUI then
-            v.Global:Install();
-        end
-        if v.Local ~= nil and v.Local.Install ~= nil and type(v.Local.Install) == "function" and GUI then
-            v.Local:Install();
-        end
-    end
-end
-
----
--- Registiert ein Bundle, sodass es initialisiert wird.
---
--- @param _Bundle Name des Moduls
--- @within QsbFramework Class
--- @local
---
-function QsbFramework:RegisterBundle(_Bundle)
-    if not _G[_Bundle] and not GUI then
-        local text = string.format("Error while initialize bundle '%s': does not exist!", tostring(_Bundle));
-        assert(false, text);
-        return;
-    end
-    table.insert(self.Data.BundleInitializerList, _G[_Bundle]);
-end
-
----
 -- Ändert den Text des Beschreibungsfensters eines Quests. Die Beschreibung
 -- wird erst dann aktualisiert, wenn der Quest ausgeblendet wird.
 --
@@ -315,12 +236,18 @@ function QsbFramework:ChangeCustomQuestCaptionText(_Text, _Quest)
     ]]);
 end
 
-
-function QsbFramework:AddSaveGameCallback(_Function)
-    if not Mission_OnSaveGameLoaded_Orig_QSB_Overwrite then
-        Mission_OnSaveGameLoaded_Orig_QSB_Overwrite = Mission_OnSaveGameLoaded;
+---
+-- Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
+-- Laden eines Spielstandes ausgeführt wird.
+--
+-- @param _Function Funktion, die ausgeführt werden soll
+-- @local
+--
+function QsbFramework:AddSaveGameAction(_Function)
+    if not Mission_OnSaveGameLoaded_Orig_QSB_Append then
+        Mission_OnSaveGameLoaded_Orig_QSB_Append = Mission_OnSaveGameLoaded;
         Mission_OnSaveGameLoaded = function()
-            Mission_OnSaveGameLoaded_Orig_QSB_Overwrite();
+            Mission_OnSaveGameLoaded_Orig_QSB_Append();
 
             for i=1, #self.Data.Overwrite.Functions.SaveGame, 1 do
                 self.Data.Overwrite.Functions.SaveGame[i]();
@@ -328,6 +255,6 @@ function QsbFramework:AddSaveGameCallback(_Function)
         end
     end
 
-    self.Data.Overwrite.Functions.SaveGame = self.Data.Overwrite.Functions.SaveGame or {};
-    table.insert(self.Data.Overwrite.Functions.SaveGame, _Function);
+    self.Data.Append.Functions.SaveGame = self.Data.Append.Functions.SaveGame or {};
+    table.insert(self.Data.Append.Functions.SaveGame, _Function);
 end
