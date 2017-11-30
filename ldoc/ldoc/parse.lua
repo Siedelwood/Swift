@@ -413,7 +413,7 @@ local function parse_file(fname, lang, package, args)
                current_item.inferred = item_follows ~= nil
                if doc.project_level(tags.class) then
                   if module_item then
-                     F:error("Module already declared!")
+                     F:error("Bundle already declared!")
                   end
                   module_item = current_item
                end

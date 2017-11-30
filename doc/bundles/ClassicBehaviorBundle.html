@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Goals">Goals</a></li>
+<li><a href="#Reprisals">Reprisals</a></li>
+<li><a href="#Rewards">Rewards</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><strong>ClassicBehaviorBundle</strong></li>
+  <li><a href="../bundles/Core.html">Core</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>ClassicBehaviorBundle</code></h1>
+<p></p>
+<p></p>
+
+
+<h2><a href="#Goals">Goals</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Goal_ActivateObject">Goal_ActivateObject (_ScriptName)</a></td>
+	<td class="summary">Ein Interaktives Objekt muss benutzt werden.</td>
+	</tr>
+</table>
+<h2><a href="#Reprisals">Reprisals</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_ObjectDeactivate">Reprisal_ObjectDeactivate (_ScriptName)</a></td>
+	<td class="summary">Deaktiviert ein interaktives Objekt</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_ObjectActivate">Reprisal_ObjectActivate (_ScriptName, _State)</a></td>
+	<td class="summary">Aktiviert ein interaktives Objekt.</td>
+	</tr>
+</table>
+<h2><a href="#Rewards">Rewards</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Reward_ObjectDeactivate">Reward_ObjectDeactivate (_ScriptName)</a></td>
+	<td class="summary">Deaktiviert ein interaktives Objekt</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_ObjectActivate">Reward_ObjectActivate (_ScriptName, _State)</a></td>
+	<td class="summary">Aktiviert ein interaktives Objekt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_ObjectInit">Reward_ObjectInit (_ScriptName, _Distance, _Time, _RewType1, _RewAmount, _CostType1, _CostAmount1, _CostType2, _CostAmount2, _Status)</a></td>
+	<td class="summary">Initialisiert ein interaktives Objekt.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Goals"></a>Goals</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Goal_ActivateObject"></a>
+    <strong>Goal_ActivateObject (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Ein Interaktives Objekt muss benutzt werden.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des interaktiven Objektes
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Reprisals"></a>Reprisals</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Reprisal_ObjectDeactivate"></a>
+    <strong>Reprisal_ObjectDeactivate (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Deaktiviert ein interaktives Objekt
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des interaktiven Objektes
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_ObjectActivate"></a>
+    <strong>Reprisal_ObjectActivate (_ScriptName, _State)</strong>
+    </dt>
+    <dd>
+    Aktiviert ein interaktives Objekt.
+<p> Der Status bestimmt, wie das objekt aktiviert wird.
+ <ul>
+ <li>0: Kann nur mit Helden aktiviert werden</li>
+ <li>1: Kann immer aktiviert werden</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des interaktiven Objektes
+        </li>
+        <li><span class="parameter">_State</span>
+         Status des Objektes
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Rewards"></a>Rewards</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Reward_ObjectDeactivate"></a>
+    <strong>Reward_ObjectDeactivate (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Deaktiviert ein interaktives Objekt
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des interaktiven Objektes
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_ObjectActivate"></a>
+    <strong>Reward_ObjectActivate (_ScriptName, _State)</strong>
+    </dt>
+    <dd>
+    Aktiviert ein interaktives Objekt.
+<p> Der Status bestimmt, wie das objekt aktiviert wird.
+ <ul>
+ <li>0: Kann nur mit Helden aktiviert werden</li>
+ <li>1: Kann immer aktiviert werden</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des interaktiven Objektes
+        </li>
+        <li><span class="parameter">_State</span>
+         Status des Objektes
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_ObjectInit"></a>
+    <strong>Reward_ObjectInit (_ScriptName, _Distance, _Time, _RewType1, _RewAmount, _CostType1, _CostAmount1, _CostType2, _CostAmount2, _Status)</strong>
+    </dt>
+    <dd>
+    Initialisiert ein interaktives Objekt.
+
+ Interaktive Objekte können Kosten und Belohnungen enthalten, müssen sie
+ jedoch nicht. Ist eine Wartezeit angegeben, kann das Objekt erst nach
+ Ablauf eines Cooldowns benutzt werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+            Skriptname des interaktiven Objektes
+        </li>
+        <li><span class="parameter">_Distance</span>
+              Entfernung zur Aktivierung
+        </li>
+        <li><span class="parameter">_Time</span>
+                  Wartezeit bis zur Aktivierung
+        </li>
+        <li><span class="parameter">_RewType1</span>
+              Warentyp der Belohnung
+        </li>
+        <li><span class="parameter">_RewAmount</span>
+             Menge der Belohnung
+        </li>
+        <li><span class="parameter">_CostType1</span>
+             Typ der 1. Ware
+        </li>
+        <li><span class="parameter">_CostAmount1</span>
+           Menge der 1. Ware
+        </li>
+        <li><span class="parameter">_CostType2</span>
+             Typ der 2. Ware
+        </li>
+        <li><span class="parameter">_CostAmount2</span>
+           Menge der 2. Ware
+        </li>
+        <li><span class="parameter">_Status</span>
+                Aktivierung (0: Held, 1: immer, 2: niemals)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-11-30 21:32:22 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

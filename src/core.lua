@@ -56,6 +56,17 @@ end
 -- User Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
+---
+-- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
+--
+-- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
+-- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
+-- werden, bevor die QSB verwendet werden kann.
+--
+function API.Install()
+    Core:InitalizeBundles();
+end
+
 -- Tables --------------------------------------------------------------------
 
 ---
@@ -69,8 +80,10 @@ end
 --
 -- @param _Source    Quelltabelle
 -- @param _Dest      Zieltabelle
--- @return table
+-- @return Kopie der Tabelle
 -- @within Table-Funktionen
+-- @usage Table = {1, 2, 3, {a = true}}
+-- Copy = API.InstanceTable(Table)
 --
 function API.InstanceTable(_Source, _Dest)
     _Dest = _Dest or {};
@@ -85,10 +98,14 @@ CopyTableRecursive = API.InstanceTable;
 -- Sucht in einer Table nach einem Wert. Das erste Aufkommen des Suchwerts
 -- wird als Erfolg gewertet.
 --
+-- Alias: Inside
+--
 -- @param _Data     Datum, das gesucht wird
 -- @param _Table    Tabelle, die durchquert wird
--- @return boolean
+-- @return booelan: Wert gefunden
 -- @within Table-Funktionen
+-- @usage Table = {1, 2, 3, {a = true}}
+-- local Found = API.TraverseTable(3, Table)
 --
 function API.TraverseTable(_Data, _Table)
     for k,v in pairs(_Table) do
@@ -107,6 +124,8 @@ Inside = API.TraverseTable;
 -- @param _Table Tabelle, die gedumpt wird
 -- @param _Name Optionaler Name im Log
 -- @within Table-Funktionen
+-- @usage Table = {1, 2, 3, {a = true}}
+-- API.DumpTable(Table)
 --
 function API.DumpTable(_Table, _Name)
     local Dump = "{\n";
@@ -137,7 +156,7 @@ end
 -- Alias: GetQuestID
 --
 -- @param _Name     Identifier des Quest
--- @return number
+-- @return number: ID des Quest
 -- @within Quest-Funktionen
 --
 function API.GetQuestID(_Name)
@@ -156,7 +175,7 @@ GetQuestID = API.GetQuestID;
 -- Alias: IsValidQuest
 --
 -- @param _QuestID   ID oder Name des Quest
--- @return boolean
+-- @return boolean: Quest existiert
 -- @within Quest-Funktionen
 --
 function API.IsValidateQuest(_QuestID)
@@ -488,7 +507,254 @@ function API.Message(_Message)
     Message(_Message);
 end
 
+---
+-- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
+--
+-- @param _Message Anzeigetext
+-- @within Message-Funktionen
+--
+function API.Dbg(_Message)
+    API.StaticNote("DEBUG: " .._Message)
+    API.Log("DEBUG: " .._Message);
+end
+dbg = API.Dbg;
+
+---
+-- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
+--
+-- @param _Message Anzeigetext
+-- @within Message-Funktionen
+--
+function API.Warn(_Message)
+    API.StaticNote("WARNING: " .._Message)
+    API.Log("WARNING: " .._Message);
+end
+warn = API.Warn;
+
 -- Entities --------------------------------------------------------------------
+
+---
+-- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
+-- Gebäude, wird immer die Position des Eingangs genommen.
+--
+-- Alias: SendCart
+--
+-- @param _position            Position
+-- @param _player              Zielspieler
+-- @param _good                Warentyp
+-- @param _amount              Warenmenge
+-- @param _cartOverlay         (optional) Overlay für Goldkarren
+-- @param _ignoreReservation   (optional) Marktplatzreservation ignorieren
+-- @return number: Entity-ID des erzeugten Wagens
+-- @within Entity-Funktionen
+-- @usage -- API-Call
+-- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
+-- -- Legacy-Call mit ID-Speicherung
+-- local ID = SendCart("Position_1", 5, Goods.G_Wool, 5)
+--
+function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)
+    local eID = GetID(_position);
+    if not IsExisting(eID) then
+        return;
+    end
+    local ID;
+    local x,y,z = Logic.EntityGetPos(eID);
+    local resCat = Logic.GetGoodCategoryForGoodType(_good);
+    local orientation = 0;
+    if Logic.IsBuilding(eID) == 1 then
+        x,y = Logic.GetBuildingApproachPosition(eID);
+        orientation = Logic.GetEntityOrientation(eID)-90;
+    end
+
+    if resCat == GoodCategories.GC_Resource then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
+    elseif _good == Goods.G_Medicine then
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y,orientation,_player)
+    elseif _good == Goods.G_Gold then
+        if _cartOverlay then
+            ID = Logic.CreateEntityOnUnblockedLand(_cartOverlay, x, y,orientation,_player)
+        else
+            ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, x, y,orientation,_player)
+        end
+    else
+        ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y,orientation,_player)
+    end
+    Logic.HireMerchant( ID, _player, _good, _amount, _player, _ignoreReservation)
+    return ID
+end
+SendCart = API.SendCart;
+
+---
+-- Ersetzt ein Entity mit einem neuen eines anderen Typs. Skriptname,
+-- Rotation, Position und Besitzer werden übernommen.
+--
+-- Alias: ReplaceEntity
+--
+-- @param _Entity     Entity
+-- @param _Type       Neuer Typ
+-- @param _NewOwner   (optional) Neuer Besitzer
+-- @return number: Entity-ID des Entity
+-- @within Entity-Funktionen
+-- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
+--
+function API.ReplaceEntity(_Entity, _Type, _NewOwner)
+    local eID = GetID(_Entity);
+    if eID == 0 then
+        return;
+    end
+    local pos = GetPosition(eID);
+    local player = _NewOwner or Logic.EntityGetPlayer(eID);
+    local orientation = Logic.GetEntityOrientation(eID);
+    local name = Logic.GetEntityName(eID);
+    DestroyEntity(eID);
+    if Logic.IsEntityTypeInCategory(_Type, EntityCategories.Soldier) == 1 then
+        return CreateBattalion(player, _Type, pos.X, pos.Y, 1, name, orientation);
+    else
+        return CreateEntity(player, _Type, pos, name, orientation);
+    end
+end
+ReplaceEntity = API.ReplaceEntity;
+
+---
+-- Rotiert ein Entity, sodass es zum Ziel schaut.
+--
+-- Alias: LookAt
+--
+-- @param _entity           Entity
+-- @param _entityToLookAt   Ziel
+-- @param _offsetEntity     Winkel-Offset
+-- @within Entity-Funktionen
+-- @usage API.LookAt("Hakim", "Alandra")
+--
+function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
+    local entity = GetEntityId(_entity);
+    local entityTLA = GetEntityId(_entityToLookAt);
+    assert( not (Logic.IsEntityDestroyed(entity) or Logic.IsEntityDestroyed(entityTLA)), "LookAt: One Entity is wrong or dead");
+    local eX, eY = Logic.GetEntityPosition(entity);
+    local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
+    local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
+    if Logic.IsBuilding(entity) then
+        orientation = orientation - 90;
+    end
+    _offsetEntity = _offsetEntity or 0;
+    Logic.SetOrientation(entity, orientation + _offsetEntity);
+end
+LookAt = API.LookAt;
+
+---
+-- Lässt zwei Entities sich gegenseitig anschauen.
+--
+-- @param _entity           Erstes Entity
+-- @param _entityToLookAt   Zweites Entity
+-- @within Entity-Funktionen
+-- @usage API.Confront("Hakim", "Alandra")
+--
+function API.Confront(_entity, _entityToLookAt)
+    API.LookAt(_entity, _entityToLookAt);
+    API.LookAt(_entityToLookAt, _entity);
+end
+
+---
+-- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
+-- Skriptnamen oder Positionstables angegeben werden.
+--
+-- Alias: GetDistance
+-- 
+-- @param _pos1 Erste Vergleichsposition
+-- @param _pos2 Zweite Vergleichsposition
+-- @return number: Entfernung zwischen den Punkten
+-- @within Entity-Funktionen
+-- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
+--
+function API.GetDistance( _pos1, _pos2 )
+    _pos1 = ((type(_pos1) == "string" or type(_pos1) == "number") and _pos1) or GetPosition(_pos1);
+    _pos2 = ((type(_pos2) == "string" or type(_pos2) == "number") and _pos2) or GetPosition(_pos2);
+    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
+        return;
+    end
+    return math.sqrt(((_pos1.X - _pos2.X)^2) + ((_pos1.Y - _pos2.Y)^2));
+end
+GetDistance = API.GetDistance;
+
+---
+-- Lokalisiert ein Entity auf der Map. Es können sowohl Skriptnamen als auch
+-- IDs verwendet werden. Wenn das Entity nicht gefunden wird, wird eine
+-- Tabelle mit XYZ = 0 zurückgegeben.
+--
+-- Alias: GetPosition
+--
+-- @param _Entity   Entity, dessen Position bestimmt wird.
+-- @return table: Positionstabelle {X= x, Y= y, Z= z}
+-- @within Entity-Funktionen
+-- @usage local Position = API.LocateEntity("Hans")
+--
+function API.LocateEntity(_Entity)
+    if (type(_Entity) == "table") then
+        return _Entity;
+    end
+    if (not IsExisting(_Entity)) then
+        return {X= 0, Y= 0, Z= 0};
+    end
+    local x, y, z = Logic.EntityGetPos(GetID(_Entity));
+    return {X= x, Y= y, Z= z};
+end
+GetPosition = API.LocateEntity;
+
+---
+-- Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.
+-- 
+-- Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
+-- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
+-- Held das Objekt aktivieren. 
+--
+-- Alias: InteractiveObjectActivate
+--
+-- @param _ScriptName  Skriptname des IO
+-- @param _State       Aktivierungszustand
+-- @within Entity-Funktionen
+-- @useage API.AcrivateIO("Haus1", 0)
+-- @usage API.AcrivateIO("Hut1")
+--
+function API.AcrivateIO(eName, State)
+    State = State or 0;
+    if GUI then
+        GUI.SendScriptCommand('API.AcrivateIO("' .._ScriptName.. '", ' ..State..')');
+        return;
+    end
+    if not IsExisting(eName) then
+        return
+    end
+    Logic.InteractiveObjectSetAvailability(GetID(eName), true);
+    for i = 1, 8 do
+        Logic.InteractiveObjectSetPlayerState(GetID(eName), i, State);
+    end
+end
+InteractiveObjectActivate = API.AcrivateIO;
+
+---
+-- Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
+-- aktiviert werden kann.
+--
+-- Alias: InteractiveObjectDeactivate
+--
+-- @param _ScriptName Skriptname des IO
+-- @within Entity-Funktionen
+-- @usage API.DeactivateIO("Hut1")
+--
+function API.DeactivateIO(_ScriptName)
+    if GUI then
+        GUI.SendScriptCommand('API.DeactivateIO("' .._ScriptName.. '")');
+        return;
+    end
+    if not IsExisting(_ScriptName) then
+        return;
+    end
+    Logic.InteractiveObjectSetAvailability(GetID(_ScriptName), false);
+    for i = 1, 8 do
+        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, 2);
+    end
+end
+InteractiveObjectDeactivate = API.DeactivateIO;
 
 ---
 -- Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
@@ -498,6 +764,7 @@ end
 -- @param _category  Kategorie, der die Entities angehören
 -- @param _territory Zielterritorium
 -- @within Entity-Funktionen
+-- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
 function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
     local PlayerEntities = {};
@@ -530,35 +797,42 @@ end
 --
 -- @param _Function Funktion, die ausgeführt werden soll
 -- @within Overwrite-Funktionen
+-- @usage SaveGame = function()
+--     API.Note("foo")
+-- end
+-- API.AddSaveGameAction(SaveGame)
 --
 function API.AddSaveGameAction(_Function)
-    return QsbFramework:AddSaveGameAction(_Function)
+    return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
 end
 
 -- -------------------------------------------------------------------------- --
 -- Application Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-QsbFramework = {
+Core = {
     Data = {
         Append = {
             Functions = {},
             Fields = {},
-        }
+        },
     }
 }
 
 ---
 -- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
--- @within QsbFramework Class
+-- @within Core Class
 -- @local
 --
-function QsbFramework:InitalizeBundles()
+function Core:InitalizeBundles()
+    if not GUI then
+        self:SetupGobal_HackCreateQuest();
+        self:SetupGlobal_HackQuestSystem();
+    end
+    
     for k,v in pairs(self.Data.BundleInitializerList) do
         if not GUI then
-            self:SetupGobal_HackCreateQuest();
-            self:SetupGlobal_HackQuestSystem();
             if v.Global ~= nil and v.Global.Install ~= nil then
                 v.Global:Install();
             end
@@ -572,9 +846,10 @@ end
 
 ---
 -- FIXME
+-- @within Initialisierer-Funktionen
 -- @local
 --
-function QsbFramework:SetupGobal_HackCreateQuest()
+function Core:SetupGobal_HackCreateQuest()
     CreateQuest = function(_QuestName, _QuestGiver, _QuestReceiver, _QuestHidden, _QuestTime, _QuestDescription, _QuestStartMsg, _QuestSuccessMsg, _QuestFailureMsg)
         local Triggers = {}
         local Goals = {}
@@ -630,9 +905,10 @@ end
 
 ---
 -- FIXME
+-- @within Initialisierer-Funktionen
 -- @local
 --
-function QsbFramework:SetupGlobal_HackQuestSystem()
+function Core:SetupGlobal_HackQuestSystem()
     QuestTemplate.Trigger_Orig_QSB_Core = QuestTemplate.Trigger
     QuestTemplate.Trigger = function(_quest)
         QuestTemplate.Trigger_Orig_QSB_Core(_quest);
@@ -665,10 +941,10 @@ end
 -- Registiert ein Bundle, sodass es initialisiert wird.
 --
 -- @param _Bundle Name des Moduls
--- @within QsbFramework Class
+-- @within Core Class
 -- @local
 --
-function QsbFramework:RegisterBundle(_Bundle)
+function Core:RegisterBundle(_Bundle)
     if not _G[_Bundle] and not GUI then
         local text = string.format("Error while initialize bundle '%s': does not exist!", tostring(_Bundle));
         assert(false, text);
@@ -682,10 +958,10 @@ end
 -- Erzeugt zudem den Konstruktor.
 --
 -- @param _Behavior    Behavior-Objekt
--- @within QsbFramework Class
+-- @within Core Class
 -- @local
 --
-function QsbFramework:RegisterBehavior(_Behavior)
+function Core:RegisterBehavior(_Behavior)
     if _Behavior.RequiresExtraNo and _Behavior.RequiresExtraNo > g_GameExtraNo then
         return;
     end
@@ -718,11 +994,11 @@ end
 -- die Zeichen A-Z, a-7, 0-9, - und _ enthalten.
 --
 -- @param _Name     Quest
--- @return boolean
--- @within QsbFramework Class
+-- @return boolean: Questname ist fehlerfrei
+-- @within Core Class
 -- @local
 --
-function QsbFramework:CheckQuestName(_Name)
+function Core:CheckQuestName(_Name)
     return not string.find(__quest_, "[ \"§$%&/\(\)\[\[\?ß\*+#,;:\.^\<\>\|]");
 end
 
@@ -732,10 +1008,10 @@ end
 --
 -- @param _Text   Neuer Text
 -- @param _Quest  Identifier des Quest
--- @within QsbFramework Class
+-- @within Core Class
 -- @local
 --
-function QsbFramework:ChangeCustomQuestCaptionText(_Text, _Quest)
+function Core:ChangeCustomQuestCaptionText(_Text, _Quest)
     _Quest.QuestDescription = Umlaute(__text_);
     Logic.ExecuteInLuaLocalState([[
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/BGDeco",0)
@@ -751,36 +1027,118 @@ function QsbFramework:ChangeCustomQuestCaptionText(_Text, _Quest)
 end
 
 ---
--- Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
--- Laden eines Spielstandes ausgeführt wird.
+-- Erweitert eine Funktion um eine andere Funktion.
+-- 
+-- Jede hinzugefügte Funktion wird nach der Originalfunktion ausgeführt. Es
+-- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
+-- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
+-- im Spiel sollte eine API-Funktion erstellt werden.
 --
--- @param _Function Funktion, die ausgeführt werden soll
+-- @param _FunctionName   
+-- @param _AppendFunction 
+-- @within Core Class  
 -- @local
 --
-function QsbFramework:AddSaveGameAction(_Function)
-    if not Mission_OnSaveGameLoaded_Orig_QSB_Append then
-        Mission_OnSaveGameLoaded_Orig_QSB_Append = Mission_OnSaveGameLoaded;
-        Mission_OnSaveGameLoaded = function()
-            Mission_OnSaveGameLoaded_Orig_QSB_Append();
-
-            for i=1, #self.Data.Overwrite.Functions.SaveGame, 1 do
-                self.Data.Overwrite.Functions.SaveGame[i]();
+function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
+    if not self.Data.Append.Functions[_FunctionName] then
+        self.Data.Append.Functions[_FunctionName] = {
+            Original = self:GetFunctionByString(_FunctionName),
+            Attachments = {}
+        };
+        
+        local batch = function(...)
+            for k, v in pairs(self.Data.Append.Functions[_FunctionName].Attachments) do
+                if v(..., self.Data.Append.Functions[_FunctionName].Original) then
+                    break;
+                end
             end
         end
+        self:ReplaceFunction(_FunctionName, batch);
     end
+    
+    _Index = _Index or #self.Data.Append.Functions[_FunctionName].Function;
+    table.insert(self.Data.Append.Functions[_FunctionName].Function, _Index, _AppendFunction);
+end
 
-    self.Data.Append.Functions.SaveGame = self.Data.Append.Functions.SaveGame or {};
-    table.insert(self.Data.Append.Functions.SaveGame, _Function);
+---
+-- Überschreibt eine Funktion mit einer anderen.
+-- 
+-- Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
+-- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
+--
+-- @within Core Class
+-- @local
+-- @usage A = {foo = function() API.Note("bar") end}
+-- B = function() API.Note("muh") end
+-- Core:ReplaceFunction("A.foo", B)
+-- -- A.foo() == B() => "muh"
+--
+function Core:ReplaceFunction(_FunctionName, _NewFunction)
+    local s, e = _FunctionName:find("%.");
+    if s then
+        local FirstLayer  = _FunctionName:sub(1, s-1);
+        local SecondLayer = _FunctionName:sub(e+1, _FunctionName:len());
+        local s, e = SecondLayer:find("%.");
+        if s then
+            local tmp = SecondLayer;
+            local SecondLayer = tmp:sub(1, s-1);
+            local ThirdLayer = tmp:sub(e+1, tmp:len());
+            _G[FirstLayer][SecondLayer][ThirdLayer] = _NewFunction;
+        else
+            _G[FirstLayer][SecondLayer] = _NewFunction;
+        end
+    else
+        _G[_FunctionName] = _NewFunction;
+        return;
+    end
+end
+
+---
+-- Sucht eine Funktion mit dem angegebenen Namen.
+--
+-- Ist die Funktionen innerhalb einer Table, so sind alle Ebenen bis zum
+-- Funktionsnamen mit anzugeben, abgetrennt durch einen Punkt.
+--
+-- @param _FunctionName Name der Funktion
+-- @param _Reference    Aktuelle Referenz (für Rekursion)
+-- @return function: Gefundene Funktion
+-- @within Core Class
+-- @local
+--
+function Core:GetFunctionInString(_FunctionName, _Reference)
+    -- Wenn wir uns in der ersten Rekursionsebene beinden, suche in _G
+    if not _Reference then
+        local s, e = _FunctionName:find("%.");
+        if s then
+            local FirstLayer = _FunctionName:sub(1, s-1);
+            local Rest = _FunctionName:sub(e+1, _FunctionName:len());
+            return self:GetFunctionByString(Rest, _G[FirstLayer]);
+        else
+            return _G[_FunctionName];
+        end
+    end
+    -- Andernfalls suche in der Referenz
+    if type(_Reference) == "table" then
+        local s, e = _FunctionName:find("%.");
+        if s then
+            local FirstLayer = _FunctionName:sub(1, s-1);
+            local Rest = _FunctionName:sub(e+1, _FunctionName:len());
+            return self:GetFunctionByString(Rest, _Reference[FirstLayer]);
+        else
+            return _Reference[_FunctionName];
+        end
+    end
 end
 
 ---
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
 -- @param _Input Boolean-Darstellung
--- @return boolean
+-- @return boolean: Konvertierte Boolean
+-- @within Core Class
 -- @local
 --
-function QsbFramework:ToBoolean(_Input)
+function Core:ToBoolean(_Input)
     local Suspicious = tostring(_Input);
     if Suspicious == true or Suspicious == "true" or Suspicious == "Yes" or Suspicious == "On" or Suspicious == "+" then
         return true;

@@ -150,7 +150,7 @@ local function setup_kinds ()
    ModuleMap:add_kind(lookup('lfunction','Local Functions','Parameters'))
    ModuleMap:add_kind(lookup('annotation','Issues'))
 
-   ProjectMap:add_kind(lookup('module','Modules'))
+   ProjectMap:add_kind(lookup('module','Bundles'))
    ProjectMap:add_kind(lookup('script','Scripts'))
    ProjectMap:add_kind(lookup('classmod','Classes'))
    ProjectMap:add_kind(lookup('topic','Topics'))

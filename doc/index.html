@@ -27,312 +27,38 @@
 <h1>ldoc</h1>
 
 
-<h2>Contents</h2>
-<ul>
-<li><a href="#Functions">Functions</a></li>
-</ul>
 
 
-<h2>Modules</h2>
+<h2>Bundles</h2>
 <ul class="nowrap">
-  <li><strong>QsbFramework</strong></li>
+  <li><a href="bundles/ClassicBehaviorBundle.html">ClassicBehaviorBundle</a></li>
+  <li><a href="bundles/Core.html">Core</a></li>
 </ul>
 
 </div>
 
 <div id="content">
 
-<h1>Module <code>QsbFramework</code></h1>
-<p>Das Framework läd die einzelnen Bundles und beinhaltet alle geteilte
- Funktionen.</p>
-<p> Interne Spielfunktionen, die überschrieben werden, müssen
- ebenfalls hier definiert werden.</p>
 
 
-<h2><a href="#Functions">Functions</a></h2>
-<table class="function_list">
+<h2>Bundles</h2>
+<table class="module_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.AddQuestBehavior">API.AddQuestBehavior (_Behavior)</a></td>
-	<td class="summary">Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.</td>
+		<td class="name"  nowrap><a href="bundles/ClassicBehaviorBundle.html">ClassicBehaviorBundle</a></td>
+		<td class="summary"></td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ValidQuestName">API.ValidQuestName (_Name)</a></td>
-	<td class="summary">Prüft, ob der Questname formal korrekt ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InstanceTable">API.InstanceTable (_Source, _Dest)</a></td>
-	<td class="summary">Kopiert eine komplette Table und gibt die Kopie zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.TraverseTable">API.TraverseTable (_Data, _Table)</a></td>
-	<td class="summary">Sucht in einer Table nach einem Wert.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GetQuestID">API.GetQuestID (_Name)</a></td>
-	<td class="summary">Gibt die ID des Quests mit dem angegebenen Namen zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ValidateQuest">API.ValidateQuest (_QuestID)</a></td>
-	<td class="summary">Prüft, ob die ID zu einem Quest gehört bzw.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.RegisterBundle">API.RegisterBundle (_Bundle)</a></td>
-	<td class="summary">Registiert ein Bundle, sodass es initialisiert wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InitalizeBundles">API.InitalizeBundles ()</a></td>
-	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.Boolean">API.Boolean (_Input)</a></td>
-	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
+		<td class="name"  nowrap><a href="bundles/Core.html">Core</a></td>
+		<td class="summary">Die Hauptaufgabe des Framework ist es, Funktionen zur Installation und der
+ Verwaltung der einzelnen Bundles bereitzustellen.</td>
 	</tr>
 </table>
-
-<br/>
-<br/>
-
-
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.AddQuestBehavior"></a>
-    <strong>API.AddQuestBehavior (_Behavior)</strong>
-    </dt>
-    <dd>
-    Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.
- Erzeugt zudem den Konstruktor.
-<p> Alias: AddQuestBehavior
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Behavior</span>
-            Behavior-Objekt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ValidQuestName"></a>
-    <strong>API.ValidQuestName (_Name)</strong>
-    </dt>
-    <dd>
-    Prüft, ob der Questname formal korrekt ist.  Questnamen dürfen i.d.R. nur
- die Zeichen A-Z, a-7, 0-9, - und _ enthalten.
-<p> Alias: ValidQuestName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Name</span>
-             Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        boolean
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InstanceTable"></a>
-    <strong>API.InstanceTable (_Source, _Dest)</strong>
-    </dt>
-    <dd>
-    Kopiert eine komplette Table und gibt die Kopie zurück.  Wenn ein Ziel
- angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
- angegebenen Tables.
- Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
- Funktion kann benutzt werden, um Klassen zu instanzieren.
-<p> Alias: CopyTableRecursive
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Source</span>
-            Quelltabelle
-        </li>
-        <li><span class="parameter">_Dest</span>
-              Zieltabelle
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        table
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.TraverseTable"></a>
-    <strong>API.TraverseTable (_Data, _Table)</strong>
-    </dt>
-    <dd>
-    Sucht in einer Table nach einem Wert.  Das erste Aufkommen des Suchwerts
- wird als Erfolg gewertet.
-<p> Alias: Inside
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Data</span>
-             Datum, das gesucht wird
-        </li>
-        <li><span class="parameter">_Table</span>
-            Tabelle, die durchquert wird
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        boolean
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GetQuestID"></a>
-    <strong>API.GetQuestID (_Name)</strong>
-    </dt>
-    <dd>
-    Gibt die ID des Quests mit dem angegebenen Namen zurück.  Existiert der
- Quest nicht, wird nil zurückgegeben.
-<p> Alias: GetQuestID
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Name</span>
-             Identifier des Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        number
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ValidateQuest"></a>
-    <strong>API.ValidateQuest (_QuestID)</strong>
-    </dt>
-    <dd>
-    Prüft, ob die ID zu einem Quest gehört bzw.  der Quest existiert. Es kann
- auch ein Questname angegeben werden.
-<p> Alias: IsValidQuest
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestID</span>
-           ID oder Name des Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        boolean
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.RegisterBundle"></a>
-    <strong>API.RegisterBundle (_Bundle)</strong>
-    </dt>
-    <dd>
-    Registiert ein Bundle, sodass es initialisiert wird.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Bundle</span>
-         Name des Moduls
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InitalizeBundles"></a>
-    <strong>API.InitalizeBundles ()</strong>
-    </dt>
-    <dd>
-    Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.Boolean"></a>
-    <strong>API.Boolean (_Input)</strong>
-    </dt>
-    <dd>
-    Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
-<p> Alias: ToBoolean
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Input</span>
-         Boolean-Darstellung
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
-
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-11-29 21:10:34 </i>
+<i style="float:right;">Last updated 2017-11-30 21:32:22 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
