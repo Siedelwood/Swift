@@ -1077,6 +1077,129 @@ end
 AddQuestBehavior(b_Reprisal_DestroyEffect);
 
 -- -------------------------------------------------------------------------- --
+
+---
+-- Eine Entfernung zwischen zwei Entities muss erreicht werden.
+--
+-- Je nach angegebener Relation muss die Entfernung unter- oder überschritten
+-- werden um den Quest zu gewinnen.
+--
+-- @param _ScriptName1  Erstes Entity
+-- @param _ScriptName2  Zweites Entity
+-- @param _Relation     Relation
+-- @param _Distance     Entfernung
+-- @return table: Behavior
+-- @within Goals
+--
+function Goal_EntityDistance(...)
+    return b_Goal_EntityDistance:new(...);
+end
+
+b_Goal_EntityDistance = {
+    Name = "Goal_EntityDistance",
+    Description = {
+        en = "Goal: Distance between two entities",
+        de = "Ziel: Zwei Entities sollen zueinander eine Entfernung ueber- oder unterschreiten.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Entity 1", de = "Entity 1" },
+        { ParameterType.ScriptName, en = "Entity 2", de = "Entity 2" },
+        { ParameterType.Custom, en = "Relation", de = "Relation" },
+        { ParameterType.Number, en = "Distance", de = "Entfernung" },
+    },
+}
+
+function b_Goal_EntityDistance:GetGoalTable(__quest_)
+    return { Objective.Custom2, {self, self.CustomFunction} }
+end
+
+function b_Goal_EntityDistance:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.Entity1 = __parameter_
+    elseif (__index_ == 1) then
+        self.Entity2 = __parameter_
+    elseif (__index_ == 2) then
+        self.bRelSmallerThan = __parameter_ == "<"
+    elseif (__index_ == 3) then
+        self.Distance = __parameter_ * 1
+    end
+end
+
+function b_Goal_EntityDistance:CustomFunction(__quest_)
+    if Logic.IsEntityDestroyed( self.Entity1 ) or Logic.IsEntityDestroyed( self.Entity2 ) then
+        return false
+    end
+    local ID1 = GetID( self.Entity1 )
+    local ID2 = GetID( self.Entity2 )
+    local InRange = Logic.CheckEntitiesDistance( ID1, ID2, self.Distance )
+    if ( self.bRelSmallerThan and InRange ) or ( not self.bRelSmallerThan and not InRange ) then
+        return true
+    end
+end
+
+function b_Goal_EntityDistance:GetCustomData( __index_ )
+    local Data = {}
+    if __index_ == 2 then
+        table.insert( Data, ">" )
+        table.insert( Data, "<" )
+    else
+        assert( false )
+    end
+    return Data
+end
+
+function b_Goal_EntityDistance:DEBUG(__quest_)
+    if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
+        local text = string.format("%s Goal_EntityDistance: At least 1 of the entities for distance check don't exist!", __quest_.Identifier);
+        dbg(text);
+        return true;
+    end
+    return false;
+end
+
+AddQuestBehavior(b_Goal_EntityDistance);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Primary Knight des angegebenen Spielers muss sich dem Ziel nähern.
+--
+-- @param _PlayerID   PlayerID des Helden
+-- @param _ScriptName Skriptname des Ziels
+-- @return table: Behavior
+-- @within Goals
+--
+function Goal_KnightDistance(...)
+    return b_Goal_KnightDistance:new(...);
+end
+
+b_Goal_KnightDistance = {
+    Name = "Goal_KnightDistance",
+    Description = {
+        en = "Goal: Bring the knight close to a given entity",
+        de = "Ziel: Bringe den Ritter nah an eine bestimmte Entitaet",
+    },
+    Parameter = {
+        { ParameterType.PlayerID,     en = "Player", de = "Spieler" },
+        { ParameterType.ScriptName, en = "Target", de = "Ziel" },
+    },
+}
+
+function b_Goal_KnightDistance:GetGoalTable()
+    return {Objective.Distance, Logic.GetKnightID(self.PlayerID), self.Target, 2500, true}
+end
+
+function b_Goal_KnightDistance:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.PlayerID = __parameter_ * 1
+    elseif (__index_ == 1) then
+        self.Target = __parameter_
+    end
+end
+
+AddQuestBehavior(b_Goal_KnightDistance);
+
+-- -------------------------------------------------------------------------- --
 -- Rewards                                                                    --
 -- -------------------------------------------------------------------------- --
 
