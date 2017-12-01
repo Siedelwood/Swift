@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
     <name>
+        Klassische Behavior
     </name>
     <description>
+        Beinhaltet die ursprünglich aus der QSB 3.9 PlusB bekannten Behavior.
     </description>
-    
+
     <dependencies>
     </dependencies>
-    
+
     <exclusions>
     </exclusions>
 </root>

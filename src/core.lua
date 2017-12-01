@@ -659,7 +659,7 @@ end
 -- Skriptnamen oder Positionstables angegeben werden.
 --
 -- Alias: GetDistance
--- 
+--
 -- @param _pos1 Erste Vergleichsposition
 -- @param _pos2 Zweite Vergleichsposition
 -- @return number: Entfernung zwischen den Punkten
@@ -702,10 +702,10 @@ GetPosition = API.LocateEntity;
 
 ---
 -- Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.
--- 
+--
 -- Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
--- Held das Objekt aktivieren. 
+-- Held das Objekt aktivieren.
 --
 -- Alias: InteractiveObjectActivate
 --
@@ -792,6 +792,17 @@ end
 -- Overwrite -------------------------------------------------------------------
 
 ---
+--
+-- @param _Value Wahrheitswert
+-- @return boolean: Wahrheitswert
+-- @within Overwrite-Funktionen
+--
+function API.ToBoolean(_Value)
+    return Core:ToBoolean(_Value);
+end
+AcceptAlternativeBoolean = API.ToBoolean;
+
+---
 -- Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
 -- Laden eines Spielstandes ausgeführt wird.
 --
@@ -830,7 +841,7 @@ function Core:InitalizeBundles()
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
     end
-    
+
     for k,v in pairs(self.Data.BundleInitializerList) do
         if not GUI then
             if v.Global ~= nil and v.Global.Install ~= nil then
@@ -1028,15 +1039,15 @@ end
 
 ---
 -- Erweitert eine Funktion um eine andere Funktion.
--- 
+--
 -- Jede hinzugefügte Funktion wird nach der Originalfunktion ausgeführt. Es
 -- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
 -- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
 -- im Spiel sollte eine API-Funktion erstellt werden.
 --
--- @param _FunctionName   
--- @param _AppendFunction 
--- @within Core Class  
+-- @param _FunctionName
+-- @param _AppendFunction
+-- @within Core Class
 -- @local
 --
 function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
@@ -1045,7 +1056,7 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
             Original = self:GetFunctionByString(_FunctionName),
             Attachments = {}
         };
-        
+
         local batch = function(...)
             for k, v in pairs(self.Data.Append.Functions[_FunctionName].Attachments) do
                 if v(..., self.Data.Append.Functions[_FunctionName].Original) then
@@ -1055,14 +1066,14 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
-    
+
     _Index = _Index or #self.Data.Append.Functions[_FunctionName].Function;
     table.insert(self.Data.Append.Functions[_FunctionName].Function, _Index, _AppendFunction);
 end
 
 ---
 -- Überschreibt eine Funktion mit einer anderen.
--- 
+--
 -- Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
 -- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
 --
