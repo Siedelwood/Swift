@@ -13,6 +13,8 @@
 API = API or {};
 QSB = QSB or {};
 
+QSB.EffectNameToID = QSB.EffectNameToID or {};
+
 -- -------------------------------------------------------------------------- --
 -- User Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -638,6 +640,108 @@ end
 AddQuestBehavior(b_Goal_DestroyType);
 
 -- -------------------------------------------------------------------------- --
+
+do
+    GameCallback_EntityKilled_Orig_QSB_Goal_DestroySoldiers = GameCallback_EntityKilled;
+    GameCallback_EntityKilled = function(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType)
+        if _AttackedPlayerID ~= 0 and _AttackingPlayerID ~= 0 then
+            QSB.Goal_DestroySoldiers[_AttackingPlayerID] = QSB.Goal_DestroySoldiers[_AttackingPlayerID] or {}
+            QSB.Goal_DestroySoldiers[_AttackingPlayerID][_AttackedPlayerID] = QSB.Goal_DestroySoldiers[_AttackingPlayerID][_AttackedPlayerID] or 0
+            if Logic.IsEntityTypeInCategory( _AttackedEntityType, EntityCategories.Military ) == 1
+            and Logic.IsEntityInCategory( _AttackedEntityID, EntityCategories.HeavyWeapon) == 0 then
+                QSB.Goal_DestroySoldiers[_AttackingPlayerID][_AttackedPlayerID] = QSB.Goal_DestroySoldiers[_AttackingPlayerID][_AttackedPlayerID] +1
+            end
+        end
+        GameCallback_EntityKilled_Orig_QSB_Goal_DestroySoldiers(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType)
+    end
+end
+
+---
+-- Spieler A muss Soldaten von Spieler B zerstören.
+--
+-- @param _PlayerA Angreifende Partei
+-- @param _PlayerB Zielpartei
+-- @param _Amount Menga an Soldaten
+-- @return table: Behavior
+-- @within Goals
+--
+function Goal_DestroySoldiers(...)
+    return b_Goal_DestroySoldiers:new(...);
+end
+
+b_Goal_DestroySoldiers = {
+    Name = "Goal_DestroySoldiers",
+    Description = {
+        en = "Goal: Destroy a given amount of enemy soldiers",
+        de = "Ziel: Zerstoere eine Anzahl gegnerischer Soldaten",
+                },
+    Parameter = {
+        {ParameterType.PlayerID, en = "Attacking Player", de = "Angreifer", },
+        {ParameterType.PlayerID, en = "Defending Player", de = "Verteidiger", },
+        {ParameterType.Number, en = "Amount", de = "Anzahl", },
+    },
+}
+
+function b_Goal_DestroySoldiers:GetGoalTable()
+    return {Objective.Custom2, {self, self.CustomFunction} }
+end
+
+function b_Goal_DestroySoldiers:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.AttackingPlayer = __parameter_ * 1
+    elseif (__index_ == 1) then
+        self.AttackedPlayer = __parameter_ * 1
+    elseif (__index_ == 2) then
+        self.KillsNeeded = __parameter_ * 1
+    end
+end
+
+function b_Goal_DestroySoldiers:CustomFunction(__quest_)
+    if not __quest_.QuestDescription or __quest_.QuestDescription == "" then
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local caption = (lang == "de" and "SOLDATEN ZERST�REN {cr}{cr}von der Partei: ") or
+                         "DESTROY SOLDIERS {cr}{cr}from faction: "
+        local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
+        local party = GetPlayerName(self.AttackedPlayer);
+        if party == "" or party == nil then
+            party = ((lang == "de" and "Spieler ") or "Player ") .. self.AttackedPlayer
+        end
+        local text = "{center}" .. caption .. party .. "{cr}{cr}" .. amount .. " "..self.KillsNeeded;
+        SetCustomCaptionText(text, __quest_);
+    end
+
+    local currentKills = 0;
+    if QSB.Goal_DestroySoldiers[self.AttackingPlayer] and QSB.Goal_DestroySoldiers[self.AttackingPlayer][self.AttackedPlayer] then
+        currentKills = QSB.Goal_DestroySoldiers[self.AttackingPlayer][self.AttackedPlayer]
+    end
+    self.SaveAmount = self.SaveAmount or currentKills
+    return self.KillsNeeded <= currentKills - self.SaveAmount or nil
+end
+
+function b_Goal_DestroySoldiers:DEBUG(__quest_)
+    if Logic.GetStoreHouse(self.AttackingPlayer) == 0 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": Player " .. self.AttackinPlayer .. " is dead :-(")
+        return true
+    elseif Logic.GetStoreHouse(self.AttackedPlayer) == 0 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": Player " .. self.AttackedPlayer .. " is dead :-(")
+        return true
+    elseif self.KillsNeeded < 0 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": Amount negative")
+        return true
+    end
+end
+
+function b_Goal_DestroySoldiers:GetIcon()
+    return {7,12}
+end
+
+function b_Goal_DestroySoldiers:Reset()
+    self.SaveAmount = nil
+end
+
+AddQuestBehavior(b_Goal_DestroySoldiers)
+
+-- -------------------------------------------------------------------------- --
 -- Reprisal                                                                   --
 -- -------------------------------------------------------------------------- --
 
@@ -875,7 +979,102 @@ AddQuestBehavior(b_Reprisal_Diplomacy);
 
 -- -------------------------------------------------------------------------- --
 
+---
+-- Ein benanntes Entity wird zerstört.
+--
+-- @param _ScriptName Skriptname des Entity
+-- @return table: Behavior
+-- @within Reprisals
+--
+function Reprisal_DestroyEntity(...)
+    return b_Reprisal_DestroyEntity:new(...);
+end
 
+b_Reprisal_DestroyEntity = {
+    Name = "Reprisal_DestroyEntity",
+    Description = {
+        en = "Reprisal: Replaces an entity with an invisible script entity, which retains the entities name.",
+        de = "Vergeltung: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen uebernimmt.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Entity", de = "Entity" },
+    },
+}
+
+function b_Reprisal_DestroyEntity:GetReprisalTable()
+    return { Reprisal.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reprisal_DestroyEntity:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.ScriptName = __parameter_
+    end
+end
+
+function b_Reprisal_DestroyEntity:CustomFunction(__quest_)
+    ReplaceEntity(self.ScriptName, Entities.XD_ScriptEntity);
+end
+
+function b_Reprisal_DestroyEntity:DEBUG(__quest_)
+    if not IsExisting(self.ScriptName) then
+        local text = string.format("%s Reprisal_DestroyEntity: '%s' is already destroyed!", __quest_.Identifier, self.ScriptName);
+        self.WarningPrinted = true;
+        warn(text);
+    end
+    return false;
+end
+
+AddQuestBehavior(b_Reprisal_DestroyEntity);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Zerstört einen über die QSB erzeugten Effekt.
+--
+-- @param _EffectName Name des Effekts
+-- @return table: Behavior
+-- @within Reprisals
+--
+function Reprisal_DestroyEffect(...)
+    return b_Reprisal_DestroyEffect:new(...);
+end
+
+b_Reprisal_DestroyEffect = {
+    Name = "Reprisal_DestroyEffect",
+    Description = {
+        en = "Reprisal: Destroys an effect",
+        de = "Vergeltung: Zerstoert einen Effekt",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Effect name", de = "Effektname" },
+    }
+}
+
+function b_Reprisal_DestroyEffect:AddParameter(__index_, __parameter_)
+    if __index_ == 0 then
+        self.EffectName = __parameter_;
+    end
+end
+
+function b_Reprisal_DestroyEffect:GetReprisalTable()
+    return { Reprisal.Custom, { self, self.CustomFunction } };
+end
+
+function b_Reprisal_DestroyEffect:CustomFunction(__quest_)
+    if not QSB.EffectNameToID[self.EffectName] or not Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
+        return;
+    end
+    Logic.DestroyEffect(QSB.EffectNameToID[self.EffectName]);
+end
+
+function b_Reprisal_DestroyEffect:DEBUG(__quest_)
+    if not QSB.EffectNameToID[self.EffectName] then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": Effect " .. self.EffectName .. " never created")
+    end
+    return false;
+end
+
+AddQuestBehavior(b_Reprisal_DestroyEffect);
 
 -- -------------------------------------------------------------------------- --
 -- Rewards                                                                    --
@@ -1256,7 +1455,7 @@ AddQuestBehavior(b_Reward_ObjectSetCarts);
 -- @within Reprisals
 --
 function Reward_Diplomacy(...)
-    return b_Reprisal_Diplomacy:new(...);
+    return b_Reward_Diplomacy:new(...);
 end
 
 b_Reward_Diplomacy = API.InstanceTable(b_Reprisal_Diplomacy);
@@ -1268,6 +1467,8 @@ b_Reward_Diplomacy.GetReprisalTable = nil;
 b_Reward_ObjectDeactivate.GetRewardTable = function(self)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
+
+AddQuestBehavior(b_Reward_Diplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1477,6 +1678,637 @@ function b_Reward_TradeOffers:GetCustomData(__index_)
 end
 
 AddQuestBehavior(b_Reward_TradeOffers)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ein benanntes Entity wird zerstört.
+--
+-- @param _ScriptName Skriptname des Entity
+-- @return table: Behavior
+-- @within Rewards
+--
+function Reward_DestroyEntity(...)
+    return b_Reprisal_DestroyEntity:new(...);
+end
+
+b_Reward_DestroyEntity = API.InstanceTable(b_Reprisal_DestroyEntity);
+b_Reward_DestroyEntity.Name = "Reward_DestroyEntity";
+b_Reward_DestroyEntity.Description.en = "Reward: Replaces an entity with an invisible script entity, which retains the entities name.";
+b_Reward_DestroyEntity.Description.de = "Lohn: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen uebernimmt.";
+b_Reward_DestroyEntity.GetReprisalTable = nil;
+
+b_Reward_DestroyEntity.GetRewardTable = function(self)
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+AddQuestBehavior(b_Reward_DestroyEntity);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Zerstört einen über die QSB erzeugten Effekt.
+--
+-- @param _EffectName Name des Effekts
+-- @return table: Behavior
+-- @within Reprisals
+--
+function Reprisal_DestroyEffect(...)
+    return b_Reprisal_DestroyEffect:new(...);
+end
+
+b_Reward_DestroyEffect = API.InstanceTable(b_Reprisal_DestroyEffect);
+b_Reward_DestroyEffect.Name = "Reward_DestroyEffect";
+b_Reward_DestroyEffect.Description.en = "Reward: Destroys an effect.";
+b_Reward_DestroyEffect.Description.de = "Lohn: Zerstoert einen Effekt.";
+b_Reward_DestroyEffect.GetReprisalTable = nil;
+
+b_Reward_DestroyEffect.GetRewardTable = function(self)
+    return { Reward.Custom, { self, self.CustomFunction } };
+end
+
+AddQuestBehavior(b_Reward_DestroyEffect);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ersetzt ein Entity mit einem Batallion.
+--
+-- Ist die Position ein Gebäude, werden die Battalione am Eingang erzeugt und
+-- Das Entity wird nicht ersetzt.
+--
+-- @param _Position    Skriptname des Entity
+-- @param _PlayerID    PlayerID des Battalion
+-- @param _UnitType    Einheitentyp der Soldaten
+-- @param _Orientation Ausrichtung in °
+-- @param _Soldiers    Anzahl an Soldaten
+-- @param _HideFromAI  Vor KI verstecken
+-- @return table: Behavior
+-- @within Rewards
+--
+function Reward_CreateBattalion(...)
+    return b_Reward_CreateBattalion:new(...);
+end
+
+b_Reward_CreateBattalion = {
+    Name = "Reward_CreateBattalion",
+    Description = {
+        en = "Reward: Replaces a script entity with a battalion, which retains the entities name",
+        de = "Lohn: Ersetzt eine Script-Entity durch ein Bataillon, welches den Namen der Script-Entity uebernimmt",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
+        { ParameterType.Number, en = "Orientation (in degrees)", de = "Ausrichtung (in Grad)" },
+        { ParameterType.Number, en = "Number of soldiers", de = "Anzahl Soldaten" },
+        { ParameterType.Custom, en = "Hide from AI", de = "Vor KI verstecken" },
+    },
+}
+
+function b_Reward_CreateBattalion:GetRewardTable()
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reward_CreateBattalion:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.ScriptNameEntity = __parameter_
+    elseif (__index_ == 1) then
+        self.PlayerID = __parameter_ * 1
+    elseif (__index_ == 2) then
+        self.UnitKey = __parameter_
+    elseif (__index_ == 3) then
+        self.Orientation = __parameter_ * 1
+    elseif (__index_ == 4) then
+        self.SoldierCount = __parameter_ * 1
+    elseif (__index_ == 5) then
+        self.HideFromAI = AcceptAlternativeBoolean(__parameter_)
+    end
+end
+
+function b_Reward_CreateBattalion:CustomFunction(__quest_)
+    if not IsExisting( self.ScriptNameEntity ) then
+        return false
+    end
+    local pos = GetPosition(self.ScriptNameEntity)
+    local NewID = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, self.SoldierCount )
+    local posID = GetID(self.ScriptNameEntity)
+    if Logic.IsBuilding(posID) == 0 then
+        DestroyEntity(self.ScriptNameEntity)
+        Logic.SetEntityName( NewID, self.ScriptNameEntity )
+    end
+    if self.HideFromAI then
+        AICore.HideEntityFromAI( self.PlayerID, NewID, true )
+    end
+end
+
+function b_Reward_CreateBattalion:GetCustomData( __index_ )
+    local Data = {}
+    if __index_ == 2 then
+        for k, v in pairs( Entities ) do
+            if Logic.IsEntityTypeInCategory( v, EntityCategories.Soldier ) == 1 then
+                table.insert( Data, k )
+            end
+        end
+        table.sort( Data )
+    elseif __index_ == 5 then
+        table.insert( Data, "false" )
+        table.insert( Data, "true" )
+    else
+        assert( false )
+    end
+    return Data
+end
+
+function b_Reward_CreateBattalion:DEBUG(__quest_)
+    if not Entities[self.UnitKey] then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
+        return true;
+    elseif not IsExisting(self.ScriptNameEntity) then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        return true;
+    elseif tonumber(self.PlayerID) == nil or self.PlayerID < 1 or self.PlayerID > 8 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": playerID is wrong!");
+        return true;
+    elseif tonumber(self.Orientation) == nil then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": orientation must be a number!");
+        return true;
+    elseif tonumber(self.SoldierCount) == nil or self.SoldierCount < 1 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": you can not create a empty batallion!");
+        return true;
+    end
+    return false;
+end
+
+AddQuestBehavior(b_Reward_CreateBattalion);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erzeugt eine Menga von Battalionen an der Position.
+--
+-- @param _Amount      Anzahl erzeugter Battalione
+-- @param _Position    Skriptname des Entity
+-- @param _PlayerID    PlayerID des Battalion
+-- @param _UnitType    Einheitentyp der Soldaten
+-- @param _Orientation Ausrichtung in °
+-- @param _Soldiers    Anzahl an Soldaten
+-- @param _HideFromAI  Vor KI verstecken
+-- @return table: Behavior
+-- @within Rewards
+--
+function Reward_CreateSeveralBattalions(...)
+    return b_Reward_CreateSeveralBattalions:new(...);
+end
+
+b_Reward_CreateSeveralBattalions = {
+    Name = "Reward_CreateSeveralBattalions",
+    Description = {
+        en = "Reward: Creates a given amount of battalions",
+        de = "Lohn: Erstellt eine gegebene Anzahl Bataillone",
+    },
+    Parameter = {
+        { ParameterType.Number, en = "Amount", de = "Anzahl" },
+        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
+        { ParameterType.Number, en = "Orientation (in degrees)", de = "Ausrichtung (in Grad)" },
+        { ParameterType.Number, en = "Number of soldiers", de = "Anzahl Soldaten" },
+        { ParameterType.Custom, en = "Hide from AI", de = "Vor KI verstecken" },
+    },
+}
+
+function b_Reward_CreateSeveralBattalions:GetRewardTable()
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reward_CreateSeveralBattalions:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.Amount = __parameter_ * 1
+    elseif (__index_ == 1) then
+        self.ScriptNameEntity = __parameter_
+    elseif (__index_ == 2) then
+        self.PlayerID = __parameter_ * 1
+    elseif (__index_ == 3) then
+        self.UnitKey = __parameter_
+    elseif (__index_ == 4) then
+        self.Orientation = __parameter_ * 1
+    elseif (__index_ == 5) then
+        self.SoldierCount = __parameter_ * 1
+    elseif (__index_ == 6) then
+        self.HideFromAI = AcceptAlternativeBoolean(__parameter_)
+    end
+end
+
+function b_Reward_CreateSeveralBattalions:CustomFunction(__quest_)
+    if not IsExisting( self.ScriptNameEntity ) then
+        return false
+    end
+    local tID = GetID(self.ScriptNameEntity)
+    local x,y,z = Logic.EntityGetPos(tID);
+    if Logic.IsBuilding(tID) == 1 then
+        x,y = Logic.GetBuildingApproachPosition(tID)
+    end
+
+    for i=1, self.Amount do
+        local NewID = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], x, y, self.Orientation, self.PlayerID, self.SoldierCount )
+        Logic.SetEntityName( NewID, self.ScriptNameEntity .. "_" .. i )
+        if self.HideFromAI then
+            AICore.HideEntityFromAI( self.PlayerID, NewID, true )
+        end
+    end
+end
+
+function b_Reward_CreateSeveralBattalions:GetCustomData( __index_ )
+    local Data = {}
+    if __index_ == 3 then
+        for k, v in pairs( Entities ) do
+            if Logic.IsEntityTypeInCategory( v, EntityCategories.Soldier ) == 1 then
+                table.insert( Data, k )
+            end
+        end
+        table.sort( Data )
+    elseif __index_ == 6 then
+        table.insert( Data, "false" )
+        table.insert( Data, "true" )
+    else
+        assert( false )
+    end
+    return Data
+end
+
+function b_Reward_CreateSeveralBattalions:DEBUG(__quest_)
+    if not Entities[self.UnitKey] then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
+        return true;
+    elseif not IsExisting(self.ScriptNameEntity) then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        return true;
+    elseif tonumber(self.PlayerID) == nil or self.PlayerID < 1 or self.PlayerID > 8 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": playerDI is wrong!");
+        return true;
+    elseif tonumber(self.Orientation) == nil then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": orientation must be a number!");
+        return true;
+    elseif tonumber(self.SoldierCount) == nil or self.SoldierCount < 1 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": you can not create a empty batallion!");
+        return true;
+    elseif tonumber(self.Amount) == nil or self.Amount < 0 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": amount can not be negative!");
+        return true;
+    end
+    return false;
+end
+
+AddQuestBehavior(b_Reward_CreateSeveralBattalions);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erzeugt einen Effekt an der angegebenen Position.
+--
+-- @param _EffectName  Einzigartiger Effektname
+-- @param _TypeName    Typ des Effekt
+-- @param _PlayerID    PlayerID des Effekt
+-- @param _Location    Position des Effekt
+-- @param _Orientation Ausrichtung in °
+-- @return table: Behavior
+-- @within Rewards
+--
+function Reward_CreateEffect(...)
+    return b_Reward_CreateEffect:new(...);
+end
+
+b_Reward_CreateEffect = {
+    Name = "Reward_CreateEffect",
+    Description = {
+        en = "Reward: Creates an effect at a specified position",
+        de = "Lohn: Erstellt einen Effekt an der angegebenen Position",
+    },
+    Parameter = {
+        { ParameterType.Default,    en = "Effect name", de = "Effektname" },
+        { ParameterType.Custom,     en = "Type name", de = "Typbezeichnung" },
+        { ParameterType.PlayerID,   en = "Player", de = "Spieler" },
+        { ParameterType.ScriptName, en = "Location", de = "Ort" },
+        { ParameterType.Number,     en = "Orientation (in degrees)(-1: from locating entity)", de = "Ausrichtung (in Grad)(-1: von Positionseinheit)" },
+    }
+}
+
+function b_Reward_CreateEffect:AddParameter(__index_, __parameter_)
+
+    if __index_ == 0 then
+        self.EffectName = __parameter_;
+    elseif __index_ == 1 then
+        self.Type = EGL_Effects[__parameter_];
+    elseif __index_ == 2 then
+        self.PlayerID = __parameter_ * 1;
+    elseif __index_ == 3 then
+        self.Location = __parameter_;
+    elseif __index_ == 4 then
+        self.Orientation = __parameter_ * 1;
+    end
+
+end
+
+function b_Reward_CreateEffect:GetRewardTable(__quest_)
+    return { Reward.Custom, { self, self.CustomFunction } };
+end
+
+function b_Reward_CreateEffect:CustomFunction(__quest_)
+    if Logic.IsEntityDestroyed(self.Location) then
+        return;
+    end
+    local entity = assert(GetID(self.Location), __quest_.Identifier .. "Error in " .. self.Name .. ": CustomFunction: Entity is invalid");
+    if QSB.EffectNameToID[self.EffectName] and Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
+        return;
+    end
+
+    local posX, posY = Logic.GetEntityPosition(entity);
+    local orientation = tonumber(self.Orientation);
+    local effect = Logic.CreateEffectWithOrientation(self.Type, posX, posY, orientation, self.PlayerID);
+    if self.EffectName ~= "" then
+        QSB.EffectNameToID[self.EffectName] = effect;
+    end
+end
+
+function b_Reward_CreateEffect:DEBUG(__quest_)
+    if QSB.EffectNameToID[self.EffectName] and Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
+        local text = string.format("%s Reward_CreateEffect: effect already exists!",__quest_.Identifier);
+        dbg(text);
+        return true;
+    elseif not IsExisting(self.Location) then
+        local text = string.format("%s Reward_CreateEffect: location %s is missing!",__quest_.Identifier, tostring(self.Location));
+        dbg(text);
+        return true;
+    elseif self.PlayerID and (self.PlayerID < 0 or self.PlayerID > 8) then
+        local text = string.format("%s Reward_CreateEffect: invalid playerID!",__quest_.Identifier);
+        dbg(text);
+        return true;
+    elseif tonumber(self.Orientation) == nil then
+        local text = string.format("%s Reward_CreateEffect: invalid orientation!",__quest_.Identifier);
+        dbg(text);
+        return true;
+    end
+end
+
+function b_Reward_CreateEffect:GetCustomData(__index_)
+    assert(__index_ == 1, "Error in " .. self.Name .. ": GetCustomData: Index is invalid.");
+    local types = {};
+    for k, v in pairs(EGL_Effects) do
+        table.insert(types, k);
+    end
+    table.sort(types);
+    return types;
+end
+
+AddQuestBehavior(b_Reward_CreateEffect);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ersetzt ein Entity mit dem Skriptnamen durch ein neues Entity.
+--
+-- Ist die Position ein Gebäude, werden die Entities am Eingang erzeugt und
+-- die Position wird nicht ersetzt.
+--
+-- @param _ScriptName  Skriptname des Entity
+-- @param _PlayerID    PlayerID des Effekt
+-- @param _TypeName    Einzigartiger Effektname
+-- @param _Orientation Ausrichtung in °
+-- @param _HideFromAI  Vor KI verstecken
+-- @return table: Behavior
+-- @within Rewards
+--
+function Reward_CreateEntity(...)
+    return b_Reward_CreateEntity:new(...);
+end
+
+b_Reward_CreateEntity = {
+    Name = "Reward_CreateEntity",
+    Description = {
+        en = "Reward: Replaces an entity by a new one of a given type",
+        de = "Lohn: Ersetzt eine Entity durch eine neue gegebenen Typs",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
+        { ParameterType.Number, en = "Orientation (in degrees)", de = "Ausrichtung (in Grad)" },
+        { ParameterType.Custom, en = "Hide from AI", de = "Vor KI verstecken" },
+    },
+}
+
+function b_Reward_CreateEntity:GetRewardTable()
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reward_CreateEntity:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.ScriptNameEntity = __parameter_
+    elseif (__index_ == 1) then
+        self.PlayerID = __parameter_ * 1
+    elseif (__index_ == 2) then
+        self.UnitKey = __parameter_
+    elseif (__index_ == 3) then
+        self.Orientation = __parameter_ * 1
+    elseif (__index_ == 4) then
+        self.HideFromAI = AcceptAlternativeBoolean(__parameter_)
+    end
+end
+
+function b_Reward_CreateEntity:CustomFunction(__quest_)
+    if not IsExisting( self.ScriptNameEntity ) then
+        return false
+    end
+    local pos = GetPosition(self.ScriptNameEntity)
+    local NewID;
+    if Logic.IsEntityTypeInCategory( self.UnitKey, EntityCategories.Soldier ) == 1 then
+        NewID       = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, 1 )
+        local l,s = {Logic.GetSoldiersAttachedToLeader(NewID)}
+        Logic.SetOrientation(s,self.Orientation)
+    else
+        NewID = Logic.CreateEntityOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID )
+    end
+    local posID = GetID(self.ScriptNameEntity)
+    if Logic.IsBuilding(posID) == 0 then
+        DestroyEntity(self.ScriptNameEntity)
+        Logic.SetEntityName( NewID, self.ScriptNameEntity )
+    end
+    if self.HideFromAI then
+        AICore.HideEntityFromAI( self.PlayerID, NewID, true )
+    end
+end
+
+function b_Reward_CreateEntity:GetCustomData( __index_ )
+    local Data = {}
+    if __index_ == 2 then
+        for k, v in pairs( Entities ) do
+            local name = {"^M_*","^XS_*","^X_*","^XT_*","^Z_*"}
+            local found = false;
+            for i=1,#name do
+                if k:find(name[i]) then
+                    found = true;
+                    break;
+                end
+            end
+            if not found then
+                table.insert( Data, k );
+            end
+        end
+        table.sort( Data )
+
+    elseif __index_ == 4 or __index_ == 5 then
+        table.insert( Data, "false" )
+        table.insert( Data, "true" )
+    else
+        assert( false )
+    end
+    return Data
+end
+
+function b_Reward_CreateEntity:DEBUG(__quest_)
+    if not Entities[self.UnitKey] then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
+        return true;
+    elseif not IsExisting(self.ScriptNameEntity) then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        return true;
+    elseif tonumber(self.PlayerID) == nil or self.PlayerID < 0 or self.PlayerID > 8 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": playerID is not valid!");
+        return true;
+    elseif tonumber(self.Orientation) == nil then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": orientation must be a number!");
+        return true;
+    end
+    return false;
+end
+
+AddQuestBehavior(b_Reward_CreateEntity);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erzeugt mehrere Entities an der angegebenen Position
+--
+-- @param _Amount      Anzahl an Entities
+-- @param _ScriptName  Skriptname des Entity
+-- @param _PlayerID    PlayerID des Effekt
+-- @param _TypeName    Einzigartiger Effektname
+-- @param _Orientation Ausrichtung in °
+-- @param _HideFromAI  Vor KI verstecken
+-- @return table: Behavior
+-- @within Rewards
+--
+function Reward_CreateSeveralEntities(...)
+    return b_Reward_CreateSeveralEntities:new(...);
+end
+
+b_Reward_CreateSeveralEntities = {
+    Name = "Reward_CreateSeveralEntities",
+    Description = {
+        en = "Reward: Creating serveral battalions at the position of a entity. They retains the entities name and a _[index] suffix",
+        de = "Lohn: Erzeugt mehrere Entities an der Position der Entity. Sie uebernimmt den Namen der Script Entity und den Suffix _[index]",
+    },
+    Parameter = {
+        { ParameterType.Number, en = "Amount", de = "Anzahl" },
+        { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
+        { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
+        { ParameterType.Number, en = "Orientation (in degrees)", de = "Ausrichtung (in Grad)" },
+        { ParameterType.Custom, en = "Hide from AI", de = "Vor KI verstecken" },
+    },
+}
+
+function b_Reward_CreateSeveralEntities:GetRewardTable()
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reward_CreateSeveralEntities:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.Amount = __parameter_ * 1
+    elseif (__index_ == 1) then
+        self.ScriptNameEntity = __parameter_
+    elseif (__index_ == 2) then
+        self.PlayerID = __parameter_ * 1
+    elseif (__index_ == 3) then
+        self.UnitKey = __parameter_
+    elseif (__index_ == 4) then
+        self.Orientation = __parameter_ * 1
+    elseif (__index_ == 5) then
+        self.HideFromAI = AcceptAlternativeBoolean(__parameter_)
+    end
+end
+
+function b_Reward_CreateSeveralEntities:CustomFunction(__quest_)
+    if not IsExisting( self.ScriptNameEntity ) then
+        return false
+    end
+    local pos = GetPosition(self.ScriptNameEntity)
+    local NewID;
+    for i=1, self.Amount do
+        if Logic.IsEntityTypeInCategory( self.UnitKey, EntityCategories.Soldier ) == 1 then
+            NewID       = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, 1 )
+            local l,s = {Logic.GetSoldiersAttachedToLeader(NewID)}
+            Logic.SetOrientation(s,self.Orientation)
+        else
+            NewID = Logic.CreateEntityOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID )
+        end
+        Logic.SetEntityName( NewID, self.ScriptNameEntity .. "_" .. i )
+        if self.HideFromAI then
+            AICore.HideEntityFromAI( self.PlayerID, NewID, true )
+        end
+    end
+end
+
+function b_Reward_CreateSeveralEntities:GetCustomData( __index_ )
+    local Data = {}
+    if __index_ == 3 then
+        for k, v in pairs( Entities ) do
+            local name = {"^M_*","^XS_*","^X_*","^XT_*","^Z_*"}
+            local found = false;
+            for i=1,#name do
+                if k:find(name[i]) then
+                    found = true;
+                    break;
+                end
+            end
+            if not found then
+                table.insert( Data, k );
+            end
+        end
+        table.sort( Data )
+
+    elseif __index_ == 5 or __index_ == 6 then
+        table.insert( Data, "false" )
+        table.insert( Data, "true" )
+    else
+        assert( false )
+    end
+    return Data
+
+end
+
+function b_Reward_CreateSeveralEntities:DEBUG(__quest_)
+    if not Entities[self.UnitKey] then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
+        return true;
+    elseif not IsExisting(self.ScriptNameEntity) then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        return true;
+    elseif tonumber(self.PlayerID) == nil or self.PlayerID < 1 or self.PlayerID > 8 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        return true;
+    elseif tonumber(self.Orientation) == nil then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": orientation must be a number!");
+        return true;
+    elseif tonumber(self.Amount) == nil or self.Amount < 0 then
+        dbg(__quest_.Identifier .. " " .. self.Name .. ": amount can not be negative!");
+        return true;
+    end
+    return false;
+end
+
+AddQuestBehavior(b_Reward_CreateSeveralEntities);
 
 -- -------------------------------------------------------------------------- --
 -- Trigger                                                                    --
