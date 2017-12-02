@@ -1,13 +1,14 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Synfonia ClassicBehaviorBundle                                        # --
+-- #  Synfonia BundleClassicBehaviors                                        # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
 --
 --
--- @module ClassicBehaviorBundle
+-- @module BundleClassicBehaviors
+-- @set sort=true
 --
 
 API = API or {};
@@ -6780,7 +6781,7 @@ AddQuestBehavior(b_Trigger_OnQuestSuccess);
 -- Application Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-ClassicBehaviorBundle = {
+BundleClassicBehaviors = {
     Global = {},
     Local = {}
 };
@@ -6791,7 +6792,7 @@ ClassicBehaviorBundle = {
 -- Initialisiert das Bundle im globalen Skript.
 -- @local
 --
-function ClassicBehaviorBundle.Global:Install()
+function BundleClassicBehaviors.Global:Install()
 
 end
 
@@ -6801,6 +6802,6 @@ end
 -- Initialisiert das Bundle im lokalen Skript.
 -- @local
 --
-function ClassicBehaviorBundle.Local:Install()
+function BundleClassicBehaviors.Local:Install()
 
 end

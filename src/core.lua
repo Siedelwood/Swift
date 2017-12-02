@@ -31,7 +31,8 @@
 -- der er einfach arbeiten kann. Kenntnis über die komplexen Prozesse hinter
 -- den Kulissen sind dafür nicht notwendig.
 --
--- @module Core
+-- @module SynfoniaCore
+-- @set sort=true
 --
 
 API = API or {};
@@ -76,7 +77,7 @@ end
 -- Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
 -- Funktion kann benutzt werden, um Klassen zu instanzieren.
 --
--- Alias: CopyTableRecursive
+-- <b>Alias:</b> CopyTableRecursive
 --
 -- @param _Source    Quelltabelle
 -- @param _Dest      Zieltabelle
@@ -98,7 +99,7 @@ CopyTableRecursive = API.InstanceTable;
 -- Sucht in einer Table nach einem Wert. Das erste Aufkommen des Suchwerts
 -- wird als Erfolg gewertet.
 --
--- Alias: Inside
+-- <b>Alias:</b> Inside
 --
 -- @param _Data     Datum, das gesucht wird
 -- @param _Table    Tabelle, die durchquert wird
@@ -153,7 +154,7 @@ end
 -- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der
 -- Quest nicht, wird nil zurückgegeben.
 --
--- Alias: GetQuestID
+-- <b>Alias:</b> GetQuestID
 --
 -- @param _Name     Identifier des Quest
 -- @return number: ID des Quest
@@ -172,7 +173,7 @@ GetQuestID = API.GetQuestID;
 -- Prüft, ob die ID zu einem Quest gehört bzw. der Quest existiert. Es kann
 -- auch ein Questname angegeben werden.
 --
--- Alias: IsValidQuest
+-- <b>Alias:</b> IsValidQuest
 --
 -- @param _QuestID   ID oder Name des Quest
 -- @return boolean: Quest existiert
@@ -188,7 +189,7 @@ IsValidQuest = API.IsValidateQuest;
 --
 -- Der Status wird auf Over und das Resultat auf Failure gesetzt.
 --
--- Alias: FailQuestsByName
+-- <b>Alias:</b> FailQuestsByName
 --
 -- @param ...  Liste mit Quests
 -- @within Quest-Funktionen
@@ -205,7 +206,7 @@ FailQuestsByName = API.FailAllQuests;
 --
 -- Der Status wird auf Over und das Resultat auf Failure gesetzt.
 --
--- Alias: FailQuestByName
+-- <b>Alias:</b> FailQuestByName
 --
 -- @param _QuestName  Name des Quest
 -- @within Quest-Funktionen
@@ -225,7 +226,7 @@ FailQuestByName = API.FailQuest;
 ---
 -- Startet eine Liste von Quests neu.
 --
--- Alias: StartQuestsByName
+-- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
 -- @within Quest-Funktionen
@@ -244,7 +245,7 @@ StartQuestsByName = API.RestartAllQuests;
 -- neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
 -- der Quest wird manuell getriggert.
 --
--- Alias: StartQuestByName
+-- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
 -- @within Quest-Funktionen
@@ -319,7 +320,7 @@ StartQuestByName = API.StartQuest;
 ---
 -- Startet eine Liste von Quests.
 --
--- Alias: StartQuestsByName
+-- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
 -- @within Quest-Funktionen
@@ -336,7 +337,7 @@ StartQuestsByName = API.StartAllQuests;
 --
 -- Dabei ist es unerheblich, ob die Bedingungen zum Start erfüllt sind.
 --
--- Alias: StartQuestByName
+-- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
 -- @within Quest-Funktionen
@@ -354,7 +355,7 @@ StartQuestByName = API.StartQuest;
 ---
 -- Unterbricht eine Liste von Quests.
 --
--- Alias: StopQuestsByName
+-- <b>Alias:</b> StopQuestsByName
 --
 -- @param ...  Liste mit Quests
 -- @within Quest-Funktionen
@@ -372,7 +373,7 @@ StopQuestwByName = API.StopAllQuests;
 -- Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
 -- gesetzt, werden diese entfernt.
 --
--- Alias: StopQuestByName
+-- <b>Alias:</b> StopQuestByName
 --
 -- @param _QuestName  Name des Quest
 -- @within Quest-Funktionen
@@ -394,7 +395,7 @@ StopQuestByName = API.StopQuest;
 --
 -- Der Status wird auf Over und das Resultat auf Success gesetzt.
 --
--- Alias: WinQuestsByName
+-- <b>Alias:</b> WinQuestsByName
 --
 -- @param ...  Liste mit Quests
 -- @within Quest-Funktionen
@@ -411,7 +412,7 @@ WinQuestsByName = API.WinAllQuests;
 --
 -- Der Status wird auf Over und das Resultat auf Success gesetzt.
 --
--- Alias: WinQuestByName
+-- <b>Alias:</b> WinQuestByName
 --
 -- @param _QuestName  Name des Quest
 -- @within Quest-Funktionen
@@ -434,7 +435,7 @@ WinQuestByName = API.WinQuest;
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und ist nicht statisch.
 --
--- Alias: GUI_Note
+-- <b>Alias:</b> GUI_Note
 --
 -- @param _Message Anzeigetext
 -- @within Message-Funktionen
@@ -537,7 +538,7 @@ warn = API.Warn;
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
 -- Gebäude, wird immer die Position des Eingangs genommen.
 --
--- Alias: SendCart
+-- <b>Alias:</b> SendCart
 --
 -- @param _position            Position
 -- @param _player              Zielspieler
@@ -588,7 +589,7 @@ SendCart = API.SendCart;
 -- Ersetzt ein Entity mit einem neuen eines anderen Typs. Skriptname,
 -- Rotation, Position und Besitzer werden übernommen.
 --
--- Alias: ReplaceEntity
+-- <b>Alias:</b> ReplaceEntity
 --
 -- @param _Entity     Entity
 -- @param _Type       Neuer Typ
@@ -618,7 +619,7 @@ ReplaceEntity = API.ReplaceEntity;
 ---
 -- Rotiert ein Entity, sodass es zum Ziel schaut.
 --
--- Alias: LookAt
+-- <b>Alias:</b> LookAt
 --
 -- @param _entity           Entity
 -- @param _entityToLookAt   Ziel
@@ -658,7 +659,7 @@ end
 -- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
 -- Skriptnamen oder Positionstables angegeben werden.
 --
--- Alias: GetDistance
+-- <b>Alias:</b> GetDistance
 --
 -- @param _pos1 Erste Vergleichsposition
 -- @param _pos2 Zweite Vergleichsposition
@@ -681,7 +682,7 @@ GetDistance = API.GetDistance;
 -- IDs verwendet werden. Wenn das Entity nicht gefunden wird, wird eine
 -- Tabelle mit XYZ = 0 zurückgegeben.
 --
--- Alias: GetPosition
+-- <b>Alias:</b> GetPosition
 --
 -- @param _Entity   Entity, dessen Position bestimmt wird.
 -- @return table: Positionstabelle {X= x, Y= y, Z= z}
@@ -707,7 +708,7 @@ GetPosition = API.LocateEntity;
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
 -- Held das Objekt aktivieren.
 --
--- Alias: InteractiveObjectActivate
+-- <b>Alias:</b> InteractiveObjectActivate
 --
 -- @param _ScriptName  Skriptname des IO
 -- @param _State       Aktivierungszustand
@@ -735,7 +736,7 @@ InteractiveObjectActivate = API.AcrivateIO;
 -- Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
 -- aktiviert werden kann.
 --
--- Alias: InteractiveObjectDeactivate
+-- <b>Alias:</b> InteractiveObjectDeactivate
 --
 -- @param _ScriptName Skriptname des IO
 -- @within Entity-Funktionen
@@ -760,7 +761,7 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 -- Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
 -- sie als Liste zurück.
 --
--- Alias: GetEntitiesOfCategoryInTerritory
+-- <b>Alias:</b> GetEntitiesOfCategoryInTerritory
 --
 -- @param _player    PlayerID [0-8] oder -1 für alle
 -- @param _category  Kategorie, der die Entities angehören
@@ -795,10 +796,19 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- Overwrite -------------------------------------------------------------------
 
 ---
+-- Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.
 --
+-- <p>Wahrheitsert true: true, "true", "yes", "on", "+"</p>
+-- <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
+--
+-- <b>Alias:</b> AcceptAlternativeBoolean
+-- 
 -- @param _Value Wahrheitswert
 -- @return boolean: Wahrheitswert
 -- @within Overwrite-Funktionen
+--
+-- @usage local Bool = API.ToBoolean("+")  --> Bool = true
+-- local Bool = API.ToBoolean("no") --> Bool = false
 --
 function API.ToBoolean(_Value)
     return Core:ToBoolean(_Value);
