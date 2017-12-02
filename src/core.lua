@@ -760,6 +760,8 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 -- Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
 -- sie als Liste zurück.
 --
+-- Alias: GetEntitiesOfCategoryInTerritory
+--
 -- @param _player    PlayerID [0-8] oder -1 für alle
 -- @param _category  Kategorie, der die Entities angehören
 -- @param _territory Zielterritorium
@@ -788,6 +790,7 @@ function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
     end
     return PlayerEntities;
 end
+GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 
 -- Overwrite -------------------------------------------------------------------
 
