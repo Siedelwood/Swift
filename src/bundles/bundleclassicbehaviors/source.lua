@@ -1,11 +1,14 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Synfonia BundleClassicBehaviors                                        # --
+-- #  Synfonia BundleClassicBehaviors                                       # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
+-- Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.
 --
+-- Die Behavior sind weitesgehend unverändert und es dürfte keine Probleme mit
+-- Inkompatibelität geben, wenn die QSB ausgetauscht wird.
 --
 -- @module BundleClassicBehaviors
 -- @set sort=true
@@ -14,13 +17,15 @@
 API = API or {};
 QSB = QSB or {};
 
-QSB.EffectNameToID = QSB.EffectNameToID or {};
+QSB.EffectNameToID    = QSB.EffectNameToID or {};
+QSB.InitalizedObjekts = QSB.InitalizedObjekts or {};
+QSB.DestroyedSoldiers = QSB.DestroyedSoldiers or {};
 
 -- -------------------------------------------------------------------------- --
 -- User Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
-
+-- Hier siehst du... nichts! ;)
 
 -- -------------------------------------------------------------------------- --
 -- Goals                                                                      --
@@ -30,8 +35,8 @@ QSB.EffectNameToID = QSB.EffectNameToID or {};
 -- Ein Interaktives Objekt muss benutzt werden.
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_ActivateObject(...)
     return b_Goal_ActivateObject:new(...);
@@ -48,13 +53,13 @@ b_Goal_ActivateObject = {
     },
 }
 
-function b_Goal_ActivateObject:GetGoalTable(__quest_)
+function b_Goal_ActivateObject:GetGoalTable(_Quest)
     return {Objective.Object, { self.ScriptName } }
 end
 
-function b_Goal_ActivateObject:AddParameter(__index_, __parameter_)
-   if __index_ == 0 then
-        self.ScriptName = __parameter_
+function b_Goal_ActivateObject:AddParameter(_Index, _Parameter)
+   if _Index == 0 then
+        self.ScriptName = _Parameter
    end
 end
 
@@ -62,7 +67,7 @@ function b_Goal_ActivateObject:GetMsgKey()
     return "Quest_Object_Activate"
 end
 
-AddQuestBehavior(b_Goal_ActivateObject);
+Core:RegisterBehavior(b_Goal_ActivateObject);
 
 -- -------------------------------------------------------------------------- --
 
@@ -79,8 +84,8 @@ AddQuestBehavior(b_Goal_ActivateObject);
 -- @param _GoodAmount    Menga der Ware
 -- @param _OtherTarget   Anderes Ziel als Auftraggeber
 -- @param _IgnoreCapture Bei Gefangennahme nicht erneut schicken
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Deliver(...)
     return b_Goal_Deliver:new(...)
@@ -95,44 +100,44 @@ b_Goal_Deliver = {
     Parameter = {
         { ParameterType.Custom, en = "Type of good", de = "Ressourcentyp" },
         { ParameterType.Number, en = "Amount of good", de = "Ressourcenmenge" },
-        { ParameterType.Custom, en = "To different player", de = "Anderer Empfaenger" },
+        { ParameterType.Custom, en = "To different player", de = "Anderer Empfänger" },
         { ParameterType.Custom, en = "Ignore capture", de = "Abfangen ignorieren" },
     },
 }
 
 
-function b_Goal_Deliver:GetGoalTable(__quest_)
+function b_Goal_Deliver:GetGoalTable(_Quest)
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture }
 end
 
-function b_Goal_Deliver:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.GoodTypeName = __parameter_
-    elseif (__index_ == 1) then
-        self.GoodAmount = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.OverrideTarget = tonumber(__parameter_)
-    elseif (__index_ == 3) then
-        self.IgnoreCapture = AcceptAlternativeBoolean(__parameter_)
+function b_Goal_Deliver:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.GoodTypeName = _Parameter
+    elseif (_Index == 1) then
+        self.GoodAmount = _Parameter * 1
+    elseif (_Index == 2) then
+        self.OverrideTarget = tonumber(_Parameter)
+    elseif (_Index == 3) then
+        self.IgnoreCapture = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Goal_Deliver:GetCustomData( __index_ )
+function b_Goal_Deliver:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 0 then
+    if _Index == 0 then
         for k, v in pairs( Goods ) do
             if string.find( k, "^G_" ) then
                 table.insert( Data, k )
             end
         end
         table.sort( Data )
-    elseif __index_ == 2 then
+    elseif _Index == 2 then
         table.insert( Data, "-" )
         for i = 1, 8 do
             table.insert( Data, i )
         end
-    elseif __index_ == 3 then
+    elseif _Index == 3 then
         table.insert( Data, "true" )
         table.insert( Data, "false" )
     else
@@ -166,7 +171,7 @@ function b_Goal_Deliver:GetMsgKey()
     return "Quest_Deliver_Goods"
 end
 
-AddQuestBehavior(b_Goal_Deliver);
+Core:RegisterBehavior(b_Goal_Deliver);
 
 -- -------------------------------------------------------------------------- --
 
@@ -186,8 +191,8 @@ AddQuestBehavior(b_Goal_Deliver);
 --
 -- @param _PlayerID Partei, die Entdeckt werden muss
 -- @param _State    Diplomatiestatus
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Diplomacy(...)
     return b_Goal_Diplomacy:new(...);
@@ -205,15 +210,15 @@ b_Goal_Diplomacy = {
     },
 }
 
-function b_Goal_Diplomacy:GetGoalTable(__quest_)
+function b_Goal_Diplomacy:GetGoalTable(_Quest)
     return { Objective.Diplomacy, self.PlayerID, DiplomacyStates[self.DiplState] }
 end
 
-function b_Goal_Diplomacy:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.DiplState = __parameter_
+function b_Goal_Diplomacy:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.DiplState = _Parameter
     end
 end
 
@@ -221,7 +226,7 @@ function b_Goal_Diplomacy:GetIcon()
     return {6,3};
 end
 
-AddQuestBehavior(b_Goal_Diplomacy);
+Core:RegisterBehavior(b_Goal_Diplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -232,8 +237,8 @@ AddQuestBehavior(b_Goal_Diplomacy);
 -- zu entdeckenden Partei befinden.
 --
 -- @param _PlayerID ID der zu entdeckenden Partei
--- @returns table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_DiscoverPlayer(...)
     return b_Goal_DiscoverPlayerN.new(...);
@@ -254,9 +259,9 @@ function b_Goal_DiscoverPlayer:GetGoalTable()
     return {Objective.Discover, 2, { self.PlayerID } }
 end
 
-function b_Goal_DiscoverPlayer:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
+function b_Goal_DiscoverPlayer:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
     end
 end
 
@@ -278,7 +283,7 @@ function b_Goal_DiscoverPlayer:GetMsgKey()
     return "Quest_Discover"
 end
 
-AddQuestBehavior(b_Goal_DiscoverPlayer);
+Core:RegisterBehavior(b_Goal_DiscoverPlayer);
 
 -- -------------------------------------------------------------------------- --
 
@@ -286,8 +291,8 @@ AddQuestBehavior(b_Goal_DiscoverPlayer);
 -- Ein Territorium muss erstmalig vom Auftragnehmer betreten werden.
 --
 -- @param _Territory Name oder ID des Territorium
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_DiscoverTerritory(...)
     return b_Goal_DiscoverTerritory:new(...);
@@ -308,11 +313,11 @@ function b_Goal_DiscoverTerritory:GetGoalTable()
     return { Objective.Discover, 1, { self.TerritoryID  } }
 end
 
-function b_Goal_DiscoverTerritory:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.TerritoryID = tonumber(__parameter_)
+function b_Goal_DiscoverTerritory:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.TerritoryID = tonumber(_Parameter)
         if not self.TerritoryID then
-            self.TerritoryID = GetTerritoryIDByName(__parameter_)
+            self.TerritoryID = GetTerritoryIDByName(_Parameter)
         end
         assert( self.TerritoryID > 0 )
     end
@@ -322,7 +327,7 @@ function b_Goal_DiscoverTerritory:GetMsgKey()
     return "Quest_Discover_Territory"
 end
 
-AddQuestBehavior(b_Goal_DiscoverTerritory);
+Core:RegisterBehavior(b_Goal_DiscoverTerritory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -330,11 +335,11 @@ AddQuestBehavior(b_Goal_DiscoverTerritory);
 -- Eine andere Partei muss besiegt werden.
 --
 -- Die Partei gilt als besiegt, wenn ein Hauptgebäude (Burg, Kirche, Lager)
--- zerstört wurde. Achtung: Funktioniert nicht bei Banditen!
+-- zerstört wurde. <b>Achtung:</b> Funktioniert nicht bei Banditen!
 --
 -- @param _PlayerID ID des Spielers
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_DestroyPlayer(...)
     return b_Goal_DestroyPlayer:new(...);
@@ -344,7 +349,7 @@ b_Goal_DestroyPlayer = {
     Name = "Goal_DestroyPlayer",
     Description = {
         en = "Goal: Destroy a player (destroy a main building)",
-        de = "Ziel: Zerstoere einen Spieler (ein Hauptgebaeude muss zerstoert werden).",
+        de = "Ziel: Zerstöre einen Spieler (ein Hauptgebäude muss zerstört werden).",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
@@ -356,9 +361,9 @@ function b_Goal_DestroyPlayer:GetGoalTable()
     return { Objective.DestroyPlayers, self.PlayerID }
 end
 
-function b_Goal_DestroyPlayer:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
+function b_Goal_DestroyPlayer:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
     end
 end
 
@@ -381,7 +386,7 @@ function b_Goal_DestroyPlayer:GetMsgKey()
     return "Quest_DestroyEntities_Building"
 end
 
-AddQuestBehavior(b_Goal_DestroyPlayer)
+Core:RegisterBehavior(b_Goal_DestroyPlayer)
 
 -- -------------------------------------------------------------------------- --
 
@@ -389,11 +394,11 @@ AddQuestBehavior(b_Goal_DestroyPlayer)
 -- Es sollen Informationen aus der Burg gestohlen werden.
 --
 -- Der Spieler muss einen Dieb entsenden um Informationen aus der Burg zu
--- stehlen. Achtung: Das ist nur bei Feinden möglich!
+-- stehlen. <b>Achtung:</b> Das ist nur bei Feinden möglich!
 --
 -- @param _PlayerID ID der Partei
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_StealInformation(...)
     return b_Goal_StealInformation:new(...);
@@ -421,10 +426,10 @@ function b_Goal_StealInformation:GetGoalTable()
 
 end
 
-function b_Goal_StealInformation:AddParameter(__index_, __parameter_)
+function b_Goal_StealInformation:AddParameter(_Index, _Parameter)
 
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
     end
 
 end
@@ -434,7 +439,7 @@ function b_Goal_StealInformation:GetMsgKey()
 
 end
 
-AddQuestBehavior(b_Goal_StealInformation);
+Core:RegisterBehavior(b_Goal_StealInformation);
 
 -- -------------------------------------------------------------------------- --
 
@@ -442,8 +447,8 @@ AddQuestBehavior(b_Goal_StealInformation);
 -- Alle Einheiten des Spielers müssen zerstört werden.
 --
 -- @param _PlayerID ID des Spielers
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_DestroyAllPlayerUnits(...)
     return b_Goal_DestroyAllPlayerUnits:new(...);
@@ -453,7 +458,7 @@ b_Goal_DestroyAllPlayerUnits = {
     Name = "Goal_DestroyAllPlayerUnits",
     Description = {
         en = "Goal: Destroy all units owned by player (be careful with script entities)",
-        de = "Ziel: Zerstoere alle Einheiten eines Spielers (vorsicht mit Script-Entities)",
+        de = "Ziel: Zerstöre alle Einheiten eines Spielers (vorsicht mit Script-Entities)",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
@@ -464,9 +469,9 @@ function b_Goal_DestroyAllPlayerUnits:GetGoalTable()
     return { Objective.DestroyAllPlayerUnits, self.PlayerID }
 end
 
-function b_Goal_DestroyAllPlayerUnits:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
+function b_Goal_DestroyAllPlayerUnits:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
     end
 end
 
@@ -489,7 +494,7 @@ function b_Goal_DestroyAllPlayerUnits:GetMsgKey()
     return "Quest_DestroyEntities"
 end
 
-AddQuestBehavior(b_Goal_DestroyAllPlayerUnits);
+Core:RegisterBehavior(b_Goal_DestroyAllPlayerUnits);
 
 -- -------------------------------------------------------------------------- --
 
@@ -497,8 +502,8 @@ AddQuestBehavior(b_Goal_DestroyAllPlayerUnits);
 -- Ein benanntes Entity muss zerstört werden.
 --
 -- @param _ScriptName Skriptname des Ziels
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_DestroyScriptEntity(...)
     return b_Goal_DestroyScriptEntity:new(...);
@@ -508,7 +513,7 @@ b_Goal_DestroyScriptEntity = {
     Name = "Goal_DestroyScriptEntity",
     Description = {
         en = "Goal: Destroy an entity",
-        de = "Ziel: Zerstoere eine Entitaet",
+        de = "Ziel: Zerstöre eine Entität",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
@@ -519,9 +524,9 @@ function b_Goal_DestroyScriptEntity:GetGoalTable()
     return {Objective.DestroyEntities, 1, { self.ScriptName } }
 end
 
-function b_Goal_DestroyScriptEntity:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
+function b_Goal_DestroyScriptEntity:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
     end
 end
 
@@ -552,7 +557,7 @@ function b_Goal_DestroyScriptEntity:GetMsgKey()
     return "Quest_DestroyEntities"
 end
 
-AddQuestBehavior(b_Goal_DestroyScriptEntity);
+Core:RegisterBehavior(b_Goal_DestroyScriptEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -565,8 +570,8 @@ AddQuestBehavior(b_Goal_DestroyScriptEntity);
 -- @param _EntityType Typ des Entity
 -- @param _Amount     Menge an Entities des Typs
 -- @param _PlayerID   Besitzer des Entity
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_DestroyType(...)
     return b_Goal_DestroyType:new(...);
@@ -576,7 +581,7 @@ b_Goal_DestroyType = {
     Name = "Goal_DestroyType",
     Description = {
         en = "Goal: Destroy entity types",
-        de = "Ziel: Zerstoere Entitaetstypen",
+        de = "Ziel: Zerstöre Entitätstypen",
     },
     Parameter = {
         { ParameterType.Custom, en = "Type name", de = "Typbezeichnung" },
@@ -585,31 +590,31 @@ b_Goal_DestroyType = {
     },
 }
 
-function b_Goal_DestroyType:GetGoalTable(__quest_)
+function b_Goal_DestroyType:GetGoalTable(_Quest)
     return {Objective.DestroyEntities, 2, Entities[self.EntityName], self.Amount, self.PlayerID }
 end
 
-function b_Goal_DestroyType:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.EntityName = __parameter_
-    elseif (__index_ == 1) then
-        self.Amount = __parameter_ * 1
+function b_Goal_DestroyType:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.EntityName = _Parameter
+    elseif (_Index == 1) then
+        self.Amount = _Parameter * 1
         self.DestroyTypeAmount = self.Amount
-    elseif (__index_ == 2) then
-        self.PlayerID = __parameter_ * 1
+    elseif (_Index == 2) then
+        self.PlayerID = _Parameter * 1
     end
 end
 
-function b_Goal_DestroyType:GetCustomData( __index_ )
+function b_Goal_DestroyType:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 0 then
+    if _Index == 0 then
         for k, v in pairs( Entities ) do
             if string.find( k, "^[ABU]_" ) then
                 table.insert( Data, k )
             end
         end
         table.sort( Data )
-    elseif __index_ == 2 then
+    elseif _Index == 2 then
         for i = 0, 8 do
             table.insert( Data, i )
         end
@@ -639,7 +644,7 @@ function b_Goal_DestroyType:GetMsgKey()
     return "Quest_DestroyEntities"
 end
 
-AddQuestBehavior(b_Goal_DestroyType);
+Core:RegisterBehavior(b_Goal_DestroyType);
 
 -- -------------------------------------------------------------------------- --
 
@@ -647,11 +652,11 @@ do
     GameCallback_EntityKilled_Orig_QSB_Goal_DestroySoldiers = GameCallback_EntityKilled;
     GameCallback_EntityKilled = function(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType)
         if _AttackedPlayerID ~= 0 and _AttackingPlayerID ~= 0 then
-            QSB.Goal_DestroySoldiers[_AttackingPlayerID] = QSB.Goal_DestroySoldiers[_AttackingPlayerID] or {}
-            QSB.Goal_DestroySoldiers[_AttackingPlayerID][_AttackedPlayerID] = QSB.Goal_DestroySoldiers[_AttackingPlayerID][_AttackedPlayerID] or 0
+            QSB.DestroyedSoldiers[_AttackingPlayerID] = QSB.DestroyedSoldiers[_AttackingPlayerID] or {}
+            QSB.DestroyedSoldiers[_AttackingPlayerID][_AttackedPlayerID] = QSB.DestroyedSoldiers[_AttackingPlayerID][_AttackedPlayerID] or 0
             if Logic.IsEntityTypeInCategory( _AttackedEntityType, EntityCategories.Military ) == 1
             and Logic.IsEntityInCategory( _AttackedEntityID, EntityCategories.HeavyWeapon) == 0 then
-                QSB.Goal_DestroySoldiers[_AttackingPlayerID][_AttackedPlayerID] = QSB.Goal_DestroySoldiers[_AttackingPlayerID][_AttackedPlayerID] +1
+                QSB.DestroyedSoldiers[_AttackingPlayerID][_AttackedPlayerID] = QSB.DestroyedSoldiers[_AttackingPlayerID][_AttackedPlayerID] +1
             end
         end
         GameCallback_EntityKilled_Orig_QSB_Goal_DestroySoldiers(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType)
@@ -664,8 +669,8 @@ end
 -- @param _PlayerA Angreifende Partei
 -- @param _PlayerB Zielpartei
 -- @param _Amount Menga an Soldaten
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_DestroySoldiers(...)
     return b_Goal_DestroySoldiers:new(...);
@@ -675,7 +680,7 @@ b_Goal_DestroySoldiers = {
     Name = "Goal_DestroySoldiers",
     Description = {
         en = "Goal: Destroy a given amount of enemy soldiers",
-        de = "Ziel: Zerstoere eine Anzahl gegnerischer Soldaten",
+        de = "Ziel: Zerstöre eine Anzahl gegnerischer Soldaten",
                 },
     Parameter = {
         {ParameterType.PlayerID, en = "Attacking Player", de = "Angreifer", },
@@ -688,18 +693,18 @@ function b_Goal_DestroySoldiers:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_DestroySoldiers:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.AttackingPlayer = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.AttackedPlayer = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.KillsNeeded = __parameter_ * 1
+function b_Goal_DestroySoldiers:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.AttackingPlayer = _Parameter * 1
+    elseif (_Index == 1) then
+        self.AttackedPlayer = _Parameter * 1
+    elseif (_Index == 2) then
+        self.KillsNeeded = _Parameter * 1
     end
 end
 
-function b_Goal_DestroySoldiers:CustomFunction(__quest_)
-    if not __quest_.QuestDescription or __quest_.QuestDescription == "" then
+function b_Goal_DestroySoldiers:CustomFunction(_Quest)
+    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
         local caption = (lang == "de" and "SOLDATEN ZERST�REN {cr}{cr}von der Partei: ") or
                          "DESTROY SOLDIERS {cr}{cr}from faction: "
@@ -709,26 +714,26 @@ function b_Goal_DestroySoldiers:CustomFunction(__quest_)
             party = ((lang == "de" and "Spieler ") or "Player ") .. self.AttackedPlayer
         end
         local text = "{center}" .. caption .. party .. "{cr}{cr}" .. amount .. " "..self.KillsNeeded;
-        Core:ChangeCustomQuestCaptionText(text, __quest_);
+        Core:ChangeCustomQuestCaptionText(text, _Quest);
     end
 
     local currentKills = 0;
-    if QSB.Goal_DestroySoldiers[self.AttackingPlayer] and QSB.Goal_DestroySoldiers[self.AttackingPlayer][self.AttackedPlayer] then
-        currentKills = QSB.Goal_DestroySoldiers[self.AttackingPlayer][self.AttackedPlayer]
+    if QSB.DestroyedSoldiers[self.AttackingPlayer] and QSB.DestroyedSoldiers[self.AttackingPlayer][self.AttackedPlayer] then
+        currentKills = QSB.DestroyedSoldiers[self.AttackingPlayer][self.AttackedPlayer]
     end
     self.SaveAmount = self.SaveAmount or currentKills
     return self.KillsNeeded <= currentKills - self.SaveAmount or nil
 end
 
-function b_Goal_DestroySoldiers:DEBUG(__quest_)
+function b_Goal_DestroySoldiers:DEBUG(_Quest)
     if Logic.GetStoreHouse(self.AttackingPlayer) == 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Player " .. self.AttackinPlayer .. " is dead :-(")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AttackinPlayer .. " is dead :-(")
         return true
     elseif Logic.GetStoreHouse(self.AttackedPlayer) == 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Player " .. self.AttackedPlayer .. " is dead :-(")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AttackedPlayer .. " is dead :-(")
         return true
     elseif self.KillsNeeded < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Amount negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Amount negative")
         return true
     end
 end
@@ -741,7 +746,7 @@ function b_Goal_DestroySoldiers:Reset()
     self.SaveAmount = nil
 end
 
-AddQuestBehavior(b_Goal_DestroySoldiers)
+Core:RegisterBehavior(b_Goal_DestroySoldiers)
 
 ---
 -- Eine Entfernung zwischen zwei Entities muss erreicht werden.
@@ -753,8 +758,8 @@ AddQuestBehavior(b_Goal_DestroySoldiers)
 -- @param _ScriptName2  Zweites Entity
 -- @param _Relation     Relation
 -- @param _Distance     Entfernung
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_EntityDistance(...)
     return b_Goal_EntityDistance:new(...);
@@ -764,7 +769,7 @@ b_Goal_EntityDistance = {
     Name = "Goal_EntityDistance",
     Description = {
         en = "Goal: Distance between two entities",
-        de = "Ziel: Zwei Entities sollen zueinander eine Entfernung ueber- oder unterschreiten.",
+        de = "Ziel: Zwei Entities sollen zueinander eine Entfernung über- oder unterschreiten.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Entity 1", de = "Entity 1" },
@@ -774,23 +779,23 @@ b_Goal_EntityDistance = {
     },
 }
 
-function b_Goal_EntityDistance:GetGoalTable(__quest_)
+function b_Goal_EntityDistance:GetGoalTable(_Quest)
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_EntityDistance:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Entity1 = __parameter_
-    elseif (__index_ == 1) then
-        self.Entity2 = __parameter_
-    elseif (__index_ == 2) then
-        self.bRelSmallerThan = __parameter_ == "<"
-    elseif (__index_ == 3) then
-        self.Distance = __parameter_ * 1
+function b_Goal_EntityDistance:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Entity1 = _Parameter
+    elseif (_Index == 1) then
+        self.Entity2 = _Parameter
+    elseif (_Index == 2) then
+        self.bRelSmallerThan = _Parameter == "<"
+    elseif (_Index == 3) then
+        self.Distance = _Parameter * 1
     end
 end
 
-function b_Goal_EntityDistance:CustomFunction(__quest_)
+function b_Goal_EntityDistance:CustomFunction(_Quest)
     if Logic.IsEntityDestroyed( self.Entity1 ) or Logic.IsEntityDestroyed( self.Entity2 ) then
         return false
     end
@@ -802,9 +807,9 @@ function b_Goal_EntityDistance:CustomFunction(__quest_)
     end
 end
 
-function b_Goal_EntityDistance:GetCustomData( __index_ )
+function b_Goal_EntityDistance:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 2 then
+    if _Index == 2 then
         table.insert( Data, ">" )
         table.insert( Data, "<" )
     else
@@ -813,16 +818,15 @@ function b_Goal_EntityDistance:GetCustomData( __index_ )
     return Data
 end
 
-function b_Goal_EntityDistance:DEBUG(__quest_)
+function b_Goal_EntityDistance:DEBUG(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
-        local text = string.format("%s Goal_EntityDistance: At least 1 of the entities for distance check don't exist!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": At least 1 of the entities for distance check don't exist!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_EntityDistance);
+Core:RegisterBehavior(b_Goal_EntityDistance);
 
 -- -------------------------------------------------------------------------- --
 
@@ -831,8 +835,8 @@ AddQuestBehavior(b_Goal_EntityDistance);
 --
 -- @param _PlayerID   PlayerID des Helden
 -- @param _ScriptName Skriptname des Ziels
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_KnightDistance(...)
     return b_Goal_KnightDistance:new(...);
@@ -842,7 +846,7 @@ b_Goal_KnightDistance = {
     Name = "Goal_KnightDistance",
     Description = {
         en = "Goal: Bring the knight close to a given entity",
-        de = "Ziel: Bringe den Ritter nah an eine bestimmte Entitaet",
+        de = "Ziel: Bringe den Ritter nah an eine bestimmte Entität",
     },
     Parameter = {
         { ParameterType.PlayerID,     en = "Player", de = "Spieler" },
@@ -854,15 +858,15 @@ function b_Goal_KnightDistance:GetGoalTable()
     return {Objective.Distance, Logic.GetKnightID(self.PlayerID), self.Target, 2500, true}
 end
 
-function b_Goal_KnightDistance:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.Target = __parameter_
+function b_Goal_KnightDistance:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.Target = _Parameter
     end
 end
 
-AddQuestBehavior(b_Goal_KnightDistance);
+Core:RegisterBehavior(b_Goal_KnightDistance);
 
 ---
 -- Eine bestimmte Anzahl an Einheiten einer Kategorie muss sich auf dem
@@ -876,8 +880,8 @@ AddQuestBehavior(b_Goal_KnightDistance);
 -- @param _Category   Kategorie der Einheiten
 -- @param _Relation   Mengenrelation (< oder >=)
 -- @param _Amount     Menge an Einheiten
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_UnitsOnTerritory(...)
     return b_Goal_UnitsOnTerritory:new(...);
@@ -898,28 +902,28 @@ b_Goal_UnitsOnTerritory = {
     },
 }
 
-function b_Goal_UnitsOnTerritory:GetGoalTable(__quest_)
+function b_Goal_UnitsOnTerritory:GetGoalTable(_Quest)
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_UnitsOnTerritory:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.TerritoryID = tonumber(__parameter_)
+function b_Goal_UnitsOnTerritory:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.TerritoryID = tonumber(_Parameter)
         if self.TerritoryID == nil then
-            self.TerritoryID = GetTerritoryIDByName(__parameter_)
+            self.TerritoryID = GetTerritoryIDByName(_Parameter)
         end
-    elseif (__index_ == 1) then
-        self.PlayerID = tonumber(__parameter_) * 1
-    elseif (__index_ == 2) then
-        self.Category = __parameter_
-    elseif (__index_ == 3) then
-        self.bRelSmallerThan = (tostring(__parameter_) == "true" or tostring(__parameter_) == "<")
-    elseif (__index_ == 4) then
-        self.NumberOfUnits = __parameter_ * 1
+    elseif (_Index == 1) then
+        self.PlayerID = tonumber(_Parameter) * 1
+    elseif (_Index == 2) then
+        self.Category = _Parameter
+    elseif (_Index == 3) then
+        self.bRelSmallerThan = (tostring(_Parameter) == "true" or tostring(_Parameter) == "<")
+    elseif (_Index == 4) then
+        self.NumberOfUnits = _Parameter * 1
     end
 end
 
-function b_Goal_UnitsOnTerritory:CustomFunction(__quest_)
+function b_Goal_UnitsOnTerritory:CustomFunction(_Quest)
     local Units = GetEntitiesOfCategoryInTerritory(self.PlayerID, EntityCategories[self.Category], self.TerritoryID);
     if self.bRelSmallerThan == false and #Units >= self.NumberOfUnits then
         return true;
@@ -928,21 +932,21 @@ function b_Goal_UnitsOnTerritory:CustomFunction(__quest_)
     end
 end
 
-function b_Goal_UnitsOnTerritory:GetCustomData( __index_ )
+function b_Goal_UnitsOnTerritory:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 1 then
+    if _Index == 1 then
         table.insert( Data, -1 )
         for i = 1, 8 do
             table.insert( Data, i )
         end
-    elseif __index_ == 2 then
+    elseif _Index == 2 then
         for k, v in pairs( EntityCategories ) do
             if not string.find( k, "^G_" ) and k ~= "SheepPasture" then
                 table.insert( Data, k )
             end
         end
         table.sort( Data );
-    elseif __index_ == 3 then
+    elseif _Index == 3 then
         table.insert( Data, ">=" )
         table.insert( Data, "<" )
     else
@@ -951,29 +955,25 @@ function b_Goal_UnitsOnTerritory:GetCustomData( __index_ )
     return Data
 end
 
-function b_Goal_UnitsOnTerritory:DEBUG(__quest_)
+function b_Goal_UnitsOnTerritory:DEBUG(_Quest)
     local territories = {Logic.GetTerritories()}
     if tonumber(self.TerritoryID) == nil or self.TerritoryID < 0 or not Inside(self.TerritoryID,territories) then
-        local text = string.format("%s Goal_UnitsOnTerritory: got an invalid territoryID!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid territoryID!");
         return true;
     elseif tonumber(self.PlayerID) == nil or self.PlayerID < 0 or self.PlayerID > 8 then
-        local text = string.format("%s Goal_UnitsOnTerritory: got an invalid playerID!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid playerID!");
         return true;
     elseif not EntityCategories[self.Category] then
-        local text = string.format("%s Goal_UnitsOnTerritory: got an invalid playerID!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid playerID!");
         return true;
     elseif tonumber(self.NumberOfUnits) == nil or self.NumberOfUnits < 0 then
-        local text = string.format("%s Goal_UnitsOnTerritory: amount is negative or nil!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": amount is negative or nil!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_UnitsOnTerritory);
+Core:RegisterBehavior(b_Goal_UnitsOnTerritory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1002,8 +1002,8 @@ AddQuestBehavior(b_Goal_UnitsOnTerritory);
 --
 -- @param _PlayerID Spieler, der den Buff aktivieren muss
 -- @param _Buff     Buff, der aktiviert werden soll
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_ActivateBuff(...)
     return b_Goal_ActivateBuff:new(...);
@@ -1021,21 +1021,21 @@ b_Goal_ActivateBuff = {
     },
 }
 
-function b_Goal_ActivateBuff:GetGoalTable(__quest_)
+function b_Goal_ActivateBuff:GetGoalTable(_Quest)
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_ActivateBuff:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.BuffName = __parameter_
-        self.Buff = Buffs[__parameter_]
+function b_Goal_ActivateBuff:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.BuffName = _Parameter
+        self.Buff = Buffs[_Parameter]
     end
 end
 
-function b_Goal_ActivateBuff:CustomFunction(__quest_)
-   if not __quest_.QuestDescription or __quest_.QuestDescription == "" then
+function b_Goal_ActivateBuff:CustomFunction(_Quest)
+   if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
         local caption = (lang == "de" and "BONUS AKTIVIEREN{cr}{cr}") or "ACTIVATE BUFF{cr}{cr}"
 
@@ -1062,7 +1062,7 @@ function b_Goal_ActivateBuff:CustomFunction(__quest_)
         end
 
         local text = "{center}" .. caption .. tMapping[self.BuffName][lang]
-        Core:ChangeCustomQuestCaptionText(text, __quest_)
+        Core:ChangeCustomQuestCaptionText(text, _Quest)
     end
 
     local Buff = Logic.GetBuff( self.PlayerID, self.Buff )
@@ -1071,9 +1071,9 @@ function b_Goal_ActivateBuff:CustomFunction(__quest_)
     end
 end
 
-function b_Goal_ActivateBuff:GetCustomData( __index_ )
+function b_Goal_ActivateBuff:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 1 then
+    if _Index == 1 then
         Data = {
             "Buff_Spice",
             "Buff_Colour",
@@ -1127,20 +1127,18 @@ function b_Goal_ActivateBuff:GetIcon()
     return tMapping[self.Buff]
 end
 
-function b_Goal_ActivateBuff:DEBUG(__quest_)
+function b_Goal_ActivateBuff:DEBUG(_Quest)
     if not self.Buff then
-        local text = string.format("%s Goal_ActivateBuff: buff '%s' does not exist!", __quest_.Identifier, tostring(self.Buff));
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": buff '" ..self.BuffName.. "' does not exist!");
         return true;
     elseif not tonumber(self.PlayerID) or self.PlayerID < 1 or self.PlayerID > 8 then
-        local text = string.format("%s Goal_ActivateBuff: got an invalid playerID!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid playerID!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_ActivateBuff);
+Core:RegisterBehavior(b_Goal_ActivateBuff);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1150,8 +1148,8 @@ AddQuestBehavior(b_Goal_ActivateBuff);
 -- @param _Position1 Erster Endpunkt der Straße
 -- @param _Position2 Zweiter Endpunkt der Straße
 -- @param _OnlyRoads Keine Wege akzeptieren
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_BuildRoad(...)
     return b_Goal_BuildRoad:new(...)
@@ -1170,7 +1168,7 @@ b_Goal_BuildRoad = {
     },
 }
 
-function b_Goal_BuildRoad:GetGoalTable(__quest_)
+function b_Goal_BuildRoad:GetGoalTable(_Quest)
     return { Objective.BuildRoad, { GetID( self.Entity1 ),
                                      GetID( self.Entity2 ),
                                      false,
@@ -1179,34 +1177,33 @@ function b_Goal_BuildRoad:GetGoalTable(__quest_)
 
 end
 
-function b_Goal_BuildRoad:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Entity1 = __parameter_
-    elseif (__index_ == 1) then
-        self.Entity2 = __parameter_
-    elseif (__index_ == 2) then
-        self.bRoadsOnly = AcceptAlternativeBoolean(__parameter_)
+function b_Goal_BuildRoad:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Entity1 = _Parameter
+    elseif (_Index == 1) then
+        self.Entity2 = _Parameter
+    elseif (_Index == 2) then
+        self.bRoadsOnly = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Goal_BuildRoad:GetCustomData( __index_ )
+function b_Goal_BuildRoad:GetCustomData( _Index )
     local Data
-    if __index_ == 2 then
+    if _Index == 2 then
         Data = {"true","false"}
     end
     return Data
 end
 
-function b_Goal_BuildRoad:DEBUG(__quest_)
+function b_Goal_BuildRoad:DEBUG(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
-        local text = string.format("%s Goal_BuildRoad: first or second entity does not exist!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": first or second entity does not exist!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_BuildRoad);
+Core:RegisterBehavior(b_Goal_BuildRoad);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1214,14 +1211,14 @@ AddQuestBehavior(b_Goal_BuildRoad);
 ---
 -- Eine Mauer muss die Bewegung eines Spielers zwischen 2 Punkten einschränken.
 --
--- Achtung: Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt gewertet
+-- <b>Achtung:</b> Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt gewertet
 -- werden, wenn der Weg durch Wasser blockiert wird!
 --
 -- @param _PlayerID  PlayerID, die blockiert wird
 -- @param _Position1 Erste Position
 -- @param _Position2 Zweite Position
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_BuildWall(...)
     return b_Goal_BuildWall:new(...)
@@ -1240,21 +1237,21 @@ b_Goal_BuildWall = {
     },
 }
 
-function b_Goal_BuildWall:GetGoalTable(__quest_)
+function b_Goal_BuildWall:GetGoalTable(_Quest)
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_BuildWall:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.EntityName1 = __parameter_
-    elseif (__index_ == 2) then
-        self.EntityName2 = __parameter_
+function b_Goal_BuildWall:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.EntityName1 = _Parameter
+    elseif (_Index == 2) then
+        self.EntityName2 = _Parameter
     end
 end
 
-function b_Goal_BuildWall:CustomFunction(__quest_)
+function b_Goal_BuildWall:CustomFunction(_Quest)
     local eID1 = GetID(self.EntityName1)
     local eID2 = GetID(self.EntityName2)
 
@@ -1288,26 +1285,23 @@ function b_Goal_BuildWall:GetIcon()
     return {3,9}
 end
 
-function b_Goal_BuildWall:DEBUG(__quest_)
+function b_Goal_BuildWall:DEBUG(_Quest)
     if not IsExisting(self.EntityName1) or not IsExisting(self.EntityName2) then
-        local text = string.format("%s %s: first or second entity does not exist!", __quest_.Identifier, self.Name);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": first or second entity does not exist!");
         return true;
     elseif not tonumber(self.PlayerID) or self.PlayerID < 1 or self.PlayerID > 8 then
-        local text = string.format("%s %s: got an invalid playerID!", __quest_.Identifier, self.Name);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid playerID!");
         return true;
     end
 
-    if GetDiplomacyState(__quest_.ReceivingPlayer, self.PlayerID) > -1 and not self.WarningPrinted then
-        local text = string.format("%s %s: player %d is neighter enemy or unknown to quest receiver!", __quest_.Identifier, self.Name, self.PlayerID);
+    if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) > -1 and not self.WarningPrinted then
+        warn("".._Quest.Identifier.." "..self.Name..": player %d is neighter enemy or unknown to quest receiver!");
         self.WarningPrinted = true;
-        warn(text);
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_BuildWall);
+Core:RegisterBehavior(b_Goal_BuildWall);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1315,8 +1309,8 @@ AddQuestBehavior(b_Goal_BuildWall);
 -- Ein bestimmtes Territorium muss vom Auftragnehmer eingenommen werden.
 --
 -- @param _Territory Territorium-ID oder Territoriumname
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Claim(...)
     return b_Goal_Claim:new(...)
@@ -1333,15 +1327,15 @@ b_Goal_Claim = {
     },
 }
 
-function b_Goal_Claim:GetGoalTable(__quest_)
+function b_Goal_Claim:GetGoalTable(_Quest)
     return { Objective.Claim, 1, self.TerritoryID }
 end
 
-function b_Goal_Claim:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.TerritoryID = tonumber(__parameter_)
+function b_Goal_Claim:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.TerritoryID = tonumber(_Parameter)
         if not self.TerritoryID then
-            self.TerritoryID = GetTerritoryIDByName(__parameter_)
+            self.TerritoryID = GetTerritoryIDByName(_Parameter)
         end
     end
 end
@@ -1350,7 +1344,7 @@ function b_Goal_Claim:GetMsgKey()
     return "Quest_Claim_Territory"
 end
 
-AddQuestBehavior(b_Goal_Claim);
+Core:RegisterBehavior(b_Goal_Claim);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1360,8 +1354,8 @@ AddQuestBehavior(b_Goal_Claim);
 -- Das Heimatterritorium des Spielers wird mitgezählt!
 --
 -- @param _Amount Anzahl Territorien
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_ClaimXTerritories(...)
     return b_Goal_ClaimXTerritories:new(...)
@@ -1371,20 +1365,20 @@ b_Goal_ClaimXTerritories = {
     Name = "Goal_ClaimXTerritories",
     Description = {
         en = "Goal: Claim the given number of territories, all player territories are counted",
-        de = "Ziel: Erobere die angegebene Anzahl Territorien, alle spielereigenen Territorien werden gezaehlt",
+        de = "Ziel: Erobere die angegebene Anzahl Territorien, alle spielereigenen Territorien werden gezählt",
     },
     Parameter = {
         { ParameterType.Number, en = "Territories" , de = "Territorien" }
     },
 }
 
-function b_Goal_ClaimXTerritories:GetGoalTable(__quest_)
+function b_Goal_ClaimXTerritories:GetGoalTable(_Quest)
     return { Objective.Claim, 2, self.TerritoriesToClaim }
 end
 
-function b_Goal_ClaimXTerritories:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.TerritoriesToClaim = __parameter_ * 1
+function b_Goal_ClaimXTerritories:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.TerritoriesToClaim = _Parameter * 1
     end
 end
 
@@ -1392,7 +1386,7 @@ function b_Goal_ClaimXTerritories:GetMsgKey()
     return "Quest_Claim_Territory"
 end
 
-AddQuestBehavior(b_Goal_ClaimXTerritories);
+Core:RegisterBehavior(b_Goal_ClaimXTerritories);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1402,8 +1396,8 @@ AddQuestBehavior(b_Goal_ClaimXTerritories);
 -- @param _Type      Typ des Entity
 -- @param _Amount    Menge an Entities
 -- @param _Territory Territorium
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Create(...)
     return b_Goal_Create:new(...);
@@ -1413,7 +1407,7 @@ b_Goal_Create = {
     Name = "Goal_Create",
     Description = {
         en = "Goal: Create Buildings/Units on a specified territory",
-        de = "Ziel: Erstelle Einheiten/Gebaeude auf einem bestimmten Territorium.",
+        de = "Ziel: Erstelle Einheiten/Gebäude auf einem bestimmten Territorium.",
     },
     Parameter = {
         { ParameterType.Entity, en = "Type name", de = "Typbezeichnung" },
@@ -1422,19 +1416,19 @@ b_Goal_Create = {
     },
 }
 
-function b_Goal_Create:GetGoalTable(__quest_)
+function b_Goal_Create:GetGoalTable(_Quest)
     return { Objective.Create, assert( Entities[self.EntityName] ), self.Amount, self.TerritoryID  }
 end
 
-function b_Goal_Create:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.EntityName = __parameter_
-    elseif (__index_ == 1) then
-        self.Amount = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.TerritoryID = tonumber(__parameter_)
+function b_Goal_Create:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.EntityName = _Parameter
+    elseif (_Index == 1) then
+        self.Amount = _Parameter * 1
+    elseif (_Index == 2) then
+        self.TerritoryID = tonumber(_Parameter)
         if not self.TerritoryID then
-            self.TerritoryID = GetTerritoryIDByName(__parameter_)
+            self.TerritoryID = GetTerritoryIDByName(_Parameter)
         end
     end
 end
@@ -1443,7 +1437,7 @@ function b_Goal_Create:GetMsgKey()
     return Logic.IsEntityTypeInCategory( Entities[self.EntityName], EntityCategories.AttackableBuilding ) == 1 and "Quest_Create_Building" or "Quest_Create_Unit"
 end
 
-AddQuestBehavior(b_Goal_Create);
+Core:RegisterBehavior(b_Goal_Create);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1452,8 +1446,8 @@ AddQuestBehavior(b_Goal_Create);
 --
 -- @param _Type   Typ des Rohstoffs
 -- @param _Amount Menge an Rohstoffen
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Produce(...)
     return b_Goal_Produce:new(...);
@@ -1471,16 +1465,16 @@ b_Goal_Produce = {
     },
 }
 
-function b_Goal_Produce:GetGoalTable(__quest_)
+function b_Goal_Produce:GetGoalTable(_Quest)
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Produce, GoodType, self.GoodAmount }
 end
 
-function b_Goal_Produce:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.GoodTypeName = __parameter_
-    elseif (__index_ == 1) then
-        self.GoodAmount = __parameter_ * 1
+function b_Goal_Produce:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.GoodTypeName = _Parameter
+    elseif (_Index == 1) then
+        self.GoodAmount = _Parameter * 1
     end
 end
 
@@ -1488,7 +1482,7 @@ function b_Goal_Produce:GetMsgKey()
     return "Quest_Produce"
 end
 
-AddQuestBehavior(b_Goal_Produce);
+Core:RegisterBehavior(b_Goal_Produce);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1498,8 +1492,8 @@ AddQuestBehavior(b_Goal_Produce);
 -- @param _Type     Typ der Ware
 -- @param _Amount   Menge an Waren
 -- @param _Relation Mengenrelation
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_GoodAmount(...)
     return b_Goal_GoodAmount:new(...);
@@ -1518,31 +1512,31 @@ b_Goal_GoodAmount = {
     },
 }
 
-function b_Goal_GoodAmount:GetGoalTable(__quest_)
+function b_Goal_GoodAmount:GetGoalTable(_Quest)
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Produce, GoodType, self.GoodAmount, self.bRelSmallerThan }
 end
 
-function b_Goal_GoodAmount:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.GoodTypeName = __parameter_
-    elseif (__index_ == 1) then
-        self.GoodAmount = __parameter_ * 1
-    elseif  (__index_ == 2) then
-        self.bRelSmallerThan = __parameter_ == "<" or tostring(__parameter_) == "true"
+function b_Goal_GoodAmount:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.GoodTypeName = _Parameter
+    elseif (_Index == 1) then
+        self.GoodAmount = _Parameter * 1
+    elseif  (_Index == 2) then
+        self.bRelSmallerThan = _Parameter == "<" or tostring(_Parameter) == "true"
     end
 end
 
-function b_Goal_GoodAmount:GetCustomData( __index_ )
+function b_Goal_GoodAmount:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 0 then
+    if _Index == 0 then
         for k, v in pairs( Goods ) do
             if string.find( k, "^G_" ) then
                 table.insert( Data, k )
             end
         end
         table.sort( Data )
-    elseif __index_ == 2 then
+    elseif _Index == 2 then
         table.insert( Data, ">=" )
         table.insert( Data, "<" )
     else
@@ -1551,7 +1545,7 @@ function b_Goal_GoodAmount:GetCustomData( __index_ )
     return Data
 end
 
-AddQuestBehavior(b_Goal_GoodAmount);
+Core:RegisterBehavior(b_Goal_GoodAmount);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1569,8 +1563,8 @@ AddQuestBehavior(b_Goal_GoodAmount);
 --
 -- @param _PlayerID ID des Spielers
 -- @param _Need     Bedürfnis
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_SatisfyNeed(...)
     return b_Goal_SatisfyNeed:new(...);
@@ -1588,17 +1582,17 @@ b_Goal_SatisfyNeed = {
     },
 }
 
-function b_Goal_SatisfyNeed:GetGoalTable(__quest_)
+function b_Goal_SatisfyNeed:GetGoalTable(_Quest)
     return { Objective.SatisfyNeed, self.PlayerID, assert( Needs[self.Need] ) }
 
 end
 
-function b_Goal_SatisfyNeed:AddParameter(__index_, __parameter_)
+function b_Goal_SatisfyNeed:AddParameter(_Index, _Parameter)
 
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.Need = __parameter_
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.Need = _Parameter
     end
 
 end
@@ -1620,7 +1614,7 @@ function b_Goal_SatisfyNeed:GetMsgKey()
     -- No default message
 end
 
-AddQuestBehavior(b_Goal_SatisfyNeed);
+Core:RegisterBehavior(b_Goal_SatisfyNeed);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1628,8 +1622,8 @@ AddQuestBehavior(b_Goal_SatisfyNeed);
 -- Der Auftragnehmer muss eine Menge an Siedlern in der Stadt haben.
 --
 -- @param _Amount Menge an Siedlern
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_SettlersNumber(...)
     return b_Goal_SettlersNumber:new(...);
@@ -1650,9 +1644,9 @@ function b_Goal_SettlersNumber:GetGoalTable()
     return {Objective.SettlersNumber, 1, self.SettlersAmount }
 end
 
-function b_Goal_SettlersNumber:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.SettlersAmount = __parameter_ * 1
+function b_Goal_SettlersNumber:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.SettlersAmount = _Parameter * 1
     end
 end
 
@@ -1660,7 +1654,7 @@ function b_Goal_SettlersNumber:GetMsgKey()
     return "Quest_NumberSettlers"
 end
 
-AddQuestBehavior(b_Goal_SettlersNumber);
+Core:RegisterBehavior(b_Goal_SettlersNumber);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1668,8 +1662,8 @@ AddQuestBehavior(b_Goal_SettlersNumber);
 -- Der Auftragnehmer muss eine Menge von Ehefrauen in der Stadt haben.
 --
 -- @param _Amount Menge an Ehefrauen
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Spouses(...)
     return b_Goal_Spouses:new(...);    
@@ -1690,9 +1684,9 @@ function b_Goal_Spouses:GetGoalTable()
     return {Objective.Spouses, self.SpousesAmount }
 end
 
-function b_Goal_Spouses:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.SpousesAmount = __parameter_ * 1
+function b_Goal_Spouses:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.SpousesAmount = _Parameter * 1
     end
 end
 
@@ -1700,7 +1694,7 @@ function b_Goal_Spouses:GetMsgKey()
     return "Quest_NumberSpouses"
 end
 
-AddQuestBehavior(b_Goal_Spouses);
+Core:RegisterBehavior(b_Goal_Spouses);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1716,8 +1710,8 @@ AddQuestBehavior(b_Goal_Spouses);
 -- @param _PlayerID ID des Spielers
 -- @param _Relation Mengenrelation
 -- @param _Amount   Menge an Soldaten
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_SoldierCount(...)
     return b_Goal_SoldierCount:new(...);
@@ -1727,7 +1721,7 @@ b_Goal_SoldierCount = {
     Name = "Goal_SoldierCount",
     Description = {
         en = "Goal: Create a specified number of soldiers",
-        de = "Ziel: Erreiche eine Anzahl groesser oder kleiner der angegebenen Menge Soldaten.",
+        de = "Ziel: Erreiche eine Anzahl grösser oder kleiner der angegebenen Menge Soldaten.",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
@@ -1736,22 +1730,22 @@ b_Goal_SoldierCount = {
     },
 }
 
-function b_Goal_SoldierCount:GetGoalTable(__quest_)
+function b_Goal_SoldierCount:GetGoalTable(_Quest)
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_SoldierCount:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.bRelSmallerThan = tostring(__parameter_) == "true" or tostring(__parameter_) == "<"
-    elseif (__index_ == 2) then
-        self.NumberOfUnits = __parameter_ * 1
+function b_Goal_SoldierCount:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.bRelSmallerThan = tostring(_Parameter) == "true" or tostring(_Parameter) == "<"
+    elseif (_Index == 2) then
+        self.NumberOfUnits = _Parameter * 1
     end
 end
 
-function b_Goal_SoldierCount:CustomFunction(__quest_)
-    if not __quest_.QuestDescription or __quest_.QuestDescription == "" then
+function b_Goal_SoldierCount:CustomFunction(_Quest)
+    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
         local caption = (lang == "de" and "SOLDATENANZAHL {cr}Partei: ") or
                             "SOLDIERS {cr}faction: "
@@ -1765,7 +1759,7 @@ function b_Goal_SoldierCount:CustomFunction(__quest_)
             party = ((lang == "de" and "Spieler ") or "Player ") .. self.PlayerID
         end
         local text = "{center}" .. caption .. party .. "{cr}{cr}" .. relationText[relation][lang] .. " "..self.NumberOfUnits;
-        Core:ChangeCustomQuestCaptionText(text, __quest_);
+        Core:ChangeCustomQuestCaptionText(text, _Quest);
     end
 
     local NumSoldiers = Logic.GetCurrentSoldierCount( self.PlayerID )
@@ -1777,9 +1771,9 @@ function b_Goal_SoldierCount:CustomFunction(__quest_)
     return nil
 end
 
-function b_Goal_SoldierCount:GetCustomData( __index_ )
+function b_Goal_SoldierCount:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 1 then
+    if _Index == 1 then
 
         table.insert( Data, ">=" )
         table.insert( Data, "<" )
@@ -1798,20 +1792,18 @@ function b_Goal_SoldierCount:GetMsgKey()
     return "Quest_Create_Unit"
 end
 
-function b_Goal_SoldierCount:DEBUG(__quest_)
+function b_Goal_SoldierCount:DEBUG(_Quest)
     if tonumber(self.NumberOfUnits) == nil or self.NumberOfUnits < 0 then
-        local text = string.format("%s Goal_SoldierCount: amount can not be below 0!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": amount can not be below 0!");
         return true;
     elseif tonumber(self.PlayerID) == nil or self.PlayerID < 1 or self.PlayerID > 8 then
-        local text = string.format("%s Goal_SoldierCount: got an invalid playerID!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid playerID!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_SoldierCount);
+Core:RegisterBehavior(b_Goal_SoldierCount);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1819,8 +1811,8 @@ AddQuestBehavior(b_Goal_SoldierCount);
 -- Der Auftragnehmer muss wenigstens einen bestimmten Titel erreichen.
 --
 -- @param _Title Titel, der erreicht werden muss
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_KnightTitle(...)
     return b_Goal_KnightTitle:new(...);
@@ -1841,9 +1833,9 @@ function b_Goal_KnightTitle:GetGoalTable()
     return {Objective.KnightTitle, assert( KnightTitles[self.KnightTitle] ) }
 end
 
-function b_Goal_KnightTitle:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.KnightTitle = __parameter_
+function b_Goal_KnightTitle:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.KnightTitle = _Parameter
     end
 end
 
@@ -1851,11 +1843,11 @@ function b_Goal_KnightTitle:GetMsgKey()
     return "Quest_KnightTitle"
 end
 
-function b_Goal_KnightTitle:GetCustomData( __index_ )
+function b_Goal_KnightTitle:GetCustomData( _Index )
     return {"Knight", "Mayor", "Baron", "Earl", "Marquees", "Duke", "Archduke"}
 end
 
-AddQuestBehavior(b_Goal_KnightTitle);
+Core:RegisterBehavior(b_Goal_KnightTitle);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1864,8 +1856,8 @@ AddQuestBehavior(b_Goal_KnightTitle);
 --
 -- @param _PlayerID ID des Spielers
 -- @param _Amount   Menge an Festen
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Festivals(...)
     return b_Goal_Festivals:new(...);
@@ -1887,17 +1879,17 @@ function b_Goal_Festivals:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Goal_Festivals:AddParameter(__index_, __parameter_)
-    if __index_ == 0 then
-        self.PlayerID = tonumber(__parameter_);
+function b_Goal_Festivals:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        self.PlayerID = tonumber(_Parameter);
     else
-        assert(__index_ == 1, "Error in " .. self.Name .. ": AddParameter: Index is invalid.");
-        self.NeededFestivals = tonumber(__parameter_);
+        assert(_Index == 1, "Error in " .. self.Name .. ": AddParameter: Index is invalid.");
+        self.NeededFestivals = tonumber(_Parameter);
     end
 end
 
-function b_Goal_Festivals:CustomFunction(__quest_)
-    if not __quest_.QuestDescription or __quest_.QuestDescription == "" then
+function b_Goal_Festivals:CustomFunction(_Quest)
+    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
         local caption = (lang == "de" and "FESTE FEIERN {cr}{cr}Partei: ") or
                             "HOLD PARTIES {cr}{cr}faction: "
@@ -1907,7 +1899,7 @@ function b_Goal_Festivals:CustomFunction(__quest_)
             party = ((lang == "de" and "Spieler ") or "Player ") .. self.PlayerID
         end
         local text = "{center}" .. caption .. party .. "{cr}{cr}" .. amount .. " "..self.NeededFestivals;
-        Core:ChangeCustomQuestCaptionText(text, __quest_);
+        Core:ChangeCustomQuestCaptionText(text, _Quest);
     end
 
     if Logic.GetStoreHouse( self.PlayerID ) == 0  then
@@ -1934,15 +1926,15 @@ function b_Goal_Festivals:CustomFunction(__quest_)
     end
 end
 
-function b_Goal_Festivals:DEBUG(__quest_)
+function b_Goal_Festivals:DEBUG(_Quest)
     if Logic.GetStoreHouse( self.PlayerID ) == 0 then
-        dbg(__quest_.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is dead :-(")
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is dead :-(")
         return true
     elseif GetPlayerCategoryType(self.PlayerID) ~= PlayerCategories.City then
-        dbg(__quest_.Identifier .. ": Error in " .. self.Name .. ":  Player "..  self.PlayerID .. " is no city")
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ":  Player "..  self.PlayerID .. " is no city")
         return true
     elseif self.NeededFestivals < 0 then
-        dbg(__quest_.Identifier .. ": Error in " .. self.Name .. ": Number of Festivals is negative")
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Number of Festivals is negative")
         return true
     end
     return false
@@ -1957,7 +1949,7 @@ function b_Goal_Festivals:GetIcon()
     return {4,15}
 end
 
-AddQuestBehavior(b_Goal_Festivals)
+Core:RegisterBehavior(b_Goal_Festivals)
 
 -- -------------------------------------------------------------------------- --
 
@@ -1965,8 +1957,8 @@ AddQuestBehavior(b_Goal_Festivals)
 -- Der Auftragnehmer muss eine Einheit gefangen nehmen.
 --
 -- @param _ScriptName Ziel
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Capture(...)
     return b_Goal_Capture:new(...)
@@ -1983,13 +1975,13 @@ b_Goal_Capture = {
     },
 }
 
-function b_Goal_Capture:GetGoalTable(__quest_)
+function b_Goal_Capture:GetGoalTable(_Quest)
     return { Objective.Capture, 1, { self.ScriptName } }
 end
 
-function b_Goal_Capture:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
+function b_Goal_Capture:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
     end
 end
 
@@ -2015,7 +2007,7 @@ function b_Goal_Capture:GetMsgKey()
     end
 end
 
-AddQuestBehavior(b_Goal_Capture);
+Core:RegisterBehavior(b_Goal_Capture);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2026,8 +2018,8 @@ AddQuestBehavior(b_Goal_Capture);
 -- @param _Typ      Typ, der gefangen werden soll
 -- @param _Amount   Menge an Einheiten
 -- @param _PlayerID Besitzer der Einheiten
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_CaptureType(...)
     return b_Goal_CaptureType:new(...)
@@ -2037,7 +2029,7 @@ b_Goal_CaptureType = {
     Name = "Goal_CaptureType",
     Description = {
         en = "Goal: Capture specified entity types",
-        de = "Ziel: Nimm bestimmte Entitaetstypen gefangen",
+        de = "Ziel: Nimm bestimmte Entitätstypen gefangen",
     },
     Parameter = {
         { ParameterType.Custom,     en = "Type name", de = "Typbezeichnung" },
@@ -2046,30 +2038,30 @@ b_Goal_CaptureType = {
     },
 }
 
-function b_Goal_CaptureType:GetGoalTable(__quest_)
+function b_Goal_CaptureType:GetGoalTable(_Quest)
     return { Objective.Capture, 2, Entities[self.EntityName], self.Amount, self.PlayerID }
 end
 
-function b_Goal_CaptureType:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.EntityName = __parameter_
-    elseif (__index_ == 1) then
-        self.Amount = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.PlayerID = __parameter_ * 1
+function b_Goal_CaptureType:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.EntityName = _Parameter
+    elseif (_Index == 1) then
+        self.Amount = _Parameter * 1
+    elseif (_Index == 2) then
+        self.PlayerID = _Parameter * 1
     end
 end
 
-function b_Goal_CaptureType:GetCustomData( __index_ )
+function b_Goal_CaptureType:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 0 then
+    if _Index == 0 then
         for k, v in pairs( Entities ) do
             if string.find( k, "^U_.+Cart" ) or Logic.IsEntityTypeInCategory( v, EntityCategories.AttackableMerchant ) == 1 then
                 table.insert( Data, k )
             end
         end
         table.sort( Data )
-    elseif __index_ == 2 then
+    elseif _Index == 2 then
         for i = 0, 8 do
             table.insert( Data, i )
         end
@@ -2096,7 +2088,7 @@ function b_Goal_CaptureType:GetMsgKey()
     end
 end
 
-AddQuestBehavior(b_Goal_CaptureType);
+Core:RegisterBehavior(b_Goal_CaptureType);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2107,8 +2099,8 @@ AddQuestBehavior(b_Goal_CaptureType);
 -- Fehlschlag gewertet.
 --
 -- @param _ScriptName
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Protect(...)
     return b_Goal_Protect:new(...)
@@ -2118,7 +2110,7 @@ b_Goal_Protect = {
     Name = "Goal_Protect",
     Description = {
         en = "Goal: Protect an entity (entity needs a script name",
-        de = "Ziel: Beschuetze eine Entitaet (Entitaet benoetigt einen Skriptnamen)",
+        de = "Ziel: Beschuetze eine Entität (Entität benötigt einen Skriptnamen)",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
@@ -2129,9 +2121,9 @@ function b_Goal_Protect:GetGoalTable()
     return {Objective.Protect, { self.ScriptName }}
 end
 
-function b_Goal_Protect:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
+function b_Goal_Protect:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
     end
 end
 
@@ -2175,18 +2167,18 @@ function b_Goal_Protect:GetMsgKey()
     return "Quest_Protect"
 end
 
-AddQuestBehavior(b_Goal_Protect);
+Core:RegisterBehavior(b_Goal_Protect);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Der AUftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.
 --
--- Achtung: Ausschließlich im Reich des Ostens verfügbar!
+-- <b>Achtung:</b> Ausschließlich im Reich des Ostens verfügbar!
 --
 -- @param _ScriptName Skriptname der Mine
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_Refill(...)
     return b_Goal_Refill:new(...)
@@ -2212,13 +2204,13 @@ function b_Goal_Refill:GetIcon()
     return {8,1,1}
 end
 
-function b_Goal_Refill:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
+function b_Goal_Refill:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
     end
 end
 
-AddQuestBehavior(b_Goal_Refill);
+Core:RegisterBehavior(b_Goal_Refill);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2234,8 +2226,8 @@ AddQuestBehavior(b_Goal_Refill);
 -- @param _ScriptName Skriptname der Mine
 -- @param _Relation   Mengenrelation
 -- @param _Amount     Menge an Rohstoffen
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_ResourceAmount(...)
     return b_Goal_ResourceAmount:new(...)
@@ -2254,21 +2246,21 @@ b_Goal_ResourceAmount = {
     },
 }
 
-function b_Goal_ResourceAmount:GetGoalTable(__quest_)
+function b_Goal_ResourceAmount:GetGoalTable(_Quest)
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
-function b_Goal_ResourceAmount:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
-    elseif (__index_ == 1) then
-        self.bRelSmallerThan = __parameter_ == "<"
-    elseif (__index_ == 2) then
-        self.Amount = __parameter_ * 1
+function b_Goal_ResourceAmount:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
+        self.bRelSmallerThan = _Parameter == "<"
+    elseif (_Index == 2) then
+        self.Amount = _Parameter * 1
     end
 end
 
-function b_Goal_ResourceAmount:CustomFunction(__quest_)
+function b_Goal_ResourceAmount:CustomFunction(_Quest)
     local ID = GetID(self.ScriptName)
     if ID and ID ~= 0 and Logic.GetResourceDoodadGoodType(ID) ~= 0 then
         local HaveAmount = Logic.GetResourceDoodadGoodAmount(ID)
@@ -2279,9 +2271,9 @@ function b_Goal_ResourceAmount:CustomFunction(__quest_)
     return nil
 end
 
-function b_Goal_ResourceAmount:GetCustomData( __index_ )
+function b_Goal_ResourceAmount:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 1 then
+    if _Index == 1 then
         table.insert( Data, ">" )
         table.insert( Data, "<" )
     else
@@ -2290,28 +2282,26 @@ function b_Goal_ResourceAmount:GetCustomData( __index_ )
     return Data
 end
 
-function b_Goal_ResourceAmount:DEBUG(__quest_)
+function b_Goal_ResourceAmount:DEBUG(_Quest)
     if not IsExisting(self.ScriptName) then
-        local text = string.format("%s Goal_ResourceAmount: entity %s does not exist!", __quest_.Identifier, self.ScriptName);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": entity '" ..self.ScriptName.. "' does not exist!");
         return true;
     elseif tonumber(self.Amount) == nil or self.Amount < 0 then
-        local text = string.format("%s Goal_ResourceAmount: error at amount! (nil or below 0)", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": error at amount! (nil or below 0)");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_ResourceAmount);
+Core:RegisterBehavior(b_Goal_ResourceAmount);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Der Quest schlägt sofort fehl.
 --
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_InstantFailure()
     return b_Goal_InstantFailure:new()
@@ -2325,19 +2315,19 @@ b_Goal_InstantFailure = {
     },
 }
 
-function b_Goal_InstantFailure:GetGoalTable(__quest_)
+function b_Goal_InstantFailure:GetGoalTable(_Quest)
     return {Objective.DummyFail};
 end
 
-AddQuestBehavior(b_Goal_InstantFailure);
+Core:RegisterBehavior(b_Goal_InstantFailure);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Der Quest wird sofort erfüllt. 
 --
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_InstantSuccess()
     return b_Goal_InstantSuccess:new()
@@ -2351,19 +2341,19 @@ b_Goal_InstantSuccess = {
     },
 }
 
-function b_Goal_InstantSuccess:GetGoalTable(__quest_)
+function b_Goal_InstantSuccess:GetGoalTable(_Quest)
     return {Objective.Dummy};
 end
 
-AddQuestBehavior(b_Goal_InstantSuccess);
+Core:RegisterBehavior(b_Goal_InstantSuccess);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Der Zustand des Quests ändert sich niemals
 --
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_NoChange()
     return b_Goal_NoChange:new()
@@ -2373,7 +2363,7 @@ b_Goal_NoChange = {
     Name = "Goal_NoChange",
     Description = {
         en = "The quest state doesn't change. Use reward functions of other quests to change the state of this quest.",
-        de = "Der Questzustand wird nicht veraendert. Ein Reward einer anderen Quest sollte den Zustand dieser Quest veraendern.",
+        de = "Der Questzustand wird nicht verändert. Ein Reward einer anderen Quest sollte den Zustand dieser Quest verändern.",
     },
 }
 
@@ -2381,7 +2371,7 @@ function b_Goal_NoChange:GetGoalTable()
     return { Objective.NoChange }
 end
 
-AddQuestBehavior(b_Goal_NoChange);
+Core:RegisterBehavior(b_Goal_NoChange);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2396,8 +2386,8 @@ AddQuestBehavior(b_Goal_NoChange);
 -- </ul>
 --
 -- @param _FunctionName Name der Funktion
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_MapScriptFunction(...)
     return b_Goal_MapScriptFunction:new(...);
@@ -2407,37 +2397,36 @@ b_Goal_MapScriptFunction = {
     Name = "Goal_MapScriptFunction",
     Description = {
         en = "Goal: Calls a function within the global map script. Return 'true' means success, 'false' means failure and 'nil' doesn't change anything.",
-        de = "Ziel: Ruft eine Funktion im globalen Skript auf, die einen Wahrheitswert zurueckgibt. Rueckgabe 'true' gilt als erfuellt, 'false' als gescheitert und 'nil' aendert nichts.",
+        de = "Ziel: Ruft eine Funktion im globalen Skript auf, die einen Wahrheitswert zurueckgibt. Rueckgabe 'true' gilt als erfuellt, 'false' als gescheitert und 'nil' ändert nichts.",
     },
     Parameter = {
         { ParameterType.Default, en = "Function name", de = "Funktionsname" },
     },
 }
 
-function b_Goal_MapScriptFunction:GetGoalTable(__quest_)
+function b_Goal_MapScriptFunction:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_MapScriptFunction:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.FuncName = __parameter_
+function b_Goal_MapScriptFunction:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.FuncName = _Parameter
     end
 end
 
-function b_Goal_MapScriptFunction:CustomFunction(__quest_)
-    return _G[self.FuncName](self, __quest_);
+function b_Goal_MapScriptFunction:CustomFunction(_Quest)
+    return _G[self.FuncName](self, _Quest);
 end
 
-function b_Goal_MapScriptFunction:DEBUG(__quest_)
+function b_Goal_MapScriptFunction:DEBUG(_Quest)
     if not self.FuncName or not _G[self.FuncName] then
-        local text = string.format("%s Goal_MapScriptFunction: function '%s' does not exist!", __quest_.Identifier, tostring(self.FuncName));
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_MapScriptFunction);
+Core:RegisterBehavior(b_Goal_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2459,8 +2448,8 @@ AddQuestBehavior(b_Goal_MapScriptFunction);
 -- @param _Name     Name der Variable
 -- @param _Relation Vergleichsoperator
 -- @param _Value    Wert oder andere Custom Variable mit wert.
--- @return table: Behavior
--- @within Goals
+-- @return Table mit Behavior
+-- @within Goal
 --
 function Goal_CustomVariables(...)
     return b_Goal_CustomVariables:new(...);
@@ -2483,14 +2472,14 @@ function b_Goal_CustomVariables:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} };
 end
 
-function b_Goal_CustomVariables:AddParameter(__index_, __parameter_)
-    if __index_ == 0 then
-        self.VariableName = __parameter_
-    elseif __index_ == 1 then
-        self.Relation = __parameter_
-    elseif __index_ == 2 then
-        local value = tonumber(__parameter_);
-        value = (value ~= nil and value) or tostring(__parameter_);
+function b_Goal_CustomVariables:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        self.VariableName = _Parameter
+    elseif _Index == 1 then
+        self.Relation = _Parameter
+    elseif _Index == 2 then
+        local value = tonumber(_Parameter);
+        value = (value ~= nil and value) or tostring(_Parameter);
         self.Value = value
     end
 end
@@ -2527,25 +2516,672 @@ function b_Goal_CustomVariables:CustomFunction()
     return nil;
 end
 
-function b_Goal_CustomVariables:GetCustomData( __index_ )
+function b_Goal_CustomVariables:GetCustomData( _Index )
     return {"==", "~=", "<=", "<", ">", ">="};
 end
 
-function b_Goal_CustomVariables:DEBUG(__quest_)
+function b_Goal_CustomVariables:DEBUG(_Quest)
     local relations = {"==", "~=", "<=", "<", ">", ">="}
     local results    = {true, false, nil}
 
     if not _G["QSB_CustomVariables_"..self.VariableName] then
-        dbg(__quest_.Identifier.." "..self.Name..": variable '"..self.VariableName.."' do not exist!");
+        dbg(_Quest.Identifier.." "..self.Name..": variable '"..self.VariableName.."' do not exist!");
         return true;
     elseif not Inside(self.Relation,relations) then
-        dbg(__quest_.Identifier.." "..self.Name..": '"..self.Relation.."' is an invalid relation!");
+        dbg(_Quest.Identifier.." "..self.Name..": '"..self.Relation.."' is an invalid relation!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Goal_CustomVariables)
+Core:RegisterBehavior(b_Goal_CustomVariables)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler muss im Chatdialog ein Passwort eingeben.
+--
+-- Es können auch mehrere Passwörter verwendet werden. Dazu muss die Liste
+-- der Passwörter abgetrennt mit ; angegeben werden.
+--
+-- <b>Achtung:</b> Ein Passwort darf immer nur aus einem Wort bestehen!
+--
+-- @param _VarName   Name der Lösungsvariablen
+-- @param _Message   Nachricht bei Falscheingabe
+-- @param _Passwords Liste der Passwörter
+-- @param _Trials    Anzahl versuche (-1 für unendlich)
+-- @return Table mit Behavior
+-- @within Goal
+--
+function Goal_InputDialog(...)
+    return b_Goal_InputDialog:new(...);
+end
+
+b_Goal_InputDialog  = {
+    Name = "Goal_InputDialog",
+    Description = {
+        en = "Goal: Player must type in something. The passwords have to be seperated by ; and whitespaces will be ignored.",
+        de = "Ziel: Oeffnet einen Dialog, der Spieler muss Lösungswörter eingeben. Diese sind durch ; abzutrennen. Leerzeichen werden ignoriert.",
+    },
+    Parameter = {
+        {ParameterType.Default, en = "ReturnVariable", de = "Name der Variable" },
+        {ParameterType.Default, en = "Message", de = "Nachricht" },
+        {ParameterType.Default, en = "Passwords", de = "Lösungswörter" },
+        {ParameterType.Number,  en = "Trials Till Correct Password (0 = Forever)", de = "Versuche (0 = unbegrenzt)" },
+    }
+}
+
+function b_Goal_InputDialog:GetGoalTable(_Quest)
+    return { Objective.Custom2, {self, self.CustomFunction}}
+end
+
+function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Variable = _Parameter
+    elseif (_Index == 1) then
+        self.Message = _Parameter
+    elseif (_Index == 2) then
+        local str = _Parameter;
+        self.Password = {};
+
+        str = Umlaute(str);
+        str = string.lower(str);
+        str = string.gsub(str, " ", "");
+        while (string.len(str) > 0)
+        do
+            local s,e = string.find(str, ";");
+            if e then
+                table.insert(self.Password, string.sub(str, 1, e-1));
+                str = string.sub(str, e+1, string.len(str));
+            else
+                table.insert(self.Password, str);
+                str = "";
+            end
+        end
+    elseif (_Index == 3) then
+        self.TryTillCorrect = (_Parameter == nil and -1) or (_Parameter * 1)
+    end
+end
+
+function b_Goal_InputDialog:CustomFunction(_Quest)
+    local function Box( __returnVariable_ )
+        if not self.shown then
+            self:InitReturnVariable(__returnVariable_)
+            self:ShowBox()
+            self.shown = true
+        end
+    end
+
+    if not IsBriefingActive or (IsBriefingActive and IsBriefingActive() == false) then
+        if (not self.TryTillCorrect) or (self.TryTillCorrect) == -1 then
+            Box( self.Variable, self.Message )
+        elseif not self.shown then
+            self.TryCounter = self.TryCounter or self.TryTillCorrect
+            Box( self.Variable, "" )
+            self.TryCounter = self.TryCounter - 1
+        end
+
+        if _G[self.Variable] then
+            Logic.ExecuteInLuaLocalState([[
+                GUI_Chat.Confirm = GUI_Chat.Confirm_Orig_Goal_InputDialog
+                GUI_Chat.Confirm_Orig_Goal_InputDialog = nil
+                GUI_Chat.Abort = GUI_Chat.Abort_Orig_Goal_InputDialog
+                GUI_Chat.Abort_Orig_Goal_InputDialog = nil
+            ]]);
+
+            if self.Password then
+
+                self.shown = nil
+                _G[self.Variable] = Umlaute(_G[self.Variable]);
+                _G[self.Variable] = string.lower(_G[self.Variable]);
+                _G[self.Variable] = string.gsub(_G[self.Variable], " ", "");
+                if Inside(_G[self.Variable], self.Password) then
+                    return true
+                elseif self.TryTillCorrect and ( self.TryTillCorrect == -1 or self.TryCounter > 0 ) then
+                    Logic.DEBUG_AddNote(Umlaute(self.Message));
+                    _G[self.Variable] = nil
+                    return
+                else
+                    Logic.DEBUG_AddNote(Umlaute(self.Message));
+                    _G[self.Variable] = nil
+                    return false
+                end
+            end
+            return true
+        end
+    end
+end
+
+function b_Goal_InputDialog:ShowBox()
+    Logic.ExecuteInLuaLocalState([[
+        Input.ChatMode()
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",1)
+        XGUIEng.SetText("/InGame/Root/Normal/ChatInput/ChatInput", "")
+        XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput")
+    ]])
+end
+
+function b_Goal_InputDialog:InitReturnVariable(__string_)
+    Logic.ExecuteInLuaLocalState([[
+        GUI_Chat.Abort_Orig_Goal_InputDialog = GUI_Chat.Abort
+        GUI_Chat.Confirm_Orig_Goal_InputDialog = GUI_Chat.Confirm
+
+        GUI_Chat.Confirm = function()
+            local _variable = "]]..__string_..[["
+            Input.GameMode()
+
+            XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",0)
+            local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput")
+            g_Chat.JustClosed = 1
+            GUI.SendScriptCommand("_G[ \"".._variable.."\" ] = \""..ChatMessage.."\"")
+        end
+
+        GUI_Chat.Abort = function() end
+    ]])
+end
+
+function b_Goal_InputDialog:DEBUG(_Quest)
+    if tonumber(self.TryTillCorrect) == nil or self.TryTillCorrect == 0 then
+        local text = string.format("%s %s: TryTillCorrect is nil or 0!",_Quest.Identifier,self.Name);
+        dbg(text);
+        return true;
+    elseif type(self.Message) ~= "string" then
+        local text = string.format("%s %s: Message is not valid!",_Quest.Identifier,self.Name);
+        dbg(text);
+        return true;
+    elseif type(self.Variable) ~= "string" then
+        local text = string.format("%s %s: Variable is not valid!",_Quest.Identifier,self.Name);
+        dbg(text);
+        return true;
+    end
+
+    for k,v in pairs(self.Password) do
+        if type(v) ~= "string" then
+            local text = string.format("%s %s: at least 1 password is not valid!",_Quest.Identifier,self.Name);
+            dbg(text);
+            return true;
+        end
+    end
+    return false;
+end
+
+function b_Goal_InputDialog:GetIcon()
+    return {12,2}
+end
+
+function b_Goal_InputDialog:Reset()
+    _G[self.Variable] = nil;
+    self.TryCounter = nil;
+    self.shown = nil;
+end
+
+Core:RegisterBehavior(b_Goal_InputDialog);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Lässt den Spieler zwischen zwei Antworten wählen.
+--
+-- Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
+--
+-- <b>Hinweis:</b> Es können nur geschlossene Fragen gestellt werden. Dialoge
+-- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
+-- Abbrechen passen.
+--
+-- @param _Title  Fenstertitel
+-- @param _Text   Fenstertext
+-- @param _Labels Label der Buttons
+-- @return Table mit Behavior
+-- @within Goal
+--
+function Goal_Decide(...)
+    return b_Goal_Decide:new(...);
+end
+
+b_Goal_Decide = {
+    Name = "Goal_Decide",
+    Description = {
+        en = "Opens a Yes/No Dialog. Decision = Quest Result",
+        de = "Oeffnet einen Ja/Nein-Dialog. Die Entscheidung bestimmt das Quest-Ergebnis (ja=true, nein=false).",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Text", de = "Text", },
+        { ParameterType.Default, en = "Title", de = "Titel", },
+        { ParameterType.Custom, en = "Button labels", de = "Button Beschriftung", },
+    },
+}
+
+function b_Goal_Decide:GetGoalTable()
+    return { Objective.Custom2, { self, self.CustomFunction } }
+end
+
+function b_Goal_Decide:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Text = _Parameter
+    elseif (_Index == 1) then
+        self.Title = _Parameter
+    elseif (_Index == 2) then
+        self.Buttons = (_Parameter == "Ok/Cancel")
+    end
+end
+
+function b_Goal_Decide:CustomFunction(_Quest)
+    if not IsBriefingActive or (IsBriefingActive and IsBriefingActive() == false) then
+        if not self.LocalExecuted then
+            if QSB.DialogActive then
+                return;
+            end
+            QSB.DialogActive = true
+            local buttons = (self.Buttons and "true") or "nil"
+            self.LocalExecuted = true
+
+            local commandString = [[
+                Game.GameTimeSetFactor( GUI.GetPlayerID(), 0 )
+                OpenRequesterDialog(%q,
+                                    %q,
+                                    "Game.GameTimeSetFactor( GUI.GetPlayerID(), 1 ); GUI.SendScriptCommand( 'QSB.DecisionWindowResult = true ')",
+                                    %s ,
+                                    "Game.GameTimeSetFactor( GUI.GetPlayerID(), 1 ); GUI.SendScriptCommand( 'QSB.DecisionWindowResult = false ')")
+            ]];
+            local commandString = string.format(commandString, self.Text, "{center} " .. self.Title, buttons)
+            Logic.ExecuteInLuaLocalState(commandString);
+
+        end
+        local result = QSB.DecisionWindowResult
+        if result ~= nil then
+            QSB.DecisionWindowResult = nil
+            QSB.DialogActive = false;
+            return result
+        end
+    end
+end
+
+function b_Goal_Decide:Reset()
+    self.LocalExecuted = nil;
+end
+
+function b_Goal_Decide:GetIcon()
+    return {4,12}
+end
+
+function b_Goal_Decide:GetCustomData(_Index)
+    if _Index == 2 then
+        return { "Yes/No", "Ok/Cancel" }
+    end
+end
+
+Core:RegisterBehavior(b_Goal_Decide);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler kann durch regelmäßiges Begleichen eines Tributes bessere
+-- Diplomatie zu einen Spieler erreichen.
+--
+-- @param _GoldAmount Menge an Gold
+-- @param _Periode    Zahlungsperiode in Monaten
+-- @param _Time       Zeitbegrenzung
+-- @param _StartMsg   Vorschlagnachricht
+-- @param _SuccessMsg Erfolgsnachricht
+-- @param _FailureMsg Fehlschlagnachricht
+-- @param _Restart    Nach nichtbezahlen neu starten
+-- @return Table mit Behavior
+-- @within Goal
+--
+function Goal_TributeDiplomacy(...)
+    return b_Goal_TributeDiplomacy:new(...);
+end
+
+b_Goal_TributeDiplomacy = {
+    Name = "Goal_TributeDiplomacy",
+    Description = {
+        en = "Goal: AI requests periodical tribute for better Diplomacy",
+        de = "Ziel: Die KI fordert einen regelmässigen Tribut fuer bessere Diplomatie. Der Questgeber ist der fordernde Spieler.",
+    },
+    Parameter = {
+        { ParameterType.Number, en = "Amount", de = "Menge", },
+        { ParameterType.Custom, en = "Length of Period in month", de = "Monate bis zur nächsten Forderung", },
+        { ParameterType.Number, en = "Time to pay Tribut in seconds", de = "Zeit bis zur Zahlung in Sekunden", },
+        { ParameterType.Default, en = "Start Message for TributQuest", de = "Startnachricht der Tributquest", },
+        { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", },
+        { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", },
+        { ParameterType.Custom, en = "Restart if failed to pay", de = "Nicht-bezahlen beendet die Quest", },
+    },
+}
+
+function b_Goal_TributeDiplomacy:GetGoalTable()
+    return {Objective.Custom2, {self, self.CustomFunction} }
+end
+
+function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Amount = _Parameter * 1
+    elseif (_Index == 1) then
+        self.PeriodLength = _Parameter * 150
+    elseif (_Index == 2) then
+        self.TributTime = _Parameter * 1
+    elseif (_Index == 3) then
+        self.StartMsg = _Parameter
+    elseif (_Index == 4) then
+        self.SuccessMsg = _Parameter
+    elseif (_Index == 5) then
+        self.FailureMsg = _Parameter
+    elseif (_Index == 6) then
+        self.RestartAtFailure = AcceptAlternativeBoolean(_Parameter)
+    end
+end
+
+function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
+    if not self.Time then
+        if self.PeriodLength - 150 < self.TributTime then
+            Logic.DEBUG_AddNote("b_Goal_TributeDiplomacy: TributTime too long")
+        end
+    end
+    if not self.QuestStarted then
+        self.QuestStarted = QuestTemplate:New(_Quest.Identifier.."TributeBanditQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
+                                    {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
+                                    {{ Triggers.Time, 0 }},
+                                    self.TributTime,
+                                    nil, nil, nil, nil, true, true,
+                                    nil,
+                                    self.StartMsg,
+                                    self.SuccessMsg,
+                                    self.FailureMsg
+                                    )
+        self.Time = Logic.GetTime()
+    end
+    local TributeQuest = Quests[self.QuestStarted]
+    if self.QuestStarted and TributeQuest.State == QuestState.Over and not self.RestartQuest then
+        if TributeQuest.Result ~= QuestResult.Success then
+            SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.Enemy)
+            if not self.RestartAtFailure then
+                return false
+            end
+        else
+            SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.TradeContact)
+        end
+
+        self.RestartQuest = true
+    end
+    local storeHouse = Logic.GetStoreHouse(_Quest.SendingPlayer)
+    if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
+        if self.QuestStarted and Quests[self.QuestStarted].State == QuestState.Active then
+            Quests[self.QuestStarted]:Interrupt()
+        end
+        return true
+    end
+    if self.QuestStarted and self.RestartQuest and ( (Logic.GetTime() - self.Time) >= self.PeriodLength ) then
+        TributeQuest.Objectives[1].Completed = nil
+        TributeQuest.Objectives[1].Data[3] = nil
+        TributeQuest.Objectives[1].Data[4] = nil
+        TributeQuest.Objectives[1].Data[5] = nil
+        TributeQuest.Result = nil
+        TributeQuest.State = QuestState.NotTriggered
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..TributeQuest.Index..")")
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { TributeQuest.QueueID })
+        self.Time = Logic.GetTime()
+        self.RestartQuest = nil
+    end
+end
+
+function b_Goal_TributeDiplomacy:DEBUG(_Quest)
+    if self.Amount < 0 then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Amount is negative")
+        return true
+    end
+end
+
+function b_Goal_TributeDiplomacy:Reset()
+    self.Time = nil
+    self.QuestStarted = nil
+    self.RestartQuest = nil
+end
+
+function b_Goal_TributeDiplomacy:Interrupt(_Quest)
+    if self.QuestStarted and Quests[self.QuestStarted] ~= nil then
+        if Quests[self.QuestStarted].State == QuestState.Active then
+            Quests[self.QuestStarted]:Interrupt()
+        end
+    end
+end
+
+function b_Goal_TributeDiplomacy:GetCustomData(_index)
+    if (_index == 1) then
+        return { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}
+    elseif (_index == 6) then
+        return { "true", "false" }
+    end
+end
+
+Core:RegisterBehavior(b_Goal_TributeDiplomacy)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erlaubt es dem Spieler ein Territorium zu mieten.
+--
+-- Zerstört der Spieler den Außenposten, schlägt der Quest fehl und das
+-- Territorium wird an den Vermieter übergeben.
+--
+-- @param _Territory  Name des Territorium
+-- @param _PlayerID   PlayerID des Zahlungsanforderer
+-- @param _Cost       Menge an Gold
+-- @param _Periode    Zahlungsperiode in Monaten
+-- @param _Time       Zeitbegrenzung
+-- @param _StartMsg   Vorschlagnachricht
+-- @param _SuccessMsg Erfolgsnachricht
+-- @param _FailMsg    Fehlschlagnachricht
+-- @param _HowOften   Anzahl an Zahlungen (0 = endlos)
+-- @param _OtherOwner Eroberung durch Dritte beendet Quest
+-- @param _Abort      Nach nichtbezahlen abbrechen
+-- @return Table mit Behavior
+-- @within Goal
+--
+function Goal_TributeClaim(...)
+    return b_Goal_TributeClaim:new(...);
+end
+
+b_Goal_TributeClaim = {
+    Name = "Goal_TributeClaim",
+    Description = {
+        en = "Goal: AI requests periodical tribute for a specified Territory",
+        de = "Ziel: Die KI fordert einen regelmässigen Tribut fuer ein Territorium. Der Questgeber ist der fordernde Spieler.",
+                },
+    Parameter = {
+        { ParameterType.TerritoryName, en = "Territory", de = "Territorium", },
+        { ParameterType.PlayerID, en = "PlayerID", de = "PlayerID", },
+        { ParameterType.Number, en = "Amount", de = "Menge", },
+        { ParameterType.Custom, en = "Length of Period in month", de = "Monate bis zur nächsten Forderung", },
+        { ParameterType.Number, en = "Time to pay Tribut in seconds", de = "Zeit bis zur Zahlung in Sekunden", },
+        { ParameterType.Default, en = "Start Message for TributQuest", de = "Startnachricht der Tributquest", },
+        { ParameterType.Default, en = "Success Message for TributQuest", de = "Erfolgsnachricht der Tributquest", },
+        { ParameterType.Default, en = "Failure Message for TributQuest", de = "Niederlagenachricht der Tributquest", },
+        { ParameterType.Number, en = "How often to pay (0 = forerver)", de = "Anzahl der Tributquests (0 = unendlich)", },
+        { ParameterType.Custom, en = "Other Owner cancels the Quest", de = "Anderer Spieler kann Quest beenden", },
+        { ParameterType.Custom, en = "About if a rate is not payed", de = "Nicht-bezahlen beendet die Quest", },
+    },
+}
+
+function b_Goal_TributeClaim:GetGoalTable()
+    return {Objective.Custom2, {self, self.CustomFunction} }
+end
+
+function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.TerritoryID = GetTerritoryIDByName(_Parameter)
+    elseif (_Index == 1) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 2) then
+        self.Amount = _Parameter * 1
+    elseif (_Index == 3) then
+        self.PeriodLength = _Parameter * 150
+    elseif (_Index == 4) then
+        self.TributTime = _Parameter * 1
+    elseif (_Index == 5) then
+        self.StartMsg = _Parameter
+    elseif (_Index == 6) then
+        self.SuccessMsg = _Parameter
+    elseif (_Index == 7) then
+        self.FailureMsg = _Parameter
+    elseif (_Index == 8) then
+        self.HowOften = _Parameter * 1
+    elseif (_Index == 9) then
+        self.OtherOwnerCancels = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 10) then
+        self.DontPayCancels = AcceptAlternativeBoolean(_Parameter)
+    end
+end
+
+function b_Goal_TributeClaim:CustomFunction(_Quest)
+    local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID)
+    if IsExisting(Outpost) and GetHealth(Outpost) < 25 then
+        SetHealth(Outpost, 60)
+    end
+
+    if Logic.GetTerritoryPlayerID(self.TerritoryID) == _Quest.ReceivingPlayer
+    or Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
+        if self.OtherOwner then
+            self:RestartTributeQuest()
+            self.OtherOwner = nil
+        end
+        if not self.Time and self.PeriodLength -20 < self.TributTime then
+                Logic.DEBUG_AddNote("b_Goal_TributeClaim: TributTime too long")
+        end
+        if not self.Quest then
+            local QuestID = QuestTemplate:New(_Quest.Identifier.."TributeClaimQuest" , self.PlayerID, _Quest.ReceivingPlayer,
+                                        {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
+                                        {{ Triggers.Time, 0 }},
+                                        self.TributTime,
+                                        nil, nil, nil, nil, true, true,
+                                        nil,
+                                        self.StartMsg,
+                                        self.SuccessMsg,
+                                        self.FailureMsg
+                                        )
+            self.Quest = Quests[QuestID]
+            self.Time = Logic.GetTime()
+        else
+            if self.Quest.State == QuestState.Over then
+                if self.Quest.Result == QuestResult.Failure then
+                    if IsExisting(Outpost) then
+                        Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
+                    end
+                    Logic.SetTerritoryPlayerID(self.TerritoryID, self.PlayerID)
+                    self.Time = Logic.GetTime()
+                    self.Quest.State = false
+
+                    if self.DontPayCancels then
+                        _Quest:Interrupt();
+                    end
+                else
+                    if self.Quest.Result == QuestResult.Success then
+                        if Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
+                            if IsExisting(Outpost) then
+                                Logic.ChangeEntityPlayerID(Outpost, _Quest.ReceivingPlayer);
+                            end
+                            Logic.SetTerritoryPlayerID(self.TerritoryID, _Quest.ReceivingPlayer)
+                        end
+                    end
+                    if Logic.GetTime() >= self.Time + self.PeriodLength then
+                        if self.HowOften and self.HowOften ~= 0 then
+                            self.TributeCounter = self.TributeCounter or 0
+                            self.TributeCounter = self.TributeCounter + 1
+                            if self.TributeCounter >= self.HowOften then
+                                return false
+                            end
+                        end
+                        self:RestartTributeQuest()
+                    end
+                end
+
+            elseif self.Quest.State == false then
+                if Logic.GetTime() >= self.Time + self.PeriodLength then
+                    self:RestartTributeQuest()
+                end
+            end
+        end
+    elseif Logic.GetTerritoryPlayerID(self.TerritoryID) == 0 and self.Quest then
+        if self.Quest.State == QuestState.Active then
+            self.Quest:Interrupt()
+        end
+    elseif Logic.GetTerritoryPlayerID(self.TerritoryID) ~= self.PlayerID then
+        if self.Quest.State == QuestState.Active then
+            self.Quest:Interrupt()
+        end
+        if self.OtherOwnerCancels then
+            _Quest:Interrupt()
+        end
+        self.OtherOwner = true
+    end
+    local storeHouse = Logic.GetStoreHouse(self.PlayerID)
+    if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
+        if self.Quest and self.Quest.State == QuestState.Active then
+            self.Quest:Interrupt()
+        end
+        return true
+    end
+end
+
+function b_Goal_TributeClaim:DEBUG(_Quest)
+
+    if self.TerritoryID == 0 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Unknown Territory")
+        return true
+    elseif not self.Quest and Logic.GetStoreHouse(self.PlayerID) == 0 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(")
+        return true
+    elseif self.Amount < 0 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Amount is negative")
+        return true
+    elseif self.PeriodLength < 1 or self.PeriodLength > 600 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Period Length is wrong")
+        return true
+    elseif self.HowOften < 0 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": HowOften is negative")
+        return true
+    end
+
+end
+
+function b_Goal_TributeClaim:Reset()
+    self.Quest = nil
+    self.Time = nil
+    self.OtherOwner = nil
+end
+
+function b_Goal_TributeClaim:Interrupt(_Quest)
+    if type(self.Quest) == "table" then
+        if self.Quest.State == QuestState.Active then
+            self.Quest:Interrupt()
+        end
+    end
+end
+
+function b_Goal_TributeClaim:RestartTributeQuest()
+
+    self.Time = Logic.GetTime()
+    self.Quest.Objectives[1].Completed = nil
+    self.Quest.Objectives[1].Data[3] = nil
+    self.Quest.Objectives[1].Data[4] = nil
+    self.Quest.Objectives[1].Data[5] = nil
+    self.Quest.Result = nil
+    self.Quest.State = QuestState.NotTriggered
+    Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.Quest.Index..")")
+    Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.Quest.QueueID })
+
+end
+
+function b_Goal_TributeClaim:GetCustomData(_index)
+
+    if (_index == 3) then
+        return { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}
+    elseif (_index == 9) or (_index == 10) then
+        return { "false", "true" }
+    end
+
+end
+
+Core:RegisterBehavior(b_Goal_TributeClaim)
 
 -- -------------------------------------------------------------------------- --
 -- Reprisal                                                                   --
@@ -2555,8 +3191,8 @@ AddQuestBehavior(b_Goal_CustomVariables)
 -- Deaktiviert ein interaktives Objekt
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_ObjectDeactivate(...)
     return b_Reprisal_ObjectDeactivate:new(...);
@@ -2577,33 +3213,32 @@ function b_Reprisal_ObjectDeactivate:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_ObjectDeactivate:AddParameter(__index_, __parameter_)
+function b_Reprisal_ObjectDeactivate:AddParameter(_Index, _Parameter)
 
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
     end
 
 end
 
-function b_Reprisal_ObjectDeactivate:CustomFunction(__quest_)
+function b_Reprisal_ObjectDeactivate:CustomFunction(_Quest)
     InteractiveObjectDeactivate(self.ScriptName);
 end
 
-function b_Reprisal_ObjectDeactivate:DEBUG(__quest_)
+function b_Reprisal_ObjectDeactivate:DEBUG(_Quest)
     if not Logic.IsInteractiveObject(GetID(self.ScriptName)) then
-        local text = string.format("%s Reprisal_ObjectDeactivate: '%s' is not a interactive object!", __quest_.Identifier, self.ScriptName);
+        warn("".._Quest.Identifier.." "..self.Name..": '" ..self.ScriptName.. "' is not a interactive object!");
         self.WarningPrinted = true;
-        warn(text);
     end
     local eID = GetID(self.ScriptName);
-    if QSB.InitalizedObjekts[eID] and QSB.InitalizedObjekts[eID] == __quest_.Identifier then
-        dbg(""..__quest_.Identifier.." "..self.Name..": you can not deactivate in the same quest the object is initalized!");
+    if QSB.InitalizedObjekts[eID] and QSB.InitalizedObjekts[eID] == _Quest.Identifier then
+        dbg("".._Quest.Identifier.." "..self.Name..": you can not deactivate in the same quest the object is initalized!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_ObjectDeactivate);
+Core:RegisterBehavior(b_Reprisal_ObjectDeactivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2618,8 +3253,8 @@ AddQuestBehavior(b_Reprisal_ObjectDeactivate);
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
 -- @param _State Status des Objektes
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_ObjectActivate(...)
     return b_Reprisal_ObjectActivate:new(...);
@@ -2641,43 +3276,42 @@ function b_Reprisal_ObjectActivate:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_ObjectActivate:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
-    elseif (__index_ == 1) then
+function b_Reprisal_ObjectActivate:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
         local parameter = 0
-        if __parameter_ == "Always" or 1 then
+        if _Parameter == "Always" or 1 then
             parameter = 1
         end
         self.UsingState = parameter
     end
 end
 
-function b_Reprisal_ObjectActivate:CustomFunction(__quest_)
+function b_Reprisal_ObjectActivate:CustomFunction(_Quest)
     InteractiveObjectActivate(self.ScriptName, self.UsingState);
 end
 
-function b_Reprisal_ObjectActivate:GetCustomData( __index_ )
-    if __index_ == 1 then
+function b_Reprisal_ObjectActivate:GetCustomData( _Index )
+    if _Index == 1 then
         return {"Knight only", "Always"}
     end
 end
 
-function b_Reprisal_ObjectActivate:DEBUG(__quest_)
+function b_Reprisal_ObjectActivate:DEBUG(_Quest)
     if not Logic.IsInteractiveObject(GetID(self.ScriptName)) then
-        local text = string.format("%s Goal_IO_ObjectActivate: '%s' is not a interactive object!", __quest_.Identifier, self.ScriptName);
+        warn("".._Quest.Identifier.." "..self.Name..": '" ..self.ScriptName.. "' is not a interactive object!");
         self.WarningPrinted = true;
-        warn(text);
     end
     local eID = GetID(self.ScriptName);
-    if QSB.InitalizedObjekts[eID] and QSB.InitalizedObjekts[eID] == __quest_.Identifier then
-        dbg(""..__quest_.Identifier.." "..self.Name..": you can not activate in the same quest the object is initalized!");
+    if QSB.InitalizedObjekts[eID] and QSB.InitalizedObjekts[eID] == _Quest.Identifier then
+        dbg("".._Quest.Identifier.." "..self.Name..": you can not activate in the same quest the object is initalized!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_ObjectActivate);
+Core:RegisterBehavior(b_Reprisal_ObjectActivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2685,8 +3319,8 @@ AddQuestBehavior(b_Reprisal_ObjectActivate);
 -- Der diplomatische Status zwischen Sender und Empfänger verschlechtert sich
 -- um eine Stufe.
 --
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_DiplomacyDecrease()
     return b_Reprisal_DiplomacyDecrease:new();
@@ -2704,22 +3338,22 @@ function b_Reprisal_DiplomacyDecrease:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_DiplomacyDecrease:CustomFunction(__quest_)
-    local Sender = __quest_.SendingPlayer;
-    local Receiver = __quest_.ReceivingPlayer;
+function b_Reprisal_DiplomacyDecrease:CustomFunction(_Quest)
+    local Sender = _Quest.SendingPlayer;
+    local Receiver = _Quest.ReceivingPlayer;
     local State = GetDiplomacyState(Receiver, Sender);
     if State > -2 then
         SetDiplomacyState(Receiver, Sender, State-1);
     end
 end
 
-function b_Reprisal_DiplomacyDecrease:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
+function b_Reprisal_DiplomacyDecrease:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
     end
 end
 
-AddQuestBehavior(b_Reprisal_DiplomacyDecrease);
+Core:RegisterBehavior(b_Reprisal_DiplomacyDecrease);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2729,8 +3363,8 @@ AddQuestBehavior(b_Reprisal_DiplomacyDecrease);
 -- @param _Party1   ID der ersten Partei
 -- @param _Party2   ID der zweiten Partei
 -- @param _State    Neuer Diplomatiestatus
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_Diplomacy(...)
     return b_Reprisal_Diplomacy:new(...);
@@ -2753,35 +3387,35 @@ function b_Reprisal_Diplomacy:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_Diplomacy:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID1 = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.PlayerID2 = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.Relation = DiplomacyStates[__parameter_]
+function b_Reprisal_Diplomacy:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID1 = _Parameter * 1
+    elseif (_Index == 1) then
+        self.PlayerID2 = _Parameter * 1
+    elseif (_Index == 2) then
+        self.Relation = DiplomacyStates[_Parameter]
     end
 end
 
-function b_Reprisal_Diplomacy:CustomFunction(__quest_)
+function b_Reprisal_Diplomacy:CustomFunction(_Quest)
     SetDiplomacyState(self.PlayerID1, self.PlayerID2, self.Relation);
 end
 
-function b_Reprisal_Diplomacy:DEBUG(__quest_)
+function b_Reprisal_Diplomacy:DEBUG(_Quest)
     if not tonumber(self.PlayerID1) or self.PlayerID1 < 1 or self.PlayerID1 > 8 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": PlayerID 1 is invalid!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": PlayerID 1 is invalid!");
         return true;
     elseif not tonumber(self.PlayerID2) or self.PlayerID2 < 1 or self.PlayerID2 > 8 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": PlayerID 2 is invalid!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": PlayerID 2 is invalid!");
         return true;
     elseif not tonumber(self.Relation) or self.Relation < -2 or self.Relation > 2 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": '"..self.Relation.."' is a invalid diplomacy state!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": '"..self.Relation.."' is a invalid diplomacy state!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_Diplomacy);
+Core:RegisterBehavior(b_Reprisal_Diplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2789,8 +3423,8 @@ AddQuestBehavior(b_Reprisal_Diplomacy);
 -- Ein benanntes Entity wird zerstört.
 --
 -- @param _ScriptName Skriptname des Entity
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_DestroyEntity(...)
     return b_Reprisal_DestroyEntity:new(...);
@@ -2800,7 +3434,7 @@ b_Reprisal_DestroyEntity = {
     Name = "Reprisal_DestroyEntity",
     Description = {
         en = "Reprisal: Replaces an entity with an invisible script entity, which retains the entities name.",
-        de = "Vergeltung: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen uebernimmt.",
+        de = "Vergeltung: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen übernimmt.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Entity", de = "Entity" },
@@ -2811,26 +3445,25 @@ function b_Reprisal_DestroyEntity:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_DestroyEntity:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
+function b_Reprisal_DestroyEntity:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
     end
 end
 
-function b_Reprisal_DestroyEntity:CustomFunction(__quest_)
+function b_Reprisal_DestroyEntity:CustomFunction(_Quest)
     ReplaceEntity(self.ScriptName, Entities.XD_ScriptEntity);
 end
 
-function b_Reprisal_DestroyEntity:DEBUG(__quest_)
+function b_Reprisal_DestroyEntity:DEBUG(_Quest)
     if not IsExisting(self.ScriptName) then
-        local text = string.format("%s Reprisal_DestroyEntity: '%s' is already destroyed!", __quest_.Identifier, self.ScriptName);
+        warn(_Quest.Identifier.." " ..self.Name..": '" ..self.ScriptName.. "' is already destroyed!");
         self.WarningPrinted = true;
-        warn(text);
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_DestroyEntity);
+Core:RegisterBehavior(b_Reprisal_DestroyEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2838,8 +3471,8 @@ AddQuestBehavior(b_Reprisal_DestroyEntity);
 -- Zerstört einen über die QSB erzeugten Effekt.
 --
 -- @param _EffectName Name des Effekts
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_DestroyEffect(...)
     return b_Reprisal_DestroyEffect:new(...);
@@ -2849,16 +3482,16 @@ b_Reprisal_DestroyEffect = {
     Name = "Reprisal_DestroyEffect",
     Description = {
         en = "Reprisal: Destroys an effect",
-        de = "Vergeltung: Zerstoert einen Effekt",
+        de = "Vergeltung: Zerstört einen Effekt",
     },
     Parameter = {
         { ParameterType.Default, en = "Effect name", de = "Effektname" },
     }
 }
 
-function b_Reprisal_DestroyEffect:AddParameter(__index_, __parameter_)
-    if __index_ == 0 then
-        self.EffectName = __parameter_;
+function b_Reprisal_DestroyEffect:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        self.EffectName = _Parameter;
     end
 end
 
@@ -2866,29 +3499,29 @@ function b_Reprisal_DestroyEffect:GetReprisalTable()
     return { Reprisal.Custom, { self, self.CustomFunction } };
 end
 
-function b_Reprisal_DestroyEffect:CustomFunction(__quest_)
+function b_Reprisal_DestroyEffect:CustomFunction(_Quest)
     if not QSB.EffectNameToID[self.EffectName] or not Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
         return;
     end
     Logic.DestroyEffect(QSB.EffectNameToID[self.EffectName]);
 end
 
-function b_Reprisal_DestroyEffect:DEBUG(__quest_)
+function b_Reprisal_DestroyEffect:DEBUG(_Quest)
     if not QSB.EffectNameToID[self.EffectName] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Effect " .. self.EffectName .. " never created")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Effect " .. self.EffectName .. " never created")
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_DestroyEffect);
+Core:RegisterBehavior(b_Reprisal_DestroyEffect);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Der Spieler verliert das Spiel.
 --
--- @return table: behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_Defeat()
     return b_Reprisal_Defeat:new()
@@ -2902,11 +3535,11 @@ b_Reprisal_Defeat = {
     },
 }
 
-function b_Reprisal_Defeat:GetReprisalTable(__quest_)
+function b_Reprisal_Defeat:GetReprisalTable(_Quest)
     return {Reprisal.Defeat};
 end
 
-AddQuestBehavior(b_Reprisal_Defeat);
+Core:RegisterBehavior(b_Reprisal_Defeat);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2915,8 +3548,8 @@ AddQuestBehavior(b_Reprisal_Defeat);
 --
 -- Es handelt sich dabei um reine Optik! Der Spieler wird nicht verlieren.
 --
--- @return table: behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_FakeDefeat()
     return b_Reprisal_FakeDefeat:new();
@@ -2944,8 +3577,8 @@ end
 -- @param _Entity Skriptname oder ID des Entity
 -- @param _Type   Neuer Typ des Entity
 -- @param _Owner  Besitzer des Entity
--- @return table: behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_ReplaceEntity(...)
     return b_Reprisal_ReplaceEntity:new(...);
@@ -2955,7 +3588,7 @@ b_Reprisal_ReplaceEntity = {
     Name = "Reprisal_ReplaceEntity",
     Description = {
         en = "Reprisal: Replaces an entity with a new one of a different type. The playerID can be changed too.",
-        de = "Vergeltung: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehoerigkeit geaendert werden.",
+        de = "Vergeltung: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehörigkeit geändert werden.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Target", de = "Ziel" },
@@ -2968,17 +3601,17 @@ function b_Reprisal_ReplaceEntity:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_ReplaceEntity:AddParameter(__index_, __parameter_)
-   if (__index_ == 0) then
-        self.ScriptName = __parameter_
-    elseif (__index_ == 1) then
-        self.NewType = __parameter_
-    elseif (__index_ == 2) then
-        self.PlayerID = tonumber(__parameter_);
+function b_Reprisal_ReplaceEntity:AddParameter(_Index, _Parameter)
+   if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
+        self.NewType = _Parameter
+    elseif (_Index == 2) then
+        self.PlayerID = tonumber(_Parameter);
     end
 end
 
-function b_Reprisal_ReplaceEntity:CustomFunction(__quest_)
+function b_Reprisal_ReplaceEntity:CustomFunction(_Quest)
     local eID = GetID(self.ScriptName);
     local pID = self.PlayerID;
     if pID == Logic.EntityGetPlayer(eID) then
@@ -2987,9 +3620,9 @@ function b_Reprisal_ReplaceEntity:CustomFunction(__quest_)
     ReplaceEntity(self.ScriptName, Entities[self.NewType], pID);
 end
 
-function b_Reprisal_ReplaceEntity:GetCustomData(__index_)
+function b_Reprisal_ReplaceEntity:GetCustomData(_Index)
     local Data = {}
-    if __index_ == 1 then
+    if _Index == 1 then
         for k, v in pairs( Entities ) do
             local name = {"^M_","^XS_","^X_","^XT_","^Z_", "^XB_"}
             local found = false;
@@ -3004,29 +3637,29 @@ function b_Reprisal_ReplaceEntity:GetCustomData(__index_)
             end
         end
         table.sort( Data )
-    elseif __index_ == 2 then
+    elseif _Index == 2 then
         Data = {"-","0","1","2","3","4","5","6","7","8",}
     end
     return Data
 end
 
-function b_Reprisal_ReplaceEntity:DEBUG(__quest_)
+function b_Reprisal_ReplaceEntity:DEBUG(_Quest)
     if not Entities[self.NewType] then
-        dbg(__quest_.Identifier.." "..self.Name..": got an invalid entity type!");
+        dbg(_Quest.Identifier.." "..self.Name..": got an invalid entity type!");
         return true;
     elseif self.PlayerID ~= nil and (self.PlayerID < 1 or self.PlayerID > 8) then
-        dbg(__quest_.Identifier.." "..self.Name..": got an invalid playerID!");
+        dbg(_Quest.Identifier.." "..self.Name..": got an invalid playerID!");
         return true;
     end
 
     if not IsExisting(self.ScriptName) then
         self.WarningPrinted = true;
-        warn(__quest_.Identifier.." "..self.Name..": '%s' does not exist!");
+        warn(_Quest.Identifier.." "..self.Name..": '" ..self.ScriptName.. "' does not exist!");
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_ReplaceEntity);
+Core:RegisterBehavior(b_Reprisal_ReplaceEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3034,8 +3667,8 @@ AddQuestBehavior(b_Reprisal_ReplaceEntity);
 -- Startet einen Quest neu.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_QuestRestart(...)
     return b_Reprisal_QuestRestart(...)
@@ -3045,30 +3678,30 @@ b_Reprisal_QuestRestart = {
     Name = "Reprisal_QuestRestart",
     Description = {
         en = "Reprisal: Restarts a (completed) quest so it can be triggered and completed again",
-        de = "Vergeltung: Startet eine (beendete) Quest neu, damit diese neu ausgeloest und beendet werden kann",
+        de = "Vergeltung: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name", de = "Questname" },
     },
 }
 
-function b_Reprisal_QuestRestart:GetReprisalTable(__quest_)
+function b_Reprisal_QuestRestart:GetReprisalTable(_Quest)
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestRestart:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
+function b_Reprisal_QuestRestart:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
     end
 end
 
-function b_Reprisal_QuestRestart:CustomFunction(__quest_)
+function b_Reprisal_QuestRestart:CustomFunction(_Quest)
     self:ResetQuest();
 end
 
-function b_Reprisal_QuestRestart:DEBUG(__quest_)
+function b_Reprisal_QuestRestart:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
         return true
     end
 end
@@ -3077,7 +3710,7 @@ function b_Reprisal_QuestRestart:ResetQuest()
     RestartQuestByName(self.QuestName);
 end
 
-AddQuestBehavior(b_Reprisal_QuestRestart);
+Core:RegisterBehavior(b_Reprisal_QuestRestart);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3085,8 +3718,8 @@ AddQuestBehavior(b_Reprisal_QuestRestart);
 -- Lässt einen Quest fehlschlagen.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_QuestFailure(...)
     return b_Reprisal_QuestFailure(...)
@@ -3096,7 +3729,7 @@ b_Reprisal_QuestFailure = {
     Name = "Reprisal_QuestFailure",
     Description = {
         en = "Reprisal: Lets another active quest fail",
-        de = "Vergeltung: Laesst eine andere aktive Quest fehlschlagen",
+        de = "Vergeltung: Lässt eine andere aktive Quest fehlschlagen",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name", de = "Questname" },
@@ -3107,26 +3740,25 @@ function b_Reprisal_QuestFailure:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestFailure:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
+function b_Reprisal_QuestFailure:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
     end
 end
 
-function b_Reprisal_QuestFailure:CustomFunction(__quest_)
+function b_Reprisal_QuestFailure:CustomFunction(_Quest)
     FailQuestByName(self.QuestName);
 end
 
-function b_Reprisal_QuestFailure:DEBUG(__quest_)
+function b_Reprisal_QuestFailure:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        local text = string.format("%s b_Reprisal_QuestFailure: got an invalid quest!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid quest!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_QuestFailure);
+Core:RegisterBehavior(b_Reprisal_QuestFailure);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3134,8 +3766,8 @@ AddQuestBehavior(b_Reprisal_QuestFailure);
 -- Wertet einen Quest als erfolgreich.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_QuestSuccess(...)
     return b_Reprisal_QuestSuccess(...)
@@ -3156,25 +3788,25 @@ function b_Reprisal_QuestSuccess:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestSuccess:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
+function b_Reprisal_QuestSuccess:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
     end
 end
 
-function b_Reprisal_QuestSuccess:CustomFunction(__quest_)
+function b_Reprisal_QuestSuccess:CustomFunction(_Quest)
     WinQuestByName(self.QuestName);
 end
 
-function b_Reprisal_QuestSuccess:DEBUG(__quest_)
+function b_Reprisal_QuestSuccess:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
         return true
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_QuestSuccess);
+Core:RegisterBehavior(b_Reprisal_QuestSuccess);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3182,8 +3814,8 @@ AddQuestBehavior(b_Reprisal_QuestSuccess);
 -- Triggert einen Quest.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_QuestActivate(...)
     return b_Reprisal_QuestActivate(...)
@@ -3193,7 +3825,7 @@ b_Reprisal_QuestActivate = {
     Name = "Reprisal_QuestActivate",
     Description = {
         en = "Reprisal: Activates another quest that is not triggered yet.",
-        de = "Vergeltung: Aktiviert eine andere Quest die noch nicht ausgeloest wurde.",
+        de = "Vergeltung: Aktiviert eine andere Quest die noch nicht ausgelöst wurde.",
                 },
     Parameter = {
         {ParameterType.QuestName, en = "Quest name", de = "Questname", },
@@ -3223,7 +3855,7 @@ function b_Reprisal_QuestActivate:DEBUG(_Quest)
     end
 end
 
-AddQuestBehavior(b_Reprisal_QuestActivate)
+Core:RegisterBehavior(b_Reprisal_QuestActivate)
 
 -- -------------------------------------------------------------------------- --
 
@@ -3231,8 +3863,8 @@ AddQuestBehavior(b_Reprisal_QuestActivate)
 -- Unterbricht einen Quest.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_QuestInterrupt(...)
     return b_Reprisal_QuestInterrupt(...)
@@ -3253,13 +3885,13 @@ function b_Reprisal_QuestInterrupt:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_QuestInterrupt:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
+function b_Reprisal_QuestInterrupt:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
     end
 end
 
-function b_Reprisal_QuestInterrupt:CustomFunction(__quest_)
+function b_Reprisal_QuestInterrupt:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
 
         local QuestID = GetQuestID(self.QuestName)
@@ -3270,15 +3902,15 @@ function b_Reprisal_QuestInterrupt:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_QuestInterrupt:DEBUG(__quest_)
+function b_Reprisal_QuestInterrupt:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
         return true
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_QuestInterrupt);
+Core:RegisterBehavior(b_Reprisal_QuestInterrupt);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3287,8 +3919,8 @@ AddQuestBehavior(b_Reprisal_QuestInterrupt);
 --
 -- @param _QuestName   Name des Quest
 -- @param _EndetQuests Bereits beendete unterbrechen
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_QuestForceInterrupt(...)
     return b_Reprisal_QuestForceInterrupt(...)
@@ -3312,19 +3944,19 @@ function b_Reprisal_QuestForceInterrupt:GetReprisalTable()
 
 end
 
-function b_Reprisal_QuestForceInterrupt:AddParameter(__index_, __parameter_)
+function b_Reprisal_QuestForceInterrupt:AddParameter(_Index, _Parameter)
 
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
-    elseif (__index_ == 1) then
-        self.InterruptEnded = AcceptAlternativeBoolean(__parameter_)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
+    elseif (_Index == 1) then
+        self.InterruptEnded = AcceptAlternativeBoolean(_Parameter)
     end
 
 end
 
-function b_Reprisal_QuestForceInterrupt:GetCustomData( __index_ )
+function b_Reprisal_QuestForceInterrupt:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 1 then
+    if _Index == 1 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
     else
@@ -3332,7 +3964,7 @@ function b_Reprisal_QuestForceInterrupt:GetCustomData( __index_ )
     end
     return Data
 end
-function b_Reprisal_QuestForceInterrupt:CustomFunction(__quest_)
+function b_Reprisal_QuestForceInterrupt:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
 
         local QuestID = GetQuestID(self.QuestName)
@@ -3343,15 +3975,15 @@ function b_Reprisal_QuestForceInterrupt:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_QuestForceInterrupt:DEBUG(__quest_)
+function b_Reprisal_QuestForceInterrupt:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_QuestForceInterrupt);
+Core:RegisterBehavior(b_Reprisal_QuestForceInterrupt);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3359,8 +3991,8 @@ AddQuestBehavior(b_Reprisal_QuestForceInterrupt);
 -- Führt eine Funktion im Skript als Reprisal aus.
 --
 -- @param _FunctionName Name der Funktion
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_MapScriptFunction(...)
     return b_Reprisal_MapScriptFunction:new(...);
@@ -3370,37 +4002,36 @@ b_Reprisal_MapScriptFunction = {
     Name = "Reprisal_MapScriptFunction",
     Description = {
         en = "Reprisal: Calls a function within the global map script if the quest has failed.",
-        de = "Vergeltung: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlaegt.",
+        de = "Vergeltung: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.",
     },
     Parameter = {
         { ParameterType.Default, en = "Function name", de = "Funktionsname" },
     },
 }
 
-function b_Reprisal_MapScriptFunction:GetReprisalTable(__quest_)
+function b_Reprisal_MapScriptFunction:GetReprisalTable(_Quest)
     return {Reprisal.Custom, {self, self.CustomFunction}};
 end
 
-function b_Reprisal_MapScriptFunction:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.FuncName = __parameter_
+function b_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.FuncName = _Parameter
     end
 end
 
-function b_Reprisal_MapScriptFunction:CustomFunction(__quest_)
-    return _G[self.FuncName](self, __quest_);
+function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
+    return _G[self.FuncName](self, _Quest);
 end
 
-function b_Reprisal_MapScriptFunction:DEBUG(__quest_)
+function b_Reprisal_MapScriptFunction:DEBUG(_Quest)
     if not self.FuncName or not _G[self.FuncName] then
-        local text = string.format("%s Reprisal_MapScriptFunction: function '%s' does not exist!", __quest_.Identifier, tostring(self.FuncName));
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_MapScriptFunction);
+Core:RegisterBehavior(b_Reprisal_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3422,8 +4053,8 @@ AddQuestBehavior(b_Reprisal_MapScriptFunction);
 -- @param _Name     Name der Variable
 -- @param _Operator Rechen- oder Zuweisungsoperator
 -- @param _Value    Wert oder andere Custom Variable
--- @return table: Behavior
--- @within Reprisals
+-- @return Table mit Behavior
+-- @within Reprisal
 --
 function Reprisal_CustomVariables(...)
     return b_Reprisal_CustomVariables:new(...);
@@ -3446,14 +4077,14 @@ function b_Reprisal_CustomVariables:GetReprisalTable()
     return { Reprisal.Custom, {self, self.CustomFunction} };
 end
 
-function b_Reprisal_CustomVariables:AddParameter(__index_, __parameter_)
-    if __index_ == 0 then
-        self.VariableName = __parameter_
-    elseif __index_ == 1 then
-        self.Operator = __parameter_
-    elseif __index_ == 2 then
-        local value = tonumber(__parameter_);
-        value = (value ~= nil and value) or tostring(__parameter_);
+function b_Reprisal_CustomVariables:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        self.VariableName = _Parameter
+    elseif _Index == 1 then
+        self.Operator = _Parameter
+    elseif _Index == 2 then
+        local value = tonumber(_Parameter);
+        value = (value ~= nil and value) or tostring(_Parameter);
         self.Value = value
     end
 end
@@ -3478,23 +4109,106 @@ function b_Reprisal_CustomVariables:CustomFunction()
     end
 end
 
-function b_Reprisal_CustomVariables:GetCustomData( __index_ )
+function b_Reprisal_CustomVariables:GetCustomData( _Index )
     return {"=", "+", "-", "*", "/", "^"};
 end
 
-function b_Reprisal_CustomVariables:DEBUG(__quest_)
+function b_Reprisal_CustomVariables:DEBUG(_Quest)
     local operators = {"=", "+", "-", "*", "/", "^"};
     if not Inside(self.Operator,operators) then
-        dbg(__quest_.Identifier.." "..self.Name..": got an invalid operator!");
+        dbg(_Quest.Identifier.." "..self.Name..": got an invalid operator!");
         return true;
     elseif self.VariableName == "" then
-        dbg(__quest_.Identifier.." "..self.Name..": missing name for variable!");
+        dbg(_Quest.Identifier.." "..self.Name..": missing name for variable!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reprisal_CustomVariables)
+Core:RegisterBehavior(b_Reprisal_CustomVariables)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erlaubt oder verbietet einem Spieler eine Technologie.
+--
+-- @param _PlayerID   ID des Spielers
+-- @param _Lock       Sperren/Entsperren
+-- @param _Technology Name der Technologie
+-- @return Table mit Behavior
+-- @within Reprisal
+--
+function Reprisal_Technology(...)
+    return b_Reprisal_Technology:new(...);
+end
+
+b_Reprisal_Technology = {
+    Name = "Reprisal_Technology",
+    Description = {
+        en = "Reprisal: Locks or unlocks a technology for the given player",
+        de = "Vergeltung: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player",
+    },
+    Parameter = {
+        { ParameterType.PlayerID, en = "PlayerID", de = "SpielerID" },
+        { ParameterType.Custom,   en = "Un / Lock", de = "Sperren/Erlauben" },
+        { ParameterType.Custom,   en = "Technology", de = "Technologie" },
+    },
+}
+
+function b_Reprisal_Technology:GetReprisalTable(_Quest)
+    return { Reprisal.Custom, {self, self.CustomFunction} }
+end
+
+function b_Reprisal_Technology:AddParameter(_Index, _Parameter)
+    if (_Index ==0) then
+        self.PlayerID = _Parameter*1
+    elseif (_Index == 1) then
+        self.LockType = _Parameter == "Lock"
+    elseif (_Index == 2) then
+        self.Technology = _Parameter
+    end
+end
+
+function b_Reprisal_Technology:CustomFunction(_Quest)
+    if self.PlayerID
+    and Logic.GetStoreHouse(self.PlayerID) ~= 0
+    and Technologies[self.Technology]
+    then
+        if self.LockType  then
+            LockFeaturesForPlayer(self.PlayerID, Technologies[self.Technology])
+        else
+            UnLockFeaturesForPlayer(self.PlayerID, Technologies[self.Technology])
+        end
+    else
+        return false
+    end
+end
+
+function b_Reprisal_Technology:GetCustomData(_Index)
+    local Data = {}
+    if (_Index == 1) then
+        Data[1] = "Lock"
+        Data[2] = "UnLock"
+    elseif (_Index == 2) then
+        for k, v in pairs( Technologies ) do
+            table.insert( Data, k )
+        end
+    end
+    return Data
+end
+
+function b_Reprisal_Technology:DEBUG(_Quest)
+    if not Technologies[self.Technology] then
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid technology type!");
+        return true;
+    elseif tonumber(self.PlayerID) == nil or self.PlayerID < 1 or self.PlayerID > 8 then
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid playerID!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reprisal_Technology);
 
 -- -------------------------------------------------------------------------- --
 -- Rewards                                                                    --
@@ -3504,8 +4218,8 @@ AddQuestBehavior(b_Reprisal_CustomVariables)
 -- Deaktiviert ein interaktives Objekt
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_ObjectDeactivate(...)
     return b_Reward_ObjectDeactivate:new(...);
@@ -3521,7 +4235,7 @@ b_Reward_ObjectDeactivate.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_ObjectDeactivate);
+Core:RegisterBehavior(b_Reward_ObjectDeactivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3536,8 +4250,8 @@ AddQuestBehavior(b_Reward_ObjectDeactivate);
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
 -- @param _State Status des Objektes
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_ObjectActivate(...)
     return Reward_ObjectActivate:new(...);
@@ -3553,7 +4267,7 @@ b_Reward_ObjectActivate.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} };
 end
 
-AddQuestBehavior(b_Reward_ObjectActivate);
+Core:RegisterBehavior(b_Reward_ObjectActivate);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3574,8 +4288,8 @@ AddQuestBehavior(b_Reward_ObjectActivate);
 -- @param _CType2     Typ der 2. Ware
 -- @param _CAmount2   Menge der 2. Ware
 -- @param _Status     Aktivierung (0: Held, 1: immer, 2: niemals)
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_ObjectInit(...)
     return Reward_ObjectInit:new(...);
@@ -3585,7 +4299,7 @@ b_Reward_ObjectInit = {
     Name = "Reward_ObjectInit",
     Description = {
         en = "Reward: Setup an interactive object with costs and rewards.",
-        de = "Lohn: Initialisiert ein interaktives Objekt mit seinen Kosten und Schaetzen.",
+        de = "Lohn: Initialisiert ein interaktives Objekt mit seinen Kosten und Schätzen.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Interactive object",     de = "Interaktives Objekt" },
@@ -3605,44 +4319,44 @@ function b_Reward_ObjectInit:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_ObjectInit:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
-    elseif (__index_ == 1) then
-        self.Distance = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.Waittime = __parameter_ * 1
-    elseif (__index_ == 3) then
-        self.RewardType = __parameter_
-    elseif (__index_ == 4) then
-        self.RewardAmount = tonumber(__parameter_)
-    elseif (__index_ == 5) then
-        self.FirstCostType = __parameter_
-    elseif (__index_ == 6) then
-        self.FirstCostAmount = tonumber(__parameter_)
-    elseif (__index_ == 7) then
-        self.SecondCostType = __parameter_
-    elseif (__index_ == 8) then
-        self.SecondCostAmount = tonumber(__parameter_)
-    elseif (__index_ == 9) then
+function b_Reward_ObjectInit:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
+        self.Distance = _Parameter * 1
+    elseif (_Index == 2) then
+        self.Waittime = _Parameter * 1
+    elseif (_Index == 3) then
+        self.RewardType = _Parameter
+    elseif (_Index == 4) then
+        self.RewardAmount = tonumber(_Parameter)
+    elseif (_Index == 5) then
+        self.FirstCostType = _Parameter
+    elseif (_Index == 6) then
+        self.FirstCostAmount = tonumber(_Parameter)
+    elseif (_Index == 7) then
+        self.SecondCostType = _Parameter
+    elseif (_Index == 8) then
+        self.SecondCostAmount = tonumber(_Parameter)
+    elseif (_Index == 9) then
         local parameter = nil
-        if __parameter_ == "Always" or 1 then
+        if _Parameter == "Always" or 1 then
             parameter = 1
-        elseif __parameter_ == "Never" or 2 then
+        elseif _Parameter == "Never" or 2 then
             parameter = 2
-        elseif __parameter_ == "Knight only" or 0 then
+        elseif _Parameter == "Knight only" or 0 then
             parameter = 0
         end
         self.UsingState = parameter
     end
 end
 
-function b_Reward_ObjectInit:CustomFunction(__quest_)
+function b_Reward_ObjectInit:CustomFunction(_Quest)
     local eID = GetID(self.ScriptName);
     if eID == 0 then
         return;
     end
-    QSB.InitalizedObjekts[eID] = __quest_.Identifier;
+    QSB.InitalizedObjekts[eID] = _Quest.Identifier;
 
     Logic.InteractiveObjectClearCosts(eID);
     Logic.InteractiveObjectClearRewards(eID);
@@ -3675,8 +4389,8 @@ function b_Reward_ObjectInit:CustomFunction(__quest_)
     table.insert(HiddenTreasures,eID);
 end
 
-function b_Reward_ObjectInit:GetCustomData( __index_ )
-    if __index_ == 3 or __index_ == 5 or __index_ == 7 then
+function b_Reward_ObjectInit:GetCustomData( _Index )
+    if _Index == 3 or _Index == 5 or _Index == 7 then
         local Data = {
             "-",
             "G_Beer",
@@ -3711,54 +4425,54 @@ function b_Reward_ObjectInit:GetCustomData( __index_ )
             Data[#Data+1] = "G_Olibanum"
         end
         return Data
-    elseif __index_ == 9 then
+    elseif _Index == 9 then
         return {"-", "Knight only", "Always", "Never",}
     end
 end
 
-function b_Reward_ObjectInit:DEBUG(__quest_)
+function b_Reward_ObjectInit:DEBUG(_Quest)
     if Logic.IsInteractiveObject(GetID(self.ScriptName)) == false then
-        dbg("Reward_ObjectInit "..__quest_.Identifier..": '"..self.ScriptName.."' is not a interactive object!");
+        dbg("".._Quest.Identifier.." "..self.Name..": '"..self.ScriptName.."' is not a interactive object!");
         return true;
     end
     if self.UsingState ~= 1 and self.Distance < 50 then
-        warn(""..__quest_.Identifier.." "..self.Name..": distance is maybe too short!");
+        warn("".._Quest.Identifier.." "..self.Name..": distance is maybe too short!");
     end
     if self.Waittime < 0 then
-        dbg(""..__quest_.Identifier.." "..self.Name..": waittime must be equal or greater than 0!");
+        dbg("".._Quest.Identifier.." "..self.Name..": waittime must be equal or greater than 0!");
         return true;
     end
     if self.RewardType and self.RewardType ~= "-" then
         if not Goods[self.RewardType] then
-            dbg(""..__quest_.Identifier.." "..self.Name..": '"..self.RewardType.."' is invalid good type!");
+            dbg("".._Quest.Identifier.." "..self.Name..": '"..self.RewardType.."' is invalid good type!");
             return true;
         elseif self.RewardAmount < 1 then
-            dbg(""..__quest_.Identifier.." "..self.Name..": amount can not be 0 or negative!");
+            dbg("".._Quest.Identifier.." "..self.Name..": amount can not be 0 or negative!");
             return true;
         end
     end
     if self.FirstCostType and self.FirstCostType ~= "-" then
         if not Goods[self.FirstCostType] then
-            dbg(""..__quest_.Identifier.." "..self.Name..": '"..self.FirstCostType.."' is invalid good type!");
+            dbg("".._Quest.Identifier.." "..self.Name..": '"..self.FirstCostType.."' is invalid good type!");
             return true;
         elseif self.FirstCostAmount < 1 then
-            dbg(""..__quest_.Identifier.." "..self.Name..": amount can not be 0 or negative!");
+            dbg("".._Quest.Identifier.." "..self.Name..": amount can not be 0 or negative!");
             return true;
         end
     end
     if self.SecondCostType and self.SecondCostType ~= "-" then
         if not Goods[self.SecondCostType] then
-            dbg(""..__quest_.Identifier.." "..self.Name..": '"..self.SecondCostType.."' is invalid good type!");
+            dbg("".._Quest.Identifier.." "..self.Name..": '"..self.SecondCostType.."' is invalid good type!");
             return true;
         elseif self.SecondCostAmount < 1 then
-            dbg(""..__quest_.Identifier.." "..self.Name..": amount can not be 0 or negative!");
+            dbg("".._Quest.Identifier.." "..self.Name..": amount can not be 0 or negative!");
             return true;
         end
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_ObjectInit);
+Core:RegisterBehavior(b_Reward_ObjectInit);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3774,8 +4488,8 @@ AddQuestBehavior(b_Reward_ObjectInit);
 -- @param _CostGoldType         Wagen für Goldkosten
 -- @param _RewResourceType      Wagen für Rohstofflieferung
 -- @param _RewGoldType          Wagen für Goldlieferung
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_ObjectSetCarts(...)
     return b_Reward_ObjectSetCarts:new(...);
@@ -3800,33 +4514,33 @@ function b_Reward_ObjectSetCarts:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_ObjectSetCarts:AddParameter(__index_, __parameter_)
-    if __index_ == 0 then
-        self.ScriptName = __parameter_
-    elseif __index_ == 1 then
-        if not __parameter_ or __parameter_ == "default" then
-            __parameter_ = "U_ResourceMerchant";
+function b_Reward_ObjectSetCarts:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        self.ScriptName = _Parameter
+    elseif _Index == 1 then
+        if not _Parameter or _Parameter == "default" then
+            _Parameter = "U_ResourceMerchant";
         end
-        self.CostResourceCart = __parameter_
-    elseif __index_ == 2 then
-        if not __parameter_ or __parameter_ == "default" then
-            __parameter_ = "U_GoldCart";
+        self.CostResourceCart = _Parameter
+    elseif _Index == 2 then
+        if not _Parameter or _Parameter == "default" then
+            _Parameter = "U_GoldCart";
         end
-        self.CostGoldCart = __parameter_
-    elseif __index_ == 3 then
-        if not __parameter_ or __parameter_ == "default" then
-            __parameter_ = "U_ResourceMerchant";
+        self.CostGoldCart = _Parameter
+    elseif _Index == 3 then
+        if not _Parameter or _Parameter == "default" then
+            _Parameter = "U_ResourceMerchant";
         end
-        self.RewardResourceCart = __parameter_
-    elseif __index_ == 4 then
-        if not __parameter_ or __parameter_ == "default" then
-            __parameter_ = "U_GoldCart";
+        self.RewardResourceCart = _Parameter
+    elseif _Index == 4 then
+        if not _Parameter or _Parameter == "default" then
+            _Parameter = "U_GoldCart";
         end
-        self.RewardGoldCart = __parameter_
+        self.RewardGoldCart = _Parameter
     end
 end
 
-function b_Reward_ObjectSetCarts:CustomFunction(__quest_)
+function b_Reward_ObjectSetCarts:CustomFunction(_Quest)
     local eID = GetID(self.ScriptName);
     Logic.InteractiveObjectSetRewardResourceCartType(eID, Entities[self.RewardResourceCart]);
     Logic.InteractiveObjectSetRewardGoldCartType(eID, Entities[self.RewardGoldCart]);
@@ -3834,10 +4548,10 @@ function b_Reward_ObjectSetCarts:CustomFunction(__quest_)
     Logic.InteractiveObjectSetCostResourceCartType(eID, Entities[self.CostGoldCart]);
 end
 
-function b_Reward_ObjectSetCarts:GetCustomData( __index_ )
-    if __index_ == 2 or __index_ == 4 then
+function b_Reward_ObjectSetCarts:GetCustomData( _Index )
+    if _Index == 2 or _Index == 4 then
         return {"U_GoldCart", "U_GoldCart_Mission", "U_Noblemen_Cart", "U_RegaliaCart"}
-    elseif __index_ == 1 or __index_ == 3 then
+    elseif _Index == 1 or _Index == 3 then
         local Data = {"U_ResourceMerchant", "U_Medicus", "U_Marketer"}
         if g_GameExtraNo > 0 then
             table.insert(Data, "U_NPC_Resource_Monk_AS");
@@ -3846,22 +4560,22 @@ function b_Reward_ObjectSetCarts:GetCustomData( __index_ )
     end
 end
 
-function b_Reward_ObjectSetCarts:DEBUG(__quest_)
+function b_Reward_ObjectSetCarts:DEBUG(_Quest)
     if (not Entities[self.CostResourceCart]) or (not Entities[self.CostGoldCart])
     or (not Entities[self.RewardResourceCart]) or (not Entities[self.RewardGoldCart]) then
-        dbg(""..__quest_.Identifier.." "..self.Name..": invalid cart type!");
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid cart type!");
         return true;
     end
 
     local eID = GetID(self.ScriptName);
-    if QSB.InitalizedObjekts[eID] and QSB.InitalizedObjekts[eID] == __quest_.Identifier then
-        dbg(""..__quest_.Identifier.." "..self.Name..": you can not change carts in the same quest the object is initalized!");
+    if QSB.InitalizedObjekts[eID] and QSB.InitalizedObjekts[eID] == _Quest.Identifier then
+        dbg("".._Quest.Identifier.." "..self.Name..": you can not change carts in the same quest the object is initalized!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_ObjectSetCarts);
+Core:RegisterBehavior(b_Reward_ObjectSetCarts);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3871,8 +4585,8 @@ AddQuestBehavior(b_Reward_ObjectSetCarts);
 -- @param _Party1   ID der ersten Partei
 -- @param _Party2   ID der zweiten Partei
 -- @param _State    Neuer Diplomatiestatus
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_Diplomacy(...)
     return b_Reward_Diplomacy:new(...);
@@ -3888,7 +4602,7 @@ b_Reward_ObjectDeactivate.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_Diplomacy);
+Core:RegisterBehavior(b_Reward_Diplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3896,8 +4610,8 @@ AddQuestBehavior(b_Reward_Diplomacy);
 -- Verbessert die diplomatischen Beziehungen zwischen Sender und Empfänger
 -- um einen Grad.
 --
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_DiplomacyIncrease()
     return b_Reward_DiplomacyIncrease:new();
@@ -3915,22 +4629,22 @@ function b_Reward_DiplomacyIncrease:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_DiplomacyIncrease:CustomFunction(__quest_)
-    local Sender = __quest_.SendingPlayer;
-    local Receiver = __quest_.ReceivingPlayer;
+function b_Reward_DiplomacyIncrease:CustomFunction(_Quest)
+    local Sender = _Quest.SendingPlayer;
+    local Receiver = _Quest.ReceivingPlayer;
     local State = GetDiplomacyState(Receiver, Sender);
     if State < 2 then
         SetDiplomacyState(Receiver, Sender, State+1);
     end
 end
 
-function b_Reward_DiplomacyIncrease:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
+function b_Reward_DiplomacyIncrease:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
     end
 end
 
-AddQuestBehavior(b_Reward_DiplomacyIncrease);
+Core:RegisterBehavior(b_Reward_DiplomacyIncrease);
 
 -- -------------------------------------------------------------------------- --
 
@@ -3939,7 +4653,7 @@ AddQuestBehavior(b_Reward_DiplomacyIncrease);
 --
 -- Sollen Angebote gelöscht werden, muss "-" als Ware ausgewählt werden.
 --
--- ACHTUNG: Stadtlagerhäuser können keine Söldner anbieten!
+-- <b>Achtung:</b> Stadtlagerhäuser können keine Söldner anbieten!
 --
 -- @param _PlayerID Partei, die Anbietet
 -- @param _Amount1  Menge des 1. Angebot
@@ -3950,8 +4664,8 @@ AddQuestBehavior(b_Reward_DiplomacyIncrease);
 -- @param _Type3    Ware oder Typ des 3. Angebot
 -- @param _Amount4  Menge des 4. Angebot
 -- @param _Type4    Ware oder Typ des 4. Angebot
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_TradeOffers(...)
     return b_Reward_TradeOffers:new(...);
@@ -3961,7 +4675,7 @@ b_Reward_TradeOffers = {
     Name = "Reward_TradeOffers",
     Description = {
         en = "Reward: Deletes all existing offers for a merchant and sets new offers, if given",
-        de = "Lohn: Loescht alle Angebote eines Haendlers und setzt neue, wenn angegeben",
+        de = "Lohn: Löscht alle Angebote eines Händlers und setzt neue, wenn angegeben",
     },
     Parameter = {
         { ParameterType.Custom, en = "PlayerID", de = "PlayerID" },
@@ -3980,25 +4694,25 @@ function b_Reward_TradeOffers:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_TradeOffers:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_
-    elseif (__index_ == 1) then
-        self.AmountOffer1 = tonumber(__parameter_)
-    elseif (__index_ == 2) then
-        self.Offer1 = __parameter_
-    elseif (__index_ == 3) then
-        self.AmountOffer2 = tonumber(__parameter_)
-    elseif (__index_ == 4) then
-        self.Offer2 = __parameter_
-    elseif (__index_ == 5) then
-        self.AmountOffer3 = tonumber(__parameter_)
-    elseif (__index_ == 6) then
-        self.Offer3 = __parameter_
-    elseif (__index_ == 7) then
-        self.AmountOffer4 = tonumber(__parameter_)
-    elseif (__index_ == 8) then
-        self.Offer4 = __parameter_
+function b_Reward_TradeOffers:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter
+    elseif (_Index == 1) then
+        self.AmountOffer1 = tonumber(_Parameter)
+    elseif (_Index == 2) then
+        self.Offer1 = _Parameter
+    elseif (_Index == 3) then
+        self.AmountOffer2 = tonumber(_Parameter)
+    elseif (_Index == 4) then
+        self.Offer2 = _Parameter
+    elseif (_Index == 5) then
+        self.AmountOffer3 = tonumber(_Parameter)
+    elseif (_Index == 6) then
+        self.Offer3 = _Parameter
+    elseif (_Index == 7) then
+        self.AmountOffer4 = tonumber(_Parameter)
+    elseif (_Index == 8) then
+        self.Offer4 = _Parameter
     end
 end
 
@@ -4020,14 +4734,14 @@ function b_Reward_TradeOffers:CustomFunction()
     end
 end
 
-function b_Reward_TradeOffers:DEBUG(__quest_)
+function b_Reward_TradeOffers:DEBUG(_Quest)
     if Logic.GetStoreHouse(self.PlayerID ) == 0 then
-        dbg(__quest_.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(")
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(")
         return true
     end
 end
 
-function b_Reward_TradeOffers:GetCustomData(__index_)
+function b_Reward_TradeOffers:GetCustomData(_Index)
     local Players = { "2", "3", "4", "5", "6", "7", "8" }
     local Amount = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
     local Offers = {"-",
@@ -4088,16 +4802,16 @@ function b_Reward_TradeOffers:GetCustomData(__index_)
         table.insert(Offers, "U_MilitarySword_Khana")
         table.insert(Offers, "U_MilitaryBow_Khana")
     end
-    if (__index_ == 0) then
+    if (_Index == 0) then
         return Players
-    elseif (__index_ == 1) or (__index_ == 3) or (__index_ == 5) or (__index_ == 7) then
+    elseif (_Index == 1) or (_Index == 3) or (_Index == 5) or (_Index == 7) then
         return Amount
-    elseif (__index_ == 2) or (__index_ == 4) or (__index_ == 6) or (__index_ == 8) then
+    elseif (_Index == 2) or (_Index == 4) or (_Index == 6) or (_Index == 8) then
         return Offers
     end
 end
 
-AddQuestBehavior(b_Reward_TradeOffers)
+Core:RegisterBehavior(b_Reward_TradeOffers)
 
 -- -------------------------------------------------------------------------- --
 
@@ -4105,8 +4819,8 @@ AddQuestBehavior(b_Reward_TradeOffers)
 -- Ein benanntes Entity wird zerstört.
 --
 -- @param _ScriptName Skriptname des Entity
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_DestroyEntity(...)
     return b_Reward_DestroyEntity:new(...);
@@ -4115,14 +4829,14 @@ end
 b_Reward_DestroyEntity = API.InstanceTable(b_Reprisal_DestroyEntity);
 b_Reward_DestroyEntity.Name = "Reward_DestroyEntity";
 b_Reward_DestroyEntity.Description.en = "Reward: Replaces an entity with an invisible script entity, which retains the entities name.";
-b_Reward_DestroyEntity.Description.de = "Lohn: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen uebernimmt.";
+b_Reward_DestroyEntity.Description.de = "Lohn: Ersetzt eine Entity mit einer unsichtbaren Script-Entity, die den Namen übernimmt.";
 b_Reward_DestroyEntity.GetReprisalTable = nil;
 
 b_Reward_DestroyEntity.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_DestroyEntity);
+Core:RegisterBehavior(b_Reward_DestroyEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4130,8 +4844,8 @@ AddQuestBehavior(b_Reward_DestroyEntity);
 -- Zerstört einen über die QSB erzeugten Effekt.
 --
 -- @param _EffectName Name des Effekts
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_DestroyEffect(...)
     return b_Reward_DestroyEffect:new(...);
@@ -4140,14 +4854,14 @@ end
 b_Reward_DestroyEffect = API.InstanceTable(b_Reprisal_DestroyEffect);
 b_Reward_DestroyEffect.Name = "Reward_DestroyEffect";
 b_Reward_DestroyEffect.Description.en = "Reward: Destroys an effect.";
-b_Reward_DestroyEffect.Description.de = "Lohn: Zerstoert einen Effekt.";
+b_Reward_DestroyEffect.Description.de = "Lohn: Zerstört einen Effekt.";
 b_Reward_DestroyEffect.GetReprisalTable = nil;
 
 b_Reward_DestroyEffect.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } };
 end
 
-AddQuestBehavior(b_Reward_DestroyEffect);
+Core:RegisterBehavior(b_Reward_DestroyEffect);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4163,8 +4877,8 @@ AddQuestBehavior(b_Reward_DestroyEffect);
 -- @param _Orientation Ausrichtung in °
 -- @param _Soldiers    Anzahl an Soldaten
 -- @param _HideFromAI  Vor KI verstecken
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_CreateBattalion(...)
     return b_Reward_CreateBattalion:new(...);
@@ -4174,7 +4888,7 @@ b_Reward_CreateBattalion = {
     Name = "Reward_CreateBattalion",
     Description = {
         en = "Reward: Replaces a script entity with a battalion, which retains the entities name",
-        de = "Lohn: Ersetzt eine Script-Entity durch ein Bataillon, welches den Namen der Script-Entity uebernimmt",
+        de = "Lohn: Ersetzt eine Script-Entity durch ein Bataillon, welches den Namen der Script-Entity übernimmt",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
@@ -4190,23 +4904,23 @@ function b_Reward_CreateBattalion:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_CreateBattalion:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptNameEntity = __parameter_
-    elseif (__index_ == 1) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.UnitKey = __parameter_
-    elseif (__index_ == 3) then
-        self.Orientation = __parameter_ * 1
-    elseif (__index_ == 4) then
-        self.SoldierCount = __parameter_ * 1
-    elseif (__index_ == 5) then
-        self.HideFromAI = AcceptAlternativeBoolean(__parameter_)
+function b_Reward_CreateBattalion:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptNameEntity = _Parameter
+    elseif (_Index == 1) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 2) then
+        self.UnitKey = _Parameter
+    elseif (_Index == 3) then
+        self.Orientation = _Parameter * 1
+    elseif (_Index == 4) then
+        self.SoldierCount = _Parameter * 1
+    elseif (_Index == 5) then
+        self.HideFromAI = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_CreateBattalion:CustomFunction(__quest_)
+function b_Reward_CreateBattalion:CustomFunction(_Quest)
     if not IsExisting( self.ScriptNameEntity ) then
         return false
     end
@@ -4222,16 +4936,16 @@ function b_Reward_CreateBattalion:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_CreateBattalion:GetCustomData( __index_ )
+function b_Reward_CreateBattalion:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 2 then
+    if _Index == 2 then
         for k, v in pairs( Entities ) do
             if Logic.IsEntityTypeInCategory( v, EntityCategories.Soldier ) == 1 then
                 table.insert( Data, k )
             end
         end
         table.sort( Data )
-    elseif __index_ == 5 then
+    elseif _Index == 5 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
     else
@@ -4240,27 +4954,27 @@ function b_Reward_CreateBattalion:GetCustomData( __index_ )
     return Data
 end
 
-function b_Reward_CreateBattalion:DEBUG(__quest_)
+function b_Reward_CreateBattalion:DEBUG(_Quest)
     if not Entities[self.UnitKey] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
         return true;
     elseif not IsExisting(self.ScriptNameEntity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
         return true;
     elseif tonumber(self.PlayerID) == nil or self.PlayerID < 1 or self.PlayerID > 8 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": playerID is wrong!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": playerID is wrong!");
         return true;
     elseif tonumber(self.Orientation) == nil then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": orientation must be a number!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": orientation must be a number!");
         return true;
     elseif tonumber(self.SoldierCount) == nil or self.SoldierCount < 1 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": you can not create a empty batallion!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": you can not create a empty batallion!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_CreateBattalion);
+Core:RegisterBehavior(b_Reward_CreateBattalion);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4274,8 +4988,8 @@ AddQuestBehavior(b_Reward_CreateBattalion);
 -- @param _Orientation Ausrichtung in °
 -- @param _Soldiers    Anzahl an Soldaten
 -- @param _HideFromAI  Vor KI verstecken
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_CreateSeveralBattalions(...)
     return b_Reward_CreateSeveralBattalions:new(...);
@@ -4302,25 +5016,25 @@ function b_Reward_CreateSeveralBattalions:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_CreateSeveralBattalions:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Amount = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.ScriptNameEntity = __parameter_
-    elseif (__index_ == 2) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 3) then
-        self.UnitKey = __parameter_
-    elseif (__index_ == 4) then
-        self.Orientation = __parameter_ * 1
-    elseif (__index_ == 5) then
-        self.SoldierCount = __parameter_ * 1
-    elseif (__index_ == 6) then
-        self.HideFromAI = AcceptAlternativeBoolean(__parameter_)
+function b_Reward_CreateSeveralBattalions:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Amount = _Parameter * 1
+    elseif (_Index == 1) then
+        self.ScriptNameEntity = _Parameter
+    elseif (_Index == 2) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 3) then
+        self.UnitKey = _Parameter
+    elseif (_Index == 4) then
+        self.Orientation = _Parameter * 1
+    elseif (_Index == 5) then
+        self.SoldierCount = _Parameter * 1
+    elseif (_Index == 6) then
+        self.HideFromAI = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_CreateSeveralBattalions:CustomFunction(__quest_)
+function b_Reward_CreateSeveralBattalions:CustomFunction(_Quest)
     if not IsExisting( self.ScriptNameEntity ) then
         return false
     end
@@ -4339,16 +5053,16 @@ function b_Reward_CreateSeveralBattalions:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_CreateSeveralBattalions:GetCustomData( __index_ )
+function b_Reward_CreateSeveralBattalions:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 3 then
+    if _Index == 3 then
         for k, v in pairs( Entities ) do
             if Logic.IsEntityTypeInCategory( v, EntityCategories.Soldier ) == 1 then
                 table.insert( Data, k )
             end
         end
         table.sort( Data )
-    elseif __index_ == 6 then
+    elseif _Index == 6 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
     else
@@ -4357,30 +5071,30 @@ function b_Reward_CreateSeveralBattalions:GetCustomData( __index_ )
     return Data
 end
 
-function b_Reward_CreateSeveralBattalions:DEBUG(__quest_)
+function b_Reward_CreateSeveralBattalions:DEBUG(_Quest)
     if not Entities[self.UnitKey] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
         return true;
     elseif not IsExisting(self.ScriptNameEntity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
         return true;
     elseif tonumber(self.PlayerID) == nil or self.PlayerID < 1 or self.PlayerID > 8 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": playerDI is wrong!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": playerDI is wrong!");
         return true;
     elseif tonumber(self.Orientation) == nil then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": orientation must be a number!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": orientation must be a number!");
         return true;
     elseif tonumber(self.SoldierCount) == nil or self.SoldierCount < 1 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": you can not create a empty batallion!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": you can not create a empty batallion!");
         return true;
     elseif tonumber(self.Amount) == nil or self.Amount < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": amount can not be negative!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": amount can not be negative!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_CreateSeveralBattalions);
+Core:RegisterBehavior(b_Reward_CreateSeveralBattalions);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4392,8 +5106,8 @@ AddQuestBehavior(b_Reward_CreateSeveralBattalions);
 -- @param _PlayerID    PlayerID des Effekt
 -- @param _Location    Position des Effekt
 -- @param _Orientation Ausrichtung in °
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_CreateEffect(...)
     return b_Reward_CreateEffect:new(...);
@@ -4414,31 +5128,31 @@ b_Reward_CreateEffect = {
     }
 }
 
-function b_Reward_CreateEffect:AddParameter(__index_, __parameter_)
+function b_Reward_CreateEffect:AddParameter(_Index, _Parameter)
 
-    if __index_ == 0 then
-        self.EffectName = __parameter_;
-    elseif __index_ == 1 then
-        self.Type = EGL_Effects[__parameter_];
-    elseif __index_ == 2 then
-        self.PlayerID = __parameter_ * 1;
-    elseif __index_ == 3 then
-        self.Location = __parameter_;
-    elseif __index_ == 4 then
-        self.Orientation = __parameter_ * 1;
+    if _Index == 0 then
+        self.EffectName = _Parameter;
+    elseif _Index == 1 then
+        self.Type = EGL_Effects[_Parameter];
+    elseif _Index == 2 then
+        self.PlayerID = _Parameter * 1;
+    elseif _Index == 3 then
+        self.Location = _Parameter;
+    elseif _Index == 4 then
+        self.Orientation = _Parameter * 1;
     end
 
 end
 
-function b_Reward_CreateEffect:GetRewardTable(__quest_)
+function b_Reward_CreateEffect:GetRewardTable(_Quest)
     return { Reward.Custom, { self, self.CustomFunction } };
 end
 
-function b_Reward_CreateEffect:CustomFunction(__quest_)
+function b_Reward_CreateEffect:CustomFunction(_Quest)
     if Logic.IsEntityDestroyed(self.Location) then
         return;
     end
-    local entity = assert(GetID(self.Location), __quest_.Identifier .. "Error in " .. self.Name .. ": CustomFunction: Entity is invalid");
+    local entity = assert(GetID(self.Location), _Quest.Identifier .. "Error in " .. self.Name .. ": CustomFunction: Entity is invalid");
     if QSB.EffectNameToID[self.EffectName] and Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
         return;
     end
@@ -4451,28 +5165,24 @@ function b_Reward_CreateEffect:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_CreateEffect:DEBUG(__quest_)
+function b_Reward_CreateEffect:DEBUG(_Quest)
     if QSB.EffectNameToID[self.EffectName] and Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
-        local text = string.format("%s Reward_CreateEffect: effect already exists!",__quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": effect already exists!");
         return true;
     elseif not IsExisting(self.Location) then
-        local text = string.format("%s Reward_CreateEffect: location %s is missing!",__quest_.Identifier, tostring(self.Location));
-        dbg(text);
+        sbg("".._Quest.Identifier.." "..self.Name..": location '" ..self.Location.. "' is missing!");
         return true;
     elseif self.PlayerID and (self.PlayerID < 0 or self.PlayerID > 8) then
-        local text = string.format("%s Reward_CreateEffect: invalid playerID!",__quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid playerID!");
         return true;
     elseif tonumber(self.Orientation) == nil then
-        local text = string.format("%s Reward_CreateEffect: invalid orientation!",__quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid orientation!");
         return true;
     end
 end
 
-function b_Reward_CreateEffect:GetCustomData(__index_)
-    assert(__index_ == 1, "Error in " .. self.Name .. ": GetCustomData: Index is invalid.");
+function b_Reward_CreateEffect:GetCustomData(_Index)
+    assert(_Index == 1, "Error in " .. self.Name .. ": GetCustomData: Index is invalid.");
     local types = {};
     for k, v in pairs(EGL_Effects) do
         table.insert(types, k);
@@ -4481,7 +5191,7 @@ function b_Reward_CreateEffect:GetCustomData(__index_)
     return types;
 end
 
-AddQuestBehavior(b_Reward_CreateEffect);
+Core:RegisterBehavior(b_Reward_CreateEffect);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4496,8 +5206,8 @@ AddQuestBehavior(b_Reward_CreateEffect);
 -- @param _TypeName    Einzigartiger Effektname
 -- @param _Orientation Ausrichtung in °
 -- @param _HideFromAI  Vor KI verstecken
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_CreateEntity(...)
     return b_Reward_CreateEntity:new(...);
@@ -4522,21 +5232,21 @@ function b_Reward_CreateEntity:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_CreateEntity:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptNameEntity = __parameter_
-    elseif (__index_ == 1) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.UnitKey = __parameter_
-    elseif (__index_ == 3) then
-        self.Orientation = __parameter_ * 1
-    elseif (__index_ == 4) then
-        self.HideFromAI = AcceptAlternativeBoolean(__parameter_)
+function b_Reward_CreateEntity:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptNameEntity = _Parameter
+    elseif (_Index == 1) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 2) then
+        self.UnitKey = _Parameter
+    elseif (_Index == 3) then
+        self.Orientation = _Parameter * 1
+    elseif (_Index == 4) then
+        self.HideFromAI = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_CreateEntity:CustomFunction(__quest_)
+function b_Reward_CreateEntity:CustomFunction(_Quest)
     if not IsExisting( self.ScriptNameEntity ) then
         return false
     end
@@ -4559,9 +5269,9 @@ function b_Reward_CreateEntity:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_CreateEntity:GetCustomData( __index_ )
+function b_Reward_CreateEntity:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 2 then
+    if _Index == 2 then
         for k, v in pairs( Entities ) do
             local name = {"^M_*","^XS_*","^X_*","^XT_*","^Z_*"}
             local found = false;
@@ -4577,7 +5287,7 @@ function b_Reward_CreateEntity:GetCustomData( __index_ )
         end
         table.sort( Data )
 
-    elseif __index_ == 4 or __index_ == 5 then
+    elseif _Index == 4 or _Index == 5 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
     else
@@ -4586,24 +5296,24 @@ function b_Reward_CreateEntity:GetCustomData( __index_ )
     return Data
 end
 
-function b_Reward_CreateEntity:DEBUG(__quest_)
+function b_Reward_CreateEntity:DEBUG(_Quest)
     if not Entities[self.UnitKey] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
         return true;
     elseif not IsExisting(self.ScriptNameEntity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
         return true;
     elseif tonumber(self.PlayerID) == nil or self.PlayerID < 0 or self.PlayerID > 8 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": playerID is not valid!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": playerID is not valid!");
         return true;
     elseif tonumber(self.Orientation) == nil then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": orientation must be a number!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": orientation must be a number!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_CreateEntity);
+Core:RegisterBehavior(b_Reward_CreateEntity);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4616,8 +5326,8 @@ AddQuestBehavior(b_Reward_CreateEntity);
 -- @param _TypeName    Einzigartiger Effektname
 -- @param _Orientation Ausrichtung in °
 -- @param _HideFromAI  Vor KI verstecken
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_CreateSeveralEntities(...)
     return b_Reward_CreateSeveralEntities:new(...);
@@ -4627,7 +5337,7 @@ b_Reward_CreateSeveralEntities = {
     Name = "Reward_CreateSeveralEntities",
     Description = {
         en = "Reward: Creating serveral battalions at the position of a entity. They retains the entities name and a _[index] suffix",
-        de = "Lohn: Erzeugt mehrere Entities an der Position der Entity. Sie uebernimmt den Namen der Script Entity und den Suffix _[index]",
+        de = "Lohn: Erzeugt mehrere Entities an der Position der Entity. Sie übernimmt den Namen der Script Entity und den Suffix _[index]",
     },
     Parameter = {
         { ParameterType.Number, en = "Amount", de = "Anzahl" },
@@ -4643,23 +5353,23 @@ function b_Reward_CreateSeveralEntities:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_CreateSeveralEntities:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Amount = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.ScriptNameEntity = __parameter_
-    elseif (__index_ == 2) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 3) then
-        self.UnitKey = __parameter_
-    elseif (__index_ == 4) then
-        self.Orientation = __parameter_ * 1
-    elseif (__index_ == 5) then
-        self.HideFromAI = AcceptAlternativeBoolean(__parameter_)
+function b_Reward_CreateSeveralEntities:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Amount = _Parameter * 1
+    elseif (_Index == 1) then
+        self.ScriptNameEntity = _Parameter
+    elseif (_Index == 2) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 3) then
+        self.UnitKey = _Parameter
+    elseif (_Index == 4) then
+        self.Orientation = _Parameter * 1
+    elseif (_Index == 5) then
+        self.HideFromAI = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_CreateSeveralEntities:CustomFunction(__quest_)
+function b_Reward_CreateSeveralEntities:CustomFunction(_Quest)
     if not IsExisting( self.ScriptNameEntity ) then
         return false
     end
@@ -4680,9 +5390,9 @@ function b_Reward_CreateSeveralEntities:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_CreateSeveralEntities:GetCustomData( __index_ )
+function b_Reward_CreateSeveralEntities:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 3 then
+    if _Index == 3 then
         for k, v in pairs( Entities ) do
             local name = {"^M_*","^XS_*","^X_*","^XT_*","^Z_*"}
             local found = false;
@@ -4698,7 +5408,7 @@ function b_Reward_CreateSeveralEntities:GetCustomData( __index_ )
         end
         table.sort( Data )
 
-    elseif __index_ == 5 or __index_ == 6 then
+    elseif _Index == 5 or _Index == 6 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
     else
@@ -4708,27 +5418,27 @@ function b_Reward_CreateSeveralEntities:GetCustomData( __index_ )
 
 end
 
-function b_Reward_CreateSeveralEntities:DEBUG(__quest_)
+function b_Reward_CreateSeveralEntities:DEBUG(_Quest)
     if not Entities[self.UnitKey] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
         return true;
     elseif not IsExisting(self.ScriptNameEntity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
         return true;
     elseif tonumber(self.PlayerID) == nil or self.PlayerID < 1 or self.PlayerID > 8 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
         return true;
     elseif tonumber(self.Orientation) == nil then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": orientation must be a number!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": orientation must be a number!");
         return true;
     elseif tonumber(self.Amount) == nil or self.Amount < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": amount can not be negative!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": amount can not be negative!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_CreateSeveralEntities);
+Core:RegisterBehavior(b_Reward_CreateSeveralEntities);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4737,8 +5447,8 @@ AddQuestBehavior(b_Reward_CreateSeveralEntities);
 --
 -- @param _Settler     Einheit, die bewegt wird
 -- @param _Destination Bewegungsziel
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_MoveSettler(...)
     return b_Reward_MoveSettler:new(...);
@@ -4748,7 +5458,7 @@ b_Reward_MoveSettler = {
     Name = "Reward_MoveSettler",
     Description = {
         en = "Reward: Moves a (NPC) settler to a destination. Must not be AI controlled, or it won't move",
-        de = "Lohn: Bewegt einen (NPC) Siedler zu einem Zielort. Darf keinem KI Spieler gehoeren, ansonsten wird sich der Siedler nicht bewegen",
+        de = "Lohn: Bewegt einen (NPC) Siedler zu einem Zielort. Darf keinem KI Spieler gehören, ansonsten wird sich der Siedler nicht bewegen",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Settler", de = "Siedler" },
@@ -4760,15 +5470,15 @@ function b_Reward_MoveSettler:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_MoveSettler:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptNameUnit = __parameter_
-    elseif (__index_ == 1) then
-        self.ScriptNameDest = __parameter_
+function b_Reward_MoveSettler:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptNameUnit = _Parameter
+    elseif (_Index == 1) then
+        self.ScriptNameDest = _Parameter
     end
 end
 
-function b_Reward_MoveSettler:CustomFunction(__quest_)
+function b_Reward_MoveSettler:CustomFunction(_Quest)
     if Logic.IsEntityDestroyed( self.ScriptNameUnit ) or Logic.IsEntityDestroyed( self.ScriptNameDest ) then
         return false
     end
@@ -4780,26 +5490,26 @@ function b_Reward_MoveSettler:CustomFunction(__quest_)
     Logic.MoveSettler( GetID( self.ScriptNameUnit ), DestX, DestY )
 end
 
-function b_Reward_MoveSettler:DEBUG(__quest_)
+function b_Reward_MoveSettler:DEBUG(_Quest)
     if not not IsExisting(self.ScriptNameUnit) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": mover entity does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": mover entity does not exist!");
         return true;
     elseif not IsExisting(self.ScriptNameDest) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": destination does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": destination does not exist!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_MoveSettler);
+Core:RegisterBehavior(b_Reward_MoveSettler);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Der Spieler gewinnt das Spiel.
 --
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_Victory()
     return b_Reward_Victory:new()
@@ -4813,19 +5523,19 @@ b_Reward_Victory = {
     },
 }
 
-function b_Reward_Victory:GetRewardTable(__quest_)
+function b_Reward_Victory:GetRewardTable(_Quest)
     return {Reward.Victory};
 end
 
-AddQuestBehavior(b_Reward_Victory);
+Core:RegisterBehavior(b_Reward_Victory);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Der Spieler verliert das Spiel.
 --
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_Defeat()
     return b_Reward_Defeat:new()
@@ -4839,17 +5549,17 @@ b_Reward_Defeat = {
     },
 }
 
-function b_Reward_Defeat:GetRewardTable(__quest_)
+function b_Reward_Defeat:GetRewardTable(_Quest)
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reward_Defeat:CustomFunction(__quest_)
-    __quest_:TerminateEventsAndStuff()
+function b_Reward_Defeat:CustomFunction(_Quest)
+    _Quest:TerminateEventsAndStuff()
     Logic.ExecuteInLuaLocalState("GUI_Window.MissionEndScreenSetVictoryReasonText(".. g_VictoryAndDefeatType.DefeatMissionFailed ..")")
-    Defeated(__quest_.ReceivingPlayer)
+    Defeated(_Quest.ReceivingPlayer)
 end
 
-AddQuestBehavior(b_Reward_Defeat);
+Core:RegisterBehavior(b_Reward_Defeat);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4858,8 +5568,8 @@ AddQuestBehavior(b_Reward_Defeat);
 --
 -- Dies ist reine Optik! Der Spieler wird dadurch nicht das Spiel gewinnen.
 --
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_FakeVictory()
     return b_Reward_FakeVictory:new();
@@ -4877,7 +5587,7 @@ function b_Reward_FakeVictory:GetRewardTable()
     return { Reward.FakeVictory }
 end
 
-AddQuestBehavior(b_Reward_FakeVictory);
+Core:RegisterBehavior(b_Reward_FakeVictory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -4901,8 +5611,8 @@ AddQuestBehavior(b_Reward_FakeVictory);
 -- @param _Ammo       Anzahl Munitionswagen
 -- @param _Type       Typ der Soldaten
 -- @param _Reuse      Freie Truppen wiederverwenden
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_AI_SpawnAndAttackTerritory(...)
     return b_Reward_AI_SpawnAndAttackTerritory:new(...);
@@ -4933,51 +5643,51 @@ function b_Reward_AI_SpawnAndAttackTerritory:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:AddParameter(__index_, __parameter_)
+function b_Reward_AI_SpawnAndAttackTerritory:AddParameter(_Index, _Parameter)
 
-    if (__index_ == 0) then
-        self.AIPlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.Spawnpoint = __parameter_
-    elseif (__index_ == 2) then
-        self.TerritoryID = tonumber(__parameter_)
+    if (_Index == 0) then
+        self.AIPlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.Spawnpoint = _Parameter
+    elseif (_Index == 2) then
+        self.TerritoryID = tonumber(_Parameter)
         if not self.TerritoryID then
-            self.TerritoryID = GetTerritoryIDByName(__parameter_)
+            self.TerritoryID = GetTerritoryIDByName(_Parameter)
         end
-    elseif (__index_ == 3) then
-        self.NumSword = __parameter_ * 1
-    elseif (__index_ == 4) then
-        self.NumBow = __parameter_ * 1
-    elseif (__index_ == 5) then
-        self.NumCatapults = __parameter_ * 1
-    elseif (__index_ == 6) then
-        self.NumSiegeTowers = __parameter_ * 1
-    elseif (__index_ == 7) then
-        self.NumRams = __parameter_ * 1
-    elseif (__index_ == 8) then
-        self.NumAmmoCarts = __parameter_ * 1
-    elseif (__index_ == 9) then
-        if __parameter_ == "Normal" or __parameter_ == false then
+    elseif (_Index == 3) then
+        self.NumSword = _Parameter * 1
+    elseif (_Index == 4) then
+        self.NumBow = _Parameter * 1
+    elseif (_Index == 5) then
+        self.NumCatapults = _Parameter * 1
+    elseif (_Index == 6) then
+        self.NumSiegeTowers = _Parameter * 1
+    elseif (_Index == 7) then
+        self.NumRams = _Parameter * 1
+    elseif (_Index == 8) then
+        self.NumAmmoCarts = _Parameter * 1
+    elseif (_Index == 9) then
+        if _Parameter == "Normal" or _Parameter == false then
             self.TroopType = false
-        elseif __parameter_ == "RedPrince" or __parameter_ == true then
+        elseif _Parameter == "RedPrince" or _Parameter == true then
             self.TroopType = true
-        elseif __parameter_ == "Bandit" or __parameter_ == 2 then
+        elseif _Parameter == "Bandit" or _Parameter == 2 then
             self.TroopType = 2
-        elseif __parameter_ == "Cultist" or __parameter_ == 3 then
+        elseif _Parameter == "Cultist" or _Parameter == 3 then
             self.TroopType = 3
         else
             assert(false)
         end
-    elseif (__index_ == 10) then
-        self.ReuseTroops = AcceptAlternativeBoolean(__parameter_)
+    elseif (_Index == 10) then
+        self.ReuseTroops = AcceptAlternativeBoolean(_Parameter)
     end
 
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:GetCustomData( __index_ )
+function b_Reward_AI_SpawnAndAttackTerritory:GetCustomData( _Index )
 
     local Data = {}
-    if __index_ == 9 then
+    if _Index == 9 then
         table.insert( Data, "Normal" )
         table.insert( Data, "RedPrince" )
         table.insert( Data, "Bandit" )
@@ -4985,7 +5695,7 @@ function b_Reward_AI_SpawnAndAttackTerritory:GetCustomData( __index_ )
             table.insert( Data, "Cultist" )
         end
 
-    elseif __index_ == 10 then
+    elseif _Index == 10 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
 
@@ -4997,7 +5707,7 @@ function b_Reward_AI_SpawnAndAttackTerritory:GetCustomData( __index_ )
 
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:CustomFunction(__quest_)
+function b_Reward_AI_SpawnAndAttackTerritory:CustomFunction(_Quest)
 
     local TargetID = Logic.GetTerritoryAcquiringBuildingID( self.TerritoryID )
     if TargetID ~= 0 then
@@ -5006,42 +5716,42 @@ function b_Reward_AI_SpawnAndAttackTerritory:CustomFunction(__quest_)
 
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:DEBUG(__quest_)
+function b_Reward_AI_SpawnAndAttackTerritory:DEBUG(_Quest)
     if self.AIPlayerID < 2 then
-        dbg(__quest_.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
     elseif Logic.IsEntityDestroyed(self.Spawnpoint) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Entity " .. self.SpawnPoint .. " is missing")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Entity " .. self.SpawnPoint .. " is missing")
         return true
     elseif self.TerritoryID == 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Territory unknown")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Territory unknown")
         return true
     elseif self.NumSword < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Number of Swords is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Number of Swords is negative")
         return true
     elseif self.NumBow < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Number of Bows is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Number of Bows is negative")
         return true
     elseif self.NumBow + self.NumSword < 1 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": No Soldiers?")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": No Soldiers?")
         return true
     elseif self.NumCatapults < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Catapults is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Catapults is negative")
         return true
     elseif self.NumSiegeTowers < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": SiegeTowers is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": SiegeTowers is negative")
         return true
     elseif self.NumRams < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Rams is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Rams is negative")
         return true
     elseif self.NumAmmoCarts < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": AmmoCarts is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": AmmoCarts is negative")
         return true
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_AI_SpawnAndAttackTerritory);
+Core:RegisterBehavior(b_Reward_AI_SpawnAndAttackTerritory);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5060,8 +5770,8 @@ AddQuestBehavior(b_Reward_AI_SpawnAndAttackTerritory);
 -- @param _Bow        Anzahl Bogenschützen (Battalione)
 -- @param _Soldier    Typ der Soldaten
 -- @param _Reuse      Freie Truppen wiederverwenden
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_AI_SpawnAndAttackArea(...)
     return b_Reward_AI_SpawnAndAttackArea:new(...);
@@ -5089,47 +5799,47 @@ function b_Reward_AI_SpawnAndAttackArea:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_SpawnAndAttackArea:AddParameter(__index_, __parameter_)
+function b_Reward_AI_SpawnAndAttackArea:AddParameter(_Index, _Parameter)
 
-    if (__index_ == 0) then
-        self.AIPlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.Spawnpoint = __parameter_
-    elseif (__index_ == 2) then
-        self.TargetName = __parameter_
-    elseif (__index_ == 3) then
-        self.Radius = __parameter_ * 1
-    elseif (__index_ == 4) then
-        self.NumSword = __parameter_ * 1
-    elseif (__index_ == 5) then
-        self.NumBow = __parameter_ * 1
-    elseif (__index_ == 6) then
-        if __parameter_ == "Normal" or __parameter_ == false then
+    if (_Index == 0) then
+        self.AIPlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.Spawnpoint = _Parameter
+    elseif (_Index == 2) then
+        self.TargetName = _Parameter
+    elseif (_Index == 3) then
+        self.Radius = _Parameter * 1
+    elseif (_Index == 4) then
+        self.NumSword = _Parameter * 1
+    elseif (_Index == 5) then
+        self.NumBow = _Parameter * 1
+    elseif (_Index == 6) then
+        if _Parameter == "Normal" or _Parameter == false then
             self.TroopType = false
-        elseif __parameter_ == "RedPrince" or __parameter_ == true then
+        elseif _Parameter == "RedPrince" or _Parameter == true then
             self.TroopType = true
-        elseif __parameter_ == "Bandit" or __parameter_ == 2 then
+        elseif _Parameter == "Bandit" or _Parameter == 2 then
             self.TroopType = 2
-        elseif __parameter_ == "Cultist" or __parameter_ == 3 then
+        elseif _Parameter == "Cultist" or _Parameter == 3 then
             self.TroopType = 3
         else
             assert(false)
         end
-    elseif (__index_ == 7) then
-        self.ReuseTroops = AcceptAlternativeBoolean(__parameter_)
+    elseif (_Index == 7) then
+        self.ReuseTroops = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_AI_SpawnAndAttackArea:GetCustomData( __index_ )
+function b_Reward_AI_SpawnAndAttackArea:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 6 then
+    if _Index == 6 then
         table.insert( Data, "Normal" )
         table.insert( Data, "RedPrince" )
         table.insert( Data, "Bandit" )
         if g_GameExtraNo >= 1 then
             table.insert( Data, "Cultist" )
         end
-    elseif __index_ == 7 then
+    elseif _Index == 7 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
     else
@@ -5138,40 +5848,40 @@ function b_Reward_AI_SpawnAndAttackArea:GetCustomData( __index_ )
     return Data
 end
 
-function b_Reward_AI_SpawnAndAttackArea:CustomFunction(__quest_)
+function b_Reward_AI_SpawnAndAttackArea:CustomFunction(_Quest)
     if Logic.IsEntityAlive( self.TargetName ) and Logic.IsEntityAlive( self.Spawnpoint ) then
         local TargetID = GetID( self.TargetName )
         AIScript_SpawnAndRaidSettlement( self.AIPlayerID, TargetID, self.Spawnpoint, self.Radius, self.NumSword, self.NumBow, self.TroopType, self.ReuseTroops )
     end
 end
 
-function b_Reward_AI_SpawnAndAttackArea:DEBUG(__quest_)
+function b_Reward_AI_SpawnAndAttackArea:DEBUG(_Quest)
     if self.AIPlayerID < 2 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
     elseif Logic.IsEntityDestroyed(self.Spawnpoint) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Entity " .. self.SpawnPoint .. " is missing")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Entity " .. self.SpawnPoint .. " is missing")
         return true
     elseif Logic.IsEntityDestroyed(self.TargetName) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Entity " .. self.TargetName .. " is missing")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Entity " .. self.TargetName .. " is missing")
         return true
     elseif self.Radius < 1 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Radius is to small or negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Radius is to small or negative")
         return true
     elseif self.NumSword < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Number of Swords is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Number of Swords is negative")
         return true
     elseif self.NumBow < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Number of Bows is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Number of Bows is negative")
         return true
     elseif self.NumBow + self.NumSword < 1 then
-        dbg(__quest_.Identifier .. ": Error in " .. self.Name .. ": No Soldiers?")
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": No Soldiers?")
         return true
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_AI_SpawnAndAttackArea);
+Core:RegisterBehavior(b_Reward_AI_SpawnAndAttackArea);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5188,8 +5898,8 @@ AddQuestBehavior(b_Reward_AI_SpawnAndAttackArea);
 -- @param _CaptureCarts Soldaten greifen Karren an
 -- @param _Type         Typ der Soldaten
 -- @param _Reuse        Freie Truppen wiederverwenden
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_AI_SpawnAndProtectArea(...)
     return b_Reward_AI_SpawnAndProtectArea:new(...);
@@ -5219,49 +5929,49 @@ function b_Reward_AI_SpawnAndProtectArea:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_SpawnAndProtectArea:AddParameter(__index_, __parameter_)
+function b_Reward_AI_SpawnAndProtectArea:AddParameter(_Index, _Parameter)
 
-    if (__index_ == 0) then
-        self.AIPlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.Spawnpoint = __parameter_
-    elseif (__index_ == 2) then
-        self.TargetName = __parameter_
-    elseif (__index_ == 3) then
-        self.Radius = __parameter_ * 1
-    elseif (__index_ == 4) then
-        self.Time = __parameter_ * 1
-    elseif (__index_ == 5) then
-        self.NumSword = __parameter_ * 1
-    elseif (__index_ == 6) then
-        self.NumBow = __parameter_ * 1
-    elseif (__index_ == 7) then
-        self.CaptureTradeCarts = AcceptAlternativeBoolean(__parameter_)
-    elseif (__index_ == 8) then
-        if __parameter_ == "Normal" or __parameter_ == true then
+    if (_Index == 0) then
+        self.AIPlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.Spawnpoint = _Parameter
+    elseif (_Index == 2) then
+        self.TargetName = _Parameter
+    elseif (_Index == 3) then
+        self.Radius = _Parameter * 1
+    elseif (_Index == 4) then
+        self.Time = _Parameter * 1
+    elseif (_Index == 5) then
+        self.NumSword = _Parameter * 1
+    elseif (_Index == 6) then
+        self.NumBow = _Parameter * 1
+    elseif (_Index == 7) then
+        self.CaptureTradeCarts = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 8) then
+        if _Parameter == "Normal" or _Parameter == true then
             self.TroopType = false
-        elseif __parameter_ == "RedPrince" or __parameter_ == false then
+        elseif _Parameter == "RedPrince" or _Parameter == false then
             self.TroopType = true
-        elseif __parameter_ == "Bandit" or __parameter_ == 2 then
+        elseif _Parameter == "Bandit" or _Parameter == 2 then
             self.TroopType = 2
-        elseif __parameter_ == "Cultist" or __parameter_ == 3 then
+        elseif _Parameter == "Cultist" or _Parameter == 3 then
             self.TroopType = 3
         else
             assert(false)
         end
-    elseif (__index_ == 9) then
-        self.ReuseTroops = AcceptAlternativeBoolean(__parameter_)
+    elseif (_Index == 9) then
+        self.ReuseTroops = AcceptAlternativeBoolean(_Parameter)
     end
 
 end
 
-function b_Reward_AI_SpawnAndProtectArea:GetCustomData( __index_ )
+function b_Reward_AI_SpawnAndProtectArea:GetCustomData( _Index )
 
     local Data = {}
-    if __index_ == 7 then
+    if _Index == 7 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
-    elseif __index_ == 8 then
+    elseif _Index == 8 then
         table.insert( Data, "Normal" )
         table.insert( Data, "RedPrince" )
         table.insert( Data, "Bandit" )
@@ -5269,7 +5979,7 @@ function b_Reward_AI_SpawnAndProtectArea:GetCustomData( __index_ )
             table.insert( Data, "Cultist" )
         end
 
-    elseif __index_ == 9 then
+    elseif _Index == 9 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
 
@@ -5281,7 +5991,7 @@ function b_Reward_AI_SpawnAndProtectArea:GetCustomData( __index_ )
 
 end
 
-function b_Reward_AI_SpawnAndProtectArea:CustomFunction(__quest_)
+function b_Reward_AI_SpawnAndProtectArea:CustomFunction(_Quest)
 
     if Logic.IsEntityAlive( self.TargetName ) and Logic.IsEntityAlive( self.Spawnpoint ) then
         local TargetID = GetID( self.TargetName )
@@ -5290,36 +6000,36 @@ function b_Reward_AI_SpawnAndProtectArea:CustomFunction(__quest_)
 
 end
 
-function b_Reward_AI_SpawnAndProtectArea:DEBUG(__quest_)
+function b_Reward_AI_SpawnAndProtectArea:DEBUG(_Quest)
     if self.AIPlayerID < 2 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
     elseif Logic.IsEntityDestroyed(self.Spawnpoint) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Entity " .. self.SpawnPoint .. " is missing")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Entity " .. self.SpawnPoint .. " is missing")
         return true
     elseif Logic.IsEntityDestroyed(self.TargetName) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Entity " .. self.TargetName .. " is missing")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Entity " .. self.TargetName .. " is missing")
         return true
     elseif self.Radius < 1 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Radius is to small or negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Radius is to small or negative")
         return true
     elseif self.Time < -1 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Time is smaller than -1")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Time is smaller than -1")
         return true
     elseif self.NumSword < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Number of Swords is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Number of Swords is negative")
         return true
     elseif self.NumBow < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Number of Bows is negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Number of Bows is negative")
         return true
     elseif self.NumBow + self.NumSword < 1 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": No Soldiers?")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": No Soldiers?")
         return true
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_AI_SpawnAndProtectArea);
+Core:RegisterBehavior(b_Reward_AI_SpawnAndProtectArea);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5345,8 +6055,8 @@ AddQuestBehavior(b_Reward_AI_SpawnAndProtectArea);
 -- @param _PlayerID PlayerID des KI
 -- @param _Fact     Konfigurationseintrag
 -- @param _Value    Neuer Wert
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_AI_SetNumericalFact(...)
     return b_Reward_AI_SetNumericalFact:new(...);
@@ -5369,10 +6079,10 @@ function b_Reward_AI_SetNumericalFact:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_AI_SetNumericalFact:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.AIPlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
+function b_Reward_AI_SetNumericalFact:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.AIPlayerID = _Parameter * 1
+    elseif (_Index == 1) then
         -- mapping of numerical facts
         local fact = {
             ["Courage"]               = "FEAR",
@@ -5400,18 +6110,18 @@ function b_Reward_AI_SetNumericalFact:AddParameter(__index_, __parameter_)
             ["FMST"]                  = "FMST", -- >= 0
             ["FMBA"]                  = "FMBA", -- >= 0
         }
-        self.NumericalFact = fact[__parameter_]
-    elseif (__index_ == 2) then
-        self.Value = __parameter_ * 1
+        self.NumericalFact = fact[_Parameter]
+    elseif (_Index == 2) then
+        self.Value = _Parameter * 1
     end
 end
 
-function b_Reward_AI_SetNumericalFact:CustomFunction(__quest_)
+function b_Reward_AI_SetNumericalFact:CustomFunction(_Quest)
     AICore.SetNumericalFact( self.AIPlayerID, self.NumericalFact, self.Value )
 end
 
-function b_Reward_AI_SetNumericalFact:GetCustomData(__index_)
-    if (__index_ == 1) then
+function b_Reward_AI_SetNumericalFact:GetCustomData(_Index)
+    if (_Index == 1) then
         return {
             "Courage",
             "Reconstruction",
@@ -5429,27 +6139,27 @@ function b_Reward_AI_SetNumericalFact:GetCustomData(__index_)
     end
 end
 
-function b_Reward_AI_SetNumericalFact:DEBUG(__quest_)
+function b_Reward_AI_SetNumericalFact:DEBUG(_Quest)
     if Logic.GetStoreHouse(self.AIPlayerID) == 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong or dead")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong or dead")
         return true
     elseif not self.NumericalFact then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": invalid numerical fact choosen")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": invalid numerical fact choosen")
         return true
     else
         if self.NumericalFact == "BARB" or self.NumericalFact == "FCOP" or self.NumericalFact == "FMOP" then
             if self.Value ~= 0 and self.Value ~= 1 then
-                dbg(__quest_.Identifier .. " " .. self.Name .. ": BARB, FCOP, FMOP: value must be 1 or 0")
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": BARB, FCOP, FMOP: value must be 1 or 0")
                 return true
             end
         elseif self.NumericalFact == "FEAR" then
             if self.Value <= 0 then
-                dbg(__quest_.Identifier .. " " .. self.Name .. ": FEAR: value must greater than 0")
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": FEAR: value must greater than 0")
                 return true
             end
         else
             if self.Value < 0 then
-                dbg(__quest_.Identifier .. " " .. self.Name .. ": BPMX, FMBM, FMSM, FMRA, FMCA, FMAC, FMST, FMBA: value must greater than or equal 0")
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": BPMX, FMBM, FMSM, FMRA, FMCA, FMAC, FMST, FMBA: value must greater than or equal 0")
                 return true
             end
         end
@@ -5457,7 +6167,7 @@ function b_Reward_AI_SetNumericalFact:DEBUG(__quest_)
     return false
 end
 
-AddQuestBehavior(b_Reward_AI_SetNumericalFact);
+Core:RegisterBehavior(b_Reward_AI_SetNumericalFact);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5466,8 +6176,8 @@ AddQuestBehavior(b_Reward_AI_SetNumericalFact);
 --
 -- @param _PlayerID         PlayerID des KI-Spielers
 -- @param _Aggressiveness   Aggressivitätswert (1 bis 3)
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_AI_Aggressiveness(...)
     return b_Reward_AI_Aggressiveness:new(...);
@@ -5477,12 +6187,12 @@ b_Reward_AI_Aggressiveness = {
     Name = "Reward_AI_Aggressiveness",
     Description = {
         en = "Reward: Sets the AI player's aggressiveness.",
-        de = "Lohn: Setzt die Aggressivitaet des KI-Spielers fest.",
+        de = "Lohn: Setzt die Aggressivität des KI-Spielers fest.",
     },
     Parameter =
     {
         { ParameterType.PlayerID, en = "AI player", de = "KI-Spieler" },
-        { ParameterType.Custom, en = "Aggressiveness (1-3)", de = "Aggressivitaet (1-3)" }
+        { ParameterType.Custom, en = "Aggressiveness (1-3)", de = "Aggressivität (1-3)" }
     }
 };
 
@@ -5490,11 +6200,11 @@ function b_Reward_AI_Aggressiveness:GetRewardTable()
     return {Reward.Custom, {self, self.CustomFunction} };
 end
 
-function b_Reward_AI_Aggressiveness:AddParameter(__index_, __parameter_)
-    if __index_ == 0 then
-        self.AIPlayer = __parameter_ * 1;
-    elseif __index_ == 1 then
-        self.Aggressiveness = tonumber(__parameter_);
+function b_Reward_AI_Aggressiveness:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        self.AIPlayer = _Parameter * 1;
+    elseif _Index == 1 then
+        self.Aggressiveness = tonumber(_Parameter);
     end
 end
 
@@ -5513,19 +6223,19 @@ function b_Reward_AI_Aggressiveness:CustomFunction()
     end
 end
 
-function b_Reward_AI_Aggressiveness:DEBUG(__quest_)
+function b_Reward_AI_Aggressiveness:DEBUG(_Quest)
     if self.AIPlayer < 2 or Logic.GetStoreHouse(self.AIPlayer) == 0 then
-        dbg(__quest_.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is wrong")
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is wrong")
         return true
     end
 end
 
-function b_Reward_AI_Aggressiveness:GetCustomData(__index_)
-    assert(__index_ == 1, "Error in " .. self.Name .. ": GetCustomData: Index is invalid.");
+function b_Reward_AI_Aggressiveness:GetCustomData(_Index)
+    assert(_Index == 1, "Error in " .. self.Name .. ": GetCustomData: Index is invalid.");
     return { "1", "2", "3" };
 end
 
-AddQuestBehavior(b_Reward_AI_Aggressiveness)
+Core:RegisterBehavior(b_Reward_AI_Aggressiveness)
 
 -- -------------------------------------------------------------------------- --
 
@@ -5537,8 +6247,8 @@ AddQuestBehavior(b_Reward_AI_Aggressiveness)
 --
 -- @param _PlayerID      PlayerID des KI
 -- @param _EnemyPlayerID PlayerID des Feindes
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_AI_SetEnemy(...)
     return b_Reward_AI_SetEnemy:new(...);
@@ -5563,12 +6273,12 @@ function b_Reward_AI_SetEnemy:GetRewardTable()
 
 end
 
-function b_Reward_AI_SetEnemy:AddParameter(__index_, __parameter_)
+function b_Reward_AI_SetEnemy:AddParameter(_Index, _Parameter)
 
-    if __index_ == 0 then
-        self.AIPlayer = __parameter_ * 1;
-    elseif __index_ == 1 then
-        self.Enemy = __parameter_ * 1;
+    if _Index == 0 then
+        self.AIPlayer = _Parameter * 1;
+    elseif _Index == 1 then
+        self.Enemy = _Parameter * 1;
     end
 
 end
@@ -5582,15 +6292,15 @@ function b_Reward_AI_SetEnemy:CustomFunction()
 
 end
 
-function b_Reward_AI_SetEnemy:DEBUG(__quest_)
+function b_Reward_AI_SetEnemy:DEBUG(_Quest)
 
     if self.AIPlayer <= 1 or self.AIPlayer >= 8 or Logic.PlayerGetIsHumanFlag(self.AIPlayer) then
-        dbg(__quest_.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong")
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong")
         return true
     end
 
 end
-AddQuestBehavior(b_Reward_AI_SetEnemy)
+Core:RegisterBehavior(b_Reward_AI_SetEnemy)
 
 -- -------------------------------------------------------------------------- --
 
@@ -5602,8 +6312,8 @@ AddQuestBehavior(b_Reward_AI_SetEnemy)
 -- @param _Entity Skriptname oder ID des Entity
 -- @param _Type   Neuer Typ des Entity
 -- @param _Owner  Besitzer des Entity
--- @return table: behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_ReplaceEntity(...)
     return b_Reward_ReplaceEntity:new(...);
@@ -5612,26 +6322,26 @@ end
 b_Reward_ReplaceEntity = API.InstanceTable(b_Reprisal_ReplaceEntity);
 b_Reward_ReplaceEntity.Name = "Reward_ReplaceEntity";
 b_Reward_ReplaceEntity.Description.en = "Reward: Replaces an entity with a new one of a different type. The playerID can be changed too.";
-b_Reward_ReplaceEntity.Description.de = "Lohn: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehoerigkeit geaendert werden.";
+b_Reward_ReplaceEntity.Description.de = "Lohn: Ersetzt eine Entity durch eine neue anderen Typs. Es kann auch die Spielerzugehörigkeit geändert werden.";
 b_Reward_ReplaceEntity.GetReprisalTable = nil;
 
-b_Reward_ReplaceEntity.GetRewardTable = function(self)
+b_Reward_ReplaceEntity.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_ReplaceEntity);
+Core:RegisterBehavior(b_Reward_ReplaceEntity);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Setzt die Menge von Rohstoffen in einer Mine.
 --
--- Achtung: Im Reich des Ostens darf die Mine nicht eingestürzt sein!
+-- <b>Achtung:</b> Im Reich des Ostens darf die Mine nicht eingestürzt sein!
 --
 -- @param _ScriptName Skriptname der Mine
 -- @param _Amount     Menge an Rohstoffen
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_SetResourceAmount(...)
     return b_Reward_SetResourceAmount:new(...);
@@ -5641,7 +6351,7 @@ b_Reward_SetResourceAmount = {
     Name = "Reward_SetResourceAmount",
     Description = {
         en = "Reward: Set the current and maximum amount of a resource doodad (the amount can also set to 0)",
-        de = "Lohn: Setzt die aktuellen sowie maximalen Resourcen in einem Doodad (auch 0 ist moeglich)",
+        de = "Lohn: Setzt die aktuellen sowie maximalen Resourcen in einem Doodad (auch 0 ist möglich)",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Ressource", de = "Resource" },
@@ -5653,17 +6363,17 @@ function b_Reward_SetResourceAmount:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_SetResourceAmount:AddParameter(__index_, __parameter_)
+function b_Reward_SetResourceAmount:AddParameter(_Index, _Parameter)
 
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
-    elseif (__index_ == 1) then
-        self.Amount = __parameter_ * 1
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
+    elseif (_Index == 1) then
+        self.Amount = _Parameter * 1
     end
 
 end
 
-function b_Reward_SetResourceAmount:CustomFunction(__quest_)
+function b_Reward_SetResourceAmount:CustomFunction(_Quest)
     if Logic.IsEntityDestroyed( self.ScriptName ) then
         return false
     end
@@ -5674,18 +6384,18 @@ function b_Reward_SetResourceAmount:CustomFunction(__quest_)
     Logic.SetResourceDoodadGoodAmount( EntityID, self.Amount )
 end
 
-function b_Reward_SetResourceAmount:DEBUG(__quest_)
+function b_Reward_SetResourceAmount:DEBUG(_Quest)
     if not IsExisting(self.ScriptName) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": resource entity does not exist!")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": resource entity does not exist!")
         return true
     elseif not type(self.Amount) == "number" or self.Amount < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": resource amount can not be negative!")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": resource amount can not be negative!")
         return true
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_SetResourceAmount);
+Core:RegisterBehavior(b_Reward_SetResourceAmount);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5694,8 +6404,8 @@ AddQuestBehavior(b_Reward_SetResourceAmount);
 --
 -- @param _Type   Rohstofftyp
 -- @param _Amount Menge an Rohstoffen
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_Resources(...)
     return b_Reward_Resources:new(...);
@@ -5713,11 +6423,11 @@ b_Reward_Resources = {
     },
 }
 
-function b_Reward_Resources:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.GoodTypeName = __parameter_
-    elseif (__index_ == 1) then
-        self.GoodAmount = __parameter_ * 1
+function b_Reward_Resources:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.GoodTypeName = _Parameter
+    elseif (_Index == 1) then
+        self.GoodAmount = _Parameter * 1
     end
 end
 
@@ -5726,7 +6436,7 @@ function b_Reward_Resources:GetRewardTable()
     return { Reward.Resources, GoodType, self.GoodAmount }
 end
 
-AddQuestBehavior(b_Reward_Resources);
+Core:RegisterBehavior(b_Reward_Resources);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5745,8 +6455,8 @@ AddQuestBehavior(b_Reward_Resources);
 -- @param _OtherPlayer   Anderer Empfänger als Auftraggeber
 -- @param _NoReservation Platzreservation auf dem Markt ignorieren (Sinnvoll?)
 -- @param _Replace       Spawnpoint ersetzen
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_SendCart(...)
     return b_Reward_SendCart:new(...);
@@ -5756,7 +6466,7 @@ b_Reward_SendCart = {
     Name = "Reward_SendCart",
     Description = {
         en = "Reward: Sends a cart to a player. It spawns at a building or by replacing an entity. The cart can replace the entity if it's not a building.",
-        de = "Lohn: Sendet einen Karren zu einem Spieler. Der Karren wird an einem Gebaeude oder einer Entity erstellt. Er ersetzt die Entity, wenn diese kein Gebaeude ist.",
+        de = "Lohn: Sendet einen Karren zu einem Spieler. Der Karren wird an einem Gebäude oder einer Entity erstellt. Er ersetzt die Entity, wenn diese kein Gebäude ist.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Script entity", de = "Script Entity" },
@@ -5774,27 +6484,27 @@ function b_Reward_SendCart:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_SendCart:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptNameEntity = __parameter_
-    elseif (__index_ == 1) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 2) then
-        self.UnitKey = __parameter_
-    elseif (__index_ == 3) then
-        self.GoodType = __parameter_
-    elseif (__index_ == 4) then
-        self.GoodAmount = __parameter_ * 1
-    elseif (__index_ == 5) then
-        self.OverrideTargetPlayer = tonumber(__parameter_)
-    elseif (__index_ == 6) then
-        self.IgnoreReservation = AcceptAlternativeBoolean(__parameter_)
-    elseif (__index_ == 7) then
-        self.ReplaceEntity = AcceptAlternativeBoolean(__parameter_)
+function b_Reward_SendCart:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptNameEntity = _Parameter
+    elseif (_Index == 1) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 2) then
+        self.UnitKey = _Parameter
+    elseif (_Index == 3) then
+        self.GoodType = _Parameter
+    elseif (_Index == 4) then
+        self.GoodAmount = _Parameter * 1
+    elseif (_Index == 5) then
+        self.OverrideTargetPlayer = tonumber(_Parameter)
+    elseif (_Index == 6) then
+        self.IgnoreReservation = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 7) then
+        self.ReplaceEntity = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_SendCart:CustomFunction(__quest_)
+function b_Reward_SendCart:CustomFunction(_Quest)
 
     if not IsExisting( self.ScriptNameEntity ) then
         return false;
@@ -5816,56 +6526,56 @@ function b_Reward_SendCart:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_SendCart:GetCustomData( __index_ )
+function b_Reward_SendCart:GetCustomData( _Index )
     local Data = {}
-    if __index_ == 2 then
+    if _Index == 2 then
         Data = { "U_ResourceMerchant", "U_Medicus", "U_Marketer", "U_ThiefCart", "U_GoldCart", "U_Noblemen_Cart", "U_RegaliaCart" }
-    elseif __index_ == 3 then
+    elseif _Index == 3 then
         for k, v in pairs( Goods ) do
             if string.find( k, "^G_" ) then
                 table.insert( Data, k )
             end
         end
         table.sort( Data )
-    elseif __index_ == 5 then
+    elseif _Index == 5 then
         table.insert( Data, "---" )
         for i = 1, 8 do
             table.insert( Data, i )
         end
-    elseif __index_ == 6 then
+    elseif _Index == 6 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
-    elseif __index_ == 7 then
+    elseif _Index == 7 then
         table.insert( Data, "false" )
         table.insert( Data, "true" )
     end
     return Data
 end
 
-function b_Reward_SendCart:DEBUG(__quest_)
+function b_Reward_SendCart:DEBUG(_Quest)
     if not IsExisting(self.ScriptNameEntity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
         return true;
     elseif not tonumber(self.PlayerID) or self.PlayerID < 1 or self.PlayerID > 8 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": got a invalid playerID!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": got a invalid playerID!");
         return true;
     elseif not Entities[self.UnitKey] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity type '"..self.UnitKey.."' is invalid!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity type '"..self.UnitKey.."' is invalid!");
         return true;
     elseif not Goods[self.GoodType] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": good type '"..self.GoodType.."' is invalid!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": good type '"..self.GoodType.."' is invalid!");
         return true;
     elseif not tonumber(self.GoodAmount) or self.GoodAmount < 1 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": good amount can not be below 1!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": good amount can not be below 1!");
         return true;
     elseif tonumber(self.OverrideTargetPlayer) and (self.OverrideTargetPlayer < 1 or self.OverrideTargetPlayer > 8) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": overwrite target player with invalid playerID!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": overwrite target player with invalid playerID!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Reward_SendCart);
+Core:RegisterBehavior(b_Reward_SendCart);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5877,8 +6587,8 @@ AddQuestBehavior(b_Reward_SendCart);
 --
 -- @param _Type   Typ der Einheit
 -- @param _Amount Menge an Einheiten
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_Units(...)
     return b_Reward_Units:new(...)
@@ -5896,11 +6606,11 @@ b_Reward_Units = {
     },
 }
 
-function b_Reward_Units:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.EntityName = __parameter_
-    elseif (__index_ == 1) then
-        self.Amount = __parameter_ * 1
+function b_Reward_Units:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.EntityName = _Parameter
+    elseif (_Index == 1) then
+        self.Amount = _Parameter * 1
     end
 end
 
@@ -5908,7 +6618,7 @@ function b_Reward_Units:GetRewardTable()
     return { Reward.Units, assert( Entities[self.EntityName] ), self.Amount }
 end
 
-AddQuestBehavior(b_Reward_Units);
+Core:RegisterBehavior(b_Reward_Units);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5916,8 +6626,8 @@ AddQuestBehavior(b_Reward_Units);
 -- Startet einen Quest neu.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_QuestRestart(...)
     return b_Reward_QuestRestart(...)
@@ -5926,14 +6636,14 @@ end
 b_Reward_QuestRestart = API.InstanceTable(b_Reprisal_QuestRestart);
 b_Reward_QuestRestart.Name = "Reward_ReplaceEntity";
 b_Reward_QuestRestart.Description.en = "Reward: Restarts a (completed) quest so it can be triggered and completed again.";
-b_Reward_QuestRestart.Description.de = "Lohn: Startet eine (beendete) Quest neu, damit diese neu ausgeloest und beendet werden kann.";
+b_Reward_QuestRestart.Description.de = "Lohn: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann.";
 b_Reward_QuestRestart.GetReprisalTable = nil;
 
-b_Reward_QuestRestart.GetRewardTable = function(self, __quest_)
+b_Reward_QuestRestart.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_QuestRestart);
+Core:RegisterBehavior(b_Reward_QuestRestart);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5941,8 +6651,8 @@ AddQuestBehavior(b_Reward_QuestRestart);
 -- Lässt einen Quest fehlschlagen.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_QuestFailure(...)
     return b_Reward_QuestFailure(...)
@@ -5951,14 +6661,14 @@ end
 b_Reward_QuestFailure = API.InstanceTable(b_Reprisal_ReplaceEntity);
 b_Reward_QuestFailure.Name = "Reward_QuestFailure";
 b_Reward_QuestFailure.Description.en = "Reward: Lets another active quest fail.";
-b_Reward_QuestFailure.Description.de = "Lohn: Laesst eine andere aktive Quest fehlschlagen.";
+b_Reward_QuestFailure.Description.de = "Lohn: Lässt eine andere aktive Quest fehlschlagen.";
 b_Reward_QuestFailure.GetReprisalTable = nil;
 
 b_Reward_QuestFailure.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_QuestFailure);
+Core:RegisterBehavior(b_Reward_QuestFailure);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5966,8 +6676,8 @@ AddQuestBehavior(b_Reward_QuestFailure);
 -- Wertet einen Quest als erfolgreich.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_QuestSuccess(...)
     return b_Reward_QuestSuccess(...)
@@ -5983,7 +6693,7 @@ b_Reward_QuestSuccess.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_QuestSuccess);
+Core:RegisterBehavior(b_Reward_QuestSuccess);
 
 -- -------------------------------------------------------------------------- --
 
@@ -5991,8 +6701,8 @@ AddQuestBehavior(b_Reward_QuestSuccess);
 -- Triggert einen Quest.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_QuestActivate(...)
     return b_Reward_QuestActivate(...)
@@ -6001,14 +6711,14 @@ end
 b_Reward_QuestActivate = API.InstanceTable(b_Reprisal_QuestActivate);
 b_Reward_QuestActivate.Name = "Reward_QuestActivate";
 b_Reward_QuestActivate.Description.en = "Reward: Activates another quest that is not triggered yet.";
-b_Reward_QuestActivate.Description.de = "Lohn: Aktiviert eine andere Quest die noch nicht ausgeloest wurde.";
+b_Reward_QuestActivate.Description.de = "Lohn: Aktiviert eine andere Quest die noch nicht ausgelöst wurde.";
 b_Reward_QuestActivate.GetReprisalTable = nil;
 
 b_Reward_QuestActivate.GetRewardTable = function(self, _Quest)
     return {Reward.Custom, {self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_QuestActivate)
+Core:RegisterBehavior(b_Reward_QuestActivate)
 
 -- -------------------------------------------------------------------------- --
 
@@ -6016,8 +6726,8 @@ AddQuestBehavior(b_Reward_QuestActivate)
 -- Unterbricht einen Quest.
 --
 -- @param _QuestName Name des Quest
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_QuestInterrupt(...)
     return b_Reward_QuestInterrupt(...)
@@ -6033,7 +6743,7 @@ b_Reward_QuestInterrupt.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_QuestInterrupt);
+Core:RegisterBehavior(b_Reward_QuestInterrupt);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6042,8 +6752,8 @@ AddQuestBehavior(b_Reward_QuestInterrupt);
 --
 -- @param _QuestName   Name des Quest
 -- @param _EndetQuests Bereits beendete unterbrechen
--- @return table: Behavior
--- @within Rewards
+-- @return Table mit Behavior
+-- @within Reward
 --
 function Reward_QuestForceInterrupt(...)
     return b_Reward_QuestForceInterrupt(...)
@@ -6059,7 +6769,329 @@ b_Reward_QuestForceInterrupt.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-AddQuestBehavior(b_Reward_QuestForceInterrupt);
+Core:RegisterBehavior(b_Reward_QuestForceInterrupt);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Führt eine Funktion im Skript als Reward aus.
+--
+-- @param _FunctionName Name der Funktion
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_MapScriptFunction(...)
+    return b_Reward_MapScriptFunction:new(...);
+end
+
+b_Reward_MapScriptFunction = API.InstanceTable(b_Reprisal_MapScriptFunction);
+b_Reward_MapScriptFunction.Name = "Reprisal_MapScriptFunction";
+b_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
+b_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
+b_Reward_MapScriptFunction.GetReprisalTable = nil;
+
+b_Reward_MapScriptFunction.GetRewardTable = function(self, _Quest)
+    return {Reward.Custom, {self, self.CustomFunction}};
+end
+
+Core:RegisterBehavior(b_Reward_MapScriptFunction);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert den Wert einer benutzerdefinierten Variable.
+--
+-- Benutzerdefinierte Variablen können ausschließlich Zahlen sein.
+--
+---- <p>Operatoren</p>
+-- <ul>
+-- <li>= - Variablenwert wird auf den Wert gesetzt</li>
+-- <li>- - Variablenwert mit Wert Subtrahieren</li>
+-- <li>+ - Variablenwert mit Wert addieren</li>
+-- <li>* - Variablenwert mit Wert multiplizieren</li>
+-- <li>/ - Variablenwert mit Wert dividieren</li>
+-- <li>^ - Variablenwert mit Wert potenzieren</li>
+-- </ul>
+--
+-- @param _Name     Name der Variable
+-- @param _Operator Rechen- oder Zuweisungsoperator
+-- @param _Value    Wert oder andere Custom Variable
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_CustomVariables(...)
+    return b_Reward_CustomVariables:new(...);
+end
+
+b_Reward_CustomVariables = API.InstanceTable(b_Reprisal_CustomVariables);
+b_Reward_CustomVariables.Name = "Reward_CustomVariables";
+b_Reward_CustomVariables.Description.en = "Reward: Executes a mathematical operation with this variable. The other operand can be a number or another custom variable.";
+b_Reward_CustomVariables.Description.de = "Lohn: Fuehrt eine mathematische Operation mit der Variable aus. Der andere Operand kann eine Zahl oder eine Custom-Varible sein.";
+b_Reward_CustomVariables.GetReprisalTable = nil;
+
+b_Reward_CustomVariables.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom, {self, self.CustomFunction} };
+end
+
+Core:RegisterBehavior(b_Reward_CustomVariables)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erlaubt oder verbietet einem Spieler eine Technologie.
+--
+-- @param _PlayerID   ID des Spielers
+-- @param _Lock       Sperren/Entsperren
+-- @param _Technology Name der Technologie
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_Technology(...)
+    return b_Reward_Technology:new(...);
+end
+
+b_Reward_Technology = API.InstanceTable(b_Reprisal_Technology);
+b_Reward_Technology.Name = "Reward_Technology";
+b_Reward_Technology.Description.en = "Reward: Locks or unlocks a technology for the given player.";
+b_Reward_Technology.Description.de = "Lohn: Sperrt oder erlaubt eine Technolgie fuer den angegebenen Player.";
+b_Reward_Technology.GetReprisalTable = nil;
+
+b_Reward_Technology.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom, {self, self.CustomFunction} }
+end
+
+Core:RegisterBehavior(b_Reward_Technology);
+
+---
+-- Gibt dem Auftragnehmer eine Anzahl an Prestigepunkten.
+--
+-- @param _Amount Menge an Prestige
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_PrestigePoints(...)
+    return b_Reward_PrestigePoints:mew(...);
+end
+
+b_Reward_PrestigePoints  = {
+    Name = "Reward_PrestigePoints",
+    Description = {
+        en = "Reward: Prestige",
+        de = "Lohn: Prestige",
+    },
+    Parameter = {
+        { ParameterType.Number, en = "Points", de = "Punkte" },
+    },
+}
+
+function b_Reward_PrestigePoints :AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Points = _Parameter
+    end
+end
+
+function b_Reward_PrestigePoints :GetRewardTable()
+    return { Reward.PrestigePoints, self.Points }
+end
+
+Core:RegisterBehavior(b_Reward_PrestigePoints);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Besetzt einen Außenposten mit Soldaten.
+--
+-- @param _ScriptName Skriptname des Außenposten
+-- @param _Type       Soldatentyp
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_AI_MountOutpost(...)
+    return b_Reward_AI_MountOutpost:new(...);
+end
+
+b_Reward_AI_MountOutpost = {
+    Name = "Reward_AI_MountOutpost",
+    Description = {
+        en = "Reward: Places a troop of soldiers on a named outpost.",
+        de = "Lohn: Platziert einen Trupp Soldaten auf einem Aussenposten der KI.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.Custom,      en = "Soldiers type", de = "Soldatentyp" },
+    },
+}
+
+function b_Reward_AI_MountOutpost:GetRewardTable()
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reward_AI_MountOutpost:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        self.Scriptname = _Parameter
+    else
+        self.SoldiersType = _Parameter
+    end
+end
+
+function b_Reward_AI_MountOutpost:CustomFunction(_Quest)
+    local outpostID = assert(
+        not Logic.IsEntityDestroyed(self.Scriptname) and GetID(self.Scriptname),
+       _Quest.Identifier .. ": Error in " .. self.Name .. ": CustomFunction: Outpost is invalid"
+    )
+    local AIPlayerID = Logic.EntityGetPlayer(outpostID)
+    local ax, ay = Logic.GetBuildingApproachPosition(outpostID)
+    local TroopID = Logic.CreateBattalionOnUnblockedLand(Entities[self.SoldiersType], ax, ay, 0, AIPlayerID, 0)
+    AICore.HideEntityFromAI(AIPlayerID, TroopID, true)
+    Logic.CommandEntityToMountBuilding(TroopID, outpostID)
+end
+
+function b_Reward_AI_MountOutpost:GetCustomData(_Index)
+    if _Index == 1 then
+        local Data = {}
+        for k,v in pairs(Entities) do
+            if string.find(k, "U_MilitaryBandit") or string.find(k, "U_MilitarySword") or string.find(k, "U_MilitaryBow") then
+                Data[#Data+1] = k
+            end
+        end
+        return Data
+    end
+end
+
+function b_Reward_AI_MountOutpost:DEBUG(_Quest)
+    if Logic.IsEntityDestroyed(self.Scriptname) then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Outpost " .. self.Scriptname .. " is missing")
+        return true
+    end
+end
+
+Core:RegisterBehavior(b_Reward_AI_MountOutpost)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet einen Quest neu und lößt ihn sofort aus.
+--
+-- @param _QuestName Name des Quest
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_QuestRestartForceActive(...)
+    return b_Reward_QuestRestartForceActive:new(...);
+end
+
+b_Reward_QuestRestartForceActive = {
+    Name = "Reward_QuestRestartForceActive",
+    Description = {
+        en = "Reward: Restarts a (completed) quest and triggers it immediately.",
+        de = "Lohn: Startet eine (beendete) Quest neu und triggert sie sofort.",
+    },
+    Parameter = {
+        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
+    },
+}
+
+function b_Reward_QuestRestartForceActive:GetRewardTable()
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reward_QuestRestartForceActive:AddParameter(_Index, _Parameter)
+    assert(_Index == 0, "Error in " .. self.Name .. ": AddParameter: Index is invalid.")
+    self.QuestName = _Parameter
+end
+
+function b_Reward_QuestRestartForceActive:CustomFunction(_Quest)
+    local QuestID, Quest = self:ResetQuest(_Quest);
+    if QuestID then
+        Quest:SetMsgKeyOverride()
+        Quest:SetIconOverride()
+        Quest:Trigger()
+    end
+end
+
+b_Reward_QuestRestartForceActive.ResetQuest = b_Reward_QuestRestart.CustomFunction;
+function b_Reward_QuestRestartForceActive:DEBUG(_Quest)
+    if not Quests[GetQuestID(self.QuestName)] then
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist")
+        return true
+    end
+end
+
+Core:RegisterBehavior(b_Reward_QuestRestartForceActive)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Baut das angegebene Gabäude um eine Stufe aus.
+--
+-- <b>Achtung:</b> Ein Gebäude muss erst fertig ausgebaut sein, bevor ein
+-- weiterer Ausbau begonnen werden kann!
+--
+-- @param _ScriptName Skriptname des Gebäudes
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_UpgradeBuilding(...)
+    return b_Reward_UpgradeBuilding:new(...);
+end
+
+b_Reward_UpgradeBuilding = {
+    Name = "Reward_UpgradeBuilding",
+    Description = {
+        en = "Reward: Upgrades a building",
+        de = "Lohn: Baut ein Gebäude aus"
+    },
+    Parameter =    {
+        { ParameterType.ScriptName, en = "Building", de = "Gebäude" }
+    }
+};
+
+function b_Reward_UpgradeBuilding:GetRewardTable()
+
+    return {Reward.Custom, {self, self.CustomFunction}};
+
+end
+
+function b_Reward_UpgradeBuilding:AddParameter(_Index, _Parameter)
+
+    if _Index == 0 then
+        self.Building = _Parameter;
+    end
+
+end
+
+function b_Reward_UpgradeBuilding:CustomFunction(_Quest)
+
+    local building = GetID(self.Building);
+    if building ~= 0
+    and Logic.IsBuilding(building) == 1
+    and Logic.IsBuildingUpgradable(building, true)
+    and Logic.IsBuildingUpgradable(building, false)
+    then
+        Logic.UpgradeBuilding(building);
+    end
+
+end
+
+function b_Reward_UpgradeBuilding:DEBUG(_Quest)
+
+    local building = GetID(self.Building);
+    if not (building ~= 0
+            and Logic.IsBuilding(building) == 1
+            and Logic.IsBuildingUpgradable(building, true)
+            and Logic.IsBuildingUpgradable(building, false) )
+    then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Building is wrong")
+        return true
+    end
+
+end
+
+Core:RegisterBehavior(b_Reward_UpgradeBuilding)
+
+-- -------------------------------------------------------------------------- --
+
+
 
 -- -------------------------------------------------------------------------- --
 -- Trigger                                                                    --
@@ -6071,7 +7103,7 @@ AddQuestBehavior(b_Reward_QuestForceInterrupt);
 -- Ein Spieler ist dann entdeckt, wenn sein Heimatterritorium aufgedeckt wird.
 --
 -- @param _PlayerID Zu entdeckender Spieler
--- @return table: Behavior
+-- @return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_PlayerDiscovered(...)
@@ -6082,24 +7114,24 @@ b_Trigger_PlayerDiscovered = {
     Name = "Trigger_PlayerDiscovered",
     Description = {
         en = "Trigger: if a given player has been discovered",
-        de = "Ausloeser: wenn ein angegebener Spieler entdeckt wurde",
+        de = "Auslöser: wenn ein angegebener Spieler entdeckt wurde",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
     },
 }
 
-function b_Trigger_PlayerDiscovered:GetTriggerTable(__quest_)
+function b_Trigger_PlayerDiscovered:GetTriggerTable(_Quest)
     return {Triggers.PlayerDiscovered, self.PlayerID}
 end
 
-function b_Trigger_PlayerDiscovered:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1;
+function b_Trigger_PlayerDiscovered:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1;
     end
 end
 
-AddQuestBehavior(b_Trigger_PlayerDiscovered);
+Core:RegisterBehavior(b_Trigger_PlayerDiscovered);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6109,7 +7141,7 @@ AddQuestBehavior(b_Trigger_PlayerDiscovered);
 --
 -- @param _PlayerID ID der Partei
 -- @param _State    Diplomatie-Status
--- @return table: Behavior
+-- @return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnDiplomacy(...)
@@ -6120,7 +7152,7 @@ b_Trigger_OnDiplomacy = {
     Name = "Trigger_OnDiplomacy",
     Description = {
         en = "Trigger: if diplomatic relations have been established with a player",
-        de = "Ausloeser: wenn ein angegebener Diplomatie-Status mit einem Spieler erreicht wurde.",
+        de = "Auslöser: wenn ein angegebener Diplomatie-Status mit einem Spieler erreicht wurde.",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
@@ -6128,19 +7160,19 @@ b_Trigger_OnDiplomacy = {
     },
 }
 
-function b_Trigger_OnDiplomacy:GetTriggerTable(__quest_)
+function b_Trigger_OnDiplomacy:GetTriggerTable(_Quest)
     return {Triggers.Diplomacy, self.PlayerID, assert( DiplomacyStates[self.DiplState] ) }
 end
 
-function b_Trigger_OnDiplomacy:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.DiplState = __parameter_
+function b_Trigger_OnDiplomacy:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.DiplState = _Parameter
     end
 end
 
-AddQuestBehavior(b_Trigger_OnDiplomacy);
+Core:RegisterBehavior(b_Trigger_OnDiplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6150,7 +7182,7 @@ AddQuestBehavior(b_Trigger_OnDiplomacy);
 -- @param _PlayerID ID des Spielers
 -- @param _Need     Bedürfnis
 -- @param _Amount   Menge an skreikenden Siedlern
--- @return table: Behavior
+-- @return Table mit Behavior
 -- @within Trigger
 -- 
 function Trigger_OnNeedUnsatisfied(...)
@@ -6161,7 +7193,7 @@ b_Trigger_OnNeedUnsatisfied = {
     Name = "Trigger_OnNeedUnsatisfied",
     Description = {
         en = "Trigger: if a specified need is unsatisfied",
-        de = "Ausloeser: wenn ein bestimmtes Beduerfnis nicht befriedigt ist.",
+        de = "Auslöser: wenn ein bestimmtes Beduerfnis nicht befriedigt ist.",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
@@ -6174,35 +7206,35 @@ function b_Trigger_OnNeedUnsatisfied:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnNeedUnsatisfied:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.Need = __parameter_
-    elseif (__index_ == 2) then
-        self.WorkersOnStrike = __parameter_ * 1
+function b_Trigger_OnNeedUnsatisfied:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.Need = _Parameter
+    elseif (_Index == 2) then
+        self.WorkersOnStrike = _Parameter * 1
     end
 end
 
-function b_Trigger_OnNeedUnsatisfied:CustomFunction(__quest_)
+function b_Trigger_OnNeedUnsatisfied:CustomFunction(_Quest)
     return Logic.GetNumberOfStrikingWorkersPerNeed( self.PlayerID, Needs[self.Need] ) >= self.WorkersOnStrike
 end
 
-function b_Trigger_OnNeedUnsatisfied:DEBUG(__quest_)
+function b_Trigger_OnNeedUnsatisfied:DEBUG(_Quest)
     if Logic.GetStoreHouse(self.PlayerID) == 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": " .. self.PlayerID .. " does not exist.")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": " .. self.PlayerID .. " does not exist.")
         return true
     elseif not Needs[self.Need] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": " .. self.Need .. " does not exist.")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": " .. self.Need .. " does not exist.")
         return true
     elseif self.WorkersOnStrike < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": WorkersOnStrike value negative")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": WorkersOnStrike value negative")
         return true
     end
     return false;
 end
 
-AddQuestBehavior(b_Trigger_OnNeedUnsatisfied);
+Core:RegisterBehavior(b_Trigger_OnNeedUnsatisfied);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6210,7 +7242,7 @@ AddQuestBehavior(b_Trigger_OnNeedUnsatisfied);
 -- Startet den Quest, wenn die angegebene Mine erschöpft ist.
 -- 
 -- @param _ScriptName Skriptname der Mine
--- @return table: Behavior
+-- @return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnResourceDepleted(...)
@@ -6221,7 +7253,7 @@ b_Trigger_OnResourceDepleted = {
     Name = "Trigger_OnResourceDepleted",
     Description = {
         en = "Trigger: if a resource is (temporarily) depleted",
-        de = "Ausloeser: wenn eine Ressource (zeitweilig) verbraucht ist",
+        de = "Auslöser: wenn eine Ressource (zeitweilig) verbraucht ist",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
@@ -6232,18 +7264,18 @@ function b_Trigger_OnResourceDepleted:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnResourceDepleted:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.ScriptName = __parameter_
+function b_Trigger_OnResourceDepleted:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter
     end
 end
 
-function b_Trigger_OnResourceDepleted:CustomFunction(__quest_)
+function b_Trigger_OnResourceDepleted:CustomFunction(_Quest)
     local ID = GetID(self.ScriptName)
     return not ID or ID == 0 or Logic.GetResourceDoodadGoodType(ID) == 0 or Logic.GetResourceDoodadGoodAmount(ID) == 0
 end
 
-AddQuestBehavior(b_Trigger_OnResourceDepleted);
+Core:RegisterBehavior(b_Trigger_OnResourceDepleted);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6254,7 +7286,7 @@ AddQuestBehavior(b_Trigger_OnResourceDepleted);
 -- @param  _PlayerID ID des Spielers
 -- @param  _Type     Typ des Rohstoffes
 -- @param _Amount    Menge an Rohstoffen
--- @return table: Behavior
+-- @return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnAmountOfGoods(...)
@@ -6265,7 +7297,7 @@ b_Trigger_OnAmountOfGoods = {
     Name = "Trigger_OnAmountOfGoods",
     Description = {
         en = "Trigger: if the player has gathered a given amount of resources in his storehouse",
-        de = "Ausloeser: wenn der Spieler eine bestimmte Menge einer Ressource in seinem Lagerhaus hat",
+        de = "Auslöser: wenn der Spieler eine bestimmte Menge einer Ressource in seinem Lagerhaus hat",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Player", de = "Spieler" },
@@ -6278,17 +7310,17 @@ function b_Trigger_OnAmountOfGoods:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnAmountOfGoods:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.PlayerID = __parameter_ * 1
-    elseif (__index_ == 1) then
-        self.GoodTypeName = __parameter_
-    elseif (__index_ == 2) then
-        self.GoodAmount = __parameter_ * 1
+function b_Trigger_OnAmountOfGoods:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1
+    elseif (_Index == 1) then
+        self.GoodTypeName = _Parameter
+    elseif (_Index == 2) then
+        self.GoodAmount = _Parameter * 1
     end
 end
 
-function b_Trigger_OnAmountOfGoods:CustomFunction(__quest_)
+function b_Trigger_OnAmountOfGoods:CustomFunction(_Quest)
     local StoreHouseID = Logic.GetStoreHouse(self.PlayerID)
     if (StoreHouseID == 0) then
         return false
@@ -6301,21 +7333,21 @@ function b_Trigger_OnAmountOfGoods:CustomFunction(__quest_)
     return false
 end
 
-function b_Trigger_OnAmountOfGoods:DEBUG(__quest_)
+function b_Trigger_OnAmountOfGoods:DEBUG(_Quest)
     if Logic.GetStoreHouse(self.PlayerID) == 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": " .. self.PlayerID .. " does not exist.")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": " .. self.PlayerID .. " does not exist.")
         return true
     elseif not Goods[self.GoodTypeName] then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Good type is wrong.")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Good type is wrong.")
         return true
     elseif self.GoodAmount < 0 then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": Good amount is negative.")
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Good amount is negative.")
         return true
     end
     return false;
 end
 
-AddQuestBehavior(b_Trigger_OnAmountOfGoods);
+Core:RegisterBehavior(b_Trigger_OnAmountOfGoods);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6324,7 +7356,7 @@ AddQuestBehavior(b_Trigger_OnAmountOfGoods);
 --
 -- @param _QuestName Name des Quest
 -- @param _Time      Wartezeit
--- return table: Behavior
+-- return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnQuestActive(...)
@@ -6335,7 +7367,7 @@ b_Trigger_OnQuestActive = {
     Name = "Trigger_OnQuestActive",
     Description = {
         en = "Trigger: if a given quest has been activated. Waiting time optional",
-        de = "Ausloeser: wenn eine angegebene Quest aktiviert wurde. Optional mit Wartezeit",
+        de = "Auslöser: wenn eine angegebene Quest aktiviert wurde. Optional mit Wartezeit",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name", de = "Questname" },
@@ -6343,19 +7375,19 @@ b_Trigger_OnQuestActive = {
     },
 }
 
-function b_Trigger_OnQuestActive:GetTriggerTable(__quest_)
+function b_Trigger_OnQuestActive:GetTriggerTable(_Quest)
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestActive:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
-    elseif (__index_ == 1) then
-        self.WaitTime = (__parameter_ ~= nil and tonumber(__parameter_)) or 0
+function b_Trigger_OnQuestActive:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
+    elseif (_Index == 1) then
+        self.WaitTime = (_Parameter ~= nil and tonumber(_Parameter)) or 0
     end
 end
 
-function b_Trigger_OnQuestActive:CustomFunction(__quest_)
+function b_Trigger_OnQuestActive:CustomFunction(_Quest)
     local QuestID = GetQuestID(self.QuestName)
     if QuestID ~= nil then
         assert(type(QuestID) == "number");
@@ -6377,14 +7409,12 @@ function b_Trigger_OnQuestActive:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnQuestActive:DEBUG(__quest_)
+function b_Trigger_OnQuestActive:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
-        local text = string.format("%s Trigger_OnQuestActive: invalid quest name!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif type(self.WaitTime) ~= "number" then
-        local text = string.format("%s Trigger_OnQuestActive: waitTime must be a number!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -6401,7 +7431,7 @@ function b_Trigger_OnQuestActive:Reset()
     self.WasActivated = nil;
 end
 
-AddQuestBehavior(b_Trigger_OnQuestActive);
+Core:RegisterBehavior(b_Trigger_OnQuestActive);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6410,7 +7440,7 @@ AddQuestBehavior(b_Trigger_OnQuestActive);
 --
 -- @param _QuestName Name des Quest
 -- @param _Time      Wartezeit
--- return table: Behavior
+-- return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnQuestFailure(...)
@@ -6421,7 +7451,7 @@ b_Trigger_OnQuestFailure = {
     Name = "Trigger_OnQuestFailure",
     Description = {
         en = "Trigger: if a given quest has failed. Waiting time optional",
-        de = "Ausloeser: wenn eine angegebene Quest fehlgeschlagen ist. Optional mit Wartezeit",
+        de = "Auslöser: wenn eine angegebene Quest fehlgeschlagen ist. Optional mit Wartezeit",
     },
     Parameter = {
         { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
@@ -6429,19 +7459,19 @@ b_Trigger_OnQuestFailure = {
     },
 }
 
-function b_Trigger_OnQuestFailure:GetTriggerTable(__quest_)
+function b_Trigger_OnQuestFailure:GetTriggerTable(_Quest)
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestFailure:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
-    elseif (__index_ == 1) then
-        self.WaitTime = (__parameter_ ~= nil and tonumber(__parameter_)) or 0
+function b_Trigger_OnQuestFailure:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
+    elseif (_Index == 1) then
+        self.WaitTime = (_Parameter ~= nil and tonumber(_Parameter)) or 0
     end
 end
 
-function b_Trigger_OnQuestFailure:CustomFunction(__quest_)
+function b_Trigger_OnQuestFailure:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].Result == QuestResult.Failure) then
@@ -6458,14 +7488,12 @@ function b_Trigger_OnQuestFailure:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnQuestFailure:DEBUG(__quest_)
+function b_Trigger_OnQuestFailure:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
-        local text = string.format("%s Trigger_OnQuestFailure: invalid quest name!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif type(self.WaitTime) ~= "number" then
-        local text = string.format("%s Trigger_OnQuestFailure: waitTime must be a number!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -6479,7 +7507,7 @@ function b_Trigger_OnQuestFailure:Reset()
     self.WaitTimeTimer = nil;
 end
 
-AddQuestBehavior(b_Trigger_OnQuestFailure);
+Core:RegisterBehavior(b_Trigger_OnQuestFailure);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6491,7 +7519,7 @@ AddQuestBehavior(b_Trigger_OnQuestFailure);
 --
 -- @param _QuestName Name des Quest
 -- @param _Time      Wartezeit
--- return table: Behavior
+-- return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnQuestNotTriggered(...)
@@ -6502,24 +7530,24 @@ b_Trigger_OnQuestNotTriggered = {
     Name = "Trigger_OnQuestNotTriggered",
     Description = {
         en = "Trigger: if a given quest is not yet active. Should be used in combination with other triggers.",
-        de = "Ausloeser: wenn eine angegebene Quest noch inaktiv ist. Sollte mit weiteren Triggern kombiniert werden.",
+        de = "Auslöser: wenn eine angegebene Quest noch inaktiv ist. Sollte mit weiteren Triggern kombiniert werden.",
     },
     Parameter = {
         { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
     },
 }
 
-function b_Trigger_OnQuestNotTriggered:GetTriggerTable(__quest_)
+function b_Trigger_OnQuestNotTriggered:GetTriggerTable(_Quest)
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestNotTriggered:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
+function b_Trigger_OnQuestNotTriggered:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
     end
 end
 
-function b_Trigger_OnQuestNotTriggered:CustomFunction(__quest_)
+function b_Trigger_OnQuestNotTriggered:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].State == QuestState.NotTriggered) then
@@ -6529,16 +7557,15 @@ function b_Trigger_OnQuestNotTriggered:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnQuestNotTriggered:DEBUG(__quest_)
+function b_Trigger_OnQuestNotTriggered:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
-        local text = string.format("%s Trigger_OnQuestNotTriggered: invalid quest name!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     end
     return false;
 end
 
-AddQuestBehavior(b_Trigger_OnQuestNotTriggered);
+Core:RegisterBehavior(b_Trigger_OnQuestNotTriggered);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6547,7 +7574,7 @@ AddQuestBehavior(b_Trigger_OnQuestNotTriggered);
 --
 -- @param _QuestName Name des Quest
 -- @param _Time      Wartezeit
--- return table: Behavior
+-- return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnQuestInterrupted(...)
@@ -6558,7 +7585,7 @@ b_Trigger_OnQuestInterrupted = {
     Name = "Trigger_OnQuestInterrupted",
     Description = {
         en = "Trigger: if a given quest has been interrupted. Should be used in combination with other triggers.",
-        de = "Ausloeser: wenn eine angegebene Quest abgebrochen wurde. Sollte mit weiteren Triggern kombiniert werden.",
+        de = "Auslöser: wenn eine angegebene Quest abgebrochen wurde. Sollte mit weiteren Triggern kombiniert werden.",
     },
     Parameter = {
         { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
@@ -6566,19 +7593,19 @@ b_Trigger_OnQuestInterrupted = {
     },
 }
 
-function b_Trigger_OnQuestInterrupted:GetTriggerTable(__quest_)
+function b_Trigger_OnQuestInterrupted:GetTriggerTable(_Quest)
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestInterrupted:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
-    elseif (__index_ == 1) then
-        self.WaitTime = (__parameter_ ~= nil and tonumber(__parameter_)) or 0
+function b_Trigger_OnQuestInterrupted:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
+    elseif (_Index == 1) then
+        self.WaitTime = (_Parameter ~= nil and tonumber(_Parameter)) or 0
     end
 end
 
-function b_Trigger_OnQuestInterrupted:CustomFunction(__quest_)
+function b_Trigger_OnQuestInterrupted:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result == QuestResult.Interrupted) then
@@ -6595,14 +7622,12 @@ function b_Trigger_OnQuestInterrupted:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnQuestInterrupted:DEBUG(__quest_)
+function b_Trigger_OnQuestInterrupted:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
-        local text = string.format("%s Trigger_OnQuestInterrupted: invalid quest name!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif type(self.WaitTime) ~= "number" then
-        local text = string.format("%s Trigger_OnQuestInterrupted: waitTime must be a number!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -6616,7 +7641,7 @@ function b_Trigger_OnQuestInterrupted:Reset()
     self.WaitTimeTimer = nil;
 end
 
-AddQuestBehavior(b_Trigger_OnQuestInterrupted);
+Core:RegisterBehavior(b_Trigger_OnQuestInterrupted);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6628,7 +7653,7 @@ AddQuestBehavior(b_Trigger_OnQuestInterrupted);
 --
 -- @param _QuestName Name des Quest
 -- @param _Time      Wartezeit
--- return table: Behavior
+-- return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnQuestOver(...)
@@ -6639,7 +7664,7 @@ b_Trigger_OnQuestOver = {
     Name = "Trigger_OnQuestOver",
     Description = {
         en = "Trigger: if a given quest has been finished, regardless of its result. Waiting time optional",
-        de = "Ausloeser: wenn eine angegebene Quest beendet wurde, unabhaengig von deren Ergebnis. Wartezeit optional",
+        de = "Auslöser: wenn eine angegebene Quest beendet wurde, unabhängig von deren Ergebnis. Wartezeit optional",
     },
     Parameter = {
         { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
@@ -6647,19 +7672,19 @@ b_Trigger_OnQuestOver = {
     },
 }
 
-function b_Trigger_OnQuestOver:GetTriggerTable(__quest_)
+function b_Trigger_OnQuestOver:GetTriggerTable(_Quest)
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestOver:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
-    elseif (__index_ == 1) then
-        self.WaitTime = (__parameter_ ~= nil and tonumber(__parameter_)) or 0
+function b_Trigger_OnQuestOver:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
+    elseif (_Index == 1) then
+        self.WaitTime = (_Parameter ~= nil and tonumber(_Parameter)) or 0
     end
 end
 
-function b_Trigger_OnQuestOver:CustomFunction(__quest_)
+function b_Trigger_OnQuestOver:CustomFunction(_Quest)
     if (GetQuestID(self.QuestName) ~= nil) then
         local QuestID = GetQuestID(self.QuestName)
         if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
@@ -6676,14 +7701,12 @@ function b_Trigger_OnQuestOver:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnQuestOver:DEBUG(__quest_)
+function b_Trigger_OnQuestOver:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
-        local text = string.format("%s Trigger_OnQuestOver: invalid quest name!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif type(self.WaitTime) ~= "number" then
-        local text = string.format("%s Trigger_OnQuestOver: waitTime must be a number!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -6697,7 +7720,7 @@ function b_Trigger_OnQuestOver:Reset()
     self.WaitTimeTimer = nil;
 end
 
-AddQuestBehavior(b_Trigger_OnQuestOver);
+Core:RegisterBehavior(b_Trigger_OnQuestOver);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6706,7 +7729,7 @@ AddQuestBehavior(b_Trigger_OnQuestOver);
 --
 -- @param _QuestName Name des Quest
 -- @param _Time      Wartezeit
--- return table: Behavior
+-- return Table mit Behavior
 -- @within Trigger
 --
 function Trigger_OnQuestSuccess(...)
@@ -6717,7 +7740,7 @@ b_Trigger_OnQuestSuccess = {
     Name = "Trigger_OnQuestSuccess",
     Description = {
         en = "Trigger: if a given quest has been finished successfully. Waiting time optional",
-        de = "Ausloeser: wenn eine angegebene Quest erfolgreich abgeschlossen wurde. Wartezeit optional",
+        de = "Auslöser: wenn eine angegebene Quest erfolgreich abgeschlossen wurde. Wartezeit optional",
     },
     Parameter = {
         { ParameterType.QuestName,     en = "Quest name", de = "Questname" },
@@ -6725,15 +7748,15 @@ b_Trigger_OnQuestSuccess = {
     },
 }
 
-function b_Trigger_OnQuestSuccess:GetTriggerTable(__quest_)
+function b_Trigger_OnQuestSuccess:GetTriggerTable(_Quest)
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_OnQuestSuccess:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.QuestName = __parameter_
-    elseif (__index_ == 1) then
-        self.WaitTime = (__parameter_ ~= nil and tonumber(__parameter_)) or 0
+function b_Trigger_OnQuestSuccess:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.QuestName = _Parameter
+    elseif (_Index == 1) then
+        self.WaitTime = (_Parameter ~= nil and tonumber(_Parameter)) or 0
     end
 end
 
@@ -6754,14 +7777,12 @@ function b_Trigger_OnQuestSuccess:CustomFunction()
     return false;
 end
 
-function b_Trigger_OnQuestSuccess:DEBUG(__quest_)
+function b_Trigger_OnQuestSuccess:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
-        local text = string.format("%s Trigger_OnQuestSuccess: invalid quest name!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif type(self.WaitTime) ~= "number" then
-        local text = string.format("%s Trigger_OnQuestSuccess: waittime must be a number!", __quest_.Identifier);
-        dbg(text);
+        dbg("".._Quest.Identifier.." "..self.Name..": waittime must be a number!");
         return true;
     end
     return false;
@@ -6775,7 +7796,553 @@ function b_Trigger_OnQuestSuccess:Reset()
     self.WaitTimeTimer = nil;
 end
 
-AddQuestBehavior(b_Trigger_OnQuestSuccess);
+Core:RegisterBehavior(b_Trigger_OnQuestSuccess);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest, wenn eine benutzerdefinierte Variable einen bestimmten
+-- Wert angenommen hat.
+--
+-- Benutzerdefinierte Variablen müssen Zahlen sein.
+--
+-- @param _Name     Name der Variable
+-- @param _Relation Vergleichsoperator
+-- @param _Value    Wert oder Custom Variable
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_CustomVariables(...)
+    return b_Trigger_CustomVariables:new(...);
+end
+
+b_Trigger_CustomVariables = {
+    Name = "Trigger_CustomVariables",
+    Description = {
+        en = "Trigger: if the variable has a certain value.",
+        de = "Auslöser: wenn die Variable einen bestimmen Wert eingenommen hat.",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Name of Variable", de = "Variablennamen" },
+        { ParameterType.Custom,  en = "Relation", de = "Relation" },
+        { ParameterType.Default, en = "Value", de = "Wert" }
+    }
+};
+
+function b_Trigger_CustomVariables:GetTriggerTable()
+    return { Triggers.Custom2, {self, self.CustomFunction} };
+end
+
+function b_Trigger_CustomVariables:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        self.VariableName = _Parameter
+    elseif _Index == 1 then
+        self.Relation = _Parameter
+    elseif _Index == 2 then
+        local value = tonumber(_Parameter);
+        value = (value ~= nil and value) or _Parameter;
+        self.Value = value
+    end
+end
+
+function b_Trigger_CustomVariables:CustomFunction()
+    if _G["QSB_CustomVariables_"..self.VariableName] ~= nil then
+        if self.Relation == "==" then
+            return _G["QSB_CustomVariables_"..self.VariableName] == ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        elseif self.Relation ~= "~=" then
+            return _G["QSB_CustomVariables_"..self.VariableName] ~= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        elseif self.Relation == ">" then
+            return _G["QSB_CustomVariables_"..self.VariableName] > ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        elseif self.Relation == ">=" then
+            return _G["QSB_CustomVariables_"..self.VariableName] >= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        elseif self.Relation == "<=" then
+            return _G["QSB_CustomVariables_"..self.VariableName] <= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        else
+            return _G["QSB_CustomVariables_"..self.VariableName] < ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+        end
+    end
+    return false;
+end
+
+function b_Trigger_CustomVariables:GetCustomData( _Index )
+    if _Index == 1 then
+        return {"==", "~=", "<=", "<", ">", ">="};
+    end
+end
+
+function b_Trigger_CustomVariables:DEBUG(_Quest)
+    local relations = {"==", "~=", "<=", "<", ">", ">="}
+    local results    = {true, false, nil}
+
+    if not _G["QSB_CustomVariables_"..self.VariableName] then
+        dbg(_Quest.Identifier.." "..self.Name..": variable '"..self.VariableName.."' do not exist!");
+        return true;
+    elseif not Inside(self.Relation,relations) then
+        dbg(_Quest.Identifier.." "..self.Name..": '"..self.Relation.."' is an invalid relation!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_CustomVariables)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest sofort.
+--
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_AlwaysActive()
+    return b_Trigger_AlwaysActive:new()
+end
+
+b_Trigger_AlwaysActive = {
+    Name = "Trigger_AlwaysActive",
+    Description = {
+        en = "Trigger: the map has been started.",
+        de = "Auslöser: Start der Karte.",
+    },
+}
+
+function b_Trigger_AlwaysActive:GetTriggerTable(_Quest)
+    return {Triggers.Time, 0 }
+end
+
+Core:RegisterBehavior(b_Trigger_AlwaysActive);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest im angegebenen Monat.
+--
+-- @param _Month Monat
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_OnMonth(...)
+    return b_Trigger_OnMonth:new(...);
+end
+
+b_Trigger_OnMonth = {
+    Name = "Trigger_OnMonth",
+    Description = {
+        en = "Trigger: a specified month",
+        de = "Auslöser: ein bestimmter Monat",
+    },
+    Parameter = {
+        { ParameterType.Custom, en = "Month", de = "Monat" },
+    },
+}
+
+function b_Trigger_OnMonth:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_OnMonth:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Month = _Parameter * 1
+    end
+end
+
+function b_Trigger_OnMonth:CustomFunction(_Quest)
+    return self.Month == Logic.GetCurrentMonth()
+end
+
+function b_Trigger_OnMonth:GetCustomData( _Index )
+    local Data = {}
+    if _Index == 0 then
+        for i = 1, 12 do
+            table.insert( Data, i )
+        end
+    else
+        assert( false )
+    end
+    return Data
+end
+
+function b_Trigger_OnMonth:DEBUG(_Quest)
+    if self.Month < 1 or self.Month > 12 then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Month has the wrong value")
+        return true
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_OnMonth);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest sobald der Monsunregen einsetzt.
+--
+-- <b>Achtung:</b> Dieses Behavior ist nur für Reich des Ostens verfügbar.
+--
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_OnMonsoon()
+    return b_Trigger_OnMonsoon:new();
+end
+
+b_Trigger_OnMonsoon = {
+    Name = "Trigger_OnMonsoon",
+    Description = {
+        en = "Trigger: on monsoon.",
+        de = "Auslöser: wenn der Monsun beginnt.",
+    },
+    RequiresExtraNo = 1,
+}
+
+function b_Trigger_OnMonsoon:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_OnMonsoon:CustomFunction(_Quest)
+    if Logic.GetWeatherDoesShallowWaterFlood(0) then
+        return true
+    end
+end
+
+Core:RegisterBehavior(b_Trigger_OnMonsoon);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest sobald der Timer abgelaufen ist.
+--
+-- Der Timer zählt immer vom Start der Map an.
+--
+-- @param _Time Zeit bis zum Start
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_Time(...)
+    return b_Trigger_Time:new(...);
+end
+
+b_Trigger_Time = {
+    Name = "Trigger_Time",
+    Description = {
+        en = "Trigger: a given amount of time since map start",
+        de = "Auslöser: eine gewisse Anzahl Sekunden nach Spielbeginn",
+    },
+    Parameter = {
+        { ParameterType.Number, en = "Time (sec.)", de = "Zeit (Sek.)" },
+    },
+}
+
+function b_Trigger_Time:GetTriggerTable(_Quest)
+    return {Triggers.Time, self.Time }
+end
+
+function b_Trigger_Time:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Time = _Parameter * 1
+    end
+end
+
+Core:RegisterBehavior(b_Trigger_Time);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest sobald das Wasser gefriert.
+--
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_OnWaterFreezes()
+    return b_Trigger_OnWaterFreezes:new();
+end
+
+b_Trigger_OnWaterFreezes = {
+    Name = "Trigger_OnWaterFreezes",
+    Description = {
+        en = "Trigger: if the water starts freezing",
+        de = "Auslöser: wenn die Gewässer gefrieren",
+    },
+}
+
+function b_Trigger_OnWaterFreezes:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_OnWaterFreezes:CustomFunction(_Quest)
+    if Logic.GetWeatherDoesWaterFreeze(0) then
+        return true
+    end
+end
+
+Core:RegisterBehavior(b_Trigger_OnWaterFreezes);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest niemals.
+--
+-- Quests, für die dieser Trigger gesetzt ist, müssen durch einen anderen
+-- Quest über Reward_QuestActive oder Reprisal_QuestActive gestartet werden.
+--
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_NeverTriggered()
+    return b_Trigger_NeverTriggered:new();
+end
+
+b_Trigger_NeverTriggered = {
+    Name = "Trigger_NeverTriggered",
+    Description = {
+        en = "Never triggers a Quest. The quest may be set active by Reward_QuestActivate or Reward_QuestRestartForceActive",
+        de = "Löst nie eine Quest aus. Die Quest kann von Reward_QuestActivate oder Reward_QuestRestartForceActive aktiviert werden.",
+    },
+}
+
+function b_Trigger_NeverTriggered:GetTriggerTable()
+
+    return {Triggers.Custom2, {self, function() end} }
+
+end
+
+Core:RegisterBehavior(b_Trigger_NeverTriggered)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest, sobald wenigstens einer von zwei Quests fehlschlägt.
+--
+-- @param _QuestName1 Name des ersten Quest
+-- @param _QuestName2 Name des zweiten Quest
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_OnAtLeastOneQuestFailure(...)
+    return b_Trigger_OnAtLeastOneQuestFailure:new(...);
+end
+
+b_Trigger_OnAtLeastOneQuestFailure = {
+    Name = "Trigger_OnAtLeastOneQuestFailure",
+    Description = {
+        en = "Trigger: if one or both of the given quests have failed.",
+        de = "Auslöser: wenn einer oder beide der angegebenen Aufträge fehlgeschlagen sind.",
+    },
+    Parameter = {
+        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
+        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2" },
+    },
+}
+
+function b_Trigger_OnAtLeastOneQuestFailure:GetTriggerTable(_Quest)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_OnAtLeastOneQuestFailure:AddParameter(_Index, _Parameter)
+    self.QuestTable = {};
+
+    if (_Index == 0) then
+        self.Quest1 = _Parameter;
+    elseif (_Index == 1) then
+        self.Quest2 = _Parameter;
+    end
+end
+
+function b_Trigger_OnAtLeastOneQuestFailure:CustomFunction(_Quest)
+    local Quest1 = Quests[GetQuestID(self.Quest1)];
+    local Quest2 = Quests[GetQuestID(self.Quest2)];
+    if (Quest1.State == QuestState.Over and Quest1.Result == QuestResult.Failure)
+    or (Quest2.State == QuestState.Over and Quest2.Result == QuestResult.Failure) then
+        return true;
+    end
+    return false;
+end
+
+function b_Trigger_OnAtLeastOneQuestFailure:DEBUG(_Quest)
+    if self.Quest1 == self.Quest2 then
+        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
+        return true;
+    elseif not IsValidQuest(self.Quest1) then
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        return true;
+    elseif not IsValidQuest(self.Quest2) then
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_OnAtLeastOneQuestFailure);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest, sobald wenigstens einer von zwei Quests erfolgreich ist.
+--
+-- @param _QuestName1 Name des ersten Quest
+-- @param _QuestName2 Name des zweiten Quest
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_OnAtLeastOneQuestSuccess(...)
+    return b_Trigger_OnAtLeastOneQuestSuccess:new(...);
+end
+
+b_Trigger_OnAtLeastOneQuestSuccess = {
+    Name = "Trigger_OnAtLeastOneQuestSuccess",
+    Description = {
+        en = "Trigger: if one or both of the given quests are won.",
+        de = "Auslöser: wenn einer oder beide der angegebenen Aufträge gewonnen wurden.",
+    },
+    Parameter = {
+        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
+        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2" },
+    },
+}
+
+function b_Trigger_OnAtLeastOneQuestSuccess:GetTriggerTable(_Quest)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_OnAtLeastOneQuestSuccess:AddParameter(_Index, _Parameter)
+    self.QuestTable = {};
+
+    if (_Index == 0) then
+        self.Quest1 = _Parameter;
+    elseif (_Index == 1) then
+        self.Quest2 = _Parameter;
+    end
+end
+
+function b_Trigger_OnAtLeastOneQuestSuccess:CustomFunction(_Quest)
+    local Quest1 = Quests[GetQuestID(self.Quest1)];
+    local Quest2 = Quests[GetQuestID(self.Quest2)];
+    if (Quest1.State == QuestState.Over and Quest1.Result == QuestResult.Success)
+    or (Quest2.State == QuestState.Over and Quest2.Result == QuestResult.Success) then
+        return true;
+    end
+    return false;
+end
+
+function b_Trigger_OnAtLeastOneQuestSuccess:DEBUG(_Quest)
+    if self.Quest1 == self.Quest2 then
+        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
+        return true;
+    elseif not IsValidQuest(self.Quest1) then
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        return true;
+    elseif not IsValidQuest(self.Quest2) then
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_OnAtLeastOneQuestSuccess);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest, sobald mindestens X von Y Quests erfolgreich sind.
+--
+-- @param _MinAmount   Mindestens zu erfüllen (max. 5)
+-- @param _QuestAmount Anzahl geprüfter Quests (max. 5 und >= _MinAmount)
+-- @param _Quest1      Name des 1. Quest
+-- @param _Quest2      Name des 2. Quest
+-- @param _Quest3      Name des 3. Quest
+-- @param _Quest4      Name des 4. Quest
+-- @param _Quest5      Name des 5. Quest
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_OnAtLeastXOfYQuestsSuccess(...)
+    return b_Trigger_OnAtLeastXOfYQuestsSuccess:new(...);
+end
+
+b_Trigger_OnAtLeastXOfYQuestsSuccess = {
+    Name = "Trigger_OnAtLeastXOfYQuestsSuccess",
+    Description = {
+        en = "Trigger: if at least X of Y given quests has been finished successfully.",
+        de = "Auslöser: wenn X von Y angegebener Quests erfolgreich abgeschlossen wurden.",
+    },
+    Parameter = {
+        { ParameterType.Custom, en = "Least Amount", de = "Mindest Anzahl" },
+        { ParameterType.Custom, en = "Quest Amount", de = "Quest Anzahl" },
+        { ParameterType.QuestName, en = "Quest name 1", de = "Questname 1" },
+        { ParameterType.QuestName, en = "Quest name 2", de = "Questname 2" },
+        { ParameterType.QuestName, en = "Quest name 3", de = "Questname 3" },
+        { ParameterType.QuestName, en = "Quest name 4", de = "Questname 4" },
+        { ParameterType.QuestName, en = "Quest name 5", de = "Questname 5" },
+    },
+}
+
+function b_Trigger_OnAtLeastXOfYQuestsSuccess:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_OnAtLeastXOfYQuestsSuccess:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.LeastAmount = tonumber(_Parameter)
+    elseif (_Index == 1) then
+        self.QuestAmount = tonumber(_Parameter)
+    elseif (_Index == 2) then
+        self.QuestName1 = _Parameter
+    elseif (_Index == 3) then
+        self.QuestName2 = _Parameter
+    elseif (_Index == 4) then
+        self.QuestName3 = _Parameter
+    elseif (_Index == 5) then
+        self.QuestName4 = _Parameter
+    elseif (_Index == 6) then
+        self.QuestName5 = _Parameter
+    end
+end
+
+function b_Trigger_OnAtLeastXOfYQuestsSuccess:CustomFunction()
+    local least = 0
+    for i = 1, self.QuestAmount do
+        local QuestID = GetQuestID(self["QuestName"..i]);
+        if IsValidQuest(QuestID) then
+			if (Quests[QuestID].Result == QuestResult.Success) then
+				least = least + 1
+				if least >= self.LeastAmount then
+					return true
+				end
+			end
+		end
+    end
+    return false
+end
+
+function b_Trigger_OnAtLeastXOfYQuestsSuccess:DEBUG(_Quest)
+    local leastAmount = self.LeastAmount
+    local questAmount = self.QuestAmount
+    if leastAmount <= 0 or leastAmount >5 then
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": LeastAmount is wrong")
+        return true
+    elseif questAmount <= 0 or questAmount > 5 then
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": QuestAmount is wrong")
+        return true
+    elseif leastAmount > questAmount then
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": LeastAmount is greater than QuestAmount")
+        return true
+    end
+    for i = 1, questAmount do
+        if not IsValidQuest(self["QuestName"..i]) then
+            dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest ".. self["QuestName"..i] .. " not found")
+            return true
+        end
+    end
+    return false
+end
+
+function b_Trigger_OnAtLeastXOfYQuestsSuccess:GetCustomData(_Index)
+    if (_Index == 0) or (_Index == 1) then
+        return {"1", "2", "3", "4", "5"}
+    end
+end
+
+Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
 
 -- -------------------------------------------------------------------------- --
 -- Application Space                                                          --
@@ -6790,6 +8357,7 @@ BundleClassicBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
+-- @within Application Space
 -- @local
 --
 function BundleClassicBehaviors.Global:Install()
@@ -6800,8 +8368,11 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
+-- @within Application Space
 -- @local
 --
 function BundleClassicBehaviors.Local:Install()
 
 end
+
+Core:RegisterBundle("BundleClassicBehaviors");

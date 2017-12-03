@@ -31,7 +31,7 @@
 -- der er einfach arbeiten kann. Kenntnis über die komplexen Prozesse hinter
 -- den Kulissen sind dafür nicht notwendig.
 --
--- @module SynfoniaCore
+-- @script SynfoniaCore
 -- @set sort=true
 --
 
@@ -63,6 +63,7 @@ end
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
 -- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
 -- werden, bevor die QSB verwendet werden kann.
+-- @within User Space
 --
 function API.Install()
     Core:InitalizeBundles();
@@ -82,14 +83,18 @@ end
 -- @param _Source    Quelltabelle
 -- @param _Dest      Zieltabelle
 -- @return Kopie der Tabelle
--- @within Table-Funktionen
+-- @within User Space
 -- @usage Table = {1, 2, 3, {a = true}}
 -- Copy = API.InstanceTable(Table)
 --
 function API.InstanceTable(_Source, _Dest)
     _Dest = _Dest or {};
     for k, v in pairs(_Source) do
-        _Dest[k] = (type(v) == "table" and API.InstanceTable(v)) or v;
+        if type(v) == "table" then
+            _Dest[k] = API.InstanceTable(v);
+        else
+            _Dest[k] = v;
+        end
     end
     return _Dest;
 end
@@ -104,7 +109,7 @@ CopyTableRecursive = API.InstanceTable;
 -- @param _Data     Datum, das gesucht wird
 -- @param _Table    Tabelle, die durchquert wird
 -- @return booelan: Wert gefunden
--- @within Table-Funktionen
+-- @within User Space
 -- @usage Table = {1, 2, 3, {a = true}}
 -- local Found = API.TraverseTable(3, Table)
 --
@@ -124,28 +129,28 @@ Inside = API.TraverseTable;
 --
 -- @param _Table Tabelle, die gedumpt wird
 -- @param _Name Optionaler Name im Log
--- @within Table-Funktionen
+-- @within User Space
 -- @usage Table = {1, 2, 3, {a = true}}
 -- API.DumpTable(Table)
 --
 function API.DumpTable(_Table, _Name)
-    local Dump = "{\n";
+    local Start = "{";
     if _Name then
-        Dump = _Name.. " = " ..Dump;
+        Start = _Name.. " = \n" ..Start;
     end
-    for k, f in pairs(_Table) do
+    Framework.WriteToLog(Start);
+    
+    for k, v in pairs(_Table) do
         if type(v) == "table" then
-            Dump = Dump.. "[" ..k.. "] = " .. API.DumpTable(v);
+            Framework.WriteToLog("[" ..k.. "] = ");
+            API.DumpTable(v);
         elseif type(v) == "string" then
-            Dump = Dump.. "[" ..k.. "] = \"" ..v.. "\"\n";
+            Framework.WriteToLog("[" ..k.. "] = \"" ..v.. "\"");
         else
-            Dump = Dump.. "[" ..k.. "] = " ..tostring(v).. "\n";
+            Framework.WriteToLog("[" ..k.. "] = " ..tostring(v));
         end
     end
-    Dump = Dump.. "}\n";
-
-    API.Log("Dump of Table:")
-    Framework.WriteToLog(Dump);
+    Framework.WriteToLog("}");
 end
 
 -- Quests ----------------------------------------------------------------------
@@ -158,7 +163,7 @@ end
 --
 -- @param _Name     Identifier des Quest
 -- @return number: ID des Quest
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.GetQuestID(_Name)
     for i=1, Quests[0] do
@@ -177,7 +182,7 @@ GetQuestID = API.GetQuestID;
 --
 -- @param _QuestID   ID oder Name des Quest
 -- @return boolean: Quest existiert
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.IsValidateQuest(_QuestID)
     return Quests[_QuestID] ~= nil or Quests[self:GetQuestID(_QuestID)] ~= nil;
@@ -192,7 +197,7 @@ IsValidQuest = API.IsValidateQuest;
 -- <b>Alias:</b> FailQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.FailAllQuests(...)
     for i=1, #args, 1 do
@@ -209,7 +214,7 @@ FailQuestsByName = API.FailAllQuests;
 -- <b>Alias:</b> FailQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -229,7 +234,7 @@ FailQuestByName = API.FailQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.RestartAllQuests(...)
     for i=1, #args, 1 do
@@ -248,7 +253,7 @@ StartQuestsByName = API.RestartAllQuests;
 -- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
@@ -323,7 +328,7 @@ StartQuestByName = API.StartQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.StartAllQuests(...)
     for i=1, #args, 1 do
@@ -340,7 +345,7 @@ StartQuestsByName = API.StartAllQuests;
 -- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -358,7 +363,7 @@ StartQuestByName = API.StartQuest;
 -- <b>Alias:</b> StopQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.StopAllQuests(...)
     for i=1, #args, 1 do
@@ -376,7 +381,7 @@ StopQuestwByName = API.StopAllQuests;
 -- <b>Alias:</b> StopQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -398,7 +403,7 @@ StopQuestByName = API.StopQuest;
 -- <b>Alias:</b> WinQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.WinAllQuests(...)
     for i=1, #args, 1 do
@@ -415,7 +420,7 @@ WinQuestsByName = API.WinAllQuests;
 -- <b>Alias:</b> WinQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within Quest-Funktionen
+-- @within User Space
 --
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -438,7 +443,7 @@ WinQuestByName = API.WinQuest;
 -- <b>Alias:</b> GUI_Note
 --
 -- @param _Message Anzeigetext
--- @within Message-Funktionen
+-- @within User Space
 --
 function API.Note(_Message)
     _Message = tostring(_Message);
@@ -455,7 +460,7 @@ GUI_Note = API.Note;
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
 -- @param _Message Anzeigetext
--- @within Message-Funktionen
+-- @within User Space
 --
 function API.StaticNote(_Message)
     _Message = tostring(_Message);
@@ -469,7 +474,7 @@ end
 ---
 -- Löscht alle Nachrichten im Debug Window.
 --
--- @within Message-Funktionen
+-- @within User Space
 --
 function API.ClearNotes()
     if not GUI then
@@ -485,11 +490,11 @@ end
 -- Spiels die Nachricht gesendet wurde.
 --
 -- @param _Message Nachricht für's Log
--- @within Message-Funktionen
+-- @within User Space
 --
 function API.Log(_Message)
     local Env  = (GUI and "Local") or "Global";
-    local TUrn = Logic.GetTimeMs();
+    local Turn = Logic.GetTimeMs();
     Framework.WriteToLog(Env.. ":" ..Turn.. ": " .._Message);
 end
 
@@ -497,7 +502,7 @@ end
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
 -- @param _Message Anzeigetext
--- @within Message-Funktionen
+-- @within User Space
 --
 function API.Message(_Message)
     _Message = tostring(_Message);
@@ -512,7 +517,7 @@ end
 -- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
 --
 -- @param _Message Anzeigetext
--- @within Message-Funktionen
+-- @within User Space
 --
 function API.Dbg(_Message)
     API.StaticNote("DEBUG: " .._Message)
@@ -524,7 +529,7 @@ dbg = API.Dbg;
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
 --
 -- @param _Message Anzeigetext
--- @within Message-Funktionen
+-- @within User Space
 --
 function API.Warn(_Message)
     API.StaticNote("WARNING: " .._Message)
@@ -547,7 +552,7 @@ warn = API.Warn;
 -- @param _cartOverlay         (optional) Overlay für Goldkarren
 -- @param _ignoreReservation   (optional) Marktplatzreservation ignorieren
 -- @return number: Entity-ID des erzeugten Wagens
--- @within Entity-Funktionen
+-- @within User Space
 -- @usage -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
 -- -- Legacy-Call mit ID-Speicherung
@@ -595,7 +600,7 @@ SendCart = API.SendCart;
 -- @param _Type       Neuer Typ
 -- @param _NewOwner   (optional) Neuer Besitzer
 -- @return number: Entity-ID des Entity
--- @within Entity-Funktionen
+-- @within User Space
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
 function API.ReplaceEntity(_Entity, _Type, _NewOwner)
@@ -624,7 +629,7 @@ ReplaceEntity = API.ReplaceEntity;
 -- @param _entity           Entity
 -- @param _entityToLookAt   Ziel
 -- @param _offsetEntity     Winkel-Offset
--- @within Entity-Funktionen
+-- @within User Space
 -- @usage API.LookAt("Hakim", "Alandra")
 --
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
@@ -647,7 +652,7 @@ LookAt = API.LookAt;
 --
 -- @param _entity           Erstes Entity
 -- @param _entityToLookAt   Zweites Entity
--- @within Entity-Funktionen
+-- @within User Space
 -- @usage API.Confront("Hakim", "Alandra")
 --
 function API.Confront(_entity, _entityToLookAt)
@@ -664,7 +669,7 @@ end
 -- @param _pos1 Erste Vergleichsposition
 -- @param _pos2 Zweite Vergleichsposition
 -- @return number: Entfernung zwischen den Punkten
--- @within Entity-Funktionen
+-- @within User Space
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
@@ -686,7 +691,7 @@ GetDistance = API.GetDistance;
 --
 -- @param _Entity   Entity, dessen Position bestimmt wird.
 -- @return table: Positionstabelle {X= x, Y= y, Z= z}
--- @within Entity-Funktionen
+-- @within User Space
 -- @usage local Position = API.LocateEntity("Hans")
 --
 function API.LocateEntity(_Entity)
@@ -712,11 +717,11 @@ GetPosition = API.LocateEntity;
 --
 -- @param _ScriptName  Skriptname des IO
 -- @param _State       Aktivierungszustand
--- @within Entity-Funktionen
--- @useage API.AcrivateIO("Haus1", 0)
--- @usage API.AcrivateIO("Hut1")
+-- @within User Space
+-- @usage API.ActivateIO("Haus1", 0)
+-- @usage API.ActivateIO("Hut1")
 --
-function API.AcrivateIO(eName, State)
+function API.ActivateIO(_ScriptName, _State)
     State = State or 0;
     if GUI then
         GUI.SendScriptCommand('API.AcrivateIO("' .._ScriptName.. '", ' ..State..')');
@@ -739,7 +744,7 @@ InteractiveObjectActivate = API.AcrivateIO;
 -- <b>Alias:</b> InteractiveObjectDeactivate
 --
 -- @param _ScriptName Skriptname des IO
--- @within Entity-Funktionen
+-- @within User Space
 -- @usage API.DeactivateIO("Hut1")
 --
 function API.DeactivateIO(_ScriptName)
@@ -766,7 +771,7 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 -- @param _player    PlayerID [0-8] oder -1 für alle
 -- @param _category  Kategorie, der die Entities angehören
 -- @param _territory Zielterritorium
--- @within Entity-Funktionen
+-- @within User Space
 -- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
 function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
@@ -805,7 +810,7 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- 
 -- @param _Value Wahrheitswert
 -- @return boolean: Wahrheitswert
--- @within Overwrite-Funktionen
+-- @within User Space
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
 -- local Bool = API.ToBoolean("no") --> Bool = false
@@ -820,7 +825,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- Laden eines Spielstandes ausgeführt wird.
 --
 -- @param _Function Funktion, die ausgeführt werden soll
--- @within Overwrite-Funktionen
+-- @within User Space
 -- @usage SaveGame = function()
 --     API.Note("foo")
 -- end
@@ -840,13 +845,14 @@ Core = {
             Functions = {},
             Fields = {},
         },
+        BundleInitializerList = {},
     }
 }
 
 ---
 -- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
--- @within Core Class
+-- @within Application Space
 -- @local
 --
 function Core:InitalizeBundles()
@@ -870,7 +876,7 @@ end
 
 ---
 -- FIXME
--- @within Initialisierer-Funktionen
+-- @within Application Space
 -- @local
 --
 function Core:SetupGobal_HackCreateQuest()
@@ -909,7 +915,7 @@ function Core:SetupGobal_HackCreateQuest()
         if (#Triggers == 0) or (#Goals == 0) then
             return
         end
-        if ValidateQuestName(_QuestName) then
+        if Core:CheckQuestName(_QuestName) then
             local QuestID = QuestTemplate:New(_QuestName, _QuestGiver, _QuestReceiver,
                                                     Goals,
                                                     Triggers,
@@ -929,7 +935,7 @@ end
 
 ---
 -- FIXME
--- @within Initialisierer-Funktionen
+-- @within Application Space
 -- @local
 --
 function Core:SetupGlobal_HackQuestSystem()
@@ -939,7 +945,7 @@ function Core:SetupGlobal_HackQuestSystem()
         for i=1,_quest.Objectives[0] do
             if _quest.Objectives[i].Type == Objective.Custom2 and _quest.Objectives[i].Data[1].SetDescriptionOverwrite then
                 local Desc = _quest.Objectives[i].Data[1]:SetDescriptionOverwrite(_quest);
-                SetQuestDescriptionText(_quest.Identifier, Desc);
+                Core:ChangeCustomQuestCaptionText(_quest.Identifier, Desc);
                 break;
             end
         end
@@ -965,15 +971,12 @@ end
 -- Registiert ein Bundle, sodass es initialisiert wird.
 --
 -- @param _Bundle Name des Moduls
--- @within Core Class
+-- @within Application Space
 -- @local
 --
 function Core:RegisterBundle(_Bundle)
-    if not _G[_Bundle] and not GUI then
-        local text = string.format("Error while initialize bundle '%s': does not exist!", tostring(_Bundle));
-        assert(false, text);
-        return;
-    end
+    local text = string.format("Error while initialize bundle '%s': does not exist!", tostring(_Bundle));
+    assert(_G[_Bundle] ~= nil, text);
     table.insert(self.Data.BundleInitializerList, _G[_Bundle]);
 end
 
@@ -982,35 +985,33 @@ end
 -- Erzeugt zudem den Konstruktor.
 --
 -- @param _Behavior    Behavior-Objekt
--- @within Core Class
+-- @within Application Space
 -- @local
 --
 function Core:RegisterBehavior(_Behavior)
+    if GUI then
+        return;
+    end
     if _Behavior.RequiresExtraNo and _Behavior.RequiresExtraNo > g_GameExtraNo then
         return;
     end
 
     if not _G["b_" .. _Behavior.Name] then
         dbg("AddQuestBehavior: can not find ".. _Behavior.Name .."!");
-        return;
-    end
-
-    if not _G["b_" .. _Behavior.Name].new then
-        _G["b_" .. _Behavior.Name].new = function(self, ...)
-            local behavior = self:CopyTableRecursive(self);
-            if self.Parameter then
-                for i=1,table.getn(self.Parameter) do
-                    behavior:AddParameter(i-1, arg[i]);
+    else
+        if not _G["b_" .. _Behavior.Name].new then
+            _G["b_" .. _Behavior.Name].new = function(self, ...)
+                local behavior = API.InstanceTable(self);
+                if self.Parameter then
+                    for i=1,table.getn(self.Parameter) do
+                        behavior:AddParameter(i-1, arg[i]);
+                    end
                 end
+                return behavior;
             end
-            return behavior;
         end
+        table.insert(g_QuestBehaviorTypes, _Behavior);
     end
-
-    -- _G[_Behavior.Name] = function(...)
-    --     return _G["b_" .. _Behavior.Name]:new(...);
-    -- end
-    table.insert(g_QuestBehaviorTypes, _Behavior);
 end
 
 ---
@@ -1019,11 +1020,11 @@ end
 --
 -- @param _Name     Quest
 -- @return boolean: Questname ist fehlerfrei
--- @within Core Class
+-- @within Application Space
 -- @local
 --
 function Core:CheckQuestName(_Name)
-    return not string.find(__quest_, "[ \"§$%&/\(\)\[\[\?ß\*+#,;:\.^\<\>\|]");
+    return not string.find(_Name, "[ \"§$%&/\(\)\[\[\?ß\*+#,;:\.^\<\>\|]");
 end
 
 ---
@@ -1032,7 +1033,7 @@ end
 --
 -- @param _Text   Neuer Text
 -- @param _Quest  Identifier des Quest
--- @within Core Class
+-- @within Application Space
 -- @local
 --
 function Core:ChangeCustomQuestCaptionText(_Text, _Quest)
@@ -1060,13 +1061,14 @@ end
 --
 -- @param _FunctionName
 -- @param _AppendFunction
--- @within Core Class
+-- @param _Index
+-- @within Application Space
 -- @local
 --
 function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
     if not self.Data.Append.Functions[_FunctionName] then
         self.Data.Append.Functions[_FunctionName] = {
-            Original = self:GetFunctionByString(_FunctionName),
+            Original = self:GetFunctionInString(_FunctionName),
             Attachments = {}
         };
 
@@ -1076,12 +1078,13 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
                     break;
                 end
             end
+            self.Data.Append.Functions[_FunctionName].Original();
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
 
-    _Index = _Index or #self.Data.Append.Functions[_FunctionName].Function;
-    table.insert(self.Data.Append.Functions[_FunctionName].Function, _Index, _AppendFunction);
+    _Index = _Index or #self.Data.Append.Functions[_FunctionName].Attachments;
+    table.insert(self.Data.Append.Functions[_FunctionName].Attachments, _Index, _AppendFunction);
 end
 
 ---
@@ -1090,8 +1093,8 @@ end
 -- Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
 -- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
 --
--- @within Core Class
 -- @local
+-- @within Application Space
 -- @usage A = {foo = function() API.Note("bar") end}
 -- B = function() API.Note("muh") end
 -- Core:ReplaceFunction("A.foo", B)
@@ -1126,7 +1129,7 @@ end
 -- @param _FunctionName Name der Funktion
 -- @param _Reference    Aktuelle Referenz (für Rekursion)
 -- @return function: Gefundene Funktion
--- @within Core Class
+-- @within Application Space
 -- @local
 --
 function Core:GetFunctionInString(_FunctionName, _Reference)
@@ -1136,7 +1139,7 @@ function Core:GetFunctionInString(_FunctionName, _Reference)
         if s then
             local FirstLayer = _FunctionName:sub(1, s-1);
             local Rest = _FunctionName:sub(e+1, _FunctionName:len());
-            return self:GetFunctionByString(Rest, _G[FirstLayer]);
+            return self:GetFunctionInString(Rest, _G[FirstLayer]);
         else
             return _G[_FunctionName];
         end
@@ -1147,7 +1150,7 @@ function Core:GetFunctionInString(_FunctionName, _Reference)
         if s then
             local FirstLayer = _FunctionName:sub(1, s-1);
             local Rest = _FunctionName:sub(e+1, _FunctionName:len());
-            return self:GetFunctionByString(Rest, _Reference[FirstLayer]);
+            return self:GetFunctionInString(Rest, _Reference[FirstLayer]);
         else
             return _Reference[_FunctionName];
         end
@@ -1159,7 +1162,7 @@ end
 --
 -- @param _Input Boolean-Darstellung
 -- @return boolean: Konvertierte Boolean
--- @within Core Class
+-- @within Application Space
 -- @local
 --
 function Core:ToBoolean(_Input)

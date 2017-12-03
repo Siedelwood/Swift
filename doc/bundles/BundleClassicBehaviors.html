@@ -32,9 +32,9 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Goals">Goals</a></li>
-<li><a href="#Reprisals">Reprisals</a></li>
-<li><a href="#Rewards">Rewards</a></li>
+<li><a href="#Goal">Goal</a></li>
+<li><a href="#Reprisal">Reprisal</a></li>
+<li><a href="#Reward">Reward</a></li>
 <li><a href="#Trigger">Trigger</a></li>
 </ul>
 
@@ -42,20 +42,29 @@
 <h2>Bundles</h2>
 <ul class="nowrap">
   <li><strong>BundleClassicBehaviors</strong></li>
+  <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
   <li><a href="../bundles/BundleSynfoniaBehaviors.html">BundleSynfoniaBehaviors</a></li>
-  <li><a href="../bundles/SynfoniaCore.html">SynfoniaCore</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SynfoniaCore.html">SynfoniaCore</a></li>
+  <li><a href="../scripts/SynfoniaLoader.html">SynfoniaLoader</a></li>
 </ul>
 
 </div>
 
 <div id="content">
 
-<h1>Module <code>BundleClassicBehaviors</code></h1>
-<p></p>
-<p></p>
+<h1>Bundle <code>BundleClassicBehaviors</code></h1>
+<p>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</p>
+<p>
+<p> Die Behavior sind weitesgehend unverändert und es dürfte keine Probleme mit
+ Inkompatibelität geben, wenn die QSB ausgetauscht wird.
+</p>
 
 
-<h2><a href="#Goals">Goals</a></h2>
+<h2><a href="#Goal">Goal</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Goal_ActivateBuff">Goal_ActivateBuff (_PlayerID, _Buff)</a></td>
@@ -97,6 +106,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#Goal_CustomVariables">Goal_CustomVariables (_Name, _Relation, _Value)</a></td>
 	<td class="summary">Eine benutzerdefinierte Variable muss einen bestimmten Wert haben.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_Decide">Goal_Decide (_Title, _Text, _Labels)</a></td>
+	<td class="summary">Lässt den Spieler zwischen zwei Antworten wählen.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_Deliver">Goal_Deliver (_GoodType, _GoodAmount, _OtherTarget, _IgnoreCapture)</a></td>
@@ -146,6 +159,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#Goal_GoodAmount">Goal_GoodAmount (_Type, _Amount, _Relation)</a></td>
 	<td class="summary">Der Spieler muss eine bestimmte Menge einer Ware erreichen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_InputDialog">Goal_InputDialog (_VarName, _Message, _Passwords, _Trials)</a></td>
+	<td class="summary">Der Spieler muss im Chatdialog ein Passwort eingeben.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_InstantFailure">Goal_InstantFailure ()</a></td>
@@ -208,12 +225,21 @@
 	<td class="summary">Es sollen Informationen aus der Burg gestohlen werden.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Goal_TributeClaim">Goal_TributeClaim (_Territory, _PlayerID, _Cost, _Periode, _Time, _StartMsg, _SuccessMsg, _FailMsg, _HowOften, _OtherOwner, _Abort)</a></td>
+	<td class="summary">Erlaubt es dem Spieler ein Territorium zu mieten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_TributeDiplomacy">Goal_TributeDiplomacy (_GoldAmount, _Periode, _Time, _StartMsg, _SuccessMsg, _FailureMsg, _Restart)</a></td>
+	<td class="summary">Der Spieler kann durch regelmäßiges Begleichen eines Tributes bessere
+ Diplomatie zu einen Spieler erreichen.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Goal_UnitsOnTerritory">Goal_UnitsOnTerritory (_Territory, _PlayerID, _Category, _Relation, _Amount)</a></td>
 	<td class="summary">Eine bestimmte Anzahl an Einheiten einer Kategorie muss sich auf dem
  Territorium befinden.</td>
 	</tr>
 </table>
-<h2><a href="#Reprisals">Reprisals</a></h2>
+<h2><a href="#Reprisal">Reprisal</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Reprisal_CustomVariables">Reprisal_CustomVariables (_Name, _Operator, _Value)</a></td>
@@ -284,12 +310,20 @@
 	<td class="name" nowrap><a href="#Reprisal_ReplaceEntity">Reprisal_ReplaceEntity (_Entity, _Type, _Owner)</a></td>
 	<td class="summary">Ein Entity wird durch ein neues anderen Typs ersetzt.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_Technology">Reprisal_Technology (_PlayerID, _Lock, _Technology)</a></td>
+	<td class="summary">Erlaubt oder verbietet einem Spieler eine Technologie.</td>
+	</tr>
 </table>
-<h2><a href="#Rewards">Rewards</a></h2>
+<h2><a href="#Reward">Reward</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Reward_AI_Aggressiveness">Reward_AI_Aggressiveness (_PlayerID, _Aggressiveness)</a></td>
 	<td class="summary">Stellt den Aggressivitätswert des KI-Spielers nachträglich ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_AI_MountOutpost">Reward_AI_MountOutpost (_ScriptName, _Type)</a></td>
+	<td class="summary">Besetzt einen Außenposten mit Soldaten.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_AI_SetEnemy">Reward_AI_SetEnemy (_PlayerID, _EnemyPlayerID)</a></td>
@@ -332,6 +366,10 @@
 	<td class="summary">Erzeugt mehrere Entities an der angegebenen Position</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Reward_CustomVariables">Reward_CustomVariables (_Name, _Operator, _Value)</a></td>
+	<td class="summary">Ändert den Wert einer benutzerdefinierten Variable.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Reward_Defeat">Reward_Defeat ()</a></td>
 	<td class="summary">Der Spieler verliert das Spiel.</td>
 	</tr>
@@ -357,6 +395,10 @@
 	<td class="summary">Zeigt die Siegdekoration an dem Quest an.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Reward_MapScriptFunction">Reward_MapScriptFunction (_FunctionName)</a></td>
+	<td class="summary">Führt eine Funktion im Skript als Reward aus.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Reward_MoveSettler">Reward_MoveSettler (_Settler, _Destination)</a></td>
 	<td class="summary">Bewegt einen Siedler oder ein Battalion zum angegebenen Zielort.</td>
 	</tr>
@@ -375,6 +417,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#Reward_ObjectSetCarts">Reward_ObjectSetCarts (_ScriptName, _CostResourceType, _CostGoldType, _RewResourceType, _RewGoldType)</a></td>
 	<td class="summary">Setzt die benutzten Wagen eines interaktiven Objektes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_PrestigePoints">Reward_PrestigePoints (_Amount)</a></td>
+	<td class="summary">Gibt dem Auftragnehmer eine Anzahl an Prestigepunkten.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_QuestActivate">Reward_QuestActivate (_QuestName)</a></td>
@@ -397,6 +443,10 @@
 	<td class="summary">Startet einen Quest neu.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Reward_QuestRestartForceActive">Reward_QuestRestartForceActive (_QuestName)</a></td>
+	<td class="summary">Startet einen Quest neu und lößt ihn sofort aus.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Reward_QuestSuccess">Reward_QuestSuccess (_QuestName)</a></td>
 	<td class="summary">Wertet einen Quest als erfolgreich.</td>
 	</tr>
@@ -417,12 +467,20 @@
 	<td class="summary">Setzt die Menge von Rohstoffen in einer Mine.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Reward_Technology">Reward_Technology (_PlayerID, _Lock, _Technology)</a></td>
+	<td class="summary">Erlaubt oder verbietet einem Spieler eine Technologie.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Reward_TradeOffers">Reward_TradeOffers (_PlayerID, _Amount1, _Type1, _Amount2, _Type2, _Amount3, _Type3, _Amount4, _Type4)</a></td>
 	<td class="summary">Erzeugt Handelsangebote im Lagerhaus des angegebenen Spielers.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_Units">Reward_Units (_Type, _Amount)</a></td>
 	<td class="summary">Gibt dem Auftragnehmer eine Menge an Einheiten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_UpgradeBuilding">Reward_UpgradeBuilding (_ScriptName)</a></td>
+	<td class="summary">Baut das angegebene Gabäude um eine Stufe aus.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_Victory">Reward_Victory ()</a></td>
@@ -432,14 +490,47 @@
 <h2><a href="#Trigger">Trigger</a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#Trigger_AlwaysActive">Trigger_AlwaysActive ()</a></td>
+	<td class="summary">Startet den Quest sofort.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_CustomVariables">Trigger_CustomVariables (_Name, _Relation, _Value)</a></td>
+	<td class="summary">Startet den Quest, wenn eine benutzerdefinierte Variable einen bestimmten
+ Wert angenommen hat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_NeverTriggered">Trigger_NeverTriggered ()</a></td>
+	<td class="summary">Startet den Quest niemals.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Trigger_OnAmountOfGoods">Trigger_OnAmountOfGoods (_PlayerID, _Type, _Amount)</a></td>
 	<td class="summary">Startet den Quest, sobald der angegebene Spieler eine Menge an Rohstoffen
  im Lagerhaus hat.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnAtLeastOneQuestFailure">Trigger_OnAtLeastOneQuestFailure (_QuestName1, _QuestName2)</a></td>
+	<td class="summary">Startet den Quest, sobald wenigstens einer von zwei Quests fehlschlägt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnAtLeastOneQuestSuccess">Trigger_OnAtLeastOneQuestSuccess (_QuestName1, _QuestName2)</a></td>
+	<td class="summary">Startet den Quest, sobald wenigstens einer von zwei Quests erfolgreich ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnAtLeastXOfYQuestsSuccess">Trigger_OnAtLeastXOfYQuestsSuccess (_MinAmount, _QuestAmount, _Quest1, _Quest2, _Quest3, _Quest4, _Quest5)</a></td>
+	<td class="summary">Startet den Quest, sobald mindestens X von Y Quests erfolgreich sind.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Trigger_OnDiplomacy">Trigger_OnDiplomacy (_PlayerID, _State)</a></td>
 	<td class="summary">Starte den Quest, wenn zwischen dem Empfänger und der angegebenen Partei
  der geforderte Diplomatiestatus herrscht.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnMonsoon">Trigger_OnMonsoon ()</a></td>
+	<td class="summary">Startet den Quest sobald der Monsunregen einsetzt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnMonth">Trigger_OnMonth (_Month)</a></td>
+	<td class="summary">Startet den Quest im angegebenen Monat.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Trigger_OnNeedUnsatisfied">Trigger_OnNeedUnsatisfied (_PlayerID, _Need, _Amount)</a></td>
@@ -474,8 +565,16 @@
 	<td class="summary">Startet den Quest, wenn die angegebene Mine erschöpft ist.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnWaterFreezes">Trigger_OnWaterFreezes ()</a></td>
+	<td class="summary">Startet den Quest sobald das Wasser gefriert.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Trigger_PlayerDiscovered">Trigger_PlayerDiscovered (_PlayerID)</a></td>
 	<td class="summary">Starte den Quest, wenn ein anderer Spieler entdeckt wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_Time">Trigger_Time (_Time)</a></td>
+	<td class="summary">Startet den Quest sobald der Timer abgelaufen ist.</td>
 	</tr>
 </table>
 
@@ -483,7 +582,7 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Goals"></a>Goals</h2>
+    <h2 class="section-header "><a name="Goal"></a>Goal</h2>
 
     <dl class="function">
     <dt>
@@ -527,7 +626,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -552,7 +651,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -583,7 +682,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -596,7 +695,7 @@
     </dt>
     <dd>
     Eine Mauer muss die Bewegung eines Spielers zwischen 2 Punkten einschränken.
-<p> Achtung: Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt gewertet
+<p> <b>Achtung:</b> Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt gewertet
  werden, wenn der Weg durch Wasser blockiert wird!
 
 
@@ -617,7 +716,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -642,7 +741,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -674,7 +773,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -699,7 +798,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -726,7 +825,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -757,7 +856,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -799,7 +898,43 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_Decide"></a>
+    <strong>Goal_Decide (_Title, _Text, _Labels)</strong>
+    </dt>
+    <dd>
+    Lässt den Spieler zwischen zwei Antworten wählen.
+<p> Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
+<p> <b>Hinweis:</b> Es können nur geschlossene Fragen gestellt werden. Dialoge
+ müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
+ Abbrechen passen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+          Fenstertitel
+        </li>
+        <li><span class="parameter">_Text</span>
+           Fenstertext
+        </li>
+        <li><span class="parameter">_Labels</span>
+         Label der Buttons
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -839,7 +974,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -864,7 +999,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -878,7 +1013,7 @@
     <dd>
     Eine andere Partei muss besiegt werden.
 <p> Die Partei gilt als besiegt, wenn ein Hauptgebäude (Burg, Kirche, Lager)
- zerstört wurde. Achtung: Funktioniert nicht bei Banditen!
+ zerstört wurde. <b>Achtung:</b> Funktioniert nicht bei Banditen!
 
 
 
@@ -892,7 +1027,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -917,7 +1052,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -948,7 +1083,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -982,7 +1117,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1019,7 +1154,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1044,6 +1179,11 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
 
 
 
@@ -1067,7 +1207,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1104,7 +1244,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1132,7 +1272,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1163,7 +1303,45 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_InputDialog"></a>
+    <strong>Goal_InputDialog (_VarName, _Message, _Passwords, _Trials)</strong>
+    </dt>
+    <dd>
+    Der Spieler muss im Chatdialog ein Passwort eingeben.
+<p> Es können auch mehrere Passwörter verwendet werden. Dazu muss die Liste
+ der Passwörter abgetrennt mit ; angegeben werden.
+<p> <b>Achtung:</b> Ein Passwort darf immer nur aus einem Wort bestehen!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_VarName</span>
+           Name der Lösungsvariablen
+        </li>
+        <li><span class="parameter">_Message</span>
+           Nachricht bei Falscheingabe
+        </li>
+        <li><span class="parameter">_Passwords</span>
+         Liste der Passwörter
+        </li>
+        <li><span class="parameter">_Trials</span>
+            Anzahl versuche (-1 für unendlich)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -1182,7 +1360,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1202,7 +1380,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1230,7 +1408,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1255,7 +1433,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1287,7 +1465,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1306,7 +1484,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1334,7 +1512,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1362,7 +1540,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1375,7 +1553,7 @@
     </dt>
     <dd>
     Der AUftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.
-<p> Achtung: Ausschließlich im Reich des Ostens verfügbar!
+<p> <b>Achtung:</b> Ausschließlich im Reich des Ostens verfügbar!
 
 
 
@@ -1389,7 +1567,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1426,7 +1604,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1463,7 +1641,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1488,7 +1666,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1525,7 +1703,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1550,7 +1728,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1564,7 +1742,7 @@
     <dd>
     Es sollen Informationen aus der Burg gestohlen werden.
 <p> Der Spieler muss einen Dieb entsenden um Informationen aus der Burg zu
- stehlen. Achtung: Das ist nur bei Feinden möglich!
+ stehlen. <b>Achtung:</b> Das ist nur bei Feinden möglich!
 
 
 
@@ -1578,7 +1756,109 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_TributeClaim"></a>
+    <strong>Goal_TributeClaim (_Territory, _PlayerID, _Cost, _Periode, _Time, _StartMsg, _SuccessMsg, _FailMsg, _HowOften, _OtherOwner, _Abort)</strong>
+    </dt>
+    <dd>
+    Erlaubt es dem Spieler ein Territorium zu mieten.
+<p> Zerstört der Spieler den Außenposten, schlägt der Quest fehl und das
+ Territorium wird an den Vermieter übergeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Territory</span>
+          Name des Territorium
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+           PlayerID des Zahlungsanforderer
+        </li>
+        <li><span class="parameter">_Cost</span>
+               Menge an Gold
+        </li>
+        <li><span class="parameter">_Periode</span>
+            Zahlungsperiode in Monaten
+        </li>
+        <li><span class="parameter">_Time</span>
+               Zeitbegrenzung
+        </li>
+        <li><span class="parameter">_StartMsg</span>
+           Vorschlagnachricht
+        </li>
+        <li><span class="parameter">_SuccessMsg</span>
+         Erfolgsnachricht
+        </li>
+        <li><span class="parameter">_FailMsg</span>
+            Fehlschlagnachricht
+        </li>
+        <li><span class="parameter">_HowOften</span>
+           Anzahl an Zahlungen (0 = endlos)
+        </li>
+        <li><span class="parameter">_OtherOwner</span>
+         Eroberung durch Dritte beendet Quest
+        </li>
+        <li><span class="parameter">_Abort</span>
+              Nach nichtbezahlen abbrechen
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_TributeDiplomacy"></a>
+    <strong>Goal_TributeDiplomacy (_GoldAmount, _Periode, _Time, _StartMsg, _SuccessMsg, _FailureMsg, _Restart)</strong>
+    </dt>
+    <dd>
+    Der Spieler kann durch regelmäßiges Begleichen eines Tributes bessere
+ Diplomatie zu einen Spieler erreichen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_GoldAmount</span>
+         Menge an Gold
+        </li>
+        <li><span class="parameter">_Periode</span>
+            Zahlungsperiode in Monaten
+        </li>
+        <li><span class="parameter">_Time</span>
+               Zeitbegrenzung
+        </li>
+        <li><span class="parameter">_StartMsg</span>
+           Vorschlagnachricht
+        </li>
+        <li><span class="parameter">_SuccessMsg</span>
+         Erfolgsnachricht
+        </li>
+        <li><span class="parameter">_FailureMsg</span>
+         Fehlschlagnachricht
+        </li>
+        <li><span class="parameter">_Restart</span>
+            Nach nichtbezahlen neu starten
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -1619,7 +1899,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1627,7 +1907,7 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Reprisals"></a>Reprisals</h2>
+    <h2 class="section-header "><a name="Reprisal"></a>Reprisal</h2>
 
     <dl class="function">
     <dt>
@@ -1665,7 +1945,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1684,7 +1964,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1709,7 +1989,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1734,7 +2014,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1765,7 +2045,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1785,7 +2065,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1806,7 +2086,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1831,7 +2111,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1865,7 +2145,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1890,7 +2170,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1915,7 +2195,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1940,7 +2220,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1968,7 +2248,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -1993,7 +2273,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2018,7 +2298,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2043,7 +2323,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2076,7 +2356,38 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_Technology"></a>
+    <strong>Reprisal_Technology (_PlayerID, _Lock, _Technology)</strong>
+    </dt>
+    <dd>
+    Erlaubt oder verbietet einem Spieler eine Technologie.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+           ID des Spielers
+        </li>
+        <li><span class="parameter">_Lock</span>
+               Sperren/Entsperren
+        </li>
+        <li><span class="parameter">_Technology</span>
+         Name der Technologie
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -2084,7 +2395,7 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Rewards"></a>Rewards</h2>
+    <h2 class="section-header "><a name="Reward"></a>Reward</h2>
 
     <dl class="function">
     <dt>
@@ -2108,7 +2419,35 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_AI_MountOutpost"></a>
+    <strong>Reward_AI_MountOutpost (_ScriptName, _Type)</strong>
+    </dt>
+    <dd>
+    Besetzt einen Außenposten mit Soldaten.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Außenposten
+        </li>
+        <li><span class="parameter">_Type</span>
+               Soldatentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -2139,7 +2478,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2186,7 +2525,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2236,7 +2575,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2297,7 +2636,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2349,7 +2688,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2392,7 +2731,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2429,7 +2768,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2469,7 +2808,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2512,7 +2851,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2552,7 +2891,49 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_CustomVariables"></a>
+    <strong>Reward_CustomVariables (_Name, _Operator, _Value)</strong>
+    </dt>
+    <dd>
+    Ändert den Wert einer benutzerdefinierten Variable.
+<p> Benutzerdefinierte Variablen können ausschließlich Zahlen sein.
+<p> <p>Operatoren</p>
+ <ul>
+ <li>= - Variablenwert wird auf den Wert gesetzt</li>
+ <li>- - Variablenwert mit Wert Subtrahieren</li>
+ <li>+ - Variablenwert mit Wert addieren</li>
+ <li>* - Variablenwert mit Wert multiplizieren</li>
+ <li>/ - Variablenwert mit Wert dividieren</li>
+ <li>^ - Variablenwert mit Wert potenzieren</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+             Name der Variable
+        </li>
+        <li><span class="parameter">_Operator</span>
+         Rechen- oder Zuweisungsoperator
+        </li>
+        <li><span class="parameter">_Value</span>
+            Wert oder andere Custom Variable
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -2571,7 +2952,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2596,7 +2977,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2621,7 +3002,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2652,7 +3033,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2672,7 +3053,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2693,7 +3074,32 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_MapScriptFunction"></a>
+    <strong>Reward_MapScriptFunction (_FunctionName)</strong>
+    </dt>
+    <dd>
+    Führt eine Funktion im Skript als Reward aus.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+         Name der Funktion
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -2721,7 +3127,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2755,7 +3161,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2780,7 +3186,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2836,7 +3242,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2877,7 +3283,32 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_PrestigePoints"></a>
+    <strong>Reward_PrestigePoints (_Amount)</strong>
+    </dt>
+    <dd>
+    Gibt dem Auftragnehmer eine Anzahl an Prestigepunkten.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         Menge an Prestige
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -2902,7 +3333,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2927,7 +3358,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2955,7 +3386,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -2980,7 +3411,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -3005,7 +3436,32 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_QuestRestartForceActive"></a>
+    <strong>Reward_QuestRestartForceActive (_QuestName)</strong>
+    </dt>
+    <dd>
+    Startet einen Quest neu und lößt ihn sofort aus.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -3030,7 +3486,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -3063,7 +3519,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: behavior
+        Table mit Behavior
     </ol>
 
 
@@ -3091,7 +3547,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -3141,7 +3597,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -3154,7 +3610,7 @@
     </dt>
     <dd>
     Setzt die Menge von Rohstoffen in einer Mine.
-<p> Achtung: Im Reich des Ostens darf die Mine nicht eingestürzt sein!
+<p> <b>Achtung:</b> Im Reich des Ostens darf die Mine nicht eingestürzt sein!
 
 
 
@@ -3171,7 +3627,38 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_Technology"></a>
+    <strong>Reward_Technology (_PlayerID, _Lock, _Technology)</strong>
+    </dt>
+    <dd>
+    Erlaubt oder verbietet einem Spieler eine Technologie.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+           ID des Spielers
+        </li>
+        <li><span class="parameter">_Lock</span>
+               Sperren/Entsperren
+        </li>
+        <li><span class="parameter">_Technology</span>
+         Name der Technologie
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -3185,7 +3672,7 @@
     <dd>
     Erzeugt Handelsangebote im Lagerhaus des angegebenen Spielers.
 <p> Sollen Angebote gelöscht werden, muss "-" als Ware ausgewählt werden.
-<p> ACHTUNG: Stadtlagerhäuser können keine Söldner anbieten!
+<p> <b>Achtung:</b> Stadtlagerhäuser können keine Söldner anbieten!
 
 
 
@@ -3223,7 +3710,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -3254,7 +3741,35 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_UpgradeBuilding"></a>
+    <strong>Reward_UpgradeBuilding (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Baut das angegebene Gabäude um eine Stufe aus.
+<p> <b>Achtung:</b> Ein Gebäude muss erst fertig ausgebaut sein, bevor ein
+ weiterer Ausbau begonnen werden kann!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Gebäudes
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -3273,7 +3788,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -3284,6 +3799,81 @@
     <h2 class="section-header "><a name="Trigger"></a>Trigger</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "Trigger_AlwaysActive"></a>
+    <strong>Trigger_AlwaysActive ()</strong>
+    </dt>
+    <dd>
+    Startet den Quest sofort.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_CustomVariables"></a>
+    <strong>Trigger_CustomVariables (_Name, _Relation, _Value)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, wenn eine benutzerdefinierte Variable einen bestimmten
+ Wert angenommen hat.
+<p> Benutzerdefinierte Variablen müssen Zahlen sein.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+             Name der Variable
+        </li>
+        <li><span class="parameter">_Relation</span>
+         Vergleichsoperator
+        </li>
+        <li><span class="parameter">_Value</span>
+            Wert oder Custom Variable
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_NeverTriggered"></a>
+    <strong>Trigger_NeverTriggered ()</strong>
+    </dt>
+    <dd>
+    Startet den Quest niemals.
+<p> Quests, für die dieser Trigger gesetzt ist, müssen durch einen anderen
+ Quest über Reward_QuestActive oder Reprisal_QuestActive gestartet werden.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
     <dt>
     <a name = "Trigger_OnAmountOfGoods"></a>
     <strong>Trigger_OnAmountOfGoods (_PlayerID, _Type, _Amount)</strong>
@@ -3309,7 +3899,106 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnAtLeastOneQuestFailure"></a>
+    <strong>Trigger_OnAtLeastOneQuestFailure (_QuestName1, _QuestName2)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald wenigstens einer von zwei Quests fehlschlägt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName1</span>
+         Name des ersten Quest
+        </li>
+        <li><span class="parameter">_QuestName2</span>
+         Name des zweiten Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnAtLeastOneQuestSuccess"></a>
+    <strong>Trigger_OnAtLeastOneQuestSuccess (_QuestName1, _QuestName2)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald wenigstens einer von zwei Quests erfolgreich ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName1</span>
+         Name des ersten Quest
+        </li>
+        <li><span class="parameter">_QuestName2</span>
+         Name des zweiten Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnAtLeastXOfYQuestsSuccess"></a>
+    <strong>Trigger_OnAtLeastXOfYQuestsSuccess (_MinAmount, _QuestAmount, _Quest1, _Quest2, _Quest3, _Quest4, _Quest5)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald mindestens X von Y Quests erfolgreich sind.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_MinAmount</span>
+           Mindestens zu erfüllen (max. 5)
+        </li>
+        <li><span class="parameter">_QuestAmount</span>
+         Anzahl geprüfter Quests (max. 5 und >= _MinAmount)
+        </li>
+        <li><span class="parameter">_Quest1</span>
+              Name des 1. Quest
+        </li>
+        <li><span class="parameter">_Quest2</span>
+              Name des 2. Quest
+        </li>
+        <li><span class="parameter">_Quest3</span>
+              Name des 3. Quest
+        </li>
+        <li><span class="parameter">_Quest4</span>
+              Name des 4. Quest
+        </li>
+        <li><span class="parameter">_Quest5</span>
+              Name des 5. Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -3338,7 +4027,53 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnMonsoon"></a>
+    <strong>Trigger_OnMonsoon ()</strong>
+    </dt>
+    <dd>
+    Startet den Quest sobald der Monsunregen einsetzt.
+<p> <b>Achtung:</b> Dieses Behavior ist nur für Reich des Ostens verfügbar.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnMonth"></a>
+    <strong>Trigger_OnMonth (_Month)</strong>
+    </dt>
+    <dd>
+    Startet den Quest im angegebenen Monat.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Month</span>
+         Monat
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -3369,7 +4104,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
     </ol>
 
 
@@ -3391,7 +4126,7 @@
         </li>
         <li><span class="parameter">_Time</span>
               Wartezeit
- return table: Behavior
+ return Table mit Behavior
         </li>
     </ul>
 
@@ -3415,7 +4150,7 @@
         </li>
         <li><span class="parameter">_Time</span>
               Wartezeit
- return table: Behavior
+ return Table mit Behavior
         </li>
     </ul>
 
@@ -3439,7 +4174,7 @@
         </li>
         <li><span class="parameter">_Time</span>
               Wartezeit
- return table: Behavior
+ return Table mit Behavior
         </li>
     </ul>
 
@@ -3466,7 +4201,7 @@
         </li>
         <li><span class="parameter">_Time</span>
               Wartezeit
- return table: Behavior
+ return Table mit Behavior
         </li>
     </ul>
 
@@ -3493,7 +4228,7 @@
         </li>
         <li><span class="parameter">_Time</span>
               Wartezeit
- return table: Behavior
+ return Table mit Behavior
         </li>
     </ul>
 
@@ -3517,7 +4252,7 @@
         </li>
         <li><span class="parameter">_Time</span>
               Wartezeit
- return table: Behavior
+ return Table mit Behavior
         </li>
     </ul>
 
@@ -3545,7 +4280,26 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnWaterFreezes"></a>
+    <strong>Trigger_OnWaterFreezes ()</strong>
+    </dt>
+    <dd>
+    Startet den Quest sobald das Wasser gefriert.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -3572,7 +4326,34 @@
     <h3>Returns:</h3>
     <ol>
 
-        table: Behavior
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_Time"></a>
+    <strong>Trigger_Time (_Time)</strong>
+    </dt>
+    <dd>
+    Startet den Quest sobald der Timer abgelaufen ist.
+<p> Der Timer zählt immer vom Start der Map an.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Time</span>
+         Zeit bis zum Start
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
     </ol>
 
 
@@ -3586,7 +4367,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-12-02 16:31:37 </i>
+<i style="float:right;">Last updated 2017-12-03 22:32:52 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

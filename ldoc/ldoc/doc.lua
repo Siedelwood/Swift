@@ -117,6 +117,7 @@ function doc.presentation_name (tag)
          return f:upper()..r
       end)
    end
+   name = (name == "Module" and "Bundle") or name;
    return name
 end
 

@@ -64,7 +64,7 @@ pre.example {
 }
 
 table.index { border: 1px #00007f; }
-table.index td { text-align: left; vertical-align: top; }
+table.index td { text-align: left; vertical-align: top; hyphens: auto; }
 
 #container {
     margin-left: 1em;
@@ -89,7 +89,7 @@ table.index td { text-align: left; vertical-align: top; }
 
 #navigation {
     float: left;
-    width: 26em;
+    width: 18em;
     vertical-align: top;
     background-color: #f0f0f0;
     overflow: visible;
@@ -123,7 +123,7 @@ table.index td { text-align: left; vertical-align: top; }
 }
 
 #content {
-    margin-left: 26em;
+    margin-left: 18em;
     padding: 1em;
     border-left: 2px solid #cccccc;
     border-right: 2px solid #cccccc;

@@ -1,0 +1,1163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#User_Space">User Space</a></li>
+</ul>
+
+
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><strong>SynfoniaCore</strong></li>
+  <li><a href="../scripts/SynfoniaLoader.html">SynfoniaLoader</a></li>
+</ul>
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSynfoniaBehaviors.html">BundleSynfoniaBehaviors</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Script <code>SynfoniaCore</code></h1>
+<p>Die Hauptaufgabe des Framework ist es, Funktionen zur Installation und der
+ Verwaltung der einzelnen Bundles bereitzustellen.</p>
+<p> Bundles sind in sich
+ geschlossene Module, die wenig bis gar keine Abhänigkeiten haben. Damit
+ das funktioniert, muss das Framework auch allgemeingültige Funktionen
+ bereitstellen, auf die Bundles aufbauen können.
+<p> Im Framework werden zudem überschriebene Spielfunktionen angelegt und so
+ aufbereitet, dass Bundles ihre Inhalte einfach ergänzen können. Dies wird
+ jedoch nicht für alle Funktionen des Spiels möglich sein.
+<p> Wie die einzelnen Bundles ist auch das Framework in einen User- und einen
+ Application-Space aufgeteilt. Der User-Space enthält Funktionen innerhalb
+ der Bibliothek "API". Alle Bundles ergänzen ihre User-Space-Funktionen dort.
+ Außer den Aliases auf API-Funktionen und den Behavior-Funktionen sind keine
+ anderen öffentlichen Funktionen für den Anwendern sichtbar zu machen!
+<p> Im Application-Space liegen die privaten Funktionen und Variablen, die
+ nicht in der Dokumentation erscheinen. Sie sind mit einem Local-Tag zu
+ versehen! Der Nutzer soll diese Funktionen in der Regel nicht anfassen,
+ daher muss er auch nicht wissen, dass es sie gibt!
+<p> Ziel der Teilung zwischen User-Space und Application-Space ist es, dem
+ Anwender eine saubere und leicht verständliche Oberfläche zu Bieten, mit
+ der er einfach arbeiten kann. Kenntnis über die komplexen Prozesse hinter
+ den Kulissen sind dafür nicht notwendig.
+</p>
+
+
+<h2><a href="#User_Space">User Space</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ActivateIO">API.ActivateIO (_ScriptName, _State)</a></td>
+	<td class="summary">Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.AddSaveGameAction">API.AddSaveGameAction (_Function)</a></td>
+	<td class="summary">Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
+ Laden eines Spielstandes ausgeführt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ClearNotes">API.ClearNotes ()</a></td>
+	<td class="summary">Löscht alle Nachrichten im Debug Window.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Confront">API.Confront (_entity, _entityToLookAt)</a></td>
+	<td class="summary">Lässt zwei Entities sich gegenseitig anschauen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Dbg">API.Dbg (_Message)</a></td>
+	<td class="summary">Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DeactivateIO">API.DeactivateIO (_ScriptName)</a></td>
+	<td class="summary">Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
+ aktiviert werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DumpTable">API.DumpTable (_Table, _Name)</a></td>
+	<td class="summary">Schreibt ein genaues Abbild der Table ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.FailAllQuests">API.FailAllQuests (...)</a></td>
+	<td class="summary">Lässt eine Liste von Quests fehlschlagen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.FailQuest">API.FailQuest (_QuestName)</a></td>
+	<td class="summary">Lässt den Quest fehlschlagen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetDistance">API.GetDistance (_pos1, _pos2)</a></td>
+	<td class="summary">Bestimmt die Distanz zwischen zwei Punkten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntitiesOfCategoryInTerritory">API.GetEntitiesOfCategoryInTerritory (_player, _category, _territory)</a></td>
+	<td class="summary">Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
+ sie als Liste zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetQuestID">API.GetQuestID (_Name)</a></td>
+	<td class="summary">Gibt die ID des Quests mit dem angegebenen Namen zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Install">API.Install ()</a></td>
+	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InstanceTable">API.InstanceTable (_Source, _Dest)</a></td>
+	<td class="summary">Kopiert eine komplette Table und gibt die Kopie zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsValidateQuest">API.IsValidateQuest (_QuestID)</a></td>
+	<td class="summary">Prüft, ob die ID zu einem Quest gehört bzw.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.LocateEntity">API.LocateEntity (_Entity)</a></td>
+	<td class="summary">Lokalisiert ein Entity auf der Map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Log">API.Log (_Message)</a></td>
+	<td class="summary">Schreibt eine einzelne Zeile Text ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.LookAt">API.LookAt (_entity, _entityToLookAt, _offsetEntity)</a></td>
+	<td class="summary">Rotiert ein Entity, sodass es zum Ziel schaut.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Message">API.Message (_Message)</a></td>
+	<td class="summary">Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Note">API.Note (_Message)</a></td>
+	<td class="summary">Schreibt eine Nachricht in das Debug Window.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ReplaceEntity">API.ReplaceEntity (_Entity, _Type, _NewOwner)</a></td>
+	<td class="summary">Ersetzt ein Entity mit einem neuen eines anderen Typs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.RestartAllQuests">API.RestartAllQuests (...)</a></td>
+	<td class="summary">Startet eine Liste von Quests neu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.RestartQuest">API.RestartQuest (_QuestName)</a></td>
+	<td class="summary">Startet den Quest neu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SendCart">API.SendCart (_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)</a></td>
+	<td class="summary">Sendet einen Handelskarren zu dem Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartAllQuests">API.StartAllQuests (...)</a></td>
+	<td class="summary">Startet eine Liste von Quests.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartQuest">API.StartQuest (_QuestName)</a></td>
+	<td class="summary">Startet den Quest sofort, sofern er existiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StaticNote">API.StaticNote (_Message)</a></td>
+	<td class="summary">Schreibt eine Nachricht in das Debug Window.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StopAllQuests">API.StopAllQuests (...)</a></td>
+	<td class="summary">Unterbricht eine Liste von Quests.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StopQuest">API.StopQuest (_QuestName)</a></td>
+	<td class="summary">Unterbricht den Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ToBoolean">API.ToBoolean (_Value)</a></td>
+	<td class="summary">Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TraverseTable">API.TraverseTable (_Data, _Table)</a></td>
+	<td class="summary">Sucht in einer Table nach einem Wert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Warn">API.Warn (_Message)</a></td>
+	<td class="summary">Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.WinAllQuests">API.WinAllQuests (...)</a></td>
+	<td class="summary">Gewinnt eine Liste von Quests.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.WinQuest">API.WinQuest (_QuestName)</a></td>
+	<td class="summary">Gewinnt den Quest.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="User_Space"></a>User Space</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ActivateIO"></a>
+    <strong>API.ActivateIO (_ScriptName, _State)</strong>
+    </dt>
+    <dd>
+    Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.
+<p> Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
+ einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
+ Held das Objekt aktivieren.
+<p> <b>Alias:</b> InteractiveObjectActivate
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+          Skriptname des IO
+        </li>
+        <li><span class="parameter">_State</span>
+               Aktivierungszustand
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">API.ActivateIO(<span class="string">"Haus1"</span>, <span class="number">0</span>)</pre></li>
+        <li><pre class="example">API.ActivateIO(<span class="string">"Hut1"</span>)</pre></li>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.AddSaveGameAction"></a>
+    <strong>API.AddSaveGameAction (_Function)</strong>
+    </dt>
+    <dd>
+    Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
+ Laden eines Spielstandes ausgeführt wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         Funktion, die ausgeführt werden soll
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">SaveGame = <span class="keyword">function</span>()
+    API.Note(<span class="string">"foo"</span>)
+<span class="keyword">end</span>
+API.AddSaveGameAction(SaveGame)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.ClearNotes"></a>
+    <strong>API.ClearNotes ()</strong>
+    </dt>
+    <dd>
+    Löscht alle Nachrichten im Debug Window.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Confront"></a>
+    <strong>API.Confront (_entity, _entityToLookAt)</strong>
+    </dt>
+    <dd>
+    Lässt zwei Entities sich gegenseitig anschauen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+                   Erstes Entity
+        </li>
+        <li><span class="parameter">_entityToLookAt</span>
+           Zweites Entity
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.Confront(<span class="string">"Hakim"</span>, <span class="string">"Alandra"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.Dbg"></a>
+    <strong>API.Dbg (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.DeactivateIO"></a>
+    <strong>API.DeactivateIO (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
+ aktiviert werden kann.
+<p> <b>Alias:</b> InteractiveObjectDeactivate
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des IO
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DeactivateIO(<span class="string">"Hut1"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DumpTable"></a>
+    <strong>API.DumpTable (_Table, _Name)</strong>
+    </dt>
+    <dd>
+    Schreibt ein genaues Abbild der Table ins Log.  Funktionen, Threads und
+ Metatables werden als Adresse geschrieben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Table</span>
+         Tabelle, die gedumpt wird
+        </li>
+        <li><span class="parameter">_Name</span>
+         Optionaler Name im Log
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
+API.DumpTable(Table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.FailAllQuests"></a>
+    <strong>API.FailAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Lässt eine Liste von Quests fehlschlagen.
+<p> Der Status wird auf Over und das Resultat auf Failure gesetzt.
+<p> <b>Alias:</b> FailQuestsByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.FailQuest"></a>
+    <strong>API.FailQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Lässt den Quest fehlschlagen.
+<p> Der Status wird auf Over und das Resultat auf Failure gesetzt.
+<p> <b>Alias:</b> FailQuestByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetDistance"></a>
+    <strong>API.GetDistance (_pos1, _pos2)</strong>
+    </dt>
+    <dd>
+    Bestimmt die Distanz zwischen zwei Punkten.  Es können Entity-IDs,
+ Skriptnamen oder Positionstables angegeben werden.
+<p> <b>Alias:</b> GetDistance
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_pos1</span>
+         Erste Vergleichsposition
+        </li>
+        <li><span class="parameter">_pos2</span>
+         Zweite Vergleichsposition
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Entfernung zwischen den Punkten
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Distance = API.GetDistance(<span class="string">"HQ1"</span>, Logic.GetKnightID(<span class="number">1</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetEntitiesOfCategoryInTerritory"></a>
+    <strong>API.GetEntitiesOfCategoryInTerritory (_player, _category, _territory)</strong>
+    </dt>
+    <dd>
+    Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
+ sie als Liste zurück.
+<p> <b>Alias:</b> GetEntitiesOfCategoryInTerritory
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_player</span>
+            PlayerID [0-8] oder -1 für alle
+        </li>
+        <li><span class="parameter">_category</span>
+          Kategorie, der die Entities angehören
+        </li>
+        <li><span class="parameter">_territory</span>
+         Zielterritorium
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Found = API.GetEntitiesOfCategoryInTerritory(<span class="number">1</span>, EntityCategories.Hero, <span class="number">5</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetQuestID"></a>
+    <strong>API.GetQuestID (_Name)</strong>
+    </dt>
+    <dd>
+    Gibt die ID des Quests mit dem angegebenen Namen zurück.  Existiert der
+ Quest nicht, wird nil zurückgegeben.
+<p> <b>Alias:</b> GetQuestID
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+             Identifier des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: ID des Quest
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Install"></a>
+    <strong>API.Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
+<p> Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
+ Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
+ werden, bevor die QSB verwendet werden kann.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InstanceTable"></a>
+    <strong>API.InstanceTable (_Source, _Dest)</strong>
+    </dt>
+    <dd>
+    Kopiert eine komplette Table und gibt die Kopie zurück.  Wenn ein Ziel
+ angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
+ angegebenen Tables.
+ Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
+ Funktion kann benutzt werden, um Klassen zu instanzieren.
+<p> <b>Alias:</b> CopyTableRecursive
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Source</span>
+            Quelltabelle
+        </li>
+        <li><span class="parameter">_Dest</span>
+              Zieltabelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Kopie der Tabelle
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
+Copy = API.InstanceTable(Table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.IsValidateQuest"></a>
+    <strong>API.IsValidateQuest (_QuestID)</strong>
+    </dt>
+    <dd>
+    Prüft, ob die ID zu einem Quest gehört bzw.  der Quest existiert. Es kann
+ auch ein Questname angegeben werden.
+<p> <b>Alias:</b> IsValidQuest
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestID</span>
+           ID oder Name des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Quest existiert
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.LocateEntity"></a>
+    <strong>API.LocateEntity (_Entity)</strong>
+    </dt>
+    <dd>
+    Lokalisiert ein Entity auf der Map.  Es können sowohl Skriptnamen als auch
+ IDs verwendet werden. Wenn das Entity nicht gefunden wird, wird eine
+ Tabelle mit XYZ = 0 zurückgegeben.
+<p> <b>Alias:</b> GetPosition
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Entity, dessen Position bestimmt wird.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Positionstabelle {X= x, Y= y, Z= z}
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Position = API.LocateEntity(<span class="string">"Hans"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.Log"></a>
+    <strong>API.Log (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine einzelne Zeile Text ins Log.  Vor dem Text steh, ob aus dem
+ globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
+ Spiels die Nachricht gesendet wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         Nachricht für's Log
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.LookAt"></a>
+    <strong>API.LookAt (_entity, _entityToLookAt, _offsetEntity)</strong>
+    </dt>
+    <dd>
+    Rotiert ein Entity, sodass es zum Ziel schaut.
+<p> <b>Alias:</b> LookAt
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+                   Entity
+        </li>
+        <li><span class="parameter">_entityToLookAt</span>
+           Ziel
+        </li>
+        <li><span class="parameter">_offsetEntity</span>
+             Winkel-Offset
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.LookAt(<span class="string">"Hakim"</span>, <span class="string">"Alandra"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.Message"></a>
+    <strong>API.Message (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Note"></a>
+    <strong>API.Note (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Nachricht in das Debug Window.  Der Text erscheint links am
+ Bildschirm und ist nicht statisch.
+<p> <b>Alias:</b> GUI_Note
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ReplaceEntity"></a>
+    <strong>API.ReplaceEntity (_Entity, _Type, _NewOwner)</strong>
+    </dt>
+    <dd>
+    Ersetzt ein Entity mit einem neuen eines anderen Typs.  Skriptname,
+ Rotation, Position und Besitzer werden übernommen.
+<p> <b>Alias:</b> ReplaceEntity
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+             Entity
+        </li>
+        <li><span class="parameter">_Type</span>
+               Neuer Typ
+        </li>
+        <li><span class="parameter">_NewOwner</span>
+           (optional) Neuer Besitzer
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Entity-ID des Entity
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ReplaceEntity(<span class="string">"Stein"</span>, Entities.XD_ScriptEntity)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.RestartAllQuests"></a>
+    <strong>API.RestartAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Startet eine Liste von Quests neu.
+<p> <b>Alias:</b> StartQuestsByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.RestartQuest"></a>
+    <strong>API.RestartQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Startet den Quest neu.
+<p> Der Quest muss beendet sein um ihn wieder neu zu starten. Wird ein Quest
+ neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
+ der Quest wird manuell getriggert.
+<p> <b>Alias:</b> StartQuestByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SendCart"></a>
+    <strong>API.SendCart (_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)</strong>
+    </dt>
+    <dd>
+    Sendet einen Handelskarren zu dem Spieler.  Startet der Karren von einem
+ Gebäude, wird immer die Position des Eingangs genommen.
+<p> <b>Alias:</b> SendCart
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_position</span>
+                    Position
+        </li>
+        <li><span class="parameter">_player</span>
+                      Zielspieler
+        </li>
+        <li><span class="parameter">_good</span>
+                        Warentyp
+        </li>
+        <li><span class="parameter">_amount</span>
+                      Warenmenge
+        </li>
+        <li><span class="parameter">_cartOverlay</span>
+                 (optional) Overlay für Goldkarren
+        </li>
+        <li><span class="parameter">_ignoreReservation</span>
+           (optional) Marktplatzreservation ignorieren
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Entity-ID des erzeugten Wagens
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- API-Call
+</span>API.SendCart(Logic.GetStoreHouse(<span class="number">1</span>), <span class="number">2</span>, Goods.G_Grain, <span class="number">45</span>)
+<span class="comment">-- Legacy-Call mit ID-Speicherung
+</span><span class="keyword">local</span> ID = SendCart(<span class="string">"Position_1"</span>, <span class="number">5</span>, Goods.G_Wool, <span class="number">5</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.StartAllQuests"></a>
+    <strong>API.StartAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Startet eine Liste von Quests.
+<p> <b>Alias:</b> StartQuestsByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartQuest"></a>
+    <strong>API.StartQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Startet den Quest sofort, sofern er existiert.
+<p> Dabei ist es unerheblich, ob die Bedingungen zum Start erfüllt sind.
+<p> <b>Alias:</b> StartQuestByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StaticNote"></a>
+    <strong>API.StaticNote (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Nachricht in das Debug Window.  Der Text erscheint links am
+ Bildschirm und verbleibt dauerhaft am Bildschirm.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StopAllQuests"></a>
+    <strong>API.StopAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Unterbricht eine Liste von Quests.
+<p> <b>Alias:</b> StopQuestsByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StopQuest"></a>
+    <strong>API.StopQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Unterbricht den Quest.
+<p> Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
+ gesetzt, werden diese entfernt.
+<p> <b>Alias:</b> StopQuestByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ToBoolean"></a>
+    <strong>API.ToBoolean (_Value)</strong>
+    </dt>
+    <dd>
+    Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.
+<p> <p>Wahrheitsert true: true, "true", "yes", "on", "+"</p>
+ <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
+<p> <b>Alias:</b> AcceptAlternativeBoolean
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Value</span>
+         Wahrheitswert
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Wahrheitswert
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Bool = API.ToBoolean(<span class="string">"+"</span>)  <span class="comment">--&gt; Bool = true
+</span><span class="keyword">local</span> Bool = API.ToBoolean(<span class="string">"no"</span>) <span class="comment">--&gt; Bool = false</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TraverseTable"></a>
+    <strong>API.TraverseTable (_Data, _Table)</strong>
+    </dt>
+    <dd>
+    Sucht in einer Table nach einem Wert.  Das erste Aufkommen des Suchwerts
+ wird als Erfolg gewertet.
+<p> <b>Alias:</b> Inside
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+             Datum, das gesucht wird
+        </li>
+        <li><span class="parameter">_Table</span>
+            Tabelle, die durchquert wird
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        booelan: Wert gefunden
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
+<span class="keyword">local</span> Found = API.TraverseTable(<span class="number">3</span>, Table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.Warn"></a>
+    <strong>API.Warn (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.WinAllQuests"></a>
+    <strong>API.WinAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Gewinnt eine Liste von Quests.
+<p> Der Status wird auf Over und das Resultat auf Success gesetzt.
+<p> <b>Alias:</b> WinQuestsByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.WinQuest"></a>
+    <strong>API.WinQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Gewinnt den Quest.
+<p> Der Status wird auf Over und das Resultat auf Success gesetzt.
+<p> <b>Alias:</b> WinQuestByName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-12-03 22:32:52 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
