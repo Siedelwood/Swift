@@ -5,7 +5,7 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+--
 --
 -- @module BundleQuestGeneration
 -- @set sort=true
@@ -106,7 +106,7 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
-    
+
 end
 
 ---
@@ -121,12 +121,12 @@ function BundleQuestGeneration.Global:NewQuest(_Data)
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
     end
-    
+
     if not Core:CheckQuestName(_Data.Name) then
         dbg("Quest '"..tostring(_Data.Name).."': invalid questname! Contains forbidden characters!");
         return;
     end
-    
+
     local QuestData = API.InstanceTable(self.Data.QuestTemplate);
     QuestData.Identifier      = _Data.Name;
     QuestData.MSGKeyOverwrite = nil;
@@ -142,11 +142,11 @@ function BundleQuestGeneration.Global:NewQuest(_Data)
     QuestData.Sender          = (_Data.Sender ~= nil and _Data.Sender) or 1;
     QuestData.Receiver        = (_Data.Receiver ~= nil and _Data.Receiver) or 1;
     QuestData.Time            = (_Data.Time ~= nil and _Data.Time) or 0;
-    
+
     if _Data.Arguments then
         QuestData.Arguments = API.InstanceTable(_Data.Arguments);
     end
-    
+
     table.insert(self.Data.GenerationList, QuestData);
     local ID = #self.Data.GenerationList;
     self:AttachBehavior(ID, _Data);
@@ -170,11 +170,11 @@ function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
             _Data[k] = v[lang];
         end
     end
-    
+
     for k,v in pairs(_Data) do
         if v.GetGoalTable then
             table.insert(self.Data.GenerationList[_ID].Goals, v:GetGoalTable());
-            
+
             local Idx = #self.Data.GenerationList[_ID].Goals;
             self.Data.GenerationList[_ID].Goals[Idx].Context            = v;
             self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideIcon   = self.Data.GenerationList[_ID].Goals[Idx].Context.GetIcon;
@@ -203,7 +203,7 @@ function BundleQuestGeneration.Global:StartQuests()
     while (#self.Data.GenerationList > 0)
     do
         local QuestData = table.remove(self.Data.GenerationList, 1);
-        if self:DebugQuests(QuestData) then
+        if self:DebugQuest(QuestData) then
             local QuestID, Quest = QuestTemplate:New(
                 QuestData.Identifier,
                 QuestData.Sender,
@@ -222,7 +222,7 @@ function BundleQuestGeneration.Global:StartQuests()
                 QuestData.SuccessText,
                 QuestData.FailureText
             );
-            
+
             if QuestData.MSGKeyOverwrite then
                 Quest.MsgTableOverride = self.MSGKeyOverwrite;
             end
@@ -251,12 +251,12 @@ function BundleQuestGeneration.Global:ValidateQuests()
         if #v.Triggers == 0 then
             table.insert(self.Data.GenerationList[k].Triggers, Trigger_Time(0));
         end
-        
+
         if #v.Goals == 0 and #v.Triggers == 0 then
             local text = string.format("Quest '" ..v.Identifier.. "' is missing a goal or a trigger!");
             return false;
         end
-        
+
         local debugText = ""
         -- check if quest table is invalid
         if not v then
@@ -307,7 +307,7 @@ function BundleQuestGeneration.Global:ValidateQuests()
                 debugText = debugText .. v.Identifier..": Failure is not a string!"
             end
         end
-    
+
         if debugText ~= "" then
             dbg(debugText);
             return false;
@@ -318,16 +318,16 @@ end
 
 
 ---
--- Prüft die Quests in der Initalisierungsliste der Quests auf Korrektheit.
+-- Dummy-Funktion zur Validierung der Behavior eines Quests
 --
--- Diese Funktion kann durch ein Debug Bundle überschrieben werden um Quests
+-- Diese Funktion muss durch ein Debug Bundle überschrieben werden um Quests
 -- in der Initalisiererliste zu testen.
 --
 -- @param _List Liste der Quests
 -- @within Application Space
 -- @local
 --
-function BundleQuestGeneration.Global:DebugQuests(_List)
+function BundleQuestGeneration.Global:DebugQuest(_List)
     return true;
 end
 
@@ -340,7 +340,7 @@ end
 -- @local
 --
 function BundleQuestGeneration.Local:Install()
-    
+
 end
 
 Core:RegisterBundle("BundleQuestGeneration");

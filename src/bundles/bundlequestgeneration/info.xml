@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
     <name>
-        Questerzeugung
+        <![CDATA[Questerzeugung]]>
     </name>
     <description>
-        Mit diesem Modul können Aufträge per Skript erstellt werden.
+        <![CDATA[Mit diesem Modul können Aufträge per Skript erstellt werden.]]>
     </description>
 
     <dependencies>

@@ -32,36 +32,36 @@ SynfoniaLoader = {
     Data = {
         -- Liste der zu ladenden Bundles.
         LoadOrder  = {
-            
+
             -- Enthält alle Behavior aus der QSB 3.9 ohne größere Änderungen.
             --
-            -- Abhänigkeiiten:    
+            -- Abhänigkeiiten:
             --   keine
             --
             -- Inkompatibelitäten:
             --   keine
-        
+
             {"BundleClassicBehaviors",              true},
 
             -- Enthält die neuen Behavior von Synfonia. Zwar ist dieses Bundle
             -- Unabhänig von den klassischen Behavior, doch ergibt es nicht
             -- viel sinn es alleine zu nutzen.
             --
-            -- Abhänigkeiiten:    
+            -- Abhänigkeiiten:
             --   keine
             --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleSynfoniaBehaviors",             true},
-            
-            -- 
-            
-            {"BundleQuestDebug",                    true},
-            
-            -- 
-            
+
+            --
+
             {"BundleQuestGeneration",               true},
+
+            --
+
+            {"BundleQuestDebug",                    true},
         }
     }
 }

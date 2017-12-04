@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
     <name>
-        Klassische Behavior
+        <![CDATA[Klassische Behavior]]>
     </name>
     <description>
-        Beinhaltet die ursprünglich aus der QSB 3.9 PlusB bekannten Behavior.
+        <![CDATA[Beinhaltet die ursprünglich aus der QSB 3.9 PlusB bekannten 
+        Behavior.]]>
     </description>
 
     <dependencies>

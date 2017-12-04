@@ -5,7 +5,18 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+-- Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher
+-- neuer Möglichkeiten.
+--
+-- Die wichtigste Neuerung ist die Konsole, die es erlaubt Quests direkt über
+-- die Eingabe von Befehlen zu steuern, einzelne einfache Lua-Kommandos im
+-- Spiel auszuführen und sogar komplette Skripte zu laden.
+--
+-- Der Debug kann auf zwei verschiedene Arten Aktiviert werden:
+-- <ol>
+-- <li>Im Skript über API.ActivateDebugMode bz. ActivateDebugMode</li>
+-- <li>Im Questassistenten über Reward_DEBUG</li>
+-- </ol>
 --
 -- @module BundleQuestDebug
 -- @set sort=true
@@ -41,7 +52,7 @@ BundleQuestDebug = {
 -- @param _TraceQuests    Aktiviert Questverfolgung
 -- @param _DevelopingMode Aktiviert Cheats und Konsole
 -- @within User Space
--- 
+--
 function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
     if GUI then
         return;
@@ -49,6 +60,72 @@ function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _Develo
     BundleQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode);
 end
 ActivateDebugMode = API.ActivateDebugMode;
+
+-- -------------------------------------------------------------------------- --
+-- Rewards                                                                    --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Aktiviert den Debug.
+--
+-- <b>Hinweis:</b> Die Option "Quest vor Start prüfen" funktioniert nur, wenn
+-- der Debug im Skript gestartet wird, bevor CreateQuests() ausgeführt wird.
+-- Zu dem Zeitpunkt, wenn ein Quest, der im Assistenten erstellt wurde,
+-- ausgelöst wird, wurde CreateQuests bereits ausgeführt! Es ist daher nicht
+-- mehr möglich die Quests vorab zu prüfen.
+--
+-- @see API.ActivateDebugMode
+--
+-- @param _CheckAtStart   Prüfe Quests zur Erzeugunszeit
+-- @param _CheckAtRun     Prüfe Quests zur Laufzeit
+-- @param _TraceQuests    Aktiviert Questverfolgung
+-- @param _DevelopingMode Aktiviert Cheats und Konsole
+-- @return Table mit Behavior
+-- @within Rewards
+--
+function Reward_DEBUG(...)
+    return b_Reward_DEBUG:new(...);
+end
+
+b_Reward_DEBUG = {
+    Name = "Reward_DEBUG",
+    Description = {
+        en = "Reward: Start the debug mode. See documentation for more information.",
+        de = "Lohn: Startet den Debug-Modus. Für mehr Informationen siehe Dokumentation.",
+    },
+    Parameter = {
+        { ParameterType.Custom,     en = "Check quests beforehand", de = "Quest vor Start prüfen" },
+        { ParameterType.Custom,     en = "Check quest while runtime", de = "Quests zur Laufzeit prüfen" },
+        { ParameterType.Custom,     en = "Use quest trace", de = "Questverfolgung" },
+        { ParameterType.Custom,     en = "Activate developing mode", de = "Testmodus aktivieren" },
+    },
+}
+
+function b_Reward_DEBUG:GetRewardTable(__quest_)
+    return { Reward.Custom, {self, self.CustomFunction} }
+end
+
+function b_Reward_DEBUG:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.CheckAtStart = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 1) then
+        self.CheckWhileRuntime = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 2) then
+        self.UseQuestTrace = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 3) then
+        self.DelepoingMode = AcceptAlternativeBoolean(_Parameter)
+    end
+end
+
+function b_Reward_DEBUG:CustomFunction(__quest_)
+    API.ActivateDebugMode(self.CheckAtStart, self.CheckWhileRuntime, self.UseQuestTrace, self.DelepoingMode);
+end
+
+function b_Reward_DEBUG:GetCustomData(_Index)
+    return {"true","false"};
+end
+
+AddQuestBehavior(b_Reward_DEBUG);
 
 -- -------------------------------------------------------------------------- --
 -- Application Space                                                          --
@@ -61,9 +138,9 @@ ActivateDebugMode = API.ActivateDebugMode;
 --
 -- @within BundleQuestDebug.Global
 -- @local
--- 
+--
 function BundleQuestDebug.Global:Install()
-    
+
     BundleQuestDebug.Global.Data.DebugCommands = {
         -- groupless commands
         {"clear",               BundleQuestDebug.Global.Clear,},
@@ -96,7 +173,7 @@ function BundleQuestDebug.Global:Install()
         {"collectgarbage",      BundleQuestDebug.Global.CollectGarbage,},
         {"dumpmemory",          BundleQuestDebug.Global.CountLuaLoad,},
     }
-    
+
     for k,v in pairs(_G) do
         if type(v) == "table" and v.Name and k == "b_"..v.Name and v.CustomFunction and not v.CustomFunction2 then
             v.CustomFunction2 = v.CustomFunction;
@@ -112,11 +189,13 @@ function BundleQuestDebug.Global:Install()
             end
         end
     end
-    
+
     if BundleQuestGeneration then
-        BundleQuestGeneration.Global.DebugQuests = BundleQuestDebugHelper_DebugQuests;
+        BundleQuestGeneration.Global.DebugQuest = BundleQuestDebug.Global.DebugQuest;
     end
-    
+
+    self:OverwriteCreateQuests();
+
     API.AddSaveGameAction(self.OnSaveGameLoad);
 end
 
@@ -133,77 +212,20 @@ end
 -- @param _DevelopingMode Aktiviert Cheats und Konsole
 -- @within BundleQuestDebug.Global
 -- @local
--- 
+--
 function BundleQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
     if self.Data.DebugModeIsActive then
         return;
     end
     self.Data.DebugModeIsActive = true;
-    
+
     self.Data.CheckAtStart    = _CheckAtStart == true;
     self.Data.CheckAtRun      = _CheckAtRun == true;
     self.Data.TraceQuests     = _TraceQuests == true;
     self.Data.DevelopingMode  = _DevelopingMode == true;
-    
+
     self:ActivateQuestTrace();
     self:ActivateDevelopingMode();
-end
-
----
--- Stellt den Debug nach dem Laden eines Spielstandes wieder her.
--- @local
---
-function BundleQuestDebug.Global.OnSaveGameLoad(_Original)
-    BundleQuestDebug.Global:ActivateDevelopingMode();
-    BundleQuestDebug.Global:ActivateQuestTrace();
-end
-
----
--- Prüft die Quests in der Initalisierungsliste der Quests auf Korrektheit.
---
--- @param _List Liste der Quests
--- @local
---
-BundleQuestDebugHelper_DebugQuests = function(self, _Quest)
-    if BundleQuestDebug.Global.Data.CheckAtStart then
-        if _Quest.Goals then
-            for i=1, #_Quest.Goals, 1 do
-                if type(_Quest.Goals[i][2]) == "table" and type(_Quest.Goals[i][2][1]) == "table" then
-                    if _Quest.Goals[i][2][1].DEBUG and _Quest.Goals[i][2][1]:DEBUG(_Quest) then
-                        return false;
-                    end
-                end
-            end
-        end
-        if _Quest.Reprisals then
-            for i=1, #_Quest.Reprisals, 1 do
-                if type(_Quest.Reprisals[i][2]) == "table" and type(_Quest.Reprisals[i][2][1]) == "table" then
-                    if _Quest.Reprisals[i][2][1].DEBUG and _Quest.Reprisals[i][2][1]:DEBUG(_Quest) then
-                        return false;
-                    end
-                end
-            end
-        end
-        if _Quest.Rewards then
-            for i=1, #_Quest.Rewards, 1 do
-                if type(_Quest.Rewards[i][2]) == "table" and type(_Quest.Rewards[i][2][1]) == "table" then
-                    if _Quest.Rewards[i][2][1].DEBUG and _Quest.Rewards[i][2][1]:DEBUG(_Quest) then
-                        return false;
-                    end
-                end
-            end
-        end
-        if _Quest.Triggers then
-            for i=1, #_Quest.Triggers, 1 do
-                if type(_Quest.Triggers[i][2]) == "table" and type(_Quest.Triggers[i][2][1]) == "table" then
-                    if _Quest.Triggers[i][2][1].DEBUG and _Quest.Triggers[i][2][1]:DEBUG(_Quest) then
-                        return false;
-                    end
-                end
-            end
-        end
-    end
-    return true;
 end
 
 ---
@@ -318,16 +340,16 @@ end
 function BundleQuestDebug.Global:PrintQuests(_Arguments, _Flags)
     local questText         = ""
     local counter            = 0;
-    
+
     local accept = function(_quest, _state)
         return _quest.State == _state;
     end
-        
+
     if _Flags == 3 then
         self:PrintDetail(_Arguments);
         return;
     end
-    
+
     if _Flags == 1 then
         accept = function(_quest, _arg)
             return string.find(_quest.Identifier, _arg);
@@ -335,7 +357,7 @@ function BundleQuestDebug.Global:PrintQuests(_Arguments, _Flags)
     elseif _Flags == 2 then
         _Arguments[2] = QuestState.Active;
     end
-    
+
     for i= 1, Quests[0] do
         if Quests[i] then
             if accept(Quests[i], _Arguments[2]) then
@@ -404,7 +426,7 @@ end
 --
 -- @within BundleQuestDebug.Global
 -- @local
--- 
+--
 function BundleQuestDebug.Global:Clear()
     Logic.ExecuteInLuaLocalState("GUI.ClearNotes()");
 end
@@ -525,6 +547,120 @@ function BundleQuestDebug.Global:QuestReset(_QuestName, _ExactName)
     API.RestartAllQuests(unpack(FoundQuests));
 end
 
+---
+-- Überschreibt CreateQuests, sodass Assistentenquests über das Skript erzeugt 
+-- werden um diese sinnvoll überprüfen zu können.
+--
+-- @within BundleQuestDebug.Global
+-- @local
+--
+function BundleQuestDebug.Global:OverwriteCreateQuests()
+    self.Data.CreateQuestOriginal = CreateQuests;
+    CreateQuests = function()
+        if not BundleQuestDebug.Global.Data.CheckAtStart then
+            BundleQuestDebug.Global.Data.CreateQuestsOriginal();
+            return;
+        end
+
+        local QuestNames = Logic.Quest_GetQuestNames()
+        for i=1, #QuestNames, 1 do
+            local QuestName = QuestNames[i]
+            local QuestData = {Logic.Quest_GetQuestParamter(QuestName)};
+
+            -- Behavior ermitteln
+            local Behaviors = {};
+            local Amount = Logic.Quest_GetQuestNumberOfBehaviors(QuestName);
+            for j=0, Amount-1, 1 do
+                local Name = Logic.Quest_GetQuestBehaviorName(QuestName, j);
+                local Template = GetBehaviorTemplateByName(Name);
+                assert(Template ~= nil);
+
+                local Parameters = Logic.Quest_GetQuestBehaviorParameter(QuestName, j);
+                API.DumpTable(Parameters);
+                table.insert(Behaviors, Template:new(unpack(Parameters)));
+            end
+
+            API.AddQuest {
+                Name        = QuestName,
+                Sender      = QuestData[1],
+                Receiver    = QuestData[2],
+                Time        = QuestData[4],
+                Description = QuestData[5],
+                Suggestion  = QuestData[6],
+                Failure     = QuestData[7],
+                Success     = QuestData[8],
+
+                unpack(Behaviors),
+            }
+        end
+
+        API.StartQuests();
+    end
+end
+
+---
+-- Stellt den Debug nach dem Laden eines Spielstandes wieder her.
+--
+-- @param _Original Referenz auf Save-Funktion
+-- @local
+--
+function BundleQuestDebug.Global.OnSaveGameLoad(_Original)
+    BundleQuestDebug.Global:ActivateDevelopingMode();
+    BundleQuestDebug.Global:ActivateQuestTrace();
+end
+
+---
+-- Prüft die Quests in der Initalisierungsliste der Quests auf Korrektheit.
+--
+-- Es können nur Behavior der Typen Goal.Custom, Reprisal.Custom2,
+-- Reward.Custom2 und Triggers.Custom überprüft werden. Die anderen Typen
+-- können nicht debugt werden!
+--
+-- @param _List Liste der Quests
+-- @local
+--
+function BundleQuestDebug.Global.DebugQuest(self, _Quest)
+    if BundleQuestDebug.Global.Data.CheckAtStart then
+        if _Quest.Goals then
+            for i=1, #_Quest.Goals, 1 do
+                if type(_Quest.Goals[i][2]) == "table" and type(_Quest.Goals[i][2][1]) == "table" then
+                    if _Quest.Goals[i][2][1].DEBUG and _Quest.Goals[i][2][1]:DEBUG(_Quest) then
+                        return false;
+                    end
+                end
+            end
+        end
+        if _Quest.Reprisals then
+            for i=1, #_Quest.Reprisals, 1 do
+                if type(_Quest.Reprisals[i][2]) == "table" and type(_Quest.Reprisals[i][2][1]) == "table" then
+                    if _Quest.Reprisals[i][2][1].DEBUG and _Quest.Reprisals[i][2][1]:DEBUG(_Quest) then
+                        return false;
+                    end
+                end
+            end
+        end
+        if _Quest.Rewards then
+            for i=1, #_Quest.Rewards, 1 do
+                if type(_Quest.Rewards[i][2]) == "table" and type(_Quest.Rewards[i][2][1]) == "table" then
+                    if _Quest.Rewards[i][2][1].DEBUG and _Quest.Rewards[i][2][1]:DEBUG(_Quest) then
+                        return false;
+                    end
+                end
+            end
+        end
+        if _Quest.Triggers then
+            for i=1, #_Quest.Triggers, 1 do
+                if type(_Quest.Triggers[i][2]) == "table" and type(_Quest.Triggers[i][2][1]) == "table" then
+                    if _Quest.Triggers[i][2][1].DEBUG and _Quest.Triggers[i][2][1]:DEBUG(_Quest) then
+                        return false;
+                    end
+                end
+            end
+        end
+    end
+    return true;
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -532,9 +668,9 @@ end
 --
 -- @within BundleQuestDebug.Local
 -- @local
--- 
+--
 function BundleQuestDebug.Local:Install()
-    
+
 end
 
 ---
@@ -585,7 +721,7 @@ function BundleQuestDebug.Local:ActivateDevelopingMode()
         g_Chat.JustClosed = 1;
         Game.GameTimeSetFactor( GUI.GetPlayerID(), 1 );
     end
-    
+
     QSB_DEBUG_InputBoxJob = function()
         if not BundleQuestDebug.Local.Data.BoxShown then
             Input.ChatMode();
@@ -601,7 +737,7 @@ function BundleQuestDebug.Local:ActivateDevelopingMode()
             return true;
         end
     end
-    
+
     Input.KeyBindDown(
         Keys.ModifierShift + Keys.OemPipe,
         "StartSimpleJob('QSB_DEBUG_InputBoxJob')",
@@ -611,4 +747,3 @@ function BundleQuestDebug.Local:ActivateDevelopingMode()
 end
 
 Core:RegisterBundle("BundleQuestDebug");
-

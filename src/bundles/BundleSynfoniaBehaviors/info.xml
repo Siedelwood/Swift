@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
     <name>
-        Synfonia Behavior
+        <![CDATA[Synfonia Behavior]]>
     </name>
     <description>
-        Beinhaltet neue Behavior, die es zuvor noch nicht gab.
+        <![CDATA[Beinhaltet neue Behavior, die es zuvor noch nicht gab.]]>
     </description>
 
     <dependencies>

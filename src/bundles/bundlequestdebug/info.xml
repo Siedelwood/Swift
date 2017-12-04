@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
     <name>
-        Debug
+        <![CDATA[Debug]]>
     </name>
     <description>
-        Fügt den DEBUG-Mode inklusive Zugriff auf Queststrukturen über Shellkommandos und Cheats hinzu.
+        <![CDATA[Fügt den DEBUG-Mode inklusive Zugriff auf Queststrukturen 
+        über Shellkommandos und Cheats hinzu. Der Debug kann zudem Quests 
+        kontrollieren. Fehlerhafte Quests werden nicht gestartet und eine 
+        Fehlermeldung wird ausgegeben.]]>
     </description>
 
     <dependencies>
+        <dependency>BundleQuestGeneration</dependency>
     </dependencies>
 
     <exclusions>
