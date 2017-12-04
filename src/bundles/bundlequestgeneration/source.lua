@@ -5,7 +5,9 @@
 -- -------------------------------------------------------------------------- --
 
 ---
+-- Mit diesem Modul können Aufträge per Skript erstellt werden.
 --
+-- 
 --
 -- @module BundleQuestGeneration
 -- @set sort=true
@@ -344,3 +346,4 @@ function BundleQuestGeneration.Local:Install()
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
+

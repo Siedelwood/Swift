@@ -1830,3 +1830,4 @@ function BundleSynfoniaBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleSynfoniaBehaviors");
+

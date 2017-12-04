@@ -4,7 +4,7 @@
         <![CDATA[Synfonia Behavior]]>
     </name>
     <description>
-        <![CDATA[Beinhaltet neue Behavior, die es zuvor noch nicht gab.]]>
+        <![CDATA[Dieses Bundle enthält einige weitere nützliche Standard-Behavior.]]>
     </description>
 
     <dependencies>

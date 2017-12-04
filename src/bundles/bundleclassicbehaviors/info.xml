@@ -4,8 +4,7 @@
         <![CDATA[Klassische Behavior]]>
     </name>
     <description>
-        <![CDATA[Beinhaltet die ursprünglich aus der QSB 3.9 PlusB bekannten 
-        Behavior.]]>
+        <![CDATA[Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.]]>
     </description>
 
     <dependencies>

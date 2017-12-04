@@ -747,3 +747,4 @@ function BundleQuestDebug.Local:ActivateDevelopingMode()
 end
 
 Core:RegisterBundle("BundleQuestDebug");
+
