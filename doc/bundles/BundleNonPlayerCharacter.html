@@ -1,0 +1,768 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#NonPlayerCharacter">NonPlayerCharacter</a></li>
+<li><a href="#Behavior">Behavior</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><strong>BundleNonPlayerCharacter</strong></li>
+  <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSynfoniaBehaviors.html">BundleSynfoniaBehaviors</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SynfoniaCore.html">SynfoniaCore</a></li>
+  <li><a href="../scripts/SynfoniaLoader.html">SynfoniaLoader</a></li>
+  <li><a href="../scripts/SynfoniaWriter.html">SynfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleNonPlayerCharacter</code></h1>
+<p>Implementiert ansprechbare Spielfiguren.</p>
+<p> Ein NPC wird angesprochen, indem
+ man mit einem selektierten Held über ihn zeigt. Der Mauszeiger wird zu einer
+ Hand. Klickt man dann links, wird sich der Held zum NPC bewegen. Sobald er
+ ihn errecht, wird eine Aktion ausgeführt.
+<p> Folgt ein NPC einem Helden, wird er stehen bleiben, wenn der Held zu weit
+ entfernt ist. Wenn ein Ziel angegeben ist, dann wird das Callback erst
+ ausgelöst, wenn man den NPC in der Nähe des Ziels anspricht. Ist kein
+ Ziel angegeben, wird das Callback niemals ausgelöst.
+ Optional kann eine Action angegeben werden, die anstelle des Callback
+ ausgeführt wird, wenn das Ziel nicht erreicht ist.
+<p> Führt ein NPC einen Helden, wird er stehen bleiben, wenn der Held zu weit
+ entfernt ist. Andernfalls bewegt sich der NPC zum Zielpunkt. Das Callback
+ wird nur ausgelöst, wenn sich der NPC in der Nähe des Ziels befindet. Es
+ kann eine Action angegeben werden, die anstelle des Callback ausgeführt
+ wird, wenn das Ziel nicht erreicht ist.
+</p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">-- Einfachen NPC erzeugen:
+local NPC = NonPlqyerCharacter:New(&quot;npc&quot;)
+             :SetDialogPartner(&quot;hero&quot;)               -- Optional
+             :SetCallback(Briefing1)                 -- Optional
+             :Activate();
+
+-- Folgenden NPC erzeugen:
+local NPC = NonPlqyerCharacter:New(&quot;npc&quot;)
+             :SetDialogPartner(&quot;hero&quot;)               -- Optional
+             :SetFollowTarget(&quot;hero&quot;)
+             :SetFollowDestination(&quot;destination&quot;)    -- Optional
+             :SetFollowAction(NotArrivedFunction)    -- Optional
+             :SetCallback(Briefing1)                 -- Optional
+             :Activate();
+
+-- Führenden NPC erzeugen:
+local NPC = NonPlqyerCharacter:New(&quot;npc&quot;)
+             :SetDialogPartner(&quot;hero&quot;)               -- Optional
+             :SetGuideParams(&quot;destination&quot;, &quot;hero&quot;)
+             :SetGuideAction(NotArrivedFunction)     -- Optional
+             :SetCallback(Briefing1)                 -- Optional
+             :Activate();
+
+-- NPC deaktivieren:
+NPC:Deactivate();
+
+-- NPC erneut aktivieren:
+NPC:Reset():Activate();
+
+-- NPC löschen:
+NPC:Dispose();
+</pre>
+    </ul>
+
+
+<h2><a href="#NonPlayerCharacter">NonPlayerCharacter</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate ()</a></td>
+	<td class="summary"><p>Aktiviert den NPC.</p>
+
+ <p><b>Alias:</b> NonPlayerCharacter:Activate</p></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate ()</a></td>
+	<td class="summary"><p>Deaktiviert den NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose ()</a></td>
+	<td class="summary">Löscht einen NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId">BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId ()</a></td>
+	<td class="summary">Gibt die Entity ID des letzten Helden zurück, der einen NPC
+ angesprochen hat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID">BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID ()</a></td>
+	<td class="summary">Gibt die Entity ID des NPC zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance">BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance (_ScriptName)</a></td>
+	<td class="summary">Gibt die Inztanz des NPC mit dem angegebenen Skriptnamen zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId">BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId ()</a></td>
+	<td class="summary">Gibt die Entity ID des letzten angesprochenen NPC zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo">BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo ()</a></td>
+	<td class="summary">Gibt true zurück, wenn der NPC angesprochen wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive">BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive ()</a></td>
+	<td class="summary">Gibt true zurück, wenn der NPC aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:New">BundleNonPlayerCharacter.Global.NonPlayerCharacter:New (_ScriptName)</a></td>
+	<td class="summary">Erzeugt eine neue Instanz von NonPlayerCharacter für das Entity
+ mit dem angegebenen Skriptnamen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset ()</a></td>
+	<td class="summary">Setzt den NPC zurück, sodass er erneut aktiviert werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback (_Callback)</a></td>
+	<td class="summary">Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner (_HeroName)</a></td>
+	<td class="summary">Setzt den Ansprechpartner für diesen NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowAction">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowAction (_Function)</a></td>
+	<td class="summary">Setzt die Funktion, die während ein NPC einem Helden folgt und
+ das Ziel noch nicht erreicht ist, anstelle des Callback beim
+ Ansprechen ausgeführt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowDestination">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowDestination (_ScriptName)</a></td>
+	<td class="summary">Setzt das Ziel, zu dem der NPC vom Helden geführt werden
+ muss.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowTarget">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowTarget (_ScriptName)</a></td>
+	<td class="summary">Setzt den Helden, dem der NPC folgt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideAction">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideAction (_Function)</a></td>
+	<td class="summary">Setzt die Funktion, die während ein NPC einen Helden führt und
+ das Ziel noch nicht erreicht ist, anstelle des Callback beim
+ Ansprechen ausgeführt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideParams">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideParams (_ScriptName, _Target)</a></td>
+	<td class="summary">Setzt das Ziel zu dem der NPC läuft und den Helden, der dem
+ NPC folgen muss.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback (_Callback)</a></td>
+	<td class="summary">Setzt das Callback für den Fall, dass ein falscher Held den
+ NPC anspricht.</td>
+	</tr>
+</table>
+<h2><a href="#Behavior">Behavior</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Goal_NPC">Goal_NPC (_NpcName, _HeroName)</a></td>
+	<td class="summary">Der Held muss einen Nichtspielercharakter ansprechen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_NPC">Trigger_NPC (_NpcName, _HeroName)</a></td>
+	<td class="summary">Startet den Quest, sobald der NPC angesprochen wurde.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="NonPlayerCharacter"></a>NonPlayerCharacter</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate ()</strong>
+    </dt>
+    <dd>
+    <p>Aktiviert den NPC.</p>
+
+ <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate ()</strong>
+    </dt>
+    <dd>
+    <p>Deaktiviert den NPC.
+
+ <p><b>Alias:</b> NonPlayerCharacter:Deactivate</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose ()</strong>
+    </dt>
+    <dd>
+    Löscht einen NPC.
+<p> <b>Alias:</b> NonPlayerCharacter:Dispose
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des letzten Helden zurück, der einen NPC
+ angesprochen hat.
+<p> <b>Alias:</b> NonPlayerCharacter:GetHeroId
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des NPC zurück.  Ist der NPC ein Leader, wird
+ der erste Soldat zurückgegeben, wenn es einen gibt.
+<p> <b>Alias:</b> NonPlayerCharacter:GetID
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Gibt die Inztanz des NPC mit dem angegebenen Skriptnamen zurück.
+ Handelt es sich um einen Soldaten, wird versucht die Instanz
+ über den Leader zu ermitteln.
+<p> <b>Alias:</b> NonPlayerCharacter:GetInstance
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des NPC
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des letzten angesprochenen NPC zurück.
+<p> <b>Alias:</b> NonPlayerCharacter:GetNpcId
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo ()</strong>
+    </dt>
+    <dd>
+    Gibt true zurück, wenn der NPC angesprochen wurde.  Ist ein
+ spezieller Ansprechpartner definiert, wird nur dann true
+ zurückgegeben, wenn dieser Held mit dem NPC spricht.
+<p> <b>Alias:</b> NonPlayerCharacter:HasTalkedTo
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive ()</strong>
+    </dt>
+    <dd>
+    Gibt true zurück, wenn der NPC aktiv ist.
+<p> <b>Alias:</b> NonPlayerCharacter:IsActive
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:New"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:New (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine neue Instanz von NonPlayerCharacter für das Entity
+ mit dem angegebenen Skriptnamen.
+<p> <b>Alias:</b> NonPlayerCharacter:New
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des NPC
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset ()</strong>
+    </dt>
+    <dd>
+    Setzt den NPC zurück, sodass er erneut aktiviert werden kann.
+<p> <b>Alias:</b> NonPlayerCharacter:Reset
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback (_Callback)</strong>
+    </dt>
+    <dd>
+    Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.
+<p> <b>Alias:</b> NonPlayerCharacter:SetCallback
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Callback</span>
+             Callback
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner (_HeroName)</strong>
+    </dt>
+    <dd>
+    Setzt den Ansprechpartner für diesen NPC.
+<p> <b>Alias:</b> NonPlayerCharacter:SetDialogPartner
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_HeroName</span>
+             Skriptname des Helden
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowAction"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowAction (_Function)</strong>
+    </dt>
+    <dd>
+    Setzt die Funktion, die während ein NPC einem Helden folgt und
+ das Ziel noch nicht erreicht ist, anstelle des Callback beim
+ Ansprechen ausgeführt wird.
+<p> <b>Alias:</b> NonPlayerCharacter:SetFollowAction
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+             Action
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowDestination"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowDestination (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Setzt das Ziel, zu dem der NPC vom Helden geführt werden
+ muss.  Wenn ein Ziel erreicht wird, kann der NPC erst dann
+ angesprochen werden, wenn das Ziel erreicht ist.
+<p> <b>Alias:</b> NonPlayerCharacter:SetFollowDestination
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+             Skriptname des Ziel
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowTarget"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowTarget (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Setzt den Helden, dem der NPC folgt.  Ist Kein Ziel gesetzt,
+ folgt der NPC dem Helden unbegrenzt.
+<p> <b>Alias:</b> NonPlayerCharacter:SetFollowTarget
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+             Skriptname des Helden
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideAction"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideAction (_Function)</strong>
+    </dt>
+    <dd>
+    Setzt die Funktion, die während ein NPC einen Helden führt und
+ das Ziel noch nicht erreicht ist, anstelle des Callback beim
+ Ansprechen ausgeführt wird.
+<p> <b>Alias:</b> NonPlayerCharacter:SetGuideAction
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+             Action
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideParams"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideParams (_ScriptName, _Target)</strong>
+    </dt>
+    <dd>
+    Setzt das Ziel zu dem der NPC läuft und den Helden, der dem
+ NPC folgen muss.
+<p> <b>Alias:</b> NonPlayerCharacter:SetGuideParams
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+             Skriptname des Ziel
+        </li>
+        <li><span class="parameter">_Target</span>
+                 Striptname des Helden
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback (_Callback)</strong>
+    </dt>
+    <dd>
+    Setzt das Callback für den Fall, dass ein falscher Held den
+ NPC anspricht.
+<p> <b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Callback</span>
+             Callback
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Behavior"></a>Behavior</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Goal_NPC"></a>
+    <strong>Goal_NPC (_NpcName, _HeroName)</strong>
+    </dt>
+    <dd>
+    Der Held muss einen Nichtspielercharakter ansprechen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_NpcName</span>
+          Skriptname des NPC
+        </li>
+        <li><span class="parameter">_HeroName</span>
+         Skriptname des Helden (optional)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_NPC"></a>
+    <strong>Trigger_NPC (_NpcName, _HeroName)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald der NPC angesprochen wurde.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_NpcName</span>
+          Skriptname des NPC
+        </li>
+        <li><span class="parameter">_HeroName</span>
+         Skriptname des Helden (optional)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-12-05 22:03:10 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

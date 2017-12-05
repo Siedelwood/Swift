@@ -74,6 +74,17 @@ SynfoniaLoader = {
             --   keine
 
             {"BundleQuestDebug",                    true},
+            
+            -- Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen. 
+            -- Interaktion mit ihnen löst eine beliebige Funktion aus.
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleNonPlayerCharacter",            true},
         }
     }
 }

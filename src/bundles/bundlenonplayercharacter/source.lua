@@ -26,12 +26,13 @@
 -- @module BundleNonPlayerCharacter
 -- @set sort=true
 --
--- @usage -- Einfachen NPC erzeugen:
+-- @usage
+-- -- Einfachen NPC erzeugen:
 -- local NPC = NonPlqyerCharacter:New("npc")
 --              :SetDialogPartner("hero")               -- Optional
 --              :SetCallback(Briefing1)                 -- Optional
 --              :Activate();
---
+-- 
 -- -- Folgenden NPC erzeugen:
 -- local NPC = NonPlqyerCharacter:New("npc")
 --              :SetDialogPartner("hero")               -- Optional
@@ -81,12 +82,14 @@ BundleNonPlayerCharacter = {
 ---
 -- Erzeugt eine neue Instanz von NonPlayerCharacter für das Entity
 -- mit dem angegebenen Skriptnamen.
--- @param _ScriptName Skriptname des NPC
 --
+-- <b>Alias:</b> NonPlayerCharacter:New
+--
+-- @param _ScriptName Skriptname des NPC
 -- @return object
 -- @within NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(self, _ScriptName)
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
     assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
     assert(IsExisting(_ScriptName), 'entity "' .._ScriptName.. '" does not exist!');
     
@@ -100,6 +103,8 @@ end
 -- Gibt die Inztanz des NPC mit dem angegebenen Skriptnamen zurück.
 -- Handelt es sich um einen Soldaten, wird versucht die Instanz
 -- über den Leader zu ermitteln.
+--
+-- <b>Alias:</b> NonPlayerCharacter:GetInstance
 --
 -- @param _ScriptName Skriptname des NPC
 -- @return object
@@ -121,6 +126,8 @@ end
 ---
 -- Gibt die Entity ID des letzten angesprochenen NPC zurück.
 --
+-- <b>Alias:</b> NonPlayerCharacter:GetNpcId
+--
 -- @return number
 -- @within NonPlayerCharacter
 --
@@ -133,6 +140,8 @@ end
 -- Gibt die Entity ID des letzten Helden zurück, der einen NPC
 -- angesprochen hat.
 --
+-- <b>Alias:</b> NonPlayerCharacter:GetHeroId
+--
 -- @return number
 -- @within NonPlayerCharacter
 --
@@ -144,6 +153,8 @@ end
 ---
 -- Gibt die Entity ID des NPC zurück. Ist der NPC ein Leader, wird
 -- der erste Soldat zurückgegeben, wenn es einen gibt.
+--
+-- <b>Alias:</b> NonPlayerCharacter:GetID
 --
 -- @return number
 -- @within NonPlayerCharacter
@@ -162,6 +173,9 @@ end
 
 ---
 -- Löscht einen NPC.
+--
+-- <b>Alias:</b> NonPlayerCharacter:Dispose
+--
 -- @within NonPlayerCharacter
 -- 
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose()
@@ -171,7 +185,10 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose()
 end
 
 ---
--- Aktiviert den NPC.
+-- <p>Aktiviert den NPC.</p>
+-- 
+-- <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
+--
 -- @return self
 -- @within NonPlayerCharacter
 --
@@ -184,7 +201,10 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate()
 end
 
 ---
--- Deaktiviert den NPC.
+-- <p>Deaktiviert den NPC.
+-- 
+-- <p><b>Alias:</b> NonPlayerCharacter:Deactivate</p>
+--
 -- @return self
 -- @within NonPlayerCharacter
 --
@@ -199,6 +219,8 @@ end
 ---
 -- Gibt true zurück, wenn der NPC aktiv ist.
 --
+-- <b>Alias:</b> NonPlayerCharacter:IsActive
+--
 -- @return boolean
 -- @within NonPlayerCharacter
 --
@@ -209,6 +231,9 @@ end
 
 ---
 -- Setzt den NPC zurück, sodass er erneut aktiviert werden kann.
+--
+-- <b>Alias:</b> NonPlayerCharacter:Reset
+--
 -- @return self
 -- @within NonPlayerCharacter
 --
@@ -226,6 +251,8 @@ end
 -- spezieller Ansprechpartner definiert, wird nur dann true
 -- zurückgegeben, wenn dieser Held mit dem NPC spricht.
 --
+-- <b>Alias:</b> NonPlayerCharacter:HasTalkedTo
+--
 -- @return boolean
 -- @within NonPlayerCharacter
 --
@@ -239,6 +266,9 @@ end
 
 ---
 -- Setzt den Ansprechpartner für diesen NPC.
+--
+-- <b>Alias:</b> NonPlayerCharacter:SetDialogPartner
+--
 -- @param _HeroName     Skriptname des Helden
 -- @return self
 -- @within NonPlayerCharacter
@@ -252,6 +282,9 @@ end
 ---
 -- Setzt das Callback für den Fall, dass ein falscher Held den
 -- NPC anspricht.
+--
+-- <b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback
+--
 -- @param _Callback     Callback
 -- @return self
 -- @within NonPlayerCharacter
@@ -266,6 +299,9 @@ end
 -- Setzt das Ziel, zu dem der NPC vom Helden geführt werden
 -- muss. Wenn ein Ziel erreicht wird, kann der NPC erst dann
 -- angesprochen werden, wenn das Ziel erreicht ist.
+--
+-- <b>Alias:</b> NonPlayerCharacter:SetFollowDestination
+--
 -- @param _ScriptName     Skriptname des Ziel
 -- @return self
 -- @within NonPlayerCharacter
@@ -279,6 +315,9 @@ end
 ---
 -- Setzt den Helden, dem der NPC folgt. Ist Kein Ziel gesetzt,
 -- folgt der NPC dem Helden unbegrenzt.
+--
+-- <b>Alias:</b> NonPlayerCharacter:SetFollowTarget
+--
 -- @param _ScriptName     Skriptname des Helden
 -- @return self
 -- @within NonPlayerCharacter
@@ -293,6 +332,9 @@ end
 -- Setzt die Funktion, die während ein NPC einem Helden folgt und
 -- das Ziel noch nicht erreicht ist, anstelle des Callback beim
 -- Ansprechen ausgeführt wird.
+--
+-- <b>Alias:</b> NonPlayerCharacter:SetFollowAction
+--
 -- @param _Function     Action
 -- @return self
 -- @within NonPlayerCharacter
@@ -305,6 +347,9 @@ end
 ---
 -- Setzt das Ziel zu dem der NPC läuft und den Helden, der dem
 -- NPC folgen muss.
+--
+-- <b>Alias:</b> NonPlayerCharacter:SetGuideParams
+--
 -- @param _ScriptName     Skriptname des Ziel
 -- @param _Target         Striptname des Helden
 -- @return self
@@ -321,6 +366,9 @@ end
 -- Setzt die Funktion, die während ein NPC einen Helden führt und
 -- das Ziel noch nicht erreicht ist, anstelle des Callback beim
 -- Ansprechen ausgeführt wird.
+--
+-- <b>Alias:</b> NonPlayerCharacter:SetGuideAction
+--
 -- @param _Function     Action
 -- @return self
 -- @within NonPlayerCharacter
@@ -333,6 +381,9 @@ end
 
 ---
 -- Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.
+--
+-- <b>Alias:</b> NonPlayerCharacter:SetCallback
+--
 -- @param _Callback     Callback
 -- @return self
 -- @within NonPlayerCharacter
@@ -391,7 +442,7 @@ function b_Goal_NPC:GetIcon()
     return {14,10}
 end
 
-AddQuestBehavior(b_Goal_NPC);
+Core:RegisterBehavior(b_Goal_NPC);
 
 -- -------------------------------------------------------------------------- --
 
@@ -462,7 +513,7 @@ function b_Trigger_NPC:DEBUG(__quest_)
     return false;
 end
 
-AddQuestBehavior(b_Trigger_NPC);
+Core:RegisterBehavior(b_Trigger_NPC);
 
 -- -------------------------------------------------------------------------- --
 -- Application Space                                                          --

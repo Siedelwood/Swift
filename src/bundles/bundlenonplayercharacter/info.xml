@@ -4,7 +4,7 @@
         <![CDATA[Charakterinteraktion]]>
     </name>
     <description>
-        <![CDATA[]]>
+        <![CDATA[Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen. Interaktion mit ihnen löst eine beliebige Funktion aus.]]>
     </description>
 
     <dependencies>
