@@ -190,7 +190,7 @@ function b_Goal_StealGold:SetDescriptionOverwrite(__quest_)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     local amount = self.Amount-self.StohlenGold;
     amount = (amount > 0 and amount) or 0;
-    local text = Umlaute{
+    local text = {
         de = "Gold stehlen {cr}{cr}Aus Stadtgebäuden zu stehlende Goldmenge: ",
         en = "Steal gold {cr}{cr}Amount on gold to steal from city buildings: ",
     };
@@ -275,17 +275,17 @@ function b_Goal_StealBuilding:SetDescriptionOverwrite(__quest_)
     local text;
 
     if isCathedral then
-        text = Umlaute{
+        text = {
             de = "Sabotage {cr}{cr} Sabotiert die mit Pfeil markierte Kirche.",
             en = "Sabotage {cr}{cr} Sabotage the Church of the opponent.",
         };
     elseif isWarehouse then
-        text = Umlaute{
+        text = {
             de = "Lagerhaus bestehlen {cr}{cr} Sendet einen Dieb in das markierte Lagerhaus.",
             en = "Steal from storehouse {cr}{cr} Steal from the marked storehouse.",
         };
     else
-        text = Umlaute{
+        text = {
             de = "Geb�ude bestehlen {cr}{cr} Bestehlt das durch einen Pfeil markierte Gebäude.",
             en = "Steal from building {cr}{cr} Steal from the building marked by an arrow.",
         };
@@ -404,8 +404,8 @@ end
 function b_Goal_Infiltrate:SetDescriptionOverwrite(__quest_)
     if not __quest_.QuestDescription then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-        local text = Umlaute{
-            de = "Geb�ude infriltrieren {cr}{cr}Spioniere das markierte Geb�ude mit einem Dieb aus!",
+        local text = {
+            de = "Gebäude infriltrieren {cr}{cr}Spioniere das markierte Gebäude mit einem Dieb aus!",
             en = "Infiltrate building {cr}{cr}Spy on the highlighted buildings with a thief!",
         };
         return text[lang];
@@ -1689,7 +1689,7 @@ function BundleSynfoniaBehaviors.Global:Install()
                             Quests[i].Objectives[j].Data[1].StohlenGold = Quests[i].Objectives[j].Data[1].StohlenGold + _GoodAmount;
                             if Quests[i].Objectives[j].Data[1].Printout then
                                 local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-                                local msg  = Umlaute{de = "Talern gestohlen",en = "gold stolen",};
+                                local msg  = {de = "Talern gestohlen",en = "gold stolen",};
                                 local curr = Quests[i].Objectives[j].Data[1].StohlenGold;
                                 local need = Quests[i].Objectives[j].Data[1].Amount;
                                 API.Note(string.format("%d/%d %s", curr, need, msg[lang]));

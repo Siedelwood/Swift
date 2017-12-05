@@ -2584,7 +2584,7 @@ function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
         local str = _Parameter;
         self.Password = {};
 
-        str = Umlaute(str);
+        str = str;
         str = string.lower(str);
         str = string.gsub(str, " ", "");
         while (string.len(str) > 0)
@@ -2632,17 +2632,17 @@ function b_Goal_InputDialog:CustomFunction(_Quest)
             if self.Password then
 
                 self.shown = nil
-                _G[self.Variable] = Umlaute(_G[self.Variable]);
+                _G[self.Variable] = _G[self.Variable];
                 _G[self.Variable] = string.lower(_G[self.Variable]);
                 _G[self.Variable] = string.gsub(_G[self.Variable], " ", "");
                 if Inside(_G[self.Variable], self.Password) then
                     return true
                 elseif self.TryTillCorrect and ( self.TryTillCorrect == -1 or self.TryCounter > 0 ) then
-                    Logic.DEBUG_AddNote(Umlaute(self.Message));
+                    Logic.DEBUG_AddNote(self.Message);
                     _G[self.Variable] = nil
                     return
                 else
-                    Logic.DEBUG_AddNote(Umlaute(self.Message));
+                    Logic.DEBUG_AddNote(self.Message);
                     _G[self.Variable] = nil
                     return false
                 end

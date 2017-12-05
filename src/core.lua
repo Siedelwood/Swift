@@ -1037,7 +1037,7 @@ end
 -- @local
 --
 function Core:ChangeCustomQuestCaptionText(_Text, _Quest)
-    _Quest.QuestDescription = Umlaute(__text_);
+    _Quest.QuestDescription = _Text;
     Logic.ExecuteInLuaLocalState([[
         XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/BGDeco",0)
         local identifier = "]].._Quest.Identifier..[["
