@@ -57,13 +57,13 @@ BundleNonPlayerCharacter = {
 -- @within NonPlayerCharacter
 --
 -- @usage -- Einfachen NPC erzeugen:
--- local NPC = NonPlqyerCharacter:New("npc")
+-- local NPC = NonPlayerCharacter:New("npc")
 --              :SetDialogPartner("hero")               -- Optional
 --              :SetCallback(Briefing1)                 -- Optional
 --              :Activate();
 --
 -- -- Folgenden NPC erzeugen:
--- local NPC = NonPlqyerCharacter:New("npc")
+-- local NPC = NonPlayerCharacter:New("npc")
 --              :SetDialogPartner("hero")               -- Optional
 --              :SetFollowTarget("hero")
 --              :SetFollowDestination("destination")    -- Optional
@@ -72,7 +72,7 @@ BundleNonPlayerCharacter = {
 --              :Activate();
 --
 -- -- Führenden NPC erzeugen:
--- local NPC = NonPlqyerCharacter:New("npc")
+-- local NPC = NonPlayerCharacter:New("npc")
 --              :SetDialogPartner("hero")               -- Optional
 --              :SetGuideParams("destination", "hero")
 --              :SetGuideAction(NotArrivedFunction)     -- Optional
@@ -85,7 +85,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
     
     local npc = CopyTableRecursive(self);
     npc.Data.NpcName = _ScriptName;
-    BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[_ScriptName] = npc;
+    QSB.NonPlayerCharacterObjects[_ScriptName] = npc;
     return npc;
 end
 
@@ -99,7 +99,7 @@ end
 -- @param _ScriptName Skriptname des NPC
 -- @return object
 -- @within NonPlayerCharacter
--- usage -- NPC ermitteln
+-- @usage -- NPC ermitteln
 -- local NPC = NonPlayerCharacter:GetInstance("horst");
 -- -- Etwas mit dem NPC tun
 -- NPC:SetDialogPartner("hilda");
@@ -114,7 +114,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance(_ScriptN
             ScriptName = Logic.GetEntityName(LeaderID);
         end
     end
-    return BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[ScriptName];
+    return QSB.NonPlayerCharacterObjects[ScriptName];
 end
 
 ---
@@ -178,15 +178,15 @@ end
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
     self:Deactivate();
-    BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[self.Data.NpcName] = nil;
+    QSB.NonPlayerCharacterObjects[self.Data.NpcName] = nil;
 end
 
 ---
--- <p>Aktiviert den NPC.</p>
+-- Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.
 -- 
 -- <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
 --
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @usage -- NPC aktivieren:
 -- NPC:Activate();
@@ -200,11 +200,11 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate()
 end
 
 ---
--- <p>Deaktiviert den NPC.
+-- Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.
 -- 
 -- <p><b>Alias:</b> NonPlayerCharacter:Deactivate</p>
 --
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @usage -- NPC deaktivieren:
 -- NPC:Deactivate();
@@ -218,9 +218,9 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate()
 end
 
 ---
--- Gibt true zurück, wenn der NPC aktiv ist.
+-- <p>Gibt true zurück, wenn der NPC aktiv ist.</p>
 --
--- <b>Alias:</b> NonPlayerCharacter:IsActive
+-- <p><b>Alias:</b> NonPlayerCharacter:IsActive</p>
 --
 -- @return boolean
 -- @within NonPlayerCharacter
@@ -235,7 +235,7 @@ end
 --
 -- <b>Alias:</b> NonPlayerCharacter:Reset
 --
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset()
@@ -271,7 +271,7 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:SetDialogPartner
 --
 -- @param _HeroName     Skriptname des Helden
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner(_HeroName)
@@ -287,7 +287,7 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback
 --
 -- @param _Callback     Callback
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback(_Callback)
@@ -304,7 +304,7 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:SetFollowDestination
 --
 -- @param _ScriptName     Skriptname des Ziel
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowDestination(_ScriptName)
@@ -320,7 +320,7 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:SetFollowTarget
 --
 -- @param _ScriptName     Skriptname des Helden
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowTarget(_ScriptName)
@@ -337,7 +337,7 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:SetFollowAction
 --
 -- @param _Function     Action
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowAction(_Function)
@@ -353,7 +353,7 @@ end
 --
 -- @param _ScriptName     Skriptname des Ziel
 -- @param _Target         Striptname des Helden
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideParams(_ScriptName, _Target)
@@ -371,7 +371,7 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:SetGuideAction
 --
 -- @param _Function     Action
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideAction(_Function)
@@ -386,7 +386,7 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:SetCallback
 --
 -- @param _Callback     Callback
--- @return self
+-- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback(_Callback)
@@ -535,7 +535,7 @@ function BundleNonPlayerCharacter.Global:Install()
     --
     StartSimpleJobEx( function()
         for k, v in pairs(
-            BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects
+            QSB.NonPlayerCharacterObjects
         ) do
             NonPlayerCharacter:Control(k);
         end

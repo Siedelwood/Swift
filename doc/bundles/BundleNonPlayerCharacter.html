@@ -40,6 +40,7 @@
 <h2>Bundles</h2>
 <ul class="nowrap">
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
   <li><strong>BundleNonPlayerCharacter</strong></li>
   <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
   <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
@@ -74,54 +75,17 @@
  kann eine Action angegeben werden, die anstelle des Callback ausgeführt
  wird, wenn das Ziel nicht erreicht ist.
 </p>
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">-- Einfachen NPC erzeugen:
-local NPC = NonPlqyerCharacter:New(&quot;npc&quot;)
-             :SetDialogPartner(&quot;hero&quot;)               -- Optional
-             :SetCallback(Briefing1)                 -- Optional
-             :Activate();
-
--- Folgenden NPC erzeugen:
-local NPC = NonPlqyerCharacter:New(&quot;npc&quot;)
-             :SetDialogPartner(&quot;hero&quot;)               -- Optional
-             :SetFollowTarget(&quot;hero&quot;)
-             :SetFollowDestination(&quot;destination&quot;)    -- Optional
-             :SetFollowAction(NotArrivedFunction)    -- Optional
-             :SetCallback(Briefing1)                 -- Optional
-             :Activate();
-
--- Führenden NPC erzeugen:
-local NPC = NonPlqyerCharacter:New(&quot;npc&quot;)
-             :SetDialogPartner(&quot;hero&quot;)               -- Optional
-             :SetGuideParams(&quot;destination&quot;, &quot;hero&quot;)
-             :SetGuideAction(NotArrivedFunction)     -- Optional
-             :SetCallback(Briefing1)                 -- Optional
-             :Activate();
-
--- NPC deaktivieren:
-NPC:Deactivate();
-
--- NPC erneut aktivieren:
-NPC:Reset():Activate();
-
--- NPC löschen:
-NPC:Dispose();
-</pre>
-    </ul>
 
 
 <h2><a href="#NonPlayerCharacter">NonPlayerCharacter</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate ()</a></td>
-	<td class="summary"><p>Aktiviert den NPC.</p>
-
- <p><b>Alias:</b> NonPlayerCharacter:Activate</p></td>
+	<td class="summary">Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate ()</a></td>
-	<td class="summary"><p>Deaktiviert den NPC.</td>
+	<td class="summary">Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose ()</a></td>
@@ -150,7 +114,7 @@ NPC:Dispose();
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive">BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive ()</a></td>
-	<td class="summary">Gibt true zurück, wenn der NPC aktiv ist.</td>
+	<td class="summary"><p>Gibt true zurück, wenn der NPC aktiv ist.</p></td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:New">BundleNonPlayerCharacter.Global.NonPlayerCharacter:New (_ScriptName)</a></td>
@@ -225,20 +189,26 @@ NPC:Dispose();
     <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate ()</strong>
     </dt>
     <dd>
-    <p>Aktiviert den NPC.</p>
+    Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.
 
  <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
+
 
 
 
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC aktivieren:
+</span>NPC:Activate();</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -246,7 +216,7 @@ NPC:Dispose();
     <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate ()</strong>
     </dt>
     <dd>
-    <p>Deaktiviert den NPC.
+    Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.
 
  <p><b>Alias:</b> NonPlayerCharacter:Deactivate</p>
 
@@ -256,11 +226,16 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC deaktivieren:
+</span>NPC:Deactivate();</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -277,6 +252,11 @@ NPC:Dispose();
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC löschen
+</span>NPC:Dispose();</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -350,6 +330,13 @@ NPC:Dispose();
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC ermitteln
+</span><span class="keyword">local</span> NPC = NonPlayerCharacter:GetInstance(<span class="string">"horst"</span>);
+<span class="comment">-- Etwas mit dem NPC tun
+</span>NPC:SetDialogPartner(<span class="string">"hilda"</span>);</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -401,8 +388,7 @@ NPC:Dispose();
     <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive ()</strong>
     </dt>
     <dd>
-    Gibt true zurück, wenn der NPC aktiv ist.
-<p> <b>Alias:</b> NonPlayerCharacter:IsActive
+    <p>Gibt true zurück, wenn der NPC aktiv ist.</p>  <p><b>Alias:</b> NonPlayerCharacter:IsActive</p>
 
 
 
@@ -443,6 +429,31 @@ NPC:Dispose();
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Einfachen NPC erzeugen:
+</span><span class="keyword">local</span> NPC = NonPlayerCharacter:New(<span class="string">"npc"</span>)
+             :SetDialogPartner(<span class="string">"hero"</span>)               <span class="comment">-- Optional
+</span>             :SetCallback(Briefing1)                 <span class="comment">-- Optional
+</span>             :Activate();
+
+<span class="comment">-- Folgenden NPC erzeugen:
+</span><span class="keyword">local</span> NPC = NonPlayerCharacter:New(<span class="string">"npc"</span>)
+             :SetDialogPartner(<span class="string">"hero"</span>)               <span class="comment">-- Optional
+</span>             :SetFollowTarget(<span class="string">"hero"</span>)
+             :SetFollowDestination(<span class="string">"destination"</span>)    <span class="comment">-- Optional
+</span>             :SetFollowAction(NotArrivedFunction)    <span class="comment">-- Optional
+</span>             :SetCallback(Briefing1)                 <span class="comment">-- Optional
+</span>             :Activate();
+
+<span class="comment">-- Führenden NPC erzeugen:
+</span><span class="keyword">local</span> NPC = NonPlayerCharacter:New(<span class="string">"npc"</span>)
+             :SetDialogPartner(<span class="string">"hero"</span>)               <span class="comment">-- Optional
+</span>             :SetGuideParams(<span class="string">"destination"</span>, <span class="string">"hero"</span>)
+             :SetGuideAction(NotArrivedFunction)     <span class="comment">-- Optional
+</span>             :SetCallback(Briefing1)                 <span class="comment">-- Optional
+</span>             :Activate();</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -459,7 +470,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -486,7 +497,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -513,7 +524,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -542,7 +553,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -571,7 +582,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -599,7 +610,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -628,7 +639,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -659,7 +670,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -687,7 +698,7 @@ NPC:Dispose();
     <h3>Returns:</h3>
     <ol>
 
-        self
+        Instanz von NonPlayerCharacter
     </ol>
 
 
@@ -761,7 +772,7 @@ NPC:Dispose();
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-12-05 22:03:10 </i>
+<i style="float:right;">Last updated 2017-12-06 21:01:52 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
