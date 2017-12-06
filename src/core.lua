@@ -219,9 +219,6 @@ FailQuestsByName = API.FailAllQuests;
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if Quest.RemoveNPCMarkers then
-            Quest:RemoveNPCMarkers();
-        end
         Quest:RemoveQuestMarkers();
         Quest:Fail();
     end
@@ -241,7 +238,7 @@ function API.RestartAllQuests(...)
         API.RestartQuest(args[i]);
     end
 end
-StartQuestsByName = API.RestartAllQuests;
+RestartQuestsByName = API.RestartAllQuests;
 
 ---
 -- Startet den Quest neu.
@@ -250,7 +247,11 @@ StartQuestsByName = API.RestartAllQuests;
 -- neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
 -- der Quest wird manuell getriggert.
 --
--- <b>Alias:</b> StartQuestByName
+-- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird 
+-- ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion 
+-- angepasst oder überschrieben werden.
+--
+-- <b>Alias:</b> RestartQuestByName
 --
 -- @param _QuestName  Name des Quest
 -- @within User Space
@@ -320,7 +321,7 @@ function API.RestartQuest(_QuestName)
         return QuestID, Quest;
     end
 end
-StartQuestByName = API.StartQuest;
+RestartQuestByName = API.RestartQuest;
 
 ---
 -- Startet eine Liste von Quests.
@@ -386,9 +387,6 @@ StopQuestwByName = API.StopAllQuests;
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if Quest.RemoveNPCMarkers then
-            Quest:RemoveNPCMarkers();
-        end
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
     end
@@ -425,9 +423,6 @@ WinQuestsByName = API.WinAllQuests;
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if Quest.RemoveNPCMarkers then
-            Quest:RemoveNPCMarkers();
-        end
         Quest:RemoveQuestMarkers();
         Quest:Success();
     end
