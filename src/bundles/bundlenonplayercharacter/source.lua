@@ -26,39 +26,6 @@
 -- @module BundleNonPlayerCharacter
 -- @set sort=true
 --
--- @usage
--- -- Einfachen NPC erzeugen:
--- local NPC = NonPlqyerCharacter:New("npc")
---              :SetDialogPartner("hero")               -- Optional
---              :SetCallback(Briefing1)                 -- Optional
---              :Activate();
--- 
--- -- Folgenden NPC erzeugen:
--- local NPC = NonPlqyerCharacter:New("npc")
---              :SetDialogPartner("hero")               -- Optional
---              :SetFollowTarget("hero")
---              :SetFollowDestination("destination")    -- Optional
---              :SetFollowAction(NotArrivedFunction)    -- Optional
---              :SetCallback(Briefing1)                 -- Optional
---              :Activate();
---
--- -- Führenden NPC erzeugen:
--- local NPC = NonPlqyerCharacter:New("npc")
---              :SetDialogPartner("hero")               -- Optional
---              :SetGuideParams("destination", "hero")
---              :SetGuideAction(NotArrivedFunction)     -- Optional
---              :SetCallback(Briefing1)                 -- Optional
---              :Activate();
---
--- -- NPC deaktivieren:
--- NPC:Deactivate();
---
--- -- NPC erneut aktivieren:
--- NPC:Reset():Activate();
---
--- -- NPC löschen:
--- NPC:Dispose();
---
 
 API = API or {};
 QSB = QSB or {};
@@ -89,6 +56,29 @@ BundleNonPlayerCharacter = {
 -- @return object
 -- @within NonPlayerCharacter
 --
+-- @usage -- Einfachen NPC erzeugen:
+-- local NPC = NonPlqyerCharacter:New("npc")
+--              :SetDialogPartner("hero")               -- Optional
+--              :SetCallback(Briefing1)                 -- Optional
+--              :Activate();
+--
+-- -- Folgenden NPC erzeugen:
+-- local NPC = NonPlqyerCharacter:New("npc")
+--              :SetDialogPartner("hero")               -- Optional
+--              :SetFollowTarget("hero")
+--              :SetFollowDestination("destination")    -- Optional
+--              :SetFollowAction(NotArrivedFunction)    -- Optional
+--              :SetCallback(Briefing1)                 -- Optional
+--              :Activate();
+--
+-- -- Führenden NPC erzeugen:
+-- local NPC = NonPlqyerCharacter:New("npc")
+--              :SetDialogPartner("hero")               -- Optional
+--              :SetGuideParams("destination", "hero")
+--              :SetGuideAction(NotArrivedFunction)     -- Optional
+--              :SetCallback(Briefing1)                 -- Optional
+--              :Activate();
+--
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
     assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
     assert(IsExisting(_ScriptName), 'entity "' .._ScriptName.. '" does not exist!');
@@ -109,6 +99,10 @@ end
 -- @param _ScriptName Skriptname des NPC
 -- @return object
 -- @within NonPlayerCharacter
+-- usage -- NPC ermitteln
+-- local NPC = NonPlayerCharacter:GetInstance("horst");
+-- -- Etwas mit dem NPC tun
+-- NPC:SetDialogPartner("hilda");
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance(_ScriptName)
     assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
@@ -177,6 +171,9 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:Dispose
 --
 -- @within NonPlayerCharacter
+--
+-- @usage -- NPC löschen
+-- NPC:Dispose();
 -- 
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -191,6 +188,8 @@ end
 --
 -- @return self
 -- @within NonPlayerCharacter
+-- @usage -- NPC aktivieren:
+-- NPC:Activate();
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -207,6 +206,8 @@ end
 --
 -- @return self
 -- @within NonPlayerCharacter
+-- @usage -- NPC deaktivieren:
+-- NPC:Deactivate();
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
