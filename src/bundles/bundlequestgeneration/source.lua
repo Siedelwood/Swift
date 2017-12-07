@@ -174,19 +174,27 @@ function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
     end
 
     for k,v in pairs(_Data) do
-        if v.GetGoalTable then
-            table.insert(self.Data.GenerationList[_ID].Goals, v:GetGoalTable());
+        if tonumber(k) ~= nil then
+            if type(v) ~= "table" then
+                dbg(self.Data.GenerationList[_ID].Identifier..": Some behavior entries aren't behavior!");
+            else
+                if v.GetGoalTable then
+                    table.insert(self.Data.GenerationList[_ID].Goals, v:GetGoalTable());
 
-            local Idx = #self.Data.GenerationList[_ID].Goals;
-            self.Data.GenerationList[_ID].Goals[Idx].Context            = v;
-            self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideIcon   = self.Data.GenerationList[_ID].Goals[Idx].Context.GetIcon;
-            self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideMsgKey = self.Data.GenerationList[_ID].Goals[Idx].Context.GetMsgKey;
-        elseif v.GetReprisalTable then
-            table.insert(self.Data.GenerationList[_ID].Reprisals, v:GetReprisalTable());
-        elseif v.GetRewardTable then
-            table.insert(self.Data.GenerationList[_ID].Rewards, v:GetRewardTable());
-        elseif v.GetTriggerTable then
-            table.insert(self.Data.GenerationList[_ID].Triggers, v:GetTriggerTable());
+                    local Idx = #self.Data.GenerationList[_ID].Goals;
+                    self.Data.GenerationList[_ID].Goals[Idx].Context            = v;
+                    self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideIcon   = self.Data.GenerationList[_ID].Goals[Idx].Context.GetIcon;
+                    self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideMsgKey = self.Data.GenerationList[_ID].Goals[Idx].Context.GetMsgKey;
+                elseif v.GetReprisalTable then
+                    table.insert(self.Data.GenerationList[_ID].Reprisals, v:GetReprisalTable());
+                elseif v.GetRewardTable then
+                    table.insert(self.Data.GenerationList[_ID].Rewards, v:GetRewardTable());
+                elseif v.GetTriggerTable then
+                    table.insert(self.Data.GenerationList[_ID].Triggers, v:GetTriggerTable());
+                else
+                    dbg(self.Data.GenerationList[_ID].Identifier..": Could not obtain behavior table!");
+                end
+            end
         end
     end
 end
