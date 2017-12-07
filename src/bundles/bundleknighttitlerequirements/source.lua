@@ -5,7 +5,51 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+-- Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell
+-- an die eigenen Vorstellungen anzupassen.
+--
+-- Mögliche Aufstiegsbedingungen:
+-- <ul>
+-- <li><b>Entitytyp besitzen</b><br/>
+-- Der Spieler muss eine bestimmte Anzahl von Entities eines Typs besitzen.
+-- </li>
+-- <li><b>Entitykategorie besitzen</b><br/>
+-- Der Spieler muss eine bestimmte Anzahl von Entities einer Kategorie besitzen.
+-- </li>
+-- <li><b>Gütertyp besitzen</b><br/>
+-- Der Spieler muss Rohstoffe oder Güter eines Typs besitzen.
+-- </li>
+-- <li><b>Produkte erzeugen</b><br/>
+-- Der Spieler muss Gebrauchsgegenstände für ein Bedürfnis bereitstellen.
+-- </li>
+-- <li><b>Güter konsumieren</b><br/>
+-- Die Siedler müssen eine Menge einer bestimmten Waren konsumieren.
+-- </li>
+-- <li><b>Vielfältigkeit bereitstellen</b><br/>
+-- Der Spieler muss einen Vielfältigkeits-Buff aktivieren.
+-- </li>
+-- <li><b>Stadtruf erreichen</b><br/>
+-- Der Ruf der Stadt muss einen bestimmten Wert erreichen oder überschreiten.
+-- <li><b>Anzahl an Dekorationen</b><br/>
+-- Der Spieler muss mindestens die Anzahl der angegebenen Dekoration besitzen.
+-- </li>
+-- <li><b>Anzahl voll dekorierter Gebäude</b><br/>
+-- Anzahl an Gebäuden, an die alle vier Dekorationen angebracht sein müssen.
+-- </li>
+-- <li><b>Spezialgebäude ausbauen</b><br/>
+-- Ein Spezielgebäude muss ausgebaut werden.
+-- </li>
+-- <li><b>Anzahl Siedler</b><br/>
+-- Der Spieler benötigt eine Gesamtzahl an Siedlern.
+-- </li>
+-- <li><b>Anzahl reiche Stadtgebäude</b><br/>
+-- Eine Anzahl an Gebäuden muss durch Einnahmen Reichtum erlangen.
+-- </li>
+-- <li><b>Benutzerdefiniert</b><br/>
+-- Eine benutzerdefinierte Funktion, die entweder als Schalter oder als Zähler 
+-- fungieren kann und true oder false zurückgeben muss.
+-- </li>
+-- </ul>
 --
 -- @module BundleKnightTitleRequirements
 -- @set sort=true
@@ -477,12 +521,7 @@ function BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements()
         if KnightTitleRequirements[NextTitle].Custom ~= nil then
             for i=1, #KnightTitleRequirements[NextTitle].Custom do
                 local Icon = KnightTitleRequirements[NextTitle].Custom[i][2];
-                if type(Icon) == "table" then
-                    SetIcon(WidgetPos[RequirementsIndex] .. "/Icon", Icon);
-                else
-                    UserSetTexture(WidgetPos[RequirementsIndex] .. "/Icon", Icon);
-                end
-
+                BundleKnightTitleRequirements.Local:RequirementIcon(WidgetPos[RequirementsIndex] .. "/Icon", Icon);
                 local IsFulfilled, CurrentAmount, NeededAmount = DoCustomFunctionForKnightTitleSucceed(PlayerID, NextTitle, i);
                 if CurrentAmount and NeededAmount then
                     XGUIEng.SetText(WidgetPos[RequirementsIndex] .. "/Amount", "{center}" .. CurrentAmount .. "/" .. NeededAmount);
@@ -622,6 +661,50 @@ function BundleKnightTitleRequirements.Local:OverwriteTooltips()
         BundleKnightTitleRequirements.Local.Data.BuffTypeNames[Buffs.Buff_MusicalInstrument] = {
             de = "Muskinstrumente beschaffen", en = "Obtain instruments"
         }
+    end
+end
+
+---
+-- Ändert die Textur eines Icons in den Aufstiegsbedingungen.
+--
+-- Icons für Aufstiegsbedingungen können sein:
+-- <ul>
+-- <li>Koordinaten auf der Spielinternen Icon Matrix</li>
+-- <li>Koordinaten auf einer externen Icon Matrix (Name .. "big.png")</li>
+-- <li>Pfad zu einelnem Icon (200x200 Pixel)</li>
+-- </ul>
+--
+-- @param _Widget Icon Widget
+-- @param _Icon   Icon Textur
+-- @within BundleKnightTitleRequirements
+-- @local
+--
+function BundleKnightTitleRequirements.Local:RequirementIcon(_Widget, _Icon)
+    if type(_Icon) == "table" then
+        if type(_Icon[3]) == "string" then
+            local u0, u1, v0, v1;
+            u0 = (_Coordinates[1] - 1) * 64;
+            v0 = (_Coordinates[2] - 1) * 64;
+            u1 = (_Coordinates[1]) * 64;
+            v1 = (_Coordinates[2]) * 64;
+            XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
+            XGUIEng.SetMaterialTexture(_Widget, 1, _Icon[3].. "big.png");
+            XGUIEng.SetMaterialUV(_Widget, 1, u0, v0, u1, v1);
+        else
+            SetIcon(_Widget, _Icon);
+        end
+    else
+        local screenSize = {GUI.GetScreenSize()};
+        local Scale = 330;
+        if screenSize[2] >= 800 then
+            Scale = 260;
+        end
+        if screenSize[2] >= 1000 then
+            Scale = 210;
+        end
+        XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
+        XGUIEng.SetMaterialTexture(_Widget, 1, _file);
+        XGUIEng.SetMaterialUV(_Widget, 1, 0, 0, Scale, Scale);
     end
 end
 

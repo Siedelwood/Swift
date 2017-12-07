@@ -10,6 +10,15 @@
 -- und passe die Systemvariable PATH so an, dass Lua über die Power Shell oder
 -- die Eingabeaufforderung ausgeführt werden kann.
 --
+-- <p>Unter Linux und Mac müssen einige Abhängigkeiten von LDoc nachinstalliert
+-- werden um die Dokumentation generieren zu können. Die Installationen müssen
+-- mit Root-Rechten durchgeführt werden!</p>
+-- <ul>
+-- <li>apt install luarocks</li>
+-- <li>luarocks install luafilesystem</li>
+-- <li>luarocks install penlight</li>
+-- </ul>
+--
 -- Um die QSB zusammenfügen zu lassen, nutze die make.bat im Hauptverzeichnis
 -- des Projektes oder rufe dieses Skript in der Shell auf.
 --
