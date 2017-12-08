@@ -601,10 +601,11 @@ end
 ---
 -- Stellt den Debug nach dem Laden eines Spielstandes wieder her.
 --
--- @param _Original Referenz auf Save-Funktion
+-- @param _Arguments Argumente der überschriebenen Funktion
+-- @param _Original  Referenz auf Save-Funktion
 -- @local
 --
-function BundleQuestDebug.Global.OnSaveGameLoad(_Original)
+function BundleQuestDebug.Global.OnSaveGameLoad(_Arguments, _Original)
     BundleQuestDebug.Global:ActivateDevelopingMode();
     BundleQuestDebug.Global:ActivateQuestTrace();
 end

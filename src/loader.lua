@@ -96,6 +96,17 @@ SynfoniaLoader = {
             --   keine
             
             {"BundleKnightTitleRequirements",       true},
+            
+            -- Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation
+            -- der Oberfläche des Spiels.
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleInterfaceApperance",            true},
         }
     }
 }

@@ -17,6 +17,8 @@
 API = API or {};
 QSB = QSB or {};
 
+QSB.PlayerNames = {};
+
 -- -------------------------------------------------------------------------- --
 -- User Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -365,6 +367,117 @@ function API.SetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
 end
 UserSetTextBuy = API.SetTooltipCosts;
 
+---
+-- Gibt den Namen des Territoriums zurück.
+--
+-- <b>Alias:</b> GetTerritoryName
+--
+-- @return _TerritoryID ID des Territoriums
+-- @return Name des Territorium
+-- @within User Space
+--
+function API.GetTerritoryName(_TerritoryID)
+    local Name = Logic.GetTerritoryName(_TerritoryID);
+    local MapType = Framework.GetCurrentMapTypeAndCampaignName();
+    if MapType == 1 or MapType == 3 then
+        return Name;
+    end
+
+    local MapName = Framework.GetCurrentMapName();
+    local StringTable = "Map_" .. MapName;
+    local TerritoryName = string.gsub(Name, " ","");
+    TerritoryName = XGUIEng.GetStringTableText(StringTable .. "/Territory_" .. TerritoryName);
+    if TerritoryName == "" then
+        TerritoryName = Name .. "(key?)";
+    end
+    return TerritoryName;
+end
+GetTerritoryName = API.GetTerritoryName;
+
+---
+-- Gibt den Namen des Spielers zurück.
+--
+-- <b>Alias:</b> GetPlayerName
+--
+-- @return _PlayerID ID des Spielers
+-- @return Name des Territorium
+-- @within User Space
+--
+function API.GetPlayerName(_PlayerID)
+    local PlayerName = Logic.GetPlayerName(_PlayerID);
+    local name = QSB.PlayerNames[_PlayerID];
+    if name ~= nil and name ~= "" then
+        PlayerName = name;
+    end
+
+    local MapType = Framework.GetCurrentMapTypeAndCampaignName();
+    local MutliplayerMode = Framework.GetMultiplayerMapMode(Framework.GetCurrentMapName(), MapType);
+
+    if MutliplayerMode > 0 then
+        return PlayerName;
+    end
+    if MapType == 1 or MapType == 3 then
+        local PlayerNameTmp, PlayerHeadTmp, PlayerAITmp = Framework.GetPlayerInfo(_PlayerID);
+        if PlayerName ~= "" then
+            return PlayerName;
+        end
+        return PlayerNameTmp;
+    end
+end
+GetPlayerName_OrigName = GetPlayerName;
+GetPlayerName = API.GetPlayerName;
+
+---
+-- Gibt dem Spieler einen neuen Namen.
+--
+-- <b>Alias:</b> SetPlayerName
+--
+-- @return _playerID ID des Spielers
+-- @return _name     Name des Spielers
+-- @return Name des Territorium
+-- @within User Space
+--
+function API.SetPlayerName(_playerID,_name)
+    assert(type(_playerID) == "number");
+    assert(type(_name) == "string");
+    if not GUI then
+        Logic.ExecuteInLuaLocalState("SetPlayerName(".._playerID..",'".._name.."')");
+    else
+        GUI_MissionStatistic.PlayerNames[_playerID] = _name;
+        GUI.SendScriptCommand("QSB.PlayerNames[".._playerID.."] = '".._name.."'");
+    end
+    QSB.PlayerNames[_playerID] = _name;
+end
+SetPlayerName = API.SetPlayerName;
+
+---
+-- Setzt zu Spielbeginn eine andere Spielerfarbe.
+--
+-- @return _PlayerID ID des Spielers
+-- @return _Color    Spielerfarbe
+-- @return _Logo     Logo (optional)
+-- @return _Pattern  Pattern (optional)
+-- @return Name des Territorium
+-- @within User Space
+--
+function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
+    if GUI then
+        return;
+    end
+    local Type    = type(_Color);
+    local Col     = (type(_Color) == "string" and g_ColorIndex[_Color]) or _Color;
+    local Logo    = _Logo or -1;
+    local Pattern = _Pattern or -1;
+    
+    g_ColorIndex["ExtraColor1"] = 16;
+    g_ColorIndex["ExtraColor2"] = 17;
+    
+    StartSimpleJobEx( function(Col, _PlayerID, _Logo, _Pattern)
+        Logic.PlayerSetPlayerColor(_PlayerID, Col, _Logo, _Pattern);
+        return true;
+    end, Col, _PlayerID, Logo, Pattern);
+end
+
 -- -------------------------------------------------------------------------- --
 -- Application Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -392,7 +505,7 @@ end
 -- @within Application Space
 -- @local
 --
-function BundleInterfaceApperance.Global.RestoreAfterLoad(_Original)
+function BundleInterfaceApperance.Global.RestoreAfterLoad()
     Logic.ExecuteInLuaLocalState([[
         BundleInterfaceApperance.Local:RestoreAfterLoad();
     ]]);
@@ -421,6 +534,16 @@ function BundleInterfaceApperance.Local:Install()
         g_MissionGoodOrEntityCounterIcon = _Icon;
 
         XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 1);
+    end
+    
+    GUI_Knight.ClaimTerritoryUpdate_Orig_QSB_InterfaceApperance = GUI_Knight.ClaimTerritoryUpdate;
+    GUI_Knight.ClaimTerritoryUpdate = function()
+        local Key = "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Knight/ClaimTerritory";
+        if BundleInterfaceApperance.Local.Data.HiddenWidgets[Key] == true
+        then
+            BundleInterfaceApperance.Local:HideInterfaceButton(Key, true);
+        end
+        GUI_Knight.ClaimTerritoryUpdate_Orig_QSB_InterfaceApperance();
     end
 end
 

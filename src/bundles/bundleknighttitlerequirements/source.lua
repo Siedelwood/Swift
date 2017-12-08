@@ -1600,6 +1600,14 @@ end
 
 ---
 -- Definiert andere Aufstiegsbedingungen für den Spieler.
+--
+-- Diese Funktion muss entweder in der QSB modifiziert oder sowohl im globalen
+-- als auch im lokalen Skript überschrieben werden. Bei Modifikationen muss
+-- das Schema für Aufstiegsbedingungen und Rechtevergabe immer beibehalten
+-- werden.
+--
+-- TODO: Fehlererennung muss noch implementiert werden!
+--
 -- @within BB-Funktionen
 --
 InitKnightTitleTables = function()
