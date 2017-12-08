@@ -22,6 +22,8 @@ QSB = QSB or {};
 ---
 -- Startet ein Musikstück als Stimme.
 --
+-- <b>Alias:</b> StartMusic
+--
 -- Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre 
 -- sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
 -- gespielt werden kann! Alle als Sprache abgespielten Sounds werden die
@@ -46,9 +48,12 @@ function API.StartMusic(_Description)
     end
     BundleMusicTools.Global:StartSong(_Description);
 end
+StartMusic = API.StartMusic;
 
 ---
 -- Vereinfachter einzeiliger Aufruf für StartSong.
+--
+-- <b>Alias:</b> StartMusicSimple
 --
 -- @param _File    Pfad zur Datei
 -- @param _Volume  Lautstärke
@@ -70,9 +75,12 @@ function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     };
     BundleMusicTools.Global:StartSong(Data);
 end
+StartMusicSimple = API.StartMusicSimple;
 
 ---
 -- Spielt eine Playlist ab.
+--
+-- <b>Alias:</b> StartPlaylist
 --
 -- Eine im Skript definierte Playlist, nicht
 -- eine XML! Die Playlist kann einmal abgearbeitet oder auf Wiederholung
@@ -89,11 +97,14 @@ function API.StartPlaylist(_Playlist)
     end
     BundleMusicTools.Global:StartPlaylist(_Playlist);
 end
+StartPlaylist = API.StartPlaylist;
 
 ---
 -- Stoppt gerade gespielte Musik und startet die Playlist mit dem
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
+--
+-- <b>Alias:</b> StartPlaylistTitle
 --
 -- @param _Title 
 -- @within User Space
@@ -104,9 +115,12 @@ function API.StartPlaylistTitle(_Title)
     end
     BundleMusicTools.Global:StartPlaylistTitle(_Title);
 end
+StartPlaylistTitle = API.StartPlaylistTitle;
 
 ---
 -- Stopt Musik und stellt die alte Soundkonfiguration wieder her.
+--
+-- <b>Alias:</b> StopSong
 --
 -- @within User Space
 --
@@ -116,10 +130,13 @@ function API.StopSong()
     end
     BundleMusicTools.Global:StopSong();
 end
+StopSong = API.StopSong;
 
 ---
 -- Stopt den gerade laufenden Song und leert sowohl die Songdaten
 -- als auch die Playlist.
+--
+-- <b>Alias:</b> AbortSongOrPlaylist
 --
 -- @within User Space
 --
@@ -129,6 +146,7 @@ function API.AbortMusic()
     end
     BundleMusicTools.Global:AbortMusic();
 end
+AbortSongOrPlaylist = API.AbortMusic;
 
 -- -------------------------------------------------------------------------- --
 -- Application Space                                                          --
