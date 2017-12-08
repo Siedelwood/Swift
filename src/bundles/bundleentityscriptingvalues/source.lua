@@ -136,9 +136,7 @@ end
 
 BundleEntityScriptingValues = {
     Global = {
-        Data = {
-            GenerationList = {},
-        }
+        Data = {}
     },
     Local = {
         Data = {}
