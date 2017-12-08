@@ -44,7 +44,7 @@ function API.StartMusic(_Description)
     if GUI then
         return;
     end
-    
+    BundleMusicTools.Global:StartSong(_Description);
 end
 
 ---
@@ -60,7 +60,15 @@ function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     if GUI then
         return;
     end
-    
+    local Data = {
+        File     = _File,
+        Volume   = _Volume,
+        Length   = _Length,
+        Fadeout  = _FadeOut * 10,
+        MuteAtmo = true;
+        MuteUI   = true,
+    };
+    BundleMusicTools.Global:StartSong(Data);
 end
 
 ---
@@ -79,7 +87,7 @@ function API.StartPlaylist(_Playlist)
     if GUI then
         return;
     end
-    
+    BundleMusicTools.Global:StartPlaylist(_Playlist);
 end
 
 ---
@@ -94,7 +102,7 @@ function API.StartPlaylistTitle(_Title)
     if GUI then
         return;
     end
-    
+    BundleMusicTools.Global:StartPlaylistTitle(_Title);
 end
 
 ---
@@ -106,7 +114,7 @@ function API.StopSong()
     if GUI then
         return;
     end
-    
+    BundleMusicTools.Global:StopSong();
 end
 
 ---
@@ -119,7 +127,7 @@ function API.AbortMusic()
     if GUI then
         return;
     end
-    
+    BundleMusicTools.Global:AbortMusic();
 end
 
 -- -------------------------------------------------------------------------- --
