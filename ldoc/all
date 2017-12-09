@@ -1,2 +1,2 @@
 #!/bin/bash
-lua ldoc/ldoc/ldoc.lua --all --dir doc src
+lua ldoc/ldoc/ldoc.lua --all --dir doc lua
