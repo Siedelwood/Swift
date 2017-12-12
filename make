@@ -1,2 +1,2 @@
 #!/bin/bash
-lua src/writer.lua
+lua qsb/lua/writer.lua

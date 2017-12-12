@@ -107,6 +107,48 @@ SynfoniaLoader = {
             --   keine
             
             {"BundleInterfaceApperance",            true},
+            
+            -- Ändert die Funktionen zur Erstellung von Angeboten und setzt
+            -- neue Preise. Zudem können Angebote analysiert werden.
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleTradingFunctions",              true},
+            
+            -- Bietet die Möglichkeit einzelne MP3-Dateien oder Playlists aus
+            -- MP3-Dateien abzuspielen.
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleMusicTools",                    true},
+            
+            -- Bietet direkten Zugriff auf die Daten eines Entities im RAM.
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleEntityScriptingValues",         true},
+            
+            -- Ermöglicht Bau- und Abrissverbote für Gebäude.
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleConstructionControl",           true},
         }
     }
 }
