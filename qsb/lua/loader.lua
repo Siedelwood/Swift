@@ -156,7 +156,7 @@ end
 -- @local
 --
 function SynfoniaLoader:ConcatSources()
-    local BasePath = "src/";
+    local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";

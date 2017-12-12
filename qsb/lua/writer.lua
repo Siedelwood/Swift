@@ -25,7 +25,7 @@
 -- @script SynfoniaWriter
 --
 
-dofile("src/loader.lua");
+dofile("qsb/lua/loader.lua");
 local fh = io.open("synfonia.lua", "r");
 if fh then
     fh:close();

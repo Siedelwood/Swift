@@ -534,9 +534,7 @@ function BundleNonPlayerCharacter.Global:Install()
     -- Führt die statische Steuerungsfunktion für alle NPC aus.
     --
     StartSimpleJobEx( function()
-        for k, v in pairs(
-            QSB.NonPlayerCharacterObjects
-        ) do
+        for k, v in pairs(QSB.NonPlayerCharacterObjects) do
             NonPlayerCharacter:Control(k);
         end
     end);

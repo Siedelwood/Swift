@@ -1644,6 +1644,75 @@ end
 Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsWon);
 
 -- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.
+--
+-- @param _QuestName1 Name des ersten Quest
+-- @param _QuestName2 Name des zweiten Quest
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_OnExactOneQuestIsLost(...)
+    return b_Trigger_OnExactOneQuestIsLost:new(...);
+end
+
+b_Trigger_OnExactOneQuestIsLost = {
+    Name = "Trigger_OnExactOneQuestIsLost",
+    Description = {
+        en = "Trigger: If one of two given quests has been lost, but NOT both.",
+        de = "Ausloeser: Wenn einer von zwei angegebenen Quests (aber NICHT beide) fehlschlägt.",
+    },
+    Parameter = {
+        { ParameterType.QuestName, en = "Quest Name 1", de = "Questname 1" },
+        { ParameterType.QuestName, en = "Quest Name 2", de = "Questname 2" },
+    },
+}
+
+function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable(__quest_)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_OnExactOneQuestIsLost:AddParameter(__index_, __parameter_)
+    self.QuestTable = {};
+
+    if (__index_ == 0) then
+        self.Quest1 = __parameter_;
+    elseif (__index_ == 1) then
+        self.Quest2 = __parameter_;
+    end
+end
+
+function b_Trigger_OnExactOneQuestIsLost:CustomFunction(__quest_)
+    local Quest1 = Quests[GetQuestID(self.Quest1)];
+    local Quest2 = Quests[GetQuestID(self.Quest2)];
+    if Quest2 and Quest1 then
+        local Quest1Succeed = (Quest1.State == QuestState.Over and Quest1.Result == QuestResult.Failure);
+        local Quest2Succeed = (Quest2.State == QuestState.Over and Quest2.Result == QuestResult.Failure);
+        if (Quest1Succeed and not Quest2Succeed) or (not Quest1Succeed and Quest2Succeed) then
+            return true;
+        end
+    end
+    return false;
+end
+
+function b_Trigger_OnExactOneQuestIsLost:DEBUG(__quest_)
+    if self.Quest1 == self.Quest2 then
+        dbg(__quest_.Identifier..": "..self.Name..": Both quests are identical!");
+        return true;
+    elseif not IsValidQuest(self.Quest1) then
+        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        return true;
+    elseif not IsValidQuest(self.Quest2) then
+        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsWon);
+
+-- -------------------------------------------------------------------------- --
 -- Application Space                                                          --
 -- -------------------------------------------------------------------------- --
 
