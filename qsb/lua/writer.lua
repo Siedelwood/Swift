@@ -22,13 +22,13 @@
 -- Um die QSB zusammenfügen zu lassen, nutze die make.bat im Hauptverzeichnis
 -- des Projektes oder rufe dieses Skript in der Shell auf.
 --
--- @script SynfoniaWriter
+-- @script SymfoniaWriter
 --
 
 dofile("qsb/lua/loader.lua");
-local fh = io.open("synfonia.lua", "r");
+local fh = io.open("Symfonia.lua", "r");
 if fh then
     fh:close();
-    os.remove("synfonia.lua");
+    os.remove("Symfonia.lua");
 end
-SynfoniaLoader:CreateQSB();
+SymfoniaLoader:CreateQSB();

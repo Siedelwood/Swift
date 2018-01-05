@@ -1,18 +1,18 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Synfonia Loader                                                       # --
+-- #  Symfonia Loader                                                       # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ermöglicht es den Quellcode von Synfonia zu nutzen, ohne vorher eine QSB
+-- Ermöglicht es den Quellcode von Symfonia zu nutzen, ohne vorher eine QSB
 -- generieren zu lassen.
 --
 -- Vorallem während des Entwicklungsprozesses ist es störend, wenn man sich
 -- immer wieder eine neue QSB bauen muss. Der Loader ermöglicht es, die QSB,
 -- bzw. ihre Quelldateien, während der Entwicklung direkt aus dem Projektordner
 -- zu nutzen. Alles nötige dazu ist, dieses Skript in die Map zu laden und
--- die Funktion SynfoniaLoader:Load auszuführen.
+-- die Funktion SymfoniaLoader:Load auszuführen.
 --
 -- Über die Load Order können einzelne Bundles aktiviert und deaktiviert
 -- werden. Die Reihenfolge in der Tabelle bestimmt zudem die Reihenfolge,
@@ -24,11 +24,11 @@
 -- Trotz allem muss nach Abschluss der Entwicklung eine normale QSB in die
 -- Map eingefügt werden. Du kannst sie dann entsprechend zusammen bauen.
 --
--- @script SynfoniaLoader
+-- @script SymfoniaLoader
 -- @set sort=true
 --
 
-SynfoniaLoader = {
+SymfoniaLoader = {
     Data = {
         LoadOrder  = {
 
@@ -42,7 +42,7 @@ SynfoniaLoader = {
 
             {"BundleClassicBehaviors",              true},
 
-            -- Enthält die neuen Behavior von Synfonia. Zwar ist dieses Bundle
+            -- Enthält die neuen Behavior von Symfonia. Zwar ist dieses Bundle
             -- Unabhänig von den klassischen Behavior, doch ergibt es nicht
             -- viel sinn es alleine zu nutzen.
             --
@@ -52,7 +52,7 @@ SynfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
 
-            {"BundleSynfoniaBehaviors",             true},
+            {"BundleSymfoniaBehaviors",             true},
 
             -- Mit diesem Modul können Aufträge per Skript erstellt werden.
             --
@@ -161,10 +161,10 @@ SynfoniaLoader = {
 -- Einträge bestimmt die Ladereihenfolge.
 --
 -- @param _Path Root-Verzeichnis
--- @within SynfoniaLoader
--- @usage SynfoniaLoader:Load()
+-- @within SymfoniaLoader
+-- @usage SymfoniaLoader:Load()
 --
-function SynfoniaLoader:Load(_Path)
+function SymfoniaLoader:Load(_Path)
     Script.Load(_Path.. "/core.lua");
     for i= 1, #self.Data.LoadOrder, 1 do
         if self.Data.LoadOrder[i][2] then
@@ -182,7 +182,7 @@ end
 -- @return Dateiinhalt als String
 -- @local
 --
-function SynfoniaLoader:LoadSource(_Path)
+function SymfoniaLoader:LoadSource(_Path)
     local fh = io.open(_Path, "rb");
     assert(fh, "File not found: " ..tostring(_Path));
     fh:seek("set", 0);
@@ -197,7 +197,7 @@ end
 -- @return Table mit Inhalten
 -- @local
 --
-function SynfoniaLoader:ConcatSources()
+function SymfoniaLoader:ConcatSources()
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
     for k, v in pairs(self.Data.LoadOrder) do
@@ -211,12 +211,12 @@ function SynfoniaLoader:ConcatSources()
 end
 
 ---
--- Fügt die Quelldateien von Synfonia zu einer QSB zusammen.
+-- Fügt die Quelldateien von Symfonia zu einer QSB zusammen.
 -- @local
 --
-function SynfoniaLoader:CreateQSB()
+function SymfoniaLoader:CreateQSB()
     local QsbContent = self:ConcatSources();
-    local fh = io.open("synfonia.lua", "a+");
+    local fh = io.open("Symfonia.lua", "a+");
     assert(fh, "Output file can not be created!");
     fh:seek("set", 0);
     fh:write(unpack(QsbContent));

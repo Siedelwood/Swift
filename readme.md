@@ -14,7 +14,7 @@ Maps in der Community zu heben.
 
 # 2 Installation
 
-Um Synfonia zu nutzen, muss das Repository zuerst geklont werden. Sobald dies
+Um Symfonia zu nutzen, muss das Repository zuerst geklont werden. Sobald dies
 geschehen ist, kann sofort losgelegt werden.
 
 # 3 Bibliothek

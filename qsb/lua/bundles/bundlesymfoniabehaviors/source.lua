@@ -1,13 +1,13 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Synfonia BundleSynfoniaBehaviors                                      # --
+-- #  Symfonia BundleSymfoniaBehaviors                                      # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Dieses Bundle enthält einige weitere nützliche Standard-Behavior.
 --
--- @module BundleSynfoniaBehaviors
+-- @module BundleSymfoniaBehaviors
 -- @set sort=true
 --
 
@@ -1716,7 +1716,7 @@ Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsWon);
 -- Application Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleSynfoniaBehaviors = {
+BundleSymfoniaBehaviors = {
     Global = {},
     Local = {}
 };
@@ -1728,14 +1728,14 @@ BundleSynfoniaBehaviors = {
 -- @within Application Space
 -- @local
 --
-function BundleSynfoniaBehaviors.Global:Install()
+function BundleSymfoniaBehaviors.Global:Install()
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     -- Theif observation
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    GameCallback_OnThiefDeliverEarnings_Orig_QSB_SynfoniaBehaviors = GameCallback_OnThiefDeliverEarnings;
+    GameCallback_OnThiefDeliverEarnings_Orig_QSB_SymfoniaBehaviors = GameCallback_OnThiefDeliverEarnings;
     GameCallback_OnThiefDeliverEarnings = function(_ThiefPlayerID, _ThiefID, _BuildingID, _GoodAmount)
-        GameCallback_OnThiefDeliverEarnings_Orig_QSB_SynfoniaBehaviors(_ThiefPlayerID, _ThiefID, _BuildingID, _GoodAmount);
+        GameCallback_OnThiefDeliverEarnings_Orig_QSB_SymfoniaBehaviors(_ThiefPlayerID, _ThiefID, _BuildingID, _GoodAmount);
 
         for i=1, Quests[0] do
             if Quests[i] and Quests[i].State == QuestState.Active then
@@ -1770,9 +1770,9 @@ function BundleSynfoniaBehaviors.Global:Install()
         end
     end
 
-    GameCallback_OnThiefStealBuilding_Orig_QSB_SynfoniaBehaviors = GameCallback_OnThiefStealBuilding;
+    GameCallback_OnThiefStealBuilding_Orig_QSB_SymfoniaBehaviors = GameCallback_OnThiefStealBuilding;
     GameCallback_OnThiefStealBuilding = function(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID)
-        GameCallback_OnThiefStealBuilding_Orig_QSB_SynfoniaBehaviors(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
+        GameCallback_OnThiefStealBuilding_Orig_QSB_SymfoniaBehaviors(_ThiefID, _ThiefPlayerID, _BuildingID, _BuildingPlayerID);
 
         for i=1, Quests[0] do
             if Quests[i] and Quests[i].State == QuestState.Active then
@@ -1815,7 +1815,7 @@ function BundleSynfoniaBehaviors.Global:Install()
     -- Objectives
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    QuestTemplate.IsObjectiveCompleted_Orig_QSB_SynfoniaBehaviors = QuestTemplate.IsObjectiveCompleted;
+    QuestTemplate.IsObjectiveCompleted_Orig_QSB_SymfoniaBehaviors = QuestTemplate.IsObjectiveCompleted;
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
         local data = objective.Data;
@@ -1840,7 +1840,7 @@ function BundleSynfoniaBehaviors.Global:Install()
                 objective.Completed = false;
             end
         else
-            return self:IsObjectiveCompleted_Orig_QSB_SynfoniaBehaviors(objective);
+            return self:IsObjectiveCompleted_Orig_QSB_SymfoniaBehaviors(objective);
         end
     end
 
@@ -1894,9 +1894,9 @@ end
 -- @within Application Space
 -- @local
 --
-function BundleSynfoniaBehaviors.Local:Install()
+function BundleSymfoniaBehaviors.Local:Install()
 
 end
 
-Core:RegisterBundle("BundleSynfoniaBehaviors");
+Core:RegisterBundle("BundleSymfoniaBehaviors");
 

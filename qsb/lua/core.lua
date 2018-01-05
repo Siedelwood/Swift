@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Synfonia Core                                                         # --
+-- #  Symfonia Core                                                         # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
@@ -31,7 +31,7 @@
 -- der er einfach arbeiten kann. Kenntnis über die komplexen Prozesse hinter
 -- den Kulissen sind dafür nicht notwendig.
 --
--- @script SynfoniaCore
+-- @script SymfoniaCore
 -- @set sort=true
 --
 
