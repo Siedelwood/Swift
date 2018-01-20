@@ -85,7 +85,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
     
     local npc = CopyTableRecursive(self);
     npc.Data.NpcName = _ScriptName;
-    QSB.NonPlayerCharacterObjects[_ScriptName] = npc;
+    BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[_ScriptName] = npc;
     return npc;
 end
 
@@ -114,7 +114,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance(_ScriptN
             ScriptName = Logic.GetEntityName(LeaderID);
         end
     end
-    return QSB.NonPlayerCharacterObjects[ScriptName];
+    return BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[ScriptName];
 end
 
 ---
@@ -178,7 +178,7 @@ end
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
     self:Deactivate();
-    QSB.NonPlayerCharacterObjects[self.Data.NpcName] = nil;
+    BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[self.Data.NpcName] = nil;
 end
 
 ---
@@ -534,7 +534,7 @@ function BundleNonPlayerCharacter.Global:Install()
     -- Führt die statische Steuerungsfunktion für alle NPC aus.
     --
     StartSimpleJobEx( function()
-        for k, v in pairs(QSB.NonPlayerCharacterObjects) do
+        for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
             NonPlayerCharacter:Control(k);
         end
     end);
@@ -567,6 +567,7 @@ function BundleNonPlayerCharacter.Global:Install()
         if NPC then
             if NPC.Data.FollowTarget ~= nil then
                 if NPC.Data.FollowDestination then
+                    API.Note(Logic.GetDistanceBetweenEntities(_EntityID, GetID(NPC.Data.FollowDestination)))
                     if Logic.GetDistanceBetweenEntities(_EntityID, GetID(NPC.Data.FollowDestination)) > 2000 then
                         if NPC.Data.FollowAction then 
                             NPC.Data.FollowAction(self);

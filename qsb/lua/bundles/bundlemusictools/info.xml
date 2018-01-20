@@ -4,7 +4,8 @@
         <![CDATA[Musikfunktionen]]>
     </name>
     <description>
-        <![CDATA[]]>
+        <![CDATA[Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze 
+           Playlists als Stimme abzuspielen.]]>
     </description>
 
     <dependencies>

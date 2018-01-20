@@ -125,7 +125,7 @@ function b_Reward_DEBUG:GetCustomData(_Index)
     return {"true","false"};
 end
 
-AddQuestBehavior(b_Reward_DEBUG);
+Core:RegisterBehavior(b_Reward_DEBUG);
 
 -- -------------------------------------------------------------------------- --
 -- Application Space                                                          --
@@ -220,9 +220,16 @@ function BundleQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _Trac
     self.Data.DebugModeIsActive = true;
 
     self.Data.CheckAtStart    = _CheckAtStart == true;
+    QSB.DEBUG_CheckAtStart    = _CheckAtStart == true;
+    
     self.Data.CheckAtRun      = _CheckAtRun == true;
+    QSB.DEBUG_CheckAtRun      = _CheckAtRun == true;
+    
     self.Data.TraceQuests     = _TraceQuests == true;
+    QSB.DEBUG_TraceQuests     = _TraceQuests == true;
+    
     self.Data.DevelopingMode  = _DevelopingMode == true;
+    QSB.DEBUG_DevelopingMode  = _DevelopingMode == true;
 
     self:ActivateQuestTrace();
     self:ActivateDevelopingMode();

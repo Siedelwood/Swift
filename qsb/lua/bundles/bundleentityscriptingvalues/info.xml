@@ -4,7 +4,8 @@
         <![CDATA[Entity Scripting Values]]>
     </name>
     <description>
-        <![CDATA[]]>
+        <![CDATA[Dieses Bundle ermöglicht die Manipulation einer Entität
+           direkt im Arbeitsspeicher.]]>
     </description>
 
     <dependencies>

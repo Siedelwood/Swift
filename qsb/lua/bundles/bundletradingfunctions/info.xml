@@ -4,7 +4,10 @@
         <![CDATA[Handelsfunktionen]]>
     </name>
     <description>
-        <![CDATA[]]>
+        <![CDATA[Bietet Funktionen zur Analyse und Manipulation von Angeboten
+           in einem Lagerhaus. Die gängigen Funktionen, wie z.B. AddOffer
+           werden erweitert und ein neues Händlerskript ermöglicht mehrere
+           fliegende Händler auf einer Map.]]>
     </description>
 
     <dependencies>

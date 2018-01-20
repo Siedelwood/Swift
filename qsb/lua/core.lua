@@ -89,6 +89,9 @@ end
 --
 function API.InstanceTable(_Source, _Dest)
     _Dest = _Dest or {};
+    assert(type(_Source) == "table")
+    assert(type(_Dest) == "table")
+    
     for k, v in pairs(_Source) do
         if type(v) == "table" then
             _Dest[k] = API.InstanceTable(v);

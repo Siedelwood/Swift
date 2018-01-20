@@ -5,7 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+-- Erlaubt es Gebiete oder Territorien auf der Map zu definieren, auf der ein
+-- Gebäude oder ein Typ nicht gebaut bzw. nicht abgerissen werden darf.
 --
 -- @module BundleConstructionControl
 -- @set sort=true

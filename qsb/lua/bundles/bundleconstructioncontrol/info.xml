@@ -4,7 +4,9 @@
         <![CDATA[Bau- und Abrisskontrolle]]>
     </name>
     <description>
-        <![CDATA[]]>
+        <![CDATA[Mit diesem Bundle können Gebäude und Gebäudetypen definiert
+           werden, die in einem gebiet oder auf einem Territorium nicht
+           abgerissen oder nicht gebaut werden sollen.]]>
     </description>
 
     <dependencies>

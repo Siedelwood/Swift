@@ -5,7 +5,13 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+-- Dieses Bundle bietet einige (experientelle) Funktionen zum untersuchen und
+-- zur Manipulation von Handelsangeboten. Die bekannten Funktionen, wie z.B.
+-- AddOffer, werden erweitert, sodass sie Angebote für einen Spieler mit einer
+-- anderen ID als 1 erstellen können.
+-- Zudem wird ein fliegender Händler angeboten, der periodisch den Hafen mit
+-- einem Schiff anfährt. Dabei kann der Fahrtweg frei mit Wegpunkten bestimmt
+-- werden. Es können auch mehrere Spieler zu Händlern gemacht werden.
 --
 -- @module BundleTradingFunctions
 -- @set sort=true

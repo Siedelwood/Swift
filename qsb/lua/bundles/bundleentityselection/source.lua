@@ -26,7 +26,33 @@ QSB = QSB or {};
 
 BundleEntitySelection = {
     Global = {},
-    Local = {}
+    Local = {
+        Data = {
+            Tooltips = {
+                KnightButton = {
+                    Title = {
+                        de = "Ritter selektieren",
+                        en = "- Selektiert den Ritter {cr}- STRG halten selektiert alle Ritter",
+                    },
+                    Text = {
+                        de = "Select Knight",
+                        en = "- Selects the knight {cr}- Press CTRL to select all knights",
+                    },
+                },
+                BattalionButton = {
+                    Title = {
+                        de = "Militär selektieren",
+                        en = "- Selektiert alle Militäreinheiten {cr}- SHIFT halten um auch Munitionswagen und Trebuchets auszuwählen",
+                    },
+                    Text = {
+                        de = "Select Units",
+                        en = "- Selects all military units {cr}- Press SHIFT to additionally select ammunition carts and trebuchets",
+                    },
+                },
+            },
+        },
+    },
+    
 };
 
 -- Global Script ---------------------------------------------------------------
@@ -54,22 +80,31 @@ function BundleEntitySelection.Local:Install()
 end
 
 ---
--- 
+-- Hängt eine Funktion an die GUI_Tooltip.SetNameAndDescription an, sodass
+-- Tooltips überschrieben werden können.
+--
 -- @within Application Space
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
     
     local Function = function(_Arguments, _Original)
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID()
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
         
         if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButton") == CurrentWidgetID then
-            
+            BundleEntitySelection.Local:SetTooltip(
+                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[lang], 
+                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[lang]
+            )
             return;
         end
         
         if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/BattalionButton") == CurrentWidgetID then
-            
+            BundleEntitySelection.Local:SetTooltip(
+                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[lang],
+                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[lang]
+            )
             return;
         end
         
@@ -79,23 +114,57 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
 end
 
 ---
--- 
+-- Schreibt einen anderen Text in einen normalen Tooltip.
 --
--- @param _Key Description Key
+-- @param _TitleText Titel des Tooltip
+-- @param _DescText  Text des Tooltip
 -- @within Application Space
 -- @local
 --
-function BundleEntitySelection.Local:SetTooltip(_Key)
+function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText)
+    local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal"
+    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
+    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name")
+    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text")
     
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _TitleText)
+    XGUIEng.SetText(TooltipDescriptionWidget, _DescText)
+    
+    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
+    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
+    
+    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
 end
 
 ---
--- 
+-- Überschreibt den SelectKnight-Button. Durch drücken von CTLR können alle
+-- Helden selektiert werden, die der Spieler kontrolliert.
+--
 -- @within Application Space
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectKnight()
-    
+    GUI_Knight.JumpToButtonClicked = function()
+        local PlayerID = GUI.GetPlayerID();
+        local KnightID = Logic.GetKnightID(PlayerID);
+        if KnightID > 0 then
+            g_MultiSelection.EntityList = {};
+            g_MultiSelection.Highlighted = {};
+            GUI.ClearSelection();
+            
+            if XGUIEng.IsModifierPressed(Keys.ModifierControl) then
+                local knights = {}
+                Logic.GetKnights(PlayerID, knights);
+                for i=1,#knights do
+                    GUI.SelectEntity(knights[i]);
+                end
+            else
+                GUI.SelectEntity(Logic.GetKnightID(PlayerID));
+            end
+        else
+            GUI.AddNote("Debug: You do not have a knight");
+        end
+    end
 end
 
 ---

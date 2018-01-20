@@ -4,7 +4,9 @@
         <![CDATA[Benutzerinterface]]>
     </name>
     <description>
-        <![CDATA[]]>
+        <![CDATA[Bietet Funktionen zum Anzeigen/Verstecken von Widgets und
+           Beschriftung von Tooltips an. Außerdem können eigene Grafiken
+           auf Buttons gelegt werden.]]>
     </description>
 
     <dependencies>

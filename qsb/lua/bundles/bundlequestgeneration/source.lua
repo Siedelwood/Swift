@@ -5,9 +5,7 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Mit diesem Modul können Aufträge per Skript erstellt werden.
---
--- 
+-- Mit diesem Bundle können Aufträge per Skript erstellt werden.
 --
 -- @module BundleQuestGeneration
 -- @set sort=true

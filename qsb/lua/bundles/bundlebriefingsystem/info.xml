@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
     <name>
-        <![CDATA[Questerzeugung]]>
+        <![CDATA[Briefings und Cutscenes]]>
     </name>
     <description>
-        <![CDATA[Mit diesem Bundle können Aufträge per Skript erstellt werden.]]>
+        <![CDATA[Mit diesem Bundle wird eine um viele Features erweiterte
+           Version des Briefing System angeboten.]]>
     </description>
 
     <dependencies>

@@ -241,7 +241,7 @@ Core:RegisterBehavior(b_Goal_Diplomacy);
 -- @within Goal
 --
 function Goal_DiscoverPlayer(...)
-    return b_Goal_DiscoverPlayerN.new(...);
+    return b_Goal_DiscoverPlayer:new(...);
 end
 
 b_Goal_DiscoverPlayer = {
@@ -4598,7 +4598,7 @@ b_Reward_Diplomacy.Description.de   = "Reward: Sets Diplomacy state of two Playe
 b_Reward_Diplomacy.Description.en   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
 b_Reward_Diplomacy.GetReprisalTable = nil;
 
-b_Reward_ObjectDeactivate.GetRewardTable = function(self, _Quest)
+b_Reward_Diplomacy.GetRewardTable = function(self, _Quest)
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
@@ -7733,7 +7733,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestOver);
 -- @within Trigger
 --
 function Trigger_OnQuestSuccess(...)
-    return b_Trigger_OnQuestSuccess(...);
+    return b_Trigger_OnQuestSuccess:new(...);
 end
 
 b_Trigger_OnQuestSuccess = {

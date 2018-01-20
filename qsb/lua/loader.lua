@@ -95,7 +95,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleKnightTitleRequirements",       true},
+            {"BundleKnightTitleRequirements",       false},
             
             -- Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation
             -- der Oberfläche des Spiels.
@@ -106,7 +106,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleInterfaceApperance",            true},
+            {"BundleInterfaceApperance",            false},
             
             -- Ändert die Funktionen zur Erstellung von Angeboten und setzt
             -- neue Preise. Zudem können Angebote analysiert werden.
@@ -117,7 +117,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleTradingFunctions",              true},
+            {"BundleTradingFunctions",              false},
             
             -- Bietet die Möglichkeit einzelne MP3-Dateien oder Playlists aus
             -- MP3-Dateien abzuspielen.
@@ -128,7 +128,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleMusicTools",                    true},
+            {"BundleMusicTools",                    false},
             
             -- Bietet direkten Zugriff auf die Daten eines Entities im RAM.
             -- 
@@ -138,7 +138,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleEntityScriptingValues",         true},
+            {"BundleEntityScriptingValues",         false},
             
             -- Ermöglicht Bau- und Abrissverbote für Gebäude.
             -- 
@@ -148,7 +148,27 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleConstructionControl",           true},
+            {"BundleConstructionControl",           false},
+            
+            -- Ermöglicht Briefings und Cutscenes.
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleBriefingSystem",                false},
+            
+            -- Steuert die Selektion von Einheiten
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleBriefingSystem",                false},
         }
     }
 }
