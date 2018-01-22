@@ -799,6 +799,24 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- Overwrite -------------------------------------------------------------------
 
 ---
+-- Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.
+--
+-- Wird diese Funktion als dem globalen Skript aufgerufen, sendet sie den
+-- Befehl an das lokale Skript. Wird diese Funktion im lokalen Skript genutzt,
+-- wird der Befehl an das globale Skript geschickt.
+--
+-- @param _Command Lua-Befehl als String
+-- @param _Flag    FIXME
+--
+function API.Bridge(_Command, _Flag)
+    if not GUI then
+        Logic.ExecuteInLuaLocalState(_Command)
+    else
+        GUI.SendScriptCommand(_Command, _Flag)
+    end
+end
+
+---
 -- Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.
 --
 -- <p>Wahrheitsert true: true, "true", "yes", "on", "+"</p>
