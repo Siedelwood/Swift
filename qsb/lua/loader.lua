@@ -169,6 +169,16 @@ SymfoniaLoader = {
             --   keine
             
             {"BundleBriefingSystem",                false},
+            
+            -- Spielstände in anderen Ordnern verwalten
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleSaveGameTools",                 false},
         }
     }
 }
