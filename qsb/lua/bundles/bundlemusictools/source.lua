@@ -44,6 +44,7 @@ QSB = QSB or {};
 --
 function API.StartMusic(_Description)
     if GUI then
+        API.Log("Could not execute API.StartMusic in local script!");
         return;
     end
     BundleMusicTools.Global:StartSong(_Description);
@@ -63,6 +64,7 @@ StartMusic = API.StartMusic;
 --
 function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     if GUI then
+        API.Bridge("API.StartMusicSimple('" .._File.. "', " .._Volume.. ", " .._Length.. ", " .._FadeOut.. ")");
         return;
     end
     local Data = {
@@ -93,6 +95,7 @@ StartMusicSimple = API.StartMusicSimple;
 --
 function API.StartPlaylist(_Playlist)
     if GUI then
+        API.Log("Could not execute API.StartPlaylist in local script!");
         return;
     end
     BundleMusicTools.Global:StartPlaylist(_Playlist);
@@ -111,6 +114,7 @@ StartPlaylist = API.StartPlaylist;
 --
 function API.StartPlaylistTitle(_Title)
     if GUI then
+        API.Log("Could not execute API.StartPlaylistTitle in local script!");
         return;
     end
     BundleMusicTools.Global:StartPlaylistTitle(_Title);
@@ -126,6 +130,7 @@ StartPlaylistTitle = API.StartPlaylistTitle;
 --
 function API.StopSong()
     if GUI then
+        API.Bridge("API.StopSong()");
         return;
     end
     BundleMusicTools.Global:StopSong();
@@ -142,6 +147,7 @@ StopSong = API.StopSong;
 --
 function API.AbortMusic()
     if GUI then
+        API.Bridge("API.AbortMusic()");
         return;
     end
     BundleMusicTools.Global:AbortMusic();

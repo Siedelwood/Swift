@@ -55,6 +55,7 @@ BundleQuestDebug = {
 --
 function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
     if GUI then
+        API.Bridge("API.DisbandTravelingSalesman(" ..tostring(_CheckAtStart).. ", " ..tostring(_CheckAtRun).. ", " ..tostring(_TraceQuests).. ", " ..tostring(_DevelopingMode).. ")");
         return;
     end
     BundleQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode);

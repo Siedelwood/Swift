@@ -20,6 +20,11 @@
 -- der Bibliothek "API". Alle Bundles ergänzen ihre User-Space-Funktionen dort.
 -- Außer den Aliases auf API-Funktionen und den Behavior-Funktionen sind keine
 -- anderen öffentlichen Funktionen für den Anwendern sichtbar zu machen!
+-- Sinn des User-Space ist es, Funktionsaufrufe, die zum Teil nur in einer
+-- Skriptumgebung bekannt sind zu verallgemeinern. Wird die Funktion nun aus
+-- der falschen Umgebung aufgerufen, wird der Aufruf an die richtige Umgebung
+-- weitergereicht oder, falls dies nicht möglich ist, abgebrochen. Dies soll
+-- Fehler vermeiden.
 --
 -- Im Application-Space liegen die privaten Funktionen und Variablen, die
 -- nicht in der Dokumentation erscheinen. Sie sind mit einem Local-Tag zu
@@ -679,6 +684,28 @@ function API.GetDistance( _pos1, _pos2 )
     return math.sqrt(((_pos1.X - _pos2.X)^2) + ((_pos1.Y - _pos2.Y)^2));
 end
 GetDistance = API.GetDistance;
+
+---
+-- Prüft, ob eine Positionstabelle eine gültige Position enthält.
+--
+-- <b>Alias:</b> IsValidPosition
+--
+-- @param _pos Positionstable
+-- @return boolean: Position ist valide
+-- @within User Space
+--
+function API.ValidatePosition(_pos)
+    if type(_pos) == "table" then
+        if (_pos.X ~= nil and type(_pos.X) == "number") and (_pos.Y ~= nil and type(_pos.Y) == "number") then
+            local world = {Logic.WorldGetSize()}
+            if _pos.X <= world[1] and _pos.X >= 0 and _pos.Y <= world[2] and _pos.Y >= 0 then
+                return true;
+            end
+        end
+    end
+    return false;
+end
+IsValidPosition = API.ValidatePosition;
 
 ---
 -- Lokalisiert ein Entity auf der Map. Es können sowohl Skriptnamen als auch

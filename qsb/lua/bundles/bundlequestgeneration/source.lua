@@ -47,6 +47,10 @@ QSB = QSB or {};
 -- @within User Space
 --
 function API.AddQuest(_Data)
+    if GUI then
+        API.Log("Could not execute API.AddQuest in local script!");
+        return;
+    end
     return BundleQuestGeneration.Global:NewQuest(_Data);
 end
 AddQuest = API.AddQuest;
@@ -57,6 +61,10 @@ AddQuest = API.AddQuest;
 -- @within User Space
 --
 function API.StartQuests()
+    if GUI then
+        API.Brudge("API.StartQuests()");
+        return;
+    end
     return BundleQuestGeneration.Global:StartQuests();
 end
 StartQuests = API.StartQuests;
