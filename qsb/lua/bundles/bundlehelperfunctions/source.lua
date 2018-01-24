@@ -209,6 +209,74 @@ function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
 end
 SetPositionEx = API.PlaceToPosition;
 
+---
+-- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+-- Hat das Entity einen Namen, bleibt dieser unverändert und wird
+-- zurückgegeben.
+--
+-- <b>Alias:<b> GiveEntityName
+--
+-- @param _EntityID Entity ID
+-- @return string: Vergebener Name
+-- @within User Space
+--
+function API.GiveEntityName(_EntityID)
+    if GUI then
+        API.Bridge("API.GiveEntityName(" ..GetID(_EntityID).. ")")
+        return;
+    end
+    return BundleHelperFunctions.Global:GiveEntityName(_EntityID);
+end
+GiveEntityName = API.GiveEntityName;
+
+---
+-- Gibt den Skriptnamen des Entity zurück.
+--
+-- <b>Alias:<b> GetEntityName
+--
+-- @param _entity Gesuchtes Entity
+-- @return string: Skriptname
+-- @within User Space
+--
+function API.GetEntityName(_entity)
+    return Logic.GetEntityName(GetID(_entity));
+end
+GetEntityName = API.GetEntityName;
+
+---
+-- Setzt die Orientierung des Entity.
+--
+-- <b>Alias:<b> SetOrientation
+--
+-- @param _entity Gesuchtes Entity
+-- @param _ori    Ausrichtung in Grad
+-- @within User Space
+--
+function API.SetOrientation(_entity, _ori)
+    if GUI then
+        API.Bridge("API.SetOrientation(" ..GetID(_entity).. ", " .._ori.. ")")
+        return;
+    end
+    if IsExisting(_entity) then
+        Logic.SetOrientation(GetID(_entity), _ori);
+    end
+end
+SetOrientation = API.SetOrientation;
+
+---
+-- Gibt die Orientierung des Entity zurück.
+--
+-- <b>Alias:<b> GetOrientation
+--
+-- @param _entity Gesuchtes Entity
+-- @return number: Orientierung in Grad
+-- @within User Space
+--
+function API.GetOrientation(_entity)
+    return Logic.GetEntityOrientation(GetID(_entity));
+end
+GetOrientation = API.GetOrientation;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -429,6 +497,31 @@ function BundleHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distan
             return true;
         end
     end, eID, tID);
+end
+
+---
+-- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+-- Hat das Entity einen Namen, bleibt dieser unverändert und wird
+-- zurückgegeben.
+--
+-- @param _EntityID Entity ID
+-- @return string: Vergebener Name
+-- @within Application Space
+-- @local
+--
+function BundleHelperFunctions.Global:GiveEntityName(_EntityID)
+    if type(_EntityID) == "string" then
+        return _EntityID;
+    else
+        assert(type(_EntityID) == "number");
+        local name = Logic.GetEntityName(_EntityID);
+        if (type(name) ~= "string" or name == "" ) then
+            QSB.GiveEntityNameCounter = (QSB.GiveEntityNameCounter or 0)+ 1;
+            name = "GiveEntityName_Entity_"..QSB.GiveEntityNameCounter;
+            Logic.SetEntityName(_EntityID, name);
+        end
+        return name;
+    end
 end
 
 -- Local Script ----------------------------------------------------------------
