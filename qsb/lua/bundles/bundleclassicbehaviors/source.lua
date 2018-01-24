@@ -22,7 +22,7 @@ QSB.InitalizedObjekts = QSB.InitalizedObjekts or {};
 QSB.DestroyedSoldiers = QSB.DestroyedSoldiers or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 -- Hier siehst du... nichts! ;)
@@ -8345,7 +8345,7 @@ end
 Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleClassicBehaviors = {
@@ -8357,7 +8357,7 @@ BundleClassicBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleClassicBehaviors.Global:Install()
@@ -8368,7 +8368,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleClassicBehaviors.Local:Install()

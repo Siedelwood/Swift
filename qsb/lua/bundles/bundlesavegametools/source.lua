@@ -16,7 +16,7 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -25,7 +25,7 @@ QSB = QSB or {};
 -- zum nδchsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
--- @within User Space
+-- @within User-Space
 --
 function API.AutoSaveGame(_name)
     assert(_name);
@@ -43,7 +43,7 @@ end
 --
 -- @param _path	Pfad zum Ziel
 -- @param _name	Name des Spielstandes
--- @within User Space
+-- @within User-Space
 --
 function API.SaveGameToFolder(_path, _name)
     assert(_path);
@@ -64,7 +64,7 @@ end
 -- @param _path		  Pfad zum Ziel
 -- @param _name		  Name des Spielstandes
 -- @param _needButton Startbutton anzeigen (0 oder 1)
--- @within User Space
+-- @within User-Space
 --
 function API.LoadGameFromFolder(_path, _name, _needButton)
     assert(_path);
@@ -92,7 +92,7 @@ end
 -- @param _knight		Index des Helden
 -- @param _folder		Mapordner
 -- @param _needButton	Startbutton nutzen
--- @within User Space
+-- @within User-Space
 --
 function API.StartMap(_map, _knight, _folder, _needButton)
     assert(_map);
@@ -107,7 +107,7 @@ function API.StartMap(_map, _knight, _folder, _needButton)
 end
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleSaveGameTools = {
@@ -126,7 +126,7 @@ BundleSaveGameTools = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleSaveGameTools.Global:Install()
@@ -140,7 +140,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleSaveGameTools.Local:Install()
@@ -153,7 +153,7 @@ end
 -- zum nδchsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleSaveGameTools.Local:AutoSaveGame(_name)
@@ -189,7 +189,7 @@ end
 --
 -- @param _path	Pfad zum Ziel
 -- @param _name	Name des Spielstandes
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleSaveGameTools.Local:SaveGameToFolder(_path, _name)
@@ -206,7 +206,7 @@ end
 -- @param _path		  Pfad zum Ziel
 -- @param _name		  Name des Spielstandes
 -- @param _needButton Startbutton anzeigen (0 oder 1)
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton)
@@ -235,7 +235,7 @@ end
 -- @param _knight		Index des Helden
 -- @param _folder		Mapordner
 -- @param _needButton	Startbutton nutzen
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleSaveGameTools.Local:LoadGameFromFolder(_map, _knight, _folder, _needButton)

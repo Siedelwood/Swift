@@ -35,7 +35,7 @@ BundleQuestDebug = {
 }
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -51,7 +51,7 @@ BundleQuestDebug = {
 -- @param _CheckAtRun     Prüfe Quests zur Laufzeit
 -- @param _TraceQuests    Aktiviert Questverfolgung
 -- @param _DevelopingMode Aktiviert Cheats und Konsole
--- @within User Space
+-- @within User-Space
 --
 function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
     if GUI then
@@ -129,7 +129,7 @@ end
 Core:RegisterBehavior(b_Reward_DEBUG);
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 -- Global Script ---------------------------------------------------------------

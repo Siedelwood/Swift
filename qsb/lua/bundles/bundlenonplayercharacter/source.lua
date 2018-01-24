@@ -31,7 +31,7 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 BundleNonPlayerCharacter = {
@@ -517,14 +517,14 @@ end
 Core:RegisterBehavior(b_Trigger_NPC);
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 -- Global Script ---------------------------------------------------------------
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
@@ -765,7 +765,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleNonPlayerCharacter.Local:Install()

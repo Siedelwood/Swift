@@ -20,7 +20,7 @@ QSB = QSB or {};
 QSB.PlayerNames = {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -30,7 +30,7 @@ QSB.PlayerNames = {};
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideMinimap(_Flag)
     if not GUI then
@@ -55,7 +55,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideToggleMinimap(_Flag)
     if not GUI then
@@ -76,7 +76,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideDiplomacyMenu(_Flag)
     if not GUI then
@@ -97,7 +97,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideProductionMenu(_Flag)
     if not GUI then
@@ -118,7 +118,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideWeatherMenu(_Flag)
     if not GUI then
@@ -139,7 +139,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideBuyTerritory(_Flag)
     if not GUI then
@@ -160,7 +160,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideKnightAbility(_Flag)
     if not GUI then
@@ -185,7 +185,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideKnightButton(_Flag)
     if not GUI then
@@ -218,7 +218,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideSelectionButton(_Flag)
     if not GUI then
@@ -241,7 +241,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User Space
+-- @within User-Space
 --
 function API.HideBuildMenu(_Flag)
     if not GUI then
@@ -268,7 +268,7 @@ end
 -- 
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
--- @within User Space
+-- @within User-Space
 --
 function API.SetTexture(_widget, _file)
     if not GUI then
@@ -308,7 +308,7 @@ UserSetTexture = API.SetTexture;
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
 -- @param _Name        Name der Icon Matrix
--- @within User Space
+-- @within User-Space
 --
 function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then
@@ -335,7 +335,7 @@ UserSetIcon = API.SetIcon;
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
--- @within User Space
+-- @within User-Space
 --
 function API.SetTooltipNormal(_title, _text, _disabledText)
     if not GUI then 
@@ -357,7 +357,7 @@ UserSetTextNormal = API.SetTooltipNormal;
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @param _costs        Kostentabelle
 -- @param _inSettlement Kosten in Siedlung suchen
--- @within User Space
+-- @within User-Space
 --
 function API.SetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
     if not GUI then
@@ -374,7 +374,7 @@ UserSetTextBuy = API.SetTooltipCosts;
 --
 -- @return _TerritoryID ID des Territoriums
 -- @return Name des Territorium
--- @within User Space
+-- @within User-Space
 --
 function API.GetTerritoryName(_TerritoryID)
     local Name = Logic.GetTerritoryName(_TerritoryID);
@@ -401,7 +401,7 @@ GetTerritoryName = API.GetTerritoryName;
 --
 -- @return _PlayerID ID des Spielers
 -- @return Name des Territorium
--- @within User Space
+-- @within User-Space
 --
 function API.GetPlayerName(_PlayerID)
     local PlayerName = Logic.GetPlayerName(_PlayerID);
@@ -435,7 +435,7 @@ GetPlayerName = API.GetPlayerName;
 -- @return _playerID ID des Spielers
 -- @return _name     Name des Spielers
 -- @return Name des Territorium
--- @within User Space
+-- @within User-Space
 --
 function API.SetPlayerName(_playerID,_name)
     assert(type(_playerID) == "number");
@@ -458,7 +458,7 @@ SetPlayerName = API.SetPlayerName;
 -- @return _Logo     Logo (optional)
 -- @return _Pattern  Pattern (optional)
 -- @return Name des Territorium
--- @within User Space
+-- @within User-Space
 --
 function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     if GUI then
@@ -479,7 +479,7 @@ function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
 end
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleInterfaceApperance = {
@@ -493,7 +493,7 @@ BundleInterfaceApperance = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Global:Install()
@@ -502,7 +502,7 @@ end
 
 ---
 -- Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Global.RestoreAfterLoad()
@@ -515,7 +515,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Local:Install()
@@ -552,7 +552,7 @@ end
 --
 -- @param _Widget Widgetpfad oder ID
 -- @param _Hide   Hidden Flag
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Local:HideInterfaceButton(_Widget, _Hide)
@@ -562,7 +562,7 @@ end
 
 ---
 -- Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Local:RestoreAfterLoad()
@@ -578,7 +578,7 @@ end
 --
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Local:SetTexture(_widget, _file)
@@ -610,7 +610,7 @@ end
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
 -- @param _Name        Name der Icon Matrix
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
@@ -652,7 +652,7 @@ end
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Local:TextNormal(_title, _text, _disabledText)
@@ -703,7 +703,7 @@ end
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @param _costs        Kostentabelle
 -- @param _inSettlement Kosten in Siedlung suchen
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleInterfaceApperance.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement)

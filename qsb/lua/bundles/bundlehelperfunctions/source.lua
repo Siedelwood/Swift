@@ -15,7 +15,7 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -26,7 +26,7 @@ QSB = QSB or {};
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
--- @within User Space
+-- @within User-Space
 --
 function API.UndiscoverTerritory(_PlayerID, _TerritoryID)
     if GUI then
@@ -45,7 +45,7 @@ UndiscoverTerritory = API.UndiscoverTerritory;
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
--- @within User Space
+-- @within User-Space
 --
 function API.UndiscoverTerritories(_PlayerID, _TargetPlayerID)
     if GUI then
@@ -66,7 +66,7 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
 -- @param _PlayerID Partei oder nil für alle
--- @within User Space
+-- @within User-Space
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
     if GUI then
@@ -87,7 +87,7 @@ SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 -- @param _category     Kategorien oder Table mit Kategorien
 -- @param _territory    Zielterritorium oder Table mit Territorien
 -- @return table: Liste mit Entities
--- @within User Space
+-- @within User-Space
 --
 function API.GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
     return BundleHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
@@ -101,7 +101,7 @@ GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
 -- 
 -- @param _Prefix Präfix des Skriptnamen
 -- @return table: Liste mit Entities
--- @within User Space
+-- @within User-Space
 --
 function API.GetEntitiesByPrefix(_Prefix)
     return BundleHelperFunctions:GetEntitiesByPrefix(_Prefix);
@@ -138,7 +138,7 @@ SetResourceAmount = API.SetResourceAmount;
 -- @param _angle           Winkel
 -- @param _buildingRealPos Gebäudemitte statt Gebäudeeingang
 -- @return table: Position
--- @within User Space
+-- @within User-Space
 --
 function API.GetRelativePos(_target, _distance, _angle, _buildingRealPos)
     return BundleHelperFunctions:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
@@ -151,7 +151,7 @@ GetRelativePos = API.GetRelativePos;
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function API.SetPosition(_Entity,_Position)
@@ -163,8 +163,54 @@ function API.SetPosition(_Entity,_Position)
 end
 SetPosition = API.SetPosition;
 
+---
+-- Das Entity wird zum ziel bewegt und kann relativ um das Ziel in einem
+-- Winkel bewegt werden. Das Entity wird das Ziel anschießend anschauen.
+-- Die Funktion kann auch Schiffe bewegen, indem der letzte Parameter
+-- true gesetzt wird.
+--
+-- <b>Alias:<b> MoveEx
+--
+-- @param _Entity       Zu bewegendes Entity
+-- @param _Position     Ziel
+-- @param _Distance     Entfernung zum Ziel
+-- @param _Angle        Winkel
+-- @param _moveAsEntity Blocking ignorieren
+-- @within User-Space
+--
+function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+    if GUI then
+        API.Bridge("API.MoveToPosition(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ", " ..tostring(_moveAsEntity).. ")")
+        return;
+    end
+    BundleHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+end
+MoveEx = API.MoveToPosition;
+
+---
+-- Platziert das Entity wird zum ziel bewegt und kann relativ um das Ziel
+-- in einem Winkel.
+--
+-- <b>Alias:<b> SetPositionEx
+--
+-- @param _Entity       Zu bewegendes Entity
+-- @param _Position     Ziel
+-- @param _Distance     Entfernung zum Ziel
+-- @param _Angle        Winkel
+-- @within User-Space
+--
+function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
+    if GUI then
+        API.Bridge("API.PlaceToPosition(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ")")
+        return;
+    end
+    local Position = API.GetRelativePos(_Position, _Distance, _Angle, true);
+    API.SetPosition(_Entity, Position);
+end
+SetPositionEx = API.PlaceToPosition;
+
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleHelperFunctions = {
@@ -183,7 +229,7 @@ BundleHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions.Global:Install()
@@ -194,7 +240,7 @@ end
 -- Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
 -- auch während des Spiels setzen zu können.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions.Global:OverwriteGeologistRefill()
@@ -217,7 +263,7 @@ end
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID)
@@ -238,7 +284,7 @@ end
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID)
@@ -264,7 +310,7 @@ end
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
 -- @param _PlayerID Partei oder nil für alle
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
@@ -293,7 +339,7 @@ end
 -- @param _StartAmount  Menge an Rohstoffen
 -- @param _RefillAmount Minimale Nachfüllmenge (> 0)
 -- @return boolean: Operation erfolgreich
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
@@ -318,7 +364,7 @@ end
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions.Global:SetPosition(_Entity,_Position)
@@ -330,17 +376,59 @@ function BundleHelperFunctions.Global:SetPosition(_Entity,_Position)
     if type(pos) ~= "table" then
         pos = GetPosition(pos);
     end
-    assert( IsValidPosition(pos));
-
-    Logic.DEBUG_SetSettlerPosition(EntityID, pos.X, pos.Y);
-    if Logic.IsLeader(EntityID) == 1 then
-        local soldiers = {Logic.GetSoldiersAttachedToLeader(EntityID)};
-        if soldiers[1] > 0 then
-            for i=1,#soldiers do
-                Logic.DEBUG_SetSettlerPosition(soldiers[i], pos.X, pos.Y);
+    if API.IsValidPosition(pos) then
+        Logic.DEBUG_SetSettlerPosition(EntityID, pos.X, pos.Y);
+        if Logic.IsLeader(EntityID) == 1 then
+            local soldiers = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+            if soldiers[1] > 0 then
+                for i=1,#soldiers do
+                    Logic.DEBUG_SetSettlerPosition(soldiers[i], pos.X, pos.Y);
+                end
             end
         end
     end
+end
+
+---
+-- Das Entity wird zum ziel bewegt und kann relativ um das Ziel in einem
+-- Winkel bewegt werden. Das Entity wird das Ziel anschießend anschauen.
+-- Die Funktion kann auch Schiffe bewegen, indem der letzte Parameter
+-- true gesetzt wird.
+--
+-- @param _Entity       Zu bewegendes Entity
+-- @param _Position     Ziel
+-- @param _Distance     Entfernung zum Ziel
+-- @param _Angle        Winkel
+-- @param _moveAsEntity Blocking ignorieren
+-- @within Application-Space
+-- @local
+--
+function BundleHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+    if not IsExisting(_Entity)then
+        return
+    end
+    if not _Distance then
+        _Distance = 0;
+    end
+    local eID = GetID(_Entity);
+    local tID = GetID(_Position);
+    local pos = GetRelativePos(_Position, _Distance);
+    if type(_Angle) == "number" then
+        pos = BundleHelperFunctions:GetRelativePos(_Position, _Distance, _Angle);
+    end
+
+    if _moveAsEntity then
+        Logic.MoveEntity(eID, pos.X, pos.Y);
+    else
+        Logic.MoveSettler(eID, pos.X, pos.Y);
+    end
+    
+    StartSimpleJobEx( function(_EntityID, _TargetID)
+        if not Logic.IsEntityMoving(_EntityID) then
+            LookAt(_EntityID, _TargetID);
+            return true;
+        end
+    end, eID, tID);
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -348,7 +436,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions.Local:Install()
@@ -367,7 +455,7 @@ end
 -- @param _category     Kategorien oder Table mit Kategorien
 -- @param _territory    Zielterritorium oder Table mit Territorien
 -- @return table: Liste mit Entities
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
@@ -393,7 +481,7 @@ end
 -- 
 -- @param _Prefix Präfix des Skriptnamen
 -- @return table: Liste mit Entities
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions:GetEntitiesByPrefix(_Prefix)
@@ -421,7 +509,7 @@ end
 -- @param _angle           Winkel
 -- @param _buildingRealPos Gebäudemitte statt Gebäudeeingang
 -- @return table: Position
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleHelperFunctions:GetRelativePos(_target,_distance,_angle,_buildingRealPos)

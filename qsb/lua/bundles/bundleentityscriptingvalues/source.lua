@@ -16,7 +16,7 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -24,7 +24,7 @@ QSB = QSB or {};
 --
 -- @param _Entity Entity
 -- @return Größenfaktor
--- @within User Space
+-- @within User-Space
 -- @local
 --
 function API.GetScale(_Entity)
@@ -39,7 +39,7 @@ end
 --
 -- @param _Entity Entity
 -- @return Besitzer
--- @within User Space
+-- @within User-Space
 -- @local
 --
 function API.GetPlayer(_Entity)
@@ -54,7 +54,7 @@ end
 --
 -- @param _Entity Entity
 -- @return Positionstabelle
--- @within User Space
+-- @within User-Space
 -- @local
 --
 function API.GetMovingTarget(_Entity)
@@ -69,7 +69,7 @@ end
 --
 -- @param _Entity Entity
 -- @return Ist NPC
--- @within User Space
+-- @within User-Space
 -- @local
 --
 function API.IsNPC(_Entity)
@@ -84,7 +84,7 @@ end
 --
 -- @param _Entity Entity
 -- @return Ist sichtbar
--- @within User Space
+-- @within User-Space
 -- @local
 --
 function API.IsViusible(_Entity)
@@ -102,7 +102,7 @@ end
 --
 -- @param _Entity Entity
 -- @param _Scale  Größenfaktor
--- @within User Space
+-- @within User-Space
 -- @local
 --
 function API.SetScale(_Entity, _Scale)
@@ -120,7 +120,7 @@ end
 --
 -- @param _Entity   Entity
 -- @param _PlayerID Besitzer
--- @within User Space
+-- @within User-Space
 -- @local
 --
 function API.SetPlayer(_Entity, _PlayerID)
@@ -131,7 +131,7 @@ function API.SetPlayer(_Entity, _PlayerID)
 end
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleEntityScriptingValues = {
@@ -148,7 +148,7 @@ BundleEntityScriptingValues = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues.Global:Install()
@@ -160,7 +160,7 @@ end
 --
 -- @param _entity Entity
 -- @param _size   Größenfaktor
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
@@ -176,7 +176,7 @@ end
 --
 -- @param _entity   Entity
 -- @param _PlayerID Neuer Besitzer
--- @within Application Space
+-- @within Application-Space
 -- @local
 -- 
 function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
@@ -189,7 +189,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues.Local:Install()
@@ -203,7 +203,7 @@ end
 --
 -- @param _entity Entity
 -- @return Größenfaktor
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:GetEntitySize(_entity)
@@ -218,7 +218,7 @@ end
 --
 -- @param _entity Entity
 -- @return PlayerID
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:GetPlayerID(_entity)
@@ -231,7 +231,7 @@ end
 --
 -- @param _entity Entity
 -- @return Entity ist sichtbar
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:IsEntityVisible(_entity)
@@ -244,7 +244,7 @@ end
 --
 -- @param _entity Entity
 -- @return NPC ist aktiv
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:IsOnScreenInformationActive(_entity)
@@ -260,7 +260,7 @@ end
 --
 -- @param _entity Entity
 -- @return Position Table
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:GetMovingTargetPosition(_entity)
@@ -276,7 +276,7 @@ end
 -- @param _entity Zu untersuchendes Entity
 -- @param _index  Index im RAM
 -- @return Integer
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:GetValueAsInteger(_entity, _index)
@@ -290,7 +290,7 @@ end
 -- @param _entity Zu untersuchendes Entity
 -- @param _index  Index im RAM
 -- @return Float
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:GetValueAsFloat(_entity, _index)
@@ -304,7 +304,7 @@ end
 -- @param a	Zahl
 -- @param b	Modul
 -- @return qmod der Zahl
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:qmod(a, b)
@@ -316,7 +316,7 @@ end
 --
 -- @param num Integer
 -- @return Integer als Float
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:Int2Float(num)
@@ -342,7 +342,7 @@ end
 --
 -- @param num Bits
 -- @return Table mit Bits
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:bitsInt(num)
@@ -360,7 +360,7 @@ end
 -- @param num Integer
 -- @param t	  Table
 -- @return Table mit Bits
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:bitsFrac(num, t)
@@ -377,7 +377,7 @@ end
 --
 -- @param fval Float
 -- @return Float als Integer
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntityScriptingValues:Float2Int(fval)

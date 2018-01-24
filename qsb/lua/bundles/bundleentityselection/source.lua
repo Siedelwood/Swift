@@ -15,13 +15,13 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleEntitySelection = {
@@ -59,7 +59,7 @@ BundleEntitySelection = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntitySelection.Global:Install()
@@ -70,7 +70,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntitySelection.Local:Install()
@@ -83,7 +83,7 @@ end
 -- Hängt eine Funktion an die GUI_Tooltip.SetNameAndDescription an, sodass
 -- Tooltips überschrieben werden können.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
@@ -118,7 +118,7 @@ end
 --
 -- @param _TitleText Titel des Tooltip
 -- @param _DescText  Text des Tooltip
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText)
@@ -140,7 +140,7 @@ end
 -- Überschreibt den SelectKnight-Button. Durch drücken von CTLR können alle
 -- Helden selektiert werden, die der Spieler kontrolliert.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectKnight()
@@ -170,7 +170,7 @@ end
 ---
 -- Überschreibt die Militärselektion, sodass der Spieler mit SHIFT zusätzlich
 -- die Munitionswagen und Trebuchets selektieren kann.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectAllUnits()
@@ -203,7 +203,7 @@ end
 
 ---
 -- Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntitySelection.Local:NormalLeaderSortOrder()
@@ -243,7 +243,7 @@ end
 
 ---
 -- Erzeugt die erweiterte Selektion mit Munitionswagen und Trebuchets.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleEntitySelection.Local:ExtendedLeaderSortOrder()

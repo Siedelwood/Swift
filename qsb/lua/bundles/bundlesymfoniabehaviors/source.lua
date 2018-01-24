@@ -15,7 +15,7 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 
@@ -1713,7 +1713,7 @@ end
 Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsWon);
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleSymfoniaBehaviors = {
@@ -1725,7 +1725,7 @@ BundleSymfoniaBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleSymfoniaBehaviors.Global:Install()
@@ -1891,7 +1891,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleSymfoniaBehaviors.Local:Install()

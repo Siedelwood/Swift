@@ -15,7 +15,7 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+-- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -44,7 +44,7 @@ QSB = QSB or {};
 -- </ul>
 --
 -- @param _Data Questdefinition
--- @within User Space
+-- @within User-Space
 --
 function API.AddQuest(_Data)
     if GUI then
@@ -58,7 +58,7 @@ AddQuest = API.AddQuest;
 ---
 -- Startet alle mittels API.AddQuest initalisierten Quests.
 --
--- @within User Space
+-- @within User-Space
 --
 function API.StartQuests()
     if GUI then
@@ -70,7 +70,7 @@ end
 StartQuests = API.StartQuests;
 
 -- -------------------------------------------------------------------------- --
--- Application Space                                                          --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleQuestGeneration = {
@@ -110,7 +110,7 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
@@ -121,7 +121,7 @@ end
 -- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
 --
 -- @param _Data Daten des Quest.
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleQuestGeneration.Global:NewQuest(_Data)
@@ -168,7 +168,7 @@ end
 --
 -- @param _ID   Id des Quests
 -- @param _Data Quest Data
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
@@ -208,7 +208,7 @@ end
 ---
 -- Startet alle Quests in der GenerationList.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleQuestGeneration.Global:StartQuests()
@@ -256,7 +256,7 @@ end
 -- Validiert alle Quests in der GenerationList. Verschiedene Standardfehler
 -- werden geprüft.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleQuestGeneration.Global:ValidateQuests()
@@ -340,7 +340,7 @@ end
 -- in der Initalisiererliste zu testen.
 --
 -- @param _List Liste der Quests
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleQuestGeneration.Global:DebugQuest(_List)
@@ -352,7 +352,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application Space
+-- @within Application-Space
 -- @local
 --
 function BundleQuestGeneration.Local:Install()
