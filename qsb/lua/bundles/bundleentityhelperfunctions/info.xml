@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
     <name>
-        <![CDATA[Hilfsfunktionen]]>
+        <![CDATA[Hilfsfunktionen: Entities]]>
     </name>
     <description>
-        <![CDATA[]]>
+        <![CDATA[Dieses Bundle enthält häufig gebrauchte Funktionen im Kontext 
+           zu Entities.]]>
     </description>
 
     <dependencies>

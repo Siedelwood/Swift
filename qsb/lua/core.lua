@@ -518,27 +518,124 @@ end
 
 ---
 -- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
+-- 
+-- <b>Alias:</b> dbg
 --
 -- @param _Message Anzeigetext
 -- @within User-Space
 --
 function API.Dbg(_Message)
-    API.StaticNote("DEBUG: " .._Message)
+    if QSB.Log.CurrentLevel >= QSB.Log.Level.ERROR then
+        API.StaticNote("DEBUG: " .._Message)
+    end
     API.Log("DEBUG: " .._Message);
+    -- FIXME Funktioniert das ingame?
+    API.Log(debug.traceback());
 end
 dbg = API.Dbg;
 
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
+-- 
+-- <b>Alias:</b> warn
 --
 -- @param _Message Anzeigetext
 -- @within User-Space
 --
 function API.Warn(_Message)
-    API.StaticNote("WARNING: " .._Message)
+    if QSB.Log.CurrentLevel >= QSB.Log.Level.WARNING then
+        API.StaticNote("WARNING: " .._Message)
+    end
     API.Log("WARNING: " .._Message);
 end
 warn = API.Warn;
+
+---
+-- Schreibt eine Information auf den Bildschirm und ins Log.
+-- 
+-- <b>Alias:</b> info
+-- 
+-- @param _Message Anzeigetext
+-- @within User-Space
+--
+function API.Info(_Message)
+    if QSB.Log.CurrentLevel >= QSB.Log.Level.INFO then
+        API.StaticNote("WARNING: " .._Message)
+    end
+    API.Log("INFO: " .._Message);
+end
+info = API.Warn;
+
+-- Log Levels
+QSB.Log = {
+    Level = {
+        OFF      = 90000,
+        ERROR    = 3000,
+        WARNING  = 2000,
+        INFO     = 1000,
+    },
+}
+
+-- Aktuelles Level
+QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
+
+---
+-- Setzt das Log-Level für die aktuelle Skriptumgebung.
+--
+-- Als Voreinstellung werden alle Meldungen immer angezeigt!
+-- 
+-- Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
+-- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
+-- angezeigt werden.
+--
+-- <table>
+-- <tr>
+-- <th>
+-- Level
+-- </th>
+-- <th>
+-- Beschreibung
+-- </th>
+-- </tr>
+-- <td>
+-- QSB.Log.Level.OFF
+-- </td>
+-- <td>
+-- Alle Meldungen werden unterdrückt.
+-- </td>
+-- <tr>
+-- <td>
+-- QSB.Log.Level.ERROR
+-- </td>
+-- <td>
+-- Es werden nur Fehler angezeigt.
+-- </td>
+-- </tr>
+-- <tr>
+-- <td>
+-- QSB.Log.Level.WARNING
+-- </td>
+-- <td>
+-- Es werden nur Warnungen und Fehler angezeigt.
+-- </td>
+-- </tr>
+-- <tr>
+-- <td>
+-- QSB.Log.Level.INFO
+-- </td>
+-- <td>
+-- Es werden Meldungen aller Stufen angezeigt.
+-- </td>
+-- </tr>
+-- </table>
+-- 
+-- @param _Level Level
+-- @within User-Space
+--
+function API.SetLogLevel(_Level)
+    assert(type(_Level) == "number");
+    QSB.Log.CurrentLevel = _Level;
+end
 
 -- Entities --------------------------------------------------------------------
 
