@@ -537,7 +537,7 @@ dbg = API.Dbg;
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
 -- 
--- <b>Alias:</b> warn
+-- <p><b>Alias:</b> warn</p>
 --
 -- @param _Message Anzeigetext
 -- @within User-Space
@@ -588,7 +588,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
 -- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
 -- angezeigt werden.
 --
--- <table>
+-- <table border="1">
 -- <tr>
 -- <th>
 -- Level

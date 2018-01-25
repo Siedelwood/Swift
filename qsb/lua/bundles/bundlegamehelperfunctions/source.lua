@@ -22,7 +22,7 @@ QSB = QSB or {};
 -- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
 -- der entdeckten Territorien.
 --
--- <b>Alias:<b> UndiscoverTerritory
+-- <b>Alias:</b> UndiscoverTerritory
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
@@ -41,7 +41,7 @@ UndiscoverTerritory = API.UndiscoverTerritory;
 -- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
 -- Territorien. Als Nebeneffekt gild die Partei als unentdeckt.
 --
--- <b>Alias:<b> UndiscoverTerritories
+-- <b>Alias:</b> UndiscoverTerritories
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
@@ -61,7 +61,7 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
 --
--- <b>Alias:<b> SetNeedSatisfactionLevel
+-- <b>Alias:</b> SetNeedSatisfactionLevel
 --
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses

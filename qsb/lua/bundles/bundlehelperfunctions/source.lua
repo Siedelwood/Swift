@@ -1,13 +1,13 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia BundleEntityHelperFunctions                                  # --
+-- #  Symfonia BundleHelperFunctions                                        # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle enthält häufig gebrauchte Funktionen im Kontext zu Entities.
+-- 
 --
--- @module BundleEntityHelperFunctions
+-- @module BundleHelperFunctions
 -- @set sort=true
 --
 
@@ -17,6 +17,65 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
+
+---
+-- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
+-- der entdeckten Territorien.
+--
+-- <b>Alias:</b> UndiscoverTerritory
+--
+-- @param _PlayerID    Spieler-ID
+-- @param _TerritoryID Territorium-ID
+-- @within User-Space
+--
+function API.UndiscoverTerritory(_PlayerID, _TerritoryID)
+    if GUI then
+        API.Bridge("API.UndiscoverTerritory(" .._PlayerID.. ", ".._TerritoryID.. ")")
+        return;
+    end
+    BundleHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID);
+end
+UndiscoverTerritory = API.UndiscoverTerritory;
+
+---
+-- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
+-- Territorien. Als Nebeneffekt gild die Partei als unentdeckt.
+--
+-- <b>Alias:</b> UndiscoverTerritories
+--
+-- @param _PlayerID       Spieler-ID
+-- @param _TargetPlayerID Zielpartei
+-- @within User-Space
+--
+function API.UndiscoverTerritories(_PlayerID, _TargetPlayerID)
+    if GUI then
+        API.Bridge("API.UndiscoverTerritories(" .._PlayerID.. ", ".._TargetPlayerID.. ")")
+        return;
+    end
+    BundleHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID);
+end
+UndiscoverTerritories = API.UndiscoverTerritories;
+
+---
+-- Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
+-- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
+-- zwischen 0.0 und 1.0.
+--
+-- <b>Alias:</b> SetNeedSatisfactionLevel
+--
+-- @param _Need     Bedürfnis
+-- @param _State    Erfüllung des Bedürfnisses
+-- @param _PlayerID Partei oder nil für alle
+-- @within User-Space
+--
+function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
+    if GUI then
+        API.Bridge("API.SetNeedSatisfaction(" .._Need.. ", " .._State.. ", " .._PlayerID.. ")")
+        return;
+    end
+    BundleHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID);
+end
+SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 
 ---
 -- Ermittelt alle Entities in den Kategorien auf den Territorien für die
@@ -31,7 +90,7 @@ QSB = QSB or {};
 -- @within User-Space
 --
 function API.GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
-    return BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
+    return BundleHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
 end
 GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
 
@@ -45,7 +104,7 @@ GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
 -- @within User-Space
 --
 function API.GetEntitiesByPrefix(_Prefix)
-    return BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix);
+    return BundleHelperFunctions:GetEntitiesByPrefix(_Prefix);
 end
 GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 
@@ -64,7 +123,7 @@ function API.SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
         API.Bridge("API.SetResourceAmount(" .._Entity..", " .._StartAmount.. ", " .._RefillAmount.. ")")
         return;
     end
-    return BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount);
+    BundleHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount);
 end
 SetResourceAmount = API.SetResourceAmount;
 
@@ -82,7 +141,7 @@ SetResourceAmount = API.SetResourceAmount;
 -- @within User-Space
 --
 function API.GetRelativePos(_target, _distance, _angle, _buildingRealPos)
-    return BundleEntityHelperFunctions:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
+    return BundleHelperFunctions:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
 end
 GetRelativePos = API.GetRelativePos;
 
@@ -100,7 +159,7 @@ function API.SetPosition(_Entity,_Position)
         API.Bridge("API.SetPosition(" .._Entity.. ", " .._Position.. ")")
         return;
     end
-    return BundleEntityHelperFunctions.Global:SetPosition(_Entity, _Position);
+    BundleHelperFunctions.Global:SetPosition(_Entity, _Position);
 end
 SetPosition = API.SetPosition;
 
@@ -124,7 +183,7 @@ function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity
         API.Bridge("API.MoveToPosition(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ", " ..tostring(_moveAsEntity).. ")")
         return;
     end
-    return BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+    BundleHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
 end
 MoveEx = API.MoveToPosition;
 
@@ -166,7 +225,7 @@ function API.GiveEntityName(_EntityID)
         API.Bridge("API.GiveEntityName(" ..GetID(_EntityID).. ")")
         return;
     end
-    return BundleEntityHelperFunctions.Global:GiveEntityName(_EntityID);
+    return BundleHelperFunctions.Global:GiveEntityName(_EntityID);
 end
 GiveEntityName = API.GiveEntityName;
 
@@ -180,37 +239,9 @@ GiveEntityName = API.GiveEntityName;
 -- @within User Space
 --
 function API.GetEntityName(_entity)
-    if not IsExisting(_entity) then
-        local Subject = (type(_entity) == "string" and _entity) or "'" .._entity.. "'";
-        API.Warn("API.GetEntityName: Entity " ..Subject.. " does not exist!");
-        return nil;
-    end
     return Logic.GetEntityName(GetID(_entity));
 end
 GetEntityName = API.GetEntityName;
-
----
--- Setzt den Skriptnamen des Entity.
---
--- <b>Alias:</b> SetEntityName
---
--- @param _entity Entity
--- @param _name   Skriptname
--- @return string: Skriptname
--- @within User Space
---
-function API.SetEntityName(_entity, _name)
-    if GUI then
-        API.Bridge("API.SetEntityName(" ..GetID(_EntityID).. ", '" .._name.. "')")
-        return;
-    end
-    if IsExisting(_name) then
-        API.Dbg("API.SetEntityName: Entity '" .._name.. "' already exists!");
-        return;
-    end
-    return Logic.SetEntityName(GetID(_entity), _name);
-end
-SetEntityName = API.SetEntityName;
 
 ---
 -- Setzt die Orientierung des Entity.
@@ -226,12 +257,9 @@ function API.SetOrientation(_entity, _ori)
         API.Bridge("API.SetOrientation(" ..GetID(_entity).. ", " .._ori.. ")")
         return;
     end
-    if not IsExisting(_entity) then
-        local Subject = (type(_entity) == "string" and _entity) or "'" .._entity.. "'";
-        API.Dbg("API.SetOrientation: Entity " ..Subject.. " does not exist!");
-        return;
+    if IsExisting(_entity) then
+        Logic.SetOrientation(GetID(_entity), _ori);
     end
-    return Logic.SetOrientation(GetID(_entity), _ori);
 end
 SetOrientation = API.SetOrientation;
 
@@ -245,78 +273,15 @@ SetOrientation = API.SetOrientation;
 -- @within User Space
 --
 function API.GetOrientation(_entity)
-    if not IsExisting(_entity) then
-        local Subject = (type(_entity) == "string" and _entity) or "'" .._entity.. "'";
-        API.Warn("API.GetOrientation: Entity " ..Subject.. " does not exist!");
-        return 0;
-    end
     return Logic.GetEntityOrientation(GetID(_entity));
 end
 GetOrientation = API.GetOrientation;
-
----
--- Das Entity greift ein anderes Entity an, sofern möglich.
---
--- <b>Alias:</b> Attack
---
--- @param_Entity  Angreifendes Entity
--- @param _Target Angegriffenes Entity
--- @within Application Space
--- @local
---
-function API.EntityAttack(_Entity, _Target)
-    if GUI then
-        API.Bridge("API.EntityAttack(" ..GetID(_Entity).. ", " ..GetID(_Target).. ")")
-        return;
-    end
-    return BundleEntityHelperFunctions.Global:Attack(_Entity, _Target);
-end
-Attack = API.EntityAttack;
-
----
--- Ein Entity oder ein Battalion wird zu einer Position laufen und
--- alle gültigen Ziele auf dem Weg angreifen.
---
--- <b>Alias:</b> AttackMove
---
--- @param _Entity   Angreifendes Entity
--- @param _Position Skriptname, EntityID oder Positionstable
--- @within Application Space
--- @local
---
-function API.EntityAttackMove(_Entity, _Position)
-    if GUI then
-        API.Dbg("API.EntityAttackMove: Cannot be used from local script!");
-        return;
-    end
-    return BundleEntityHelperFunctions.Global:AttackMove(_Entity, _Position);
-end
-AttackMove = API.EntityAttackMove;
-
----
--- Bewegt das Entity zur Zielposition.
---
--- <b>Alias:</b> Move
---
--- @param _Entity   Bewegendes Entity
--- @param _Position Skriptname, EntityID oder Positionstable
--- @within Application Space
--- @local
---
-function API.EntityMove(_Entity, _Position)
-    if GUI then
-        API.Dbg("API.EntityMove: Cannot be used from local script!");
-        return;
-    end
-    return BundleEntityHelperFunctions.Global:Move(_Entity, _Position);
-end
-Move = API.EntityMove;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleEntityHelperFunctions = {
+BundleHelperFunctions = {
     Global = {
         Data = {
             RefillAmounts = {},
@@ -335,8 +300,8 @@ BundleEntityHelperFunctions = {
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions.Global:Install()
-    BundleEntityHelperFunctions.Global:OverwriteGeologistRefill();
+function BundleHelperFunctions.Global:Install()
+    BundleHelperFunctions.Global:OverwriteGeologistRefill();
 end
 
 ---
@@ -346,15 +311,90 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions.Global:OverwriteGeologistRefill()
+function BundleHelperFunctions.Global:OverwriteGeologistRefill()
     if Framework.GetGameExtraNo() >= 1 then
         GameCallback_OnGeologistRefill_Orig_QSBPlusComforts1 = GameCallback_OnGeologistRefill
         GameCallback_OnGeologistRefill = function( _PlayerID, _TargetID, _GeologistID )
             GameCallback_OnGeologistRefill_Orig_QSBPlusComforts1( _PlayerID, _TargetID, _GeologistID )
-            if BundleEntityHelperFunctions.Global.Data.RefillAmounts[_TargetID] then
-                local RefillAmount = BundleEntityHelperFunctions.Global.Data.RefillAmounts[_TargetID];
+            if BundleHelperFunctions.Global.Data.RefillAmounts[_TargetID] then
+                local RefillAmount = BundleHelperFunctions.Global.Data.RefillAmounts[_TargetID];
                 local RefillRandom = RefillAmount + math.random(1, math.floor((RefillAmount * 0.2) + 0.5));
                 Logic.SetResourceDoodadGoodAmount(_TargetID, RefillRandom);
+            end
+        end
+    end
+end
+
+---
+-- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
+-- der entdeckten Territorien.
+--
+-- @param _PlayerID    Spieler-ID
+-- @param _TerritoryID Territorium-ID
+-- @within Application-Space
+-- @local
+--
+function BundleHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID)
+    if DiscoveredTerritories[_PlayerID] == nil then
+        DiscoveredTerritories[_PlayerID] = {};
+    end
+    for i=1, #DiscoveredTerritories[_PlayerID], 1 do
+        if DiscoveredTerritories[_PlayerID][i] == _TerritoryID then
+            table.remove(DiscoveredTerritories[_PlayerID], i);
+            break;
+        end
+    end
+end
+
+---
+-- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
+-- Territorien. Als Nebeneffekt gild die Partei als unentdeckt-
+--
+-- @param _PlayerID       Spieler-ID
+-- @param _TargetPlayerID Zielpartei
+-- @within Application-Space
+-- @local
+--
+function BundleHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID)
+    if DiscoveredTerritories[_PlayerID] == nil then
+        DiscoveredTerritories[_PlayerID] = {};
+    end
+    local Discovered = {};
+    for k, v in pairs(DiscoveredTerritories[_PlayerID]) do
+        local OwnerPlayerID = Logic.GetTerritoryPlayerID(v);
+        if OwnerPlayerID ~= _TargetPlayerID then
+            table.insert(Discovered, v);
+            break;
+        end
+    end
+    DiscoveredTerritories[_PlayerID][i] = Discovered;
+end
+
+---
+-- Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
+-- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
+-- zwischen 0.0 und 1.0.
+--
+-- @param _Need     Bedürfnis
+-- @param _State    Erfüllung des Bedürfnisses
+-- @param _PlayerID Partei oder nil für alle
+-- @within Application-Space
+-- @local
+--
+function BundleHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
+    if not _PlayerID then
+        for i=1, 8, 1 do
+            Module_Comforts.Global.SetNeedSatisfactionLevel(_Need, _State, i);
+        end
+    else
+        local City = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.CityBuilding)};
+        if _Need == Needs.Nutrition or _Need == Needs.Medicine then
+            local Rim = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.OuterRimBuilding)};
+            City = Array_Append(City, Rim);
+        end
+        for j=1, #City, 1 do
+            if Logic.IsNeedActive(City[j], _Need) then
+                Logic.SetNeedState(City[j], _Need, _State);
             end
         end
     end
@@ -370,13 +410,12 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
+function BundleHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
     assert(type(_StartAmount) == "number");
     assert(type(_RefillAmount) == "number");
     
     local EntityID = GetID(_Entity);
     if not IsExisting(EntityID) or Logic.GetResourceDoodadGoodType(EntityID) == 0 then
-        API.Dbg("MoveToPosition: Resource entity is invalid!");
         return false;
     end
     if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
@@ -396,9 +435,8 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions.Global:SetPosition(_Entity,_Position)
+function BundleHelperFunctions.Global:SetPosition(_Entity,_Position)
     if not IsExisting(_Entity)then
-        API.Dbg("MoveToPosition: Entity is invalid!");
         return
     end
     local EntityID = GetEntityId(_Entity);
@@ -433,9 +471,8 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+function BundleHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
     if not IsExisting(_Entity)then
-        API.Dbg("MoveToPosition: Entity is invalid!");
         return
     end
     if not _Distance then
@@ -445,7 +482,7 @@ function BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _
     local tID = GetID(_Position);
     local pos = GetRelativePos(_Position, _Distance);
     if type(_Angle) == "number" then
-        pos = BundleEntityHelperFunctions:GetRelativePos(_Position, _Distance, _Angle);
+        pos = BundleHelperFunctions:GetRelativePos(_Position, _Distance, _Angle);
     end
 
     if _moveAsEntity then
@@ -472,7 +509,7 @@ end
 -- @within Application Space
 -- @local
 --
-function BundleEntityHelperFunctions.Global:GiveEntityName(_EntityID)
+function BundleHelperFunctions.Global:GiveEntityName(_EntityID)
     if type(_EntityID) == "string" then
         return _EntityID;
     else
@@ -487,62 +524,6 @@ function BundleEntityHelperFunctions.Global:GiveEntityName(_EntityID)
     end
 end
 
----
--- Das Entity greift ein anderes Entity an, sofern möglich.
---
--- @param_Entity  Angreifendes Entity
--- @param _Target Angegriffenes Entity
--- @within Application Space
--- @local
---
-function BundleEntityHelperFunctions.Global:Attack(_Entity, _Target)
-    local EntityID = GetID(_Entity);
-    local TargetID = GetID(_Target);
-    local Position = {};
-    if IsExisting(EntityID) and IsExisting(TargetID) then
-        Logic.GroupAttack(EntityID, TargetID);
-    end
-end
-
----
--- Ein Entity oder ein Battalion wird zu einer Position laufen und
--- alle gültigen Ziele auf dem Weg angreifen.
---
--- @param _Entity   Angreifendes Entity
--- @param _Position Skriptname, EntityID oder Positionstable
--- @within Application Space
--- @local
---
-function BundleEntityHelperFunctions.Global:AttackMove(_Entity, _Position)
-    local EntityID = GetID(_Entity);
-    local pos = {};
-    if type(_Position) == "string" or type(_Position) == "number" then
-        pos = API.LocateEntity(_Position);
-    else
-        pos = _Position;
-    end
-    Logic.GroupAttackMove(EntityID, pos.X, pos.Y);
-end
-
----
--- Bewegt das Entity zur Zielposition.
---
--- @param _Entity   Bewegendes Entity
--- @param _Position Skriptname, EntityID oder Positionstable
--- @within Application Space
--- @local
---
-function BundleEntityHelperFunctions.Global:Move(_Entity, _Position)
-    local EntityID = GetID(_Entity);
-    local pos = {};
-    if type(_Position) == "string" or type(_Position) == "number" then
-        pos = API.LocateEntity(_Position);
-    else
-        pos = _Position;
-    end
-    Logic.MoveSettler(EntityID, pos.X, pos.Y);
-end
-
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -551,7 +532,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions.Local:Install()
+function BundleHelperFunctions.Local:Install()
 
 end
 
@@ -570,7 +551,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
+function BundleHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
     -- Tables erzwingen
     local p = (type(_player) == "table" and _player) or {_player};
     local c = (type(_category) == "table" and _category) or {_category};
@@ -596,7 +577,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix)
+function BundleHelperFunctions:GetEntitiesByPrefix(_Prefix)
     local list = {};
     local i = 1;
     local bFound = true;
@@ -624,9 +605,8 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntityHelperFunctions:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
+function BundleHelperFunctions:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
     if not type(_target) == "table" and not IsExisting(_target)then
-        API.Dbg("GetRelativePos: Target is invalid!");
         return
     end
     if _angle == nil then
@@ -656,5 +636,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleEntityHelperFunctions");
+Core:RegisterBundle("BundleHelperFunctions");
 
