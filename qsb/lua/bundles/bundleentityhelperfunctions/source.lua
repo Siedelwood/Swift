@@ -64,6 +64,11 @@ function API.SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
         API.Bridge("API.SetResourceAmount(" .._Entity..", " .._StartAmount.. ", " .._RefillAmount.. ")")
         return;
     end
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        API.Dbg("API.SetResourceAmount: Entity " ..Subject.. " does not exist!");
+        return;
+    end
     return BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount);
 end
 SetResourceAmount = API.SetResourceAmount;
@@ -82,6 +87,12 @@ SetResourceAmount = API.SetResourceAmount;
 -- @within User-Space
 --
 function API.GetRelativePos(_target, _distance, _angle, _buildingRealPos)
+    if not API.ValidatePosition(_target) then
+        if not IsExisting(_target) then
+            API.Dbg("API.GetRelativePos: Target is invalid!");
+            return;
+        end
+    end
     return BundleEntityHelperFunctions:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
 end
 GetRelativePos = API.GetRelativePos;
@@ -100,7 +111,17 @@ function API.SetPosition(_Entity,_Position)
         API.Bridge("API.SetPosition(" .._Entity.. ", " .._Position.. ")")
         return;
     end
-    return BundleEntityHelperFunctions.Global:SetPosition(_Entity, _Position);
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        API.Dbg("API.SetPosition: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    local Position = API.LocateEntity(_Position)
+    if not API.ValidatePosition(Position) then
+        API.Dbg("API.SetPosition: Position is invalid!");
+        return;
+    end
+    return BundleEntityHelperFunctions.Global:SetPosition(_Entity, Position);
 end
 SetPosition = API.SetPosition;
 
@@ -124,6 +145,16 @@ function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity
         API.Bridge("API.MoveToPosition(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ", " ..tostring(_moveAsEntity).. ")")
         return;
     end
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        API.Dbg("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    if not IsExisting(_Position) then
+        local Subject = (type(_Position) == "string" and _Position) or "'" .._Position.. "'";
+        API.Dbg("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
+        return;
+    end
     return BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
 end
 MoveEx = API.MoveToPosition;
@@ -145,6 +176,16 @@ function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
         API.Bridge("API.PlaceToPosition(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ")")
         return;
     end
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        API.Dbg("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    if not IsExisting(_Position) then
+        local Subject = (type(_Position) == "string" and _Position) or "'" .._Position.. "'";
+        API.Dbg("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
+        return;
+    end
     local Position = API.GetRelativePos(_Position, _Distance, _Angle, true);
     API.SetPosition(_Entity, Position);
 end
@@ -162,6 +203,10 @@ SetPositionEx = API.PlaceToPosition;
 -- @within User Space
 --
 function API.GiveEntityName(_EntityID)
+    if IsExisting(_name) then
+        API.Dbg("API.GiveEntityName: Entity does not exist!");
+        return;
+    end
     if GUI then
         API.Bridge("API.GiveEntityName(" ..GetID(_EntityID).. ")")
         return;
@@ -269,6 +314,16 @@ function API.EntityAttack(_Entity, _Target)
         API.Bridge("API.EntityAttack(" ..GetID(_Entity).. ", " ..GetID(_Target).. ")")
         return;
     end
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.EntityAttack: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    if not IsExisting(_Target) then
+        local Subject = (type(_Target) == "string" and "'" .._Target.. "'") or _Target;
+        API.Dbg("API.EntityAttack: Target " ..Subject.. " does not exist!");
+        return;
+    end
     return BundleEntityHelperFunctions.Global:Attack(_Entity, _Target);
 end
 Attack = API.EntityAttack;
@@ -289,7 +344,17 @@ function API.EntityAttackMove(_Entity, _Position)
         API.Dbg("API.EntityAttackMove: Cannot be used from local script!");
         return;
     end
-    return BundleEntityHelperFunctions.Global:AttackMove(_Entity, _Position);
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.EntityAttackMove: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    local Position = API.LocateEntity(_Position)
+    if not API.ValidatePosition(Position) then
+        API.Dbg("API.EntityAttackMove: Position is invalid!");
+        return;
+    end
+    return BundleEntityHelperFunctions.Global:AttackMove(_Entity, Position);
 end
 AttackMove = API.EntityAttackMove;
 
@@ -308,9 +373,85 @@ function API.EntityMove(_Entity, _Position)
         API.Dbg("API.EntityMove: Cannot be used from local script!");
         return;
     end
-    return BundleEntityHelperFunctions.Global:Move(_Entity, _Position);
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.EntityMove: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    local Position = API.LocateEntity(_Position)
+    if not API.ValidatePosition(Position) then
+        API.Dbg("API.EntityMove: Position is invalid!");
+        return;
+    end
+    return BundleEntityHelperFunctions.Global:Move(_Entity, Position);
 end
 Move = API.EntityMove;
+
+
+---
+-- Gibt die Battalion-ID (Entity-ID des Leaders) eines Soldaten zurück.
+--
+-- <b>Alias:</b> GetLeaderBySoldier
+--
+-- @param _soldier Soldier
+-- @return number: ID des Battalion
+-- @within User-Space
+--
+function API.GetLeaderBySoldier(_soldier)
+    if not IsExisting(_soldier) then
+        API.Dbg("API.GetLeaderBySoldier: Entity " .._soldier.. " does not exist!");
+        return;
+    end
+    return Logic.SoldierGetLeaderEntityID(GetID(_soldier))
+end
+GetLeaderBySoldier = API.GetLeaderBySoldier;
+
+---
+-- Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.
+--
+-- <b>Alias:</b> GetClosestKnight
+-- 
+-- @param _eID      Basis-Entity
+-- @param _playerID Besitzer der Helden
+-- @return number: Nächstes Entity
+-- @within User-Space
+--
+function API.GetNearestKnight(_eID,_playerID)
+    local Knights = {};
+    Logic.GetKnights(_playerID, Knights);
+    return API.GetNearestEntity(_eID, Knights);
+end
+GetClosestKnight = API.GetNearestKnight;
+
+---
+-- Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+-- am nächsten ist.
+--
+-- <b>Alias:</b> GetClosestEntity
+-- 
+-- @param _eID      Basis-Entity
+-- @param _entities Liste von Entities
+-- @return number: Nächstes Entity
+-- @within User-Space
+--
+function API.GetNearestEntity(_eID, _entities)
+    if not IsExisting(_eID) then
+        API.Dbg("API.GetClosestEntity: Base entity does not exist!");
+        return;
+    end
+    if #_entities == 0 then
+        API.Dbg("API.GetClosestEntity: The target list is empty!");
+        return;
+    end
+    for i= 1, #_entities, 1 do
+        if not IsExisting(_entities[i]) then
+            API.Dbg("API.GetClosestEntity: At least one target entity is dead!");
+            return;
+        end
+    end
+    return BundleEntityHelperFunctions:GetNearestEntity(_eID,_entities);
+end
+GetClosestEntity = API.GetNearestEntity;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -376,7 +517,7 @@ function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmo
     
     local EntityID = GetID(_Entity);
     if not IsExisting(EntityID) or Logic.GetResourceDoodadGoodType(EntityID) == 0 then
-        API.Dbg("MoveToPosition: Resource entity is invalid!");
+        API.Dbg("SetResourceAmount: Resource entity is invalid!");
         return false;
     end
     if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
@@ -398,22 +539,15 @@ end
 --
 function BundleEntityHelperFunctions.Global:SetPosition(_Entity,_Position)
     if not IsExisting(_Entity)then
-        API.Dbg("MoveToPosition: Entity is invalid!");
         return
     end
     local EntityID = GetEntityId(_Entity);
-    local pos = _Position;
-    if type(pos) ~= "table" then
-        pos = GetPosition(pos);
-    end
-    if API.IsValidPosition(pos) then
-        Logic.DEBUG_SetSettlerPosition(EntityID, pos.X, pos.Y);
-        if Logic.IsLeader(EntityID) == 1 then
-            local soldiers = {Logic.GetSoldiersAttachedToLeader(EntityID)};
-            if soldiers[1] > 0 then
-                for i=1,#soldiers do
-                    Logic.DEBUG_SetSettlerPosition(soldiers[i], pos.X, pos.Y);
-                end
+    Logic.DEBUG_SetSettlerPosition(EntityID, _Position.X, _Position.Y);
+    if Logic.IsLeader(EntityID) == 1 then
+        local soldiers = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+        if soldiers[1] > 0 then
+            for i=1,#soldiers do
+                Logic.DEBUG_SetSettlerPosition(soldiers[i], _Position.X, _Position.Y);
             end
         end
     end
@@ -435,7 +569,6 @@ end
 --
 function BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
     if not IsExisting(_Entity)then
-        API.Dbg("MoveToPosition: Entity is invalid!");
         return
     end
     if not _Distance then
@@ -498,10 +631,7 @@ end
 function BundleEntityHelperFunctions.Global:Attack(_Entity, _Target)
     local EntityID = GetID(_Entity);
     local TargetID = GetID(_Target);
-    local Position = {};
-    if IsExisting(EntityID) and IsExisting(TargetID) then
-        Logic.GroupAttack(EntityID, TargetID);
-    end
+    Logic.GroupAttack(EntityID, TargetID);
 end
 
 ---
@@ -509,38 +639,26 @@ end
 -- alle gültigen Ziele auf dem Weg angreifen.
 --
 -- @param _Entity   Angreifendes Entity
--- @param _Position Skriptname, EntityID oder Positionstable
+-- @param _Position Positionstable
 -- @within Application Space
 -- @local
 --
 function BundleEntityHelperFunctions.Global:AttackMove(_Entity, _Position)
     local EntityID = GetID(_Entity);
-    local pos = {};
-    if type(_Position) == "string" or type(_Position) == "number" then
-        pos = API.LocateEntity(_Position);
-    else
-        pos = _Position;
-    end
-    Logic.GroupAttackMove(EntityID, pos.X, pos.Y);
+    Logic.GroupAttackMove(EntityID, _Position.X, _Position.Y);
 end
 
 ---
 -- Bewegt das Entity zur Zielposition.
 --
 -- @param _Entity   Bewegendes Entity
--- @param _Position Skriptname, EntityID oder Positionstable
+-- @param _Position Positionstable
 -- @within Application Space
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Move(_Entity, _Position)
     local EntityID = GetID(_Entity);
-    local pos = {};
-    if type(_Position) == "string" or type(_Position) == "number" then
-        pos = API.LocateEntity(_Position);
-    else
-        pos = _Position;
-    end
-    Logic.MoveSettler(EntityID, pos.X, pos.Y);
+    Logic.MoveSettler(EntityID, _Position.X, _Position.Y);
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -626,7 +744,6 @@ end
 --
 function BundleEntityHelperFunctions:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
     if not type(_target) == "table" and not IsExisting(_target)then
-        API.Dbg("GetRelativePos: Target is invalid!");
         return
     end
     if _angle == nil then
@@ -652,6 +769,29 @@ function BundleEntityHelperFunctions:GetRelativePos(_target,_distance,_angle,_bu
                  Y= pos.Y+_distance * math.sin(math.rad(ori))};
     end
     return pos1;
+end
+
+---
+-- Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+-- am nächsten ist.
+-- 
+-- @param _eID      Basis-Entity
+-- @param _entities Liste von Entities
+-- @return number: Nächstes Entity
+-- @within Application-Space
+-- @local
+--
+function BundleEntityHelperFunctions:GetNearestEntity(_eID,_entities)
+    local bestDistance = Logic.WorldGetSize();
+    local best = nil;
+    for i=1,#_entities do
+        local distanceBetween = Logic.GetDistanceBetweenEntities(_entities[i], _eID);
+        if distanceBetween < bestDistance and _entities[i] ~= _eID then
+            bestDistance = distanceBetween;
+            best = _entities[i];
+        end
+    end
+    return best;
 end
 
 -- -------------------------------------------------------------------------- --

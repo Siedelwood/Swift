@@ -77,6 +77,68 @@ function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
 end
 SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 
+---
+-- Entsperrt einen gesperrten Titel für den Spieler, sofern dieser
+-- Titel gesperrt wurde.
+--
+-- <b>Alias:</b> UnlockTitleForPlayer
+--
+-- @param _PlayerID    Zielpartei
+-- @param _KnightTitle Titel zum Entsperren
+-- @within User-Space
+--
+function API.UnlockTitleForPlayer(_PlayerID, _KnightTitle)
+    if GUI then
+        API.Bridge("API.UnlockTitleForPlayer(" .._PlayerID.. ", " .._KnightTitle.. ")")
+        return;
+    end
+    return BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _KnightTitle);
+end
+UnlockTitleForPlayer = API.UnlockTitleForPlayer;
+
+---
+-- Fokusiert die Kamera auf dem Primärritter des Spielers.
+--
+-- <b>Alias:</b> SetCameraToPlayerKnight
+--
+-- @param _Player     Partei
+-- @param _Rotation   Kamerawinkel
+-- @param _ZoomFactor Zoomfaktor
+-- @within User-Space
+--
+function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
+    if not GUI then
+        API.Bridge("API.SetCameraToPlayerKnight(" .._Player.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
+        return;
+    end
+    return BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor);
+end
+SetCameraToPlayerKnight = API.FocusCameraOnKnight;
+
+---
+-- Fokusiert die Kamera auf dem Entity.
+--
+-- <b>Alias:</b> SetCameraToEntity
+--
+-- @param _Entity     Entity
+-- @param _Rotation   Kamerawinkel
+-- @param _ZoomFactor Zoomfaktor
+-- @within User-Space
+--
+function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
+    if not GUI then
+        API.Bridge("API.FocusCameraOnEntity(" .._Entity.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
+        return;
+    end
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        API.Dbg("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    return BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
+end
+SetCameraToEntity = API.FocusCameraOnEntity;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -177,7 +239,33 @@ function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State
     end
 end
 
-
+---
+-- Entsperrt einen gesperrten Titel für den Spieler, sofern dieser
+-- Titel gesperrt wurde.
+--
+-- @param _PlayerID    Zielpartei
+-- @param _KnightTitle Titel zum Entsperren
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _KnightTitle)
+    if LockedKnightTitles[_PlayerID] == _KnightTitle
+    then
+        LockedKnightTitles[_PlayerID] = nil;
+        for KnightTitle= _KnightTitle, #NeedsAndRightsByKnightTitle
+        do
+            local TechnologyTable = NeedsAndRightsByKnightTitle[KnightTitle][4];
+            if TechnologyTable ~= nil
+            then
+                for i=1, #TechnologyTable
+                do
+                    local TechnologyType = TechnologyTable[i];
+                    Logic.TechnologySetState(_PlayerID, TechnologyType, TechnologyStates.Unlocked);
+                end
+            end
+        end
+    end
+end
 
 -- Local Script ----------------------------------------------------------------
 
@@ -189,6 +277,37 @@ end
 --
 function BundleGameHelperFunctions.Local:Install()
 
+end
+
+---
+-- Fokusiert die Kamera auf dem Primärritter des Spielers.
+--
+-- @param _Player     Partei
+-- @param _Rotation   Kamerawinkel
+-- @param _ZoomFactor Zoomfaktor
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor)
+    BundleGameHelperFunctions.Local:SetCameraToEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor);
+end
+
+---
+-- Fokusiert die Kamera auf dem Entity.
+--
+-- @param _Entity     Entity
+-- @param _Rotation   Kamerawinkel
+-- @param _ZoomFactor Zoomfaktor
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
+    local pos = GetPosition(_Entity);
+    local rotation = (_Rotation or -45);
+    local zoomFactor = (_ZoomFactor or 0.5);
+    Camera.RTS_SetLookAtPosition(pos.X, pos.Y);
+    Camera.RTS_SetRotationAngle(rotation);
+    Camera.RTS_SetZoomFactor(zoomFactor);
 end
 
 -- -------------------------------------------------------------------------- --
