@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#User_Space">User-Space</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><strong>BundleGameHelperFunctions</strong></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleGameHelperFunctions</code></h1>
+<p></p>
+<p></p>
+
+
+<h2><a href="#User_Space">User-Space</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.FocusCameraOnEntity">API.FocusCameraOnEntity (_Entity, _Rotation, _ZoomFactor)</a></td>
+	<td class="summary">Fokusiert die Kamera auf dem Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.FocusCameraOnKnight">API.FocusCameraOnKnight (_Player, _Rotation, _ZoomFactor)</a></td>
+	<td class="summary">Fokusiert die Kamera auf dem Primärritter des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetNeedSatisfaction">API.SetNeedSatisfaction (_Need, _State, _PlayerID)</a></td>
+	<td class="summary">Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
+ des angegebenen Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UndiscoverTerritories">API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</a></td>
+	<td class="summary">Entfernt alle Territorien einer Partei aus der Liste der entdeckten
+ Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UndiscoverTerritory">API.UndiscoverTerritory (_PlayerID, _TerritoryID)</a></td>
+	<td class="summary">Entfernt ein Territorium für den angegebenen Spieler aus der Liste
+ der entdeckten Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnlockTitleForPlayer">API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</a></td>
+	<td class="summary">Entsperrt einen gesperrten Titel für den Spieler, sofern dieser
+ Titel gesperrt wurde.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="User_Space"></a>User-Space</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.FocusCameraOnEntity"></a>
+    <strong>API.FocusCameraOnEntity (_Entity, _Rotation, _ZoomFactor)</strong>
+    </dt>
+    <dd>
+    Fokusiert die Kamera auf dem Entity.
+<p> <b>Alias:</b> SetCameraToEntity
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+             Entity
+        </li>
+        <li><span class="parameter">_Rotation</span>
+           Kamerawinkel
+        </li>
+        <li><span class="parameter">_ZoomFactor</span>
+         Zoomfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.FocusCameraOnKnight"></a>
+    <strong>API.FocusCameraOnKnight (_Player, _Rotation, _ZoomFactor)</strong>
+    </dt>
+    <dd>
+    Fokusiert die Kamera auf dem Primärritter des Spielers.
+<p> <b>Alias:</b> SetCameraToPlayerKnight
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Player</span>
+             Partei
+        </li>
+        <li><span class="parameter">_Rotation</span>
+           Kamerawinkel
+        </li>
+        <li><span class="parameter">_ZoomFactor</span>
+         Zoomfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetNeedSatisfaction"></a>
+    <strong>API.SetNeedSatisfaction (_Need, _State, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
+ des angegebenen Spielers.  Der Befriedigungsstatus ist eine Zahl
+ zwischen 0.0 und 1.0.
+<p> <b>Alias:</b> SetNeedSatisfactionLevel
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Need</span>
+             Bedürfnis
+        </li>
+        <li><span class="parameter">_State</span>
+            Erfüllung des Bedürfnisses
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         Partei oder nil für alle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UndiscoverTerritories"></a>
+    <strong>API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</strong>
+    </dt>
+    <dd>
+    Entfernt alle Territorien einer Partei aus der Liste der entdeckten
+ Territorien.  Als Nebeneffekt gild die Partei als unentdeckt.
+<p> <b>Alias:</b> UndiscoverTerritories
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+               Spieler-ID
+        </li>
+        <li><span class="parameter">_TargetPlayerID</span>
+         Zielpartei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UndiscoverTerritory"></a>
+    <strong>API.UndiscoverTerritory (_PlayerID, _TerritoryID)</strong>
+    </dt>
+    <dd>
+    Entfernt ein Territorium für den angegebenen Spieler aus der Liste
+ der entdeckten Territorien.
+<p> <b>Alias:</b> UndiscoverTerritory
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            Spieler-ID
+        </li>
+        <li><span class="parameter">_TerritoryID</span>
+         Territorium-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UnlockTitleForPlayer"></a>
+    <strong>API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</strong>
+    </dt>
+    <dd>
+    Entsperrt einen gesperrten Titel für den Spieler, sofern dieser
+ Titel gesperrt wurde.
+<p> <b>Alias:</b> UnlockTitleForPlayer
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            Zielpartei
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Titel zum Entsperren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-01-28 12:06:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

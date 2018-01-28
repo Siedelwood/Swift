@@ -54,7 +54,7 @@ elseif MapEditor then
 end
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+--                                                                  --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -63,7 +63,7 @@ end
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
 -- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
 -- werden, bevor die QSB verwendet werden kann.
--- @within User Space
+-- @within 
 --
 function API.Install()
     Core:InitalizeBundles();
@@ -83,7 +83,7 @@ end
 -- @param _Source    Quelltabelle
 -- @param _Dest      Zieltabelle
 -- @return Kopie der Tabelle
--- @within User Space
+-- @within 
 -- @usage Table = {1, 2, 3, {a = true}}
 -- Copy = API.InstanceTable(Table)
 --
@@ -112,7 +112,7 @@ CopyTableRecursive = API.InstanceTable;
 -- @param _Data     Datum, das gesucht wird
 -- @param _Table    Tabelle, die durchquert wird
 -- @return booelan: Wert gefunden
--- @within User Space
+-- @within 
 -- @usage Table = {1, 2, 3, {a = true}}
 -- local Found = API.TraverseTable(3, Table)
 --
@@ -132,7 +132,7 @@ Inside = API.TraverseTable;
 --
 -- @param _Table Tabelle, die gedumpt wird
 -- @param _Name Optionaler Name im Log
--- @within User Space
+-- @within 
 -- @usage Table = {1, 2, 3, {a = true}}
 -- API.DumpTable(Table)
 --
@@ -166,7 +166,7 @@ end
 --
 -- @param _Name     Identifier des Quest
 -- @return number: ID des Quest
--- @within User Space
+-- @within 
 --
 function API.GetQuestID(_Name)
     for i=1, Quests[0] do
@@ -185,7 +185,7 @@ GetQuestID = API.GetQuestID;
 --
 -- @param _QuestID   ID oder Name des Quest
 -- @return boolean: Quest existiert
--- @within User Space
+-- @within 
 --
 function API.IsValidateQuest(_QuestID)
     return Quests[_QuestID] ~= nil or Quests[self:GetQuestID(_QuestID)] ~= nil;
@@ -200,7 +200,7 @@ IsValidQuest = API.IsValidateQuest;
 -- <b>Alias:</b> FailQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User Space
+-- @within 
 --
 function API.FailAllQuests(...)
     for i=1, #args, 1 do
@@ -217,7 +217,7 @@ FailQuestsByName = API.FailAllQuests;
 -- <b>Alias:</b> FailQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User Space
+-- @within 
 --
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -234,7 +234,7 @@ FailQuestByName = API.FailQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User Space
+-- @within 
 --
 function API.RestartAllQuests(...)
     for i=1, #args, 1 do
@@ -257,7 +257,7 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <b>Alias:</b> RestartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User Space
+-- @within 
 --
 function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
@@ -332,7 +332,7 @@ RestartQuestByName = API.RestartQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User Space
+-- @within 
 --
 function API.StartAllQuests(...)
     for i=1, #args, 1 do
@@ -349,7 +349,7 @@ StartQuestsByName = API.StartAllQuests;
 -- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User Space
+-- @within 
 --
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -367,7 +367,7 @@ StartQuestByName = API.StartQuest;
 -- <b>Alias:</b> StopQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User Space
+-- @within 
 --
 function API.StopAllQuests(...)
     for i=1, #args, 1 do
@@ -385,7 +385,7 @@ StopQuestwByName = API.StopAllQuests;
 -- <b>Alias:</b> StopQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User Space
+-- @within 
 --
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -404,7 +404,7 @@ StopQuestByName = API.StopQuest;
 -- <b>Alias:</b> WinQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User Space
+-- @within 
 --
 function API.WinAllQuests(...)
     for i=1, #args, 1 do
@@ -421,7 +421,7 @@ WinQuestsByName = API.WinAllQuests;
 -- <b>Alias:</b> WinQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User Space
+-- @within 
 --
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -441,7 +441,7 @@ WinQuestByName = API.WinQuest;
 -- <b>Alias:</b> GUI_Note
 --
 -- @param _Message Anzeigetext
--- @within User Space
+-- @within 
 --
 function API.Note(_Message)
     _Message = tostring(_Message);
@@ -458,7 +458,7 @@ GUI_Note = API.Note;
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
 -- @param _Message Anzeigetext
--- @within User Space
+-- @within 
 --
 function API.StaticNote(_Message)
     _Message = tostring(_Message);
@@ -472,7 +472,7 @@ end
 ---
 -- Löscht alle Nachrichten im Debug Window.
 --
--- @within User Space
+-- @within 
 --
 function API.ClearNotes()
     if not GUI then
@@ -488,7 +488,7 @@ end
 -- Spiels die Nachricht gesendet wurde.
 --
 -- @param _Message Nachricht für's Log
--- @within User Space
+-- @within 
 --
 function API.Log(_Message)
     local Env  = (GUI and "Local") or "Global";
@@ -500,7 +500,7 @@ end
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
 -- @param _Message Anzeigetext
--- @within User Space
+-- @within 
 --
 function API.Message(_Message)
     _Message = tostring(_Message);
@@ -515,7 +515,7 @@ end
 -- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
 --
 -- @param _Message Anzeigetext
--- @within User Space
+-- @within 
 --
 function API.Dbg(_Message)
     API.StaticNote("DEBUG: " .._Message)
@@ -527,7 +527,7 @@ dbg = API.Dbg;
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
 --
 -- @param _Message Anzeigetext
--- @within User Space
+-- @within 
 --
 function API.Warn(_Message)
     API.StaticNote("WARNING: " .._Message)
@@ -550,7 +550,7 @@ warn = API.Warn;
 -- @param _cartOverlay         (optional) Overlay für Goldkarren
 -- @param _ignoreReservation   (optional) Marktplatzreservation ignorieren
 -- @return number: Entity-ID des erzeugten Wagens
--- @within User Space
+-- @within 
 -- @usage -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
 -- -- Legacy-Call mit ID-Speicherung
@@ -598,7 +598,7 @@ SendCart = API.SendCart;
 -- @param _Type       Neuer Typ
 -- @param _NewOwner   (optional) Neuer Besitzer
 -- @return number: Entity-ID des Entity
--- @within User Space
+-- @within 
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
 function API.ReplaceEntity(_Entity, _Type, _NewOwner)
@@ -627,7 +627,7 @@ ReplaceEntity = API.ReplaceEntity;
 -- @param _entity           Entity
 -- @param _entityToLookAt   Ziel
 -- @param _offsetEntity     Winkel-Offset
--- @within User Space
+-- @within 
 -- @usage API.LookAt("Hakim", "Alandra")
 --
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
@@ -650,7 +650,7 @@ LookAt = API.LookAt;
 --
 -- @param _entity           Erstes Entity
 -- @param _entityToLookAt   Zweites Entity
--- @within User Space
+-- @within 
 -- @usage API.Confront("Hakim", "Alandra")
 --
 function API.Confront(_entity, _entityToLookAt)
@@ -667,7 +667,7 @@ end
 -- @param _pos1 Erste Vergleichsposition
 -- @param _pos2 Zweite Vergleichsposition
 -- @return number: Entfernung zwischen den Punkten
--- @within User Space
+-- @within 
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
@@ -689,7 +689,7 @@ GetDistance = API.GetDistance;
 --
 -- @param _Entity   Entity, dessen Position bestimmt wird.
 -- @return table: Positionstabelle {X= x, Y= y, Z= z}
--- @within User Space
+-- @within 
 -- @usage local Position = API.LocateEntity("Hans")
 --
 function API.LocateEntity(_Entity)
@@ -715,7 +715,7 @@ GetPosition = API.LocateEntity;
 --
 -- @param _ScriptName  Skriptname des IO
 -- @param _State       Aktivierungszustand
--- @within User Space
+-- @within 
 -- @usage API.ActivateIO("Haus1", 0)
 -- @usage API.ActivateIO("Hut1")
 --
@@ -742,7 +742,7 @@ InteractiveObjectActivate = API.AcrivateIO;
 -- <b>Alias:</b> InteractiveObjectDeactivate
 --
 -- @param _ScriptName Skriptname des IO
--- @within User Space
+-- @within 
 -- @usage API.DeactivateIO("Hut1")
 --
 function API.DeactivateIO(_ScriptName)
@@ -769,7 +769,7 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 -- @param _player    PlayerID [0-8] oder -1 für alle
 -- @param _category  Kategorie, der die Entities angehören
 -- @param _territory Zielterritorium
--- @within User Space
+-- @within 
 -- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
 function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
@@ -808,7 +808,7 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- 
 -- @param _Value Wahrheitswert
 -- @return boolean: Wahrheitswert
--- @within User Space
+-- @within 
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
 -- local Bool = API.ToBoolean("no") --> Bool = false
@@ -823,7 +823,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- Laden eines Spielstandes ausgeführt wird.
 --
 -- @param _Function Funktion, die ausgeführt werden soll
--- @within User Space
+-- @within 
 -- @usage SaveGame = function()
 --     API.Note("foo")
 -- end
@@ -1198,7 +1198,7 @@ QSB.InitalizedObjekts = QSB.InitalizedObjekts or {};
 QSB.DestroyedSoldiers = QSB.DestroyedSoldiers or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+--                                                                  --
 -- -------------------------------------------------------------------------- --
 
 -- Hier siehst du... nichts! ;)
@@ -9570,7 +9570,7 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+--                                                                  --
 -- -------------------------------------------------------------------------- --
 
 
@@ -11472,7 +11472,7 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+--                                                                  --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -11501,7 +11501,7 @@ QSB = QSB or {};
 -- </ul>
 --
 -- @param _Data Questdefinition
--- @within User Space
+-- @within 
 --
 function API.AddQuest(_Data)
     return BundleQuestGeneration.Global:NewQuest(_Data);
@@ -11511,7 +11511,7 @@ AddQuest = API.AddQuest;
 ---
 -- Startet alle mittels API.AddQuest initalisierten Quests.
 --
--- @within User Space
+-- @within 
 --
 function API.StartQuests()
     return BundleQuestGeneration.Global:StartQuests();
@@ -11848,7 +11848,7 @@ BundleQuestDebug = {
 }
 
 -- -------------------------------------------------------------------------- --
--- User Space                                                                 --
+--                                                                  --
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -11864,7 +11864,7 @@ BundleQuestDebug = {
 -- @param _CheckAtRun     Prüfe Quests zur Laufzeit
 -- @param _TraceQuests    Aktiviert Questverfolgung
 -- @param _DevelopingMode Aktiviert Cheats und Konsole
--- @within User Space
+-- @within 
 --
 function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
     if GUI then

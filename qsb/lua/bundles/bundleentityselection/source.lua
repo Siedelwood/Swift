@@ -5,7 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+-- Dieses Bundle implementiert verschiedene Selektionsmodi. Es gibt keine
+-- öffentlichen Funktionen. Das Bundle arbeitet autonom ohne zutun.
 --
 -- @module BundleEntitySelection
 -- @set sort=true

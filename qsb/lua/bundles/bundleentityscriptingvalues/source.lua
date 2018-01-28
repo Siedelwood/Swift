@@ -25,7 +25,6 @@ QSB = QSB or {};
 -- @param _Entity Entity
 -- @return Größenfaktor
 -- @within User-Space
--- @local
 --
 function API.GetScale(_Entity)
     if not IsExisting(_Entity) then
@@ -40,7 +39,6 @@ end
 -- @param _Entity Entity
 -- @return Besitzer
 -- @within User-Space
--- @local
 --
 function API.GetPlayer(_Entity)
     if not IsExisting(_Entity) then
@@ -55,7 +53,6 @@ end
 -- @param _Entity Entity
 -- @return Positionstabelle
 -- @within User-Space
--- @local
 --
 function API.GetMovingTarget(_Entity)
     if not IsExisting(_Entity) then
@@ -70,7 +67,6 @@ end
 -- @param _Entity Entity
 -- @return Ist NPC
 -- @within User-Space
--- @local
 --
 function API.IsNPC(_Entity)
     if not IsExisting(_Entity) then
@@ -85,9 +81,8 @@ end
 -- @param _Entity Entity
 -- @return Ist sichtbar
 -- @within User-Space
--- @local
 --
-function API.IsViusible(_Entity)
+function API.IsVisible(_Entity)
     if not IsExisting(_Entity) then
         return false;
     end
@@ -103,7 +98,6 @@ end
 -- @param _Entity Entity
 -- @param _Scale  Größenfaktor
 -- @within User-Space
--- @local
 --
 function API.SetScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
@@ -121,7 +115,6 @@ end
 -- @param _Entity   Entity
 -- @param _PlayerID Besitzer
 -- @within User-Space
--- @local
 --
 function API.SetPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
@@ -203,7 +196,7 @@ end
 --
 -- @param _entity Entity
 -- @return Größenfaktor
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:GetEntitySize(_entity)
@@ -218,7 +211,7 @@ end
 --
 -- @param _entity Entity
 -- @return PlayerID
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:GetPlayerID(_entity)
@@ -231,7 +224,7 @@ end
 --
 -- @param _entity Entity
 -- @return Entity ist sichtbar
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:IsEntityVisible(_entity)
@@ -244,7 +237,7 @@ end
 --
 -- @param _entity Entity
 -- @return NPC ist aktiv
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:IsOnScreenInformationActive(_entity)
@@ -260,7 +253,7 @@ end
 --
 -- @param _entity Entity
 -- @return Position Table
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:GetMovingTargetPosition(_entity)
@@ -276,7 +269,7 @@ end
 -- @param _entity Zu untersuchendes Entity
 -- @param _index  Index im RAM
 -- @return Integer
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:GetValueAsInteger(_entity, _index)
@@ -290,7 +283,7 @@ end
 -- @param _entity Zu untersuchendes Entity
 -- @param _index  Index im RAM
 -- @return Float
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:GetValueAsFloat(_entity, _index)
@@ -304,7 +297,7 @@ end
 -- @param a	Zahl
 -- @param b	Modul
 -- @return qmod der Zahl
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:qmod(a, b)
@@ -316,7 +309,7 @@ end
 --
 -- @param num Integer
 -- @return Integer als Float
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:Int2Float(num)
@@ -342,7 +335,7 @@ end
 --
 -- @param num Bits
 -- @return Table mit Bits
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:bitsInt(num)
@@ -360,7 +353,7 @@ end
 -- @param num Integer
 -- @param t	  Table
 -- @return Table mit Bits
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:bitsFrac(num, t)
@@ -377,7 +370,7 @@ end
 --
 -- @param fval Float
 -- @return Float als Integer
--- @within Application-Space
+-- @within BundleEntityScriptingValues
 -- @local
 --
 function BundleEntityScriptingValues:Float2Int(fval)

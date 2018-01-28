@@ -33,7 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
-<li><a href="#User_Space">User Space</a></li>
+<li><a href="#User_Space">User-Space</a></li>
 </ul>
 
 
@@ -48,8 +48,10 @@
   <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
   <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
   <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
   <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
   <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
   <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
@@ -80,6 +82,11 @@
  der Bibliothek "API". Alle Bundles ergänzen ihre User-Space-Funktionen dort.
  Außer den Aliases auf API-Funktionen und den Behavior-Funktionen sind keine
  anderen öffentlichen Funktionen für den Anwendern sichtbar zu machen!
+ Sinn des User-Space ist es, Funktionsaufrufe, die zum Teil nur in einer
+ Skriptumgebung bekannt sind zu verallgemeinern. Wird die Funktion nun aus
+ der falschen Umgebung aufgerufen, wird der Aufruf an die richtige Umgebung
+ weitergereicht oder, falls dies nicht möglich ist, abgebrochen. Dies soll
+ Fehler vermeiden.
 <p> Im Application-Space liegen die privaten Funktionen und Variablen, die
  nicht in der Dokumentation erscheinen. Sie sind mit einem Local-Tag zu
  versehen! Der Nutzer soll diese Funktionen in der Regel nicht anfassen,
@@ -98,7 +105,7 @@
 	<td class="summary">Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.</td>
 	</tr>
 </table>
-<h2><a href="#User_Space">User Space</a></h2>
+<h2><a href="#User_Space">User-Space</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#API.ActivateIO">API.ActivateIO (_ScriptName, _State)</a></td>
@@ -152,6 +159,10 @@
 	<td class="summary">Gibt die ID des Quests mit dem angegebenen Namen zurück.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.Info">API.Info (_Message)</a></td>
+	<td class="summary">Schreibt eine Information auf den Bildschirm und ins Log.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.Install">API.Install ()</a></td>
 	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
 	</tr>
@@ -200,6 +211,10 @@
 	<td class="summary">Sendet einen Handelskarren zu dem Spieler.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.SetLogLevel">API.SetLogLevel (_Level)</a></td>
+	<td class="summary">Setzt das Log-Level für die aktuelle Skriptumgebung.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.StartAllQuests">API.StartAllQuests (...)</a></td>
 	<td class="summary">Startet eine Liste von Quests.</td>
 	</tr>
@@ -226,6 +241,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.TraverseTable">API.TraverseTable (_Data, _Table)</a></td>
 	<td class="summary">Sucht in einer Table nach einem Wert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ValidatePosition">API.ValidatePosition (_pos)</a></td>
+	<td class="summary">Prüft, ob eine Positionstabelle eine gültige Position enthält.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.Warn">API.Warn (_Message)</a></td>
@@ -276,7 +295,7 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="User_Space"></a>User Space</h2>
+    <h2 class="section-header "><a name="User_Space"></a>User-Space</h2>
 
     <dl class="function">
     <dt>
@@ -387,6 +406,9 @@ API.AddSaveGameAction(SaveGame)</pre>
     </dt>
     <dd>
     Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
+
+ <b>Alias:</b> dbg
+
 
 
     <h3>Parameters:</h3>
@@ -595,6 +617,29 @@ API.DumpTable(Table)</pre>
 
         number: ID des Quest
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Info"></a>
+    <strong>API.Info (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Information auf den Bildschirm und ins Log.
+
+ <b>Alias:</b> info
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         Anzeigetext
+        </li>
+    </ul>
+
 
 
 
@@ -954,6 +999,72 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.SetLogLevel"></a>
+    <strong>API.SetLogLevel (_Level)</strong>
+    </dt>
+    <dd>
+    Setzt das Log-Level für die aktuelle Skriptumgebung.
+<p> Als Voreinstellung werden alle Meldungen immer angezeigt!
+
+ Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
+ werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
+ angezeigt werden.
+<p> <table border="1">
+ <tr>
+ <th>
+ Level
+ </th>
+ <th>
+ Beschreibung
+ </th>
+ </tr>
+ <td>
+ QSB.Log.Level.OFF
+ </td>
+ <td>
+ Alle Meldungen werden unterdrückt.
+ </td>
+ <tr>
+ <td>
+ QSB.Log.Level.ERROR
+ </td>
+ <td>
+ Es werden nur Fehler angezeigt.
+ </td>
+ </tr>
+ <tr>
+ <td>
+ QSB.Log.Level.WARNING
+ </td>
+ <td>
+ Es werden nur Warnungen und Fehler angezeigt.
+ </td>
+ </tr>
+ <tr>
+ <td>
+ QSB.Log.Level.INFO
+ </td>
+ <td>
+ Es werden Meldungen aller Stufen angezeigt.
+ </td>
+ </tr>
+ </table>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Level</span>
+         Level
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.StartAllQuests"></a>
     <strong>API.StartAllQuests (...)</strong>
     </dt>
@@ -1137,11 +1248,41 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.ValidatePosition"></a>
+    <strong>API.ValidatePosition (_pos)</strong>
+    </dt>
+    <dd>
+    Prüft, ob eine Positionstabelle eine gültige Position enthält.
+<p> <b>Alias:</b> IsValidPosition
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_pos</span>
+         Positionstable
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Position ist valide
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.Warn"></a>
     <strong>API.Warn (_Message)</strong>
     </dt>
     <dd>
     Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
+
+ <p><b>Alias:</b> warn</p>
+
 
 
     <h3>Parameters:</h3>
@@ -1209,7 +1350,7 @@ Copy = API.InstanceTable(Table)</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-01-22 18:45:30 </i>
+<i style="float:right;">Last updated 2018-01-28 12:06:04 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
