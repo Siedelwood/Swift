@@ -4,3 +4,4 @@ Script.Load("E:/Repositories/symfonia/qsb/lua/bundles/bundlesymfoniabehaviors/so
 Script.Load("E:/Repositories/symfonia/qsb/lua/bundles/bundlequestdebug/source.lua")
 Script.Load("E:/Repositories/symfonia/qsb/lua/bundles/bundlequestgeneration/source.lua")
 Script.Load("E:/Repositories/symfonia/qsb/lua/bundles/bundleknighttitlerequirements/source.lua")
+Script.Load("E:/Repositories/symfonia/qsb/lua/bundles/bundleentityscriptingvalues/source.lua")

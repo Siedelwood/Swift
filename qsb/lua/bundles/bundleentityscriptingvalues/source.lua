@@ -120,7 +120,7 @@ function API.SetPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
         return;
     end
-    BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _PlayerID)
+    BundleEntityScriptingValues.Global:SetPlayerID(_Entity, _PlayerID)
 end
 
 -- -------------------------------------------------------------------------- --
