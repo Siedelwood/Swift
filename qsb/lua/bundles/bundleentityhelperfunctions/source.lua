@@ -200,7 +200,7 @@ SetPositionEx = API.PlaceToPosition;
 --
 -- @param _EntityID Entity ID
 -- @return string: Vergebener Name
--- @within User Space
+-- @within 
 --
 function API.GiveEntityName(_EntityID)
     if IsExisting(_name) then
@@ -222,7 +222,7 @@ GiveEntityName = API.GiveEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @return string: Skriptname
--- @within User Space
+-- @within 
 --
 function API.GetEntityName(_entity)
     if not IsExisting(_entity) then
@@ -242,7 +242,7 @@ GetEntityName = API.GetEntityName;
 -- @param _entity Entity
 -- @param _name   Skriptname
 -- @return string: Skriptname
--- @within User Space
+-- @within 
 --
 function API.SetEntityName(_entity, _name)
     if GUI then
@@ -264,7 +264,7 @@ SetEntityName = API.SetEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @param _ori    Ausrichtung in Grad
--- @within User Space
+-- @within 
 --
 function API.SetOrientation(_entity, _ori)
     if GUI then
@@ -287,7 +287,7 @@ SetOrientation = API.SetOrientation;
 --
 -- @param _entity Gesuchtes Entity
 -- @return number: Orientierung in Grad
--- @within User Space
+-- @within 
 --
 function API.GetOrientation(_entity)
     if not IsExisting(_entity) then
