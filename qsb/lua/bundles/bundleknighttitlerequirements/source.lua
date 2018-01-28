@@ -58,6 +58,9 @@
 API = API or {};
 QSB = QSB or {};
 
+QSB.RequirementTooltipTypes = {};
+QSB.ConsumedGoodsCounter = {};
+
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -129,7 +132,7 @@ end
 -- @within BundleKnightTitleRequirements
 -- @local
 --
-function BundleKnightTitleRequirements.Local:Install()
+function BundleKnightTitleRequirements.Local:Install()    
     self:OverwriteTooltips();
     self:InitTexturePositions();
     self:OverwriteUpdateRequirements();
@@ -246,7 +249,7 @@ end
 --
 function BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements()
     GUI_Knight.UpdateRequirements = function()
-        local WidgetPos = QSB.RequirementTooltipTypes;
+        local WidgetPos = BundleKnightTitleRequirements.Local.Data.RequirementWidgets;
         local RequirementsIndex = 1;
 
         local PlayerID = GUI.GetPlayerID();
@@ -622,6 +625,8 @@ end
 -- @local
 --
 function BundleKnightTitleRequirements.Local:OverwriteTooltips()
+    API.Note("BundleKnightTitleRequirements.Local:OverwriteTooltips")
+    
     GUI_Tooltip.SetNameAndDescription_Orig_QSB_Requirements = GUI_Tooltip.SetNameAndDescription;
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
@@ -748,7 +753,8 @@ function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     local PlayerID = GUI.GetPlayerID();
     local KnightTitle = Logic.GetKnightTitle(PlayerID);
-    local Title, Text;
+    local Title = ""
+    local Text = "";
 
     if _key == "Consume" or _key == "Goods" or _key == "DecoratedBuildings" then
         local GoodType     = KnightTitleRequirements[KnightTitle+1][_key][_i][1];
@@ -804,7 +810,9 @@ function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
         Title = BundleKnightTitleRequirements.Local.Data.Description[_key].Title;
         Text  = BundleKnightTitleRequirements.Local.Data.Description[_key].Text;
     end
-
+    
+    Title = (type(Title) == "table" and Title[lang]) or Title;
+    Text  = (type(Text) == "table" and Text[lang]) or Text;
     self:RequirementTooltip(Title, Text);
 end
 
@@ -1279,7 +1287,6 @@ DoNeededNumberOfConsumedGoodsForKnightTitleExist = function( _PlayerID, _KnightT
         return;
     end
     if _i then
-        QSB.ConsumedGoodsCounter = QSB.ConsumedGoodsCounter or {};
         QSB.ConsumedGoodsCounter[_PlayerID] = QSB.ConsumedGoodsCounter[_PlayerID] or {};
 
         local GoodType = KnightTitleRequirements[_KnightTitle].Consume[_i][1];
