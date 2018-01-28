@@ -416,7 +416,7 @@ end
 function BundleQuestDebug.Global:ExecuteCommand(_Arguments, _Flags)
     if _Arguments[2] then
         local args = "";
-        for i=2,#__arguments_ do
+        for i=2,#_Arguments do
             args = args .. " " .. _Arguments[i];
         end
 

@@ -625,14 +625,12 @@ end
 -- @local
 --
 function BundleKnightTitleRequirements.Local:OverwriteTooltips()
-    API.Note("BundleKnightTitleRequirements.Local:OverwriteTooltips")
-    
     GUI_Tooltip.SetNameAndDescription_Orig_QSB_Requirements = GUI_Tooltip.SetNameAndDescription;
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Selected = GUI.GetSelectedEntity();
         local PlayerID = GUI.GetPlayerID();
-
+    
         for k,v in pairs(BundleKnightTitleRequirements.Local.Data.RequirementWidgets) do
             if v .. "/Icon" == XGUIEng.GetWidgetPathByID(CurrentWidgetID) then
                 local key = QSB.RequirementTooltipTypes[k];

@@ -33,20 +33,20 @@ BundleEntitySelection = {
                 KnightButton = {
                     Title = {
                         de = "Ritter selektieren",
-                        en = "- Selektiert den Ritter {cr}- STRG halten selektiert alle Ritter",
+                        en = "Select Knight",
                     },
                     Text = {
-                        de = "Select Knight",
-                        en = "- Selects the knight {cr}- Press CTRL to select all knights",
+                        de = "- Klick selektiert den Ritter {cr}- Doppelklick springt zum Ritter{cr}- STRG halten selektiert alle Ritter",
+                        en = "- Click selects the knight {cr}- Double click jumps to knight{cr}- Press CTRL to select all knights",
                     },
                 },
                 BattalionButton = {
                     Title = {
                         de = "Militär selektieren",
-                        en = "- Selektiert alle Militäreinheiten {cr}- SHIFT halten um auch Munitionswagen und Trebuchets auszuwählen",
+                        en = "Select Units",
                     },
                     Text = {
-                        de = "Select Units",
+                        de = "- Selektiert alle Militäreinheiten {cr}- SHIFT halten um auch Munitionswagen und Trebuchets auszuwählen",
                         en = "- Selects all military units {cr}- Press SHIFT to additionally select ammunition carts and trebuchets",
                     },
                 },
@@ -88,8 +88,8 @@ end
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
-    
-    local Function = function(_Arguments, _Original)
+    GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection = GUI_Tooltip.SetNameAndDescription;
+    GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID()
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
         
@@ -108,10 +108,8 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
             )
             return;
         end
-        
-        _Original(unpack(_Arguments));
+        GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean);
     end
-    Core:AppendFunction("GUI_Tooltip.SetNameAndDescription", Function)
 end
 
 ---
@@ -161,7 +159,17 @@ function BundleEntitySelection.Local:OverwriteSelectKnight()
                 end
             else
                 GUI.SelectEntity(Logic.GetKnightID(PlayerID));
+                
+                if ((Framework.GetTimeMs() - g_Selection.LastClickTime ) < g_Selection.MaxDoubleClickTime) then
+                    local pos = GetPosition(KnightID);
+                    Camera.RTS_SetLookAtPosition(pos.X, pos.Y);
+                else
+                    Sound.FXPlay2DSound("ui\\mini_knight");
+                end
+                
+                g_Selection.LastClickTime = Framework.GetTimeMs();
             end
+            GUI_MultiSelection.CreateMultiSelection(g_SelectionChangedSource.User);
         else
             GUI.AddNote("Debug: You do not have a knight");
         end
