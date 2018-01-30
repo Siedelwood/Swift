@@ -61,11 +61,12 @@ GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 --
 function API.SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
     if GUI then
-        API.Bridge("API.SetResourceAmount(" .._Entity..", " .._StartAmount.. ", " .._RefillAmount.. ")")
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        API.Bridge("API.SetResourceAmount(" ..Subject..", " .._StartAmount.. ", " .._RefillAmount.. ")")
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
         API.Dbg("API.SetResourceAmount: Entity " ..Subject.. " does not exist!");
         return;
     end
@@ -103,16 +104,20 @@ GetRelativePos = API.GetRelativePos;
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within Application-Space
--- @local
+-- @within User-Space
 --
-function API.SetPosition(_Entity,_Position)
+function API.SetPosition(_Entity, _Position)
     if GUI then
-        API.Bridge("API.SetPosition(" .._Entity.. ", " .._Position.. ")")
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        local Position = _Position;
+        if type(Position) == "table" then
+            Position = "{X= " ..tostring(Position.X).. ", Y= " ..tostring(Position.Y).. "}";
+        end
+        API.Bridge("API.SetPosition(" ..Subject.. ", " ..Position.. ")")
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
         API.Dbg("API.SetPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
@@ -146,12 +151,12 @@ function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
         API.Dbg("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
     if not IsExisting(_Position) then
-        local Subject = (type(_Position) == "string" and _Position) or "'" .._Position.. "'";
+        local Subject = (type(_Position) ~= "string" and _Position) or "'" .._Position.. "'";
         API.Dbg("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
@@ -177,12 +182,12 @@ function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
         API.Dbg("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
     if not IsExisting(_Position) then
-        local Subject = (type(_Position) == "string" and _Position) or "'" .._Position.. "'";
+        local Subject = (type(_Position) ~= "string" and _Position) or "'" .._Position.. "'";
         API.Dbg("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
@@ -200,7 +205,7 @@ SetPositionEx = API.PlaceToPosition;
 --
 -- @param _EntityID Entity ID
 -- @return string: Vergebener Name
--- @within 
+-- @within User-Space
 --
 function API.GiveEntityName(_EntityID)
     if IsExisting(_name) then
@@ -222,11 +227,11 @@ GiveEntityName = API.GiveEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @return string: Skriptname
--- @within 
+-- @within User-Space
 --
 function API.GetEntityName(_entity)
     if not IsExisting(_entity) then
-        local Subject = (type(_entity) == "string" and _entity) or "'" .._entity.. "'";
+        local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
         API.Warn("API.GetEntityName: Entity " ..Subject.. " does not exist!");
         return nil;
     end
@@ -242,7 +247,7 @@ GetEntityName = API.GetEntityName;
 -- @param _entity Entity
 -- @param _name   Skriptname
 -- @return string: Skriptname
--- @within 
+-- @within User-Space
 --
 function API.SetEntityName(_entity, _name)
     if GUI then
@@ -264,7 +269,7 @@ SetEntityName = API.SetEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @param _ori    Ausrichtung in Grad
--- @within 
+-- @within User-Space
 --
 function API.SetOrientation(_entity, _ori)
     if GUI then
@@ -272,7 +277,7 @@ function API.SetOrientation(_entity, _ori)
         return;
     end
     if not IsExisting(_entity) then
-        local Subject = (type(_entity) == "string" and _entity) or "'" .._entity.. "'";
+        local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
         API.Dbg("API.SetOrientation: Entity " ..Subject.. " does not exist!");
         return;
     end
@@ -287,11 +292,11 @@ SetOrientation = API.SetOrientation;
 --
 -- @param _entity Gesuchtes Entity
 -- @return number: Orientierung in Grad
--- @within 
+-- @within User-Space
 --
 function API.GetOrientation(_entity)
     if not IsExisting(_entity) then
-        local Subject = (type(_entity) == "string" and _entity) or "'" .._entity.. "'";
+        local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
         API.Warn("API.GetOrientation: Entity " ..Subject.. " does not exist!");
         return 0;
     end
@@ -306,8 +311,7 @@ GetOrientation = API.GetOrientation;
 --
 -- @param_Entity  Angreifendes Entity
 -- @param _Target Angegriffenes Entity
--- @within Application Space
--- @local
+-- @within User-Space
 --
 function API.EntityAttack(_Entity, _Target)
     if GUI then
@@ -399,7 +403,8 @@ Move = API.EntityMove;
 --
 function API.GetLeaderBySoldier(_soldier)
     if not IsExisting(_soldier) then
-        API.Dbg("API.GetLeaderBySoldier: Entity " .._soldier.. " does not exist!");
+        local Subject = (type(_soldier) == "string" and "'" .._soldier.. "'") or _Entity;
+        API.Dbg("API.GetLeaderBySoldier: Entity " ..Subject.. " does not exist!");
         return;
     end
     return Logic.SoldierGetLeaderEntityID(GetID(_soldier))
@@ -436,16 +441,16 @@ GetClosestKnight = API.GetNearestKnight;
 --
 function API.GetNearestEntity(_eID, _entities)
     if not IsExisting(_eID) then
-        API.Dbg("API.GetClosestEntity: Base entity does not exist!");
+        API.Dbg("API.GetNearestEntity: Base entity does not exist!");
         return;
     end
     if #_entities == 0 then
-        API.Dbg("API.GetClosestEntity: The target list is empty!");
+        API.Dbg("API.GetNearestEntity: The target list is empty!");
         return;
     end
     for i= 1, #_entities, 1 do
         if not IsExisting(_entities[i]) then
-            API.Dbg("API.GetClosestEntity: At least one target entity is dead!");
+            API.Dbg("API.GetNearestEntity: At least one target entity is dead!");
             return;
         end
     end
