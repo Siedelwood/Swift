@@ -31,7 +31,7 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/requirment/qsb.lua")
+    Script.Load("E:/Repositories/symfonia/test/entity/qsb.lua")
     API.Install()
 
     if Framework.IsNetworkGame() ~= true then
@@ -62,35 +62,35 @@ function RunTests()
 end
 
 function ApiTest1()
-    -- 6 Raubtiere müssen gefunden werden. TODO
+    -- 6 Raubtiere müssen gefunden werden.
     local Result = API.GetEntitiesOfCategoriesInTerritories(0, EntityCategories.AttackableAnimal, {1, 2});
-    assert(#Result ~= 6, "Fehlschlag: Anzahl Raubtiere stimmt nicht!");
+    assert(#Result == 6, "Fehlschlag: Anzahl Raubtiere stimmt nicht!");
     
     -- 2 Helden müssen gefunden werden.
     local Result = API.GetEntitiesOfCategoriesInTerritories({1, 2}, EntityCategories.Hero, {1, 2});
-    assert(#Result ~= 2, "Fehlschlag: Anzahl Helden stimmt nicht!");
+    assert(#Result == 2, "Fehlschlag: Anzahl Helden stimmt nicht!");
     
     API.Note("API.GetEntitiesOfCategoriesInTerritories getestet");
 end
 
 function ApiTest2()
-    -- 6 benannte Entities finden TODO
+    -- 6 benannte Entities finden
     local Result = API.GetEntitiesByPrefix("NamedEntity");
-    assert(#Result ~= 6, "Fehlschlag: Anzahl Entities stimmt nicht!");
+    assert(#Result == 6, "Fehlschlag: Anzahl Entities stimmt nicht!");
     
     API.Note("API.GetEntitiesByPrefix getestet");
 end
 
 function ApiTest3()
-    -- Füllmenge muss 500 sein TODO
+    -- Füllmenge muss 500 sein
     API.SetResourceAmount("mine", 500, 250);
-    assert(Logic.GetResourceDoodadGoodAmount(GetID("mine")) ~= 500, "Fehlschlag: Rofstoffzahl falsch!");
+    assert(Logic.GetResourceDoodadGoodAmount(GetID("mine")) == 500, "Fehlschlag: Rofstoffzahl falsch!");
     
     API.Note("API.GetResourceDoodadGoodAmount getestet");
 end
 
 function ApiTest4()
-    -- Leader des Battalion bestimmen TODO
+    -- Leader des Battalion bestimmen
     local Leader          = GetID("TestBattalion");
     local Soldier         = {Logic.GetSoldiersAttachedToLeader(Leader)};
     local LeaderBySoldier = API.GetLeaderBySoldier(Soldier[2]);
