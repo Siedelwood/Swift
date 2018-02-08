@@ -33,15 +33,14 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#User_Space">User-Space</a></li>
-<li><a href="#"></a></li>
 </ul>
 
 
 <h2>Bundles</h2>
 <ul class="nowrap">
-  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
   <li><strong>BundleEntityHelperFunctions</strong></li>
   <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
   <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
@@ -75,6 +74,10 @@
 <h2><a href="#User_Space">User-Space</a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#API.EntityAttack">API.EntityAttack (_Entity, _Target)</a></td>
+	<td class="summary">Das Entity greift ein anderes Entity an, sofern möglich.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.GetEntitiesByPrefix">API.GetEntitiesByPrefix (_Prefix)</a></td>
 	<td class="summary">Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.</td>
 	</tr>
@@ -82,6 +85,10 @@
 	<td class="name" nowrap><a href="#API.GetEntitiesOfCategoriesInTerritories">API.GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</a></td>
 	<td class="summary">Ermittelt alle Entities in den Kategorien auf den Territorien für die
  Liste von Parteien und gibt sie als Liste zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityName">API.GetEntityName (_entity)</a></td>
+	<td class="summary">Gibt den Skriptnamen des Entity zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.GetLeaderBySoldier">API.GetLeaderBySoldier (_soldier)</a></td>
@@ -97,9 +104,17 @@
 	<td class="summary">Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.GetOrientation">API.GetOrientation (_entity)</a></td>
+	<td class="summary">Gibt die Orientierung des Entity zurück.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.GetRelativePos">API.GetRelativePos (_target, _distance, _angle, _buildingRealPos)</a></td>
 	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
  Basisposition.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GiveEntityName">API.GiveEntityName (_EntityID)</a></td>
+	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.MoveToPosition">API.MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</a></td>
@@ -110,21 +125,6 @@
 	<td class="name" nowrap><a href="#API.PlaceToPosition">API.PlaceToPosition (_Entity, _Position, _Distance, _Angle)</a></td>
 	<td class="summary">Platziert das Entity wird zum ziel bewegt und kann relativ um das Ziel
  in einem Winkel.</td>
-	</tr>
-</table>
-<h2><a href="#"></a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.GetEntityName">API.GetEntityName (_entity)</a></td>
-	<td class="summary">Gibt den Skriptnamen des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GetOrientation">API.GetOrientation (_entity)</a></td>
-	<td class="summary">Gibt die Orientierung des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GiveEntityName">API.GiveEntityName (_EntityID)</a></td>
-	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SetEntityName">API.SetEntityName (_entity, _name)</a></td>
@@ -143,6 +143,31 @@
     <h2 class="section-header "><a name="User_Space"></a>User-Space</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "API.EntityAttack"></a>
+    <strong>API.EntityAttack (_Entity, _Target)</strong>
+    </dt>
+    <dd>
+    Das Entity greift ein anderes Entity an, sofern möglich.
+<p> <b>Alias:</b> Attack
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+         Angegriffenes Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
     <dt>
     <a name = "API.GetEntitiesByPrefix"></a>
     <strong>API.GetEntitiesByPrefix (_Prefix)</strong>
@@ -198,6 +223,33 @@
     <ol>
 
         table: Liste mit Entities
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityName"></a>
+    <strong>API.GetEntityName (_entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Skriptnamen des Entity zurück.
+<p> <b>Alias:</b> GetEntityName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+         Gesuchtes Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Skriptname
     </ol>
 
 
@@ -293,6 +345,33 @@
 
 </dd>
     <dt>
+    <a name = "API.GetOrientation"></a>
+    <strong>API.GetOrientation (_entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Orientierung des Entity zurück.
+<p> <b>Alias:</b> GetOrientation
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+         Gesuchtes Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Orientierung in Grad
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.GetRelativePos"></a>
     <strong>API.GetRelativePos (_target, _distance, _angle, _buildingRealPos)</strong>
     </dt>
@@ -323,6 +402,35 @@
     <ol>
 
         table: Position
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GiveEntityName"></a>
+    <strong>API.GiveEntityName (_EntityID)</strong>
+    </dt>
+    <dd>
+    Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+ Hat das Entity einen Namen, bleibt dieser unverändert und wird
+ zurückgegeben.
+<p> <b>Alias:</b> GiveEntityName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         Entity ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Vergebener Name
     </ol>
 
 
@@ -398,93 +506,6 @@
 
 
 </dd>
-</dl>
-    <h2 class="section-header "><a name=""></a></h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.GetEntityName"></a>
-    <strong>API.GetEntityName (_entity)</strong>
-    </dt>
-    <dd>
-    Gibt den Skriptnamen des Entity zurück.
-<p> <b>Alias:</b> GetEntityName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         Gesuchtes Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        string: Skriptname
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GetOrientation"></a>
-    <strong>API.GetOrientation (_entity)</strong>
-    </dt>
-    <dd>
-    Gibt die Orientierung des Entity zurück.
-<p> <b>Alias:</b> GetOrientation
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         Gesuchtes Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        number: Orientierung in Grad
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GiveEntityName"></a>
-    <strong>API.GiveEntityName (_EntityID)</strong>
-    </dt>
-    <dd>
-    Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
- Hat das Entity einen Namen, bleibt dieser unverändert und wird
- zurückgegeben.
-<p> <b>Alias:</b> GiveEntityName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_EntityID</span>
-         Entity ID
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        string: Vergebener Name
-    </ol>
-
-
-
-
-</dd>
     <dt>
     <a name = "API.SetEntityName"></a>
     <strong>API.SetEntityName (_entity, _name)</strong>
@@ -547,7 +568,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-01-28 12:06:04 </i>
+<i style="float:right;">Last updated 2018-02-08 19:16:37 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

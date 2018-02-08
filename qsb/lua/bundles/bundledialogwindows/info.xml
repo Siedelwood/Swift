@@ -4,7 +4,9 @@
         <![CDATA[Dialogfenster]]>
     </name>
     <description>
-        <![CDATA[]]>
+        <![CDATA[Mit diesem Bundle kommen einige Funktionen für das lokale 
+           Skript hinzu, die es ermöglichen verschiedene Dialoge oder ein 
+           Textfenster anzuzeigen.]]>
     </description>
 
     <dependencies>
