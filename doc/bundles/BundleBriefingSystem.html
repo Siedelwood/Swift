@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#User_Space">User-Space</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><strong>BundleBriefingSystem</strong></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleBriefingSystem</code></h1>
+<p>Ermöglicht es Briefings und Cutscenes zu verwenden.</p>
+<p>
+<p> Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
+ der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
+ Antwortmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
+ oder Menüstrukturen abgebildet werden.
+<p> Cutscenes dürfen kein Multiple Choice enthalten und werden immer nur ganz
+ abgespielt oder abgebrochen. Das Überspringen einzelner Seiten ist nicht
+ möglich. Cutscenes verfügen über eine neue Kamerasteuerung (Blickrichtung
+ und Ursprungspunkt) und sollten ausschließlich für szenerische Untermalung
+ der Handlung eingesetzt werden.
+</p>
+
+
+<h2><a href="#User_Space">User-Space</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AddPages">API.AddPages (_briefing)</a></td>
+	<td class="summary">Initalisiert die Page-Funktionen für das übergebene Briefing</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetCurrentBriefing">API.GetCurrentBriefing ()</a></td>
+	<td class="summary">Gibt das aktuelle Briefing zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetCurrentBriefingPage">API.GetCurrentBriefingPage (_pageNumber)</a></td>
+	<td class="summary">Gibt die Seite im aktuellen Briefing zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsBriefingFinished">API.IsBriefingFinished (_Flag)</a></td>
+	<td class="summary">Prüft, ob ein Briefing abgespielt wurde (beendet ist).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.MCGetSelectedAnswer">API.MCGetSelectedAnswer (_page)</a></td>
+	<td class="summary">Gibt die gewähtle Antwort für die MC Page zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.PauseQuestsDuringBriefings">API.PauseQuestsDuringBriefings (_Flag)</a></td>
+	<td class="summary">Setzt den Zustand von Quest Timern während biefings.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartBriefing">API.StartBriefing (_briefing, _cutsceneMode)</a></td>
+	<td class="summary">Startet ein Briefing.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartCutscene">API.StartCutscene (_briefing)</a></td>
+	<td class="summary">Startet ein Briefing im Cutscene Mode.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="User_Space"></a>User-Space</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AddPages"></a>
+    <strong>API.AddPages (_briefing)</strong>
+    </dt>
+    <dd>
+    Initalisiert die Page-Funktionen für das übergebene Briefing
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_briefing</span>
+         Quest Timer pausiert
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        function(3): AP, ASP, ASMC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetCurrentBriefing"></a>
+    <strong>API.GetCurrentBriefing ()</strong>
+    </dt>
+    <dd>
+    Gibt das aktuelle Briefing zurück.
+<p> Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Briefing
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetCurrentBriefingPage"></a>
+    <strong>API.GetCurrentBriefingPage (_pageNumber)</strong>
+    </dt>
+    <dd>
+    Gibt die Seite im aktuellen Briefing zurück.
+<p> Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_pageNumber</span>
+         Index der Page
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Page
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsBriefingFinished"></a>
+    <strong>API.IsBriefingFinished (_Flag)</strong>
+    </dt>
+    <dd>
+    Prüft, ob ein Briefing abgespielt wurde (beendet ist).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Quest Timer pausiert
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Briefing ist beendet
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.MCGetSelectedAnswer"></a>
+    <strong>API.MCGetSelectedAnswer (_page)</strong>
+    </dt>
+    <dd>
+    Gibt die gewähtle Antwort für die MC Page zurück.
+<p> Wird eine Seite mehrmals durchlaufen, wird die jeweils letzte Antwort
+ zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+         Seite
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Gewählte Antwort
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.PauseQuestsDuringBriefings"></a>
+    <strong>API.PauseQuestsDuringBriefings (_Flag)</strong>
+    </dt>
+    <dd>
+    Setzt den Zustand von Quest Timern während biefings.
+<p> Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Quest Timer pausiert
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartBriefing"></a>
+    <strong>API.StartBriefing (_briefing, _cutsceneMode)</strong>
+    </dt>
+    <dd>
+    Startet ein Briefing.  Im Cutscene Mode wird die normale Kamera
+ deaktiviert und durch die Cutsene Kamera ersetzt. Außerdem
+ können Grenzsteine ausgeblendet und der Himmel angezeigt werden.
+ Die Okklusion wird abgeschaltet Alle Änderungen werden nach dem
+ Briefing automatisch zurückgesetzt.
+ Läuft bereits ein Briefing, kommt das neue in die Warteschlange.
+ Es wird die ID des erstellten Briefings zurückgegeben.
+<p> <b>Alias</b>: BriefingSystem.StartBriefing <br/>
+ <b>Alias</b>: StartBriefing
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_briefing</span>
+             Briefing-Table
+        </li>
+        <li><span class="parameter">_cutsceneMode</span>
+         Cutscene-Mode nutzen?
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Briefing-ID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartCutscene"></a>
+    <strong>API.StartCutscene (_briefing)</strong>
+    </dt>
+    <dd>
+    Startet ein Briefing im Cutscene Mode.  Alle nicht erlauten Operationen,
+ wie seitenweises Überspringen oder Multiple Choice, sind deaktiviert.
+<p> <b>Alias</b>: BriefingSystem.StartCutscene <br/>
+ <b>Alias</b>: StartCutscene
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_briefing</span>
+         Briefing-Tabelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Briefing-ID
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-02-08 20:14:40 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
