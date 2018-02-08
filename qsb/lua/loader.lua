@@ -95,7 +95,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleKnightTitleRequirements",       false},
+            {"BundleKnightTitleRequirements",       true},
             
             -- Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation
             -- der Oberfläche des Spiels.
@@ -106,7 +106,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleInterfaceApperance",            false},
+            {"BundleInterfaceApperance",            true},
             
             -- Ändert die Funktionen zur Erstellung von Angeboten und setzt
             -- neue Preise. Zudem können Angebote analysiert werden.
@@ -117,7 +117,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleTradingFunctions",              false},
+            {"BundleTradingFunctions",              true},
             
             -- Bietet die Möglichkeit einzelne MP3-Dateien oder Playlists aus
             -- MP3-Dateien abzuspielen.
@@ -128,7 +128,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleMusicTools",                    false},
+            {"BundleMusicTools",                    true},
             
             -- Bietet direkten Zugriff auf die Daten eines Entities im RAM.
             -- 
@@ -138,7 +138,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleEntityScriptingValues",         false},
+            {"BundleEntityScriptingValues",         true},
             
             -- Ermöglicht Bau- und Abrissverbote für Gebäude.
             -- 
@@ -148,17 +148,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleConstructionControl",           false},
-            
-            -- Ermöglicht Briefings und Cutscenes.
-            -- 
-            -- Abhängigkeiten:
-            --   keine
-            -- 
-            -- Inkompatibelitäten:
-            --   keine
-            
-            {"BundleBriefingSystem",                false},
+            {"BundleConstructionControl",           true},
             
             -- Steuert die Selektion von Einheiten
             -- 
@@ -168,7 +158,7 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleBriefingSystem",                false},
+            {"BundleEntitySelection",               true},
             
             -- Spielstände in anderen Ordnern verwalten
             -- 
@@ -178,7 +168,27 @@ SymfoniaLoader = {
             -- Inkompatibelitäten:
             --   keine
             
-            {"BundleSaveGameTools",                 false},
+            {"BundleSaveGameTools",                 true},
+            
+            -- Hilfsfunktionen zu Entities
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleEntityHelperFunctions",         true},
+            
+            -- Allgemeine Hilfsfunktionen
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleGameHelperFunctions",           true},
         }
     }
 }

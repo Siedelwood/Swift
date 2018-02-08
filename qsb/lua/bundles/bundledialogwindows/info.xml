@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
     <name>
-        <![CDATA[Briefings und Cutscenes]]>
+        <![CDATA[Dialogfenster]]>
     </name>
     <description>
-        <![CDATA[Mit diesem Bundle wird eine um viele Features erweiterte
-           Version des Briefing System angeboten.]]>
+        <![CDATA[]]>
     </description>
 
     <dependencies>
