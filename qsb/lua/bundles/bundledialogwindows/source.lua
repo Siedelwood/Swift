@@ -5,8 +5,10 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
--- @module 
+-- Mit diesem Bundle kommen einige Funktionen für das lokale Skript hinzu, die
+-- es ermöglichen verschiedene Dialoge oder ein Textfenster anzuzeigen.
+--
+-- @module BundleDialogWindows
 -- @set sort=true
 --
 
@@ -17,7 +19,81 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
+---
+-- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
+-- der Dialog der Dialogwarteschlange hinzugefügt.
+--
+-- @param _Title  Titel des Dialog
+-- @param _Text   Text des Dialog
+-- @param _Action Callback-Funktion
+-- @within User-Space
+--
+function API.OpenDialog(_Title, _Text, _Action)
+    if not GUI then
+        API.Dbg("API.OpenDialog: Can only be used in the local script!");
+        return;
+    end
+    
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Title) == "table" then
+       _Title = _Title[lang];
+    end
+    if type(_Text) == "table" then
+       _Text = _Text[lang];
+    end
+    return BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action);
+end
 
+---
+-- Öffnet einen Ja-Nein-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
+-- der Dialog der Dialogwarteschlange hinzugefügt.
+--
+-- @param _Title    Titel des Dialog
+-- @param _Text     Text des Dialog
+-- @param _Action   Callback-Funktion
+-- @param _OkCancel Okay/Abbrechen statt Ja/Nein
+-- @within User-Space
+--
+function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
+    if not GUI then
+        API.Dbg("API.OpenRequesterDialog: Can only be used in the local script!");
+        return;
+    end
+    
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Title) == "table" then
+       _Title = _Title[lang];
+    end
+    if type(_Text) == "table" then
+       _Text = _Text[lang];
+    end
+    return BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
+end
+
+---
+-- Öffnet einen Auswahldialog. Sollte bereits ein Dialog zu sehen sein, wird
+-- der Dialog der Dialogwarteschlange hinzugefügt.
+--
+-- @param _Title  Titel des Dialog
+-- @param _Text   Text des Dialog
+-- @param _Action Callback-Funktion
+-- @param _List   Liste der Optionen
+-- @within User-Space
+--
+function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
+    if not GUI then
+        API.Dbg("API.OpenSelectionDialog: Can only be used in the local script!");
+        return;
+    end
+    
+    if type(_Text) == "table" then
+        _Text.de = _Text.de .. "{cr}";
+        _Text.en = _Text.en .. "{cr}";
+    else
+        _Text = _Text .. "{cr}";
+    end
+    return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -59,7 +135,7 @@ BundleDialogWindows = {
 -- @local
 --
 function BundleDialogWindows.Global:Install()
-    
+    TextWindow = BundleDialogWindows.Local.TextWindow;
 end
 
 
@@ -159,20 +235,12 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Local:OpenDialog = function(_Title, _Text, _Action)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-        if type(_Title) == "table" then
-           _Title = _Title[lang];
-        end
-        _Title = "{center}" .. _Title;
         assert(type(_Title) == "string");
-        
-        if type(_Text) == "table" then
-           _Text = _Text[lang];
-        end
         assert(type(_Text) == "string");
         
+        _Title = "{center}" .. _Title;
         if string.len(_Text) < 35 then
             _Text = _Text .. "{cr}";
         end
@@ -229,18 +297,10 @@ end
 -- @local
 --
 function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-        if type(_Title) == "table" then
-           _Title = _Title[lang];
-        end
-        _Title = "{center}" .. _Title;
         assert(type(_Title) == "string");
-        
-        if type(_Text) == "table" then
-           _Text = _Text[lang];
-        end
         assert(type(_Text) == "string");
+        _Title = "{center}" .. _Title;
 
         self.OpenDialog(_Title, _Text, _Action);
         XGUIEng.ShowWidget(RequesterDialog_Yes,1);
@@ -286,12 +346,6 @@ end
 --
 function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
-        if type(_Text) == "table" then
-            _Text.de = _Text.de .. "{cr}";
-            _Text.en = _Text.en .. "{cr}";
-        else
-            _Text = _Text .. "{cr}";
-        end
         self:OpenDialog(_Title, _Text, _Action);
 
         local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
@@ -378,6 +432,8 @@ end
 -- Optional kann ein Button genutzt werden, der eine Aktion ausführt, wenn
 -- er gedrückt wird.
 --
+-- <b>Alias</b>: TextWindow:New
+--
 -- Parameterliste:
 -- <table>
 -- <tr>
@@ -408,11 +464,11 @@ end
 --
 -- @param ... Parameterliste
 -- @return TextWindow: Konfiguriertes Fenster
--- @within Application-Space
--- @local
+-- @within TextWindow
 --
 function BundleDialogWindows.Local.TextWindow:New(...)
-    local window      = API.InstanceTable(self);
+    assert(self == BundleDialogWindows.Local.TextWindow, "Can not be used from instance!")
+    local window           = API.InstanceTable(self);
     window.Data.Caption    = arg[1] or window.Data.Caption;
     window.Data.Text       = arg[2] or window.Data.Text;
     window.Data.Action     = arg[3];
@@ -422,12 +478,106 @@ function BundleDialogWindows.Local.TextWindow:New(...)
 end
 
 ---
+-- Fügt einen beliebigen Parameter hinzu. Parameter müssen immer als
+-- Schlüssel-Wert-Paare angegeben werden und dürfen vorhandene Pare nicht
+-- überschreiben.
+--
+-- <b>Alias</b>: TextWindow:AddParamater
+--
+-- @param _Key   Schlüssel
+-- @param _Value Wert
+-- @return self
+-- @within TextWindow
+--
+function BundleDialogWindows.Local.TextWindow:AddParamater(_Key, _Value)
+    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
+    assert(self.Data[_Key] ~= nil, "Key '" .._Key.. "' already exists!");
+    self.Data[_Key] = _Value;
+    return self;
+end
+
+---
+-- Setzt die Überschrift des TextWindow.
+--
+-- <b>Alias</b>: TextWindow:SetCaption
+--
+-- @param _Text Titel des Textfenster
+-- @return self
+-- @within TextWindow
+--
+function BundleDialogWindows.Local.TextWindow:SetCaption(_Text)
+    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
+    assert(type(_Text) == "string");
+    self.Data.Caption = _Text;
+    return self;
+end
+
+---
+-- Setzt den Inhalt des TextWindow.
+--
+-- <b>Alias</b>: TextWindow:SetContent
+--
+-- @param _Text Inhalt des Textfenster
+-- @return self
+-- @within TextWindow
+--
+function BundleDialogWindows.Local.TextWindow:SetContent(_Text)
+    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
+    assert(type(_Text) == "string");
+    self.Data.Text = _Text;
+    return self;
+end
+
+---
+-- Setzt die Close Action des TextWindow. Die Funktion wird beim schließen
+-- des Fensters ausgeführt.
+--
+-- <b>Alias</b>: TextWindow:SetAction
+--
+-- @param _Function Close Callback
+-- @return self
+-- @within TextWindow
+--
+function BundleDialogWindows.Local.TextWindow:SetAction(_Function)
+    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
+    assert(nil or type(_Callback) == "function");
+    self.Data.Action = _Function;
+    return self;
+end
+
+---
+-- Setzt einen Aktionsbutton im TextWindow.
+--
+-- Der Button muss mit einer Funktion versehen werden. Sobald der Button
+-- betätigt wird, wird die Funktion ausgeführt.
+--
+-- <b>Alias</b>: TextWindow:SetButton
+--
+-- @param _Text     Beschriftung des Buttons
+-- @param _Callback Aktion des Buttons
+-- @return self
+-- @within TextWindow
+--
+function BundleDialogWindows.Local.TextWindow:SetButton(_Text, _Callback)
+    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
+    if _Text then
+        assert(type(_Text) == "string");
+        assert(type(_Callback) == "function");
+    end
+    self.Data.ButtonText = _Text;
+    self.Data.Callback   = _Callback;
+    return self;
+end
+
+---
 -- Zeigt ein erzeigtes Fenster an.
 --
--- @within Application-Space
--- @local
+-- <b>Alias</b>: TextWindow:Show
+--
+-- @within TextWindow
 --
 function BundleDialogWindows.Local.TextWindow:Show()
+    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
     BundleDialogWindows.Local.TextWindow.Data.Shown = true;
     self.Data.Shown = true;
     self:Prepare();

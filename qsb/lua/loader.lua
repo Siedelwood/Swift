@@ -189,6 +189,16 @@ SymfoniaLoader = {
             --   keine
             
             {"BundleGameHelperFunctions",           true},
+            
+            -- Dialoge und Textfenster
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleDialogWindows",                 true},
         }
     }
 }
