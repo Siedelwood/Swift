@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <name>
+        <![CDATA[Briefings und Cutscenes]]>
+    </name>
+    <description>
+        <![CDATA[Verwende Briefings und Cutscenes in deiner Mission. Briefings 
+           dienen zur Missionsbesprechung und sollten mehr textbasiert sein. 
+           Cutscenes dienen zur optischen Untermalung mit Effekten und sollten 
+           nicht so viel Text beinhalten.]]>
+    </description>
+
+    <dependencies>
+    </dependencies>
+
+    <exclusions>
+    </exclusions>
+</root>

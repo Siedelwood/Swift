@@ -199,6 +199,16 @@ SymfoniaLoader = {
             --   keine
             
             {"BundleDialogWindows",                 true},
+            
+            -- Ermöglicht Briefings und Cutscenes
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleBriefingSystem",                true},
         }
     }
 }
