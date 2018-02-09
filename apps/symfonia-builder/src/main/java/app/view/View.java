@@ -1,7 +1,5 @@
 package app.view;
 
-import app.view.swing.window.Window;
-
 /**
  * 
  * 
@@ -14,17 +12,17 @@ public interface View
      * 
      * @return Begrüßungsfenster
      */
-    public Window getWelcomeWindow();
+    public WelcomeWindowInterface getWelcomeWindow();
     
     /**
      * 
      * @return Operationsauswahlfenster
      */
-    public Window getOptionSelectionWindow();
+    public OptionSelectionWindowInterface getOptionSelectionWindow();
     
     /**
      * 
      * @return Paketauswahlfenster
      */
-    public Window getSelectBundlesWindow();
+    public SelectBundleWindowInterface getSelectBundlesWindow();
 }

@@ -1,14 +1,13 @@
 package app.view.swing;
 
 import app.controler.ViewController;
-import app.controler.window.OptionSelectionWindowController;
-import app.controler.window.SelectBundleWindowController;
-import app.controler.window.WelcomeWindowController;
+import app.view.OptionSelectionWindowInterface;
+import app.view.SelectBundleWindowInterface;
 import app.view.View;
+import app.view.WelcomeWindowInterface;
 import app.view.swing.window.OptionSelectionWindow;
 import app.view.swing.window.SelectBundleWindow;
 import app.view.swing.window.WelcomeWindow;
-import app.view.swing.window.Window;
 import config.Configuration;
 
 /**
@@ -32,21 +31,22 @@ public class SwingView implements View
     /**
      * 
      */
-    private WelcomeWindow welcomeWindow;
+    private WelcomeWindowInterface welcomeWindow;
     
     /**
      * 
      */
-    private OptionSelectionWindow optionSelectionWindow;
+    private OptionSelectionWindowInterface optionSelectionWindow;
     
     /**
      * 
      */
-    private SelectBundleWindow selectBundleWindow;
-    
+    private SelectBundleWindowInterface selectBundleWindow;
+
     /**
-     * 
-     * @param config
+     *
+     * @param configuration
+     * @param controller
      */
     public SwingView(final Configuration configuration, final ViewController controller)
     {
@@ -57,12 +57,12 @@ public class SwingView implements View
     /**
      * {@inheritDoc}
      */
-    public Window getWelcomeWindow()
+    public WelcomeWindowInterface getWelcomeWindow()
     {
         if (welcomeWindow == null) {
             welcomeWindow = new WelcomeWindow(
                 this.configuration, 
-                new WelcomeWindowController(this.configuration)
+                this.controller.getWwController()
             );
         }
         return welcomeWindow;
@@ -71,12 +71,12 @@ public class SwingView implements View
     /**
      * {@inheritDoc}
      */
-    public Window getOptionSelectionWindow()
+    public OptionSelectionWindowInterface getOptionSelectionWindow()
     {
         if (optionSelectionWindow == null) {
             optionSelectionWindow = new OptionSelectionWindow(
                 this.configuration,
-                new OptionSelectionWindowController(this.configuration)
+                this.controller.getOswController()
             );
         }
         return optionSelectionWindow;
@@ -85,12 +85,12 @@ public class SwingView implements View
     /**
      * {@inheritDoc}
      */
-    public Window getSelectBundlesWindow()
+    public SelectBundleWindowInterface getSelectBundlesWindow()
     {
         if (selectBundleWindow == null) {
             selectBundleWindow = new SelectBundleWindow(
                 this.configuration, 
-                new SelectBundleWindowController(this.configuration)
+                this.controller.getSbwController()
             );
         }
         return selectBundleWindow;

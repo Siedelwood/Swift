@@ -14,7 +14,8 @@ import config.PropertyConfiguration;
  * @author angermanager
  *
  */
-public class SymfoniaQsbBuilder
+@SuppressWarnings("serial")
+public class SymfoniaQsbBuilder extends SymfoniaJFrame
 {
     /**
      * 
@@ -38,8 +39,17 @@ public class SymfoniaQsbBuilder
     /**
      * 
      */
-    public void start() {
-        // TODO Setup
+    public void start() {        
+        add(view.getWelcomeWindow().getRootPane());        
+        addWindowListener(this);
+        
+        setSize(
+            config.getInteger("defaults.window.size.x"),
+            config.getInteger("defaults.window.size.y")
+        );
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setVisible(true);
         
         view.getWelcomeWindow().show();
     }
@@ -53,9 +63,7 @@ public class SymfoniaQsbBuilder
         try
         {
             final Configuration config = new PropertyConfiguration("conf/app.properties");
-            
             final View view = new SwingView(config, ViewController.getInstance(config));
-            
             final SymfoniaQsbBuilder app = new SymfoniaQsbBuilder(view, config);
             app.start();
             

@@ -1,13 +1,29 @@
 package app.controler.window;
 
+import app.controler.ViewController;
 import config.Configuration;
 
 public class SelectBundleWindowController
 {
+    /**
+     * 
+     */
+    private final Configuration configuration;
+    
+    /**
+     * 
+     */
+    private final ViewController controller;
 
-    public SelectBundleWindowController(final Configuration config)
+    /**
+     * 
+     * @param config
+     * @param controller
+     */
+    public SelectBundleWindowController(final Configuration config, final ViewController controller)
     {
-        // TODO Auto-generated constructor stub
+        this.configuration = config;
+        this.controller = controller;
     }
 
 }

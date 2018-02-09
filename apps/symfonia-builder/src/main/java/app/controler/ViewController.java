@@ -55,7 +55,7 @@ public class ViewController
     public WelcomeWindowController getWwController()
     {
         if (wwController == null) {
-            wwController = new WelcomeWindowController(config);
+            wwController = new WelcomeWindowController(config, this);
         }
         return wwController;
     }
@@ -67,7 +67,7 @@ public class ViewController
     public SelectBundleWindowController getSbwController()
     {
         if (sbwController == null) {
-            sbwController = new SelectBundleWindowController(config);
+            sbwController = new SelectBundleWindowController(config, this);
         }
         return sbwController;
     }
@@ -79,7 +79,7 @@ public class ViewController
     public OptionSelectionWindowController getOswController()
     {
         if (oswController == null) {
-            oswController = new OptionSelectionWindowController(config);
+            oswController = new OptionSelectionWindowController(config, this);
         }
         return oswController;
     }
