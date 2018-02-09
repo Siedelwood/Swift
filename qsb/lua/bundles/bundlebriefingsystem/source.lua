@@ -38,7 +38,7 @@ QSB = QSB or {};
 -- @within User-Space
 --
 function API.PauseQuestsDuringBriefings(_Flag)
-    if not GUI then
+    if GUI then
         API.Dbg("API.PauseQuestsDuringBriefings: Can only be used in the global script!");
         return;
     end
@@ -53,7 +53,7 @@ end
 -- @within User-Space
 --
 function API.IsBriefingFinished(_briefingID)
-    if not GUI then
+    if GUI then
         API.Dbg("API.IsBriefingFinished: Can only be used in the global script!");
         return;
     end
@@ -71,7 +71,7 @@ end
 -- @within User-Space
 --
 function API.MCGetSelectedAnswer(_page)
-    if not GUI then
+    if GUI then
         API.Dbg("API.MCGetSelectedAnswer: Can only be used in the global script!");
         return;
     end
@@ -88,7 +88,7 @@ end
 -- @within User-Space
 --
 function API.GetCurrentBriefingPage(_pageNumber)
-    if not GUI then
+    if GUI then
         API.Dbg("API.GetCurrentBriefingPage: Can only be used in the global script!");
         return;
     end
@@ -104,7 +104,7 @@ end
 -- @within User-Space
 --
 function API.GetCurrentBriefing()
-    if not GUI then
+    if GUI then
         API.Dbg("API.GetCurrentBriefing: Can only be used in the global script!");
         return;
     end
@@ -119,7 +119,7 @@ end
 -- @within User-Space
 --
 function API.AddPages(_briefing)
-    if not GUI then
+    if GUI then
         API.Dbg("API.AddPages: Can only be used in the global script!");
         return;
     end
@@ -538,7 +538,8 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
 
     ---
     -- Startet ein Briefing im Cutscene Mode. Alle nicht erlauten Operationen,
-    -- wie seitenweises Überspringen oder Multiple Choice, sind deaktiviert.
+    -- wie seitenweises Überspringen oder Multiple Choice, sind deaktiviert
+    -- bzw. verhindern den Start der Cutscene.
     --
     -- <b>Alias</b>: BriefingSystem.StartCutscene <br/>
     -- <b>Alias</b>: StartCutscene
@@ -548,12 +549,28 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
     -- @within User-Space
     --
     function API.StartCutscene(_briefing)
-        -- Seitenweises abbrechen ist nicht erlaubt!
+        -- Seitenweises abbrechen ist nicht erlaubt
         _briefing.skipPerPage = false;
 
         for i=1, #_briefing, 1 do
-            -- Multiple Choice ist ebenfalls nicht erlaubt
+            -- Multiple Choice ist nicht erlaubt
             if _briefing[i].mc then
+                API.Dbg("API.StartCutscene: Unallowed multiple choice at page " ..i.. " found!");
+                return;
+            end
+            -- Marker sind nicht erlaubt
+            if _briefing[i].marker then
+                API.Dbg("API.StartCutscene: Unallowed marker at page " ..i.. " found!");
+                return;
+            end
+            -- Pointer sind nicht erlaubt
+            if _briefing[i].pointer then
+                API.Dbg("API.StartCutscene: Unallowed pointer at page " ..i.. " found!");
+                return;
+            end
+            -- Exploration ist nicht erlaubt
+            if _briefing[i].explore then
+                API.Dbg("API.StartCutscene: Unallowed explore at page " ..i.. " found!");
                 return;
             end
         end
@@ -1526,7 +1543,7 @@ function BundleDialogWindows.Local:InitalizeBriefingSystem()
     function BriefingSystem.ShowBriefingText(_text, _doNotCalc, _smallBar)
         local text = XGUIEng.GetStringTableText(_text);
         if text == "" then
-            text = Umlaute(_text);
+            text = _text;
         end
         if not _doNotCalc then
             GUI.SendScriptCommand("BriefingSystem.timer = " .. (BriefingSystem.GlobalSystem.STANDARDTIME_PER_PAGE + BriefingSystem.GlobalSystem.SECONDS_PER_CHAR * string.len(text)) .. ";");
@@ -1543,7 +1560,7 @@ function BundleDialogWindows.Local:InitalizeBriefingSystem()
     function BriefingSystem.ShowBriefingTitle(_title)
         local title = XGUIEng.GetStringTableText(_title);
         if title == "" then
-            title = Umlaute(_title);
+            title = _title;
         end
         if BriefingSystem.GlobalSystem and string.sub(title, 1, 1) ~= "{" then
             title = BriefingSystem.GlobalSystem.COLOR1 .. "{center}{darkshadow}" .. title;
@@ -1609,7 +1626,7 @@ function BundleDialogWindows.Local:InitalizeBriefingSystem()
     -- _text	Nachricht
     --
     function BriefingSystem.PushInformationText(_text)
-        local length = string.len(Umlaute(_text)) * 5;
+        local length = string.len(_text) * 5;
         length = (length < 800 and 800) or length;
         table.insert(BriefingSystem.InformationTextQueue, {_text, length});
     end

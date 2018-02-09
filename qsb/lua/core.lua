@@ -529,8 +529,6 @@ function API.Dbg(_Message)
         API.StaticNote("DEBUG: " .._Message)
     end
     API.Log("DEBUG: " .._Message);
-    -- FIXME Funktioniert das ingame?
-    API.Log(debug.traceback());
 end
 dbg = API.Dbg;
 
