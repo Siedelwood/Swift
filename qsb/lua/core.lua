@@ -562,7 +562,7 @@ function API.Info(_Message)
     end
     API.Log("INFO: " .._Message);
 end
-info = API.Warn;
+info = API.Info;
 
 -- Log Levels
 QSB.Log = {

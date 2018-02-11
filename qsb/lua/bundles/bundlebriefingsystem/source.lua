@@ -34,6 +34,8 @@ QSB = QSB or {};
 --
 -- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
 --
+-- <b>Alias</b>: PauseQuestsDuringBriefings
+--
 -- @param _Flag Quest Timer pausiert
 -- @within User-Space
 --
@@ -44,9 +46,12 @@ function API.PauseQuestsDuringBriefings(_Flag)
     end
     return BundleDialogWindows.Global:PauseQuestsDuringBriefings(_Flag);
 end
+PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 
 ---
 -- Prüft, ob ein Briefing abgespielt wurde (beendet ist).
+--
+-- <b>Alias</b>: IsBriefingFinished
 --
 -- @param _Flag Quest Timer pausiert
 -- @return boolean: Briefing ist beendet
@@ -59,12 +64,15 @@ function API.IsBriefingFinished(_briefingID)
     end
     return BundleDialogWindows.Global:IsBriefingFinished(_briefingID);
 end
+IsBriefingFinished = API.IsBriefingFinished;
 
 ---
 -- Gibt die gewähtle Antwort für die MC Page zurück.
 --
 -- Wird eine Seite mehrmals durchlaufen, wird die jeweils letzte Antwort
 -- zurückgegeben.
+--
+-- <b>Alias</b>: MCGetSelectedAnswer
 --
 -- @param _page Seite
 -- @return number: Gewählte Antwort
@@ -77,11 +85,14 @@ function API.MCGetSelectedAnswer(_page)
     end
     return BundleDialogWindows.Global:MCGetSelectedAnswer(_page);
 end
+MCGetSelectedAnswer = API.MCGetSelectedAnswer;
 
 ---
 -- Gibt die Seite im aktuellen Briefing zurück.
 --
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
+--
+-- <b>Alias</b>: GetCurrentBriefingPage
 --
 -- @param _pageNumber Index der Page
 -- @return table: Page
@@ -94,11 +105,14 @@ function API.GetCurrentBriefingPage(_pageNumber)
     end
     return BundleDialogWindows.Global:GetCurrentBriefingPage(_pageNumber);
 end
+GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 
 ---
 -- Gibt das aktuelle Briefing zurück.
 --
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
+--
+-- <b>Alias</b>: GetCurrentBriefing
 --
 -- @return table: Briefing
 -- @within User-Space
@@ -110,9 +124,12 @@ function API.GetCurrentBriefing()
     end
     return BundleDialogWindows.Global:GetCurrentBriefing();
 end
+GetCurrentBriefing = API.GetCurrentBriefing;
 
 ---
--- Initalisiert die Page-Funktionen für das übergebene Briefing
+-- Initalisiert die Page-Funktionen für das übergebene Briefing.
+--
+-- <b>Alias</b>: AddPages
 --
 -- @param _briefing Quest Timer pausiert
 -- @return function(3): AP, ASP, ASMC
@@ -125,6 +142,7 @@ function API.AddPages(_briefing)
     end
     return BundleDialogWindows.Global:AddPages(_briefing);
 end
+AddPages = API.AddPages;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --

@@ -61,7 +61,7 @@ QSB.TraderTypes = {
 --
 function API.GetOfferInformation(_PlayerID)
     if GUI then
-        API.Log("Could not execute API.GetOfferInformation in local script!");
+        API.Log("Can not execute API.GetOfferInformation in local script!");
         return;
     end
     return BundleTradingFunctions.Global:GetOfferInformation(_PlayerID);
@@ -77,7 +77,7 @@ end
 --
 function API.GetOfferCount(_PlayerID)
     if GUI then
-        API.Log("Could not execute API.GetOfferCount in local script!");
+        API.Log("Can not execute API.GetOfferCount in local script!");
         return;
     end
     return BundleTradingFunctions.Global:GetOfferCount(_PlayerID);
@@ -94,7 +94,7 @@ end
 --
 function API.GetOfferAndTrader(_PlayerID, _GoodorEntityType)
     if GUI then
-        API.Log("Could not execute API.GetOfferAndTrader in local script!");
+        API.Log("Can not execute API.GetOfferAndTrader in local script!");
         return;
     end
     return BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodorEntityType);
@@ -110,7 +110,7 @@ end
 --
 function API.GetTraderType(_BuildingID, _TraderID)
     if GUI then
-        API.Log("Could not execute API.GetTraderType in local script!");
+        API.Log("Can not execute API.GetTraderType in local script!");
         return;
     end
     return BundleTradingFunctions.Global:GetTraderType(_BuildingID, _TraderID);
@@ -126,7 +126,7 @@ end
 --
 function API.GetTrader(_BuildingID, _TraderType)
     if GUI then
-        API.Log("Could not execute API.GetTrader in local script!");
+        API.Log("Can not execute API.GetTrader in local script!");
         return;
     end
     return BundleTradingFunctions.Global:GetTrader(_BuildingID, _TraderType);
@@ -198,7 +198,7 @@ end
 --
 function API.ActivateTravelingSalesman(_Offers, _Stay, _Waypoints, _Reversed, _PlayerID)
     if GUI then
-        API.Log("Could not execute API.ActivateTravelingSalesman in local script!");
+        API.Log("Can not execute API.ActivateTravelingSalesman in local script!");
         return;
     end
     return BundleTradingFunctions.Global:TravelingSalesman_Create(_Offers, _Stay, _Waypoints, _Reversed, _PlayerID);
