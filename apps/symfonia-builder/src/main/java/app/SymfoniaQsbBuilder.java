@@ -1,75 +1,79 @@
 package app;
 
-import app.controler.ViewController;
-import app.exception.SymfoniaQsbBuilderException;
-import app.view.View;
-import app.view.swing.SwingView;
-import config.Configuration;
-import config.ConfigurationException;
-import config.PropertyConfiguration;
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+import controller.ViewController;
+import view.component.SymfoniaJFrame;
+import view.window.WelcomeWindow;
 
 /**
- * 
- * 
+ *
+ *
  * @author angermanager
  *
  */
 @SuppressWarnings("serial")
 public class SymfoniaQsbBuilder extends SymfoniaJFrame
 {
+
     /**
      * 
      */
-    private final View view;
-    
+    private SymfoniaJFrame frame;
+
     /**
      * 
      */
-    private final Configuration config;
+    private final ViewController controller;
 
     /**
      * 
      * @param properties
      */
-    public SymfoniaQsbBuilder(final View view, final Configuration config) {
-        this.view = view;
-        this.config = config;
+    public SymfoniaQsbBuilder()
+    {
+	controller = ViewController.getInstance();
     }
-    
+
     /**
      * 
      */
-    public void start() {        
-        add(view.getWelcomeWindow().getRootPane());        
-        addWindowListener(this);
-        
-        setSize(
-            config.getInteger("defaults.window.size.x"),
-            config.getInteger("defaults.window.size.y")
-        );
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        
-        view.getWelcomeWindow().show();
+    public void build()
+    {
+	final Dimension size = Configuration.getDimension("defaults.window.size");
+
+	frame = new SymfoniaJFrame();
+	frame.setTitle("Symfonia Builder");
+	frame.setBounds(0, 0, size.width, size.height);
+	frame.setResizable(false);
+	frame.setLocationRelativeTo(null);
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+	final WelcomeWindow welcomeWindow = new WelcomeWindow(size.width, size.height);
+	frame.add(welcomeWindow.getRootPane());
+	controller.addWindow("WelcomeWindow", welcomeWindow);
+
+	frame.setVisible(true);
     }
-    
+
+    /**
+     * 
+     * @return
+     */
+    public SymfoniaJFrame getFrame()
+    {
+	return frame;
+    }
+
     /**
      * 
      * @param args
-     * @throws SymfoniaQsbBuilderException 
      */
-    public static void main(final String[] args) throws SymfoniaQsbBuilderException {
-        try
-        {
-            final Configuration config = new PropertyConfiguration("conf/app.properties");
-            final View view = new SwingView(config, ViewController.getInstance(config));
-            final SymfoniaQsbBuilder app = new SymfoniaQsbBuilder(view, config);
-            app.start();
-            
-        } catch (final ConfigurationException e)
-        {
-            throw new SymfoniaQsbBuilderException("Unable to run application", e);
-        }
+    public static void main(final String[] args)
+    {
+	final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder();
+	builder.build();
     }
 }
