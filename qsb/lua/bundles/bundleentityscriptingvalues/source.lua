@@ -28,6 +28,8 @@ QSB = QSB or {};
 --
 function API.GetScale(_Entity)
     if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.GetScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return BundleEntityScriptingValues:GetEntitySize(_Entity);
@@ -42,6 +44,8 @@ end
 --
 function API.GetPlayer(_Entity)
     if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.GetPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return BundleEntityScriptingValues:GetPlayerID(_entity);
@@ -56,6 +60,8 @@ end
 --
 function API.GetMovingTarget(_Entity)
     if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.GetMovingTarget: Target " ..Subject.. " is invalid!");
         return nil;
     end
     return BundleEntityScriptingValues:GetMovingTargetPosition(_Entity);
@@ -70,6 +76,8 @@ end
 --
 function API.IsNPC(_Entity)
     if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.IsNPC: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues:IsOnScreenInformationActive(_Entity);
@@ -84,6 +92,8 @@ end
 --
 function API.IsVisible(_Entity)
     if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.IsVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues:IsEntityVisible(_Entity);
@@ -101,9 +111,15 @@ end
 --
 function API.SetScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.SetScale: Target " ..Subject.. " is invalid!");
         return;
     end
-    BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale)
+    if type(_Scale) ~= "number" then
+        API.Dbg("API.SetScale: Scale must be a number!");
+        return;
+    end
+    return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
 end
 
 ---
@@ -118,9 +134,15 @@ end
 --
 function API.SetPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
+        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("API.SetPlayer: Target " ..Subject.. " is invalid!");
         return;
     end
-    BundleEntityScriptingValues.Global:SetPlayerID(_Entity, _PlayerID)
+    if type(_PlayerID) ~= "number" or _PlayerID <= 0 or _PlayerID > 8 then
+        API.Dbg("API.SetPlayer: Player-ID must between 0 and 8!");
+        return;
+    end
+    return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
 end
 
 -- -------------------------------------------------------------------------- --

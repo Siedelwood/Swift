@@ -165,8 +165,8 @@ end
 MoveEx = API.MoveToPosition;
 
 ---
--- Platziert das Entity wird zum ziel bewegt und kann relativ um das Ziel
--- in einem Winkel.
+-- Platziert das Entity wird zum ziel gesetzt und das relativ zum Winkel um 
+-- das Ziel.
 --
 -- <b>Alias:</b> SetPositionEx
 --
