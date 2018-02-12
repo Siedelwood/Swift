@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <name>
+        <![CDATA[Burglager]]>
+    </name>
+    <description>
+        <![CDATA[Dieses Bundle stellt ein Burglager zur Verfügung, das sich
+           ähnlich wie das normale Lager verhält. Das Burglager ist von der
+           Ausbaustufe der Burg abhängig. Je weiter die Burg ausgebaut wird, 
+           desto höher ist das Limit.]]>
+    </description>
+
+    <dependencies>
+    </dependencies>
+
+    <exclusions>
+    </exclusions>
+</root>
