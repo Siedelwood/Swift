@@ -209,6 +209,16 @@ SymfoniaLoader = {
             --   keine
             
             {"BundleBriefingSystem",                true},
+            
+            -- Burglager
+            -- 
+            -- Abhängigkeiten:
+            --   keine
+            -- 
+            -- Inkompatibelitäten:
+            --   keine
+            
+            {"BundleCastleStore",                   true},
         }
     }
 }

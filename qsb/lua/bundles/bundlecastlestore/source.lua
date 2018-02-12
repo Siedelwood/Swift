@@ -29,7 +29,7 @@
 -- -- Menge einer Ware ermitteln:
 -- -- Sicheres ermitteln aller Waren mit und mit ohne Burglager
 -- -- Achtung: Dies ist eine statische Methode!
--- local Amount = QSB.Castlestore:GetGoodAmountWithCastleStore(1, Goods.G_Grain, false);
+-- local Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(1, Goods.G_Grain, false);
 -- Menge einer bestimmten Ware ermitteln:
 -- local Amount = MyStore:GetAmount(Goods.G_Wood);
 -- -- Aktuelles Limit erhalten:
@@ -83,6 +83,10 @@ BundleCastleStore = {
     },
     Local = {
         Data = {},
+        
+        CastleStore = {
+            Data = {}
+        },
         
         Description = {
             ShowCastle = {
@@ -165,15 +169,15 @@ end
 -- @return QSB.CastleStore
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:New(_PlayerID)
+function BundleCastleStore.Global.CastleStore:New(_PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
-    local Store = CopyTableRecursive(self);
+    local Store = API.InstanceTable(self);
     Store.Data.PlayerID = _PlayerID;
     BundleCastleStore.Global.Data.CastleStoreObjects[_PlayerID] = Store;
     
     if not self.Data.UpdateCastleStore then
         self.Data.UpdateCastleStore = true;
-        StartSimpleJobEx(self.Data.CastleStore.UpdateStores);
+        StartSimpleJobEx(BundleCastleStore.Global.CastleStore.UpdateStores);
     end
     Logic.ExecuteInLuaLocalState([[
         QSB.CastleStore:CreateStore(]] ..Store.Data.PlayerID.. [[);
@@ -190,9 +194,9 @@ end
 -- @return QSB.CastleStore
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:GetInstance(_PlayerID)
+function BundleCastleStore.Global.CastleStore:GetInstance(_PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
-    return self.Data.CastleStoreObjects[_PlayerID];
+    return BundleCastleStore.Global.Data.CastleStoreObjects[_PlayerID];
 end
 
 ---
@@ -207,7 +211,7 @@ end
 -- @return number
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:GetGoodAmountWithCastleStore(_PlayerID, _Good, _WithoutMarketplace)
+function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_PlayerID, _Good, _WithoutMarketplace)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
     local CastleStore = self:GetInstance(_PlayerID);
     local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _WithoutMarketplace);
@@ -225,7 +229,7 @@ end
 --
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:Dispose()
+function BundleCastleStore.Global.CastleStore:Dispose()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     Logic.ExecuteInLuaLocalState([[
         QSB.CastleStore:DeleteStore(]] ..self.Data.PlayerID.. [[);
@@ -244,7 +248,7 @@ end
 -- @return self
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
+function BundleCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     self.Data.Goods[_Good][4] = _Limit;
     Logic.ExecuteInLuaLocalState([[
@@ -262,7 +266,7 @@ end
 -- @return self
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:SetStorageLimit(_Limit)
+function BundleCastleStore.Global.CastleStore:SetStorageLimit(_Limit)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     self.Data.CapacityBase = _Limit;
     Logic.ExecuteInLuaLocalState([[
@@ -280,7 +284,7 @@ end
 -- @return number
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:GetAmount(_Good)
+function BundleCastleStore.Global.CastleStore:GetAmount(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     if self.Data.Goods[_Good] then
         return self.Data.Goods[_Good][1];
@@ -296,7 +300,7 @@ end
 -- @return number
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:GetTotalAmount()
+function BundleCastleStore.Global.CastleStore:GetTotalAmount()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     local TotalAmount = 0;
     for k, v in pairs(self.Data.Goods) do
@@ -313,7 +317,7 @@ end
 -- @return number
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:GetLimit()
+function BundleCastleStore.Global.CastleStore:GetLimit()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     local Level = 0;
     local Headquarters = Logic.GetHeadquarters(self.Data.PlayerID);
@@ -337,7 +341,7 @@ end
 -- @return boolean
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:IsGoodAccepted(_Good)
+function BundleCastleStore.Global.CastleStore:IsGoodAccepted(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     return self.Data.Goods[_Good][2] == true;
 end
@@ -352,7 +356,7 @@ end
 -- @return self
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:SetGoodAccepted(_Good, _Flag)
+function BundleCastleStore.Global.CastleStore:SetGoodAccepted(_Good, _Flag)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     self.Data.Goods[_Good][2] = _Flag == true;
     Logic.ExecuteInLuaLocalState([[
@@ -372,7 +376,7 @@ end
 -- @return boolean
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:IsGoodLocked(_Good)
+function BundleCastleStore.Global.CastleStore:IsGoodLocked(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     return self.Data.Goods[_Good][3] == true;
 end
@@ -387,7 +391,7 @@ end
 -- @return self
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:SetGoodLocked(_Good, _Flag)
+function BundleCastleStore.Global.CastleStore:SetGoodLocked(_Good, _Flag)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     self.Data.Goods[_Good][3] = _Flag == true;
     Logic.ExecuteInLuaLocalState([[
@@ -407,7 +411,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleCastleStore.Global.Castlestore:ActivateTemporaryMode()
+function BundleCastleStore.Global.CastleStore:ActivateTemporaryMode()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     Logic.ExecuteInLocalLuaState([[
         QSB.CastleStore.OnStorehouseTabClicked(QSB.CastleStore, ]] ..self.Data.PlayerID.. [[)
@@ -424,7 +428,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleCastleStore.Global.Castlestore:ActivateStockMode()
+function BundleCastleStore.Global.CastleStore:ActivateStockMode()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     Logic.ExecuteInLocalLuaState([[
         QSB.CastleStore.OnCityTabClicked(QSB.CastleStore, ]] ..self.Data.PlayerID.. [[)
@@ -441,7 +445,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleCastleStore.Global.Castlestore:ActivateOutsourceMode()
+function BundleCastleStore.Global.CastleStore:ActivateOutsourceMode()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     Logic.ExecuteInLocalLuaState([[
         QSB.CastleStore.OnMultiTabClicked(QSB.CastleStore, ]] ..self.Data.PlayerID.. [[)
@@ -460,7 +464,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleCastleStore.Global.Castlestore:Store(_Good, _Amount)
+function BundleCastleStore.Global.CastleStore:Store(_Good, _Amount)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     if self:IsGoodAccepted(_Good) then
         if self:GetLimit() >= self:GetTotalAmount() + _Amount then
@@ -490,7 +494,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleCastleStore.Global.Castlestore:Outsource(_Good, _Amount)
+function BundleCastleStore.Global.CastleStore:Outsource(_Good, _Amount)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     local Level = Logic.GetUpgradeLevel(Logic.GetHeadquarters(self.Data.PlayerID));
     if Logic.GetPlayerUnreservedStorehouseSpace(self.Data.PlayerID) >= _Amount then
@@ -518,7 +522,7 @@ end
 -- @return self
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:Add(_Good, _Amount)
+function BundleCastleStore.Global.CastleStore:Add(_Good, _Amount)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     if self:IsGoodAccepted(_Good) then
         for i= 1, _Amount, 1 do
@@ -546,7 +550,7 @@ end
 -- @return self
 -- @within User-Space
 --
-function BundleCastleStore.Global.Castlestore:Remove(_Good, _Amount)
+function BundleCastleStore.Global.CastleStore:Remove(_Good, _Amount)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
     if self:GetAmount(_Good) > 0 then
         local ToRemove = (_Amount <= self:GetAmount(_Good) and _Amount) or self:GetAmount(_Good);
@@ -568,9 +572,9 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleCastleStore.Global.Castlestore.UpdateStores()
+function BundleCastleStore.Global.CastleStore.UpdateStores()
     assert(self == nil, "This method is only procedural!");
-    for k, v in pairs(BundleCastleStore.Global.CastleStoreObjects) do
+    for k, v in pairs(BundleCastleStore.Global.Data.CastleStoreObjects) do
         if v ~= nil then
             local Level = Logic.GetUpgradeLevel(Logic.GetHeadquarters(v.Data.PlayerID));
             for kk, vv in pairs(v.Data.Goods) do
@@ -740,7 +744,7 @@ end
 function BundleCastleStore.Local:Install()
     QSB.CastleStore = BundleCastleStore.Local.CastleStore;
     self:OverwriteGameFunctions();
-    self:HackGetStringTableText();
+    self:OverwriteGetStringTableText();
 end
 
 ---
