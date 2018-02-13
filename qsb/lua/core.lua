@@ -1211,12 +1211,10 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
         };
 
         local batch = function(...)
-            for k, v in pairs(self.Data.Append.Functions[_FunctionName].Attachments) do
-                if v(arg, self.Data.Append.Functions[_FunctionName].Original) then
-                    return;
-                end
-            end
             self.Data.Append.Functions[_FunctionName].Original(unpack(arg));
+            for k, v in pairs(self.Data.Append.Functions[_FunctionName].Attachments) do
+                v(unpack(arg))
+            end
         end
         self:ReplaceFunction(_FunctionName, batch);
     end

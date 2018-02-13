@@ -14,8 +14,8 @@ Maps in der Community zu heben.
 
 # 2 Installation
 
-Um Symfonia zu nutzen, muss das Repository zuerst geklont werden. Sobald dies
-geschehen ist, kann sofort losgelegt werden.
+Um Symfonia zu nutzen, muss das Repository zuerst geklont werden. Im Ordner 
+"version" befinden sich die veröffentlichten Versionen der QSB+.
 
 # 3 Bibliothek
 
