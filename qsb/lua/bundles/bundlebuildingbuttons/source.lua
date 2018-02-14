@@ -19,46 +19,6 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Aktiviert die Single Reverse Buttons.
---
--- Single Reverse belegt den Index 1 der zusätzlichen Gebäude-Buttons!
---
--- <b>Alias:</b> ActivateSingleReserve
---
--- @within User-Space
---
-function API.ActivateSingleReserve()
-    if not GUI then
-        API.Bridge("API.ActivateSingleReserve()");
-        return;
-    end
-    
-    BundleBuildingButtons.Local:AddOptionalButton(
-        1,
-        BundleConstructionControl.Local.ButtonDefaultSingleReserve_Action,
-        BundleConstructionControl.Local.ButtonDefaultSingleReserve_Tooltip,
-        BundleConstructionControl.Local.ButtonDefaultSingleReserve_Update
-    );
-end
-ActivateSingleReserve = API.ActivateSingleReserve;
-
----
--- Deaktiviert die Single Reserve Buttons.
---
--- <b>Alias:</b> DeactivateSingleReserve
---
--- @within User-Space
---
-function API.DeactivateSingleReserve()
-    if not GUI then
-        API.Bridge("API.DeactivateSingleReserve()");
-        return;
-    end
-    BundleBuildingButtons.Local:DeleteOptionalButton(1);
-end
-DeactivateSingleReserve = API.DeactivateSingleReserve;
-
----
 -- Aktiviert die Single Stop Buttons.
 --
 -- Single Stop belegt den Index 1 der zusätzlichen Gebäude-Buttons!
@@ -75,9 +35,9 @@ function API.ActivateSingleStop()
     
     BundleBuildingButtons.Local:AddOptionalButton(
         2,
-        BundleConstructionControl.Local.ButtonDefaultSingleStop_Action,
-        BundleConstructionControl.Local.ButtonDefaultSingleStop_Tooltip,
-        BundleConstructionControl.Local.ButtonDefaultSingleStop_Update
+        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action,
+        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip,
+        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update
     );
 end
 ActivateSingleStop = API.ActivateSingleStop;
@@ -111,7 +71,7 @@ function API.UseDowngrade(_flag)
         API.Bridge("API.UseDowngrade(" ..tostring(_flag).. ")");
         return;
     end
-    BundleConstructionControl.Local.Data.Downgrade = _flag;
+    BundleBuildingButtons.Local.Data.Downgrade = _flag == true;
 end
 UseDowngrade = API.UseDowngrade;
 
@@ -129,13 +89,13 @@ function API.UseBreedCattle(_flag)
         return;
     end
     
-    BundleConstructionControl.Local.Data.BreedCattle = _flag;
+    BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
     if _flag == true then
         local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow];
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     else
-        local Price = BundleConstructionControl.Local.Data.CattleMoneyCost;
+        local Price = BundleBuildingButtons.Local.Data.CattleMoneyCost;
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     end
@@ -156,13 +116,13 @@ function API.UseBreedSheeps(_flag)
         return;
     end
     
-    BundleConstructionControl.Local.Data.BreedSheeps = _flag;
+    BundleBuildingButtons.Local.Data.BreedSheeps = _flag == true;
     if _flag == true then
         local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Sheep]
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
     else
-        local Price = BundleConstructionControl.Local.Data.SheepMoneyCost;
+        local Price = BundleBuildingButtons.Local.Data.SheepMoneyCost;
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
     end
@@ -183,13 +143,13 @@ function API.UseBreedCattle(_flag)
         return;
     end
     
-    BundleConstructionControl.Local.Data.BreedCattle = _flag;
+    BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
     if _flag == true then
         local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow];
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     else
-        local Price = BundleConstructionControl.Local.Data.CattleMoneyCost;
+        local Price = BundleBuildingButtons.Local.Data.CattleMoneyCost;
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     end
@@ -209,7 +169,7 @@ function API.SetSheepGrainCost(_Amount)
         API.Bridge("API.SetSheepGrainCost(" .._Amount.. ")");
         return;
     end
-    BundleConstructionControl.Local.Data.SheepCosts = _Amount;
+    BundleBuildingButtons.Local.Data.SheepCosts = _Amount;
 end
 SetSheepGrainCost = API.SetSheepGrainCost;
 
@@ -226,7 +186,7 @@ function API.SetCattleGrainCost(_Amount)
         API.Bridge("API.SetCattleGrainCost(" .._Amount.. ")");
         return;
     end
-    BundleConstructionControl.Local.Data.CattleCosts = _Amount;
+    BundleBuildingButtons.Local.Data.CattleCosts = _Amount;
 end
 SetCattleGrainCost = API.SetCattleGrainCost;
 
@@ -246,7 +206,7 @@ function API.SetSheepNeeded(_Amount)
     if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
         API.Dbg("API.SetSheepNeeded: Needed amount is invalid!");
     end
-    BundleConstructionControl.Local.Data.SheepNeeded = _Amount;
+    BundleBuildingButtons.Local.Data.SheepNeeded = _Amount;
 end
 SetSheepNeeded = API.SetSheepNeeded;
 
@@ -266,7 +226,7 @@ function API.SetCattleNeeded(_Amount)
     if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
         API.Dbg("API.SetCattleNeeded: Needed amount is invalid!");
     end
-    BundleConstructionControl.Local.Data.CattleNeeded = _Amount;
+    BundleBuildingButtons.Local.Data.CattleNeeded = _Amount;
 end
 SetCattleNeeded = API.SetCattleNeeded;
 
@@ -279,9 +239,7 @@ BundleBuildingButtons = {
         Data = {}
     },
     Local = {
-        Data = {
-            ModifiedHouseMenu = true,
-            
+        Data = {            
             OptionalButton1 = {
                 UseButton = false,
             },
@@ -291,15 +249,20 @@ BundleBuildingButtons = {
             
             StoppedBuildings = {},
             ReservedGoods = {},
-            
             Downgrade = true,
+            
             BreedCattle = true,
-            CattleMoneyCost = 300,
             CattleCosts = 10,
             CattleNeeded = 3,
+            -- TODO implement API method to set value
+            CattleKnightTitle = 0,
+            CattleMoneyCost = 300,
+            
             BreedSheeps = true,
             SheepCosts = 10,
             SheepNeeded = 3,
+            -- TODO implement API method to set value
+            SheepKnightTitle = 0,
             SheepMoneyCost = 300,
         },
         
@@ -344,17 +307,6 @@ BundleBuildingButtons = {
                     en = "- Continue or stop work for this building",
                 },
             },
-    
-            SingleReserve = {
-                Title = {
-                    de = "Ware reservieren/freigeben",
-                    en = "Reserve/Resume product",
-                },
-                Text = {
-                    de = "- Reserviere das Produkt des Gebäudes oder gib es frei",
-                    en = "- Reserve or resume the product of this building",
-                },
-            },
         },
     },
 }
@@ -383,9 +335,9 @@ end
 function BundleBuildingButtons.Local:Install()
     MerchantSystem.BasePricesOrigTHEA                = {};
     MerchantSystem.BasePricesOrigTHEA[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
-    MerchantSystem.BasePrices[Goods.G_Sheep]         = BundleConstructionControl.Local.Data.SheepMoneyCost;
+    MerchantSystem.BasePrices[Goods.G_Sheep]         = BundleBuildingButtons.Local.Data.SheepMoneyCost;
     MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
-    MerchantSystem.BasePrices[Goods.G_Cow]           = BundleConstructionControl.Local.Data.CattleMoneyCost;
+    MerchantSystem.BasePrices[Goods.G_Cow]           = BundleBuildingButtons.Local.Data.CattleMoneyCost;
     
     self:OverwriteHouseMenuButtons();
     self:OverwriteBuySiegeEngine();
@@ -410,7 +362,7 @@ function BundleBuildingButtons.Local:BuyAnimal(_eID)
     local eType = Logic.GetEntityType(_eID);
 
     if eType == Entities.B_CattlePasture then
-        local Cost = BundleConstructionControl.Local.Data.CattleCosts * (-1);
+        local Cost = BundleBuildingButtons.Local.Data.CattleCosts * (-1);
         GUI.SendScriptCommand([[
             local pID = Logic.EntityGetPlayer(]].._eID..[[)
             local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
@@ -418,7 +370,7 @@ function BundleBuildingButtons.Local:BuyAnimal(_eID)
             AddGood(Goods.G_Grain, ]] ..Cost.. [[, pID)
         ]]);
     elseif eType == Entities.B_SheepPasture then
-        local Cost = BundleConstructionControl.Local.Data.SheepCosts * (-1);
+        local Cost = BundleBuildingButtons.Local.Data.SheepCosts * (-1);
         GUI.SendScriptCommand([[
             local pID = Logic.EntityGetPlayer(]].._eID..[[)
             local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
@@ -440,7 +392,7 @@ function BundleBuildingButtons.Local:DowngradeBuilding()
     GUI.DeselectEntity(Selected);
     if Logic.GetUpgradeLevel(Selected) > 0 then
         local AmountToHurt = math.ceil(Logic.GetEntityMaxHealth(Selected) / 2);
-        if Logic.GetEntityHealth(AmountToHurt) >= AmountToHurt then
+        if Logic.GetEntityHealth(Selected) >= AmountToHurt then
             GUI.SendScriptCommand([[Logic.HurtEntity(]] ..Selected.. [[, ]] ..AmountToHurt.. [[)]]);
         end
     else
@@ -480,11 +432,11 @@ function BundleBuildingButtons.Local:AddOptionalButton(_idx, _actionFunction, _t
         XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateAutoToggle"),
         XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateOpenClose"),
     };
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].WidgetID = wID[_idx];
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].UseButton = true;
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].ActionFunction = _actionFunction;
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].TooltipFunction = _tooltipFunction;
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].UpdateFunction = _updateFunction;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].WidgetID = wID[_idx];
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].UseButton = true;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].ActionFunction = _actionFunction;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].TooltipFunction = _tooltipFunction;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].UpdateFunction = _updateFunction;
 end
 
 ---
@@ -505,11 +457,11 @@ function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
         XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateAutoToggle"),
         XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateOpenClose"),
     };
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].WidgetID = wID[_idx];
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].UseButton = false;
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].ActionFunction = nil;
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].TooltipFunction = nil;
-    BundleConstructionControl.Local.Data["OptionalButton".._idx].UpdateFunction = nil;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].WidgetID = wID[_idx];
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].UseButton = false;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].ActionFunction = nil;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].TooltipFunction = nil;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].UpdateFunction = nil;
 end
 
 ---
@@ -522,10 +474,10 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
     GUI_BuildingButtons.GateAutoToggleClicked = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local EntityID = GUI.GetSelectedEntity();
-        if not BundleConstructionControl.Local.Data.OptionalButton1.ActionFunction then
+        if not BundleBuildingButtons.Local.Data.OptionalButton1.ActionFunction then
             return;
         end
-        BundleConstructionControl.Local.Data.OptionalButton1.ActionFunction(CurrentWidgetID, EntityID);
+        BundleBuildingButtons.Local.Data.OptionalButton1.ActionFunction(CurrentWidgetID, EntityID);
     end
 
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -533,10 +485,10 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
     GUI_BuildingButtons.GateAutoToggleMouseOver = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local EntityID = GUI.GetSelectedEntity();
-        if not BundleConstructionControl.Local.Data.OptionalButton1.TooltipFunction then
+        if not BundleBuildingButtons.Local.Data.OptionalButton1.TooltipFunction then
             return;
         end
-        BundleConstructionControl.Local.Data.OptionalButton1.TooltipFunction(CurrentWidgetID, EntityID);
+        BundleBuildingButtons.Local.Data.OptionalButton1.TooltipFunction(CurrentWidgetID, EntityID);
     end
     
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -551,9 +503,8 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
 
         if EntityID == nil
         or Logic.IsBuilding(EntityID) == 0
-        or not BundleConstructionControl.Local.Data.OptionalButton1.UpdateFunction
-        or not BundleConstructionControl.Local.Data.OptionalButton1.UseButton
-        or not BundleConstructionControl.Local.Data.ModifiedHouseMenu
+        or not BundleBuildingButtons.Local.Data.OptionalButton1.UpdateFunction
+        or not BundleBuildingButtons.Local.Data.OptionalButton1.UseButton
         or Logic.IsConstructionComplete(EntityID) == 0 then
             XGUIEng.ShowWidget(CurrentWidgetID, 0);
             return;
@@ -568,7 +519,7 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
         else
             XGUIEng.DisableButton(CurrentWidgetID, 0);
         end
-        BundleConstructionControl.Local.Data.OptionalButton1.UpdateFunction(CurrentWidgetID, EntityID);
+        BundleBuildingButtons.Local.Data.OptionalButton1.UpdateFunction(CurrentWidgetID, EntityID);
     end
 end
 
@@ -582,10 +533,10 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
     GUI_BuildingButtons.GateOpenCloseClicked = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local EntityID = GUI.GetSelectedEntity();
-        if not BundleConstructionControl.Local.Data.OptionalButton2.ActionFunction then
+        if not BundleBuildingButtons.Local.Data.OptionalButton2.ActionFunction then
             return;
         end
-        BundleConstructionControl.Local.Data.OptionalButton2.ActionFunction(CurrentWidgetID, EntityID);
+        BundleBuildingButtons.Local.Data.OptionalButton2.ActionFunction(CurrentWidgetID, EntityID);
     end
     
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -593,10 +544,10 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
     GUI_BuildingButtons.GateOpenCloseMouseOver = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local EntityID = GUI.GetSelectedEntity();
-        if not BundleConstructionControl.Local.Data.OptionalButton2.TooltipFunction then
+        if not BundleBuildingButtons.Local.Data.OptionalButton2.TooltipFunction then
             return;
         end
-        BundleConstructionControl.Local.Data.OptionalButton2.TooltipFunction(CurrentWidgetID, EntityID);
+        BundleBuildingButtons.Local.Data.OptionalButton2.TooltipFunction(CurrentWidgetID, EntityID);
     end
     
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -611,9 +562,8 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
 
         if EntityID == nil
         or Logic.IsBuilding(EntityID) == 0
-        or not BundleConstructionControl.Local.Data.OptionalButton2.UpdateFunction
-        or not BundleConstructionControl.Local.Data.OptionalButton2.UseButton
-        or not BundleConstructionControl.Local.Data.ModifiedHouseMenu
+        or not BundleBuildingButtons.Local.Data.OptionalButton2.UpdateFunction
+        or not BundleBuildingButtons.Local.Data.OptionalButton2.UseButton
         or Logic.IsConstructionComplete(EntityID) == 0
         or Logic.IsBuilding(EntityID) == 0 then
             XGUIEng.ShowWidget(CurrentWidgetID, 0);
@@ -629,7 +579,7 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
         else
             XGUIEng.DisableButton(CurrentWidgetID, 0);
         end
-        BundleConstructionControl.Local.Data.OptionalButton2.UpdateFunction(CurrentWidgetID, EntityID);
+        BundleBuildingButtons.Local.Data.OptionalButton2.UpdateFunction(CurrentWidgetID, EntityID);
     end
 end
 
@@ -647,10 +597,11 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.TrapToggleMouseOver = function()
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         BundleBuildingButtons.Local:TextNormal(
-            BundleBuildingButtons.Local.Description.Downgrade.Title,
-            BundleBuildingButtons.Local.Description.Downgrade.Text,
-            BundleBuildingButtons.Local.Description.Downgrade.Disabled
+            BundleBuildingButtons.Local.Description.Downgrade.Title[lang],
+            BundleBuildingButtons.Local.Description.Downgrade.Text[lang],
+            BundleBuildingButtons.Local.Description.Downgrade.Disabled[lang]
         );
     end
     
@@ -707,8 +658,7 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
         if Logic.IsConstructionComplete(EntityID) == 0
         or (Logic.IsEntityInCategory(EntityID, EntityCategories.OuterRimBuilding) == 0
         and Logic.IsEntityInCategory(EntityID, EntityCategories.CityBuilding) == 0)
-        or not BundleBuildingButtons.Local.Downgrade
-        or not BundleBuildingButtons.Local.Data.ModifiedHouseMenu
+        or not BundleBuildingButtons.Local.Data.Downgrade
         or Level == 0 then
             XGUIEng.ShowWidget(CurrentWidgetID, 0);
             return;
@@ -733,6 +683,7 @@ end
 --
 function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
     GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType,_TechnologyType)
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local BarrackID = GUI.GetSelectedEntity();
         local BuildingEntityType = Logic.GetEntityType(BarrackID);
@@ -746,17 +697,17 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
         local Costs = {Logic.GetUnitCost(BarrackID, _EntityType)}
         if BuildingEntityType == Entities.B_CattlePasture then
             BundleBuildingButtons.Local:TextCosts(
-                BundleBuildingButtons.Local.Description.BuyCattle.Title,
-                BundleBuildingButtons.Local.Description.BuyCattle.Text,
-                BundleBuildingButtons.Local.Description.BuyCattle.Disabled,
+                BundleBuildingButtons.Local.Description.BuyCattle.Title[lang],
+                BundleBuildingButtons.Local.Description.BuyCattle.Text[lang],
+                BundleBuildingButtons.Local.Description.BuyCattle.Disabled[lang],
                 {Goods.G_Grain, BundleBuildingButtons.Local.Data.CattleCosts},
                 false
             );
         elseif BuildingEntityType == Entities.B_SheepPasture then
             BundleBuildingButtons.Local:TextCosts(
-                BundleBuildingButtons.Local.Description.BuyCattle.Title,
-                BundleBuildingButtons.Local.Description.BuyCattle.Text,
-                BundleBuildingButtons.Local.Description.BuyCattle.Disabled,
+                BundleBuildingButtons.Local.Description.BuyCattle.Title[lang],
+                BundleBuildingButtons.Local.Description.BuyCattle.Text[lang],
+                BundleBuildingButtons.Local.Description.BuyCattle.Disabled[lang],
                 {Goods.G_Grain, BundleBuildingButtons.Local.Data.SheepCosts},
                 false
             );
@@ -782,94 +733,103 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
     GUI_BuildingButtons.BuySiegeEngineCartUpdate = function(_Technology)
-        local PlayerID = GUI.GetPlayerID()
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID()
-        local EntityID = GUI.GetSelectedEntity()
-        local EntityType = Logic.GetEntityType(EntityID)
-        local grain = GetPlayerResources(Goods.G_Grain,PlayerID)
-        local pos = GetPosition(EntityID)
+        local PlayerID = GUI.GetPlayerID();
+        local KnightTitle = Logic.GetKnightTitle(PlayerID);
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        local EntityType = Logic.GetEntityType(EntityID);
+        local grain = GetPlayerResources(Goods.G_Grain,PlayerID);
+        local pos = GetPosition(EntityID);
 
         if EntityType == Entities.B_SiegeEngineWorkshop then
-            XGUIEng.ShowWidget(CurrentWidgetID,1)
+            XGUIEng.ShowWidget(CurrentWidgetID,1);
             if _Technology == Technologies.R_BatteringRam then
-                SetIcon(CurrentWidgetID, {9,5})
+                SetIcon(CurrentWidgetID, {9,5});
             elseif _Technology == Technologies.R_SiegeTower then
-                SetIcon(CurrentWidgetID, {9,6})
+                SetIcon(CurrentWidgetID, {9,6});
             elseif _Technology == Technologies.R_Catapult then
-                SetIcon(CurrentWidgetID, {9,4})
+                SetIcon(CurrentWidgetID, {9,4});
             end
         elseif EntityType == Entities.B_CattlePasture then
             local CattlePasture = GetPlayerEntities(PlayerID,Entities.B_CattlePasture);
-            local cows          = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Cow01,pos.X,pos.Y,800,16)}
-            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.CattlePasture)
-            local maxAnimal     = #CattlePasture*5
+            local cows          = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Cow01,pos.X,pos.Y,800,16)};
+            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.CattlePasture);
+            local maxAnimal     = #CattlePasture*5;
 
             SetIcon(CurrentWidgetID, {3,16})
 
-            if _Technology == Technologies.R_Catapult and BundleBuildingButtons.Local.Data.BreedCattle and BundleConstructionControl.Local.Data.ModifiedHouseMenu then
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1)
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1)
-                
-                if curAnimal >= maxAnimal then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1)
-                elseif grain < BundleBuildingButtons.Local.Data.CattleCosts then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1)
-                elseif cows[1] < BundleBuildingButtons.Local.Data.CattleNeeded then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1)
-                else
-                    XGUIEng.DisableButton(CurrentWidgetID, 0)
+            if _Technology == Technologies.R_Catapult then
+                if BundleBuildingButtons.Local.Data.BreedCattle then
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
+                    
+                    if curAnimal >= maxAnimal then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif grain < BundleBuildingButtons.Local.Data.CattleCosts then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif KnightTitle < BundleBuildingButtons.Local.Data.CattleKnightTitle then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif cows[1] < BundleBuildingButtons.Local.Data.CattleNeeded then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    else
+                        XGUIEng.DisableButton(CurrentWidgetID, 0);
+                    end
                 end
             else
-                XGUIEng.ShowWidget(CurrentWidgetID,0)
+                XGUIEng.ShowWidget(CurrentWidgetID,0);
             end
         elseif EntityType == Entities.B_SheepPasture then
             local SheepPasture     = GetPlayerEntities(PlayerID,Entities.B_SheepPasture);
-            local sheeps        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep01,pos.X,pos.Y,800,16)}
+            local sheeps        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep01,pos.X,pos.Y,800,16)};
             table.remove(sheeps, 1);
-            local sheeps2        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep02,pos.X,pos.Y,800,16)}
+            local sheeps2        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep02,pos.X,pos.Y,800,16)};
             table.remove(sheeps2, 1);
-            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.SheepPasture)
-            local maxAnimal     = #SheepPasture*5
+            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.SheepPasture);
+            local maxAnimal     = #SheepPasture*5;
 
             sheeps = Array_Append(sheeps,sheeps2)
             SetIcon(CurrentWidgetID, {4,1})
 
-            if _Technology == Technologies.R_Catapult and BundleBuildingButtons.Local.Data.BreedSheeps and BundleConstructionControl.Local.Data.ModifiedHouseMenu then
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1)
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1)
-                
-                if curAnimal >= maxAnimal then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1)
-                elseif grain < BundleBuildingButtons.Local.Data.SheepCosts then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1)
-                elseif #sheeps < BundleBuildingButtons.Local.Data.SheepsNeeded then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1)
-                else
-                    XGUIEng.DisableButton(CurrentWidgetID, 0)
+            if _Technology == Technologies.R_Catapult then
+                if BundleBuildingButtons.Local.Data.BreedSheeps then
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
+                    
+                    if curAnimal >= maxAnimal then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif grain < BundleBuildingButtons.Local.Data.SheepCosts then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif #sheeps < BundleBuildingButtons.Local.Data.SheepKnightTitle then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif #sheeps < BundleBuildingButtons.Local.Data.SheepNeeded then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    else
+                        XGUIEng.DisableButton(CurrentWidgetID, 0);
+                    end
                 end
             else
-                XGUIEng.ShowWidget(CurrentWidgetID,0)
+                XGUIEng.ShowWidget(CurrentWidgetID,0);
             end
         else
-            XGUIEng.ShowWidget(CurrentWidgetID,0)
-            return
+            XGUIEng.ShowWidget(CurrentWidgetID,0);
+            return;
         end
 
         if Logic.IsConstructionComplete(GUI.GetSelectedEntity()) == 0 then
-            XGUIEng.ShowWidget(CurrentWidgetID,0)
-            return
+            XGUIEng.ShowWidget(CurrentWidgetID,0);
+            return;
         end
 
         if EntityType ~= Entities.B_SheepPasture and EntityType ~= Entities.B_CattlePasture then
-            local TechnologyState = Logic.TechnologyGetState(PlayerID, _Technology)
+            local TechnologyState = Logic.TechnologyGetState(PlayerID, _Technology);
             if EnableRights == nil or EnableRights == false then
-                XGUIEng.DisableButton(CurrentWidgetID,0)
+                XGUIEng.DisableButton(CurrentWidgetID,0);
                 return
             end
             if TechnologyState == TechnologyStates.Researched then
-                XGUIEng.DisableButton(CurrentWidgetID,0)
+                XGUIEng.DisableButton(CurrentWidgetID,0);
             else
-                XGUIEng.DisableButton(CurrentWidgetID,1)
+                XGUIEng.DisableButton(CurrentWidgetID,1);
             end
         end
     end
@@ -1041,9 +1001,9 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action(WidgetID, EntityID)
-    local StoppedState = BundleConstructionControl.Local.Data.StoppedBuildings[EntityID] == true;
+    local StoppedState = BundleBuildingButtons.Local.Data.StoppedBuildings[EntityID] == true;
     GUI.SetStoppedState(EntityID, not StoppedState);
-    BundleConstructionControl.Local.Data.StoppedBuildings[EntityID] = not StoppedState;
+    BundleBuildingButtons.Local.Data.StoppedBuildings[EntityID] = not StoppedState;
 end
 
 ---
@@ -1053,9 +1013,10 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     BundleBuildingButtons.Local:TextNormal(
-        BundleConstructionControl.Local.Description.SingleStop.Title,
-        BundleConstructionControl.Local.Description.SingleStop.Text
+        BundleBuildingButtons.Local.Description.SingleStop.Title[lang],
+        BundleBuildingButtons.Local.Description.SingleStop.Text[lang]
     );
 end
 
@@ -1072,7 +1033,7 @@ function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update(_WidgetID, _
         XGUIEng.ShowWidget(_WidgetID, 0);
     end
 
-    if BundleConstructionControl.Local.Data.StoppedBuildings[_EntityID] == true then
+    if BundleBuildingButtons.Local.Data.StoppedBuildings[_EntityID] == true then
         SetIcon(_WidgetID, {4, 12});
     else
         SetIcon(_WidgetID, {4, 13});
