@@ -718,10 +718,11 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
                                     AddGood(goodType, AmountInStorehouse * (-1), Sender);
                                     QSB.CastleStore:GetInstance(self.ReceivingPlayer)
                                                    :Remove(goodType, AmountDifference);
-                                                   
-                                   self.Objectives[i].Data[3] = Logic.CreateEntityAtBuilding(Entities.U_ResourceMerchant, SenderStorehouse, 0, Target);
-                                   Logic.HireMerchant(self.Objectives[i].Data[3], Target, goodType, goodQuantity, self.ReceivingPlayer);
+                                else
+                                    AddGood(goodType, goodQuantity * (-1), Sender);
                                 end
+                                self.Objectives[i].Data[3] = Logic.CreateEntityAtBuilding(Entities.U_ResourceMerchant, SenderStorehouse, 0, Target);
+                                Logic.HireMerchant(self.Objectives[i].Data[3], Target, goodType, goodQuantity, self.ReceivingPlayer);
                             else
                                 Logic.StartTradeGoodGathering(Sender, Target, goodType, goodQuantity, 0)
                             end
