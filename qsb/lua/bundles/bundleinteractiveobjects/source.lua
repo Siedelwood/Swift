@@ -38,7 +38,7 @@ function API.SetupInteractiveObject(_Name, _Description)
         API.Dbg("API.SetupInteractiveObject: Can not be used from local enviorment!");
         return;
     end
-    return BundleInteractiveObjects.Global:CreateObject(Description);
+    return BundleInteractiveObjects.Global:CreateObject(_Description);
 end
 SetupInteractiveObject = API.SetupInteractiveObject;
 
@@ -56,7 +56,7 @@ function API.CreateObject(_Description)
         API.Dbg("API.CreateObject: Can not be used from local enviorment!");
         return;
     end
-    return BundleInteractiveObjects.Global:CreateObject(Description);
+    return BundleInteractiveObjects.Global:CreateObject(_Description);
 end
 CreateObject = API.CreateObject;
 
@@ -432,37 +432,37 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
             end
         end
 
-        GameCallback_OnObjectInteraction = function(__entityID_, __playerID_)
+        GameCallback_OnObjectInteraction = function(__entityID_, _PlayerID)
             local eName = Logic.GetEntityName(__entityID_);
             for k,v in pairs(IO)do
                 if k == eName then
                     if not v.Used then
-                        v.Callback(v, __playerID_);
+                        v.Callback(v, _PlayerID);
                         if not v.StayActive then
                             IO[k].Used = true;
                         end
                     end
                 end
             end
-            OnInteractiveObjectOpened(__entityID_, __playerID_);
-            OnTreasureFound(__entityID_, __playerID_);
+            OnInteractiveObjectOpened(__entityID_, _PlayerID);
+            OnTreasureFound(__entityID_, _PlayerID);
         end
 
-        GameCallback_ExecuteCustomObjectReward = function(__playerID_, __spawnID_, __type_, __amount_)
-            if not Logic.IsInteractiveObject(GetID(__spawnID_)) then
-                local pos = GetPosition(__spawnID_);
-                local resCat = Logic.GetGoodCategoryForGoodType(__type_);
+        GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnID, _Type, _Amount)
+            if not Logic.IsInteractiveObject(GetID(_SpawnID)) then
+                local pos = GetPosition(_SpawnID);
+                local resCat = Logic.GetGoodCategoryForGoodType(_Type);
                 local ID;
                 if resCat == GoodCategories.GC_Resource then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, pos.X, pos.Y,0,__playerID_);
-                elseif __type_ == Goods.G_Medicine then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, pos.X, pos.Y,0,__playerID_);
-                elseif __type_ == Goods.G_Gold then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, pos.X, pos.Y,0,__playerID_);
+                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, pos.X, pos.Y,0,_PlayerID);
+                elseif _Type == Goods.G_Medicine then
+                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, pos.X, pos.Y,0,_PlayerID);
+                elseif _Type == Goods.G_Gold then
+                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, pos.X, pos.Y,0,_PlayerID);
                 else
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, pos.X, pos.Y,0,__playerID_);
+                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, pos.X, pos.Y,0,_PlayerID);
                 end
-                Logic.HireMerchant(ID,__playerID_,__type_,__amount_,__playerID_);
+                Logic.HireMerchant(ID,_PlayerID,_Type,_Amount,_PlayerID);
             end
         end
 
@@ -522,9 +522,6 @@ end
 ---
 -- Prüft, ob die Kosten für ein interaktives Objekt beglichen werden können.
 --
--- Wenn BundleCastleStore in der QSB ist, werden auch die Waren im Burglager
--- für die Zahlung berücksichtigt.
---
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
@@ -533,9 +530,6 @@ end
 --
 function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
     local AmountOfGoods = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
-    if BundleCastleStore then
-        AmountOfGoods = BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, true);
-    end
     if AmountOfGoods < _Amount then
         return false;
     end
@@ -544,9 +538,6 @@ end
 
 ---
 -- Zieht die Kosten des Objektes aus dem Lagerhaus des Spielers ab.
---
--- Wenn BundleCastleStore in der QSB ist, werden auch die Waren im Burglager
--- für die Zahlung berücksichtigt.
 --
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
@@ -570,18 +561,7 @@ function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
             end
         end
     else
-        if BundleCastleStore then
-            local AmountInStorehouse = GetPlayerResources(_Good, _PlayerID);
-            if AmountInStorehouse < _Amount then
-                local AmountDifference = _Amount - AmountInStorehouse;
-                API.Bridge("AddGood(".._Good..","..(AmountInStorehouse*(-1))..",".._PlayerID..")");
-                API.Bridge("QSB.CastleStore:GetInstance(".._PlayerID.."):Remove(".._Good..", "..AmountDifference..")");
-            else
-                API.Bridge("AddGood(".._Good..","..(_Amount*(-1))..",".._PlayerID..")");
-            end
-        else
-            API.Bridge("AddGood(".._Good..","..(_Amount*(-1))..",".._PlayerID..")");
-        end
+        API.Bridge("AddGood(".._Good..","..(_Amount*(-1))..",".._PlayerID..")");
     end
 end
 
@@ -797,11 +777,11 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
                     -- costs 1
                     if Costs[1] then
-                        CanBuyBoolean = BundleInteractiveObjects.Local:CanBeBought(pID, Costs[1], Costs[2]);
+                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[1], Costs[2]);
                     end
                     -- costs 2
                     if Costs[3] then
-                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[4], Costs[5]);
+                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[3], Costs[4]);
                     end
 
                     -- check condition
@@ -872,7 +852,6 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                     end
                     if Logic.IsInteractiveObject(eID) ~= true then
                         Play2DSound(pID, ActivationSound);
-                        -- Sound.FXPlay2DSound( "ui\\menu_left_prestige");
                         GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
                     end
                 end

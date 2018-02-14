@@ -29,7 +29,7 @@
 -- -- Menge einer Ware ermitteln:
 -- -- Sicheres ermitteln aller Waren mit und mit ohne Burglager
 -- -- Achtung: Dies ist eine statische Methode!
--- local Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(1, Goods.G_Grain, false);
+-- local Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(Goods.G_Grain, 1, false);
 -- Menge einer bestimmten Ware ermitteln:
 -- local Amount = MyStore:GetAmount(Goods.G_Wood);
 -- -- Aktuelles Limit erhalten:
@@ -206,17 +206,17 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore
 --
--- @param number _PlayeriD      ID des Spielers
 -- @param number _Good          Warentyp
+-- @param number _PlayeriD      ID des Spielers
 -- @return number
 -- @within User-Space
 --
-function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_PlayerID, _Good, _WithoutMarketplace)
+function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _WithoutMarketplace)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
     local CastleStore = self:GetInstance(_PlayerID);
     local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _WithoutMarketplace);
     
-    if CastleStore ~= nil and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
+    if CastleStore ~= nil and _Good ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
         Amount = Amount + CastleStore:GetAmount(_Good);
     end
     return Amount;
@@ -661,7 +661,7 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
                     local goodType = self.Objectives[i].Data[1]
                     local goodQuantity = self.Objectives[i].Data[2]
                     
-                    local amount = QSB.CastleStore:GetGoodAmountWithCastleStore(self.ReceivingPlayer, goodType, true);
+                    local amount = QSB.CastleStore:GetGoodAmountWithCastleStore(goodType, self.ReceivingPlayer, true);
                     if amount >= goodQuantity then
                         local Sender = self.ReceivingPlayer
                         local Target = self.Objectives[i].Data[6] and self.Objectives[i].Data[6] or self.SendingPlayer
@@ -809,6 +809,29 @@ function BundleCastleStore.Local.CastleStore:GetAmount(_PlayerID, _Good)
         return 0;
     end
     return self.Data[_PlayerID].Goods[_Good][1];
+end
+
+---
+-- Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+-- der Waren im Burglager. Hat der Spieler kein Burglager, wird
+-- nur die Menge im Lagerhaus zurückgegeben.
+--
+-- <b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore
+--
+-- @param number _Good          Warentyp
+-- @param number _PlayeriD      ID des Spielers
+-- @return number
+-- @within User-Space
+--
+function BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _WithoutMarketplace)
+    assert(self == BundleCastleStore.Local.CastleStore, "Can not be used from instance!");
+    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _WithoutMarketplace);
+    if self:HasCastleStore(_PlayerID) then
+        if _Good ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
+            Amount = Amount + self:GetAmount(_PlayerID, _Good);
+        end
+    end
+    return Amount;
 end
 
 ---

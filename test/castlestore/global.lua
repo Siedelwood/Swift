@@ -49,3 +49,7 @@ function Mission_FirstMapAction()
     -----
     QSB.CastleStore:New(1)
 end
+
+function AmountInCastleStore()
+    API.Note(QSB.CastleStore:GetGoodAmountWithCastleStore(1, Goods.G_Grain, true))
+end
