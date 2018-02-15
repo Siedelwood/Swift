@@ -29,7 +29,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      */
     public SymfoniaJFrame(final GraphicsConfiguration gc)
     {
-	super(gc);
+        super(gc);
     }
 
     /**
@@ -37,7 +37,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      */
     public SymfoniaJFrame(final String title) throws HeadlessException
     {
-	super(title);
+        super(title);
     }
 
     /**
@@ -45,7 +45,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      */
     public SymfoniaJFrame(final String title, final GraphicsConfiguration gc)
     {
-	super(title, gc);
+        super(title, gc);
     }
 
     /**

@@ -38,8 +38,9 @@ public interface WindowInterface extends ActionListener, ListSelectionListener
      * Behandelt Action Events.
      * 
      * @param aE Event
+     * @throws WindowException 
      */
-    public void handleActionEvent(final ActionEvent aE);
+    public void handleActionEvent(final ActionEvent aE) throws WindowException;
 
     /**
      * Behandelt veränderte Werte in Selektionslisten.

@@ -5,7 +5,7 @@ import java.awt.LayoutManager;
 
 import javax.swing.BorderFactory;
 
-import app.Configuration;
+import config.Configuration;
 
 /**
  * Erzeugt ein Panel mit einem grauen Hintergrund und Rahmen.

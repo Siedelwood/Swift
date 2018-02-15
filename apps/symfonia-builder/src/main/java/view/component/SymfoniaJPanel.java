@@ -5,7 +5,7 @@ import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 
-import app.Configuration;
+import config.Configuration;
 
 /**
  * Erzeugt ein Panel mit einem gelborangen Hintergrund.

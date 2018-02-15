@@ -4,8 +4,12 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
+import config.Configuration;
 import controller.ViewController;
 import view.component.SymfoniaJFrame;
+import view.window.OptionSelectionWindow;
+import view.window.SelfUpdateWindow;
+import view.window.TestSaveWindow;
 import view.window.WelcomeWindow;
 
 /**
@@ -32,9 +36,9 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      * 
      * @param properties
      */
-    public SymfoniaQsbBuilder()
+    public SymfoniaQsbBuilder(final ViewController controller)
     {
-	controller = ViewController.getInstance();
+        this.controller = controller;
     }
 
     /**
@@ -42,20 +46,33 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      */
     public void build()
     {
-	final Dimension size = Configuration.getDimension("defaults.window.size");
-
-	frame = new SymfoniaJFrame();
-	frame.setTitle("Symfonia Builder");
-	frame.setBounds(0, 0, size.width, size.height);
-	frame.setResizable(false);
-	frame.setLocationRelativeTo(null);
-	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-	final WelcomeWindow welcomeWindow = new WelcomeWindow(size.width, size.height);
-	frame.add(welcomeWindow.getRootPane());
-	controller.addWindow("WelcomeWindow", welcomeWindow);
-
-	frame.setVisible(true);
+    	final Dimension size = Configuration.getDimension("defaults.window.size");
+    
+    	frame = new SymfoniaJFrame();
+    	frame.setTitle("Symfonia Builder");
+    	frame.setBounds(0, 0, size.width, size.height);
+    	frame.setResizable(false);
+    	frame.setLocationRelativeTo(null);
+    	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    	// Willkommensfenster hinzufügen
+    	controller.addWindow("WelcomeWindow", new WelcomeWindow(size.width, size.height));
+    	frame.add(controller.getWindow("WelcomeWindow").getRootPane());
+    	
+    	// Optionsfenster hinzufügen
+        controller.addWindow("OptionSelectionWindow", new OptionSelectionWindow(size.width, size.height));
+        frame.add(controller.getWindow("OptionSelectionWindow").getRootPane());
+        
+        // Selfupdate-Fenster hinzufügen
+        controller.addWindow("SelfUpdateWindow", new SelfUpdateWindow(size.width, size.height));
+        frame.add(controller.getWindow("SelfUpdateWindow").getRootPane());
+        
+        // Beispiele-Speichern-Fenster hinzufügen
+        controller.addWindow("SaveBaseScriptsWindow", new TestSaveWindow(size.width, size.height));
+        frame.add(controller.getWindow("SaveBaseScriptsWindow").getRootPane());
+    	
+        controller.getWindow("WelcomeWindow").show();
+        frame.setVisible(true);
     }
 
     /**
@@ -64,7 +81,7 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      */
     public SymfoniaJFrame getFrame()
     {
-	return frame;
+        return frame;
     }
 
     /**
@@ -73,7 +90,7 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      */
     public static void main(final String[] args)
     {
-	final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder();
-	builder.build();
+    	final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder(ViewController.getInstance());
+    	builder.build();
     }
 }

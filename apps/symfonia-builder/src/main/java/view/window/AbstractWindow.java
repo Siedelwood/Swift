@@ -44,7 +44,7 @@ public abstract class AbstractWindow implements WindowInterface
     @Override
     public void hide()
     {
-	root.setVisible(false);
+        root.setVisible(false);
     }
 
     /**
@@ -54,14 +54,15 @@ public abstract class AbstractWindow implements WindowInterface
     @Override
     public SymfoniaJPanel getRootPane()
     {
-	return root;
+        return root;
     }
 
     /**
      * {@inheritDoc}
+     * @throws WindowException 
      */
     @Override
-    public abstract void handleActionEvent(final ActionEvent aE);
+    public abstract void handleActionEvent(final ActionEvent aE) throws WindowException;
 
     /**
      * {@inheritDoc}
@@ -75,7 +76,7 @@ public abstract class AbstractWindow implements WindowInterface
     @Override
     public void valueChanged(final ListSelectionEvent aE)
     {
-	handleValueChanged(aE);
+        handleValueChanged(aE);
     }
 
     /**
@@ -84,6 +85,12 @@ public abstract class AbstractWindow implements WindowInterface
     @Override
     public void actionPerformed(final ActionEvent aE)
     {
-	handleActionEvent(aE);
+        try
+        {
+            handleActionEvent(aE);
+        } catch (final WindowException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
