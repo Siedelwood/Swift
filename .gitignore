@@ -2,6 +2,8 @@
 doctest/
 bin/
 tmp/
+target/
+*/target/
 *.tmp
 *.bak
 *.swp

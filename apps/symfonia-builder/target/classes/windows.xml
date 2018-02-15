@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<windows>
-	<window id="welcome">
-		<label id="caption"></label>
-		<label id="description"></label>
-		<button id="next"><![CDATA[Weiter]]></button>
-	</window>
-</windows>
