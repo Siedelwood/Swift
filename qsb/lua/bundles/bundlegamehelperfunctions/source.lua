@@ -5,7 +5,7 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+--
 --
 -- @module BundleGameHelperFunctions
 -- @set sort=true
@@ -139,16 +139,101 @@ function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
 end
 SetCameraToEntity = API.FocusCameraOnEntity;
 
+---
+--
+--
+-- @within User-Space
+--
+function API.SetSpeedLimit(_Limit)
+    if GUI then
+        API.Bridge("API.SetSpeedLimit(" .._Limit.. ")");
+        return;
+    end
+    return API.Bridge("BundleGameHelperFunctions.Local:SetSpeedLimit(" .._Limit.. ")");
+end
+
+---
+--
+--
+-- @within User-Space
+--
+function API.ActivateSpeedLimit(_Flag)
+    if GUI then
+        API.Bridge("API.ActivateSpeedLimit(" ..tostring(_Flag).. ")");
+        return;
+    end
+    return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
+end
+
+---
+--
+--
+-- @within User-Space
+--
+function API.KillCheats()
+    if GUI then
+        API.Bridge("API.KillCheats()");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:KillCheats();
+end
+
+---
+--
+--
+-- @within User-Space
+--
+function API.RessurectCheats()
+    if GUI then
+        API.Bridge("API.RessurectCheats()");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:RessurectCheats();
+end
+
+---
+--
+--
+-- @within User-Space
+--
+function API.ForbidSaveGame(_Flag)
+    if GUI then
+        API.Bridge("API.ForbidSaveGame(".. tostring(_Flag) ..")");
+        return;
+    end
+    API.Bridge([[
+        BundleGameHelperFunctions.Local.Data.ForbidSave = ]].. tostring(_Flag) ..[[ == true
+        BundleGameHelperFunctions.Local:DisplaySaveButtons(]].. tostring(_Flag) ..[[)
+    ]]);
+end
+
+---
+--
+--
+-- @within User-Space
+--
+function API.AllowExtendedZoom(_Flag)
+    if GUI then
+        API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:AllowExtendedZoom(_Flag);
+end
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleGameHelperFunctions = {
     Global = {
-        Data = {}
+        Data = {
+            ExtendedZoomAllowed = true,
+        }
     },
     Local = {
-        Data = {}
+        Data = {
+            SpeedLimit = 32,
+        }
     },
 }
 
@@ -161,7 +246,8 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
-    
+
+    API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
 end
 
 ---
@@ -267,6 +353,135 @@ function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _Knigh
     end
 end
 
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:InitFestival()
+
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:AllowExtendedZoom(_Flag)
+    self.Data.ExtendedZoomAllowed = _Flag == true;
+    if _Flag == false then
+        self:DeactivateExtendedZoom();
+    end
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
+    if self.Data.ExtendedZoomAllowed then
+        if self.Data.ExtendedZoomActive then
+            self:DeactivateExtendedZoom();
+        else
+            self:ActivateExtendedZoom();
+        end
+    end
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
+    self.Data.ExtendedZoomActive = true;
+    API.Bridge("BundleGameHelperFunctions.Local:ActivateExtendedZoom()");
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
+    self.Data.ExtendedZoomActive = false;
+    API.Bridge("BundleGameHelperFunctions.Local:DeactivateExtendedZoom()");
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:InitExtendedZoom()
+    API.Bridge([[
+        BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
+        BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
+    ]]);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:KillCheats()
+    self.Data.CheatsForbidden = true;
+    API.Bridge("BundleGameHelperFunctions.Local:KillCheats()");
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:RessurectCheats()
+    self.Data.CheatsForbidden = false;
+    API.Bridge("BundleGameHelperFunctions.Local:RessurectCheats()");
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Stellt nicht-persistente Änderungen nach dem laden wieder her.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
+    -- Feste sperren --
+    Logic.StartFestival_Orig_NothingToCelebrate = nil;
+    BundleGameHelperFunctions.Global:InitFestival();
+
+    -- Geänderter Zoom --
+    if BundleGameHelperFunctions.Global.Data.ExtendedZoomActive then
+        BundleGameHelperFunctions.Global:ActivateExtendedZoom();
+    end
+
+    -- Cheats sperren --
+    if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
+        BundleGameHelperFunctions.Global:KillCheats();
+    end
+
+    -- Menschlichen Spieler ändern --
+    if BundleGameHelperFunctions.Global.Data.HumanPlayerChangedOnce then
+        -- FIXME
+    end
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -276,7 +491,8 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Local:Install()
-
+    self:InitForbidSpeedUp()
+    self:InitForbidSaveGame();
 end
 
 ---
@@ -310,7 +526,182 @@ function BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _
     Camera.RTS_SetZoomFactor(zoomFactor);
 end
 
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:AddHotKey(_Keys, _Description)
+
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
+    _Limit = (_Limit < 1 and 1) or math.floor(_Limit);
+    self.Data.SpeedLimit = _Limit;
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
+    self.Data.UseSpeedLimit = _Flag == true;
+    if _Flag and Game.GameTimeGetFactor(GUI.GetPlayerID()) > self.Data.SpeedLimit then
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), self.Data.SpeedLimit);
+    end
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
+    GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp = GameCallback_GameSpeedChanged;
+    GameCallback_GameSpeedChanged = function( _Speed )
+        GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp( _Speed );
+        if BundleGameHelperFunctions.Local.Data.UseSpeedLimit == true then
+            if _Speed > BundleGameHelperFunctions.Local.Data.SpeedLimit then
+                Game.GameTimeSetFactor(GUI.GetPlayerID(), BundleGameHelperFunctions.Local.Data.SpeedLimit);
+            end
+        end
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:KillCheats()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
+        "KeyBindings_EnableDebugMode(0)",
+        2,
+        false
+    );
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:RessurectCheats()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
+        "KeyBindings_EnableDebugMode(2)",
+        2,
+        false
+    );
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
+    BundleGameHelperFunctions.Local:AddHotKey("STRG + SHIFT + K", "Alternativen Zoom ein/aus");
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.K,
+        "BundleGameHelperFunctions.Local:ToggleExtendedZoom()",
+        2,
+        false
+    );
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
+    API.Bridge("BundleGameHelperFunctions.Global:ToggleExtendedZoom()");
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
+    Camera.RTS_SetZoomFactorMax(0.8701);
+    Camera.RTS_SetZoomFactor(0.8700);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:DeactivateExtendedZoom()
+    Camera.RTS_SetZoomFactor(0.5000);
+    Camera.RTS_SetZoomFactorMax(0.5001);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:InitForbidSaveGame()
+    KeyBindings_SaveGame_Orig_Preferences_SaveGame = KeyBindings_SaveGame;
+    KeyBindings_SaveGame = function()
+        if BundleGameHelperFunctions.Local.Data.ForbidSave then
+            return;
+        end
+        KeyBindings_SaveGame_Orig_Preferences_SaveGame();
+    end
+end
+
+---
+--
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:DisplaySaveButtons(_Flag)
+    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame",  (_Flag and 0) or 1);
+    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", (_Flag and 0) or 1);
+end
+
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleGameHelperFunctions");
-

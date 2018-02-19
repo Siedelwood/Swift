@@ -6,9 +6,9 @@
 
 ---
 -- Dieses Bundle stellt ein Burglager zur Verfügung, das sich ähnlich wie das
--- normale Lager verhält. Das Burglager ist von der Ausbaustufe der Burg 
+-- normale Lager verhält. Das Burglager ist von der Ausbaustufe der Burg
 -- abhängig. Je weiter die Burg ausgebaut wird, desto höher ist das Limit.
--- Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit 
+-- Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit
 -- der Ware im Lagerhaus erreicht wird.
 --
 -- Der Spieler kann das allgemeine Verhalten des Lagers für alle Waren wählen,
@@ -83,11 +83,11 @@ BundleCastleStore = {
     },
     Local = {
         Data = {},
-        
+
         CastleStore = {
             Data = {}
         },
-        
+
         Description = {
             ShowCastle = {
                 Text = {
@@ -95,21 +95,21 @@ BundleCastleStore = {
                     en = "Financial view",
                 },
             },
-            
+
             ShowCastleStore = {
                 Text = {
                     de = "Lageransicht",
                     en = "Storeage view",
                 },
             },
-            
+
             GoodButtonDisabled = {
                 Text = {
                     de = "Diese Ware wird nicht angenommen.",
                     en = "This good will not be stored.",
                 },
             },
-            
+
             CityTab = {
                 Title = {
                     de = "Waren bunkern",
@@ -120,7 +120,7 @@ BundleCastleStore = {
                     en = "- Stores goods inside the store {cr}- Goods also remain in the warehouse when space is available",
                 },
             },
-            
+
             StorehouseTab = {
                 Title = {
                     de = "Waren zwischenlagern",
@@ -131,7 +131,7 @@ BundleCastleStore = {
                     en = "- Stores goods inside the store {cr}- Allows to extrac goods as soon as space becomes available",
                 },
             },
-            
+
             MultiTab = {
                 Title = {
                     de = "Lager räumen",
@@ -157,7 +157,7 @@ BundleCastleStore = {
 function BundleCastleStore.Global:Install()
     QSB.CastleStore = BundleCastleStore.Global.CastleStore;
     self:OverwriteGameFunctions()
-    API.AddSaveGameAction(BundleCastleStore.Local.OnSaveGameLoaded);
+    API.AddSaveGameAction(BundleCastleStore.Global.OnSaveGameLoaded);
 end
 
 ---
@@ -174,7 +174,7 @@ function BundleCastleStore.Global.CastleStore:New(_PlayerID)
     local Store = API.InstanceTable(self);
     Store.Data.PlayerID = _PlayerID;
     BundleCastleStore.Global.Data.CastleStoreObjects[_PlayerID] = Store;
-    
+
     if not self.Data.UpdateCastleStore then
         self.Data.UpdateCastleStore = true;
         StartSimpleJobEx(BundleCastleStore.Global.CastleStore.UpdateStores);
@@ -215,7 +215,7 @@ function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
     local CastleStore = self:GetInstance(_PlayerID);
     local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _WithoutMarketplace);
-    
+
     if CastleStore ~= nil and _Good ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
         Amount = Amount + CastleStore:GetAmount(_Good);
     end
@@ -324,7 +324,7 @@ function BundleCastleStore.Global.CastleStore:GetLimit()
     if Headquarters ~= 0 then
         Level = Logic.GetUpgradeLevel(Headquarters);
     end
-    
+
     local Capacity = self.Data.CapacityBase;
     for i= 1, (Level+1), 1 do
         Capacity = Capacity * 2;
@@ -487,7 +487,7 @@ end
 -- Lagert eine Menge von Waren aus dem Burglager aus.
 --
 -- <b>Alias</b>: QSB.CastleStore:Outsource
--- 
+--
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
@@ -635,11 +635,11 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
         local data = objective.Data;
-    
+
         if objective.Completed ~= nil then
             return objective.Completed;
         end
-        
+
         if objectiveType == Objective.Produce then
             local GoodAmount = GetPlayerGoodsInSettlement(data[1], self.ReceivingPlayer, true);
             local CastleStore = QSB.CastleStore:GetInstance(self.ReceivingPlayer);
@@ -653,19 +653,19 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
             return QuestTemplate.IsObjectiveCompleted_Orig_QSB_CastleStore(self, objective);
         end
     end
-    
+
     QuestTemplate.SendGoods = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Deliver then
                 if self.Objectives[i].Data[3] == nil then
                     local goodType = self.Objectives[i].Data[1]
                     local goodQuantity = self.Objectives[i].Data[2]
-                    
+
                     local amount = QSB.CastleStore:GetGoodAmountWithCastleStore(goodType, self.ReceivingPlayer, true);
                     if amount >= goodQuantity then
                         local Sender = self.ReceivingPlayer
                         local Target = self.Objectives[i].Data[6] and self.Objectives[i].Data[6] or self.SendingPlayer
-                        
+
                         local expectedMerchant = {}
                         expectedMerchant.Good = goodType
                         expectedMerchant.Amount = goodQuantity
@@ -674,7 +674,7 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
                         self.Objectives[i].Data[5] = expectedMerchant
                         self.Objectives[i].Data[3] = 1
                         QuestMerchants[#QuestMerchants+1] = expectedMerchant
-                        
+
                         if goodType == Goods.G_Gold then
                             local BuildingID = Logic.GetHeadquarters(Sender)
                             if BuildingID == 0 then
@@ -686,31 +686,31 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
                             if MapCallback_DeliverCartSpawned then
                                 MapCallback_DeliverCartSpawned( self, self.Objectives[i].Data[3], goodType )
                             end
-                        
+
                         elseif goodType == Goods.G_Water then
                             local BuildingID = Logic.GetMarketplace(Sender)
-                        
+
                             self.Objectives[i].Data[3] = Logic.CreateEntityAtBuilding(Entities.U_Marketer, BuildingID, 0, Target)
                             Logic.HireMerchant(self.Objectives[i].Data[3], Target, goodType, goodQuantity, self.ReceivingPlayer)
                             Logic.RemoveGoodFromStock(BuildingID,goodType,goodQuantity)
                             if MapCallback_DeliverCartSpawned then
                                 MapCallback_DeliverCartSpawned( self, self.Objectives[i].Data[3], goodType )
                             end
-                            
+
                         else
                             if Logic.GetGoodCategoryForGoodType(goodType) == GoodCategories.GC_Resource then
                                 local StorehouseID = Logic.GetStoreHouse(Target)
                                 local NumberOfGoodTypes = Logic.GetNumberOfGoodTypesOnOutStock(StorehouseID)
                                 if NumberOfGoodTypes ~= nil then
-                                    for j = 0, NumberOfGoodTypes-1 do        
+                                    for j = 0, NumberOfGoodTypes-1 do
                                         local StoreHouseGoodType = Logic.GetGoodTypeOnOutStockByIndex(StorehouseID,j)
                                         local Amount = Logic.GetAmountOnOutStockByIndex(StorehouseID, j)
                                         if Amount >= goodQuantity then
-                                            Logic.RemoveGoodFromStock(StorehouseID, StoreHouseGoodType, goodQuantity, false)                                        
+                                            Logic.RemoveGoodFromStock(StorehouseID, StoreHouseGoodType, goodQuantity, false)
                                         end
                                     end
                                 end
-                                
+
                                 local SenderStorehouse = Logic.GetStoreHouse(Sender);
                                 local AmountInStorehouse = GetPlayerResources(goodType, Sender);
                                 if AmountInStorehouse < goodQuantity then
@@ -730,7 +730,7 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
                     end
                 end
             end
-        end 
+        end
     end
 end
 
@@ -1012,7 +1012,7 @@ function BundleCastleStore.Local.CastleStore:GetLimit(_PlayerID)
     if Headquarters ~= 0 then
         Level = Logic.GetUpgradeLevel(Headquarters);
     end
-    
+
     local Capacity = self.Data[_PlayerID].CapacityBase;
     for i= 1, (Level+1), 1 do
         Capacity = Capacity * 2;
@@ -1187,7 +1187,7 @@ function BundleCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _Curr
     if not self:HasCastleStore(_PlayerID) then
         return;
     end
-    
+
     local MotherContainer  = "/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InStorehouse/Goods";
     local WarningColor = "";
     if self:GetLimit(_PlayerID) == self:GetTotalAmount(_PlayerID) then
@@ -1200,7 +1200,7 @@ function BundleCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _Curr
         local BGWidget = MotherContainer.. "/" ..GoodTypeName.. "/BG";
         XGUIEng.SetText(AmountWidget, "{center}" .. WarningColor .. v[1]);
         XGUIEng.DisableButton(ButtonWidget, 0)
-        
+
         if self:IsAccepted(_PlayerID, k) then
             XGUIEng.SetMaterialColor(ButtonWidget, 0, 255, 255, 255, 255);
             XGUIEng.SetMaterialColor(ButtonWidget, 1, 255, 255, 255, 255);
@@ -1272,7 +1272,7 @@ function BundleCastleStore.Local.CastleStore:RestoreStorehouseMenu()
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InCity/Goods", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InCity", 0);
     SetIcon("/InGame/Root/Normal/AlignBottomRight/DialogButtons/PlayerButtons/DestroyGoods", {16, 8});
-    
+
     local MotherPath = "/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/";
     SetIcon(MotherPath.. "StorehouseTabButtonUp/up/B_StoreHouse", {3, 13});
     SetIcon(MotherPath.. "StorehouseTabButtonDown/down/B_StoreHouse", {3, 13});
@@ -1303,7 +1303,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleMenu()
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse", 0)
     XGUIEng.ShowWidget(MotherPath.. "Selection/BGSmall", 1)
     XGUIEng.ShowWidget(MotherPath.. "Selection/Castle", 1)
-    
+
     if g_HideSoldierPayment ~= nil then
         XGUIEng.ShowWidget(MotherPath.. "Selection/Castle/Treasury/Payment", 0)
         XGUIEng.ShowWidget(MotherPath.. "Selection/Castle/LimitSoldiers", 0)
@@ -1313,7 +1313,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleMenu()
     GUI_Trade.StorehouseSelected()
     local AnchorInfoForSmallX, AnchorInfoForSmallY = XGUIEng.GetWidgetLocalPosition(MotherPath.. "Selection/AnchorInfoForSmall")
     XGUIEng.SetWidgetLocalPosition(MotherPath.. "Selection/Info", AnchorInfoForSmallX, AnchorInfoForSmallY)
-    
+
     XGUIEng.ShowWidget(MotherPath.. "DialogButtons/PlayerButtons", 1)
     XGUIEng.ShowWidget(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 1)
     XGUIEng.DisableButton(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 0)
@@ -1341,7 +1341,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     GUI_Trade.StorehouseSelected()
     local AnchorInfoForBigX, AnchorInfoForBigY = XGUIEng.GetWidgetLocalPosition(MotherPath.. "Selection/AnchorInfoForBig")
     XGUIEng.SetWidgetLocalPosition(MotherPath.. "Selection/Info", AnchorInfoForBigX, AnchorInfoForBigY)
-    
+
     XGUIEng.ShowWidget(MotherPath.. "DialogButtons/PlayerButtons", 1)
     XGUIEng.ShowWidget(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 1)
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/InStorehouse", 1)
@@ -1350,7 +1350,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     XGUIEng.ShowAllSubWidgets(MotherPath.. "Selection/Storehouse/InCity/Goods", 0);
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/InCity/Goods/G_Beer", 1)
     XGUIEng.DisableButton(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 0)
-    
+
     local MotherPathDialog = MotherPath.. "DialogButtons/PlayerButtons/";
     local MotherPathTabs = MotherPath.. "Selection/Storehouse/TabButtons/";
     SetIcon(MotherPathDialog.. "DestroyGoods", {3, 14});
@@ -1360,7 +1360,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     SetIcon(MotherPathTabs.. "CityTabButtonDown/down/CityBuildingsNumber", {15, 6});
     SetIcon(MotherPathTabs.. "Tab03Up/up/B_Castle_ME", {7, 1});
     SetIcon(MotherPathTabs.. "Tab03Down/down/B_Castle_ME", {7, 1});
-    
+
     self:UpdateBehaviorTabs(GUI.GetPlayerID());
 end
 
@@ -1377,7 +1377,7 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID = GUI.GetPlayerID();
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        
+
         if _key == "UI_ObjectNames/DestroyGoods" then
             if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignBottomRight/Selection/Castle") == 1 then
                 return BundleCastleStore.Local.Description.ShowCastleStore.Text[lang];
@@ -1388,7 +1388,7 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
         if _key == "UI_ObjectDescription/DestroyGoods" then
             return "";
         end
-        
+
         if _key == "UI_ObjectNames/CityBuildingsNumber" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
                 return BundleCastleStore.Local.Description.CityTab.Title[lang];
@@ -1399,7 +1399,7 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
                 return BundleCastleStore.Local.Description.CityTab.Text[lang];
             end
         end
-        
+
         if _key == "UI_ObjectNames/B_StoreHouse" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
                 return BundleCastleStore.Local.Description.StorehouseTab.Title[lang];
@@ -1410,7 +1410,7 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
                 return BundleCastleStore.Local.Description.StorehouseTab.Text[lang];
             end
         end
-        
+
         if _key == "UI_ObjectNames/B_Castle_ME" then
             local WidgetMotherName = "/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/";
             local WidgetDownButton = WidgetMotherName.. "Tab03Down/down/B_Castle_ME";
@@ -1426,13 +1426,13 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
                 return BundleCastleStore.Local.Description.MultiTab.Text[lang];
             end
         end
-        
+
         if _key == "UI_ButtonDisabled/NotEnoughGoods" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
                 return BundleCastleStore.Local.Description.GoodButtonDisabled.Text[lang];
             end
         end
-        
+
         return GetStringTableText_Orig_QSB_CatsleStore(_key);
     end
 end
@@ -1450,94 +1450,94 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
         GameCallback_GUI_SelectionChanged_Orig_QSB_CastleStore(_Source);
         QSB.CastleStore:SelectionChanged(GUI.GetPlayerID());
     end
-    
+
     GUI_Trade.GoodClicked_Orig_QSB_CastleStore = GUI_Trade.GoodClicked;
     GUI_Trade.GoodClicked = function()
         local GoodType = Goods[XGUIEng.GetWidgetNameByID(XGUIEng.GetWidgetsMotherID(XGUIEng.GetCurrentWidgetID()))];
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.GoodClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:GoodClicked(PlayerID, GoodType);
     end
-    
+
     GUI_Trade.DestroyGoodsClicked_Orig_QSB_CastleStore = GUI_Trade.DestroyGoodsClicked;
     GUI_Trade.DestroyGoodsClicked = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.DestroyGoodsClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:DestroyGoodsClicked(PlayerID);
     end
-    
+
     GUI_Trade.SellUpdate_Orig_QSB_CastleStore = GUI_Trade.SellUpdate;
     GUI_Trade.SellUpdate = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.SellUpdate_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:UpdateGoodsDisplay(PlayerID);
     end
-    
+
     GUI_Trade.CityTabButtonClicked_Orig_QSB_CastleStore = GUI_Trade.CityTabButtonClicked;
     GUI_Trade.CityTabButtonClicked = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.CityTabButtonClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:OnCityTabClicked(PlayerID);
     end
-    
+
     GUI_Trade.StorehouseTabButtonClicked_Orig_QSB_CastleStore = GUI_Trade.StorehouseTabButtonClicked;
     GUI_Trade.StorehouseTabButtonClicked = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.StorehouseTabButtonClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:OnStorehouseTabClicked(PlayerID);
     end
-    
+
     GUI_Trade.MultiTabButtonClicked_Orig_QSB_CastleStore = GUI_Trade.MultiTabButtonClicked;
     GUI_Trade.MultiTabButtonClicked = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.MultiTabButtonClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:OnMultiTabClicked(PlayerID);
     end
-    
+
     GUI_BuildingInfo.StorageLimitUpdate_Orig_QSB_CastleStore = GUI_BuildingInfo.StorageLimitUpdate;
     GUI_BuildingInfo.StorageLimitUpdate = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_BuildingInfo.StorageLimitUpdate_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:UpdateStorageLimit(PlayerID);
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+
     GUI_Interaction.SendGoodsClicked = function()
         local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(g_Interaction.CurrentMessageQuestIndex);
         if not Quest then
@@ -1548,7 +1548,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
         local GoodAmount = Quest.Objectives[1].Data[2];
         local Costs = {GoodType, GoodAmount};
         local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs, true);
-        
+
         local PlayerID = GUI.GetPlayerID();
         if Logic.GetGoodCategoryForGoodType(GoodType) == GoodCategories.GC_Resource then
             CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
@@ -1559,7 +1559,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
                 CanBuyBoolean = (GetPlayerResources(GoodType, PlayerID) + QSB.CastleStore:GetAmount(PlayerID, GoodType)) >= GoodAmount;
             end
         end
-        
+
         local TargetPlayerID = Quest.Objectives[1].Data[6] and Quest.Objectives[1].Data[6] or Quest.SendingPlayer;
         local PlayerSectorType = PlayerSectorTypes.Thief;
         local IsReachable = CanEntityReachTarget(TargetPlayerID, Logic.GetStoreHouse(GUI.GetPlayerID()), Logic.GetStoreHouse(TargetPlayerID), nil, PlayerSectorType);
@@ -1568,7 +1568,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
             Message(MessageText);
             return
         end
-    
+
         if CanBuyBoolean == true then
             Sound.FXPlay2DSound( "ui\\menu_click");
             GUI.QuestTemplate_SendGoods(QuestIndex);
@@ -1577,7 +1577,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
             Message(CanNotBuyString);
         end
     end
-    
+
     GUI_Tooltip.SetCosts = function(_TooltipCostsContainer, _Costs, _GoodsInSettlementBoolean)
         local TooltipCostsContainerPath = XGUIEng.GetWidgetPathByID(_TooltipCostsContainer);
         local Good1ContainerPath = TooltipCostsContainerPath .. "/1Good";
@@ -1585,7 +1585,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
         local NumberOfValidAmounts = 0;
         local Good1Path;
         local Good2Path;
-    
+
         for i = 2, #_Costs, 2 do
             if _Costs[i] ~= 0 then
                 NumberOfValidAmounts = NumberOfValidAmounts + 1;
@@ -1607,7 +1607,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
         elseif NumberOfValidAmounts > 2 then
             GUI.AddNote("Debug: Invalid Costs table. Not more than 2 GoodTypes allowed.");
         end
-    
+
         local ContainerIndex = 1;
         for i = 1, #_Costs, 2 do
             if _Costs[i + 1] ~= 0 then
@@ -1674,4 +1674,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleCastleStore");
-
