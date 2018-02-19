@@ -1,0 +1,416 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#User_Space">User-Space</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><strong>BundleBuildingButtons</strong></li>
+  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../bundles/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleBuildingButtons</code></h1>
+<p></p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:AddOptionalButton">BundleBuildingButtons.Local:AddOptionalButton (_idx, _actionFunction, _tooltipFunction, _updateFunction)</a></td>
+	<td class="summary">Fügt einen Button dem Hausmenü hinzu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:DeleteOptionalButton">BundleBuildingButtons.Local:DeleteOptionalButton (_idx)</a></td>
+	<td class="summary">Entfernt den Zusatz-Button auf dem Index.</td>
+	</tr>
+</table>
+<h2><a href="#User_Space">User-Space</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ActivateSingleStop">API.ActivateSingleStop ()</a></td>
+	<td class="summary">Aktiviert die Single Stop Buttons.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DeactivateSingleStop">API.DeactivateSingleStop ()</a></td>
+	<td class="summary">Deaktiviert die Single Stop Buttons.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetCattleGrainCost">API.SetCattleGrainCost (_Amount)</a></td>
+	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetCattleNeeded">API.SetCattleNeeded (_Amount)</a></td>
+	<td class="summary">Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetSheepGrainCost">API.SetSheepGrainCost (_Amount)</a></td>
+	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetSheepNeeded">API.SetSheepNeeded (_Amount)</a></td>
+	<td class="summary">Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_flag)</a></td>
+	<td class="summary">Erlaube oder verbiete dem Spieler Kühe zu züchten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_flag)</a></td>
+	<td class="summary">Erlaube oder verbiete dem Spieler Kühe zu züchten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_flag)</a></td>
+	<td class="summary">Erlaube oder verbiete dem Spieler Schafe zu züchten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseDowngrade">API.UseDowngrade (_flag)</a></td>
+	<td class="summary">Verwende Downgrade bei Stadt- und Rohstoffgebäuden.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleBuildingButtons.Local:AddOptionalButton"></a>
+    <strong>BundleBuildingButtons.Local:AddOptionalButton (_idx, _actionFunction, _tooltipFunction, _updateFunction)</strong>
+    </dt>
+    <dd>
+    Fügt einen Button dem Hausmenü hinzu.  Es können nur 2 Buttons
+ hinzugefügt werden. Buttons brauchen immer eine Action-, eine
+ Tooltip- und eine Update-Funktion.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_idx</span>
+                      Indexposition des Button (1 oder 2)
+        </li>
+        <li><span class="parameter">_actionFunction</span>
+           Action-Funktion (String in Global)
+        </li>
+        <li><span class="parameter">_tooltipFunction</span>
+          Tooltip-Funktion (String in Global)
+        </li>
+        <li><span class="parameter">_updateFunction</span>
+           Update-Funktion (String in Global)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:DeleteOptionalButton"></a>
+    <strong>BundleBuildingButtons.Local:DeleteOptionalButton (_idx)</strong>
+    </dt>
+    <dd>
+    Entfernt den Zusatz-Button auf dem Index.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_idx</span>
+         Indexposition des Button (1 oder 2)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="User_Space"></a>User-Space</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ActivateSingleStop"></a>
+    <strong>API.ActivateSingleStop ()</strong>
+    </dt>
+    <dd>
+    Aktiviert die Single Stop Buttons.
+<p> Single Stop belegt den Index 1 der zusätzlichen Gebäude-Buttons!
+<p> <b>Alias:</b> ActivateSingleStop
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.DeactivateSingleStop"></a>
+    <strong>API.DeactivateSingleStop ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Single Stop Buttons.
+<p> <b>Alias:</b> DeactivateSingleStop
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetCattleGrainCost"></a>
+    <strong>API.SetCattleGrainCost (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+<p> <b>Alias:</b> SetCattleGrainCost
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         Getreidekosten
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetCattleNeeded"></a>
+    <strong>API.SetCattleNeeded (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.
+<p> <b>Alias:</b> SetCattleNeeded
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         Benötigte Menge
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetSheepGrainCost"></a>
+    <strong>API.SetSheepGrainCost (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+<p> <b>Alias:</b> SetSheepGrainCost
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         Getreidekosten
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetSheepNeeded"></a>
+    <strong>API.SetSheepNeeded (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.
+<p> <b>Alias:</b> SetSheepNeeded
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         Benötigte Menge
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UseBreedCattle"></a>
+    <strong>API.UseBreedCattle (_flag)</strong>
+    </dt>
+    <dd>
+    Erlaube oder verbiete dem Spieler Kühe zu züchten.
+<p> <b>Alias:</b> UseBreedCattle
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         Kuhzucht aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UseBreedCattle"></a>
+    <strong>API.UseBreedCattle (_flag)</strong>
+    </dt>
+    <dd>
+    Erlaube oder verbiete dem Spieler Kühe zu züchten.
+<p> <b>Alias:</b> UseBreedCattle
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         Kuhzucht aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UseBreedSheeps"></a>
+    <strong>API.UseBreedSheeps (_flag)</strong>
+    </dt>
+    <dd>
+    Erlaube oder verbiete dem Spieler Schafe zu züchten.
+<p> <b>Alias:</b> UseBreedSheeps
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         Schafzucht aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UseDowngrade"></a>
+    <strong>API.UseDowngrade (_flag)</strong>
+    </dt>
+    <dd>
+    Verwende Downgrade bei Stadt- und Rohstoffgebäuden.
+<p> <b>Alias:</b> UseDowngrade
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         Downgrade aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-02-15 17:56:33 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#User_Space">User-Space</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><strong>BundleInteractiveObjects</strong></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleInteractiveObjects</code></h1>
+<p>Ermöglicht die Manipulation der Interaktiven Objekte und das Erstellen
+ völlig neuer eigener Objekte.</p>
+<p></p>
+
+
+<h2><a href="#User_Space">User-Space</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AddCustomIOName">API.AddCustomIOName (_Key, _Text)</a></td>
+	<td class="summary">Erzeugt eine Beschriftung für Custom Objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateObject">API.CreateObject (_Name, _Description)</a></td>
+	<td class="summary">Erzeugt ein interaktives Objekt nach alter Schreibweise.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.LockInteractiveObject">API.LockInteractiveObject (_EntityName)</a></td>
+	<td class="summary">Sperrt ein Interaktives Objekt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.RemoveInteractiveObject">API.RemoveInteractiveObject (_EntityName)</a></td>
+	<td class="summary">Löscht ein interaktives Objekt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetupInteractiveObject">API.SetupInteractiveObject (_Name, _Description)</a></td>
+	<td class="summary">Erzeugt ein interaktives Objekt nach alter Schreibweise.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnlockInteractiveObject">API.UnlockInteractiveObject (_EntityName)</a></td>
+	<td class="summary">Entsperrt ein Interaktives Objekt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnuseInteractiveObject">API.UnuseInteractiveObject (_EntityName)</a></td>
+	<td class="summary">Setzt ein Interaktives Objekt als unbenutzt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseInteractiveObject">API.UseInteractiveObject (_EntityName)</a></td>
+	<td class="summary">Setzt ein Interaktives Objekt als benutzt.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="User_Space"></a>User-Space</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AddCustomIOName"></a>
+    <strong>API.AddCustomIOName (_Key, _Text)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Beschriftung für Custom Objects.
+<p> Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
+ Mit dieser Funktion kann ein Name angelegt werden.
+<p> <b>Alias:</b> AddCustomIOName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Key</span>
+          Identifier der Beschriftung
+        </li>
+        <li><span class="parameter">_Text</span>
+         Text der Beschriftung
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.CreateObject"></a>
+    <strong>API.CreateObject (_Name, _Description)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein interaktives Objekt nach alter Schreibweise.
+<p> <b>Alias:</b> CreateObject
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+                  Skriptname des Objekts
+        </li>
+        <li><span class="parameter">_Description</span>
+           Beschreibung
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.LockInteractiveObject"></a>
+    <strong>API.LockInteractiveObject (_EntityName)</strong>
+    </dt>
+    <dd>
+    Sperrt ein Interaktives Objekt.
+<p> Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+<p> <b>Alias:</b> LockInteractiveObject
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityName</span>
+         Skriptname des IO
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.RemoveInteractiveObject"></a>
+    <strong>API.RemoveInteractiveObject (_EntityName)</strong>
+    </dt>
+    <dd>
+    Löscht ein interaktives Objekt.
+<p> Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
+ Konfiguration des Objektes entfernt.
+<p> <b>Alias:</b> RemoveInteractiveObject
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityName</span>
+         Skriptname des IO
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetupInteractiveObject"></a>
+    <strong>API.SetupInteractiveObject (_Name, _Description)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein interaktives Objekt nach alter Schreibweise.
+<p> Diese Funktion ist ein Mapping für die veraltete Schreibweise. Du kannst
+ dich hiermit ermutigt fühlen, API.CreateObject zu verwenden!
+<p> <b>Alias:</b> SetupInteractiveObject
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+                  Skriptname des Objekts
+        </li>
+        <li><span class="parameter">_Description</span>
+           Beschreibung
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UnlockInteractiveObject"></a>
+    <strong>API.UnlockInteractiveObject (_EntityName)</strong>
+    </dt>
+    <dd>
+    Entsperrt ein Interaktives Objekt.
+<p> Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+<p> <b>Alias:</b> UnlockInteractiveObject
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityName</span>
+         Skriptname des IO
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UnuseInteractiveObject"></a>
+    <strong>API.UnuseInteractiveObject (_EntityName)</strong>
+    </dt>
+    <dd>
+    Setzt ein Interaktives Objekt als unbenutzt.
+<p> Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+<p> <b>Alias:</b> UnuseInteractiveObject
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityName</span>
+         Skriptname des IO
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UseInteractiveObject"></a>
+    <strong>API.UseInteractiveObject (_EntityName)</strong>
+    </dt>
+    <dd>
+    Setzt ein Interaktives Objekt als benutzt.
+<p> Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+<p> <b>Alias:</b> UseInteractiveObject
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityName</span>
+         Skriptname des IO
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-02-15 17:56:33 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
