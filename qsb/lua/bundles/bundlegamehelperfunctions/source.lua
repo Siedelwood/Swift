@@ -5,7 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
---
+-- Dieses Bundle gibt dem Mapper einige Werkzeuge in die Hand, um einige
+-- Features zu gewähren oder zu verwähren.
 --
 -- @module BundleGameHelperFunctions
 -- @set sort=true
@@ -140,8 +141,9 @@ end
 SetCameraToEntity = API.FocusCameraOnEntity;
 
 ---
+-- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
---
+-- @param _Limit Obergrenze
 -- @within User-Space
 --
 function API.SetSpeedLimit(_Limit)
@@ -153,8 +155,10 @@ function API.SetSpeedLimit(_Limit)
 end
 
 ---
+-- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
+-- kann nicht mehr überschritten werden.
 --
---
+-- @param _Flag Speedbremse ist aktiv
 -- @within User-Space
 --
 function API.ActivateSpeedLimit(_Flag)
@@ -166,7 +170,7 @@ function API.ActivateSpeedLimit(_Flag)
 end
 
 ---
---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
 -- @within User-Space
 --
@@ -179,7 +183,7 @@ function API.KillCheats()
 end
 
 ---
---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
 -- @within User-Space
 --
@@ -192,8 +196,9 @@ function API.RessurectCheats()
 end
 
 ---
+-- Sperrt das Speichern von Spielständen oder gibt es wieder frei.
 --
---
+-- @param _Flag Speichern gesperrt
 -- @within User-Space
 --
 function API.ForbidSaveGame(_Flag)
@@ -208,11 +213,12 @@ function API.ForbidSaveGame(_Flag)
 end
 
 ---
+-- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
---
+-- @param _Flag Erweiterter Zoom gestattet
 -- @within User-Space
 --
-function API.AllowExtendedZoom(_Flag)
+function API.ActivateExtendedZoom(_Flag)
     if GUI then
         API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
         return;
@@ -354,7 +360,7 @@ function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _Knigh
 end
 
 ---
---
+-- FIXME
 --
 -- @within Application-Space
 -- @local
@@ -366,7 +372,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
---
+-- Aktiviert oder deaktiviert den erweiterten Zoom.
 --
 -- @within Application-Space
 -- @local
@@ -379,7 +385,7 @@ function BundleGameHelperFunctions.Global:AllowExtendedZoom(_Flag)
 end
 
 ---
---
+-- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
 --
 -- @within Application-Space
 -- @local
@@ -395,7 +401,7 @@ function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
 end
 
 ---
---
+-- Aktiviert den erweiterten Zoom.
 --
 -- @within Application-Space
 -- @local
@@ -406,7 +412,7 @@ function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
 end
 
 ---
---
+-- Deaktiviert den erweiterten Zoom.
 --
 -- @within Application-Space
 -- @local
@@ -417,7 +423,7 @@ function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
 end
 
 ---
---
+-- Initialisiert den erweiterten Zoom.
 --
 -- @within Application-Space
 -- @local
@@ -432,7 +438,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
 -- @within Application-Space
 -- @local
@@ -443,7 +449,7 @@ function BundleGameHelperFunctions.Global:KillCheats()
 end
 
 ---
---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
 -- @within Application-Space
 -- @local
@@ -526,21 +532,12 @@ function BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _
     Camera.RTS_SetZoomFactor(zoomFactor);
 end
 
----
---
---
--- @within Application-Space
--- @local
---
-function BundleGameHelperFunctions.Local:AddHotKey(_Keys, _Description)
-
-end
-
 -- -------------------------------------------------------------------------- --
 
 ---
+-- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
---
+-- @param _Limit Obergrenze
 -- @within Application-Space
 -- @local
 --
@@ -550,8 +547,10 @@ function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
 end
 
 ---
+-- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
+-- kann nicht mehr überschritten werden.
 --
---
+-- @param _Flag Speedbremse ist aktiv
 -- @within Application-Space
 -- @local
 --
@@ -563,7 +562,8 @@ function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
 end
 
 ---
---
+-- Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
+-- aufgerufen wird und installiert die Speedbremse.
 --
 -- @within Application-Space
 -- @local
@@ -583,7 +583,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
 -- @within Application-Space
 -- @local
@@ -598,7 +598,7 @@ function BundleGameHelperFunctions.Local:KillCheats()
 end
 
 ---
---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
 -- @within Application-Space
 -- @local
@@ -615,17 +615,20 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
---
+-- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
 --
 -- @within Application-Space
 -- @local
 --
 function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
-    BundleGameHelperFunctions.Local:AddHotKey("STRG + SHIFT + K", "Alternativen Zoom ein/aus");
+    API.AddHotKey(
+        {de = "Strg + Umschalt + K",       en = "Ctrl + Shift + K"},
+        {de = "Alternativen Zoom ein/aus", en = "Alternative zoom on/off"}
+    )
 end
 
 ---
---
+-- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
 -- @within Application-Space
 -- @local
@@ -640,7 +643,7 @@ function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
 end
 
 ---
---
+-- Wechselt zwischen erweitertem und normalen Zoom.
 --
 -- @within Application-Space
 -- @local
@@ -650,7 +653,7 @@ function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
 end
 
 ---
---
+-- Erweitert die Zoomrestriktion auf das Maximum.
 --
 -- @within Application-Space
 -- @local
@@ -662,7 +665,7 @@ function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
 end
 
 ---
---
+-- Stellt die normale Zoomrestriktion wieder her.
 --
 -- @within Application-Space
 -- @local
@@ -676,7 +679,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
---
+-- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
 --
 -- @within Application-Space
 -- @local
@@ -692,7 +695,7 @@ function BundleGameHelperFunctions.Local:InitForbidSaveGame()
 end
 
 ---
---
+-- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
 --
 -- @within Application-Space
 -- @local

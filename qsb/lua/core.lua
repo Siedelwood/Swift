@@ -980,8 +980,8 @@ end
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
 --
--- @param _Key         
--- @param _Description 
+-- @param _Key         Tastenkombination
+-- @param _Description Beschreibung des Hotkey
 -- @return number: Index
 -- @within User-Space
 --
@@ -1203,6 +1203,7 @@ function Core:SetupLocal_HackRegisterHotkey()
 
             for k,v in pairs(Core.Data.HotkeyDescriptions) do
                 if v then
+                    v[1] = (type(v[1]) == "table" and v[1][lang]) or v[1];
                     v[2] = (type(v[2]) == "table" and v[2][lang]) or v[2];
                     table.insert(g_KeyBindingsOptions.Descriptions, 1, v);
                 end
