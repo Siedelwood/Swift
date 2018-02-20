@@ -279,7 +279,7 @@ function API.UnBanTypeAtTerritory(_type, _territory)
     if type(_territory) == "string" then
         _territory = GetTerritoryIDByName(_territory);
     end
-    
+
     if not BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] then
         return;
     end
@@ -417,10 +417,10 @@ end
 --
 function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original)
     local PlayerID = _Arg[1];
-    local Type     = _Arg[1];
-    local x        = _Arg[1];
-    local y        = _Arg[1];
-    
+    local Type     = _Arg[2];
+    local x        = _Arg[3];
+    local y        = _Arg[4];
+
     -- Auf Territorium ---------------------------------------------
 
     -- Prüfe Kategorien
@@ -449,7 +449,7 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
             end
         end
     end
-    
+
     -- In einem Gebiet ---------------------------------------------
 
     -- Prüfe Kategorien
@@ -506,7 +506,7 @@ function BundleConstructionControl.Local.DeleteEntityStateBuilding(_Arg, _Origin
     local eType = Logic.GetEntityType(_Arg[1]);
     local eName = Logic.GetEntityName(_Arg[1]);
     local tID   = GetTerritoryUnderEntity(_Arg[1]);
-    
+
     if Logic.IsConstructionComplete(_BuildingID) == 1 and Module_tHEA.GameControl.Protection then
         -- Prüfe auf Namen
         if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
@@ -543,4 +543,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleConstructionControl");
-
