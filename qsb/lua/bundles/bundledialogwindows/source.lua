@@ -33,7 +33,7 @@ function API.OpenDialog(_Title, _Text, _Action)
         API.Dbg("API.OpenDialog: Can only be used in the local script!");
         return;
     end
-    
+
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Title) == "table" then
        _Title = _Title[lang];
@@ -59,7 +59,7 @@ function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
         API.Dbg("API.OpenRequesterDialog: Can only be used in the local script!");
         return;
     end
-    
+
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Title) == "table" then
        _Title = _Title[lang];
@@ -85,7 +85,7 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
         API.Dbg("API.OpenSelectionDialog: Can only be used in the local script!");
         return;
     end
-    
+
     if type(_Text) == "table" then
         _Text.de = _Text.de .. "{cr}";
         _Text.en = _Text.en .. "{cr}";
@@ -135,7 +135,7 @@ BundleDialogWindows = {
 -- @local
 --
 function BundleDialogWindows.Global:Install()
-    TextWindow = BundleDialogWindows.Local.TextWindow;
+
 end
 
 
@@ -150,6 +150,7 @@ end
 --
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
+    TextWindow = BundleDialogWindows.Local.TextWindow;
 end
 
 ---
@@ -239,7 +240,7 @@ function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
         assert(type(_Title) == "string");
         assert(type(_Text) == "string");
-        
+
         _Title = "{center}" .. _Title;
         if string.len(_Text) < 35 then
             _Text = _Text .. "{cr}";
@@ -706,4 +707,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleDialogWindows");
-
