@@ -143,6 +143,8 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 ---
 -- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
+-- <b>Alias:</b> SetSpeedLimit
+--
 -- @param _Limit Obergrenze
 -- @within User-Space
 --
@@ -153,10 +155,13 @@ function API.SetSpeedLimit(_Limit)
     end
     return API.Bridge("BundleGameHelperFunctions.Local:SetSpeedLimit(" .._Limit.. ")");
 end
+SetSpeedLimit = API.SetSpeedLimit
 
 ---
 -- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
 -- kann nicht mehr überschritten werden.
+--
+-- <b>Alias:</b> ActivateSpeedLimit
 --
 -- @param _Flag Speedbremse ist aktiv
 -- @within User-Space
@@ -168,9 +173,12 @@ function API.ActivateSpeedLimit(_Flag)
     end
     return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
 end
+ActivateSpeedLimit = API.ActivateSpeedLimit;
 
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- <b>Alias:</b> KillCheats
 --
 -- @within User-Space
 --
@@ -181,9 +189,12 @@ function API.KillCheats()
     end
     return BundleGameHelperFunctions.Global:KillCheats();
 end
+KillCheats = API.KillCheats;
 
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- <b>Alias:</b> RessurectCheats
 --
 -- @within User-Space
 --
@@ -194,9 +205,12 @@ function API.RessurectCheats()
     end
     return BundleGameHelperFunctions.Global:RessurectCheats();
 end
+RessurectCheats = API.RessurectCheats;
 
 ---
 -- Sperrt das Speichern von Spielständen oder gibt es wieder frei.
+--
+-- <b>Alias:</b> ForbidSaveGame
 --
 -- @param _Flag Speichern gesperrt
 -- @within User-Space
@@ -211,9 +225,12 @@ function API.ForbidSaveGame(_Flag)
         BundleGameHelperFunctions.Local:DisplaySaveButtons(]].. tostring(_Flag) ..[[)
     ]]);
 end
+ForbidSaveGame = API.ForbidSaveGame;
 
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
+--
+-- <b>Alias:</b> ActivateExtendedZoom
 --
 -- @param _Flag Erweiterter Zoom gestattet
 -- @within User-Space
@@ -228,10 +245,13 @@ function API.ActivateExtendedZoom(_Flag)
         BundleGameHelperFunctions.Global:DeactivateExtendedZoom();
     end
 end
+ActivateExtendedZoom = API.ActivateExtendedZoom;
 
 ---
 -- Startet ein Fest für den Spieler. Ist dieser Typ von Fest für
 -- den Spieler verboten, wird er automatisch erlaubt.
+--
+-- <b>Alias:</b> StartNormalFestival
 --
 -- @param  _PlayerID Spieler
 -- @within User-Space
@@ -244,10 +264,13 @@ function API.StartNormalFestival(_PlayerID)
     BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, false);
     Logic.StartFestival(_PlayerID, 0);
 end
+StartNormalFestival = API.StartNormalFestival;
 
 ---
 -- Startet ein Beförderungsfest für den Spieler. Ist dieser Typ
 -- von Fest für den Spieler verboten, wird er automatisch erlaubt.
+--
+-- <b>Alias:</b> StartCityUpgradeFestival
 --
 -- @param _PlayerID Spieler
 -- @within User-Space
@@ -260,9 +283,12 @@ function API.StartCityUpgradeFestival(_PlayerID)
     BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 1, false);
     Logic.StartFestival(_PlayerID, 1);
 end
+StartCityUpgradeFestival = API.StartCityUpgradeFestival;
 
 ---
 -- Verbietet ein normales Fest und sperrt die Technologie.
+--
+-- <b>Alias:</b> ForbidFestival
 --
 -- @param _PlayerID Spieler
 -- @within User-Space
@@ -275,9 +301,12 @@ function API.ForbidFestival(_PlayerID)
     BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, true);
     Logic.TechnologySetState(_PlayerID, Technologies.R_Festival, TechnologyStates.Locked);
 end
+ForbidFestival = API.ForbidFestival;
 
 ---
 -- Erlaubt ein normales Fest und gibt die Technologie frei.
+--
+-- <b>Alias:</b> AllowFestival
 --
 -- @param _PlayerID Spieler
 -- @within User-Space
@@ -297,6 +326,47 @@ function API.AllowFestival(_PlayerID)
     end
     Logic.TechnologySetState(_PlayerID, Technology, State);
 end
+AllowFestival = API.AllowFestival;
+
+---
+-- Wechselt die Spieler ID des menschlichen Spielers. Die neue ID muss
+-- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
+-- Mode verwendet werden.
+--
+-- <b>Alias:</b> PlayerSetPlayerID
+--
+-- @param _OldID        Alte ID des menschlichen Spielers
+-- @param _NewID        Neue ID des menschlichen Spielers
+-- @param _NewName Name in der Statistik
+-- @param _RetainKnight Ritter mitnehmen
+-- @within User-Space
+--
+function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
+    if GUI then
+        API.Bridge("API.SetControllingPlayer(".. _OldID ..", ".. _NewID ..", ".. _NewName ..", ".. tostring(_RetainKnight) ..")");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight);
+end
+PlayerSetPlayerID = API.SetControllingPlayer;
+
+---
+-- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
+-- definierte Spieler wird als kontrollierender Spieler angenommen.
+--
+-- <b>Alias:</b> PlayerGetPlayerID
+--
+-- @return number: PlayerID
+-- @within User-Space
+--
+function API.GetControllingPlayer()
+    if not GUI then
+        return BundleGameHelperFunctions.Global:GetControllingPlayer();
+    else
+        return GUI.GetPlayerID();
+    end
+end
+PlayerGetPlayerID = API.GetControllingPlayer;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -305,6 +375,9 @@ end
 BundleGameHelperFunctions = {
     Global = {
         Data = {
+            HumanPlayerChangedOnce = false,
+            HumanKnightType = 0,
+            HumanPlayerID = 1,
             ExtendedZoomAllowed = true,
             FestivalBlacklist = {},
         }
@@ -430,6 +503,108 @@ function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _Knigh
             end
         end
     end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Wechselt die Spieler ID des menschlichen Spielers. Die neue ID muss
+-- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
+-- Mode verwendet werden.
+--
+-- @param _oldPlayerID          Alte ID des menschlichen Spielers
+-- @param _newPlayerID          Neue ID des menschlichen Spielers
+-- @param _newNameForStatistics Name in der Statistik
+-- @param _retainPrimaryKnight  Ritter mitnehmen
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)
+    assert(type(_oldPlayerID) == "number");
+    assert(type(_newPlayerID) == "number");
+    _newNameForStatistics = _newNameForStatistics or "";
+    _retainPrimaryKnight = (_retainPrimaryKnight and true) or false;
+
+    local eID,eName,eType;
+    if _retainPrimaryKnight then
+        eID   = Logic.GetKnightID(_oldPlayerID);
+        eName = Logic.GetEntityName(eID);
+        eType = Logic.GetEntityType(eID);
+        Logic.ChangeEntityPlayerID(eID,_newPlayerID);
+        Logic.SetPrimaryKnightID(_newPlayerID,GetID(eName));
+    else
+        eID   = Logic.GetKnightID(_newPlayerID);
+        eName = Logic.GetEntityName(eID);
+        eType = Logic.GetEntityType(eID);
+    end
+
+    Logic.PlayerSetIsHumanFlag(_oldPlayerID, 0);
+    Logic.PlayerSetIsHumanFlag(_newPlayerID, 1);
+    Logic.PlayerSetGameStateToPlaying(_newPlayerID);
+
+    self.Data.HumanKnightType = eType;
+    self.Data.HumanPlayerID = _newPlayerID;
+
+    GameCallback_PlayerLost = function( _PlayerID )
+        if _PlayerID == self:GetControllingPlayer() then
+            QuestTemplate:TerminateEventsAndStuff()
+            if MissionCallback_Player1Lost then
+                MissionCallback_Player1Lost()
+            end
+        end
+    end
+
+    Logic.ExecuteInLuaLocalState([[
+        GUI.ClearSelection()
+        GUI.SetControlledPlayer(]].._newPlayerID..[[)
+
+        for k,v in pairs(Buffs)do
+            GUI_Buffs.UpdateBuffsInInterface(]].._newPlayerID..[[,v)
+            GUI.ResetMiniMap()
+        end
+
+        if IsExisting(Logic.GetKnightID(GUI.GetPlayerID())) then
+            local portrait = GetKnightActor(]]..eType..[[)
+            g_PlayerPortrait[GUI.GetPlayerID()] = portrait
+            LocalSetKnightPicture()
+        end
+
+        local newName = "]].._newNameForStatistics..[["
+        if newName ~= "" then
+            GUI_MissionStatistic.PlayerNames[GUI.GetPlayerID()] = newName
+        end
+        HideOtherMenus()
+
+        function GUI_Knight.GetTitleNameByTitleID(_KnightType, _TitleIndex)
+            local KeyName = "Title_" .. GetNameOfKeyInTable(KnightTitles, _TitleIndex) .. "_" .. KnightGender[]]..eType..[[]
+            local String = XGUIEng.GetStringTableText("UI_ObjectNames/" .. KeyName)
+            if String == nil or String == "" then
+                String = "Knight not in Gender Table? (localscript.lua)"
+            end
+            return String
+        end
+    ]]);
+
+    self.Data.HumanPlayerChangedOnce = true;
+end
+
+---
+-- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
+-- definierte Spieler wird als kontrollierender Spieler angenommen.
+--
+-- @return number: PlayerID
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:GetControllingPlayer()
+    local pID = 1;
+    for i=1,8 do
+        if Logic.PlayerGetIsHumanFlag(i) == true then
+            pID = i;
+            break;
+        end
+    end
+    return pID;
 end
 
 -- -------------------------------------------------------------------------- --
