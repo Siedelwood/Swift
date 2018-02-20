@@ -477,6 +477,8 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
             end
         end
     end
+
+    return true;
 end
 
 -- Local Script ----------------------------------------------------------------

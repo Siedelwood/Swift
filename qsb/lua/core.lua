@@ -96,7 +96,7 @@ function API.InstanceTable(_Source, _Dest)
     _Dest = _Dest or {};
     assert(type(_Source) == "table")
     assert(type(_Dest) == "table")
-    
+
     for k, v in pairs(_Source) do
         if type(v) == "table" then
             _Dest[k] = API.InstanceTable(v);
@@ -147,7 +147,7 @@ function API.DumpTable(_Table, _Name)
         Start = _Name.. " = \n" ..Start;
     end
     Framework.WriteToLog(Start);
-    
+
     for k, v in pairs(_Table) do
         if type(v) == "table" then
             Framework.WriteToLog("[" ..k.. "] = ");
@@ -255,8 +255,8 @@ RestartQuestsByName = API.RestartAllQuests;
 -- neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
 -- der Quest wird manuell getriggert.
 --
--- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird 
--- ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion 
+-- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
+-- ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion
 -- angepasst oder überschrieben werden.
 --
 -- <b>Alias:</b> RestartQuestByName
@@ -518,7 +518,7 @@ end
 
 ---
 -- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
--- 
+--
 -- <b>Alias:</b> dbg
 --
 -- @param _Message Anzeigetext
@@ -534,7 +534,7 @@ dbg = API.Dbg;
 
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
--- 
+--
 -- <p><b>Alias:</b> warn</p>
 --
 -- @param _Message Anzeigetext
@@ -550,9 +550,9 @@ warn = API.Warn;
 
 ---
 -- Schreibt eine Information auf den Bildschirm und ins Log.
--- 
+--
 -- <b>Alias:</b> info
--- 
+--
 -- @param _Message Anzeigetext
 -- @within User-Space
 --
@@ -581,7 +581,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.
 --
 -- Als Voreinstellung werden alle Meldungen immer angezeigt!
--- 
+--
 -- Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
 -- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
 -- angezeigt werden.
@@ -626,7 +626,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
 -- </td>
 -- </tr>
 -- </table>
--- 
+--
 -- @param _Level Level
 -- @within User-Space
 --
@@ -945,7 +945,7 @@ end
 -- <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
 --
 -- <b>Alias:</b> AcceptAlternativeBoolean
--- 
+--
 -- @param _Value Wahrheitswert
 -- @return boolean: Wahrheitswert
 -- @within User-Space
@@ -1161,7 +1161,7 @@ function Core:SetupLocal_HackRegisterHotkey()
         else
             XGUIEng.ShowWidget("/InGame/KeyBindingsMain/Backdrop", 0);
         end
-        
+
         if g_KeyBindingsOptions.Descriptions == nil then
             g_KeyBindingsOptions.Descriptions = {};
             DescRegister("MenuInGame");
@@ -1324,10 +1324,11 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
         };
 
         local batch = function(...)
-            self.Data.Append.Functions[_FunctionName].Original(unpack(arg));
+            local ReturnValue = self.Data.Append.Functions[_FunctionName].Original(unpack(arg));
             for k, v in pairs(self.Data.Append.Functions[_FunctionName].Attachments) do
-                v(unpack(arg))
+                ReturnValue = v(unpack(arg))
             end
+            return ReturnValue;
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
@@ -1424,4 +1425,3 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
-
