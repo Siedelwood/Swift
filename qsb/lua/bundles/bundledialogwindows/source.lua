@@ -361,7 +361,7 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. ";BundleDialogWindows.Local.Callback(BundleDialogWindows.Local)";
+        Action = Action .. "; BundleDialogWindows.Local.Callback(BundleDialogWindows.Local)";
         XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
 
         local Container = "/InGame/Singleplayer/CustomGame/ContainerSelection/";
