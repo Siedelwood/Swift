@@ -970,7 +970,46 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- API.AddSaveGameAction(SaveGame)
 --
 function API.AddSaveGameAction(_Function)
+    if GUI then
+        API.Dbg("API.AddSaveGameAction: Can not be used from the local script!");
+        return;
+    end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
+end
+
+---
+-- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
+--
+-- @param _Key         Tastenkombination
+-- @param _Description Beschreibung des Hotkey
+-- @return number: Index
+-- @within User-Space
+--
+function API.AddHotKey(_Key, _Description)
+    if not GUI then
+        API.Dbg("API.AddHotKey: Can not be used from the global script!");
+        return;
+    end
+    table.insert(Core.Data.HotkeyDescriptions, {_Key, _Description});
+    return #Core.Data.HotkeyDescriptions;
+end
+
+---
+-- Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
+--
+-- @param _Index Index in Table
+-- @within User-Space
+--
+function API.RemoveHotKey(_Index)
+    if not GUI then
+        API.Dbg("API.RemoveHotKey: Can not be used from the global script!");
+        return;
+    end
+    if type(_Index) ~= "number" or _Index > #Core.Data.HotkeyDescriptions then
+        API.Dbg("API.RemoveHotKey: No candidate found or Index is nil!");
+        return;
+    end
+    Core.Data.HotkeyDescriptions[_Index] = nil;
 end
 
 -- -------------------------------------------------------------------------- --
@@ -983,6 +1022,7 @@ Core = {
             Functions = {},
             Fields = {},
         },
+        HotkeyDescriptions = {},
         BundleInitializerList = {},
     }
 }
@@ -997,6 +1037,8 @@ function Core:InitalizeBundles()
     if not GUI then
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
+    else
+        self:SetupLocal_HackRegisterHotkey();
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
@@ -1101,6 +1143,77 @@ function Core:SetupGlobal_HackQuestSystem()
             if _quest.Triggers[i].Type == Triggers.Custom2 and _quest.Triggers[i].Data[1].Interrupt then
                 _quest.Triggers[i].Data[1]:Interrupt(_quest, i);
             end
+        end
+    end
+end
+
+---
+-- Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
+-- angezeigt werden können.
+-- @within Application-Space
+-- @local
+--
+function Core:SetupLocal_HackRegisterHotkey()
+    function g_KeyBindingsOptions:OnShow()
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if Game ~= nil then
+            XGUIEng.ShowWidget("/InGame/KeyBindingsMain/Backdrop", 1);
+        else
+            XGUIEng.ShowWidget("/InGame/KeyBindingsMain/Backdrop", 0);
+        end
+        
+        if g_KeyBindingsOptions.Descriptions == nil then
+            g_KeyBindingsOptions.Descriptions = {};
+            DescRegister("MenuInGame");
+            DescRegister("MenuDiplomacy");
+            DescRegister("MenuProduction");
+            DescRegister("MenuPromotion");
+            DescRegister("MenuWeather");
+            DescRegister("ToggleOutstockInformations");
+            DescRegister("JumpMarketplace");
+            DescRegister("JumpMinimapEvent");
+            DescRegister("BuildingUpgrade");
+            DescRegister("BuildLastPlaced");
+            DescRegister("BuildStreet");
+            DescRegister("BuildTrail");
+            DescRegister("KnockDown");
+            DescRegister("MilitaryAttack");
+            DescRegister("MilitaryStandGround");
+            DescRegister("MilitaryGroupAdd");
+            DescRegister("MilitaryGroupSelect");
+            DescRegister("MilitaryGroupStore");
+            DescRegister("MilitaryToggleUnits");
+            DescRegister("UnitSelect");
+            DescRegister("UnitSelectToggle");
+            DescRegister("UnitSelectSameType");
+            DescRegister("StartChat");
+            DescRegister("StopChat");
+            DescRegister("QuickSave");
+            DescRegister("QuickLoad");
+            DescRegister("TogglePause");
+            DescRegister("RotateBuilding");
+            DescRegister("ExitGame");
+            DescRegister("Screenshot");
+            DescRegister("ResetCamera");
+            DescRegister("CameraMove");
+            DescRegister("CameraMoveMouse");
+            DescRegister("CameraZoom");
+            DescRegister("CameraZoomMouse");
+            DescRegister("CameraRotate");
+
+            for k,v in pairs(Core.Data.HotkeyDescriptions) do
+                if v then
+                    v[1] = (type(v[1]) == "table" and v[1][lang]) or v[1];
+                    v[2] = (type(v[2]) == "table" and v[2][lang]) or v[2];
+                    table.insert(g_KeyBindingsOptions.Descriptions, 1, v);
+                end
+            end
+        end
+        XGUIEng.ListBoxPopAll(g_KeyBindingsOptions.Widget.ShortcutList);
+        XGUIEng.ListBoxPopAll(g_KeyBindingsOptions.Widget.ActionList);
+        for Index, Desc in ipairs(g_KeyBindingsOptions.Descriptions) do
+            XGUIEng.ListBoxPushItem(g_KeyBindingsOptions.Widget.ShortcutList, Desc[1]);
+            XGUIEng.ListBoxPushItem(g_KeyBindingsOptions.Widget.ActionList,   Desc[2]);
         end
     end
 end
@@ -19804,7 +19917,8 @@ Core:RegisterBundle("BundleEntityHelperFunctions");
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+-- Dieses Bundle gibt dem Mapper einige Werkzeuge in die Hand, um einige
+-- Features zu gewähren oder zu verwähren.
 --
 -- @module BundleGameHelperFunctions
 -- @set sort=true
@@ -19938,16 +20052,311 @@ function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
 end
 SetCameraToEntity = API.FocusCameraOnEntity;
 
+---
+-- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+--
+-- <b>Alias:</b> SetSpeedLimit
+--
+-- @param _Limit Obergrenze
+-- @within User-Space
+--
+function API.SetSpeedLimit(_Limit)
+    if GUI then
+        API.Bridge("API.SetSpeedLimit(" .._Limit.. ")");
+        return;
+    end
+    return API.Bridge("BundleGameHelperFunctions.Local:SetSpeedLimit(" .._Limit.. ")");
+end
+SetSpeedLimit = API.SetSpeedLimit
+
+---
+-- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
+-- kann nicht mehr überschritten werden.
+--
+-- <b>Alias:</b> ActivateSpeedLimit
+--
+-- @param _Flag Speedbremse ist aktiv
+-- @within User-Space
+--
+function API.ActivateSpeedLimit(_Flag)
+    if GUI then
+        API.Bridge("API.ActivateSpeedLimit(" ..tostring(_Flag).. ")");
+        return;
+    end
+    return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
+end
+ActivateSpeedLimit = API.ActivateSpeedLimit;
+
+---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- <b>Alias:</b> KillCheats
+--
+-- @within User-Space
+--
+function API.KillCheats()
+    if GUI then
+        API.Bridge("API.KillCheats()");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:KillCheats();
+end
+KillCheats = API.KillCheats;
+
+---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- <b>Alias:</b> RessurectCheats
+--
+-- @within User-Space
+--
+function API.RessurectCheats()
+    if GUI then
+        API.Bridge("API.RessurectCheats()");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:RessurectCheats();
+end
+RessurectCheats = API.RessurectCheats;
+
+---
+-- Sperrt das Speichern von Spielständen oder gibt es wieder frei.
+--
+-- <b>Alias:</b> ForbidSaveGame
+--
+-- @param _Flag Speichern gesperrt
+-- @within User-Space
+--
+function API.ForbidSaveGame(_Flag)
+    if GUI then
+        API.Bridge("API.ForbidSaveGame(".. tostring(_Flag) ..")");
+        return;
+    end
+    API.Bridge([[
+        BundleGameHelperFunctions.Local.Data.ForbidSave = ]].. tostring(_Flag) ..[[ == true
+        BundleGameHelperFunctions.Local:DisplaySaveButtons(]].. tostring(_Flag) ..[[)
+    ]]);
+end
+ForbidSaveGame = API.ForbidSaveGame;
+
+---
+-- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
+--
+-- <b>Alias:</b> ActivateExtendedZoom
+--
+-- @param _Flag Erweiterter Zoom gestattet
+-- @within User-Space
+--
+function API.ActivateExtendedZoom(_Flag)
+    if GUI then
+        API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
+        return;
+    end
+    BundleGameHelperFunctions.Global.Data.ExtendedZoomAllowed = _Flag == true;
+    if _Flag == false then
+        BundleGameHelperFunctions.Global:DeactivateExtendedZoom();
+    end
+end
+ActivateExtendedZoom = API.ActivateExtendedZoom;
+
+---
+-- Startet ein Fest für den Spieler. Ist dieser Typ von Fest für
+-- den Spieler verboten, wird er automatisch erlaubt.
+--
+-- <b>Alias:</b> StartNormalFestival
+--
+-- @param  _PlayerID Spieler
+-- @within User-Space
+--
+function API.StartNormalFestival(_PlayerID)
+    if GUI then
+        API.Bridge("API.StartNormalFestival(".. _PlayerID ..")");
+        return;
+    end
+    BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, false);
+    Logic.StartFestival(_PlayerID, 0);
+end
+StartNormalFestival = API.StartNormalFestival;
+
+---
+-- Startet ein Beförderungsfest für den Spieler. Ist dieser Typ
+-- von Fest für den Spieler verboten, wird er automatisch erlaubt.
+--
+-- <b>Alias:</b> StartCityUpgradeFestival
+--
+-- @param _PlayerID Spieler
+-- @within User-Space
+--
+function API.StartCityUpgradeFestival(_PlayerID)
+    if GUI then
+        API.Bridge("API.StartCityUpgradeFestival(".. _PlayerID ..")");
+        return;
+    end
+    BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 1, false);
+    Logic.StartFestival(_PlayerID, 1);
+end
+StartCityUpgradeFestival = API.StartCityUpgradeFestival;
+
+---
+-- Verbietet ein normales Fest und sperrt die Technologie.
+--
+-- <b>Alias:</b> ForbidFestival
+--
+-- @param _PlayerID Spieler
+-- @within User-Space
+--
+function API.ForbidFestival(_PlayerID)
+    if GUI then
+        API.Bridge("API.ForbidFestival(".. _PlayerID ..")");
+        return;
+    end
+    BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, true);
+    Logic.TechnologySetState(_PlayerID, Technologies.R_Festival, TechnologyStates.Locked);
+end
+ForbidFestival = API.ForbidFestival;
+
+---
+-- Erlaubt ein normales Fest und gibt die Technologie frei.
+--
+-- <b>Alias:</b> AllowFestival
+--
+-- @param _PlayerID Spieler
+-- @within User-Space
+--
+function API.AllowFestival(_PlayerID)
+    if GUI then
+        API.Bridge("API.AllowFestival(".. _PlayerID ..")");
+        return;
+    end
+
+    BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, false);
+    local KnightTitle = Logic.GetKnightTitle(_PlayerID)
+    local Technology = Technologies.R_Festival;
+    local State = TechnologyStates.Unlocked;
+    if KnightTitleNeededForTechnology[Technology] == nil or KnightTitle >= KnightTitleNeededForTechnology[Technology] then
+        State = TechnologyStates.Researched;
+    end
+    Logic.TechnologySetState(_PlayerID, Technology, State);
+end
+AllowFestival = API.AllowFestival;
+
+---
+-- Wechselt die Spieler ID des menschlichen Spielers. Die neue ID muss
+-- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
+-- Mode verwendet werden.
+--
+-- <b>Alias:</b> PlayerSetPlayerID
+--
+-- @param _OldID        Alte ID des menschlichen Spielers
+-- @param _NewID        Neue ID des menschlichen Spielers
+-- @param _NewName Name in der Statistik
+-- @param _RetainKnight Ritter mitnehmen
+-- @within User-Space
+--
+function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
+    if GUI then
+        API.Bridge("API.SetControllingPlayer(".. _OldID ..", ".. _NewID ..", ".. _NewName ..", ".. tostring(_RetainKnight) ..")");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight);
+end
+PlayerSetPlayerID = API.SetControllingPlayer;
+
+---
+-- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
+-- definierte Spieler wird als kontrollierender Spieler angenommen.
+--
+-- <b>Alias:</b> PlayerGetPlayerID
+--
+-- @return number: PlayerID
+-- @within User-Space
+--
+function API.GetControllingPlayer()
+    if not GUI then
+        return BundleGameHelperFunctions.Global:GetControllingPlayer();
+    else
+        return GUI.GetPlayerID();
+    end
+end
+PlayerGetPlayerID = API.GetControllingPlayer;
+
+---
+-- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
+-- Held kann 0 sein, dann wird entweder der letzte Held verwendet
+-- oder über den GUI-Spieler ermittelt.
+--
+-- <b>Alias:</b> HeroCameraActivate
+--
+-- @param _Hero    Skriptname/Entity-ID des Helden
+-- @param _MaxZoom Maximaler Zoomfaktor
+-- @within Application-Space
+-- @local
+--
+function API.ThridPersonActivate(_Hero, _MaxZoom)
+    if GUI then
+        API.Bridge("API.ThridPersonActivate(".. _Hero ..", ".. _MaxZoom ..")");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom);
+end
+HeroCameraActivate = API.ThridPersonActivate;
+
+---
+-- Deaktiviert die Heldenkamera.
+--
+-- <b>Alias:</b> HeroCameraDeactivate
+--
+-- @within Application-Space
+-- @local
+--
+function API.ThridPersonDeactivate()
+    if GUI then
+        API.Bridge("API.ThridPersonDeactivate()");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:ThridPersonDeactivate();
+end
+HeroCameraDeactivate = API.ThridPersonDeactivate;
+
+---
+-- Prüft, ob die Heldenkamera aktiv ist.
+--
+-- <b>Alias:</b> HeroCameraIsRuning
+--
+-- @return boolean: Kamera aktiv
+-- @within Application-Space
+-- @local
+--
+function API.ThridPersonIsRuning()
+    if not GUI then
+        return BundleGameHelperFunctions.Global:ThridPersonIsRuning();
+    else
+        return BundleGameHelperFunctions.Local:ThridPersonIsRuning();
+    end
+end
+HeroCameraIsRuning = API.ThridPersonIsRuning;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleGameHelperFunctions = {
     Global = {
-        Data = {}
+        Data = {
+            HumanPlayerChangedOnce = false,
+            HumanKnightType = 0,
+            HumanPlayerID = 1,
+            ExtendedZoomAllowed = true,
+            FestivalBlacklist = {},
+        }
     },
     Local = {
-        Data = {}
+        Data = {
+            SpeedLimit = 32,
+            ThirdPersonIsActive = false,
+            ThirdPersonLastHero = nil,
+            ThirdPersonLastZoom = nil,
+        }
     },
 }
 
@@ -19960,7 +20369,8 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
-    
+
+    API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
 end
 
 ---
@@ -20022,7 +20432,7 @@ end
 function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
     if not _PlayerID then
         for i=1, 8, 1 do
-            Module_Comforts.Global.SetNeedSatisfactionLevel(_Need, _State, i);
+            self:SetNeedSatisfactionLevel(_Need, _State, i);
         end
     else
         local City = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.CityBuilding)};
@@ -20066,6 +20476,344 @@ function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _Knigh
     end
 end
 
+-- -------------------------------------------------------------------------- --
+
+---
+-- Wechselt die Spieler ID des menschlichen Spielers. Die neue ID muss
+-- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
+-- Mode verwendet werden.
+--
+-- @param _oldPlayerID          Alte ID des menschlichen Spielers
+-- @param _newPlayerID          Neue ID des menschlichen Spielers
+-- @param _newNameForStatistics Name in der Statistik
+-- @param _retainPrimaryKnight  Ritter mitnehmen
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)
+    assert(type(_oldPlayerID) == "number");
+    assert(type(_newPlayerID) == "number");
+    _newNameForStatistics = _newNameForStatistics or "";
+    _retainPrimaryKnight = (_retainPrimaryKnight and true) or false;
+
+    local eID,eName,eType;
+    if _retainPrimaryKnight then
+        eID   = Logic.GetKnightID(_oldPlayerID);
+        eName = Logic.GetEntityName(eID);
+        eType = Logic.GetEntityType(eID);
+        Logic.ChangeEntityPlayerID(eID,_newPlayerID);
+        Logic.SetPrimaryKnightID(_newPlayerID,GetID(eName));
+    else
+        eID   = Logic.GetKnightID(_newPlayerID);
+        eName = Logic.GetEntityName(eID);
+        eType = Logic.GetEntityType(eID);
+    end
+
+    Logic.PlayerSetIsHumanFlag(_oldPlayerID, 0);
+    Logic.PlayerSetIsHumanFlag(_newPlayerID, 1);
+    Logic.PlayerSetGameStateToPlaying(_newPlayerID);
+
+    self.Data.HumanKnightType = eType;
+    self.Data.HumanPlayerID = _newPlayerID;
+
+    GameCallback_PlayerLost = function( _PlayerID )
+        if _PlayerID == self:GetControllingPlayer() then
+            QuestTemplate:TerminateEventsAndStuff()
+            if MissionCallback_Player1Lost then
+                MissionCallback_Player1Lost()
+            end
+        end
+    end
+
+    Logic.ExecuteInLuaLocalState([[
+        GUI.ClearSelection()
+        GUI.SetControlledPlayer(]].._newPlayerID..[[)
+
+        for k,v in pairs(Buffs)do
+            GUI_Buffs.UpdateBuffsInInterface(]].._newPlayerID..[[,v)
+            GUI.ResetMiniMap()
+        end
+
+        if IsExisting(Logic.GetKnightID(GUI.GetPlayerID())) then
+            local portrait = GetKnightActor(]]..eType..[[)
+            g_PlayerPortrait[GUI.GetPlayerID()] = portrait
+            LocalSetKnightPicture()
+        end
+
+        local newName = "]].._newNameForStatistics..[["
+        if newName ~= "" then
+            GUI_MissionStatistic.PlayerNames[GUI.GetPlayerID()] = newName
+        end
+        HideOtherMenus()
+
+        function GUI_Knight.GetTitleNameByTitleID(_KnightType, _TitleIndex)
+            local KeyName = "Title_" .. GetNameOfKeyInTable(KnightTitles, _TitleIndex) .. "_" .. KnightGender[]]..eType..[[]
+            local String = XGUIEng.GetStringTableText("UI_ObjectNames/" .. KeyName)
+            if String == nil or String == "" then
+                String = "Knight not in Gender Table? (localscript.lua)"
+            end
+            return String
+        end
+    ]]);
+
+    self.Data.HumanPlayerChangedOnce = true;
+end
+
+---
+-- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
+-- definierte Spieler wird als kontrollierender Spieler angenommen.
+--
+-- @return number: PlayerID
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:GetControllingPlayer()
+    local pID = 1;
+    for i=1,8 do
+        if Logic.PlayerGetIsHumanFlag(i) == true then
+            pID = i;
+            break;
+        end
+    end
+    return pID;
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
+-- werden kann.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:InitFestival()
+    if not Logic.StartFestival_Orig_NothingToCelebrate then
+        Logic.StartFestival_Orig_NothingToCelebrate = Logic.StartFestival;
+    end
+
+    Logic.StartFestival = function(_PlayerID, _Index)
+        if BundleGameHelperFunctions.Global.Data.FestivalBlacklist[_PlayerID] then
+            if BundleGameHelperFunctions.Global.Data.FestivalBlacklist[_PlayerID][_Index] then
+                return;
+            end
+        end
+        Logic.StartFestival_Orig_NothingToCelebrate(_PlayerID, _Index);
+    end
+end
+
+---
+-- Erlaubt oder verbietet ein Fest für den angegebenen Spieler.
+--
+-- @param _PlayerID ID des Spielers
+-- @param _Index    Index des Fest
+-- @param _Flag     Erlauben/verbieten
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, _Index, _Flag)
+    self:InitFestival();
+
+    if not self.Data.FestivalBlacklist[_PlayerID]
+    then
+        self.Data.FestivalBlacklist[_PlayerID] = {};
+    end
+    self.Data.FestivalBlacklist[_PlayerID][_Index] = _Flag == true;
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
+    if self.Data.ExtendedZoomAllowed then
+        if self.Data.ExtendedZoomActive then
+            self:DeactivateExtendedZoom();
+        else
+            self:ActivateExtendedZoom();
+        end
+    end
+end
+
+---
+-- Aktiviert den erweiterten Zoom.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
+    self.Data.ExtendedZoomActive = true;
+    API.Bridge("BundleGameHelperFunctions.Local:ActivateExtendedZoom()");
+end
+
+---
+-- Deaktiviert den erweiterten Zoom.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
+    self.Data.ExtendedZoomActive = false;
+    API.Bridge("BundleGameHelperFunctions.Local:DeactivateExtendedZoom()");
+end
+
+---
+-- Initialisiert den erweiterten Zoom.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:InitExtendedZoom()
+    API.Bridge([[
+        BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
+        BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
+    ]]);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:KillCheats()
+    self.Data.CheatsForbidden = true;
+    API.Bridge("BundleGameHelperFunctions.Local:KillCheats()");
+end
+
+---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:RessurectCheats()
+    self.Data.CheatsForbidden = false;
+    API.Bridge("BundleGameHelperFunctions.Local:RessurectCheats()");
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
+-- Held kann 0 sein, dann wird entweder der letzte Held verwendet
+-- oder über den GUI-Spieler ermittelt.
+--
+-- @param _Hero    Skriptname/Entity-ID des Helden
+-- @param _MaxZoom Maximaler Zoomfaktor
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
+    if not BriefingSystem.StartBriefing_Orig_HeroCamera then
+        BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing();
+    end
+
+    local Hero = GetID(_Hero);
+    BundleGameHelperFunctions.Global.Data.ThridPersonIsActive = true;
+    Logic.ExecuteInLuaLocalState([[
+        BundleGameHelperFunctions.Local:ThridPersonActivate(]]..tostring(Hero)..[[, ]].. tostring(_MaxZoom) ..[[);
+    ]]);
+end
+
+---
+-- Deaktiviert die Heldenkamera.
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:ThridPersonDeactivate()
+    BundleGameHelperFunctions.Global.Data.ThridPersonIsActive = false;
+    Logic.ExecuteInLuaLocalState([[
+        BundleGameHelperFunctions.Local:ThridPersonDeactivate();
+    ]]);
+end
+
+---
+-- Prüft, ob die Heldenkamera aktiv ist.
+--
+-- @return boolean: Kamera aktiv
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:ThridPersonIsRuning()
+    return self.Data.ThridPersonIsActive;
+end
+
+---
+-- Überschreibt StartBriefing und EndBriefing des Briefing System,
+-- wenn es vorhanden ist.
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:THridPersonOverwriteStartAndEndBriefing()
+    if BriefingSystem then
+        BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
+        BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
+            if BundleGameHelperFunctions.Global:ThridPersonIsRuning() then
+                BundleGameHelperFunctions.Global:ThridPersonDeactivate();
+                BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode = true;
+            end
+            BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
+        end
+        StartBriefing = BriefingSystem.StartBriefing;
+
+        BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
+        BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
+            BriefingSystem.EndBriefing_Orig_HeroCamera();
+            if BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode then
+                BundleGameHelperFunctions.Global:ThridPersonActivate(0);
+                BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode = false;
+            end
+        end
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Stellt nicht-persistente Änderungen nach dem laden wieder her.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
+    -- Feste sperren --
+    Logic.StartFestival_Orig_NothingToCelebrate = nil;
+    BundleGameHelperFunctions.Global:InitFestival();
+
+    -- Geänderter Zoom --
+    if BundleGameHelperFunctions.Global.Data.ExtendedZoomActive then
+        BundleGameHelperFunctions.Global:ActivateExtendedZoom();
+    end
+
+    -- Cheats sperren --
+    if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
+        BundleGameHelperFunctions.Global:KillCheats();
+    end
+
+    -- Menschlichen Spieler ändern --
+    if BundleGameHelperFunctions.Global.Data.HumanPlayerChangedOnce then
+        Logic.ExecuteInLuaLocalState([[
+            GUI.SetControlledPlayer(]]..BundleGameHelperFunctions.Global.Data.HumanPlayerID..[[)
+            for k,v in pairs(Buffs)do
+                GUI_Buffs.UpdateBuffsInInterface(]]..BundleGameHelperFunctions.Global.Data.HumanPlayerID..[[,v)
+                GUI.ResetMiniMap()
+            end
+            if IsExisting(Logic.GetKnightID(GUI.GetPlayerID())) then
+                local portrait = GetKnightActor(]]..BundleGameHelperFunctions.Global.Data.HumanKnightType..[[)
+                g_PlayerPortrait[]]..BundleGameHelperFunctions.Global.Data.HumanPlayerID..[[] = portrait
+                LocalSetKnightPicture()
+            end
+        ]]);
+    end
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -20075,7 +20823,8 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Local:Install()
-
+    self:InitForbidSpeedUp()
+    self:InitForbidSaveGame();
 end
 
 ---
@@ -20111,8 +20860,274 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleGameHelperFunctions");
+---
+-- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+--
+-- @param _Limit Obergrenze
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
+    _Limit = (_Limit < 1 and 1) or math.floor(_Limit);
+    self.Data.SpeedLimit = _Limit;
+end
 
+---
+-- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
+-- kann nicht mehr überschritten werden.
+--
+-- @param _Flag Speedbremse ist aktiv
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
+    self.Data.UseSpeedLimit = _Flag == true;
+    if _Flag and Game.GameTimeGetFactor(GUI.GetPlayerID()) > self.Data.SpeedLimit then
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), self.Data.SpeedLimit);
+    end
+end
+
+---
+-- Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
+-- aufgerufen wird und installiert die Speedbremse.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
+    GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp = GameCallback_GameSpeedChanged;
+    GameCallback_GameSpeedChanged = function( _Speed )
+        GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp( _Speed );
+        if BundleGameHelperFunctions.Local.Data.UseSpeedLimit == true then
+            if _Speed > BundleGameHelperFunctions.Local.Data.SpeedLimit then
+                Game.GameTimeSetFactor(GUI.GetPlayerID(), BundleGameHelperFunctions.Local.Data.SpeedLimit);
+            end
+        end
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:KillCheats()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
+        "KeyBindings_EnableDebugMode(0)",
+        2,
+        false
+    );
+end
+
+---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:RessurectCheats()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
+        "KeyBindings_EnableDebugMode(2)",
+        2,
+        false
+    );
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
+    API.AddHotKey(
+        {de = "Strg + Umschalt + K",       en = "Ctrl + Shift + K"},
+        {de = "Alternativen Zoom ein/aus", en = "Alternative zoom on/off"}
+    )
+end
+
+---
+-- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.K,
+        "BundleGameHelperFunctions.Local:ToggleExtendedZoom()",
+        2,
+        false
+    );
+end
+
+---
+-- Wechselt zwischen erweitertem und normalen Zoom.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
+    API.Bridge("BundleGameHelperFunctions.Global:ToggleExtendedZoom()");
+end
+
+---
+-- Erweitert die Zoomrestriktion auf das Maximum.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
+    Camera.RTS_SetZoomFactorMax(0.8701);
+    Camera.RTS_SetZoomFactor(0.8700);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+---
+-- Stellt die normale Zoomrestriktion wieder her.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:DeactivateExtendedZoom()
+    Camera.RTS_SetZoomFactor(0.5000);
+    Camera.RTS_SetZoomFactorMax(0.5001);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:InitForbidSaveGame()
+    KeyBindings_SaveGame_Orig_Preferences_SaveGame = KeyBindings_SaveGame;
+    KeyBindings_SaveGame = function()
+        if BundleGameHelperFunctions.Local.Data.ForbidSave then
+            return;
+        end
+        KeyBindings_SaveGame_Orig_Preferences_SaveGame();
+    end
+end
+
+---
+-- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:DisplaySaveButtons(_Flag)
+    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame",  (_Flag and 0) or 1);
+    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", (_Flag and 0) or 1);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
+-- Held kann 0 sein, dann wird entweder der letzte Held verwendet
+-- oder über den GUI-Spieler ermittelt.
+--
+-- @param _Hero    Skriptname/Entity-ID des Helden
+-- @param _MaxZoom Maximaler Zoomfaktor
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ThridPersonActivate(_Hero, _MaxZoom)
+    _Hero = (_Hero ~= 0 and _Hero) or self.Data.ThridPersonLastHero or Logic.GetKnightID(GUI.GetPlayerID());
+    _MaxZoom = _MaxZoom or self.Data.ThridPersonLastZoom or 0.5;
+    if not _Hero then
+        return;
+    end
+
+    if not GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera then
+        self:ThridPersonOverwriteGetBorderScrollFactor();
+    end
+
+    self.Data.ThridPersonLastHero = _Hero;
+    self.Data.ThridPersonLastZoom = _MaxZoom;
+    self.Data.ThridPersonIsActive = true;
+
+    local Orientation = Logic.GetEntityOrientation(_Hero);
+    Camera.RTS_FollowEntity(_Hero);
+    Camera.RTS_SetRotationAngle(Orientation-90);
+    Camera.RTS_SetZoomFactor(_MaxZoom);
+    Camera.RTS_SetZoomFactorMax(_MaxZoom + 0.0001);
+end
+
+---
+-- Deaktiviert die Heldenkamera.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ThridPersonDeactivate()
+    self.Data.ThridPersonIsActive = false;
+    Camera.RTS_SetZoomFactorMax(0.5);
+    Camera.RTS_SetZoomFactor(0.5);
+    Camera.RTS_FollowEntity(0);
+end
+
+---
+-- Prüft, ob die Heldenkamera aktiv ist.
+--
+-- @return boolean: Kamera aktiv
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ThridPersonIsRuning()
+    return self.Data.ThridPersonIsActive;
+end
+
+---
+-- Überschreibt GameCallback_GetBorderScrollFactor und wandelt den
+-- Bildlauf am Bildschirmrand in Bildrotation um. Dabei wird die
+-- Kamera um links oder rechts gedreht, abhänig von der Position
+-- der Mouse.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFactor()
+    GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera = GameCallback_Camera_GetBorderscrollFactor
+    GameCallback_Camera_GetBorderscrollFactor = function()
+        if not BundleGameHelperFunctions.Local.Data.ThridPersonIsActive then
+            return GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera();
+        end
+
+        local CameraRotation = Camera.RTS_GetRotationAngle();
+        local xS, yS = GUI.GetScreenSize();
+        local xM, yM = GUI.GetMousePosition();
+        local xR = xM / xS;
+
+        if xR <= 0.02 then
+            CameraRotation = CameraRotation + 0.3;
+        elseif xR >= 0.98 then
+            CameraRotation = CameraRotation - 0.3;
+        else
+            return 0;
+        end
+        if CameraRotation >= 360 then
+            CameraRotation = 0;
+        end
+        Camera.RTS_SetRotationAngle(CameraRotation);
+        return 0;
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleGameHelperFunctions");
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleDialogWindows                                          # --
@@ -23336,9 +24351,9 @@ Core:RegisterBehavior(b_Trigger_Briefing)-- ------------------------------------
 
 ---
 -- Dieses Bundle stellt ein Burglager zur Verfügung, das sich ähnlich wie das
--- normale Lager verhält. Das Burglager ist von der Ausbaustufe der Burg 
+-- normale Lager verhält. Das Burglager ist von der Ausbaustufe der Burg
 -- abhängig. Je weiter die Burg ausgebaut wird, desto höher ist das Limit.
--- Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit 
+-- Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit
 -- der Ware im Lagerhaus erreicht wird.
 --
 -- Der Spieler kann das allgemeine Verhalten des Lagers für alle Waren wählen,
@@ -23413,11 +24428,11 @@ BundleCastleStore = {
     },
     Local = {
         Data = {},
-        
+
         CastleStore = {
             Data = {}
         },
-        
+
         Description = {
             ShowCastle = {
                 Text = {
@@ -23425,21 +24440,21 @@ BundleCastleStore = {
                     en = "Financial view",
                 },
             },
-            
+
             ShowCastleStore = {
                 Text = {
                     de = "Lageransicht",
                     en = "Storeage view",
                 },
             },
-            
+
             GoodButtonDisabled = {
                 Text = {
                     de = "Diese Ware wird nicht angenommen.",
                     en = "This good will not be stored.",
                 },
             },
-            
+
             CityTab = {
                 Title = {
                     de = "Waren bunkern",
@@ -23450,7 +24465,7 @@ BundleCastleStore = {
                     en = "- Stores goods inside the store {cr}- Goods also remain in the warehouse when space is available",
                 },
             },
-            
+
             StorehouseTab = {
                 Title = {
                     de = "Waren zwischenlagern",
@@ -23461,7 +24476,7 @@ BundleCastleStore = {
                     en = "- Stores goods inside the store {cr}- Allows to extrac goods as soon as space becomes available",
                 },
             },
-            
+
             MultiTab = {
                 Title = {
                     de = "Lager räumen",
@@ -23487,7 +24502,7 @@ BundleCastleStore = {
 function BundleCastleStore.Global:Install()
     QSB.CastleStore = BundleCastleStore.Global.CastleStore;
     self:OverwriteGameFunctions()
-    API.AddSaveGameAction(BundleCastleStore.Local.OnSaveGameLoaded);
+    API.AddSaveGameAction(BundleCastleStore.Global.OnSaveGameLoaded);
 end
 
 ---
@@ -23504,7 +24519,7 @@ function BundleCastleStore.Global.CastleStore:New(_PlayerID)
     local Store = API.InstanceTable(self);
     Store.Data.PlayerID = _PlayerID;
     BundleCastleStore.Global.Data.CastleStoreObjects[_PlayerID] = Store;
-    
+
     if not self.Data.UpdateCastleStore then
         self.Data.UpdateCastleStore = true;
         StartSimpleJobEx(BundleCastleStore.Global.CastleStore.UpdateStores);
@@ -23545,7 +24560,7 @@ function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
     local CastleStore = self:GetInstance(_PlayerID);
     local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _WithoutMarketplace);
-    
+
     if CastleStore ~= nil and _Good ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
         Amount = Amount + CastleStore:GetAmount(_Good);
     end
@@ -23654,7 +24669,7 @@ function BundleCastleStore.Global.CastleStore:GetLimit()
     if Headquarters ~= 0 then
         Level = Logic.GetUpgradeLevel(Headquarters);
     end
-    
+
     local Capacity = self.Data.CapacityBase;
     for i= 1, (Level+1), 1 do
         Capacity = Capacity * 2;
@@ -23817,7 +24832,7 @@ end
 -- Lagert eine Menge von Waren aus dem Burglager aus.
 --
 -- <b>Alias</b>: QSB.CastleStore:Outsource
--- 
+--
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
@@ -23965,11 +24980,11 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
         local data = objective.Data;
-    
+
         if objective.Completed ~= nil then
             return objective.Completed;
         end
-        
+
         if objectiveType == Objective.Produce then
             local GoodAmount = GetPlayerGoodsInSettlement(data[1], self.ReceivingPlayer, true);
             local CastleStore = QSB.CastleStore:GetInstance(self.ReceivingPlayer);
@@ -23983,19 +24998,19 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
             return QuestTemplate.IsObjectiveCompleted_Orig_QSB_CastleStore(self, objective);
         end
     end
-    
+
     QuestTemplate.SendGoods = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Deliver then
                 if self.Objectives[i].Data[3] == nil then
                     local goodType = self.Objectives[i].Data[1]
                     local goodQuantity = self.Objectives[i].Data[2]
-                    
+
                     local amount = QSB.CastleStore:GetGoodAmountWithCastleStore(goodType, self.ReceivingPlayer, true);
                     if amount >= goodQuantity then
                         local Sender = self.ReceivingPlayer
                         local Target = self.Objectives[i].Data[6] and self.Objectives[i].Data[6] or self.SendingPlayer
-                        
+
                         local expectedMerchant = {}
                         expectedMerchant.Good = goodType
                         expectedMerchant.Amount = goodQuantity
@@ -24004,7 +25019,7 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
                         self.Objectives[i].Data[5] = expectedMerchant
                         self.Objectives[i].Data[3] = 1
                         QuestMerchants[#QuestMerchants+1] = expectedMerchant
-                        
+
                         if goodType == Goods.G_Gold then
                             local BuildingID = Logic.GetHeadquarters(Sender)
                             if BuildingID == 0 then
@@ -24016,31 +25031,31 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
                             if MapCallback_DeliverCartSpawned then
                                 MapCallback_DeliverCartSpawned( self, self.Objectives[i].Data[3], goodType )
                             end
-                        
+
                         elseif goodType == Goods.G_Water then
                             local BuildingID = Logic.GetMarketplace(Sender)
-                        
+
                             self.Objectives[i].Data[3] = Logic.CreateEntityAtBuilding(Entities.U_Marketer, BuildingID, 0, Target)
                             Logic.HireMerchant(self.Objectives[i].Data[3], Target, goodType, goodQuantity, self.ReceivingPlayer)
                             Logic.RemoveGoodFromStock(BuildingID,goodType,goodQuantity)
                             if MapCallback_DeliverCartSpawned then
                                 MapCallback_DeliverCartSpawned( self, self.Objectives[i].Data[3], goodType )
                             end
-                            
+
                         else
                             if Logic.GetGoodCategoryForGoodType(goodType) == GoodCategories.GC_Resource then
                                 local StorehouseID = Logic.GetStoreHouse(Target)
                                 local NumberOfGoodTypes = Logic.GetNumberOfGoodTypesOnOutStock(StorehouseID)
                                 if NumberOfGoodTypes ~= nil then
-                                    for j = 0, NumberOfGoodTypes-1 do        
+                                    for j = 0, NumberOfGoodTypes-1 do
                                         local StoreHouseGoodType = Logic.GetGoodTypeOnOutStockByIndex(StorehouseID,j)
                                         local Amount = Logic.GetAmountOnOutStockByIndex(StorehouseID, j)
                                         if Amount >= goodQuantity then
-                                            Logic.RemoveGoodFromStock(StorehouseID, StoreHouseGoodType, goodQuantity, false)                                        
+                                            Logic.RemoveGoodFromStock(StorehouseID, StoreHouseGoodType, goodQuantity, false)
                                         end
                                     end
                                 end
-                                
+
                                 local SenderStorehouse = Logic.GetStoreHouse(Sender);
                                 local AmountInStorehouse = GetPlayerResources(goodType, Sender);
                                 if AmountInStorehouse < goodQuantity then
@@ -24060,7 +25075,7 @@ function BundleCastleStore.Global:OverwriteGameFunctions()
                     end
                 end
             end
-        end 
+        end
     end
 end
 
@@ -24342,7 +25357,7 @@ function BundleCastleStore.Local.CastleStore:GetLimit(_PlayerID)
     if Headquarters ~= 0 then
         Level = Logic.GetUpgradeLevel(Headquarters);
     end
-    
+
     local Capacity = self.Data[_PlayerID].CapacityBase;
     for i= 1, (Level+1), 1 do
         Capacity = Capacity * 2;
@@ -24517,7 +25532,7 @@ function BundleCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _Curr
     if not self:HasCastleStore(_PlayerID) then
         return;
     end
-    
+
     local MotherContainer  = "/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InStorehouse/Goods";
     local WarningColor = "";
     if self:GetLimit(_PlayerID) == self:GetTotalAmount(_PlayerID) then
@@ -24530,7 +25545,7 @@ function BundleCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _Curr
         local BGWidget = MotherContainer.. "/" ..GoodTypeName.. "/BG";
         XGUIEng.SetText(AmountWidget, "{center}" .. WarningColor .. v[1]);
         XGUIEng.DisableButton(ButtonWidget, 0)
-        
+
         if self:IsAccepted(_PlayerID, k) then
             XGUIEng.SetMaterialColor(ButtonWidget, 0, 255, 255, 255, 255);
             XGUIEng.SetMaterialColor(ButtonWidget, 1, 255, 255, 255, 255);
@@ -24602,7 +25617,7 @@ function BundleCastleStore.Local.CastleStore:RestoreStorehouseMenu()
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InCity/Goods", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InCity", 0);
     SetIcon("/InGame/Root/Normal/AlignBottomRight/DialogButtons/PlayerButtons/DestroyGoods", {16, 8});
-    
+
     local MotherPath = "/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/";
     SetIcon(MotherPath.. "StorehouseTabButtonUp/up/B_StoreHouse", {3, 13});
     SetIcon(MotherPath.. "StorehouseTabButtonDown/down/B_StoreHouse", {3, 13});
@@ -24633,7 +25648,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleMenu()
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse", 0)
     XGUIEng.ShowWidget(MotherPath.. "Selection/BGSmall", 1)
     XGUIEng.ShowWidget(MotherPath.. "Selection/Castle", 1)
-    
+
     if g_HideSoldierPayment ~= nil then
         XGUIEng.ShowWidget(MotherPath.. "Selection/Castle/Treasury/Payment", 0)
         XGUIEng.ShowWidget(MotherPath.. "Selection/Castle/LimitSoldiers", 0)
@@ -24643,7 +25658,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleMenu()
     GUI_Trade.StorehouseSelected()
     local AnchorInfoForSmallX, AnchorInfoForSmallY = XGUIEng.GetWidgetLocalPosition(MotherPath.. "Selection/AnchorInfoForSmall")
     XGUIEng.SetWidgetLocalPosition(MotherPath.. "Selection/Info", AnchorInfoForSmallX, AnchorInfoForSmallY)
-    
+
     XGUIEng.ShowWidget(MotherPath.. "DialogButtons/PlayerButtons", 1)
     XGUIEng.ShowWidget(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 1)
     XGUIEng.DisableButton(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 0)
@@ -24671,7 +25686,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     GUI_Trade.StorehouseSelected()
     local AnchorInfoForBigX, AnchorInfoForBigY = XGUIEng.GetWidgetLocalPosition(MotherPath.. "Selection/AnchorInfoForBig")
     XGUIEng.SetWidgetLocalPosition(MotherPath.. "Selection/Info", AnchorInfoForBigX, AnchorInfoForBigY)
-    
+
     XGUIEng.ShowWidget(MotherPath.. "DialogButtons/PlayerButtons", 1)
     XGUIEng.ShowWidget(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 1)
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/InStorehouse", 1)
@@ -24680,7 +25695,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     XGUIEng.ShowAllSubWidgets(MotherPath.. "Selection/Storehouse/InCity/Goods", 0);
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/InCity/Goods/G_Beer", 1)
     XGUIEng.DisableButton(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 0)
-    
+
     local MotherPathDialog = MotherPath.. "DialogButtons/PlayerButtons/";
     local MotherPathTabs = MotherPath.. "Selection/Storehouse/TabButtons/";
     SetIcon(MotherPathDialog.. "DestroyGoods", {3, 14});
@@ -24690,7 +25705,7 @@ function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     SetIcon(MotherPathTabs.. "CityTabButtonDown/down/CityBuildingsNumber", {15, 6});
     SetIcon(MotherPathTabs.. "Tab03Up/up/B_Castle_ME", {7, 1});
     SetIcon(MotherPathTabs.. "Tab03Down/down/B_Castle_ME", {7, 1});
-    
+
     self:UpdateBehaviorTabs(GUI.GetPlayerID());
 end
 
@@ -24707,7 +25722,7 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID = GUI.GetPlayerID();
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        
+
         if _key == "UI_ObjectNames/DestroyGoods" then
             if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignBottomRight/Selection/Castle") == 1 then
                 return BundleCastleStore.Local.Description.ShowCastleStore.Text[lang];
@@ -24718,7 +25733,7 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
         if _key == "UI_ObjectDescription/DestroyGoods" then
             return "";
         end
-        
+
         if _key == "UI_ObjectNames/CityBuildingsNumber" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
                 return BundleCastleStore.Local.Description.CityTab.Title[lang];
@@ -24729,7 +25744,7 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
                 return BundleCastleStore.Local.Description.CityTab.Text[lang];
             end
         end
-        
+
         if _key == "UI_ObjectNames/B_StoreHouse" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
                 return BundleCastleStore.Local.Description.StorehouseTab.Title[lang];
@@ -24740,7 +25755,7 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
                 return BundleCastleStore.Local.Description.StorehouseTab.Text[lang];
             end
         end
-        
+
         if _key == "UI_ObjectNames/B_Castle_ME" then
             local WidgetMotherName = "/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons/";
             local WidgetDownButton = WidgetMotherName.. "Tab03Down/down/B_Castle_ME";
@@ -24756,13 +25771,13 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
                 return BundleCastleStore.Local.Description.MultiTab.Text[lang];
             end
         end
-        
+
         if _key == "UI_ButtonDisabled/NotEnoughGoods" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
                 return BundleCastleStore.Local.Description.GoodButtonDisabled.Text[lang];
             end
         end
-        
+
         return GetStringTableText_Orig_QSB_CatsleStore(_key);
     end
 end
@@ -24780,94 +25795,94 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
         GameCallback_GUI_SelectionChanged_Orig_QSB_CastleStore(_Source);
         QSB.CastleStore:SelectionChanged(GUI.GetPlayerID());
     end
-    
+
     GUI_Trade.GoodClicked_Orig_QSB_CastleStore = GUI_Trade.GoodClicked;
     GUI_Trade.GoodClicked = function()
         local GoodType = Goods[XGUIEng.GetWidgetNameByID(XGUIEng.GetWidgetsMotherID(XGUIEng.GetCurrentWidgetID()))];
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.GoodClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:GoodClicked(PlayerID, GoodType);
     end
-    
+
     GUI_Trade.DestroyGoodsClicked_Orig_QSB_CastleStore = GUI_Trade.DestroyGoodsClicked;
     GUI_Trade.DestroyGoodsClicked = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.DestroyGoodsClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:DestroyGoodsClicked(PlayerID);
     end
-    
+
     GUI_Trade.SellUpdate_Orig_QSB_CastleStore = GUI_Trade.SellUpdate;
     GUI_Trade.SellUpdate = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.SellUpdate_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:UpdateGoodsDisplay(PlayerID);
     end
-    
+
     GUI_Trade.CityTabButtonClicked_Orig_QSB_CastleStore = GUI_Trade.CityTabButtonClicked;
     GUI_Trade.CityTabButtonClicked = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.CityTabButtonClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:OnCityTabClicked(PlayerID);
     end
-    
+
     GUI_Trade.StorehouseTabButtonClicked_Orig_QSB_CastleStore = GUI_Trade.StorehouseTabButtonClicked;
     GUI_Trade.StorehouseTabButtonClicked = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.StorehouseTabButtonClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:OnStorehouseTabClicked(PlayerID);
     end
-    
+
     GUI_Trade.MultiTabButtonClicked_Orig_QSB_CastleStore = GUI_Trade.MultiTabButtonClicked;
     GUI_Trade.MultiTabButtonClicked = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_Trade.MultiTabButtonClicked_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:OnMultiTabClicked(PlayerID);
     end
-    
+
     GUI_BuildingInfo.StorageLimitUpdate_Orig_QSB_CastleStore = GUI_BuildingInfo.StorageLimitUpdate;
     GUI_BuildingInfo.StorageLimitUpdate = function()
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID   = GUI.GetPlayerID();
-        
+
         if Logic.IsEntityInCategory(SelectedID, EntityCategories.Storehouse) == 1 then
             GUI_BuildingInfo.StorageLimitUpdate_Orig_QSB_CastleStore();
             return;
         end
         QSB.CastleStore:UpdateStorageLimit(PlayerID);
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+
     GUI_Interaction.SendGoodsClicked = function()
         local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(g_Interaction.CurrentMessageQuestIndex);
         if not Quest then
@@ -24878,7 +25893,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
         local GoodAmount = Quest.Objectives[1].Data[2];
         local Costs = {GoodType, GoodAmount};
         local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs, true);
-        
+
         local PlayerID = GUI.GetPlayerID();
         if Logic.GetGoodCategoryForGoodType(GoodType) == GoodCategories.GC_Resource then
             CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
@@ -24889,7 +25904,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
                 CanBuyBoolean = (GetPlayerResources(GoodType, PlayerID) + QSB.CastleStore:GetAmount(PlayerID, GoodType)) >= GoodAmount;
             end
         end
-        
+
         local TargetPlayerID = Quest.Objectives[1].Data[6] and Quest.Objectives[1].Data[6] or Quest.SendingPlayer;
         local PlayerSectorType = PlayerSectorTypes.Thief;
         local IsReachable = CanEntityReachTarget(TargetPlayerID, Logic.GetStoreHouse(GUI.GetPlayerID()), Logic.GetStoreHouse(TargetPlayerID), nil, PlayerSectorType);
@@ -24898,7 +25913,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
             Message(MessageText);
             return
         end
-    
+
         if CanBuyBoolean == true then
             Sound.FXPlay2DSound( "ui\\menu_click");
             GUI.QuestTemplate_SendGoods(QuestIndex);
@@ -24907,7 +25922,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
             Message(CanNotBuyString);
         end
     end
-    
+
     GUI_Tooltip.SetCosts = function(_TooltipCostsContainer, _Costs, _GoodsInSettlementBoolean)
         local TooltipCostsContainerPath = XGUIEng.GetWidgetPathByID(_TooltipCostsContainer);
         local Good1ContainerPath = TooltipCostsContainerPath .. "/1Good";
@@ -24915,7 +25930,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
         local NumberOfValidAmounts = 0;
         local Good1Path;
         local Good2Path;
-    
+
         for i = 2, #_Costs, 2 do
             if _Costs[i] ~= 0 then
                 NumberOfValidAmounts = NumberOfValidAmounts + 1;
@@ -24937,7 +25952,7 @@ function BundleCastleStore.Local:OverwriteGameFunctions()
         elseif NumberOfValidAmounts > 2 then
             GUI.AddNote("Debug: Invalid Costs table. Not more than 2 GoodTypes allowed.");
         end
-    
+
         local ContainerIndex = 1;
         for i = 1, #_Costs, 2 do
             if _Costs[i + 1] ~= 0 then
@@ -25004,4 +26019,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleCastleStore");
-

@@ -39,6 +39,8 @@
 <h2>Bundles</h2>
 <ul class="nowrap">
   <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
   <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
@@ -46,6 +48,7 @@
   <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
   <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
   <li><strong>BundleGameHelperFunctions</strong></li>
+  <li><a href="../bundles/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
   <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
   <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
   <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
@@ -68,12 +71,25 @@
 <div id="content">
 
 <h1>Bundle <code>BundleGameHelperFunctions</code></h1>
-<p></p>
+<p>Dieses Bundle gibt dem Mapper einige Werkzeuge in die Hand, um einige
+ Features zu gewähren oder zu verwähren.</p>
 <p></p>
 
 
 <h2><a href="#User_Space">User-Space</a></h2>
 <table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ActivateExtendedZoom">API.ActivateExtendedZoom (_Flag)</a></td>
+	<td class="summary">Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ActivateSpeedLimit">API.ActivateSpeedLimit (_Flag)</a></td>
+	<td class="summary">Aktiviert die Speedbremse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.AllowFestival">API.AllowFestival (_PlayerID)</a></td>
+	<td class="summary">Erlaubt ein normales Fest und gibt die Technologie frei.</td>
+	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.FocusCameraOnEntity">API.FocusCameraOnEntity (_Entity, _Rotation, _ZoomFactor)</a></td>
 	<td class="summary">Fokusiert die Kamera auf dem Entity.</td>
@@ -83,9 +99,45 @@
 	<td class="summary">Fokusiert die Kamera auf dem Primärritter des Spielers.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.ForbidFestival">API.ForbidFestival (_PlayerID)</a></td>
+	<td class="summary">Verbietet ein normales Fest und sperrt die Technologie.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ForbidSaveGame">API.ForbidSaveGame (_Flag)</a></td>
+	<td class="summary">Sperrt das Speichern von Spielständen oder gibt es wieder frei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetControllingPlayer">API.GetControllingPlayer ()</a></td>
+	<td class="summary">Gibt die ID des kontrollierenden Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.KillCheats">API.KillCheats ()</a></td>
+	<td class="summary">Deaktiviert die Tastenkombination zum Einschalten der Cheats.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.RessurectCheats">API.RessurectCheats ()</a></td>
+	<td class="summary">Aktiviert die Tastenkombination zum Einschalten der Cheats.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetControllingPlayer">API.SetControllingPlayer (_OldID, _NewID, _NewName, _RetainKnight)</a></td>
+	<td class="summary">Wechselt die Spieler ID des menschlichen Spielers.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.SetNeedSatisfaction">API.SetNeedSatisfaction (_Need, _State, _PlayerID)</a></td>
 	<td class="summary">Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
  des angegebenen Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetSpeedLimit">API.SetSpeedLimit (_Limit)</a></td>
+	<td class="summary">Setzt die Obergrenze für die Spielgeschwindigkeit fest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartCityUpgradeFestival">API.StartCityUpgradeFestival (_PlayerID)</a></td>
+	<td class="summary">Startet ein Beförderungsfest für den Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartNormalFestival">API.StartNormalFestival (_PlayerID)</a></td>
+	<td class="summary">Startet ein Fest für den Spieler.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.UndiscoverTerritories">API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</a></td>
@@ -111,6 +163,73 @@
     <h2 class="section-header "><a name="User_Space"></a>User-Space</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "API.ActivateExtendedZoom"></a>
+    <strong>API.ActivateExtendedZoom (_Flag)</strong>
+    </dt>
+    <dd>
+    Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
+<p> <b>Alias:</b> ActivateExtendedZoom
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Erweiterter Zoom gestattet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ActivateSpeedLimit"></a>
+    <strong>API.ActivateSpeedLimit (_Flag)</strong>
+    </dt>
+    <dd>
+    Aktiviert die Speedbremse.  Die vorher eingestellte Maximalgeschwindigkeit
+ kann nicht mehr überschritten werden.
+<p> <b>Alias:</b> ActivateSpeedLimit
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Speedbremse ist aktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.AllowFestival"></a>
+    <strong>API.AllowFestival (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Erlaubt ein normales Fest und gibt die Technologie frei.
+<p> <b>Alias:</b> AllowFestival
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Spieler
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
     <dt>
     <a name = "API.FocusCameraOnEntity"></a>
     <strong>API.FocusCameraOnEntity (_Entity, _Rotation, _ZoomFactor)</strong>
@@ -168,6 +287,137 @@
 
 </dd>
     <dt>
+    <a name = "API.ForbidFestival"></a>
+    <strong>API.ForbidFestival (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Verbietet ein normales Fest und sperrt die Technologie.
+<p> <b>Alias:</b> ForbidFestival
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Spieler
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ForbidSaveGame"></a>
+    <strong>API.ForbidSaveGame (_Flag)</strong>
+    </dt>
+    <dd>
+    Sperrt das Speichern von Spielständen oder gibt es wieder frei.
+<p> <b>Alias:</b> ForbidSaveGame
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Speichern gesperrt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetControllingPlayer"></a>
+    <strong>API.GetControllingPlayer ()</strong>
+    </dt>
+    <dd>
+    Gibt die ID des kontrollierenden Spielers zurück.  Der erste als menschlich
+ definierte Spieler wird als kontrollierender Spieler angenommen.
+<p> <b>Alias:</b> PlayerGetPlayerID
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: PlayerID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.KillCheats"></a>
+    <strong>API.KillCheats ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+<p> <b>Alias:</b> KillCheats
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.RessurectCheats"></a>
+    <strong>API.RessurectCheats ()</strong>
+    </dt>
+    <dd>
+    Aktiviert die Tastenkombination zum Einschalten der Cheats.
+<p> <b>Alias:</b> RessurectCheats
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetControllingPlayer"></a>
+    <strong>API.SetControllingPlayer (_OldID, _NewID, _NewName, _RetainKnight)</strong>
+    </dt>
+    <dd>
+    Wechselt die Spieler ID des menschlichen Spielers.  Die neue ID muss
+ einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
+ Mode verwendet werden.
+<p> <b>Alias:</b> PlayerSetPlayerID
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_OldID</span>
+                Alte ID des menschlichen Spielers
+        </li>
+        <li><span class="parameter">_NewID</span>
+                Neue ID des menschlichen Spielers
+        </li>
+        <li><span class="parameter">_NewName</span>
+         Name in der Statistik
+        </li>
+        <li><span class="parameter">_RetainKnight</span>
+         Ritter mitnehmen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.SetNeedSatisfaction"></a>
     <strong>API.SetNeedSatisfaction (_Need, _State, _PlayerID)</strong>
     </dt>
@@ -189,6 +439,74 @@
         </li>
         <li><span class="parameter">_PlayerID</span>
          Partei oder nil für alle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetSpeedLimit"></a>
+    <strong>API.SetSpeedLimit (_Limit)</strong>
+    </dt>
+    <dd>
+    Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+<p> <b>Alias:</b> SetSpeedLimit
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Limit</span>
+         Obergrenze
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartCityUpgradeFestival"></a>
+    <strong>API.StartCityUpgradeFestival (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Startet ein Beförderungsfest für den Spieler.  Ist dieser Typ
+ von Fest für den Spieler verboten, wird er automatisch erlaubt.
+<p> <b>Alias:</b> StartCityUpgradeFestival
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Spieler
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartNormalFestival"></a>
+    <strong>API.StartNormalFestival (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Startet ein Fest für den Spieler.  Ist dieser Typ von Fest für
+ den Spieler verboten, wird er automatisch erlaubt.
+<p> <b>Alias:</b> StartNormalFestival
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Spieler
         </li>
     </ul>
 
@@ -282,7 +600,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-02-09 19:08:38 </i>
+<i style="float:right;">Last updated 2018-02-20 09:34:02 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -5,7 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+-- Fügt Rückbau, Single Stop und Viehzucht hinzu. Außerdem bekommt der Mapper
+-- die Möglichkeit bis zu 2 Gebäudeschalter an einem Gebäude anzubringen.
 --
 -- @module BundleBuildingButtons
 -- @set sort=true
@@ -32,7 +33,7 @@ function API.ActivateSingleStop()
         API.Bridge("API.ActivateSingleStop()");
         return;
     end
-    
+
     BundleBuildingButtons.Local:AddOptionalButton(
         2,
         BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action,
@@ -88,7 +89,7 @@ function API.UseBreedCattle(_flag)
         API.Bridge("API.UseBreedCattle(" ..tostring(_flag).. ")");
         return;
     end
-    
+
     BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
     if _flag == true then
         local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow];
@@ -115,7 +116,7 @@ function API.UseBreedSheeps(_flag)
         API.Bridge("API.UseBreedSheeps(" ..tostring(_flag).. ")");
         return;
     end
-    
+
     BundleBuildingButtons.Local.Data.BreedSheeps = _flag == true;
     if _flag == true then
         local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Sheep]
@@ -142,7 +143,7 @@ function API.UseBreedCattle(_flag)
         API.Bridge("API.UseBreedCattle(" ..tostring(_flag).. ")");
         return;
     end
-    
+
     BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
     if _flag == true then
         local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow];
@@ -160,7 +161,7 @@ UseBreedCattle = API.UseBreedCattle;
 -- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
 --
 -- <b>Alias:</b> SetSheepGrainCost
--- 
+--
 -- @param _Amount Getreidekosten
 -- @within User-Space
 --
@@ -177,7 +178,7 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 -- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
 --
 -- <b>Alias:</b> SetCattleGrainCost
--- 
+--
 -- @param _Amount Getreidekosten
 -- @within User-Space
 --
@@ -194,7 +195,7 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 -- Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.
 --
 -- <b>Alias:</b> SetSheepNeeded
--- 
+--
 -- @param _Amount Benötigte Menge
 -- @within User-Space
 --
@@ -214,7 +215,7 @@ SetSheepNeeded = API.SetSheepNeeded;
 -- Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.
 --
 -- <b>Alias:</b> SetCattleNeeded
--- 
+--
 -- @param _Amount Benötigte Menge
 -- @within User-Space
 --
@@ -239,25 +240,25 @@ BundleBuildingButtons = {
         Data = {}
     },
     Local = {
-        Data = {            
+        Data = {
             OptionalButton1 = {
                 UseButton = false,
             },
             OptionalButton2 = {
                 UseButton = false,
             },
-            
+
             StoppedBuildings = {},
             ReservedGoods = {},
             Downgrade = true,
-            
+
             BreedCattle = true,
             CattleCosts = 10,
             CattleNeeded = 3,
             -- TODO implement API method to set value
             CattleKnightTitle = 0,
             CattleMoneyCost = 300,
-            
+
             BreedSheeps = true,
             SheepCosts = 10,
             SheepNeeded = 3,
@@ -265,7 +266,7 @@ BundleBuildingButtons = {
             SheepKnightTitle = 0,
             SheepMoneyCost = 300,
         },
-        
+
         Description = {
             Downgrade = {
                 Title = {
@@ -281,7 +282,7 @@ BundleBuildingButtons = {
                     en = "Can not be downgraded yet!",
                 },
             },
-    
+
             BuyCattle = {
                 Title = {
                     de = "Nutztier kaufen",
@@ -296,7 +297,7 @@ BundleBuildingButtons = {
                     en = "Buy not possible!",
                 },
             },
-    
+
             SingleStop = {
                 Title = {
                     de = "Arbeit anhalten/aufnehmen",
@@ -338,13 +339,13 @@ function BundleBuildingButtons.Local:Install()
     MerchantSystem.BasePrices[Goods.G_Sheep]         = BundleBuildingButtons.Local.Data.SheepMoneyCost;
     MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
     MerchantSystem.BasePrices[Goods.G_Cow]           = BundleBuildingButtons.Local.Data.CattleMoneyCost;
-    
+
     self:OverwriteHouseMenuButtons();
     self:OverwriteBuySiegeEngine();
     self:OverwriteToggleTrap();
     self:OverwriteGateOpenClose();
     self:OverwriteAutoToggle();
-    
+
     Core:AppendFunction(
         "GameCallback_GUI_SelectionChanged",
         self.OnSelectionChanged
@@ -352,7 +353,7 @@ function BundleBuildingButtons.Local:Install()
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -381,7 +382,7 @@ function BundleBuildingButtons.Local:BuyAnimal(_eID)
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -405,10 +406,13 @@ end
 -- Fügt einen Button dem Hausmenü hinzu. Es können nur 2 Buttons
 -- hinzugefügt werden. Buttons brauchen immer eine Action-, eine
 -- Tooltip- und eine Update-Funktion.
+--
 -- @param _idx              Indexposition des Button (1 oder 2)
 -- @param _actionFunction   Action-Funktion (String in Global)
 -- @param _tooltipFunction  Tooltip-Funktion (String in Global)
 -- @param _updateFunction   Update-Funktion (String in Global)
+-- @within Application-Space
+-- @local
 --
 function BundleBuildingButtons.Local:AddOptionalButton(_idx, _actionFunction, _tooltipFunction, _updateFunction)
     if not GUI then
@@ -426,7 +430,7 @@ function BundleBuildingButtons.Local:AddOptionalButton(_idx, _actionFunction, _t
         ]]);
         return;
     end
-    
+
     assert(_idx == 1 or _idx == 2);
     local wID = {
         XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateAutoToggle"),
@@ -441,7 +445,10 @@ end
 
 ---
 -- Entfernt den Zusatz-Button auf dem Index.
+--
 -- @param _idx Indexposition des Button (1 oder 2)
+-- @within Application-Space
+-- @local
 --
 function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
     if not GUI then
@@ -451,7 +458,7 @@ function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
         ]]);
         return;
     end
-    
+
     assert(_idx == 1 or _idx == 2);
     local wID = {
         XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateAutoToggle"),
@@ -465,7 +472,7 @@ function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -490,7 +497,7 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
         end
         BundleBuildingButtons.Local.Data.OptionalButton1.TooltipFunction(CurrentWidgetID, EntityID);
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.GateAutoToggleUpdate = function()
@@ -524,7 +531,7 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -538,7 +545,7 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
         end
         BundleBuildingButtons.Local.Data.OptionalButton2.ActionFunction(CurrentWidgetID, EntityID);
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.GateOpenCloseMouseOver = function()
@@ -549,7 +556,7 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
         end
         BundleBuildingButtons.Local.Data.OptionalButton2.TooltipFunction(CurrentWidgetID, EntityID);
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.GateOpenCloseUpdate = function()
@@ -584,7 +591,7 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -593,7 +600,7 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
     GUI_BuildingButtons.TrapToggleClicked = function()
         BundleBuildingButtons.Local:DowngradeBuilding();
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.TrapToggleMouseOver = function()
@@ -604,7 +611,7 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
             BundleBuildingButtons.Local.Description.Downgrade.Disabled[lang]
         );
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.TrapToggleUpdate = function()
@@ -676,7 +683,7 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -715,9 +722,9 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
             GUI_Tooltip.TooltipBuy(Costs,nil,nil,_TechnologyType);
         end
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+
     GUI_BuildingButtons.BuySiegeEngineCartClicked_OrigTHEA_Buildings = GUI_BuildingButtons.BuySiegeEngineCartClicked
     GUI_BuildingButtons.BuySiegeEngineCartClicked = function(_EntityType)
         local BarrackID = GUI.GetSelectedEntity()
@@ -729,9 +736,9 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
             GUI_BuildingButtons.BuySiegeEngineCartClicked_OrigTHEA_Buildings(_EntityType)
         end
     end
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+
     GUI_BuildingButtons.BuySiegeEngineCartUpdate = function(_Technology)
         local PlayerID = GUI.GetPlayerID();
         local KnightTitle = Logic.GetKnightTitle(PlayerID);
@@ -762,7 +769,7 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
                 if BundleBuildingButtons.Local.Data.BreedCattle then
                     XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
                     XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
-                    
+
                     if curAnimal >= maxAnimal then
                         XGUIEng.DisableButton(CurrentWidgetID, 1);
                     elseif grain < BundleBuildingButtons.Local.Data.CattleCosts then
@@ -794,7 +801,7 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
                 if BundleBuildingButtons.Local.Data.BreedSheeps then
                     XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
                     XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
-                    
+
                     if curAnimal >= maxAnimal then
                         XGUIEng.DisableButton(CurrentWidgetID, 1);
                     elseif grain < BundleBuildingButtons.Local.Data.SheepCosts then
@@ -836,7 +843,7 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -940,7 +947,7 @@ function BundleBuildingButtons.Local:TextNormal(_Title, _Text, _DisabledText)
     local TooltipContainerSizeWidgets = {TooltipBGWidget};
     GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget);
     GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer);
-    
+
     _DisabledText = _DisabledText or "";
     local disabled = ""
     if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _DisabledText ~= "" and _Text ~= "" then
@@ -995,7 +1002,7 @@ function BundleBuildingButtons.Local:TextCosts(_Title, _Text, _DisabledText, _Co
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -1007,7 +1014,7 @@ function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action(WidgetID, En
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -1021,7 +1028,7 @@ function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, E
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -1041,7 +1048,7 @@ function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update(_WidgetID, _
 end
 
 ---
--- 
+--
 --
 -- @within Application-Space
 -- @local
@@ -1058,4 +1065,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleBuildingButtons");
-
