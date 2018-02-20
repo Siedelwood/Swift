@@ -20249,13 +20249,13 @@ AllowFestival = API.AllowFestival;
 --
 -- @param _OldID        Alte ID des menschlichen Spielers
 -- @param _NewID        Neue ID des menschlichen Spielers
--- @param _NewName Name in der Statistik
+-- @param _NewName      Name in der Statistik
 -- @param _RetainKnight Ritter mitnehmen
 -- @within User-Space
 --
 function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
     if GUI then
-        API.Bridge("API.SetControllingPlayer(".. _OldID ..", ".. _NewID ..", ".. _NewName ..", ".. tostring(_RetainKnight) ..")");
+        API.Bridge("API.SetControllingPlayer(".. _OldID ..", ".. _NewID ..", '".. _NewName .."', ".. tostring(_RetainKnight) ..")");
         return;
     end
     return BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight);
@@ -20294,7 +20294,8 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 --
 function API.ThridPersonActivate(_Hero, _MaxZoom)
     if GUI then
-        API.Bridge("API.ThridPersonActivate(".. _Hero ..", ".. _MaxZoom ..")");
+        local Target = (type(_Hero) == "string" and "'".._Hero.."'") or _Hero;
+        API.Bridge("API.ThridPersonActivate(".. Target ..", ".. _MaxZoom ..")");
         return;
     end
     return BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom);
@@ -20336,6 +20337,41 @@ function API.ThridPersonIsRuning()
 end
 HeroCameraIsRuning = API.ThridPersonIsRuning;
 
+---
+-- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
+-- zurück, der die Verfolgung steuert.
+--
+-- @param _Entity   Entity das folgt
+-- @param _Knight   Held
+-- @param _Distance Entfernung, die uberschritten sein muss
+-- @param _Angle    Ausrichtung
+-- @return number: Job-ID
+-- @within User-Space
+--
+function API.AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
+    if GUI then
+        local Target = (type(_Entity) == "string" and "'".._Entity.."'") or _Entity;
+        local Knight = (type(_Knight) == "string" and "'".._Knight.."'") or _Knight;
+        API.Bridge("API.StopFollowKnightSave(" ..Target.. ", " ..Knight.. ", " .._Distance.. "," .._Angle.. ")");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle);
+end
+
+---
+-- Beendet einen Verfolgungsjob.
+--
+-- @param _JobID Job-ID
+-- @within User-Space
+--
+function API.StopFollowKnightSave(_JobID)
+    if GUI then
+        API.Bridge("API.StopFollowKnightSave(" .._JobID.. ")");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
+end
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -20348,6 +20384,7 @@ BundleGameHelperFunctions = {
             HumanPlayerID = 1,
             ExtendedZoomAllowed = true,
             FestivalBlacklist = {},
+            FollowKnightSave = {},
         }
     },
     Local = {
@@ -20757,7 +20794,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleGameHelperFunctions.Global:THridPersonOverwriteStartAndEndBriefing()
+function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
     if BriefingSystem then
         BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
         BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
@@ -20779,6 +20816,97 @@ function BundleGameHelperFunctions.Global:THridPersonOverwriteStartAndEndBriefin
         end
     end
 end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
+-- zurück, der die Verfolgung steuert.
+--
+-- @param _Entity   Entity das folgt
+-- @param _Knight   Held
+-- @param _Distance Entfernung, die uberschritten sein muss
+-- @param _Angle    Ausrichtung
+-- @return number: Job-ID
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
+    local EntityID = GetID(_Entity);
+    local KnightID = GetID(_Knight);
+    _Angle = _Angle or 0;
+
+    local JobID = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN,
+                                         nil,
+                                         "ControlFollowKnightSave",
+                                         1,
+                                         {},
+                                         {EntityID, KnightID, _Distance, _Angle});
+
+    table.insert(self.Data.FollowKnightSave, JobID);
+    return JobID;
+end
+
+---
+-- Beendet einen Verfolgungsjob.
+--
+-- @param _JobID Job-ID
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
+    for k,v in pairs(self.Data.FollowKnightSave) do
+        if _JobID == v then
+            self.Data.FollowKnightSave[k] = nil;
+            EndJob(_JobID);
+        end
+    end
+end
+
+---
+-- Kontrolliert die Verfolgung eines Helden durch einen Siedler.
+-- @internal
+--
+-- @param _Entity   Entity das folgt
+-- @param _Knight   Held
+-- @param _Distance Entfernung, die uberschritten sein muss
+-- @param _Angle    Ausrichtung
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
+    -- Entity oder Held sind hinüber bzw. haben ihre ID veründert
+    if not IsExisting(_KnightID) or not IsExisting(_EntityID) then
+        return true;
+    end
+
+    -- Wenn Entity ein Held ist, dann nur, wenn Entity nicht komatös ist
+    if Logic.IsKnight(_EntityID) and Logic.KnightGetResurrectionProgress(_EntityID) ~= 1 then
+        return false;
+    end
+    -- Wenn Knight ein Held ist, dann nur, wenn Knight nicht komatös ist
+    if Logic.IsKnight(_KnightID) and Logic.KnightGetResurrectionProgress(_KnightID) ~= 1 then
+        return false;
+    end
+
+    if  Logic.IsEntityMoving(_EntityID) == false and Logic.IsFighting(_EntityID) == false
+    and IsNear(_EntityID, _KnightID, _Distance+300) == false then
+        -- Relative Position hinter Held bestimmen
+        local x, y, z = Logic.EntityGetPos(_KnightID);
+        local orientation = Logic.GetEntityOrientation(_KnightID)-(180+_Angle);
+        local xBehind = x + _Distance * math.cos(math.rad(orientation));
+        local yBehind = y + _Distance * math.sin(math.rad(orientation));
+
+        -- Relative Position blockingsicher machen
+        local NoBlocking = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, xBehind, yBehind, 0, 0);
+        local x, y, z = Logic.EntityGetPos(NoBlocking);
+        DestroyEntity(NoBlocking);
+
+        -- Zur neuen unblockierten Position bewegen
+        Logic.MoveSettler(_EntityID, x, y);
+    end
+end
+ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSave;
 
 -- -------------------------------------------------------------------------- --
 
