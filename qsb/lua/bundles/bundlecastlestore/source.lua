@@ -167,7 +167,7 @@ end
 --
 -- @param number _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:New(_PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
@@ -192,7 +192,7 @@ end
 --
 -- @param number _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetInstance(_PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
@@ -209,7 +209,7 @@ end
 -- @param number _Good          Warentyp
 -- @param number _PlayeriD      ID des Spielers
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _WithoutMarketplace)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
@@ -227,7 +227,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:Dispose
 --
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:Dispose()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -246,7 +246,7 @@ end
 -- @param number _Good      Warentyp
 -- @param number _Limit     Obergrenze
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -264,7 +264,7 @@ end
 --
 -- @param number _Limit     Maximale Kapazität
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:SetStorageLimit(_Limit)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -282,7 +282,7 @@ end
 --
 -- @param number _Good  Warentyp
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetAmount(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -298,7 +298,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GetTotalAmount
 --
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetTotalAmount()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -315,7 +315,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GetLimit
 --
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetLimit()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -339,7 +339,7 @@ end
 --
 -- @param number _Good  Warentyp
 -- @return boolean
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:IsGoodAccepted(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -354,7 +354,7 @@ end
 -- @param number _Good      Watentyp
 -- @param boolean _Flag     Akzeptanz-Flag
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:SetGoodAccepted(_Good, _Flag)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -374,7 +374,7 @@ end
 --
 -- @param number _Good  Warentyp
 -- @return boolean
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:IsGoodLocked(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -389,7 +389,7 @@ end
 -- @param number _Good      Watentyp
 -- @param boolean _Flag     Akzeptanz-Flag
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:SetGoodLocked(_Good, _Flag)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -520,7 +520,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:Add(_Good, _Amount)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -548,7 +548,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:Remove(_Good, _Amount)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -821,7 +821,7 @@ end
 -- @param number _Good          Warentyp
 -- @param number _PlayeriD      ID des Spielers
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _WithoutMarketplace)
     assert(self == BundleCastleStore.Local.CastleStore, "Can not be used from instance!");

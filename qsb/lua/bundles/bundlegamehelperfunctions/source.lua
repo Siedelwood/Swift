@@ -446,6 +446,12 @@ BundleGameHelperFunctions = {
             ThirdPersonLastZoom = nil,
         }
     },
+    Shared = {
+        Data = {
+            TimeLineUniqueJobID = 1,
+            TimeLineJobs = {},
+        },
+    }
 }
 
 -- Global Script ---------------------------------------------------------------
@@ -457,8 +463,8 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
-
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
+    QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
 end
 
 ---
@@ -913,6 +919,8 @@ end
 function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSpeedUp()
     self:InitForbidSaveGame();
+
+    QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
 end
 
 ---
@@ -1210,6 +1218,127 @@ function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFact
         end
         Camera.RTS_SetRotationAngle(CameraRotation);
         return 0;
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
+-- an denen eine Aktion ausgeführt wird.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineStart
+--
+-- @param _description     Beschreibung
+-- @return number
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineStart(_description)
+    local JobID = self.Data.TimeLineUniqueJobID;
+    self.Data.TimeLineUniqueJobID = JobID +1;
+
+    _description.Running = true;
+    _description.StartTime = Logic.GetTime();
+    _description.Iterator = 1;
+
+    -- Check auf sinnvolle Zeitabstände
+    local Last = 0;
+    for i=1, #_description, 1 do
+        if _description[i].Time < Last then
+            _description[i].Time = Last+1;
+            Last = _description[i].Time;
+        end
+    end
+
+    self.Data.TimeLineJobs[JobID] = _description;
+    if not self.Data.ControlerID then
+        local Controler = StartSimpleJobEx( BundleGameHelperFunctions.Shared.TimeLineControler );
+        self.Data.ControlerID = Controler;
+    end
+    return JobID;
+end
+
+---
+-- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
+-- beendet, beginnt er dennoch von vorn.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineRestart
+--
+-- @param _ID  ID des Zeitstrahl
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineRestart(_ID)
+    if not self.Data.TimeLineJobs[_ID] then
+        return;
+    end
+    self.Data.TimeLineJobs[_ID].Running = true;
+    self.Data.TimeLineJobs[_ID].StartTime = Logic.GetTime();
+    self.Data.TimeLineJobs[_ID].Iterator = 1;
+end
+
+---
+-- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineIsRunning
+--
+-- @param _ID  ID des Zeitstrahl
+-- @return boolean
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineIsRunning(_ID)
+    if self.Data.TimeLineJobs[_ID] then
+        return self.Data.TimeLineJobs[_ID].Running == true;
+    end
+    return false;
+end
+
+---
+-- Hält einen Zeitstrahl an.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineYield
+--
+-- @param _ID  ID des Zeitstrahl
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineYield(_ID)
+    if not self.Data.TimeLineJobs[_ID] then
+        return;
+    end
+    self.Data.TimeLineJobs[_ID].Running = false;
+end
+
+---
+-- Stößt einen angehaltenen Zeitstrahl wieder an.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineResume
+--
+-- @param _ID  ID des Zeitstrahl
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineResume(_ID)
+    if not self.Data.TimeLineJobs[_ID] then
+        return;
+    end
+    self.Data.TimeLineJobs[_ID].Running = true;
+end
+
+---
+-- Steuert alle Zeitstrahlen.
+-- @within QSB.TimeLine
+-- @local
+--
+function BundleGameHelperFunctions.Shared.TimeLineControler()
+    for k,v in pairs(BundleGameHelperFunctions.Shared.Data.Jobs) do
+        if v.Iterator > #v then
+            BundleGameHelperFunctions.Shared.Data.Jobs[k].Running = false;
+        end
+
+        if v.Running then
+            if (v[v.Iterator].Time + v.StartTime) <= Logic.GetTime() then
+                v[v.Iterator].Action(v[v.Iterator]);
+                BundleGameHelperFunctions.Shared.Data.Jobs[k].Iterator = v.Iterator +1;
+            end
+        end
     end
 end
 

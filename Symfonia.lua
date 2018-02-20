@@ -20358,6 +20358,12 @@ BundleGameHelperFunctions = {
             ThirdPersonLastZoom = nil,
         }
     },
+    Shared = {
+        Data = {
+            TimeLineUniqueJobID = 1,
+            TimeLineJobs = {},
+        },
+    }
 }
 
 -- Global Script ---------------------------------------------------------------
@@ -20369,8 +20375,8 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
-
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
+    QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
 end
 
 ---
@@ -20825,6 +20831,8 @@ end
 function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSpeedUp()
     self:InitForbidSaveGame();
+
+    QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
 end
 
 ---
@@ -21122,6 +21130,127 @@ function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFact
         end
         Camera.RTS_SetRotationAngle(CameraRotation);
         return 0;
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
+-- an denen eine Aktion ausgeführt wird.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineStart
+--
+-- @param _description     Beschreibung
+-- @return number
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineStart(_description)
+    local JobID = self.Data.TimeLineUniqueJobID;
+    self.Data.TimeLineUniqueJobID = JobID +1;
+
+    _description.Running = true;
+    _description.StartTime = Logic.GetTime();
+    _description.Iterator = 1;
+
+    -- Check auf sinnvolle Zeitabstände
+    local Last = 0;
+    for i=1, #_description, 1 do
+        if _description[i].Time < Last then
+            _description[i].Time = Last+1;
+            Last = _description[i].Time;
+        end
+    end
+
+    self.Data.TimeLineJobs[JobID] = _description;
+    if not self.Data.ControlerID then
+        local Controler = StartSimpleJobEx( BundleGameHelperFunctions.Shared.TimeLineControler );
+        self.Data.ControlerID = Controler;
+    end
+    return JobID;
+end
+
+---
+-- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
+-- beendet, beginnt er dennoch von vorn.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineRestart
+--
+-- @param _ID  ID des Zeitstrahl
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineRestart(_ID)
+    if not self.Data.TimeLineJobs[_ID] then
+        return;
+    end
+    self.Data.TimeLineJobs[_ID].Running = true;
+    self.Data.TimeLineJobs[_ID].StartTime = Logic.GetTime();
+    self.Data.TimeLineJobs[_ID].Iterator = 1;
+end
+
+---
+-- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineIsRunning
+--
+-- @param _ID  ID des Zeitstrahl
+-- @return boolean
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineIsRunning(_ID)
+    if self.Data.TimeLineJobs[_ID] then
+        return self.Data.TimeLineJobs[_ID].Running == true;
+    end
+    return false;
+end
+
+---
+-- Hält einen Zeitstrahl an.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineYield
+--
+-- @param _ID  ID des Zeitstrahl
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineYield(_ID)
+    if not self.Data.TimeLineJobs[_ID] then
+        return;
+    end
+    self.Data.TimeLineJobs[_ID].Running = false;
+end
+
+---
+-- Stößt einen angehaltenen Zeitstrahl wieder an.
+--
+-- <b>Alias:</b> QSB.TimeLineStart:TimeLineResume
+--
+-- @param _ID  ID des Zeitstrahl
+-- @within QSB.TimeLine
+--
+function BundleGameHelperFunctions.Shared:TimeLineResume(_ID)
+    if not self.Data.TimeLineJobs[_ID] then
+        return;
+    end
+    self.Data.TimeLineJobs[_ID].Running = true;
+end
+
+---
+-- Steuert alle Zeitstrahlen.
+-- @within QSB.TimeLine
+-- @local
+--
+function BundleGameHelperFunctions.Shared.TimeLineControler()
+    for k,v in pairs(BundleGameHelperFunctions.Shared.Data.Jobs) do
+        if v.Iterator > #v then
+            BundleGameHelperFunctions.Shared.Data.Jobs[k].Running = false;
+        end
+
+        if v.Running then
+            if (v[v.Iterator].Time + v.StartTime) <= Logic.GetTime() then
+                v[v.Iterator].Action(v[v.Iterator]);
+                BundleGameHelperFunctions.Shared.Data.Jobs[k].Iterator = v.Iterator +1;
+            end
+        end
     end
 end
 
@@ -24512,7 +24641,7 @@ end
 --
 -- @param number _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:New(_PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
@@ -24537,7 +24666,7 @@ end
 --
 -- @param number _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetInstance(_PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
@@ -24554,7 +24683,7 @@ end
 -- @param number _Good          Warentyp
 -- @param number _PlayeriD      ID des Spielers
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _WithoutMarketplace)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
@@ -24572,7 +24701,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:Dispose
 --
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:Dispose()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24591,7 +24720,7 @@ end
 -- @param number _Good      Warentyp
 -- @param number _Limit     Obergrenze
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24609,7 +24738,7 @@ end
 --
 -- @param number _Limit     Maximale Kapazität
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:SetStorageLimit(_Limit)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24627,7 +24756,7 @@ end
 --
 -- @param number _Good  Warentyp
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetAmount(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24643,7 +24772,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GetTotalAmount
 --
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetTotalAmount()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24660,7 +24789,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GetLimit
 --
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetLimit()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24684,7 +24813,7 @@ end
 --
 -- @param number _Good  Warentyp
 -- @return boolean
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:IsGoodAccepted(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24699,7 +24828,7 @@ end
 -- @param number _Good      Watentyp
 -- @param boolean _Flag     Akzeptanz-Flag
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:SetGoodAccepted(_Good, _Flag)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24719,7 +24848,7 @@ end
 --
 -- @param number _Good  Warentyp
 -- @return boolean
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:IsGoodLocked(_Good)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24734,7 +24863,7 @@ end
 -- @param number _Good      Watentyp
 -- @param boolean _Flag     Akzeptanz-Flag
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:SetGoodLocked(_Good, _Flag)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24865,7 +24994,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:Add(_Good, _Amount)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -24893,7 +25022,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:Remove(_Good, _Amount)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -25166,7 +25295,7 @@ end
 -- @param number _Good          Warentyp
 -- @param number _PlayeriD      ID des Spielers
 -- @return number
--- @within User-Space
+-- @within QSB.CastleStore
 --
 function BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _WithoutMarketplace)
     assert(self == BundleCastleStore.Local.CastleStore, "Can not be used from instance!");
