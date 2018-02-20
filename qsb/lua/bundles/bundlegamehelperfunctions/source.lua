@@ -223,7 +223,79 @@ function API.ActivateExtendedZoom(_Flag)
         API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
         return;
     end
-    return BundleGameHelperFunctions.Global:AllowExtendedZoom(_Flag);
+    BundleGameHelperFunctions.Global.Data.ExtendedZoomAllowed = _Flag == true;
+    if _Flag == false then
+        BundleGameHelperFunctions.Global:DeactivateExtendedZoom();
+    end
+end
+
+---
+-- Startet ein Fest für den Spieler. Ist dieser Typ von Fest für
+-- den Spieler verboten, wird er automatisch erlaubt.
+--
+-- @param  _PlayerID Spieler
+-- @within User-Space
+--
+function API.StartNormalFestival(_PlayerID)
+    if GUI then
+        API.Bridge("API.StartNormalFestival(".. _PlayerID ..")");
+        return;
+    end
+    BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, false);
+    Logic.StartFestival(_PlayerID, 0);
+end
+
+---
+-- Startet ein Beförderungsfest für den Spieler. Ist dieser Typ
+-- von Fest für den Spieler verboten, wird er automatisch erlaubt.
+--
+-- @param _PlayerID Spieler
+-- @within User-Space
+--
+function API.StartCityUpgradeFestival(_PlayerID)
+    if GUI then
+        API.Bridge("API.StartCityUpgradeFestival(".. _PlayerID ..")");
+        return;
+    end
+    BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 1, false);
+    Logic.StartFestival(_PlayerID, 1);
+end
+
+---
+-- Verbietet ein normales Fest und sperrt die Technologie.
+--
+-- @param _PlayerID Spieler
+-- @within User-Space
+--
+function API.ForbidFestival(_PlayerID)
+    if GUI then
+        API.Bridge("API.ForbidFestival(".. _PlayerID ..")");
+        return;
+    end
+    BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, true);
+    Logic.TechnologySetState(_PlayerID, Technologies.R_Festival, TechnologyStates.Locked);
+end
+
+---
+-- Erlaubt ein normales Fest und gibt die Technologie frei.
+--
+-- @param _PlayerID Spieler
+-- @within User-Space
+--
+function API.AllowFestival(_PlayerID)
+    if GUI then
+        API.Bridge("API.AllowFestival(".. _PlayerID ..")");
+        return;
+    end
+
+    BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, false);
+    local KnightTitle = Logic.GetKnightTitle(_PlayerID)
+    local Technology = Technologies.R_Festival;
+    local State = TechnologyStates.Unlocked;
+    if KnightTitleNeededForTechnology[Technology] == nil or KnightTitle >= KnightTitleNeededForTechnology[Technology] then
+        State = TechnologyStates.Researched;
+    end
+    Logic.TechnologySetState(_PlayerID, Technology, State);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -234,6 +306,7 @@ BundleGameHelperFunctions = {
     Global = {
         Data = {
             ExtendedZoomAllowed = true,
+            FestivalBlacklist = {},
         }
     },
     Local = {
@@ -315,7 +388,7 @@ end
 function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
     if not _PlayerID then
         for i=1, 8, 1 do
-            Module_Comforts.Global.SetNeedSatisfactionLevel(_Need, _State, i);
+            self:SetNeedSatisfactionLevel(_Need, _State, i);
         end
     else
         local City = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.CityBuilding)};
@@ -359,30 +432,50 @@ function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _Knigh
     end
 end
 
+-- -------------------------------------------------------------------------- --
+
 ---
--- FIXME
+-- Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
+-- werden kann.
 --
 -- @within Application-Space
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitFestival()
+    if not Logic.StartFestival_Orig_NothingToCelebrate then
+        Logic.StartFestival_Orig_NothingToCelebrate = Logic.StartFestival;
+    end
 
+    Logic.StartFestival = function(_PlayerID, _Index)
+        if BundleGameHelperFunctions.Global.Data.FestivalBlacklist[_PlayerID] then
+            if BundleGameHelperFunctions.Global.Data.FestivalBlacklist[_PlayerID][_Index] then
+                return;
+            end
+        end
+        Logic.StartFestival_Orig_NothingToCelebrate(_PlayerID, _Index);
+    end
 end
 
--- -------------------------------------------------------------------------- --
-
 ---
--- Aktiviert oder deaktiviert den erweiterten Zoom.
+-- Erlaubt oder verbietet ein Fest für den angegebenen Spieler.
 --
+-- @param _PlayerID ID des Spielers
+-- @param _Index    Index des Fest
+-- @param _Flag     Erlauben/verbieten
 -- @within Application-Space
 -- @local
 --
-function BundleGameHelperFunctions.Global:AllowExtendedZoom(_Flag)
-    self.Data.ExtendedZoomAllowed = _Flag == true;
-    if _Flag == false then
-        self:DeactivateExtendedZoom();
+function BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, _Index, _Flag)
+    self:InitFestival();
+
+    if not self.Data.FestivalBlacklist[_PlayerID]
+    then
+        self.Data.FestivalBlacklist[_PlayerID] = {};
     end
+    self.Data.FestivalBlacklist[_PlayerID][_Index] = _Flag == true;
 end
+
+-- -------------------------------------------------------------------------- --
 
 ---
 -- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
