@@ -58,167 +58,187 @@ SymfoniaLoader = {
             --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
 
             {"BundleQuestGeneration",               true},
 
-            -- Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl 
+            -- Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl
             -- nützlicher neuer Möglichkeiten.
             --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
 
             {"BundleQuestDebug",                    true},
-            
-            -- Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen. 
+
+            -- Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen.
             -- Interaktion mit ihnen löst eine beliebige Funktion aus.
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleNonPlayerCharacter",            true},
-            
-            -- Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen. 
+
+            -- Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen.
             -- Interaktion mit ihnen löst eine beliebige Funktion aus.
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleKnightTitleRequirements",       true},
-            
+
             -- Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation
             -- der Oberfläche des Spiels.
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleInterfaceApperance",            true},
-            
+
             -- Ändert die Funktionen zur Erstellung von Angeboten und setzt
             -- neue Preise. Zudem können Angebote analysiert werden.
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleTradingFunctions",              true},
-            
+
             -- Bietet die Möglichkeit einzelne MP3-Dateien oder Playlists aus
             -- MP3-Dateien abzuspielen.
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleMusicTools",                    true},
-            
+
             -- Bietet direkten Zugriff auf die Daten eines Entities im RAM.
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleEntityScriptingValues",         true},
-            
+
             -- Ermöglicht Bau- und Abrissverbote für Gebäude.
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleConstructionControl",           true},
-            
+
             -- Steuert die Selektion von Einheiten
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleEntitySelection",               true},
-            
+
             -- Spielstände in anderen Ordnern verwalten
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleSaveGameTools",                 true},
-            
+
             -- Hilfsfunktionen zu Entities
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleEntityHelperFunctions",         true},
-            
+
             -- Allgemeine Hilfsfunktionen
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleGameHelperFunctions",           true},
-            
+
             -- Dialoge und Textfenster
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleDialogWindows",                 true},
-            
+
             -- Ermöglicht Briefings und Cutscenes
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleBriefingSystem",                true},
-            
+
             -- Burglager
-            -- 
+            --
             -- Abhängigkeiten:
             --   keine
-            -- 
+            --
             -- Inkompatibelitäten:
             --   keine
-            
+
             {"BundleCastleStore",                   true},
+
+            -- Gebäudeschalter
+            --
+            -- Abhängigkeiten:
+            --   keine
+            --
+            -- Inkompatibelitäten:
+            --   keine
+
+            {"BundleBuildingButtons",               true},
+
+            -- Interaktive Objekte
+            --
+            -- Abhängigkeiten:
+            --   keine
+            --
+            -- Inkompatibelitäten:
+            --   keine
+
+            {"BundleInteractiveObjects",            true},
         }
     }
 }
