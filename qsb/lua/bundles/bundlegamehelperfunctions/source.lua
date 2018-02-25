@@ -149,11 +149,11 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 -- @within User-Space
 --
 function API.SetSpeedLimit(_Limit)
-    if GUI then
+    if not GUI then
         API.Bridge("API.SetSpeedLimit(" .._Limit.. ")");
         return;
     end
-    return API.Bridge("BundleGameHelperFunctions.Local:SetSpeedLimit(" .._Limit.. ")");
+    return BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit);
 end
 SetSpeedLimit = API.SetSpeedLimit
 
@@ -235,7 +235,7 @@ ForbidSaveGame = API.ForbidSaveGame;
 -- @param _Flag Erweiterter Zoom gestattet
 -- @within User-Space
 --
-function API.ActivateExtendedZoom(_Flag)
+function API.AllowExtendedZoom(_Flag)
     if GUI then
         API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
         return;
@@ -245,7 +245,7 @@ function API.ActivateExtendedZoom(_Flag)
         BundleGameHelperFunctions.Global:DeactivateExtendedZoom();
     end
 end
-ActivateExtendedZoom = API.ActivateExtendedZoom;
+AllowExtendedZoom = API.AllowExtendedZoom;
 
 ---
 -- Startet ein Fest für den Spieler. Ist dieser Typ von Fest für
@@ -298,8 +298,16 @@ function API.ForbidFestival(_PlayerID)
         API.Bridge("API.ForbidFestival(".. _PlayerID ..")");
         return;
     end
+    
+    local KnightTitle = Logic.GetKnightTitle(_PlayerID)
+    local Technology = Technologies.R_Festival;
+    local State = TechnologyStates.Locked;
+    if KnightTitleNeededForTechnology[Technology] == nil or KnightTitle >= KnightTitleNeededForTechnology[Technology] then
+        State = TechnologyStates.Prohibited;
+    end
+    Logic.TechnologySetState(_PlayerID, Technology, State);
     BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, true);
-    Logic.TechnologySetState(_PlayerID, Technologies.R_Festival, TechnologyStates.Locked);
+    API.Bridge("BundleGameHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[" .._PlayerID.. "] = true");
 end
 ForbidFestival = API.ForbidFestival;
 
@@ -325,6 +333,7 @@ function API.AllowFestival(_PlayerID)
         State = TechnologyStates.Researched;
     end
     Logic.TechnologySetState(_PlayerID, Technology, State);
+    API.Bridge("BundleGameHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[" .._PlayerID.. "] = false");
 end
 AllowFestival = API.AllowFestival;
 
@@ -346,7 +355,7 @@ function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
         API.Bridge("API.SetControllingPlayer(".. _OldID ..", ".. _NewID ..", '".. _NewName .."', ".. tostring(_RetainKnight) ..")");
         return;
     end
-    return BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight);
+    return BundleGameHelperFunctions.Global:SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight);
 end
 PlayerSetPlayerID = API.SetControllingPlayer;
 
@@ -477,6 +486,7 @@ BundleGameHelperFunctions = {
     },
     Local = {
         Data = {
+            NormalFestivalLockedForPlayer = {},
             SpeedLimit = 32,
             ThirdPersonIsActive = false,
             ThirdPersonLastHero = nil,
@@ -500,6 +510,7 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
+    self:InitExtendedZoom();
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
     QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
 end
@@ -842,7 +853,7 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
-    if not BriefingSystem.StartBriefing_Orig_HeroCamera then
+    if BriefingSystem then
         BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing();
     end
 
@@ -884,22 +895,26 @@ end
 --
 function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
     if BriefingSystem then
-        BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
-        BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
-            if BundleGameHelperFunctions.Global:ThridPersonIsRuning() then
-                BundleGameHelperFunctions.Global:ThridPersonDeactivate();
-                BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode = true;
+        if not BriefingSystem.StartBriefing_Orig_HeroCamera then
+            BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
+            BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
+                if BundleGameHelperFunctions.Global:ThridPersonIsRuning() then
+                    BundleGameHelperFunctions.Global:ThridPersonDeactivate();
+                    BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode = true;
+                end
+                BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
             end
-            BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
+            StartBriefing = BriefingSystem.StartBriefing;
         end
-        StartBriefing = BriefingSystem.StartBriefing;
 
-        BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
-        BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
-            BriefingSystem.EndBriefing_Orig_HeroCamera();
-            if BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode then
-                BundleGameHelperFunctions.Global:ThridPersonActivate(0);
-                BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode = false;
+        if not BriefingSystem.EndBriefing_Orig_HeroCamera then
+            BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
+            BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
+                BriefingSystem.EndBriefing_Orig_HeroCamera();
+                if BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode then
+                    BundleGameHelperFunctions.Global:ThridPersonActivate(0);
+                    BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode = false;
+                end
             end
         end
     end
@@ -1047,6 +1062,7 @@ end
 function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSpeedUp()
     self:InitForbidSaveGame();
+    self:InitForbidFestival();
 
     QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
 end
@@ -1347,6 +1363,26 @@ function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFact
         Camera.RTS_SetRotationAngle(CameraRotation);
         return 0;
     end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- 
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:InitForbidFestival()
+    NewStartFestivalUpdate = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local PlayerID = GUI.GetPlayerID();
+        if BundleGameHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[PlayerID] then
+            XGUIEng.ShowWidget(WidgetID, 0);
+            return true;
+        end
+    end
+    Core:StackFunction("GUI_BuildingButtons.StartFestivalUpdate", NewStartFestivalUpdate);
 end
 
 -- -------------------------------------------------------------------------- --

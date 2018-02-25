@@ -1018,8 +1018,9 @@ end
 
 Core = {
     Data = {
-        Append = {
-            Functions = {},
+        Overwrite = {
+            StackedFunctions = {},
+            AppendedFunctions = {},
             Fields = {},
         },
         HotkeyDescriptions = {},
@@ -1305,6 +1306,49 @@ end
 ---
 -- Erweitert eine Funktion um eine andere Funktion.
 --
+-- Jede hinzugefügte Funktion wird vor der Originalfunktion ausgeführt. Es
+-- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
+-- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
+-- im Spiel sollte eine API-Funktion erstellt werden.
+--
+-- Wichtig: Die gestapelten Funktionen, die vor der Originalfunktion
+-- ausgeführt werden, müssen etwas zurückgeben, um die Funktion an
+-- gegebener Stelle zu verlassen.
+--
+-- @param _FunctionName
+-- @param _StackFunction
+-- @param _Index
+-- @within Application-Space
+-- @local
+--
+function Core:StackFunction(_FunctionName, _StackFunction, _Index)
+    if not self.Data.Overwrite.StackedFunctions[_FunctionName] then
+        self.Data.Overwrite.StackedFunctions[_FunctionName] = {
+            Original = self:GetFunctionInString(_FunctionName),
+            Attachments = {}
+        };
+
+        local batch = function(...)
+            local ReturnValue;
+            for k, v in pairs(self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments) do
+                ReturnValue = v(unpack(arg))
+                if ReturnValue ~= nil then
+                    return ReturnValue;
+                end
+            end
+            ReturnValue = self.Data.Overwrite.StackedFunctions[_FunctionName].Original(unpack(arg));
+            return ReturnValue;
+        end
+        self:ReplaceFunction(_FunctionName, batch);
+    end
+
+    _Index = _Index or #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments;
+    table.insert(self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments, _Index, _StackFunction);
+end
+
+---
+-- Erweitert eine Funktion um eine andere Funktion.
+--
 -- Jede hinzugefügte Funktion wird nach der Originalfunktion ausgeführt. Es
 -- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
 -- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
@@ -1317,15 +1361,15 @@ end
 -- @local
 --
 function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
-    if not self.Data.Append.Functions[_FunctionName] then
-        self.Data.Append.Functions[_FunctionName] = {
+    if not self.Data.Overwrite.AppendedFunctions[_FunctionName] then
+        self.Data.Overwrite.AppendedFunctions[_FunctionName] = {
             Original = self:GetFunctionInString(_FunctionName),
             Attachments = {}
         };
 
         local batch = function(...)
-            local ReturnValue = self.Data.Append.Functions[_FunctionName].Original(unpack(arg));
-            for k, v in pairs(self.Data.Append.Functions[_FunctionName].Attachments) do
+            local ReturnValue = self.Data.Overwrite.AppendedFunctions[_FunctionName].Original(unpack(arg));
+            for k, v in pairs(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments) do
                 ReturnValue = v(unpack(arg))
             end
             return ReturnValue;
@@ -1333,8 +1377,8 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
         self:ReplaceFunction(_FunctionName, batch);
     end
 
-    _Index = _Index or #self.Data.Append.Functions[_FunctionName].Attachments;
-    table.insert(self.Data.Append.Functions[_FunctionName].Attachments, _Index, _AppendFunction);
+    _Index = _Index or #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments;
+    table.insert(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, _Index, _AppendFunction);
 end
 
 ---
