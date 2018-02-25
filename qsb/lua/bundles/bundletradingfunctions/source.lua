@@ -167,7 +167,7 @@ end
 
 ---
 -- Ändert die maximale Menge des Angebots im Händelrgebäude.
--- TODO Test this Shit!
+-- TODO Muss noch getestet werden!
 --
 -- @param _Merchant	Händlergebäude
 -- @param _TraderID	ID des Händlers im Gebäude
@@ -247,7 +247,7 @@ function BundleTradingFunctions.Global:Install()
 end
 
 ---
---
+-- Überschreibt die Funktionen für Standardangebote.
 --
 -- @within Application-Space
 -- @local

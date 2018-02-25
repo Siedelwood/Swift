@@ -150,7 +150,7 @@ end
 ---
 -- Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
 -- des Spielstandes. Wenn nicht gespeichert werden kann, wird bis
--- zum nδchsten mφglichen Zeitpunkt gewartet.
+-- zum nächsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
 -- @within Application-Space
@@ -166,13 +166,13 @@ function BundleSaveGameTools.Local:AutoSaveGame(_name)
     local text = (lang == "de" and "Spiel wird gespeichert...") or
                   "Saving game...";
 
-    if (not IsBriefingActive or not IsBriefingActive()) and XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+    if self:CanGameBeSaved() then
         OpenDialog(text, XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
         XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
         Framework.SaveGame("Autosave "..counter.." --- ".._name, "--");
     else
         StartSimpleJobEx( function()
-            if (not IsBriefingActive or not IsBriefingActive()) and XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+            if BundleSaveGameTools.Local:CanGameBeSaved() then
                 OpenDialog(text, XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
                 XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
                 Framework.SaveGame("Autosave - "..counter.." --- ".._name, "--");
@@ -180,6 +180,26 @@ function BundleSaveGameTools.Local:AutoSaveGame(_name)
             end
         end);
     end
+end
+
+---
+-- Prüft, ob das Spiel gerade gespeichert werden kann.
+--
+-- @return boolean: Kann speichern
+-- @within Application-Space
+-- @local
+--
+function BundleSaveGameTools.Local:CanGameBeSaved()
+    if BundleGameHelperFunctions and BundleGameHelperFunctions.Local.Data.ForbidSave then
+        return false;
+    end
+    if IsBriefingActive and IsBriefingActive() then
+        return false;
+    end
+    if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") ~= 0 then
+        return false;
+    end
+    return true;
 end
 
 ---

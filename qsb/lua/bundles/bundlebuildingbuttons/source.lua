@@ -249,20 +249,17 @@ BundleBuildingButtons = {
             },
 
             StoppedBuildings = {},
-            ReservedGoods = {},
             Downgrade = true,
 
             BreedCattle = true,
             CattleCosts = 10,
             CattleNeeded = 3,
-            -- TODO implement API method to set value
             CattleKnightTitle = 0,
             CattleMoneyCost = 300,
 
             BreedSheeps = true,
             SheepCosts = 10,
             SheepNeeded = 3,
-            -- TODO implement API method to set value
             SheepKnightTitle = 0,
             SheepMoneyCost = 300,
         },
@@ -346,14 +343,11 @@ function BundleBuildingButtons.Local:Install()
     self:OverwriteGateOpenClose();
     self:OverwriteAutoToggle();
 
-    Core:AppendFunction(
-        "GameCallback_GUI_SelectionChanged",
-        self.OnSelectionChanged
-    );
+    Core:AppendFunction("GameCallback_GUI_SelectionChanged", self.OnSelectionChanged);
 end
 
 ---
---
+-- Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
 --
 -- @within Application-Space
 -- @local
@@ -382,7 +376,9 @@ function BundleBuildingButtons.Local:BuyAnimal(_eID)
 end
 
 ---
+-- Das aktuell selektierte Gebäude wird um eine Stufe zurückgebaut.
 --
+-- Ein Gebäude der Stufe 1 wird zerstört. Aktuell ist dies aber inaktiv.
 --
 -- @within Application-Space
 -- @local
@@ -472,7 +468,10 @@ function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
 end
 
 ---
+-- Überschreibt die GUI-Funktionen des inaktiven Schalters für automatisches
+-- Umschalten von Torsperren.
 --
+-- Diese Funktion implementiert den optionalen Schalter #1.
 --
 -- @within Application-Space
 -- @local
@@ -531,7 +530,9 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
 end
 
 ---
+-- Überschreibt den inaktiven Button zum öffnen/schließen von Toren.
 --
+-- Diese Funktion implementiert den optionalen Schalter #2.
 --
 -- @within Application-Space
 -- @local
@@ -591,7 +592,9 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
 end
 
 ---
+-- Überschreibt den inaktiven Button zum umschalten der Torhausfallen.
 --
+-- Diese Funktion implementiert den Rückbau.
 --
 -- @within Application-Space
 -- @local
@@ -635,25 +638,25 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
 
         -- Protection - Submodul
         if BundleConstructionControl then
-            -- Pr?fe auf Namen
+            -- Prüfe auf Namen
             if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
                 XGUIEng.ShowWidget(CurrentWidgetID, 0);
                 return;
             end
 
-            -- Pr?fe auf Typen
+            -- Prüfe auf Typen
             if Inside(eType, BundleConstructionControl.Local.Data.EntityTypes) then
                 XGUIEng.ShowWidget(CurrentWidgetID, 0);
                 return;
             end
 
-            -- Pr?fe auf Territorien
+            -- Prüfe auf Territorien
             if Inside(tID, BundleConstructionControl.Local.Data.OnTerritory) then
                 XGUIEng.ShowWidget(CurrentWidgetID, 0);
                 return;
             end
 
-            -- Pr?fe auf Category
+            -- Prüfe auf Category
             for k,v in pairs(BundleConstructionControl.Local.Data.EntityCategories) do
                 if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
                     XGUIEng.ShowWidget(CurrentWidgetID, 0);
@@ -683,7 +686,8 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
 end
 
 ---
---
+-- Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung. Dabei
+-- wird die Nutztierzucht implementiert.
 --
 -- @within Application-Space
 -- @local
@@ -843,7 +847,8 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
 end
 
 ---
---
+-- Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
+-- funktioniert.
 --
 -- @within Application-Space
 -- @local
@@ -858,29 +863,6 @@ function BundleBuildingButtons.Local:OverwriteHouseMenuButtons()
         local Buildings = GetPlayerEntities(PlayerID, EntityType);
 
         for i=1, #Buildings, 1 do
-            if BundleBuildingButtons.Local.Data.StoppedBuildings[Buildings[i]] ~= HouseMenu.StopProductionBool then
-                BundleBuildingButtons.Local.Data.StoppedBuildings[Buildings[i]] = HouseMenu.StopProductionBool;
-                GUI.SetStoppedState(Buildings[i], HouseMenu.StopProductionBool);
-            end
-        end
-    end
-
-    HouseMenuStopConsumptionClicked_Orig_tHEA_SingleReserve = HouseMenuStopConsumptionClicked;
-    HouseMenuStopConsumptionClicked = function()
-        HouseMenuStopConsumptionClicked_Orig_tHEA_SingleReserve();
-        local WidgetName = HouseMenu.Widget.CurrentBuilding;
-        local EntityType = Entities[WidgetName];
-        local GoodType = Logic.GetProductOfBuildingType(EntityType);
-        local PlayerID = GUI.GetPlayerID();
-        local Buildings = GetPlayerEntities(PlayerID, EntityType);
-
-        if BundleBuildingButtons.Local.Data.ReservedGoods[GoodType] ~= HouseMenu.StopConsumptionBool then
-            BundleBuildingButtons.Local.Data.ReservedGoods[GoodType] = HouseMenu.StopConsumptionBool;
-            GUI.SetGoodLockState(GoodType, HouseMenu.StopConsumptionBool)
-        end
-
-        for i=1, #Buildings, 1 do
-            HouseMenu.StopProductionBool = false;
             if BundleBuildingButtons.Local.Data.StoppedBuildings[Buildings[i]] ~= HouseMenu.StopProductionBool then
                 BundleBuildingButtons.Local.Data.StoppedBuildings[Buildings[i]] = HouseMenu.StopProductionBool;
                 GUI.SetStoppedState(Buildings[i], HouseMenu.StopProductionBool);
@@ -1002,7 +984,7 @@ function BundleBuildingButtons.Local:TextCosts(_Title, _Text, _DisabledText, _Co
 end
 
 ---
---
+-- Diese Funktion ist die Action von Single Stop.
 --
 -- @within Application-Space
 -- @local
@@ -1014,7 +996,7 @@ function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action(WidgetID, En
 end
 
 ---
---
+-- Diese Funktion steuert den Tooltip von Single Stop.
 --
 -- @within Application-Space
 -- @local
@@ -1028,7 +1010,7 @@ function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, E
 end
 
 ---
---
+-- Diese Funktion ist der Update Job von Single Stop.
 --
 -- @within Application-Space
 -- @local
@@ -1048,7 +1030,9 @@ function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update(_WidgetID, _
 end
 
 ---
+-- Diese Funktion wird aufgerufen, sobald sich die Selektion ändert.
 --
+-- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
 -- @within Application-Space
 -- @local

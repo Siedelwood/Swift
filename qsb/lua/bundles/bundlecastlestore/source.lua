@@ -1086,7 +1086,7 @@ function BundleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
 end
 
 ---
--- FIXME
+-- Ein GoodType-Button wurde geklickt.
 --
 -- <b>Alias</b>: QSB.CastleStore:GoodClicked
 --

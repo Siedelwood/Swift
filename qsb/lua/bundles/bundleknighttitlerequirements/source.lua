@@ -1611,7 +1611,7 @@ end
 -- das Schema für Aufstiegsbedingungen und Rechtevergabe immer beibehalten
 -- werden.
 --
--- TODO: Fehlererennung muss noch implementiert werden!
+-- TODO: Fehlererkennung muss noch implementiert werden!
 --
 -- @within BB-Funktionen
 --
