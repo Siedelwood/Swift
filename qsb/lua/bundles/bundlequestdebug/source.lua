@@ -563,7 +563,7 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:OverwriteCreateQuests()
-    self.Data.CreateQuestOriginal = CreateQuests;
+    self.Data.CreateQuestsOriginal = CreateQuests;
     CreateQuests = function()
         if not BundleQuestDebug.Global.Data.CheckAtStart then
             BundleQuestDebug.Global.Data.CreateQuestsOriginal();
