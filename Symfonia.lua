@@ -96,7 +96,7 @@ function API.InstanceTable(_Source, _Dest)
     _Dest = _Dest or {};
     assert(type(_Source) == "table")
     assert(type(_Dest) == "table")
-    
+
     for k, v in pairs(_Source) do
         if type(v) == "table" then
             _Dest[k] = API.InstanceTable(v);
@@ -147,7 +147,7 @@ function API.DumpTable(_Table, _Name)
         Start = _Name.. " = \n" ..Start;
     end
     Framework.WriteToLog(Start);
-    
+
     for k, v in pairs(_Table) do
         if type(v) == "table" then
             Framework.WriteToLog("[" ..k.. "] = ");
@@ -255,8 +255,8 @@ RestartQuestsByName = API.RestartAllQuests;
 -- neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
 -- der Quest wird manuell getriggert.
 --
--- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird 
--- ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion 
+-- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
+-- ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion
 -- angepasst oder überschrieben werden.
 --
 -- <b>Alias:</b> RestartQuestByName
@@ -518,7 +518,7 @@ end
 
 ---
 -- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
--- 
+--
 -- <b>Alias:</b> dbg
 --
 -- @param _Message Anzeigetext
@@ -534,7 +534,7 @@ dbg = API.Dbg;
 
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
--- 
+--
 -- <p><b>Alias:</b> warn</p>
 --
 -- @param _Message Anzeigetext
@@ -550,9 +550,9 @@ warn = API.Warn;
 
 ---
 -- Schreibt eine Information auf den Bildschirm und ins Log.
--- 
+--
 -- <b>Alias:</b> info
--- 
+--
 -- @param _Message Anzeigetext
 -- @within User-Space
 --
@@ -581,7 +581,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.
 --
 -- Als Voreinstellung werden alle Meldungen immer angezeigt!
--- 
+--
 -- Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
 -- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
 -- angezeigt werden.
@@ -626,7 +626,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
 -- </td>
 -- </tr>
 -- </table>
--- 
+--
 -- @param _Level Level
 -- @within User-Space
 --
@@ -945,7 +945,7 @@ end
 -- <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
 --
 -- <b>Alias:</b> AcceptAlternativeBoolean
--- 
+--
 -- @param _Value Wahrheitswert
 -- @return boolean: Wahrheitswert
 -- @within User-Space
@@ -1018,8 +1018,9 @@ end
 
 Core = {
     Data = {
-        Append = {
-            Functions = {},
+        Overwrite = {
+            StackedFunctions = {},
+            AppendedFunctions = {},
             Fields = {},
         },
         HotkeyDescriptions = {},
@@ -1161,7 +1162,7 @@ function Core:SetupLocal_HackRegisterHotkey()
         else
             XGUIEng.ShowWidget("/InGame/KeyBindingsMain/Backdrop", 0);
         end
-        
+
         if g_KeyBindingsOptions.Descriptions == nil then
             g_KeyBindingsOptions.Descriptions = {};
             DescRegister("MenuInGame");
@@ -1305,6 +1306,49 @@ end
 ---
 -- Erweitert eine Funktion um eine andere Funktion.
 --
+-- Jede hinzugefügte Funktion wird vor der Originalfunktion ausgeführt. Es
+-- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
+-- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
+-- im Spiel sollte eine API-Funktion erstellt werden.
+--
+-- Wichtig: Die gestapelten Funktionen, die vor der Originalfunktion
+-- ausgeführt werden, müssen etwas zurückgeben, um die Funktion an
+-- gegebener Stelle zu verlassen.
+--
+-- @param _FunctionName
+-- @param _StackFunction
+-- @param _Index
+-- @within Application-Space
+-- @local
+--
+function Core:StackFunction(_FunctionName, _StackFunction, _Index)
+    if not self.Data.Overwrite.StackedFunctions[_FunctionName] then
+        self.Data.Overwrite.StackedFunctions[_FunctionName] = {
+            Original = self:GetFunctionInString(_FunctionName),
+            Attachments = {}
+        };
+
+        local batch = function(...)
+            local ReturnValue;
+            for k, v in pairs(self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments) do
+                ReturnValue = v(unpack(arg))
+                if ReturnValue ~= nil then
+                    return ReturnValue;
+                end
+            end
+            ReturnValue = self.Data.Overwrite.StackedFunctions[_FunctionName].Original(unpack(arg));
+            return ReturnValue;
+        end
+        self:ReplaceFunction(_FunctionName, batch);
+    end
+
+    _Index = _Index or #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments;
+    table.insert(self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments, _Index, _StackFunction);
+end
+
+---
+-- Erweitert eine Funktion um eine andere Funktion.
+--
 -- Jede hinzugefügte Funktion wird nach der Originalfunktion ausgeführt. Es
 -- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
 -- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
@@ -1317,23 +1361,24 @@ end
 -- @local
 --
 function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
-    if not self.Data.Append.Functions[_FunctionName] then
-        self.Data.Append.Functions[_FunctionName] = {
+    if not self.Data.Overwrite.AppendedFunctions[_FunctionName] then
+        self.Data.Overwrite.AppendedFunctions[_FunctionName] = {
             Original = self:GetFunctionInString(_FunctionName),
             Attachments = {}
         };
 
         local batch = function(...)
-            self.Data.Append.Functions[_FunctionName].Original(unpack(arg));
-            for k, v in pairs(self.Data.Append.Functions[_FunctionName].Attachments) do
-                v(unpack(arg))
+            local ReturnValue = self.Data.Overwrite.AppendedFunctions[_FunctionName].Original(unpack(arg));
+            for k, v in pairs(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments) do
+                ReturnValue = v(unpack(arg))
             end
+            return ReturnValue;
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
 
-    _Index = _Index or #self.Data.Append.Functions[_FunctionName].Attachments;
-    table.insert(self.Data.Append.Functions[_FunctionName].Attachments, _Index, _AppendFunction);
+    _Index = _Index or #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments;
+    table.insert(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, _Index, _AppendFunction);
 end
 
 ---
@@ -1424,7 +1469,6 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
-
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleClassicBehaviors                                       # --
@@ -9824,7 +9868,7 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
-
+-- Hier gibt es keine Funktionen!
 
 -- -------------------------------------------------------------------------- --
 -- Goals                                                                      --
@@ -15307,7 +15351,7 @@ end
 -- das Schema für Aufstiegsbedingungen und Rechtevergabe immer beibehalten
 -- werden.
 --
--- TODO: Fehlererennung muss noch implementiert werden!
+-- TODO: Fehlererkennung muss noch implementiert werden!
 --
 -- @within BB-Funktionen
 --
@@ -16485,7 +16529,7 @@ end
 
 ---
 -- Ändert die maximale Menge des Angebots im Händelrgebäude.
--- TODO Test this Shit!
+-- TODO Muss noch getestet werden!
 --
 -- @param _Merchant	Händlergebäude
 -- @param _TraderID	ID des Händlers im Gebäude
@@ -16565,7 +16609,7 @@ function BundleTradingFunctions.Global:Install()
 end
 
 ---
---
+-- Überschreibt die Funktionen für Standardangebote.
 --
 -- @within Application-Space
 -- @local
@@ -18282,7 +18326,7 @@ function API.UnBanTypeAtTerritory(_type, _territory)
     if type(_territory) == "string" then
         _territory = GetTerritoryIDByName(_territory);
     end
-    
+
     if not BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] then
         return;
     end
@@ -18420,10 +18464,10 @@ end
 --
 function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original)
     local PlayerID = _Arg[1];
-    local Type     = _Arg[1];
-    local x        = _Arg[1];
-    local y        = _Arg[1];
-    
+    local Type     = _Arg[2];
+    local x        = _Arg[3];
+    local y        = _Arg[4];
+
     -- Auf Territorium ---------------------------------------------
 
     -- Prüfe Kategorien
@@ -18452,7 +18496,7 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
             end
         end
     end
-    
+
     -- In einem Gebiet ---------------------------------------------
 
     -- Prüfe Kategorien
@@ -18480,6 +18524,8 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
             end
         end
     end
+
+    return true;
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -18509,7 +18555,7 @@ function BundleConstructionControl.Local.DeleteEntityStateBuilding(_Arg, _Origin
     local eType = Logic.GetEntityType(_Arg[1]);
     local eName = Logic.GetEntityName(_Arg[1]);
     local tID   = GetTerritoryUnderEntity(_Arg[1]);
-    
+
     if Logic.IsConstructionComplete(_BuildingID) == 1 and Module_tHEA.GameControl.Protection then
         -- Prüfe auf Namen
         if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
@@ -18546,7 +18592,6 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleConstructionControl");
-
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleEntitySelection                                        # --
@@ -18997,7 +19042,7 @@ end
 ---
 -- Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
 -- des Spielstandes. Wenn nicht gespeichert werden kann, wird bis
--- zum nδchsten mφglichen Zeitpunkt gewartet.
+-- zum nächsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
 -- @within Application-Space
@@ -19013,13 +19058,13 @@ function BundleSaveGameTools.Local:AutoSaveGame(_name)
     local text = (lang == "de" and "Spiel wird gespeichert...") or
                   "Saving game...";
 
-    if (not IsBriefingActive or not IsBriefingActive()) and XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+    if self:CanGameBeSaved() then
         OpenDialog(text, XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
         XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
         Framework.SaveGame("Autosave "..counter.." --- ".._name, "--");
     else
         StartSimpleJobEx( function()
-            if (not IsBriefingActive or not IsBriefingActive()) and XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+            if BundleSaveGameTools.Local:CanGameBeSaved() then
                 OpenDialog(text, XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
                 XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
                 Framework.SaveGame("Autosave - "..counter.." --- ".._name, "--");
@@ -19027,6 +19072,26 @@ function BundleSaveGameTools.Local:AutoSaveGame(_name)
             end
         end);
     end
+end
+
+---
+-- Prüft, ob das Spiel gerade gespeichert werden kann.
+--
+-- @return boolean: Kann speichern
+-- @within Application-Space
+-- @local
+--
+function BundleSaveGameTools.Local:CanGameBeSaved()
+    if BundleGameHelperFunctions and BundleGameHelperFunctions.Local.Data.ForbidSave then
+        return false;
+    end
+    if IsBriefingActive and IsBriefingActive() then
+        return false;
+    end
+    if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") ~= 0 then
+        return false;
+    end
+    return true;
 end
 
 ---
@@ -20061,11 +20126,11 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 -- @within User-Space
 --
 function API.SetSpeedLimit(_Limit)
-    if GUI then
+    if not GUI then
         API.Bridge("API.SetSpeedLimit(" .._Limit.. ")");
         return;
     end
-    return API.Bridge("BundleGameHelperFunctions.Local:SetSpeedLimit(" .._Limit.. ")");
+    return BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit);
 end
 SetSpeedLimit = API.SetSpeedLimit
 
@@ -20147,7 +20212,7 @@ ForbidSaveGame = API.ForbidSaveGame;
 -- @param _Flag Erweiterter Zoom gestattet
 -- @within User-Space
 --
-function API.ActivateExtendedZoom(_Flag)
+function API.AllowExtendedZoom(_Flag)
     if GUI then
         API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
         return;
@@ -20157,7 +20222,7 @@ function API.ActivateExtendedZoom(_Flag)
         BundleGameHelperFunctions.Global:DeactivateExtendedZoom();
     end
 end
-ActivateExtendedZoom = API.ActivateExtendedZoom;
+AllowExtendedZoom = API.AllowExtendedZoom;
 
 ---
 -- Startet ein Fest für den Spieler. Ist dieser Typ von Fest für
@@ -20210,8 +20275,16 @@ function API.ForbidFestival(_PlayerID)
         API.Bridge("API.ForbidFestival(".. _PlayerID ..")");
         return;
     end
+    
+    local KnightTitle = Logic.GetKnightTitle(_PlayerID)
+    local Technology = Technologies.R_Festival;
+    local State = TechnologyStates.Locked;
+    if KnightTitleNeededForTechnology[Technology] == nil or KnightTitle >= KnightTitleNeededForTechnology[Technology] then
+        State = TechnologyStates.Prohibited;
+    end
+    Logic.TechnologySetState(_PlayerID, Technology, State);
     BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, true);
-    Logic.TechnologySetState(_PlayerID, Technologies.R_Festival, TechnologyStates.Locked);
+    API.Bridge("BundleGameHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[" .._PlayerID.. "] = true");
 end
 ForbidFestival = API.ForbidFestival;
 
@@ -20237,6 +20310,7 @@ function API.AllowFestival(_PlayerID)
         State = TechnologyStates.Researched;
     end
     Logic.TechnologySetState(_PlayerID, Technology, State);
+    API.Bridge("BundleGameHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[" .._PlayerID.. "] = false");
 end
 AllowFestival = API.AllowFestival;
 
@@ -20258,7 +20332,7 @@ function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
         API.Bridge("API.SetControllingPlayer(".. _OldID ..", ".. _NewID ..", '".. _NewName .."', ".. tostring(_RetainKnight) ..")");
         return;
     end
-    return BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight);
+    return BundleGameHelperFunctions.Global:SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight);
 end
 PlayerSetPlayerID = API.SetControllingPlayer;
 
@@ -20389,6 +20463,7 @@ BundleGameHelperFunctions = {
     },
     Local = {
         Data = {
+            NormalFestivalLockedForPlayer = {},
             SpeedLimit = 32,
             ThirdPersonIsActive = false,
             ThirdPersonLastHero = nil,
@@ -20412,6 +20487,7 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
+    self:InitExtendedZoom();
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
     QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
 end
@@ -20754,7 +20830,7 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
-    if not BriefingSystem.StartBriefing_Orig_HeroCamera then
+    if BriefingSystem then
         BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing();
     end
 
@@ -20796,22 +20872,26 @@ end
 --
 function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
     if BriefingSystem then
-        BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
-        BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
-            if BundleGameHelperFunctions.Global:ThridPersonIsRuning() then
-                BundleGameHelperFunctions.Global:ThridPersonDeactivate();
-                BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode = true;
+        if not BriefingSystem.StartBriefing_Orig_HeroCamera then
+            BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
+            BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
+                if BundleGameHelperFunctions.Global:ThridPersonIsRuning() then
+                    BundleGameHelperFunctions.Global:ThridPersonDeactivate();
+                    BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode = true;
+                end
+                BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
             end
-            BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
+            StartBriefing = BriefingSystem.StartBriefing;
         end
-        StartBriefing = BriefingSystem.StartBriefing;
 
-        BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
-        BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
-            BriefingSystem.EndBriefing_Orig_HeroCamera();
-            if BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode then
-                BundleGameHelperFunctions.Global:ThridPersonActivate(0);
-                BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode = false;
+        if not BriefingSystem.EndBriefing_Orig_HeroCamera then
+            BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
+            BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
+                BriefingSystem.EndBriefing_Orig_HeroCamera();
+                if BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode then
+                    BundleGameHelperFunctions.Global:ThridPersonActivate(0);
+                    BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode = false;
+                end
             end
         end
     end
@@ -20959,6 +21039,7 @@ end
 function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSpeedUp()
     self:InitForbidSaveGame();
+    self:InitForbidFestival();
 
     QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
 end
@@ -21264,6 +21345,26 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
+-- 
+--
+-- @within Application-Space
+-- @local
+--
+function BundleGameHelperFunctions.Local:InitForbidFestival()
+    NewStartFestivalUpdate = function()
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local PlayerID = GUI.GetPlayerID();
+        if BundleGameHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[PlayerID] then
+            XGUIEng.ShowWidget(WidgetID, 0);
+            return true;
+        end
+    end
+    Core:StackFunction("GUI_BuildingButtons.StartFestivalUpdate", NewStartFestivalUpdate);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
 -- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
 -- an denen eine Aktion ausgeführt wird.
 --
@@ -21420,7 +21521,7 @@ function API.OpenDialog(_Title, _Text, _Action)
         API.Dbg("API.OpenDialog: Can only be used in the local script!");
         return;
     end
-    
+
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Title) == "table" then
        _Title = _Title[lang];
@@ -21446,7 +21547,7 @@ function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
         API.Dbg("API.OpenRequesterDialog: Can only be used in the local script!");
         return;
     end
-    
+
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Title) == "table" then
        _Title = _Title[lang];
@@ -21472,7 +21573,7 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
         API.Dbg("API.OpenSelectionDialog: Can only be used in the local script!");
         return;
     end
-    
+
     if type(_Text) == "table" then
         _Text.de = _Text.de .. "{cr}";
         _Text.en = _Text.en .. "{cr}";
@@ -21522,7 +21623,7 @@ BundleDialogWindows = {
 -- @local
 --
 function BundleDialogWindows.Global:Install()
-    TextWindow = BundleDialogWindows.Local.TextWindow;
+
 end
 
 
@@ -21537,6 +21638,7 @@ end
 --
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
+    TextWindow = BundleDialogWindows.Local.TextWindow;
 end
 
 ---
@@ -21626,7 +21728,7 @@ function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
     if XGUIEng.IsWidgetShown(RequesterDialog) == 0 then
         assert(type(_Title) == "string");
         assert(type(_Text) == "string");
-        
+
         _Title = "{center}" .. _Title;
         if string.len(_Text) < 35 then
             _Text = _Text .. "{cr}";
@@ -21747,7 +21849,7 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
         Action = Action .. "; XGUIEng.PopPage()";
-        Action = Action .. ";BundleDialogWindows.Local.Callback(BundleDialogWindows.Local)";
+        Action = Action .. "; BundleDialogWindows.Local.Callback(BundleDialogWindows.Local)";
         XGUIEng.SetActionFunction(RequesterDialog_Ok, Action);
 
         local Container = "/InGame/Singleplayer/CustomGame/ContainerSelection/";
@@ -22093,7 +22195,6 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleDialogWindows");
-
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleBriefingSystem                                         # --
@@ -25688,7 +25789,7 @@ function BundleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
 end
 
 ---
--- FIXME
+-- Ein GoodType-Button wurde geklickt.
 --
 -- <b>Alias</b>: QSB.CastleStore:GoodClicked
 --
@@ -26276,3 +26377,2082 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleCastleStore");
+-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia BundleBuildingButtons                                        # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Fügt Rückbau, Single Stop und Viehzucht hinzu. Außerdem bekommt der Mapper
+-- die Möglichkeit bis zu 2 Gebäudeschalter an einem Gebäude anzubringen.
+--
+-- @module BundleBuildingButtons
+-- @set sort=true
+--
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Aktiviert die Single Stop Buttons.
+--
+-- Single Stop belegt den Index 1 der zusätzlichen Gebäude-Buttons!
+--
+-- <b>Alias:</b> ActivateSingleStop
+--
+-- @within User-Space
+--
+function API.ActivateSingleStop()
+    if not GUI then
+        API.Bridge("API.ActivateSingleStop()");
+        return;
+    end
+
+    BundleBuildingButtons.Local:AddOptionalButton(
+        2,
+        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action,
+        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip,
+        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update
+    );
+end
+ActivateSingleStop = API.ActivateSingleStop;
+
+---
+-- Deaktiviert die Single Stop Buttons.
+--
+-- <b>Alias:</b> DeactivateSingleStop
+--
+-- @within User-Space
+--
+function API.DeactivateSingleStop()
+    if not GUI then
+        API.Bridge("API.DeactivateSingleStop()");
+        return;
+    end
+    BundleBuildingButtons.Local:DeleteOptionalButton(2);
+end
+DeactivateSingleStop = API.DeactivateSingleStop;
+
+---
+-- Verwende Downgrade bei Stadt- und Rohstoffgebäuden.
+--
+-- <b>Alias:</b> UseDowngrade
+--
+-- @param _flag Downgrade aktiv/inaktiv
+-- @within User-Space
+--
+function API.UseDowngrade(_flag)
+    if not GUI then
+        API.Bridge("API.UseDowngrade(" ..tostring(_flag).. ")");
+        return;
+    end
+    BundleBuildingButtons.Local.Data.Downgrade = _flag == true;
+end
+UseDowngrade = API.UseDowngrade;
+
+---
+-- Erlaube oder verbiete dem Spieler Kühe zu züchten.
+--
+-- <b>Alias:</b> UseBreedCattle
+--
+-- @param _flag Kuhzucht aktiv/inaktiv
+-- @within User-Space
+--
+function API.UseBreedCattle(_flag)
+    if not GUI then
+        API.Bridge("API.UseBreedCattle(" ..tostring(_flag).. ")");
+        return;
+    end
+
+    BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
+    if _flag == true then
+        local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow];
+        MerchantSystem.BasePrices[Goods.G_Cow] = Price;
+        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
+    else
+        local Price = BundleBuildingButtons.Local.Data.CattleMoneyCost;
+        MerchantSystem.BasePrices[Goods.G_Cow] = Price;
+        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
+    end
+end
+UseBreedCattle = API.UseBreedCattle;
+
+---
+-- Erlaube oder verbiete dem Spieler Schafe zu züchten.
+--
+-- <b>Alias:</b> UseBreedSheeps
+--
+-- @param _flag Schafzucht aktiv/inaktiv
+-- @within User-Space
+--
+function API.UseBreedSheeps(_flag)
+    if not GUI then
+        API.Bridge("API.UseBreedSheeps(" ..tostring(_flag).. ")");
+        return;
+    end
+
+    BundleBuildingButtons.Local.Data.BreedSheeps = _flag == true;
+    if _flag == true then
+        local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Sheep]
+        MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
+        API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
+    else
+        local Price = BundleBuildingButtons.Local.Data.SheepMoneyCost;
+        MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
+        API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
+    end
+end
+UseBreedSheeps = API.UseBreedSheeps;
+
+---
+-- Erlaube oder verbiete dem Spieler Kühe zu züchten.
+--
+-- <b>Alias:</b> UseBreedCattle
+--
+-- @param _flag Kuhzucht aktiv/inaktiv
+-- @within User-Space
+--
+function API.UseBreedCattle(_flag)
+    if not GUI then
+        API.Bridge("API.UseBreedCattle(" ..tostring(_flag).. ")");
+        return;
+    end
+
+    BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
+    if _flag == true then
+        local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow];
+        MerchantSystem.BasePrices[Goods.G_Cow] = Price;
+        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
+    else
+        local Price = BundleBuildingButtons.Local.Data.CattleMoneyCost;
+        MerchantSystem.BasePrices[Goods.G_Cow] = Price;
+        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
+    end
+end
+UseBreedCattle = API.UseBreedCattle;
+
+---
+-- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+--
+-- <b>Alias:</b> SetSheepGrainCost
+--
+-- @param _Amount Getreidekosten
+-- @within User-Space
+--
+function API.SetSheepGrainCost(_Amount)
+    if not GUI then
+        API.Bridge("API.SetSheepGrainCost(" .._Amount.. ")");
+        return;
+    end
+    BundleBuildingButtons.Local.Data.SheepCosts = _Amount;
+end
+SetSheepGrainCost = API.SetSheepGrainCost;
+
+---
+-- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+--
+-- <b>Alias:</b> SetCattleGrainCost
+--
+-- @param _Amount Getreidekosten
+-- @within User-Space
+--
+function API.SetCattleGrainCost(_Amount)
+    if not GUI then
+        API.Bridge("API.SetCattleGrainCost(" .._Amount.. ")");
+        return;
+    end
+    BundleBuildingButtons.Local.Data.CattleCosts = _Amount;
+end
+SetCattleGrainCost = API.SetCattleGrainCost;
+
+---
+-- Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.
+--
+-- <b>Alias:</b> SetSheepNeeded
+--
+-- @param _Amount Benötigte Menge
+-- @within User-Space
+--
+function API.SetSheepNeeded(_Amount)
+    if not GUI then
+        API.Bridge("API.SetSheepNeeded(" .._Amount.. ")");
+        return;
+    end
+    if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
+        API.Dbg("API.SetSheepNeeded: Needed amount is invalid!");
+    end
+    BundleBuildingButtons.Local.Data.SheepNeeded = _Amount;
+end
+SetSheepNeeded = API.SetSheepNeeded;
+
+---
+-- Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.
+--
+-- <b>Alias:</b> SetCattleNeeded
+--
+-- @param _Amount Benötigte Menge
+-- @within User-Space
+--
+function API.SetCattleNeeded(_Amount)
+    if not GUI then
+        API.Bridge("API.SetCattleNeeded(" .._Amount.. ")");
+        return;
+    end
+    if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
+        API.Dbg("API.SetCattleNeeded: Needed amount is invalid!");
+    end
+    BundleBuildingButtons.Local.Data.CattleNeeded = _Amount;
+end
+SetCattleNeeded = API.SetCattleNeeded;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+BundleBuildingButtons = {
+    Global = {
+        Data = {}
+    },
+    Local = {
+        Data = {
+            OptionalButton1 = {
+                UseButton = false,
+            },
+            OptionalButton2 = {
+                UseButton = false,
+            },
+
+            StoppedBuildings = {},
+            Downgrade = true,
+
+            BreedCattle = true,
+            CattleCosts = 10,
+            CattleNeeded = 3,
+            CattleKnightTitle = 0,
+            CattleMoneyCost = 300,
+
+            BreedSheeps = true,
+            SheepCosts = 10,
+            SheepNeeded = 3,
+            SheepKnightTitle = 0,
+            SheepMoneyCost = 300,
+        },
+
+        Description = {
+            Downgrade = {
+                Title = {
+                    de = "Rückbau",
+                    en = "Downgrade",
+                },
+                Text = {
+                    de = "- Reißt eine Stufe des Geb?udes ein {cr}- Der überschüssige Arbeiter wird entlassen",
+                    en = "- Destroy one level of this building {cr}- The surplus worker will be dismissed",
+                },
+                Disabled = {
+                    de = "Kann nicht zurückgebaut werden!",
+                    en = "Can not be downgraded yet!",
+                },
+            },
+
+            BuyCattle = {
+                Title = {
+                    de = "Nutztier kaufen",
+                    en = "Buy Farm animal",
+                },
+                Text = {
+                    de = "- Kauft ein Nutztier {cr}- Nutztiere produzieren Rohstoffe",
+                    en = "- Buy a farm animal {cr}- Farm animals produce resources",
+                },
+                Disabled = {
+                    de = "Kauf ist nicht möglich!",
+                    en = "Buy not possible!",
+                },
+            },
+
+            SingleStop = {
+                Title = {
+                    de = "Arbeit anhalten/aufnehmen",
+                    en = "Start/Stop Work",
+                },
+                Text = {
+                    de = "- Startet oder stoppe die Arbeit in diesem Betrieb",
+                    en = "- Continue or stop work for this building",
+                },
+            },
+        },
+    },
+}
+
+-- Global Script ---------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im globalen Skript.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Global:Install()
+end
+
+
+
+-- Local Script ----------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im lokalen Skript.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:Install()
+    MerchantSystem.BasePricesOrigTHEA                = {};
+    MerchantSystem.BasePricesOrigTHEA[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
+    MerchantSystem.BasePrices[Goods.G_Sheep]         = BundleBuildingButtons.Local.Data.SheepMoneyCost;
+    MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
+    MerchantSystem.BasePrices[Goods.G_Cow]           = BundleBuildingButtons.Local.Data.CattleMoneyCost;
+
+    self:OverwriteHouseMenuButtons();
+    self:OverwriteBuySiegeEngine();
+    self:OverwriteToggleTrap();
+    self:OverwriteGateOpenClose();
+    self:OverwriteAutoToggle();
+
+    Core:AppendFunction("GameCallback_GUI_SelectionChanged", self.OnSelectionChanged);
+end
+
+---
+-- Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:BuyAnimal(_eID)
+    Sound.FXPlay2DSound("ui\\menu_click");
+    local eType = Logic.GetEntityType(_eID);
+
+    if eType == Entities.B_CattlePasture then
+        local Cost = BundleBuildingButtons.Local.Data.CattleCosts * (-1);
+        GUI.SendScriptCommand([[
+            local pID = Logic.EntityGetPlayer(]].._eID..[[)
+            local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
+            Logic.CreateEntity(Entities.A_X_Cow01, x, y, 0, pID)
+            AddGood(Goods.G_Grain, ]] ..Cost.. [[, pID)
+        ]]);
+    elseif eType == Entities.B_SheepPasture then
+        local Cost = BundleBuildingButtons.Local.Data.SheepCosts * (-1);
+        GUI.SendScriptCommand([[
+            local pID = Logic.EntityGetPlayer(]].._eID..[[)
+            local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
+            Logic.CreateEntity(Entities.A_X_Sheep01, x, y, 0, pID)
+            AddGood(Goods.G_Grain, ]] ..Cost.. [[, pID)
+        ]]);
+    end
+end
+
+---
+-- Das aktuell selektierte Gebäude wird um eine Stufe zurückgebaut.
+--
+-- Ein Gebäude der Stufe 1 wird zerstört. Aktuell ist dies aber inaktiv.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:DowngradeBuilding()
+    Sound.FXPlay2DSound("ui\\menu_click");
+    local Selected = GUI.GetSelectedEntity();
+    GUI.DeselectEntity(Selected);
+    if Logic.GetUpgradeLevel(Selected) > 0 then
+        local AmountToHurt = math.ceil(Logic.GetEntityMaxHealth(Selected) / 2);
+        if Logic.GetEntityHealth(Selected) >= AmountToHurt then
+            GUI.SendScriptCommand([[Logic.HurtEntity(]] ..Selected.. [[, ]] ..AmountToHurt.. [[)]]);
+        end
+    else
+        local AmountToHurt = Logic.GetEntityMaxHealth(Selected);
+        GUI.SendScriptCommand([[Logic.HurtEntity(]] ..Selected.. [[, ]] ..AmountToHurt.. [[)]]);
+    end
+end
+
+---
+-- Fügt einen Button dem Hausmenü hinzu. Es können nur 2 Buttons
+-- hinzugefügt werden. Buttons brauchen immer eine Action-, eine
+-- Tooltip- und eine Update-Funktion.
+--
+-- @param _idx              Indexposition des Button (1 oder 2)
+-- @param _actionFunction   Action-Funktion (String in Global)
+-- @param _tooltipFunction  Tooltip-Funktion (String in Global)
+-- @param _updateFunction   Update-Funktion (String in Global)
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:AddOptionalButton(_idx, _actionFunction, _tooltipFunction, _updateFunction)
+    if not GUI then
+        assert(_idx == 1 or _idx == 2);
+        assert(type(_actionFunction) == "string");
+        assert(type(_tooltipFunction) == "string");
+        assert(type(_updateFunction) == "string");
+        Logic.ExecuteInLuaLocalState([[
+            BundleBuildingButtons.Local:AddOptionalButton(
+                ]] .._idx.. [[,
+                _G["]] .._actionFunction.. [["],
+                _G["]] .._tooltipFunction.. [["],
+                _G["]] .._updateFunction.. [["],
+            )
+        ]]);
+        return;
+    end
+
+    assert(_idx == 1 or _idx == 2);
+    local wID = {
+        XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateAutoToggle"),
+        XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateOpenClose"),
+    };
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].WidgetID = wID[_idx];
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].UseButton = true;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].ActionFunction = _actionFunction;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].TooltipFunction = _tooltipFunction;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].UpdateFunction = _updateFunction;
+end
+
+---
+-- Entfernt den Zusatz-Button auf dem Index.
+--
+-- @param _idx Indexposition des Button (1 oder 2)
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
+    if not GUI then
+        assert(_idx == 1 or _idx == 2);
+        Logic.ExecuteInLuaLocalState([[
+            BundleBuildingButtons.Local:DeleteOptionalButton(]] .._idx.. [[)
+        ]]);
+        return;
+    end
+
+    assert(_idx == 1 or _idx == 2);
+    local wID = {
+        XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateAutoToggle"),
+        XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateOpenClose"),
+    };
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].WidgetID = wID[_idx];
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].UseButton = false;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].ActionFunction = nil;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].TooltipFunction = nil;
+    BundleBuildingButtons.Local.Data["OptionalButton".._idx].UpdateFunction = nil;
+end
+
+---
+-- Überschreibt die GUI-Funktionen des inaktiven Schalters für automatisches
+-- Umschalten von Torsperren.
+--
+-- Diese Funktion implementiert den optionalen Schalter #1.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:OverwriteAutoToggle()
+    GUI_BuildingButtons.GateAutoToggleClicked = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        if not BundleBuildingButtons.Local.Data.OptionalButton1.ActionFunction then
+            return;
+        end
+        BundleBuildingButtons.Local.Data.OptionalButton1.ActionFunction(CurrentWidgetID, EntityID);
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    GUI_BuildingButtons.GateAutoToggleMouseOver = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        if not BundleBuildingButtons.Local.Data.OptionalButton1.TooltipFunction then
+            return;
+        end
+        BundleBuildingButtons.Local.Data.OptionalButton1.TooltipFunction(CurrentWidgetID, EntityID);
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    GUI_BuildingButtons.GateAutoToggleUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
+        local Health = Logic.GetEntityHealth(EntityID);
+
+        SetIcon(CurrentWidgetID, {8,16});
+
+        if EntityID == nil
+        or Logic.IsBuilding(EntityID) == 0
+        or not BundleBuildingButtons.Local.Data.OptionalButton1.UpdateFunction
+        or not BundleBuildingButtons.Local.Data.OptionalButton1.UseButton
+        or Logic.IsConstructionComplete(EntityID) == 0 then
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
+            return;
+        end
+
+        if Logic.BuildingDoWorkersStrike(EntityID) == true
+        or Logic.IsBuildingBeingUpgraded(EntityID) == true
+        or Logic.IsBuildingBeingKnockedDown(EntityID) == true
+        or Logic.IsBurning(EntityID) == true
+        or MaxHealth-Health > 0 then
+            XGUIEng.DisableButton(CurrentWidgetID, 1);
+        else
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+        end
+        BundleBuildingButtons.Local.Data.OptionalButton1.UpdateFunction(CurrentWidgetID, EntityID);
+    end
+end
+
+---
+-- Überschreibt den inaktiven Button zum öffnen/schließen von Toren.
+--
+-- Diese Funktion implementiert den optionalen Schalter #2.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:OverwriteGateOpenClose()
+    GUI_BuildingButtons.GateOpenCloseClicked = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        if not BundleBuildingButtons.Local.Data.OptionalButton2.ActionFunction then
+            return;
+        end
+        BundleBuildingButtons.Local.Data.OptionalButton2.ActionFunction(CurrentWidgetID, EntityID);
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    GUI_BuildingButtons.GateOpenCloseMouseOver = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        if not BundleBuildingButtons.Local.Data.OptionalButton2.TooltipFunction then
+            return;
+        end
+        BundleBuildingButtons.Local.Data.OptionalButton2.TooltipFunction(CurrentWidgetID, EntityID);
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    GUI_BuildingButtons.GateOpenCloseUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
+        local Health = Logic.GetEntityHealth(EntityID);
+
+        SetIcon(CurrentWidgetID, {8,16});
+
+        if EntityID == nil
+        or Logic.IsBuilding(EntityID) == 0
+        or not BundleBuildingButtons.Local.Data.OptionalButton2.UpdateFunction
+        or not BundleBuildingButtons.Local.Data.OptionalButton2.UseButton
+        or Logic.IsConstructionComplete(EntityID) == 0
+        or Logic.IsBuilding(EntityID) == 0 then
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
+            return;
+        end
+
+        if Logic.BuildingDoWorkersStrike(EntityID) == true
+        or Logic.IsBuildingBeingUpgraded(EntityID) == true
+        or Logic.IsBuildingBeingKnockedDown(EntityID) == true
+        or Logic.IsBurning(EntityID) == true
+        or MaxHealth-Health > 0 then
+            XGUIEng.DisableButton(CurrentWidgetID, 1);
+        else
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+        end
+        BundleBuildingButtons.Local.Data.OptionalButton2.UpdateFunction(CurrentWidgetID, EntityID);
+    end
+end
+
+---
+-- Überschreibt den inaktiven Button zum umschalten der Torhausfallen.
+--
+-- Diese Funktion implementiert den Rückbau.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:OverwriteToggleTrap()
+    GUI_BuildingButtons.TrapToggleClicked = function()
+        BundleBuildingButtons.Local:DowngradeBuilding();
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    GUI_BuildingButtons.TrapToggleMouseOver = function()
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        BundleBuildingButtons.Local:TextNormal(
+            BundleBuildingButtons.Local.Description.Downgrade.Title[lang],
+            BundleBuildingButtons.Local.Description.Downgrade.Text[lang],
+            BundleBuildingButtons.Local.Description.Downgrade.Disabled[lang]
+        );
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    GUI_BuildingButtons.TrapToggleUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        local eName = Logic.GetEntityName(EntityID);
+        local eType = Logic.GetEntityType(EntityID);
+        local tID = GetTerritoryUnderEntity(EntityID);
+        local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
+        local Health = Logic.GetEntityHealth(EntityID);
+        local Level = Logic.GetUpgradeLevel(EntityID);
+
+        local x,y = XGUIEng.GetWidgetLocalPosition("/InGame/Root/Normal/BuildingButtons/Upgrade");
+        SetIcon(CurrentWidgetID, {3,15});
+        XGUIEng.SetWidgetLocalPosition(CurrentWidgetID, x+64, y);
+
+        if EntityID == nil or Logic.IsBuilding(EntityID) == 0 then
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
+            return;
+        end
+
+        -- Protection - Submodul
+        if BundleConstructionControl then
+            -- Prüfe auf Namen
+            if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
+                XGUIEng.ShowWidget(CurrentWidgetID, 0);
+                return;
+            end
+
+            -- Prüfe auf Typen
+            if Inside(eType, BundleConstructionControl.Local.Data.EntityTypes) then
+                XGUIEng.ShowWidget(CurrentWidgetID, 0);
+                return;
+            end
+
+            -- Prüfe auf Territorien
+            if Inside(tID, BundleConstructionControl.Local.Data.OnTerritory) then
+                XGUIEng.ShowWidget(CurrentWidgetID, 0);
+                return;
+            end
+
+            -- Prüfe auf Category
+            for k,v in pairs(BundleConstructionControl.Local.Data.EntityCategories) do
+                if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
+                    XGUIEng.ShowWidget(CurrentWidgetID, 0);
+                    return;
+                end
+            end
+        end
+
+        if Logic.IsConstructionComplete(EntityID) == 0
+        or (Logic.IsEntityInCategory(EntityID, EntityCategories.OuterRimBuilding) == 0
+        and Logic.IsEntityInCategory(EntityID, EntityCategories.CityBuilding) == 0)
+        or not BundleBuildingButtons.Local.Data.Downgrade
+        or Level == 0 then
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
+            return;
+        end
+        if Logic.BuildingDoWorkersStrike(EntityID) == true
+        or Logic.IsBuildingBeingUpgraded(EntityID) == true
+        or Logic.IsBuildingBeingKnockedDown(EntityID) == true
+        or Logic.IsBurning(EntityID) == true
+        or MaxHealth-Health > 0 then
+            XGUIEng.DisableButton(CurrentWidgetID, 1);
+        else
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+        end
+    end
+end
+
+---
+-- Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung. Dabei
+-- wird die Nutztierzucht implementiert.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
+    GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType,_TechnologyType)
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local BarrackID = GUI.GetSelectedEntity();
+        local BuildingEntityType = Logic.GetEntityType(BarrackID);
+
+        if  BuildingEntityType ~= Entities.B_SiegeEngineWorkshop
+        and BuildingEntityType ~= Entities.B_CattlePasture
+        and BuildingEntityType ~= Entities.B_SheepPasture then
+            return;
+        end
+
+        local Costs = {Logic.GetUnitCost(BarrackID, _EntityType)}
+        if BuildingEntityType == Entities.B_CattlePasture then
+            BundleBuildingButtons.Local:TextCosts(
+                BundleBuildingButtons.Local.Description.BuyCattle.Title[lang],
+                BundleBuildingButtons.Local.Description.BuyCattle.Text[lang],
+                BundleBuildingButtons.Local.Description.BuyCattle.Disabled[lang],
+                {Goods.G_Grain, BundleBuildingButtons.Local.Data.CattleCosts},
+                false
+            );
+        elseif BuildingEntityType == Entities.B_SheepPasture then
+            BundleBuildingButtons.Local:TextCosts(
+                BundleBuildingButtons.Local.Description.BuyCattle.Title[lang],
+                BundleBuildingButtons.Local.Description.BuyCattle.Text[lang],
+                BundleBuildingButtons.Local.Description.BuyCattle.Disabled[lang],
+                {Goods.G_Grain, BundleBuildingButtons.Local.Data.SheepCosts},
+                false
+            );
+        else
+            GUI_Tooltip.TooltipBuy(Costs,nil,nil,_TechnologyType);
+        end
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    GUI_BuildingButtons.BuySiegeEngineCartClicked_OrigTHEA_Buildings = GUI_BuildingButtons.BuySiegeEngineCartClicked
+    GUI_BuildingButtons.BuySiegeEngineCartClicked = function(_EntityType)
+        local BarrackID = GUI.GetSelectedEntity()
+        local PlayerID = GUI.GetPlayerID()
+        local eType = Logic.GetEntityType(BarrackID)
+        if eType == Entities.B_CattlePasture or eType == Entities.B_SheepPasture then
+            BundleBuildingButtons.Local:BuyAnimal(BarrackID);
+        else
+            GUI_BuildingButtons.BuySiegeEngineCartClicked_OrigTHEA_Buildings(_EntityType)
+        end
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    GUI_BuildingButtons.BuySiegeEngineCartUpdate = function(_Technology)
+        local PlayerID = GUI.GetPlayerID();
+        local KnightTitle = Logic.GetKnightTitle(PlayerID);
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local EntityID = GUI.GetSelectedEntity();
+        local EntityType = Logic.GetEntityType(EntityID);
+        local grain = GetPlayerResources(Goods.G_Grain,PlayerID);
+        local pos = GetPosition(EntityID);
+
+        if EntityType == Entities.B_SiegeEngineWorkshop then
+            XGUIEng.ShowWidget(CurrentWidgetID,1);
+            if _Technology == Technologies.R_BatteringRam then
+                SetIcon(CurrentWidgetID, {9,5});
+            elseif _Technology == Technologies.R_SiegeTower then
+                SetIcon(CurrentWidgetID, {9,6});
+            elseif _Technology == Technologies.R_Catapult then
+                SetIcon(CurrentWidgetID, {9,4});
+            end
+        elseif EntityType == Entities.B_CattlePasture then
+            local CattlePasture = GetPlayerEntities(PlayerID,Entities.B_CattlePasture);
+            local cows          = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Cow01,pos.X,pos.Y,800,16)};
+            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.CattlePasture);
+            local maxAnimal     = #CattlePasture*5;
+
+            SetIcon(CurrentWidgetID, {3,16})
+
+            if _Technology == Technologies.R_Catapult then
+                if BundleBuildingButtons.Local.Data.BreedCattle then
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
+
+                    if curAnimal >= maxAnimal then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif grain < BundleBuildingButtons.Local.Data.CattleCosts then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif KnightTitle < BundleBuildingButtons.Local.Data.CattleKnightTitle then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif cows[1] < BundleBuildingButtons.Local.Data.CattleNeeded then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    else
+                        XGUIEng.DisableButton(CurrentWidgetID, 0);
+                    end
+                end
+            else
+                XGUIEng.ShowWidget(CurrentWidgetID,0);
+            end
+        elseif EntityType == Entities.B_SheepPasture then
+            local SheepPasture     = GetPlayerEntities(PlayerID,Entities.B_SheepPasture);
+            local sheeps        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep01,pos.X,pos.Y,800,16)};
+            table.remove(sheeps, 1);
+            local sheeps2        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep02,pos.X,pos.Y,800,16)};
+            table.remove(sheeps2, 1);
+            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.SheepPasture);
+            local maxAnimal     = #SheepPasture*5;
+
+            sheeps = Array_Append(sheeps,sheeps2)
+            SetIcon(CurrentWidgetID, {4,1})
+
+            if _Technology == Technologies.R_Catapult then
+                if BundleBuildingButtons.Local.Data.BreedSheeps then
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
+                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
+
+                    if curAnimal >= maxAnimal then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif grain < BundleBuildingButtons.Local.Data.SheepCosts then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif #sheeps < BundleBuildingButtons.Local.Data.SheepKnightTitle then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    elseif #sheeps < BundleBuildingButtons.Local.Data.SheepNeeded then
+                        XGUIEng.DisableButton(CurrentWidgetID, 1);
+                    else
+                        XGUIEng.DisableButton(CurrentWidgetID, 0);
+                    end
+                end
+            else
+                XGUIEng.ShowWidget(CurrentWidgetID,0);
+            end
+        else
+            XGUIEng.ShowWidget(CurrentWidgetID,0);
+            return;
+        end
+
+        if Logic.IsConstructionComplete(GUI.GetSelectedEntity()) == 0 then
+            XGUIEng.ShowWidget(CurrentWidgetID,0);
+            return;
+        end
+
+        if EntityType ~= Entities.B_SheepPasture and EntityType ~= Entities.B_CattlePasture then
+            local TechnologyState = Logic.TechnologyGetState(PlayerID, _Technology);
+            if EnableRights == nil or EnableRights == false then
+                XGUIEng.DisableButton(CurrentWidgetID,0);
+                return
+            end
+            if TechnologyState == TechnologyStates.Researched then
+                XGUIEng.DisableButton(CurrentWidgetID,0);
+            else
+                XGUIEng.DisableButton(CurrentWidgetID,1);
+            end
+        end
+    end
+end
+
+---
+-- Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
+-- funktioniert.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:OverwriteHouseMenuButtons()
+    HouseMenuStopProductionClicked_Orig_tHEA_SingleStop = HouseMenuStopProductionClicked;
+    HouseMenuStopProductionClicked = function()
+        HouseMenuStopProductionClicked_Orig_tHEA_SingleStop();
+        local WidgetName = HouseMenu.Widget.CurrentBuilding;
+        local EntityType = Entities[WidgetName];
+        local PlayerID = GUI.GetPlayerID();
+        local Buildings = GetPlayerEntities(PlayerID, EntityType);
+
+        for i=1, #Buildings, 1 do
+            if BundleBuildingButtons.Local.Data.StoppedBuildings[Buildings[i]] ~= HouseMenu.StopProductionBool then
+                BundleBuildingButtons.Local.Data.StoppedBuildings[Buildings[i]] = HouseMenu.StopProductionBool;
+                GUI.SetStoppedState(Buildings[i], HouseMenu.StopProductionBool);
+            end
+        end
+    end
+end
+
+---
+-- Ändert die Textur eines Icons im House Menu.
+--
+-- @param _Widget Icon Widget
+-- @param _Icon   Icon Textur
+-- @within BundleBuildingButtons
+-- @local
+--
+function BundleBuildingButtons.Local:HouseMenuIcon(_Widget, _Icon)
+    if type(_Icon) == "table" then
+        if type(_Icon[3]) == "string" then
+            local u0, u1, v0, v1;
+            u0 = (_Coordinates[1] - 1) * 64;
+            v0 = (_Coordinates[2] - 1) * 64;
+            u1 = (_Coordinates[1]) * 64;
+            v1 = (_Coordinates[2]) * 64;
+            XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
+            XGUIEng.SetMaterialTexture(_Widget, 1, _Icon[3].. "big.png");
+            XGUIEng.SetMaterialUV(_Widget, 1, u0, v0, u1, v1);
+        else
+            SetIcon(_Widget, _Icon);
+        end
+    else
+        local screenSize = {GUI.GetScreenSize()};
+        local Scale = 330;
+        if screenSize[2] >= 800 then
+            Scale = 260;
+        end
+        if screenSize[2] >= 1000 then
+            Scale = 210;
+        end
+        XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
+        XGUIEng.SetMaterialTexture(_Widget, 1, _file);
+        XGUIEng.SetMaterialUV(_Widget, 1, 0, 0, Scale, Scale);
+    end
+end
+
+---
+-- Setzt einen für den Tooltip des aktuellen Widget einen neuen Text.
+--
+-- @param _Title        Titel des Tooltip
+-- @param _Text         Text des Tooltip
+-- @param _DisabledText Textzusatz wenn inaktiv
+-- @within BundleBuildingButtons
+-- @local
+--
+function BundleBuildingButtons.Local:TextNormal(_Title, _Text, _DisabledText)
+    local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal";
+    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath);
+    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name");
+    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text");
+    local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG");
+    local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn");
+    local PositionWidget = XGUIEng.GetCurrentWidgetID();
+    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget);
+    local TooltipContainerSizeWidgets = {TooltipBGWidget};
+    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget);
+    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer);
+
+    _DisabledText = _DisabledText or "";
+    local disabled = ""
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _DisabledText ~= "" and _Text ~= "" then
+        disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _DisabledText
+    end
+
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _Title);
+    XGUIEng.SetText(TooltipDescriptionWidget, _Text .. disabled);
+    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
+    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
+    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
+end
+
+---
+-- Setzt den Kostentooltip des aktuellen Widgets.
+--
+-- @param _Title        Titel des Tooltip
+-- @param _Text         Text des Tooltip
+-- @param _DisabledText Textzusatz wenn inaktiv
+-- @param _Costs        Kostentabelle
+-- @param _InSettlement Kosten in Siedlung suchen
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
+    local TooltipContainerPath = "/InGame/Root/Normal/TooltipBuy"
+    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
+    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name")
+    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text")
+    local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG")
+    local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn")
+    local TooltipCostsContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/Costs")
+    local PositionWidget = XGUIEng.GetCurrentWidgetID()
+    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget)
+    GUI_Tooltip.SetCosts(TooltipCostsContainer, _Costs, _InSettlement)
+    local TooltipContainerSizeWidgets = {TooltipContainer, TooltipCostsContainer, TooltipBGWidget}
+    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget, nil, true)
+    GUI_Tooltip.OrderTooltip(TooltipContainerSizeWidgets, TooltipFadeInContainer, TooltipCostsContainer, PositionWidget, TooltipBGWidget)
+    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer)
+
+    _DisabledText = _DisabledText or "";
+    local disabled = ""
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _DisabledText ~= "" and _Text ~= "" then
+        disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _DisabledText
+    end
+
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _Title)
+    XGUIEng.SetText(TooltipDescriptionWidget, _Text .. disabled)
+    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
+    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
+    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
+end
+
+---
+-- Diese Funktion ist die Action von Single Stop.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action(WidgetID, EntityID)
+    local StoppedState = BundleBuildingButtons.Local.Data.StoppedBuildings[EntityID] == true;
+    GUI.SetStoppedState(EntityID, not StoppedState);
+    BundleBuildingButtons.Local.Data.StoppedBuildings[EntityID] = not StoppedState;
+end
+
+---
+-- Diese Funktion steuert den Tooltip von Single Stop.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    BundleBuildingButtons.Local:TextNormal(
+        BundleBuildingButtons.Local.Description.SingleStop.Title[lang],
+        BundleBuildingButtons.Local.Description.SingleStop.Text[lang]
+    );
+end
+
+---
+-- Diese Funktion ist der Update Job von Single Stop.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update(_WidgetID, _EntityID)
+    local IsOuterRimBuilding = Logic.IsEntityInCategory(_EntityID, EntityCategories.OuterRimBuilding) == 1;
+    local IsCityBuilding = Logic.IsEntityInCategory(_EntityID, EntityCategories.CityBuilding) == 1;
+    if IsOuterRimBuilding == false and IsCityBuilding == false then
+        XGUIEng.ShowWidget(_WidgetID, 0);
+    end
+
+    if BundleBuildingButtons.Local.Data.StoppedBuildings[_EntityID] == true then
+        SetIcon(_WidgetID, {4, 12});
+    else
+        SetIcon(_WidgetID, {4, 13});
+    end
+end
+
+---
+-- Diese Funktion wird aufgerufen, sobald sich die Selektion ändert.
+--
+-- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleBuildingButtons.Local.OnSelectionChanged(_Source)
+    local eID = GUI.GetSelectedEntity();
+    local eType = Logic.GetEntityType(eID);
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/GateAutoToggle",1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/GateOpenClose",1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/TrapToggle",1);
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleBuildingButtons");
+-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia BundleInteractiveObjects                                     # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ermöglicht die Manipulation der Interaktiven Objekte und das Erstellen 
+-- völlig neuer eigener Objekte.
+--
+-- @module BundleInteractiveObjects
+-- @set sort=true
+--
+
+API = API or {};
+QSB = QSB or {};
+
+QSB.IOList = {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erzeugt ein interaktives Objekt nach alter Schreibweise.
+--
+-- Diese Funktion ist ein Mapping für die veraltete Schreibweise. Du kannst
+-- dich hiermit ermutigt fühlen, API.CreateObject zu verwenden!
+--
+-- <b>Alias:</b> SetupInteractiveObject
+--
+-- @param _Name          Skriptname des Objekts
+-- @param _Description   Beschreibung
+-- @within User-Space
+--
+function API.SetupInteractiveObject(_Name, _Description)
+    if GUI then
+        API.Dbg("API.SetupInteractiveObject: Can not be used from local enviorment!");
+        return;
+    end
+    return BundleInteractiveObjects.Global:CreateObject(_Description);
+end
+SetupInteractiveObject = API.SetupInteractiveObject;
+
+---
+-- Erzeugt ein interaktives Objekt nach alter Schreibweise.
+--
+-- <b>Alias:</b> CreateObject
+--
+-- @param _Name          Skriptname des Objekts
+-- @param _Description   Beschreibung
+-- @within User-Space
+--
+function API.CreateObject(_Description)
+    if GUI then
+        API.Dbg("API.CreateObject: Can not be used from local enviorment!");
+        return;
+    end
+    return BundleInteractiveObjects.Global:CreateObject(_Description);
+end
+CreateObject = API.CreateObject;
+
+---
+-- Löscht ein interaktives Objekt.
+--
+-- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
+-- Konfiguration des Objektes entfernt.
+--
+-- <b>Alias:</b> RemoveInteractiveObject
+--
+-- @param _EntityName Skriptname des IO
+-- @within User-Space
+--
+function API.RemoveInteractiveObject(_EntityName)
+    if GUI then
+        API.Bridge("API.RemoveInteractiveObject('" .._EntityName.. "')");
+        return;
+    end
+    return BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName);
+end
+RemoveInteractiveObject = API.RemoveInteractiveObject;
+
+---
+-- Setzt ein Interaktives Objekt als unbenutzt.
+--
+-- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+--
+-- <b>Alias:</b> UnuseInteractiveObject
+--
+-- @param _EntityName Skriptname des IO
+-- @within User-Space
+--
+function API.UnuseInteractiveObject(_EntityName)
+    if GUI then
+        API.Bridge("API.UnuseInteractiveObject('" .._EntityName.. "')");
+        return;
+    end
+    return BundleInteractiveObjects.Global:UnuseInteractiveObject(_EntityName);
+end
+UnuseInteractiveObject = API.UnuseInteractiveObject;
+
+---
+-- Entsperrt ein Interaktives Objekt.
+--
+-- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+--
+-- <b>Alias:</b> UnlockInteractiveObject
+--
+-- @param _EntityName Skriptname des IO
+-- @within User-Space
+--
+function API.UnlockInteractiveObject(_EntityName)
+    if GUI then
+        API.Bridge("API.UnlockInteractiveObject('" .._EntityName.. "')");
+        return;
+    end
+    return BundleInteractiveObjects.Global:UnlockInteractiveObject(_EntityName);
+end
+UnlockInteractiveObject = API.UnlockInteractiveObject;
+
+---
+-- Setzt ein Interaktives Objekt als benutzt.
+--
+-- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+--
+-- <b>Alias:</b> UseInteractiveObject
+--
+-- @param _EntityName Skriptname des IO
+-- @within User-Space
+--
+function API.UseInteractiveObject(_EntityName)
+    if GUI then
+        API.Bridge("API.UseInteractiveObject('" .._EntityName.. "')");
+        return;
+    end
+    return BundleInteractiveObjects.Global:UseInteractiveObject(_EntityName);
+end
+UseInteractiveObject = API.UseInteractiveObject;
+
+---
+-- Sperrt ein Interaktives Objekt.
+--
+-- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+--
+-- <b>Alias:</b> LockInteractiveObject
+--
+-- @param _EntityName Skriptname des IO
+-- @within User-Space
+--
+function API.LockInteractiveObject(_EntityName)
+    if GUI then
+        API.Bridge("API.LockInteractiveObject('" .._EntityName.. "')");
+        return;
+    end
+    return BundleInteractiveObjects.Global:LockInteractiveObject(_EntityName);
+end
+LockInteractiveObject = API.LockInteractiveObject;
+
+---
+-- Erzeugt eine Beschriftung für Custom Objects.
+--
+-- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
+-- Mit dieser Funktion kann ein Name angelegt werden.
+--
+-- <b>Alias:</b> AddCustomIOName
+--
+-- @param _Key  Identifier der Beschriftung
+-- @param _Text Text der Beschriftung
+-- @within User-Space
+--
+function API.AddCustomIOName(_Key, _Text)
+    if type(_Text == "table") then
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        _Text = _Text[lang];
+    end
+    if GUI then
+        API.Bridge("API.AddCustomIOName('" .._Key.. "', '" .._Text.. "')");
+        return;
+    end
+    return BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text);
+end
+AddCustomIOName = API.AddCustomIOName;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+BundleInteractiveObjects = {
+    Global = {
+        Data = {}
+    },
+    Local = {
+        Data = {
+            IOCustomNames = {},
+            IOCustomNamesByEntityName = {},
+        },
+    },
+}
+
+-- Global Script ---------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im globalen Skript.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:Install()
+    IO = {};
+end
+
+---
+-- Erzeugt ein interaktives Objekt. Dabei können sowohl interaktive
+-- Objekte (alle mit I_X_), eine Auswahl von normalen Entities und
+-- sogar (sichtbare) XD_ScriptEntities verwendet werden.
+-- Name, Titel und Icon müssen immer angegeben werden. Die restlichen
+-- Angaben hängen teilweise vom Typ der Entity, teilweise vom
+-- Verwendungszweck ab.
+--
+-- @param _Description Beschreibung
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:CreateObject(_Description)
+    local lang = Network.GetDesiredLanguage();
+
+    self:HackOnInteractionEvent();
+    self:RemoveInteractiveObject(_Description.Name);
+
+    if type(_Description.Title) == "table" then
+        _Description.Title = _Description.Title[lang];
+    end
+    if not _Description.Title or _Description.Title == "" then
+        _Description.Title = (lang == "de" and "Interaktion") or "Interaction";
+    end
+
+    if type(_Description.Text) == "table" then
+        _Description.Text = _Description.Text[lang];
+    end
+    if not _Description.Text then
+        _Description.Text = "";
+    end
+
+    if type(_Description.WrongKnight) == "table" then
+        _Description.WrongKnight = _Description.WrongKnight[lang];
+    end
+    _Description.WrongKnight = _Description.WrongKnight or "";
+
+    if type(_Description.ConditionUnfulfilled) == "table" then
+        _Description.ConditionUnfulfilled = _Description.ConditionUnfulfilled[lang];
+    end
+    _Description.ConditionUnfulfilled = _Description.ConditionUnfulfilled or "";
+
+    _Description.Condition = _Description.Condition or function() return true end
+    _Description.Callback = _Description.Callback or function() end
+    _Description.Distance = _Description.Distance or 1200;
+    _Description.Waittime = _Description.Waittime or 15;
+    _Description.Texture = _Description.Texture or {14,10};
+    _Description.Reward = _Description.Reward or {};
+    _Description.Costs = _Description.Costs or {};
+    _Description.State = _Description.State or 0;
+
+    Logic.ExecuteInLuaLocalState([[
+        QSB.IOList[#QSB.IOList+1] = "]].._Description.Name..[["
+        if not BundleInteractiveObjects.Local.Data.InteractionHackStarted then
+            BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
+            BundleInteractiveObjects.Local.Data.InteractionHackStarted = true;
+        end
+    ]]);
+    IO[_Description.Name] = API.InstanceTable(_Description);
+
+    local eID = GetID(_Description.Name);
+    if Logic.IsInteractiveObject(eID) == true then
+        Logic.InteractiveObjectClearCosts(eID);
+        Logic.InteractiveObjectClearRewards(eID);
+        Logic.InteractiveObjectSetInteractionDistance(eID,_Description.Distance);
+        Logic.InteractiveObjectSetTimeToOpen(eID,_Description.Waittime);
+        Logic.InteractiveObjectAddRewards(eID,_Description.Reward[1],_Description.Reward[2]);
+        Logic.InteractiveObjectAddCosts(eID,_Description.Costs[1],_Description.Costs[2]);
+        Logic.InteractiveObjectAddCosts(eID,_Description.Costs[3],_Description.Costs[4]);
+
+        Logic.InteractiveObjectSetAvailability(eID, true);
+        Logic.InteractiveObjectSetPlayerState(eID, _Description.PlayerID or 1, _Description.State);
+        Logic.InteractiveObjectSetRewardResourceCartType(eID, Entities.U_ResourceMerchant);
+        Logic.InteractiveObjectSetRewardGoldCartType(eID, Entities.U_GoldCart);
+        Logic.InteractiveObjectSetCostGoldCartType(eID, Entities.U_GoldCart);
+        Logic.InteractiveObjectSetCostResourceCartType(eID, Entities.U_ResourceMerchant);
+        table.insert(HiddenTreasures,eID);
+    end
+end
+
+---
+-- Löscht ein interaktives Objekt.
+--
+-- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
+-- Konfiguration des Objektes entfernt.
+--
+-- @param _EntityName Skriptname des IO
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName)
+    for k,v in pairs(IO) do
+        if k == _EntityName then
+            Logic.ExecuteInLuaLocalState([[
+                IO["]].._EntityName..[["] = nil;
+            ]]);
+            IO[_EntityName] = nil;
+        end
+    end
+end
+
+---
+-- Setzt ein Interaktives Objekt als unbenutzt.
+--
+-- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+--
+-- @param _EntityName Skriptname des IO
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:UnuseInteractiveObject(_EntityName)
+    if IO[_EntityName] then
+        IO[_EntityName].Used = false;
+    end
+end
+
+---
+-- Entsperrt ein Interaktives Objekt.
+--
+-- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+--
+-- @param _EntityName Skriptname des IO
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:UnlockInteractiveObject(_EntityName)
+    if IO[_EntityName] then
+        IO[_EntityName].Inactive = false;
+    end
+end
+
+---
+-- Setzt ein Interaktives Objekt als benutzt.
+--
+-- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+--
+-- @param _EntityName Skriptname des IO
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:UseInteractiveObject(_EntityName)
+    if IO[_EntityName] then
+        IO[_EntityName].Used = true;
+    end
+end
+
+---
+-- Sperrt ein Interaktives Objekt.
+--
+-- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+--
+-- @param _EntityName Skriptname des IO
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:LockInteractiveObject(_EntityName)
+    if IO[_EntityName] then
+        IO[_EntityName].Inactive = true;
+    end
+end
+
+---
+-- Erzeugt eine Beschriftung für Custom Objects.
+--
+-- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
+-- Mit dieser Funktion kann ein Name angelegt werden.
+--
+-- @param _Key  Identifier der Beschriftung
+-- @param _Text Text der Beschriftung
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text)
+    if type(_Text) == "table" then
+        local GermanText  = _Text.de;
+        local EnglishText = _Text.en;
+
+        Logic.ExecuteInLuaLocalState([[
+            BundleInteractiveObjects.Local.Data.IOCustomNames["]].._Key..[["] = {
+                de = "]]..GermanText..[[",
+                en = "]]..EnglishText..[["
+            }
+        ]]);
+    else
+        Logic.ExecuteInLuaLocalState([[
+            BundleInteractiveObjects.Local.Data.IOCustomNames["]].._Key..[["] = "]].._Text..[["
+        ]]);
+    end
+end
+
+---
+-- Überschreibt die Events, die ausgelöst werden, wenn interaktive Objekte
+-- benutzt werden.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global:HackOnInteractionEvent()
+    if not BundleInteractiveObjects.Global.Data.InteractionEventHacked then
+        StartSimpleJobEx(BundleInteractiveObjects.Global.ControlInteractiveObjects);
+        BundleInteractiveObjects.Global.Data.InteractionEventHacked = true;
+
+        OnTreasureFound = function(_TreasureID, _PlayerID)
+            for i=1, #HiddenTreasures do
+                local HiddenTreasureID = HiddenTreasures[i]
+                if HiddenTreasureID == _TreasureID then
+                    Logic.InteractiveObjectSetAvailability(_TreasureID,false)
+                    for PlayerID = 1, 8 do
+                        Logic.InteractiveObjectSetPlayerState(_TreasureID,PlayerID, 2)
+                    end
+                    table.remove(HiddenTreasures,i)
+                    HiddenTreasures[0] = #HiddenTreasures
+
+                    local ActivationSound = "menu_left_prestige";
+                    local eName = Logic.GetEntityName(_TreasureID);
+                    if IO[eName] and IO[eName].ActivationSound then
+                        ActivationSound = IO[eName].ActivationSound;
+                    end
+                    Logic.ExecuteInLuaLocalState("Play2DSound(" .. _PlayerID ..",'" .. ActivationSound .. "')");
+                end
+            end
+        end
+
+        GameCallback_OnObjectInteraction = function(__entityID_, _PlayerID)
+            local eName = Logic.GetEntityName(__entityID_);
+            for k,v in pairs(IO)do
+                if k == eName then
+                    if not v.Used then
+                        v.Callback(v, _PlayerID);
+                        if not v.StayActive then
+                            IO[k].Used = true;
+                        end
+                    end
+                end
+            end
+            OnInteractiveObjectOpened(__entityID_, _PlayerID);
+            OnTreasureFound(__entityID_, _PlayerID);
+        end
+
+        GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnID, _Type, _Amount)
+            if not Logic.IsInteractiveObject(GetID(_SpawnID)) then
+                local pos = GetPosition(_SpawnID);
+                local resCat = Logic.GetGoodCategoryForGoodType(_Type);
+                local ID;
+                if resCat == GoodCategories.GC_Resource then
+                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, pos.X, pos.Y,0,_PlayerID);
+                elseif _Type == Goods.G_Medicine then
+                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, pos.X, pos.Y,0,_PlayerID);
+                elseif _Type == Goods.G_Gold then
+                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, pos.X, pos.Y,0,_PlayerID);
+                else
+                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, pos.X, pos.Y,0,_PlayerID);
+                end
+                Logic.HireMerchant(ID,_PlayerID,_Type,_Amount,_PlayerID);
+            end
+        end
+
+        function QuestTemplate:AreObjectsActivated(objectList)
+            for i=1, objectList[0] do
+                if not objectList[-i] then
+                    objectList[-i] = GetEntityId(objectList[i]);
+                end
+                local EntityName = Logic.GetEntityName(objectList[-i]);
+                local interactive = IO[EntityName];
+
+                if Logic.IsInteractiveObject(objectList[-i]) then
+                    if not IsInteractiveObjectOpen(objectList[-i]) then
+                        return false;
+                    end
+                else
+                    if not interactive then
+                        return false;
+                    end
+                    if interactive.Used ~= true then
+                        return false;
+                    end
+                end
+            end
+            return true;
+        end
+    end
+end
+
+---
+-- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt 
+-- ist und erlaubt die Benutzung.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Global.ControlInteractiveObjects()
+    for k,v in pairs(IO) do
+        if not v.Used == true then
+            v.ConditionFullfilled = v.Condition(v);
+        end
+    end
+end
+
+-- Local Script ----------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im lokalen Skript.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Local:Install()
+    IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
+end
+
+---
+-- Prüft, ob die Kosten für ein interaktives Objekt beglichen werden können.
+--
+-- @param _PlayerID Spieler, der zahlt
+-- @param _Good     Typ der Ware
+-- @param _Amount   Menge der Ware
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
+    local AmountOfGoods = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
+    if AmountOfGoods < _Amount then
+        return false;
+    end
+    return true;
+end
+
+---
+-- Zieht die Kosten des Objektes aus dem Lagerhaus des Spielers ab.
+--
+-- @param _PlayerID Spieler, der zahlt
+-- @param _Good     Typ der Ware
+-- @param _Amount   Menge der Ware
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
+    if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
+        local buildings = GetPlayerEntities(_PlayerID,0);
+        local goodAmount = _Amount;
+        for i=1,#buildings do
+            if Logic.IsBuilding(buildings[i]) == 1 and goodAmount > 0 then
+                if Logic.GetBuildingProduct(buildings[i]) == _Good then
+                    local goodAmountInBuilding = Logic.GetAmountOnOutStockByIndex(buildings[i],0);
+                    for j=1,goodAmountInBuilding do
+                        API.Bridge("Logic.RemoveGoodFromStock("..buildings[i]..",".._Good..",1)");
+                        goodAmount = goodAmount -1;
+                    end
+                end
+            end
+        end
+    else
+        API.Bridge("AddGood(".._Good..","..(_Amount*(-1))..",".._PlayerID..")");
+    end
+end
+
+---
+-- Überschreibt die Spielfunktione, die interaktive Objekte steuern.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
+    g_Interaction.ActiveObjectsOnScreen = g_Interaction.ActiveObjectsOnScreen or {};
+    g_Interaction.ActiveObjects = g_Interaction.ActiveObjects or {};
+
+    GUI_Interaction.InteractiveObjectUpdate = function()
+        local PlayerID = GUI.GetPlayerID();
+        if g_Interaction.ActiveObjects == nil then
+            return;
+        end
+
+        for i = 1, #g_Interaction.ActiveObjects do
+            local ObjectID = g_Interaction.ActiveObjects[i];
+            local X, Y = GUI.GetEntityInfoScreenPosition(ObjectID);
+            local ScreenSizeX, ScreenSizeY = GUI.GetScreenSize();
+
+            if X ~= 0 and Y ~= 0 and X > -50 and Y > -50 and X < (ScreenSizeX + 50) and Y < (ScreenSizeY + 50) then
+                if Inside(ObjectID, g_Interaction.ActiveObjectsOnScreen) == false then
+                    table.insert(g_Interaction.ActiveObjectsOnScreen, ObjectID);
+                end
+            else
+                for i = 1, #g_Interaction.ActiveObjectsOnScreen do
+                    if g_Interaction.ActiveObjectsOnScreen[i] == ObjectID then
+                        table.remove(g_Interaction.ActiveObjectsOnScreen, i);
+                    end
+                end
+            end
+        end
+
+        for i = 1, #g_Interaction.ActiveObjectsOnScreen do
+            local Widget = "/InGame/Root/Normal/InteractiveObjects/" .. i;
+            if XGUIEng.IsWidgetExisting(Widget) == 1 then
+                local ObjectID = g_Interaction.ActiveObjectsOnScreen[i];
+                local EntityType = Logic.GetEntityType(ObjectID);
+                local X, Y = GUI.GetEntityInfoScreenPosition(ObjectID);
+                local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
+                local BaseCosts = {Logic.InteractiveObjectGetCosts(ObjectID)};
+                local EffectiveCosts = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
+                local IsAvailable = Logic.InteractiveObjectGetAvailability(ObjectID);
+                local eType = Logic.GetEntityType(ObjectID);
+                local entityName = Logic.GetEntityName(ObjectID);
+                local eTypeName = Logic.GetEntityTypeName(eType);
+                local Disable = false;
+
+                XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
+
+                if BaseCosts[1] ~= nil and EffectiveCosts[1] == nil and IsAvailable == true then
+                    Disable = true;
+                end
+                local HasSpace = Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, PlayerID);
+                if HasSpace == false then
+                    Disable = true;
+                end
+                if Disable == true then
+                    XGUIEng.DisableButton(Widget, 1);
+                else
+                    XGUIEng.DisableButton(Widget, 0);
+                end
+
+                if GUI_Interaction.InteractiveObjectUpdateEx1 ~= nil then
+                    GUI_Interaction.InteractiveObjectUpdateEx1(Widget, EntityType);
+                end
+                if IO[entityName] then
+                    BundleInteractiveObjects.Local:SetIcon(Widget,IO[entityName].Texture);
+                end
+                XGUIEng.ShowWidget(Widget, 1);
+            end
+        end
+
+        for k,v in pairs(QSB.IOList) do
+            local pID = GUI.GetPlayerID();
+            local eType = Logic.GetEntityType(GetID(v));
+            local eTypeName = Logic.GetEntityTypeName(eType);
+            if eTypeName and v ~= "" then
+                if  not(string.find(eTypeName,"I_X_")) and not(string.find(eTypeName,"Mine"))
+                and not(string.find(eTypeName,"B_Wel")) and not(string.find(eTypeName,"B_Cis")) then
+                    if IO[v].State == 0 and IO[v].Distance ~= nil and IO[v].Distance > 0 then
+                        local knights = {};
+                        Logic.GetKnights(pID,knights);
+
+                        local found = false;
+                        for i=1,#knights do
+                            if IsNear(knights[i], v, IO[v].Distance) then
+                                found = true;
+                                break;
+                            end
+                        end
+                        if not IO[v].Used and not IO[v].Inactive then
+                            if found then
+                                ScriptCallback_ObjectInteraction(pID,GetID(v));
+                            else
+                                ScriptCallback_CloseObjectInteraction(pID,GetID(v));
+                            end
+                        else
+                            ScriptCallback_CloseObjectInteraction(pID,GetID(v));
+                        end
+                    else
+                        if not IO[v].Used and not IO[v].Inactive then
+                            ScriptCallback_ObjectInteraction(pID,GetID(v));
+                        else
+                            ScriptCallback_CloseObjectInteraction(pID,GetID(v));
+                        end
+                    end
+                end
+            end
+        end
+
+        for i = #g_Interaction.ActiveObjectsOnScreen + 1, 2 do
+            local Widget = "/InGame/Root/Normal/InteractiveObjects/" .. i;
+            XGUIEng.ShowWidget(Widget, 0);
+        end
+    end
+
+    GUI_Interaction.InteractiveObjectMouseOver = function()
+        local PlayerID = GUI.GetPlayerID();
+        local ButtonNumber = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
+        local ObjectID = g_Interaction.ActiveObjectsOnScreen[ButtonNumber];
+        local EntityType = Logic.GetEntityType(ObjectID);
+
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
+        local IsAvailable = Logic.InteractiveObjectGetAvailability(ObjectID);
+
+        local TooltipTextKey;
+        local TooltipDisabledTextKey;
+        local eName = Logic.GetEntityName(ObjectID);
+
+        if IsAvailable == true then
+           TooltipTextKey = "InteractiveObjectAvailable";
+        else
+           TooltipTextKey = "InteractiveObjectNotAvailable";
+        end
+        if Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, PlayerID) == false then
+           TooltipDisabledTextKey = "InteractiveObjectAvailableReward";
+        end
+
+        local CheckSettlement;
+        if Costs and Costs[1] and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
+           CheckSettlement = true;
+        end
+
+        if IO[eName] and IO[eName].Used ~= true then
+            local title;
+            local text;
+            if IO[eName].Title or IO[eName].Text then
+                title = IO[eName].Title or "";
+                text  = IO[eName].Text or "";
+            end
+            if Logic.IsInteractiveObject(ObjectID) == false then
+                Costs = IO[eName].Costs;
+                if Costs and Costs[1] and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
+                    CheckSettlement = true;
+                end
+            end
+            BundleInteractiveObjects.Local:TextCosts(title, text, nil, {Costs[1], Costs[2], Costs[3], Costs[4]}, CheckSettlement);
+            return;
+        end
+        GUI_Tooltip.TooltipBuy(Costs, TooltipTextKey, TooltipDisabledTextKey, nil, CheckSettlement);
+    end
+
+    GUI_Interaction.InteractiveObjectClicked_Orig_QSB_IO = GUI_Interaction.InteractiveObjectClicked
+    GUI_Interaction.InteractiveObjectClicked = function()
+        local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
+        local lang = Network.GetDesiredLanguage();
+        local eID = g_Interaction.ActiveObjectsOnScreen[i];
+        local pID = GUI.GetPlayerID();
+
+        for k,v in pairs(IO)do
+            if eID == GetID(k)then
+                local ActivationSound = "menu_left_prestige";
+                if v.ActivationSound then
+                    ActivationSound = v.ActivationSound;
+                end
+
+                local Reward = {};
+                if IO[k].Reward and IO[k].Reward[1] ~= nil then
+                    table.insert(Reward,IO[k].Reward[1]);
+                    table.insert(Reward,IO[k].Reward[2]);
+                end
+                local space = true;
+                if  Reward[2] and type(Reward[2]) == "number" and Reward[1] ~= Goods.G_Gold
+                and Logic.GetGoodCategoryForGoodType(Reward[1]) == GoodCategories.GC_Resource then
+                    local freeSpace = Logic.GetPlayerUnreservedStorehouseSpace(pID);
+                    if freeSpace < Reward[2] then
+                        space = false;
+                    end
+                end
+
+                local CheckSettlement;
+                if IO[k].Costs and IO[k].Costs[1] then
+                    if Logic.GetGoodCategoryForGoodType(IO[k].Costs[1]) ~= GoodCategories.GC_Resource then
+                        CheckSettlement = true;
+                    end
+
+                    -- space
+                    if space == false then
+                        local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace")
+                        Message(MessageText);
+                        return;
+                    end
+
+                    local Costs = IO[k].Costs;
+                    local CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
+                    local CanBuyBoolean = true;
+
+                    -- costs 1
+                    if Costs[1] then
+                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[1], Costs[2]);
+                    end
+                    -- costs 2
+                    if Costs[3] then
+                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[3], Costs[4]);
+                    end
+
+                    -- check condition
+                    if not IO[k].ConditionFullfilled then
+                        if IO[k].ConditionUnfulfilled and IO[k].ConditionUnfulfilled ~= "" then
+                            Message(IO[k].ConditionUnfulfilled);
+                        end
+                        return;
+                    end
+
+                    -- check opener
+                    if IO[k].Opener then
+                        if Logic.GetDistanceBetweenEntities(GetID(IO[k].Opener),GetID(k)) > IO[k].Distance then
+                            if IO[k].WrongKnight and IO[k].WrongKnight ~= "" then
+                                Message(IO[k].WrongKnight);
+                            end
+                            return;
+                        end
+                    end
+
+                    if CanBuyBoolean == true then
+                        if Costs[1] ~= nil and not Logic.IsInteractiveObject(eID) then
+                            BundleInteractiveObjects.Local:BuyObject(pID, Costs[1], Costs[2]);
+                        end
+                        if Costs[3] ~= nil and not Logic.IsInteractiveObject(eID) then
+                            BundleInteractiveObjects.Local:BuyObject(pID, Costs[3], Costs[4]);
+                        end
+                        -- reward
+                        if #Reward > 0 then
+                            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..pID..",'"..k.."',"..Reward[1]..","..Reward[2]..")");
+                        end
+                        if Logic.IsInteractiveObject(eID) ~= true then
+                            Play2DSound(pID, ActivationSound);
+                            GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
+                        end
+                    else
+                        Message(CanNotBuyString)
+                    end
+                else
+                    -- space
+                    if space == false then
+                        local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace")
+                        Message(MessageText);
+                        return;
+                    end
+
+                    -- check condition
+                    if not IO[k].ConditionFullfilled then
+                        if IO[k].ConditionUnfulfilled and IO[k].ConditionUnfulfilled ~= "" then
+                            Message(IO[k].ConditionUnfulfilled);
+                        end
+                        return;
+                    end
+
+                    -- check opener
+                    if IO[k].Opener then
+                        if Logic.GetDistanceBetweenEntities(GetID(IO[k].Opener),GetID(k)) > IO[k].Distance then
+                            if IO[k].WrongKnight and IO[k].WrongKnight ~= "" then
+                                Message(IO[k].WrongKnight);
+                            end
+                            return;
+                        end
+                    end
+
+                    -- reward
+                    if #Reward > 0 then
+                        GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..pID..",'"..k.."',"..Reward[1]..","..Reward[2]..")");
+                    end
+                    if Logic.IsInteractiveObject(eID) ~= true then
+                        Play2DSound(pID, ActivationSound);
+                        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
+                    end
+                end
+            end
+        end
+        GUI_Interaction.InteractiveObjectClicked_Orig_QSB_IO();
+    end
+
+    GUI_Interaction.DisplayQuestObjective_Orig_QSB_IO = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
+        local lang = Network.GetDesiredLanguage();
+        if lang ~= "de" then lang = "en" end
+
+        local QuestIndexTemp = tonumber(_QuestIndex);
+        if QuestIndexTemp then
+            _QuestIndex = QuestIndexTemp;
+        end
+
+        local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
+        local QuestObjectivesPath = "/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives";
+        XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
+        local QuestObjectiveContainer;
+        local QuestTypeCaption;
+
+        local ParentQuest = Quests[_QuestIndex];
+        local ParentQuestIdentifier;
+        if ParentQuest ~= nil
+        and type(ParentQuest) == "table" then
+            ParentQuestIdentifier = ParentQuest.Identifier;
+        end
+        local HookTable = {};
+
+        g_CurrentDisplayedQuestID = _QuestIndex;
+
+        if QuestType == Objective.Object then
+            QuestObjectiveContainer = QuestObjectivesPath .. "/List"
+            QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestInteraction")
+            local ObjectList = {}
+
+            for i = 1, Quest.Objectives[1].Data[0] do
+                local ObjectType
+                if Logic.IsEntityDestroyed(Quest.Objectives[1].Data[i]) then
+                    ObjectType = g_Interaction.SavedQuestEntityTypes[_QuestIndex][i]
+                else
+                    ObjectType = Logic.GetEntityType(GetEntityId(Quest.Objectives[1].Data[i]))
+                end
+                local ObjectEntityName = Logic.GetEntityName(Quest.Objectives[1].Data[i]);
+                local ObjectName = ""
+                if ObjectType ~= 0 then
+                    local ObjectTypeName = Logic.GetEntityTypeName(ObjectType)
+                    ObjectName = Wrapped_GetStringTableText(_QuestIndex, "Names/" .. ObjectTypeName)
+                    if ObjectName == "" then
+                        ObjectName = Wrapped_GetStringTableText(_QuestIndex, "UI_ObjectNames/" .. ObjectTypeName)
+                    end
+                    if ObjectName == "" then
+                        ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectTypeName];
+                        if type(ObjectName) == "table" then
+                            local lang = Network.GetDesiredLanguage();
+                            lang = (lang == "de" and "de") or "en";
+                            ObjectName = ObjectName[lang];
+                        end
+                    end
+                    if ObjectName == "" then
+                        ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectEntityName];
+                        if type(ObjectName) == "table" then
+                            local lang = Network.GetDesiredLanguage();
+                            lang = (lang == "de" and "de") or "en";
+                            ObjectName = ObjectName[lang];
+                        end
+                    end
+                    if ObjectName == "" then
+                        ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName
+                    end
+                end
+                table.insert(ObjectList, ObjectName)
+            end
+            for i = 1, 4 do
+                local String = ObjectList[i]
+                if String == nil then
+                    String = ""
+                end
+                XGUIEng.SetText(QuestObjectiveContainer .. "/Entry" .. i, "{center}" .. String)
+            end
+
+            SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{14, 10});
+            XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
+            XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
+        else
+            GUI_Interaction.DisplayQuestObjective_Orig_QSB_IO(_QuestIndex, _MessageKey);
+        end
+    end
+end
+
+---
+-- Setzt den Kostentooltip des aktuellen Widgets.
+--
+-- @param _Title        Titel des Tooltip
+-- @param _Text         Text des Tooltip
+-- @param _DisabledText Textzusatz wenn inaktiv
+-- @param _Costs        Kostentabelle
+-- @param _InSettlement Kosten in Siedlung suchen
+-- @within Application-Space
+-- @local
+--
+function BundleInteractiveObjects.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
+    local TooltipContainerPath = "/InGame/Root/Normal/TooltipBuy"
+    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
+    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name")
+    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text")
+    local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG")
+    local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn")
+    local TooltipCostsContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/Costs")
+    local PositionWidget = XGUIEng.GetCurrentWidgetID()
+    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget)
+    GUI_Tooltip.SetCosts(TooltipCostsContainer, _Costs, _InSettlement)
+    local TooltipContainerSizeWidgets = {TooltipContainer, TooltipCostsContainer, TooltipBGWidget}
+    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget, nil, true)
+    GUI_Tooltip.OrderTooltip(TooltipContainerSizeWidgets, TooltipFadeInContainer, TooltipCostsContainer, PositionWidget, TooltipBGWidget)
+    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer)
+
+    _DisabledText = _DisabledText or "";
+    local disabled = ""
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _DisabledText ~= "" and _Text ~= "" then
+        disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _DisabledText
+    end
+
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _Title)
+    XGUIEng.SetText(TooltipDescriptionWidget, _Text .. disabled)
+    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
+    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
+    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
+end
+
+---
+-- Ändert die Textur eines Icons des aktuellen Widget.
+--
+-- @param _Widget Icon Widget
+-- @param _Icon   Icon Textur
+-- @within BundleBuildingButtons
+-- @local
+--
+function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)
+    if type(_Icon) == "table" then
+        if type(_Icon[3]) == "string" then
+            local u0, u1, v0, v1;
+            u0 = (_Coordinates[1] - 1) * 64;
+            v0 = (_Coordinates[2] - 1) * 64;
+            u1 = (_Coordinates[1]) * 64;
+            v1 = (_Coordinates[2]) * 64;
+            XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
+            XGUIEng.SetMaterialTexture(_Widget, 1, _Icon[3].. "big.png");
+            XGUIEng.SetMaterialUV(_Widget, 1, u0, v0, u1, v1);
+        else
+            SetIcon(_Widget, _Icon);
+        end
+    else
+        local screenSize = {GUI.GetScreenSize()};
+        local Scale = 330;
+        if screenSize[2] >= 800 then
+            Scale = 260;
+        end
+        if screenSize[2] >= 1000 then
+            Scale = 210;
+        end
+        XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
+        XGUIEng.SetMaterialTexture(_Widget, 1, _file);
+        XGUIEng.SetMaterialUV(_Widget, 1, 0, 0, Scale, Scale);
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleInteractiveObjects");
+
