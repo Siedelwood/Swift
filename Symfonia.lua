@@ -161,6 +161,41 @@ function API.DumpTable(_Table, _Name)
     Framework.WriteToLog("}");
 end
 
+---
+-- Konvertiert alle Strings, Booleans und Numbers einer Tabelle in
+-- einen String. Die Funktion ist rekursiv, d.h. es werden auch alle
+-- Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
+-- String ist, wird als Adresse geschrieben.
+-- @param _Table Table zum konvertieren
+-- @return string: Converted table
+--
+function API.ConvertTableToString(_Table)
+    assert(type(_Table) == "table");
+    local TableString = "{";
+    for k, v in pairs(_Table) do
+        local key;
+        if (tonumber(k)) then
+            key = ""..k;
+        else
+            key = "'"..k.."'";
+        end
+
+        if type(v) == "table" then
+            TableString = TableString .. "[" .. key .. "] = " .. API.ConvertTableToString(v) .. ", ";
+        elseif type(v) == "number" then
+            TableString = TableString .. "[" .. key .. "] = " .. v .. ", ";
+        elseif type(v) == "string" then
+            TableString = TableString .. "[" .. key .. "] = '" .. v .. "', ";
+        elseif type(v) == "boolean" or type(v) == "nil" then
+            TableString = TableString .. "[" .. key .. "] = " .. tostring(v) .. ", ";
+        else
+            TableString = TableString .. "[" .. key .. "] = '" .. tostring(v) .. "', ";
+        end
+    end
+    TableString = TableString .. "}";
+    return TableString
+end
+
 -- Quests ----------------------------------------------------------------------
 
 ---
@@ -208,8 +243,8 @@ IsValidQuest = API.IsValidateQuest;
 -- @within User-Space
 --
 function API.FailAllQuests(...)
-    for i=1, #args, 1 do
-        API.FailQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.FailQuest(arg[i]);
     end
 end
 FailQuestsByName = API.FailAllQuests;
@@ -242,8 +277,8 @@ FailQuestByName = API.FailQuest;
 -- @within User-Space
 --
 function API.RestartAllQuests(...)
-    for i=1, #args, 1 do
-        API.RestartQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.RestartQuest(arg[i]);
     end
 end
 RestartQuestsByName = API.RestartAllQuests;
@@ -340,8 +375,8 @@ RestartQuestByName = API.RestartQuest;
 -- @within User-Space
 --
 function API.StartAllQuests(...)
-    for i=1, #args, 1 do
-        API.StartQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.StartQuest(arg[i]);
     end
 end
 StartQuestsByName = API.StartAllQuests;
@@ -375,8 +410,8 @@ StartQuestByName = API.StartQuest;
 -- @within User-Space
 --
 function API.StopAllQuests(...)
-    for i=1, #args, 1 do
-        API.StopQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.StopQuest(arg[i]);
     end
 end
 StopQuestwByName = API.StopAllQuests;
@@ -412,8 +447,8 @@ StopQuestByName = API.StopQuest;
 -- @within User-Space
 --
 function API.WinAllQuests(...)
-    for i=1, #args, 1 do
-        API.WinQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.WinQuest(arg[i]);
     end
 end
 WinQuestsByName = API.WinAllQuests;
@@ -962,6 +997,8 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
 -- Laden eines Spielstandes ausgeführt wird.
 --
+-- <b>Alias</b>: AddOnSaveGameLoadedAction
+--
 -- @param _Function Funktion, die ausgeführt werden soll
 -- @within User-Space
 -- @usage SaveGame = function()
@@ -976,6 +1013,7 @@ function API.AddSaveGameAction(_Function)
     end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
 end
+AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
@@ -12678,7 +12716,7 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:OverwriteCreateQuests()
-    self.Data.CreateQuestOriginal = CreateQuests;
+    self.Data.CreateQuestsOriginal = CreateQuests;
     CreateQuests = function()
         if not BundleQuestDebug.Global.Data.CheckAtStart then
             BundleQuestDebug.Global.Data.CreateQuestsOriginal();
@@ -16091,7 +16129,9 @@ end
 BundleInterfaceApperance = {
     Global = {},
     Local = {
-        HiddenWidgets = {},
+        Data = {
+            HiddenWidgets = {},
+        },
     }
 };
 
@@ -18457,25 +18497,22 @@ end
 ---
 -- Verhindert den Bau von Entities in Gebieten und Territorien.
 --
--- @param _Arg      Argumente Originalfunktion
--- @param _Original Referenz Originalfunktion
+-- @param _PlayerID Spieler
+-- @param _Type     Gebäudetyp
+-- @param _x        X-Position
+-- @param _y        Y-Position
 -- @within Application-Space
 -- @local
 --
-function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original)
-    local PlayerID = _Arg[1];
-    local Type     = _Arg[2];
-    local x        = _Arg[3];
-    local y        = _Arg[4];
-
+function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
     -- Auf Territorium ---------------------------------------------
 
     -- Prüfe Kategorien
     for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockCategories) do
         if v then
             for key, val in pairs(v) do
-                if val and Logic.GetTerritoryAtPosition(x, y) == val then
-                    if Logic.IsEntityTypeInCategory(Type, k) == 1 then
+                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
+                    if Logic.IsEntityTypeInCategory(_Type, k) == 1 then
                         return false;
                     end
                 end
@@ -18487,9 +18524,9 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockEntities) do
         if v then
             for key,val in pairs(v) do
-                GUI_Note(tostring(Logic.GetTerritoryAtPosition(x, y) == val));
-                if val and Logic.GetTerritoryAtPosition(x, y) == val then
-                    if Type == k then
+                GUI_Note(tostring(Logic.GetTerritoryAtPosition(_x, _y) == val));
+                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
+                    if _Type == k then
                         return false;
                     end
                 end
@@ -18503,8 +18540,8 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockCategories) do
         if v then
             for key, val in pairs(v) do
-                if Logic.IsEntityTypeInCategory(Type, val[1]) == 1 then
-                    if GetDistance(k, {X= x, Y= y}) < val[2] then
+                if Logic.IsEntityTypeInCategory(_Type, val[1]) == 1 then
+                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
                         return false;
                     end
                 end
@@ -18516,8 +18553,8 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockEntities) do
         if v then
             for key, val in pairs(v) do
-                if Type == val[1] then
-                    if GetDistance(k, {X= x, Y= y}) < val[2] then
+                if _Type == val[1] then
+                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
                         return false;
                     end
                 end
@@ -18546,15 +18583,14 @@ end
 ---
 -- Verhindert den Abriss von Entities.
 --
--- @param _Arg      Argumente Originalfunktion
--- @param _Original Referenz Originalfunktion
+-- @param _BuildingID EntityID des Gebäudes
 -- @within Application-Space
 -- @local
 --
-function BundleConstructionControl.Local.DeleteEntityStateBuilding(_Arg, _Original)
-    local eType = Logic.GetEntityType(_Arg[1]);
-    local eName = Logic.GetEntityName(_Arg[1]);
-    local tID   = GetTerritoryUnderEntity(_Arg[1]);
+function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
+    local eType = Logic.GetEntityType(_BuildingID);
+    local eName = Logic.GetEntityName(_BuildingID);
+    local tID   = GetTerritoryUnderEntity(_BuildingID);
 
     if Logic.IsConstructionComplete(_BuildingID) == 1 and Module_tHEA.GameControl.Protection then
         -- Prüfe auf Namen
@@ -27413,6 +27449,7 @@ end
 --
 -- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
+-- @param _Source Quelle der Änderung
 -- @within Application-Space
 -- @local
 --

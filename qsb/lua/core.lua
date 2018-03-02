@@ -161,6 +161,41 @@ function API.DumpTable(_Table, _Name)
     Framework.WriteToLog("}");
 end
 
+---
+-- Konvertiert alle Strings, Booleans und Numbers einer Tabelle in
+-- einen String. Die Funktion ist rekursiv, d.h. es werden auch alle
+-- Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
+-- String ist, wird als Adresse geschrieben.
+-- @param _Table Table zum konvertieren
+-- @return string: Converted table
+--
+function API.ConvertTableToString(_Table)
+    assert(type(_Table) == "table");
+    local TableString = "{";
+    for k, v in pairs(_Table) do
+        local key;
+        if (tonumber(k)) then
+            key = ""..k;
+        else
+            key = "'"..k.."'";
+        end
+
+        if type(v) == "table" then
+            TableString = TableString .. "[" .. key .. "] = " .. API.ConvertTableToString(v) .. ", ";
+        elseif type(v) == "number" then
+            TableString = TableString .. "[" .. key .. "] = " .. v .. ", ";
+        elseif type(v) == "string" then
+            TableString = TableString .. "[" .. key .. "] = '" .. v .. "', ";
+        elseif type(v) == "boolean" or type(v) == "nil" then
+            TableString = TableString .. "[" .. key .. "] = " .. tostring(v) .. ", ";
+        else
+            TableString = TableString .. "[" .. key .. "] = '" .. tostring(v) .. "', ";
+        end
+    end
+    TableString = TableString .. "}";
+    return TableString
+end
+
 -- Quests ----------------------------------------------------------------------
 
 ---
@@ -962,6 +997,8 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
 -- Laden eines Spielstandes ausgeführt wird.
 --
+-- <b>Alias</b>: AddOnSaveGameLoadedAction
+--
 -- @param _Function Funktion, die ausgeführt werden soll
 -- @within User-Space
 -- @usage SaveGame = function()
@@ -976,6 +1013,7 @@ function API.AddSaveGameAction(_Function)
     end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
 end
+AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
