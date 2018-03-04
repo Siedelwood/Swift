@@ -150,7 +150,7 @@ end
 --
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
-    TextWindow = BundleDialogWindows.Local.TextWindow;
+    TextWindow = self.TextWindow;
 end
 
 ---
@@ -541,8 +541,8 @@ end
 --
 function BundleDialogWindows.Local.TextWindow:SetAction(_Function)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    assert(nil or type(_Callback) == "function");
-    self.Data.Action = _Function;
+    assert(nil or type(_Function) == "function");
+    self.Data.Callback = _Function;
     return self;
 end
 
@@ -566,7 +566,7 @@ function BundleDialogWindows.Local.TextWindow:SetButton(_Text, _Callback)
         assert(type(_Callback) == "function");
     end
     self.Data.ButtonText = _Text;
-    self.Data.Callback   = _Callback;
+    self.Data.Action     = _Callback;
     return self;
 end
 

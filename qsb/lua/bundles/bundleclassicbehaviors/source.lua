@@ -3035,7 +3035,9 @@ end
 function b_Goal_TributeClaim:CustomFunction(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID)
     if IsExisting(Outpost) and GetHealth(Outpost) < 25 then
-        SetHealth(Outpost, 60)
+        while (Logic.GetEntityHealth(Outpost) > Logic.GetEntityMaxHealth(Outpost) * 0.6) do
+            Logic.HurtEntity(Outpost, 1);
+        end
     end
 
     if Logic.GetTerritoryPlayerID(self.TerritoryID) == _Quest.ReceivingPlayer

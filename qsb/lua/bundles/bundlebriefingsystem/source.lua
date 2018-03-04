@@ -44,7 +44,7 @@ function API.PauseQuestsDuringBriefings(_Flag)
         API.Dbg("API.PauseQuestsDuringBriefings: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:PauseQuestsDuringBriefings(_Flag);
+    return BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag);
 end
 PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 
@@ -62,7 +62,7 @@ function API.IsBriefingFinished(_briefingID)
         API.Dbg("API.IsBriefingFinished: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:IsBriefingFinished(_briefingID);
+    return BundleBriefingSystem.Global:IsBriefingFinished(_briefingID);
 end
 IsBriefingFinished = API.IsBriefingFinished;
 
@@ -83,7 +83,7 @@ function API.MCGetSelectedAnswer(_page)
         API.Dbg("API.MCGetSelectedAnswer: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:MCGetSelectedAnswer(_page);
+    return BundleBriefingSystem.Global:MCGetSelectedAnswer(_page);
 end
 MCGetSelectedAnswer = API.MCGetSelectedAnswer;
 
@@ -103,7 +103,7 @@ function API.GetCurrentBriefingPage(_pageNumber)
         API.Dbg("API.GetCurrentBriefingPage: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:GetCurrentBriefingPage(_pageNumber);
+    return BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber);
 end
 GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 
@@ -122,7 +122,7 @@ function API.GetCurrentBriefing()
         API.Dbg("API.GetCurrentBriefing: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:GetCurrentBriefing();
+    return BundleBriefingSystem.Global:GetCurrentBriefing();
 end
 GetCurrentBriefing = API.GetCurrentBriefing;
 
@@ -140,7 +140,7 @@ function API.AddPages(_briefing)
         API.Dbg("API.AddPages: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:AddPages(_briefing);
+    return BundleBriefingSystem.Global:AddPages(_briefing);
 end
 AddPages = API.AddPages;
 
@@ -148,7 +148,7 @@ AddPages = API.AddPages;
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleDialogWindows = {
+BundleBriefingSystem = {
     Global = {
         Data = {
             PlayedBriefings = {},
@@ -169,7 +169,7 @@ BundleDialogWindows = {
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:Install()
+function BundleBriefingSystem.Global:Install()
     self:InitalizeBriefingSystem();
 end
 
@@ -182,7 +182,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:PauseQuestsDuringBriefings(_Flag)
+function BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag)
     self.Data.QuestsPausedWhileBriefingActive = _Flag == true;
 end
 
@@ -194,7 +194,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:IsBriefingFinished(_briefingID)
+function BundleBriefingSystem.Global:IsBriefingFinished(_briefingID)
     return self.Data.PlayedBriefings[_briefingID] == true;
 end
 
@@ -209,7 +209,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:MCGetSelectedAnswer(_page)
+function BundleBriefingSystem.Global:MCGetSelectedAnswer(_page)
     if _page.mc and _page.mc.given then
         return _page.mc.given;
     end
@@ -226,7 +226,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:GetCurrentBriefingPage(_pageNumber)
+function BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber)
     return BriefingSystem.currBriefing[_pageNumber];
 end
 
@@ -239,7 +239,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:GetCurrentBriefing()
+function BundleBriefingSystem.Global:GetCurrentBriefing()
     return BriefingSystem.currBriefing;
 end
 
@@ -251,7 +251,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:AddPages(_briefing)
+function BundleBriefingSystem.Global:AddPages(_briefing)
     ---
     -- Erstellt eine Seite in normaler Syntax oder als Cutscene.
     -- AP kann auch für Sprungbefehle genutzt werden. Dabei wird der
@@ -409,7 +409,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:InitalizeBriefingSystem()
+function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- Setze Standardfarben
     DBlau   = "{@color:70,70,255,255}";
     Blau    = "{@color:153,210,234,255}";
@@ -448,7 +448,7 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
 
                 -- Wenn ein Briefing läuft, vergeht keine Zeit in laufenden Quests
                 if IsBriefingActive() then
-                    if BundleDialogWindows.Global.Data.QuestsPausedWhileBriefingActive == true then
+                    if BundleBriefingSystem.Global.Data.QuestsPausedWhileBriefingActive == true then
                         self.StartTime = self.StartTime +1;
                     end
                 end
@@ -624,8 +624,8 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
         ]]);
 
         -- Briefing ID erzeugen
-        BundleDialogWindows.Global.Data.BriefingID = BundleDialogWindows.Global.Data.BriefingID +1;
-        _briefing.UniqueBriefingID = BundleDialogWindows.Global.Data.BriefingID;
+        BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
+        _briefing.UniqueBriefingID = BundleBriefingSystem.Global.Data.BriefingID;
 
         if #_briefing > 0 then
             _briefing[1].duration = (_briefing[1].duration or 0) + 0.1;
@@ -667,7 +667,7 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
             ]]);
 
             _briefing.finished_Orig_QSB_Briefing(self);
-            BundleDialogWindows.Global.Data.PlayedBriefings[_briefing.UniqueBriefingID] = true;
+            BundleBriefingSystem.Global.Data.PlayedBriefings[_briefing.UniqueBriefingID] = true;
         end
 
         -- Briefing starten
@@ -679,7 +679,7 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
         else
             BriefingSystem.ExecuteBriefing(_briefing);
         end
-        return BundleDialogWindows.Global.Data.BriefingID;
+        return BundleBriefingSystem.Global.Data.BriefingID;
     end
     BriefingSystem.StartBriefing = API.StartBriefing;
     StartBriefing = API.StartBriefing;
@@ -1089,7 +1089,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Local:Install()
+function BundleBriefingSystem.Local:Install()
     self:InitalizeBriefingSystem();
 end
 
@@ -1099,7 +1099,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Local:InitalizeBriefingSystem()
+function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     GameCallback_GUI_SelectionChanged_Orig_QSB_Briefing = GameCallback_GUI_SelectionChanged;
     GameCallback_GUI_SelectionChanged = function(_Source)
         GameCallback_GUI_SelectionChanged_Orig_QSB_Briefing(_Source);
@@ -2293,7 +2293,7 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleDialogWindows");
+Core:RegisterBundle("BundleBriefingSystem");
 
 --[[
 ----------------------------------------------------------------------------

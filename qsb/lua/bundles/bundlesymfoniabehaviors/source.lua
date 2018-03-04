@@ -679,14 +679,6 @@ function b_Reprisal_ChangePlayer:CustomFunction(__quest_)
     end
     local eID = GetID(self.Entity);
     if Logic.IsLeader(eID) == 1 then
-        -- local SoldiersAmount = Logic.LeaderGetNumberOfSoldiers(eID);
-        -- local SoldiersType = Logic.LeaderGetNumberOfSoldiers(eID);
-        -- local Orientation = Logic.GetEntityOrientation(eID);
-        -- local EntityName = Logic.GetEntityName(eID);
-        -- local x,y,z = Logic.EntityGetPos(eID);
-        -- local NewID = Logic.CreateBattalionOnUnblockedLand(SoldiersType, x, y, Orientation, self.Player, SoldiersAmount );
-        -- Logic.SetEntityName(NewID, EntityName);
-        -- DestroyEntity(eID);
         Logic.ChangeSettlerPlayerID(eID, self.Player);
     else
         Logic.ChangeEntityPlayerID(eID, self.Player);

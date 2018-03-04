@@ -593,7 +593,7 @@ warn = API.Warn;
 --
 function API.Info(_Message)
     if QSB.Log.CurrentLevel >= QSB.Log.Level.INFO then
-        API.StaticNote("WARNING: " .._Message)
+        API.Note("INFO: " .._Message)
     end
     API.Log("INFO: " .._Message);
 end
@@ -952,6 +952,29 @@ function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
     return PlayerEntities;
 end
 GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
+
+---
+-- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+-- Hat das Entity einen Namen, bleibt dieser unverändert und wird
+-- zurückgegeben.
+-- @param _EntityID Entity ID
+-- @return string: Skriptname
+--
+function API.EnsureScriptName(_EntityID)
+    if type(_EntityID) == "string" then
+        return _EntityID;
+    else
+        assert(type(_EntityID) == "number");
+        local name = Logic.GetEntityName(_EntityID);
+        if (type(name) ~= "string" or name == "" ) then
+            QSB.GiveEntityNameCounter = (QSB.GiveEntityNameCounter or 0)+ 1;
+            name = "EnsureScriptName_Name_"..QSB.GiveEntityNameCounter;
+            Logic.SetEntityName(_EntityID, name);
+        end
+        return name;
+    end
+end
+GiveEntityName = API.EnsureScriptName;
 
 -- Overwrite -------------------------------------------------------------------
 
