@@ -484,7 +484,7 @@ WinQuestByName = API.WinQuest;
 -- @within User-Space
 --
 function API.Note(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     local MessageFunc = Logic.DEBUG_AddNote;
     if GUI then
         MessageFunc = GUI.AddNote;
@@ -501,7 +501,7 @@ GUI_Note = API.Note;
 -- @within User-Space
 --
 function API.StaticNote(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('GUI.AddStaticNote("' .._Message.. '")');
         return;
@@ -543,7 +543,7 @@ end
 -- @within User-Space
 --
 function API.Message(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('Message("' .._Message.. '")');
         return;
@@ -566,6 +566,22 @@ function API.Dbg(_Message)
     API.Log("DEBUG: " .._Message);
 end
 dbg = API.Dbg;
+
+---
+-- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
+-- übergeben wird.
+--
+-- @param _Message Anzeigetext
+-- @return string: Message
+-- @within User-Space
+--
+function API.EnsureMessage(_Message)
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Message) == "table" then
+        _Message = _Message[Language];
+    end
+    return tostring(_Message);
+end
 
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
@@ -806,12 +822,18 @@ end
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
-    _pos1 = ((type(_pos1) == "string" or type(_pos1) == "number") and _pos1) or GetPosition(_pos1);
-    _pos2 = ((type(_pos2) == "string" or type(_pos2) == "number") and _pos2) or GetPosition(_pos2);
-    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
-        return;
+    if (type(_pos1) == "string") or (type(_pos1) == "number") then
+        _pos1 = GetPosition(_pos1);
     end
-    return math.sqrt(((_pos1.X - _pos2.X)^2) + ((_pos1.Y - _pos2.Y)^2));
+    if (type(_pos2) == "string") or (type(_pos2) == "number") then
+        _pos2 = GetPosition(_pos2);
+    end
+    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
+        return {X= 1, Y= 1};
+    end
+    local xDistance = (_pos1.X - _pos2.X);
+    local yDistance = (_pos1.Y - _pos2.Y);
+    return math.sqrt((xDistance^2) + (yDistance^2));
 end
 GetDistance = API.GetDistance;
 
@@ -21626,13 +21648,15 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
         API.Dbg("API.OpenSelectionDialog: Can only be used in the local script!");
         return;
     end
-
-    if type(_Text) == "table" then
-        _Text.de = _Text.de .. "{cr}";
-        _Text.en = _Text.en .. "{cr}";
-    else
-        _Text = _Text .. "{cr}";
+    
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Title) == "table" then
+       _Title = _Title[lang];
     end
+    if type(_Text) == "table" then
+       _Text = _Text[lang];
+    end
+    _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
 
@@ -21746,7 +21770,7 @@ function BundleDialogWindows.Local:DialogQueueStartNext()
         local Entry = self.Data.Requester.Next;
         if Entry then
             local Methode = Entry[1];
-            self.Data[Methode]( unpack(Entry[2]) );
+            self[Methode]( self, unpack(Entry[2]) );
             self.Data.Requester.Next = nil;
         end
         return true;
@@ -21893,7 +21917,7 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
         XGUIEng.ListBoxPopAll(HeroComboBoxID);
         for i=1,#_List do
-            XGUIEng.ListBoxPushItem(HeroComboBoxID, Umlaute(_List[i]) );
+            XGUIEng.ListBoxPushItem(HeroComboBoxID, _List[i] );
         end
         XGUIEng.ListBoxSetSelectedIndex(HeroComboBoxID, 0);
         CustomGame.Knight = 0;
@@ -22082,7 +22106,7 @@ end
 --
 function BundleDialogWindows.Local.TextWindow:SetAction(_Function)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    assert(nil or type(_Callback) == "function");
+    assert(nil or type(_Function) == "function");
     self.Data.Callback = _Function;
     return self;
 end
