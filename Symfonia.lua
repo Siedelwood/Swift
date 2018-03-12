@@ -11933,14 +11933,20 @@ function API.QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Ca
     end
     return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback);
 end
+QuestMessage = API.QuestMessage;
 
 ---
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
 -- einander angezeigt werden.
 --
+-- Der Vorgänger-Quest und die Wartezeit müssen nur beim ersten Eintrag
+-- angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
+-- sie nicht angegeben sein. Es können Einträge von rechts nach links
+-- weggelassen werden.
+--
 -- Diese Funktion ist geeignet um Dialoge zu konfigurieren!
 --
--- <b>Alias</b>: 
+-- <b>Alias</b>: QuestDialog
 --
 -- Einzelne Einträge pro Quest:
 -- <ul>
@@ -11963,13 +11969,19 @@ function API.QuestDialog(_Messages)
         return;
     end
     
+    local QuestID, Quest
     local GeneratedQuests = {};
     for i= 1, #_Messages, 1 do
-        local QuestID, Quest = API.QuestMessage(unpack(_Messages[i]));
+        if i > 1 then
+            _Messages[i][4] = _Messages[i][4] or Quest.Identifier;
+            _Messages[i][5] = _Messages[i][5] or 12;
+        end
+        QuestID, Quest = API.QuestMessage(unpack(_Messages[i]));
         table.insert(GeneratedQuests, {QuestID, Quest});
     end
     return GeneratedQuests;
 end
+QuestDialog = API.QuestDialog;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
