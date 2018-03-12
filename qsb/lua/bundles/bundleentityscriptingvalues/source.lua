@@ -22,6 +22,8 @@ QSB = QSB or {};
 ---
 -- Gibt den Größenfaktor des Entity zurück.
 --
+-- <b>Alias</b>: GetScale
+--
 -- @param _Entity Entity
 -- @return Größenfaktor
 -- @within User-Space
@@ -34,9 +36,12 @@ function API.GetScale(_Entity)
     end
     return BundleEntityScriptingValues:GetEntitySize(_Entity);
 end
+GetScale = API.GetScale;
 
 ---
 -- Gibt den Besitzer des Entity zurück.
+--
+-- <b>Alias</b>: GetPlayer
 --
 -- @param _Entity Entity
 -- @return Besitzer
@@ -50,9 +55,12 @@ function API.GetPlayer(_Entity)
     end
     return BundleEntityScriptingValues:GetPlayerID(_entity);
 end
+AGetPlayer = API.GetPlayer;
 
 ---
 -- Gibt die Position zurück, zu der sich das Entity bewegt.
+--
+-- <b>Alias</b>: GetMovingTarget
 --
 -- @param _Entity Entity
 -- @return Positionstabelle
@@ -66,25 +74,31 @@ function API.GetMovingTarget(_Entity)
     end
     return BundleEntityScriptingValues:GetMovingTargetPosition(_Entity);
 end
+GetMovingTarget = API.GetMovingTarget;
 
 ---
 -- Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
+--
+-- <b>Alias</b>: IsNpc
 --
 -- @param _Entity Entity
 -- @return Ist NPC
 -- @within User-Space
 --
-function API.IsNPC(_Entity)
+function API.IsNpc(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsNPC: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.IsNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues:IsOnScreenInformationActive(_Entity);
 end
+IsNpc = API.IsNpc;
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
+--
+-- <b>Alias</b>: IsVisible
 --
 -- @param _Entity Entity
 -- @return Ist sichtbar
@@ -98,12 +112,15 @@ function API.IsVisible(_Entity)
     end
     return BundleEntityScriptingValues:IsEntityVisible(_Entity);
 end
+IsVisible = API.IsVisible;
 
 ---
 -- Setzt den Größenfaktor des Entity.
 --
 -- Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
 -- die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
+--
+-- <b>Alias</b>: SetScale
 --
 -- @param _Entity Entity
 -- @param _Scale  Größenfaktor
@@ -121,12 +138,15 @@ function API.SetScale(_Entity, _Scale)
     end
     return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
 end
+SetScale = API.SetScale;
 
 ---
 -- Ändert den Besitzer des Entity.
 --
 -- Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
 -- möglich ein Raubtier einem Spieler zuzuweisen.
+--
+-- <b>Alias</b>: ChangePlayer
 --
 -- @param _Entity   Entity
 -- @param _PlayerID Besitzer
@@ -144,6 +164,7 @@ function API.SetPlayer(_Entity, _PlayerID)
     end
     return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
 end
+ChangePlayer = API.SetPlayer;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --

@@ -560,7 +560,7 @@ end
 -- @within User-Space
 --
 function API.Dbg(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.ERROR then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.ERROR then
         API.StaticNote("DEBUG: " .._Message)
     end
     API.Log("DEBUG: " .._Message);
@@ -592,7 +592,7 @@ end
 -- @within User-Space
 --
 function API.Warn(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.WARNING then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
         API.StaticNote("WARNING: " .._Message)
     end
     API.Log("WARNING: " .._Message);
@@ -608,7 +608,7 @@ warn = API.Warn;
 -- @within User-Space
 --
 function API.Info(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.INFO then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
         API.Note("INFO: " .._Message)
     end
     API.Log("INFO: " .._Message);
@@ -622,11 +622,12 @@ QSB.Log = {
         ERROR    = 3000,
         WARNING  = 2000,
         INFO     = 1000,
+        ALL      = 0,
     },
 }
 
 -- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
+QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
 
 ---
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.

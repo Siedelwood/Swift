@@ -505,24 +505,21 @@ function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
     local eName = Logic.GetEntityName(_BuildingID);
     local tID   = GetTerritoryUnderEntity(_BuildingID);
 
-    if Logic.IsConstructionComplete(_BuildingID) == 1 and Module_tHEA.GameControl.Protection then
+    if Logic.IsConstructionComplete(_BuildingID) == 1 then
         -- Prüfe auf Namen
         if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
 
         -- Prüfe auf Typen
         if Inside(eType, BundleConstructionControl.Local.Data.EntityTypes) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
 
         -- Prüfe auf Territorien
         if Inside(tID, BundleConstructionControl.Local.Data.OnTerritory) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
@@ -530,7 +527,6 @@ function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
         -- Prüfe auf Category
         for k,v in pairs(BundleConstructionControl.Local.Data.EntityCategories) do
             if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
-                Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
                 GUI.CancelBuildingKnockDown(_BuildingID);
                 return;
             end

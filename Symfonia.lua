@@ -484,7 +484,7 @@ WinQuestByName = API.WinQuest;
 -- @within User-Space
 --
 function API.Note(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     local MessageFunc = Logic.DEBUG_AddNote;
     if GUI then
         MessageFunc = GUI.AddNote;
@@ -501,7 +501,7 @@ GUI_Note = API.Note;
 -- @within User-Space
 --
 function API.StaticNote(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('GUI.AddStaticNote("' .._Message.. '")');
         return;
@@ -543,7 +543,7 @@ end
 -- @within User-Space
 --
 function API.Message(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('Message("' .._Message.. '")');
         return;
@@ -560,12 +560,28 @@ end
 -- @within User-Space
 --
 function API.Dbg(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.ERROR then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.ERROR then
         API.StaticNote("DEBUG: " .._Message)
     end
     API.Log("DEBUG: " .._Message);
 end
 dbg = API.Dbg;
+
+---
+-- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
+-- übergeben wird.
+--
+-- @param _Message Anzeigetext
+-- @return string: Message
+-- @within User-Space
+--
+function API.EnsureMessage(_Message)
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Message) == "table" then
+        _Message = _Message[Language];
+    end
+    return tostring(_Message);
+end
 
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
@@ -576,7 +592,7 @@ dbg = API.Dbg;
 -- @within User-Space
 --
 function API.Warn(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.WARNING then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
         API.StaticNote("WARNING: " .._Message)
     end
     API.Log("WARNING: " .._Message);
@@ -592,7 +608,7 @@ warn = API.Warn;
 -- @within User-Space
 --
 function API.Info(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.INFO then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
         API.Note("INFO: " .._Message)
     end
     API.Log("INFO: " .._Message);
@@ -606,11 +622,12 @@ QSB.Log = {
         ERROR    = 3000,
         WARNING  = 2000,
         INFO     = 1000,
+        ALL      = 0,
     },
 }
 
 -- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
+QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
 
 ---
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.
@@ -806,12 +823,18 @@ end
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
-    _pos1 = ((type(_pos1) == "string" or type(_pos1) == "number") and _pos1) or GetPosition(_pos1);
-    _pos2 = ((type(_pos2) == "string" or type(_pos2) == "number") and _pos2) or GetPosition(_pos2);
-    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
-        return;
+    if (type(_pos1) == "string") or (type(_pos1) == "number") then
+        _pos1 = GetPosition(_pos1);
     end
-    return math.sqrt(((_pos1.X - _pos2.X)^2) + ((_pos1.Y - _pos2.Y)^2));
+    if (type(_pos2) == "string") or (type(_pos2) == "number") then
+        _pos2 = GetPosition(_pos2);
+    end
+    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
+        return {X= 1, Y= 1};
+    end
+    local xDistance = (_pos1.X - _pos2.X);
+    local yDistance = (_pos1.Y - _pos2.Y);
+    return math.sqrt((xDistance^2) + (yDistance^2));
 end
 GetDistance = API.GetDistance;
 
@@ -17697,6 +17720,8 @@ QSB = QSB or {};
 ---
 -- Gibt den Größenfaktor des Entity zurück.
 --
+-- <b>Alias</b>: GetScale
+--
 -- @param _Entity Entity
 -- @return Größenfaktor
 -- @within User-Space
@@ -17709,9 +17734,12 @@ function API.GetScale(_Entity)
     end
     return BundleEntityScriptingValues:GetEntitySize(_Entity);
 end
+GetScale = API.GetScale;
 
 ---
 -- Gibt den Besitzer des Entity zurück.
+--
+-- <b>Alias</b>: GetPlayer
 --
 -- @param _Entity Entity
 -- @return Besitzer
@@ -17725,9 +17753,12 @@ function API.GetPlayer(_Entity)
     end
     return BundleEntityScriptingValues:GetPlayerID(_entity);
 end
+AGetPlayer = API.GetPlayer;
 
 ---
 -- Gibt die Position zurück, zu der sich das Entity bewegt.
+--
+-- <b>Alias</b>: GetMovingTarget
 --
 -- @param _Entity Entity
 -- @return Positionstabelle
@@ -17741,25 +17772,31 @@ function API.GetMovingTarget(_Entity)
     end
     return BundleEntityScriptingValues:GetMovingTargetPosition(_Entity);
 end
+GetMovingTarget = API.GetMovingTarget;
 
 ---
 -- Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
+--
+-- <b>Alias</b>: IsNpc
 --
 -- @param _Entity Entity
 -- @return Ist NPC
 -- @within User-Space
 --
-function API.IsNPC(_Entity)
+function API.IsNpc(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsNPC: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.IsNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues:IsOnScreenInformationActive(_Entity);
 end
+IsNpc = API.IsNpc;
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
+--
+-- <b>Alias</b>: IsVisible
 --
 -- @param _Entity Entity
 -- @return Ist sichtbar
@@ -17773,12 +17810,15 @@ function API.IsVisible(_Entity)
     end
     return BundleEntityScriptingValues:IsEntityVisible(_Entity);
 end
+IsVisible = API.IsVisible;
 
 ---
 -- Setzt den Größenfaktor des Entity.
 --
 -- Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
 -- die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
+--
+-- <b>Alias</b>: SetScale
 --
 -- @param _Entity Entity
 -- @param _Scale  Größenfaktor
@@ -17796,12 +17836,15 @@ function API.SetScale(_Entity, _Scale)
     end
     return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
 end
+SetScale = API.SetScale;
 
 ---
 -- Ändert den Besitzer des Entity.
 --
 -- Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
 -- möglich ein Raubtier einem Spieler zuzuweisen.
+--
+-- <b>Alias</b>: ChangePlayer
 --
 -- @param _Entity   Entity
 -- @param _PlayerID Besitzer
@@ -17819,6 +17862,7 @@ function API.SetPlayer(_Entity, _PlayerID)
     end
     return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
 end
+ChangePlayer = API.SetPlayer;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -18609,24 +18653,21 @@ function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
     local eName = Logic.GetEntityName(_BuildingID);
     local tID   = GetTerritoryUnderEntity(_BuildingID);
 
-    if Logic.IsConstructionComplete(_BuildingID) == 1 and Module_tHEA.GameControl.Protection then
+    if Logic.IsConstructionComplete(_BuildingID) == 1 then
         -- Prüfe auf Namen
         if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
 
         -- Prüfe auf Typen
         if Inside(eType, BundleConstructionControl.Local.Data.EntityTypes) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
 
         -- Prüfe auf Territorien
         if Inside(tID, BundleConstructionControl.Local.Data.OnTerritory) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
@@ -18634,7 +18675,6 @@ function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
         -- Prüfe auf Category
         for k,v in pairs(BundleConstructionControl.Local.Data.EntityCategories) do
             if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
-                Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
                 GUI.CancelBuildingKnockDown(_BuildingID);
                 return;
             end
@@ -22082,7 +22122,7 @@ end
 --
 function BundleDialogWindows.Local.TextWindow:SetAction(_Function)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    assert(nil or type(_Callback) == "function");
+    assert(nil or type(_Function) == "function");
     self.Data.Callback = _Function;
     return self;
 end
