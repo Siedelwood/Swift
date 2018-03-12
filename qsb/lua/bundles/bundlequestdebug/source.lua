@@ -389,6 +389,46 @@ function BundleQuestDebug.Global:PrintQuests(_Arguments, _Flags)
 end
 
 ---
+--
+--
+function BundleQuestDebug.Global:PrintDetail(_Arguments)
+    local questText = "";
+    local questID = GetQuestID(string.gsub(_Arguments[2], " ", ""));
+
+    if Quests[questID] then
+        local state        = (Quests[questID].State == QuestState.NotTriggered and "not triggered") or
+                              (Quests[questID].State == QuestState.Active and "active") or
+                                "over";
+        local result        = (Quests[questID].Result == QuestResult.Success and "success") or
+                              (Quests[questID].Result == QuestResult.Failure and "failure") or
+                              (Quests[questID].Result == QuestResult.Interrupted and "interrupted") or
+                                "undecided";
+
+        questText = questText .. "Name: " .. Quests[questID].Identifier .. "{cr}";
+        questText = questText .. "State: " .. state .. "{cr}";
+        questText = questText .. "Result: " .. result .. "{cr}";
+        questText = questText .. "Sender: " .. Quests[questID].SendingPlayer .. "{cr}";
+        questText = questText .. "Receiver: " .. Quests[questID].ReceivingPlayer .. "{cr}";
+        questText = questText .. "Duration: " .. Quests[questID].Duration .. "{cr}";
+        questText = questText .. "Start Text: "  .. tostring(Quests[questID].QuestStartMsg) .. "{cr}";
+        questText = questText .. "Failure Text: " .. tostring(Quests[questID].QuestFailureMsg) .. "{cr}";
+        questText = questText .. "Success Text: " .. tostring(Quests[questID].QuestSuccessMsg) .. "{cr}";
+        questText = questText .. "Description: " .. tostring(Quests[questID].QuestDescription) .. "{cr}";
+        questText = questText .. "Objectives: " .. #Quests[questID].Objectives .. "{cr}";
+        questText = questText .. "Reprisals: " .. #Quests[questID].Reprisals .. "{cr}";
+        questText = questText .. "Rewards: " .. #Quests[questID].Rewards .. "{cr}";
+        questText = questText .. "Triggers: " .. #Quests[questID].Triggers .. "{cr}";
+    else
+        questText = questText .. tostring(_Arguments[2]) .. " not found!";
+    end
+
+    Logic.ExecuteInLuaLocalState([[
+        GUI.ClearNotes()
+        GUI.AddStaticNote("]]..questText..[[")
+    ]]);
+end
+
+---
 -- Läd ein Lua-Skript in das Enviorment.
 --
 -- @within BundleQuestDebug.Global

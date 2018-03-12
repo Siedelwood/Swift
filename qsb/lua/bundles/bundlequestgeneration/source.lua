@@ -233,13 +233,14 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
     local OnQuestOver = {
         Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
             if not _Data.QuestName then
+                API.Note("triggered");
                 return true;
             end
-            local QuestID = GetQuestID(_Data.QuestName)
+            local QuestID = GetQuestID(_Data.QuestName);
             if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
                 return true;
             end
-            return falseM
+            return false;
         end}
     }
     
@@ -255,10 +256,10 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
         (_Sender or 1),
         (_Receiver or 1),
         {{ Objective.NoChange,}},
-        OnQuestOver,
-        (_AncestorWt or 0),
-        nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil, nil,
-        _Text
+        { OnQuestOver },
+        (_AncestorWt or 1),
+        nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil,
+        _Text, nil
     );
 end
 
