@@ -11851,8 +11851,6 @@ QSB = QSB or {};
 ---
 -- Erstellt einen Quest, startet ihn jedoch noch nicht.
 --
--- <b>Alias:</b> AddQuest
---
 -- Ein Quest braucht immer wenigstens ein Goal und einen Trigger. Hat ein Quest
 -- keinen Namen, erhält er automatisch einen mit fortlaufender Nummerierung.
 --
@@ -11873,12 +11871,14 @@ QSB = QSB or {};
 -- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
 -- </ul>
 --
+-- <b>Alias:</b> AddQuest
+--
 -- @param _Data Questdefinition
 -- @within User-Space
 --
 function API.AddQuest(_Data)
     if GUI then
-        API.Log("Could not execute API.AddQuest in local script!");
+        API.Log("API.AddQuest: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:NewQuest(_Data);
@@ -11887,6 +11887,8 @@ AddQuest = API.AddQuest;
 
 ---
 -- Startet alle mittels API.AddQuest initalisierten Quests.
+--
+-- <b>Alias</b>: StartQuests
 --
 -- @within User-Space
 --
@@ -11899,6 +11901,76 @@ function API.StartQuests()
 end
 StartQuests = API.StartQuests;
 
+---
+-- Erzeugt eine Nachricht im Questfenster.
+--
+-- Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
+-- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+-- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+-- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+-- des Quests ausgeführt wird.
+--
+-- Alle Paramater sind optional und können von rechts nach links weggelassen
+-- oder mit nil aufgefüllt werden.
+--
+-- <b>Alias</b>: QuestMessage
+--
+-- @param _Text       Anzeigetext der Nachricht
+-- @param _Sender     Sender der Nachricht
+-- @param _Receiver   Receiver der Nachricht
+-- @param _Ancestor   Vorgänger-Quest
+-- @param _AncestorWt Wartezeit
+-- @param _Callback   Callback
+-- @return number: QuestID
+-- @return table: Quest
+--
+-- @within User-Space
+--
+function API.QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+    if GUI then
+        API.Log("API.QuestMessage: Could not execute in local script!");
+        return;
+    end
+    return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback);
+end
+
+---
+-- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
+-- einander angezeigt werden.
+--
+-- Diese Funktion ist geeignet um Dialoge zu konfigurieren!
+--
+-- <b>Alias</b>: 
+--
+-- Einzelne Einträge pro Quest:
+-- <ul>
+-- <li>Anzeigetext der Nachricht</li>
+-- <li>Sender der Nachricht</li>
+-- <li>Receiver der Nachricht</li>
+-- <li>Vorgänger-Quest</li>
+-- <li>Wartezeit</li>
+-- <li>Callback</li>
+-- </ul>
+--
+-- @param _Messages Table with Quests
+-- @return table: List of generated Quests
+--
+-- @within User-Space
+--
+function API.QuestDialog(_Messages)
+    if GUI then
+        API.Log("API.QuestDialog: Could not execute in local script!");
+        return;
+    end
+    
+    local GeneratedQuests = {};
+    for i= 1, #_Messages, 1 do
+        local QuestID, Quest = API.QuestMessage(unpack(_Messages[i]));
+        table.insert(GeneratedQuests, {QuestID, Quest});
+    end
+    return GeneratedQuests;
+end
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -11907,6 +11979,7 @@ BundleQuestGeneration = {
     Global = {
         Data = {
             GenerationList = {},
+            QuestMessageID = 0,
         }
     },
     Local = {
@@ -11945,6 +12018,66 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 --
 function BundleQuestGeneration.Global:Install()
 
+end
+
+---
+-- Erzeugt eine Nachricht im Questfenster.
+--
+-- Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
+-- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+-- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+-- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+-- des Quests ausgeführt wird.
+--
+-- Alle Paramater sind optional und können von rechts nach links weggelassen
+-- oder mit nil aufgefüllt werden.
+--
+-- @param _Text       Anzeigetext der Nachricht
+-- @param _Sender     Sender der Nachricht
+-- @param _Receiver   Receiver der Nachricht
+-- @param _Ancestor   Vorgänger-Quest
+-- @param _AncestorWt Wartezeit
+-- @param _Callback   Callback
+-- @return number: QuestID
+-- @return table: Quest
+--
+-- @within Application-Space
+-- @local
+--
+function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+    self.Data.QuestMessageID = self.Data.QuestMessageID +1;
+    
+    -- Trigger-Nachbau
+    local OnQuestOver = {
+        Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
+            if not _Data.QuestName then
+                return true;
+            end
+            local QuestID = GetQuestID(_Data.QuestName)
+            if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
+                return true;
+            end
+            return falseM
+        end}
+    }
+    
+    -- Lokalisierung
+    local Language = (Network.GetDesiredLanguage() == "de" or "de") or "en";
+    if type(_Text) == "table" then
+        _Text = _Text[Language];
+    end
+    assert(type(_Text) == "string");
+    
+    return QuestTemplate:New(
+        "QSB_QuestMessage_" ..self.Data.QuestMessageID,
+        (_Sender or 1),
+        (_Receiver or 1),
+        {{ Objective.NoChange,}},
+        OnQuestOver,
+        (_AncestorWt or 0),
+        nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil, nil,
+        _Text
+    );
 end
 
 ---
