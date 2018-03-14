@@ -202,11 +202,11 @@ function BundleDialogWindows.Local:DialogQueueStartNext()
     self.Data.Requester.Next = table.remove(self.Data.Requester.Queue, 1);
 
     DialogQueueStartNext_HiResControl = function()
-        local Entry = self.Data.Requester.Next;
-        if Entry then
+        local Entry = BundleDialogWindows.Local.Data.Requester.Next;
+        if Entry and Entry[1] and Entry[2] then
             local Methode = Entry[1];
-            self.Data[Methode]( unpack(Entry[2]) );
-            self.Data.Requester.Next = nil;
+            BundleDialogWindows.Local[Methode]( BundleDialogWindows.Local, unpack(Entry[2]) );
+            BundleDialogWindows.Local.Data.Requester.Next = nil;
         end
         return true;
     end
@@ -303,7 +303,7 @@ function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _
         assert(type(_Text) == "string");
         _Title = "{center}" .. _Title;
 
-        self.OpenDialog(_Title, _Text, _Action);
+        self:OpenDialog(_Title, _Text, _Action);
         XGUIEng.ShowWidget(RequesterDialog_Yes,1);
         XGUIEng.ShowWidget(RequesterDialog_No,1);
         XGUIEng.ShowWidget(RequesterDialog_Ok,0);
