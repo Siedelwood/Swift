@@ -177,7 +177,7 @@ function API.ConvertTableToString(_Table)
         if (tonumber(k)) then
             key = ""..k;
         else
-            key = "'"..k.."'";
+            key = "\""..k.."\"";
         end
 
         if type(v) == "table" then
@@ -185,11 +185,11 @@ function API.ConvertTableToString(_Table)
         elseif type(v) == "number" then
             TableString = TableString .. "[" .. key .. "] = " .. v .. ", ";
         elseif type(v) == "string" then
-            TableString = TableString .. "[" .. key .. "] = '" .. v .. "', ";
+            TableString = TableString .. "[" .. key .. "] = \"" .. v .. "\", ";
         elseif type(v) == "boolean" or type(v) == "nil" then
-            TableString = TableString .. "[" .. key .. "] = " .. tostring(v) .. ", ";
+            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
         else
-            TableString = TableString .. "[" .. key .. "] = '" .. tostring(v) .. "', ";
+            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
         end
     end
     TableString = TableString .. "}";

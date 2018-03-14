@@ -177,7 +177,7 @@ function API.ConvertTableToString(_Table)
         if (tonumber(k)) then
             key = ""..k;
         else
-            key = "'"..k.."'";
+            key = "\""..k.."\"";
         end
 
         if type(v) == "table" then
@@ -185,11 +185,11 @@ function API.ConvertTableToString(_Table)
         elseif type(v) == "number" then
             TableString = TableString .. "[" .. key .. "] = " .. v .. ", ";
         elseif type(v) == "string" then
-            TableString = TableString .. "[" .. key .. "] = '" .. v .. "', ";
+            TableString = TableString .. "[" .. key .. "] = \"" .. v .. "\", ";
         elseif type(v) == "boolean" or type(v) == "nil" then
-            TableString = TableString .. "[" .. key .. "] = " .. tostring(v) .. ", ";
+            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
         else
-            TableString = TableString .. "[" .. key .. "] = '" .. tostring(v) .. "', ";
+            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
         end
     end
     TableString = TableString .. "}";
@@ -12063,13 +12063,14 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
     local OnQuestOver = {
         Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
             if not _Data.QuestName then
+                API.Note("triggered");
                 return true;
             end
-            local QuestID = GetQuestID(_Data.QuestName)
+            local QuestID = GetQuestID(_Data.QuestName);
             if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
                 return true;
             end
-            return falseM
+            return false;
         end}
     }
     
@@ -12085,10 +12086,10 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
         (_Sender or 1),
         (_Receiver or 1),
         {{ Objective.NoChange,}},
-        OnQuestOver,
-        (_AncestorWt or 0),
-        nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil, nil,
-        _Text
+        { OnQuestOver },
+        (_AncestorWt or 1),
+        nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil,
+        _Text, nil
     );
 end
 
@@ -12718,6 +12719,46 @@ function BundleQuestDebug.Global:PrintQuests(_Arguments, _Flags)
 
     if counter >= 15 then
         questText = questText .. "{cr}{cr}(" .. (counter-15) .. " weitere Ergebnis(se) gefunden!)";
+    end
+
+    Logic.ExecuteInLuaLocalState([[
+        GUI.ClearNotes()
+        GUI.AddStaticNote("]]..questText..[[")
+    ]]);
+end
+
+---
+--
+--
+function BundleQuestDebug.Global:PrintDetail(_Arguments)
+    local questText = "";
+    local questID = GetQuestID(string.gsub(_Arguments[2], " ", ""));
+
+    if Quests[questID] then
+        local state        = (Quests[questID].State == QuestState.NotTriggered and "not triggered") or
+                              (Quests[questID].State == QuestState.Active and "active") or
+                                "over";
+        local result        = (Quests[questID].Result == QuestResult.Success and "success") or
+                              (Quests[questID].Result == QuestResult.Failure and "failure") or
+                              (Quests[questID].Result == QuestResult.Interrupted and "interrupted") or
+                                "undecided";
+
+        questText = questText .. "Name: " .. Quests[questID].Identifier .. "{cr}";
+        questText = questText .. "State: " .. state .. "{cr}";
+        questText = questText .. "Result: " .. result .. "{cr}";
+        questText = questText .. "Sender: " .. Quests[questID].SendingPlayer .. "{cr}";
+        questText = questText .. "Receiver: " .. Quests[questID].ReceivingPlayer .. "{cr}";
+        questText = questText .. "Duration: " .. Quests[questID].Duration .. "{cr}";
+        questText = questText .. "Start Text: "  .. tostring(Quests[questID].QuestStartMsg) .. "{cr}";
+        questText = questText .. "Failure Text: " .. tostring(Quests[questID].QuestFailureMsg) .. "{cr}";
+        questText = questText .. "Success Text: " .. tostring(Quests[questID].QuestSuccessMsg) .. "{cr}";
+        questText = questText .. "Description: " .. tostring(Quests[questID].QuestDescription) .. "{cr}";
+        questText = questText .. "Objectives: " .. #Quests[questID].Objectives .. "{cr}";
+        questText = questText .. "Reprisals: " .. #Quests[questID].Reprisals .. "{cr}";
+        questText = questText .. "Rewards: " .. #Quests[questID].Rewards .. "{cr}";
+        questText = questText .. "Triggers: " .. #Quests[questID].Triggers .. "{cr}";
+    else
+        questText = questText .. tostring(_Arguments[2]) .. " not found!";
     end
 
     Logic.ExecuteInLuaLocalState([[
@@ -21928,11 +21969,11 @@ function BundleDialogWindows.Local:DialogQueueStartNext()
     self.Data.Requester.Next = table.remove(self.Data.Requester.Queue, 1);
 
     DialogQueueStartNext_HiResControl = function()
-        local Entry = self.Data.Requester.Next;
-        if Entry then
+        local Entry = BundleDialogWindows.Local.Data.Requester.Next;
+        if Entry and Entry[1] and Entry[2] then
             local Methode = Entry[1];
-            self.Data[Methode]( unpack(Entry[2]) );
-            self.Data.Requester.Next = nil;
+            BundleDialogWindows.Local[Methode]( BundleDialogWindows.Local, unpack(Entry[2]) );
+            BundleDialogWindows.Local.Data.Requester.Next = nil;
         end
         return true;
     end
@@ -22029,7 +22070,7 @@ function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _
         assert(type(_Text) == "string");
         _Title = "{center}" .. _Title;
 
-        self.OpenDialog(_Title, _Text, _Action);
+        self:OpenDialog(_Title, _Text, _Action);
         XGUIEng.ShowWidget(RequesterDialog_Yes,1);
         XGUIEng.ShowWidget(RequesterDialog_No,1);
         XGUIEng.ShowWidget(RequesterDialog_Ok,0);
