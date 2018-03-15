@@ -228,7 +228,7 @@ GetQuestID = API.GetQuestID;
 -- @within User-Space
 --
 function API.IsValidateQuest(_QuestID)
-    return Quests[_QuestID] ~= nil or Quests[self:GetQuestID(_QuestID)] ~= nil;
+    return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
 end
 IsValidQuest = API.IsValidateQuest;
 

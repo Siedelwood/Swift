@@ -421,7 +421,7 @@ GetLeaderBySoldier = API.GetLeaderBySoldier;
 -- @return number: Nächstes Entity
 -- @within User-Space
 --
-function API.GetNearestKnight(_eID,_playerID)
+function API.GetNearestKnight(_eID, _playerID)
     local Knights = {};
     Logic.GetKnights(_playerID, Knights);
     return API.GetNearestEntity(_eID, Knights);
@@ -441,7 +441,6 @@ GetClosestKnight = API.GetNearestKnight;
 --
 function API.GetNearestEntity(_eID, _entities)
     if not IsExisting(_eID) then
-        API.Dbg("API.GetNearestEntity: Base entity does not exist!");
         return;
     end
     if #_entities == 0 then
