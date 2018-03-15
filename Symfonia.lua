@@ -228,7 +228,7 @@ GetQuestID = API.GetQuestID;
 -- @within User-Space
 --
 function API.IsValidateQuest(_QuestID)
-    return Quests[_QuestID] ~= nil or Quests[self:GetQuestID(_QuestID)] ~= nil;
+    return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
 end
 IsValidQuest = API.IsValidateQuest;
 
@@ -19872,7 +19872,7 @@ GetLeaderBySoldier = API.GetLeaderBySoldier;
 -- @return number: Nächstes Entity
 -- @within User-Space
 --
-function API.GetNearestKnight(_eID,_playerID)
+function API.GetNearestKnight(_eID, _playerID)
     local Knights = {};
     Logic.GetKnights(_playerID, Knights);
     return API.GetNearestEntity(_eID, Knights);
@@ -19892,7 +19892,6 @@ GetClosestKnight = API.GetNearestKnight;
 --
 function API.GetNearestEntity(_eID, _entities)
     if not IsExisting(_eID) then
-        API.Dbg("API.GetNearestEntity: Base entity does not exist!");
         return;
     end
     if #_entities == 0 then
@@ -22985,6 +22984,8 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
 
             return true
         end
+        
+        BundleBriefingSystem:OverwriteGetPosition();
     end
 
 -- Briefing System Beginn ----------------------------------------------
@@ -24765,28 +24766,49 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
         XGUIEng.ShowWidget(BG, 1);
     end
+    
+    BundleBriefingSystem:OverwriteGetPosition();
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.
+--
+function BundleBriefingSystem:OverwriteGetPosition()
+    GetPosition = function(_input, _offsetZ)
+        _offsetZ = _offsetZ or 0;
+        if type(_input) == "table" then
+            return _input;
+        else
+            if not IsExisting(_input) then
+                return {X=0, Y=0, Z=0+_offsetZ};
+            else
+                local eID = GetID(_input);
+                local x,y,z = Logic.EntityGetPos(eID);
+                return {X=x, Y=y, Z=z+_offsetZ};
+            end
+        end
+    end
 end
 
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleBriefingSystem");
 
---[[
-----------------------------------------------------------------------------
-    Reward_Briefing
-    added by totalwarANGEL
-    Ruft eine Funktion im Skript auf, die eine Briefing-ID zurück gibt.
-    Diese wird dann in der Quest gespeichert und kann mit Trigger_Briefing
-    verwendet werden.
-    Die letzte Zeile der Funktion, die das Briefing erstellt und startet,
-    sieht demzufolge so aus: return StartBriefing(briefing)
-----------------------------------------------------------------------------
-    Argument        | Beschreibung
-  ------------------|---------------------------------------
-    Funktion        | Funktion, die das Briefing erstellt
-                    | und die ID zurück gibt.
-----------------------------------------------------------------------------
-]]
+---
+-- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+-- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
+--
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
+-- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+--
+-- @param _Briefing Funktionsname als String
+-- @return table: Behavior
+--
+function Reward_Briefing(...)
+    return b_Reward_Briefing:new(...);
+end
 
 b_Reward_Briefing = {
     Name = "Reward_Briefing",
@@ -24835,24 +24857,21 @@ function b_Reward_Briefing:Reset(__quest_)
     Quests[QuestID].EmbeddedBriefing = nil;
 end
 
-Core:RegisterBehavior(b_Reward_Briefing)
+Core:RegisterBehavior(b_Reward_Briefing);
 
---[[
-----------------------------------------------------------------------------
-    Reprisal_Briefing
-    added by totalwarANGEL
-    Ruft eine Funktion im Skript auf, die eine Briefing-ID zurück gibt.
-    Diese wird dann in der Quest gespeichert und kann mit Trigger_Briefing
-    verwendet werden.
-    Die letzte Zeile der Funktion, die das Briefing erstellt und startet,
-    sieht demzufolge so aus: return StartBriefing(briefing)
-----------------------------------------------------------------------------
-    Argument        | Beschreibung
-  ------------------|---------------------------------------
-    Funktion        | Funktion, die das Briefing erstellt
-                    | und die ID zurück gibt.
-----------------------------------------------------------------------------
-]]
+---
+-- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+-- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
+--
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
+-- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+--
+-- @param _Briefing Funktionsname als String
+-- @return table: Behavior
+--
+function Reprisal_Briefing(...)
+    return b_Reprisal_Briefing:new(...);
+end
 
 b_Reprisal_Briefing = {
     Name = "Reprisal_Briefing",
@@ -24903,20 +24922,17 @@ end
 
 Core:RegisterBehavior(b_Reprisal_Briefing)
 
---[[
-----------------------------------------------------------------------------
-    Trigger_Briefing
-    added by totalwarANGEL
-    Starte eine Quest nachdem ein eingebettetes Briefing in einer anderen Quest
-    beendet ist. Questname muss demzufolge einen Quest referenzieren, in dem ein
-    Briefing mit Reward_Briefing oder Reprisal_Briefing integriert wurde.
-----------------------------------------------------------------------------
-    Argument        | Beschreibung
-  ------------------|---------------------------------------
-    Questname       | Questname einer Quest mit Briefing
-    Wartezeit       | Wartezeit in Sekunden
-----------------------------------------------------------------------------
-]]
+---
+-- Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
+-- angehangen ist, beendet ist.
+--
+-- @param _QuestName Name des Quest
+-- @param _Waittime  Wartezeit in Sekunden
+-- @return table: Behavior
+--
+function Trigger_Briefing(...)
+    return b_Trigger_Briefing:new(...);
+end
 
 b_Trigger_Briefing = {
     Name = "Trigger_Briefing",
