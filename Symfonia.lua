@@ -13736,11 +13736,11 @@ function BundleNonPlayerCharacter.Global:Install()
             if NPC:HasTalkedTo() then
                 NPC:Deactivate();
                 if NPC.Data.Callback then
-                    NPC.Data.Callback(NPC);
+                    NPC.Data.Callback(NPC, ClosestKnightID);
                 end
             else
                 if NPC.Data.WrongHeroCallback then
-                    NPC.Data.WrongHeroCallback(NPC);
+                    NPC.Data.WrongHeroCallback(NPC, ClosestKnightID);
                 end
             end
         end
@@ -13829,10 +13829,8 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
     local Offset = 0;
     if Logic.IsEntityInCategory(self.Data.NpcName, EntityCategories.Hero) == 1 then
         LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, 25);
-    else
-        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
     end
-    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.Data.NpcName, 25);
+    LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
 end
 
 ---
@@ -17628,7 +17626,9 @@ BundleMusicTools = {
         }
     },
     Local = {
-        Data = {}
+        Data = {
+            SoundBackup = {},
+        }
     },
 }
 
@@ -17764,38 +17764,38 @@ end
 -- @local
 --
 function BundleMusicTools.Global.StartSongControl()
-    if not self.Data.StartSongData.Running then
-        self.Data.StartSongData = {};
-        self.Data.StartSongJob = nil;
-        if #self.Data.StartSongQueue > 0 then
-            local Description = table.remove(self.Data.StartSongQueue, 1);
-            self:StartSong(Description);
+    if not BundleMusicTools.Global.Data.StartSongData.Running then
+        BundleMusicTools.Global.Data.StartSongData = {};
+        BundleMusicTools.Global.Data.StartSongJob = nil;
+        if #BundleMusicTools.Global.Data.StartSongQueue > 0 then
+            local Description = table.remove(BundleMusicTools.Global.Data.StartSongQueue, 1);
+            BundleMusicTools.Global:StartSong(Description);
         else
-            if self.Data.StartSongPlaylist.Repeat then
-                self:StartPlaylist(self.Data.StartSongPlaylist);
+            if BundleMusicTools.Global.Data.StartSongPlaylist.Repeat then
+                BundleMusicTools.Global:StartPlaylist(BundleMusicTools.Global.Data.StartSongPlaylist);
             end
         end
         return true;
     end
 
-    local Data = self.Data.StartSongData;
-    -- Zeit z�hlen
-    self.Data.StartSongData.Time = Data.Time +1;
+    local Data = BundleMusicTools.Global.Data.StartSongData;
+    -- Zeit zählen
+    BundleMusicTools.Global.Data.StartSongData.Time = Data.Time +1;
 
     if Data.Fadeout < 5 then
         if Data.Time >= Data.Length then
-            self.Data.StartSongData.Running = false;
-            self:StopSong();
+            BundleMusicTools.Global.Data.StartSongData.Running = false;
+            BundleMusicTools.Global:StopSong();
         end
     else
         local FadeoutTime = Data.Length - Data.Fadeout+1;
         if Data.Time >= FadeoutTime then
             if Data.Time >= Data.Length then
-                self.Data.StartSongData.Running = false;
-                self:StopSong();
+                BundleMusicTools.Global.Data.StartSongData.Running = false;
+                BundleMusicTools.Global:StopSong();
             else
                 local VolumeStep = Data.Volume / Data.Fadeout;
-                self.Data.StartSongData.CurrentVolume = Data.CurrentVolume - VolumeStep;
+                BundleMusicTools.Global.Data.StartSongData.CurrentVolume = Data.CurrentVolume - VolumeStep;
                 Logic.ExecuteInLuaLocalState([[
                     Sound.SetSpeechVolume(]]..Data.CurrentVolume..[[)
                 ]]);
@@ -20383,11 +20383,12 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
-        API.Bridge("API.FocusCameraOnEntity(" .._Entity.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        API.Bridge("API.FocusCameraOnEntity(" ..Subject.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
         API.Dbg("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
         return;
     end
@@ -25017,7 +25018,7 @@ Core:RegisterBehavior(b_Trigger_Briefing)-- ------------------------------------
 --
 -- @usage
 -- -- Ein Lager erzeugen:
--- MyStore = QSB.CatsleStore(1);
+-- MyStore = QSB.CastleStore:New(1);
 --
 -- -- Ein Lager löschen:
 -- MyStore:Dispose();
