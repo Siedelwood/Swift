@@ -167,7 +167,9 @@ BundleMusicTools = {
         }
     },
     Local = {
-        Data = {}
+        Data = {
+            SoundBackup = {},
+        }
     },
 }
 
@@ -303,38 +305,38 @@ end
 -- @local
 --
 function BundleMusicTools.Global.StartSongControl()
-    if not self.Data.StartSongData.Running then
-        self.Data.StartSongData = {};
-        self.Data.StartSongJob = nil;
-        if #self.Data.StartSongQueue > 0 then
-            local Description = table.remove(self.Data.StartSongQueue, 1);
-            self:StartSong(Description);
+    if not BundleMusicTools.Global.Data.StartSongData.Running then
+        BundleMusicTools.Global.Data.StartSongData = {};
+        BundleMusicTools.Global.Data.StartSongJob = nil;
+        if #BundleMusicTools.Global.Data.StartSongQueue > 0 then
+            local Description = table.remove(BundleMusicTools.Global.Data.StartSongQueue, 1);
+            BundleMusicTools.Global:StartSong(Description);
         else
-            if self.Data.StartSongPlaylist.Repeat then
-                self:StartPlaylist(self.Data.StartSongPlaylist);
+            if BundleMusicTools.Global.Data.StartSongPlaylist.Repeat then
+                BundleMusicTools.Global:StartPlaylist(BundleMusicTools.Global.Data.StartSongPlaylist);
             end
         end
         return true;
     end
 
-    local Data = self.Data.StartSongData;
-    -- Zeit z�hlen
-    self.Data.StartSongData.Time = Data.Time +1;
+    local Data = BundleMusicTools.Global.Data.StartSongData;
+    -- Zeit zählen
+    BundleMusicTools.Global.Data.StartSongData.Time = Data.Time +1;
 
     if Data.Fadeout < 5 then
         if Data.Time >= Data.Length then
-            self.Data.StartSongData.Running = false;
-            self:StopSong();
+            BundleMusicTools.Global.Data.StartSongData.Running = false;
+            BundleMusicTools.Global:StopSong();
         end
     else
         local FadeoutTime = Data.Length - Data.Fadeout+1;
         if Data.Time >= FadeoutTime then
             if Data.Time >= Data.Length then
-                self.Data.StartSongData.Running = false;
-                self:StopSong();
+                BundleMusicTools.Global.Data.StartSongData.Running = false;
+                BundleMusicTools.Global:StopSong();
             else
                 local VolumeStep = Data.Volume / Data.Fadeout;
-                self.Data.StartSongData.CurrentVolume = Data.CurrentVolume - VolumeStep;
+                BundleMusicTools.Global.Data.StartSongData.CurrentVolume = Data.CurrentVolume - VolumeStep;
                 Logic.ExecuteInLuaLocalState([[
                     Sound.SetSpeechVolume(]]..Data.CurrentVolume..[[)
                 ]]);

@@ -598,11 +598,11 @@ function BundleNonPlayerCharacter.Global:Install()
             if NPC:HasTalkedTo() then
                 NPC:Deactivate();
                 if NPC.Data.Callback then
-                    NPC.Data.Callback(NPC);
+                    NPC.Data.Callback(NPC, ClosestKnightID);
                 end
             else
                 if NPC.Data.WrongHeroCallback then
-                    NPC.Data.WrongHeroCallback(NPC);
+                    NPC.Data.WrongHeroCallback(NPC, ClosestKnightID);
                 end
             end
         end
@@ -691,10 +691,8 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
     local Offset = 0;
     if Logic.IsEntityInCategory(self.Data.NpcName, EntityCategories.Hero) == 1 then
         LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, 25);
-    else
-        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
     end
-    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.Data.NpcName, 25);
+    LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
 end
 
 ---

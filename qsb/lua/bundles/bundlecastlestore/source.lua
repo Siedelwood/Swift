@@ -19,7 +19,7 @@
 --
 -- @usage
 -- -- Ein Lager erzeugen:
--- MyStore = QSB.CatsleStore(1);
+-- MyStore = QSB.CastleStore:New(1);
 --
 -- -- Ein Lager löschen:
 -- MyStore:Dispose();
