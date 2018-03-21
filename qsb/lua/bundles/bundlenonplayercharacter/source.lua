@@ -690,7 +690,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
     
     local Offset = 0;
     if Logic.IsEntityInCategory(self.Data.NpcName, EntityCategories.Hero) == 1 then
-        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, 25);
+        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastNpcEntityID, 15);
     end
     LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
 end

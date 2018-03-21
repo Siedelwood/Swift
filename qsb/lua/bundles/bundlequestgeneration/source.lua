@@ -233,7 +233,6 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
     local OnQuestOver = {
         Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
             if not _Data.QuestName then
-                API.Note("triggered");
                 return true;
             end
             local QuestID = GetQuestID(_Data.QuestName);
@@ -271,6 +270,7 @@ end
 -- @local
 --
 function BundleQuestGeneration.Global:NewQuest(_Data)
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if not _Data.Name then
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);

@@ -4433,7 +4433,7 @@ function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
         end
     end
     if not self.QuestStarted then
-        self.QuestStarted = QuestTemplate:New(_Quest.Identifier.."TributeBanditQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
+        self.QuestStarted = QuestTemplate:new(_Quest.Identifier.."TributeBanditQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
                                     {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
                                     {{ Triggers.Time, 0 }},
                                     self.TributTime,
@@ -4605,7 +4605,7 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
                 Logic.DEBUG_AddNote("b_Goal_TributeClaim: TributTime too long")
         end
         if not self.Quest then
-            local QuestID = QuestTemplate:New(_Quest.Identifier.."TributeClaimQuest" , self.PlayerID, _Quest.ReceivingPlayer,
+            local QuestID = QuestTemplate:new(_Quest.Identifier.."TributeClaimQuest" , self.PlayerID, _Quest.ReceivingPlayer,
                                         {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
                                         {{ Triggers.Time, 0 }},
                                         self.TributTime,
@@ -8917,7 +8917,7 @@ Core:RegisterBehavior(b_Trigger_OnAmountOfGoods);
 -- @within Trigger
 --
 function Trigger_OnQuestActive(...)
-    return b_Trigger_OnQuestActive(...);
+    return b_Trigger_OnQuestActive:new(...);
 end
 
 b_Trigger_OnQuestActive = {
@@ -9900,6 +9900,57 @@ function b_Trigger_OnAtLeastXOfYQuestsSuccess:GetCustomData(_Index)
 end
 
 Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Führt eine Funktion im Skript als Trigger aus.
+--
+-- Die Funktion muss entweder true or false zurückgeben.
+--
+-- @param _FunctionName Name der Funktion
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_MapScriptFunction(...)
+    return b_Trigger_MapScriptFunction:new(...);
+end
+
+b_Trigger_MapScriptFunction = {
+    Name = "Trigger_MapScriptFunction",
+    Description = {
+        en = "Calls a function within the global map script. If the function returns true the quest will be started",
+        de = "Ruft eine Funktion im globalen Skript auf. Wenn sie true sendet, wird die Quest gestartet.",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Function name", de = "Funktionsname" },
+    },
+}
+
+function b_Trigger_MapScriptFunction:GetTriggerTable(__quest_)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_MapScriptFunction:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.FuncName = __parameter_
+    end
+end
+
+function b_Trigger_MapScriptFunction:CustomFunction(__quest_)
+    return _G[self.FuncName](self, __quest_);
+end
+
+function b_Trigger_MapScriptFunction:DEBUG(__quest_)
+    if not self.FuncName or not _G[self.FuncName] then
+        local text = string.format("%s Trigger_MapScriptFunction: function '%s' does not exist!", __quest_.Identifier, tostring(self.FuncName));
+        dbg(text);
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -12063,7 +12114,6 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
     local OnQuestOver = {
         Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
             if not _Data.QuestName then
-                API.Note("triggered");
                 return true;
             end
             local QuestID = GetQuestID(_Data.QuestName);
@@ -12101,6 +12151,7 @@ end
 -- @local
 --
 function BundleQuestGeneration.Global:NewQuest(_Data)
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if not _Data.Name then
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
@@ -12872,7 +12923,7 @@ end
 --
 function BundleQuestDebug.Global:QuestSuccess(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.WinAllQuests(unpack(FoundQuests));
@@ -12886,7 +12937,7 @@ end
 --
 function BundleQuestDebug.Global:QuestFailure(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.FailAllQuests(unpack(FoundQuests));
@@ -12900,7 +12951,7 @@ end
 --
 function BundleQuestDebug.Global:QuestInterrupt(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.StopAllQuests(unpack(FoundQuests));
@@ -12914,7 +12965,7 @@ end
 --
 function BundleQuestDebug.Global:QuestTrigger(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.StartAllQuests(unpack(FoundQuests));
@@ -12928,7 +12979,7 @@ end
 --
 function BundleQuestDebug.Global:QuestReset(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.RestartAllQuests(unpack(FoundQuests));
@@ -13828,7 +13879,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
     
     local Offset = 0;
     if Logic.IsEntityInCategory(self.Data.NpcName, EntityCategories.Hero) == 1 then
-        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, 25);
+        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastNpcEntityID, 15);
     end
     LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
 end

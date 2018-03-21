@@ -533,7 +533,7 @@ end
 --
 function BundleQuestDebug.Global:QuestSuccess(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.WinAllQuests(unpack(FoundQuests));
@@ -547,7 +547,7 @@ end
 --
 function BundleQuestDebug.Global:QuestFailure(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.FailAllQuests(unpack(FoundQuests));
@@ -561,7 +561,7 @@ end
 --
 function BundleQuestDebug.Global:QuestInterrupt(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.StopAllQuests(unpack(FoundQuests));
@@ -575,7 +575,7 @@ end
 --
 function BundleQuestDebug.Global:QuestTrigger(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.StartAllQuests(unpack(FoundQuests));
@@ -589,7 +589,7 @@ end
 --
 function BundleQuestDebug.Global:QuestReset(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    if #FoundQuests == 0 then
         return;
     end
     API.RestartAllQuests(unpack(FoundQuests));
