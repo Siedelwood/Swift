@@ -789,7 +789,7 @@ function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
     local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
-    if Logic.IsBuilding(entity) then
+    if Logic.IsBuilding(entity) == 1 then
         orientation = orientation - 90;
     end
     _offsetEntity = _offsetEntity or 0;
@@ -4433,7 +4433,7 @@ function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
         end
     end
     if not self.QuestStarted then
-        self.QuestStarted = QuestTemplate:new(_Quest.Identifier.."TributeBanditQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
+        self.QuestStarted = QuestTemplate:New(_Quest.Identifier.."TributeBanditQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
                                     {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
                                     {{ Triggers.Time, 0 }},
                                     self.TributTime,
@@ -4605,7 +4605,7 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
                 Logic.DEBUG_AddNote("b_Goal_TributeClaim: TributTime too long")
         end
         if not self.Quest then
-            local QuestID = QuestTemplate:new(_Quest.Identifier.."TributeClaimQuest" , self.PlayerID, _Quest.ReceivingPlayer,
+            local QuestID = QuestTemplate:New(_Quest.Identifier.."TributeClaimQuest" , self.PlayerID, _Quest.ReceivingPlayer,
                                         {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
                                         {{ Triggers.Time, 0 }},
                                         self.TributTime,
