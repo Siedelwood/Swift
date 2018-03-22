@@ -789,7 +789,7 @@ function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
     local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
-    if Logic.IsBuilding(entity) then
+    if Logic.IsBuilding(entity) == 1 then
         orientation = orientation - 90;
     end
     _offsetEntity = _offsetEntity or 0;
