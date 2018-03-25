@@ -209,9 +209,14 @@ end
 -- @within User-Space
 --
 function API.GetQuestID(_Name)
-    for i=1, Quests[0] do
-        if Quests[i].Identifier == _Name then
-            return i;
+    if type(_Name) == "number" then
+        return _Name;
+    end
+    for k, v in pairs(Quests) do
+        if v and k > 0 then
+            if v.Identifier == _Name then
+                return k;
+            end
         end
     end
 end
@@ -244,7 +249,7 @@ IsValidQuest = API.IsValidateQuest;
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
-        API.FailQuest(arg[i]);
+        API.FailQuest(arg[i].Identifier);
     end
 end
 FailQuestsByName = API.FailAllQuests;
@@ -278,7 +283,7 @@ FailQuestByName = API.FailQuest;
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
-        API.RestartQuest(arg[i]);
+        API.RestartQuest(arg[i].Identifier);
     end
 end
 RestartQuestsByName = API.RestartAllQuests;
@@ -376,7 +381,7 @@ RestartQuestByName = API.RestartQuest;
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
-        API.StartQuest(arg[i]);
+        API.StartQuest(arg[i].Identifier);
     end
 end
 StartQuestsByName = API.StartAllQuests;
@@ -411,7 +416,7 @@ StartQuestByName = API.StartQuest;
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
-        API.StopQuest(arg[i]);
+        API.StopQuest(arg[i].Identifier);
     end
 end
 StopQuestwByName = API.StopAllQuests;
@@ -448,7 +453,7 @@ StopQuestByName = API.StopQuest;
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
-        API.WinQuest(arg[i]);
+        API.WinQuest(arg[i].Identifier);
     end
 end
 WinQuestsByName = API.WinAllQuests;
