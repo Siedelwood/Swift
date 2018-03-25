@@ -410,25 +410,22 @@ end
 ---
 -- Verhindert den Bau von Entities in Gebieten und Territorien.
 --
--- @param _Arg      Argumente Originalfunktion
--- @param _Original Referenz Originalfunktion
+-- @param _PlayerID Spieler
+-- @param _Type     Gebäudetyp
+-- @param _x        X-Position
+-- @param _y        Y-Position
 -- @within Application-Space
 -- @local
 --
-function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original)
-    local PlayerID = _Arg[1];
-    local Type     = _Arg[2];
-    local x        = _Arg[3];
-    local y        = _Arg[4];
-
+function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
     -- Auf Territorium ---------------------------------------------
 
     -- Prüfe Kategorien
     for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockCategories) do
         if v then
             for key, val in pairs(v) do
-                if val and Logic.GetTerritoryAtPosition(x, y) == val then
-                    if Logic.IsEntityTypeInCategory(Type, k) == 1 then
+                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
+                    if Logic.IsEntityTypeInCategory(_Type, k) == 1 then
                         return false;
                     end
                 end
@@ -440,9 +437,9 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockEntities) do
         if v then
             for key,val in pairs(v) do
-                GUI_Note(tostring(Logic.GetTerritoryAtPosition(x, y) == val));
-                if val and Logic.GetTerritoryAtPosition(x, y) == val then
-                    if Type == k then
+                GUI_Note(tostring(Logic.GetTerritoryAtPosition(_x, _y) == val));
+                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
+                    if _Type == k then
                         return false;
                     end
                 end
@@ -456,8 +453,8 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockCategories) do
         if v then
             for key, val in pairs(v) do
-                if Logic.IsEntityTypeInCategory(Type, val[1]) == 1 then
-                    if GetDistance(k, {X= x, Y= y}) < val[2] then
+                if Logic.IsEntityTypeInCategory(_Type, val[1]) == 1 then
+                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
                         return false;
                     end
                 end
@@ -469,8 +466,8 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockEntities) do
         if v then
             for key, val in pairs(v) do
-                if Type == val[1] then
-                    if GetDistance(k, {X= x, Y= y}) < val[2] then
+                if _Type == val[1] then
+                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
                         return false;
                     end
                 end
@@ -499,34 +496,30 @@ end
 ---
 -- Verhindert den Abriss von Entities.
 --
--- @param _Arg      Argumente Originalfunktion
--- @param _Original Referenz Originalfunktion
+-- @param _BuildingID EntityID des Gebäudes
 -- @within Application-Space
 -- @local
 --
-function BundleConstructionControl.Local.DeleteEntityStateBuilding(_Arg, _Original)
-    local eType = Logic.GetEntityType(_Arg[1]);
-    local eName = Logic.GetEntityName(_Arg[1]);
-    local tID   = GetTerritoryUnderEntity(_Arg[1]);
+function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
+    local eType = Logic.GetEntityType(_BuildingID);
+    local eName = Logic.GetEntityName(_BuildingID);
+    local tID   = GetTerritoryUnderEntity(_BuildingID);
 
-    if Logic.IsConstructionComplete(_BuildingID) == 1 and Module_tHEA.GameControl.Protection then
+    if Logic.IsConstructionComplete(_BuildingID) == 1 then
         -- Prüfe auf Namen
         if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
 
         -- Prüfe auf Typen
         if Inside(eType, BundleConstructionControl.Local.Data.EntityTypes) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
 
         -- Prüfe auf Territorien
         if Inside(tID, BundleConstructionControl.Local.Data.OnTerritory) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
@@ -534,7 +527,6 @@ function BundleConstructionControl.Local.DeleteEntityStateBuilding(_Arg, _Origin
         -- Prüfe auf Category
         for k,v in pairs(BundleConstructionControl.Local.Data.EntityCategories) do
             if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
-                Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
                 GUI.CancelBuildingKnockDown(_BuildingID);
                 return;
             end

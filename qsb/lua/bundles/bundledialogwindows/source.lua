@@ -86,12 +86,14 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
         return;
     end
 
-    if type(_Text) == "table" then
-        _Text.de = _Text.de .. "{cr}";
-        _Text.en = _Text.en .. "{cr}";
-    else
-        _Text = _Text .. "{cr}";
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Title) == "table" then
+       _Title = _Title[lang];
     end
+    if type(_Text) == "table" then
+       _Text = _Text[lang];
+    end
+    _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
 
@@ -150,7 +152,7 @@ end
 --
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
-    TextWindow = BundleDialogWindows.Local.TextWindow;
+    TextWindow = self.TextWindow;
 end
 
 ---
@@ -202,11 +204,11 @@ function BundleDialogWindows.Local:DialogQueueStartNext()
     self.Data.Requester.Next = table.remove(self.Data.Requester.Queue, 1);
 
     DialogQueueStartNext_HiResControl = function()
-        local Entry = self.Data.Requester.Next;
-        if Entry then
+        local Entry = BundleDialogWindows.Local.Data.Requester.Next;
+        if Entry and Entry[1] and Entry[2] then
             local Methode = Entry[1];
-            self.Data[Methode]( unpack(Entry[2]) );
-            self.Data.Requester.Next = nil;
+            BundleDialogWindows.Local[Methode]( BundleDialogWindows.Local, unpack(Entry[2]) );
+            BundleDialogWindows.Local.Data.Requester.Next = nil;
         end
         return true;
     end
@@ -303,7 +305,7 @@ function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _
         assert(type(_Text) == "string");
         _Title = "{center}" .. _Title;
 
-        self.OpenDialog(_Title, _Text, _Action);
+        self:OpenDialog(_Title, _Text, _Action);
         XGUIEng.ShowWidget(RequesterDialog_Yes,1);
         XGUIEng.ShowWidget(RequesterDialog_No,1);
         XGUIEng.ShowWidget(RequesterDialog_Ok,0);
@@ -352,7 +354,7 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
         XGUIEng.ListBoxPopAll(HeroComboBoxID);
         for i=1,#_List do
-            XGUIEng.ListBoxPushItem(HeroComboBoxID, Umlaute(_List[i]) );
+            XGUIEng.ListBoxPushItem(HeroComboBoxID, _List[i] );
         end
         XGUIEng.ListBoxSetSelectedIndex(HeroComboBoxID, 0);
         CustomGame.Knight = 0;
@@ -541,8 +543,8 @@ end
 --
 function BundleDialogWindows.Local.TextWindow:SetAction(_Function)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    assert(nil or type(_Callback) == "function");
-    self.Data.Action = _Function;
+    assert(nil or type(_Function) == "function");
+    self.Data.Callback = _Function;
     return self;
 end
 
@@ -566,7 +568,7 @@ function BundleDialogWindows.Local.TextWindow:SetButton(_Text, _Callback)
         assert(type(_Callback) == "function");
     end
     self.Data.ButtonText = _Text;
-    self.Data.Callback   = _Callback;
+    self.Data.Action     = _Callback;
     return self;
 end
 

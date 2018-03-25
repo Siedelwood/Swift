@@ -161,6 +161,41 @@ function API.DumpTable(_Table, _Name)
     Framework.WriteToLog("}");
 end
 
+---
+-- Konvertiert alle Strings, Booleans und Numbers einer Tabelle in
+-- einen String. Die Funktion ist rekursiv, d.h. es werden auch alle
+-- Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
+-- String ist, wird als Adresse geschrieben.
+-- @param _Table Table zum konvertieren
+-- @return string: Converted table
+--
+function API.ConvertTableToString(_Table)
+    assert(type(_Table) == "table");
+    local TableString = "{";
+    for k, v in pairs(_Table) do
+        local key;
+        if (tonumber(k)) then
+            key = ""..k;
+        else
+            key = "\""..k.."\"";
+        end
+
+        if type(v) == "table" then
+            TableString = TableString .. "[" .. key .. "] = " .. API.ConvertTableToString(v) .. ", ";
+        elseif type(v) == "number" then
+            TableString = TableString .. "[" .. key .. "] = " .. v .. ", ";
+        elseif type(v) == "string" then
+            TableString = TableString .. "[" .. key .. "] = \"" .. v .. "\", ";
+        elseif type(v) == "boolean" or type(v) == "nil" then
+            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
+        else
+            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
+        end
+    end
+    TableString = TableString .. "}";
+    return TableString
+end
+
 -- Quests ----------------------------------------------------------------------
 
 ---
@@ -174,9 +209,14 @@ end
 -- @within User-Space
 --
 function API.GetQuestID(_Name)
-    for i=1, Quests[0] do
-        if Quests[i].Identifier == _Name then
-            return i;
+    if type(_Name) == "number" then
+        return _Name;
+    end
+    for k, v in pairs(Quests) do
+        if v and k > 0 then
+            if v.Identifier == _Name then
+                return k;
+            end
         end
     end
 end
@@ -193,7 +233,7 @@ GetQuestID = API.GetQuestID;
 -- @within User-Space
 --
 function API.IsValidateQuest(_QuestID)
-    return Quests[_QuestID] ~= nil or Quests[self:GetQuestID(_QuestID)] ~= nil;
+    return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
 end
 IsValidQuest = API.IsValidateQuest;
 
@@ -208,8 +248,8 @@ IsValidQuest = API.IsValidateQuest;
 -- @within User-Space
 --
 function API.FailAllQuests(...)
-    for i=1, #args, 1 do
-        API.FailQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.FailQuest(arg[i].Identifier);
     end
 end
 FailQuestsByName = API.FailAllQuests;
@@ -227,6 +267,7 @@ FailQuestsByName = API.FailAllQuests;
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("fail quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Fail();
     end
@@ -242,8 +283,8 @@ FailQuestByName = API.FailQuest;
 -- @within User-Space
 --
 function API.RestartAllQuests(...)
-    for i=1, #args, 1 do
-        API.RestartQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.RestartQuest(arg[i].Identifier);
     end
 end
 RestartQuestsByName = API.RestartAllQuests;
@@ -268,6 +309,7 @@ function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then
+        API.Info("restart quest " .._QuestName);
         if Quest.Objectives then
             local questObjectives = Quest.Objectives;
             for i = 1, questObjectives[0] do
@@ -340,8 +382,8 @@ RestartQuestByName = API.RestartQuest;
 -- @within User-Space
 --
 function API.StartAllQuests(...)
-    for i=1, #args, 1 do
-        API.StartQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.StartQuest(arg[i].Identifier);
     end
 end
 StartQuestsByName = API.StartAllQuests;
@@ -359,6 +401,7 @@ StartQuestsByName = API.StartAllQuests;
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("start quest " .._QuestName);
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
         Quest:Trigger();
@@ -375,8 +418,8 @@ StartQuestByName = API.StartQuest;
 -- @within User-Space
 --
 function API.StopAllQuests(...)
-    for i=1, #args, 1 do
-        API.StopQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.StopQuest(arg[i].Identifier);
     end
 end
 StopQuestwByName = API.StopAllQuests;
@@ -395,6 +438,7 @@ StopQuestwByName = API.StopAllQuests;
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("interrupt quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
     end
@@ -412,8 +456,8 @@ StopQuestByName = API.StopQuest;
 -- @within User-Space
 --
 function API.WinAllQuests(...)
-    for i=1, #args, 1 do
-        API.WinQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.WinQuest(arg[i].Identifier);
     end
 end
 WinQuestsByName = API.WinAllQuests;
@@ -431,6 +475,7 @@ WinQuestsByName = API.WinAllQuests;
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("win quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Success();
     end
@@ -449,7 +494,7 @@ WinQuestByName = API.WinQuest;
 -- @within User-Space
 --
 function API.Note(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     local MessageFunc = Logic.DEBUG_AddNote;
     if GUI then
         MessageFunc = GUI.AddNote;
@@ -466,7 +511,7 @@ GUI_Note = API.Note;
 -- @within User-Space
 --
 function API.StaticNote(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('GUI.AddStaticNote("' .._Message.. '")');
         return;
@@ -508,7 +553,7 @@ end
 -- @within User-Space
 --
 function API.Message(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('Message("' .._Message.. '")');
         return;
@@ -525,12 +570,28 @@ end
 -- @within User-Space
 --
 function API.Dbg(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.ERROR then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.ERROR then
         API.StaticNote("DEBUG: " .._Message)
     end
     API.Log("DEBUG: " .._Message);
 end
 dbg = API.Dbg;
+
+---
+-- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
+-- übergeben wird.
+--
+-- @param _Message Anzeigetext
+-- @return string: Message
+-- @within User-Space
+--
+function API.EnsureMessage(_Message)
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Message) == "table" then
+        _Message = _Message[Language];
+    end
+    return tostring(_Message);
+end
 
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
@@ -541,7 +602,7 @@ dbg = API.Dbg;
 -- @within User-Space
 --
 function API.Warn(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.WARNING then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
         API.StaticNote("WARNING: " .._Message)
     end
     API.Log("WARNING: " .._Message);
@@ -557,8 +618,8 @@ warn = API.Warn;
 -- @within User-Space
 --
 function API.Info(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.INFO then
-        API.StaticNote("WARNING: " .._Message)
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
+        API.Note("INFO: " .._Message)
     end
     API.Log("INFO: " .._Message);
 end
@@ -571,11 +632,12 @@ QSB.Log = {
         ERROR    = 3000,
         WARNING  = 2000,
         INFO     = 1000,
+        ALL      = 0,
     },
 }
 
 -- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
+QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
 
 ---
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.
@@ -737,7 +799,7 @@ function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
     local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
-    if Logic.IsBuilding(entity) then
+    if Logic.IsBuilding(entity) == 1 then
         orientation = orientation - 90;
     end
     _offsetEntity = _offsetEntity or 0;
@@ -771,12 +833,18 @@ end
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
-    _pos1 = ((type(_pos1) == "string" or type(_pos1) == "number") and _pos1) or GetPosition(_pos1);
-    _pos2 = ((type(_pos2) == "string" or type(_pos2) == "number") and _pos2) or GetPosition(_pos2);
-    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
-        return;
+    if (type(_pos1) == "string") or (type(_pos1) == "number") then
+        _pos1 = GetPosition(_pos1);
     end
-    return math.sqrt(((_pos1.X - _pos2.X)^2) + ((_pos1.Y - _pos2.Y)^2));
+    if (type(_pos2) == "string") or (type(_pos2) == "number") then
+        _pos2 = GetPosition(_pos2);
+    end
+    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
+        return {X= 1, Y= 1};
+    end
+    local xDistance = (_pos1.X - _pos2.X);
+    local yDistance = (_pos1.Y - _pos2.Y);
+    return math.sqrt((xDistance^2) + (yDistance^2));
 end
 GetDistance = API.GetDistance;
 
@@ -918,6 +986,29 @@ function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
 end
 GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 
+---
+-- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+-- Hat das Entity einen Namen, bleibt dieser unverändert und wird
+-- zurückgegeben.
+-- @param _EntityID Entity ID
+-- @return string: Skriptname
+--
+function API.EnsureScriptName(_EntityID)
+    if type(_EntityID) == "string" then
+        return _EntityID;
+    else
+        assert(type(_EntityID) == "number");
+        local name = Logic.GetEntityName(_EntityID);
+        if (type(name) ~= "string" or name == "" ) then
+            QSB.GiveEntityNameCounter = (QSB.GiveEntityNameCounter or 0)+ 1;
+            name = "EnsureScriptName_Name_"..QSB.GiveEntityNameCounter;
+            Logic.SetEntityName(_EntityID, name);
+        end
+        return name;
+    end
+end
+GiveEntityName = API.EnsureScriptName;
+
 -- Overwrite -------------------------------------------------------------------
 
 ---
@@ -962,6 +1053,8 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
 -- Laden eines Spielstandes ausgeführt wird.
 --
+-- <b>Alias</b>: AddOnSaveGameLoadedAction
+--
 -- @param _Function Funktion, die ausgeführt werden soll
 -- @within User-Space
 -- @usage SaveGame = function()
@@ -976,6 +1069,7 @@ function API.AddSaveGameAction(_Function)
     end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
 end
+AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.

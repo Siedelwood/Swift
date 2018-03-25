@@ -485,7 +485,9 @@ end
 BundleInterfaceApperance = {
     Global = {},
     Local = {
-        HiddenWidgets = {},
+        Data = {
+            HiddenWidgets = {},
+        },
     }
 };
 

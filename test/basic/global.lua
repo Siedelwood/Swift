@@ -73,4 +73,12 @@ function Mission_FirstMapAction()
     }
     
     API.StartQuests()
+    
+    -----
+    
+    API.QuestDialog {
+        {"Das ist ein Test!",        1, 1, "Test03",  10, function() API.Note("Dialog Quest 1") end},
+        {"Das ist noch ein Test!",   1, 1, nil,      nil, function() API.Note("Dialog Quest 2") end},
+        {"Das ist der letzte Test!", 1, 1, nil,      nil, function() API.Note("Dialog Quest 3") end},
+    }
 end

@@ -128,11 +128,12 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
-        API.Bridge("API.FocusCameraOnEntity(" .._Entity.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        API.Bridge("API.FocusCameraOnEntity(" ..Subject.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
         API.Dbg("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
         return;
     end

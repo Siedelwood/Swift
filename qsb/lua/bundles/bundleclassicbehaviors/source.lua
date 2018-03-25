@@ -3035,7 +3035,9 @@ end
 function b_Goal_TributeClaim:CustomFunction(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID)
     if IsExisting(Outpost) and GetHealth(Outpost) < 25 then
-        SetHealth(Outpost, 60)
+        while (Logic.GetEntityHealth(Outpost) > Logic.GetEntityMaxHealth(Outpost) * 0.6) do
+            Logic.HurtEntity(Outpost, 1);
+        end
     end
 
     if Logic.GetTerritoryPlayerID(self.TerritoryID) == _Quest.ReceivingPlayer
@@ -7360,7 +7362,7 @@ Core:RegisterBehavior(b_Trigger_OnAmountOfGoods);
 -- @within Trigger
 --
 function Trigger_OnQuestActive(...)
-    return b_Trigger_OnQuestActive(...);
+    return b_Trigger_OnQuestActive:new(...);
 end
 
 b_Trigger_OnQuestActive = {
@@ -8343,6 +8345,57 @@ function b_Trigger_OnAtLeastXOfYQuestsSuccess:GetCustomData(_Index)
 end
 
 Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Führt eine Funktion im Skript als Trigger aus.
+--
+-- Die Funktion muss entweder true or false zurückgeben.
+--
+-- @param _FunctionName Name der Funktion
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_MapScriptFunction(...)
+    return b_Trigger_MapScriptFunction:new(...);
+end
+
+b_Trigger_MapScriptFunction = {
+    Name = "Trigger_MapScriptFunction",
+    Description = {
+        en = "Calls a function within the global map script. If the function returns true the quest will be started",
+        de = "Ruft eine Funktion im globalen Skript auf. Wenn sie true sendet, wird die Quest gestartet.",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Function name", de = "Funktionsname" },
+    },
+}
+
+function b_Trigger_MapScriptFunction:GetTriggerTable(__quest_)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_MapScriptFunction:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.FuncName = __parameter_
+    end
+end
+
+function b_Trigger_MapScriptFunction:CustomFunction(__quest_)
+    return _G[self.FuncName](self, __quest_);
+end
+
+function b_Trigger_MapScriptFunction:DEBUG(__quest_)
+    if not self.FuncName or not _G[self.FuncName] then
+        local text = string.format("%s Trigger_MapScriptFunction: function '%s' does not exist!", __quest_.Identifier, tostring(self.FuncName));
+        dbg(text);
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --

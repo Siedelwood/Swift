@@ -161,6 +161,41 @@ function API.DumpTable(_Table, _Name)
     Framework.WriteToLog("}");
 end
 
+---
+-- Konvertiert alle Strings, Booleans und Numbers einer Tabelle in
+-- einen String. Die Funktion ist rekursiv, d.h. es werden auch alle
+-- Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
+-- String ist, wird als Adresse geschrieben.
+-- @param _Table Table zum konvertieren
+-- @return string: Converted table
+--
+function API.ConvertTableToString(_Table)
+    assert(type(_Table) == "table");
+    local TableString = "{";
+    for k, v in pairs(_Table) do
+        local key;
+        if (tonumber(k)) then
+            key = ""..k;
+        else
+            key = "\""..k.."\"";
+        end
+
+        if type(v) == "table" then
+            TableString = TableString .. "[" .. key .. "] = " .. API.ConvertTableToString(v) .. ", ";
+        elseif type(v) == "number" then
+            TableString = TableString .. "[" .. key .. "] = " .. v .. ", ";
+        elseif type(v) == "string" then
+            TableString = TableString .. "[" .. key .. "] = \"" .. v .. "\", ";
+        elseif type(v) == "boolean" or type(v) == "nil" then
+            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
+        else
+            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
+        end
+    end
+    TableString = TableString .. "}";
+    return TableString
+end
+
 -- Quests ----------------------------------------------------------------------
 
 ---
@@ -174,9 +209,14 @@ end
 -- @within User-Space
 --
 function API.GetQuestID(_Name)
-    for i=1, Quests[0] do
-        if Quests[i].Identifier == _Name then
-            return i;
+    if type(_Name) == "number" then
+        return _Name;
+    end
+    for k, v in pairs(Quests) do
+        if v and k > 0 then
+            if v.Identifier == _Name then
+                return k;
+            end
         end
     end
 end
@@ -193,7 +233,7 @@ GetQuestID = API.GetQuestID;
 -- @within User-Space
 --
 function API.IsValidateQuest(_QuestID)
-    return Quests[_QuestID] ~= nil or Quests[self:GetQuestID(_QuestID)] ~= nil;
+    return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
 end
 IsValidQuest = API.IsValidateQuest;
 
@@ -208,8 +248,8 @@ IsValidQuest = API.IsValidateQuest;
 -- @within User-Space
 --
 function API.FailAllQuests(...)
-    for i=1, #args, 1 do
-        API.FailQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.FailQuest(arg[i].Identifier);
     end
 end
 FailQuestsByName = API.FailAllQuests;
@@ -227,6 +267,7 @@ FailQuestsByName = API.FailAllQuests;
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("fail quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Fail();
     end
@@ -242,8 +283,8 @@ FailQuestByName = API.FailQuest;
 -- @within User-Space
 --
 function API.RestartAllQuests(...)
-    for i=1, #args, 1 do
-        API.RestartQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.RestartQuest(arg[i].Identifier);
     end
 end
 RestartQuestsByName = API.RestartAllQuests;
@@ -268,6 +309,7 @@ function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then
+        API.Info("restart quest " .._QuestName);
         if Quest.Objectives then
             local questObjectives = Quest.Objectives;
             for i = 1, questObjectives[0] do
@@ -340,8 +382,8 @@ RestartQuestByName = API.RestartQuest;
 -- @within User-Space
 --
 function API.StartAllQuests(...)
-    for i=1, #args, 1 do
-        API.StartQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.StartQuest(arg[i].Identifier);
     end
 end
 StartQuestsByName = API.StartAllQuests;
@@ -359,6 +401,7 @@ StartQuestsByName = API.StartAllQuests;
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("start quest " .._QuestName);
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
         Quest:Trigger();
@@ -375,8 +418,8 @@ StartQuestByName = API.StartQuest;
 -- @within User-Space
 --
 function API.StopAllQuests(...)
-    for i=1, #args, 1 do
-        API.StopQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.StopQuest(arg[i].Identifier);
     end
 end
 StopQuestwByName = API.StopAllQuests;
@@ -395,6 +438,7 @@ StopQuestwByName = API.StopAllQuests;
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("interrupt quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
     end
@@ -412,8 +456,8 @@ StopQuestByName = API.StopQuest;
 -- @within User-Space
 --
 function API.WinAllQuests(...)
-    for i=1, #args, 1 do
-        API.WinQuest(args[i]);
+    for i=1, #arg, 1 do
+        API.WinQuest(arg[i].Identifier);
     end
 end
 WinQuestsByName = API.WinAllQuests;
@@ -431,6 +475,7 @@ WinQuestsByName = API.WinAllQuests;
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("win quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Success();
     end
@@ -449,7 +494,7 @@ WinQuestByName = API.WinQuest;
 -- @within User-Space
 --
 function API.Note(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     local MessageFunc = Logic.DEBUG_AddNote;
     if GUI then
         MessageFunc = GUI.AddNote;
@@ -466,7 +511,7 @@ GUI_Note = API.Note;
 -- @within User-Space
 --
 function API.StaticNote(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('GUI.AddStaticNote("' .._Message.. '")');
         return;
@@ -508,7 +553,7 @@ end
 -- @within User-Space
 --
 function API.Message(_Message)
-    _Message = tostring(_Message);
+    _Message = API.EnsureMessage(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('Message("' .._Message.. '")');
         return;
@@ -525,12 +570,28 @@ end
 -- @within User-Space
 --
 function API.Dbg(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.ERROR then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.ERROR then
         API.StaticNote("DEBUG: " .._Message)
     end
     API.Log("DEBUG: " .._Message);
 end
 dbg = API.Dbg;
+
+---
+-- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
+-- übergeben wird.
+--
+-- @param _Message Anzeigetext
+-- @return string: Message
+-- @within User-Space
+--
+function API.EnsureMessage(_Message)
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Message) == "table" then
+        _Message = _Message[Language];
+    end
+    return tostring(_Message);
+end
 
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
@@ -541,7 +602,7 @@ dbg = API.Dbg;
 -- @within User-Space
 --
 function API.Warn(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.WARNING then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
         API.StaticNote("WARNING: " .._Message)
     end
     API.Log("WARNING: " .._Message);
@@ -557,8 +618,8 @@ warn = API.Warn;
 -- @within User-Space
 --
 function API.Info(_Message)
-    if QSB.Log.CurrentLevel >= QSB.Log.Level.INFO then
-        API.StaticNote("WARNING: " .._Message)
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
+        API.Note("INFO: " .._Message)
     end
     API.Log("INFO: " .._Message);
 end
@@ -571,11 +632,12 @@ QSB.Log = {
         ERROR    = 3000,
         WARNING  = 2000,
         INFO     = 1000,
+        ALL      = 0,
     },
 }
 
 -- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.INFO;
+QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
 
 ---
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.
@@ -737,7 +799,7 @@ function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
     local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
-    if Logic.IsBuilding(entity) then
+    if Logic.IsBuilding(entity) == 1 then
         orientation = orientation - 90;
     end
     _offsetEntity = _offsetEntity or 0;
@@ -771,12 +833,18 @@ end
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
-    _pos1 = ((type(_pos1) == "string" or type(_pos1) == "number") and _pos1) or GetPosition(_pos1);
-    _pos2 = ((type(_pos2) == "string" or type(_pos2) == "number") and _pos2) or GetPosition(_pos2);
-    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
-        return;
+    if (type(_pos1) == "string") or (type(_pos1) == "number") then
+        _pos1 = GetPosition(_pos1);
     end
-    return math.sqrt(((_pos1.X - _pos2.X)^2) + ((_pos1.Y - _pos2.Y)^2));
+    if (type(_pos2) == "string") or (type(_pos2) == "number") then
+        _pos2 = GetPosition(_pos2);
+    end
+    if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
+        return {X= 1, Y= 1};
+    end
+    local xDistance = (_pos1.X - _pos2.X);
+    local yDistance = (_pos1.Y - _pos2.Y);
+    return math.sqrt((xDistance^2) + (yDistance^2));
 end
 GetDistance = API.GetDistance;
 
@@ -918,6 +986,29 @@ function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
 end
 GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 
+---
+-- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+-- Hat das Entity einen Namen, bleibt dieser unverändert und wird
+-- zurückgegeben.
+-- @param _EntityID Entity ID
+-- @return string: Skriptname
+--
+function API.EnsureScriptName(_EntityID)
+    if type(_EntityID) == "string" then
+        return _EntityID;
+    else
+        assert(type(_EntityID) == "number");
+        local name = Logic.GetEntityName(_EntityID);
+        if (type(name) ~= "string" or name == "" ) then
+            QSB.GiveEntityNameCounter = (QSB.GiveEntityNameCounter or 0)+ 1;
+            name = "EnsureScriptName_Name_"..QSB.GiveEntityNameCounter;
+            Logic.SetEntityName(_EntityID, name);
+        end
+        return name;
+    end
+end
+GiveEntityName = API.EnsureScriptName;
+
 -- Overwrite -------------------------------------------------------------------
 
 ---
@@ -962,6 +1053,8 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- Hängt eine Funktion an Mission_OnSaveGameLoaded an, sodass sie nach dem
 -- Laden eines Spielstandes ausgeführt wird.
 --
+-- <b>Alias</b>: AddOnSaveGameLoadedAction
+--
 -- @param _Function Funktion, die ausgeführt werden soll
 -- @within User-Space
 -- @usage SaveGame = function()
@@ -976,6 +1069,7 @@ function API.AddSaveGameAction(_Function)
     end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
 end
+AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
@@ -4506,7 +4600,9 @@ end
 function b_Goal_TributeClaim:CustomFunction(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID)
     if IsExisting(Outpost) and GetHealth(Outpost) < 25 then
-        SetHealth(Outpost, 60)
+        while (Logic.GetEntityHealth(Outpost) > Logic.GetEntityMaxHealth(Outpost) * 0.6) do
+            Logic.HurtEntity(Outpost, 1);
+        end
     end
 
     if Logic.GetTerritoryPlayerID(self.TerritoryID) == _Quest.ReceivingPlayer
@@ -8831,7 +8927,7 @@ Core:RegisterBehavior(b_Trigger_OnAmountOfGoods);
 -- @within Trigger
 --
 function Trigger_OnQuestActive(...)
-    return b_Trigger_OnQuestActive(...);
+    return b_Trigger_OnQuestActive:new(...);
 end
 
 b_Trigger_OnQuestActive = {
@@ -9816,6 +9912,57 @@ end
 Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
 
 -- -------------------------------------------------------------------------- --
+
+---
+-- Führt eine Funktion im Skript als Trigger aus.
+--
+-- Die Funktion muss entweder true or false zurückgeben.
+--
+-- @param _FunctionName Name der Funktion
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_MapScriptFunction(...)
+    return b_Trigger_MapScriptFunction:new(...);
+end
+
+b_Trigger_MapScriptFunction = {
+    Name = "Trigger_MapScriptFunction",
+    Description = {
+        en = "Calls a function within the global map script. If the function returns true the quest will be started",
+        de = "Ruft eine Funktion im globalen Skript auf. Wenn sie true sendet, wird die Quest gestartet.",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Function name", de = "Funktionsname" },
+    },
+}
+
+function b_Trigger_MapScriptFunction:GetTriggerTable(__quest_)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_MapScriptFunction:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.FuncName = __parameter_
+    end
+end
+
+function b_Trigger_MapScriptFunction:CustomFunction(__quest_)
+    return _G[self.FuncName](self, __quest_);
+end
+
+function b_Trigger_MapScriptFunction:DEBUG(__quest_)
+    if not self.FuncName or not _G[self.FuncName] then
+        local text = string.format("%s Trigger_MapScriptFunction: function '%s' does not exist!", __quest_.Identifier, tostring(self.FuncName));
+        dbg(text);
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_MapScriptFunction);
+
+-- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
@@ -10529,14 +10676,6 @@ function b_Reprisal_ChangePlayer:CustomFunction(__quest_)
     end
     local eID = GetID(self.Entity);
     if Logic.IsLeader(eID) == 1 then
-        -- local SoldiersAmount = Logic.LeaderGetNumberOfSoldiers(eID);
-        -- local SoldiersType = Logic.LeaderGetNumberOfSoldiers(eID);
-        -- local Orientation = Logic.GetEntityOrientation(eID);
-        -- local EntityName = Logic.GetEntityName(eID);
-        -- local x,y,z = Logic.EntityGetPos(eID);
-        -- local NewID = Logic.CreateBattalionOnUnblockedLand(SoldiersType, x, y, Orientation, self.Player, SoldiersAmount );
-        -- Logic.SetEntityName(NewID, EntityName);
-        -- DestroyEntity(eID);
         Logic.ChangeSettlerPlayerID(eID, self.Player);
     else
         Logic.ChangeEntityPlayerID(eID, self.Player);
@@ -11773,8 +11912,6 @@ QSB = QSB or {};
 ---
 -- Erstellt einen Quest, startet ihn jedoch noch nicht.
 --
--- <b>Alias:</b> AddQuest
---
 -- Ein Quest braucht immer wenigstens ein Goal und einen Trigger. Hat ein Quest
 -- keinen Namen, erhält er automatisch einen mit fortlaufender Nummerierung.
 --
@@ -11795,12 +11932,14 @@ QSB = QSB or {};
 -- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
 -- </ul>
 --
+-- <b>Alias:</b> AddQuest
+--
 -- @param _Data Questdefinition
 -- @within User-Space
 --
 function API.AddQuest(_Data)
     if GUI then
-        API.Log("Could not execute API.AddQuest in local script!");
+        API.Log("API.AddQuest: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:NewQuest(_Data);
@@ -11809,6 +11948,8 @@ AddQuest = API.AddQuest;
 
 ---
 -- Startet alle mittels API.AddQuest initalisierten Quests.
+--
+-- <b>Alias</b>: StartQuests
 --
 -- @within User-Space
 --
@@ -11821,6 +11962,88 @@ function API.StartQuests()
 end
 StartQuests = API.StartQuests;
 
+---
+-- Erzeugt eine Nachricht im Questfenster.
+--
+-- Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
+-- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+-- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+-- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+-- des Quests ausgeführt wird.
+--
+-- Alle Paramater sind optional und können von rechts nach links weggelassen
+-- oder mit nil aufgefüllt werden.
+--
+-- <b>Alias</b>: QuestMessage
+--
+-- @param _Text       Anzeigetext der Nachricht
+-- @param _Sender     Sender der Nachricht
+-- @param _Receiver   Receiver der Nachricht
+-- @param _Ancestor   Vorgänger-Quest
+-- @param _AncestorWt Wartezeit
+-- @param _Callback   Callback
+-- @return number: QuestID
+-- @return table: Quest
+--
+-- @within User-Space
+--
+function API.QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+    if GUI then
+        API.Log("API.QuestMessage: Could not execute in local script!");
+        return;
+    end
+    return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback);
+end
+QuestMessage = API.QuestMessage;
+
+---
+-- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
+-- einander angezeigt werden.
+--
+-- Der Vorgänger-Quest und die Wartezeit müssen nur beim ersten Eintrag
+-- angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
+-- sie nicht angegeben sein. Es können Einträge von rechts nach links
+-- weggelassen werden.
+--
+-- Diese Funktion ist geeignet um Dialoge zu konfigurieren!
+--
+-- <b>Alias</b>: QuestDialog
+--
+-- Einzelne Einträge pro Quest:
+-- <ul>
+-- <li>Anzeigetext der Nachricht</li>
+-- <li>Sender der Nachricht</li>
+-- <li>Receiver der Nachricht</li>
+-- <li>Vorgänger-Quest</li>
+-- <li>Wartezeit</li>
+-- <li>Callback</li>
+-- </ul>
+--
+-- @param _Messages Table with Quests
+-- @return table: List of generated Quests
+--
+-- @within User-Space
+--
+function API.QuestDialog(_Messages)
+    if GUI then
+        API.Log("API.QuestDialog: Could not execute in local script!");
+        return;
+    end
+    
+    local QuestID, Quest
+    local GeneratedQuests = {};
+    for i= 1, #_Messages, 1 do
+        if i > 1 then
+            _Messages[i][4] = _Messages[i][4] or Quest.Identifier;
+            _Messages[i][5] = _Messages[i][5] or 12;
+        end
+        QuestID, Quest = API.QuestMessage(unpack(_Messages[i]));
+        table.insert(GeneratedQuests, {QuestID, Quest});
+    end
+    return GeneratedQuests;
+end
+QuestDialog = API.QuestDialog;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -11829,6 +12052,7 @@ BundleQuestGeneration = {
     Global = {
         Data = {
             GenerationList = {},
+            QuestMessageID = 0,
         }
     },
     Local = {
@@ -11870,6 +12094,66 @@ function BundleQuestGeneration.Global:Install()
 end
 
 ---
+-- Erzeugt eine Nachricht im Questfenster.
+--
+-- Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
+-- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+-- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+-- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+-- des Quests ausgeführt wird.
+--
+-- Alle Paramater sind optional und können von rechts nach links weggelassen
+-- oder mit nil aufgefüllt werden.
+--
+-- @param _Text       Anzeigetext der Nachricht
+-- @param _Sender     Sender der Nachricht
+-- @param _Receiver   Receiver der Nachricht
+-- @param _Ancestor   Vorgänger-Quest
+-- @param _AncestorWt Wartezeit
+-- @param _Callback   Callback
+-- @return number: QuestID
+-- @return table: Quest
+--
+-- @within Application-Space
+-- @local
+--
+function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+    self.Data.QuestMessageID = self.Data.QuestMessageID +1;
+    
+    -- Trigger-Nachbau
+    local OnQuestOver = {
+        Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
+            if not _Data.QuestName then
+                return true;
+            end
+            local QuestID = GetQuestID(_Data.QuestName);
+            if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
+                return true;
+            end
+            return false;
+        end}
+    }
+    
+    -- Lokalisierung
+    local Language = (Network.GetDesiredLanguage() == "de" or "de") or "en";
+    if type(_Text) == "table" then
+        _Text = _Text[Language];
+    end
+    assert(type(_Text) == "string");
+    
+    return QuestTemplate:New(
+        "QSB_QuestMessage_" ..self.Data.QuestMessageID,
+        (_Sender or 1),
+        (_Receiver or 1),
+        {{ Objective.NoChange,}},
+        { OnQuestOver },
+        (_AncestorWt or 1),
+        nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil,
+        _Text, nil
+    );
+end
+
+---
 -- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
 --
 -- @param _Data Daten des Quest.
@@ -11877,6 +12161,7 @@ end
 -- @local
 --
 function BundleQuestGeneration.Global:NewQuest(_Data)
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if not _Data.Name then
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
@@ -12504,6 +12789,46 @@ function BundleQuestDebug.Global:PrintQuests(_Arguments, _Flags)
 end
 
 ---
+--
+--
+function BundleQuestDebug.Global:PrintDetail(_Arguments)
+    local questText = "";
+    local questID = GetQuestID(string.gsub(_Arguments[2], " ", ""));
+
+    if Quests[questID] then
+        local state        = (Quests[questID].State == QuestState.NotTriggered and "not triggered") or
+                              (Quests[questID].State == QuestState.Active and "active") or
+                                "over";
+        local result        = (Quests[questID].Result == QuestResult.Success and "success") or
+                              (Quests[questID].Result == QuestResult.Failure and "failure") or
+                              (Quests[questID].Result == QuestResult.Interrupted and "interrupted") or
+                                "undecided";
+
+        questText = questText .. "Name: " .. Quests[questID].Identifier .. "{cr}";
+        questText = questText .. "State: " .. state .. "{cr}";
+        questText = questText .. "Result: " .. result .. "{cr}";
+        questText = questText .. "Sender: " .. Quests[questID].SendingPlayer .. "{cr}";
+        questText = questText .. "Receiver: " .. Quests[questID].ReceivingPlayer .. "{cr}";
+        questText = questText .. "Duration: " .. Quests[questID].Duration .. "{cr}";
+        questText = questText .. "Start Text: "  .. tostring(Quests[questID].QuestStartMsg) .. "{cr}";
+        questText = questText .. "Failure Text: " .. tostring(Quests[questID].QuestFailureMsg) .. "{cr}";
+        questText = questText .. "Success Text: " .. tostring(Quests[questID].QuestSuccessMsg) .. "{cr}";
+        questText = questText .. "Description: " .. tostring(Quests[questID].QuestDescription) .. "{cr}";
+        questText = questText .. "Objectives: " .. #Quests[questID].Objectives .. "{cr}";
+        questText = questText .. "Reprisals: " .. #Quests[questID].Reprisals .. "{cr}";
+        questText = questText .. "Rewards: " .. #Quests[questID].Rewards .. "{cr}";
+        questText = questText .. "Triggers: " .. #Quests[questID].Triggers .. "{cr}";
+    else
+        questText = questText .. tostring(_Arguments[2]) .. " not found!";
+    end
+
+    Logic.ExecuteInLuaLocalState([[
+        GUI.ClearNotes()
+        GUI.AddStaticNote("]]..questText..[[")
+    ]]);
+end
+
+---
 -- Läd ein Lua-Skript in das Enviorment.
 --
 -- @within BundleQuestDebug.Global
@@ -12607,8 +12932,8 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestSuccess(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    if #FoundQuests == 0 then
         return;
     end
     API.WinAllQuests(unpack(FoundQuests));
@@ -12621,8 +12946,8 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestFailure(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    if #FoundQuests == 0 then
         return;
     end
     API.FailAllQuests(unpack(FoundQuests));
@@ -12635,8 +12960,8 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestInterrupt(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    if #FoundQuests == 0 then
         return;
     end
     API.StopAllQuests(unpack(FoundQuests));
@@ -12649,8 +12974,8 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestTrigger(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    if #FoundQuests == 0 then
         return;
     end
     API.StartAllQuests(unpack(FoundQuests));
@@ -12663,8 +12988,8 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestReset(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
-    if #FoundQuests > 0 then
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    if #FoundQuests == 0 then
         return;
     end
     API.RestartAllQuests(unpack(FoundQuests));
@@ -12678,7 +13003,7 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:OverwriteCreateQuests()
-    self.Data.CreateQuestOriginal = CreateQuests;
+    self.Data.CreateQuestsOriginal = CreateQuests;
     CreateQuests = function()
         if not BundleQuestDebug.Global.Data.CheckAtStart then
             BundleQuestDebug.Global.Data.CreateQuestsOriginal();
@@ -13472,11 +13797,11 @@ function BundleNonPlayerCharacter.Global:Install()
             if NPC:HasTalkedTo() then
                 NPC:Deactivate();
                 if NPC.Data.Callback then
-                    NPC.Data.Callback(NPC);
+                    NPC.Data.Callback(NPC, ClosestKnightID);
                 end
             else
                 if NPC.Data.WrongHeroCallback then
-                    NPC.Data.WrongHeroCallback(NPC);
+                    NPC.Data.WrongHeroCallback(NPC, ClosestKnightID);
                 end
             end
         end
@@ -13517,19 +13842,21 @@ function BundleNonPlayerCharacter.Global:Install()
         else
             if data[1] == -65565 then
                 if not IsExisting(data[3]) then
-                    return false;
-                end
-                if not data[4].NpcInstance then
-                    local NPC = NonPlayerCharacter:New(data[3]);
-                    NPC:SetDialogPartner(data[2]);
-                    data[4].NpcInstance = NPC;
-                end
-                if data[4].NpcInstance:HasTalkedTo(data[2]) then
-                    objective.Completed = true;
-                end
-                if not objective.Completed then
-                    if not data[4].NpcInstance:IsActive() then
-                        data[4].NpcInstance:Activate();
+                    API.Dbg(data[3].. " is dead! :(");
+                    objective.Completed = false;
+                else
+                    if not data[4].NpcInstance then
+                        local NPC = NonPlayerCharacter:New(data[3]);
+                        NPC:SetDialogPartner(data[2]);
+                        data[4].NpcInstance = NPC;
+                    end
+                    if data[4].NpcInstance:HasTalkedTo(data[2]) then
+                        objective.Completed = true;
+                    end
+                    if not objective.Completed then
+                        if not data[4].NpcInstance:IsActive() then
+                            data[4].NpcInstance:Activate();
+                        end
                     end
                 end
             else
@@ -13563,12 +13890,10 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
     end
     
     local Offset = 0;
-    if Logic.IsEntityInCategory(self.Data.NpcName, EntityCategories.Hero) == 1 then
-        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, 25);
-    else
-        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
+    if Logic.IsKnight(GetID(self.Data.NpcName)) then
+        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, 15);
     end
-    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.Data.NpcName, 25);
+    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.Data.NpcName, 15);
 end
 
 ---
@@ -16091,7 +16416,9 @@ end
 BundleInterfaceApperance = {
     Global = {},
     Local = {
-        HiddenWidgets = {},
+        Data = {
+            HiddenWidgets = {},
+        },
     }
 };
 
@@ -17362,7 +17689,9 @@ BundleMusicTools = {
         }
     },
     Local = {
-        Data = {}
+        Data = {
+            SoundBackup = {},
+        }
     },
 }
 
@@ -17498,38 +17827,38 @@ end
 -- @local
 --
 function BundleMusicTools.Global.StartSongControl()
-    if not self.Data.StartSongData.Running then
-        self.Data.StartSongData = {};
-        self.Data.StartSongJob = nil;
-        if #self.Data.StartSongQueue > 0 then
-            local Description = table.remove(self.Data.StartSongQueue, 1);
-            self:StartSong(Description);
+    if not BundleMusicTools.Global.Data.StartSongData.Running then
+        BundleMusicTools.Global.Data.StartSongData = {};
+        BundleMusicTools.Global.Data.StartSongJob = nil;
+        if #BundleMusicTools.Global.Data.StartSongQueue > 0 then
+            local Description = table.remove(BundleMusicTools.Global.Data.StartSongQueue, 1);
+            BundleMusicTools.Global:StartSong(Description);
         else
-            if self.Data.StartSongPlaylist.Repeat then
-                self:StartPlaylist(self.Data.StartSongPlaylist);
+            if BundleMusicTools.Global.Data.StartSongPlaylist.Repeat then
+                BundleMusicTools.Global:StartPlaylist(BundleMusicTools.Global.Data.StartSongPlaylist);
             end
         end
         return true;
     end
 
-    local Data = self.Data.StartSongData;
-    -- Zeit z�hlen
-    self.Data.StartSongData.Time = Data.Time +1;
+    local Data = BundleMusicTools.Global.Data.StartSongData;
+    -- Zeit zählen
+    BundleMusicTools.Global.Data.StartSongData.Time = Data.Time +1;
 
     if Data.Fadeout < 5 then
         if Data.Time >= Data.Length then
-            self.Data.StartSongData.Running = false;
-            self:StopSong();
+            BundleMusicTools.Global.Data.StartSongData.Running = false;
+            BundleMusicTools.Global:StopSong();
         end
     else
         local FadeoutTime = Data.Length - Data.Fadeout+1;
         if Data.Time >= FadeoutTime then
             if Data.Time >= Data.Length then
-                self.Data.StartSongData.Running = false;
-                self:StopSong();
+                BundleMusicTools.Global.Data.StartSongData.Running = false;
+                BundleMusicTools.Global:StopSong();
             else
                 local VolumeStep = Data.Volume / Data.Fadeout;
-                self.Data.StartSongData.CurrentVolume = Data.CurrentVolume - VolumeStep;
+                BundleMusicTools.Global.Data.StartSongData.CurrentVolume = Data.CurrentVolume - VolumeStep;
                 Logic.ExecuteInLuaLocalState([[
                     Sound.SetSpeechVolume(]]..Data.CurrentVolume..[[)
                 ]]);
@@ -17640,6 +17969,8 @@ QSB = QSB or {};
 ---
 -- Gibt den Größenfaktor des Entity zurück.
 --
+-- <b>Alias</b>: GetScale
+--
 -- @param _Entity Entity
 -- @return Größenfaktor
 -- @within User-Space
@@ -17652,9 +17983,12 @@ function API.GetScale(_Entity)
     end
     return BundleEntityScriptingValues:GetEntitySize(_Entity);
 end
+GetScale = API.GetScale;
 
 ---
 -- Gibt den Besitzer des Entity zurück.
+--
+-- <b>Alias</b>: GetPlayer
 --
 -- @param _Entity Entity
 -- @return Besitzer
@@ -17668,9 +18002,12 @@ function API.GetPlayer(_Entity)
     end
     return BundleEntityScriptingValues:GetPlayerID(_entity);
 end
+AGetPlayer = API.GetPlayer;
 
 ---
 -- Gibt die Position zurück, zu der sich das Entity bewegt.
+--
+-- <b>Alias</b>: GetMovingTarget
 --
 -- @param _Entity Entity
 -- @return Positionstabelle
@@ -17684,25 +18021,31 @@ function API.GetMovingTarget(_Entity)
     end
     return BundleEntityScriptingValues:GetMovingTargetPosition(_Entity);
 end
+GetMovingTarget = API.GetMovingTarget;
 
 ---
 -- Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
+--
+-- <b>Alias</b>: IsNpc
 --
 -- @param _Entity Entity
 -- @return Ist NPC
 -- @within User-Space
 --
-function API.IsNPC(_Entity)
+function API.IsNpc(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsNPC: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.IsNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues:IsOnScreenInformationActive(_Entity);
 end
+IsNpc = API.IsNpc;
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
+--
+-- <b>Alias</b>: IsVisible
 --
 -- @param _Entity Entity
 -- @return Ist sichtbar
@@ -17716,12 +18059,15 @@ function API.IsVisible(_Entity)
     end
     return BundleEntityScriptingValues:IsEntityVisible(_Entity);
 end
+IsVisible = API.IsVisible;
 
 ---
 -- Setzt den Größenfaktor des Entity.
 --
 -- Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
 -- die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
+--
+-- <b>Alias</b>: SetScale
 --
 -- @param _Entity Entity
 -- @param _Scale  Größenfaktor
@@ -17739,12 +18085,15 @@ function API.SetScale(_Entity, _Scale)
     end
     return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
 end
+SetScale = API.SetScale;
 
 ---
 -- Ändert den Besitzer des Entity.
 --
 -- Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
 -- möglich ein Raubtier einem Spieler zuzuweisen.
+--
+-- <b>Alias</b>: ChangePlayer
 --
 -- @param _Entity   Entity
 -- @param _PlayerID Besitzer
@@ -17762,6 +18111,7 @@ function API.SetPlayer(_Entity, _PlayerID)
     end
     return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
 end
+ChangePlayer = API.SetPlayer;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -18457,25 +18807,22 @@ end
 ---
 -- Verhindert den Bau von Entities in Gebieten und Territorien.
 --
--- @param _Arg      Argumente Originalfunktion
--- @param _Original Referenz Originalfunktion
+-- @param _PlayerID Spieler
+-- @param _Type     Gebäudetyp
+-- @param _x        X-Position
+-- @param _y        Y-Position
 -- @within Application-Space
 -- @local
 --
-function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original)
-    local PlayerID = _Arg[1];
-    local Type     = _Arg[2];
-    local x        = _Arg[3];
-    local y        = _Arg[4];
-
+function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
     -- Auf Territorium ---------------------------------------------
 
     -- Prüfe Kategorien
     for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockCategories) do
         if v then
             for key, val in pairs(v) do
-                if val and Logic.GetTerritoryAtPosition(x, y) == val then
-                    if Logic.IsEntityTypeInCategory(Type, k) == 1 then
+                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
+                    if Logic.IsEntityTypeInCategory(_Type, k) == 1 then
                         return false;
                     end
                 end
@@ -18487,9 +18834,9 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockEntities) do
         if v then
             for key,val in pairs(v) do
-                GUI_Note(tostring(Logic.GetTerritoryAtPosition(x, y) == val));
-                if val and Logic.GetTerritoryAtPosition(x, y) == val then
-                    if Type == k then
+                GUI_Note(tostring(Logic.GetTerritoryAtPosition(_x, _y) == val));
+                if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
+                    if _Type == k then
                         return false;
                     end
                 end
@@ -18503,8 +18850,8 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockCategories) do
         if v then
             for key, val in pairs(v) do
-                if Logic.IsEntityTypeInCategory(Type, val[1]) == 1 then
-                    if GetDistance(k, {X= x, Y= y}) < val[2] then
+                if Logic.IsEntityTypeInCategory(_Type, val[1]) == 1 then
+                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
                         return false;
                     end
                 end
@@ -18516,8 +18863,8 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_Arg, _Original
     for k, v in pairs(BundleConstructionControl.Global.Data.AreaBlockEntities) do
         if v then
             for key, val in pairs(v) do
-                if Type == val[1] then
-                    if GetDistance(k, {X= x, Y= y}) < val[2] then
+                if _Type == val[1] then
+                    if GetDistance(k, {X= _x, Y= _y}) < val[2] then
                         return false;
                     end
                 end
@@ -18546,34 +18893,30 @@ end
 ---
 -- Verhindert den Abriss von Entities.
 --
--- @param _Arg      Argumente Originalfunktion
--- @param _Original Referenz Originalfunktion
+-- @param _BuildingID EntityID des Gebäudes
 -- @within Application-Space
 -- @local
 --
-function BundleConstructionControl.Local.DeleteEntityStateBuilding(_Arg, _Original)
-    local eType = Logic.GetEntityType(_Arg[1]);
-    local eName = Logic.GetEntityName(_Arg[1]);
-    local tID   = GetTerritoryUnderEntity(_Arg[1]);
+function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
+    local eType = Logic.GetEntityType(_BuildingID);
+    local eName = Logic.GetEntityName(_BuildingID);
+    local tID   = GetTerritoryUnderEntity(_BuildingID);
 
-    if Logic.IsConstructionComplete(_BuildingID) == 1 and Module_tHEA.GameControl.Protection then
+    if Logic.IsConstructionComplete(_BuildingID) == 1 then
         -- Prüfe auf Namen
         if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
 
         -- Prüfe auf Typen
         if Inside(eType, BundleConstructionControl.Local.Data.EntityTypes) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
 
         -- Prüfe auf Territorien
         if Inside(tID, BundleConstructionControl.Local.Data.OnTerritory) then
-            Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
             GUI.CancelBuildingKnockDown(_BuildingID);
             return;
         end
@@ -18581,7 +18924,6 @@ function BundleConstructionControl.Local.DeleteEntityStateBuilding(_Arg, _Origin
         -- Prüfe auf Category
         for k,v in pairs(BundleConstructionControl.Local.Data.EntityCategories) do
             if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
-                Message(Module_tHEA_Protection.Description.NoKnockdown[Module_tHEA_Protection.lang]);
                 GUI.CancelBuildingKnockDown(_BuildingID);
                 return;
             end
@@ -19593,7 +19935,7 @@ GetLeaderBySoldier = API.GetLeaderBySoldier;
 -- @return number: Nächstes Entity
 -- @within User-Space
 --
-function API.GetNearestKnight(_eID,_playerID)
+function API.GetNearestKnight(_eID, _playerID)
     local Knights = {};
     Logic.GetKnights(_playerID, Knights);
     return API.GetNearestEntity(_eID, Knights);
@@ -19613,7 +19955,6 @@ GetClosestKnight = API.GetNearestKnight;
 --
 function API.GetNearestEntity(_eID, _entities)
     if not IsExisting(_eID) then
-        API.Dbg("API.GetNearestEntity: Base entity does not exist!");
         return;
     end
     if #_entities == 0 then
@@ -20105,11 +20446,12 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
-        API.Bridge("API.FocusCameraOnEntity(" .._Entity.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        API.Bridge("API.FocusCameraOnEntity(" ..Subject.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and _Entity) or "'" .._Entity.. "'";
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
         API.Dbg("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
         return;
     end
@@ -21574,12 +21916,14 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
         return;
     end
 
-    if type(_Text) == "table" then
-        _Text.de = _Text.de .. "{cr}";
-        _Text.en = _Text.en .. "{cr}";
-    else
-        _Text = _Text .. "{cr}";
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Title) == "table" then
+       _Title = _Title[lang];
     end
+    if type(_Text) == "table" then
+       _Text = _Text[lang];
+    end
+    _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
 
@@ -21638,7 +21982,7 @@ end
 --
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
-    TextWindow = BundleDialogWindows.Local.TextWindow;
+    TextWindow = self.TextWindow;
 end
 
 ---
@@ -21690,11 +22034,11 @@ function BundleDialogWindows.Local:DialogQueueStartNext()
     self.Data.Requester.Next = table.remove(self.Data.Requester.Queue, 1);
 
     DialogQueueStartNext_HiResControl = function()
-        local Entry = self.Data.Requester.Next;
-        if Entry then
+        local Entry = BundleDialogWindows.Local.Data.Requester.Next;
+        if Entry and Entry[1] and Entry[2] then
             local Methode = Entry[1];
-            self.Data[Methode]( unpack(Entry[2]) );
-            self.Data.Requester.Next = nil;
+            BundleDialogWindows.Local[Methode]( BundleDialogWindows.Local, unpack(Entry[2]) );
+            BundleDialogWindows.Local.Data.Requester.Next = nil;
         end
         return true;
     end
@@ -21791,7 +22135,7 @@ function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _
         assert(type(_Text) == "string");
         _Title = "{center}" .. _Title;
 
-        self.OpenDialog(_Title, _Text, _Action);
+        self:OpenDialog(_Title, _Text, _Action);
         XGUIEng.ShowWidget(RequesterDialog_Yes,1);
         XGUIEng.ShowWidget(RequesterDialog_No,1);
         XGUIEng.ShowWidget(RequesterDialog_Ok,0);
@@ -21840,7 +22184,7 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
         XGUIEng.ListBoxPopAll(HeroComboBoxID);
         for i=1,#_List do
-            XGUIEng.ListBoxPushItem(HeroComboBoxID, Umlaute(_List[i]) );
+            XGUIEng.ListBoxPushItem(HeroComboBoxID, _List[i] );
         end
         XGUIEng.ListBoxSetSelectedIndex(HeroComboBoxID, 0);
         CustomGame.Knight = 0;
@@ -22029,8 +22373,8 @@ end
 --
 function BundleDialogWindows.Local.TextWindow:SetAction(_Function)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    assert(nil or type(_Callback) == "function");
-    self.Data.Action = _Function;
+    assert(nil or type(_Function) == "function");
+    self.Data.Callback = _Function;
     return self;
 end
 
@@ -22054,7 +22398,7 @@ function BundleDialogWindows.Local.TextWindow:SetButton(_Text, _Callback)
         assert(type(_Callback) == "function");
     end
     self.Data.ButtonText = _Text;
-    self.Data.Callback   = _Callback;
+    self.Data.Action     = _Callback;
     return self;
 end
 
@@ -22241,7 +22585,7 @@ function API.PauseQuestsDuringBriefings(_Flag)
         API.Dbg("API.PauseQuestsDuringBriefings: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:PauseQuestsDuringBriefings(_Flag);
+    return BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag);
 end
 PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 
@@ -22259,7 +22603,7 @@ function API.IsBriefingFinished(_briefingID)
         API.Dbg("API.IsBriefingFinished: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:IsBriefingFinished(_briefingID);
+    return BundleBriefingSystem.Global:IsBriefingFinished(_briefingID);
 end
 IsBriefingFinished = API.IsBriefingFinished;
 
@@ -22280,7 +22624,7 @@ function API.MCGetSelectedAnswer(_page)
         API.Dbg("API.MCGetSelectedAnswer: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:MCGetSelectedAnswer(_page);
+    return BundleBriefingSystem.Global:MCGetSelectedAnswer(_page);
 end
 MCGetSelectedAnswer = API.MCGetSelectedAnswer;
 
@@ -22300,7 +22644,7 @@ function API.GetCurrentBriefingPage(_pageNumber)
         API.Dbg("API.GetCurrentBriefingPage: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:GetCurrentBriefingPage(_pageNumber);
+    return BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber);
 end
 GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 
@@ -22319,7 +22663,7 @@ function API.GetCurrentBriefing()
         API.Dbg("API.GetCurrentBriefing: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:GetCurrentBriefing();
+    return BundleBriefingSystem.Global:GetCurrentBriefing();
 end
 GetCurrentBriefing = API.GetCurrentBriefing;
 
@@ -22337,7 +22681,7 @@ function API.AddPages(_briefing)
         API.Dbg("API.AddPages: Can only be used in the global script!");
         return;
     end
-    return BundleDialogWindows.Global:AddPages(_briefing);
+    return BundleBriefingSystem.Global:AddPages(_briefing);
 end
 AddPages = API.AddPages;
 
@@ -22345,7 +22689,7 @@ AddPages = API.AddPages;
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleDialogWindows = {
+BundleBriefingSystem = {
     Global = {
         Data = {
             PlayedBriefings = {},
@@ -22366,7 +22710,7 @@ BundleDialogWindows = {
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:Install()
+function BundleBriefingSystem.Global:Install()
     self:InitalizeBriefingSystem();
 end
 
@@ -22379,7 +22723,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:PauseQuestsDuringBriefings(_Flag)
+function BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag)
     self.Data.QuestsPausedWhileBriefingActive = _Flag == true;
 end
 
@@ -22391,7 +22735,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:IsBriefingFinished(_briefingID)
+function BundleBriefingSystem.Global:IsBriefingFinished(_briefingID)
     return self.Data.PlayedBriefings[_briefingID] == true;
 end
 
@@ -22406,7 +22750,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:MCGetSelectedAnswer(_page)
+function BundleBriefingSystem.Global:MCGetSelectedAnswer(_page)
     if _page.mc and _page.mc.given then
         return _page.mc.given;
     end
@@ -22423,7 +22767,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:GetCurrentBriefingPage(_pageNumber)
+function BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber)
     return BriefingSystem.currBriefing[_pageNumber];
 end
 
@@ -22436,7 +22780,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:GetCurrentBriefing()
+function BundleBriefingSystem.Global:GetCurrentBriefing()
     return BriefingSystem.currBriefing;
 end
 
@@ -22448,7 +22792,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:AddPages(_briefing)
+function BundleBriefingSystem.Global:AddPages(_briefing)
     ---
     -- Erstellt eine Seite in normaler Syntax oder als Cutscene.
     -- AP kann auch für Sprungbefehle genutzt werden. Dabei wird der
@@ -22606,7 +22950,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Global:InitalizeBriefingSystem()
+function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- Setze Standardfarben
     DBlau   = "{@color:70,70,255,255}";
     Blau    = "{@color:153,210,234,255}";
@@ -22645,7 +22989,7 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
 
                 -- Wenn ein Briefing läuft, vergeht keine Zeit in laufenden Quests
                 if IsBriefingActive() then
-                    if BundleDialogWindows.Global.Data.QuestsPausedWhileBriefingActive == true then
+                    if BundleBriefingSystem.Global.Data.QuestsPausedWhileBriefingActive == true then
                         self.StartTime = self.StartTime +1;
                     end
                 end
@@ -22706,6 +23050,8 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
 
             return true
         end
+        
+        BundleBriefingSystem:OverwriteGetPosition();
     end
 
 -- Briefing System Beginn ----------------------------------------------
@@ -22821,8 +23167,8 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
         ]]);
 
         -- Briefing ID erzeugen
-        BundleDialogWindows.Global.Data.BriefingID = BundleDialogWindows.Global.Data.BriefingID +1;
-        _briefing.UniqueBriefingID = BundleDialogWindows.Global.Data.BriefingID;
+        BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
+        _briefing.UniqueBriefingID = BundleBriefingSystem.Global.Data.BriefingID;
 
         if #_briefing > 0 then
             _briefing[1].duration = (_briefing[1].duration or 0) + 0.1;
@@ -22864,7 +23210,7 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
             ]]);
 
             _briefing.finished_Orig_QSB_Briefing(self);
-            BundleDialogWindows.Global.Data.PlayedBriefings[_briefing.UniqueBriefingID] = true;
+            BundleBriefingSystem.Global.Data.PlayedBriefings[_briefing.UniqueBriefingID] = true;
         end
 
         -- Briefing starten
@@ -22876,7 +23222,7 @@ function BundleDialogWindows.Global:InitalizeBriefingSystem()
         else
             BriefingSystem.ExecuteBriefing(_briefing);
         end
-        return BundleDialogWindows.Global.Data.BriefingID;
+        return BundleBriefingSystem.Global.Data.BriefingID;
     end
     BriefingSystem.StartBriefing = API.StartBriefing;
     StartBriefing = API.StartBriefing;
@@ -23286,7 +23632,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Local:Install()
+function BundleBriefingSystem.Local:Install()
     self:InitalizeBriefingSystem();
 end
 
@@ -23296,7 +23642,7 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleDialogWindows.Local:InitalizeBriefingSystem()
+function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     GameCallback_GUI_SelectionChanged_Orig_QSB_Briefing = GameCallback_GUI_SelectionChanged;
     GameCallback_GUI_SelectionChanged = function(_Source)
         GameCallback_GUI_SelectionChanged_Orig_QSB_Briefing(_Source);
@@ -24486,28 +24832,49 @@ function BundleDialogWindows.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
         XGUIEng.ShowWidget(BG, 1);
     end
+    
+    BundleBriefingSystem:OverwriteGetPosition();
 end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleDialogWindows");
+---
+-- Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.
+--
+function BundleBriefingSystem:OverwriteGetPosition()
+    GetPosition = function(_input, _offsetZ)
+        _offsetZ = _offsetZ or 0;
+        if type(_input) == "table" then
+            return _input;
+        else
+            if not IsExisting(_input) then
+                return {X=0, Y=0, Z=0+_offsetZ};
+            else
+                local eID = GetID(_input);
+                local x,y,z = Logic.EntityGetPos(eID);
+                return {X=x, Y=y, Z=z+_offsetZ};
+            end
+        end
+    end
+end
 
---[[
-----------------------------------------------------------------------------
-    Reward_Briefing
-    added by totalwarANGEL
-    Ruft eine Funktion im Skript auf, die eine Briefing-ID zurück gibt.
-    Diese wird dann in der Quest gespeichert und kann mit Trigger_Briefing
-    verwendet werden.
-    Die letzte Zeile der Funktion, die das Briefing erstellt und startet,
-    sieht demzufolge so aus: return StartBriefing(briefing)
-----------------------------------------------------------------------------
-    Argument        | Beschreibung
-  ------------------|---------------------------------------
-    Funktion        | Funktion, die das Briefing erstellt
-                    | und die ID zurück gibt.
-----------------------------------------------------------------------------
-]]
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleBriefingSystem");
+
+---
+-- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+-- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
+--
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
+-- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+--
+-- @param _Briefing Funktionsname als String
+-- @return table: Behavior
+--
+function Reward_Briefing(...)
+    return b_Reward_Briefing:new(...);
+end
 
 b_Reward_Briefing = {
     Name = "Reward_Briefing",
@@ -24556,24 +24923,21 @@ function b_Reward_Briefing:Reset(__quest_)
     Quests[QuestID].EmbeddedBriefing = nil;
 end
 
-Core:RegisterBehavior(b_Reward_Briefing)
+Core:RegisterBehavior(b_Reward_Briefing);
 
---[[
-----------------------------------------------------------------------------
-    Reprisal_Briefing
-    added by totalwarANGEL
-    Ruft eine Funktion im Skript auf, die eine Briefing-ID zurück gibt.
-    Diese wird dann in der Quest gespeichert und kann mit Trigger_Briefing
-    verwendet werden.
-    Die letzte Zeile der Funktion, die das Briefing erstellt und startet,
-    sieht demzufolge so aus: return StartBriefing(briefing)
-----------------------------------------------------------------------------
-    Argument        | Beschreibung
-  ------------------|---------------------------------------
-    Funktion        | Funktion, die das Briefing erstellt
-                    | und die ID zurück gibt.
-----------------------------------------------------------------------------
-]]
+---
+-- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+-- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
+--
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
+-- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+--
+-- @param _Briefing Funktionsname als String
+-- @return table: Behavior
+--
+function Reprisal_Briefing(...)
+    return b_Reprisal_Briefing:new(...);
+end
 
 b_Reprisal_Briefing = {
     Name = "Reprisal_Briefing",
@@ -24624,20 +24988,17 @@ end
 
 Core:RegisterBehavior(b_Reprisal_Briefing)
 
---[[
-----------------------------------------------------------------------------
-    Trigger_Briefing
-    added by totalwarANGEL
-    Starte eine Quest nachdem ein eingebettetes Briefing in einer anderen Quest
-    beendet ist. Questname muss demzufolge einen Quest referenzieren, in dem ein
-    Briefing mit Reward_Briefing oder Reprisal_Briefing integriert wurde.
-----------------------------------------------------------------------------
-    Argument        | Beschreibung
-  ------------------|---------------------------------------
-    Questname       | Questname einer Quest mit Briefing
-    Wartezeit       | Wartezeit in Sekunden
-----------------------------------------------------------------------------
-]]
+---
+-- Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
+-- angehangen ist, beendet ist.
+--
+-- @param _QuestName Name des Quest
+-- @param _Waittime  Wartezeit in Sekunden
+-- @return table: Behavior
+--
+function Trigger_Briefing(...)
+    return b_Trigger_Briefing:new(...);
+end
 
 b_Trigger_Briefing = {
     Name = "Trigger_Briefing",
@@ -24722,7 +25083,7 @@ Core:RegisterBehavior(b_Trigger_Briefing)-- ------------------------------------
 --
 -- @usage
 -- -- Ein Lager erzeugen:
--- MyStore = QSB.CatsleStore(1);
+-- MyStore = QSB.CastleStore:New(1);
 --
 -- -- Ein Lager löschen:
 -- MyStore:Dispose();
@@ -26901,6 +27262,7 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
         or Logic.IsBurning(EntityID) == true
         or MaxHealth-Health > 0 then
             XGUIEng.DisableButton(CurrentWidgetID, 1);
+            return;
         else
             XGUIEng.DisableButton(CurrentWidgetID, 0);
         end
@@ -27413,6 +27775,7 @@ end
 --
 -- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
+-- @param _Source Quelle der Änderung
 -- @within Application-Space
 -- @local
 --

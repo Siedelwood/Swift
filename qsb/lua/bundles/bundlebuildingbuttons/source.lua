@@ -522,6 +522,7 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
         or Logic.IsBurning(EntityID) == true
         or MaxHealth-Health > 0 then
             XGUIEng.DisableButton(CurrentWidgetID, 1);
+            return;
         else
             XGUIEng.DisableButton(CurrentWidgetID, 0);
         end
@@ -1034,6 +1035,7 @@ end
 --
 -- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
+-- @param _Source Quelle der Änderung
 -- @within Application-Space
 -- @local
 --
