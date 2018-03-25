@@ -86,12 +86,14 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
         return;
     end
 
-    if type(_Text) == "table" then
-        _Text.de = _Text.de .. "{cr}";
-        _Text.en = _Text.en .. "{cr}";
-    else
-        _Text = _Text .. "{cr}";
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Title) == "table" then
+       _Title = _Title[lang];
     end
+    if type(_Text) == "table" then
+       _Text = _Text[lang];
+    end
+    _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
 
@@ -352,7 +354,7 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
         XGUIEng.ListBoxPopAll(HeroComboBoxID);
         for i=1,#_List do
-            XGUIEng.ListBoxPushItem(HeroComboBoxID, Umlaute(_List[i]) );
+            XGUIEng.ListBoxPushItem(HeroComboBoxID, _List[i] );
         end
         XGUIEng.ListBoxSetSelectedIndex(HeroComboBoxID, 0);
         CustomGame.Knight = 0;
