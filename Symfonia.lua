@@ -209,9 +209,14 @@ end
 -- @within User-Space
 --
 function API.GetQuestID(_Name)
-    for i=1, Quests[0] do
-        if Quests[i].Identifier == _Name then
-            return i;
+    if type(_Name) == "number" then
+        return _Name;
+    end
+    for k, v in pairs(Quests) do
+        if v and k > 0 then
+            if v.Identifier == _Name then
+                return k;
+            end
         end
     end
 end
@@ -244,7 +249,7 @@ IsValidQuest = API.IsValidateQuest;
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
-        API.FailQuest(arg[i]);
+        API.FailQuest(arg[i].Identifier);
     end
 end
 FailQuestsByName = API.FailAllQuests;
@@ -262,6 +267,7 @@ FailQuestsByName = API.FailAllQuests;
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("fail quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Fail();
     end
@@ -278,7 +284,7 @@ FailQuestByName = API.FailQuest;
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
-        API.RestartQuest(arg[i]);
+        API.RestartQuest(arg[i].Identifier);
     end
 end
 RestartQuestsByName = API.RestartAllQuests;
@@ -303,6 +309,7 @@ function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then
+        API.Info("restart quest " .._QuestName);
         if Quest.Objectives then
             local questObjectives = Quest.Objectives;
             for i = 1, questObjectives[0] do
@@ -376,7 +383,7 @@ RestartQuestByName = API.RestartQuest;
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
-        API.StartQuest(arg[i]);
+        API.StartQuest(arg[i].Identifier);
     end
 end
 StartQuestsByName = API.StartAllQuests;
@@ -394,6 +401,7 @@ StartQuestsByName = API.StartAllQuests;
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("start quest " .._QuestName);
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
         Quest:Trigger();
@@ -411,7 +419,7 @@ StartQuestByName = API.StartQuest;
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
-        API.StopQuest(arg[i]);
+        API.StopQuest(arg[i].Identifier);
     end
 end
 StopQuestwByName = API.StopAllQuests;
@@ -430,6 +438,7 @@ StopQuestwByName = API.StopAllQuests;
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("interrupt quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
     end
@@ -448,7 +457,7 @@ StopQuestByName = API.StopQuest;
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
-        API.WinQuest(arg[i]);
+        API.WinQuest(arg[i].Identifier);
     end
 end
 WinQuestsByName = API.WinAllQuests;
@@ -466,6 +475,7 @@ WinQuestsByName = API.WinAllQuests;
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("win quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Success();
     end
@@ -12922,7 +12932,7 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestSuccess(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -12936,7 +12946,7 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestFailure(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -12950,7 +12960,7 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestInterrupt(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -12964,7 +12974,7 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestTrigger(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -12978,7 +12988,7 @@ end
 -- @local
 --
 function BundleQuestDebug.Global:QuestReset(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[1], _ExactName);
+    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -13832,19 +13842,21 @@ function BundleNonPlayerCharacter.Global:Install()
         else
             if data[1] == -65565 then
                 if not IsExisting(data[3]) then
-                    return false;
-                end
-                if not data[4].NpcInstance then
-                    local NPC = NonPlayerCharacter:New(data[3]);
-                    NPC:SetDialogPartner(data[2]);
-                    data[4].NpcInstance = NPC;
-                end
-                if data[4].NpcInstance:HasTalkedTo(data[2]) then
-                    objective.Completed = true;
-                end
-                if not objective.Completed then
-                    if not data[4].NpcInstance:IsActive() then
-                        data[4].NpcInstance:Activate();
+                    API.Dbg(data[3].. " is dead! :(");
+                    objective.Completed = false;
+                else
+                    if not data[4].NpcInstance then
+                        local NPC = NonPlayerCharacter:New(data[3]);
+                        NPC:SetDialogPartner(data[2]);
+                        data[4].NpcInstance = NPC;
+                    end
+                    if data[4].NpcInstance:HasTalkedTo(data[2]) then
+                        objective.Completed = true;
+                    end
+                    if not objective.Completed then
+                        if not data[4].NpcInstance:IsActive() then
+                            data[4].NpcInstance:Activate();
+                        end
                     end
                 end
             else
@@ -13878,10 +13890,10 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
     end
     
     local Offset = 0;
-    if Logic.IsEntityInCategory(self.Data.NpcName, EntityCategories.Hero) == 1 then
-        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastNpcEntityID, 15);
+    if Logic.IsKnight(GetID(self.Data.NpcName)) then
+        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, 15);
     end
-    LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
+    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.Data.NpcName, 15);
 end
 
 ---
@@ -21904,12 +21916,14 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
         return;
     end
 
-    if type(_Text) == "table" then
-        _Text.de = _Text.de .. "{cr}";
-        _Text.en = _Text.en .. "{cr}";
-    else
-        _Text = _Text .. "{cr}";
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Title) == "table" then
+       _Title = _Title[lang];
     end
+    if type(_Text) == "table" then
+       _Text = _Text[lang];
+    end
+    _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
 
@@ -22170,7 +22184,7 @@ function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _
         local HeroComboBoxID = XGUIEng.GetWidgetID(CustomGame.Widget.KnightsList);
         XGUIEng.ListBoxPopAll(HeroComboBoxID);
         for i=1,#_List do
-            XGUIEng.ListBoxPushItem(HeroComboBoxID, Umlaute(_List[i]) );
+            XGUIEng.ListBoxPushItem(HeroComboBoxID, _List[i] );
         end
         XGUIEng.ListBoxSetSelectedIndex(HeroComboBoxID, 0);
         CustomGame.Knight = 0;
@@ -27248,6 +27262,7 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
         or Logic.IsBurning(EntityID) == true
         or MaxHealth-Health > 0 then
             XGUIEng.DisableButton(CurrentWidgetID, 1);
+            return;
         else
             XGUIEng.DisableButton(CurrentWidgetID, 0);
         end

@@ -267,6 +267,7 @@ FailQuestsByName = API.FailAllQuests;
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("fail quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Fail();
     end
@@ -308,6 +309,7 @@ function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then
+        API.Info("restart quest " .._QuestName);
         if Quest.Objectives then
             local questObjectives = Quest.Objectives;
             for i = 1, questObjectives[0] do
@@ -399,6 +401,7 @@ StartQuestsByName = API.StartAllQuests;
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("start quest " .._QuestName);
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
         Quest:Trigger();
@@ -435,6 +438,7 @@ StopQuestwByName = API.StopAllQuests;
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("interrupt quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
     end
@@ -471,6 +475,7 @@ WinQuestsByName = API.WinAllQuests;
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
+        API.Info("win quest " .._QuestName);
         Quest:RemoveQuestMarkers();
         Quest:Success();
     end
