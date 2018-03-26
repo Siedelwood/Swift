@@ -189,19 +189,19 @@ end
 -- definiert werden.
 -- Es kann mehrere fliegende Händler auf der Map geben.
 --
+-- @param _PlayerID	 Spieler-ID des Händlers
 -- @param _Offers	 Liste an Angeboten
 -- @param _Stay		 Wartezeit
 -- @param _Waypoints Wegpunktliste Anfahrt
 -- @param _Reversed	 Wegpunktliste Abfahrt
--- @param _PlayerID	 Spieler-ID des Händlers
 -- @within User-Space
 --
-function API.ActivateTravelingSalesman(_Offers, _Stay, _Waypoints, _Reversed, _PlayerID)
+function API.ActivateTravelingSalesman(_PlayerID, _Offers, _Stay, _Waypoints, _Reversed)
     if GUI then
         API.Log("Can not execute API.ActivateTravelingSalesman in local script!");
         return;
     end
-    return BundleTradingFunctions.Global:TravelingSalesman_Create(_Offers, _Stay, _Waypoints, _Reversed, _PlayerID);
+    return BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Stay, _Waypoints, _Reversed);
 end
 
 ---
@@ -225,7 +225,7 @@ end
 
 BundleTradingFunctions = {
     Global = {
-        Data = {}
+        Data = {},
     },
     Local = {
         Data = {}
@@ -639,39 +639,39 @@ end
 -- definiert werden.
 -- Es kann mehrere fliegende Händler auf der Map geben.
 --
--- @param offers	Liste an Angeboten
--- @param stay		Wartezeit
--- @param waypoints	Wegpunktliste Anfahrt
--- @param reversed	Wegpunktliste Abfahrt
--- @param playerID	Spieler-ID des Händlers
+-- @param _PlayerID	  Spieler-ID des Händlers
+-- @param _Offers	  Liste an Angeboten
+-- @param _Appearance Wartezeit
+-- @param _Waypoints  Wegpunktliste Anfahrt
+-- @param _Reversed   Wegpunktliste Abfahrt
 -- @within Application-Space
 -- @local
 --
-function BundleTradingFunctions.Global:TravelingSalesman_Create(offers, stay, waypoints, reversed, playerID)
-    assert(type(playerID) == "number");
-    assert(type(offers) == "table");
-    stay = stay or {{3,5},{8,10}};
-    assert(type(stay) == "table");
-    assert(type(waypoints) == "table");
+function BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed)
+    assert(type(_PlayerID) == "number");
+    assert(type(_Offers) == "table");
+    _Appearance = _Appearance or {{3,5},{8,10}};
+    assert(type(_Appearance) == "table");
+    assert(type(_Waypoints) == "table");
 
-    if not reversed then
-        reversed = {};
-        for i=#waypoints, 1, -1 do
-            reversed[#waypoints+1 - i] = waypoints[i];
+    if not _Reversed then
+        _Reversed = {};
+        for i=#_Waypoints, 1, -1 do
+            _Reversed[#_Waypoints+1 - i] = _Waypoints[i];
         end
     end
 
-    if not QSB.TravelingSalesman.Harbors[playerID] then
-        QSB.TravelingSalesman.Harbors[playerID] = {};
+    if not QSB.TravelingSalesman.Harbors[_PlayerID] then
+        QSB.TravelingSalesman.Harbors[_PlayerID] = {};
 
-        QSB.TravelingSalesman.Harbors[playerID].Waypoints = waypoints;
-        QSB.TravelingSalesman.Harbors[playerID].Reversed = reversed;
-        QSB.TravelingSalesman.Harbors[playerID].SpawnPos = waypoints[1];
-        QSB.TravelingSalesman.Harbors[playerID].Destination = reversed[1];
-        QSB.TravelingSalesman.Harbors[playerID].Appearance = stay;
-        QSB.TravelingSalesman.Harbors[playerID].Status = 0;
-        QSB.TravelingSalesman.Harbors[playerID].Offer = offers;
-        QSB.TravelingSalesman.Harbors[playerID].LastOffer = 0;
+        QSB.TravelingSalesman.Harbors[_PlayerID].Waypoints = _Waypoints;
+        QSB.TravelingSalesman.Harbors[_PlayerID].Reversed = _Reversed;
+        QSB.TravelingSalesman.Harbors[_PlayerID].SpawnPos = _Waypoints[1];
+        QSB.TravelingSalesman.Harbors[_PlayerID].Destination = _Reversed[1];
+        QSB.TravelingSalesman.Harbors[_PlayerID].Appearance = _Appearance;
+        QSB.TravelingSalesman.Harbors[_PlayerID].Status = 0;
+        QSB.TravelingSalesman.Harbors[_PlayerID].Offer = _Offers;
+        QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = 0;
     end
     math.randomseed(Logic.GetTimeMs());
 
@@ -684,37 +684,37 @@ end
 -- Zerstört den fliegenden Händler. Der Spieler wird dabei natürlich
 -- nicht zerstört.
 --
--- @param playerID	Spieler-ID des Händlers
+-- @param _PlayerID	Spieler-ID des Händlers
 -- @within Application-Space
 -- @local
 --
-function BundleTradingFunctions.Global:TravelingSalesman_Disband(playerID)
-    assert(type(playerID) == "number");
-    QSB.TravelingSalesman.Harbors[playerID] = nil;
-    Logic.RemoveAllOffers(Logic.GetStoreHouse(playerID));
-    DestroyEntity("TravelingSalesmanShip_Player"..playerID);
+function BundleTradingFunctions.Global:TravelingSalesman_Disband(_PlayerID)
+    assert(type(_PlayerID) == "number");
+    QSB.TravelingSalesman.Harbors[_PlayerID] = nil;
+    Logic.RemoveAllOffers(Logic.GetStoreHouse(_PlayerID));
+    DestroyEntity("TravelingSalesmanShip_Player" .._PlayerID);
 end
 
 ---
 -- Setzt die Angebote des Fliegenden Händlers.
 --
--- @paramplayerID	Spieler-ID des Händlers
+-- @param _PlayerID	Spieler-ID des Händlers
 -- @within Application-Space
 -- @local
 --
-function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(playerID)
-    MerchantSystem.TradeBlackList[playerID] = {};
-    MerchantSystem.TradeBlackList[playerID][0] = #MerchantSystem.TradeBlackList[3];
+function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(_PlayerID)
+    MerchantSystem.TradeBlackList[_PlayerID] = {};
+    MerchantSystem.TradeBlackList[_PlayerID][0] = #MerchantSystem.TradeBlackList[3];
 
-    local traderId = Logic.GetStoreHouse(playerID);
+    local traderId = Logic.GetStoreHouse(_PlayerID);
     local rand = 1;
-    if #QSB.TravelingSalesman.Harbors[playerID].Offer > 1 then
+    if #QSB.TravelingSalesman.Harbors[_PlayerID].Offer > 1 then
         repeat
-            rand = math.random(1,#QSB.TravelingSalesman.Harbors[playerID].Offer);
-        until (rand ~= QSB.TravelingSalesman.Harbors[playerID].LastOffer);
+            rand = math.random(1,#QSB.TravelingSalesman.Harbors[_PlayerID].Offer);
+        until (rand ~= QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer);
     end
-    QSB.TravelingSalesman.Harbors[playerID].LastOffer = rand;
-    local offer = QSB.TravelingSalesman.Harbors[playerID].Offer[rand];
+    QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = rand;
+    local offer = QSB.TravelingSalesman.Harbors[_PlayerID].Offer[rand];
     Logic.RemoveAllOffers(traderId);
 
     if #offer > 0 then
@@ -741,8 +741,8 @@ function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(playerID)
         end
     end
 
-    SetDiplomacyState(self:TravelingSalesman_GetHumanPlayer(),playerID,DiplomacyStates.TradeContact);
-    ActivateMerchantPermanentlyForPlayer(Logic.GetStoreHouse(playerID),self:TravelingSalesman_GetHumanPlayer());
+    SetDiplomacyState(self:TravelingSalesman_GetHumanPlayer(), _PlayerID, DiplomacyStates.TradeContact);
+    ActivateMerchantPermanentlyForPlayer(Logic.GetStoreHouse(_PlayerID), self:TravelingSalesman_GetHumanPlayer());
 
     local doIt = (IsBriefingActive and not IsBriefingActive()) or true
     if doIt then
@@ -751,13 +751,13 @@ function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(playerID)
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
         QuestTemplate:New(
-            "TravelingSalesman_Info_P"..playerID,
-            _Quest.SendingPlayer,
+            "TravelingSalesman_Info_P" .._PlayerID,
+            _PlayerID,
             self:TravelingSalesman_GetHumanPlayer(),
             {{ Objective.Dummy,}},
             {{ Triggers.Time, 0 }},
             0,
-            nil, nil, nil, nil, nil, true,
+            nil, nil, nil, nil, false, true,
             nil, nil,
             Text[lang],
             nil
@@ -824,7 +824,7 @@ end
 -- @local
 --
 function BundleTradingFunctions.Local:Install()
-
+    
 end
 
 -- -------------------------------------------------------------------------- --
