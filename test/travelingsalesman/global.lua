@@ -49,26 +49,26 @@ function Mission_FirstMapAction()
     -----
     
     local offers = {
-    {
-    {"G_Gems",5,},
-    {"G_Iron",5,},
-    {"G_Beer",2,},
-    },
-    {
-    {"G_Stone",5,},
-    {"G_Sheep",1,},
-    {"G_Cheese",2,},
-    },
-    {
-    {"G_Grain",5,},
-    {"G_Broom",2,},
-    {"G_Sheep",1,},
-    },
-    {
-    {"U_CatapultCart",1,},
-    {"U_MilitarySword",3,},
-    {"U_MilitaryBow",3,},
-    },
+        {
+            {"G_Gems",5,},
+            {"G_Iron",5,},
+            {"G_Beer",2,},
+        },
+        {
+            {"G_Stone",5,},
+            {"G_Sheep",1,},
+            {"G_Cheese",2,},
+        },
+        {
+            {"G_Grain",5,},
+            {"G_Broom",2,},
+            {"G_Sheep",1,},
+        },
+        {
+            {"U_CatapultCart",1,},
+            {"U_MilitarySword",3,},
+            {"U_MilitaryBow",3,},
+        },
     }
     API.ActivateTravelingSalesman(2, offers, nil, {"WP1", "WP2", "WP3", "WP4"}, nil);
 end
