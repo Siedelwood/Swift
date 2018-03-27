@@ -44,9 +44,9 @@ QSB.TraderTypes = {
 -- @return Angebotsinformationen
 -- @within User-Space
 --
--- @usage BundleTradingFunctions.Global:GetOfferInformation(2);
+-- @usage local Info = BundleTradingFunctions.Global:GetOfferInformation(2);
 --
--- -- Ausgabe:
+-- -- Info enthält:
 -- -- Info = {
 -- --      Player = 2,
 -- --      Storehouse = 26796.
@@ -184,24 +184,75 @@ function API.ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
 end
 
 ---
--- Erstellt einen fliegenden Händler mit zufälligen Angeboten. Soll
--- immer das selbe angeboten werden, muss nur ein Angebotsblock
--- definiert werden.
--- Es kann mehrere fliegende Händler auf der Map geben.
+-- Erstellt einen fliegenden Händler mit zufälligen Angeboten.
 --
--- @param _PlayerID	 Spieler-ID des Händlers
--- @param _Offers	 Liste an Angeboten
--- @param _Stay		 Wartezeit
--- @param _Waypoints Wegpunktliste Anfahrt
--- @param _Reversed	 Wegpunktliste Abfahrt
+-- Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
+-- definiert werden.
+-- Es kann mehr als einen fliegenden Händler auf der Map geben.
+--
+-- @param _PlayerID	  Spieler-ID des Händlers
+-- @param _Offers	  Liste an Angeboten
+-- @param _Waypoints  Wegpunktliste Anfahrt
+-- @param _Reversed	  Wegpunktliste Abfahrt
+-- @param _Appearance Ankunft und Abfahrt
 -- @within User-Space
 --
-function API.ActivateTravelingSalesman(_PlayerID, _Offers, _Stay, _Waypoints, _Reversed)
+-- @usage -- Angebote deklarieren
+-- local Offers = {
+--     {
+--         {"G_Gems", 5,},
+--         {"G_Iron", 5,},
+--         {"G_Beer", 2,},
+--     },
+--     {
+--         {"G_Stone", 5,},
+--         {"G_Sheep", 1,},
+--         {"G_Cheese", 2,},
+--         {"G_Milk", 5,},
+--     },
+--     {
+--         {"G_Grain", 5,},
+--         {"G_Broom", 2,},
+--         {"G_Sheep", 1,},
+--     },
+--     {
+--         {"U_CatapultCart", 1,},
+--         {"U_MilitarySword", 3,},
+--         {"U_MilitaryBow", 3,},
+--     },
+-- };
+-- -- Es sind maximal 4 Angebote pro Block erlaubt. Es können Waren, Soldaten 
+-- -- oder Entertainer angeboten werden. Es wird immer automatisch 1 Block 
+-- -- selektiert und die ANgebote gesetzt.
+--
+-- -- Wegpunkte deklarieren
+-- local Waypoints = {"WP1", "WP2", "WP3", "WP4"};
+-- -- Es gibt nun zwei Möglichkeiten:
+-- -- 1. Durch weglassen des Reversed Path werden die Wegpunkte durch das
+-- -- Schiff bei der Abfahrt automatisch rückwärts abgefahren.
+-- -- 2. Es wird ein anderer Pfad für die Abfahrt deklariert.
+--
+-- -- Anfahrt und Abfanrtsmonate deklarieren
+-- local Appearance = {{4, 6}, {8, 10}};
+-- -- Auch hier gibt es 2 Möglichkeiten:
+-- -- 1. Neue Anfahrts- und Abfahrtszeiten setzen.
+-- -- 2. _Apperance weglassen / nil setzen und den Standard verwenden
+-- -- (März bis Mai und August bis Oktober)
+--
+-- -- Jetzt kann ein fliegender Händler erzeugt werden
+-- API.ActivateTravelingSalesman(2, Offers, Waypoints, nil, Appearance);
+-- -- Hier ist der Rückweg automatisch die Umkehr des Hinwegs (_Reversed = nil).
+--
+-- -- _Reversed und _Apperance können in den meisten Fällen immer weggelassen
+-- -- bzw. nil sein!
+-- API.ActivateTravelingSalesman(2, Offers, Waypoints);
+--
+function API.ActivateTravelingSalesman(_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance)
     if GUI then
         API.Log("Can not execute API.ActivateTravelingSalesman in local script!");
         return;
     end
-    return BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Stay, _Waypoints, _Reversed);
+    return BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed);
 end
 
 ---
