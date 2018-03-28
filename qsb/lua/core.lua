@@ -1137,13 +1137,14 @@ function Core:InitalizeBundles()
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
+        local Bundle = _G[v];
         if not GUI then
-            if v.Global ~= nil and v.Global.Install ~= nil then
-                v.Global:Install();
+            if Bundle.Global ~= nil and Bundle.Global.Install ~= nil then
+                Bundle.Global:Install();
             end
         else
-            if v.Local ~= nil and v.Local.Install ~= nil then
-                v.Local:Install();
+            if Bundle.Local ~= nil and Bundle.Local.Install ~= nil then
+                Bundle.Local:Install();
             end
         end
     end
@@ -1323,7 +1324,23 @@ end
 function Core:RegisterBundle(_Bundle)
     local text = string.format("Error while initialize bundle '%s': does not exist!", tostring(_Bundle));
     assert(_G[_Bundle] ~= nil, text);
-    table.insert(self.Data.BundleInitializerList, _G[_Bundle]);
+    table.insert(self.Data.BundleInitializerList, _Bundle);
+end
+
+---
+-- Registiert ein AddOn als Bundle, sodass es initialisiert wird.
+--
+-- Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und 
+-- existiert nur zur Übersichtlichkeit.
+--
+-- @param _Bundle Name des Moduls
+-- @within Application-Space
+-- @local
+--
+function Core:RegisterAddOn(_AddOn)
+    local text = string.format("Error while initialize addon '%s': does not exist!", tostring(_AddOn));
+    assert(_G[_AddOn] ~= nil, text);
+    table.insert(self.Data.BundleInitializerList, _AddOn);
 end
 
 ---

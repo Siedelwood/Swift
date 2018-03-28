@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <name>
+        <![CDATA[AddOn Example]]>
+    </name>
+    <description>
+        <![CDATA[This is just a Test! Do not intent to use this in your maps!
+           This will be removed after tests are done!]]>
+    </description>
+
+    <dependencies>
+        <dependency>BundleInteractiveObjects</dependency>
+        <dependency>BundleEntityHealth</dependency>
+    </dependencies>
+
+    <exclusions>
+    </exclusions>
+</root>
