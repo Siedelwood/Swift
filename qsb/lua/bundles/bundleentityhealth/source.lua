@@ -251,3 +251,163 @@ end
 
 Core:RegisterBundle("BundleEntityHealth");
 
+---
+-- Ändert die Gesundheit eines Entity.
+--
+-- @param _Entity     Entity
+-- @param _Percentage Prozentwert
+-- @return Table mit Behavior
+-- @within Reprisal
+--
+function Reprisal_SetHealth(...)
+    return b_Reprisal_SetHealth:new(...);
+end
+
+b_Reprisal_SetHealth = {
+    Name = "Reprisal_SetHealth",
+    Description = {
+        en = "Reprisal: Changes the health of an entity.",
+        de = "Vergeltung: Setzt die Gesundheit eines Entity.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
+        { ParameterType.Number,     en = "Percentage", de = "Prozentsatz", },
+    },
+}
+
+function b_Reprisal_SetHealth:GetRewardTable(_Quest)
+    return { Reprisal.Custom, { self, self.CustomFunction } }
+end
+
+function b_Reprisal_SetHealth:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Percentage = _Parameter;
+    end
+end
+
+function b_Reprisal_SetHealth:CustomFunction(_Quest)
+    SetHealth(self.Entity, self.Percentage);
+end
+
+function b_Reprisal_SetHealth:DEBUG(_Quest)
+    if not IsExisting(self.Entity) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        -- return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reprisal_SetHealth);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert die Gesundheit eines Entity.
+--
+-- @param _Entity     Entity
+-- @param _Percentage Prozentwert
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_SetHealth(...)
+    return b_Reward_SetHealth:new(...);
+end
+
+b_Reward_SetHealth = API.InstanceTable(b_Reprisal_SetHealth);
+b_Reward_SetHealth.Name = "Reward_SetHealth";
+b_Reward_SetHealth.Description.en = "Reward: Changes the health of an entity.";
+b_Reward_SetHealth.Description.de = "Lohn: Setzt die Gesundheit eines Entity.";
+b_Reward_SetHealth.GetReprisalTable = nil;
+
+b_Reward_SetHealth.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom, { self, self.CustomFunction } }
+end
+
+function b_Reward_SetHealth:DEBUG(_Quest)
+    if not IsExisting(self.Entity) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reward_SetHealth);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Die Gesundheit eines Entities muss einen bestimmten Wert erreichen.
+--
+-- @param _Entity Entity, das überwacht wird
+-- @param _Amount Menge in Prozent
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_EntityHealth(...)
+    return b_Trigger_EntityHealth:new(...);
+end
+
+b_Trigger_EntityHealth = {
+    Name = "Trigger_EntityHealth",
+    Description = {
+        en = "Trigger: The health of a unit must reach a certain point.",
+        de = "Auslöser: Die Gesundheit eines Entity muss einen bestimmten Wert erreichen.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.Custom,     en = "Relation",    de = "Relation" },
+        { ParameterType.Number,     en = "Percentage",  de = "Prozentwert" },
+    },
+}
+
+function b_Trigger_EntityHealth:GetTriggerTable(_Quest)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_EntityHealth:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter;
+    elseif (_Index == 1) then
+        self.BeSmalerThan = _Parameter == "<";
+    elseif (_Index == 2) then
+        self.Percentage = _Parameter;
+    end
+end
+
+function b_Goal_StealGold:GetCustomData(_Index)
+    if _Index == 1 then
+        return { "<", ">=" };
+    end
+end
+
+function b_Trigger_EntityHealth:CustomFunction(_Quest)
+    if self.BeSmalerThan then
+        return GetHealth(self.ScriptName) < self.Percentage;
+    else
+        return GetHealth(self.ScriptName) >= self.Percentage;
+    end
+end
+
+function b_Trigger_EntityHealth:DEBUG(_Quest)
+    if not IsExisting(self.ScriptName) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_EntityHealth);
