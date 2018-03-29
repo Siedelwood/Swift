@@ -87,7 +87,7 @@ BundleKnightTitleRequirements = {
 --
 function BundleKnightTitleRequirements.Global:Install()
     self:OverwriteConsumedGoods();
-    InitKnightTitleTables();
+    -- InitKnightTitleTables();
 end
 
 ---
@@ -137,7 +137,7 @@ function BundleKnightTitleRequirements.Local:Install()
     self:InitTexturePositions();
     self:OverwriteUpdateRequirements();
     self:OverwritePromotionCelebration();
-    InitKnightTitleTables();
+    -- InitKnightTitleTables();
 end
 
 ---
