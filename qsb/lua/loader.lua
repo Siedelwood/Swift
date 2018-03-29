@@ -34,6 +34,8 @@
 -- @set sort=true
 --
 
+QSB = QSB or {};
+
 SymfoniaLoader = {
     Data = {
         LoadOrder = {
@@ -63,7 +65,7 @@ SymfoniaLoader = {
         -- zu einem oder mehr Bundles.
         AddOnLoadOrder = {
             {
-             "AddonIOTemplates",                    true,
+             "AddOnExample",                        false,
              "BundleInteractiveObjects",
              "BundleEntityHealth"
             },
@@ -84,7 +86,7 @@ SymfoniaLoader = {
 --
 -- @param _Path Root-Verzeichnis
 -- @within SymfoniaLoader
--- @usage SymfoniaLoader:Load()
+-- @usage SymfoniaLoader:Load("C:/My/Path/To/Symfonia")
 --
 function SymfoniaLoader:Load(_Path)
     Script.Load(_Path.. "/core.lua");
@@ -94,6 +96,7 @@ function SymfoniaLoader:Load(_Path)
         if self.Data.LoadOrder[i][2] then
             local Name = self.Data.LoadOrder[i][1]:lower();
             Script.Load(_Path.. "/bundles/" ..Name.. "/source.lua");
+            API.Log("Load bundle '" .. _Path.. "/bundles/" ..Name.. "/source.lua'");
         end
     end
     
@@ -108,11 +111,15 @@ function SymfoniaLoader:Load(_Path)
                 LoadAddon = LoadAddon and API.TraverseTable(self.Data.AddOnLoadOrder[i][j], Core.Data.BundleInitializerList);
             end
             -- Lade Addon
+            local Name = self.Data.AddOnLoadOrder[i][1]:lower();
             if LoadAddon then
-                local Name = self.Data.AddOnLoadOrder[i][1]:lower();
                 Script.Load(_Path.. "/addons/" ..Name.. "/source.lua");
+                API.Log("Load addon '" .. _Path.. "/addons/" ..Name.. "/source.lua'");
             else
-                API.Dbg("SymfoniaLoader:Load: AddOn '" ..Name.. "' has unsatisfied dependencies and was not loaded!");
+                -- Only show once
+                if not GUI then
+                    API.Dbg("SymfoniaLoader:Load: AddOn '" ..Name.. "' has unsatisfied dependencies and was not loaded!");
+                end
             end
         end
     end
@@ -157,12 +164,14 @@ function SymfoniaLoader:ConcatSources()
     for k, v in pairs(self.Data.AddOnLoadOrder) do
         local FileContent = "";
         if v[2] then
-            local LoadAddon = true;
+            local LoadAddOn = true;
             for i= 3, #v, 1 do
-                LoadAddon = LoadAddon and API.TraverseTable(v[i], Core.Data.BundleInitializerList);
+                if SymfoniaLoader:IsDependencyLoaded(v[i], i) == false then
+                    LoadAddOn = false;
+                end
             end
-            if LoadAddon then
-                FileContent = self:LoadSource(BasePath.. "bundles/" ..v[1]:lower().. "/source.lua");
+            if LoadAddOn == true then
+                FileContent = self:LoadSource(BasePath.. "addons/" ..v[1]:lower().. "/source.lua");
                 table.insert(QsbContent, FileContent);
             end
         end
@@ -172,14 +181,41 @@ function SymfoniaLoader:ConcatSources()
 end
 
 ---
+-- Checks, if the dependency is loaded.
+-- @param _Name Name of dependency
+-- @param _i    Current addon index
+-- @return boolean: Will be loaded
+-- @local
+--
+function SymfoniaLoader:IsDependencyLoaded(_Name, _i)
+    for j= 1, #self.Data.LoadOrder, 1 do
+        if self.Data.LoadOrder[j][1] == _Name and self.Data.LoadOrder[j][2] then
+            return true;
+        end
+    end
+    for j= 1, _i, 1 do
+        if self.Data.AddOnLoadOrder[j] and self.Data.AddOnLoadOrder[j][1] == _Name and self.Data.AddOnLoadOrder[j][2] then
+            return true;
+        end
+    end
+    return false;
+end
+
+---
 -- Fügt die Quelldateien von Symfonia zu einer QSB zusammen.
 -- @local
 --
 function SymfoniaLoader:CreateQSB()
     local QsbContent = self:ConcatSources();
-    local fh = io.open("Symfonia_v" ..QSB.Version.. ".lua", "a+");
+    -- Delete old file
+    local fh = io.open("Symfonia.lua", "r");
+    if fh ~= nil then
+        os.remove("Symfonia.lua");
+        fh:close();
+    end
+    -- Write new file
+    local fh = io.open("Symfonia.lua", "wt");
     assert(fh, "Output file can not be created!");
-    fh:seek("set", 0);
     fh:write(unpack(QsbContent));
     fh:close();
 end

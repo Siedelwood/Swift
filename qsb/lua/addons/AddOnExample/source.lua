@@ -11,19 +11,19 @@ AddOnExample = {
 }
 
 function AddOnExample.Global:Install()
-    API.Info("Global: AddOnExample was installed!");
+    --API.Info("Global: AddOnExample was installed!");
 end
 
 function AddOnExample.Global:Bockwurst()
-    API.Info("Global: Bockwurst is realy delicious!");
+    --API.Info("Global: Bockwurst is realy delicious!");
 end
 
 function AddOnExample.Local:Install()
-    API.Info("Local: AddOnExample was installed!");
+    --API.Info("Local: AddOnExample was installed!");
 end
 
 function AddOnExample.Local:Bockwurst()
-    API.Info("Local: Bockwurst is realy delicious!");
+    --API.Info("Local: Bockwurst is realy delicious!");
 end
 
 Core:RegisterAddOn("AddOnExample");

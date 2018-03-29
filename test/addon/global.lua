@@ -31,12 +31,9 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    -- Laden der Bibliothek
-    local MapType, Campaign = Framework.GetCurrentMapTypeAndCampaignName();
-    local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
-    local MapName = Framework.GetCurrentMapName();
-    Script.Load("Maps/"..MapFolder.."/"..MapName.."/QuestSystemBehavior.lua");
-    API.Install()
+    local Path = "E:/Repositories/symfonia/qsb/lua";
+    Script.Load(Path .. "/loader.lua");
+    SymfoniaLoader:Load(Path);
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -45,27 +42,4 @@ function Mission_FirstMapAction()
     end
     
     API.ActivateDebugMode(true, true, true, true)
-    
-    AddGood(Goods.G_Gold,   500, 1)
-    AddGood(Goods.G_Wood,    30, 1)
-    AddGood(Goods.G_Grain,   25, 1)
-    
-    -----
-    
-    QSB.CastleStore:New(1)
-    
-    API.AddQuest {
-        Name = "ABC",
-        Visible = true,
-        EndMessage = true,
-        Sender = 2,
-        Goal_Deliver("G_RawFish", 100),
-        Trigger_Time(5),
-    }
-    
-    API.StartQuests()
-end
-
-function AmountInCastleStore()
-    API.Note(QSB.CastleStore:GetGoodAmountWithCastleStore(1, Goods.G_Grain, true))
 end

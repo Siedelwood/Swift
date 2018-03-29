@@ -42,7 +42,7 @@
 
 API = API or {};
 QSB = QSB or {
-    Version = "0.0.6";
+    Version = "0.0.6"
 };
 
 ParameterType = ParameterType or {};

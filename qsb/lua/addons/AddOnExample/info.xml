@@ -10,7 +10,6 @@
 
     <dependencies>
         <dependency>BundleInteractiveObjects</dependency>
-        <dependency>BundleEntityHealth</dependency>
     </dependencies>
 
     <exclusions>
