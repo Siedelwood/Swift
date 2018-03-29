@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <name>
+        <![CDATA[Gesundheit von Einheiten]]>
+    </name>
+    <description>
+        <![CDATA[Dieses Bundle soll dem Mapper ermöglichen die Trigger, die 
+           auslösen, wenn Entities kämpfen, besser zu nutzen. Außerdem werden 
+           einige Hilfsfunktionen bereitgestellt.]]>
+    </description>
+
+    <dependencies>
+    </dependencies>
+
+    <exclusions>
+    </exclusions>
+</root>

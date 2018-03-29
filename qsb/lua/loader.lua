@@ -59,6 +59,7 @@ SymfoniaLoader = {
             {"BundleCastleStore",                   true},
             {"BundleBuildingButtons",               true},
             {"BundleInteractiveObjects",            true},
+            {"BundleEntityHealth",                  true},
         },
         
         -- BETA: LoadOrder der Addons. Addons sind Bundles mit Abhängigkeiten
