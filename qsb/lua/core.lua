@@ -41,7 +41,9 @@
 --
 
 API = API or {};
-QSB = QSB or {};
+QSB = QSB or {
+    Version = "0.0.6";
+};
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;

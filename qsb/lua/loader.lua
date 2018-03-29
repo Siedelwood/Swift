@@ -145,6 +145,7 @@ end
 function SymfoniaLoader:ConcatSources()
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
+    
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";
         if v[2] then
@@ -152,6 +153,21 @@ function SymfoniaLoader:ConcatSources()
         end
         table.insert(QsbContent, FileContent);
     end
+    
+    for k, v in pairs(self.Data.AddOnLoadOrder) do
+        local FileContent = "";
+        if v[2] then
+            local LoadAddon = true;
+            for i= 3, #v, 1 do
+                LoadAddon = LoadAddon and API.TraverseTable(v[i], Core.Data.BundleInitializerList);
+            end
+            if LoadAddon then
+                FileContent = self:LoadSource(BasePath.. "bundles/" ..v[1]:lower().. "/source.lua");
+                table.insert(QsbContent, FileContent);
+            end
+        end
+    end
+    
     return QsbContent;
 end
 
@@ -161,7 +177,7 @@ end
 --
 function SymfoniaLoader:CreateQSB()
     local QsbContent = self:ConcatSources();
-    local fh = io.open("Symfonia.lua", "a+");
+    local fh = io.open("Symfonia_v" ..QSB.Version.. ".lua", "a+");
     assert(fh, "Output file can not be created!");
     fh:seek("set", 0);
     fh:write(unpack(QsbContent));
