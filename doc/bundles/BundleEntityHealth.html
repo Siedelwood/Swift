@@ -33,7 +33,6 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#User_Space">User-Space</a></li>
-<li><a href="#Rewards">Rewards</a></li>
 </ul>
 
 
@@ -45,7 +44,7 @@
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
   <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
-  <li><a href="../bundles/BundleEntityHealth.html">BundleEntityHealth</a></li>
+  <li><strong>BundleEntityHealth</strong></li>
   <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
   <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
   <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
@@ -55,7 +54,7 @@
   <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
   <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
   <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
-  <li><strong>BundleQuestDebug</strong></li>
+  <li><a href="../bundles/BundleQuestDebug.html">BundleQuestDebug</a></li>
   <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
   <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
   <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
@@ -72,33 +71,32 @@
 
 <div id="content">
 
-<h1>Bundle <code>BundleQuestDebug</code></h1>
-<p>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher
- neuer Möglichkeiten.</p>
-<p>
-<p> Die wichtigste Neuerung ist die Konsole, die es erlaubt Quests direkt über
- die Eingabe von Befehlen zu steuern, einzelne einfache Lua-Kommandos im
- Spiel auszuführen und sogar komplette Skripte zu laden.
-<p> Der Debug kann auf zwei verschiedene Arten Aktiviert werden:
- <ol>
- <li>Im Skript über API.ActivateDebugMode bz. ActivateDebugMode</li>
- <li>Im Questassistenten über Reward_DEBUG</li>
- </ol>
+<h1>Bundle <code>BundleEntityHealth</code></h1>
+<p>Dieses Bundle soll dem Mapper ermöglichen die Trigger, die auslösen, wenn
+ Entities kämpfen, besser zu nutzen.</p>
+<p> Außerdem werden einige Hilfsfunktionen
+ bereitgestellt.
 </p>
 
 
 <h2><a href="#User_Space">User-Space</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.ActivateDebugMode">API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</a></td>
-	<td class="summary">Aktiviert den Debug.</td>
+	<td class="name" nowrap><a href="#API.AddOnEntityHurtAction">API.AddOnEntityHurtAction (_Function)</a></td>
+	<td class="summary">Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity von einem
+ anderen Entity verwundet wird.</td>
 	</tr>
-</table>
-<h2><a href="#Rewards">Rewards</a></h2>
-<table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Reward_DEBUG">Reward_DEBUG (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</a></td>
-	<td class="summary">Aktiviert den Debug.</td>
+	<td class="name" nowrap><a href="#API.GetHealth">API.GetHealth (_Entity)</a></td>
+	<td class="summary">Gibt die Gesundheit des Entity in prozent zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetHealth">API.SetHealth (_Entity, _Percentage)</a></td>
+	<td class="summary">Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetOnFire">API.SetOnFire (_Entity, _Strength)</a></td>
+	<td class="summary">Steckt ein Gebäude in Brand.</td>
 	</tr>
 </table>
 
@@ -110,31 +108,20 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.ActivateDebugMode"></a>
-    <strong>API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</strong>
+    <a name = "API.AddOnEntityHurtAction"></a>
+    <strong>API.AddOnEntityHurtAction (_Function)</strong>
     </dt>
     <dd>
-    Aktiviert den Debug.
-<p> Der Developing Mode bietet viele Hotkeys und eine Konsole. Die Konsole ist
- ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
- sogar Funktionen während des Spiels zu überschreiben.
-<p> <b>Alias:</b> ActivateDebugMode
+    Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity von einem
+ anderen Entity verwundet wird.
+<p> <b>Alias</b>: AddOnEntityHurtAction
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_CheckAtStart</span>
-           Prüfe Quests zur Erzeugunszeit
-        </li>
-        <li><span class="parameter">_CheckAtRun</span>
-             Prüfe Quests zur Laufzeit
-        </li>
-        <li><span class="parameter">_TraceQuests</span>
-            Aktiviert Questverfolgung
-        </li>
-        <li><span class="parameter">_DevelopingMode</span>
-         Aktiviert Cheats und Konsole
+        <li><span class="parameter">_Function</span>
+         Funktion, die ausgeführt wird.
         </li>
     </ul>
 
@@ -143,51 +130,85 @@
 
 
 </dd>
-</dl>
-    <h2 class="section-header "><a name="Rewards"></a>Rewards</h2>
-
-    <dl class="function">
     <dt>
-    <a name = "Reward_DEBUG"></a>
-    <strong>Reward_DEBUG (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</strong>
+    <a name = "API.GetHealth"></a>
+    <strong>API.GetHealth (_Entity)</strong>
     </dt>
     <dd>
-    Aktiviert den Debug.
-<p> <b>Hinweis:</b> Die Option "Quest vor Start prüfen" funktioniert nur, wenn
- der Debug im Skript gestartet wird, bevor CreateQuests() ausgeführt wird.
- Zu dem Zeitpunkt, wenn ein Quest, der im Assistenten erstellt wurde,
- ausgelöst wird, wurde CreateQuests bereits ausgeführt! Es ist daher nicht
- mehr möglich die Quests vorab zu prüfen.
+    Gibt die Gesundheit des Entity in prozent zurück.
+<p> Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen,
+ Gebäude und Raubtiere haben Gesundheit.
+<p> <b>Alias</b>: GetHealth
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_CheckAtStart</span>
-           Prüfe Quests zur Erzeugunszeit
-        </li>
-        <li><span class="parameter">_CheckAtRun</span>
-             Prüfe Quests zur Laufzeit
-        </li>
-        <li><span class="parameter">_TraceQuests</span>
-            Aktiviert Questverfolgung
-        </li>
-        <li><span class="parameter">_DevelopingMode</span>
-         Aktiviert Cheats und Konsole
+        <li><span class="parameter">_Entity</span>
+         Entity to change
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        Table mit Behavior
+        number: Health in percent
     </ol>
 
 
-    <h3>See also:</h3>
+
+
+</dd>
+    <dt>
+    <a name = "API.SetHealth"></a>
+    <strong>API.SetHealth (_Entity, _Percentage)</strong>
+    </dt>
+    <dd>
+    Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.
+<p> Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen,
+ Gebäude und Raubtiere haben Gesundheit.
+<p> <b>Alias</b>: SetHealth
+
+
+
+    <h3>Parameters:</h3>
     <ul>
-         <a href="../bundles/BundleQuestDebug.html#API.ActivateDebugMode">API.ActivateDebugMode</a>
+        <li><span class="parameter">_Entity</span>
+             Entity to change
+        </li>
+        <li><span class="parameter">_Percentage</span>
+         Health amount
+        </li>
     </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetOnFire"></a>
+    <strong>API.SetOnFire (_Entity, _Strength)</strong>
+    </dt>
+    <dd>
+    Steckt ein Gebäude in Brand.
+<p> Achtung: Nur Gebäude können in Brand gesteckt werden.
+<p> <b>Alias</b>: SetOnFire
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Entity to change
+        </li>
+        <li><span class="parameter">_Strength</span>
+         Intensity of fire
+        </li>
+    </ul>
+
+
+
 
 
 </dd>
