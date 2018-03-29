@@ -25,7 +25,7 @@ function Mission_LocalOnMapStart()
 
     -- Läd die Module
     API.Install();
-    
+    InitKnightTitleTables();
     
 end
 
