@@ -18,8 +18,14 @@
 -- werden. Die Reihenfolge in der Tabelle bestimmt zudem die Reihenfolge,
 -- nach der die Skripte geladen wird. Es wird empfohlen diese Reihenfolge
 -- beizubehalten, da es sonst möglicher Weise zu Problemen mit möglichen
--- Abhängigkeiten kommen könnte. Ebenso gibt es gegenseitige Ausschlüsse,
--- doch diese sind im Kommentar darüber vermerkt.
+-- unentdeckten Abhängigkeiten kommen könnte.
+--
+-- Neben den Bundles gibt es auch AddOns. AddOns sind spezielle Bundles, die 
+-- von einem oder mehr Bundles bzw. anderen AddOns abhängig sind. Ist eine 
+-- Abhängigkeit unbefriedigt, wird das AddOn nicht geladen! AddOns, die von 
+-- anderen AddOns abhängig sind, müssen in der Load Order hinter AddOns stehen
+-- die sie benötigen. Desshalb wird auch hier empfohlen, die Load Order nicht
+-- zu verändern.
 --
 -- Trotz allem muss nach Abschluss der Entwicklung eine normale QSB in die
 -- Map eingefügt werden. Du kannst sie dann entsprechend zusammen bauen.
@@ -28,240 +34,96 @@
 -- @set sort=true
 --
 
+QSB = QSB or {};
+
 SymfoniaLoader = {
     Data = {
-        LoadOrder  = {
-
-            -- Enthält alle Behavior aus der QSB 3.9 ohne größere Änderungen.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
+        LoadOrder = {
             {"BundleClassicBehaviors",              true},
-
-            -- Enthält die neuen Behavior von Symfonia. Zwar ist dieses Bundle
-            -- Unabhänig von den klassischen Behavior, doch ergibt es nicht
-            -- viel sinn es alleine zu nutzen.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleSymfoniaBehaviors",             true},
-
-            -- Mit diesem Modul können Aufträge per Skript erstellt werden.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleQuestGeneration",               true},
-
-            -- Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl
-            -- nützlicher neuer Möglichkeiten.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleQuestDebug",                    true},
-
-            -- Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen.
-            -- Interaktion mit ihnen löst eine beliebige Funktion aus.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleNonPlayerCharacter",            true},
-
-            -- Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen.
-            -- Interaktion mit ihnen löst eine beliebige Funktion aus.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleKnightTitleRequirements",       true},
-
-            -- Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation
-            -- der Oberfläche des Spiels.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleInterfaceApperance",            true},
-
-            -- Ändert die Funktionen zur Erstellung von Angeboten und setzt
-            -- neue Preise. Zudem können Angebote analysiert werden.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleTradingFunctions",              true},
-
-            -- Bietet die Möglichkeit einzelne MP3-Dateien oder Playlists aus
-            -- MP3-Dateien abzuspielen.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleMusicTools",                    true},
-
-            -- Bietet direkten Zugriff auf die Daten eines Entities im RAM.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleEntityScriptingValues",         true},
-
-            -- Ermöglicht Bau- und Abrissverbote für Gebäude.
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleConstructionControl",           true},
-
-            -- Steuert die Selektion von Einheiten
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleEntitySelection",               true},
-
-            -- Spielstände in anderen Ordnern verwalten
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleSaveGameTools",                 true},
-
-            -- Hilfsfunktionen zu Entities
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleEntityHelperFunctions",         true},
-
-            -- Allgemeine Hilfsfunktionen
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleGameHelperFunctions",           true},
-
-            -- Dialoge und Textfenster
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleDialogWindows",                 true},
-
-            -- Ermöglicht Briefings und Cutscenes
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleBriefingSystem",                true},
-
-            -- Burglager
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleCastleStore",                   true},
-
-            -- Gebäudeschalter
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleBuildingButtons",               true},
-
-            -- Interaktive Objekte
-            --
-            -- Abhängigkeiten:
-            --   keine
-            --
-            -- Inkompatibelitäten:
-            --   keine
-
             {"BundleInteractiveObjects",            true},
-        }
+        },
+        
+        -- BETA: LoadOrder der Addons. Addons sind Bundles mit Abhängigkeiten
+        -- zu einem oder mehr Bundles.
+        AddOnLoadOrder = {
+            {
+             "AddOnExample",                        false,
+             "BundleInteractiveObjects",
+             "BundleEntityHealth"
+            },
+        },
     }
 }
 
 ---
--- Lädt alle Bundles innerhalb der Load Order und initalisiert sie.
+-- Lädt alle Bundles innerhalb der Load Order und initalisiert sie. Diese 
+-- Funktion ist für die Verwendung im Spiel gedacht.
 -- <br/><br/>
 -- Die Liste der Bundles steuert welche Behavior geladen werden. Wird ein
 -- Bundle auf false gesetzt, wird es nicht geladen. Die Reihenfolge der
 -- Einträge bestimmt die Ladereihenfolge.
 --
+-- _Path ist der absolute Pfad, wo die QSB auf dem Rechner liegt oder der 
+-- relative Pfad in der Map, in den die Quellen gepackt wurden.
+--
 -- @param _Path Root-Verzeichnis
 -- @within SymfoniaLoader
--- @usage SymfoniaLoader:Load()
+-- @usage SymfoniaLoader:Load("C:/My/Path/To/Symfonia")
 --
 function SymfoniaLoader:Load(_Path)
     Script.Load(_Path.. "/core.lua");
+    
+    -- Lade alle Bundles
     for i= 1, #self.Data.LoadOrder, 1 do
         if self.Data.LoadOrder[i][2] then
             local Name = self.Data.LoadOrder[i][1]:lower();
             Script.Load(_Path.. "/bundles/" ..Name.. "/source.lua");
+            API.Log("Load bundle '" .. _Path.. "/bundles/" ..Name.. "/source.lua'");
         end
     end
+    
+    assert(API ~= nil);
+    
+    -- Lade alle AddOns 
+    for i= 1, #self.Data.AddOnLoadOrder, 1 do        
+        if self.Data.AddOnLoadOrder[i][2] then
+            -- Prüfe Abhängigkeiten
+            local LoadAddon = true;
+            for j= 3, #self.Data.AddOnLoadOrder[i], 1 do
+                LoadAddon = LoadAddon and API.TraverseTable(self.Data.AddOnLoadOrder[i][j], Core.Data.BundleInitializerList);
+            end
+            -- Lade Addon
+            local Name = self.Data.AddOnLoadOrder[i][1]:lower();
+            if LoadAddon then
+                Script.Load(_Path.. "/addons/" ..Name.. "/source.lua");
+                API.Log("Load addon '" .. _Path.. "/addons/" ..Name.. "/source.lua'");
+            else
+                -- Only show once
+                if not GUI then
+                    API.Dbg("SymfoniaLoader:Load: AddOn '" ..Name.. "' has unsatisfied dependencies and was not loaded!");
+                end
+            end
+        end
+    end
+    
     assert(API ~= nil);
     API.Install();
 end
@@ -290,6 +152,7 @@ end
 function SymfoniaLoader:ConcatSources()
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
+    
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";
         if v[2] then
@@ -297,7 +160,45 @@ function SymfoniaLoader:ConcatSources()
         end
         table.insert(QsbContent, FileContent);
     end
+    
+    for k, v in pairs(self.Data.AddOnLoadOrder) do
+        local FileContent = "";
+        if v[2] then
+            local LoadAddOn = true;
+            for i= 3, #v, 1 do
+                if SymfoniaLoader:IsDependencyLoaded(v[i], i) == false then
+                    LoadAddOn = false;
+                end
+            end
+            if LoadAddOn == true then
+                FileContent = self:LoadSource(BasePath.. "addons/" ..v[1]:lower().. "/source.lua");
+                table.insert(QsbContent, FileContent);
+            end
+        end
+    end
+    
     return QsbContent;
+end
+
+---
+-- Checks, if the dependency is loaded.
+-- @param _Name Name of dependency
+-- @param _i    Current addon index
+-- @return boolean: Will be loaded
+-- @local
+--
+function SymfoniaLoader:IsDependencyLoaded(_Name, _i)
+    for j= 1, #self.Data.LoadOrder, 1 do
+        if self.Data.LoadOrder[j][1] == _Name and self.Data.LoadOrder[j][2] then
+            return true;
+        end
+    end
+    for j= 1, _i, 1 do
+        if self.Data.AddOnLoadOrder[j] and self.Data.AddOnLoadOrder[j][1] == _Name and self.Data.AddOnLoadOrder[j][2] then
+            return true;
+        end
+    end
+    return false;
 end
 
 ---
@@ -306,9 +207,15 @@ end
 --
 function SymfoniaLoader:CreateQSB()
     local QsbContent = self:ConcatSources();
-    local fh = io.open("Symfonia.lua", "a+");
+    -- Delete old file
+    local fh = io.open("Symfonia.lua", "r");
+    if fh ~= nil then
+        os.remove("Symfonia.lua");
+        fh:close();
+    end
+    -- Write new file
+    local fh = io.open("Symfonia.lua", "wt");
     assert(fh, "Output file can not be created!");
-    fh:seek("set", 0);
     fh:write(unpack(QsbContent));
     fh:close();
 end
