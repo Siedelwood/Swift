@@ -27,7 +27,7 @@
 --
 -- @param _Entity Entity to change
 -- @return number: Health in percent
--- @within User-Space
+-- @within Public
 --
 function API.GetHealth(_Entity)
     return BundleEntityHealth:GetHealth(_Entity);
@@ -44,7 +44,7 @@ GetHealth = API.GetHealth;
 --
 -- @param _Entity     Entity to change
 -- @param _Percentage Health amount
--- @within User-Space
+-- @within Public
 --
 function API.SetHealth(_Entity, _Percentage)
     if GUI then
@@ -79,7 +79,7 @@ SetHealth = API.SetHealth;
 --
 -- @param _Entity   Entity to change
 -- @param _Strength Intensity of fire
--- @within User-Space
+-- @within Public
 --
 function API.SetOnFire(_Entity, _Strength)
     if GUI then
@@ -112,7 +112,7 @@ SetOnFire = API.SetOnFire;
 -- <b>Alias</b>: AddOnEntityHurtAction
 --
 -- @param _Function Funktion, die ausgeführt wird.
--- @within User-Space
+-- @within Public
 --
 function API.AddOnEntityHurtAction(_Function)
     if GUI then
@@ -146,7 +146,7 @@ BundleEntityHealth = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Global:Install()
@@ -162,7 +162,7 @@ end
 --
 -- @param _Entity     Entity to change
 -- @param _Percentage Health amount
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Global:SetEntityHealth(_Entity, _Percentage)
@@ -184,7 +184,7 @@ end
 -- Funktion übergeben.
 --
 -- @param _Function Funktion, die ausgeführt wird
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Global.AddOnEntityHurtAction(_Function)
@@ -194,7 +194,7 @@ end
 ---
 -- Führt alle registrierten Events aus, wenn ein Entity ein anderes angreift.
 -- 
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Global.EntityHurtEntityController()
@@ -220,7 +220,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Local:Install()
@@ -234,7 +234,7 @@ end
 --
 -- @param _Entity Entity to change
 -- @return number: Health in percent
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth:GetHealth(_Entity)

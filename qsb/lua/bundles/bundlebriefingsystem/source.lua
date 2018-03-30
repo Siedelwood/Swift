@@ -37,7 +37,7 @@ QSB = QSB or {};
 -- <b>Alias</b>: PauseQuestsDuringBriefings
 --
 -- @param _Flag Quest Timer pausiert
--- @within User-Space
+-- @within Public
 --
 function API.PauseQuestsDuringBriefings(_Flag)
     if GUI then
@@ -55,7 +55,7 @@ PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 --
 -- @param _Flag Quest Timer pausiert
 -- @return boolean: Briefing ist beendet
--- @within User-Space
+-- @within Public
 --
 function API.IsBriefingFinished(_briefingID)
     if GUI then
@@ -76,7 +76,7 @@ IsBriefingFinished = API.IsBriefingFinished;
 --
 -- @param _page Seite
 -- @return number: Gewählte Antwort
--- @within User-Space
+-- @within Public
 --
 function API.MCGetSelectedAnswer(_page)
     if GUI then
@@ -96,7 +96,7 @@ MCGetSelectedAnswer = API.MCGetSelectedAnswer;
 --
 -- @param _pageNumber Index der Page
 -- @return table: Page
--- @within User-Space
+-- @within Public
 --
 function API.GetCurrentBriefingPage(_pageNumber)
     if GUI then
@@ -115,7 +115,7 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 -- <b>Alias</b>: GetCurrentBriefing
 --
 -- @return table: Briefing
--- @within User-Space
+-- @within Public
 --
 function API.GetCurrentBriefing()
     if GUI then
@@ -133,7 +133,7 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 -- @param _briefing Quest Timer pausiert
 -- @return function(3): AP, ASP, ASMC
--- @within User-Space
+-- @within Public
 --
 function API.AddPages(_briefing)
     if GUI then
@@ -166,7 +166,7 @@ BundleBriefingSystem = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:Install()
@@ -179,7 +179,7 @@ end
 -- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
 --
 -- @param _Flag Quest Timer pausiert
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag)
@@ -191,7 +191,7 @@ end
 --
 -- @param _Flag Quest Timer pausiert
 -- @return boolean: Briefing ist beendet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:IsBriefingFinished(_briefingID)
@@ -206,7 +206,7 @@ end
 --
 -- @param _page Seite
 -- @return number: Gewählte Antwort
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:MCGetSelectedAnswer(_page)
@@ -223,7 +223,7 @@ end
 --
 -- @param _pageNumber Index der Page
 -- @return table: Page
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber)
@@ -236,7 +236,7 @@ end
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
 -- @return table: Briefing
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:GetCurrentBriefing()
@@ -248,7 +248,7 @@ end
 --
 -- @param _briefing Quest Timer pausiert
 -- @return function(3): AP, ASP, ASMC
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:AddPages(_briefing)
@@ -406,7 +406,7 @@ end
 ---
 -- Initalisiert das Briefing System im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:InitalizeBriefingSystem()
@@ -566,7 +566,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     --
     -- @param _briefing Briefing-Tabelle
     -- @return number: Briefing-ID
-    -- @within User-Space
+    -- @within Public
     --
     function API.StartCutscene(_briefing)
         -- Seitenweises abbrechen ist nicht erlaubt
@@ -615,7 +615,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- @param _briefing     Briefing-Table
     -- @param _cutsceneMode Cutscene-Mode nutzen?
     -- @return number: Briefing-ID
-    -- @within User-Space
+    -- @within Public
     --
     function API.StartBriefing(_briefing, _cutsceneMode)
         -- view wird nur Ausgeführt, wenn es sich um eine Cutscene handelt
@@ -1088,7 +1088,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Local:Install()
@@ -1098,7 +1098,7 @@ end
 ---
 -- Initalisiert das Briefing System im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Local:InitalizeBriefingSystem()

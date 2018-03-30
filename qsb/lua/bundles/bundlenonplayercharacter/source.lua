@@ -524,7 +524,7 @@ Core:RegisterBehavior(b_Trigger_NPC);
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
@@ -765,7 +765,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleNonPlayerCharacter.Local:Install()

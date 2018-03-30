@@ -28,7 +28,7 @@ QSB = QSB or {};
 -- @param _category     Kategorien oder Table mit Kategorien
 -- @param _territory    Zielterritorium oder Table mit Territorien
 -- @return table: Liste mit Entities
--- @within User-Space
+-- @within Public
 --
 function API.GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
     return BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
@@ -42,7 +42,7 @@ GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
 -- 
 -- @param _Prefix Präfix des Skriptnamen
 -- @return table: Liste mit Entities
--- @within User-Space
+-- @within Public
 --
 function API.GetEntitiesByPrefix(_Prefix)
     return BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix);
@@ -85,7 +85,7 @@ SetResourceAmount = API.SetResourceAmount;
 -- @param _angle           Winkel
 -- @param _buildingRealPos Gebäudemitte statt Gebäudeeingang
 -- @return table: Position
--- @within User-Space
+-- @within Public
 --
 function API.GetRelativePos(_target, _distance, _angle, _buildingRealPos)
     if not API.ValidatePosition(_target) then
@@ -104,7 +104,7 @@ GetRelativePos = API.GetRelativePos;
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within User-Space
+-- @within Public
 --
 function API.SetPosition(_Entity, _Position)
     if GUI then
@@ -143,7 +143,7 @@ SetPosition = API.SetPosition;
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
 -- @param _moveAsEntity Blocking ignorieren
--- @within User-Space
+-- @within Public
 --
 function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
     if GUI then
@@ -174,7 +174,7 @@ MoveEx = API.MoveToPosition;
 -- @param _Position     Ziel
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
--- @within User-Space
+-- @within Public
 --
 function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
     if GUI then
@@ -205,7 +205,7 @@ SetPositionEx = API.PlaceToPosition;
 --
 -- @param _EntityID Entity ID
 -- @return string: Vergebener Name
--- @within User-Space
+-- @within Public
 --
 function API.GiveEntityName(_EntityID)
     if IsExisting(_name) then
@@ -227,7 +227,7 @@ GiveEntityName = API.GiveEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @return string: Skriptname
--- @within User-Space
+-- @within Public
 --
 function API.GetEntityName(_entity)
     if not IsExisting(_entity) then
@@ -247,7 +247,7 @@ GetEntityName = API.GetEntityName;
 -- @param _entity Entity
 -- @param _name   Skriptname
 -- @return string: Skriptname
--- @within User-Space
+-- @within Public
 --
 function API.SetEntityName(_entity, _name)
     if GUI then
@@ -269,7 +269,7 @@ SetEntityName = API.SetEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @param _ori    Ausrichtung in Grad
--- @within User-Space
+-- @within Public
 --
 function API.SetOrientation(_entity, _ori)
     if GUI then
@@ -292,7 +292,7 @@ SetOrientation = API.SetOrientation;
 --
 -- @param _entity Gesuchtes Entity
 -- @return number: Orientierung in Grad
--- @within User-Space
+-- @within Public
 --
 function API.GetOrientation(_entity)
     if not IsExisting(_entity) then
@@ -311,7 +311,7 @@ GetOrientation = API.GetOrientation;
 --
 -- @param_Entity  Angreifendes Entity
 -- @param _Target Angegriffenes Entity
--- @within User-Space
+-- @within Public
 --
 function API.EntityAttack(_Entity, _Target)
     if GUI then
@@ -399,7 +399,7 @@ Move = API.EntityMove;
 --
 -- @param _soldier Soldier
 -- @return number: ID des Battalion
--- @within User-Space
+-- @within Public
 --
 function API.GetLeaderBySoldier(_soldier)
     if not IsExisting(_soldier) then
@@ -419,7 +419,7 @@ GetLeaderBySoldier = API.GetLeaderBySoldier;
 -- @param _eID      Basis-Entity
 -- @param _playerID Besitzer der Helden
 -- @return number: Nächstes Entity
--- @within User-Space
+-- @within Public
 --
 function API.GetNearestKnight(_eID, _playerID)
     local Knights = {};
@@ -437,7 +437,7 @@ GetClosestKnight = API.GetNearestKnight;
 -- @param _eID      Basis-Entity
 -- @param _entities Liste von Entities
 -- @return number: Nächstes Entity
--- @within User-Space
+-- @within Public
 --
 function API.GetNearestEntity(_eID, _entities)
     if not IsExisting(_eID) then
@@ -477,7 +477,7 @@ BundleEntityHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Install()
@@ -488,7 +488,7 @@ end
 -- Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
 -- auch während des Spiels setzen zu können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:OverwriteGeologistRefill()
@@ -512,7 +512,7 @@ end
 -- @param _StartAmount  Menge an Rohstoffen
 -- @param _RefillAmount Minimale Nachfüllmenge (> 0)
 -- @return boolean: Operation erfolgreich
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
@@ -538,7 +538,7 @@ end
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:SetPosition(_Entity,_Position)
@@ -568,7 +568,7 @@ end
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
 -- @param _moveAsEntity Blocking ignorieren
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
@@ -670,7 +670,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Local:Install()
@@ -689,7 +689,7 @@ end
 -- @param _category     Kategorien oder Table mit Kategorien
 -- @param _territory    Zielterritorium oder Table mit Territorien
 -- @return table: Liste mit Entities
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
@@ -715,7 +715,7 @@ end
 -- 
 -- @param _Prefix Präfix des Skriptnamen
 -- @return table: Liste mit Entities
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix)
@@ -743,7 +743,7 @@ end
 -- @param _angle           Winkel
 -- @param _buildingRealPos Gebäudemitte statt Gebäudeeingang
 -- @return table: Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
@@ -782,7 +782,7 @@ end
 -- @param _eID      Basis-Entity
 -- @param _entities Liste von Entities
 -- @return number: Nächstes Entity
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetNearestEntity(_eID,_entities)

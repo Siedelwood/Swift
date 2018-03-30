@@ -15,23 +15,23 @@
 -- aufbereitet, dass Bundles ihre Inhalte einfach ergänzen können. Dies wird
 -- jedoch nicht für alle Funktionen des Spiels möglich sein.
 --
--- Wie die einzelnen Bundles ist auch das Framework in einen User- und einen
--- Application-Space aufgeteilt. Der User-Space enthält Funktionen innerhalb
--- der Bibliothek "API". Alle Bundles ergänzen ihre User-Space-Funktionen dort.
+-- Wie die einzelnen Bundles ist auch das Framework in einen Public und einen
+-- Private Space aufgeteilt. Der Public Space enthält Funktionen innerhalb
+-- der Bibliothek "API". Alle Bundles ergänzen ihre Public-Funktionen dort.
 -- Außer den Aliases auf API-Funktionen und den Behavior-Funktionen sind keine
 -- anderen öffentlichen Funktionen für den Anwendern sichtbar zu machen!
--- Sinn des User-Space ist es, Funktionsaufrufe, die zum Teil nur in einer
+-- Sinn des Public Space ist es, Funktionsaufrufe, die zum Teil nur in einer
 -- Skriptumgebung bekannt sind zu verallgemeinern. Wird die Funktion nun aus
 -- der falschen Umgebung aufgerufen, wird der Aufruf an die richtige Umgebung
 -- weitergereicht oder, falls dies nicht möglich ist, abgebrochen. Dies soll
 -- Fehler vermeiden.
 --
--- Im Application-Space liegen die privaten Funktionen und Variablen, die
+-- Im Private Space liegen die privaten Funktionen und Variablen, die
 -- nicht in der Dokumentation erscheinen. Sie sind mit einem Local-Tag zu
 -- versehen! Der Nutzer soll diese Funktionen in der Regel nicht anfassen,
 -- daher muss er auch nicht wissen, dass es sie gibt!
 --
--- Ziel der Teilung zwischen User-Space und Application-Space ist es, dem
+-- Ziel der Teilung zwischen Public Space und Private Space ist es, dem
 -- Anwender eine saubere und leicht verständliche Oberfläche zu Bieten, mit
 -- der er einfach arbeiten kann. Kenntnis über die komplexen Prozesse hinter
 -- den Kulissen sind dafür nicht notwendig.
@@ -70,7 +70,7 @@ end
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
 -- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
 -- werden, bevor die QSB verwendet werden kann.
--- @within User-Space
+-- @within Public
 --
 function API.Install()
     Core:InitalizeBundles();
@@ -90,7 +90,7 @@ end
 -- @param _Source    Quelltabelle
 -- @param _Dest      Zieltabelle
 -- @return Kopie der Tabelle
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- Copy = API.InstanceTable(Table)
 --
@@ -119,7 +119,7 @@ CopyTableRecursive = API.InstanceTable;
 -- @param _Data     Datum, das gesucht wird
 -- @param _Table    Tabelle, die durchquert wird
 -- @return booelan: Wert gefunden
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- local Found = API.TraverseTable(3, Table)
 --
@@ -139,7 +139,7 @@ Inside = API.TraverseTable;
 --
 -- @param _Table Tabelle, die gedumpt wird
 -- @param _Name Optionaler Name im Log
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- API.DumpTable(Table)
 --
@@ -208,7 +208,7 @@ end
 --
 -- @param _Name     Identifier des Quest
 -- @return number: ID des Quest
--- @within User-Space
+-- @within Public
 --
 function API.GetQuestID(_Name)
     if type(_Name) == "number" then
@@ -232,7 +232,7 @@ GetQuestID = API.GetQuestID;
 --
 -- @param _QuestID   ID oder Name des Quest
 -- @return boolean: Quest existiert
--- @within User-Space
+-- @within Public
 --
 function API.IsValidateQuest(_QuestID)
     return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
@@ -247,7 +247,7 @@ IsValidQuest = API.IsValidateQuest;
 -- <b>Alias:</b> FailQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
@@ -264,7 +264,7 @@ FailQuestsByName = API.FailAllQuests;
 -- <b>Alias:</b> FailQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -282,7 +282,7 @@ FailQuestByName = API.FailQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
@@ -305,7 +305,7 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <b>Alias:</b> RestartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
@@ -381,7 +381,7 @@ RestartQuestByName = API.RestartQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
@@ -398,7 +398,7 @@ StartQuestsByName = API.StartAllQuests;
 -- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -417,7 +417,7 @@ StartQuestByName = API.StartQuest;
 -- <b>Alias:</b> StopQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
@@ -435,7 +435,7 @@ StopQuestwByName = API.StopAllQuests;
 -- <b>Alias:</b> StopQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -455,7 +455,7 @@ StopQuestByName = API.StopQuest;
 -- <b>Alias:</b> WinQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
@@ -472,7 +472,7 @@ WinQuestsByName = API.WinAllQuests;
 -- <b>Alias:</b> WinQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -493,7 +493,7 @@ WinQuestByName = API.WinQuest;
 -- <b>Alias:</b> GUI_Note
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Note(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -510,7 +510,7 @@ GUI_Note = API.Note;
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.StaticNote(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -524,7 +524,7 @@ end
 ---
 -- Löscht alle Nachrichten im Debug Window.
 --
--- @within User-Space
+-- @within Public
 --
 function API.ClearNotes()
     if not GUI then
@@ -540,7 +540,7 @@ end
 -- Spiels die Nachricht gesendet wurde.
 --
 -- @param _Message Nachricht für's Log
--- @within User-Space
+-- @within Public
 --
 function API.Log(_Message)
     local Env  = (GUI and "Local") or "Global";
@@ -552,7 +552,7 @@ end
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Message(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -569,7 +569,7 @@ end
 -- <b>Alias:</b> dbg
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Dbg(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.ERROR then
@@ -585,7 +585,7 @@ dbg = API.Dbg;
 --
 -- @param _Message Anzeigetext
 -- @return string: Message
--- @within User-Space
+-- @within Public
 --
 function API.EnsureMessage(_Message)
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -601,7 +601,7 @@ end
 -- <p><b>Alias:</b> warn</p>
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Warn(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
@@ -617,7 +617,7 @@ warn = API.Warn;
 -- <b>Alias:</b> info
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Info(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
@@ -692,7 +692,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
 -- </table>
 --
 -- @param _Level Level
--- @within User-Space
+-- @within Public
 --
 function API.SetLogLevel(_Level)
     assert(type(_Level) == "number");
@@ -714,7 +714,7 @@ end
 -- @param _cartOverlay         (optional) Overlay für Goldkarren
 -- @param _ignoreReservation   (optional) Marktplatzreservation ignorieren
 -- @return number: Entity-ID des erzeugten Wagens
--- @within User-Space
+-- @within Public
 -- @usage -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
 -- -- Legacy-Call mit ID-Speicherung
@@ -762,7 +762,7 @@ SendCart = API.SendCart;
 -- @param _Type       Neuer Typ
 -- @param _NewOwner   (optional) Neuer Besitzer
 -- @return number: Entity-ID des Entity
--- @within User-Space
+-- @within Public
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
 function API.ReplaceEntity(_Entity, _Type, _NewOwner)
@@ -791,7 +791,7 @@ ReplaceEntity = API.ReplaceEntity;
 -- @param _entity           Entity
 -- @param _entityToLookAt   Ziel
 -- @param _offsetEntity     Winkel-Offset
--- @within User-Space
+-- @within Public
 -- @usage API.LookAt("Hakim", "Alandra")
 --
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
@@ -814,7 +814,7 @@ LookAt = API.LookAt;
 --
 -- @param _entity           Erstes Entity
 -- @param _entityToLookAt   Zweites Entity
--- @within User-Space
+-- @within Public
 -- @usage API.Confront("Hakim", "Alandra")
 --
 function API.Confront(_entity, _entityToLookAt)
@@ -831,7 +831,7 @@ end
 -- @param _pos1 Erste Vergleichsposition
 -- @param _pos2 Zweite Vergleichsposition
 -- @return number: Entfernung zwischen den Punkten
--- @within User-Space
+-- @within Public
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
@@ -857,7 +857,7 @@ GetDistance = API.GetDistance;
 --
 -- @param _pos Positionstable
 -- @return boolean: Position ist valide
--- @within User-Space
+-- @within Public
 --
 function API.ValidatePosition(_pos)
     if type(_pos) == "table" then
@@ -881,7 +881,7 @@ IsValidPosition = API.ValidatePosition;
 --
 -- @param _Entity   Entity, dessen Position bestimmt wird.
 -- @return table: Positionstabelle {X= x, Y= y, Z= z}
--- @within User-Space
+-- @within Public
 -- @usage local Position = API.LocateEntity("Hans")
 --
 function API.LocateEntity(_Entity)
@@ -907,7 +907,7 @@ GetPosition = API.LocateEntity;
 --
 -- @param _ScriptName  Skriptname des IO
 -- @param _State       Aktivierungszustand
--- @within User-Space
+-- @within Public
 -- @usage API.ActivateIO("Haus1", 0)
 -- @usage API.ActivateIO("Hut1")
 --
@@ -934,7 +934,7 @@ InteractiveObjectActivate = API.AcrivateIO;
 -- <b>Alias:</b> InteractiveObjectDeactivate
 --
 -- @param _ScriptName Skriptname des IO
--- @within User-Space
+-- @within Public
 -- @usage API.DeactivateIO("Hut1")
 --
 function API.DeactivateIO(_ScriptName)
@@ -961,7 +961,7 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 -- @param _player    PlayerID [0-8] oder -1 für alle
 -- @param _category  Kategorie, der die Entities angehören
 -- @param _territory Zielterritorium
--- @within User-Space
+-- @within Public
 -- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
 function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
@@ -1041,7 +1041,7 @@ end
 --
 -- @param _Value Wahrheitswert
 -- @return boolean: Wahrheitswert
--- @within User-Space
+-- @within Public
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
 -- local Bool = API.ToBoolean("no") --> Bool = false
@@ -1058,7 +1058,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- <b>Alias</b>: AddOnSaveGameLoadedAction
 --
 -- @param _Function Funktion, die ausgeführt werden soll
--- @within User-Space
+-- @within Public
 -- @usage SaveGame = function()
 --     API.Note("foo")
 -- end
@@ -1079,7 +1079,7 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 -- @param _Key         Tastenkombination
 -- @param _Description Beschreibung des Hotkey
 -- @return number: Index
--- @within User-Space
+-- @within Public
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
@@ -1094,7 +1094,7 @@ end
 -- Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
 --
 -- @param _Index Index in Table
--- @within User-Space
+-- @within Public
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
@@ -1127,7 +1127,7 @@ Core = {
 ---
 -- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:InitalizeBundles()
@@ -1154,7 +1154,7 @@ end
 
 ---
 -- FIXME
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupGobal_HackCreateQuest()
@@ -1213,7 +1213,7 @@ end
 
 ---
 -- FIXME
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupGlobal_HackQuestSystem()
@@ -1248,7 +1248,7 @@ end
 ---
 -- Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
 -- angezeigt werden können.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupLocal_HackRegisterHotkey()
@@ -1320,7 +1320,7 @@ end
 -- Registiert ein Bundle, sodass es initialisiert wird.
 --
 -- @param _Bundle Name des Moduls
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:RegisterBundle(_Bundle)
@@ -1336,7 +1336,7 @@ end
 -- existiert nur zur Übersichtlichkeit.
 --
 -- @param _Bundle Name des Moduls
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:RegisterAddOn(_AddOn)
@@ -1350,7 +1350,7 @@ end
 -- Erzeugt zudem den Konstruktor.
 --
 -- @param _Behavior    Behavior-Objekt
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:RegisterBehavior(_Behavior)
@@ -1385,7 +1385,7 @@ end
 --
 -- @param _Name     Quest
 -- @return boolean: Questname ist fehlerfrei
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:CheckQuestName(_Name)
@@ -1398,7 +1398,7 @@ end
 --
 -- @param _Text   Neuer Text
 -- @param _Quest  Identifier des Quest
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:ChangeCustomQuestCaptionText(_Text, _Quest)
@@ -1431,7 +1431,7 @@ end
 -- @param _FunctionName
 -- @param _StackFunction
 -- @param _Index
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:StackFunction(_FunctionName, _StackFunction, _Index)
@@ -1470,7 +1470,7 @@ end
 -- @param _FunctionName
 -- @param _AppendFunction
 -- @param _Index
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
@@ -1501,7 +1501,7 @@ end
 -- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
 --
 -- @local
--- @within Application-Space
+-- @within Private
 -- @usage A = {foo = function() API.Note("bar") end}
 -- B = function() API.Note("muh") end
 -- Core:ReplaceFunction("A.foo", B)
@@ -1536,7 +1536,7 @@ end
 -- @param _FunctionName Name der Funktion
 -- @param _Reference    Aktuelle Referenz (für Rekursion)
 -- @return function: Gefundene Funktion
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:GetFunctionInString(_FunctionName, _Reference)
@@ -1569,7 +1569,7 @@ end
 --
 -- @param _Input Boolean-Darstellung
 -- @return boolean: Konvertierte Boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:ToBoolean(_Input)
@@ -9994,7 +9994,7 @@ BundleClassicBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleClassicBehaviors.Global:Install()
@@ -10005,7 +10005,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleClassicBehaviors.Local:Install()
@@ -11733,7 +11733,7 @@ BundleSymfoniaBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSymfoniaBehaviors.Global:Install()
@@ -11899,7 +11899,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSymfoniaBehaviors.Local:Install()
@@ -11954,7 +11954,7 @@ QSB = QSB or {};
 -- <b>Alias:</b> AddQuest
 --
 -- @param _Data Questdefinition
--- @within User-Space
+-- @within Public
 --
 function API.AddQuest(_Data)
     if GUI then
@@ -11970,7 +11970,7 @@ AddQuest = API.AddQuest;
 --
 -- <b>Alias</b>: StartQuests
 --
--- @within User-Space
+-- @within Public
 --
 function API.StartQuests()
     if GUI then
@@ -12004,7 +12004,7 @@ StartQuests = API.StartQuests;
 -- @return number: QuestID
 -- @return table: Quest
 --
--- @within User-Space
+-- @within Public
 --
 function API.QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
     if GUI then
@@ -12041,7 +12041,7 @@ QuestMessage = API.QuestMessage;
 -- @param _Messages Table with Quests
 -- @return table: List of generated Quests
 --
--- @within User-Space
+-- @within Public
 --
 function API.QuestDialog(_Messages)
     if GUI then
@@ -12105,7 +12105,7 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
@@ -12133,7 +12133,7 @@ end
 -- @return number: QuestID
 -- @return table: Quest
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
@@ -12176,7 +12176,7 @@ end
 -- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
 --
 -- @param _Data Daten des Quest.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:NewQuest(_Data)
@@ -12224,7 +12224,7 @@ end
 --
 -- @param _ID   Id des Quests
 -- @param _Data Quest Data
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
@@ -12264,7 +12264,7 @@ end
 ---
 -- Startet alle Quests in der GenerationList.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:StartQuests()
@@ -12312,7 +12312,7 @@ end
 -- Validiert alle Quests in der GenerationList. Verschiedene Standardfehler
 -- werden geprüft.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:ValidateQuests()
@@ -12396,7 +12396,7 @@ end
 -- in der Initalisiererliste zu testen.
 --
 -- @param _List Liste der Quests
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:DebugQuest(_List)
@@ -12408,7 +12408,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Local:Install()
@@ -12470,7 +12470,7 @@ BundleQuestDebug = {
 -- @param _CheckAtRun     Prüfe Quests zur Laufzeit
 -- @param _TraceQuests    Aktiviert Questverfolgung
 -- @param _DevelopingMode Aktiviert Cheats und Konsole
--- @within User-Space
+-- @within Public
 --
 function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
     if GUI then
@@ -13742,7 +13742,7 @@ Core:RegisterBehavior(b_Trigger_NPC);
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
@@ -13983,7 +13983,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleNonPlayerCharacter.Local:Install()
@@ -15980,7 +15980,7 @@ QSB.PlayerNames = {};
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideMinimap(_Flag)
     if not GUI then
@@ -16005,7 +16005,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideToggleMinimap(_Flag)
     if not GUI then
@@ -16026,7 +16026,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideDiplomacyMenu(_Flag)
     if not GUI then
@@ -16047,7 +16047,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideProductionMenu(_Flag)
     if not GUI then
@@ -16068,7 +16068,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideWeatherMenu(_Flag)
     if not GUI then
@@ -16089,7 +16089,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideBuyTerritory(_Flag)
     if not GUI then
@@ -16110,7 +16110,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideKnightAbility(_Flag)
     if not GUI then
@@ -16135,7 +16135,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideKnightButton(_Flag)
     if not GUI then
@@ -16168,7 +16168,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideSelectionButton(_Flag)
     if not GUI then
@@ -16191,7 +16191,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideBuildMenu(_Flag)
     if not GUI then
@@ -16218,7 +16218,7 @@ end
 -- 
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
--- @within User-Space
+-- @within Public
 --
 function API.SetTexture(_widget, _file)
     if not GUI then
@@ -16258,7 +16258,7 @@ UserSetTexture = API.SetTexture;
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
 -- @param _Name        Name der Icon Matrix
--- @within User-Space
+-- @within Public
 --
 function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then
@@ -16285,7 +16285,7 @@ UserSetIcon = API.SetIcon;
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.SetTooltipNormal(_title, _text, _disabledText)
     if not GUI then 
@@ -16307,7 +16307,7 @@ UserSetTextNormal = API.SetTooltipNormal;
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @param _costs        Kostentabelle
 -- @param _inSettlement Kosten in Siedlung suchen
--- @within User-Space
+-- @within Public
 --
 function API.SetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
     if not GUI then
@@ -16324,7 +16324,7 @@ UserSetTextBuy = API.SetTooltipCosts;
 --
 -- @return _TerritoryID ID des Territoriums
 -- @return Name des Territorium
--- @within User-Space
+-- @within Public
 --
 function API.GetTerritoryName(_TerritoryID)
     local Name = Logic.GetTerritoryName(_TerritoryID);
@@ -16351,7 +16351,7 @@ GetTerritoryName = API.GetTerritoryName;
 --
 -- @return _PlayerID ID des Spielers
 -- @return Name des Territorium
--- @within User-Space
+-- @within Public
 --
 function API.GetPlayerName(_PlayerID)
     local PlayerName = Logic.GetPlayerName(_PlayerID);
@@ -16385,7 +16385,7 @@ GetPlayerName = API.GetPlayerName;
 -- @return _playerID ID des Spielers
 -- @return _name     Name des Spielers
 -- @return Name des Territorium
--- @within User-Space
+-- @within Public
 --
 function API.SetPlayerName(_playerID,_name)
     assert(type(_playerID) == "number");
@@ -16408,7 +16408,7 @@ SetPlayerName = API.SetPlayerName;
 -- @return _Logo     Logo (optional)
 -- @return _Pattern  Pattern (optional)
 -- @return Name des Territorium
--- @within User-Space
+-- @within Public
 --
 function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     if GUI then
@@ -16445,7 +16445,7 @@ BundleInterfaceApperance = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Global:Install()
@@ -16454,7 +16454,7 @@ end
 
 ---
 -- Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Global.RestoreAfterLoad()
@@ -16467,7 +16467,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:Install()
@@ -16504,7 +16504,7 @@ end
 --
 -- @param _Widget Widgetpfad oder ID
 -- @param _Hide   Hidden Flag
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:HideInterfaceButton(_Widget, _Hide)
@@ -16514,7 +16514,7 @@ end
 
 ---
 -- Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:RestoreAfterLoad()
@@ -16530,7 +16530,7 @@ end
 --
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:SetTexture(_widget, _file)
@@ -16562,7 +16562,7 @@ end
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
 -- @param _Name        Name der Icon Matrix
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
@@ -16604,7 +16604,7 @@ end
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:TextNormal(_title, _text, _disabledText)
@@ -16655,7 +16655,7 @@ end
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @param _costs        Kostentabelle
 -- @param _inSettlement Kosten in Siedlung suchen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement)
@@ -16750,7 +16750,7 @@ QSB.TraderTypes = {
 --
 -- @param _PlayerID Player ID
 -- @return Angebotsinformationen
--- @within User-Space
+-- @within Public
 --
 -- @usage local Info = BundleTradingFunctions.Global:GetOfferInformation(2);
 --
@@ -16781,7 +16781,7 @@ end
 --
 -- @param _PlayerID ID des Spielers
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetOfferCount(_PlayerID)
     if GUI then
@@ -16798,7 +16798,7 @@ end
 -- @param _PlayerID Player ID
 -- @param _GoodType Warentyp oder Entitytyp
 -- @return numer, number, number
--- @within User-Space
+-- @within Public
 --
 function API.GetOfferAndTrader(_PlayerID, _GoodorEntityType)
     if GUI then
@@ -16814,7 +16814,7 @@ end
 -- @param _BuildingID Building ID
 -- @param _TraderID   Trader ID
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetTraderType(_BuildingID, _TraderID)
     if GUI then
@@ -16830,7 +16830,7 @@ end
 -- @param _BuildingID Entity ID des Handelsgebäudes
 -- @param _TraderType Typ des Händlers
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetTrader(_BuildingID, _TraderType)
     if GUI then
@@ -16847,7 +16847,7 @@ end
 -- @param _PlayerID        Entity ID des Handelsgebäudes
 -- @param _TraderType      Typ des Händlers
 -- @param _OfferIndex      Index des Angebots
--- @within User-Space
+-- @within Public
 --
 function API.RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
     if GUI then
@@ -16863,7 +16863,7 @@ end
 --
 -- @param _PlayerID            Player ID
 -- @param _GoodorEntityType    Warentyp oder Entitytyp
--- @within User-Space
+-- @within Public
 --
 function API.RemoveOffer(_PlayerID, _GoodOrEntityType)
     if GUI then
@@ -16881,7 +16881,7 @@ end
 -- @param _TraderID	ID des Händlers im Gebäude
 -- @param _OfferID		ID des Angebots
 -- @param _NewAmount	Neue Menge an Angeboten
--- @within User-Space
+-- @within Public
 --
 function API.ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
     if GUI then
@@ -16903,7 +16903,7 @@ end
 -- @param _Waypoints  Wegpunktliste Anfahrt
 -- @param _Reversed	  Wegpunktliste Abfahrt
 -- @param _Appearance Ankunft und Abfahrt
--- @within User-Space
+-- @within Public
 --
 -- @usage -- Angebote deklarieren
 -- local Offers = {
@@ -16968,7 +16968,7 @@ end
 -- nicht zerstört.
 --
 -- @param _PlayerID	Spieler-ID des Händlers
--- @within User-Space
+-- @within Public
 --
 function API.DisbandTravelingSalesman(_PlayerID)
     if GUI then
@@ -16995,7 +16995,7 @@ BundleTradingFunctions = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:Install()
@@ -17008,7 +17008,7 @@ end
 ---
 -- Überschreibt die Funktionen für Standardangebote.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:OverwriteOfferFunctions()
@@ -17123,7 +17123,7 @@ end
 ---
 -- Fügt fehlende Einträge für Militäreinheiten bei den Basispreisen
 -- und Erneuerungsraten hinzu, damit diese gehandelt werden können.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:OverwriteBasePricesAndRefreshRates()
@@ -17160,7 +17160,7 @@ end
 --
 -- @param _PlayerID Player ID
 -- @return Angebotsinformationen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 -- @usage BundleTradingFunctions.Global:GetOfferInformation(2);
@@ -17236,7 +17236,7 @@ end
 --
 -- @param _PlayerID ID des Spielers
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetOfferCount(_PlayerID)
@@ -17251,7 +17251,7 @@ end
 -- @param _PlayerID Player ID
 -- @param _GoodType Warentyp oder Entitytyp
 -- @return numer, number, number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodorEntityType)
@@ -17271,7 +17271,7 @@ end
 -- @param _BuildingID Building ID
 -- @param _TraderID   Trader ID
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetTraderType(_BuildingID, _TraderID)
@@ -17295,7 +17295,7 @@ end
 -- @param _BuildingID Entity ID des Handelsgebäudes
 -- @param _TraderType Typ des Händlers
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetTrader(_BuildingID, _TraderType)
@@ -17319,7 +17319,7 @@ end
 -- @param _PlayerID        Entity ID des Handelsgebäudes
 -- @param _TraderType      Typ des Händlers
 -- @param _OfferIndex      Index des Angebots
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
@@ -17343,7 +17343,7 @@ end
 --
 -- @param _PlayerID            Player ID
 -- @param _GoodorEntityType    Warentyp oder Entitytyp
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:RemoveOffer(_PlayerID, _GoodOrEntityType)
@@ -17362,7 +17362,7 @@ end
 -- @param _TraderID	ID des Händlers im Gebäude
 -- @param _OfferID		ID des Angebots
 -- @param _NewAmount	Neue Menge an Angeboten
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
@@ -17378,7 +17378,7 @@ end
 -- Gegenstück zu GUI.GetPlayerID().
 --
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_GetHumanPlayer()
@@ -17403,7 +17403,7 @@ end
 -- @param _Appearance Wartezeit
 -- @param _Waypoints  Wegpunktliste Anfahrt
 -- @param _Reversed   Wegpunktliste Abfahrt
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed)
@@ -17444,7 +17444,7 @@ end
 -- nicht zerstört.
 --
 -- @param _PlayerID	Spieler-ID des Händlers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_Disband(_PlayerID)
@@ -17458,7 +17458,7 @@ end
 -- Setzt die Angebote des Fliegenden Händlers.
 --
 -- @param _PlayerID	Spieler-ID des Händlers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(_PlayerID)
@@ -17526,7 +17526,7 @@ end
 
 ---
 -- Steuert alle fliegenden Händler auf der Map.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global.TravelingSalesman_Control()
@@ -17579,7 +17579,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Local:Install()
@@ -17632,7 +17632,7 @@ QSB = QSB or {};
 -- </ul>
 --
 -- @param _Description 
--- @within User-Space
+-- @within Public
 --
 function API.StartMusic(_Description)
     if GUI then
@@ -17652,7 +17652,7 @@ StartMusic = API.StartMusic;
 -- @param _Volume  Lautstärke
 -- @param _Length  Abspieldower (<= Dauer Musikstück)
 -- @param _FadeOut Ausblenden in Sekunden
--- @within User-Space
+-- @within Public
 --
 function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     if GUI then
@@ -17683,7 +17683,7 @@ StartMusicSimple = API.StartMusicSimple;
 -- sich die Playlist endlos wiederholt.
 --
 -- @param _Playlist 
--- @within User-Space
+-- @within Public
 --
 function API.StartPlaylist(_Playlist)
     if GUI then
@@ -17702,7 +17702,7 @@ StartPlaylist = API.StartPlaylist;
 -- <b>Alias:</b> StartPlaylistTitle
 --
 -- @param _Title 
--- @within User-Space
+-- @within Public
 --
 function API.StartPlaylistTitle(_Title)
     if GUI then
@@ -17718,7 +17718,7 @@ StartPlaylistTitle = API.StartPlaylistTitle;
 --
 -- <b>Alias:</b> StopSong
 --
--- @within User-Space
+-- @within Public
 --
 function API.StopSong()
     if GUI then
@@ -17735,7 +17735,7 @@ StopSong = API.StopSong;
 --
 -- <b>Alias:</b> AbortSongOrPlaylist
 --
--- @within User-Space
+-- @within Public
 --
 function API.AbortMusic()
     if GUI then
@@ -17770,7 +17770,7 @@ BundleMusicTools = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:Install()
@@ -17781,7 +17781,7 @@ end
 -- Startet ein Musikstück als Stimme.
 --
 -- @param _Description Beschreibung des Musikstücks
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartSong(_Description)
@@ -17819,7 +17819,7 @@ end
 ---
 -- Spielt eine Playlist ab.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartPlaylist(_Playlist)
@@ -17835,7 +17835,7 @@ end
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartPlaylistTitle(_Title)
@@ -17857,7 +17857,7 @@ end
 ---
 -- Stopt Musik und stellt die alte Soundkonfiguration wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StopSong()
@@ -17875,7 +17875,7 @@ end
 -- Stopt den gerade laufenden Song und leert sowohl die Songdaten
 -- als auch die Playlist.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:AbortMusic()
@@ -17893,7 +17893,7 @@ end
 -- Ist die Warteschlange leer, endet der Job. Existiert eine Playlist,
 -- für die Repeat = true ist, dann wird die Playlist neu gestartet.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global.StartSongControl()
@@ -17943,7 +17943,7 @@ StartSongControl = BundleMusicTools.Global.StartSongControl;
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:Install()
@@ -17957,7 +17957,7 @@ end
 -- @param _Song     Pfad zum Titel
 -- @param _MuteAtmo Atmosphäre stumm schalten
 -- @param _MuteUI   UI stumm schalten
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:BackupSound(_Volume, _Song, _MuteAtmo, _MuteUI)
@@ -17990,7 +17990,7 @@ end
 --
 -- @param _File        Pfad zur Datei
 -- @param _QueueLength Länge der Warteschlange
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:ResetSound(_File, _QueueLength)
@@ -18043,7 +18043,7 @@ QSB = QSB or {};
 --
 -- @param _Entity Entity
 -- @return Größenfaktor
--- @within User-Space
+-- @within Public
 --
 function API.GetScale(_Entity)
     if not IsExisting(_Entity) then
@@ -18062,7 +18062,7 @@ GetScale = API.GetScale;
 --
 -- @param _Entity Entity
 -- @return Besitzer
--- @within User-Space
+-- @within Public
 --
 function API.GetPlayer(_Entity)
     if not IsExisting(_Entity) then
@@ -18081,7 +18081,7 @@ AGetPlayer = API.GetPlayer;
 --
 -- @param _Entity Entity
 -- @return Positionstabelle
--- @within User-Space
+-- @within Public
 --
 function API.GetMovingTarget(_Entity)
     if not IsExisting(_Entity) then
@@ -18100,7 +18100,7 @@ GetMovingTarget = API.GetMovingTarget;
 --
 -- @param _Entity Entity
 -- @return Ist NPC
--- @within User-Space
+-- @within Public
 --
 function API.IsNpc(_Entity)
     if not IsExisting(_Entity) then
@@ -18119,7 +18119,7 @@ IsNpc = API.IsNpc;
 --
 -- @param _Entity Entity
 -- @return Ist sichtbar
--- @within User-Space
+-- @within Public
 --
 function API.IsVisible(_Entity)
     if not IsExisting(_Entity) then
@@ -18141,7 +18141,7 @@ IsVisible = API.IsVisible;
 --
 -- @param _Entity Entity
 -- @param _Scale  Größenfaktor
--- @within User-Space
+-- @within Public
 --
 function API.SetScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
@@ -18167,7 +18167,7 @@ SetScale = API.SetScale;
 --
 -- @param _Entity   Entity
 -- @param _PlayerID Besitzer
--- @within User-Space
+-- @within Public
 --
 function API.SetPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
@@ -18201,7 +18201,7 @@ BundleEntityScriptingValues = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Global:Install()
@@ -18213,7 +18213,7 @@ end
 --
 -- @param _entity Entity
 -- @param _size   Größenfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
@@ -18229,7 +18229,7 @@ end
 --
 -- @param _entity   Entity
 -- @param _PlayerID Neuer Besitzer
--- @within Application-Space
+-- @within Private
 -- @local
 -- 
 function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
@@ -18242,7 +18242,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Local:Install()
@@ -18490,7 +18490,7 @@ QSB = QSB or {};
 -- Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbares Entity
--- @within User-Space
+-- @within Public
 --
 function API.AddEntity(_entity)
     if not GUI then
@@ -18508,7 +18508,7 @@ end
 -- Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbarer Typ
--- @within User-Space
+-- @within Public
 --
 function API.AddEntityType(_entity)
     if not GUI then
@@ -18526,7 +18526,7 @@ end
 -- Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbare Kategorie
--- @within User-Space
+-- @within Public
 --
 function API.AddCategory(_entity)
     if not GUI then
@@ -18544,7 +18544,7 @@ end
 -- Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
 --
 -- @param _entry Geschütztes Territorium
--- @within User-Space
+-- @within Public
 --
 function API.AddTerritory(_entity)
     if not GUI then
@@ -18562,7 +18562,7 @@ end
 -- Entfernt ein Entity, dass nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbares Entity
--- @within User-Space
+-- @within Public
 --
 function API.RemoveEntity(_entry)
     if not GUI then
@@ -18583,7 +18583,7 @@ end
 -- Entfernt einen Entitytyp, der nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbarer Typ
--- @within User-Space
+-- @within Public
 --
 function API.RemoveEntityType(_entry)
     if not GUI then
@@ -18604,7 +18604,7 @@ end
 -- Entfernt eine Kategorie, die nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbare Kategorie
--- @within User-Space
+-- @within Public
 --
 function API.RemoveCategory(_entry)
     if not GUI then
@@ -18625,7 +18625,7 @@ end
 -- Entfernt ein Territory, auf dem nichts abgerissen werden kann.
 --
 -- @param _entry Geschütztes Territorium
--- @within User-Space
+-- @within Public
 --
 function API.RemoveTerritory(_entry)
     if not GUI then
@@ -18647,7 +18647,7 @@ end
 --
 -- @param _type      Entitytyp
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.BanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -18670,7 +18670,7 @@ end
 --
 -- @param _eCat      Entitykategorie
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.BanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -18694,7 +18694,7 @@ end
 -- @param _type   Entitytyp
 -- @param _center Gebietszentrum
 -- @param _area   Gebietsgröße
--- @within User-Space
+-- @within Public
 --
 function API.BanTypeInArea(_type, _center, _area)
     if GUI then
@@ -18715,7 +18715,7 @@ end
 -- @param _eCat   Entitykategorie
 -- @param _center Gebietszentrum
 -- @param _area   Gebietsgröße
--- @within User-Space
+-- @within Public
 --
 function API.BanCategoryInArea(_eCat, _center, _area)
     if GUI then
@@ -18735,7 +18735,7 @@ end
 --
 -- @param _type      Entitytyp
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.UnBanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -18763,7 +18763,7 @@ end
 --
 -- @param _ecat      Entitykategorie
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.UnBanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -18791,7 +18791,7 @@ end
 --
 -- @param _type   Entitytyp
 -- @param _center Gebiet
--- @within User-Space
+-- @within Public
 --
 function API.UnBanTypeInArea (_type, _center)
     if GUI then
@@ -18816,7 +18816,7 @@ end
 --
 -- @param _eCat   Entitykategorie
 -- @param _center Gebiet
--- @within User-Space
+-- @within Public
 --
 function API.UnBanCategoryInArea(_eCat, _center)
     if GUI then
@@ -18864,7 +18864,7 @@ BundleConstructionControl = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Global:Install()
@@ -18881,7 +18881,7 @@ end
 -- @param _Type     Gebäudetyp
 -- @param _x        X-Position
 -- @param _y        Y-Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
@@ -18950,7 +18950,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Local:Install()
@@ -18964,7 +18964,7 @@ end
 -- Verhindert den Abriss von Entities.
 --
 -- @param _BuildingID EntityID des Gebäudes
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
@@ -19028,7 +19028,7 @@ QSB = QSB or {};
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Flag Deaktiviert
--- @within User-Space
+-- @within Public
 -- 
 function API.DisableRefillTrebuchet(_Flag)
     if not GUI then
@@ -19042,7 +19042,7 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Dieben.
 -- @param _Flag Deaktiviert
--- @within User-Space
+-- @within Public
 -- 
 function API.DisableThiefRelease(_Flag)
     if not GUI then
@@ -19055,7 +19055,7 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.
 -- @param _Flag Deaktiviert
--- @within User-Space
+-- @within Public
 -- 
 function API.DisableSiegeEngineRelease(_Flag)
     if not GUI then
@@ -19068,7 +19068,7 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Soldaten.
 -- @param _Flag Deaktiviert
--- @within User-Space
+-- @within Public
 -- 
 function API.DisableMilitaryRelease(_Flag)
     if not GUI then
@@ -19177,7 +19177,7 @@ BundleEntitySelection = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:Install()
@@ -19187,6 +19187,8 @@ end
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Boolean Nachfüllen deaktiviert
+-- @within Private
+-- @local
 --
 function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
     self.Data.RefillTrebuchet = not _Boolean;
@@ -19198,7 +19200,7 @@ end
 ---
 -- Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
 -- @param _EntityID EntityID of Trebuchet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryDisambleTrebuchet(_EntityID)
@@ -19245,7 +19247,7 @@ end
 ---
 -- Baut einen Trebuchet-Wagen zu einem Trebuchet aus.
 -- @param _EntityID EntityID of Trebuchet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryErectTrebuchet(_EntityID)
@@ -19287,7 +19289,7 @@ end
 ---
 -- Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
 -- @param _EntityID EntityID of Trebuchet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryCallForRefiller(_EntityID)
@@ -19353,7 +19355,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:Install()
@@ -19377,6 +19379,8 @@ end
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Boolean Nachfüllen deaktiviert
+-- @within Private
+-- @local
 --
 function BundleEntitySelection.Local:DeactivateRefillTrebuchet(_Boolean)
     self.Data.RefillTrebuchet = not _Boolean;
@@ -19386,7 +19390,7 @@ end
 -- Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.
 --
 -- @param _Source Selection Source
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local.OnSelectionCanged(_Source)
@@ -19426,7 +19430,7 @@ end
 -- Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
 -- sodass eigene Texte für Keys angezeigt werden.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteGetStringTableText()
@@ -19453,7 +19457,7 @@ end
 ---
 -- Überschreibt die Millitärkommandos "Stop" und "Angreifen".
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryCommands()
@@ -19520,7 +19524,7 @@ end
 -- Überschreibt das Aufbauen von Kriegsmaschinen, sodass auch Trebuchets
 -- auf- und abgebaut werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryErect()
@@ -19573,7 +19577,7 @@ end
 -- Überschreibt das Abbauen von Kriegsmaschinen, sodass auch Trebuchets
 -- abgebaut werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryDisamble()
@@ -19612,7 +19616,7 @@ end
 ---
 -- Überschreibt die Multiselektion, damit Trebuchets ein Icon bekommen.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMultiselectIcon()
@@ -19681,7 +19685,7 @@ end
 -- Überschreibt die Funktion zur Beendigung der Eskorte, damit Einheiten auch
 -- entlassen werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryDismount()
@@ -19741,7 +19745,7 @@ end
 ---
 -- Überschreibt "Beute abließern", sodass Diebe entlassen werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteThiefDeliver()
@@ -19798,7 +19802,7 @@ end
 -- Hängt eine Funktion an die GUI_Tooltip.SetNameAndDescription an, sodass
 -- Tooltips überschrieben werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
@@ -19858,7 +19862,7 @@ end
 --
 -- @param _TitleText Titel des Tooltip
 -- @param _DescText  Text des Tooltip
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText, _DisabledText)
@@ -19885,7 +19889,7 @@ end
 -- Überschreibt den SelectKnight-Button. Durch drücken von CTLR können alle
 -- Helden selektiert werden, die der Spieler kontrolliert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectKnight()
@@ -19925,7 +19929,7 @@ end
 ---
 -- Überschreibt die Militärselektion, sodass der Spieler mit SHIFT zusätzlich
 -- die Munitionswagen und Trebuchets selektieren kann.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectAllUnits()
@@ -19958,7 +19962,7 @@ end
 
 ---
 -- Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:NormalLeaderSortOrder()
@@ -19998,7 +20002,7 @@ end
 
 ---
 -- Erzeugt die erweiterte Selektion mit Munitionswagen und Trebuchets.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:ExtendedLeaderSortOrder()
@@ -20069,7 +20073,7 @@ QSB = QSB or {};
 -- zum nδchsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
--- @within User-Space
+-- @within Public
 --
 function API.AutoSaveGame(_name)
     assert(_name);
@@ -20087,7 +20091,7 @@ end
 --
 -- @param _path	Pfad zum Ziel
 -- @param _name	Name des Spielstandes
--- @within User-Space
+-- @within Public
 --
 function API.SaveGameToFolder(_path, _name)
     assert(_path);
@@ -20108,7 +20112,7 @@ end
 -- @param _path		  Pfad zum Ziel
 -- @param _name		  Name des Spielstandes
 -- @param _needButton Startbutton anzeigen (0 oder 1)
--- @within User-Space
+-- @within Public
 --
 function API.LoadGameFromFolder(_path, _name, _needButton)
     assert(_path);
@@ -20136,7 +20140,7 @@ end
 -- @param _knight		Index des Helden
 -- @param _folder		Mapordner
 -- @param _needButton	Startbutton nutzen
--- @within User-Space
+-- @within Public
 --
 function API.StartMap(_map, _knight, _folder, _needButton)
     assert(_map);
@@ -20170,7 +20174,7 @@ BundleSaveGameTools = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Global:Install()
@@ -20184,7 +20188,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:Install()
@@ -20197,7 +20201,7 @@ end
 -- zum nächsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:AutoSaveGame(_name)
@@ -20230,7 +20234,7 @@ end
 -- Prüft, ob das Spiel gerade gespeichert werden kann.
 --
 -- @return boolean: Kann speichern
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:CanGameBeSaved()
@@ -20253,7 +20257,7 @@ end
 --
 -- @param _path	Pfad zum Ziel
 -- @param _name	Name des Spielstandes
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:SaveGameToFolder(_path, _name)
@@ -20270,7 +20274,7 @@ end
 -- @param _path		  Pfad zum Ziel
 -- @param _name		  Name des Spielstandes
 -- @param _needButton Startbutton anzeigen (0 oder 1)
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton)
@@ -20299,7 +20303,7 @@ end
 -- @param _knight		Index des Helden
 -- @param _folder		Mapordner
 -- @param _needButton	Startbutton nutzen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:LoadGameFromFolder(_map, _knight, _folder, _needButton)
@@ -20352,7 +20356,7 @@ QSB = QSB or {};
 -- @param _category     Kategorien oder Table mit Kategorien
 -- @param _territory    Zielterritorium oder Table mit Territorien
 -- @return table: Liste mit Entities
--- @within User-Space
+-- @within Public
 --
 function API.GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
     return BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
@@ -20366,7 +20370,7 @@ GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
 -- 
 -- @param _Prefix Präfix des Skriptnamen
 -- @return table: Liste mit Entities
--- @within User-Space
+-- @within Public
 --
 function API.GetEntitiesByPrefix(_Prefix)
     return BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix);
@@ -20409,7 +20413,7 @@ SetResourceAmount = API.SetResourceAmount;
 -- @param _angle           Winkel
 -- @param _buildingRealPos Gebäudemitte statt Gebäudeeingang
 -- @return table: Position
--- @within User-Space
+-- @within Public
 --
 function API.GetRelativePos(_target, _distance, _angle, _buildingRealPos)
     if not API.ValidatePosition(_target) then
@@ -20428,7 +20432,7 @@ GetRelativePos = API.GetRelativePos;
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within User-Space
+-- @within Public
 --
 function API.SetPosition(_Entity, _Position)
     if GUI then
@@ -20467,7 +20471,7 @@ SetPosition = API.SetPosition;
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
 -- @param _moveAsEntity Blocking ignorieren
--- @within User-Space
+-- @within Public
 --
 function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
     if GUI then
@@ -20498,7 +20502,7 @@ MoveEx = API.MoveToPosition;
 -- @param _Position     Ziel
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
--- @within User-Space
+-- @within Public
 --
 function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
     if GUI then
@@ -20529,7 +20533,7 @@ SetPositionEx = API.PlaceToPosition;
 --
 -- @param _EntityID Entity ID
 -- @return string: Vergebener Name
--- @within User-Space
+-- @within Public
 --
 function API.GiveEntityName(_EntityID)
     if IsExisting(_name) then
@@ -20551,7 +20555,7 @@ GiveEntityName = API.GiveEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @return string: Skriptname
--- @within User-Space
+-- @within Public
 --
 function API.GetEntityName(_entity)
     if not IsExisting(_entity) then
@@ -20571,7 +20575,7 @@ GetEntityName = API.GetEntityName;
 -- @param _entity Entity
 -- @param _name   Skriptname
 -- @return string: Skriptname
--- @within User-Space
+-- @within Public
 --
 function API.SetEntityName(_entity, _name)
     if GUI then
@@ -20593,7 +20597,7 @@ SetEntityName = API.SetEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @param _ori    Ausrichtung in Grad
--- @within User-Space
+-- @within Public
 --
 function API.SetOrientation(_entity, _ori)
     if GUI then
@@ -20616,7 +20620,7 @@ SetOrientation = API.SetOrientation;
 --
 -- @param _entity Gesuchtes Entity
 -- @return number: Orientierung in Grad
--- @within User-Space
+-- @within Public
 --
 function API.GetOrientation(_entity)
     if not IsExisting(_entity) then
@@ -20635,7 +20639,7 @@ GetOrientation = API.GetOrientation;
 --
 -- @param_Entity  Angreifendes Entity
 -- @param _Target Angegriffenes Entity
--- @within User-Space
+-- @within Public
 --
 function API.EntityAttack(_Entity, _Target)
     if GUI then
@@ -20723,7 +20727,7 @@ Move = API.EntityMove;
 --
 -- @param _soldier Soldier
 -- @return number: ID des Battalion
--- @within User-Space
+-- @within Public
 --
 function API.GetLeaderBySoldier(_soldier)
     if not IsExisting(_soldier) then
@@ -20743,7 +20747,7 @@ GetLeaderBySoldier = API.GetLeaderBySoldier;
 -- @param _eID      Basis-Entity
 -- @param _playerID Besitzer der Helden
 -- @return number: Nächstes Entity
--- @within User-Space
+-- @within Public
 --
 function API.GetNearestKnight(_eID, _playerID)
     local Knights = {};
@@ -20761,7 +20765,7 @@ GetClosestKnight = API.GetNearestKnight;
 -- @param _eID      Basis-Entity
 -- @param _entities Liste von Entities
 -- @return number: Nächstes Entity
--- @within User-Space
+-- @within Public
 --
 function API.GetNearestEntity(_eID, _entities)
     if not IsExisting(_eID) then
@@ -20801,7 +20805,7 @@ BundleEntityHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Install()
@@ -20812,7 +20816,7 @@ end
 -- Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
 -- auch während des Spiels setzen zu können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:OverwriteGeologistRefill()
@@ -20836,7 +20840,7 @@ end
 -- @param _StartAmount  Menge an Rohstoffen
 -- @param _RefillAmount Minimale Nachfüllmenge (> 0)
 -- @return boolean: Operation erfolgreich
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
@@ -20862,7 +20866,7 @@ end
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:SetPosition(_Entity,_Position)
@@ -20892,7 +20896,7 @@ end
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
 -- @param _moveAsEntity Blocking ignorieren
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
@@ -20994,7 +20998,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Local:Install()
@@ -21013,7 +21017,7 @@ end
 -- @param _category     Kategorien oder Table mit Kategorien
 -- @param _territory    Zielterritorium oder Table mit Territorien
 -- @return table: Liste mit Entities
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
@@ -21039,7 +21043,7 @@ end
 -- 
 -- @param _Prefix Präfix des Skriptnamen
 -- @return table: Liste mit Entities
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix)
@@ -21067,7 +21071,7 @@ end
 -- @param _angle           Winkel
 -- @param _buildingRealPos Gebäudemitte statt Gebäudeeingang
 -- @return table: Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
@@ -21106,7 +21110,7 @@ end
 -- @param _eID      Basis-Entity
 -- @param _entities Liste von Entities
 -- @return number: Nächstes Entity
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetNearestEntity(_eID,_entities)
@@ -21155,7 +21159,7 @@ QSB = QSB or {};
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
--- @within User-Space
+-- @within Public
 --
 function API.UndiscoverTerritory(_PlayerID, _TerritoryID)
     if GUI then
@@ -21174,7 +21178,7 @@ UndiscoverTerritory = API.UndiscoverTerritory;
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
--- @within User-Space
+-- @within Public
 --
 function API.UndiscoverTerritories(_PlayerID, _TargetPlayerID)
     if GUI then
@@ -21195,7 +21199,7 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
 -- @param _PlayerID Partei oder nil für alle
--- @within User-Space
+-- @within Public
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
     if GUI then
@@ -21214,7 +21218,7 @@ SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 --
 -- @param _PlayerID    Zielpartei
 -- @param _KnightTitle Titel zum Entsperren
--- @within User-Space
+-- @within Public
 --
 function API.UnlockTitleForPlayer(_PlayerID, _KnightTitle)
     if GUI then
@@ -21233,7 +21237,7 @@ UnlockTitleForPlayer = API.UnlockTitleForPlayer;
 -- @param _Player     Partei
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within User-Space
+-- @within Public
 --
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
     if not GUI then
@@ -21252,7 +21256,7 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 -- @param _Entity     Entity
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within User-Space
+-- @within Public
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
@@ -21275,7 +21279,7 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 -- <b>Alias:</b> SetSpeedLimit
 --
 -- @param _Limit Obergrenze
--- @within User-Space
+-- @within Public
 --
 function API.SetSpeedLimit(_Limit)
     if not GUI then
@@ -21293,7 +21297,7 @@ SetSpeedLimit = API.SetSpeedLimit
 -- <b>Alias:</b> ActivateSpeedLimit
 --
 -- @param _Flag Speedbremse ist aktiv
--- @within User-Space
+-- @within Public
 --
 function API.ActivateSpeedLimit(_Flag)
     if GUI then
@@ -21309,7 +21313,7 @@ ActivateSpeedLimit = API.ActivateSpeedLimit;
 --
 -- <b>Alias:</b> KillCheats
 --
--- @within User-Space
+-- @within Public
 --
 function API.KillCheats()
     if GUI then
@@ -21325,7 +21329,7 @@ KillCheats = API.KillCheats;
 --
 -- <b>Alias:</b> RessurectCheats
 --
--- @within User-Space
+-- @within Public
 --
 function API.RessurectCheats()
     if GUI then
@@ -21342,7 +21346,7 @@ RessurectCheats = API.RessurectCheats;
 -- <b>Alias:</b> ForbidSaveGame
 --
 -- @param _Flag Speichern gesperrt
--- @within User-Space
+-- @within Public
 --
 function API.ForbidSaveGame(_Flag)
     if GUI then
@@ -21362,7 +21366,7 @@ ForbidSaveGame = API.ForbidSaveGame;
 -- <b>Alias:</b> ActivateExtendedZoom
 --
 -- @param _Flag Erweiterter Zoom gestattet
--- @within User-Space
+-- @within Public
 --
 function API.AllowExtendedZoom(_Flag)
     if GUI then
@@ -21383,7 +21387,7 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 -- <b>Alias:</b> StartNormalFestival
 --
 -- @param  _PlayerID Spieler
--- @within User-Space
+-- @within Public
 --
 function API.StartNormalFestival(_PlayerID)
     if GUI then
@@ -21402,7 +21406,7 @@ StartNormalFestival = API.StartNormalFestival;
 -- <b>Alias:</b> StartCityUpgradeFestival
 --
 -- @param _PlayerID Spieler
--- @within User-Space
+-- @within Public
 --
 function API.StartCityUpgradeFestival(_PlayerID)
     if GUI then
@@ -21420,7 +21424,7 @@ StartCityUpgradeFestival = API.StartCityUpgradeFestival;
 -- <b>Alias:</b> ForbidFestival
 --
 -- @param _PlayerID Spieler
--- @within User-Space
+-- @within Public
 --
 function API.ForbidFestival(_PlayerID)
     if GUI then
@@ -21446,7 +21450,7 @@ ForbidFestival = API.ForbidFestival;
 -- <b>Alias:</b> AllowFestival
 --
 -- @param _PlayerID Spieler
--- @within User-Space
+-- @within Public
 --
 function API.AllowFestival(_PlayerID)
     if GUI then
@@ -21477,7 +21481,7 @@ AllowFestival = API.AllowFestival;
 -- @param _NewID        Neue ID des menschlichen Spielers
 -- @param _NewName      Name in der Statistik
 -- @param _RetainKnight Ritter mitnehmen
--- @within User-Space
+-- @within Public
 --
 function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
     if GUI then
@@ -21495,7 +21499,7 @@ PlayerSetPlayerID = API.SetControllingPlayer;
 -- <b>Alias:</b> PlayerGetPlayerID
 --
 -- @return number: PlayerID
--- @within User-Space
+-- @within Public
 --
 function API.GetControllingPlayer()
     if not GUI then
@@ -21515,7 +21519,7 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function API.ThridPersonActivate(_Hero, _MaxZoom)
@@ -21533,7 +21537,7 @@ HeroCameraActivate = API.ThridPersonActivate;
 --
 -- <b>Alias:</b> HeroCameraDeactivate
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function API.ThridPersonDeactivate()
@@ -21551,7 +21555,7 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 -- <b>Alias:</b> HeroCameraIsRuning
 --
 -- @return boolean: Kamera aktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function API.ThridPersonIsRuning()
@@ -21572,7 +21576,7 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
 -- @return number: Job-ID
--- @within User-Space
+-- @within Public
 --
 function API.AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
     if GUI then
@@ -21588,7 +21592,7 @@ end
 -- Beendet einen Verfolgungsjob.
 --
 -- @param _JobID Job-ID
--- @within User-Space
+-- @within Public
 --
 function API.StopFollowKnightSave(_JobID)
     if GUI then
@@ -21635,7 +21639,7 @@ BundleGameHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
@@ -21650,7 +21654,7 @@ end
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID)
@@ -21671,7 +21675,7 @@ end
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID)
@@ -21697,7 +21701,7 @@ end
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
 -- @param _PlayerID Partei oder nil für alle
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
@@ -21725,7 +21729,7 @@ end
 --
 -- @param _PlayerID    Zielpartei
 -- @param _KnightTitle Titel zum Entsperren
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _KnightTitle)
@@ -21758,7 +21762,7 @@ end
 -- @param _newPlayerID          Neue ID des menschlichen Spielers
 -- @param _newNameForStatistics Name in der Statistik
 -- @param _retainPrimaryKnight  Ritter mitnehmen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)
@@ -21835,7 +21839,7 @@ end
 -- definierte Spieler wird als kontrollierender Spieler angenommen.
 --
 -- @return number: PlayerID
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:GetControllingPlayer()
@@ -21855,7 +21859,7 @@ end
 -- Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
 -- werden kann.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitFestival()
@@ -21879,7 +21883,7 @@ end
 -- @param _PlayerID ID des Spielers
 -- @param _Index    Index des Fest
 -- @param _Flag     Erlauben/verbieten
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, _Index, _Flag)
@@ -21897,7 +21901,7 @@ end
 ---
 -- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
@@ -21913,7 +21917,7 @@ end
 ---
 -- Aktiviert den erweiterten Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
@@ -21924,7 +21928,7 @@ end
 ---
 -- Deaktiviert den erweiterten Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
@@ -21935,7 +21939,7 @@ end
 ---
 -- Initialisiert den erweiterten Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitExtendedZoom()
@@ -21950,7 +21954,7 @@ end
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:KillCheats()
@@ -21961,7 +21965,7 @@ end
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:RessurectCheats()
@@ -21978,7 +21982,7 @@ end
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
@@ -21995,7 +21999,7 @@ end
 
 ---
 -- Deaktiviert die Heldenkamera.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonDeactivate()
@@ -22009,7 +22013,7 @@ end
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
 -- @return boolean: Kamera aktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonIsRuning()
@@ -22019,7 +22023,7 @@ end
 ---
 -- Überschreibt StartBriefing und EndBriefing des Briefing System,
 -- wenn es vorhanden ist.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
@@ -22060,7 +22064,7 @@ end
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
 -- @return number: Job-ID
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
@@ -22083,7 +22087,7 @@ end
 -- Beendet einen Verfolgungsjob.
 --
 -- @param _JobID Job-ID
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
@@ -22103,7 +22107,7 @@ end
 -- @param _Knight   Held
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
@@ -22145,7 +22149,7 @@ ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSa
 ---
 -- Stellt nicht-persistente Änderungen nach dem laden wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
@@ -22185,7 +22189,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:Install()
@@ -22202,7 +22206,7 @@ end
 -- @param _Player     Partei
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor)
@@ -22215,7 +22219,7 @@ end
 -- @param _Entity     Entity
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
@@ -22233,7 +22237,7 @@ end
 -- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
 -- @param _Limit Obergrenze
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
@@ -22246,7 +22250,7 @@ end
 -- kann nicht mehr überschritten werden.
 --
 -- @param _Flag Speedbremse ist aktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
@@ -22260,7 +22264,7 @@ end
 -- Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
 -- aufgerufen wird und installiert die Speedbremse.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
@@ -22280,7 +22284,7 @@ end
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:KillCheats()
@@ -22295,7 +22299,7 @@ end
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:RessurectCheats()
@@ -22312,7 +22316,7 @@ end
 ---
 -- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
@@ -22325,7 +22329,7 @@ end
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
@@ -22340,7 +22344,7 @@ end
 ---
 -- Wechselt zwischen erweitertem und normalen Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
@@ -22350,7 +22354,7 @@ end
 ---
 -- Erweitert die Zoomrestriktion auf das Maximum.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
@@ -22362,7 +22366,7 @@ end
 ---
 -- Stellt die normale Zoomrestriktion wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:DeactivateExtendedZoom()
@@ -22376,7 +22380,7 @@ end
 ---
 -- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidSaveGame()
@@ -22392,7 +22396,7 @@ end
 ---
 -- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:DisplaySaveButtons(_Flag)
@@ -22409,7 +22413,7 @@ end
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonActivate(_Hero, _MaxZoom)
@@ -22437,7 +22441,7 @@ end
 ---
 -- Deaktiviert die Heldenkamera.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonDeactivate()
@@ -22451,7 +22455,7 @@ end
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
 -- @return boolean: Kamera aktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonIsRuning()
@@ -22464,7 +22468,7 @@ end
 -- Kamera um links oder rechts gedreht, abhänig von der Position
 -- der Mouse.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFactor()
@@ -22499,7 +22503,7 @@ end
 ---
 -- 
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidFestival()
@@ -22666,7 +22670,7 @@ QSB = QSB or {};
 -- @param _Title  Titel des Dialog
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
--- @within User-Space
+-- @within Public
 --
 function API.OpenDialog(_Title, _Text, _Action)
     if not GUI then
@@ -22692,7 +22696,7 @@ end
 -- @param _Text     Text des Dialog
 -- @param _Action   Callback-Funktion
 -- @param _OkCancel Okay/Abbrechen statt Ja/Nein
--- @within User-Space
+-- @within Public
 --
 function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
     if not GUI then
@@ -22718,7 +22722,7 @@ end
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
 -- @param _List   Liste der Optionen
--- @within User-Space
+-- @within Public
 --
 function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
     if not GUI then
@@ -22773,7 +22777,7 @@ BundleDialogWindows = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Global:Install()
@@ -22787,7 +22791,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:Install()
@@ -22798,7 +22802,7 @@ end
 ---
 -- Führt das Callback eines Info-Fensters oder eines Selektionsfensters aus.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:Callback()
@@ -22812,7 +22816,7 @@ end
 -- Führt das Callback eines Ja-Nein-Dialogs aus.
 --
 -- @param _yes Gegebene Antwort
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:CallbackRequester(_yes)
@@ -22826,7 +22830,7 @@ end
 -- Läd den nächsten Dialog aus der Warteschlange und stellt die Speicher-Hotkeys
 -- wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OnDialogClosed()
@@ -22837,7 +22841,7 @@ end
 ---
 -- Startet den nächsten Dialog in der Warteschlange, sofern möglich.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogQueueStartNext()
@@ -22860,7 +22864,7 @@ end
 --
 -- @param _Methode Dialogfunktion als String
 -- @param _Args    Argumente als Table
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogQueuePush(_Methode, _Args)
@@ -22875,7 +22879,7 @@ end
 -- @param _Title  Titel des Dialog
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
@@ -22936,7 +22940,7 @@ end
 -- @param _Text     Text des Dialog
 -- @param _Action   Callback-Funktion
 -- @param _OkCancel Okay/Abbrechen statt Ja/Nein
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
@@ -22984,7 +22988,7 @@ end
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
 -- @param _List   Liste der Optionen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
@@ -23026,7 +23030,7 @@ end
 ---
 -- Stellt die Hotkeys zum Speichern des Spiels wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:RestoreSaveGame()
@@ -23042,7 +23046,7 @@ end
 -- Überschreibt die originalen Dialogfunktionen, um Fehler in den vorhandenen
 -- Funktionen zu vermeiden.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogOverwriteOriginal()
@@ -23258,7 +23262,7 @@ end
 ---
 -- Initialisiert das TextWindow, bevor es angezeigt wird.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local.TextWindow:Prepare()
@@ -23388,7 +23392,7 @@ QSB = QSB or {};
 -- <b>Alias</b>: PauseQuestsDuringBriefings
 --
 -- @param _Flag Quest Timer pausiert
--- @within User-Space
+-- @within Public
 --
 function API.PauseQuestsDuringBriefings(_Flag)
     if GUI then
@@ -23406,7 +23410,7 @@ PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 --
 -- @param _Flag Quest Timer pausiert
 -- @return boolean: Briefing ist beendet
--- @within User-Space
+-- @within Public
 --
 function API.IsBriefingFinished(_briefingID)
     if GUI then
@@ -23427,7 +23431,7 @@ IsBriefingFinished = API.IsBriefingFinished;
 --
 -- @param _page Seite
 -- @return number: Gewählte Antwort
--- @within User-Space
+-- @within Public
 --
 function API.MCGetSelectedAnswer(_page)
     if GUI then
@@ -23447,7 +23451,7 @@ MCGetSelectedAnswer = API.MCGetSelectedAnswer;
 --
 -- @param _pageNumber Index der Page
 -- @return table: Page
--- @within User-Space
+-- @within Public
 --
 function API.GetCurrentBriefingPage(_pageNumber)
     if GUI then
@@ -23466,7 +23470,7 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 -- <b>Alias</b>: GetCurrentBriefing
 --
 -- @return table: Briefing
--- @within User-Space
+-- @within Public
 --
 function API.GetCurrentBriefing()
     if GUI then
@@ -23484,7 +23488,7 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 -- @param _briefing Quest Timer pausiert
 -- @return function(3): AP, ASP, ASMC
--- @within User-Space
+-- @within Public
 --
 function API.AddPages(_briefing)
     if GUI then
@@ -23517,7 +23521,7 @@ BundleBriefingSystem = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:Install()
@@ -23530,7 +23534,7 @@ end
 -- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
 --
 -- @param _Flag Quest Timer pausiert
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag)
@@ -23542,7 +23546,7 @@ end
 --
 -- @param _Flag Quest Timer pausiert
 -- @return boolean: Briefing ist beendet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:IsBriefingFinished(_briefingID)
@@ -23557,7 +23561,7 @@ end
 --
 -- @param _page Seite
 -- @return number: Gewählte Antwort
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:MCGetSelectedAnswer(_page)
@@ -23574,7 +23578,7 @@ end
 --
 -- @param _pageNumber Index der Page
 -- @return table: Page
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber)
@@ -23587,7 +23591,7 @@ end
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
 -- @return table: Briefing
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:GetCurrentBriefing()
@@ -23599,7 +23603,7 @@ end
 --
 -- @param _briefing Quest Timer pausiert
 -- @return function(3): AP, ASP, ASMC
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:AddPages(_briefing)
@@ -23757,7 +23761,7 @@ end
 ---
 -- Initalisiert das Briefing System im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:InitalizeBriefingSystem()
@@ -23917,7 +23921,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     --
     -- @param _briefing Briefing-Tabelle
     -- @return number: Briefing-ID
-    -- @within User-Space
+    -- @within Public
     --
     function API.StartCutscene(_briefing)
         -- Seitenweises abbrechen ist nicht erlaubt
@@ -23966,7 +23970,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- @param _briefing     Briefing-Table
     -- @param _cutsceneMode Cutscene-Mode nutzen?
     -- @return number: Briefing-ID
-    -- @within User-Space
+    -- @within Public
     --
     function API.StartBriefing(_briefing, _cutsceneMode)
         -- view wird nur Ausgeführt, wenn es sich um eine Cutscene handelt
@@ -24439,7 +24443,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Local:Install()
@@ -24449,7 +24453,7 @@ end
 ---
 -- Initalisiert das Briefing System im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Local:InitalizeBriefingSystem()
@@ -26025,7 +26029,7 @@ BundleCastleStore = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global:Install()
@@ -26282,7 +26286,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateTemporaryMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateTemporaryMode()
@@ -26299,7 +26303,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateStockMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateStockMode()
@@ -26316,7 +26320,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateOutsourceMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateOutsourceMode()
@@ -26335,7 +26339,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:Store(_Good, _Amount)
@@ -26365,7 +26369,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:Outsource(_Good, _Amount)
@@ -26443,7 +26447,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore.UpdateStores
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore.UpdateStores()
@@ -26490,7 +26494,7 @@ end
 -- Wirt ausgeführt, nachdem ein Spielstand geladen wurde. Diese Funktion Stellt
 -- alle nicht persistenten Änderungen wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.OnSaveGameLoaded()
@@ -26501,7 +26505,7 @@ end
 -- Überschreibt die globalen Spielfunktionen, die mit dem Burglager in
 -- Konfilckt stehen.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global:OverwriteGameFunctions()
@@ -26613,7 +26617,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:Install()
@@ -26628,7 +26632,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:CreateStore
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:CreateStore(_PlayerID)
@@ -26658,7 +26662,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:DeleteStore
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:DeleteStore(_PlayerID)
@@ -26674,7 +26678,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetAmount(_PlayerID, _Good)
@@ -26716,7 +26720,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetTotalAmount(_PlayerID)
@@ -26740,7 +26744,7 @@ end
 -- @param number _Good          Warentyp
 -- @param number _Amount        Warenmenge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetAmount(_PlayerID, _Good, _Amount)
@@ -26760,7 +26764,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:IsAccepted(_PlayerID, _Good)
@@ -26783,7 +26787,7 @@ end
 -- @param number _Good          Warentyp
 -- @param boolean _Good         Akzeptanz-Flag
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetAccepted(_PlayerID, _Good, _Flag)
@@ -26804,7 +26808,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:IsLocked(_PlayerID, _Good)
@@ -26827,7 +26831,7 @@ end
 -- @param number _Good          Warentyp
 -- @param boolean _Good         Akzeptanz-Flag
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetLocked(_PlayerID, _Good, _Flag)
@@ -26847,7 +26851,7 @@ end
 --
 -- @param number _PlayerID      ID des Spielers
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:HasCastleStore(_PlayerID)
@@ -26862,7 +26866,7 @@ end
 --
 -- @param number _PlayerID      ID des Spielers
 -- @return table
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetStore(_PlayerID)
@@ -26876,7 +26880,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GetLimit
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetLimit(_PlayerID)
@@ -26900,7 +26904,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnStorehouseTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
@@ -26922,7 +26926,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnCityTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
@@ -26944,7 +26948,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnMultiTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
@@ -26965,7 +26969,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GoodClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
@@ -26986,7 +26990,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:DestroyGoodsClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:DestroyGoodsClicked(_PlayerID)
@@ -27002,7 +27006,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:SelectionChanged
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SelectionChanged(_PlayerID)
@@ -27023,7 +27027,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateBehaviorTabs
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateBehaviorTabs(_PlayerID)
@@ -27053,7 +27057,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _CurrentWidget)
@@ -27095,7 +27099,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateStorageLimit
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateStorageLimit(_PlayerID)
@@ -27117,7 +27121,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ToggleStore
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ToggleStore()
@@ -27138,7 +27142,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:RestoreStorehouseMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:RestoreStorehouseMenu()
@@ -27168,7 +27172,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ShowCastleMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ShowCastleMenu()
@@ -27199,7 +27203,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ShowCastleStoreMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
@@ -27241,7 +27245,7 @@ end
 ---
 -- Überschreibt die Textausgabe mit den eigenen Texten.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:OverwriteGetStringTableText()
@@ -27315,7 +27319,7 @@ end
 -- Überschreibt die lokalen Spielfunktionen, die benötigt werden, damit das
 -- Burglager funktioniert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:OverwriteGameFunctions()
@@ -27576,7 +27580,7 @@ QSB = QSB or {};
 --
 -- <b>Alias:</b> ActivateSingleStop
 --
--- @within User-Space
+-- @within Public
 --
 function API.ActivateSingleStop()
     if not GUI then
@@ -27598,7 +27602,7 @@ ActivateSingleStop = API.ActivateSingleStop;
 --
 -- <b>Alias:</b> DeactivateSingleStop
 --
--- @within User-Space
+-- @within Public
 --
 function API.DeactivateSingleStop()
     if not GUI then
@@ -27615,7 +27619,7 @@ DeactivateSingleStop = API.DeactivateSingleStop;
 -- <b>Alias:</b> UseDowngrade
 --
 -- @param _flag Downgrade aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseDowngrade(_flag)
     if not GUI then
@@ -27632,7 +27636,7 @@ UseDowngrade = API.UseDowngrade;
 -- <b>Alias:</b> UseBreedCattle
 --
 -- @param _flag Kuhzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedCattle(_flag)
     if not GUI then
@@ -27659,7 +27663,7 @@ UseBreedCattle = API.UseBreedCattle;
 -- <b>Alias:</b> UseBreedSheeps
 --
 -- @param _flag Schafzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedSheeps(_flag)
     if not GUI then
@@ -27686,7 +27690,7 @@ UseBreedSheeps = API.UseBreedSheeps;
 -- <b>Alias:</b> UseBreedCattle
 --
 -- @param _flag Kuhzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedCattle(_flag)
     if not GUI then
@@ -27713,7 +27717,7 @@ UseBreedCattle = API.UseBreedCattle;
 -- <b>Alias:</b> SetSheepGrainCost
 --
 -- @param _Amount Getreidekosten
--- @within User-Space
+-- @within Public
 --
 function API.SetSheepGrainCost(_Amount)
     if not GUI then
@@ -27730,7 +27734,7 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 -- <b>Alias:</b> SetCattleGrainCost
 --
 -- @param _Amount Getreidekosten
--- @within User-Space
+-- @within Public
 --
 function API.SetCattleGrainCost(_Amount)
     if not GUI then
@@ -27747,7 +27751,7 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 -- <b>Alias:</b> SetSheepNeeded
 --
 -- @param _Amount Benötigte Menge
--- @within User-Space
+-- @within Public
 --
 function API.SetSheepNeeded(_Amount)
     if not GUI then
@@ -27767,7 +27771,7 @@ SetSheepNeeded = API.SetSheepNeeded;
 -- <b>Alias:</b> SetCattleNeeded
 --
 -- @param _Amount Benötigte Menge
--- @within User-Space
+-- @within Public
 --
 function API.SetCattleNeeded(_Amount)
     if not GUI then
@@ -27864,7 +27868,7 @@ BundleBuildingButtons = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Global:Install()
@@ -27877,7 +27881,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:Install()
@@ -27899,7 +27903,7 @@ end
 ---
 -- Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:BuyAnimal(_eID)
@@ -27930,7 +27934,7 @@ end
 --
 -- Ein Gebäude der Stufe 1 wird zerstört. Aktuell ist dies aber inaktiv.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:DowngradeBuilding()
@@ -27957,7 +27961,7 @@ end
 -- @param _actionFunction   Action-Funktion (String in Global)
 -- @param _tooltipFunction  Tooltip-Funktion (String in Global)
 -- @param _updateFunction   Update-Funktion (String in Global)
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:AddOptionalButton(_idx, _actionFunction, _tooltipFunction, _updateFunction)
@@ -27993,7 +27997,7 @@ end
 -- Entfernt den Zusatz-Button auf dem Index.
 --
 -- @param _idx Indexposition des Button (1 oder 2)
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
@@ -28023,7 +28027,7 @@ end
 --
 -- Diese Funktion implementiert den optionalen Schalter #1.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteAutoToggle()
@@ -28085,7 +28089,7 @@ end
 --
 -- Diese Funktion implementiert den optionalen Schalter #2.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteGateOpenClose()
@@ -28147,7 +28151,7 @@ end
 --
 -- Diese Funktion implementiert den Rückbau.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteToggleTrap()
@@ -28240,7 +28244,7 @@ end
 -- Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung. Dabei
 -- wird die Nutztierzucht implementiert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
@@ -28401,7 +28405,7 @@ end
 -- Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
 -- funktioniert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteHouseMenuButtons()
@@ -28502,7 +28506,7 @@ end
 -- @param _DisabledText Textzusatz wenn inaktiv
 -- @param _Costs        Kostentabelle
 -- @param _InSettlement Kosten in Siedlung suchen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
@@ -28537,7 +28541,7 @@ end
 ---
 -- Diese Funktion ist die Action von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action(WidgetID, EntityID)
@@ -28549,7 +28553,7 @@ end
 ---
 -- Diese Funktion steuert den Tooltip von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
@@ -28563,7 +28567,7 @@ end
 ---
 -- Diese Funktion ist der Update Job von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update(_WidgetID, _EntityID)
@@ -28586,7 +28590,7 @@ end
 -- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
 -- @param _Source Quelle der Änderung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.OnSelectionChanged(_Source)
@@ -28634,7 +28638,7 @@ QSB.IOList = {};
 --
 -- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
--- @within User-Space
+-- @within Public
 --
 function API.SetupInteractiveObject(_Name, _Description)
     if GUI then
@@ -28652,7 +28656,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 --
 -- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
--- @within User-Space
+-- @within Public
 --
 function API.CreateObject(_Description)
     if GUI then
@@ -28672,7 +28676,7 @@ CreateObject = API.CreateObject;
 -- <b>Alias:</b> RemoveInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.RemoveInteractiveObject(_EntityName)
     if GUI then
@@ -28691,7 +28695,7 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 -- <b>Alias:</b> UnuseInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UnuseInteractiveObject(_EntityName)
     if GUI then
@@ -28710,7 +28714,7 @@ UnuseInteractiveObject = API.UnuseInteractiveObject;
 -- <b>Alias:</b> UnlockInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UnlockInteractiveObject(_EntityName)
     if GUI then
@@ -28729,7 +28733,7 @@ UnlockInteractiveObject = API.UnlockInteractiveObject;
 -- <b>Alias:</b> UseInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UseInteractiveObject(_EntityName)
     if GUI then
@@ -28748,7 +28752,7 @@ UseInteractiveObject = API.UseInteractiveObject;
 -- <b>Alias:</b> LockInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.LockInteractiveObject(_EntityName)
     if GUI then
@@ -28769,7 +28773,7 @@ LockInteractiveObject = API.LockInteractiveObject;
 --
 -- @param _Key  Identifier der Beschriftung
 -- @param _Text Text der Beschriftung
--- @within User-Space
+-- @within Public
 --
 function API.AddCustomIOName(_Key, _Text)
     if type(_Text == "table") then
@@ -28805,7 +28809,7 @@ BundleInteractiveObjects = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:Install()
@@ -28821,7 +28825,7 @@ end
 -- Verwendungszweck ab.
 --
 -- @param _Description Beschreibung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:CreateObject(_Description)
@@ -28899,7 +28903,7 @@ end
 -- Konfiguration des Objektes entfernt.
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName)
@@ -28919,7 +28923,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UnuseInteractiveObject(_EntityName)
@@ -28934,7 +28938,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UnlockInteractiveObject(_EntityName)
@@ -28949,7 +28953,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UseInteractiveObject(_EntityName)
@@ -28964,7 +28968,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:LockInteractiveObject(_EntityName)
@@ -28981,7 +28985,7 @@ end
 --
 -- @param _Key  Identifier der Beschriftung
 -- @param _Text Text der Beschriftung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text)
@@ -29006,7 +29010,7 @@ end
 -- Überschreibt die Events, die ausgelöst werden, wenn interaktive Objekte
 -- benutzt werden.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:HackOnInteractionEvent()
@@ -29099,7 +29103,7 @@ end
 -- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt 
 -- ist und erlaubt die Benutzung.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global.ControlInteractiveObjects()
@@ -29115,7 +29119,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:Install()
@@ -29128,7 +29132,7 @@ end
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
@@ -29145,7 +29149,7 @@ end
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
@@ -29171,7 +29175,7 @@ end
 ---
 -- Überschreibt die Spielfunktione, die interaktive Objekte steuern.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
@@ -29556,7 +29560,7 @@ end
 -- @param _DisabledText Textzusatz wenn inaktiv
 -- @param _Costs        Kostentabelle
 -- @param _InSettlement Kosten in Siedlung suchen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
@@ -29658,7 +29662,7 @@ Core:RegisterBundle("BundleInteractiveObjects");
 --
 -- @param _Entity Entity to change
 -- @return number: Health in percent
--- @within User-Space
+-- @within Public
 --
 function API.GetHealth(_Entity)
     return BundleEntityHealth:GetHealth(_Entity);
@@ -29675,7 +29679,7 @@ GetHealth = API.GetHealth;
 --
 -- @param _Entity     Entity to change
 -- @param _Percentage Health amount
--- @within User-Space
+-- @within Public
 --
 function API.SetHealth(_Entity, _Percentage)
     if GUI then
@@ -29710,7 +29714,7 @@ SetHealth = API.SetHealth;
 --
 -- @param _Entity   Entity to change
 -- @param _Strength Intensity of fire
--- @within User-Space
+-- @within Public
 --
 function API.SetOnFire(_Entity, _Strength)
     if GUI then
@@ -29743,7 +29747,7 @@ SetOnFire = API.SetOnFire;
 -- <b>Alias</b>: AddOnEntityHurtAction
 --
 -- @param _Function Funktion, die ausgeführt wird.
--- @within User-Space
+-- @within Public
 --
 function API.AddOnEntityHurtAction(_Function)
     if GUI then
@@ -29777,7 +29781,7 @@ BundleEntityHealth = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Global:Install()
@@ -29793,7 +29797,7 @@ end
 --
 -- @param _Entity     Entity to change
 -- @param _Percentage Health amount
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Global:SetEntityHealth(_Entity, _Percentage)
@@ -29815,7 +29819,7 @@ end
 -- Funktion übergeben.
 --
 -- @param _Function Funktion, die ausgeführt wird
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Global.AddOnEntityHurtAction(_Function)
@@ -29825,7 +29829,7 @@ end
 ---
 -- Führt alle registrierten Events aus, wenn ein Entity ein anderes angreift.
 -- 
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Global.EntityHurtEntityController()
@@ -29851,7 +29855,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth.Local:Install()
@@ -29865,7 +29869,7 @@ end
 --
 -- @param _Entity Entity to change
 -- @return number: Health in percent
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHealth:GetHealth(_Entity)

@@ -22,7 +22,7 @@ QSB = QSB or {};
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Flag Deaktiviert
--- @within User-Space
+-- @within Public
 -- 
 function API.DisableRefillTrebuchet(_Flag)
     if not GUI then
@@ -36,7 +36,7 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Dieben.
 -- @param _Flag Deaktiviert
--- @within User-Space
+-- @within Public
 -- 
 function API.DisableThiefRelease(_Flag)
     if not GUI then
@@ -49,7 +49,7 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.
 -- @param _Flag Deaktiviert
--- @within User-Space
+-- @within Public
 -- 
 function API.DisableSiegeEngineRelease(_Flag)
     if not GUI then
@@ -62,7 +62,7 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Soldaten.
 -- @param _Flag Deaktiviert
--- @within User-Space
+-- @within Public
 -- 
 function API.DisableMilitaryRelease(_Flag)
     if not GUI then
@@ -171,7 +171,7 @@ BundleEntitySelection = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:Install()
@@ -181,6 +181,8 @@ end
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Boolean Nachfüllen deaktiviert
+-- @within Private
+-- @local
 --
 function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
     self.Data.RefillTrebuchet = not _Boolean;
@@ -192,7 +194,7 @@ end
 ---
 -- Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
 -- @param _EntityID EntityID of Trebuchet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryDisambleTrebuchet(_EntityID)
@@ -239,7 +241,7 @@ end
 ---
 -- Baut einen Trebuchet-Wagen zu einem Trebuchet aus.
 -- @param _EntityID EntityID of Trebuchet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryErectTrebuchet(_EntityID)
@@ -281,7 +283,7 @@ end
 ---
 -- Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
 -- @param _EntityID EntityID of Trebuchet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryCallForRefiller(_EntityID)
@@ -347,7 +349,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:Install()
@@ -371,6 +373,8 @@ end
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Boolean Nachfüllen deaktiviert
+-- @within Private
+-- @local
 --
 function BundleEntitySelection.Local:DeactivateRefillTrebuchet(_Boolean)
     self.Data.RefillTrebuchet = not _Boolean;
@@ -380,7 +384,7 @@ end
 -- Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.
 --
 -- @param _Source Selection Source
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local.OnSelectionCanged(_Source)
@@ -420,7 +424,7 @@ end
 -- Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
 -- sodass eigene Texte für Keys angezeigt werden.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteGetStringTableText()
@@ -447,7 +451,7 @@ end
 ---
 -- Überschreibt die Millitärkommandos "Stop" und "Angreifen".
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryCommands()
@@ -514,7 +518,7 @@ end
 -- Überschreibt das Aufbauen von Kriegsmaschinen, sodass auch Trebuchets
 -- auf- und abgebaut werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryErect()
@@ -567,7 +571,7 @@ end
 -- Überschreibt das Abbauen von Kriegsmaschinen, sodass auch Trebuchets
 -- abgebaut werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryDisamble()
@@ -606,7 +610,7 @@ end
 ---
 -- Überschreibt die Multiselektion, damit Trebuchets ein Icon bekommen.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMultiselectIcon()
@@ -675,7 +679,7 @@ end
 -- Überschreibt die Funktion zur Beendigung der Eskorte, damit Einheiten auch
 -- entlassen werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryDismount()
@@ -735,7 +739,7 @@ end
 ---
 -- Überschreibt "Beute abließern", sodass Diebe entlassen werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteThiefDeliver()
@@ -792,7 +796,7 @@ end
 -- Hängt eine Funktion an die GUI_Tooltip.SetNameAndDescription an, sodass
 -- Tooltips überschrieben werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
@@ -852,7 +856,7 @@ end
 --
 -- @param _TitleText Titel des Tooltip
 -- @param _DescText  Text des Tooltip
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText, _DisabledText)
@@ -879,7 +883,7 @@ end
 -- Überschreibt den SelectKnight-Button. Durch drücken von CTLR können alle
 -- Helden selektiert werden, die der Spieler kontrolliert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectKnight()
@@ -919,7 +923,7 @@ end
 ---
 -- Überschreibt die Militärselektion, sodass der Spieler mit SHIFT zusätzlich
 -- die Munitionswagen und Trebuchets selektieren kann.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectAllUnits()
@@ -952,7 +956,7 @@ end
 
 ---
 -- Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:NormalLeaderSortOrder()
@@ -992,7 +996,7 @@ end
 
 ---
 -- Erzeugt die erweiterte Selektion mit Munitionswagen und Trebuchets.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:ExtendedLeaderSortOrder()

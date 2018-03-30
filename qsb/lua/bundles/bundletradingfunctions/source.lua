@@ -42,7 +42,7 @@ QSB.TraderTypes = {
 --
 -- @param _PlayerID Player ID
 -- @return Angebotsinformationen
--- @within User-Space
+-- @within Public
 --
 -- @usage local Info = BundleTradingFunctions.Global:GetOfferInformation(2);
 --
@@ -73,7 +73,7 @@ end
 --
 -- @param _PlayerID ID des Spielers
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetOfferCount(_PlayerID)
     if GUI then
@@ -90,7 +90,7 @@ end
 -- @param _PlayerID Player ID
 -- @param _GoodType Warentyp oder Entitytyp
 -- @return numer, number, number
--- @within User-Space
+-- @within Public
 --
 function API.GetOfferAndTrader(_PlayerID, _GoodorEntityType)
     if GUI then
@@ -106,7 +106,7 @@ end
 -- @param _BuildingID Building ID
 -- @param _TraderID   Trader ID
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetTraderType(_BuildingID, _TraderID)
     if GUI then
@@ -122,7 +122,7 @@ end
 -- @param _BuildingID Entity ID des Handelsgebäudes
 -- @param _TraderType Typ des Händlers
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetTrader(_BuildingID, _TraderType)
     if GUI then
@@ -139,7 +139,7 @@ end
 -- @param _PlayerID        Entity ID des Handelsgebäudes
 -- @param _TraderType      Typ des Händlers
 -- @param _OfferIndex      Index des Angebots
--- @within User-Space
+-- @within Public
 --
 function API.RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
     if GUI then
@@ -155,7 +155,7 @@ end
 --
 -- @param _PlayerID            Player ID
 -- @param _GoodorEntityType    Warentyp oder Entitytyp
--- @within User-Space
+-- @within Public
 --
 function API.RemoveOffer(_PlayerID, _GoodOrEntityType)
     if GUI then
@@ -173,7 +173,7 @@ end
 -- @param _TraderID	ID des Händlers im Gebäude
 -- @param _OfferID		ID des Angebots
 -- @param _NewAmount	Neue Menge an Angeboten
--- @within User-Space
+-- @within Public
 --
 function API.ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
     if GUI then
@@ -195,7 +195,7 @@ end
 -- @param _Waypoints  Wegpunktliste Anfahrt
 -- @param _Reversed	  Wegpunktliste Abfahrt
 -- @param _Appearance Ankunft und Abfahrt
--- @within User-Space
+-- @within Public
 --
 -- @usage -- Angebote deklarieren
 -- local Offers = {
@@ -260,7 +260,7 @@ end
 -- nicht zerstört.
 --
 -- @param _PlayerID	Spieler-ID des Händlers
--- @within User-Space
+-- @within Public
 --
 function API.DisbandTravelingSalesman(_PlayerID)
     if GUI then
@@ -287,7 +287,7 @@ BundleTradingFunctions = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:Install()
@@ -300,7 +300,7 @@ end
 ---
 -- Überschreibt die Funktionen für Standardangebote.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:OverwriteOfferFunctions()
@@ -415,7 +415,7 @@ end
 ---
 -- Fügt fehlende Einträge für Militäreinheiten bei den Basispreisen
 -- und Erneuerungsraten hinzu, damit diese gehandelt werden können.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:OverwriteBasePricesAndRefreshRates()
@@ -452,7 +452,7 @@ end
 --
 -- @param _PlayerID Player ID
 -- @return Angebotsinformationen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 -- @usage BundleTradingFunctions.Global:GetOfferInformation(2);
@@ -528,7 +528,7 @@ end
 --
 -- @param _PlayerID ID des Spielers
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetOfferCount(_PlayerID)
@@ -543,7 +543,7 @@ end
 -- @param _PlayerID Player ID
 -- @param _GoodType Warentyp oder Entitytyp
 -- @return numer, number, number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodorEntityType)
@@ -563,7 +563,7 @@ end
 -- @param _BuildingID Building ID
 -- @param _TraderID   Trader ID
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetTraderType(_BuildingID, _TraderID)
@@ -587,7 +587,7 @@ end
 -- @param _BuildingID Entity ID des Handelsgebäudes
 -- @param _TraderType Typ des Händlers
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetTrader(_BuildingID, _TraderType)
@@ -611,7 +611,7 @@ end
 -- @param _PlayerID        Entity ID des Handelsgebäudes
 -- @param _TraderType      Typ des Händlers
 -- @param _OfferIndex      Index des Angebots
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
@@ -635,7 +635,7 @@ end
 --
 -- @param _PlayerID            Player ID
 -- @param _GoodorEntityType    Warentyp oder Entitytyp
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:RemoveOffer(_PlayerID, _GoodOrEntityType)
@@ -654,7 +654,7 @@ end
 -- @param _TraderID	ID des Händlers im Gebäude
 -- @param _OfferID		ID des Angebots
 -- @param _NewAmount	Neue Menge an Angeboten
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
@@ -670,7 +670,7 @@ end
 -- Gegenstück zu GUI.GetPlayerID().
 --
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_GetHumanPlayer()
@@ -695,7 +695,7 @@ end
 -- @param _Appearance Wartezeit
 -- @param _Waypoints  Wegpunktliste Anfahrt
 -- @param _Reversed   Wegpunktliste Abfahrt
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed)
@@ -736,7 +736,7 @@ end
 -- nicht zerstört.
 --
 -- @param _PlayerID	Spieler-ID des Händlers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_Disband(_PlayerID)
@@ -750,7 +750,7 @@ end
 -- Setzt die Angebote des Fliegenden Händlers.
 --
 -- @param _PlayerID	Spieler-ID des Händlers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(_PlayerID)
@@ -818,7 +818,7 @@ end
 
 ---
 -- Steuert alle fliegenden Händler auf der Map.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global.TravelingSalesman_Control()
@@ -871,7 +871,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Local:Install()

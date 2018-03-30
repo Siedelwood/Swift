@@ -151,7 +151,7 @@ BundleCastleStore = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global:Install()
@@ -408,7 +408,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateTemporaryMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateTemporaryMode()
@@ -425,7 +425,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateStockMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateStockMode()
@@ -442,7 +442,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateOutsourceMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateOutsourceMode()
@@ -461,7 +461,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:Store(_Good, _Amount)
@@ -491,7 +491,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:Outsource(_Good, _Amount)
@@ -569,7 +569,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore.UpdateStores
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore.UpdateStores()
@@ -616,7 +616,7 @@ end
 -- Wirt ausgeführt, nachdem ein Spielstand geladen wurde. Diese Funktion Stellt
 -- alle nicht persistenten Änderungen wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.OnSaveGameLoaded()
@@ -627,7 +627,7 @@ end
 -- Überschreibt die globalen Spielfunktionen, die mit dem Burglager in
 -- Konfilckt stehen.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global:OverwriteGameFunctions()
@@ -739,7 +739,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:Install()
@@ -754,7 +754,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:CreateStore
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:CreateStore(_PlayerID)
@@ -784,7 +784,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:DeleteStore
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:DeleteStore(_PlayerID)
@@ -800,7 +800,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetAmount(_PlayerID, _Good)
@@ -842,7 +842,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetTotalAmount(_PlayerID)
@@ -866,7 +866,7 @@ end
 -- @param number _Good          Warentyp
 -- @param number _Amount        Warenmenge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetAmount(_PlayerID, _Good, _Amount)
@@ -886,7 +886,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:IsAccepted(_PlayerID, _Good)
@@ -909,7 +909,7 @@ end
 -- @param number _Good          Warentyp
 -- @param boolean _Good         Akzeptanz-Flag
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetAccepted(_PlayerID, _Good, _Flag)
@@ -930,7 +930,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:IsLocked(_PlayerID, _Good)
@@ -953,7 +953,7 @@ end
 -- @param number _Good          Warentyp
 -- @param boolean _Good         Akzeptanz-Flag
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetLocked(_PlayerID, _Good, _Flag)
@@ -973,7 +973,7 @@ end
 --
 -- @param number _PlayerID      ID des Spielers
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:HasCastleStore(_PlayerID)
@@ -988,7 +988,7 @@ end
 --
 -- @param number _PlayerID      ID des Spielers
 -- @return table
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetStore(_PlayerID)
@@ -1002,7 +1002,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GetLimit
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetLimit(_PlayerID)
@@ -1026,7 +1026,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnStorehouseTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
@@ -1048,7 +1048,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnCityTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
@@ -1070,7 +1070,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnMultiTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
@@ -1091,7 +1091,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GoodClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
@@ -1112,7 +1112,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:DestroyGoodsClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:DestroyGoodsClicked(_PlayerID)
@@ -1128,7 +1128,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:SelectionChanged
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SelectionChanged(_PlayerID)
@@ -1149,7 +1149,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateBehaviorTabs
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateBehaviorTabs(_PlayerID)
@@ -1179,7 +1179,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _CurrentWidget)
@@ -1221,7 +1221,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateStorageLimit
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateStorageLimit(_PlayerID)
@@ -1243,7 +1243,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ToggleStore
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ToggleStore()
@@ -1264,7 +1264,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:RestoreStorehouseMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:RestoreStorehouseMenu()
@@ -1294,7 +1294,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ShowCastleMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ShowCastleMenu()
@@ -1325,7 +1325,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ShowCastleStoreMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
@@ -1367,7 +1367,7 @@ end
 ---
 -- Überschreibt die Textausgabe mit den eigenen Texten.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:OverwriteGetStringTableText()
@@ -1441,7 +1441,7 @@ end
 -- Überschreibt die lokalen Spielfunktionen, die benötigt werden, damit das
 -- Burglager funktioniert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:OverwriteGameFunctions()

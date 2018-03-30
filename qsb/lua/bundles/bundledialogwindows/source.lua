@@ -26,7 +26,7 @@ QSB = QSB or {};
 -- @param _Title  Titel des Dialog
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
--- @within User-Space
+-- @within Public
 --
 function API.OpenDialog(_Title, _Text, _Action)
     if not GUI then
@@ -52,7 +52,7 @@ end
 -- @param _Text     Text des Dialog
 -- @param _Action   Callback-Funktion
 -- @param _OkCancel Okay/Abbrechen statt Ja/Nein
--- @within User-Space
+-- @within Public
 --
 function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
     if not GUI then
@@ -78,7 +78,7 @@ end
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
 -- @param _List   Liste der Optionen
--- @within User-Space
+-- @within Public
 --
 function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
     if not GUI then
@@ -133,7 +133,7 @@ BundleDialogWindows = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Global:Install()
@@ -147,7 +147,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:Install()
@@ -158,7 +158,7 @@ end
 ---
 -- Führt das Callback eines Info-Fensters oder eines Selektionsfensters aus.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:Callback()
@@ -172,7 +172,7 @@ end
 -- Führt das Callback eines Ja-Nein-Dialogs aus.
 --
 -- @param _yes Gegebene Antwort
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:CallbackRequester(_yes)
@@ -186,7 +186,7 @@ end
 -- Läd den nächsten Dialog aus der Warteschlange und stellt die Speicher-Hotkeys
 -- wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OnDialogClosed()
@@ -197,7 +197,7 @@ end
 ---
 -- Startet den nächsten Dialog in der Warteschlange, sofern möglich.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogQueueStartNext()
@@ -220,7 +220,7 @@ end
 --
 -- @param _Methode Dialogfunktion als String
 -- @param _Args    Argumente als Table
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogQueuePush(_Methode, _Args)
@@ -235,7 +235,7 @@ end
 -- @param _Title  Titel des Dialog
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
@@ -296,7 +296,7 @@ end
 -- @param _Text     Text des Dialog
 -- @param _Action   Callback-Funktion
 -- @param _OkCancel Okay/Abbrechen statt Ja/Nein
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
@@ -344,7 +344,7 @@ end
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
 -- @param _List   Liste der Optionen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
@@ -386,7 +386,7 @@ end
 ---
 -- Stellt die Hotkeys zum Speichern des Spiels wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:RestoreSaveGame()
@@ -402,7 +402,7 @@ end
 -- Überschreibt die originalen Dialogfunktionen, um Fehler in den vorhandenen
 -- Funktionen zu vermeiden.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogOverwriteOriginal()
@@ -618,7 +618,7 @@ end
 ---
 -- Initialisiert das TextWindow, bevor es angezeigt wird.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local.TextWindow:Prepare()

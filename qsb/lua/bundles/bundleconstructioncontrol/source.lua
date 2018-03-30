@@ -23,7 +23,7 @@ QSB = QSB or {};
 -- Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbares Entity
--- @within User-Space
+-- @within Public
 --
 function API.AddEntity(_entity)
     if not GUI then
@@ -41,7 +41,7 @@ end
 -- Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbarer Typ
--- @within User-Space
+-- @within Public
 --
 function API.AddEntityType(_entity)
     if not GUI then
@@ -59,7 +59,7 @@ end
 -- Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbare Kategorie
--- @within User-Space
+-- @within Public
 --
 function API.AddCategory(_entity)
     if not GUI then
@@ -77,7 +77,7 @@ end
 -- Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
 --
 -- @param _entry Geschütztes Territorium
--- @within User-Space
+-- @within Public
 --
 function API.AddTerritory(_entity)
     if not GUI then
@@ -95,7 +95,7 @@ end
 -- Entfernt ein Entity, dass nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbares Entity
--- @within User-Space
+-- @within Public
 --
 function API.RemoveEntity(_entry)
     if not GUI then
@@ -116,7 +116,7 @@ end
 -- Entfernt einen Entitytyp, der nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbarer Typ
--- @within User-Space
+-- @within Public
 --
 function API.RemoveEntityType(_entry)
     if not GUI then
@@ -137,7 +137,7 @@ end
 -- Entfernt eine Kategorie, die nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbare Kategorie
--- @within User-Space
+-- @within Public
 --
 function API.RemoveCategory(_entry)
     if not GUI then
@@ -158,7 +158,7 @@ end
 -- Entfernt ein Territory, auf dem nichts abgerissen werden kann.
 --
 -- @param _entry Geschütztes Territorium
--- @within User-Space
+-- @within Public
 --
 function API.RemoveTerritory(_entry)
     if not GUI then
@@ -180,7 +180,7 @@ end
 --
 -- @param _type      Entitytyp
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.BanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -203,7 +203,7 @@ end
 --
 -- @param _eCat      Entitykategorie
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.BanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -227,7 +227,7 @@ end
 -- @param _type   Entitytyp
 -- @param _center Gebietszentrum
 -- @param _area   Gebietsgröße
--- @within User-Space
+-- @within Public
 --
 function API.BanTypeInArea(_type, _center, _area)
     if GUI then
@@ -248,7 +248,7 @@ end
 -- @param _eCat   Entitykategorie
 -- @param _center Gebietszentrum
 -- @param _area   Gebietsgröße
--- @within User-Space
+-- @within Public
 --
 function API.BanCategoryInArea(_eCat, _center, _area)
     if GUI then
@@ -268,7 +268,7 @@ end
 --
 -- @param _type      Entitytyp
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.UnBanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -296,7 +296,7 @@ end
 --
 -- @param _ecat      Entitykategorie
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.UnBanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -324,7 +324,7 @@ end
 --
 -- @param _type   Entitytyp
 -- @param _center Gebiet
--- @within User-Space
+-- @within Public
 --
 function API.UnBanTypeInArea (_type, _center)
     if GUI then
@@ -349,7 +349,7 @@ end
 --
 -- @param _eCat   Entitykategorie
 -- @param _center Gebiet
--- @within User-Space
+-- @within Public
 --
 function API.UnBanCategoryInArea(_eCat, _center)
     if GUI then
@@ -397,7 +397,7 @@ BundleConstructionControl = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Global:Install()
@@ -414,7 +414,7 @@ end
 -- @param _Type     Gebäudetyp
 -- @param _x        X-Position
 -- @param _y        Y-Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
@@ -483,7 +483,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Local:Install()
@@ -497,7 +497,7 @@ end
 -- Verhindert den Abriss von Entities.
 --
 -- @param _BuildingID EntityID des Gebäudes
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)

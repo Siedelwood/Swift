@@ -26,7 +26,7 @@ QSB = QSB or {};
 --
 -- @param _Entity Entity
 -- @return Größenfaktor
--- @within User-Space
+-- @within Public
 --
 function API.GetScale(_Entity)
     if not IsExisting(_Entity) then
@@ -45,7 +45,7 @@ GetScale = API.GetScale;
 --
 -- @param _Entity Entity
 -- @return Besitzer
--- @within User-Space
+-- @within Public
 --
 function API.GetPlayer(_Entity)
     if not IsExisting(_Entity) then
@@ -64,7 +64,7 @@ AGetPlayer = API.GetPlayer;
 --
 -- @param _Entity Entity
 -- @return Positionstabelle
--- @within User-Space
+-- @within Public
 --
 function API.GetMovingTarget(_Entity)
     if not IsExisting(_Entity) then
@@ -83,7 +83,7 @@ GetMovingTarget = API.GetMovingTarget;
 --
 -- @param _Entity Entity
 -- @return Ist NPC
--- @within User-Space
+-- @within Public
 --
 function API.IsNpc(_Entity)
     if not IsExisting(_Entity) then
@@ -102,7 +102,7 @@ IsNpc = API.IsNpc;
 --
 -- @param _Entity Entity
 -- @return Ist sichtbar
--- @within User-Space
+-- @within Public
 --
 function API.IsVisible(_Entity)
     if not IsExisting(_Entity) then
@@ -124,7 +124,7 @@ IsVisible = API.IsVisible;
 --
 -- @param _Entity Entity
 -- @param _Scale  Größenfaktor
--- @within User-Space
+-- @within Public
 --
 function API.SetScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
@@ -150,7 +150,7 @@ SetScale = API.SetScale;
 --
 -- @param _Entity   Entity
 -- @param _PlayerID Besitzer
--- @within User-Space
+-- @within Public
 --
 function API.SetPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
@@ -184,7 +184,7 @@ BundleEntityScriptingValues = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Global:Install()
@@ -196,7 +196,7 @@ end
 --
 -- @param _entity Entity
 -- @param _size   Größenfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
@@ -212,7 +212,7 @@ end
 --
 -- @param _entity   Entity
 -- @param _PlayerID Neuer Besitzer
--- @within Application-Space
+-- @within Private
 -- @local
 -- 
 function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
@@ -225,7 +225,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Local:Install()

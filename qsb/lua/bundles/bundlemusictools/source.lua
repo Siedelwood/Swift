@@ -40,7 +40,7 @@ QSB = QSB or {};
 -- </ul>
 --
 -- @param _Description 
--- @within User-Space
+-- @within Public
 --
 function API.StartMusic(_Description)
     if GUI then
@@ -60,7 +60,7 @@ StartMusic = API.StartMusic;
 -- @param _Volume  Lautstärke
 -- @param _Length  Abspieldower (<= Dauer Musikstück)
 -- @param _FadeOut Ausblenden in Sekunden
--- @within User-Space
+-- @within Public
 --
 function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     if GUI then
@@ -91,7 +91,7 @@ StartMusicSimple = API.StartMusicSimple;
 -- sich die Playlist endlos wiederholt.
 --
 -- @param _Playlist 
--- @within User-Space
+-- @within Public
 --
 function API.StartPlaylist(_Playlist)
     if GUI then
@@ -110,7 +110,7 @@ StartPlaylist = API.StartPlaylist;
 -- <b>Alias:</b> StartPlaylistTitle
 --
 -- @param _Title 
--- @within User-Space
+-- @within Public
 --
 function API.StartPlaylistTitle(_Title)
     if GUI then
@@ -126,7 +126,7 @@ StartPlaylistTitle = API.StartPlaylistTitle;
 --
 -- <b>Alias:</b> StopSong
 --
--- @within User-Space
+-- @within Public
 --
 function API.StopSong()
     if GUI then
@@ -143,7 +143,7 @@ StopSong = API.StopSong;
 --
 -- <b>Alias:</b> AbortSongOrPlaylist
 --
--- @within User-Space
+-- @within Public
 --
 function API.AbortMusic()
     if GUI then
@@ -178,7 +178,7 @@ BundleMusicTools = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:Install()
@@ -189,7 +189,7 @@ end
 -- Startet ein Musikstück als Stimme.
 --
 -- @param _Description Beschreibung des Musikstücks
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartSong(_Description)
@@ -227,7 +227,7 @@ end
 ---
 -- Spielt eine Playlist ab.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartPlaylist(_Playlist)
@@ -243,7 +243,7 @@ end
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartPlaylistTitle(_Title)
@@ -265,7 +265,7 @@ end
 ---
 -- Stopt Musik und stellt die alte Soundkonfiguration wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StopSong()
@@ -283,7 +283,7 @@ end
 -- Stopt den gerade laufenden Song und leert sowohl die Songdaten
 -- als auch die Playlist.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:AbortMusic()
@@ -301,7 +301,7 @@ end
 -- Ist die Warteschlange leer, endet der Job. Existiert eine Playlist,
 -- für die Repeat = true ist, dann wird die Playlist neu gestartet.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global.StartSongControl()
@@ -351,7 +351,7 @@ StartSongControl = BundleMusicTools.Global.StartSongControl;
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:Install()
@@ -365,7 +365,7 @@ end
 -- @param _Song     Pfad zum Titel
 -- @param _MuteAtmo Atmosphäre stumm schalten
 -- @param _MuteUI   UI stumm schalten
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:BackupSound(_Volume, _Song, _MuteAtmo, _MuteUI)
@@ -398,7 +398,7 @@ end
 --
 -- @param _File        Pfad zur Datei
 -- @param _QueueLength Länge der Warteschlange
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:ResetSound(_File, _QueueLength)
