@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <name>
+        <![CDATA[IO Templates]]>
+    </name>
+    <description>
+        <![CDATA[]]>
+    </description>
+
+    <dependencies>
+        <dependency>BundleInteractiveObjects</dependency>
+        <dependency>BundleEntitySelection</dependency>
+    </dependencies>
+
+    <exclusions>
+    </exclusions>
+</root>
