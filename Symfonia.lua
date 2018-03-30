@@ -10070,25 +10070,25 @@ b_Goal_MoveToPosition = {
     },
 }
 
-function b_Goal_MoveToPosition:GetGoalTable(__quest_)
+function b_Goal_MoveToPosition:GetGoalTable(_Quest)
     return {Objective.Distance, self.Entity, self.Target, self.Distance, self.Marker}
 end
 
-function b_Goal_MoveToPosition:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Entity = __parameter_
-    elseif (__index_ == 1) then
-        self.Target = __parameter_
-    elseif (__index_ == 2) then
-        self.Distance = __parameter_ * 1
-    elseif (__index_ == 3) then
-        self.Marker = AcceptAlternativeBoolean(__parameter_)
+function b_Goal_MoveToPosition:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Entity = _Parameter
+    elseif (_Index == 1) then
+        self.Target = _Parameter
+    elseif (_Index == 2) then
+        self.Distance = _Parameter * 1
+    elseif (_Index == 3) then
+        self.Marker = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Goal_MoveToPosition:GetCustomData( __index_ )
+function b_Goal_MoveToPosition:GetCustomData( _Index )
     local Data = {};
-    if __index_ == 3 then
+    if _Index == 3 then
         Data = {"true", "false"}
     end
     return Data
@@ -10120,17 +10120,17 @@ b_Goal_WinQuest = {
     },
 }
 
-function b_Goal_WinQuest:GetGoalTable(__quest_)
+function b_Goal_WinQuest:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_WinQuest:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Quest = __parameter_;
+function b_Goal_WinQuest:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Quest = _Parameter;
     end
 end
 
-function b_Goal_WinQuest:CustomFunction(__quest_)
+function b_Goal_WinQuest:CustomFunction(_Quest)
     local quest = Quests[GetQuestID(self.Quest)];
     if quest then
         if quest.Result == QuestResult.Failure then
@@ -10143,9 +10143,9 @@ function b_Goal_WinQuest:CustomFunction(__quest_)
     return nil;
 end
 
-function b_Goal_WinQuest:DEBUG(__quest_)
+function b_Goal_WinQuest:DEBUG(_Quest)
     if Quests[GetQuestID(self.Quest)] == nil then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
         return true;
     end
     return false;
@@ -10182,27 +10182,27 @@ b_Goal_StealGold = {
     },
 }
 
-function b_Goal_StealGold:GetGoalTable(__quest_)
+function b_Goal_StealGold:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_StealGold:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Amount = __parameter_ * 1;
-    elseif (__index_ == 1) then
-        __parameter_ = __parameter_ or "true"
-        self.Printout = AcceptAlternativeBoolean(__parameter_);
+function b_Goal_StealGold:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Amount = _Parameter * 1;
+    elseif (_Index == 1) then
+        _Parameter = _Parameter or "true"
+        self.Printout = AcceptAlternativeBoolean(_Parameter);
     end
     self.StohlenGold = 0;
 end
 
-function b_Goal_StealGold:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_StealGold:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_StealGold:SetDescriptionOverwrite(__quest_)
+function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     local amount = self.Amount-self.StohlenGold;
     amount = (amount > 0 and amount) or 0;
@@ -10213,8 +10213,8 @@ function b_Goal_StealGold:SetDescriptionOverwrite(__quest_)
     return "{center}" .. text[lang] .. amount
 end
 
-function b_Goal_StealGold:CustomFunction(__quest_)
-    Core:ChangeCustomQuestCaptionText(__quest_.Identifier, self:SetDescriptionOverwrite(__quest_));
+function b_Goal_StealGold:CustomFunction(_Quest)
+    Core:ChangeCustomQuestCaptionText(_Quest.Identifier, self:SetDescriptionOverwrite(_Quest));
 
     if self.StohlenGold >= self.Amount then
         return true;
@@ -10226,9 +10226,9 @@ function b_Goal_StealGold:GetIcon()
     return {5,13};
 end
 
-function b_Goal_StealGold:DEBUG(__quest_)
+function b_Goal_StealGold:DEBUG(_Quest)
     if tonumber(self.Amount) == nil and self.Amount < 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
         return true;
     end
     return false;
@@ -10267,24 +10267,24 @@ b_Goal_StealBuilding = {
     },
 }
 
-function b_Goal_StealBuilding:GetGoalTable(__quest_)
+function b_Goal_StealBuilding:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_StealBuilding:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Building = __parameter_
+function b_Goal_StealBuilding:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Building = _Parameter
     end
     self.RobberList = {};
 end
 
-function b_Goal_StealBuilding:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_StealBuilding:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_StealBuilding:SetDescriptionOverwrite(__quest_)
+function b_Goal_StealBuilding:SetDescriptionOverwrite(_Quest)
     local isCathedral = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Cathedrals) == 1;
     local isWarehouse = Logic.GetEntityType(GetID(self.Building)) == Entities.B_StoreHouse;
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -10309,7 +10309,7 @@ function b_Goal_StealBuilding:SetDescriptionOverwrite(__quest_)
     return "{center}" .. text[lang];
 end
 
-function b_Goal_StealBuilding:CustomFunction(__quest_)
+function b_Goal_StealBuilding:CustomFunction(_Quest)
     if not IsExisting(self.Building) then
         if self.Marker then
             Logic.DestroyEffect(self.Marker);
@@ -10333,20 +10333,20 @@ function b_Goal_StealBuilding:GetIcon()
     return {5,13};
 end
 
-function b_Goal_StealBuilding:DEBUG(__quest_)
+function b_Goal_StealBuilding:DEBUG(_Quest)
     local eTypeName = Logic.GetEntityTypeName(Logic.GetEntityType(GetID(self.Building)));
     local IsHeadquarter = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Headquarters) == 1;
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is not a building");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
         return true;
     elseif string.find(eTypeName, "B_NPC_BanditsHQ") or string.find(eTypeName, "B_NPC_Cloister") or string.find(eTypeName, "B_NPC_StoreHouse") then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
         return true;
     elseif IsHeadquarter then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
         return true;
     end
     return false;
@@ -10358,7 +10358,7 @@ function b_Goal_StealBuilding:Reset()
     self.Marker = nil;
 end
 
-function b_Goal_StealBuilding:Interrupt(__quest_)
+function b_Goal_StealBuilding:Interrupt(_Quest)
     Logic.DestroyEffect(self.Marker);
 end
 
@@ -10398,27 +10398,27 @@ b_Goal_Infiltrate = {
     },
 }
 
-function b_Goal_Infiltrate:GetGoalTable(__quest_)
+function b_Goal_Infiltrate:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_Infiltrate:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Building = __parameter_
-    elseif (__index_ == 1) then
-        __parameter_ = __parameter_ or "true"
-        self.Delete = AcceptAlternativeBoolean(__parameter_)
+function b_Goal_Infiltrate:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Building = _Parameter
+    elseif (_Index == 1) then
+        _Parameter = _Parameter or "true"
+        self.Delete = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Goal_Infiltrate:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_Infiltrate:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_Infiltrate:SetDescriptionOverwrite(__quest_)
-    if not __quest_.QuestDescription then
+function b_Goal_Infiltrate:SetDescriptionOverwrite(_Quest)
+    if not _Quest.QuestDescription then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local text = {
             de = "Gebäude infriltrieren {cr}{cr}Spioniere das markierte Gebäude mit einem Dieb aus!",
@@ -10426,11 +10426,11 @@ function b_Goal_Infiltrate:SetDescriptionOverwrite(__quest_)
         };
         return text[lang];
     else
-        return __quest_.QuestDescription;
+        return _Quest.QuestDescription;
     end
 end
 
-function b_Goal_Infiltrate:CustomFunction(__quest_)
+function b_Goal_Infiltrate:CustomFunction(_Quest)
     if not IsExisting(self.Building) then
         if self.Marker then
             Logic.DestroyEffect(self.Marker);
@@ -10454,12 +10454,12 @@ function b_Goal_Infiltrate:GetIcon()
     return self.IconOverwrite;
 end
 
-function b_Goal_Infiltrate:DEBUG(__quest_)
+function b_Goal_Infiltrate:DEBUG(_Quest)
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is not a building");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
         return true;
     end
     return false;
@@ -10470,7 +10470,7 @@ function b_Goal_Infiltrate:Reset()
     self.Marker = nil;
 end
 
-function b_Goal_Infiltrate:Interrupt(__quest_)
+function b_Goal_Infiltrate:Interrupt(_Quest)
     Logic.DestroyEffect(self.Marker);
 end
 
@@ -10587,23 +10587,23 @@ b_Reprisal_SetPosition = {
     },
 }
 
-function b_Reprisal_SetPosition:GetReprisalTable(__quest_)
+function b_Reprisal_SetPosition:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetPosition:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Target = __parameter_;
-    elseif (__index_ == 2) then
-        self.FaceToFace = AcceptAlternativeBoolean(__parameter_)
-    elseif (__index_ == 3) then
-        self.Distance = (__parameter_ ~= nil and tonumber(__parameter_)) or 100;
+function b_Reprisal_SetPosition:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Target = _Parameter;
+    elseif (_Index == 2) then
+        self.FaceToFace = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 3) then
+        self.Distance = (_Parameter ~= nil and tonumber(_Parameter)) or 100;
     end
 end
 
-function b_Reprisal_SetPosition:CustomFunction(__quest_)
+function b_Reprisal_SetPosition:CustomFunction(_Quest)
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
         return;
     end
@@ -10629,21 +10629,21 @@ function b_Reprisal_SetPosition:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetPosition:GetCustomData(__index_)
-    if __index_ == 3 then
+function b_Reprisal_SetPosition:GetCustomData(_Index)
+    if _Index == 3 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetPosition:DEBUG(__quest_)
+function b_Reprisal_SetPosition:DEBUG(_Quest)
     if self.FaceToFace then
         if tonumber(self.Distance) == nil or self.Distance < 50 then
-            dbg(__quest_.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
+            dbg(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
             return true;
         end
     end
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -10677,19 +10677,19 @@ b_Reprisal_ChangePlayer = {
     },
 }
 
-function b_Reprisal_ChangePlayer:GetReprisalTable(__quest_)
+function b_Reprisal_ChangePlayer:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_ChangePlayer:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Player = tostring(__parameter_);
+function b_Reprisal_ChangePlayer:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Player = tostring(_Parameter);
     end
 end
 
-function b_Reprisal_ChangePlayer:CustomFunction(__quest_)
+function b_Reprisal_ChangePlayer:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -10701,15 +10701,15 @@ function b_Reprisal_ChangePlayer:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_ChangePlayer:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_ChangePlayer:GetCustomData(_Index)
+    if _Index == 1 then
         return {"0", "1", "2", "3", "4", "5", "6", "7", "8"}
     end
 end
 
-function b_Reprisal_ChangePlayer:DEBUG(__quest_)
+function b_Reprisal_ChangePlayer:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -10743,19 +10743,19 @@ b_Reprisal_SetVisible = {
     },
 }
 
-function b_Reprisal_SetVisible:GetReprisalTable(__quest_)
+function b_Reprisal_SetVisible:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetVisible:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Visible = AcceptAlternativeBoolean(__parameter_)
+function b_Reprisal_SetVisible:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Visible = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reprisal_SetVisible:CustomFunction(__quest_)
+function b_Reprisal_SetVisible:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -10790,15 +10790,15 @@ function b_Reprisal_SetVisible:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetVisible:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetVisible:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetVisible:DEBUG(__quest_)
+function b_Reprisal_SetVisible:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -10832,19 +10832,19 @@ b_Reprisal_SetVulnerability = {
     },
 }
 
-function b_Reprisal_SetVulnerability:GetReprisalTable(__quest_)
+function b_Reprisal_SetVulnerability:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetVulnerability:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Vulnerability = AcceptAlternativeBoolean(__parameter_)
+function b_Reprisal_SetVulnerability:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Vulnerability = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reprisal_SetVulnerability:CustomFunction(__quest_)
+function b_Reprisal_SetVulnerability:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -10886,15 +10886,15 @@ function b_Reprisal_SetVulnerability:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetVulnerability:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetVulnerability:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetVulnerability:DEBUG(__quest_)
+function b_Reprisal_SetVulnerability:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -10923,8 +10923,8 @@ end
 b_Reprisal_SetModel = {
     Name = "Reprisal_SetModel",
     Description = {
-        en = "Reward: Changes the model of the entity. Be careful, some models crash the game.",
-        de = "Lohn: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.",
+        en = "Reprisal: Changes the model of the entity. Be careful, some models crash the game.",
+        de = "Vergeltung: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
@@ -10932,19 +10932,19 @@ b_Reprisal_SetModel = {
     },
 }
 
-function b_Reprisal_SetModel:GetRewardTable(__quest_)
-    return { Reward.Custom, { self, self.CustomFunction } }
+function b_Reprisal_SetModel:GetReprisalTable(_Quest)
+    return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetModel:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Model = __parameter_;
+function b_Reprisal_SetModel:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Model = _Parameter;
     end
 end
 
-function b_Reprisal_SetModel:CustomFunction(__quest_)
+function b_Reprisal_SetModel:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -10952,8 +10952,8 @@ function b_Reprisal_SetModel:CustomFunction(__quest_)
     Logic.SetModel(eID, Models[self.Model]);
 end
 
-function b_Reprisal_SetModel:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetModel:GetCustomData(_Index)
+    if _Index == 1 then
         local Data = {};
         for k,v in pairs(Models) do
             if  not string.find(k,"Animals_") and not string.find(k,"Banners_") and not string.find(k,"Goods_") and not string.find(k,"goods_")
@@ -10966,9 +10966,9 @@ function b_Reprisal_SetModel:GetCustomData(__index_)
     end
 end
 
-function b_Reprisal_SetModel:DEBUG(__quest_)
+function b_Reprisal_SetModel:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -11004,7 +11004,7 @@ b_Reward_SetPosition.Description.en = "Reward: Places an entity relative to the 
 b_Reward_SetPosition.Description.de = "Lohn: Setzt eine Entity relativ zur Position einer anderen. Die Entity kann zum Ziel ausgerichtet werden.";
 b_Reward_SetPosition.GetReprisalTable = nil;
 
-b_Reward_SetPosition.GetRewardTable = function(self, __quest_)
+b_Reward_SetPosition.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11030,7 +11030,7 @@ b_Reward_ChangePlayer.Description.en = "Reward: Changes the owner of the entity 
 b_Reward_ChangePlayer.Description.de = "Lohn: Aendert den Besitzer einer Entity oder eines Battalions.";
 b_Reward_ChangePlayer.GetReprisalTable = nil;
 
-b_Reward_ChangePlayer.GetRewardTable = function(self, __quest_)
+b_Reward_ChangePlayer.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11071,23 +11071,23 @@ b_Reward_MoveToPosition = {
     },
 }
 
-function b_Reward_MoveToPosition:GetRewardTable(__quest_)
+function b_Reward_MoveToPosition:GetRewardTable(_Quest)
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reward_MoveToPosition:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Target = __parameter_;
-    elseif (__index_ == 2) then
-        self.Distance = __parameter_ * 1;
-    elseif (__index_ == 3) then
-        self.Angle = __parameter_ * 1;
+function b_Reward_MoveToPosition:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Target = _Parameter;
+    elseif (_Index == 2) then
+        self.Distance = _Parameter * 1;
+    elseif (_Index == 3) then
+        self.Angle = _Parameter * 1;
     end
 end
 
-function b_Reward_MoveToPosition:CustomFunction(__quest_)
+function b_Reward_MoveToPosition:CustomFunction(_Quest)
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
         return;
     end
@@ -11112,12 +11112,12 @@ function b_Reward_MoveToPosition:CustomFunction(__quest_)
     end, entity, target);
 end
 
-function b_Reward_MoveToPosition:DEBUG(__quest_)
+function b_Reward_MoveToPosition:DEBUG(_Quest)
     if tonumber(self.Distance) == nil or self.Distance < 50 then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Reward_MoveToPosition: Distance is nil or to short!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
         return true;
     elseif not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Reward_MoveToPosition: Mover entity or target entity does not exist!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -11152,12 +11152,12 @@ function b_Reward_VictoryWithParty:GetRewardTable()
     return {Reward.Custom, {self, self.CustomFunction}};
 end
 
-function b_Reward_VictoryWithParty:AddParameter(__index_, __parameter_)
+function b_Reward_VictoryWithParty:AddParameter(_Index, _Parameter)
 end
 
-function b_Reward_VictoryWithParty:CustomFunction(__quest_)
+function b_Reward_VictoryWithParty:CustomFunction(_Quest)
     Victory(g_VictoryAndDefeatType.VictoryMissionComplete);
-    local pID = __quest_.ReceivingPlayer;
+    local pID = _Quest.ReceivingPlayer;
 
     local market = Logic.GetMarketplace(pID);
     if IsExisting(market) then
@@ -11198,7 +11198,7 @@ function b_Reward_VictoryWithParty:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_VictoryWithParty:DEBUG(__quest_)
+function b_Reward_VictoryWithParty:DEBUG(_Quest)
     return false;
 end
 
@@ -11224,7 +11224,7 @@ b_Reward_SetVisible.Description.en = "Reward: Changes the visibility of an entit
 b_Reward_SetVisible.Description.de = "Lohn: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.";
 b_Reward_SetVisible.GetReprisalTable = nil;
 
-b_Reward_SetVisible.GetRewardTable = function(self, __quest_)
+b_Reward_SetVisible.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11256,19 +11256,19 @@ b_Reward_AI_SetEntityControlled = {
     },
 }
 
-function b_Reward_AI_SetEntityControlled:GetRewardTable(__quest_)
+function b_Reward_AI_SetEntityControlled:GetRewardTable(_Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reward_AI_SetEntityControlled:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Hidden = AcceptAlternativeBoolean(__parameter_)
+function b_Reward_AI_SetEntityControlled:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Hidden = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_AI_SetEntityControlled:CustomFunction(__quest_)
+function b_Reward_AI_SetEntityControlled:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -11289,15 +11289,15 @@ function b_Reward_AI_SetEntityControlled:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_AI_SetEntityControlled:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reward_AI_SetEntityControlled:GetCustomData(_Index)
+    if _Index == 1 then
         return { "false", "true" }
     end
 end
 
-function b_Reward_AI_SetEntityControlled:DEBUG(__quest_)
+function b_Reward_AI_SetEntityControlled:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -11325,7 +11325,7 @@ b_Reward_SetVulnerability.Description.en = "Reward: Changes the vulnerability of
 b_Reward_SetVulnerability.Description.de = "Lohn: Macht eine Entity verwundbar oder unverwundbar. Handelt es sich um einen Spawner, sind die gespawnten Entities betroffen.";
 b_Reward_SetVulnerability.GetReprisalTable = nil;
 
-b_Reward_SetVulnerability.GetRewardTable = function(self, __quest_)
+b_Reward_SetVulnerability.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11355,7 +11355,7 @@ b_Reward_SetModel.Description.en = "Reward: Changes the model of the entity. Be 
 b_Reward_SetModel.Description.de = "Lohn: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.";
 b_Reward_SetModel.GetReprisalTable = nil;
 
-b_Reward_SetModel.GetRewardTable = function(self, __quest_)
+b_Reward_SetModel.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11608,21 +11608,21 @@ b_Trigger_OnExactOneQuestIsWon = {
     },
 }
 
-function b_Trigger_OnExactOneQuestIsWon:GetTriggerTable(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_OnExactOneQuestIsWon:AddParameter(__index_, __parameter_)
+function b_Trigger_OnExactOneQuestIsWon:AddParameter(_Index, _Parameter)
     self.QuestTable = {};
 
-    if (__index_ == 0) then
-        self.Quest1 = __parameter_;
-    elseif (__index_ == 1) then
-        self.Quest2 = __parameter_;
+    if (_Index == 0) then
+        self.Quest1 = _Parameter;
+    elseif (_Index == 1) then
+        self.Quest2 = _Parameter;
     end
 end
 
-function b_Trigger_OnExactOneQuestIsWon:CustomFunction(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:CustomFunction(_Quest)
     local Quest1 = Quests[GetQuestID(self.Quest1)];
     local Quest2 = Quests[GetQuestID(self.Quest2)];
     if Quest2 and Quest1 then
@@ -11635,15 +11635,15 @@ function b_Trigger_OnExactOneQuestIsWon:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnExactOneQuestIsWon:DEBUG(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:DEBUG(_Quest)
     if self.Quest1 == self.Quest2 then
-        dbg(__quest_.Identifier..": "..self.Name..": Both quests are identical!");
+        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;
@@ -11677,21 +11677,21 @@ b_Trigger_OnExactOneQuestIsLost = {
     },
 }
 
-function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_OnExactOneQuestIsLost:AddParameter(__index_, __parameter_)
+function b_Trigger_OnExactOneQuestIsLost:AddParameter(_Index, _Parameter)
     self.QuestTable = {};
 
-    if (__index_ == 0) then
-        self.Quest1 = __parameter_;
-    elseif (__index_ == 1) then
-        self.Quest2 = __parameter_;
+    if (_Index == 0) then
+        self.Quest1 = _Parameter;
+    elseif (_Index == 1) then
+        self.Quest2 = _Parameter;
     end
 end
 
-function b_Trigger_OnExactOneQuestIsLost:CustomFunction(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:CustomFunction(_Quest)
     local Quest1 = Quests[GetQuestID(self.Quest1)];
     local Quest2 = Quests[GetQuestID(self.Quest2)];
     if Quest2 and Quest1 then
@@ -11704,15 +11704,15 @@ function b_Trigger_OnExactOneQuestIsLost:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnExactOneQuestIsLost:DEBUG(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:DEBUG(_Quest)
     if self.Quest1 == self.Quest2 then
-        dbg(__quest_.Identifier..": "..self.Name..": Both quests are identical!");
+        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;
@@ -19025,16 +19025,78 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
+---
+-- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+-- @param _Flag Deaktiviert
+-- @within User-Space
+-- 
+function API.DisableRefillTrebuchet(_Flag)
+    if not GUI then
+        API.Bridge("API.DisableRefillTrebuchet(" ..tostring(_Flag).. ")");
+        return;
+    end
+    API.Bridge("BundleEntitySelection.Local.Data.RefillTrebuchet = " ..tostring(_Flag).. " == true");
+    BundleEntitySelection.Local.Data.RefillTrebuchet = _Flag == true;
+end
 
+---
+-- Deaktiviert oder aktiviert das Entlassen von Dieben.
+-- @param _Flag Deaktiviert
+-- @within User-Space
+-- 
+function API.DisableThiefRelease(_Flag)
+    if not GUI then
+        API.Bridge("API.DisableThiefRelease(" ..tostring(_Flag).. ")");
+        return;
+    end
+    BundleEntitySelection.Local.Data.ThiefRelease = _Flag == true;
+end
+
+---
+-- Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.
+-- @param _Flag Deaktiviert
+-- @within User-Space
+-- 
+function API.DisableSiegeEngineRelease(_Flag)
+    if not GUI then
+        API.Bridge("API.DisableSiegeEngineRelease(" ..tostring(_Flag).. ")");
+        return;
+    end
+    BundleEntitySelection.Local.Data.SiegeEngineRelease = _Flag == true;
+end
+
+---
+-- Deaktiviert oder aktiviert das Entlassen von Soldaten.
+-- @param _Flag Deaktiviert
+-- @within User-Space
+-- 
+function API.DisableMilitaryRelease(_Flag)
+    if not GUI then
+        API.Bridge("API.DisableMilitaryRelease(" ..tostring(_Flag).. ")");
+        return;
+    end
+    BundleEntitySelection.Local.Data.MilitaryRelease = _Flag == true;
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleEntitySelection = {
-    Global = {},
+    Global = {
+        Data = {
+            RefillTrebuchet = true,
+            AmmunitionUnderway = {},
+            TrebuchetIDToCart = {},
+        },
+    },
     Local = {
         Data = {
+            RefillTrebuchet = true,
+            ThiefRelease = true,
+            SiegeEngineRelease = true,
+            MilitaryRelease = true,
+            
             Tooltips = {
                 KnightButton = {
                     Title = {
@@ -19046,6 +19108,7 @@ BundleEntitySelection = {
                         en = "- Click selects the knight {cr}- Double click jumps to knight{cr}- Press CTRL to select all knights",
                     },
                 },
+                
                 BattalionButton = {
                     Title = {
                         de = "Militär selektieren",
@@ -19054,6 +19117,54 @@ BundleEntitySelection = {
                     Text = {
                         de = "- Selektiert alle Militäreinheiten {cr}- SHIFT halten um auch Munitionswagen und Trebuchets auszuwählen",
                         en = "- Selects all military units {cr}- Press SHIFT to additionally select ammunition carts and trebuchets",
+                    },
+                },
+                
+                ReleaseSoldiers = {
+                    Title = {
+                        de = "Militär entlassen",
+                        en = "Release military unit",
+                    },
+                    Text = {
+                        de = "- Eine Militäreinheit entlassen {cr}- Soldaten werden nacheinander entlassen",
+                        en = "- Dismiss a military unit {cr}- Soldiers will be dismissed each after another",
+                    },
+                    Disabled = {
+                        de = "Kann nicht entlassen werden!",
+                        en = "Releasing is impossible!",
+                    },
+                },
+                
+                TrebuchetCart = {
+                    Title = {
+                        de = "Trebuchetwagen",
+                        en = "Trebuchet cart",
+                    },
+                    Text = {
+                        de = "- Kann einmalig zum Trebuchet ausgebaut werden",
+                        en = "- Can uniquely be transmuted into a trebuchet",
+                    },
+                },
+        
+                Trebuchet = {
+                    Title = {
+                        de = "Trebuchet",
+                        en = "Trebuchet",
+                    },
+                    Text = {
+                        de = "- Kann über weite Strecken Gebäude angreifen {cr}- Kann Gebäude in Brand stecken {cr}- Kann nur durch Munitionsanforderung befüllt werden {cr}- Trebuchet kann manuell zurückgeschickt werden",
+                        en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- Can only be filled by ammunition request {cr}- The trebuchet can be manually send back to the city",
+                    },
+                },
+                
+                TrebuchetRefiller = {
+                    Title = {
+                        de = "Aufladen",
+                        en = "Refill",
+                    },
+                    Text = {
+                        de = "- Läd das Trebuchet mit Karren aus dem Lagerhaus nach {cr}- Benötigt die Differenz an Steinen {cr}- Kann jeweils nur einen Wagen zu selben Zeit senden",
+                        en = "- Refill the Trebuchet with a cart from the storehouse {cr}- Stones for missing ammunition required {cr}- Only one cart at the time allowed",
                     },
                 },
             },
@@ -19073,6 +19184,171 @@ function BundleEntitySelection.Global:Install()
 
 end
 
+---
+-- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+-- @param _Boolean Nachfüllen deaktiviert
+--
+function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
+    self.Data.RefillTrebuchet = not _Boolean;
+    Logic.ExecuteInLuaLocalState([[
+        function BundleEntitySelection.Local:DeactivateRefillTrebuchet(]]..tostring(_Boolean)..[[)
+    ]]);
+end
+
+---
+-- Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
+-- @param _EntityID EntityID of Trebuchet
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Global:MilitaryDisambleTrebuchet(_EntityID)
+    local x,y,z = Logic.EntityGetPos(_EntityID);
+    local PlayerID = Logic.EntityGetPlayer(_EntityID);
+
+    -- Externes Callback für das Kartenskript
+    -- Bricht die Ausführung dieser Funktion ab!
+    if GameCallback_QSB_OnDisambleTrebuchet then
+        GameCallback_QSB_OnDisambleTrebuchet(_EntityID, PlayerID, x, y, z);
+        return;
+    end
+
+    if self.Data.AmmunitionUnderway[_EntityID] then
+        API.Message {
+            de = "Eine Munitionslieferung ist auf dem Weg!",
+            en = "A ammunition card is on the way!",
+        };
+        return;
+    end
+
+    Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
+    Logic.SetEntityInvulnerabilityFlag(_EntityID, 1);
+    Logic.SetEntitySelectableFlag(_EntityID, 0);
+    Logic.SetVisible(_EntityID, false);
+
+    local TrebuchetCart = self.Data.TrebuchetIDToCart[_EntityID];
+    if TrebuchetCart ~= nil then
+        Logic.SetEntityInvulnerabilityFlag(TrebuchetCart, 0);
+        Logic.SetEntitySelectableFlag(TrebuchetCart, 1);
+        Logic.SetVisible(TrebuchetCart, true);
+    else
+        TrebuchetCart = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, PlayerID);
+        self.Data.TrebuchetIDToCart[_EntityID] = TrebuchetCart;
+    end
+
+    Logic.DEBUG_SetSettlerPosition(TrebuchetCart, x, y);
+    Logic.SetTaskList(TrebuchetCart, TaskLists.TL_NPC_IDLE);
+    Logic.ExecuteInLuaLocalState([[
+        GUI.SelectEntity(]]..TrebuchetCart..[[)
+    ]]);
+end
+
+---
+-- Baut einen Trebuchet-Wagen zu einem Trebuchet aus.
+-- @param _EntityID EntityID of Trebuchet
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Global:MilitaryErectTrebuchet(_EntityID)
+    local x,y,z = Logic.EntityGetPos(_EntityID);
+    local PlayerID = Logic.EntityGetPlayer(_EntityID);
+
+    -- Externes Callback für das Kartenskript
+    -- Bricht die Ausführung dieser Funktion ab!
+    if GameCallback_QSB_OnErectTrebuchet then
+        GameCallback_QSB_OnErectTrebuchet(_EntityID, PlayerID, x, y, z);
+        return;
+    end
+
+    Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
+    Logic.SetEntityInvulnerabilityFlag(_EntityID, 1);
+    Logic.SetEntitySelectableFlag(_EntityID, 0);
+    Logic.SetVisible(_EntityID, false);
+
+    local Trebuchet;
+    for k, v in pairs(self.Data.TrebuchetIDToCart) do
+        if v == _EntityID then
+            Trebuchet = tonumber(k);
+        end
+    end
+    if Trebuchet == nil then
+        Trebuchet = Logic.CreateEntity(Entities.U_Trebuchet, x, y, 0, PlayerID);
+        self.Data.TrebuchetIDToCart[Trebuchet] = _EntityID;
+    end
+
+    Logic.SetEntityInvulnerabilityFlag(Trebuchet, 0);
+    Logic.SetEntitySelectableFlag(Trebuchet, 1);
+    Logic.SetVisible(Trebuchet, true);
+    Logic.DEBUG_SetSettlerPosition(Trebuchet, x, y);
+    Logic.ExecuteInLuaLocalState([[
+        GUI.SelectEntity(]]..Trebuchet..[[)
+    ]]);
+end
+
+---
+-- Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
+-- @param _EntityID EntityID of Trebuchet
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Global:MilitaryCallForRefiller(_EntityID)
+    local PlayerID = Logic.EntityGetPlayer(_EntityID);
+    local StoreID = Logic.GetStoreHouse(PlayerID);
+    local HaveAmount = Logic.GetAmmunitionAmount(_EntityID);
+    local Stones = GetPlayerResources(Goods.G_Stone, PlayerID)
+
+    -- Externes Callback für das Kartenskript
+    -- Bricht die Ausführung dieser Funktion ab!
+    if GameCallback_tHEA_OnRefillerCartCalled then
+        GameCallback_tHEA_OnRefillerCartCalled(_EntityID, PlayerID, StoreID, HaveAmount, Stones);
+        return;
+    end
+
+    if self.Data.AmmunitionUnderway[_EntityID] or StoreID == 0 then
+        API.Message {
+            de = "Eine Munitionslieferung ist auf dem Weg!",
+            en = "A ammunition card is on the way!",
+        };
+        return;
+    end
+
+    if HaveAmount == 10 or Stones < 10-HaveAmount then
+        API.Message {
+            de = "Nicht genug Steine oder das Trebuchet ist voll!",
+            en = "Not enough stones or the trebuchet is full!",
+        };
+        return;
+    end
+
+    local x,y = Logic.GetBuildingApproachPosition(StoreID);
+    local CartID = Logic.CreateEntity(Entities.U_AmmunitionCart, x, y, 0, PlayerID);
+    self.Data.AmmunitionUnderway[_EntityID] = {CartID, 10-HaveAmount};
+    Logic.SetEntityInvulnerabilityFlag(CartID, 1);
+    Logic.SetEntitySelectableFlag(CartID, 0);
+    AddGood(Goods.G_Stone, (10-HaveAmount)*(-1), PlayerID);
+
+    StartSimpleJobEx( function(_Trebuchet)
+        local CartID = self.Data.AmmunitionUnderway[_EntityID][1];
+        local Amount = self.Data.AmmunitionUnderway[_EntityID][2];
+
+        if not IsExisting(CartID) or not IsExisting(_Trebuchet) then
+            self.Data.AmmunitionUnderway[_EntityID] = nil;
+            return true;
+        end
+
+        if not Logic.IsEntityMoving(CartID) then
+            local x,y,z = Logic.EntityGetPos(_Trebuchet);
+            Logic.MoveSettler(CartID, x, y);
+        end
+
+        if IsNear(CartID, _Trebuchet, 500) then
+            for i=1, Amount, 1 do
+                Logic.RefillAmmunitions(_Trebuchet);
+            end
+            DestroyEntity(CartID);
+        end
+    end, _EntityID);
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -19084,6 +19360,438 @@ function BundleEntitySelection.Local:Install()
     self:OverwriteSelectAllUnits();
     self:OverwriteSelectKnight();
     self:OverwriteNamesAndDescription();
+    self:OverwriteThiefDeliver();
+    self:OverwriteMilitaryDismount();
+    self:OverwriteMultiselectIcon();
+    self:OverwriteMilitaryDisamble();
+    self:OverwriteMilitaryErect();
+    self:OverwriteMilitaryCommands();
+    self:OverwriteGetStringTableText();
+    
+    Core:AppendFunction(
+        "GameCallback_GUI_SelectionChanged", 
+        self.OnSelectionCanged
+    );
+end
+
+---
+-- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+-- @param _Boolean Nachfüllen deaktiviert
+--
+function BundleEntitySelection.Local:DeactivateRefillTrebuchet(_Boolean)
+    self.Data.RefillTrebuchet = not _Boolean;
+end
+
+---
+-- Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.
+--
+-- @param _Source Selection Source
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Local.OnSelectionCanged(_Source)
+    local SelectedEntities = {GUI.GetSelectedEntities()}
+    local PlayerID = GUI.GetPlayerID();
+    local EntityID = GUI.GetSelectedEntity();
+    local EntityType = Logic.GetEntityType(EntityID);
+
+    if EntityID ~= nil then
+        if EntityType == Entities.U_SiegeEngineCart then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/BGMilitary", 1);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngineCart", 1);
+        elseif EntityType == Entities.U_Trebuchet then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/BGMilitary", 1);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military", 1);
+            if BundleEntitySelection.Local.Data.RefillTrebuchet then
+                XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 1);
+            else
+                XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 0);
+            end
+            GUI_Military.StrengthUpdate();
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngine", 1);
+        end
+    end
+end
+
+---
+-- Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
+-- sodass eigene Texte für Keys angezeigt werden.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteGetStringTableText()
+    GetStringTableText_Orig_BundleEntitySelection = XGUIEng.GetStringTableText;
+    XGUIEng.GetStringTableText = function(_key)
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if _key == "UI_ObjectDescription/Attack" then
+            local EntityID = GUI.GetSelectedEntity();
+            if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
+                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Text[Language];
+            end
+        end
+        if _key == "UI_ObjectNames/Attack" then
+            local EntityID = GUI.GetSelectedEntity();
+            if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
+                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Title[Language];
+            end
+        end
+        
+        return GetStringTableText_Orig_BundleEntitySelection(_key);
+    end
+end
+
+---
+-- Überschreibt die Millitärkommandos "Stop" und "Angreifen".
+--
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMilitaryCommands()
+    GUI_Military.AttackClicked = function()
+        Sound.FXPlay2DSound( "ui\\menu_click");
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        local EntityType = Logic.GetEntityType(SelectedEntities[1]);
+
+        if EntityType == Entities.U_Trebuchet then
+            for i=1, #SelectedEntities, 1 do
+                EntityType = Logic.GetEntityType(SelectedEntities[i]);
+                if EntityType == Entities.U_Trebuchet then
+                    GUI.SendScriptCommand([[
+                        BundleEntitySelection.Global:MilitaryCallForRefiller(]]..SelectedEntities[i]..[[)
+                    ]]);
+                end
+            end
+        else
+            GUI.ActivateExplicitAttackCommandState();
+        end
+    end
+
+    GUI_Military.StandGroundClicked = function()
+        Sound.FXPlay2DSound( "ui\\menu_click");
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+
+        for i=1,#SelectedEntities do
+            local LeaderID = SelectedEntities[i];
+            local eType = Logic.GetEntityType(LeaderID);
+            GUI.SendCommandStationaryDefend(LeaderID);
+            if eType == Entities.U_Trebuchet then
+                GUI.SendScriptCommand([[
+                    Logic.SetTaskList(]]..LeaderID..[[, TaskLists.TL_NPC_IDLE)
+                ]]);
+            end
+        end
+
+    end
+
+    GUI_Military.StandGroundUpdate = function()
+        local WidgetAttack = "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack";
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+
+        SetIcon(WidgetAttack, {12, 4});
+
+        if #SelectedEntities == 1 then
+            local eID = SelectedEntities[1];
+            local eType = Logic.GetEntityType(eID);
+            if eType == Entities.U_Trebuchet then
+                if Logic.GetAmmunitionAmount(eID) > 0 then
+                    XGUIEng.ShowWidget(WidgetAttack, 0);
+                else
+                    XGUIEng.ShowWidget(WidgetAttack, 1);
+                end
+                SetIcon(WidgetAttack, {1, 10});
+            else
+                XGUIEng.ShowWidget(WidgetAttack, 1);
+            end
+        end
+    end
+end
+
+---
+-- Überschreibt das Aufbauen von Kriegsmaschinen, sodass auch Trebuchets
+-- auf- und abgebaut werden können.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMilitaryErect()
+    GUI_Military.ErectClicked_Orig_BundleEntitySelection = GUI_Military.ErectClicked;
+    GUI_Military.ErectClicked = function()
+        GUI_Military.ErectClicked_Orig_BundleEntitySelection();
+
+        local PlayerID = GUI.GetPlayerID();
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        for i=1, #SelectedEntities, 1 do
+            local EntityType = Logic.GetEntityType(SelectedEntities[i]);
+            if EntityType == Entities.U_SiegeEngineCart then
+                GUI.SendScriptCommand([[
+                    BundleEntitySelection.Global:MilitaryErectTrebuchet(]]..SelectedEntities[i]..[[)
+                ]]);
+            end
+        end
+    end
+    
+    GUI_Military.ErectUpdate_Orig_BundleEntitySelection = GUI_Military.ErectUpdate;
+    GUI_Military.ErectUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local SiegeCartID = GUI.GetSelectedEntity();
+        local PlayerID = GUI.GetPlayerID();
+        local EntityType = Logic.GetEntityType(SiegeCartID);
+
+        if EntityType == Entities.U_SiegeEngineCart then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            SetIcon(CurrentWidgetID, {12, 6});
+        else
+            GUI_Military.ErectUpdate_Orig_BundleEntitySelection();
+        end
+    end
+    
+    GUI_Military.ErectMouseOver_Orig_BundleEntitySelection = GUI_Military.ErectMouseOver;
+    GUI_Military.ErectMouseOver = function()
+        local SiegeCartID = GUI.GetSelectedEntity();
+        local TooltipTextKey;
+        if Logic.GetEntityType(SiegeCartID) == Entities.U_SiegeEngineCart then
+            TooltipTextKey = "ErectCatapult";
+        else
+            GUI_Military.ErectMouseOver_Orig_BundleEntitySelection();
+            return;
+        end
+        GUI_Tooltip.TooltipNormal(TooltipTextKey, "Erect");
+    end
+end
+
+---
+-- Überschreibt das Abbauen von Kriegsmaschinen, sodass auch Trebuchets
+-- abgebaut werden können.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMilitaryDisamble()
+    GUI_Military.DisassembleClicked_Orig_BundleEntitySelection = GUI_Military.DisassembleClicked;
+    GUI_Military.DisassembleClicked = function()
+        GUI_Military.DisassembleClicked_Orig_BundleEntitySelection();
+
+        local PlayerID = GUI.GetPlayerID();
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        for i=1, #SelectedEntities, 1 do
+            local EntityType = Logic.GetEntityType(SelectedEntities[i]);
+            if EntityType == Entities.U_Trebuchet then
+                GUI.SendScriptCommand([[
+                    BundleEntitySelection.Global:MilitaryDisambleTrebuchet(]]..SelectedEntities[i]..[[)
+                ]]);
+            end
+        end
+    end
+
+    GUI_Military.DisassembleUpdate_Orig_BundleEntitySelection = GUI_Military.DisassembleUpdate;
+    GUI_Military.DisassembleUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local PlayerID = GUI.GetPlayerID();
+        local SiegeEngineID = GUI.GetSelectedEntity();
+        local EntityType = Logic.GetEntityType(SiegeEngineID);
+
+        if EntityType == Entities.U_Trebuchet then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            SetIcon(CurrentWidgetID, {12, 9});
+        else
+            GUI_Military.DisassembleUpdate_Orig_BundleEntitySelection();
+        end
+    end
+end
+
+---
+-- Überschreibt die Multiselektion, damit Trebuchets ein Icon bekommen.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMultiselectIcon()
+    GUI_MultiSelection.IconUpdate_Orig_BundleEntitySelection = GUI_MultiSelection.IconUpdate;
+    GUI_MultiSelection.IconUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local CurrentMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
+        local CurrentMotherName = XGUIEng.GetWidgetNameByID(CurrentMotherID);
+        local Index = CurrentMotherName + 0;
+        local CurrentMotherPath = XGUIEng.GetWidgetPathByID(CurrentMotherID);
+        local HealthWidgetPath = CurrentMotherPath .. "/Health";
+        local EntityID = g_MultiSelection.EntityList[Index];
+        local EntityType = Logic.GetEntityType(EntityID);
+        local HealthState = Logic.GetEntityHealth(EntityID);
+        local EntityMaxHealth = Logic.GetEntityMaxHealth(EntityID);
+
+        if EntityType ~= Entities.U_SiegeEngineCart and EntityType ~= Entities.U_Trebuchet then
+            GUI_MultiSelection.IconUpdate_Orig_BundleEntitySelection();
+            return;
+        end
+        if Logic.IsEntityAlive(EntityID) == false then
+            XGUIEng.ShowWidget(CurrentMotherID, 0);
+            GUI_MultiSelection.CreateEX();
+            return;
+        end
+
+        SetIcon(CurrentWidgetID, g_TexturePositions.Entities[EntityType]);
+
+        HealthState = math.floor(HealthState / EntityMaxHealth * 100);
+        if HealthState < 50 then
+            local green = math.floor(2*255* (HealthState/100));
+            XGUIEng.SetMaterialColor(HealthWidgetPath,0,255,green, 20,255);
+        else
+            local red = 2*255 - math.floor(2*255* (HealthState/100));
+            XGUIEng.SetMaterialColor(HealthWidgetPath,0,red, 255, 20,255);
+        end
+        XGUIEng.SetProgressBarValues(HealthWidgetPath,HealthState, 100);
+    end
+
+    GUI_MultiSelection.IconMouseOver_Orig_BundleEntitySelection = GUI_MultiSelection.IconMouseOver;
+    GUI_MultiSelection.IconMouseOver = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local CurrentMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
+        local CurrentMotherName = XGUIEng.GetWidgetNameByID(CurrentMotherID);
+        local Index = tonumber(CurrentMotherName);
+        local EntityID = g_MultiSelection.EntityList[Index];
+        local EntityType = Logic.GetEntityType(EntityID);
+
+        if EntityType ~= Entities.U_SiegeEngineCart and EntityType ~= Entities.U_Trebuchet then
+            GUI_MultiSelection.IconMouseOver_Orig_BundleEntitySelection();
+            return;
+        end
+        
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if EntityType == Entities.U_SiegeEngineCart then
+            local TooltipData = BundleEntitySelection.Local.Data.Tooltips.TrebuchetCart;
+            BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
+        elseif EntityType == Entities.U_Trebuchet then
+            local TooltipData = BundleEntitySelection.Local.Data.Tooltips.Trebuchet;
+            BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
+        end
+    end
+end
+
+---
+-- Überschreibt die Funktion zur Beendigung der Eskorte, damit Einheiten auch
+-- entlassen werden können.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMilitaryDismount()
+    GUI_Military.DismountClicked_Orig_BundleEntitySelection = GUI_Military.DismountClicked;
+    GUI_Military.DismountClicked = function()
+        local Selected = GUI.GetSelectedEntity(Selected);
+        local Type = Logic.GetEntityType(Selected);
+        local PlayerID = GUI.GetPlayerID();
+        if Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false then
+            if (Type == Entities.U_SiegeEngineCart or Type == Entities.U_MilitarySiegeTower or
+                Type == Entities.U_MilitaryCatapult or Type == Entities.U_MilitaryBatteringRam or
+                Type == Entities.U_SiegeTowerCart or Type == Entities.U_CatapultCart or
+                Type == Entities.U_BatteringRamCart or Type == Entities.U_AmmunitionCart)
+            and BundleEntitySelection.Local.Data.SiegeEngineRelease then
+                Sound.FXPlay2DSound( "ui\\menu_click");
+                GUI.SendScriptCommand([[DestroyEntity(]]..Selected..[[)]]);
+                return;
+            end
+            if (Logic.IsLeader(Selected) == 1 and BundleEntitySelection.Local.Data.MilitaryRelease) then
+                Sound.FXPlay2DSound( "ui\\menu_click");
+                local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
+                GUI.SendScriptCommand([[DestroyEntity(]]..Soldiers[#Soldiers]..[[)]]);
+                return;
+            end
+        else
+            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+        end
+    end
+
+    GUI_Military.DismountUpdate_Orig_BundleEntitySelection = GUI_Military.DismountUpdate;
+    GUI_Military.DismountUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local Selected = GUI.GetSelectedEntity();
+        local Type = Logic.GetEntityType(Selected);
+        if (Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false and Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 0) then
+            if Logic.IsLeader(Selected) == 1 and not BundleEntitySelection.Local.Data.MilitaryRelease then
+                XGUIEng.DisableButton(CurrentWidgetID, 1);
+            elseif  Logic.IsLeader(Selected) == 0 then
+                if not BundleEntitySelection.Local.Data.SiegeEngineRelease then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                end
+                if Type == Entities.U_Trebuchet then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                end
+            else
+                SetIcon(CurrentWidgetID, {12, 1});
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
+            end
+            SetIcon(CurrentWidgetID, {14, 12});
+        else
+            SetIcon(CurrentWidgetID, {12, 1});
+            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+        end
+    end
+end
+
+---
+-- Überschreibt "Beute abließern", sodass Diebe entlassen werden können.
+--
+-- @within Application-Space
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteThiefDeliver()
+    GUI_Thief.ThiefDeliverClicked_Orig_BundleEntitySelection = GUI_Thief.ThiefDeliverClicked;
+    GUI_Thief.ThiefDeliverClicked = function()
+        if not self.Data.ThiefRelease then
+            GUI_Thief.ThiefDeliverClicked_Orig_BundleEntitySelection();
+            return;
+        end
+
+        Sound.FXPlay2DSound( "ui\\menu_click");
+        local PlayerID = GUI.GetPlayerID();
+        local ThiefID = GUI.GetSelectedEntity()
+        if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
+            return;
+        end
+        GUI.SendScriptCommand([[DestroyEntity(]]..ThiefID..[[)]]);
+    end
+
+    GUI_Thief.ThiefDeliverMouseOver_Orig_BundleEntitySelection = GUI_Thief.ThiefDeliverMouseOver;
+    GUI_Thief.ThiefDeliverMouseOver = function()
+        if not BundleEntitySelection.Local.Data.ThiefRelease then
+            local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+            GUI_Thief.ThiefDeliverMouseOver_Orig_BundleEntitySelection();
+            return;
+        end
+        
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        BundleEntitySelection.Local:SetTooltip(
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang],
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[lang]
+        );
+    end
+
+    GUI_Thief.ThiefDeliverUpdate_Orig_BundleEntitySelection = GUI_Thief.ThiefDeliverUpdate;
+    GUI_Thief.ThiefDeliverUpdate = function()
+        if not BundleEntitySelection.Local.Data.ThiefRelease then
+            GUI_Thief.ThiefDeliverUpdate_Orig_BundleEntitySelection();
+        else
+            local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+            local ThiefID = GUI.GetSelectedEntity();
+            if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
+                XGUIEng.DisableButton(CurrentWidgetID, 1);
+            else
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
+            end
+            SetIcon(CurrentWidgetID, {14, 12});
+        end
+    end
 end
 
 ---
@@ -19096,14 +19804,14 @@ end
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
     GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection = GUI_Tooltip.SetNameAndDescription;
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID()
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         
         if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
                 BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[lang], 
                 BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[lang]
-            )
+            );
             return;
         end
         
@@ -19111,9 +19819,36 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
             BundleEntitySelection.Local:SetTooltip(
                 BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[lang],
                 BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[lang]
-            )
+            );
             return;
         end
+        
+        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Dismount") == CurrentWidgetID then
+            local SelectedEntity = GUI.GetSelectedEntity();
+            if SelectedEntity ~= 0 then
+                if Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Leader) == 1
+                or Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Thief) == 1
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitaryCatapult
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitarySiegeTower
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitaryBatteringRam
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_CatapultCart
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_SiegeTowerCart
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_BatteringRamCart
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_SiegeEngineCart
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_Trebuchet then
+                    local GuardianEntity = Logic.GetGuardianEntityID(SelectedEntity)
+                    if GuardianEntity == 0 then
+                        BundleEntitySelection.Local:SetTooltip(
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang],
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[lang]
+                        );
+                        return;
+                    end
+                end
+            end
+        end
+        
         GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean);
     end
 end
@@ -19126,19 +19861,24 @@ end
 -- @within Application-Space
 -- @local
 --
-function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText)
-    local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal"
-    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
-    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name")
-    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text")
+function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText, _DisabledText)
+    local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal";
+    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath);
+    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name");
+    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text");
+    local PositionWidget = XGUIEng.GetCurrentWidgetID();
     
-    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _TitleText)
-    XGUIEng.SetText(TooltipDescriptionWidget, _DescText)
+    _DisabledText = _DisabledText or "";
+    local DisabledText = "";
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText ~= "" and _text ~= "" then
+        DisabledText = DisabledText .. "{cr}{@color:255,32,32,255}" .. _DisabledText;
+    end
     
-    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
-    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
-    
-    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _TitleText);    
+    XGUIEng.SetText(TooltipDescriptionWidget, _DescText .. DisabledText);
+    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
+    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
+    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
 end
 
 ---
@@ -29142,3 +29882,163 @@ end
 
 Core:RegisterBundle("BundleEntityHealth");
 
+---
+-- Ändert die Gesundheit eines Entity.
+--
+-- @param _Entity     Entity
+-- @param _Percentage Prozentwert
+-- @return Table mit Behavior
+-- @within Reprisal
+--
+function Reprisal_SetHealth(...)
+    return b_Reprisal_SetHealth:new(...);
+end
+
+b_Reprisal_SetHealth = {
+    Name = "Reprisal_SetHealth",
+    Description = {
+        en = "Reprisal: Changes the health of an entity.",
+        de = "Vergeltung: Setzt die Gesundheit eines Entity.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
+        { ParameterType.Number,     en = "Percentage", de = "Prozentsatz", },
+    },
+}
+
+function b_Reprisal_SetHealth:GetRewardTable(_Quest)
+    return { Reprisal.Custom, { self, self.CustomFunction } }
+end
+
+function b_Reprisal_SetHealth:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Percentage = _Parameter;
+    end
+end
+
+function b_Reprisal_SetHealth:CustomFunction(_Quest)
+    SetHealth(self.Entity, self.Percentage);
+end
+
+function b_Reprisal_SetHealth:DEBUG(_Quest)
+    if not IsExisting(self.Entity) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        -- return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reprisal_SetHealth);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert die Gesundheit eines Entity.
+--
+-- @param _Entity     Entity
+-- @param _Percentage Prozentwert
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_SetHealth(...)
+    return b_Reward_SetHealth:new(...);
+end
+
+b_Reward_SetHealth = API.InstanceTable(b_Reprisal_SetHealth);
+b_Reward_SetHealth.Name = "Reward_SetHealth";
+b_Reward_SetHealth.Description.en = "Reward: Changes the health of an entity.";
+b_Reward_SetHealth.Description.de = "Lohn: Setzt die Gesundheit eines Entity.";
+b_Reward_SetHealth.GetReprisalTable = nil;
+
+b_Reward_SetHealth.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom, { self, self.CustomFunction } }
+end
+
+function b_Reward_SetHealth:DEBUG(_Quest)
+    if not IsExisting(self.Entity) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reward_SetHealth);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Die Gesundheit eines Entities muss einen bestimmten Wert erreichen.
+--
+-- @param _Entity Entity, das überwacht wird
+-- @param _Amount Menge in Prozent
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_EntityHealth(...)
+    return b_Trigger_EntityHealth:new(...);
+end
+
+b_Trigger_EntityHealth = {
+    Name = "Trigger_EntityHealth",
+    Description = {
+        en = "Trigger: The health of a unit must reach a certain point.",
+        de = "Auslöser: Die Gesundheit eines Entity muss einen bestimmten Wert erreichen.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.Custom,     en = "Relation",    de = "Relation" },
+        { ParameterType.Number,     en = "Percentage",  de = "Prozentwert" },
+    },
+}
+
+function b_Trigger_EntityHealth:GetTriggerTable(_Quest)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_EntityHealth:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter;
+    elseif (_Index == 1) then
+        self.BeSmalerThan = _Parameter == "<";
+    elseif (_Index == 2) then
+        self.Percentage = _Parameter;
+    end
+end
+
+function b_Goal_StealGold:GetCustomData(_Index)
+    if _Index == 1 then
+        return { "<", ">=" };
+    end
+end
+
+function b_Trigger_EntityHealth:CustomFunction(_Quest)
+    if self.BeSmalerThan then
+        return GetHealth(self.ScriptName) < self.Percentage;
+    else
+        return GetHealth(self.ScriptName) >= self.Percentage;
+    end
+end
+
+function b_Trigger_EntityHealth:DEBUG(_Quest)
+    if not IsExisting(self.ScriptName) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_EntityHealth);
