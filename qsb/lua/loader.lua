@@ -62,13 +62,11 @@ SymfoniaLoader = {
             {"BundleEntityHealth",                  true},
         },
         
-        -- BETA: LoadOrder der Addons. Addons sind Bundles mit Abhängigkeiten
-        -- zu einem oder mehr Bundles.
         AddOnLoadOrder = {
             {
-             "AddOnExample",                        false,
-             "BundleInteractiveObjects",
-             "BundleEntityHealth"
+            "AddOnInteractiveObjectTemplates",      true,
+            "BundleInteractiveObjects",
+            "BundleEntitySelection"
             },
         },
     }

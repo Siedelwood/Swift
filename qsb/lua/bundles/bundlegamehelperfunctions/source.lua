@@ -1510,3 +1510,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleGameHelperFunctions");
+

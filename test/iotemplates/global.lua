@@ -42,4 +42,6 @@ function Mission_FirstMapAction()
     end
     
     API.ActivateDebugMode(true, true, true, true)
+    
+    API.CreateIOBuildingSite("baths", 1, Entities.B_Baths);
 end

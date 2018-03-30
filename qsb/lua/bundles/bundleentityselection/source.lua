@@ -29,8 +29,8 @@ function API.DisableRefillTrebuchet(_Flag)
         API.Bridge("API.DisableRefillTrebuchet(" ..tostring(_Flag).. ")");
         return;
     end
-    API.Bridge("BundleEntitySelection.Local.Data.RefillTrebuchet = " ..tostring(_Flag).. " == true");
-    BundleEntitySelection.Local.Data.RefillTrebuchet = _Flag == true;
+    API.Bridge("BundleEntitySelection.Local.Data.RefillTrebuchet = " ..tostring(not _Flag));
+    BundleEntitySelection.Local.Data.RefillTrebuchet = not _Flag;
 end
 
 ---

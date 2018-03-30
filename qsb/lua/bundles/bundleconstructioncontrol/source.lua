@@ -537,3 +537,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleConstructionControl");
+
