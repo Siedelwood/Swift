@@ -31,8 +31,9 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/travelingsalesman/qsb.lua")
-    API.Install()
+    local Path = "E:/Repositories/symfonia/qsb/lua";
+    Script.Load(Path .. "/loader.lua");
+    SymfoniaLoader:Load(Path);
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -42,33 +43,5 @@ function Mission_FirstMapAction()
     
     API.ActivateDebugMode(true, true, true, true)
     
-    AddGood(Goods.G_Gold,   500, 1)
-    AddGood(Goods.G_Wood,    30, 1)
-    AddGood(Goods.G_Grain,   25, 1)
-    
-    -----
-    
-    local offers = {
-        {
-            {"G_Gems",5,},
-            {"G_Iron",5,},
-            {"G_Beer",2,},
-        },
-        {
-            {"G_Stone",5,},
-            {"G_Sheep",1,},
-            {"G_Cheese",2,},
-        },
-        {
-            {"G_Grain",5,},
-            {"G_Broom",2,},
-            {"G_Sheep",1,},
-        },
-        {
-            {"U_CatapultCart",1,},
-            {"U_MilitarySword",3,},
-            {"U_MilitaryBow",3,},
-        },
-    }
-    API.ActivateTravelingSalesman(2, offers, nil, {"WP1", "WP2", "WP3", "WP4"}, nil);
+    API.CreateIOBuildingSite("baths", 1, Entities.B_Baths);
 end

@@ -51,6 +51,7 @@ function Mission_FirstMapAction()
 
     -- Läd die Module
     API.Install();
+    InitKnightTitleTables();
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player();

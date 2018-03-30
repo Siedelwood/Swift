@@ -54,25 +54,25 @@ b_Goal_MoveToPosition = {
     },
 }
 
-function b_Goal_MoveToPosition:GetGoalTable(__quest_)
+function b_Goal_MoveToPosition:GetGoalTable(_Quest)
     return {Objective.Distance, self.Entity, self.Target, self.Distance, self.Marker}
 end
 
-function b_Goal_MoveToPosition:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Entity = __parameter_
-    elseif (__index_ == 1) then
-        self.Target = __parameter_
-    elseif (__index_ == 2) then
-        self.Distance = __parameter_ * 1
-    elseif (__index_ == 3) then
-        self.Marker = AcceptAlternativeBoolean(__parameter_)
+function b_Goal_MoveToPosition:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Entity = _Parameter
+    elseif (_Index == 1) then
+        self.Target = _Parameter
+    elseif (_Index == 2) then
+        self.Distance = _Parameter * 1
+    elseif (_Index == 3) then
+        self.Marker = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Goal_MoveToPosition:GetCustomData( __index_ )
+function b_Goal_MoveToPosition:GetCustomData( _Index )
     local Data = {};
-    if __index_ == 3 then
+    if _Index == 3 then
         Data = {"true", "false"}
     end
     return Data
@@ -104,17 +104,17 @@ b_Goal_WinQuest = {
     },
 }
 
-function b_Goal_WinQuest:GetGoalTable(__quest_)
+function b_Goal_WinQuest:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_WinQuest:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Quest = __parameter_;
+function b_Goal_WinQuest:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Quest = _Parameter;
     end
 end
 
-function b_Goal_WinQuest:CustomFunction(__quest_)
+function b_Goal_WinQuest:CustomFunction(_Quest)
     local quest = Quests[GetQuestID(self.Quest)];
     if quest then
         if quest.Result == QuestResult.Failure then
@@ -127,9 +127,9 @@ function b_Goal_WinQuest:CustomFunction(__quest_)
     return nil;
 end
 
-function b_Goal_WinQuest:DEBUG(__quest_)
+function b_Goal_WinQuest:DEBUG(_Quest)
     if Quests[GetQuestID(self.Quest)] == nil then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
         return true;
     end
     return false;
@@ -166,27 +166,27 @@ b_Goal_StealGold = {
     },
 }
 
-function b_Goal_StealGold:GetGoalTable(__quest_)
+function b_Goal_StealGold:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_StealGold:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Amount = __parameter_ * 1;
-    elseif (__index_ == 1) then
-        __parameter_ = __parameter_ or "true"
-        self.Printout = AcceptAlternativeBoolean(__parameter_);
+function b_Goal_StealGold:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Amount = _Parameter * 1;
+    elseif (_Index == 1) then
+        _Parameter = _Parameter or "true"
+        self.Printout = AcceptAlternativeBoolean(_Parameter);
     end
     self.StohlenGold = 0;
 end
 
-function b_Goal_StealGold:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_StealGold:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_StealGold:SetDescriptionOverwrite(__quest_)
+function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     local amount = self.Amount-self.StohlenGold;
     amount = (amount > 0 and amount) or 0;
@@ -197,8 +197,8 @@ function b_Goal_StealGold:SetDescriptionOverwrite(__quest_)
     return "{center}" .. text[lang] .. amount
 end
 
-function b_Goal_StealGold:CustomFunction(__quest_)
-    Core:ChangeCustomQuestCaptionText(__quest_.Identifier, self:SetDescriptionOverwrite(__quest_));
+function b_Goal_StealGold:CustomFunction(_Quest)
+    Core:ChangeCustomQuestCaptionText(_Quest.Identifier, self:SetDescriptionOverwrite(_Quest));
 
     if self.StohlenGold >= self.Amount then
         return true;
@@ -210,9 +210,9 @@ function b_Goal_StealGold:GetIcon()
     return {5,13};
 end
 
-function b_Goal_StealGold:DEBUG(__quest_)
+function b_Goal_StealGold:DEBUG(_Quest)
     if tonumber(self.Amount) == nil and self.Amount < 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
         return true;
     end
     return false;
@@ -251,24 +251,24 @@ b_Goal_StealBuilding = {
     },
 }
 
-function b_Goal_StealBuilding:GetGoalTable(__quest_)
+function b_Goal_StealBuilding:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_StealBuilding:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Building = __parameter_
+function b_Goal_StealBuilding:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Building = _Parameter
     end
     self.RobberList = {};
 end
 
-function b_Goal_StealBuilding:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_StealBuilding:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_StealBuilding:SetDescriptionOverwrite(__quest_)
+function b_Goal_StealBuilding:SetDescriptionOverwrite(_Quest)
     local isCathedral = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Cathedrals) == 1;
     local isWarehouse = Logic.GetEntityType(GetID(self.Building)) == Entities.B_StoreHouse;
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -293,7 +293,7 @@ function b_Goal_StealBuilding:SetDescriptionOverwrite(__quest_)
     return "{center}" .. text[lang];
 end
 
-function b_Goal_StealBuilding:CustomFunction(__quest_)
+function b_Goal_StealBuilding:CustomFunction(_Quest)
     if not IsExisting(self.Building) then
         if self.Marker then
             Logic.DestroyEffect(self.Marker);
@@ -317,20 +317,20 @@ function b_Goal_StealBuilding:GetIcon()
     return {5,13};
 end
 
-function b_Goal_StealBuilding:DEBUG(__quest_)
+function b_Goal_StealBuilding:DEBUG(_Quest)
     local eTypeName = Logic.GetEntityTypeName(Logic.GetEntityType(GetID(self.Building)));
     local IsHeadquarter = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Headquarters) == 1;
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is not a building");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
         return true;
     elseif string.find(eTypeName, "B_NPC_BanditsHQ") or string.find(eTypeName, "B_NPC_Cloister") or string.find(eTypeName, "B_NPC_StoreHouse") then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
         return true;
     elseif IsHeadquarter then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
         return true;
     end
     return false;
@@ -342,7 +342,7 @@ function b_Goal_StealBuilding:Reset()
     self.Marker = nil;
 end
 
-function b_Goal_StealBuilding:Interrupt(__quest_)
+function b_Goal_StealBuilding:Interrupt(_Quest)
     Logic.DestroyEffect(self.Marker);
 end
 
@@ -382,27 +382,27 @@ b_Goal_Infiltrate = {
     },
 }
 
-function b_Goal_Infiltrate:GetGoalTable(__quest_)
+function b_Goal_Infiltrate:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_Infiltrate:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Building = __parameter_
-    elseif (__index_ == 1) then
-        __parameter_ = __parameter_ or "true"
-        self.Delete = AcceptAlternativeBoolean(__parameter_)
+function b_Goal_Infiltrate:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Building = _Parameter
+    elseif (_Index == 1) then
+        _Parameter = _Parameter or "true"
+        self.Delete = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Goal_Infiltrate:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_Infiltrate:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_Infiltrate:SetDescriptionOverwrite(__quest_)
-    if not __quest_.QuestDescription then
+function b_Goal_Infiltrate:SetDescriptionOverwrite(_Quest)
+    if not _Quest.QuestDescription then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local text = {
             de = "Gebäude infriltrieren {cr}{cr}Spioniere das markierte Gebäude mit einem Dieb aus!",
@@ -410,11 +410,11 @@ function b_Goal_Infiltrate:SetDescriptionOverwrite(__quest_)
         };
         return text[lang];
     else
-        return __quest_.QuestDescription;
+        return _Quest.QuestDescription;
     end
 end
 
-function b_Goal_Infiltrate:CustomFunction(__quest_)
+function b_Goal_Infiltrate:CustomFunction(_Quest)
     if not IsExisting(self.Building) then
         if self.Marker then
             Logic.DestroyEffect(self.Marker);
@@ -438,12 +438,12 @@ function b_Goal_Infiltrate:GetIcon()
     return self.IconOverwrite;
 end
 
-function b_Goal_Infiltrate:DEBUG(__quest_)
+function b_Goal_Infiltrate:DEBUG(_Quest)
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is not a building");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
         return true;
     end
     return false;
@@ -454,7 +454,7 @@ function b_Goal_Infiltrate:Reset()
     self.Marker = nil;
 end
 
-function b_Goal_Infiltrate:Interrupt(__quest_)
+function b_Goal_Infiltrate:Interrupt(_Quest)
     Logic.DestroyEffect(self.Marker);
 end
 
@@ -571,23 +571,23 @@ b_Reprisal_SetPosition = {
     },
 }
 
-function b_Reprisal_SetPosition:GetReprisalTable(__quest_)
+function b_Reprisal_SetPosition:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetPosition:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Target = __parameter_;
-    elseif (__index_ == 2) then
-        self.FaceToFace = AcceptAlternativeBoolean(__parameter_)
-    elseif (__index_ == 3) then
-        self.Distance = (__parameter_ ~= nil and tonumber(__parameter_)) or 100;
+function b_Reprisal_SetPosition:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Target = _Parameter;
+    elseif (_Index == 2) then
+        self.FaceToFace = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 3) then
+        self.Distance = (_Parameter ~= nil and tonumber(_Parameter)) or 100;
     end
 end
 
-function b_Reprisal_SetPosition:CustomFunction(__quest_)
+function b_Reprisal_SetPosition:CustomFunction(_Quest)
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
         return;
     end
@@ -613,21 +613,21 @@ function b_Reprisal_SetPosition:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetPosition:GetCustomData(__index_)
-    if __index_ == 3 then
+function b_Reprisal_SetPosition:GetCustomData(_Index)
+    if _Index == 3 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetPosition:DEBUG(__quest_)
+function b_Reprisal_SetPosition:DEBUG(_Quest)
     if self.FaceToFace then
         if tonumber(self.Distance) == nil or self.Distance < 50 then
-            dbg(__quest_.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
+            dbg(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
             return true;
         end
     end
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -661,19 +661,19 @@ b_Reprisal_ChangePlayer = {
     },
 }
 
-function b_Reprisal_ChangePlayer:GetReprisalTable(__quest_)
+function b_Reprisal_ChangePlayer:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_ChangePlayer:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Player = tostring(__parameter_);
+function b_Reprisal_ChangePlayer:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Player = tostring(_Parameter);
     end
 end
 
-function b_Reprisal_ChangePlayer:CustomFunction(__quest_)
+function b_Reprisal_ChangePlayer:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -685,15 +685,15 @@ function b_Reprisal_ChangePlayer:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_ChangePlayer:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_ChangePlayer:GetCustomData(_Index)
+    if _Index == 1 then
         return {"0", "1", "2", "3", "4", "5", "6", "7", "8"}
     end
 end
 
-function b_Reprisal_ChangePlayer:DEBUG(__quest_)
+function b_Reprisal_ChangePlayer:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -727,19 +727,19 @@ b_Reprisal_SetVisible = {
     },
 }
 
-function b_Reprisal_SetVisible:GetReprisalTable(__quest_)
+function b_Reprisal_SetVisible:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetVisible:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Visible = AcceptAlternativeBoolean(__parameter_)
+function b_Reprisal_SetVisible:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Visible = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reprisal_SetVisible:CustomFunction(__quest_)
+function b_Reprisal_SetVisible:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -774,15 +774,15 @@ function b_Reprisal_SetVisible:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetVisible:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetVisible:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetVisible:DEBUG(__quest_)
+function b_Reprisal_SetVisible:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -816,19 +816,19 @@ b_Reprisal_SetVulnerability = {
     },
 }
 
-function b_Reprisal_SetVulnerability:GetReprisalTable(__quest_)
+function b_Reprisal_SetVulnerability:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetVulnerability:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Vulnerability = AcceptAlternativeBoolean(__parameter_)
+function b_Reprisal_SetVulnerability:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Vulnerability = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reprisal_SetVulnerability:CustomFunction(__quest_)
+function b_Reprisal_SetVulnerability:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -870,15 +870,15 @@ function b_Reprisal_SetVulnerability:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetVulnerability:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetVulnerability:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetVulnerability:DEBUG(__quest_)
+function b_Reprisal_SetVulnerability:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -907,8 +907,8 @@ end
 b_Reprisal_SetModel = {
     Name = "Reprisal_SetModel",
     Description = {
-        en = "Reward: Changes the model of the entity. Be careful, some models crash the game.",
-        de = "Lohn: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.",
+        en = "Reprisal: Changes the model of the entity. Be careful, some models crash the game.",
+        de = "Vergeltung: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
@@ -916,19 +916,19 @@ b_Reprisal_SetModel = {
     },
 }
 
-function b_Reprisal_SetModel:GetRewardTable(__quest_)
-    return { Reward.Custom, { self, self.CustomFunction } }
+function b_Reprisal_SetModel:GetReprisalTable(_Quest)
+    return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetModel:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Model = __parameter_;
+function b_Reprisal_SetModel:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Model = _Parameter;
     end
 end
 
-function b_Reprisal_SetModel:CustomFunction(__quest_)
+function b_Reprisal_SetModel:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -936,8 +936,8 @@ function b_Reprisal_SetModel:CustomFunction(__quest_)
     Logic.SetModel(eID, Models[self.Model]);
 end
 
-function b_Reprisal_SetModel:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetModel:GetCustomData(_Index)
+    if _Index == 1 then
         local Data = {};
         for k,v in pairs(Models) do
             if  not string.find(k,"Animals_") and not string.find(k,"Banners_") and not string.find(k,"Goods_") and not string.find(k,"goods_")
@@ -950,9 +950,9 @@ function b_Reprisal_SetModel:GetCustomData(__index_)
     end
 end
 
-function b_Reprisal_SetModel:DEBUG(__quest_)
+function b_Reprisal_SetModel:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -988,7 +988,7 @@ b_Reward_SetPosition.Description.en = "Reward: Places an entity relative to the 
 b_Reward_SetPosition.Description.de = "Lohn: Setzt eine Entity relativ zur Position einer anderen. Die Entity kann zum Ziel ausgerichtet werden.";
 b_Reward_SetPosition.GetReprisalTable = nil;
 
-b_Reward_SetPosition.GetRewardTable = function(self, __quest_)
+b_Reward_SetPosition.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -1014,7 +1014,7 @@ b_Reward_ChangePlayer.Description.en = "Reward: Changes the owner of the entity 
 b_Reward_ChangePlayer.Description.de = "Lohn: Aendert den Besitzer einer Entity oder eines Battalions.";
 b_Reward_ChangePlayer.GetReprisalTable = nil;
 
-b_Reward_ChangePlayer.GetRewardTable = function(self, __quest_)
+b_Reward_ChangePlayer.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -1055,23 +1055,23 @@ b_Reward_MoveToPosition = {
     },
 }
 
-function b_Reward_MoveToPosition:GetRewardTable(__quest_)
+function b_Reward_MoveToPosition:GetRewardTable(_Quest)
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reward_MoveToPosition:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Target = __parameter_;
-    elseif (__index_ == 2) then
-        self.Distance = __parameter_ * 1;
-    elseif (__index_ == 3) then
-        self.Angle = __parameter_ * 1;
+function b_Reward_MoveToPosition:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Target = _Parameter;
+    elseif (_Index == 2) then
+        self.Distance = _Parameter * 1;
+    elseif (_Index == 3) then
+        self.Angle = _Parameter * 1;
     end
 end
 
-function b_Reward_MoveToPosition:CustomFunction(__quest_)
+function b_Reward_MoveToPosition:CustomFunction(_Quest)
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
         return;
     end
@@ -1096,12 +1096,12 @@ function b_Reward_MoveToPosition:CustomFunction(__quest_)
     end, entity, target);
 end
 
-function b_Reward_MoveToPosition:DEBUG(__quest_)
+function b_Reward_MoveToPosition:DEBUG(_Quest)
     if tonumber(self.Distance) == nil or self.Distance < 50 then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Reward_MoveToPosition: Distance is nil or to short!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
         return true;
     elseif not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Reward_MoveToPosition: Mover entity or target entity does not exist!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -1136,12 +1136,12 @@ function b_Reward_VictoryWithParty:GetRewardTable()
     return {Reward.Custom, {self, self.CustomFunction}};
 end
 
-function b_Reward_VictoryWithParty:AddParameter(__index_, __parameter_)
+function b_Reward_VictoryWithParty:AddParameter(_Index, _Parameter)
 end
 
-function b_Reward_VictoryWithParty:CustomFunction(__quest_)
+function b_Reward_VictoryWithParty:CustomFunction(_Quest)
     Victory(g_VictoryAndDefeatType.VictoryMissionComplete);
-    local pID = __quest_.ReceivingPlayer;
+    local pID = _Quest.ReceivingPlayer;
 
     local market = Logic.GetMarketplace(pID);
     if IsExisting(market) then
@@ -1182,7 +1182,7 @@ function b_Reward_VictoryWithParty:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_VictoryWithParty:DEBUG(__quest_)
+function b_Reward_VictoryWithParty:DEBUG(_Quest)
     return false;
 end
 
@@ -1208,7 +1208,7 @@ b_Reward_SetVisible.Description.en = "Reward: Changes the visibility of an entit
 b_Reward_SetVisible.Description.de = "Lohn: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.";
 b_Reward_SetVisible.GetReprisalTable = nil;
 
-b_Reward_SetVisible.GetRewardTable = function(self, __quest_)
+b_Reward_SetVisible.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -1240,19 +1240,19 @@ b_Reward_AI_SetEntityControlled = {
     },
 }
 
-function b_Reward_AI_SetEntityControlled:GetRewardTable(__quest_)
+function b_Reward_AI_SetEntityControlled:GetRewardTable(_Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reward_AI_SetEntityControlled:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Hidden = AcceptAlternativeBoolean(__parameter_)
+function b_Reward_AI_SetEntityControlled:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Hidden = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_AI_SetEntityControlled:CustomFunction(__quest_)
+function b_Reward_AI_SetEntityControlled:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -1273,15 +1273,15 @@ function b_Reward_AI_SetEntityControlled:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_AI_SetEntityControlled:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reward_AI_SetEntityControlled:GetCustomData(_Index)
+    if _Index == 1 then
         return { "false", "true" }
     end
 end
 
-function b_Reward_AI_SetEntityControlled:DEBUG(__quest_)
+function b_Reward_AI_SetEntityControlled:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1309,7 +1309,7 @@ b_Reward_SetVulnerability.Description.en = "Reward: Changes the vulnerability of
 b_Reward_SetVulnerability.Description.de = "Lohn: Macht eine Entity verwundbar oder unverwundbar. Handelt es sich um einen Spawner, sind die gespawnten Entities betroffen.";
 b_Reward_SetVulnerability.GetReprisalTable = nil;
 
-b_Reward_SetVulnerability.GetRewardTable = function(self, __quest_)
+b_Reward_SetVulnerability.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -1339,7 +1339,7 @@ b_Reward_SetModel.Description.en = "Reward: Changes the model of the entity. Be 
 b_Reward_SetModel.Description.de = "Lohn: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.";
 b_Reward_SetModel.GetReprisalTable = nil;
 
-b_Reward_SetModel.GetRewardTable = function(self, __quest_)
+b_Reward_SetModel.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -1592,21 +1592,21 @@ b_Trigger_OnExactOneQuestIsWon = {
     },
 }
 
-function b_Trigger_OnExactOneQuestIsWon:GetTriggerTable(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_OnExactOneQuestIsWon:AddParameter(__index_, __parameter_)
+function b_Trigger_OnExactOneQuestIsWon:AddParameter(_Index, _Parameter)
     self.QuestTable = {};
 
-    if (__index_ == 0) then
-        self.Quest1 = __parameter_;
-    elseif (__index_ == 1) then
-        self.Quest2 = __parameter_;
+    if (_Index == 0) then
+        self.Quest1 = _Parameter;
+    elseif (_Index == 1) then
+        self.Quest2 = _Parameter;
     end
 end
 
-function b_Trigger_OnExactOneQuestIsWon:CustomFunction(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:CustomFunction(_Quest)
     local Quest1 = Quests[GetQuestID(self.Quest1)];
     local Quest2 = Quests[GetQuestID(self.Quest2)];
     if Quest2 and Quest1 then
@@ -1619,15 +1619,15 @@ function b_Trigger_OnExactOneQuestIsWon:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnExactOneQuestIsWon:DEBUG(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:DEBUG(_Quest)
     if self.Quest1 == self.Quest2 then
-        dbg(__quest_.Identifier..": "..self.Name..": Both quests are identical!");
+        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;
@@ -1661,21 +1661,21 @@ b_Trigger_OnExactOneQuestIsLost = {
     },
 }
 
-function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_OnExactOneQuestIsLost:AddParameter(__index_, __parameter_)
+function b_Trigger_OnExactOneQuestIsLost:AddParameter(_Index, _Parameter)
     self.QuestTable = {};
 
-    if (__index_ == 0) then
-        self.Quest1 = __parameter_;
-    elseif (__index_ == 1) then
-        self.Quest2 = __parameter_;
+    if (_Index == 0) then
+        self.Quest1 = _Parameter;
+    elseif (_Index == 1) then
+        self.Quest2 = _Parameter;
     end
 end
 
-function b_Trigger_OnExactOneQuestIsLost:CustomFunction(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:CustomFunction(_Quest)
     local Quest1 = Quests[GetQuestID(self.Quest1)];
     local Quest2 = Quests[GetQuestID(self.Quest2)];
     if Quest2 and Quest1 then
@@ -1688,15 +1688,15 @@ function b_Trigger_OnExactOneQuestIsLost:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnExactOneQuestIsLost:DEBUG(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:DEBUG(_Quest)
     if self.Quest1 == self.Quest2 then
-        dbg(__quest_.Identifier..": "..self.Name..": Both quests are identical!");
+        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;
@@ -1717,7 +1717,7 @@ BundleSymfoniaBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSymfoniaBehaviors.Global:Install()
@@ -1883,7 +1883,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSymfoniaBehaviors.Local:Install()

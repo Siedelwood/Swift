@@ -31,7 +31,11 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/castlestore/qsb.lua")
+    -- Laden der Bibliothek
+    local MapType, Campaign = Framework.GetCurrentMapTypeAndCampaignName();
+    local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
+    local MapName = Framework.GetCurrentMapName();
+    Script.Load("Maps/"..MapFolder.."/"..MapName.."/QuestSystemBehavior.lua");
     API.Install()
 
     if Framework.IsNetworkGame() ~= true then

@@ -26,7 +26,7 @@ QSB = QSB or {};
 --
 -- <b>Alias:</b> ActivateSingleStop
 --
--- @within User-Space
+-- @within Public
 --
 function API.ActivateSingleStop()
     if not GUI then
@@ -48,7 +48,7 @@ ActivateSingleStop = API.ActivateSingleStop;
 --
 -- <b>Alias:</b> DeactivateSingleStop
 --
--- @within User-Space
+-- @within Public
 --
 function API.DeactivateSingleStop()
     if not GUI then
@@ -65,7 +65,7 @@ DeactivateSingleStop = API.DeactivateSingleStop;
 -- <b>Alias:</b> UseDowngrade
 --
 -- @param _flag Downgrade aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseDowngrade(_flag)
     if not GUI then
@@ -82,7 +82,7 @@ UseDowngrade = API.UseDowngrade;
 -- <b>Alias:</b> UseBreedCattle
 --
 -- @param _flag Kuhzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedCattle(_flag)
     if not GUI then
@@ -109,7 +109,7 @@ UseBreedCattle = API.UseBreedCattle;
 -- <b>Alias:</b> UseBreedSheeps
 --
 -- @param _flag Schafzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedSheeps(_flag)
     if not GUI then
@@ -136,7 +136,7 @@ UseBreedSheeps = API.UseBreedSheeps;
 -- <b>Alias:</b> UseBreedCattle
 --
 -- @param _flag Kuhzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedCattle(_flag)
     if not GUI then
@@ -163,7 +163,7 @@ UseBreedCattle = API.UseBreedCattle;
 -- <b>Alias:</b> SetSheepGrainCost
 --
 -- @param _Amount Getreidekosten
--- @within User-Space
+-- @within Public
 --
 function API.SetSheepGrainCost(_Amount)
     if not GUI then
@@ -180,7 +180,7 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 -- <b>Alias:</b> SetCattleGrainCost
 --
 -- @param _Amount Getreidekosten
--- @within User-Space
+-- @within Public
 --
 function API.SetCattleGrainCost(_Amount)
     if not GUI then
@@ -197,7 +197,7 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 -- <b>Alias:</b> SetSheepNeeded
 --
 -- @param _Amount Benötigte Menge
--- @within User-Space
+-- @within Public
 --
 function API.SetSheepNeeded(_Amount)
     if not GUI then
@@ -217,7 +217,7 @@ SetSheepNeeded = API.SetSheepNeeded;
 -- <b>Alias:</b> SetCattleNeeded
 --
 -- @param _Amount Benötigte Menge
--- @within User-Space
+-- @within Public
 --
 function API.SetCattleNeeded(_Amount)
     if not GUI then
@@ -314,7 +314,7 @@ BundleBuildingButtons = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Global:Install()
@@ -327,7 +327,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:Install()
@@ -349,7 +349,7 @@ end
 ---
 -- Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:BuyAnimal(_eID)
@@ -380,7 +380,7 @@ end
 --
 -- Ein Gebäude der Stufe 1 wird zerstört. Aktuell ist dies aber inaktiv.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:DowngradeBuilding()
@@ -407,7 +407,7 @@ end
 -- @param _actionFunction   Action-Funktion (String in Global)
 -- @param _tooltipFunction  Tooltip-Funktion (String in Global)
 -- @param _updateFunction   Update-Funktion (String in Global)
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:AddOptionalButton(_idx, _actionFunction, _tooltipFunction, _updateFunction)
@@ -443,7 +443,7 @@ end
 -- Entfernt den Zusatz-Button auf dem Index.
 --
 -- @param _idx Indexposition des Button (1 oder 2)
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
@@ -473,7 +473,7 @@ end
 --
 -- Diese Funktion implementiert den optionalen Schalter #1.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteAutoToggle()
@@ -535,7 +535,7 @@ end
 --
 -- Diese Funktion implementiert den optionalen Schalter #2.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteGateOpenClose()
@@ -597,7 +597,7 @@ end
 --
 -- Diese Funktion implementiert den Rückbau.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteToggleTrap()
@@ -690,7 +690,7 @@ end
 -- Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung. Dabei
 -- wird die Nutztierzucht implementiert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
@@ -851,7 +851,7 @@ end
 -- Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
 -- funktioniert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteHouseMenuButtons()
@@ -952,7 +952,7 @@ end
 -- @param _DisabledText Textzusatz wenn inaktiv
 -- @param _Costs        Kostentabelle
 -- @param _InSettlement Kosten in Siedlung suchen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
@@ -987,7 +987,7 @@ end
 ---
 -- Diese Funktion ist die Action von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action(WidgetID, EntityID)
@@ -999,7 +999,7 @@ end
 ---
 -- Diese Funktion steuert den Tooltip von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
@@ -1013,7 +1013,7 @@ end
 ---
 -- Diese Funktion ist der Update Job von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update(_WidgetID, _EntityID)
@@ -1036,7 +1036,7 @@ end
 -- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
 -- @param _Source Quelle der Änderung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.OnSelectionChanged(_Source)
@@ -1051,3 +1051,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleBuildingButtons");
+

@@ -87,7 +87,7 @@ BundleKnightTitleRequirements = {
 --
 function BundleKnightTitleRequirements.Global:Install()
     self:OverwriteConsumedGoods();
-    InitKnightTitleTables();
+    -- InitKnightTitleTables();
 end
 
 ---
@@ -137,7 +137,7 @@ function BundleKnightTitleRequirements.Local:Install()
     self:InitTexturePositions();
     self:OverwriteUpdateRequirements();
     self:OverwritePromotionCelebration();
-    InitKnightTitleTables();
+    -- InitKnightTitleTables();
 end
 
 ---
@@ -1604,7 +1604,8 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
--- Definiert andere Aufstiegsbedingungen für den Spieler.
+-- Definiert andere Aufstiegsbedingungen für den Spieler. Muss stets nach dem
+-- Laden der QSB im globalen und lokalen Skript aufgerufen werden!
 --
 -- Diese Funktion muss entweder in der QSB modifiziert oder sowohl im globalen
 -- als auch im lokalen Skript überschrieben werden. Bei Modifikationen muss

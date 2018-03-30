@@ -15,23 +15,23 @@
 -- aufbereitet, dass Bundles ihre Inhalte einfach ergänzen können. Dies wird
 -- jedoch nicht für alle Funktionen des Spiels möglich sein.
 --
--- Wie die einzelnen Bundles ist auch das Framework in einen User- und einen
--- Application-Space aufgeteilt. Der User-Space enthält Funktionen innerhalb
--- der Bibliothek "API". Alle Bundles ergänzen ihre User-Space-Funktionen dort.
+-- Wie die einzelnen Bundles ist auch das Framework in einen Public und einen
+-- Private Space aufgeteilt. Der Public Space enthält Funktionen innerhalb
+-- der Bibliothek "API". Alle Bundles ergänzen ihre Public-Funktionen dort.
 -- Außer den Aliases auf API-Funktionen und den Behavior-Funktionen sind keine
 -- anderen öffentlichen Funktionen für den Anwendern sichtbar zu machen!
--- Sinn des User-Space ist es, Funktionsaufrufe, die zum Teil nur in einer
+-- Sinn des Public Space ist es, Funktionsaufrufe, die zum Teil nur in einer
 -- Skriptumgebung bekannt sind zu verallgemeinern. Wird die Funktion nun aus
 -- der falschen Umgebung aufgerufen, wird der Aufruf an die richtige Umgebung
 -- weitergereicht oder, falls dies nicht möglich ist, abgebrochen. Dies soll
 -- Fehler vermeiden.
 --
--- Im Application-Space liegen die privaten Funktionen und Variablen, die
+-- Im Private Space liegen die privaten Funktionen und Variablen, die
 -- nicht in der Dokumentation erscheinen. Sie sind mit einem Local-Tag zu
 -- versehen! Der Nutzer soll diese Funktionen in der Regel nicht anfassen,
 -- daher muss er auch nicht wissen, dass es sie gibt!
 --
--- Ziel der Teilung zwischen User-Space und Application-Space ist es, dem
+-- Ziel der Teilung zwischen Public Space und Private Space ist es, dem
 -- Anwender eine saubere und leicht verständliche Oberfläche zu Bieten, mit
 -- der er einfach arbeiten kann. Kenntnis über die komplexen Prozesse hinter
 -- den Kulissen sind dafür nicht notwendig.
@@ -41,7 +41,9 @@
 --
 
 API = API or {};
-QSB = QSB or {};
+QSB = QSB or {
+    Version = "0.0.6"
+};
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -68,7 +70,7 @@ end
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
 -- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
 -- werden, bevor die QSB verwendet werden kann.
--- @within User-Space
+-- @within Public
 --
 function API.Install()
     Core:InitalizeBundles();
@@ -88,7 +90,7 @@ end
 -- @param _Source    Quelltabelle
 -- @param _Dest      Zieltabelle
 -- @return Kopie der Tabelle
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- Copy = API.InstanceTable(Table)
 --
@@ -117,7 +119,7 @@ CopyTableRecursive = API.InstanceTable;
 -- @param _Data     Datum, das gesucht wird
 -- @param _Table    Tabelle, die durchquert wird
 -- @return booelan: Wert gefunden
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- local Found = API.TraverseTable(3, Table)
 --
@@ -137,7 +139,7 @@ Inside = API.TraverseTable;
 --
 -- @param _Table Tabelle, die gedumpt wird
 -- @param _Name Optionaler Name im Log
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- API.DumpTable(Table)
 --
@@ -206,7 +208,7 @@ end
 --
 -- @param _Name     Identifier des Quest
 -- @return number: ID des Quest
--- @within User-Space
+-- @within Public
 --
 function API.GetQuestID(_Name)
     if type(_Name) == "number" then
@@ -230,7 +232,7 @@ GetQuestID = API.GetQuestID;
 --
 -- @param _QuestID   ID oder Name des Quest
 -- @return boolean: Quest existiert
--- @within User-Space
+-- @within Public
 --
 function API.IsValidateQuest(_QuestID)
     return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
@@ -245,7 +247,7 @@ IsValidQuest = API.IsValidateQuest;
 -- <b>Alias:</b> FailQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
@@ -262,7 +264,7 @@ FailQuestsByName = API.FailAllQuests;
 -- <b>Alias:</b> FailQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -280,7 +282,7 @@ FailQuestByName = API.FailQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
@@ -303,7 +305,7 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <b>Alias:</b> RestartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
@@ -379,7 +381,7 @@ RestartQuestByName = API.RestartQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
@@ -396,7 +398,7 @@ StartQuestsByName = API.StartAllQuests;
 -- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -415,7 +417,7 @@ StartQuestByName = API.StartQuest;
 -- <b>Alias:</b> StopQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
@@ -433,7 +435,7 @@ StopQuestwByName = API.StopAllQuests;
 -- <b>Alias:</b> StopQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -453,7 +455,7 @@ StopQuestByName = API.StopQuest;
 -- <b>Alias:</b> WinQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
@@ -470,7 +472,7 @@ WinQuestsByName = API.WinAllQuests;
 -- <b>Alias:</b> WinQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -491,7 +493,7 @@ WinQuestByName = API.WinQuest;
 -- <b>Alias:</b> GUI_Note
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Note(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -508,7 +510,7 @@ GUI_Note = API.Note;
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.StaticNote(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -522,7 +524,7 @@ end
 ---
 -- Löscht alle Nachrichten im Debug Window.
 --
--- @within User-Space
+-- @within Public
 --
 function API.ClearNotes()
     if not GUI then
@@ -538,7 +540,7 @@ end
 -- Spiels die Nachricht gesendet wurde.
 --
 -- @param _Message Nachricht für's Log
--- @within User-Space
+-- @within Public
 --
 function API.Log(_Message)
     local Env  = (GUI and "Local") or "Global";
@@ -550,7 +552,7 @@ end
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Message(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -567,7 +569,7 @@ end
 -- <b>Alias:</b> dbg
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Dbg(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.ERROR then
@@ -583,7 +585,7 @@ dbg = API.Dbg;
 --
 -- @param _Message Anzeigetext
 -- @return string: Message
--- @within User-Space
+-- @within Public
 --
 function API.EnsureMessage(_Message)
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -599,7 +601,7 @@ end
 -- <p><b>Alias:</b> warn</p>
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Warn(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
@@ -615,7 +617,7 @@ warn = API.Warn;
 -- <b>Alias:</b> info
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Info(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
@@ -690,7 +692,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
 -- </table>
 --
 -- @param _Level Level
--- @within User-Space
+-- @within Public
 --
 function API.SetLogLevel(_Level)
     assert(type(_Level) == "number");
@@ -712,7 +714,7 @@ end
 -- @param _cartOverlay         (optional) Overlay für Goldkarren
 -- @param _ignoreReservation   (optional) Marktplatzreservation ignorieren
 -- @return number: Entity-ID des erzeugten Wagens
--- @within User-Space
+-- @within Public
 -- @usage -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
 -- -- Legacy-Call mit ID-Speicherung
@@ -760,7 +762,7 @@ SendCart = API.SendCart;
 -- @param _Type       Neuer Typ
 -- @param _NewOwner   (optional) Neuer Besitzer
 -- @return number: Entity-ID des Entity
--- @within User-Space
+-- @within Public
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
 function API.ReplaceEntity(_Entity, _Type, _NewOwner)
@@ -789,7 +791,7 @@ ReplaceEntity = API.ReplaceEntity;
 -- @param _entity           Entity
 -- @param _entityToLookAt   Ziel
 -- @param _offsetEntity     Winkel-Offset
--- @within User-Space
+-- @within Public
 -- @usage API.LookAt("Hakim", "Alandra")
 --
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
@@ -812,7 +814,7 @@ LookAt = API.LookAt;
 --
 -- @param _entity           Erstes Entity
 -- @param _entityToLookAt   Zweites Entity
--- @within User-Space
+-- @within Public
 -- @usage API.Confront("Hakim", "Alandra")
 --
 function API.Confront(_entity, _entityToLookAt)
@@ -829,7 +831,7 @@ end
 -- @param _pos1 Erste Vergleichsposition
 -- @param _pos2 Zweite Vergleichsposition
 -- @return number: Entfernung zwischen den Punkten
--- @within User-Space
+-- @within Public
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
@@ -855,7 +857,7 @@ GetDistance = API.GetDistance;
 --
 -- @param _pos Positionstable
 -- @return boolean: Position ist valide
--- @within User-Space
+-- @within Public
 --
 function API.ValidatePosition(_pos)
     if type(_pos) == "table" then
@@ -879,7 +881,7 @@ IsValidPosition = API.ValidatePosition;
 --
 -- @param _Entity   Entity, dessen Position bestimmt wird.
 -- @return table: Positionstabelle {X= x, Y= y, Z= z}
--- @within User-Space
+-- @within Public
 -- @usage local Position = API.LocateEntity("Hans")
 --
 function API.LocateEntity(_Entity)
@@ -905,7 +907,7 @@ GetPosition = API.LocateEntity;
 --
 -- @param _ScriptName  Skriptname des IO
 -- @param _State       Aktivierungszustand
--- @within User-Space
+-- @within Public
 -- @usage API.ActivateIO("Haus1", 0)
 -- @usage API.ActivateIO("Hut1")
 --
@@ -932,7 +934,7 @@ InteractiveObjectActivate = API.AcrivateIO;
 -- <b>Alias:</b> InteractiveObjectDeactivate
 --
 -- @param _ScriptName Skriptname des IO
--- @within User-Space
+-- @within Public
 -- @usage API.DeactivateIO("Hut1")
 --
 function API.DeactivateIO(_ScriptName)
@@ -959,7 +961,7 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 -- @param _player    PlayerID [0-8] oder -1 für alle
 -- @param _category  Kategorie, der die Entities angehören
 -- @param _territory Zielterritorium
--- @within User-Space
+-- @within Public
 -- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
 function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
@@ -1039,7 +1041,7 @@ end
 --
 -- @param _Value Wahrheitswert
 -- @return boolean: Wahrheitswert
--- @within User-Space
+-- @within Public
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
 -- local Bool = API.ToBoolean("no") --> Bool = false
@@ -1056,7 +1058,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- <b>Alias</b>: AddOnSaveGameLoadedAction
 --
 -- @param _Function Funktion, die ausgeführt werden soll
--- @within User-Space
+-- @within Public
 -- @usage SaveGame = function()
 --     API.Note("foo")
 -- end
@@ -1077,7 +1079,7 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 -- @param _Key         Tastenkombination
 -- @param _Description Beschreibung des Hotkey
 -- @return number: Index
--- @within User-Space
+-- @within Public
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
@@ -1092,7 +1094,7 @@ end
 -- Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
 --
 -- @param _Index Index in Table
--- @within User-Space
+-- @within Public
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
@@ -1125,7 +1127,7 @@ Core = {
 ---
 -- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:InitalizeBundles()
@@ -1137,13 +1139,14 @@ function Core:InitalizeBundles()
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
+        local Bundle = _G[v];
         if not GUI then
-            if v.Global ~= nil and v.Global.Install ~= nil then
-                v.Global:Install();
+            if Bundle.Global ~= nil and Bundle.Global.Install ~= nil then
+                Bundle.Global:Install();
             end
         else
-            if v.Local ~= nil and v.Local.Install ~= nil then
-                v.Local:Install();
+            if Bundle.Local ~= nil and Bundle.Local.Install ~= nil then
+                Bundle.Local:Install();
             end
         end
     end
@@ -1151,7 +1154,7 @@ end
 
 ---
 -- FIXME
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupGobal_HackCreateQuest()
@@ -1210,7 +1213,7 @@ end
 
 ---
 -- FIXME
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupGlobal_HackQuestSystem()
@@ -1245,7 +1248,7 @@ end
 ---
 -- Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
 -- angezeigt werden können.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupLocal_HackRegisterHotkey()
@@ -1317,13 +1320,29 @@ end
 -- Registiert ein Bundle, sodass es initialisiert wird.
 --
 -- @param _Bundle Name des Moduls
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:RegisterBundle(_Bundle)
     local text = string.format("Error while initialize bundle '%s': does not exist!", tostring(_Bundle));
     assert(_G[_Bundle] ~= nil, text);
-    table.insert(self.Data.BundleInitializerList, _G[_Bundle]);
+    table.insert(self.Data.BundleInitializerList, _Bundle);
+end
+
+---
+-- Registiert ein AddOn als Bundle, sodass es initialisiert wird.
+--
+-- Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und 
+-- existiert nur zur Übersichtlichkeit.
+--
+-- @param _Bundle Name des Moduls
+-- @within Private
+-- @local
+--
+function Core:RegisterAddOn(_AddOn)
+    local text = string.format("Error while initialize addon '%s': does not exist!", tostring(_AddOn));
+    assert(_G[_AddOn] ~= nil, text);
+    table.insert(self.Data.BundleInitializerList, _AddOn);
 end
 
 ---
@@ -1331,7 +1350,7 @@ end
 -- Erzeugt zudem den Konstruktor.
 --
 -- @param _Behavior    Behavior-Objekt
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:RegisterBehavior(_Behavior)
@@ -1366,7 +1385,7 @@ end
 --
 -- @param _Name     Quest
 -- @return boolean: Questname ist fehlerfrei
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:CheckQuestName(_Name)
@@ -1379,7 +1398,7 @@ end
 --
 -- @param _Text   Neuer Text
 -- @param _Quest  Identifier des Quest
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:ChangeCustomQuestCaptionText(_Text, _Quest)
@@ -1412,7 +1431,7 @@ end
 -- @param _FunctionName
 -- @param _StackFunction
 -- @param _Index
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:StackFunction(_FunctionName, _StackFunction, _Index)
@@ -1451,7 +1470,7 @@ end
 -- @param _FunctionName
 -- @param _AppendFunction
 -- @param _Index
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
@@ -1482,7 +1501,7 @@ end
 -- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
 --
 -- @local
--- @within Application-Space
+-- @within Private
 -- @usage A = {foo = function() API.Note("bar") end}
 -- B = function() API.Note("muh") end
 -- Core:ReplaceFunction("A.foo", B)
@@ -1517,7 +1536,7 @@ end
 -- @param _FunctionName Name der Funktion
 -- @param _Reference    Aktuelle Referenz (für Rekursion)
 -- @return function: Gefundene Funktion
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:GetFunctionInString(_FunctionName, _Reference)
@@ -1550,7 +1569,7 @@ end
 --
 -- @param _Input Boolean-Darstellung
 -- @return boolean: Konvertierte Boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:ToBoolean(_Input)
@@ -1563,3 +1582,4 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
+

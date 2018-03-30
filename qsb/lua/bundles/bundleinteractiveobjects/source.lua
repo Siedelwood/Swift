@@ -31,7 +31,7 @@ QSB.IOList = {};
 --
 -- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
--- @within User-Space
+-- @within Public
 --
 function API.SetupInteractiveObject(_Name, _Description)
     if GUI then
@@ -49,7 +49,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 --
 -- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
--- @within User-Space
+-- @within Public
 --
 function API.CreateObject(_Description)
     if GUI then
@@ -69,7 +69,7 @@ CreateObject = API.CreateObject;
 -- <b>Alias:</b> RemoveInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.RemoveInteractiveObject(_EntityName)
     if GUI then
@@ -88,7 +88,7 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 -- <b>Alias:</b> UnuseInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UnuseInteractiveObject(_EntityName)
     if GUI then
@@ -107,7 +107,7 @@ UnuseInteractiveObject = API.UnuseInteractiveObject;
 -- <b>Alias:</b> UnlockInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UnlockInteractiveObject(_EntityName)
     if GUI then
@@ -126,7 +126,7 @@ UnlockInteractiveObject = API.UnlockInteractiveObject;
 -- <b>Alias:</b> UseInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UseInteractiveObject(_EntityName)
     if GUI then
@@ -145,7 +145,7 @@ UseInteractiveObject = API.UseInteractiveObject;
 -- <b>Alias:</b> LockInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.LockInteractiveObject(_EntityName)
     if GUI then
@@ -166,7 +166,7 @@ LockInteractiveObject = API.LockInteractiveObject;
 --
 -- @param _Key  Identifier der Beschriftung
 -- @param _Text Text der Beschriftung
--- @within User-Space
+-- @within Public
 --
 function API.AddCustomIOName(_Key, _Text)
     if type(_Text == "table") then
@@ -202,7 +202,7 @@ BundleInteractiveObjects = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:Install()
@@ -218,7 +218,7 @@ end
 -- Verwendungszweck ab.
 --
 -- @param _Description Beschreibung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:CreateObject(_Description)
@@ -296,7 +296,7 @@ end
 -- Konfiguration des Objektes entfernt.
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName)
@@ -316,7 +316,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UnuseInteractiveObject(_EntityName)
@@ -331,7 +331,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UnlockInteractiveObject(_EntityName)
@@ -346,7 +346,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UseInteractiveObject(_EntityName)
@@ -361,7 +361,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:LockInteractiveObject(_EntityName)
@@ -378,7 +378,7 @@ end
 --
 -- @param _Key  Identifier der Beschriftung
 -- @param _Text Text der Beschriftung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text)
@@ -403,7 +403,7 @@ end
 -- Überschreibt die Events, die ausgelöst werden, wenn interaktive Objekte
 -- benutzt werden.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:HackOnInteractionEvent()
@@ -496,7 +496,7 @@ end
 -- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt 
 -- ist und erlaubt die Benutzung.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global.ControlInteractiveObjects()
@@ -512,7 +512,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:Install()
@@ -525,7 +525,7 @@ end
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
@@ -542,7 +542,7 @@ end
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
@@ -568,7 +568,7 @@ end
 ---
 -- Überschreibt die Spielfunktione, die interaktive Objekte steuern.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
@@ -953,7 +953,7 @@ end
 -- @param _DisabledText Textzusatz wenn inaktiv
 -- @param _Costs        Kostentabelle
 -- @param _InSettlement Kosten in Siedlung suchen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)

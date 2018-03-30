@@ -15,23 +15,23 @@
 -- aufbereitet, dass Bundles ihre Inhalte einfach ergänzen können. Dies wird
 -- jedoch nicht für alle Funktionen des Spiels möglich sein.
 --
--- Wie die einzelnen Bundles ist auch das Framework in einen User- und einen
--- Application-Space aufgeteilt. Der User-Space enthält Funktionen innerhalb
--- der Bibliothek "API". Alle Bundles ergänzen ihre User-Space-Funktionen dort.
+-- Wie die einzelnen Bundles ist auch das Framework in einen Public und einen
+-- Private Space aufgeteilt. Der Public Space enthält Funktionen innerhalb
+-- der Bibliothek "API". Alle Bundles ergänzen ihre Public-Funktionen dort.
 -- Außer den Aliases auf API-Funktionen und den Behavior-Funktionen sind keine
 -- anderen öffentlichen Funktionen für den Anwendern sichtbar zu machen!
--- Sinn des User-Space ist es, Funktionsaufrufe, die zum Teil nur in einer
+-- Sinn des Public Space ist es, Funktionsaufrufe, die zum Teil nur in einer
 -- Skriptumgebung bekannt sind zu verallgemeinern. Wird die Funktion nun aus
 -- der falschen Umgebung aufgerufen, wird der Aufruf an die richtige Umgebung
 -- weitergereicht oder, falls dies nicht möglich ist, abgebrochen. Dies soll
 -- Fehler vermeiden.
 --
--- Im Application-Space liegen die privaten Funktionen und Variablen, die
+-- Im Private Space liegen die privaten Funktionen und Variablen, die
 -- nicht in der Dokumentation erscheinen. Sie sind mit einem Local-Tag zu
 -- versehen! Der Nutzer soll diese Funktionen in der Regel nicht anfassen,
 -- daher muss er auch nicht wissen, dass es sie gibt!
 --
--- Ziel der Teilung zwischen User-Space und Application-Space ist es, dem
+-- Ziel der Teilung zwischen Public Space und Private Space ist es, dem
 -- Anwender eine saubere und leicht verständliche Oberfläche zu Bieten, mit
 -- der er einfach arbeiten kann. Kenntnis über die komplexen Prozesse hinter
 -- den Kulissen sind dafür nicht notwendig.
@@ -41,7 +41,9 @@
 --
 
 API = API or {};
-QSB = QSB or {};
+QSB = QSB or {
+    Version = "0.0.6"
+};
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -68,7 +70,7 @@ end
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
 -- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
 -- werden, bevor die QSB verwendet werden kann.
--- @within User-Space
+-- @within Public
 --
 function API.Install()
     Core:InitalizeBundles();
@@ -88,7 +90,7 @@ end
 -- @param _Source    Quelltabelle
 -- @param _Dest      Zieltabelle
 -- @return Kopie der Tabelle
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- Copy = API.InstanceTable(Table)
 --
@@ -117,7 +119,7 @@ CopyTableRecursive = API.InstanceTable;
 -- @param _Data     Datum, das gesucht wird
 -- @param _Table    Tabelle, die durchquert wird
 -- @return booelan: Wert gefunden
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- local Found = API.TraverseTable(3, Table)
 --
@@ -137,7 +139,7 @@ Inside = API.TraverseTable;
 --
 -- @param _Table Tabelle, die gedumpt wird
 -- @param _Name Optionaler Name im Log
--- @within User-Space
+-- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- API.DumpTable(Table)
 --
@@ -206,7 +208,7 @@ end
 --
 -- @param _Name     Identifier des Quest
 -- @return number: ID des Quest
--- @within User-Space
+-- @within Public
 --
 function API.GetQuestID(_Name)
     if type(_Name) == "number" then
@@ -230,7 +232,7 @@ GetQuestID = API.GetQuestID;
 --
 -- @param _QuestID   ID oder Name des Quest
 -- @return boolean: Quest existiert
--- @within User-Space
+-- @within Public
 --
 function API.IsValidateQuest(_QuestID)
     return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
@@ -245,7 +247,7 @@ IsValidQuest = API.IsValidateQuest;
 -- <b>Alias:</b> FailQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
@@ -262,7 +264,7 @@ FailQuestsByName = API.FailAllQuests;
 -- <b>Alias:</b> FailQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.FailQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -280,7 +282,7 @@ FailQuestByName = API.FailQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
@@ -303,7 +305,7 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <b>Alias:</b> RestartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.RestartQuest(_QuestName)
     local QuestID = GetQuestID(_QuestName);
@@ -379,7 +381,7 @@ RestartQuestByName = API.RestartQuest;
 -- <b>Alias:</b> StartQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
@@ -396,7 +398,7 @@ StartQuestsByName = API.StartAllQuests;
 -- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.StartQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -415,7 +417,7 @@ StartQuestByName = API.StartQuest;
 -- <b>Alias:</b> StopQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
@@ -433,7 +435,7 @@ StopQuestwByName = API.StopAllQuests;
 -- <b>Alias:</b> StopQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.StopQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -453,7 +455,7 @@ StopQuestByName = API.StopQuest;
 -- <b>Alias:</b> WinQuestsByName
 --
 -- @param ...  Liste mit Quests
--- @within User-Space
+-- @within Public
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
@@ -470,7 +472,7 @@ WinQuestsByName = API.WinAllQuests;
 -- <b>Alias:</b> WinQuestByName
 --
 -- @param _QuestName  Name des Quest
--- @within User-Space
+-- @within Public
 --
 function API.WinQuest(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
@@ -491,7 +493,7 @@ WinQuestByName = API.WinQuest;
 -- <b>Alias:</b> GUI_Note
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Note(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -508,7 +510,7 @@ GUI_Note = API.Note;
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.StaticNote(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -522,7 +524,7 @@ end
 ---
 -- Löscht alle Nachrichten im Debug Window.
 --
--- @within User-Space
+-- @within Public
 --
 function API.ClearNotes()
     if not GUI then
@@ -538,7 +540,7 @@ end
 -- Spiels die Nachricht gesendet wurde.
 --
 -- @param _Message Nachricht für's Log
--- @within User-Space
+-- @within Public
 --
 function API.Log(_Message)
     local Env  = (GUI and "Local") or "Global";
@@ -550,7 +552,7 @@ end
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Message(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -567,7 +569,7 @@ end
 -- <b>Alias:</b> dbg
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Dbg(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.ERROR then
@@ -583,7 +585,7 @@ dbg = API.Dbg;
 --
 -- @param _Message Anzeigetext
 -- @return string: Message
--- @within User-Space
+-- @within Public
 --
 function API.EnsureMessage(_Message)
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -599,7 +601,7 @@ end
 -- <p><b>Alias:</b> warn</p>
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Warn(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
@@ -615,7 +617,7 @@ warn = API.Warn;
 -- <b>Alias:</b> info
 --
 -- @param _Message Anzeigetext
--- @within User-Space
+-- @within Public
 --
 function API.Info(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
@@ -690,7 +692,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
 -- </table>
 --
 -- @param _Level Level
--- @within User-Space
+-- @within Public
 --
 function API.SetLogLevel(_Level)
     assert(type(_Level) == "number");
@@ -712,7 +714,7 @@ end
 -- @param _cartOverlay         (optional) Overlay für Goldkarren
 -- @param _ignoreReservation   (optional) Marktplatzreservation ignorieren
 -- @return number: Entity-ID des erzeugten Wagens
--- @within User-Space
+-- @within Public
 -- @usage -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
 -- -- Legacy-Call mit ID-Speicherung
@@ -760,7 +762,7 @@ SendCart = API.SendCart;
 -- @param _Type       Neuer Typ
 -- @param _NewOwner   (optional) Neuer Besitzer
 -- @return number: Entity-ID des Entity
--- @within User-Space
+-- @within Public
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
 function API.ReplaceEntity(_Entity, _Type, _NewOwner)
@@ -789,7 +791,7 @@ ReplaceEntity = API.ReplaceEntity;
 -- @param _entity           Entity
 -- @param _entityToLookAt   Ziel
 -- @param _offsetEntity     Winkel-Offset
--- @within User-Space
+-- @within Public
 -- @usage API.LookAt("Hakim", "Alandra")
 --
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
@@ -812,7 +814,7 @@ LookAt = API.LookAt;
 --
 -- @param _entity           Erstes Entity
 -- @param _entityToLookAt   Zweites Entity
--- @within User-Space
+-- @within Public
 -- @usage API.Confront("Hakim", "Alandra")
 --
 function API.Confront(_entity, _entityToLookAt)
@@ -829,7 +831,7 @@ end
 -- @param _pos1 Erste Vergleichsposition
 -- @param _pos2 Zweite Vergleichsposition
 -- @return number: Entfernung zwischen den Punkten
--- @within User-Space
+-- @within Public
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
 function API.GetDistance( _pos1, _pos2 )
@@ -855,7 +857,7 @@ GetDistance = API.GetDistance;
 --
 -- @param _pos Positionstable
 -- @return boolean: Position ist valide
--- @within User-Space
+-- @within Public
 --
 function API.ValidatePosition(_pos)
     if type(_pos) == "table" then
@@ -879,7 +881,7 @@ IsValidPosition = API.ValidatePosition;
 --
 -- @param _Entity   Entity, dessen Position bestimmt wird.
 -- @return table: Positionstabelle {X= x, Y= y, Z= z}
--- @within User-Space
+-- @within Public
 -- @usage local Position = API.LocateEntity("Hans")
 --
 function API.LocateEntity(_Entity)
@@ -905,7 +907,7 @@ GetPosition = API.LocateEntity;
 --
 -- @param _ScriptName  Skriptname des IO
 -- @param _State       Aktivierungszustand
--- @within User-Space
+-- @within Public
 -- @usage API.ActivateIO("Haus1", 0)
 -- @usage API.ActivateIO("Hut1")
 --
@@ -932,7 +934,7 @@ InteractiveObjectActivate = API.AcrivateIO;
 -- <b>Alias:</b> InteractiveObjectDeactivate
 --
 -- @param _ScriptName Skriptname des IO
--- @within User-Space
+-- @within Public
 -- @usage API.DeactivateIO("Hut1")
 --
 function API.DeactivateIO(_ScriptName)
@@ -959,7 +961,7 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 -- @param _player    PlayerID [0-8] oder -1 für alle
 -- @param _category  Kategorie, der die Entities angehören
 -- @param _territory Zielterritorium
--- @within User-Space
+-- @within Public
 -- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
 function API.GetEntitiesOfCategoryInTerritory(_player, _category, _territory)
@@ -1039,7 +1041,7 @@ end
 --
 -- @param _Value Wahrheitswert
 -- @return boolean: Wahrheitswert
--- @within User-Space
+-- @within Public
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
 -- local Bool = API.ToBoolean("no") --> Bool = false
@@ -1056,7 +1058,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 -- <b>Alias</b>: AddOnSaveGameLoadedAction
 --
 -- @param _Function Funktion, die ausgeführt werden soll
--- @within User-Space
+-- @within Public
 -- @usage SaveGame = function()
 --     API.Note("foo")
 -- end
@@ -1077,7 +1079,7 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 -- @param _Key         Tastenkombination
 -- @param _Description Beschreibung des Hotkey
 -- @return number: Index
--- @within User-Space
+-- @within Public
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
@@ -1092,7 +1094,7 @@ end
 -- Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
 --
 -- @param _Index Index in Table
--- @within User-Space
+-- @within Public
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
@@ -1125,7 +1127,7 @@ Core = {
 ---
 -- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:InitalizeBundles()
@@ -1137,13 +1139,14 @@ function Core:InitalizeBundles()
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
+        local Bundle = _G[v];
         if not GUI then
-            if v.Global ~= nil and v.Global.Install ~= nil then
-                v.Global:Install();
+            if Bundle.Global ~= nil and Bundle.Global.Install ~= nil then
+                Bundle.Global:Install();
             end
         else
-            if v.Local ~= nil and v.Local.Install ~= nil then
-                v.Local:Install();
+            if Bundle.Local ~= nil and Bundle.Local.Install ~= nil then
+                Bundle.Local:Install();
             end
         end
     end
@@ -1151,7 +1154,7 @@ end
 
 ---
 -- FIXME
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupGobal_HackCreateQuest()
@@ -1210,7 +1213,7 @@ end
 
 ---
 -- FIXME
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupGlobal_HackQuestSystem()
@@ -1245,7 +1248,7 @@ end
 ---
 -- Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
 -- angezeigt werden können.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:SetupLocal_HackRegisterHotkey()
@@ -1317,13 +1320,29 @@ end
 -- Registiert ein Bundle, sodass es initialisiert wird.
 --
 -- @param _Bundle Name des Moduls
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:RegisterBundle(_Bundle)
     local text = string.format("Error while initialize bundle '%s': does not exist!", tostring(_Bundle));
     assert(_G[_Bundle] ~= nil, text);
-    table.insert(self.Data.BundleInitializerList, _G[_Bundle]);
+    table.insert(self.Data.BundleInitializerList, _Bundle);
+end
+
+---
+-- Registiert ein AddOn als Bundle, sodass es initialisiert wird.
+--
+-- Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und 
+-- existiert nur zur Übersichtlichkeit.
+--
+-- @param _Bundle Name des Moduls
+-- @within Private
+-- @local
+--
+function Core:RegisterAddOn(_AddOn)
+    local text = string.format("Error while initialize addon '%s': does not exist!", tostring(_AddOn));
+    assert(_G[_AddOn] ~= nil, text);
+    table.insert(self.Data.BundleInitializerList, _AddOn);
 end
 
 ---
@@ -1331,7 +1350,7 @@ end
 -- Erzeugt zudem den Konstruktor.
 --
 -- @param _Behavior    Behavior-Objekt
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:RegisterBehavior(_Behavior)
@@ -1366,7 +1385,7 @@ end
 --
 -- @param _Name     Quest
 -- @return boolean: Questname ist fehlerfrei
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:CheckQuestName(_Name)
@@ -1379,7 +1398,7 @@ end
 --
 -- @param _Text   Neuer Text
 -- @param _Quest  Identifier des Quest
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:ChangeCustomQuestCaptionText(_Text, _Quest)
@@ -1412,7 +1431,7 @@ end
 -- @param _FunctionName
 -- @param _StackFunction
 -- @param _Index
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:StackFunction(_FunctionName, _StackFunction, _Index)
@@ -1451,7 +1470,7 @@ end
 -- @param _FunctionName
 -- @param _AppendFunction
 -- @param _Index
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
@@ -1482,7 +1501,7 @@ end
 -- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
 --
 -- @local
--- @within Application-Space
+-- @within Private
 -- @usage A = {foo = function() API.Note("bar") end}
 -- B = function() API.Note("muh") end
 -- Core:ReplaceFunction("A.foo", B)
@@ -1517,7 +1536,7 @@ end
 -- @param _FunctionName Name der Funktion
 -- @param _Reference    Aktuelle Referenz (für Rekursion)
 -- @return function: Gefundene Funktion
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:GetFunctionInString(_FunctionName, _Reference)
@@ -1550,7 +1569,7 @@ end
 --
 -- @param _Input Boolean-Darstellung
 -- @return boolean: Konvertierte Boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function Core:ToBoolean(_Input)
@@ -1563,6 +1582,7 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
+
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleClassicBehaviors                                       # --
@@ -9975,7 +9995,7 @@ BundleClassicBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleClassicBehaviors.Global:Install()
@@ -9986,7 +10006,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleClassicBehaviors.Local:Install()
@@ -10051,25 +10071,25 @@ b_Goal_MoveToPosition = {
     },
 }
 
-function b_Goal_MoveToPosition:GetGoalTable(__quest_)
+function b_Goal_MoveToPosition:GetGoalTable(_Quest)
     return {Objective.Distance, self.Entity, self.Target, self.Distance, self.Marker}
 end
 
-function b_Goal_MoveToPosition:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Entity = __parameter_
-    elseif (__index_ == 1) then
-        self.Target = __parameter_
-    elseif (__index_ == 2) then
-        self.Distance = __parameter_ * 1
-    elseif (__index_ == 3) then
-        self.Marker = AcceptAlternativeBoolean(__parameter_)
+function b_Goal_MoveToPosition:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Entity = _Parameter
+    elseif (_Index == 1) then
+        self.Target = _Parameter
+    elseif (_Index == 2) then
+        self.Distance = _Parameter * 1
+    elseif (_Index == 3) then
+        self.Marker = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Goal_MoveToPosition:GetCustomData( __index_ )
+function b_Goal_MoveToPosition:GetCustomData( _Index )
     local Data = {};
-    if __index_ == 3 then
+    if _Index == 3 then
         Data = {"true", "false"}
     end
     return Data
@@ -10101,17 +10121,17 @@ b_Goal_WinQuest = {
     },
 }
 
-function b_Goal_WinQuest:GetGoalTable(__quest_)
+function b_Goal_WinQuest:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_WinQuest:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Quest = __parameter_;
+function b_Goal_WinQuest:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Quest = _Parameter;
     end
 end
 
-function b_Goal_WinQuest:CustomFunction(__quest_)
+function b_Goal_WinQuest:CustomFunction(_Quest)
     local quest = Quests[GetQuestID(self.Quest)];
     if quest then
         if quest.Result == QuestResult.Failure then
@@ -10124,9 +10144,9 @@ function b_Goal_WinQuest:CustomFunction(__quest_)
     return nil;
 end
 
-function b_Goal_WinQuest:DEBUG(__quest_)
+function b_Goal_WinQuest:DEBUG(_Quest)
     if Quests[GetQuestID(self.Quest)] == nil then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
         return true;
     end
     return false;
@@ -10163,27 +10183,27 @@ b_Goal_StealGold = {
     },
 }
 
-function b_Goal_StealGold:GetGoalTable(__quest_)
+function b_Goal_StealGold:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_StealGold:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Amount = __parameter_ * 1;
-    elseif (__index_ == 1) then
-        __parameter_ = __parameter_ or "true"
-        self.Printout = AcceptAlternativeBoolean(__parameter_);
+function b_Goal_StealGold:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Amount = _Parameter * 1;
+    elseif (_Index == 1) then
+        _Parameter = _Parameter or "true"
+        self.Printout = AcceptAlternativeBoolean(_Parameter);
     end
     self.StohlenGold = 0;
 end
 
-function b_Goal_StealGold:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_StealGold:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_StealGold:SetDescriptionOverwrite(__quest_)
+function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     local amount = self.Amount-self.StohlenGold;
     amount = (amount > 0 and amount) or 0;
@@ -10194,8 +10214,8 @@ function b_Goal_StealGold:SetDescriptionOverwrite(__quest_)
     return "{center}" .. text[lang] .. amount
 end
 
-function b_Goal_StealGold:CustomFunction(__quest_)
-    Core:ChangeCustomQuestCaptionText(__quest_.Identifier, self:SetDescriptionOverwrite(__quest_));
+function b_Goal_StealGold:CustomFunction(_Quest)
+    Core:ChangeCustomQuestCaptionText(_Quest.Identifier, self:SetDescriptionOverwrite(_Quest));
 
     if self.StohlenGold >= self.Amount then
         return true;
@@ -10207,9 +10227,9 @@ function b_Goal_StealGold:GetIcon()
     return {5,13};
 end
 
-function b_Goal_StealGold:DEBUG(__quest_)
+function b_Goal_StealGold:DEBUG(_Quest)
     if tonumber(self.Amount) == nil and self.Amount < 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
         return true;
     end
     return false;
@@ -10248,24 +10268,24 @@ b_Goal_StealBuilding = {
     },
 }
 
-function b_Goal_StealBuilding:GetGoalTable(__quest_)
+function b_Goal_StealBuilding:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_StealBuilding:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Building = __parameter_
+function b_Goal_StealBuilding:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Building = _Parameter
     end
     self.RobberList = {};
 end
 
-function b_Goal_StealBuilding:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_StealBuilding:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_StealBuilding:SetDescriptionOverwrite(__quest_)
+function b_Goal_StealBuilding:SetDescriptionOverwrite(_Quest)
     local isCathedral = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Cathedrals) == 1;
     local isWarehouse = Logic.GetEntityType(GetID(self.Building)) == Entities.B_StoreHouse;
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -10290,7 +10310,7 @@ function b_Goal_StealBuilding:SetDescriptionOverwrite(__quest_)
     return "{center}" .. text[lang];
 end
 
-function b_Goal_StealBuilding:CustomFunction(__quest_)
+function b_Goal_StealBuilding:CustomFunction(_Quest)
     if not IsExisting(self.Building) then
         if self.Marker then
             Logic.DestroyEffect(self.Marker);
@@ -10314,20 +10334,20 @@ function b_Goal_StealBuilding:GetIcon()
     return {5,13};
 end
 
-function b_Goal_StealBuilding:DEBUG(__quest_)
+function b_Goal_StealBuilding:DEBUG(_Quest)
     local eTypeName = Logic.GetEntityTypeName(Logic.GetEntityType(GetID(self.Building)));
     local IsHeadquarter = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Headquarters) == 1;
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is not a building");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
         return true;
     elseif string.find(eTypeName, "B_NPC_BanditsHQ") or string.find(eTypeName, "B_NPC_Cloister") or string.find(eTypeName, "B_NPC_StoreHouse") then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
         return true;
     elseif IsHeadquarter then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
         return true;
     end
     return false;
@@ -10339,7 +10359,7 @@ function b_Goal_StealBuilding:Reset()
     self.Marker = nil;
 end
 
-function b_Goal_StealBuilding:Interrupt(__quest_)
+function b_Goal_StealBuilding:Interrupt(_Quest)
     Logic.DestroyEffect(self.Marker);
 end
 
@@ -10379,27 +10399,27 @@ b_Goal_Infiltrate = {
     },
 }
 
-function b_Goal_Infiltrate:GetGoalTable(__quest_)
+function b_Goal_Infiltrate:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_Infiltrate:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Building = __parameter_
-    elseif (__index_ == 1) then
-        __parameter_ = __parameter_ or "true"
-        self.Delete = AcceptAlternativeBoolean(__parameter_)
+function b_Goal_Infiltrate:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Building = _Parameter
+    elseif (_Index == 1) then
+        _Parameter = _Parameter or "true"
+        self.Delete = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Goal_Infiltrate:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Goal_Infiltrate:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_Infiltrate:SetDescriptionOverwrite(__quest_)
-    if not __quest_.QuestDescription then
+function b_Goal_Infiltrate:SetDescriptionOverwrite(_Quest)
+    if not _Quest.QuestDescription then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local text = {
             de = "Gebäude infriltrieren {cr}{cr}Spioniere das markierte Gebäude mit einem Dieb aus!",
@@ -10407,11 +10427,11 @@ function b_Goal_Infiltrate:SetDescriptionOverwrite(__quest_)
         };
         return text[lang];
     else
-        return __quest_.QuestDescription;
+        return _Quest.QuestDescription;
     end
 end
 
-function b_Goal_Infiltrate:CustomFunction(__quest_)
+function b_Goal_Infiltrate:CustomFunction(_Quest)
     if not IsExisting(self.Building) then
         if self.Marker then
             Logic.DestroyEffect(self.Marker);
@@ -10435,12 +10455,12 @@ function b_Goal_Infiltrate:GetIcon()
     return self.IconOverwrite;
 end
 
-function b_Goal_Infiltrate:DEBUG(__quest_)
+function b_Goal_Infiltrate:DEBUG(_Quest)
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is not a building");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        dbg(__quest_.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
         return true;
     end
     return false;
@@ -10451,7 +10471,7 @@ function b_Goal_Infiltrate:Reset()
     self.Marker = nil;
 end
 
-function b_Goal_Infiltrate:Interrupt(__quest_)
+function b_Goal_Infiltrate:Interrupt(_Quest)
     Logic.DestroyEffect(self.Marker);
 end
 
@@ -10568,23 +10588,23 @@ b_Reprisal_SetPosition = {
     },
 }
 
-function b_Reprisal_SetPosition:GetReprisalTable(__quest_)
+function b_Reprisal_SetPosition:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetPosition:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Target = __parameter_;
-    elseif (__index_ == 2) then
-        self.FaceToFace = AcceptAlternativeBoolean(__parameter_)
-    elseif (__index_ == 3) then
-        self.Distance = (__parameter_ ~= nil and tonumber(__parameter_)) or 100;
+function b_Reprisal_SetPosition:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Target = _Parameter;
+    elseif (_Index == 2) then
+        self.FaceToFace = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 3) then
+        self.Distance = (_Parameter ~= nil and tonumber(_Parameter)) or 100;
     end
 end
 
-function b_Reprisal_SetPosition:CustomFunction(__quest_)
+function b_Reprisal_SetPosition:CustomFunction(_Quest)
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
         return;
     end
@@ -10610,21 +10630,21 @@ function b_Reprisal_SetPosition:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetPosition:GetCustomData(__index_)
-    if __index_ == 3 then
+function b_Reprisal_SetPosition:GetCustomData(_Index)
+    if _Index == 3 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetPosition:DEBUG(__quest_)
+function b_Reprisal_SetPosition:DEBUG(_Quest)
     if self.FaceToFace then
         if tonumber(self.Distance) == nil or self.Distance < 50 then
-            dbg(__quest_.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
+            dbg(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
             return true;
         end
     end
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -10658,19 +10678,19 @@ b_Reprisal_ChangePlayer = {
     },
 }
 
-function b_Reprisal_ChangePlayer:GetReprisalTable(__quest_)
+function b_Reprisal_ChangePlayer:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_ChangePlayer:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Player = tostring(__parameter_);
+function b_Reprisal_ChangePlayer:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Player = tostring(_Parameter);
     end
 end
 
-function b_Reprisal_ChangePlayer:CustomFunction(__quest_)
+function b_Reprisal_ChangePlayer:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -10682,15 +10702,15 @@ function b_Reprisal_ChangePlayer:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_ChangePlayer:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_ChangePlayer:GetCustomData(_Index)
+    if _Index == 1 then
         return {"0", "1", "2", "3", "4", "5", "6", "7", "8"}
     end
 end
 
-function b_Reprisal_ChangePlayer:DEBUG(__quest_)
+function b_Reprisal_ChangePlayer:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -10724,19 +10744,19 @@ b_Reprisal_SetVisible = {
     },
 }
 
-function b_Reprisal_SetVisible:GetReprisalTable(__quest_)
+function b_Reprisal_SetVisible:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetVisible:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Visible = AcceptAlternativeBoolean(__parameter_)
+function b_Reprisal_SetVisible:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Visible = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reprisal_SetVisible:CustomFunction(__quest_)
+function b_Reprisal_SetVisible:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -10771,15 +10791,15 @@ function b_Reprisal_SetVisible:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetVisible:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetVisible:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetVisible:DEBUG(__quest_)
+function b_Reprisal_SetVisible:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -10813,19 +10833,19 @@ b_Reprisal_SetVulnerability = {
     },
 }
 
-function b_Reprisal_SetVulnerability:GetReprisalTable(__quest_)
+function b_Reprisal_SetVulnerability:GetReprisalTable(_Quest)
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetVulnerability:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Vulnerability = AcceptAlternativeBoolean(__parameter_)
+function b_Reprisal_SetVulnerability:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Vulnerability = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reprisal_SetVulnerability:CustomFunction(__quest_)
+function b_Reprisal_SetVulnerability:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -10867,15 +10887,15 @@ function b_Reprisal_SetVulnerability:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_SetVulnerability:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetVulnerability:GetCustomData(_Index)
+    if _Index == 1 then
         return { "true", "false" }
     end
 end
 
-function b_Reprisal_SetVulnerability:DEBUG(__quest_)
+function b_Reprisal_SetVulnerability:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -10904,8 +10924,8 @@ end
 b_Reprisal_SetModel = {
     Name = "Reprisal_SetModel",
     Description = {
-        en = "Reward: Changes the model of the entity. Be careful, some models crash the game.",
-        de = "Lohn: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.",
+        en = "Reprisal: Changes the model of the entity. Be careful, some models crash the game.",
+        de = "Vergeltung: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
@@ -10913,19 +10933,19 @@ b_Reprisal_SetModel = {
     },
 }
 
-function b_Reprisal_SetModel:GetRewardTable(__quest_)
-    return { Reward.Custom, { self, self.CustomFunction } }
+function b_Reprisal_SetModel:GetReprisalTable(_Quest)
+    return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reprisal_SetModel:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Model = __parameter_;
+function b_Reprisal_SetModel:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Model = _Parameter;
     end
 end
 
-function b_Reprisal_SetModel:CustomFunction(__quest_)
+function b_Reprisal_SetModel:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -10933,8 +10953,8 @@ function b_Reprisal_SetModel:CustomFunction(__quest_)
     Logic.SetModel(eID, Models[self.Model]);
 end
 
-function b_Reprisal_SetModel:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reprisal_SetModel:GetCustomData(_Index)
+    if _Index == 1 then
         local Data = {};
         for k,v in pairs(Models) do
             if  not string.find(k,"Animals_") and not string.find(k,"Banners_") and not string.find(k,"Goods_") and not string.find(k,"goods_")
@@ -10947,9 +10967,9 @@ function b_Reprisal_SetModel:GetCustomData(__index_)
     end
 end
 
-function b_Reprisal_SetModel:DEBUG(__quest_)
+function b_Reprisal_SetModel:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -10985,7 +11005,7 @@ b_Reward_SetPosition.Description.en = "Reward: Places an entity relative to the 
 b_Reward_SetPosition.Description.de = "Lohn: Setzt eine Entity relativ zur Position einer anderen. Die Entity kann zum Ziel ausgerichtet werden.";
 b_Reward_SetPosition.GetReprisalTable = nil;
 
-b_Reward_SetPosition.GetRewardTable = function(self, __quest_)
+b_Reward_SetPosition.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11011,7 +11031,7 @@ b_Reward_ChangePlayer.Description.en = "Reward: Changes the owner of the entity 
 b_Reward_ChangePlayer.Description.de = "Lohn: Aendert den Besitzer einer Entity oder eines Battalions.";
 b_Reward_ChangePlayer.GetReprisalTable = nil;
 
-b_Reward_ChangePlayer.GetRewardTable = function(self, __quest_)
+b_Reward_ChangePlayer.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11052,23 +11072,23 @@ b_Reward_MoveToPosition = {
     },
 }
 
-function b_Reward_MoveToPosition:GetRewardTable(__quest_)
+function b_Reward_MoveToPosition:GetRewardTable(_Quest)
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
-function b_Reward_MoveToPosition:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Target = __parameter_;
-    elseif (__index_ == 2) then
-        self.Distance = __parameter_ * 1;
-    elseif (__index_ == 3) then
-        self.Angle = __parameter_ * 1;
+function b_Reward_MoveToPosition:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Target = _Parameter;
+    elseif (_Index == 2) then
+        self.Distance = _Parameter * 1;
+    elseif (_Index == 3) then
+        self.Angle = _Parameter * 1;
     end
 end
 
-function b_Reward_MoveToPosition:CustomFunction(__quest_)
+function b_Reward_MoveToPosition:CustomFunction(_Quest)
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
         return;
     end
@@ -11093,12 +11113,12 @@ function b_Reward_MoveToPosition:CustomFunction(__quest_)
     end, entity, target);
 end
 
-function b_Reward_MoveToPosition:DEBUG(__quest_)
+function b_Reward_MoveToPosition:DEBUG(_Quest)
     if tonumber(self.Distance) == nil or self.Distance < 50 then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Reward_MoveToPosition: Distance is nil or to short!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
         return true;
     elseif not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        dbg(__quest_.Identifier.. " " ..self.Name.. ": Reward_MoveToPosition: Mover entity or target entity does not exist!");
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -11133,12 +11153,12 @@ function b_Reward_VictoryWithParty:GetRewardTable()
     return {Reward.Custom, {self, self.CustomFunction}};
 end
 
-function b_Reward_VictoryWithParty:AddParameter(__index_, __parameter_)
+function b_Reward_VictoryWithParty:AddParameter(_Index, _Parameter)
 end
 
-function b_Reward_VictoryWithParty:CustomFunction(__quest_)
+function b_Reward_VictoryWithParty:CustomFunction(_Quest)
     Victory(g_VictoryAndDefeatType.VictoryMissionComplete);
-    local pID = __quest_.ReceivingPlayer;
+    local pID = _Quest.ReceivingPlayer;
 
     local market = Logic.GetMarketplace(pID);
     if IsExisting(market) then
@@ -11179,7 +11199,7 @@ function b_Reward_VictoryWithParty:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_VictoryWithParty:DEBUG(__quest_)
+function b_Reward_VictoryWithParty:DEBUG(_Quest)
     return false;
 end
 
@@ -11205,7 +11225,7 @@ b_Reward_SetVisible.Description.en = "Reward: Changes the visibility of an entit
 b_Reward_SetVisible.Description.de = "Lohn: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.";
 b_Reward_SetVisible.GetReprisalTable = nil;
 
-b_Reward_SetVisible.GetRewardTable = function(self, __quest_)
+b_Reward_SetVisible.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11237,19 +11257,19 @@ b_Reward_AI_SetEntityControlled = {
     },
 }
 
-function b_Reward_AI_SetEntityControlled:GetRewardTable(__quest_)
+function b_Reward_AI_SetEntityControlled:GetRewardTable(_Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
-function b_Reward_AI_SetEntityControlled:AddParameter( __index_, __parameter_ )
-    if (__index_ == 0) then
-        self.Entity = __parameter_;
-    elseif (__index_ == 1) then
-        self.Hidden = AcceptAlternativeBoolean(__parameter_)
+function b_Reward_AI_SetEntityControlled:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Hidden = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
-function b_Reward_AI_SetEntityControlled:CustomFunction(__quest_)
+function b_Reward_AI_SetEntityControlled:CustomFunction(_Quest)
     if not IsExisting(self.Entity) then
         return;
     end
@@ -11270,15 +11290,15 @@ function b_Reward_AI_SetEntityControlled:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_AI_SetEntityControlled:GetCustomData(__index_)
-    if __index_ == 1 then
+function b_Reward_AI_SetEntityControlled:GetCustomData(_Index)
+    if _Index == 1 then
         return { "false", "true" }
     end
 end
 
-function b_Reward_AI_SetEntityControlled:DEBUG(__quest_)
+function b_Reward_AI_SetEntityControlled:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(__quest_.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -11306,7 +11326,7 @@ b_Reward_SetVulnerability.Description.en = "Reward: Changes the vulnerability of
 b_Reward_SetVulnerability.Description.de = "Lohn: Macht eine Entity verwundbar oder unverwundbar. Handelt es sich um einen Spawner, sind die gespawnten Entities betroffen.";
 b_Reward_SetVulnerability.GetReprisalTable = nil;
 
-b_Reward_SetVulnerability.GetRewardTable = function(self, __quest_)
+b_Reward_SetVulnerability.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11336,7 +11356,7 @@ b_Reward_SetModel.Description.en = "Reward: Changes the model of the entity. Be 
 b_Reward_SetModel.Description.de = "Lohn: Aendert das Model einer Entity. Achtung: Einige Modelle fuehren zum Absturz.";
 b_Reward_SetModel.GetReprisalTable = nil;
 
-b_Reward_SetModel.GetRewardTable = function(self, __quest_)
+b_Reward_SetModel.GetRewardTable = function(self, _Quest)
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -11589,21 +11609,21 @@ b_Trigger_OnExactOneQuestIsWon = {
     },
 }
 
-function b_Trigger_OnExactOneQuestIsWon:GetTriggerTable(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_OnExactOneQuestIsWon:AddParameter(__index_, __parameter_)
+function b_Trigger_OnExactOneQuestIsWon:AddParameter(_Index, _Parameter)
     self.QuestTable = {};
 
-    if (__index_ == 0) then
-        self.Quest1 = __parameter_;
-    elseif (__index_ == 1) then
-        self.Quest2 = __parameter_;
+    if (_Index == 0) then
+        self.Quest1 = _Parameter;
+    elseif (_Index == 1) then
+        self.Quest2 = _Parameter;
     end
 end
 
-function b_Trigger_OnExactOneQuestIsWon:CustomFunction(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:CustomFunction(_Quest)
     local Quest1 = Quests[GetQuestID(self.Quest1)];
     local Quest2 = Quests[GetQuestID(self.Quest2)];
     if Quest2 and Quest1 then
@@ -11616,15 +11636,15 @@ function b_Trigger_OnExactOneQuestIsWon:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnExactOneQuestIsWon:DEBUG(__quest_)
+function b_Trigger_OnExactOneQuestIsWon:DEBUG(_Quest)
     if self.Quest1 == self.Quest2 then
-        dbg(__quest_.Identifier..": "..self.Name..": Both quests are identical!");
+        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;
@@ -11658,21 +11678,21 @@ b_Trigger_OnExactOneQuestIsLost = {
     },
 }
 
-function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_OnExactOneQuestIsLost:AddParameter(__index_, __parameter_)
+function b_Trigger_OnExactOneQuestIsLost:AddParameter(_Index, _Parameter)
     self.QuestTable = {};
 
-    if (__index_ == 0) then
-        self.Quest1 = __parameter_;
-    elseif (__index_ == 1) then
-        self.Quest2 = __parameter_;
+    if (_Index == 0) then
+        self.Quest1 = _Parameter;
+    elseif (_Index == 1) then
+        self.Quest2 = _Parameter;
     end
 end
 
-function b_Trigger_OnExactOneQuestIsLost:CustomFunction(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:CustomFunction(_Quest)
     local Quest1 = Quests[GetQuestID(self.Quest1)];
     local Quest2 = Quests[GetQuestID(self.Quest2)];
     if Quest2 and Quest1 then
@@ -11685,15 +11705,15 @@ function b_Trigger_OnExactOneQuestIsLost:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_OnExactOneQuestIsLost:DEBUG(__quest_)
+function b_Trigger_OnExactOneQuestIsLost:DEBUG(_Quest)
     if self.Quest1 == self.Quest2 then
-        dbg(__quest_.Identifier..": "..self.Name..": Both quests are identical!");
+        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        dbg(__quest_.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;
@@ -11714,7 +11734,7 @@ BundleSymfoniaBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSymfoniaBehaviors.Global:Install()
@@ -11880,7 +11900,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSymfoniaBehaviors.Local:Install()
@@ -11935,7 +11955,7 @@ QSB = QSB or {};
 -- <b>Alias:</b> AddQuest
 --
 -- @param _Data Questdefinition
--- @within User-Space
+-- @within Public
 --
 function API.AddQuest(_Data)
     if GUI then
@@ -11951,7 +11971,7 @@ AddQuest = API.AddQuest;
 --
 -- <b>Alias</b>: StartQuests
 --
--- @within User-Space
+-- @within Public
 --
 function API.StartQuests()
     if GUI then
@@ -11985,7 +12005,7 @@ StartQuests = API.StartQuests;
 -- @return number: QuestID
 -- @return table: Quest
 --
--- @within User-Space
+-- @within Public
 --
 function API.QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
     if GUI then
@@ -12022,7 +12042,7 @@ QuestMessage = API.QuestMessage;
 -- @param _Messages Table with Quests
 -- @return table: List of generated Quests
 --
--- @within User-Space
+-- @within Public
 --
 function API.QuestDialog(_Messages)
     if GUI then
@@ -12086,7 +12106,7 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
@@ -12114,7 +12134,7 @@ end
 -- @return number: QuestID
 -- @return table: Quest
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
@@ -12157,7 +12177,7 @@ end
 -- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
 --
 -- @param _Data Daten des Quest.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:NewQuest(_Data)
@@ -12205,7 +12225,7 @@ end
 --
 -- @param _ID   Id des Quests
 -- @param _Data Quest Data
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
@@ -12245,7 +12265,7 @@ end
 ---
 -- Startet alle Quests in der GenerationList.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:StartQuests()
@@ -12293,7 +12313,7 @@ end
 -- Validiert alle Quests in der GenerationList. Verschiedene Standardfehler
 -- werden geprüft.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:ValidateQuests()
@@ -12377,7 +12397,7 @@ end
 -- in der Initalisiererliste zu testen.
 --
 -- @param _List Liste der Quests
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Global:DebugQuest(_List)
@@ -12389,7 +12409,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleQuestGeneration.Local:Install()
@@ -12451,7 +12471,7 @@ BundleQuestDebug = {
 -- @param _CheckAtRun     Prüfe Quests zur Laufzeit
 -- @param _TraceQuests    Aktiviert Questverfolgung
 -- @param _DevelopingMode Aktiviert Cheats und Konsole
--- @within User-Space
+-- @within Public
 --
 function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
     if GUI then
@@ -13723,7 +13743,7 @@ Core:RegisterBehavior(b_Trigger_NPC);
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
@@ -13964,7 +13984,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleNonPlayerCharacter.Local:Install()
@@ -14152,7 +14172,7 @@ BundleKnightTitleRequirements = {
 --
 function BundleKnightTitleRequirements.Global:Install()
     self:OverwriteConsumedGoods();
-    InitKnightTitleTables();
+    -- InitKnightTitleTables();
 end
 
 ---
@@ -14202,7 +14222,7 @@ function BundleKnightTitleRequirements.Local:Install()
     self:InitTexturePositions();
     self:OverwriteUpdateRequirements();
     self:OverwritePromotionCelebration();
-    InitKnightTitleTables();
+    -- InitKnightTitleTables();
 end
 
 ---
@@ -15961,7 +15981,7 @@ QSB.PlayerNames = {};
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideMinimap(_Flag)
     if not GUI then
@@ -15986,7 +16006,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideToggleMinimap(_Flag)
     if not GUI then
@@ -16007,7 +16027,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideDiplomacyMenu(_Flag)
     if not GUI then
@@ -16028,7 +16048,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideProductionMenu(_Flag)
     if not GUI then
@@ -16049,7 +16069,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideWeatherMenu(_Flag)
     if not GUI then
@@ -16070,7 +16090,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideBuyTerritory(_Flag)
     if not GUI then
@@ -16091,7 +16111,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideKnightAbility(_Flag)
     if not GUI then
@@ -16116,7 +16136,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideKnightButton(_Flag)
     if not GUI then
@@ -16149,7 +16169,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideSelectionButton(_Flag)
     if not GUI then
@@ -16172,7 +16192,7 @@ end
 -- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within User-Space
+-- @within Public
 --
 function API.HideBuildMenu(_Flag)
     if not GUI then
@@ -16199,7 +16219,7 @@ end
 -- 
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
--- @within User-Space
+-- @within Public
 --
 function API.SetTexture(_widget, _file)
     if not GUI then
@@ -16239,7 +16259,7 @@ UserSetTexture = API.SetTexture;
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
 -- @param _Name        Name der Icon Matrix
--- @within User-Space
+-- @within Public
 --
 function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then
@@ -16266,7 +16286,7 @@ UserSetIcon = API.SetIcon;
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.SetTooltipNormal(_title, _text, _disabledText)
     if not GUI then 
@@ -16288,7 +16308,7 @@ UserSetTextNormal = API.SetTooltipNormal;
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @param _costs        Kostentabelle
 -- @param _inSettlement Kosten in Siedlung suchen
--- @within User-Space
+-- @within Public
 --
 function API.SetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
     if not GUI then
@@ -16305,7 +16325,7 @@ UserSetTextBuy = API.SetTooltipCosts;
 --
 -- @return _TerritoryID ID des Territoriums
 -- @return Name des Territorium
--- @within User-Space
+-- @within Public
 --
 function API.GetTerritoryName(_TerritoryID)
     local Name = Logic.GetTerritoryName(_TerritoryID);
@@ -16332,7 +16352,7 @@ GetTerritoryName = API.GetTerritoryName;
 --
 -- @return _PlayerID ID des Spielers
 -- @return Name des Territorium
--- @within User-Space
+-- @within Public
 --
 function API.GetPlayerName(_PlayerID)
     local PlayerName = Logic.GetPlayerName(_PlayerID);
@@ -16366,7 +16386,7 @@ GetPlayerName = API.GetPlayerName;
 -- @return _playerID ID des Spielers
 -- @return _name     Name des Spielers
 -- @return Name des Territorium
--- @within User-Space
+-- @within Public
 --
 function API.SetPlayerName(_playerID,_name)
     assert(type(_playerID) == "number");
@@ -16389,7 +16409,7 @@ SetPlayerName = API.SetPlayerName;
 -- @return _Logo     Logo (optional)
 -- @return _Pattern  Pattern (optional)
 -- @return Name des Territorium
--- @within User-Space
+-- @within Public
 --
 function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     if GUI then
@@ -16426,7 +16446,7 @@ BundleInterfaceApperance = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Global:Install()
@@ -16435,7 +16455,7 @@ end
 
 ---
 -- Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Global.RestoreAfterLoad()
@@ -16448,7 +16468,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:Install()
@@ -16485,7 +16505,7 @@ end
 --
 -- @param _Widget Widgetpfad oder ID
 -- @param _Hide   Hidden Flag
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:HideInterfaceButton(_Widget, _Hide)
@@ -16495,7 +16515,7 @@ end
 
 ---
 -- Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:RestoreAfterLoad()
@@ -16511,7 +16531,7 @@ end
 --
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:SetTexture(_widget, _file)
@@ -16543,7 +16563,7 @@ end
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
 -- @param _Name        Name der Icon Matrix
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
@@ -16585,7 +16605,7 @@ end
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:TextNormal(_title, _text, _disabledText)
@@ -16636,7 +16656,7 @@ end
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @param _costs        Kostentabelle
 -- @param _inSettlement Kosten in Siedlung suchen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInterfaceApperance.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement)
@@ -16731,11 +16751,11 @@ QSB.TraderTypes = {
 --
 -- @param _PlayerID Player ID
 -- @return Angebotsinformationen
--- @within User-Space
+-- @within Public
 --
--- @usage BundleTradingFunctions.Global:GetOfferInformation(2);
+-- @usage local Info = BundleTradingFunctions.Global:GetOfferInformation(2);
 --
--- -- Ausgabe:
+-- -- Info enthält:
 -- -- Info = {
 -- --      Player = 2,
 -- --      Storehouse = 26796.
@@ -16762,7 +16782,7 @@ end
 --
 -- @param _PlayerID ID des Spielers
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetOfferCount(_PlayerID)
     if GUI then
@@ -16779,7 +16799,7 @@ end
 -- @param _PlayerID Player ID
 -- @param _GoodType Warentyp oder Entitytyp
 -- @return numer, number, number
--- @within User-Space
+-- @within Public
 --
 function API.GetOfferAndTrader(_PlayerID, _GoodorEntityType)
     if GUI then
@@ -16795,7 +16815,7 @@ end
 -- @param _BuildingID Building ID
 -- @param _TraderID   Trader ID
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetTraderType(_BuildingID, _TraderID)
     if GUI then
@@ -16811,7 +16831,7 @@ end
 -- @param _BuildingID Entity ID des Handelsgebäudes
 -- @param _TraderType Typ des Händlers
 -- @return number
--- @within User-Space
+-- @within Public
 --
 function API.GetTrader(_BuildingID, _TraderType)
     if GUI then
@@ -16828,7 +16848,7 @@ end
 -- @param _PlayerID        Entity ID des Handelsgebäudes
 -- @param _TraderType      Typ des Händlers
 -- @param _OfferIndex      Index des Angebots
--- @within User-Space
+-- @within Public
 --
 function API.RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
     if GUI then
@@ -16844,7 +16864,7 @@ end
 --
 -- @param _PlayerID            Player ID
 -- @param _GoodorEntityType    Warentyp oder Entitytyp
--- @within User-Space
+-- @within Public
 --
 function API.RemoveOffer(_PlayerID, _GoodOrEntityType)
     if GUI then
@@ -16862,7 +16882,7 @@ end
 -- @param _TraderID	ID des Händlers im Gebäude
 -- @param _OfferID		ID des Angebots
 -- @param _NewAmount	Neue Menge an Angeboten
--- @within User-Space
+-- @within Public
 --
 function API.ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
     if GUI then
@@ -16873,24 +16893,75 @@ function API.ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
 end
 
 ---
--- Erstellt einen fliegenden Händler mit zufälligen Angeboten. Soll
--- immer das selbe angeboten werden, muss nur ein Angebotsblock
+-- Erstellt einen fliegenden Händler mit zufälligen Angeboten.
+--
+-- Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
 -- definiert werden.
--- Es kann mehrere fliegende Händler auf der Map geben.
+-- Es kann mehr als einen fliegenden Händler auf der Map geben.
 --
--- @param _Offers	 Liste an Angeboten
--- @param _Stay		 Wartezeit
--- @param _Waypoints Wegpunktliste Anfahrt
--- @param _Reversed	 Wegpunktliste Abfahrt
--- @param _PlayerID	 Spieler-ID des Händlers
--- @within User-Space
+-- @param _PlayerID	  Spieler-ID des Händlers
+-- @param _Offers	  Liste an Angeboten
+-- @param _Waypoints  Wegpunktliste Anfahrt
+-- @param _Reversed	  Wegpunktliste Abfahrt
+-- @param _Appearance Ankunft und Abfahrt
+-- @within Public
 --
-function API.ActivateTravelingSalesman(_Offers, _Stay, _Waypoints, _Reversed, _PlayerID)
+-- @usage -- Angebote deklarieren
+-- local Offers = {
+--     {
+--         {"G_Gems", 5,},
+--         {"G_Iron", 5,},
+--         {"G_Beer", 2,},
+--     },
+--     {
+--         {"G_Stone", 5,},
+--         {"G_Sheep", 1,},
+--         {"G_Cheese", 2,},
+--         {"G_Milk", 5,},
+--     },
+--     {
+--         {"G_Grain", 5,},
+--         {"G_Broom", 2,},
+--         {"G_Sheep", 1,},
+--     },
+--     {
+--         {"U_CatapultCart", 1,},
+--         {"U_MilitarySword", 3,},
+--         {"U_MilitaryBow", 3,},
+--     },
+-- };
+-- -- Es sind maximal 4 Angebote pro Block erlaubt. Es können Waren, Soldaten 
+-- -- oder Entertainer angeboten werden. Es wird immer automatisch 1 Block 
+-- -- selektiert und die ANgebote gesetzt.
+--
+-- -- Wegpunkte deklarieren
+-- local Waypoints = {"WP1", "WP2", "WP3", "WP4"};
+-- -- Es gibt nun zwei Möglichkeiten:
+-- -- 1. Durch weglassen des Reversed Path werden die Wegpunkte durch das
+-- -- Schiff bei der Abfahrt automatisch rückwärts abgefahren.
+-- -- 2. Es wird ein anderer Pfad für die Abfahrt deklariert.
+--
+-- -- Anfahrt und Abfanrtsmonate deklarieren
+-- local Appearance = {{4, 6}, {8, 10}};
+-- -- Auch hier gibt es 2 Möglichkeiten:
+-- -- 1. Neue Anfahrts- und Abfahrtszeiten setzen.
+-- -- 2. _Apperance weglassen / nil setzen und den Standard verwenden
+-- -- (März bis Mai und August bis Oktober)
+--
+-- -- Jetzt kann ein fliegender Händler erzeugt werden
+-- API.ActivateTravelingSalesman(2, Offers, Waypoints, nil, Appearance);
+-- -- Hier ist der Rückweg automatisch die Umkehr des Hinwegs (_Reversed = nil).
+--
+-- -- _Reversed und _Apperance können in den meisten Fällen immer weggelassen
+-- -- bzw. nil sein!
+-- API.ActivateTravelingSalesman(2, Offers, Waypoints);
+--
+function API.ActivateTravelingSalesman(_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance)
     if GUI then
         API.Log("Can not execute API.ActivateTravelingSalesman in local script!");
         return;
     end
-    return BundleTradingFunctions.Global:TravelingSalesman_Create(_Offers, _Stay, _Waypoints, _Reversed, _PlayerID);
+    return BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed);
 end
 
 ---
@@ -16898,7 +16969,7 @@ end
 -- nicht zerstört.
 --
 -- @param _PlayerID	Spieler-ID des Händlers
--- @within User-Space
+-- @within Public
 --
 function API.DisbandTravelingSalesman(_PlayerID)
     if GUI then
@@ -16914,7 +16985,7 @@ end
 
 BundleTradingFunctions = {
     Global = {
-        Data = {}
+        Data = {},
     },
     Local = {
         Data = {}
@@ -16925,7 +16996,7 @@ BundleTradingFunctions = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:Install()
@@ -16938,7 +17009,7 @@ end
 ---
 -- Überschreibt die Funktionen für Standardangebote.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:OverwriteOfferFunctions()
@@ -17053,7 +17124,7 @@ end
 ---
 -- Fügt fehlende Einträge für Militäreinheiten bei den Basispreisen
 -- und Erneuerungsraten hinzu, damit diese gehandelt werden können.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:OverwriteBasePricesAndRefreshRates()
@@ -17090,7 +17161,7 @@ end
 --
 -- @param _PlayerID Player ID
 -- @return Angebotsinformationen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 -- @usage BundleTradingFunctions.Global:GetOfferInformation(2);
@@ -17166,7 +17237,7 @@ end
 --
 -- @param _PlayerID ID des Spielers
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetOfferCount(_PlayerID)
@@ -17181,7 +17252,7 @@ end
 -- @param _PlayerID Player ID
 -- @param _GoodType Warentyp oder Entitytyp
 -- @return numer, number, number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodorEntityType)
@@ -17201,7 +17272,7 @@ end
 -- @param _BuildingID Building ID
 -- @param _TraderID   Trader ID
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetTraderType(_BuildingID, _TraderID)
@@ -17225,7 +17296,7 @@ end
 -- @param _BuildingID Entity ID des Handelsgebäudes
 -- @param _TraderType Typ des Händlers
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:GetTrader(_BuildingID, _TraderType)
@@ -17249,7 +17320,7 @@ end
 -- @param _PlayerID        Entity ID des Handelsgebäudes
 -- @param _TraderType      Typ des Händlers
 -- @param _OfferIndex      Index des Angebots
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
@@ -17273,7 +17344,7 @@ end
 --
 -- @param _PlayerID            Player ID
 -- @param _GoodorEntityType    Warentyp oder Entitytyp
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:RemoveOffer(_PlayerID, _GoodOrEntityType)
@@ -17292,7 +17363,7 @@ end
 -- @param _TraderID	ID des Händlers im Gebäude
 -- @param _OfferID		ID des Angebots
 -- @param _NewAmount	Neue Menge an Angeboten
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
@@ -17308,7 +17379,7 @@ end
 -- Gegenstück zu GUI.GetPlayerID().
 --
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global:TravelingSalesman_GetHumanPlayer()
@@ -17328,39 +17399,39 @@ end
 -- definiert werden.
 -- Es kann mehrere fliegende Händler auf der Map geben.
 --
--- @param offers	Liste an Angeboten
--- @param stay		Wartezeit
--- @param waypoints	Wegpunktliste Anfahrt
--- @param reversed	Wegpunktliste Abfahrt
--- @param playerID	Spieler-ID des Händlers
--- @within Application-Space
+-- @param _PlayerID	  Spieler-ID des Händlers
+-- @param _Offers	  Liste an Angeboten
+-- @param _Appearance Wartezeit
+-- @param _Waypoints  Wegpunktliste Anfahrt
+-- @param _Reversed   Wegpunktliste Abfahrt
+-- @within Private
 -- @local
 --
-function BundleTradingFunctions.Global:TravelingSalesman_Create(offers, stay, waypoints, reversed, playerID)
-    assert(type(playerID) == "number");
-    assert(type(offers) == "table");
-    stay = stay or {{3,5},{8,10}};
-    assert(type(stay) == "table");
-    assert(type(waypoints) == "table");
+function BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed)
+    assert(type(_PlayerID) == "number");
+    assert(type(_Offers) == "table");
+    _Appearance = _Appearance or {{3,5},{8,10}};
+    assert(type(_Appearance) == "table");
+    assert(type(_Waypoints) == "table");
 
-    if not reversed then
-        reversed = {};
-        for i=#waypoints, 1, -1 do
-            reversed[#waypoints+1 - i] = waypoints[i];
+    if not _Reversed then
+        _Reversed = {};
+        for i=#_Waypoints, 1, -1 do
+            _Reversed[#_Waypoints+1 - i] = _Waypoints[i];
         end
     end
 
-    if not QSB.TravelingSalesman.Harbors[playerID] then
-        QSB.TravelingSalesman.Harbors[playerID] = {};
+    if not QSB.TravelingSalesman.Harbors[_PlayerID] then
+        QSB.TravelingSalesman.Harbors[_PlayerID] = {};
 
-        QSB.TravelingSalesman.Harbors[playerID].Waypoints = waypoints;
-        QSB.TravelingSalesman.Harbors[playerID].Reversed = reversed;
-        QSB.TravelingSalesman.Harbors[playerID].SpawnPos = waypoints[1];
-        QSB.TravelingSalesman.Harbors[playerID].Destination = reversed[1];
-        QSB.TravelingSalesman.Harbors[playerID].Appearance = stay;
-        QSB.TravelingSalesman.Harbors[playerID].Status = 0;
-        QSB.TravelingSalesman.Harbors[playerID].Offer = offers;
-        QSB.TravelingSalesman.Harbors[playerID].LastOffer = 0;
+        QSB.TravelingSalesman.Harbors[_PlayerID].Waypoints = _Waypoints;
+        QSB.TravelingSalesman.Harbors[_PlayerID].Reversed = _Reversed;
+        QSB.TravelingSalesman.Harbors[_PlayerID].SpawnPos = _Waypoints[1];
+        QSB.TravelingSalesman.Harbors[_PlayerID].Destination = _Reversed[1];
+        QSB.TravelingSalesman.Harbors[_PlayerID].Appearance = _Appearance;
+        QSB.TravelingSalesman.Harbors[_PlayerID].Status = 0;
+        QSB.TravelingSalesman.Harbors[_PlayerID].Offer = _Offers;
+        QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = 0;
     end
     math.randomseed(Logic.GetTimeMs());
 
@@ -17373,37 +17444,37 @@ end
 -- Zerstört den fliegenden Händler. Der Spieler wird dabei natürlich
 -- nicht zerstört.
 --
--- @param playerID	Spieler-ID des Händlers
--- @within Application-Space
+-- @param _PlayerID	Spieler-ID des Händlers
+-- @within Private
 -- @local
 --
-function BundleTradingFunctions.Global:TravelingSalesman_Disband(playerID)
-    assert(type(playerID) == "number");
-    QSB.TravelingSalesman.Harbors[playerID] = nil;
-    Logic.RemoveAllOffers(Logic.GetStoreHouse(playerID));
-    DestroyEntity("TravelingSalesmanShip_Player"..playerID);
+function BundleTradingFunctions.Global:TravelingSalesman_Disband(_PlayerID)
+    assert(type(_PlayerID) == "number");
+    QSB.TravelingSalesman.Harbors[_PlayerID] = nil;
+    Logic.RemoveAllOffers(Logic.GetStoreHouse(_PlayerID));
+    DestroyEntity("TravelingSalesmanShip_Player" .._PlayerID);
 end
 
 ---
 -- Setzt die Angebote des Fliegenden Händlers.
 --
--- @paramplayerID	Spieler-ID des Händlers
--- @within Application-Space
+-- @param _PlayerID	Spieler-ID des Händlers
+-- @within Private
 -- @local
 --
-function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(playerID)
-    MerchantSystem.TradeBlackList[playerID] = {};
-    MerchantSystem.TradeBlackList[playerID][0] = #MerchantSystem.TradeBlackList[3];
+function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(_PlayerID)
+    MerchantSystem.TradeBlackList[_PlayerID] = {};
+    MerchantSystem.TradeBlackList[_PlayerID][0] = #MerchantSystem.TradeBlackList[3];
 
-    local traderId = Logic.GetStoreHouse(playerID);
+    local traderId = Logic.GetStoreHouse(_PlayerID);
     local rand = 1;
-    if #QSB.TravelingSalesman.Harbors[playerID].Offer > 1 then
+    if #QSB.TravelingSalesman.Harbors[_PlayerID].Offer > 1 then
         repeat
-            rand = math.random(1,#QSB.TravelingSalesman.Harbors[playerID].Offer);
-        until (rand ~= QSB.TravelingSalesman.Harbors[playerID].LastOffer);
+            rand = math.random(1,#QSB.TravelingSalesman.Harbors[_PlayerID].Offer);
+        until (rand ~= QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer);
     end
-    QSB.TravelingSalesman.Harbors[playerID].LastOffer = rand;
-    local offer = QSB.TravelingSalesman.Harbors[playerID].Offer[rand];
+    QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = rand;
+    local offer = QSB.TravelingSalesman.Harbors[_PlayerID].Offer[rand];
     Logic.RemoveAllOffers(traderId);
 
     if #offer > 0 then
@@ -17430,8 +17501,8 @@ function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(playerID)
         end
     end
 
-    SetDiplomacyState(self:TravelingSalesman_GetHumanPlayer(),playerID,DiplomacyStates.TradeContact);
-    ActivateMerchantPermanentlyForPlayer(Logic.GetStoreHouse(playerID),self:TravelingSalesman_GetHumanPlayer());
+    SetDiplomacyState(self:TravelingSalesman_GetHumanPlayer(), _PlayerID, DiplomacyStates.TradeContact);
+    ActivateMerchantPermanentlyForPlayer(Logic.GetStoreHouse(_PlayerID), self:TravelingSalesman_GetHumanPlayer());
 
     local doIt = (IsBriefingActive and not IsBriefingActive()) or true
     if doIt then
@@ -17440,13 +17511,13 @@ function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(playerID)
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
         QuestTemplate:New(
-            "TravelingSalesman_Info_P"..playerID,
-            _Quest.SendingPlayer,
+            "TravelingSalesman_Info_P" .._PlayerID,
+            _PlayerID,
             self:TravelingSalesman_GetHumanPlayer(),
             {{ Objective.Dummy,}},
             {{ Triggers.Time, 0 }},
             0,
-            nil, nil, nil, nil, nil, true,
+            nil, nil, nil, nil, false, true,
             nil, nil,
             Text[lang],
             nil
@@ -17456,7 +17527,7 @@ end
 
 ---
 -- Steuert alle fliegenden Händler auf der Map.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Global.TravelingSalesman_Control()
@@ -17509,11 +17580,11 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleTradingFunctions.Local:Install()
-
+    
 end
 
 -- -------------------------------------------------------------------------- --
@@ -17562,7 +17633,7 @@ QSB = QSB or {};
 -- </ul>
 --
 -- @param _Description 
--- @within User-Space
+-- @within Public
 --
 function API.StartMusic(_Description)
     if GUI then
@@ -17582,7 +17653,7 @@ StartMusic = API.StartMusic;
 -- @param _Volume  Lautstärke
 -- @param _Length  Abspieldower (<= Dauer Musikstück)
 -- @param _FadeOut Ausblenden in Sekunden
--- @within User-Space
+-- @within Public
 --
 function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     if GUI then
@@ -17613,7 +17684,7 @@ StartMusicSimple = API.StartMusicSimple;
 -- sich die Playlist endlos wiederholt.
 --
 -- @param _Playlist 
--- @within User-Space
+-- @within Public
 --
 function API.StartPlaylist(_Playlist)
     if GUI then
@@ -17632,7 +17703,7 @@ StartPlaylist = API.StartPlaylist;
 -- <b>Alias:</b> StartPlaylistTitle
 --
 -- @param _Title 
--- @within User-Space
+-- @within Public
 --
 function API.StartPlaylistTitle(_Title)
     if GUI then
@@ -17648,7 +17719,7 @@ StartPlaylistTitle = API.StartPlaylistTitle;
 --
 -- <b>Alias:</b> StopSong
 --
--- @within User-Space
+-- @within Public
 --
 function API.StopSong()
     if GUI then
@@ -17665,7 +17736,7 @@ StopSong = API.StopSong;
 --
 -- <b>Alias:</b> AbortSongOrPlaylist
 --
--- @within User-Space
+-- @within Public
 --
 function API.AbortMusic()
     if GUI then
@@ -17700,7 +17771,7 @@ BundleMusicTools = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:Install()
@@ -17711,7 +17782,7 @@ end
 -- Startet ein Musikstück als Stimme.
 --
 -- @param _Description Beschreibung des Musikstücks
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartSong(_Description)
@@ -17749,7 +17820,7 @@ end
 ---
 -- Spielt eine Playlist ab.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartPlaylist(_Playlist)
@@ -17765,7 +17836,7 @@ end
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StartPlaylistTitle(_Title)
@@ -17787,7 +17858,7 @@ end
 ---
 -- Stopt Musik und stellt die alte Soundkonfiguration wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:StopSong()
@@ -17805,7 +17876,7 @@ end
 -- Stopt den gerade laufenden Song und leert sowohl die Songdaten
 -- als auch die Playlist.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global:AbortMusic()
@@ -17823,7 +17894,7 @@ end
 -- Ist die Warteschlange leer, endet der Job. Existiert eine Playlist,
 -- für die Repeat = true ist, dann wird die Playlist neu gestartet.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Global.StartSongControl()
@@ -17873,7 +17944,7 @@ StartSongControl = BundleMusicTools.Global.StartSongControl;
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:Install()
@@ -17887,7 +17958,7 @@ end
 -- @param _Song     Pfad zum Titel
 -- @param _MuteAtmo Atmosphäre stumm schalten
 -- @param _MuteUI   UI stumm schalten
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:BackupSound(_Volume, _Song, _MuteAtmo, _MuteUI)
@@ -17920,7 +17991,7 @@ end
 --
 -- @param _File        Pfad zur Datei
 -- @param _QueueLength Länge der Warteschlange
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleMusicTools.Local:ResetSound(_File, _QueueLength)
@@ -17973,7 +18044,7 @@ QSB = QSB or {};
 --
 -- @param _Entity Entity
 -- @return Größenfaktor
--- @within User-Space
+-- @within Public
 --
 function API.GetScale(_Entity)
     if not IsExisting(_Entity) then
@@ -17992,7 +18063,7 @@ GetScale = API.GetScale;
 --
 -- @param _Entity Entity
 -- @return Besitzer
--- @within User-Space
+-- @within Public
 --
 function API.GetPlayer(_Entity)
     if not IsExisting(_Entity) then
@@ -18011,7 +18082,7 @@ AGetPlayer = API.GetPlayer;
 --
 -- @param _Entity Entity
 -- @return Positionstabelle
--- @within User-Space
+-- @within Public
 --
 function API.GetMovingTarget(_Entity)
     if not IsExisting(_Entity) then
@@ -18030,7 +18101,7 @@ GetMovingTarget = API.GetMovingTarget;
 --
 -- @param _Entity Entity
 -- @return Ist NPC
--- @within User-Space
+-- @within Public
 --
 function API.IsNpc(_Entity)
     if not IsExisting(_Entity) then
@@ -18049,7 +18120,7 @@ IsNpc = API.IsNpc;
 --
 -- @param _Entity Entity
 -- @return Ist sichtbar
--- @within User-Space
+-- @within Public
 --
 function API.IsVisible(_Entity)
     if not IsExisting(_Entity) then
@@ -18071,7 +18142,7 @@ IsVisible = API.IsVisible;
 --
 -- @param _Entity Entity
 -- @param _Scale  Größenfaktor
--- @within User-Space
+-- @within Public
 --
 function API.SetScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
@@ -18097,7 +18168,7 @@ SetScale = API.SetScale;
 --
 -- @param _Entity   Entity
 -- @param _PlayerID Besitzer
--- @within User-Space
+-- @within Public
 --
 function API.SetPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
@@ -18131,7 +18202,7 @@ BundleEntityScriptingValues = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Global:Install()
@@ -18143,7 +18214,7 @@ end
 --
 -- @param _entity Entity
 -- @param _size   Größenfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
@@ -18159,7 +18230,7 @@ end
 --
 -- @param _entity   Entity
 -- @param _PlayerID Neuer Besitzer
--- @within Application-Space
+-- @within Private
 -- @local
 -- 
 function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
@@ -18172,7 +18243,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityScriptingValues.Local:Install()
@@ -18420,7 +18491,7 @@ QSB = QSB or {};
 -- Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbares Entity
--- @within User-Space
+-- @within Public
 --
 function API.AddEntity(_entity)
     if not GUI then
@@ -18438,7 +18509,7 @@ end
 -- Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbarer Typ
--- @within User-Space
+-- @within Public
 --
 function API.AddEntityType(_entity)
     if not GUI then
@@ -18456,7 +18527,7 @@ end
 -- Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbare Kategorie
--- @within User-Space
+-- @within Public
 --
 function API.AddCategory(_entity)
     if not GUI then
@@ -18474,7 +18545,7 @@ end
 -- Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
 --
 -- @param _entry Geschütztes Territorium
--- @within User-Space
+-- @within Public
 --
 function API.AddTerritory(_entity)
     if not GUI then
@@ -18492,7 +18563,7 @@ end
 -- Entfernt ein Entity, dass nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbares Entity
--- @within User-Space
+-- @within Public
 --
 function API.RemoveEntity(_entry)
     if not GUI then
@@ -18513,7 +18584,7 @@ end
 -- Entfernt einen Entitytyp, der nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbarer Typ
--- @within User-Space
+-- @within Public
 --
 function API.RemoveEntityType(_entry)
     if not GUI then
@@ -18534,7 +18605,7 @@ end
 -- Entfernt eine Kategorie, die nicht abgerissen werden darf.
 --
 -- @param _entry Nicht abreißbare Kategorie
--- @within User-Space
+-- @within Public
 --
 function API.RemoveCategory(_entry)
     if not GUI then
@@ -18555,7 +18626,7 @@ end
 -- Entfernt ein Territory, auf dem nichts abgerissen werden kann.
 --
 -- @param _entry Geschütztes Territorium
--- @within User-Space
+-- @within Public
 --
 function API.RemoveTerritory(_entry)
     if not GUI then
@@ -18577,7 +18648,7 @@ end
 --
 -- @param _type      Entitytyp
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.BanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -18600,7 +18671,7 @@ end
 --
 -- @param _eCat      Entitykategorie
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.BanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -18624,7 +18695,7 @@ end
 -- @param _type   Entitytyp
 -- @param _center Gebietszentrum
 -- @param _area   Gebietsgröße
--- @within User-Space
+-- @within Public
 --
 function API.BanTypeInArea(_type, _center, _area)
     if GUI then
@@ -18645,7 +18716,7 @@ end
 -- @param _eCat   Entitykategorie
 -- @param _center Gebietszentrum
 -- @param _area   Gebietsgröße
--- @within User-Space
+-- @within Public
 --
 function API.BanCategoryInArea(_eCat, _center, _area)
     if GUI then
@@ -18665,7 +18736,7 @@ end
 --
 -- @param _type      Entitytyp
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.UnBanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -18693,7 +18764,7 @@ end
 --
 -- @param _ecat      Entitykategorie
 -- @param _territory Territorium
--- @within User-Space
+-- @within Public
 --
 function API.UnBanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -18721,7 +18792,7 @@ end
 --
 -- @param _type   Entitytyp
 -- @param _center Gebiet
--- @within User-Space
+-- @within Public
 --
 function API.UnBanTypeInArea (_type, _center)
     if GUI then
@@ -18746,7 +18817,7 @@ end
 --
 -- @param _eCat   Entitykategorie
 -- @param _center Gebiet
--- @within User-Space
+-- @within Public
 --
 function API.UnBanCategoryInArea(_eCat, _center)
     if GUI then
@@ -18794,7 +18865,7 @@ BundleConstructionControl = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Global:Install()
@@ -18811,7 +18882,7 @@ end
 -- @param _Type     Gebäudetyp
 -- @param _x        X-Position
 -- @param _y        Y-Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
@@ -18880,7 +18951,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Local:Install()
@@ -18894,7 +18965,7 @@ end
 -- Verhindert den Abriss von Entities.
 --
 -- @param _BuildingID EntityID des Gebäudes
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
@@ -18934,6 +19005,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleConstructionControl");
+
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleEntitySelection                                        # --
@@ -18955,16 +19027,78 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
+---
+-- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+-- @param _Flag Deaktiviert
+-- @within Public
+-- 
+function API.DisableRefillTrebuchet(_Flag)
+    if not GUI then
+        API.Bridge("API.DisableRefillTrebuchet(" ..tostring(_Flag).. ")");
+        return;
+    end
+    API.Bridge("BundleEntitySelection.Local.Data.RefillTrebuchet = " ..tostring(not _Flag));
+    BundleEntitySelection.Local.Data.RefillTrebuchet = not _Flag;
+end
 
+---
+-- Deaktiviert oder aktiviert das Entlassen von Dieben.
+-- @param _Flag Deaktiviert
+-- @within Public
+-- 
+function API.DisableThiefRelease(_Flag)
+    if not GUI then
+        API.Bridge("API.DisableThiefRelease(" ..tostring(_Flag).. ")");
+        return;
+    end
+    BundleEntitySelection.Local.Data.ThiefRelease = _Flag == true;
+end
+
+---
+-- Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.
+-- @param _Flag Deaktiviert
+-- @within Public
+-- 
+function API.DisableSiegeEngineRelease(_Flag)
+    if not GUI then
+        API.Bridge("API.DisableSiegeEngineRelease(" ..tostring(_Flag).. ")");
+        return;
+    end
+    BundleEntitySelection.Local.Data.SiegeEngineRelease = _Flag == true;
+end
+
+---
+-- Deaktiviert oder aktiviert das Entlassen von Soldaten.
+-- @param _Flag Deaktiviert
+-- @within Public
+-- 
+function API.DisableMilitaryRelease(_Flag)
+    if not GUI then
+        API.Bridge("API.DisableMilitaryRelease(" ..tostring(_Flag).. ")");
+        return;
+    end
+    BundleEntitySelection.Local.Data.MilitaryRelease = _Flag == true;
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleEntitySelection = {
-    Global = {},
+    Global = {
+        Data = {
+            RefillTrebuchet = true,
+            AmmunitionUnderway = {},
+            TrebuchetIDToCart = {},
+        },
+    },
     Local = {
         Data = {
+            RefillTrebuchet = true,
+            ThiefRelease = true,
+            SiegeEngineRelease = true,
+            MilitaryRelease = true,
+            
             Tooltips = {
                 KnightButton = {
                     Title = {
@@ -18976,6 +19110,7 @@ BundleEntitySelection = {
                         en = "- Click selects the knight {cr}- Double click jumps to knight{cr}- Press CTRL to select all knights",
                     },
                 },
+                
                 BattalionButton = {
                     Title = {
                         de = "Militär selektieren",
@@ -18984,6 +19119,54 @@ BundleEntitySelection = {
                     Text = {
                         de = "- Selektiert alle Militäreinheiten {cr}- SHIFT halten um auch Munitionswagen und Trebuchets auszuwählen",
                         en = "- Selects all military units {cr}- Press SHIFT to additionally select ammunition carts and trebuchets",
+                    },
+                },
+                
+                ReleaseSoldiers = {
+                    Title = {
+                        de = "Militär entlassen",
+                        en = "Release military unit",
+                    },
+                    Text = {
+                        de = "- Eine Militäreinheit entlassen {cr}- Soldaten werden nacheinander entlassen",
+                        en = "- Dismiss a military unit {cr}- Soldiers will be dismissed each after another",
+                    },
+                    Disabled = {
+                        de = "Kann nicht entlassen werden!",
+                        en = "Releasing is impossible!",
+                    },
+                },
+                
+                TrebuchetCart = {
+                    Title = {
+                        de = "Trebuchetwagen",
+                        en = "Trebuchet cart",
+                    },
+                    Text = {
+                        de = "- Kann einmalig zum Trebuchet ausgebaut werden",
+                        en = "- Can uniquely be transmuted into a trebuchet",
+                    },
+                },
+        
+                Trebuchet = {
+                    Title = {
+                        de = "Trebuchet",
+                        en = "Trebuchet",
+                    },
+                    Text = {
+                        de = "- Kann über weite Strecken Gebäude angreifen {cr}- Kann Gebäude in Brand stecken {cr}- Kann nur durch Munitionsanforderung befüllt werden {cr}- Trebuchet kann manuell zurückgeschickt werden",
+                        en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- Can only be filled by ammunition request {cr}- The trebuchet can be manually send back to the city",
+                    },
+                },
+                
+                TrebuchetRefiller = {
+                    Title = {
+                        de = "Aufladen",
+                        en = "Refill",
+                    },
+                    Text = {
+                        de = "- Läd das Trebuchet mit Karren aus dem Lagerhaus nach {cr}- Benötigt die Differenz an Steinen {cr}- Kann jeweils nur einen Wagen zu selben Zeit senden",
+                        en = "- Refill the Trebuchet with a cart from the storehouse {cr}- Stones for missing ammunition required {cr}- Only one cart at the time allowed",
                     },
                 },
             },
@@ -18996,44 +19179,645 @@ BundleEntitySelection = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Global:Install()
 
 end
 
+---
+-- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+-- @param _Boolean Nachfüllen deaktiviert
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
+    self.Data.RefillTrebuchet = not _Boolean;
+    Logic.ExecuteInLuaLocalState([[
+        function BundleEntitySelection.Local:DeactivateRefillTrebuchet(]]..tostring(_Boolean)..[[)
+    ]]);
+end
+
+---
+-- Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
+-- @param _EntityID EntityID of Trebuchet
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Global:MilitaryDisambleTrebuchet(_EntityID)
+    local x,y,z = Logic.EntityGetPos(_EntityID);
+    local PlayerID = Logic.EntityGetPlayer(_EntityID);
+
+    -- Externes Callback für das Kartenskript
+    -- Bricht die Ausführung dieser Funktion ab!
+    if GameCallback_QSB_OnDisambleTrebuchet then
+        GameCallback_QSB_OnDisambleTrebuchet(_EntityID, PlayerID, x, y, z);
+        return;
+    end
+
+    if self.Data.AmmunitionUnderway[_EntityID] then
+        API.Message {
+            de = "Eine Munitionslieferung ist auf dem Weg!",
+            en = "A ammunition card is on the way!",
+        };
+        return;
+    end
+
+    Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
+    Logic.SetEntityInvulnerabilityFlag(_EntityID, 1);
+    Logic.SetEntitySelectableFlag(_EntityID, 0);
+    Logic.SetVisible(_EntityID, false);
+
+    local TrebuchetCart = self.Data.TrebuchetIDToCart[_EntityID];
+    if TrebuchetCart ~= nil then
+        Logic.SetEntityInvulnerabilityFlag(TrebuchetCart, 0);
+        Logic.SetEntitySelectableFlag(TrebuchetCart, 1);
+        Logic.SetVisible(TrebuchetCart, true);
+    else
+        TrebuchetCart = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, PlayerID);
+        self.Data.TrebuchetIDToCart[_EntityID] = TrebuchetCart;
+    end
+
+    Logic.DEBUG_SetSettlerPosition(TrebuchetCart, x, y);
+    Logic.SetTaskList(TrebuchetCart, TaskLists.TL_NPC_IDLE);
+    Logic.ExecuteInLuaLocalState([[
+        GUI.SelectEntity(]]..TrebuchetCart..[[)
+    ]]);
+end
+
+---
+-- Baut einen Trebuchet-Wagen zu einem Trebuchet aus.
+-- @param _EntityID EntityID of Trebuchet
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Global:MilitaryErectTrebuchet(_EntityID)
+    local x,y,z = Logic.EntityGetPos(_EntityID);
+    local PlayerID = Logic.EntityGetPlayer(_EntityID);
+
+    -- Externes Callback für das Kartenskript
+    -- Bricht die Ausführung dieser Funktion ab!
+    if GameCallback_QSB_OnErectTrebuchet then
+        GameCallback_QSB_OnErectTrebuchet(_EntityID, PlayerID, x, y, z);
+        return;
+    end
+
+    Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
+    Logic.SetEntityInvulnerabilityFlag(_EntityID, 1);
+    Logic.SetEntitySelectableFlag(_EntityID, 0);
+    Logic.SetVisible(_EntityID, false);
+
+    local Trebuchet;
+    for k, v in pairs(self.Data.TrebuchetIDToCart) do
+        if v == _EntityID then
+            Trebuchet = tonumber(k);
+        end
+    end
+    if Trebuchet == nil then
+        Trebuchet = Logic.CreateEntity(Entities.U_Trebuchet, x, y, 0, PlayerID);
+        self.Data.TrebuchetIDToCart[Trebuchet] = _EntityID;
+    end
+
+    Logic.SetEntityInvulnerabilityFlag(Trebuchet, 0);
+    Logic.SetEntitySelectableFlag(Trebuchet, 1);
+    Logic.SetVisible(Trebuchet, true);
+    Logic.DEBUG_SetSettlerPosition(Trebuchet, x, y);
+    Logic.ExecuteInLuaLocalState([[
+        GUI.SelectEntity(]]..Trebuchet..[[)
+    ]]);
+end
+
+---
+-- Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
+-- @param _EntityID EntityID of Trebuchet
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Global:MilitaryCallForRefiller(_EntityID)
+    local PlayerID = Logic.EntityGetPlayer(_EntityID);
+    local StoreID = Logic.GetStoreHouse(PlayerID);
+    local HaveAmount = Logic.GetAmmunitionAmount(_EntityID);
+    local Stones = GetPlayerResources(Goods.G_Stone, PlayerID)
+
+    -- Externes Callback für das Kartenskript
+    -- Bricht die Ausführung dieser Funktion ab!
+    if GameCallback_tHEA_OnRefillerCartCalled then
+        GameCallback_tHEA_OnRefillerCartCalled(_EntityID, PlayerID, StoreID, HaveAmount, Stones);
+        return;
+    end
+
+    if self.Data.AmmunitionUnderway[_EntityID] or StoreID == 0 then
+        API.Message {
+            de = "Eine Munitionslieferung ist auf dem Weg!",
+            en = "A ammunition card is on the way!",
+        };
+        return;
+    end
+
+    if HaveAmount == 10 or Stones < 10-HaveAmount then
+        API.Message {
+            de = "Nicht genug Steine oder das Trebuchet ist voll!",
+            en = "Not enough stones or the trebuchet is full!",
+        };
+        return;
+    end
+
+    local x,y = Logic.GetBuildingApproachPosition(StoreID);
+    local CartID = Logic.CreateEntity(Entities.U_AmmunitionCart, x, y, 0, PlayerID);
+    self.Data.AmmunitionUnderway[_EntityID] = {CartID, 10-HaveAmount};
+    Logic.SetEntityInvulnerabilityFlag(CartID, 1);
+    Logic.SetEntitySelectableFlag(CartID, 0);
+    AddGood(Goods.G_Stone, (10-HaveAmount)*(-1), PlayerID);
+
+    StartSimpleJobEx( function(_Trebuchet)
+        local CartID = self.Data.AmmunitionUnderway[_EntityID][1];
+        local Amount = self.Data.AmmunitionUnderway[_EntityID][2];
+
+        if not IsExisting(CartID) or not IsExisting(_Trebuchet) then
+            self.Data.AmmunitionUnderway[_EntityID] = nil;
+            return true;
+        end
+
+        if not Logic.IsEntityMoving(CartID) then
+            local x,y,z = Logic.EntityGetPos(_Trebuchet);
+            Logic.MoveSettler(CartID, x, y);
+        end
+
+        if IsNear(CartID, _Trebuchet, 500) then
+            for i=1, Amount, 1 do
+                Logic.RefillAmmunitions(_Trebuchet);
+            end
+            DestroyEntity(CartID);
+        end
+    end, _EntityID);
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:Install()
     self:OverwriteSelectAllUnits();
     self:OverwriteSelectKnight();
     self:OverwriteNamesAndDescription();
+    self:OverwriteThiefDeliver();
+    self:OverwriteMilitaryDismount();
+    self:OverwriteMultiselectIcon();
+    self:OverwriteMilitaryDisamble();
+    self:OverwriteMilitaryErect();
+    self:OverwriteMilitaryCommands();
+    self:OverwriteGetStringTableText();
+    
+    Core:AppendFunction(
+        "GameCallback_GUI_SelectionChanged", 
+        self.OnSelectionCanged
+    );
+end
+
+---
+-- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+-- @param _Boolean Nachfüllen deaktiviert
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local:DeactivateRefillTrebuchet(_Boolean)
+    self.Data.RefillTrebuchet = not _Boolean;
+end
+
+---
+-- Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.
+--
+-- @param _Source Selection Source
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local.OnSelectionCanged(_Source)
+    local SelectedEntities = {GUI.GetSelectedEntities()}
+    local PlayerID = GUI.GetPlayerID();
+    local EntityID = GUI.GetSelectedEntity();
+    local EntityType = Logic.GetEntityType(EntityID);
+
+    if EntityID ~= nil then
+        if EntityType == Entities.U_SiegeEngineCart then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/BGMilitary", 1);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngineCart", 1);
+        elseif EntityType == Entities.U_Trebuchet then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/BGMilitary", 1);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 0);
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military", 1);
+            XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military", 1);
+            if BundleEntitySelection.Local.Data.RefillTrebuchet then
+                XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 1);
+            else
+                XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 0);
+            end
+            GUI_Military.StrengthUpdate();
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngine", 1);
+        end
+    end
+end
+
+---
+-- Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
+-- sodass eigene Texte für Keys angezeigt werden.
+--
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteGetStringTableText()
+    GetStringTableText_Orig_BundleEntitySelection = XGUIEng.GetStringTableText;
+    XGUIEng.GetStringTableText = function(_key)
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if _key == "UI_ObjectDescription/Attack" then
+            local EntityID = GUI.GetSelectedEntity();
+            if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
+                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Text[Language];
+            end
+        end
+        if _key == "UI_ObjectNames/Attack" then
+            local EntityID = GUI.GetSelectedEntity();
+            if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
+                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Title[Language];
+            end
+        end
+        
+        return GetStringTableText_Orig_BundleEntitySelection(_key);
+    end
+end
+
+---
+-- Überschreibt die Millitärkommandos "Stop" und "Angreifen".
+--
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMilitaryCommands()
+    GUI_Military.AttackClicked = function()
+        Sound.FXPlay2DSound( "ui\\menu_click");
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        local EntityType = Logic.GetEntityType(SelectedEntities[1]);
+
+        if EntityType == Entities.U_Trebuchet then
+            for i=1, #SelectedEntities, 1 do
+                EntityType = Logic.GetEntityType(SelectedEntities[i]);
+                if EntityType == Entities.U_Trebuchet then
+                    GUI.SendScriptCommand([[
+                        BundleEntitySelection.Global:MilitaryCallForRefiller(]]..SelectedEntities[i]..[[)
+                    ]]);
+                end
+            end
+        else
+            GUI.ActivateExplicitAttackCommandState();
+        end
+    end
+
+    GUI_Military.StandGroundClicked = function()
+        Sound.FXPlay2DSound( "ui\\menu_click");
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+
+        for i=1,#SelectedEntities do
+            local LeaderID = SelectedEntities[i];
+            local eType = Logic.GetEntityType(LeaderID);
+            GUI.SendCommandStationaryDefend(LeaderID);
+            if eType == Entities.U_Trebuchet then
+                GUI.SendScriptCommand([[
+                    Logic.SetTaskList(]]..LeaderID..[[, TaskLists.TL_NPC_IDLE)
+                ]]);
+            end
+        end
+
+    end
+
+    GUI_Military.StandGroundUpdate = function()
+        local WidgetAttack = "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack";
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+
+        SetIcon(WidgetAttack, {12, 4});
+
+        if #SelectedEntities == 1 then
+            local eID = SelectedEntities[1];
+            local eType = Logic.GetEntityType(eID);
+            if eType == Entities.U_Trebuchet then
+                if Logic.GetAmmunitionAmount(eID) > 0 then
+                    XGUIEng.ShowWidget(WidgetAttack, 0);
+                else
+                    XGUIEng.ShowWidget(WidgetAttack, 1);
+                end
+                SetIcon(WidgetAttack, {1, 10});
+            else
+                XGUIEng.ShowWidget(WidgetAttack, 1);
+            end
+        end
+    end
+end
+
+---
+-- Überschreibt das Aufbauen von Kriegsmaschinen, sodass auch Trebuchets
+-- auf- und abgebaut werden können.
+--
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMilitaryErect()
+    GUI_Military.ErectClicked_Orig_BundleEntitySelection = GUI_Military.ErectClicked;
+    GUI_Military.ErectClicked = function()
+        GUI_Military.ErectClicked_Orig_BundleEntitySelection();
+
+        local PlayerID = GUI.GetPlayerID();
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        for i=1, #SelectedEntities, 1 do
+            local EntityType = Logic.GetEntityType(SelectedEntities[i]);
+            if EntityType == Entities.U_SiegeEngineCart then
+                GUI.SendScriptCommand([[
+                    BundleEntitySelection.Global:MilitaryErectTrebuchet(]]..SelectedEntities[i]..[[)
+                ]]);
+            end
+        end
+    end
+    
+    GUI_Military.ErectUpdate_Orig_BundleEntitySelection = GUI_Military.ErectUpdate;
+    GUI_Military.ErectUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local SiegeCartID = GUI.GetSelectedEntity();
+        local PlayerID = GUI.GetPlayerID();
+        local EntityType = Logic.GetEntityType(SiegeCartID);
+
+        if EntityType == Entities.U_SiegeEngineCart then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            SetIcon(CurrentWidgetID, {12, 6});
+        else
+            GUI_Military.ErectUpdate_Orig_BundleEntitySelection();
+        end
+    end
+    
+    GUI_Military.ErectMouseOver_Orig_BundleEntitySelection = GUI_Military.ErectMouseOver;
+    GUI_Military.ErectMouseOver = function()
+        local SiegeCartID = GUI.GetSelectedEntity();
+        local TooltipTextKey;
+        if Logic.GetEntityType(SiegeCartID) == Entities.U_SiegeEngineCart then
+            TooltipTextKey = "ErectCatapult";
+        else
+            GUI_Military.ErectMouseOver_Orig_BundleEntitySelection();
+            return;
+        end
+        GUI_Tooltip.TooltipNormal(TooltipTextKey, "Erect");
+    end
+end
+
+---
+-- Überschreibt das Abbauen von Kriegsmaschinen, sodass auch Trebuchets
+-- abgebaut werden können.
+--
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMilitaryDisamble()
+    GUI_Military.DisassembleClicked_Orig_BundleEntitySelection = GUI_Military.DisassembleClicked;
+    GUI_Military.DisassembleClicked = function()
+        GUI_Military.DisassembleClicked_Orig_BundleEntitySelection();
+
+        local PlayerID = GUI.GetPlayerID();
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        for i=1, #SelectedEntities, 1 do
+            local EntityType = Logic.GetEntityType(SelectedEntities[i]);
+            if EntityType == Entities.U_Trebuchet then
+                GUI.SendScriptCommand([[
+                    BundleEntitySelection.Global:MilitaryDisambleTrebuchet(]]..SelectedEntities[i]..[[)
+                ]]);
+            end
+        end
+    end
+
+    GUI_Military.DisassembleUpdate_Orig_BundleEntitySelection = GUI_Military.DisassembleUpdate;
+    GUI_Military.DisassembleUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local PlayerID = GUI.GetPlayerID();
+        local SiegeEngineID = GUI.GetSelectedEntity();
+        local EntityType = Logic.GetEntityType(SiegeEngineID);
+
+        if EntityType == Entities.U_Trebuchet then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            SetIcon(CurrentWidgetID, {12, 9});
+        else
+            GUI_Military.DisassembleUpdate_Orig_BundleEntitySelection();
+        end
+    end
+end
+
+---
+-- Überschreibt die Multiselektion, damit Trebuchets ein Icon bekommen.
+--
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMultiselectIcon()
+    GUI_MultiSelection.IconUpdate_Orig_BundleEntitySelection = GUI_MultiSelection.IconUpdate;
+    GUI_MultiSelection.IconUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local CurrentMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
+        local CurrentMotherName = XGUIEng.GetWidgetNameByID(CurrentMotherID);
+        local Index = CurrentMotherName + 0;
+        local CurrentMotherPath = XGUIEng.GetWidgetPathByID(CurrentMotherID);
+        local HealthWidgetPath = CurrentMotherPath .. "/Health";
+        local EntityID = g_MultiSelection.EntityList[Index];
+        local EntityType = Logic.GetEntityType(EntityID);
+        local HealthState = Logic.GetEntityHealth(EntityID);
+        local EntityMaxHealth = Logic.GetEntityMaxHealth(EntityID);
+
+        if EntityType ~= Entities.U_SiegeEngineCart and EntityType ~= Entities.U_Trebuchet then
+            GUI_MultiSelection.IconUpdate_Orig_BundleEntitySelection();
+            return;
+        end
+        if Logic.IsEntityAlive(EntityID) == false then
+            XGUIEng.ShowWidget(CurrentMotherID, 0);
+            GUI_MultiSelection.CreateEX();
+            return;
+        end
+
+        SetIcon(CurrentWidgetID, g_TexturePositions.Entities[EntityType]);
+
+        HealthState = math.floor(HealthState / EntityMaxHealth * 100);
+        if HealthState < 50 then
+            local green = math.floor(2*255* (HealthState/100));
+            XGUIEng.SetMaterialColor(HealthWidgetPath,0,255,green, 20,255);
+        else
+            local red = 2*255 - math.floor(2*255* (HealthState/100));
+            XGUIEng.SetMaterialColor(HealthWidgetPath,0,red, 255, 20,255);
+        end
+        XGUIEng.SetProgressBarValues(HealthWidgetPath,HealthState, 100);
+    end
+
+    GUI_MultiSelection.IconMouseOver_Orig_BundleEntitySelection = GUI_MultiSelection.IconMouseOver;
+    GUI_MultiSelection.IconMouseOver = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local CurrentMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
+        local CurrentMotherName = XGUIEng.GetWidgetNameByID(CurrentMotherID);
+        local Index = tonumber(CurrentMotherName);
+        local EntityID = g_MultiSelection.EntityList[Index];
+        local EntityType = Logic.GetEntityType(EntityID);
+
+        if EntityType ~= Entities.U_SiegeEngineCart and EntityType ~= Entities.U_Trebuchet then
+            GUI_MultiSelection.IconMouseOver_Orig_BundleEntitySelection();
+            return;
+        end
+        
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if EntityType == Entities.U_SiegeEngineCart then
+            local TooltipData = BundleEntitySelection.Local.Data.Tooltips.TrebuchetCart;
+            BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
+        elseif EntityType == Entities.U_Trebuchet then
+            local TooltipData = BundleEntitySelection.Local.Data.Tooltips.Trebuchet;
+            BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
+        end
+    end
+end
+
+---
+-- Überschreibt die Funktion zur Beendigung der Eskorte, damit Einheiten auch
+-- entlassen werden können.
+--
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteMilitaryDismount()
+    GUI_Military.DismountClicked_Orig_BundleEntitySelection = GUI_Military.DismountClicked;
+    GUI_Military.DismountClicked = function()
+        local Selected = GUI.GetSelectedEntity(Selected);
+        local Type = Logic.GetEntityType(Selected);
+        local PlayerID = GUI.GetPlayerID();
+        if Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false then
+            if (Type == Entities.U_SiegeEngineCart or Type == Entities.U_MilitarySiegeTower or
+                Type == Entities.U_MilitaryCatapult or Type == Entities.U_MilitaryBatteringRam or
+                Type == Entities.U_SiegeTowerCart or Type == Entities.U_CatapultCart or
+                Type == Entities.U_BatteringRamCart or Type == Entities.U_AmmunitionCart)
+            and BundleEntitySelection.Local.Data.SiegeEngineRelease then
+                Sound.FXPlay2DSound( "ui\\menu_click");
+                GUI.SendScriptCommand([[DestroyEntity(]]..Selected..[[)]]);
+                return;
+            end
+            if (Logic.IsLeader(Selected) == 1 and BundleEntitySelection.Local.Data.MilitaryRelease) then
+                Sound.FXPlay2DSound( "ui\\menu_click");
+                local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
+                GUI.SendScriptCommand([[DestroyEntity(]]..Soldiers[#Soldiers]..[[)]]);
+                return;
+            end
+        else
+            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+        end
+    end
+
+    GUI_Military.DismountUpdate_Orig_BundleEntitySelection = GUI_Military.DismountUpdate;
+    GUI_Military.DismountUpdate = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local Selected = GUI.GetSelectedEntity();
+        local Type = Logic.GetEntityType(Selected);
+        if (Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false and Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 0) then
+            if Logic.IsLeader(Selected) == 1 and not BundleEntitySelection.Local.Data.MilitaryRelease then
+                XGUIEng.DisableButton(CurrentWidgetID, 1);
+            elseif  Logic.IsLeader(Selected) == 0 then
+                if not BundleEntitySelection.Local.Data.SiegeEngineRelease then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                end
+                if Type == Entities.U_Trebuchet then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                end
+            else
+                SetIcon(CurrentWidgetID, {12, 1});
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
+            end
+            SetIcon(CurrentWidgetID, {14, 12});
+        else
+            SetIcon(CurrentWidgetID, {12, 1});
+            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+        end
+    end
+end
+
+---
+-- Überschreibt "Beute abließern", sodass Diebe entlassen werden können.
+--
+-- @within Private
+-- @local
+--
+function BundleEntitySelection.Local:OverwriteThiefDeliver()
+    GUI_Thief.ThiefDeliverClicked_Orig_BundleEntitySelection = GUI_Thief.ThiefDeliverClicked;
+    GUI_Thief.ThiefDeliverClicked = function()
+        if not self.Data.ThiefRelease then
+            GUI_Thief.ThiefDeliverClicked_Orig_BundleEntitySelection();
+            return;
+        end
+
+        Sound.FXPlay2DSound( "ui\\menu_click");
+        local PlayerID = GUI.GetPlayerID();
+        local ThiefID = GUI.GetSelectedEntity()
+        if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
+            return;
+        end
+        GUI.SendScriptCommand([[DestroyEntity(]]..ThiefID..[[)]]);
+    end
+
+    GUI_Thief.ThiefDeliverMouseOver_Orig_BundleEntitySelection = GUI_Thief.ThiefDeliverMouseOver;
+    GUI_Thief.ThiefDeliverMouseOver = function()
+        if not BundleEntitySelection.Local.Data.ThiefRelease then
+            local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+            GUI_Thief.ThiefDeliverMouseOver_Orig_BundleEntitySelection();
+            return;
+        end
+        
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        BundleEntitySelection.Local:SetTooltip(
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang],
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[lang]
+        );
+    end
+
+    GUI_Thief.ThiefDeliverUpdate_Orig_BundleEntitySelection = GUI_Thief.ThiefDeliverUpdate;
+    GUI_Thief.ThiefDeliverUpdate = function()
+        if not BundleEntitySelection.Local.Data.ThiefRelease then
+            GUI_Thief.ThiefDeliverUpdate_Orig_BundleEntitySelection();
+        else
+            local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+            local ThiefID = GUI.GetSelectedEntity();
+            if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
+                XGUIEng.DisableButton(CurrentWidgetID, 1);
+            else
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
+            end
+            SetIcon(CurrentWidgetID, {14, 12});
+        end
+    end
 end
 
 ---
 -- Hängt eine Funktion an die GUI_Tooltip.SetNameAndDescription an, sodass
 -- Tooltips überschrieben werden können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
     GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection = GUI_Tooltip.SetNameAndDescription;
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID()
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         
         if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
                 BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[lang], 
                 BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[lang]
-            )
+            );
             return;
         end
         
@@ -19041,9 +19825,36 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
             BundleEntitySelection.Local:SetTooltip(
                 BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[lang],
                 BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[lang]
-            )
+            );
             return;
         end
+        
+        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Dismount") == CurrentWidgetID then
+            local SelectedEntity = GUI.GetSelectedEntity();
+            if SelectedEntity ~= 0 then
+                if Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Leader) == 1
+                or Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Thief) == 1
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitaryCatapult
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitarySiegeTower
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitaryBatteringRam
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_CatapultCart
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_SiegeTowerCart
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_BatteringRamCart
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_SiegeEngineCart
+                or Logic.GetEntityType(SelectedEntity) == Entities.U_Trebuchet then
+                    local GuardianEntity = Logic.GetGuardianEntityID(SelectedEntity)
+                    if GuardianEntity == 0 then
+                        BundleEntitySelection.Local:SetTooltip(
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang],
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[lang]
+                        );
+                        return;
+                    end
+                end
+            end
+        end
+        
         GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean);
     end
 end
@@ -19053,29 +19864,34 @@ end
 --
 -- @param _TitleText Titel des Tooltip
 -- @param _DescText  Text des Tooltip
--- @within Application-Space
+-- @within Private
 -- @local
 --
-function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText)
-    local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal"
-    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
-    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name")
-    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text")
+function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText, _DisabledText)
+    local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal";
+    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath);
+    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name");
+    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text");
+    local PositionWidget = XGUIEng.GetCurrentWidgetID();
     
-    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _TitleText)
-    XGUIEng.SetText(TooltipDescriptionWidget, _DescText)
+    _DisabledText = _DisabledText or "";
+    local DisabledText = "";
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText ~= "" and _text ~= "" then
+        DisabledText = DisabledText .. "{cr}{@color:255,32,32,255}" .. _DisabledText;
+    end
     
-    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
-    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
-    
-    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _TitleText);    
+    XGUIEng.SetText(TooltipDescriptionWidget, _DescText .. DisabledText);
+    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
+    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
+    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
 end
 
 ---
 -- Überschreibt den SelectKnight-Button. Durch drücken von CTLR können alle
 -- Helden selektiert werden, die der Spieler kontrolliert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectKnight()
@@ -19115,7 +19931,7 @@ end
 ---
 -- Überschreibt die Militärselektion, sodass der Spieler mit SHIFT zusätzlich
 -- die Munitionswagen und Trebuchets selektieren kann.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectAllUnits()
@@ -19148,7 +19964,7 @@ end
 
 ---
 -- Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:NormalLeaderSortOrder()
@@ -19188,7 +20004,7 @@ end
 
 ---
 -- Erzeugt die erweiterte Selektion mit Munitionswagen und Trebuchets.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntitySelection.Local:ExtendedLeaderSortOrder()
@@ -19259,7 +20075,7 @@ QSB = QSB or {};
 -- zum nδchsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
--- @within User-Space
+-- @within Public
 --
 function API.AutoSaveGame(_name)
     assert(_name);
@@ -19277,7 +20093,7 @@ end
 --
 -- @param _path	Pfad zum Ziel
 -- @param _name	Name des Spielstandes
--- @within User-Space
+-- @within Public
 --
 function API.SaveGameToFolder(_path, _name)
     assert(_path);
@@ -19298,7 +20114,7 @@ end
 -- @param _path		  Pfad zum Ziel
 -- @param _name		  Name des Spielstandes
 -- @param _needButton Startbutton anzeigen (0 oder 1)
--- @within User-Space
+-- @within Public
 --
 function API.LoadGameFromFolder(_path, _name, _needButton)
     assert(_path);
@@ -19326,7 +20142,7 @@ end
 -- @param _knight		Index des Helden
 -- @param _folder		Mapordner
 -- @param _needButton	Startbutton nutzen
--- @within User-Space
+-- @within Public
 --
 function API.StartMap(_map, _knight, _folder, _needButton)
     assert(_map);
@@ -19360,7 +20176,7 @@ BundleSaveGameTools = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Global:Install()
@@ -19374,7 +20190,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:Install()
@@ -19387,7 +20203,7 @@ end
 -- zum nächsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:AutoSaveGame(_name)
@@ -19420,7 +20236,7 @@ end
 -- Prüft, ob das Spiel gerade gespeichert werden kann.
 --
 -- @return boolean: Kann speichern
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:CanGameBeSaved()
@@ -19443,7 +20259,7 @@ end
 --
 -- @param _path	Pfad zum Ziel
 -- @param _name	Name des Spielstandes
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:SaveGameToFolder(_path, _name)
@@ -19460,7 +20276,7 @@ end
 -- @param _path		  Pfad zum Ziel
 -- @param _name		  Name des Spielstandes
 -- @param _needButton Startbutton anzeigen (0 oder 1)
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton)
@@ -19489,7 +20305,7 @@ end
 -- @param _knight		Index des Helden
 -- @param _folder		Mapordner
 -- @param _needButton	Startbutton nutzen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleSaveGameTools.Local:LoadGameFromFolder(_map, _knight, _folder, _needButton)
@@ -19542,7 +20358,7 @@ QSB = QSB or {};
 -- @param _category     Kategorien oder Table mit Kategorien
 -- @param _territory    Zielterritorium oder Table mit Territorien
 -- @return table: Liste mit Entities
--- @within User-Space
+-- @within Public
 --
 function API.GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
     return BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
@@ -19556,7 +20372,7 @@ GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
 -- 
 -- @param _Prefix Präfix des Skriptnamen
 -- @return table: Liste mit Entities
--- @within User-Space
+-- @within Public
 --
 function API.GetEntitiesByPrefix(_Prefix)
     return BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix);
@@ -19599,7 +20415,7 @@ SetResourceAmount = API.SetResourceAmount;
 -- @param _angle           Winkel
 -- @param _buildingRealPos Gebäudemitte statt Gebäudeeingang
 -- @return table: Position
--- @within User-Space
+-- @within Public
 --
 function API.GetRelativePos(_target, _distance, _angle, _buildingRealPos)
     if not API.ValidatePosition(_target) then
@@ -19618,7 +20434,7 @@ GetRelativePos = API.GetRelativePos;
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within User-Space
+-- @within Public
 --
 function API.SetPosition(_Entity, _Position)
     if GUI then
@@ -19657,7 +20473,7 @@ SetPosition = API.SetPosition;
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
 -- @param _moveAsEntity Blocking ignorieren
--- @within User-Space
+-- @within Public
 --
 function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
     if GUI then
@@ -19688,7 +20504,7 @@ MoveEx = API.MoveToPosition;
 -- @param _Position     Ziel
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
--- @within User-Space
+-- @within Public
 --
 function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
     if GUI then
@@ -19719,7 +20535,7 @@ SetPositionEx = API.PlaceToPosition;
 --
 -- @param _EntityID Entity ID
 -- @return string: Vergebener Name
--- @within User-Space
+-- @within Public
 --
 function API.GiveEntityName(_EntityID)
     if IsExisting(_name) then
@@ -19741,7 +20557,7 @@ GiveEntityName = API.GiveEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @return string: Skriptname
--- @within User-Space
+-- @within Public
 --
 function API.GetEntityName(_entity)
     if not IsExisting(_entity) then
@@ -19761,7 +20577,7 @@ GetEntityName = API.GetEntityName;
 -- @param _entity Entity
 -- @param _name   Skriptname
 -- @return string: Skriptname
--- @within User-Space
+-- @within Public
 --
 function API.SetEntityName(_entity, _name)
     if GUI then
@@ -19783,7 +20599,7 @@ SetEntityName = API.SetEntityName;
 --
 -- @param _entity Gesuchtes Entity
 -- @param _ori    Ausrichtung in Grad
--- @within User-Space
+-- @within Public
 --
 function API.SetOrientation(_entity, _ori)
     if GUI then
@@ -19806,7 +20622,7 @@ SetOrientation = API.SetOrientation;
 --
 -- @param _entity Gesuchtes Entity
 -- @return number: Orientierung in Grad
--- @within User-Space
+-- @within Public
 --
 function API.GetOrientation(_entity)
     if not IsExisting(_entity) then
@@ -19825,7 +20641,7 @@ GetOrientation = API.GetOrientation;
 --
 -- @param_Entity  Angreifendes Entity
 -- @param _Target Angegriffenes Entity
--- @within User-Space
+-- @within Public
 --
 function API.EntityAttack(_Entity, _Target)
     if GUI then
@@ -19913,7 +20729,7 @@ Move = API.EntityMove;
 --
 -- @param _soldier Soldier
 -- @return number: ID des Battalion
--- @within User-Space
+-- @within Public
 --
 function API.GetLeaderBySoldier(_soldier)
     if not IsExisting(_soldier) then
@@ -19933,7 +20749,7 @@ GetLeaderBySoldier = API.GetLeaderBySoldier;
 -- @param _eID      Basis-Entity
 -- @param _playerID Besitzer der Helden
 -- @return number: Nächstes Entity
--- @within User-Space
+-- @within Public
 --
 function API.GetNearestKnight(_eID, _playerID)
     local Knights = {};
@@ -19951,7 +20767,7 @@ GetClosestKnight = API.GetNearestKnight;
 -- @param _eID      Basis-Entity
 -- @param _entities Liste von Entities
 -- @return number: Nächstes Entity
--- @within User-Space
+-- @within Public
 --
 function API.GetNearestEntity(_eID, _entities)
     if not IsExisting(_eID) then
@@ -19991,7 +20807,7 @@ BundleEntityHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Install()
@@ -20002,7 +20818,7 @@ end
 -- Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
 -- auch während des Spiels setzen zu können.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:OverwriteGeologistRefill()
@@ -20026,7 +20842,7 @@ end
 -- @param _StartAmount  Menge an Rohstoffen
 -- @param _RefillAmount Minimale Nachfüllmenge (> 0)
 -- @return boolean: Operation erfolgreich
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
@@ -20052,7 +20868,7 @@ end
 --
 -- @param _Entity   Entity zum versetzen
 -- @param _Position Neue Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:SetPosition(_Entity,_Position)
@@ -20082,7 +20898,7 @@ end
 -- @param _Distance     Entfernung zum Ziel
 -- @param _Angle        Winkel
 -- @param _moveAsEntity Blocking ignorieren
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
@@ -20184,7 +21000,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Local:Install()
@@ -20203,7 +21019,7 @@ end
 -- @param _category     Kategorien oder Table mit Kategorien
 -- @param _territory    Zielterritorium oder Table mit Territorien
 -- @return table: Liste mit Entities
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
@@ -20229,7 +21045,7 @@ end
 -- 
 -- @param _Prefix Präfix des Skriptnamen
 -- @return table: Liste mit Entities
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix)
@@ -20257,7 +21073,7 @@ end
 -- @param _angle           Winkel
 -- @param _buildingRealPos Gebäudemitte statt Gebäudeeingang
 -- @return table: Position
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
@@ -20296,7 +21112,7 @@ end
 -- @param _eID      Basis-Entity
 -- @param _entities Liste von Entities
 -- @return number: Nächstes Entity
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions:GetNearestEntity(_eID,_entities)
@@ -20345,7 +21161,7 @@ QSB = QSB or {};
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
--- @within User-Space
+-- @within Public
 --
 function API.UndiscoverTerritory(_PlayerID, _TerritoryID)
     if GUI then
@@ -20364,7 +21180,7 @@ UndiscoverTerritory = API.UndiscoverTerritory;
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
--- @within User-Space
+-- @within Public
 --
 function API.UndiscoverTerritories(_PlayerID, _TargetPlayerID)
     if GUI then
@@ -20385,7 +21201,7 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
 -- @param _PlayerID Partei oder nil für alle
--- @within User-Space
+-- @within Public
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
     if GUI then
@@ -20404,7 +21220,7 @@ SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 --
 -- @param _PlayerID    Zielpartei
 -- @param _KnightTitle Titel zum Entsperren
--- @within User-Space
+-- @within Public
 --
 function API.UnlockTitleForPlayer(_PlayerID, _KnightTitle)
     if GUI then
@@ -20423,7 +21239,7 @@ UnlockTitleForPlayer = API.UnlockTitleForPlayer;
 -- @param _Player     Partei
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within User-Space
+-- @within Public
 --
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
     if not GUI then
@@ -20442,7 +21258,7 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 -- @param _Entity     Entity
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within User-Space
+-- @within Public
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
@@ -20465,7 +21281,7 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 -- <b>Alias:</b> SetSpeedLimit
 --
 -- @param _Limit Obergrenze
--- @within User-Space
+-- @within Public
 --
 function API.SetSpeedLimit(_Limit)
     if not GUI then
@@ -20483,7 +21299,7 @@ SetSpeedLimit = API.SetSpeedLimit
 -- <b>Alias:</b> ActivateSpeedLimit
 --
 -- @param _Flag Speedbremse ist aktiv
--- @within User-Space
+-- @within Public
 --
 function API.ActivateSpeedLimit(_Flag)
     if GUI then
@@ -20499,7 +21315,7 @@ ActivateSpeedLimit = API.ActivateSpeedLimit;
 --
 -- <b>Alias:</b> KillCheats
 --
--- @within User-Space
+-- @within Public
 --
 function API.KillCheats()
     if GUI then
@@ -20515,7 +21331,7 @@ KillCheats = API.KillCheats;
 --
 -- <b>Alias:</b> RessurectCheats
 --
--- @within User-Space
+-- @within Public
 --
 function API.RessurectCheats()
     if GUI then
@@ -20532,7 +21348,7 @@ RessurectCheats = API.RessurectCheats;
 -- <b>Alias:</b> ForbidSaveGame
 --
 -- @param _Flag Speichern gesperrt
--- @within User-Space
+-- @within Public
 --
 function API.ForbidSaveGame(_Flag)
     if GUI then
@@ -20552,7 +21368,7 @@ ForbidSaveGame = API.ForbidSaveGame;
 -- <b>Alias:</b> ActivateExtendedZoom
 --
 -- @param _Flag Erweiterter Zoom gestattet
--- @within User-Space
+-- @within Public
 --
 function API.AllowExtendedZoom(_Flag)
     if GUI then
@@ -20573,7 +21389,7 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 -- <b>Alias:</b> StartNormalFestival
 --
 -- @param  _PlayerID Spieler
--- @within User-Space
+-- @within Public
 --
 function API.StartNormalFestival(_PlayerID)
     if GUI then
@@ -20592,7 +21408,7 @@ StartNormalFestival = API.StartNormalFestival;
 -- <b>Alias:</b> StartCityUpgradeFestival
 --
 -- @param _PlayerID Spieler
--- @within User-Space
+-- @within Public
 --
 function API.StartCityUpgradeFestival(_PlayerID)
     if GUI then
@@ -20610,7 +21426,7 @@ StartCityUpgradeFestival = API.StartCityUpgradeFestival;
 -- <b>Alias:</b> ForbidFestival
 --
 -- @param _PlayerID Spieler
--- @within User-Space
+-- @within Public
 --
 function API.ForbidFestival(_PlayerID)
     if GUI then
@@ -20636,7 +21452,7 @@ ForbidFestival = API.ForbidFestival;
 -- <b>Alias:</b> AllowFestival
 --
 -- @param _PlayerID Spieler
--- @within User-Space
+-- @within Public
 --
 function API.AllowFestival(_PlayerID)
     if GUI then
@@ -20667,7 +21483,7 @@ AllowFestival = API.AllowFestival;
 -- @param _NewID        Neue ID des menschlichen Spielers
 -- @param _NewName      Name in der Statistik
 -- @param _RetainKnight Ritter mitnehmen
--- @within User-Space
+-- @within Public
 --
 function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
     if GUI then
@@ -20685,7 +21501,7 @@ PlayerSetPlayerID = API.SetControllingPlayer;
 -- <b>Alias:</b> PlayerGetPlayerID
 --
 -- @return number: PlayerID
--- @within User-Space
+-- @within Public
 --
 function API.GetControllingPlayer()
     if not GUI then
@@ -20705,7 +21521,7 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function API.ThridPersonActivate(_Hero, _MaxZoom)
@@ -20723,7 +21539,7 @@ HeroCameraActivate = API.ThridPersonActivate;
 --
 -- <b>Alias:</b> HeroCameraDeactivate
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function API.ThridPersonDeactivate()
@@ -20741,7 +21557,7 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 -- <b>Alias:</b> HeroCameraIsRuning
 --
 -- @return boolean: Kamera aktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function API.ThridPersonIsRuning()
@@ -20762,7 +21578,7 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
 -- @return number: Job-ID
--- @within User-Space
+-- @within Public
 --
 function API.AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
     if GUI then
@@ -20778,7 +21594,7 @@ end
 -- Beendet einen Verfolgungsjob.
 --
 -- @param _JobID Job-ID
--- @within User-Space
+-- @within Public
 --
 function API.StopFollowKnightSave(_JobID)
     if GUI then
@@ -20825,7 +21641,7 @@ BundleGameHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
@@ -20840,7 +21656,7 @@ end
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID)
@@ -20861,7 +21677,7 @@ end
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID)
@@ -20887,7 +21703,7 @@ end
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
 -- @param _PlayerID Partei oder nil für alle
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
@@ -20915,7 +21731,7 @@ end
 --
 -- @param _PlayerID    Zielpartei
 -- @param _KnightTitle Titel zum Entsperren
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _KnightTitle)
@@ -20948,7 +21764,7 @@ end
 -- @param _newPlayerID          Neue ID des menschlichen Spielers
 -- @param _newNameForStatistics Name in der Statistik
 -- @param _retainPrimaryKnight  Ritter mitnehmen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)
@@ -21025,7 +21841,7 @@ end
 -- definierte Spieler wird als kontrollierender Spieler angenommen.
 --
 -- @return number: PlayerID
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:GetControllingPlayer()
@@ -21045,7 +21861,7 @@ end
 -- Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
 -- werden kann.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitFestival()
@@ -21069,7 +21885,7 @@ end
 -- @param _PlayerID ID des Spielers
 -- @param _Index    Index des Fest
 -- @param _Flag     Erlauben/verbieten
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, _Index, _Flag)
@@ -21087,7 +21903,7 @@ end
 ---
 -- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
@@ -21103,7 +21919,7 @@ end
 ---
 -- Aktiviert den erweiterten Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
@@ -21114,7 +21930,7 @@ end
 ---
 -- Deaktiviert den erweiterten Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
@@ -21125,7 +21941,7 @@ end
 ---
 -- Initialisiert den erweiterten Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitExtendedZoom()
@@ -21140,7 +21956,7 @@ end
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:KillCheats()
@@ -21151,7 +21967,7 @@ end
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:RessurectCheats()
@@ -21168,7 +21984,7 @@ end
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
@@ -21185,7 +22001,7 @@ end
 
 ---
 -- Deaktiviert die Heldenkamera.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonDeactivate()
@@ -21199,7 +22015,7 @@ end
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
 -- @return boolean: Kamera aktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonIsRuning()
@@ -21209,7 +22025,7 @@ end
 ---
 -- Überschreibt StartBriefing und EndBriefing des Briefing System,
 -- wenn es vorhanden ist.
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
@@ -21250,7 +22066,7 @@ end
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
 -- @return number: Job-ID
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
@@ -21273,7 +22089,7 @@ end
 -- Beendet einen Verfolgungsjob.
 --
 -- @param _JobID Job-ID
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
@@ -21293,7 +22109,7 @@ end
 -- @param _Knight   Held
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
@@ -21335,7 +22151,7 @@ ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSa
 ---
 -- Stellt nicht-persistente Änderungen nach dem laden wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
@@ -21375,7 +22191,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:Install()
@@ -21392,7 +22208,7 @@ end
 -- @param _Player     Partei
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor)
@@ -21405,7 +22221,7 @@ end
 -- @param _Entity     Entity
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
@@ -21423,7 +22239,7 @@ end
 -- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
 -- @param _Limit Obergrenze
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
@@ -21436,7 +22252,7 @@ end
 -- kann nicht mehr überschritten werden.
 --
 -- @param _Flag Speedbremse ist aktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
@@ -21450,7 +22266,7 @@ end
 -- Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
 -- aufgerufen wird und installiert die Speedbremse.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
@@ -21470,7 +22286,7 @@ end
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:KillCheats()
@@ -21485,7 +22301,7 @@ end
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:RessurectCheats()
@@ -21502,7 +22318,7 @@ end
 ---
 -- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
@@ -21515,7 +22331,7 @@ end
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
@@ -21530,7 +22346,7 @@ end
 ---
 -- Wechselt zwischen erweitertem und normalen Zoom.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
@@ -21540,7 +22356,7 @@ end
 ---
 -- Erweitert die Zoomrestriktion auf das Maximum.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
@@ -21552,7 +22368,7 @@ end
 ---
 -- Stellt die normale Zoomrestriktion wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:DeactivateExtendedZoom()
@@ -21566,7 +22382,7 @@ end
 ---
 -- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidSaveGame()
@@ -21582,7 +22398,7 @@ end
 ---
 -- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:DisplaySaveButtons(_Flag)
@@ -21599,7 +22415,7 @@ end
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonActivate(_Hero, _MaxZoom)
@@ -21627,7 +22443,7 @@ end
 ---
 -- Deaktiviert die Heldenkamera.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonDeactivate()
@@ -21641,7 +22457,7 @@ end
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
 -- @return boolean: Kamera aktiv
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonIsRuning()
@@ -21654,7 +22470,7 @@ end
 -- Kamera um links oder rechts gedreht, abhänig von der Position
 -- der Mouse.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFactor()
@@ -21689,7 +22505,7 @@ end
 ---
 -- 
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidFestival()
@@ -21828,6 +22644,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleGameHelperFunctions");
+
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleDialogWindows                                          # --
@@ -21856,7 +22673,7 @@ QSB = QSB or {};
 -- @param _Title  Titel des Dialog
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
--- @within User-Space
+-- @within Public
 --
 function API.OpenDialog(_Title, _Text, _Action)
     if not GUI then
@@ -21882,7 +22699,7 @@ end
 -- @param _Text     Text des Dialog
 -- @param _Action   Callback-Funktion
 -- @param _OkCancel Okay/Abbrechen statt Ja/Nein
--- @within User-Space
+-- @within Public
 --
 function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
     if not GUI then
@@ -21908,7 +22725,7 @@ end
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
 -- @param _List   Liste der Optionen
--- @within User-Space
+-- @within Public
 --
 function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
     if not GUI then
@@ -21963,7 +22780,7 @@ BundleDialogWindows = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Global:Install()
@@ -21977,7 +22794,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:Install()
@@ -21988,7 +22805,7 @@ end
 ---
 -- Führt das Callback eines Info-Fensters oder eines Selektionsfensters aus.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:Callback()
@@ -22002,7 +22819,7 @@ end
 -- Führt das Callback eines Ja-Nein-Dialogs aus.
 --
 -- @param _yes Gegebene Antwort
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:CallbackRequester(_yes)
@@ -22016,7 +22833,7 @@ end
 -- Läd den nächsten Dialog aus der Warteschlange und stellt die Speicher-Hotkeys
 -- wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OnDialogClosed()
@@ -22027,7 +22844,7 @@ end
 ---
 -- Startet den nächsten Dialog in der Warteschlange, sofern möglich.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogQueueStartNext()
@@ -22050,7 +22867,7 @@ end
 --
 -- @param _Methode Dialogfunktion als String
 -- @param _Args    Argumente als Table
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogQueuePush(_Methode, _Args)
@@ -22065,7 +22882,7 @@ end
 -- @param _Title  Titel des Dialog
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
@@ -22126,7 +22943,7 @@ end
 -- @param _Text     Text des Dialog
 -- @param _Action   Callback-Funktion
 -- @param _OkCancel Okay/Abbrechen statt Ja/Nein
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
@@ -22174,7 +22991,7 @@ end
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
 -- @param _List   Liste der Optionen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
@@ -22216,7 +23033,7 @@ end
 ---
 -- Stellt die Hotkeys zum Speichern des Spiels wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:RestoreSaveGame()
@@ -22232,7 +23049,7 @@ end
 -- Überschreibt die originalen Dialogfunktionen, um Fehler in den vorhandenen
 -- Funktionen zu vermeiden.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local:DialogOverwriteOriginal()
@@ -22448,7 +23265,7 @@ end
 ---
 -- Initialisiert das TextWindow, bevor es angezeigt wird.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleDialogWindows.Local.TextWindow:Prepare()
@@ -22539,6 +23356,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleDialogWindows");
+
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleBriefingSystem                                         # --
@@ -22578,7 +23396,7 @@ QSB = QSB or {};
 -- <b>Alias</b>: PauseQuestsDuringBriefings
 --
 -- @param _Flag Quest Timer pausiert
--- @within User-Space
+-- @within Public
 --
 function API.PauseQuestsDuringBriefings(_Flag)
     if GUI then
@@ -22596,7 +23414,7 @@ PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 --
 -- @param _Flag Quest Timer pausiert
 -- @return boolean: Briefing ist beendet
--- @within User-Space
+-- @within Public
 --
 function API.IsBriefingFinished(_briefingID)
     if GUI then
@@ -22617,7 +23435,7 @@ IsBriefingFinished = API.IsBriefingFinished;
 --
 -- @param _page Seite
 -- @return number: Gewählte Antwort
--- @within User-Space
+-- @within Public
 --
 function API.MCGetSelectedAnswer(_page)
     if GUI then
@@ -22637,7 +23455,7 @@ MCGetSelectedAnswer = API.MCGetSelectedAnswer;
 --
 -- @param _pageNumber Index der Page
 -- @return table: Page
--- @within User-Space
+-- @within Public
 --
 function API.GetCurrentBriefingPage(_pageNumber)
     if GUI then
@@ -22656,7 +23474,7 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 -- <b>Alias</b>: GetCurrentBriefing
 --
 -- @return table: Briefing
--- @within User-Space
+-- @within Public
 --
 function API.GetCurrentBriefing()
     if GUI then
@@ -22674,7 +23492,7 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 -- @param _briefing Quest Timer pausiert
 -- @return function(3): AP, ASP, ASMC
--- @within User-Space
+-- @within Public
 --
 function API.AddPages(_briefing)
     if GUI then
@@ -22707,7 +23525,7 @@ BundleBriefingSystem = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:Install()
@@ -22720,7 +23538,7 @@ end
 -- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
 --
 -- @param _Flag Quest Timer pausiert
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag)
@@ -22732,7 +23550,7 @@ end
 --
 -- @param _Flag Quest Timer pausiert
 -- @return boolean: Briefing ist beendet
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:IsBriefingFinished(_briefingID)
@@ -22747,7 +23565,7 @@ end
 --
 -- @param _page Seite
 -- @return number: Gewählte Antwort
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:MCGetSelectedAnswer(_page)
@@ -22764,7 +23582,7 @@ end
 --
 -- @param _pageNumber Index der Page
 -- @return table: Page
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber)
@@ -22777,7 +23595,7 @@ end
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
 -- @return table: Briefing
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:GetCurrentBriefing()
@@ -22789,7 +23607,7 @@ end
 --
 -- @param _briefing Quest Timer pausiert
 -- @return function(3): AP, ASP, ASMC
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:AddPages(_briefing)
@@ -22947,7 +23765,7 @@ end
 ---
 -- Initalisiert das Briefing System im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:InitalizeBriefingSystem()
@@ -23107,7 +23925,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     --
     -- @param _briefing Briefing-Tabelle
     -- @return number: Briefing-ID
-    -- @within User-Space
+    -- @within Public
     --
     function API.StartCutscene(_briefing)
         -- Seitenweises abbrechen ist nicht erlaubt
@@ -23156,7 +23974,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- @param _briefing     Briefing-Table
     -- @param _cutsceneMode Cutscene-Mode nutzen?
     -- @return number: Briefing-ID
-    -- @within User-Space
+    -- @within Public
     --
     function API.StartBriefing(_briefing, _cutsceneMode)
         -- view wird nur Ausgeführt, wenn es sich um eine Cutscene handelt
@@ -23629,7 +24447,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Local:Install()
@@ -23639,7 +24457,7 @@ end
 ---
 -- Initalisiert das Briefing System im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBriefingSystem.Local:InitalizeBriefingSystem()
@@ -24840,6 +25658,8 @@ end
 
 ---
 -- Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.
+-- @within Private
+-- @local
 --
 function BundleBriefingSystem:OverwriteGetPosition()
     GetPosition = function(_input, _offsetZ)
@@ -24871,6 +25691,7 @@ Core:RegisterBundle("BundleBriefingSystem");
 --
 -- @param _Briefing Funktionsname als String
 -- @return table: Behavior
+-- @within Behavior
 --
 function Reward_Briefing(...)
     return b_Reward_Briefing:new(...);
@@ -24934,6 +25755,7 @@ Core:RegisterBehavior(b_Reward_Briefing);
 --
 -- @param _Briefing Funktionsname als String
 -- @return table: Behavior
+-- @within Behavior
 --
 function Reprisal_Briefing(...)
     return b_Reprisal_Briefing:new(...);
@@ -24995,6 +25817,7 @@ Core:RegisterBehavior(b_Reprisal_Briefing)
 -- @param _QuestName Name des Quest
 -- @param _Waittime  Wartezeit in Sekunden
 -- @return table: Behavior
+-- @within Behavior
 --
 function Trigger_Briefing(...)
     return b_Trigger_Briefing:new(...);
@@ -25062,7 +25885,9 @@ function b_Trigger_Briefing:DEBUG(__quest_)
     return false;
 end
 
-Core:RegisterBehavior(b_Trigger_Briefing)-- -------------------------------------------------------------------------- --
+Core:RegisterBehavior(b_Trigger_Briefing)
+
+-- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleCastleStore                                            # --
 -- ########################################################################## --
@@ -25215,7 +26040,7 @@ BundleCastleStore = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global:Install()
@@ -25472,7 +26297,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateTemporaryMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateTemporaryMode()
@@ -25489,7 +26314,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateStockMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateStockMode()
@@ -25506,7 +26331,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:ActivateOutsourceMode
 --
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:ActivateOutsourceMode()
@@ -25525,7 +26350,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:Store(_Good, _Amount)
@@ -25555,7 +26380,7 @@ end
 -- @param number _Good      Watentyp
 -- @param number _Amount    Menge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore:Outsource(_Good, _Amount)
@@ -25633,7 +26458,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore.UpdateStores
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.CastleStore.UpdateStores()
@@ -25680,7 +26505,7 @@ end
 -- Wirt ausgeführt, nachdem ein Spielstand geladen wurde. Diese Funktion Stellt
 -- alle nicht persistenten Änderungen wieder her.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global.OnSaveGameLoaded()
@@ -25691,7 +26516,7 @@ end
 -- Überschreibt die globalen Spielfunktionen, die mit dem Burglager in
 -- Konfilckt stehen.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Global:OverwriteGameFunctions()
@@ -25803,7 +26628,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:Install()
@@ -25818,7 +26643,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:CreateStore
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:CreateStore(_PlayerID)
@@ -25848,7 +26673,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:DeleteStore
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:DeleteStore(_PlayerID)
@@ -25864,7 +26689,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetAmount(_PlayerID, _Good)
@@ -25906,7 +26731,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return number
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetTotalAmount(_PlayerID)
@@ -25930,7 +26755,7 @@ end
 -- @param number _Good          Warentyp
 -- @param number _Amount        Warenmenge
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetAmount(_PlayerID, _Good, _Amount)
@@ -25950,7 +26775,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:IsAccepted(_PlayerID, _Good)
@@ -25973,7 +26798,7 @@ end
 -- @param number _Good          Warentyp
 -- @param boolean _Good         Akzeptanz-Flag
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetAccepted(_PlayerID, _Good, _Flag)
@@ -25994,7 +26819,7 @@ end
 -- @param number _PlayerID      ID des Spielers
 -- @param number _Good          Warentyp
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:IsLocked(_PlayerID, _Good)
@@ -26017,7 +26842,7 @@ end
 -- @param number _Good          Warentyp
 -- @param boolean _Good         Akzeptanz-Flag
 -- @return self
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SetLocked(_PlayerID, _Good, _Flag)
@@ -26037,7 +26862,7 @@ end
 --
 -- @param number _PlayerID      ID des Spielers
 -- @return boolean
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:HasCastleStore(_PlayerID)
@@ -26052,7 +26877,7 @@ end
 --
 -- @param number _PlayerID      ID des Spielers
 -- @return table
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetStore(_PlayerID)
@@ -26066,7 +26891,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GetLimit
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GetLimit(_PlayerID)
@@ -26090,7 +26915,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnStorehouseTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
@@ -26112,7 +26937,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnCityTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
@@ -26134,7 +26959,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:OnMultiTabClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
@@ -26155,7 +26980,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:GoodClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
@@ -26176,7 +27001,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:DestroyGoodsClicked
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:DestroyGoodsClicked(_PlayerID)
@@ -26192,7 +27017,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:SelectionChanged
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:SelectionChanged(_PlayerID)
@@ -26213,7 +27038,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateBehaviorTabs
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateBehaviorTabs(_PlayerID)
@@ -26243,7 +27068,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _CurrentWidget)
@@ -26285,7 +27110,7 @@ end
 -- <b>Alias</b>: QSB.CastleStore:UpdateStorageLimit
 --
 -- @param number _PlayerID      ID des Spielers
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:UpdateStorageLimit(_PlayerID)
@@ -26307,7 +27132,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ToggleStore
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ToggleStore()
@@ -26328,7 +27153,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:RestoreStorehouseMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:RestoreStorehouseMenu()
@@ -26358,7 +27183,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ShowCastleMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ShowCastleMenu()
@@ -26389,7 +27214,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:ShowCastleStoreMenu
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local.CastleStore:ShowCastleStoreMenu()
@@ -26431,7 +27256,7 @@ end
 ---
 -- Überschreibt die Textausgabe mit den eigenen Texten.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:OverwriteGetStringTableText()
@@ -26505,7 +27330,7 @@ end
 -- Überschreibt die lokalen Spielfunktionen, die benötigt werden, damit das
 -- Burglager funktioniert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleCastleStore.Local:OverwriteGameFunctions()
@@ -26738,6 +27563,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleCastleStore");
+
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleBuildingButtons                                        # --
@@ -26766,7 +27592,7 @@ QSB = QSB or {};
 --
 -- <b>Alias:</b> ActivateSingleStop
 --
--- @within User-Space
+-- @within Public
 --
 function API.ActivateSingleStop()
     if not GUI then
@@ -26788,7 +27614,7 @@ ActivateSingleStop = API.ActivateSingleStop;
 --
 -- <b>Alias:</b> DeactivateSingleStop
 --
--- @within User-Space
+-- @within Public
 --
 function API.DeactivateSingleStop()
     if not GUI then
@@ -26805,7 +27631,7 @@ DeactivateSingleStop = API.DeactivateSingleStop;
 -- <b>Alias:</b> UseDowngrade
 --
 -- @param _flag Downgrade aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseDowngrade(_flag)
     if not GUI then
@@ -26822,7 +27648,7 @@ UseDowngrade = API.UseDowngrade;
 -- <b>Alias:</b> UseBreedCattle
 --
 -- @param _flag Kuhzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedCattle(_flag)
     if not GUI then
@@ -26849,7 +27675,7 @@ UseBreedCattle = API.UseBreedCattle;
 -- <b>Alias:</b> UseBreedSheeps
 --
 -- @param _flag Schafzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedSheeps(_flag)
     if not GUI then
@@ -26876,7 +27702,7 @@ UseBreedSheeps = API.UseBreedSheeps;
 -- <b>Alias:</b> UseBreedCattle
 --
 -- @param _flag Kuhzucht aktiv/inaktiv
--- @within User-Space
+-- @within Public
 --
 function API.UseBreedCattle(_flag)
     if not GUI then
@@ -26903,7 +27729,7 @@ UseBreedCattle = API.UseBreedCattle;
 -- <b>Alias:</b> SetSheepGrainCost
 --
 -- @param _Amount Getreidekosten
--- @within User-Space
+-- @within Public
 --
 function API.SetSheepGrainCost(_Amount)
     if not GUI then
@@ -26920,7 +27746,7 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 -- <b>Alias:</b> SetCattleGrainCost
 --
 -- @param _Amount Getreidekosten
--- @within User-Space
+-- @within Public
 --
 function API.SetCattleGrainCost(_Amount)
     if not GUI then
@@ -26937,7 +27763,7 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 -- <b>Alias:</b> SetSheepNeeded
 --
 -- @param _Amount Benötigte Menge
--- @within User-Space
+-- @within Public
 --
 function API.SetSheepNeeded(_Amount)
     if not GUI then
@@ -26957,7 +27783,7 @@ SetSheepNeeded = API.SetSheepNeeded;
 -- <b>Alias:</b> SetCattleNeeded
 --
 -- @param _Amount Benötigte Menge
--- @within User-Space
+-- @within Public
 --
 function API.SetCattleNeeded(_Amount)
     if not GUI then
@@ -27054,7 +27880,7 @@ BundleBuildingButtons = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Global:Install()
@@ -27067,7 +27893,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:Install()
@@ -27089,7 +27915,7 @@ end
 ---
 -- Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:BuyAnimal(_eID)
@@ -27120,7 +27946,7 @@ end
 --
 -- Ein Gebäude der Stufe 1 wird zerstört. Aktuell ist dies aber inaktiv.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:DowngradeBuilding()
@@ -27147,7 +27973,7 @@ end
 -- @param _actionFunction   Action-Funktion (String in Global)
 -- @param _tooltipFunction  Tooltip-Funktion (String in Global)
 -- @param _updateFunction   Update-Funktion (String in Global)
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:AddOptionalButton(_idx, _actionFunction, _tooltipFunction, _updateFunction)
@@ -27183,7 +28009,7 @@ end
 -- Entfernt den Zusatz-Button auf dem Index.
 --
 -- @param _idx Indexposition des Button (1 oder 2)
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
@@ -27213,7 +28039,7 @@ end
 --
 -- Diese Funktion implementiert den optionalen Schalter #1.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteAutoToggle()
@@ -27275,7 +28101,7 @@ end
 --
 -- Diese Funktion implementiert den optionalen Schalter #2.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteGateOpenClose()
@@ -27337,7 +28163,7 @@ end
 --
 -- Diese Funktion implementiert den Rückbau.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteToggleTrap()
@@ -27430,7 +28256,7 @@ end
 -- Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung. Dabei
 -- wird die Nutztierzucht implementiert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
@@ -27591,7 +28417,7 @@ end
 -- Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
 -- funktioniert.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteHouseMenuButtons()
@@ -27692,7 +28518,7 @@ end
 -- @param _DisabledText Textzusatz wenn inaktiv
 -- @param _Costs        Kostentabelle
 -- @param _InSettlement Kosten in Siedlung suchen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
@@ -27727,7 +28553,7 @@ end
 ---
 -- Diese Funktion ist die Action von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action(WidgetID, EntityID)
@@ -27739,7 +28565,7 @@ end
 ---
 -- Diese Funktion steuert den Tooltip von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
@@ -27753,7 +28579,7 @@ end
 ---
 -- Diese Funktion ist der Update Job von Single Stop.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update(_WidgetID, _EntityID)
@@ -27776,7 +28602,7 @@ end
 -- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
 -- @param _Source Quelle der Änderung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleBuildingButtons.Local.OnSelectionChanged(_Source)
@@ -27791,6 +28617,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleBuildingButtons");
+
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleInteractiveObjects                                     # --
@@ -27824,7 +28651,7 @@ QSB.IOList = {};
 --
 -- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
--- @within User-Space
+-- @within Public
 --
 function API.SetupInteractiveObject(_Name, _Description)
     if GUI then
@@ -27842,7 +28669,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 --
 -- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
--- @within User-Space
+-- @within Public
 --
 function API.CreateObject(_Description)
     if GUI then
@@ -27862,7 +28689,7 @@ CreateObject = API.CreateObject;
 -- <b>Alias:</b> RemoveInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.RemoveInteractiveObject(_EntityName)
     if GUI then
@@ -27881,7 +28708,7 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 -- <b>Alias:</b> UnuseInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UnuseInteractiveObject(_EntityName)
     if GUI then
@@ -27900,7 +28727,7 @@ UnuseInteractiveObject = API.UnuseInteractiveObject;
 -- <b>Alias:</b> UnlockInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UnlockInteractiveObject(_EntityName)
     if GUI then
@@ -27919,7 +28746,7 @@ UnlockInteractiveObject = API.UnlockInteractiveObject;
 -- <b>Alias:</b> UseInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.UseInteractiveObject(_EntityName)
     if GUI then
@@ -27938,7 +28765,7 @@ UseInteractiveObject = API.UseInteractiveObject;
 -- <b>Alias:</b> LockInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within User-Space
+-- @within Public
 --
 function API.LockInteractiveObject(_EntityName)
     if GUI then
@@ -27959,7 +28786,7 @@ LockInteractiveObject = API.LockInteractiveObject;
 --
 -- @param _Key  Identifier der Beschriftung
 -- @param _Text Text der Beschriftung
--- @within User-Space
+-- @within Public
 --
 function API.AddCustomIOName(_Key, _Text)
     if type(_Text == "table") then
@@ -27995,7 +28822,7 @@ BundleInteractiveObjects = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:Install()
@@ -28011,7 +28838,7 @@ end
 -- Verwendungszweck ab.
 --
 -- @param _Description Beschreibung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:CreateObject(_Description)
@@ -28089,7 +28916,7 @@ end
 -- Konfiguration des Objektes entfernt.
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName)
@@ -28109,7 +28936,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UnuseInteractiveObject(_EntityName)
@@ -28124,7 +28951,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UnlockInteractiveObject(_EntityName)
@@ -28139,7 +28966,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:UseInteractiveObject(_EntityName)
@@ -28154,7 +28981,7 @@ end
 -- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
 --
 -- @param _EntityName Skriptname des IO
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:LockInteractiveObject(_EntityName)
@@ -28171,7 +28998,7 @@ end
 --
 -- @param _Key  Identifier der Beschriftung
 -- @param _Text Text der Beschriftung
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text)
@@ -28196,7 +29023,7 @@ end
 -- Überschreibt die Events, die ausgelöst werden, wenn interaktive Objekte
 -- benutzt werden.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global:HackOnInteractionEvent()
@@ -28289,7 +29116,7 @@ end
 -- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt 
 -- ist und erlaubt die Benutzung.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Global.ControlInteractiveObjects()
@@ -28305,7 +29132,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:Install()
@@ -28318,7 +29145,7 @@ end
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
@@ -28335,7 +29162,7 @@ end
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
@@ -28361,7 +29188,7 @@ end
 ---
 -- Überschreibt die Spielfunktione, die interaktive Objekte steuern.
 --
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
@@ -28746,7 +29573,7 @@ end
 -- @param _DisabledText Textzusatz wenn inaktiv
 -- @param _Costs        Kostentabelle
 -- @param _InSettlement Kosten in Siedlung suchen
--- @within Application-Space
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
@@ -28819,3 +29646,1417 @@ end
 
 Core:RegisterBundle("BundleInteractiveObjects");
 
+-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia BundleEntityHealth                                           # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Dieses Bundle soll dem Mapper ermöglichen die Trigger, die auslösen, wenn 
+-- Entities kämpfen, besser zu nutzen. Außerdem werden einige Hilfsfunktionen 
+-- bereitgestellt.
+--
+-- @module BundleEntityHealth
+-- @set sort=true
+--
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Gibt die Gesundheit des Entity in prozent zurück.
+--
+-- Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen, 
+-- Gebäude und Raubtiere haben Gesundheit.
+--
+-- <b>Alias</b>: GetHealth
+--
+-- @param _Entity Entity to change
+-- @return number: Health in percent
+-- @within Public
+--
+function API.GetHealth(_Entity)
+    return BundleEntityHealth:GetHealth(_Entity);
+end
+GetHealth = API.GetHealth;
+
+---
+-- Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.
+--
+-- Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen, 
+-- Gebäude und Raubtiere haben Gesundheit.
+--
+-- <b>Alias</b>: SetHealth
+--
+-- @param _Entity     Entity to change
+-- @param _Percentage Health amount
+-- @within Public
+--
+function API.SetHealth(_Entity, _Percentage)
+    if GUI then
+        local Sublect = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Bridge("API.SetHealth(" ..Sublect.. ", " .._Percentage.. ")");
+        return;
+    end
+    if not IsExisting(_Entity) then
+        local Sublect = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("_Entity " ..Sublect.. " does not exist!");
+        return;
+    end
+    if type(_Percentage) ~= "number" then
+        API.Dbg("_Percentage must be a number!");
+        return;
+    end
+    
+    _Percentage = (_Percentage < 0 and 0) or _Percentage;
+    if _Percentage > 100 then
+        API.Warn("_Percentage is larger than 100%. This could cause problems!");
+    end
+    BundleEntityHealth.Global:SetEntityHealth(_Entity, _Percentage);
+end
+SetHealth = API.SetHealth;
+
+---
+-- Steckt ein Gebäude in Brand.
+--
+-- Achtung: Nur Gebäude können in Brand gesteckt werden.
+--
+-- <b>Alias</b>: SetOnFire
+--
+-- @param _Entity   Entity to change
+-- @param _Strength Intensity of fire
+-- @within Public
+--
+function API.SetOnFire(_Entity, _Strength)
+    if GUI then
+        local Sublect = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Bridge("API.SetOnFire(" ..Sublect.. ", " .._Strength.. ")");
+        return;
+    end
+    if not IsExisting(_Entity) then
+        local Sublect = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        API.Dbg("Entity " ..Sublect.. " does not exist!");
+        return;
+    end
+    if Logic.IsBuilding(GetID(_Entity)) == 0 then
+        API.Dbg("Only buildings can be set on fire!");
+        return;
+    end
+    if type(_Strength) ~= "number" then
+        API.Dbg("_Strength must be a number!");
+        return;
+    end
+    _Strength = (_Strength < 0 and 0) or _Strength;
+    Logic.DEBUG_SetBuildingOnFile(GetID(_Entity), _Strength);
+end
+SetOnFire = API.SetOnFire;
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity von einem
+-- anderen Entity verwundet wird.
+--
+-- <b>Alias</b>: AddOnEntityHurtAction
+--
+-- @param _Function Funktion, die ausgeführt wird.
+-- @within Public
+--
+function API.AddOnEntityHurtAction(_Function)
+    if GUI then
+        API.Dbg("API.AddOnEntityHurtAction: Can not be used in local script!");
+        return;
+    end
+    if type(_Function) ~= "function" then
+        API.Dbg("_Function must be a function!");
+        return;
+    end
+    BundleEntityHealth.Global.AddOnEntityHurtAction(_Function);
+end
+AddOnEntityHurtAction = API.AddOnEntityHurtAction;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+BundleEntityHealth = {
+    Global = {
+        Data = {
+            OnEntityHurtAction = {},
+        },
+    },
+    Local = {
+        Data = {}
+    },
+}
+
+-- Global Script ---------------------------------------------------------------
+
+---
+-- Initialisiert das Bundle im globalen Skript.
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global:Install()
+    BundleEntityHealth_EntityHurtEntityController = BundleEntityHealth.Global.EntityHurtEntityController;
+    Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "BundleEntityHealth_EntityHurtEntityController", 1);
+    
+    BundleEntityHealth_EntityDestroyedController = BundleEntityHealth.Global.EntityDestroyedController;
+    Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "BundleEntityHealth_EntityDestroyedController", 1);
+end
+
+---
+-- Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.
+--
+-- @param _Entity     Entity to change
+-- @param _Percentage Health amount
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global:SetEntityHealth(_Entity, _Percentage)
+    if not IsExisting(_Entity) then
+        return;
+    end
+    local EntityID  = GetID(_Entity);
+    local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
+    local Health    = Logic.GetEntityHealth(EntityID);
+    local SetHealth = math.floor((MaxHealth * (_Percentage / 100)) + 0.5);
+    
+    Logic.HealEntity(EntityID, MaxHealth - Health);
+    Logic.HurtEntity(EntityID, MaxHealth - SetHealth);
+end
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity ein anderes
+-- verwundet. Dabei wird EntityID des Angreifers und des Verteidigers an die
+-- Funktion übergeben.
+--
+-- @param _Function Funktion, die ausgeführt wird
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global.AddOnEntityHurtAction(_Function)
+    table.insert(BundleEntityHealth.Global.Data.OnEntityHurtAction, _Function);
+end
+
+---
+-- Führt alle registrierten Events aus, wenn ein Entity ein anderes angreift.
+-- 
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global.EntityHurtEntityController()
+    local AttackerIDs = {Event.GetEntityID1()};
+    local DefenderIDs = {Event.GetEntityID2()};
+    
+    for i=1, #AttackerIDs, 1 do
+        for j=1, #DefenderIDs, 1 do
+            local Attacker = AttackerIDs[i];
+            local Defender = DefenderIDs[j];
+            if IsExisting(Attacker) and IsExisting(Defender) then
+                for k, v in pairs(BundleEntityHealth.Global.Data.OnEntityHurtAction) do
+                    if v then
+                        v(Attacker, Defender);
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Local Script ----------------------------------------------------------------
+
+---
+-- Initialisiert das Bundle im lokalen Skript.
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Local:Install()
+    
+end
+
+-- Shared Script ---------------------------------------------------------------
+
+---
+-- Gibt die Gesundheit des Entity in prozent zurück.
+--
+-- @param _Entity Entity to change
+-- @return number: Health in percent
+-- @within Private
+-- @local
+--
+function BundleEntityHealth:GetHealth(_Entity)
+    if not IsExisting(_Entity) then
+        return 0;
+    end
+    local EntityID  = GetID(_Entity);
+    local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
+    local Health    = Logic.GetEntityHealth(EntityID);
+    return (Health / MaxHealth) * 100;
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleEntityHealth");
+
+---
+-- Ändert die Gesundheit eines Entity.
+--
+-- @param _Entity     Entity
+-- @param _Percentage Prozentwert
+-- @return Table mit Behavior
+-- @within Reprisal
+--
+function Reprisal_SetHealth(...)
+    return b_Reprisal_SetHealth:new(...);
+end
+
+b_Reprisal_SetHealth = {
+    Name = "Reprisal_SetHealth",
+    Description = {
+        en = "Reprisal: Changes the health of an entity.",
+        de = "Vergeltung: Setzt die Gesundheit eines Entity.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Entity",     de = "Entity", },
+        { ParameterType.Number,     en = "Percentage", de = "Prozentsatz", },
+    },
+}
+
+function b_Reprisal_SetHealth:GetRewardTable(_Quest)
+    return { Reprisal.Custom, { self, self.CustomFunction } }
+end
+
+function b_Reprisal_SetHealth:AddParameter( _Index, _Parameter )
+    if (_Index == 0) then
+        self.Entity = _Parameter;
+    elseif (_Index == 1) then
+        self.Percentage = _Parameter;
+    end
+end
+
+function b_Reprisal_SetHealth:CustomFunction(_Quest)
+    SetHealth(self.Entity, self.Percentage);
+end
+
+function b_Reprisal_SetHealth:DEBUG(_Quest)
+    if not IsExisting(self.Entity) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        -- return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reprisal_SetHealth);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert die Gesundheit eines Entity.
+--
+-- @param _Entity     Entity
+-- @param _Percentage Prozentwert
+-- @return Table mit Behavior
+-- @within Reward
+--
+function Reward_SetHealth(...)
+    return b_Reward_SetHealth:new(...);
+end
+
+b_Reward_SetHealth = API.InstanceTable(b_Reprisal_SetHealth);
+b_Reward_SetHealth.Name = "Reward_SetHealth";
+b_Reward_SetHealth.Description.en = "Reward: Changes the health of an entity.";
+b_Reward_SetHealth.Description.de = "Lohn: Setzt die Gesundheit eines Entity.";
+b_Reward_SetHealth.GetReprisalTable = nil;
+
+b_Reward_SetHealth.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom, { self, self.CustomFunction } }
+end
+
+function b_Reward_SetHealth:DEBUG(_Quest)
+    if not IsExisting(self.Entity) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reward_SetHealth);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Die Gesundheit eines Entities muss einen bestimmten Wert erreichen.
+--
+-- @param _Entity Entity, das überwacht wird
+-- @param _Amount Menge in Prozent
+-- @return Table mit Behavior
+-- @within Trigger
+--
+function Trigger_EntityHealth(...)
+    return b_Trigger_EntityHealth:new(...);
+end
+
+b_Trigger_EntityHealth = {
+    Name = "Trigger_EntityHealth",
+    Description = {
+        en = "Trigger: The health of a unit must reach a certain point.",
+        de = "Auslöser: Die Gesundheit eines Entity muss einen bestimmten Wert erreichen.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
+        { ParameterType.Custom,     en = "Relation",    de = "Relation" },
+        { ParameterType.Number,     en = "Percentage",  de = "Prozentwert" },
+    },
+}
+
+function b_Trigger_EntityHealth:GetTriggerTable(_Quest)
+    return {Triggers.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Trigger_EntityHealth:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.ScriptName = _Parameter;
+    elseif (_Index == 1) then
+        self.BeSmalerThan = _Parameter == "<";
+    elseif (_Index == 2) then
+        self.Percentage = _Parameter;
+    end
+end
+
+function b_Goal_StealGold:GetCustomData(_Index)
+    if _Index == 1 then
+        return { "<", ">=" };
+    end
+end
+
+function b_Trigger_EntityHealth:CustomFunction(_Quest)
+    if self.BeSmalerThan then
+        return GetHealth(self.ScriptName) < self.Percentage;
+    else
+        return GetHealth(self.ScriptName) >= self.Percentage;
+    end
+end
+
+function b_Trigger_EntityHealth:DEBUG(_Quest)
+    if not IsExisting(self.ScriptName) then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        return true;
+    end
+    if self.Percentage < 0 or self.Percentage > 100 then
+        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_EntityHealth);-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia AddOnInteractiveObjectTemplates                              # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Dieses Bundle bietet fertige Schablonen für interaktive Objekte. Mit diesen
+-- Schablonen können interaktive Objekte einfach erstellt und gehandhabt werden.
+--
+-- <p>
+-- <b>Interaktive Baustellen:</b><br>
+-- Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei
+-- ein Gebäude bauen zu lassen.
+-- <br>Die Baustelle muss durch den Helden aktiviert
+-- werden. Ein Siedler wird aus dem Lagerhaus kommen und das Gebäude bauen.
+-- </p>
+-- <p>
+-- <b>Interaktive Schatztruhen:</b><br>
+-- Es werden Schatztruhen mit zufälligen Inhalt erzeugt. Diese Truhen werden
+-- aktiviert und der Inhalt wird in einem Karren abtranzportiert.
+-- </p>
+-- <p>
+-- <b>Interaktive Minen:</b><br>
+-- Der Spieler kann eine Steinmine oder Eisenmine erzeugen, die zuerst durch
+-- Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.
+-- <br>Optional kann diese Mine auch nach dem Erschöpfen einstürzen.
+-- </p>
+-- <p>
+-- <b>Trebuchet-Baustellen:</b><br>
+-- Der Spieler kann Trebuchets mieten. Das Trebuchet fährt als Karren vor,
+-- wird ausgebaut und kann anschließend benutzt werden.<br> Das Trebuchet fährt
+-- ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.<br>
+-- Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
+-- ankommt, wird die Baustelle wieder freigegeben.
+-- </p>
+--
+-- @module AddOnInteractiveObjectTemplates
+-- @set sort=true
+--
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erstelle eine Mine eines bestimmten Typs. Es können zudem eine Bedingung
+-- und zwei verschiedene Callbacks vereinbart werden.
+--
+-- <b>Alias</b>: CreateIOMine
+--
+-- @param _Position         Script Entity, die mit Mine ersetzt wird
+-- @param _Type             Typ der Mine
+-- @param _Costs            (optional) Kostentabelle
+-- @param _NotRefillable    (optional) Die Mine wird weiterhin überwacht
+-- @param _Condition        (optional) Bedingungsfunktion
+-- @param _CreationCallback (optional) Funktion nach Kauf ausführen
+-- @param _CallbackDepleted (optional) Funktion nach Ausbeutung ausführen
+-- @within Public
+--
+function API.CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
+    if GUI then
+        API.Dbg("API.CreateIOMine: Can not be used from local script!");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
+end
+CreateIOMine = API.CreateIOMine;
+
+---
+-- Erstelle eine Eisenmine.
+--
+-- <b>Alias</b>: CreateIOIronMine
+--
+-- @param _Position      Script Entity, die mit Mine ersetzt wird
+-- @param _Cost1Type     (optional) Kostenware 1
+-- @param _Cost1Amount   (optional) Kostenmenge 1
+-- @param _Cost2Type     (optional) Kostenware 2
+-- @param _Cost2Amount   (optional) Kostenmenge 2
+-- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- @within Public
+--
+function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+    if GUI then
+        API.Dbg("API.CreateIOIronMine: Can not be used from local script!");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
+end
+CreateIOIronMine = API.CreateIOIronMine;
+
+---
+-- Erstelle eine Steinmine.
+--
+-- <b>Alias</b>: CreateIOStoneMine
+--
+-- @param _Position      Script Entity, die mit Mine ersetzt wird
+-- @param _Cost1Type     (optional) Kostenware 1
+-- @param _Cost1Amount   (optional) Kostenmenge 1
+-- @param _Cost2Type     (optional) Kostenware 2
+-- @param _Cost2Amount   (optional) Kostenmenge 2
+-- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- @within Public
+--
+function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+    if GUI then
+        API.Dbg("API.CreateIOStoneMine: Can not be used from local script!");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
+end
+CreateIOStoneMine = API.CreateIOStoneMine;
+
+---
+-- Erzeugt eine Baustelle an der Position.
+--
+-- <b>Alias</b>: CreateIOBuildingSite
+--
+-- @param _Position Zielpunkt
+-- @param _PlayerID Besitzer des Gebäudes
+-- @param _Type     Typ des Gebäudes
+-- @param _Costs    (optional) Eigene Gebäudekosten
+-- @param _Distance (optional) Aktivierungsentfernung
+-- @param _Icon     (optional) Icon des Schalters
+-- @param _Title    (optional) Titel der Beschreibung
+-- @param _Text     (optional) Text der Beschreibung
+-- @param _Callback (optional) Funktion nach fertigstellung
+-- @within Public
+--
+function API.CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
+    if GUI then
+        API.Dbg("API.CreateIOBuildingSite: Can not be used from local script!");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback);
+end
+CreateIOBuildingSite = API.CreateIOBuildingSite;
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
+-- des angegebenen Typs.
+--
+-- <b>Alias</b>: CreateRandomChest
+--
+-- @param _Name     Name der zu ersetzenden Script Entity
+-- @param _Good     Warentyp
+-- @param _Min      Mindestmenge
+-- @param _Max      Maximalmenge
+-- @param _Callback Callback-Funktion
+-- @within Public
+--
+function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
+    if GUI then
+        API.Dbg("API.CreateRandomChest: Can not be used from local script!");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
+end
+CreateRandomChest = API.CreateRandomChest;
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gold
+-- des angegebenen Typs.
+--
+-- <b>Alias</b>: CreateRandomGoldChest
+-- 
+-- @param _Name Name der zu ersetzenden Script Entity
+-- @within Public
+--
+function API.CreateRandomGoldChest(_Name)
+    if GUI then
+        API.Dbg("API.CreateRandomGoldChest('" .._Name.. "')");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
+end
+CreateRandomGoldChest = API.CreateRandomGoldChest;
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gütern
+-- des angegebenen Typs.
+-- Güter können seien: Eisen, Stein, HOlz, Wolle, Fleisch, Kräuter,
+-- Honigwaben, Milch, Fisch oder Getreide.
+--
+-- <b>Alias</b>: CreateRandomResourceChest
+--
+-- @param _Name Name der zu ersetzenden Script Entity
+-- @within Public
+--
+function API.CreateRandomResourceChest(_Name)
+    if GUI then
+        API.Bridge("API.CreateRandomResourceChest('" .._Name.. "')");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name);
+end
+CreateRandomResourceChest = API.CreateRandomResourceChest;
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Luxus-
+-- gütern des angegebenen Typs.
+-- Güter können seien: Salz, Farben, Edelsteine, Musikinstrumente
+-- oder Weihrauch.
+--
+-- <b>Alias</b>: CreateRandomLuxuryChest
+--
+-- @param _Name Name der zu ersetzenden Script Entity
+-- @within Public
+--
+function API.CreateRandomLuxuryChest(_Name)
+    if GUI then
+        API.Bridge("API.CreateRandomLuxuryChest('" .._Name.. "')");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name);
+end
+CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
+
+---
+-- Erstellt eine Trebuchet-Baustelle an der Position mit den
+-- angegebenen Baukosten.
+--
+-- <b>Alias</b>: CreateTrebuchetConstructionSite
+--
+-- @param _Name     Skriptname Position
+-- @param _GoldCost Goldkosten
+-- @param _WoodCost Holzkosten
+-- @within Public
+--
+function API.CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
+    if GUI then
+        API.Bridge("API.CreateTrebuchetConstructionSite('" .._Name.. "', " .._GoldCost.. ", " .._WoodCost.. ")");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost);
+end
+CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
+
+---
+-- Zerstört eine Trebuchet-Baustelle.
+--
+-- <b>Alias</b>: DestroyTrebuchetConstructionSite
+--
+-- @param _Name Skriptname Position
+-- @within Public
+--
+function API.DestroyTrebuchetConstructionSite(_Name)
+    if GUI then
+        API.Bridge("API.DestroyTrebuchetConstructionSite('" .._Name.. "')");
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name);
+end
+DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+AddOnInteractiveObjectTemplates = {
+    Global = {
+        Data = {
+            ConstructionSite = {
+                Sites = {},
+                
+                Description = {
+                    Title = {
+                        de = "Gebäude bauen",
+                        en = "Create building",
+                    },
+                    Text = {
+                        de = "Gib das Gebäude in Auftrag. Ein Siedler wird aus"..
+                             " dem Lagerhaus kommen und mit dem Bau beginnen.",
+                        en = "Order a building. A worker will come out of the"..
+                             " storehouse and erect it.",
+                    },
+                    Unfulfilled = {
+                        de = "Das Gebäude kann derzeit nicht gebaut werden.",
+                        en = "The building can not be built at the moment.",
+                    },
+                }
+            },
+            
+            Mines = {
+                Description = {
+                    Title = {
+                        de = "Mine errichten",
+                        en = "Build pit",
+                    },
+                    Text = {
+                        de = "An diesem Ort könnt Ihr eine Mine errichten!",
+                        en = "You're able to create a pit at this location!",
+                    },
+                },
+            },
+            
+            Chests = {
+                Description = {
+                    Title = {
+                        de = "Schatztruhe",
+                        en = "Treasure Chest",
+                    },
+                    Text = {
+                        de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie um den Schatz zu bergen.",
+                        en = "This chest contains a secred treasure. Open it to salvage the treasure.",
+                    },
+                },
+            },
+            
+            Trebuchet = {
+                Error = {
+                    de = "Der Ritter benötigt einen höheren Titel!",
+                    en = "Your knight need a higher title to use this site!",
+                },
+                Description = {
+                    Title = {
+                        de = "Trebuchet anfordern",
+                        en = "Order trebuchet",
+                    },
+                    Text = {
+                        de = "- Fordert ein Trebuchet aus der Stadt an {cr}- Trebuchet wird gebaut, wenn Wagen Baustelle erreicht {cr}- Fährt zurück, wenn Munition aufgebraucht {cr}- Trebuchet kann manuell zurückgeschickt werden",
+                        en = "- Order a trebuchet from your city {cr}- The trebuchet is build after the cart has arrived {cr}- Returns after ammunition is depleted {cr}- The trebuchet can be manually send back to the city",
+                    },
+                },
+                
+                Sites = {},
+                NeededKnightTitle = 0,
+                IsActive = false,
+            },
+        }
+    },
+    Local = {
+        Data = {},
+    },
+}
+
+-- Global ----------------------------------------------------------------------
+
+---
+-- Initalisiert das AddOn.
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:Install()
+end
+
+---
+-- Initialisiert die interaktiven Baustellen.
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:TrebuchetActivate()
+    if not self.Data.Trebuchet.IsActive then
+        GameCallback_QSB_OnDisambleTrebuchet = AddOnInteractiveObjectTemplates.Global.OnTrebuchetDisambled;
+        GameCallback_QSB_OnErectTrebuchet = function() end;
+        StartSimpleJobEx(self.WatchTrebuchetsAndCarts);
+        API.DisableRefillTrebuchet(true);
+        self.Data.Trebuchet.IsActive = true;
+    end
+end
+
+---
+-- Prüft, ob der menschliche Spieler einen ausreichenden Titel
+-- hat um Trebuchets zu bauen.
+--
+-- @return boolean: Titel hoch genug
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.TrebuchetHasSufficentTitle()
+    local pID = 1;
+    for i=1,8 do
+        if Logic.PlayerGetIsHumanFlag(i) == 1 then
+            pID = i;
+            break;
+        end
+    end
+    return Logic.GetKnightTitle(pID) >= AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.NeededKnightTitle;
+end
+
+---
+-- Setzt den mindestens benötigten Titel um Trebuchets zu bauen.
+--
+-- @param _KnightTitle Titel
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:TrebuchetSetNeededKnightTitle(_KnightTitle)
+    self.Data.Trebuchet.NeededKnightTitle = _KnightTitle;
+end
+
+---
+-- Erstellt eine Trebuchet-Baustelle an der Position mit den
+-- angegebenen Baukosten.
+--
+-- @param _Name     Skriptname Position
+-- @param _GoldCost Goldkosten
+-- @param _WoodCost Holzkosten
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
+    self:TrebuchetActivate();
+
+    _GoldCost = _GoldCost or 4500;
+    _WoodCost = _WoodCost or 35;
+    local eID = GetID(_Name);
+    Logic.SetModel(eID, Models.Buildings_B_BuildingPlot_8x8);
+    Logic.SetVisible(eID, true);
+
+    self.Data.Trebuchet.Sites[_Name] = {
+        ConstructedTrebuchet = 0,
+        ConstructionCart = 0,
+        ReturningCart = 0,
+    }
+
+    CreateObject {
+        Name                    = _Name,
+        Title                   = self.Data.Trebuchet.Description.Title,
+        Text                    = self.Data.Trebuchet.Description.Text,
+        Costs                   = {Goods.G_Gold, _GoldCost, Goods.G_Wood, _WoodCost},
+        Distance                = 1000,
+        State                   = 0,
+        Condition               = self.TrebuchetHasSufficentTitle,
+        ConditionUnfulfilled    = self.Data.Trebuchet.Error,
+        Callback                = function(t, PlayerID)
+            AddOnInteractiveObjectTemplates.Global:SpawnTrebuchetCart(PlayerID, t.Name);
+        end,
+    }
+end
+
+---
+-- Zerstört eine Trebuchet-Baustelle.
+--
+-- @param _Name Skriptname Position
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name)
+    local ConstructionCart = self.Data.Trebuchet.Sites[_Name].ConstructionCart;
+    DestroyEntity(ConstructionCart);
+    local ConstructedTrebuchet = self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
+    DestroyEntity(ConstructedTrebuchet);
+    local ReturningCart = self.Data.Trebuchet.Sites[_Name].ReturningCart;
+    DestroyEntity(ReturningCart);
+
+    self.Data.Trebuchet.Sites[_Name] = nil;
+    Logic.SetVisible(GetID(_Name), false);
+    RemoveInteractiveObject(_name);
+end
+
+---
+-- Erzeugt einen Trebuchetwagen für die Baustelle.
+--
+-- @param _PlayerID Besitzer
+-- @param _Site     Baustelle
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:SpawnTrebuchetCart(_PlayerID, _Site)
+    local StoreID = Logic.GetStoreHouse(_PlayerID);
+    local x,y = Logic.GetBuildingApproachPosition(StoreID);
+    local CartID = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, _PlayerID);
+    Logic.SetEntitySelectableFlag(CartID, 0);
+    self.Data.Trebuchet.Sites[_Site].ConstructionCart = CartID;
+end
+
+---
+-- Erzeugt das Trebuchet an der Baustelle.
+--
+-- @param _PlayerID Besitzer
+-- @param _Site     Baustelle
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:SpawnTrebuchet(_PlayerID, _Site)
+    local pos = GetPosition(_Site);
+    local TrebuchetID = Logic.CreateEntity(Entities.U_Trebuchet, pos.X, pos.Y, 0, _PlayerID);
+    self.Data.Trebuchet.Sites[_Site].ConstructedTrebuchet = TrebuchetID;
+end
+
+---
+-- Baut das Trebuchet zum Wagen zurück und lässt es wieder ins
+-- Lagerhaus des Besitzers fahren.
+--
+-- @param _PlayerID  Besitzer
+-- @param _Trebuchet Baustelle
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(_PlayerID, _Trebuchet)
+    local x,y,z = Logic.EntityGetPos(_Trebuchet);
+    local CartID = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, _PlayerID);
+    Logic.SetEntitySelectableFlag(CartID, 0);
+
+    local SiteName;
+    for k,v in pairs(self.Data.Trebuchet.Sites) do
+        if v.ConstructedTrebuchet == _Trebuchet then
+            SiteName = k;
+        end
+    end
+    if SiteName then
+        self.Data.Trebuchet.Sites[SiteName].ReturningCart = CartID;
+        self.Data.Trebuchet.Sites[SiteName].ConstructedTrebuchet = 0;
+        Logic.SetVisible(GetID(SiteName), true);
+        DestroyEntity(_Trebuchet);
+    else
+        DestroyEntity(CartID);
+    end
+end
+
+---
+-- Callback: Ein Trebuchet wird manuell zurückgebaut.
+--
+-- @param _EntityID Entity-ID des Trebuchet
+-- @param _PlayerID Besitzer
+-- @param _x        X-Position
+-- @param _y        Y-Position
+-- @param _z        Z-Position
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.OnTrebuchetDisambled(_EntityID, _PlayerID, _x, _y, _z)
+    AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(_PlayerID, _EntityID);
+end
+
+---
+-- Steuert die Trebuchet-Mechanik.
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
+    for k,v in pairs(AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites) do
+        local SiteID = GetID(k);
+
+        -- Stufe 1: Karren kommt
+        if v.ConstructionCart ~= 0 then
+            -- Bauwagen wurde zerstört
+            if not IsExisting(v.ConstructionCart) then
+                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
+                API.UnuseInteractiveObject(k);
+            end
+            -- Bauwagen bewegt sich nicht zum Ziel
+            if not Logic.IsEntityMoving(v.ConstructionCart) then
+                local SiteID = GetID(k);
+                local x,y,z = Logic.EntityGetPos(SiteID);
+                Logic.MoveSettler(v.ConstructionCart, x, y);
+            end
+            -- Bauwagen ist angekommen
+            if IsNear(v.ConstructionCart, k, 500) then
+                local x,y,z = Logic.EntityGetPos(SiteID);
+                local PlayerID = Logic.EntityGetPlayer(v.ConstructionCart);
+                AddOnInteractiveObjectTemplates.Global:SpawnTrebuchet(PlayerID, k);
+                DestroyEntity(v.ConstructionCart);
+                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
+                Logic.SetVisible(SiteID, false);
+                Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
+            end
+        end
+
+        -- Stufe 2: Trebuchet steht
+        if v.ConstructedTrebuchet ~= 0 then
+            -- Trebuchet wurde zerstört
+            if not IsExisting(v.ConstructedTrebuchet) then
+                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructedTrebuchet = 0;
+                Logic.SetVisible(SiteID, true);
+                API.UnuseInteractiveObject(k);
+            end
+            -- Trebuchet hat keine Munition
+            if Logic.GetAmmunitionAmount(v.ConstructedTrebuchet) == 0 and BundleEntitySelection.Local.Data.RefillTrebuchet == false then
+                local PlayerID = Logic.EntityGetPlayer(v.ConstructedTrebuchet);
+                AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(PlayerID, v.ConstructedTrebuchet);
+            end
+        end
+
+        -- Stufe 3: Rückweg
+        if v.ReturningCart ~= 0 then
+            -- Rückkehrwagen wurde zerstört
+            if not IsExisting(v.ReturningCart) then
+                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ReturningCart = 0;
+                API.UnuseInteractiveObject(k);
+            end
+
+            local PlayerID = Logic.EntityGetPlayer(v.ReturningCart);
+            local StoreID = Logic.GetStoreHouse(PlayerID);
+
+            -- Rückkehrwagen muss sich zum Ziel bewegen
+            if not Logic.IsEntityMoving(v.ReturningCart) then
+                local x,y = Logic.GetBuildingApproachPosition(StoreID);
+                Logic.MoveSettler(v.ReturningCart, x, y);
+            end
+            -- Rückkehrwagen kommt an
+            if IsNear(v.ReturningCart, StoreID, 1100) then
+                local PlayerID = Logic.EntityGetPlayer(v.ConstructionCart);
+                DestroyEntity(v.ReturningCart);
+            end
+        end
+    end
+end
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
+-- des angegebenen Typs.
+-- @param _Name     Name der zu ersetzenden Script Entity
+-- @param _Good     Warentyp
+-- @param _Min      Mindestmenge
+-- @param _Max      Maximalmenge
+-- @param _Callback Callback-Funktion
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
+    _Min = (_Min ~= nil and _Min > 0 and _Min) or 1;
+    _Max = (_Max ~= nil and _Max > 1 and _Max) or 2;
+    if not _Callback then
+        _Callback = function(t) end
+    end
+    assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
+    assert(_Min < _Max, "CreateRandomChest: min amount must be smaller than max amount!");
+
+    local eID = ReplaceEntity(_Name, Entities.XD_ScriptEntity, 0);
+    Logic.SetModel(eID, Models.Doodads_D_X_ChestClose);
+    Logic.SetVisible(eID, true);
+
+    CreateObject {
+        Name                    = _Name,
+        Title                   = self.Data.Chests.Description.Title,
+        Text                    = self.Data.Chests.Description.Text,
+        Reward                  = {_Good, math.random(_Min, _Max)},
+        Texture                 = {1, 6},
+        Distance                = 650,
+        State                   = 0,
+        CallbackOpened          = _Callback,
+        Callback                = function(_Data)
+            ReplaceEntity(_Data.Name, Entities.D_X_ChestOpenEmpty);
+            _Data.CallbackOpened(_Data);
+        end,
+    }
+end
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gold
+-- des angegebenen Typs.
+-- 
+-- @param _Name Name der zu ersetzenden Script Entity
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateRandomGoldChest(_Name)
+    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
+end
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gütern
+-- des angegebenen Typs.
+-- Güter können seien: Eisen, Stein, HOlz, Wolle, Fleisch, Kräuter,
+-- Honigwaben, Milch, Fisch oder Getreide.
+--
+-- @param _Name Name der zu ersetzenden Script Entity
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name)
+    local PossibleGoods = {
+        Goods.G_Iron, Goods.G_Stone, Goods.G_Wood, Goods.G_Wool,
+        Goods.G_Carcass, Goods.G_Herb, Goods.G_Honeycomb,
+        Goods.G_Milk, Goods.G_RawFish, Goods.G_Grain
+    };
+    local Good = PossibleGoods[math.random(1, #PossibleGoods)];
+    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Good, 30, 60);
+end
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Luxus-
+-- gütern des angegebenen Typs.
+-- Güter können seien: Salz, Farben, Edelsteine, Musikinstrumente
+-- oder Weihrauch
+--
+-- @param _Name Name der zu ersetzenden Script Entity
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name)
+    local Luxury = {Goods.G_Salt, Goods.G_Dye};
+    if g_GameExtraNo >= 1 then
+        table.insert(Luxury, Goods.G_Gems);
+        table.insert(Luxury, Goods.G_MusicalInstrument);
+        table.insert(Luxury, Goods.G_Olibanum);
+    end
+    local Good = Luxury[math.random(1, #Luxury)];
+    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Good, 50, 100);
+end
+
+---
+-- Erstelle eine Mine eines bestimmten Typs. Es können zudem eine Bedingung
+-- und zwei verschiedene Callbacks vereinbart werden.
+--
+-- @param _Position         Script Entity, die mit Mine ersetzt wird
+-- @param _Type             Typ der Mine
+-- @param _Costs            (optional) Kostentabelle
+-- @param _NotRefillable    (optional) Die Mine wird weiterhin überwacht
+-- @param _Condition        (optional) Bedingungsfunktion
+-- @param _CreationCallback (optional) Funktion nach Kauf ausführen
+-- @param _CallbackDepleted (optional) Funktion nach Ausbeutung ausführen
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
+    -- Objekt austauschen und Model anpassen
+    local eID = ReplaceEntity(_Position, Entities.XD_ScriptEntity);
+    local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
+    if _Type == Entities.R_StoneMine then
+        Model = Models.R_SE_ResorceStone_10;
+    end
+    Logic.SetVisible(eID, true);
+    Logic.SetModel(eID, Model);
+    local x, y, z = Logic.EntityGetPos(eID);
+    local BlockerID = Logic.CreateEntity(Entities.D_ME_Rock_Set01_B_07, x, y, 0, 0);
+    Logic.SetVisible(BlockerID, false);
+
+    CreateObject {
+        Name                 = _Position,
+        Title                = self.Data.Mines.Description.Title,
+        Text                 = self.Data.Mines.Description.Text,
+        Type                 = _Type,
+        Special              = _NotRefillable,
+        Costs                = _Costs,
+        InvisibleBlocker     = BlockerID,
+        Distance             = 1500,
+        Condition            = self.ConditionBuildIOMine,
+        CustomCondition      = _Condition,
+        ConditionUnfulfilled = "Not implemented yet!",
+        CallbackCreate       = _CreationCallback,
+        CallbackDepleted     = _CallbackDepleted,
+        Callback             = self.ActionBuildIOMine,
+    };
+end
+
+---
+-- Erstelle eine Eisenmine.
+--
+-- @param _Position      Script Entity, die mit Mine ersetzt wird
+-- @param _Cost1Type     (optional) Kostenware 1
+-- @param _Cost1Amount   (optional) Kostenmenge 1
+-- @param _Cost2Type     (optional) Kostenware 2
+-- @param _Cost2Amount   (optional) Kostenmenge 2
+-- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+    assert(IsExisting(_Position));
+    if _Cost1Type then
+        assert(API.TraverseTable(_Cost1Type, Goods));
+        assert(type(_Cost1Amount) == "number");
+    end
+    if _Cost2Type then
+        assert(API.TraverseTable(_Cost2Type, Goods));
+        assert(type(_Cost2Amount) == "number");
+    end
+
+    self:CreateIOMine(
+        _Position, Entities.R_IronMine,
+        {_Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount},
+        _NotRefillable
+    );
+end
+
+---
+-- Erstelle eine Steinmine.
+--
+-- @param _Position      Script Entity, die mit Mine ersetzt wird
+-- @param _Cost1Type     (optional) Kostenware 1
+-- @param _Cost1Amount   (optional) Kostenmenge 1
+-- @param _Cost2Type     (optional) Kostenware 2
+-- @param _Cost2Amount   (optional) Kostenmenge 2
+-- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+    assert(IsExisting(_Position));
+    if _Cost1Type then
+        assert(API.TraverseTable(_Cost1Type, Goods));
+        assert(type(_Cost1Amount) == "number");
+    end
+    if _Cost2Type then
+        assert(API.TraverseTable(_Cost2Type, Goods));
+        assert(type(_Cost2Amount) == "number");
+    end
+
+    self:CreateIOMine(
+        _Position, Entities.R_StoneMine,
+        {_Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount},
+        _NotRefillable
+    );
+end
+
+---
+-- Testet die Bedingung, unter der die Mine errichtet werden kann.
+-- @param _Data Daten des Objektes
+-- @return boolean: Bedingung erfüllt
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.ConditionBuildIOMine(_Data)
+    if _Data.CustomCondition then
+        return _Data.CustomCondition(_Data) == true;
+    end
+    return true;
+end
+
+
+function AddOnInteractiveObjectTemplates.Global.ActionBuildIOMine(_Data)
+    ReplaceEntity(_Data.Name, _Data.Type);
+    DestroyEntity(_Data.InvisibleBlocker);
+    if type(_Data.CallbackCreate) == "function" then
+        _Data.CallbackCreate(_Data);
+    end
+    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "ControlIOMine", 1, {}, { _Data.Name });
+end
+
+---
+-- Prüft gebaute Minen ob diese ausgebeutet sind. Ist das der Fall
+-- werden sie "zerstört" und ggf. das Callback ausgelöst.
+-- @param _Mine Zu überwachende Mine
+-- @return boolean: Job beendet
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
+    if not IO[_Mine] then
+        return true;
+    end
+    if not IsExisting(_Mine) then
+        return true;
+    end
+    local eID = GetID(_Mine);
+
+    if Logic.GetResourceDoodadGoodAmount(eID) == 0 then
+        if IO[_Mine].Special == true then
+            local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
+            if IO[_Mine].Type == Entities.R_StoneMine then
+                Model = Models.R_ResorceStone_Scaffold_Destroyed;
+            end
+            eID = ReplaceEntity(eID, Entities.XD_ScriptEntity);
+            Logic.SetVisible(eID, true);
+            Logic.SetModel(eID, Model);
+        end
+
+        if type(IO[_Mine].CallbackDepleted) == "function" then
+            IO[_Mine].CallbackDepleted(IO[_Mine]);
+        end
+        return true;
+    end
+end
+
+---
+-- Initialisiert die interaktiven Baustellen.
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:ConstructionSiteActivate()
+    if self.Data.ConstructionSiteActivated then
+        return;
+    end
+    self.Data.ConstructionSiteActivated = true;
+
+    Core:AppendFunction(
+        "GameCallback_OnBuildingConstructionComplete",
+        self.OnConstructionComplete
+    );
+end
+
+---
+-- Ruft das Callback einer Baustelle auf, sofern eins definiert wurde.
+-- @param _PlayerID Besitzer des Gebäudes
+-- @param _EntityID Entity-ID des Gebäudes
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.OnConstructionComplete(_PlayerID, _EntityID)
+    local IO = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_EntityID];
+    if IO ~= nil and IO.CompletedCallback then
+        IO.CompletedCallback(IO, _EntityID);
+    end
+end
+
+---
+-- Erzeugt eine Baustelle an der Position.
+--
+-- @param _Position Zielpunkt
+-- @param _PlayerID Besitzer des Gebäudes
+-- @param _Type     Typ des Gebäudes
+-- @param _Costs    (optional) Eigene Gebäudekosten
+-- @param _Distance (optional) Aktivierungsentfernung
+-- @param _Icon     (optional) Icon des Schalters
+-- @param _Title    (optional) Titel der Beschreibung
+-- @param _Text     (optional) Text der Beschreibung
+-- @param _Callback (optional) Funktion nach fertigstellung
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
+    AddOnInteractiveObjectTemplates.Global:ConstructionSiteActivate();
+    local Costs = _Costs or {Logic.GetEntityTypeFullCost(_Type)};
+    local Title = _Title or self.Data.ConstructionSite.Description.Title;
+    local Text  = Text or self.Data.ConstructionSite.Description.Text;
+    local eID = GetID(_Position);
+    Logic.SetModel(eID, Models.Buildings_B_BuildingPlot_10x10);
+    Logic.SetVisible(eID, true);
+    
+    CreateObject {
+        Name                 = _Position,
+        Title                = Title,
+        Text                 = Text,
+        Texture              = _Icon or {14, 10},
+        Distance             = _Distance or 1500,
+        Type                 = _Type,
+        Costs                = Costs,
+        Condition            = AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite,
+        ConditionUnfulfilled = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Description.Unfulfilled,
+        PlayerID             = _PlayerID,
+        CompletedCallback    = _Callback,
+        Callback             = AddOnInteractiveObjectTemplates.Global.Callback;
+    };
+end
+
+---
+-- Lässt einen Siedler die Baustelle zum Gebäude aufbauen.
+-- @param _Data Daten des Objekt
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.Callback(_Data)
+    local pos  = GetPosition(_Data.Name);
+    local eID  = GetID(_Data.Name);
+    local ori  = Logic.GetEntityOrientation(eID);
+    local site = Logic.CreateConstructionSite(pos.X, pos.Y, ori, _Data.Type, _Data.PlayerID);
+    Logic.SetVisible(eID, false);
+    if (site == nil) then
+        API.Dbg('AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite: Failed to place construction site!');
+        return;
+    end
+    AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[site] = _Data;
+    StartSimpleJobEx(AddOnInteractiveObjectTemplates.Global.ControlConstructionSite, site);
+end
+
+---
+-- Prüft ob das Gebäude theoretisch gebaut werden kann.
+-- @param _Data Daten des Objekt
+-- @return boolean: Kann aktiviert werden
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite(_Data)
+    local eID = GetID(_Data.Name);
+    local tID = GetTerritoryUnderEntity(eID);
+    local pID = Logic.GetTerritoryPlayerID(tID);
+
+    if Logic.GetStoreHouse(_Data.PlayerID) == 0 then
+        return false;
+    end
+    if _Data.PlayerID ~= tID then
+        return false;
+    end
+    return true;
+end
+
+---
+-- Überwacht eine Gebäudebaustelle und reaktiviert sie fall nötig.
+-- @param _eID EntityID des Gebäudes
+-- @return boolean: Job beenden
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Global.ControlConstructionSite(_eID)
+    if AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID] == nil then
+        return true;
+    end
+    if not IsExisting(_eID) then
+        local Name = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID].Name;
+        Logic.SetVisible(GetID(Name), true);
+        API.UnuseInteractiveObject(Name);
+        return true;
+    end
+end
+
+-- Local -----------------------------------------------------------------------
+
+---
+-- Initalisiert das AddOn.
+-- @within Private
+-- @local
+--
+function AddOnInteractiveObjectTemplates.Local:Install()
+end
+
+Core:RegisterAddOn("AddOnInteractiveObjectTemplates");

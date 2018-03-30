@@ -32,19 +32,21 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
-<li><a href="#User_Space">User-Space</a></li>
+<li><a href="#Public">Public</a></li>
+<li><a href="#Behavior">Behavior</a></li>
 </ul>
 
 
 <h2>Bundles</h2>
 <ul class="nowrap">
+  <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
   <li><strong>BundleBriefingSystem</strong></li>
   <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
   <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
   <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHealth.html">BundleEntityHealth</a></li>
   <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
   <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
   <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
@@ -86,29 +88,7 @@
 </p>
 
 
-<h2><a href="#Functions">Functions</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#OverwriteGetPosition">OverwriteGetPosition ()</a></td>
-	<td class="summary">Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_Briefing">Reprisal_Briefing (_Briefing)</a></td>
-	<td class="summary">Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
- in ihr ab.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reward_Briefing">Reward_Briefing (_Briefing)</a></td>
-	<td class="summary">Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
- in ihr ab.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_Briefing">Trigger_Briefing (_QuestName, _Waittime)</a></td>
-	<td class="summary">Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
- angehangen ist, beendet ist.</td>
-	</tr>
-</table>
-<h2><a href="#User_Space">User-Space</a></h2>
+<h2><a href="#Public">Public</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#API.AddPages">API.AddPages (_briefing)</a></td>
@@ -143,117 +123,30 @@
 	<td class="summary">Startet ein Briefing im Cutscene Mode.</td>
 	</tr>
 </table>
+<h2><a href="#Behavior">Behavior</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_Briefing">Reprisal_Briefing (_Briefing)</a></td>
+	<td class="summary">Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+ in ihr ab.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_Briefing">Reward_Briefing (_Briefing)</a></td>
+	<td class="summary">Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+ in ihr ab.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_Briefing">Trigger_Briefing (_QuestName, _Waittime)</a></td>
+	<td class="summary">Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
+ angehangen ist, beendet ist.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "OverwriteGetPosition"></a>
-    <strong>OverwriteGetPosition ()</strong>
-    </dt>
-    <dd>
-    Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_Briefing"></a>
-    <strong>Reprisal_Briefing (_Briefing)</strong>
-    </dt>
-    <dd>
-    Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
- in ihr ab.  Die Funktion muss eine Briefing-ID zurückgeben.
-<p> Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Briefing</span>
-         Funktionsname als String
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        table: Behavior
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reward_Briefing"></a>
-    <strong>Reward_Briefing (_Briefing)</strong>
-    </dt>
-    <dd>
-    Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
- in ihr ab.  Die Funktion muss eine Briefing-ID zurückgeben.
-<p> Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Briefing</span>
-         Funktionsname als String
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        table: Behavior
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_Briefing"></a>
-    <strong>Trigger_Briefing (_QuestName, _Waittime)</strong>
-    </dt>
-    <dd>
-    Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
- angehangen ist, beendet ist.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-        <li><span class="parameter">_Waittime</span>
-          Wartezeit in Sekunden
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        table: Behavior
-    </ol>
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="User_Space"></a>User-Space</h2>
+    <h2 class="section-header "><a name="Public"></a>Public</h2>
 
     <dl class="function">
     <dt>
@@ -480,13 +373,104 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Behavior"></a>Behavior</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Reprisal_Briefing"></a>
+    <strong>Reprisal_Briefing (_Briefing)</strong>
+    </dt>
+    <dd>
+    Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+ in ihr ab.  Die Funktion muss eine Briefing-ID zurückgeben.
+<p> Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
+ überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Briefing</span>
+         Funktionsname als String
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_Briefing"></a>
+    <strong>Reward_Briefing (_Briefing)</strong>
+    </dt>
+    <dd>
+    Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+ in ihr ab.  Die Funktion muss eine Briefing-ID zurückgeben.
+<p> Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
+ überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Briefing</span>
+         Funktionsname als String
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_Briefing"></a>
+    <strong>Trigger_Briefing (_QuestName, _Waittime)</strong>
+    </dt>
+    <dd>
+    Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
+ angehangen ist, beendet ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Waittime</span>
+          Wartezeit in Sekunden
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-03-25 20:24:35 </i>
+<i style="float:right;">Last updated 2018-03-31 00:26:08 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
