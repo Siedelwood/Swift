@@ -25658,6 +25658,8 @@ end
 
 ---
 -- Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.
+-- @within Private
+-- @local
 --
 function BundleBriefingSystem:OverwriteGetPosition()
     GetPosition = function(_input, _offsetZ)
@@ -25689,6 +25691,7 @@ Core:RegisterBundle("BundleBriefingSystem");
 --
 -- @param _Briefing Funktionsname als String
 -- @return table: Behavior
+-- @within Behavior
 --
 function Reward_Briefing(...)
     return b_Reward_Briefing:new(...);
@@ -25752,6 +25755,7 @@ Core:RegisterBehavior(b_Reward_Briefing);
 --
 -- @param _Briefing Funktionsname als String
 -- @return table: Behavior
+-- @within Behavior
 --
 function Reprisal_Briefing(...)
     return b_Reprisal_Briefing:new(...);
@@ -25813,6 +25817,7 @@ Core:RegisterBehavior(b_Reprisal_Briefing)
 -- @param _QuestName Name des Quest
 -- @param _Waittime  Wartezeit in Sekunden
 -- @return table: Behavior
+-- @within Behavior
 --
 function Trigger_Briefing(...)
     return b_Trigger_Briefing:new(...);
