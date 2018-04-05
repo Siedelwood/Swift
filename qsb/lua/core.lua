@@ -909,7 +909,7 @@ GetPosition = API.LocateEntity;
 -- @param _State       Aktivierungszustand
 -- @within Public
 -- @usage API.ActivateIO("Haus1", 0)
--- @usage API.ActivateIO("Hut1")
+-- API.ActivateIO("Hut1")
 --
 function API.ActivateIO(_ScriptName, _State)
     State = State or 0;
