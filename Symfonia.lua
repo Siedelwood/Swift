@@ -909,7 +909,7 @@ GetPosition = API.LocateEntity;
 -- @param _State       Aktivierungszustand
 -- @within Public
 -- @usage API.ActivateIO("Haus1", 0)
--- @usage API.ActivateIO("Hut1")
+-- API.ActivateIO("Hut1")
 --
 function API.ActivateIO(_ScriptName, _State)
     State = State or 0;
@@ -8217,7 +8217,7 @@ Core:RegisterBehavior(b_Reward_Units);
 -- @within Reward
 --
 function Reward_QuestRestart(...)
-    return b_Reward_QuestRestart(...)
+    return b_Reward_QuestRestart:new(...)
 end
 
 b_Reward_QuestRestart = API.InstanceTable(b_Reprisal_QuestRestart);
@@ -8242,7 +8242,7 @@ Core:RegisterBehavior(b_Reward_QuestRestart);
 -- @within Reward
 --
 function Reward_QuestFailure(...)
-    return b_Reward_QuestFailure(...)
+    return b_Reward_QuestFailure:new(...)
 end
 
 b_Reward_QuestFailure = API.InstanceTable(b_Reprisal_ReplaceEntity);
@@ -8267,7 +8267,7 @@ Core:RegisterBehavior(b_Reward_QuestFailure);
 -- @within Reward
 --
 function Reward_QuestSuccess(...)
-    return b_Reward_QuestSuccess(...)
+    return b_Reward_QuestSuccess:new(...)
 end
 
 b_Reward_QuestSuccess = API.InstanceTable(b_Reprisal_QuestSuccess);
@@ -8292,7 +8292,7 @@ Core:RegisterBehavior(b_Reward_QuestSuccess);
 -- @within Reward
 --
 function Reward_QuestActivate(...)
-    return b_Reward_QuestActivate(...)
+    return b_Reward_QuestActivate:new(...)
 end
 
 b_Reward_QuestActivate = API.InstanceTable(b_Reprisal_QuestActivate);
@@ -8317,7 +8317,7 @@ Core:RegisterBehavior(b_Reward_QuestActivate)
 -- @within Reward
 --
 function Reward_QuestInterrupt(...)
-    return b_Reward_QuestInterrupt(...)
+    return b_Reward_QuestInterrupt:new(...)
 end
 
 b_Reward_QuestInterrupt = API.InstanceTable(b_Reprisal_QuestInterrupt);
@@ -8343,7 +8343,7 @@ Core:RegisterBehavior(b_Reward_QuestInterrupt);
 -- @within Reward
 --
 function Reward_QuestForceInterrupt(...)
-    return b_Reward_QuestForceInterrupt(...)
+    return b_Reward_QuestForceInterrupt:new(...)
 end
 
 b_Reward_QuestForceInterrupt = API.InstanceTable(b_Reprisal_QuestForceInterrupt);
@@ -15689,7 +15689,8 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
--- Definiert andere Aufstiegsbedingungen für den Spieler.
+-- Definiert andere Aufstiegsbedingungen für den Spieler. Muss stets nach dem
+-- Laden der QSB im globalen und lokalen Skript aufgerufen werden!
 --
 -- Diese Funktion muss entweder in der QSB modifiziert oder sowohl im globalen
 -- als auch im lokalen Skript überschrieben werden. Bei Modifikationen muss
@@ -25691,7 +25692,7 @@ Core:RegisterBundle("BundleBriefingSystem");
 --
 -- @param _Briefing Funktionsname als String
 -- @return table: Behavior
--- @within Behavior
+-- @within Reward
 --
 function Reward_Briefing(...)
     return b_Reward_Briefing:new(...);
@@ -25755,7 +25756,7 @@ Core:RegisterBehavior(b_Reward_Briefing);
 --
 -- @param _Briefing Funktionsname als String
 -- @return table: Behavior
--- @within Behavior
+-- @within Reprisal
 --
 function Reprisal_Briefing(...)
     return b_Reprisal_Briefing:new(...);
@@ -25817,7 +25818,7 @@ Core:RegisterBehavior(b_Reprisal_Briefing)
 -- @param _QuestName Name des Quest
 -- @param _Waittime  Wartezeit in Sekunden
 -- @return table: Behavior
--- @within Behavior
+-- @within Trigger
 --
 function Trigger_Briefing(...)
     return b_Trigger_Briefing:new(...);
@@ -28658,6 +28659,10 @@ function API.SetupInteractiveObject(_Name, _Description)
         API.Dbg("API.SetupInteractiveObject: Can not be used from local enviorment!");
         return;
     end
+    if not IsExisting(_Name) then
+        API.Dbg("API.SetupInteractiveObject: Entity \"" .._Name.. "\" is invalid!");
+        return;
+    end
     return BundleInteractiveObjects.Global:CreateObject(_Description);
 end
 SetupInteractiveObject = API.SetupInteractiveObject;
@@ -28696,85 +28701,76 @@ function API.RemoveInteractiveObject(_EntityName)
         API.Bridge("API.RemoveInteractiveObject('" .._EntityName.. "')");
         return;
     end
+    if not IsExisting(_EntityName) then
+        API.Warn("API.RemoveInteractiveObject: Entity \"" .._EntityName.. "\" is invalid!");
+        return;
+    end
     return BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName);
 end
 RemoveInteractiveObject = API.RemoveInteractiveObject;
 
 ---
--- Setzt ein Interaktives Objekt als unbenutzt.
+-- Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
+-- aktiviert werden kann.
+-- 
+-- <b>Alias</b>: InteractiveObjectActivate
 --
--- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
---
--- <b>Alias:</b> UnuseInteractiveObject
---
--- @param _EntityName Skriptname des IO
+-- @param _EntityName Skriptname des Objektes
+-- @param _State      State des Objektes
 -- @within Public
 --
-function API.UnuseInteractiveObject(_EntityName)
+function API.InteractiveObjectActivate(_EntityName, _State)
     if GUI then
-        API.Bridge("API.UnuseInteractiveObject('" .._EntityName.. "')");
+        API.Bridge("API.InteractiveObjectActivate('" .._EntityName.. "', " ..tostring(_State).. ")");
         return;
     end
-    return BundleInteractiveObjects.Global:UnuseInteractiveObject(_EntityName);
+    if not IsExisting(_EntityName) then
+        API.Warn("API.InteractiveObjectActivate: Entity \"" .._EntityName.. "\" is invalid!");
+        return;
+    end
+    
+    if not Logic.IsInteractiveObject(GetID(_EntityName)) then
+        if IO[_EntityName] then
+            IO[_EntityName].Inactive = false;
+            IO[_EntityName].Used = false;
+        end
+    else
+        API.ActivateIO(_EntityName, _State);
+    end
 end
-UnuseInteractiveObject = API.UnuseInteractiveObject;
+InteractiveObjectActivate = API.InteractiveObjectActivate;
 
 ---
--- Entsperrt ein Interaktives Objekt.
+-- Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.
 --
--- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
+-- Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
+-- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
+-- Held das Objekt aktivieren.
+-- 
+-- <b>Alias</b>: InteractiveObjectDeactivate
 --
--- <b>Alias:</b> UnlockInteractiveObject
---
--- @param _EntityName Skriptname des IO
+-- @param _EntityName Scriptname des Objektes
 -- @within Public
 --
-function API.UnlockInteractiveObject(_EntityName)
+function API.InteractiveObjectDeactivate(_EntityName)
     if GUI then
-        API.Bridge("API.UnlockInteractiveObject('" .._EntityName.. "')");
+        API.Bridge("API.InteractiveObjectDeactivate('" .._EntityName.. "')");
         return;
     end
-    return BundleInteractiveObjects.Global:UnlockInteractiveObject(_EntityName);
-end
-UnlockInteractiveObject = API.UnlockInteractiveObject;
-
----
--- Setzt ein Interaktives Objekt als benutzt.
---
--- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
---
--- <b>Alias:</b> UseInteractiveObject
---
--- @param _EntityName Skriptname des IO
--- @within Public
---
-function API.UseInteractiveObject(_EntityName)
-    if GUI then
-        API.Bridge("API.UseInteractiveObject('" .._EntityName.. "')");
+    if not IsExisting(_EntityName) then
+        API.Warn("API.InteractiveObjectDeactivate: Entity \"" .._EntityName.. "\" is invalid!");
         return;
     end
-    return BundleInteractiveObjects.Global:UseInteractiveObject(_EntityName);
-end
-UseInteractiveObject = API.UseInteractiveObject;
-
----
--- Sperrt ein Interaktives Objekt.
---
--- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
---
--- <b>Alias:</b> LockInteractiveObject
---
--- @param _EntityName Skriptname des IO
--- @within Public
---
-function API.LockInteractiveObject(_EntityName)
-    if GUI then
-        API.Bridge("API.LockInteractiveObject('" .._EntityName.. "')");
-        return;
+    
+    if not Logic.IsInteractiveObject(GetID(_EntityName)) then
+        if IO[_EntityName] then
+            IO[_EntityName].Inactive = true;
+        end
+    else
+        API.DeactivateIO(_EntityName);
     end
-    return BundleInteractiveObjects.Global:LockInteractiveObject(_EntityName);
 end
-LockInteractiveObject = API.LockInteractiveObject;
+InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 
 ---
 -- Erzeugt eine Beschriftung für Custom Objects.
@@ -28931,66 +28927,6 @@ function BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName)
 end
 
 ---
--- Setzt ein Interaktives Objekt als unbenutzt.
---
--- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
---
--- @param _EntityName Skriptname des IO
--- @within Private
--- @local
---
-function BundleInteractiveObjects.Global:UnuseInteractiveObject(_EntityName)
-    if IO[_EntityName] then
-        IO[_EntityName].Used = false;
-    end
-end
-
----
--- Entsperrt ein Interaktives Objekt.
---
--- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
---
--- @param _EntityName Skriptname des IO
--- @within Private
--- @local
---
-function BundleInteractiveObjects.Global:UnlockInteractiveObject(_EntityName)
-    if IO[_EntityName] then
-        IO[_EntityName].Inactive = false;
-    end
-end
-
----
--- Setzt ein Interaktives Objekt als benutzt.
---
--- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
---
--- @param _EntityName Skriptname des IO
--- @within Private
--- @local
---
-function BundleInteractiveObjects.Global:UseInteractiveObject(_EntityName)
-    if IO[_EntityName] then
-        IO[_EntityName].Used = true;
-    end
-end
-
----
--- Sperrt ein Interaktives Objekt.
---
--- Achtung: Das zeigt nur bei Custom Objects eine Wirkung!
---
--- @param _EntityName Skriptname des IO
--- @within Private
--- @local
---
-function BundleInteractiveObjects.Global:LockInteractiveObject(_EntityName)
-    if IO[_EntityName] then
-        IO[_EntityName].Inactive = true;
-    end
-end
-
----
 -- Erzeugt eine Beschriftung für Custom Objects.
 --
 -- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
@@ -29057,10 +28993,8 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
             for k,v in pairs(IO)do
                 if k == eName then
                     if not v.Used then
+                        IO[k].Used = true;
                         v.Callback(v, _PlayerID);
-                        if not v.StayActive then
-                            IO[k].Used = true;
-                        end
                     end
                 end
             end
@@ -29617,10 +29551,10 @@ function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)
     if type(_Icon) == "table" then
         if type(_Icon[3]) == "string" then
             local u0, u1, v0, v1;
-            u0 = (_Coordinates[1] - 1) * 64;
-            v0 = (_Coordinates[2] - 1) * 64;
-            u1 = (_Coordinates[1]) * 64;
-            v1 = (_Coordinates[2]) * 64;
+            u0 = (_Icon[1] - 1) * 64;
+            v0 = (_Icon[2] - 1) * 64;
+            u1 = (_Icon[1]) * 64;
+            v1 = (_Icon[2]) * 64;
             XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
             XGUIEng.SetMaterialTexture(_Widget, 1, _Icon[3].. "big.png");
             XGUIEng.SetMaterialUV(_Widget, 1, u0, v0, u1, v1);

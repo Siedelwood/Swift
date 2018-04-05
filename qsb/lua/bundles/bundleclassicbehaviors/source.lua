@@ -6632,7 +6632,7 @@ Core:RegisterBehavior(b_Reward_Units);
 -- @within Reward
 --
 function Reward_QuestRestart(...)
-    return b_Reward_QuestRestart(...)
+    return b_Reward_QuestRestart:new(...)
 end
 
 b_Reward_QuestRestart = API.InstanceTable(b_Reprisal_QuestRestart);
@@ -6657,7 +6657,7 @@ Core:RegisterBehavior(b_Reward_QuestRestart);
 -- @within Reward
 --
 function Reward_QuestFailure(...)
-    return b_Reward_QuestFailure(...)
+    return b_Reward_QuestFailure:new(...)
 end
 
 b_Reward_QuestFailure = API.InstanceTable(b_Reprisal_ReplaceEntity);
@@ -6682,7 +6682,7 @@ Core:RegisterBehavior(b_Reward_QuestFailure);
 -- @within Reward
 --
 function Reward_QuestSuccess(...)
-    return b_Reward_QuestSuccess(...)
+    return b_Reward_QuestSuccess:new(...)
 end
 
 b_Reward_QuestSuccess = API.InstanceTable(b_Reprisal_QuestSuccess);
@@ -6707,7 +6707,7 @@ Core:RegisterBehavior(b_Reward_QuestSuccess);
 -- @within Reward
 --
 function Reward_QuestActivate(...)
-    return b_Reward_QuestActivate(...)
+    return b_Reward_QuestActivate:new(...)
 end
 
 b_Reward_QuestActivate = API.InstanceTable(b_Reprisal_QuestActivate);
@@ -6732,7 +6732,7 @@ Core:RegisterBehavior(b_Reward_QuestActivate)
 -- @within Reward
 --
 function Reward_QuestInterrupt(...)
-    return b_Reward_QuestInterrupt(...)
+    return b_Reward_QuestInterrupt:new(...)
 end
 
 b_Reward_QuestInterrupt = API.InstanceTable(b_Reprisal_QuestInterrupt);
@@ -6758,7 +6758,7 @@ Core:RegisterBehavior(b_Reward_QuestInterrupt);
 -- @within Reward
 --
 function Reward_QuestForceInterrupt(...)
-    return b_Reward_QuestForceInterrupt(...)
+    return b_Reward_QuestForceInterrupt:new(...)
 end
 
 b_Reward_QuestForceInterrupt = API.InstanceTable(b_Reprisal_QuestForceInterrupt);
