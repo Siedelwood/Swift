@@ -521,10 +521,8 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
         or Logic.IsBuildingBeingKnockedDown(EntityID) == true
         or Logic.IsBurning(EntityID) == true
         or MaxHealth-Health > 0 then
-            XGUIEng.DisableButton(CurrentWidgetID, 1);
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
             return;
-        else
-            XGUIEng.DisableButton(CurrentWidgetID, 0);
         end
         BundleBuildingButtons.Local.Data.OptionalButton1.UpdateFunction(CurrentWidgetID, EntityID);
     end
@@ -584,9 +582,8 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
         or Logic.IsBuildingBeingKnockedDown(EntityID) == true
         or Logic.IsBurning(EntityID) == true
         or MaxHealth-Health > 0 then
-            XGUIEng.DisableButton(CurrentWidgetID, 1);
-        else
-            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
+            return;
         end
         BundleBuildingButtons.Local.Data.OptionalButton2.UpdateFunction(CurrentWidgetID, EntityID);
     end
