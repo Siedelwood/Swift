@@ -464,7 +464,7 @@ Core:RegisterBehavior(b_Goal_Infiltrate);
 
 ---
 -- Es muss eine Menge an Munition in der Kriegsmaschine erreicht werden.
--- 
+--
 -- <u>Relationen</u>
 -- <ul>
 -- <li>>= - Anzahl als Mindestmenge</li>
@@ -639,7 +639,7 @@ Core:RegisterBehavior(b_Reprisal_SetPosition);
 
 ---
 -- Ändert den Eigentümer des Entity oder des Battalions.
--- 
+--
 -- @param _ScriptName Skriptname des Entity
 -- @param _NewOwner   PlayerID des Eigentümers
 -- @return Table mit Behavior
@@ -705,7 +705,7 @@ Core:RegisterBehavior(b_Reprisal_ChangePlayer);
 
 ---
 -- Ändert die Sichtbarkeit eines Entity.
--- 
+--
 -- @param _ScriptName Skriptname des Entity
 -- @param _Visible    Sichtbarkeit an/aus
 -- @return Table mit Behavior
@@ -998,13 +998,13 @@ Core:RegisterBehavior(b_Reward_SetPosition);
 
 ---
 -- Ändert den Eigentümer des Entity oder des Battalions.
--- 
+--
 -- @param _ScriptName Skriptname des Entity
 -- @param _NewOwner   PlayerID des Eigentümers
 -- @return Table mit Behavior
 -- @within Reward
 --
-function Reprisal_ChangePlayer(...)
+function Reward_ChangePlayer(...)
     return b_Reprisal_ChangePlayer:new(...)
 end
 
@@ -1117,7 +1117,7 @@ Core:RegisterBehavior(b_Reward_MoveToPosition);
 -- Es ist nicht möglich weiterzuspielen!
 --
 -- @return Table mit Behavior
--- @within Reprisal
+-- @within Reward
 --
 function Reward_VictoryWithParty()
     return b_Reward_VictoryWithParty:new();
@@ -1192,7 +1192,7 @@ Core:RegisterBehavior(b_Reward_VictoryWithParty)
 
 ---
 -- Ändert die Sichtbarkeit eines Entity.
--- 
+--
 -- @param _ScriptName Skriptname des Entity
 -- @param _Visible    Sichtbarkeit an/aus
 -- @return Table mit Behavior
@@ -1891,4 +1891,3 @@ function BundleSymfoniaBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleSymfoniaBehaviors");
-
