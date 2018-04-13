@@ -59,6 +59,7 @@ public class SymfoniaJPanelGray extends SymfoniaJPanel
 	final Color bc = Configuration.getColor("defaults.colors.border.gray");
 
 	setBorder(BorderFactory.createLineBorder(bc, bw));
-	setBackground(Color.WHITE);
+	final Color bg = Configuration.getColor("defaults.colors.bg.gray");
+	setBackground(bg);
     }
 }

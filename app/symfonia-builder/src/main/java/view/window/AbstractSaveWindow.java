@@ -21,8 +21,7 @@ import view.component.SymfoniaJButton;
  * @author angermanager
  *
  */
-abstract public class AbstractSaveWindow extends AbstractWindow
-{
+abstract public class AbstractSaveWindow extends AbstractWindow {
 
     /**
      * Titel
@@ -65,66 +64,65 @@ abstract public class AbstractSaveWindow extends AbstractWindow
      * @param w Breite des Fenster
      * @param h Höhe des Fenster
      */
-    public AbstractSaveWindow(final int w, final int h)
-    {
-	super(w, h);
+    public AbstractSaveWindow(final int w, final int h) {
+        super(w, h);
 
-	final int titleSize = Configuration.getInteger("defaults.font.title.size");
-	final int textSize = Configuration.getInteger("defaults.font.text.size");
+        final int titleSize = Configuration.getInteger("defaults.font.title.size");
+        final int textSize = Configuration.getInteger("defaults.font.text.size");
 
-	final String chooseText = Configuration.getString("defaults.caption.button.search");
-	final String saveText = Configuration.getString("defaults.caption.button.save");
-	final String backButton = Configuration.getString("defaults.caption.button.back");
+        final String chooseText = Configuration.getString("defaults.caption.button.search");
+        final String saveText = Configuration.getString("defaults.caption.button.save");
+        final String backButton = Configuration.getString("defaults.caption.button.back");
 
-	title = new JXLabel();
-	title.setHorizontalAlignment(SwingConstants.CENTER);
-	title.setBounds(10, 10, w - 20, 30);
-	title.setFont(new Font(Font.SANS_SERIF, 1, titleSize));
-	title.setVisible(true);
-	getRootPane().add(title);
+        title = new JXLabel();
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        title.setBounds(10, 10, w - 20, 30);
+        title.setFont(new Font(Font.SANS_SERIF, 1, titleSize));
+        title.setVisible(true);
+        getRootPane().add(title);
 
-	text = new JXLabel();
-	text.setLineWrap(true);
-	text.setVerticalAlignment(SwingConstants.TOP);
-	text.setBounds(10, 50, w, h);
-	text.setFont(new Font(Font.SANS_SERIF, 0, textSize));
-	text.setVisible(true);
-	getRootPane().add(text);
+        text = new JXLabel();
+        text.setLineWrap(true);
+        text.setVerticalAlignment(SwingConstants.TOP);
+        text.setBounds(10, 50, w, h);
+        text.setFont(new Font(Font.SANS_SERIF, 0, textSize));
+        text.setVisible(true);
+        getRootPane().add(text);
 
-	choose = new SymfoniaJButton(chooseText);
-	choose.setBounds(w - 155, (h / 2) + 65, 130, 30);
-	choose.addActionListener(this);
-	choose.setVisible(true);
-	getRootPane().add(choose);
+        choose = new SymfoniaJButton(chooseText);
+        choose.setBounds(w - 155, (h / 2) + 65, 130, 30);
+        choose.addActionListener(this);
+        choose.setVisible(true);
+        getRootPane().add(choose);
 
-	fileNameField = new JTextField();
-	fileNameField.setBounds(25, (h / 2) + 35, w - 50, 28);
-	fileNameField.addActionListener(this);
-	fileNameField.setVisible(true);
-	getRootPane().add(fileNameField);
+        fileNameField = new JTextField();
+        fileNameField.setBounds(25, (h / 2) + 35, w - 50, 28);
+        fileNameField.addActionListener(this);
+        fileNameField.setVisible(true);
+        getRootPane().add(fileNameField);
 
-	info = new JXLabel();
-	info.setVerticalAlignment(SwingConstants.TOP);
-	text.setLineWrap(true);
-	info.setBounds(10, 50, h - 100, 30);
-	info.setFont(new Font(Font.SANS_SERIF, 1, textSize));
-	info.setForeground(Color.RED);
-	info.setVisible(true);
-	getRootPane().add(text);
+        info = new JXLabel();
+        info.setVerticalAlignment(SwingConstants.TOP);
+        text.setLineWrap(true);
+        info.setBounds(10, 50, h - 100, 30);
+        info.setFont(new Font(Font.SANS_SERIF, 1, textSize));
+        info.setForeground(Color.RED);
+        info.setVisible(true);
+        getRootPane().add(text);
 
-	save = new SymfoniaJButton(saveText);
-	save.setBounds(w - 155, h - 70, 130, 30);
-	save.addActionListener(this);
-	save.setVisible(true);
-	getRootPane().add(save);
+        save = new SymfoniaJButton(saveText);
+        save.setBounds(w - 155, h - 70, 130, 30);
+        save.addActionListener(this);
+        save.setVisible(true);
+        getRootPane().add(save);
 
-	back = new SymfoniaJButton(backButton);
-	back.setBounds(25, h - 70, 130, 30);
-	back.addActionListener(this);
-	back.setVisible(true);
-	getRootPane().add(back);
+        back = new SymfoniaJButton(backButton);
+        back.setBounds(25, h - 70, 130, 30);
+        back.addActionListener(this);
+        back.setVisible(true);
+        getRootPane().add(back);
 
-	getRootPane().setVisible(false);
+        getRootPane().setVisible(false);
     }
 
     /**
@@ -132,9 +130,8 @@ abstract public class AbstractSaveWindow extends AbstractWindow
      * 
      * @param title Titel des Caption Label
      */
-    public void setTitle(final String title)
-    {
-	this.title.setText(title);
+    public void setTitle(final String title) {
+        this.title.setText(title);
     }
 
     /**
@@ -142,19 +139,17 @@ abstract public class AbstractSaveWindow extends AbstractWindow
      * 
      * @param title Titel des Caption Label
      */
-    public void setText(final String text)
-    {
-	this.text.setText(text);
+    public void setText(final String text) {
+        this.text.setText(text);
     }
 
     /**
      * Setzt den Dateipfad im Dateipfad-Editfeld.
      */
-    protected void updateFilePath(String path, final String fileName)
-    {
-	final File f = new File(".");
-	path = (path == null) ? f.getAbsolutePath() : path;
-	fileNameField.setText(unixfyPath(path) + "/" + fileName);
+    protected void updateFilePath(String path, final String fileName) {
+        final File f = new File(".");
+        path = (path == null) ? f.getAbsolutePath() : path;
+        fileNameField.setText(unixfyPath(path) + "/" + fileName);
     }
 
     /**
@@ -163,54 +158,46 @@ abstract public class AbstractSaveWindow extends AbstractWindow
      * @param path Pfad zum umwandeln
      * @return Umgewandelter Pfad
      */
-    protected String unixfyPath(final String path)
-    {
-	try
-	{
-	    final String newPath = path.replaceAll("\\\\", "/");
-	    return newPath;
-	}
-	catch (final PatternSyntaxException e)
-	{
-	    return path;
-	}
+    protected String unixfyPath(final String path) {
+        try {
+            final String newPath = path.replaceAll("\\\\", "/");
+            return newPath;
+        } catch (final PatternSyntaxException e) {
+            return path;
+        }
     }
 
     /**
      * 
      * @return Auswahlbutton
      */
-    public SymfoniaJButton getChoose()
-    {
-	return choose;
+    public SymfoniaJButton getChoose() {
+        return choose;
     }
 
     /**
      * 
      * @return Dateinamensfeld
      */
-    public JTextField getFileNameField()
-    {
-	return fileNameField;
+    public JTextField getFileNameField() {
+        return fileNameField;
     }
 
     /**
      * 
      * @return Speicherbutton
      */
-    public SymfoniaJButton getSave()
-    {
-	return save;
+    public SymfoniaJButton getSave() {
+        return save;
     }
 
     /**
      * 
      * @param text Neuer Text
      */
-    public void setInfoText(final String text, final Color color)
-    {
-	info.setText(text);
-	info.setForeground(color);
+    public void setInfoText(final String text, final Color color) {
+        info.setText(text);
+        info.setForeground(color);
     }
 
     /**

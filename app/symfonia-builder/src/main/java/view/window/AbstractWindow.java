@@ -11,8 +11,7 @@ import view.component.SymfoniaJPanel;
  * @author angermanager
  *
  */
-public abstract class AbstractWindow implements WindowInterface
-{
+public abstract class AbstractWindow implements WindowInterface {
 
     /**
      * 
@@ -22,28 +21,25 @@ public abstract class AbstractWindow implements WindowInterface
     /**
      * 
      */
-    public AbstractWindow(final int w, final int h)
-    {
-	root = new SymfoniaJPanel(null);
-	root.setBounds(0, 0, w, h);
-	root.setVisible(true);
+    public AbstractWindow(final int w, final int h) {
+        root = new SymfoniaJPanel(null);
+        root.setBounds(0, 0, w, h);
+        root.setVisible(true);
     }
 
     /**
      * 
      */
     @Override
-    public void show()
-    {
-	root.setVisible(true);
+    public void show() {
+        root.setVisible(true);
     }
 
     /**
      * 
      */
     @Override
-    public void hide()
-    {
+    public void hide() {
         root.setVisible(false);
     }
 
@@ -52,14 +48,14 @@ public abstract class AbstractWindow implements WindowInterface
      * @return
      */
     @Override
-    public SymfoniaJPanel getRootPane()
-    {
+    public SymfoniaJPanel getRootPane() {
         return root;
     }
 
     /**
      * {@inheritDoc}
-     * @throws WindowException 
+     * 
+     * @throws WindowException
      */
     @Override
     public abstract void handleActionEvent(final ActionEvent aE) throws WindowException;
@@ -74,8 +70,7 @@ public abstract class AbstractWindow implements WindowInterface
      * {@inheritDoc}
      */
     @Override
-    public void valueChanged(final ListSelectionEvent aE)
-    {
+    public void valueChanged(final ListSelectionEvent aE) {
         handleValueChanged(aE);
     }
 
@@ -83,13 +78,10 @@ public abstract class AbstractWindow implements WindowInterface
      * {@inheritDoc}
      */
     @Override
-    public void actionPerformed(final ActionEvent aE)
-    {
-        try
-        {
+    public void actionPerformed(final ActionEvent aE) {
+        try {
             handleActionEvent(aE);
-        } catch (final WindowException e)
-        {
+        } catch (final WindowException e) {
             e.printStackTrace();
         }
     }

@@ -14,8 +14,7 @@ import view.component.SymfoniaJPanel;
  * @author angermanager
  *
  */
-public interface WindowInterface extends ActionListener, ListSelectionListener
-{
+public interface WindowInterface extends ActionListener, ListSelectionListener {
 
     /**
      * Zeigt das fenster an.
@@ -38,7 +37,7 @@ public interface WindowInterface extends ActionListener, ListSelectionListener
      * Behandelt Action Events.
      * 
      * @param aE Event
-     * @throws WindowException 
+     * @throws WindowException
      */
     public void handleActionEvent(final ActionEvent aE) throws WindowException;
 

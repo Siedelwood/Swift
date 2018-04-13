@@ -13,38 +13,33 @@ import javax.swing.JFrame;
  * @author angermanager
  *
  */
-public class SymfoniaJFrame extends JFrame implements WindowListener
-{
+public class SymfoniaJFrame extends JFrame implements WindowListener {
 
     /**
      * {@inheritDoc}
      */
-    public SymfoniaJFrame() throws HeadlessException
-    {
+    public SymfoniaJFrame() throws HeadlessException {
 
     }
 
     /**
      * {@inheritDoc}
      */
-    public SymfoniaJFrame(final GraphicsConfiguration gc)
-    {
+    public SymfoniaJFrame(final GraphicsConfiguration gc) {
         super(gc);
     }
 
     /**
      * {@inheritDoc}
      */
-    public SymfoniaJFrame(final String title) throws HeadlessException
-    {
+    public SymfoniaJFrame(final String title) throws HeadlessException {
         super(title);
     }
 
     /**
      * {@inheritDoc}
      */
-    public SymfoniaJFrame(final String title, final GraphicsConfiguration gc)
-    {
+    public SymfoniaJFrame(final String title, final GraphicsConfiguration gc) {
         super(title, gc);
     }
 
@@ -52,8 +47,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      * {@inheritDoc}
      */
     @Override
-    public void windowOpened(final WindowEvent e)
-    {
+    public void windowOpened(final WindowEvent e) {
 
     }
 
@@ -61,8 +55,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      * {@inheritDoc}
      */
     @Override
-    public void windowClosing(final WindowEvent e)
-    {
+    public void windowClosing(final WindowEvent e) {
 
     }
 
@@ -70,8 +63,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      * {@inheritDoc}
      */
     @Override
-    public void windowClosed(final WindowEvent e)
-    {
+    public void windowClosed(final WindowEvent e) {
 
     }
 
@@ -79,8 +71,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      * {@inheritDoc}
      */
     @Override
-    public void windowIconified(final WindowEvent e)
-    {
+    public void windowIconified(final WindowEvent e) {
 
     }
 
@@ -88,8 +79,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      * {@inheritDoc}
      */
     @Override
-    public void windowDeiconified(final WindowEvent e)
-    {
+    public void windowDeiconified(final WindowEvent e) {
 
     }
 
@@ -97,8 +87,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      * {@inheritDoc}
      */
     @Override
-    public void windowActivated(final WindowEvent e)
-    {
+    public void windowActivated(final WindowEvent e) {
 
     }
 
@@ -106,8 +95,7 @@ public class SymfoniaJFrame extends JFrame implements WindowListener
      * {@inheritDoc}
      */
     @Override
-    public void windowDeactivated(final WindowEvent e)
-    {
+    public void windowDeactivated(final WindowEvent e) {
 
     }
 }

@@ -19,8 +19,7 @@ import view.window.WelcomeWindow;
  *
  */
 @SuppressWarnings("serial")
-public class SymfoniaQsbBuilder extends SymfoniaJFrame
-{
+public class SymfoniaQsbBuilder extends SymfoniaJFrame {
 
     /**
      * 
@@ -36,41 +35,39 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      * 
      * @param properties
      */
-    public SymfoniaQsbBuilder(final ViewController controller)
-    {
+    public SymfoniaQsbBuilder(final ViewController controller) {
         this.controller = controller;
     }
 
     /**
      * 
      */
-    public void build()
-    {
-    	final Dimension size = Configuration.getDimension("defaults.window.size");
-    
-    	frame = new SymfoniaJFrame();
-    	frame.setTitle("Symfonia Builder");
-    	frame.setBounds(0, 0, size.width, size.height);
-    	frame.setResizable(false);
-    	frame.setLocationRelativeTo(null);
-    	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
-    	// Willkommensfenster hinzufügen
-    	controller.addWindow("WelcomeWindow", new WelcomeWindow(size.width, size.height));
-    	frame.add(controller.getWindow("WelcomeWindow").getRootPane());
-    	
-    	// Optionsfenster hinzufügen
+    public void build() {
+        final Dimension size = Configuration.getDimension("defaults.window.size");
+
+        frame = new SymfoniaJFrame();
+        frame.setTitle("Symfonia Builder");
+        frame.setBounds(0, 0, size.width, size.height);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Willkommensfenster hinzufügen
+        controller.addWindow("WelcomeWindow", new WelcomeWindow(size.width, size.height));
+        frame.add(controller.getWindow("WelcomeWindow").getRootPane());
+
+        // Optionsfenster hinzufügen
         controller.addWindow("OptionSelectionWindow", new OptionSelectionWindow(size.width, size.height));
         frame.add(controller.getWindow("OptionSelectionWindow").getRootPane());
-        
+
         // Selfupdate-Fenster hinzufügen
         controller.addWindow("SelfUpdateWindow", new SelfUpdateWindow(size.width, size.height));
         frame.add(controller.getWindow("SelfUpdateWindow").getRootPane());
-        
+
         // Beispiele-Speichern-Fenster hinzufügen
         controller.addWindow("SaveBaseScriptsWindow", new SaveBaseScriptsWindow(size.width, size.height));
         frame.add(controller.getWindow("SaveBaseScriptsWindow").getRootPane());
-    	
+
         controller.getWindow("WelcomeWindow").show();
         frame.setVisible(true);
     }
@@ -79,8 +76,7 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      * 
      * @return
      */
-    public SymfoniaJFrame getFrame()
-    {
+    public SymfoniaJFrame getFrame() {
         return frame;
     }
 
@@ -88,9 +84,8 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      * 
      * @param args
      */
-    public static void main(final String[] args)
-    {
-    	final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder(ViewController.getInstance());
-    	builder.build();
+    public static void main(final String[] args) {
+        final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder(ViewController.getInstance());
+        builder.build();
     }
 }
