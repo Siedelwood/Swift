@@ -81,7 +81,9 @@ public class OptionSelectionWindow extends AbstractWindow {
 	public void handleActionEvent(final ActionEvent aE) {
 		// QSB zusammenstellen
 		if (aE.getSource() == options.get(0)) {
-			//ViewController.getInstance().getWindow("OptionSelectionWindow").show();
+		    System.out.println("Show bundle selection");
+		    ViewController.getInstance().getWindow("BundleSelectionWindow").show();
+		    hide();
 		}
 
 		// Dokumentation anzeigen
@@ -119,8 +121,8 @@ public class OptionSelectionWindow extends AbstractWindow {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		OptionSelectionWindow osw = new OptionSelectionWindow(600, 400);
+	public static void main(final String[] args) {
+		final OptionSelectionWindow osw = new OptionSelectionWindow(600, 400);
 		
 	}
 }

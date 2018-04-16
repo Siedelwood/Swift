@@ -1,15 +1,21 @@
 package app;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 
 import config.Configuration;
 import controller.ViewController;
+import view.component.SymfoniaJAddOn;
+import view.component.SymfoniaJBundle;
 import view.component.SymfoniaJFrame;
+import view.window.AddOnSelectionWindow;
+import view.window.BundleSelectionWindow;
 import view.window.OptionSelectionWindow;
-import view.window.SelfUpdateWindow;
 import view.window.SaveBaseScriptsWindow;
+import view.window.SelfUpdateWindow;
 import view.window.WelcomeWindow;
 
 /**
@@ -67,6 +73,26 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame {
         // Beispiele-Speichern-Fenster hinzufügen
         controller.addWindow("SaveBaseScriptsWindow", new SaveBaseScriptsWindow(size.width, size.height));
         frame.add(controller.getWindow("SaveBaseScriptsWindow").getRootPane());
+        
+        // Bundle-Auswahl-Fenster hinzufügen
+        controller.addWindow("BundleSelectionWindow", new BundleSelectionWindow(size.width, size.height));
+        final BundleSelectionWindow window = (BundleSelectionWindow) controller.getWindow("BundleSelectionWindow");
+        final List<SymfoniaJBundle> bundleList = new ArrayList();
+        for (int i=0; i<15; i++) {
+            bundleList.add(new SymfoniaJBundle("foo", "Bockwurst", "Das ist ein Test", 700, 60));
+        }
+        window.setBundleList(bundleList);
+        frame.add(controller.getWindow("BundleSelectionWindow").getRootPane());
+        
+        // AddOn-Bundle-Auswahl-Fenster hinzufügen
+        controller.addWindow("AddOnSelectionWindow", new AddOnSelectionWindow(size.width, size.height));
+        final AddOnSelectionWindow window1 = (AddOnSelectionWindow) controller.getWindow("AddOnSelectionWindow");
+        final List<SymfoniaJAddOn> bundleList1 = new ArrayList();
+        for (int i=0; i<4; i++) {
+            bundleList1.add(new SymfoniaJAddOn("foo", "Avocado", "Das ist ein Test", null, 700, 60, null));
+        }
+        window1.setBundleList(bundleList1);
+        frame.add(controller.getWindow("AddOnSelectionWindow").getRootPane());
 
         controller.getWindow("WelcomeWindow").show();
         frame.setVisible(true);
