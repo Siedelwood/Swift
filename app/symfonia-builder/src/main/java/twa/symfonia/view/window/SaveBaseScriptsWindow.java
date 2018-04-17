@@ -15,7 +15,8 @@ import twa.symfonia.controller.ViewController;
  * @author angermanager
  *
  */
-public class SaveBaseScriptsWindow extends AbstractSaveWindow {
+public class SaveBaseScriptsWindow extends AbstractSaveWindow
+{
 
     /**
      * Constructor
@@ -23,14 +24,15 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow {
      * @param w Breite
      * @param h Höhe
      */
-    public SaveBaseScriptsWindow(final int w, final int h) {
-        super(w, h);
+    public SaveBaseScriptsWindow(final int w, final int h)
+    {
+	super(w, h);
 
-        final String exampleTitle = Configuration.getString("defaults.label.title.example");
-        final String exampleText = Configuration.getString("defaults.label.text.example");
+	final String exampleTitle = Configuration.getString("defaults.label.title.base");
+	final String exampleText = Configuration.getString("defaults.label.text.base");
 
-        title.setText(exampleTitle);
-        text.setText(exampleText);
+	title.setText(exampleTitle);
+	text.setText(exampleText);
     }
 
     /**
@@ -39,33 +41,41 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow {
      * @throws WindowException
      */
     @Override
-    public void handleActionEvent(final ActionEvent aE) throws WindowException {
-        // Datei(en) speichern
-        if (aE.getSource() == save) {
-            try {
-                ViewController.getInstance().saveBasicScripts(fileNameField.getText());
-            } catch (final ApplicationException e) {
-                throw new WindowException(e);
-            }
-        }
+    public void handleActionEvent(final ActionEvent aE) throws WindowException
+    {
+	// Datei(en) speichern
+	if (aE.getSource() == save)
+	{
+	    try
+	    {
+		ViewController.getInstance().saveBasicScripts(fileNameField.getText());
+	    }
+	    catch (final ApplicationException e)
+	    {
+		throw new WindowException(e);
+	    }
+	}
 
-        // Ziel auswählen
-        if (aE.getSource() == choose) {
-            ViewController.getInstance().chooseFolder(this);
-        }
+	// Ziel auswählen
+	if (aE.getSource() == choose)
+	{
+	    ViewController.getInstance().chooseFolder(this);
+	}
 
-        // Zurück
-        if (aE.getSource() == back) {
-            ViewController.getInstance().getWindow("OptionSelectionWindow").show();
-            hide();
-        }
+	// Zurück
+	if (aE.getSource() == back)
+	{
+	    ViewController.getInstance().getWindow("OptionSelectionWindow").show();
+	    hide();
+	}
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void handleValueChanged(final ListSelectionEvent a) {
+    public void handleValueChanged(final ListSelectionEvent a)
+    {
 
     }
 
@@ -73,9 +83,10 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow {
      * {@inheritDoc}
      */
     @Override
-    public void onSelectionFinished(File selected) {
-        selected = (selected == null) ? new File(".") : selected;
-        fileNameField.setText(unixfyPath(selected.getAbsolutePath()) + "/Basisskripte");
+    public void onSelectionFinished(File selected)
+    {
+	selected = (selected == null) ? new File(".") : selected;
+	fileNameField.setText(unixfyPath(selected.getAbsolutePath()) + "/Basisskripte");
     }
 
 }

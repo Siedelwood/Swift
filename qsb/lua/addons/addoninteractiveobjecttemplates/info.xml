@@ -2,7 +2,7 @@
 <root>
     <id>addoninteractiveobjecttemplates</id>
     <name>Vorbereitete interaktive Objekte</name>
-    <description>Dieses AddOn stellt einige bereits vorkonfigurierte Interaktive Objekte, wie z.B. Schatztruhen und Minen bereit.</description>
+    <description>Dieses AddOn stellt einige bereits vorkonfigurierte Interaktive Objekte, wie z.B. Schatztruhen und Minen bereit. Trebuchetbaustellen ermöglichen neue Taktikmissionen.</description>
 
     <dependencies>
         <dependency>bundleinteractiveobjects</dependency>

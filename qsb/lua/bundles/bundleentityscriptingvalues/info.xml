@@ -2,7 +2,7 @@
 <root>
     <id>bundleentityscriptingvalues</id>
     <name>Entity Scripting Values</name>
-    <description>Dieses Bundle ermöglicht die Manipulation einer Entität direkt im Arbeitsspeicher.</description>
+    <description>Dieses Bundle ermöglicht die Manipulation einer Entität direkt im Arbeitsspeicher. So kann z.B. die Größe eines Entity manipuliert werden.</description>
 
     <dependencies>
     </dependencies>

@@ -2,7 +2,7 @@
 <root>
     <id>bundlecastlestore</id>
     <name>Burglager 3.0</name>
-    <description>Stellt ein Burglager zur Verfügung. Fassungsvermögen ist von der Ausbaustufe der Burg abhängig.</description>
+    <description>Stellt ein Burglager zur Verfügung. Das Fassungsvermögen ist von der Ausbaustufe der Burg abhängig. Die Steuerung funktioniert ähnlich der des Lagerhauses.</description>
 
     <dependencies>
     </dependencies>
