@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Quest Debug]]>
-    </name>
-    <description>
-        <![CDATA[Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl 
-        nützlicher neuer Möglichkeiten. <br/>Die wichtigste Neuerung ist die 
-        Konsole, die es erlaubt Quests direkt über die Eingabe von Befehlen zu 
-        steuern, einzelne einfache Lua-Kommandos im Spiel auszuführen und sogar 
-        komplette Skripte zu laden.]]>
-    </description>
+    <name>Quest Debug</name>
+    <description>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</description>
 
     <dependencies>
         <dependency>BundleQuestGeneration</dependency>

@@ -14,52 +14,46 @@ import config.Configuration;
  *
  */
 @SuppressWarnings("serial")
-public class SymfoniaJPanel extends JPanel
-{
+public class SymfoniaJPanel extends JPanel {
 
     /**
      * {@inheritDoc}
      */
-    public SymfoniaJPanel()
-    {
-	super();
-	applyConfiguration();
+    public SymfoniaJPanel() {
+        super();
+        applyConfiguration();
     }
 
     /**
      * {@inheritDoc}
      */
-    public SymfoniaJPanel(final boolean b)
-    {
-	super(b);
-	applyConfiguration();
+    public SymfoniaJPanel(final boolean b) {
+        super(b);
+        applyConfiguration();
     }
 
     /**
      * {@inheritDoc}
      */
-    public SymfoniaJPanel(final LayoutManager l, final boolean b)
-    {
-	super(l, b);
-	applyConfiguration();
+    public SymfoniaJPanel(final LayoutManager l, final boolean b) {
+        super(l, b);
+        applyConfiguration();
     }
 
     /**
      * {@inheritDoc}
      */
-    public SymfoniaJPanel(final LayoutManager l)
-    {
-	super(l);
-	applyConfiguration();
+    public SymfoniaJPanel(final LayoutManager l) {
+        super(l);
+        applyConfiguration();
     }
 
     /**
      * Wendet die Konfiguration auf den Button an.
      */
-    protected void applyConfiguration()
-    {
-	final Color bg = Configuration.getColor("defaults.colors.bg.normal");
-	setBackground(bg);
+    protected void applyConfiguration() {
+        final Color bg = Configuration.getColor("defaults.colors.bg.normal");
+        setBackground(bg);
     }
 
 }

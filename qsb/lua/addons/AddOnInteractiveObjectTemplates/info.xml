@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[IO Templates]]>
-    </name>
-    <description>
-        <![CDATA[]]>
-    </description>
+    <name>Vorbereitete interaktive Objekte</name>
+    <description>Dieses AddOn stellt einige bereits vorkonfigurierte Interaktive Objekte, wie z.B. Schatztruhen und Minen bereit.</description>
 
     <dependencies>
-        <dependency>BundleInteractiveObjects</dependency>
-        <dependency>BundleEntitySelection</dependency>
+        <dependency>bundleinteractiveobjects</dependency>
+        <dependency>bundleentityselection</dependency>
     </dependencies>
 
     <exclusions>

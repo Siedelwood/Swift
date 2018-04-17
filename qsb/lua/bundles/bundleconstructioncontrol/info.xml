@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Bau- und Abrisskontrolle]]>
-    </name>
-    <description>
-        <![CDATA[Mit diesem Bundle können Gebäude und Gebäudetypen definiert
-           werden, die in einem gebiet oder auf einem Territorium nicht
-           abgerissen oder nicht gebaut werden sollen.]]>
-    </description>
+    <name>Bau- und Abrisskontrolle</name>
+    <description>Mit diesem Bundle können die Bauoptionen des Spielers in einem Gebiet eingeschränkt werden.</description>
 
     <dependencies>
     </dependencies>

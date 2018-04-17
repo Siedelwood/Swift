@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Questerzeugung]]>
-    </name>
-    <description>
-        <![CDATA[Mit diesem Bundle können Aufträge per Skript erstellt werden.]]>
-    </description>
+    <name>Questerzeugung</name>
+    <description>Mit diesem Bundle können Aufträge per Skript erstellt werden.</description>
 
     <dependencies>
     </dependencies>

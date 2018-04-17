@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Entity Scripting Values]]>
-    </name>
-    <description>
-        <![CDATA[Dieses Bundle ermöglicht die Manipulation einer Entität
-           direkt im Arbeitsspeicher.]]>
-    </description>
+    <name>Entity Scripting Values</name>
+    <description>Dieses Bundle ermöglicht die Manipulation einer Entität direkt im Arbeitsspeicher.</description>
 
     <dependencies>
     </dependencies>
