@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Charakterinteraktion]]>
-    </name>
-    <description>
-        <![CDATA[Ermöglicht es ansprechbare Nichtspielercharaktere zu erstellen. Interaktion mit ihnen löst eine beliebige Funktion aus.]]>
-    </description>
+    <name>Charakterinteraktion</name>
+    <description>Ermöglicht es ansprechbare Nichtspielercharaktere (NPC) zu erstellen. Interaktion mit ihnen löst eine beliebige Funktion aus.</description>
 
     <dependencies>
     </dependencies>

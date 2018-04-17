@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Musikfunktionen]]>
-    </name>
-    <description>
-        <![CDATA[Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze 
-           Playlists als Stimme abzuspielen.]]>
-    </description>
+    <name>Musikfunktionen</name>
+    <description>Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze Playlists als Stimme abzuspielen.</description>
 
     <dependencies>
     </dependencies>

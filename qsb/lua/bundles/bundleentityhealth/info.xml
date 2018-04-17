@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Gesundheit von Einheiten]]>
-    </name>
-    <description>
-        <![CDATA[Dieses Bundle soll dem Mapper ermöglichen die Trigger, die 
-           auslösen, wenn Entities kämpfen, besser zu nutzen. Außerdem werden 
-           einige Hilfsfunktionen bereitgestellt.]]>
-    </description>
+    <name>Gesundheit von Einheiten</name>
+    <description>Dieses Bundle bietet dem Mapper Behavior und Trigger rund um die Gesundheit von Einheiten und Gebäuden.</description>
 
     <dependencies>
     </dependencies>

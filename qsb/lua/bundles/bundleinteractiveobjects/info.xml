@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Interaktive Objekte]]>
-    </name>
-    <description>
-        <![CDATA[Ermöglicht die Manipulation der Interaktiven Objekte und das 
-           Erstellen völlig neuer eigener Objekte.]]>
-    </description>
+    <name>Interaktive Objekte</name>
+    <description>Ermöglicht die Manipulation der Interaktiven Objekte und das Erstellen völlig neuer eigener Objekttypen.</description>
 
     <dependencies>
     </dependencies>
