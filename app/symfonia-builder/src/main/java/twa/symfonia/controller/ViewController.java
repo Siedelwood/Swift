@@ -1,4 +1,4 @@
-package controller;
+package twa.symfonia.controller;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -13,8 +13,8 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FileUtils;
 
-import view.window.AbstractSaveWindow;
-import view.window.WindowInterface;
+import twa.symfonia.view.window.AbstractSaveWindow;
+import twa.symfonia.view.window.WindowInterface;
 
 /**
  * View Controller

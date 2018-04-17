@@ -1,7 +1,7 @@
-package controller;
+package twa.symfonia.controller;
 
-import view.window.AbstractSaveWindow;
-import view.window.WindowInterface;
+import twa.symfonia.view.window.AbstractSaveWindow;
+import twa.symfonia.view.window.WindowInterface;
 
 /**
  * Interface für View Controller

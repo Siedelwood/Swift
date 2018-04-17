@@ -1,13 +1,13 @@
-package view.window;
+package twa.symfonia.view.window;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
 
 import javax.swing.event.ListSelectionEvent;
 
-import config.Configuration;
-import controller.ApplicationException;
-import controller.ViewController;
+import twa.symfonia.config.Configuration;
+import twa.symfonia.controller.ApplicationException;
+import twa.symfonia.controller.ViewController;
 
 /**
  * 

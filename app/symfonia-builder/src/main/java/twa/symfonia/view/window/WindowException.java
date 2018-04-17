@@ -1,4 +1,4 @@
-package view.window;
+package twa.symfonia.view.window;
 
 /**
  * 

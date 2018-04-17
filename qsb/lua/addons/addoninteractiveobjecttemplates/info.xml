@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>addoninteractiveobjecttemplates</id>
     <name>Vorbereitete interaktive Objekte</name>
     <description>Dieses AddOn stellt einige bereits vorkonfigurierte Interaktive Objekte, wie z.B. Schatztruhen und Minen bereit.</description>
 

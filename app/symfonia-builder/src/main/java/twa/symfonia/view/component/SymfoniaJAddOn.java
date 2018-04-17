@@ -1,4 +1,4 @@
-package view.component;
+package twa.symfonia.view.component;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -11,7 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
-import config.Configuration;
+import twa.symfonia.config.Configuration;
 
 /**
  * Erzeugt eine AddOn-Bundle Kachel für gewöhnliche Bundles.

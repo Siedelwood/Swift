@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>bundlebriefingsystem</id>
     <name>Briefings und Cutscenes</name>
     <description>Ermöglicht die Verwendung von Briefings (S5-Like Missionsbeschreibungen) und Fake-Cutscenes (Kameraflüge) in der Map.</description>
 

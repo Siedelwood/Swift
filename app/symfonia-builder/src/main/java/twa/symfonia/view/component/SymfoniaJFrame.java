@@ -1,4 +1,4 @@
-package view.component;
+package twa.symfonia.view.component;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;

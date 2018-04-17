@@ -1,4 +1,4 @@
-package view.component;
+package twa.symfonia.view.component;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import config.Configuration;
+import twa.symfonia.config.Configuration;
 
 /**
  * Erzeugt einen braunen Button.

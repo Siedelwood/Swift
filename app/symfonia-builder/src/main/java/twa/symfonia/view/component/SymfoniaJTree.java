@@ -1,4 +1,4 @@
-package view.component;
+package twa.symfonia.view.component;
 
 public class SymfoniaJTree {
 

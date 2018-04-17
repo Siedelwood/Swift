@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>bundlenonplayercharacter</id>
     <name>Charakterinteraktion</name>
     <description>Ermöglicht es ansprechbare Nichtspielercharaktere (NPC) zu erstellen. Interaktion mit ihnen löst eine beliebige Funktion aus.</description>
 

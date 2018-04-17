@@ -1,4 +1,4 @@
-package view.component;
+package twa.symfonia.view.component;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import config.Configuration;
+import twa.symfonia.config.Configuration;
 
 /**
  * Zeigt eine Liste von Bundles an.

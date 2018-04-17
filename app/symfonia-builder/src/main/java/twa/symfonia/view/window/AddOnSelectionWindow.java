@@ -1,4 +1,4 @@
-package view.window;
+package twa.symfonia.view.window;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,11 +10,11 @@ import javax.swing.event.ListSelectionEvent;
 
 import org.jdesktop.swingx.JXLabel;
 
-import config.Configuration;
-import controller.ViewController;
-import view.component.SymfoniaJAddOn;
-import view.component.SymfoniaJAddOnScrollPane;
-import view.component.SymfoniaJButton;
+import twa.symfonia.config.Configuration;
+import twa.symfonia.controller.ViewController;
+import twa.symfonia.view.component.SymfoniaJAddOn;
+import twa.symfonia.view.component.SymfoniaJAddOnScrollPane;
+import twa.symfonia.view.component.SymfoniaJButton;
 
 /**
  * 

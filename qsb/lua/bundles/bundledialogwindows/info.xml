@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>bundledialogwindows</id>
     <name>Dialogfenster</name>
     <description>Mit diesem Bundle kommen verschiedene Dialog- und ein Textfenster hinzu, mit denen der Spieler interagieren kann.</description>
 

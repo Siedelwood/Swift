@@ -1,11 +1,11 @@
-package view.component;
+package twa.symfonia.view.component;
 
 import java.awt.Color;
 import java.awt.LayoutManager;
 
 import javax.swing.BorderFactory;
 
-import config.Configuration;
+import twa.symfonia.config.Configuration;
 
 /**
  * Erzeugt ein Panel mit einem grauen Hintergrund und Rahmen.

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>addonquestdebug</id>
     <name>Quest Debug</name>
     <description>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</description>
 

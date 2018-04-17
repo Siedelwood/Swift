@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>bundlebuildingbuttons</id>
     <name>Gebäudesteuerungsoptionen</name>
     <description>Bietet erweiterte Gebäudeoptionen. Beinhaltet Rückbau, Viehzucht und optionale Schalter wie z.B. Single Stop.</description>
 

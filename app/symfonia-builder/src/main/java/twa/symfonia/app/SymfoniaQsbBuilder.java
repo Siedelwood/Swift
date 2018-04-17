@@ -1,4 +1,4 @@
-package app;
+package twa.symfonia.app;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -6,17 +6,17 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import config.Configuration;
-import controller.ViewController;
-import view.component.SymfoniaJAddOn;
-import view.component.SymfoniaJBundle;
-import view.component.SymfoniaJFrame;
-import view.window.AddOnSelectionWindow;
-import view.window.BundleSelectionWindow;
-import view.window.OptionSelectionWindow;
-import view.window.SaveBaseScriptsWindow;
-import view.window.SelfUpdateWindow;
-import view.window.WelcomeWindow;
+import twa.symfonia.config.Configuration;
+import twa.symfonia.controller.ViewController;
+import twa.symfonia.view.component.SymfoniaJAddOn;
+import twa.symfonia.view.component.SymfoniaJBundle;
+import twa.symfonia.view.component.SymfoniaJFrame;
+import twa.symfonia.view.window.AddOnSelectionWindow;
+import twa.symfonia.view.window.BundleSelectionWindow;
+import twa.symfonia.view.window.OptionSelectionWindow;
+import twa.symfonia.view.window.SaveBaseScriptsWindow;
+import twa.symfonia.view.window.SelfUpdateWindow;
+import twa.symfonia.view.window.WelcomeWindow;
 
 /**
  *

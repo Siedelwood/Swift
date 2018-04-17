@@ -1,4 +1,4 @@
-package config;
+package twa.symfonia.config;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.net.URL;
 import java.util.Properties;
 
-import app.SymfoniaQsbBuilder;
+import twa.symfonia.app.SymfoniaQsbBuilder;
 
 /**
  * Ließt die Konfiguration aus der app.properties aus.

@@ -1,4 +1,4 @@
-package view.window;
+package twa.symfonia.view.window;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,8 +12,8 @@ import javax.swing.event.ListSelectionEvent;
 
 import org.jdesktop.swingx.JXLabel;
 
-import config.Configuration;
-import view.component.SymfoniaJButton;
+import twa.symfonia.config.Configuration;
+import twa.symfonia.view.component.SymfoniaJButton;
 
 /**
  * Vorlage für Speicherdialoge

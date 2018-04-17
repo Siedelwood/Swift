@@ -1,10 +1,10 @@
-package view.window;
+package twa.symfonia.view.window;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.event.ListSelectionEvent;
 
-import view.component.SymfoniaJPanel;
+import twa.symfonia.view.component.SymfoniaJPanel;
 
 /**
  * 

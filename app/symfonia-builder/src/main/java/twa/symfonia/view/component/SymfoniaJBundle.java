@@ -1,4 +1,4 @@
-package view.component;
+package twa.symfonia.view.component;
 
 import java.awt.Font;
 import java.awt.font.TextAttribute;
@@ -7,7 +7,7 @@ import java.util.Collections;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
-import config.Configuration;
+import twa.symfonia.config.Configuration;
 
 /**
  * Erzeugt eine Bundle Kachel für gewöhnliche Bundles.
