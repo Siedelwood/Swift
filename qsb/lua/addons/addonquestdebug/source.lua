@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia BundleQuestDebug                                             # --
+-- #  Symfonia AddOnQuestDebug                                              # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
@@ -18,14 +18,14 @@
 -- <li>Im Questassistenten über Reward_DEBUG</li>
 -- </ol>
 --
--- @module BundleQuestDebug
+-- @module AddOnQuestDebug
 -- @set sort=true
 --
 
 API = API or {};
 QSB = QSB or {};
 
-BundleQuestDebug = {
+AddOnQuestDebug = {
     Global =  {
         Data = {},
     },
@@ -58,7 +58,7 @@ function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _Develo
         API.Bridge("API.DisbandTravelingSalesman(" ..tostring(_CheckAtStart).. ", " ..tostring(_CheckAtRun).. ", " ..tostring(_TraceQuests).. ", " ..tostring(_DevelopingMode).. ")");
         return;
     end
-    BundleQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode);
+    AddOnQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode);
 end
 ActivateDebugMode = API.ActivateDebugMode;
 
@@ -137,49 +137,49 @@ Core:RegisterBehavior(b_Reward_DEBUG);
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:Install()
+function AddOnQuestDebug.Global:Install()
 
-    BundleQuestDebug.Global.Data.DebugCommands = {
+    AddOnQuestDebug.Global.Data.DebugCommands = {
         -- groupless commands
-        {"clear",               BundleQuestDebug.Global.Clear,},
-        {"diplomacy",           BundleQuestDebug.Global.Diplomacy,},
-        {"restartmap",          BundleQuestDebug.Global.RestartMap,},
-        {"shareview",           BundleQuestDebug.Global.ShareView,},
-        {"setposition",         BundleQuestDebug.Global.SetPosition,},
-        {"unfreeze",            BundleQuestDebug.Global.Unfreeze,},
+        {"clear",               AddOnQuestDebug.Global.Clear,},
+        {"diplomacy",           AddOnQuestDebug.Global.Diplomacy,},
+        {"restartmap",          AddOnQuestDebug.Global.RestartMap,},
+        {"shareview",           AddOnQuestDebug.Global.ShareView,},
+        {"setposition",         AddOnQuestDebug.Global.SetPosition,},
+        {"unfreeze",            AddOnQuestDebug.Global.Unfreeze,},
         -- quest control
-        {"win",                 BundleQuestDebug.Global.QuestSuccess,      true,},
-        {"winall",              BundleQuestDebug.Global.QuestSuccess,      false,},
-        {"fail",                BundleQuestDebug.Global.QuestFailure,      true,},
-        {"failall",             BundleQuestDebug.Global.QuestFailure,      false,},
-        {"stop",                BundleQuestDebug.Global.QuestInterrupt,    true,},
-        {"stopall",             BundleQuestDebug.Global.QuestInterrupt,    false,},
-        {"start",               BundleQuestDebug.Global.QuestTrigger,      true,},
-        {"startall",            BundleQuestDebug.Global.QuestTrigger,      false,},
-        {"restart",             BundleQuestDebug.Global.QuestReset,        true,},
-        {"restartall",          BundleQuestDebug.Global.QuestReset,        false,},
-        {"printequal",          BundleQuestDebug.Global.PrintQuests,       1,},
-        {"printactive",         BundleQuestDebug.Global.PrintQuests,       2,},
-        {"printdetail",         BundleQuestDebug.Global.PrintQuests,       3,},
+        {"win",                 AddOnQuestDebug.Global.QuestSuccess,      true,},
+        {"winall",              AddOnQuestDebug.Global.QuestSuccess,      false,},
+        {"fail",                AddOnQuestDebug.Global.QuestFailure,      true,},
+        {"failall",             AddOnQuestDebug.Global.QuestFailure,      false,},
+        {"stop",                AddOnQuestDebug.Global.QuestInterrupt,    true,},
+        {"stopall",             AddOnQuestDebug.Global.QuestInterrupt,    false,},
+        {"start",               AddOnQuestDebug.Global.QuestTrigger,      true,},
+        {"startall",            AddOnQuestDebug.Global.QuestTrigger,      false,},
+        {"restart",             AddOnQuestDebug.Global.QuestReset,        true,},
+        {"restartall",          AddOnQuestDebug.Global.QuestReset,        false,},
+        {"printequal",          AddOnQuestDebug.Global.PrintQuests,       1,},
+        {"printactive",         AddOnQuestDebug.Global.PrintQuests,       2,},
+        {"printdetail",         AddOnQuestDebug.Global.PrintQuests,       3,},
         -- loading scripts into running game and execute them
-        {"lload",               BundleQuestDebug.Global.LoadScript,        true},
-        {"gload",               BundleQuestDebug.Global.LoadScript,        false},
+        {"lload",               AddOnQuestDebug.Global.LoadScript,        true},
+        {"gload",               AddOnQuestDebug.Global.LoadScript,        false},
         -- execute short lua commands
-        {"lexec",               BundleQuestDebug.Global.ExecuteCommand,    true},
-        {"gexec",               BundleQuestDebug.Global.ExecuteCommand,    false},
+        {"lexec",               AddOnQuestDebug.Global.ExecuteCommand,    true},
+        {"gexec",               AddOnQuestDebug.Global.ExecuteCommand,    false},
         -- garbage collector printouts
-        {"collectgarbage",      BundleQuestDebug.Global.CollectGarbage,},
-        {"dumpmemory",          BundleQuestDebug.Global.CountLuaLoad,},
+        {"collectgarbage",      AddOnQuestDebug.Global.CollectGarbage,},
+        {"dumpmemory",          AddOnQuestDebug.Global.CountLuaLoad,},
     }
 
     for k,v in pairs(_G) do
         if type(v) == "table" and v.Name and k == "b_"..v.Name and v.CustomFunction and not v.CustomFunction2 then
             v.CustomFunction2 = v.CustomFunction;
             v.CustomFunction = function(self, __quest_)
-                if BundleQuestDebug.Global.Data.CheckAtRun then
+                if AddOnQuestDebug.Global.Data.CheckAtRun then
                     if self.DEBUG and not self.FOUND_ERROR and self:DEBUG(__quest_) then
                         self.FOUND_ERROR = true;
                     end
@@ -192,7 +192,7 @@ function BundleQuestDebug.Global:Install()
     end
 
     if BundleQuestGeneration then
-        BundleQuestGeneration.Global.DebugQuest = BundleQuestDebug.Global.DebugQuest;
+        BundleQuestGeneration.Global.DebugQuest = AddOnQuestDebug.Global.DebugQuest;
     end
 
     self:OverwriteCreateQuests();
@@ -211,10 +211,10 @@ end
 -- @param _CheckAtRun     Prüfe Quests zur Laufzeit
 -- @param _TraceQuests    Aktiviert Questverfolgung
 -- @param _DevelopingMode Aktiviert Cheats und Konsole
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
+function AddOnQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
     if self.Data.DebugModeIsActive then
         return;
     end
@@ -240,10 +240,10 @@ end
 -- Aktiviert die Questverfolgung. Jede Statusänderung wird am Bildschirm
 -- angezeigt.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:ActivateQuestTrace()
+function AddOnQuestDebug.Global:ActivateQuestTrace()
     if self.Data.TraceQuests then
         DEBUG_EnableQuestDebugKeys();
         DEBUG_QuestTrace(true);
@@ -257,22 +257,22 @@ end
 -- <p>Die Konsole des Debug wird mit SHIFT + ^ geöffnet.</p>
 -- <p>Die Konsole bietet folgende Kommandos:</p>
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:ActivateDevelopingMode()
+function AddOnQuestDebug.Global:ActivateDevelopingMode()
     if self.Data.DevelopingMode then
-        Logic.ExecuteInLuaLocalState("BundleQuestDebug.Local:ActivateDevelopingMode()");
+        Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:ActivateDevelopingMode()");
     end
 end
 
 ---
 -- Ließt eingegebene Kommandos aus und führt entsprechende Funktionen aus.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:Parser(_Input)
+function AddOnQuestDebug.Global:Parser(_Input)
     local tokens = self:Tokenize(_Input);
     for k, v in pairs(self.Data.DebugCommands) do
         if v[1] == tokens[1] then
@@ -282,7 +282,7 @@ function BundleQuestDebug.Global:Parser(_Input)
                     tokens[i] = numb;
                 end
             end
-            v[2](BundleQuestDebug.Global, tokens, v[3]);
+            v[2](AddOnQuestDebug.Global, tokens, v[3]);
             return;
         end
     end
@@ -292,10 +292,10 @@ end
 -- Zerlegt die Eingabe in einzelne Tokens und gibt diese zurück.
 --
 -- @return Table mit Tokens
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:Tokenize(_Input)
+function AddOnQuestDebug.Global:Tokenize(_Input)
     local tokens = {};
     local rest = _Input;
     while (rest and rest:len() > 0)
@@ -319,22 +319,22 @@ end
 -- Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
 -- sein und der Speicher vollgemüllt werden.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:CollectGarbage()
+function AddOnQuestDebug.Global:CollectGarbage()
     collectgarbage();
-    Logic.ExecuteInLuaLocalState("BundleQuestDebug.Local:CollectGarbage()");
+    Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:CollectGarbage()");
 end
 
 ---
 -- Gibt die Speicherauslastung von Lua zurück.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:CountLuaLoad()
-    Logic.ExecuteInLuaLocalState("BundleQuestDebug.Local:CountLuaLoad()");
+function AddOnQuestDebug.Global:CountLuaLoad()
+    Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:CountLuaLoad()");
     local LuaLoad = collectgarbage("count");
     API.StaticNote("Global Lua Size: " ..LuaLoad)
 end
@@ -342,10 +342,10 @@ end
 ---
 -- Zeigt alle Quests nach einem Filter an.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:PrintQuests(_Arguments, _Flags)
+function AddOnQuestDebug.Global:PrintQuests(_Arguments, _Flags)
     local questText         = ""
     local counter            = 0;
 
@@ -391,7 +391,7 @@ end
 ---
 --
 --
-function BundleQuestDebug.Global:PrintDetail(_Arguments)
+function AddOnQuestDebug.Global:PrintDetail(_Arguments)
     local questText = "";
     local questID = GetQuestID(string.gsub(_Arguments[2], " ", ""));
 
@@ -431,10 +431,10 @@ end
 ---
 -- Läd ein Lua-Skript in das Enviorment.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:LoadScript(_Arguments, _Flags)
+function AddOnQuestDebug.Global:LoadScript(_Arguments, _Flags)
     if _Arguments[2] then
         if _Flags == true then
             Logic.ExecuteInLuaLocalState([[Script.Load("]].._Arguments[2]..[[")]]);
@@ -450,10 +450,10 @@ end
 ---
 -- Führt ein Lua-Kommando im Enviorment aus.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:ExecuteCommand(_Arguments, _Flags)
+function AddOnQuestDebug.Global:ExecuteCommand(_Arguments, _Flags)
     if _Arguments[2] then
         local args = "";
         for i=2,#_Arguments do
@@ -472,50 +472,50 @@ end
 ---
 -- Konsolenbefehl: Leert das Debug Window.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:Clear()
+function AddOnQuestDebug.Global:Clear()
     Logic.ExecuteInLuaLocalState("GUI.ClearNotes()");
 end
 
 ---
 -- Konsolenbefehl: Ändert die Diplomatie zwischen zwei Spielern.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:Diplomacy(_Arguments)
+function AddOnQuestDebug.Global:Diplomacy(_Arguments)
     SetDiplomacyState(_Arguments[2], _Arguments[3], _Arguments[4]);
 end
 
 ---
 --  Konsolenbefehl: Startet die Map umgehend neu.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:RestartMap()
+function AddOnQuestDebug.Global:RestartMap()
     Logic.ExecuteInLuaLocalState("Framework.RestartMap()");
 end
 
 ---
 -- Konsolenbefehl: Aktiviert/deaktiviert die geteilte Sicht zweier Spieler.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:ShareView(_Arguments)
+function AddOnQuestDebug.Global:ShareView(_Arguments)
     Logic.SetShareExplorationWithPlayerFlag(_Arguments[2], _Arguments[3], _Arguments[4]);
 end
 
 ---
 -- Konsolenbefehl: Setzt die Position eines Entity.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:SetPosition(_Arguments)
+function AddOnQuestDebug.Global:SetPosition(_Arguments)
     local entity = GetID(_Arguments[2]);
     local target = GetID(_Arguments[3]);
     local x,y,z  = Logic.EntityGetPos(target);
@@ -528,10 +528,10 @@ end
 ---
 -- Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:QuestSuccess(_QuestName, _ExactName)
+function AddOnQuestDebug.Global:QuestSuccess(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -542,10 +542,10 @@ end
 ---
 -- Lässt einen Quest, oder mehrere Quests mit ähnlichen Namen, fehlschlagen.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:QuestFailure(_QuestName, _ExactName)
+function AddOnQuestDebug.Global:QuestFailure(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -556,10 +556,10 @@ end
 ---
 -- Stoppt einen Quest, oder mehrere Quests mit ähnlichen Namen.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:QuestInterrupt(_QuestName, _ExactName)
+function AddOnQuestDebug.Global:QuestInterrupt(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -570,10 +570,10 @@ end
 ---
 -- Startet einen Quest, oder mehrere Quests mit ähnlichen Namen.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:QuestTrigger(_QuestName, _ExactName)
+function AddOnQuestDebug.Global:QuestTrigger(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -584,10 +584,10 @@ end
 ---
 -- Setzt den Quest / die Quests zurück, sodass er neu gestartet werden kann.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:QuestReset(_QuestName, _ExactName)
+function AddOnQuestDebug.Global:QuestReset(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -599,14 +599,14 @@ end
 -- Überschreibt CreateQuests, sodass Assistentenquests über das Skript erzeugt 
 -- werden um diese sinnvoll überprüfen zu können.
 --
--- @within BundleQuestDebug.Global
+-- @within AddOnQuestDebug.Global
 -- @local
 --
-function BundleQuestDebug.Global:OverwriteCreateQuests()
+function AddOnQuestDebug.Global:OverwriteCreateQuests()
     self.Data.CreateQuestsOriginal = CreateQuests;
     CreateQuests = function()
-        if not BundleQuestDebug.Global.Data.CheckAtStart then
-            BundleQuestDebug.Global.Data.CreateQuestsOriginal();
+        if not AddOnQuestDebug.Global.Data.CheckAtStart then
+            AddOnQuestDebug.Global.Data.CreateQuestsOriginal();
             return;
         end
 
@@ -653,9 +653,9 @@ end
 -- @param _Original  Referenz auf Save-Funktion
 -- @local
 --
-function BundleQuestDebug.Global.OnSaveGameLoad(_Arguments, _Original)
-    BundleQuestDebug.Global:ActivateDevelopingMode();
-    BundleQuestDebug.Global:ActivateQuestTrace();
+function AddOnQuestDebug.Global.OnSaveGameLoad(_Arguments, _Original)
+    AddOnQuestDebug.Global:ActivateDevelopingMode();
+    AddOnQuestDebug.Global:ActivateQuestTrace();
 end
 
 ---
@@ -668,8 +668,8 @@ end
 -- @param _List Liste der Quests
 -- @local
 --
-function BundleQuestDebug.Global.DebugQuest(self, _Quest)
-    if BundleQuestDebug.Global.Data.CheckAtStart then
+function AddOnQuestDebug.Global.DebugQuest(self, _Quest)
+    if AddOnQuestDebug.Global.Data.CheckAtStart then
         if _Quest.Goals then
             for i=1, #_Quest.Goals, 1 do
                 if type(_Quest.Goals[i][2]) == "table" and type(_Quest.Goals[i][2][1]) == "table" then
@@ -715,10 +715,10 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within BundleQuestDebug.Local
+-- @within AddOnQuestDebug.Local
 -- @local
 --
-function BundleQuestDebug.Local:Install()
+function AddOnQuestDebug.Local:Install()
 
 end
 
@@ -729,20 +729,20 @@ end
 -- Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
 -- sein und der Speicher vollgemüllt werden.
 --
--- @within BundleQuestDebug.Local
+-- @within AddOnQuestDebug.Local
 -- @local
 --
-function BundleQuestDebug.Local:CollectGarbage()
+function AddOnQuestDebug.Local:CollectGarbage()
     collectgarbage();
 end
 
 ---
 -- Gibt die Speicherauslastung von Lua zurück.
 --
--- @within BundleQuestDebug.Local
+-- @within AddOnQuestDebug.Local
 -- @local
 --
-function BundleQuestDebug.Local:CountLuaLoad()
+function AddOnQuestDebug.Local:CountLuaLoad()
     local LuaLoad = collectgarbage("count");
     API.StaticNote("Local Lua Size: " ..LuaLoad)
 end
@@ -751,11 +751,11 @@ end
 -- Aktiviert die Questverfolgung. Jede Statusänderung wird am Bildschirm
 -- angezeigt.
 --
--- @see BundleQuestDebug.Global:ActivateDevelopingMode
--- @within BundleQuestDebug.Local
+-- @see AddOnQuestDebug.Global:ActivateDevelopingMode
+-- @within AddOnQuestDebug.Local
 -- @local
 --
-function BundleQuestDebug.Local:ActivateDevelopingMode()
+function AddOnQuestDebug.Local:ActivateDevelopingMode()
     KeyBindings_EnableDebugMode(1);
     KeyBindings_EnableDebugMode(2);
     KeyBindings_EnableDebugMode(3);
@@ -766,23 +766,23 @@ function BundleQuestDebug.Local:ActivateDevelopingMode()
     GUI_Chat.Confirm = function()
         Input.GameMode();
         XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",0);
-        BundleQuestDebug.Local.Data.ChatBoxInput = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
+        AddOnQuestDebug.Local.Data.ChatBoxInput = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput");
         g_Chat.JustClosed = 1;
         Game.GameTimeSetFactor( GUI.GetPlayerID(), 1 );
     end
 
     QSB_DEBUG_InputBoxJob = function()
-        if not BundleQuestDebug.Local.Data.BoxShown then
+        if not AddOnQuestDebug.Local.Data.BoxShown then
             Input.ChatMode();
             Game.GameTimeSetFactor( GUI.GetPlayerID(), 0 );
             XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput", 1);
             XGUIEng.SetText("/InGame/Root/Normal/ChatInput/ChatInput", "");
             XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput");
-            BundleQuestDebug.Local.Data.BoxShown = true
-        elseif BundleQuestDebug.Local.Data.ChatBoxInput then
-            BundleQuestDebug.Local.Data.ChatBoxInput = string.gsub(BundleQuestDebug.Local.Data.ChatBoxInput,"'","\'");
-            GUI.SendScriptCommand("BundleQuestDebug.Global:Parser('"..BundleQuestDebug.Local.Data.ChatBoxInput.."')");
-            BundleQuestDebug.Local.Data.BoxShown = nil;
+            AddOnQuestDebug.Local.Data.BoxShown = true
+        elseif AddOnQuestDebug.Local.Data.ChatBoxInput then
+            AddOnQuestDebug.Local.Data.ChatBoxInput = string.gsub(AddOnQuestDebug.Local.Data.ChatBoxInput,"'","\'");
+            GUI.SendScriptCommand("AddOnQuestDebug.Global:Parser('"..AddOnQuestDebug.Local.Data.ChatBoxInput.."')");
+            AddOnQuestDebug.Local.Data.BoxShown = nil;
             return true;
         end
     end
@@ -795,5 +795,5 @@ function BundleQuestDebug.Local:ActivateDevelopingMode()
     );
 end
 
-Core:RegisterBundle("BundleQuestDebug");
+Core:RegisterBundle("AddOnQuestDebug");
 
