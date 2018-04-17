@@ -6,12 +6,12 @@ package twa.symfonia.config.xml;
  *
  */
 @SuppressWarnings("serial")
-public class BundleInfoReaderException extends Exception
+public class BundleInfoMapperException extends Exception
 {
     /**
      * {@inheritDoc}
      */
-    public BundleInfoReaderException()
+    public BundleInfoMapperException()
     {
         super();
     }
@@ -19,7 +19,7 @@ public class BundleInfoReaderException extends Exception
     /**
      * {@inheritDoc}
      */
-    public BundleInfoReaderException(final String message, final Throwable cause, final boolean enableSuppression,
+    public BundleInfoMapperException(final String message, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace)
     {
         super(message, cause, enableSuppression, writableStackTrace);
@@ -28,7 +28,7 @@ public class BundleInfoReaderException extends Exception
     /**
      * {@inheritDoc}
      */
-    public BundleInfoReaderException(final String message, final Throwable cause)
+    public BundleInfoMapperException(final String message, final Throwable cause)
     {
         super(message, cause);
     }
@@ -36,7 +36,7 @@ public class BundleInfoReaderException extends Exception
     /**
      * {@inheritDoc}
      */
-    public BundleInfoReaderException(final String message)
+    public BundleInfoMapperException(final String message)
     {
         super(message);
     }
@@ -44,7 +44,7 @@ public class BundleInfoReaderException extends Exception
     /**
      * {@inheritDoc}
      */
-    public BundleInfoReaderException(final Throwable cause)
+    public BundleInfoMapperException(final Throwable cause)
     {
         super(cause);
     }
