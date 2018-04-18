@@ -1,9 +1,9 @@
 package twa.symfonia.config.xml;
 
 /**
+ * Exception, falls das Mappen von Bundle-Informationen fehlschlägt.
  * 
- * @author mheller
- *
+ * @author totalwarANGEl
  */
 @SuppressWarnings("serial")
 public class BundleInfoMapperException extends Exception
@@ -14,16 +14,16 @@ public class BundleInfoMapperException extends Exception
      */
     public BundleInfoMapperException()
     {
-	super();
+        super();
     }
 
     /**
      * {@inheritDoc}
      */
     public BundleInfoMapperException(final String message, final Throwable cause, final boolean enableSuppression,
-	    final boolean writableStackTrace)
+            final boolean writableStackTrace)
     {
-	super(message, cause, enableSuppression, writableStackTrace);
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
     /**
@@ -31,7 +31,7 @@ public class BundleInfoMapperException extends Exception
      */
     public BundleInfoMapperException(final String message, final Throwable cause)
     {
-	super(message, cause);
+        super(message, cause);
     }
 
     /**
@@ -39,7 +39,7 @@ public class BundleInfoMapperException extends Exception
      */
     public BundleInfoMapperException(final String message)
     {
-	super(message);
+        super(message);
     }
 
     /**
@@ -47,6 +47,6 @@ public class BundleInfoMapperException extends Exception
      */
     public BundleInfoMapperException(final Throwable cause)
     {
-	super(cause);
+        super(cause);
     }
 }

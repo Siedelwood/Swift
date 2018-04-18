@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -194,7 +193,9 @@ public class SymfoniaJBundleScrollPane extends JScrollPane
     {
         for (int i = 0; i < bundles.size(); i++)
         {
-            bundles.get(i).setChecked(true);
+            if (bundles.get(i).isUseable()) {
+                bundles.get(i).setChecked(true);
+            }
         }
     }
 
@@ -207,33 +208,5 @@ public class SymfoniaJBundleScrollPane extends JScrollPane
         {
             bundles.get(i).setChecked(false);
         }
-    }
-
-    /**
-     * Test
-     * 
-     * @param args
-     */
-    public static void main(final String[] args)
-    {
-        final List<SymfoniaJBundle> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++)
-        {
-            list.add(new SymfoniaJBundle("foo", "Bockwurst", "Das ist ein Test", 700, 75));
-        }
-        final SymfoniaJBundleScrollPane scroll = new SymfoniaJBundleScrollPane(500, 500, list);
-        scroll.setLocation(50, 50);
-
-        final JFrame f = new JFrame();
-        f.setBounds(0, 0, 700, 700);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        final JPanel p = new JPanel(null);
-        p.setBounds(0, 0, 700, 700);
-        p.add(scroll);
-        f.add(p);
-
-        p.setVisible(true);
-        f.setVisible(true);
     }
 }

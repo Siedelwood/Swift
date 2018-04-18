@@ -95,7 +95,6 @@ public class OptionSelectionWindow extends AbstractWindow
         // QSB zusammenstellen
         if (aE.getSource() == options.get(0))
         {
-            System.out.println("Show bundle selection");
             ViewController.getInstance().getWindow("BundleSelectionWindow").show();
             hide();
         }

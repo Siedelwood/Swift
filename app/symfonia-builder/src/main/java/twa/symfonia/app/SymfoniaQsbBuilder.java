@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import twa.symfonia.config.Configuration;
 import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.config.xml.XmlReaderStringTableImpl;
+import twa.symfonia.controller.ApplicationException;
 import twa.symfonia.controller.ViewController;
 import twa.symfonia.service.BundleTileBuilderService;
 import twa.symfonia.view.component.SymfoniaJAddOn;
@@ -17,6 +18,7 @@ import twa.symfonia.view.window.AddOnSelectionWindow;
 import twa.symfonia.view.window.BundleSelectionWindow;
 import twa.symfonia.view.window.OptionSelectionWindow;
 import twa.symfonia.view.window.SaveBaseScriptsWindow;
+import twa.symfonia.view.window.SaveQsbWindow;
 import twa.symfonia.view.window.SelfUpdateWindow;
 import twa.symfonia.view.window.WelcomeWindow;
 
@@ -53,10 +55,11 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      * Baut die Fenster der grafischen Oberfläche.
      * 
      * @param debug Debug mode active
-     * @throws Exception
+     * @throws ApplicationException 
      */
-    public void build(final boolean debug) throws Exception
+    public void build(final boolean debug) throws ApplicationException
     {
+        try {
         final Dimension size = Configuration.getDimension("defaults.window.size");
         final BundleTileBuilderService bundleListBuilder = new BundleTileBuilderService();
         String bundlesSourcePath = Configuration.getString("value.path.qsb.bundles");
@@ -86,6 +89,10 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
         // Beispiele-Speichern-Fenster hinzufügen
         controller.addWindow("SaveBaseScriptsWindow", new SaveBaseScriptsWindow(size.width, size.height, reader));
         frame.add(controller.getWindow("SaveBaseScriptsWindow").getRootPane());
+        
+        // QSB-Speichern-Fenster hinzufügen
+        controller.addWindow("SaveQsbWindow", new SaveQsbWindow(size.width, size.height, reader));
+        frame.add(controller.getWindow("SaveQsbWindow").getRootPane());
 
         // Bundle-Auswahl-Fenster hinzufügen
         if (debug == true)
@@ -113,6 +120,10 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
         // Fenster anzeigen
         controller.getWindow("WelcomeWindow").show();
         frame.setVisible(true);
+        }
+        catch (final Exception e) {
+            throw new ApplicationException(e);
+        }
     }
 
     /**
@@ -129,9 +140,9 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      * Main
      * 
      * @param args Argumente
-     * @throws Exception
+     * @throws ApplicationException
      */
-    public static void main(final String[] args) throws Exception
+    public static void main(final String[] args) throws ApplicationException
     {
         final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder(ViewController.getInstance());
         boolean debug = false;

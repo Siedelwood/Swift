@@ -24,8 +24,8 @@ public class SymfoniaJAddOn extends SymfoniaJBundle
     protected List<String> dependencies;
 
     /**
-     * Erzeugt eine Bundle-Kachel mit einem bestimmten Titel und einer
-     * bestimmten Größe.
+     * Erzeugt eine Bundle-Kachel mit einem bestimmten Titel und einer bestimmten
+     * Größe.
      * 
      * @param id Id des Bundle (-> Name des Folders)
      * @param title Titel des Bundle
@@ -36,14 +36,14 @@ public class SymfoniaJAddOn extends SymfoniaJBundle
      * @param aL Action listener
      */
     public SymfoniaJAddOn(final String id, final String title, final String text, final List<String> dependencies,
-	    final int x, final int y, final ActionListener aL)
+            final int x, final int y, final ActionListener aL)
     {
-	super(id, title, text, x, y);
-	super.applyConfiguration();
-	this.id = id;
-	this.dependencies = dependencies;
-	setSize(x, y);
-	createComponents(title, text, x, y, aL);
+        super(id, title, text, x, y);
+        super.applyConfiguration();
+        this.id = id;
+        this.dependencies = dependencies;
+        setSize(x, y);
+        createComponents(title, text, x, y, aL);
     }
 
     /**
@@ -55,15 +55,19 @@ public class SymfoniaJAddOn extends SymfoniaJBundle
      * @param y Höhe
      * @param aL Action listener
      */
-    protected void createComponents(final String title, final String text, final int x, final int y,
-	    final ActionListener aL)
+    protected void createComponents(
+        final String title,
+        final String text,
+        final int x,
+        final int y,
+        final ActionListener aL)
     {
-	this.checkbox.addActionListener(aL);
-	final int bw = Configuration.getInteger("defaults.border.width");
-	final Color bc = Configuration.getColor("defaults.colors.border.orange");
-	this.checkbox.setBackground(Configuration.getColor("defaults.colors.bg.orange"));
-	setBackground(Configuration.getColor("defaults.colors.bg.orange"));
-	setBorder(BorderFactory.createLineBorder(bc, bw));
+        this.checkbox.addActionListener(aL);
+        final int bw = Configuration.getInteger("defaults.border.width");
+        final Color bc = Configuration.getColor("defaults.colors.border.orange");
+        this.checkbox.setBackground(Configuration.getColor("defaults.colors.bg.orange"));
+        setBackground(Configuration.getColor("defaults.colors.bg.orange"));
+        setBorder(BorderFactory.createLineBorder(bc, bw));
     }
 
     /**
@@ -73,7 +77,7 @@ public class SymfoniaJAddOn extends SymfoniaJBundle
      */
     public List<String> getDependencies()
     {
-	return dependencies;
+        return dependencies;
     }
 
     /**
@@ -84,13 +88,13 @@ public class SymfoniaJAddOn extends SymfoniaJBundle
      */
     public boolean dependOn(final String id)
     {
-	for (int i = 0; i < dependencies.size(); i++)
-	{
-	    if (dependencies.get(i).equals(id))
-	    {
-		return true;
-	    }
-	}
-	return false;
+        for (int i = 0; i < dependencies.size(); i++)
+        {
+            if (dependencies.get(i).equals(id))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

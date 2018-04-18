@@ -40,8 +40,8 @@ public class SymfoniaJBundle extends SymfoniaJPanelGray
     protected JCheckBox checkbox;
 
     /**
-     * Erzeugt eine Bundle-Kachel mit einem bestimmten Titel und einer
-     * bestimmten Größe.
+     * Erzeugt eine Bundle-Kachel mit einem bestimmten Titel und einer bestimmten
+     * Größe.
      * 
      * @param id Id des Bundle (-> Name des Folders)
      * @param title Titel des Bundle
@@ -51,11 +51,11 @@ public class SymfoniaJBundle extends SymfoniaJPanelGray
      */
     public SymfoniaJBundle(final String id, final String title, final String text, final int x, final int y)
     {
-	super(null);
-	super.applyConfiguration();
-	this.id = id;
-	setSize(x, y);
-	createComponents(title, text, x, y);
+        super(null);
+        super.applyConfiguration();
+        this.id = id;
+        setSize(x, y);
+        createComponents(title, text, x, y);
     }
 
     /**
@@ -68,26 +68,26 @@ public class SymfoniaJBundle extends SymfoniaJPanelGray
      */
     protected void createComponents(final String title, final String text, final int x, final int y)
     {
-	this.title = new JLabel("<html><b>" + title + "</b></html>");
-	this.title.setBounds(40, 5, x - 80, 20);
-	this.title.setVisible(true);
-	add(this.title);
+        this.title = new JLabel("<html><b>" + title + "</b></html>");
+        this.title.setBounds(40, 5, x - 80, 20);
+        this.title.setVisible(true);
+        add(this.title);
 
-	this.text = new JLabel("<html><p>" + text + "</p></html>");
-	this.text.setBounds(40, 25, x - 80, 50);
-	this.text.setVisible(true);
-	this.text.setVerticalAlignment(JLabel.TOP);
-	this.text.setVerticalTextPosition(JLabel.TOP);
-	Font font = this.text.getFont();
-	font = font.deriveFont(Collections.singletonMap(TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
-	this.text.setFont(font);
-	add(this.text);
+        this.text = new JLabel("<html><p>" + text + "</p></html>");
+        this.text.setBounds(40, 25, x - 80, 50);
+        this.text.setVisible(true);
+        this.text.setVerticalAlignment(JLabel.TOP);
+        this.text.setVerticalTextPosition(JLabel.TOP);
+        Font font = this.text.getFont();
+        font = font.deriveFont(Collections.singletonMap(TextAttribute.WEIGHT, TextAttribute.WEIGHT_SEMIBOLD));
+        this.text.setFont(font);
+        add(this.text);
 
-	this.checkbox = new JCheckBox();
-	this.checkbox.setBounds(10, 5, 20, 20);
-	this.checkbox.setVisible(true);
-	this.checkbox.setBackground(Configuration.getColor("defaults.colors.bg.gray"));
-	add(this.checkbox);
+        this.checkbox = new JCheckBox();
+        this.checkbox.setBounds(10, 5, 20, 20);
+        this.checkbox.setVisible(true);
+        this.checkbox.setBackground(Configuration.getColor("defaults.colors.bg.gray"));
+        add(this.checkbox);
     }
 
     /**
@@ -97,7 +97,7 @@ public class SymfoniaJBundle extends SymfoniaJPanelGray
      */
     public String getID()
     {
-	return id;
+        return id;
     }
 
     /**
@@ -107,7 +107,7 @@ public class SymfoniaJBundle extends SymfoniaJPanelGray
      */
     public void setChecked(final boolean checked)
     {
-	checkbox.setSelected(checked);
+        checkbox.setSelected(checked);
     }
 
     /**
@@ -117,20 +117,30 @@ public class SymfoniaJBundle extends SymfoniaJPanelGray
      */
     public boolean isChecked()
     {
-	return checkbox.isSelected();
+        return checkbox.isSelected();
     }
 
     /**
-     * Setzt das Disabled Flag des Bundles.
+     * Setzt das Bundle als auswählbar.
      * 
-     * @param flag Flag
+     * @param flag Auswählbar
      */
-    public void setDisabled(final boolean flag)
+    public void setUsable(final boolean flag)
     {
-	checkbox.setEnabled(flag);
-	if (flag == false)
-	{
-	    checkbox.setSelected(false);
-	}
+        if (flag == false)
+        {
+            checkbox.setSelected(false);
+        }
+        checkbox.setEnabled(flag);
+    }
+
+    /**
+     * Gibt zurück, ob das Bundle auswählbar ist.
+     * 
+     * @return Auswählbar
+     */
+    public boolean isUseable()
+    {
+        return checkbox.isEnabled();
     }
 }

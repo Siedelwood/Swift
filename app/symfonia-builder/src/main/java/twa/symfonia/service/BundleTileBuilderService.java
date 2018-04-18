@@ -26,21 +26,20 @@ public class BundleTileBuilderService
      */
     public List<SymfoniaJBundle> prepareBundles(final String path)
     {
-	final List<SymfoniaJBundle> bundleList = new ArrayList();
-	try
-	{
-	    final BundleInfoMapper mapper = new BundleInfoMapper();
-	    final List<BundleModel> bundleModels = mapper.parseFolder(path);
-	    for (final BundleModel bM : bundleModels)
-	    {
-		bundleList.add(new SymfoniaJBundle(bM.getId(), bM.getName(), bM.getDescription(), 700, 64));
-	    }
-	}
-	catch (final Exception e)
-	{
-	    e.printStackTrace();
-	}
-	return bundleList;
+        final List<SymfoniaJBundle> bundleList = new ArrayList<>();
+        try
+        {
+            final BundleInfoMapper mapper = new BundleInfoMapper();
+            final List<BundleModel> bundleModels = mapper.parseFolder(path);
+            for (final BundleModel bM : bundleModels)
+            {
+                bundleList.add(new SymfoniaJBundle(bM.getId(), bM.getName(), bM.getDescription(), 700, 64));
+            }
+        } catch (final Exception e)
+        {
+            e.printStackTrace();
+        }
+        return bundleList;
     }
 
     /**
@@ -52,21 +51,20 @@ public class BundleTileBuilderService
      */
     public List<SymfoniaJAddOn> prepareAddOns(final String path, final ActionListener actionListener)
     {
-	final List<SymfoniaJAddOn> bundleList = new ArrayList();
-	try
-	{
-	    final BundleInfoMapper mapper = new BundleInfoMapper();
-	    final List<BundleModel> bundleModels = mapper.parseFolder(path);
-	    for (final BundleModel bM : bundleModels)
-	    {
-		bundleList.add(new SymfoniaJAddOn(bM.getId(), bM.getName(), bM.getDescription(), bM.getDependencies(),
-			700, 64, actionListener));
-	    }
-	}
-	catch (final Exception e)
-	{
-	    e.printStackTrace();
-	}
-	return bundleList;
+        final List<SymfoniaJAddOn> bundleList = new ArrayList<>();
+        try
+        {
+            final BundleInfoMapper mapper = new BundleInfoMapper();
+            final List<BundleModel> bundleModels = mapper.parseFolder(path);
+            for (final BundleModel bM : bundleModels)
+            {
+                bundleList.add(new SymfoniaJAddOn(bM.getId(), bM.getName(), bM.getDescription(), bM.getDependencies(),
+                        700, 80, actionListener));
+            }
+        } catch (final Exception e)
+        {
+            e.printStackTrace();
+        }
+        return bundleList;
     }
 }

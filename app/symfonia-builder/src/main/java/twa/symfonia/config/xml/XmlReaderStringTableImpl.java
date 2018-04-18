@@ -18,8 +18,9 @@ import org.w3c.dom.NodeList;
 import twa.symfonia.app.SymfoniaQsbBuilder;
 
 /**
+ * Implementation eines XML-Readers für String Tables wie aus dem Spiel bekannt.
  * 
- * @author mheller
+ * @author totalwarANGEL
  *
  */
 public class XmlReaderStringTableImpl implements XmlReaderInterface
@@ -134,9 +135,8 @@ public class XmlReaderStringTableImpl implements XmlReaderInterface
             final String fileName = key.substring(0, FileIndex);
             final String id = key.substring(IdIndex);
             openXml("config/text/" + fileName + ".xml");
-            
+
             // Text ermitteln
-            System.out.println(id);
             final String xPathString = "/root/text[@id='" + id + "']/text()";
             final XPathFactory xPathfactory = XPathFactory.newInstance();
             final XPath xpath = xPathfactory.newXPath();

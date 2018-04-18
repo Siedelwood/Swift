@@ -193,7 +193,9 @@ public class SymfoniaJAddOnScrollPane extends JScrollPane
     {
         for (int i = 0; i < bundles.size(); i++)
         {
-            bundles.get(i).setChecked(true);
+            if (bundles.get(i).isUseable()) {
+                bundles.get(i).setChecked(true);
+            }
         }
     }
 

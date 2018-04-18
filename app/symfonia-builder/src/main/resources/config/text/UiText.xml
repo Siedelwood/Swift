@@ -24,6 +24,7 @@
     <text id="CaptionSelectAddOnWindow">AddOns auswählen</text>
     <text id="CaptionExamplesWindow">Beispiele kopieren</text>
     <text id="CaptionBaseScriptWindow">Basisskripte kopieren</text>
+    <text id="CaptionSaveQsbWindow">QSB fertigstellen</text>
     
     <!-- Descriptions -->
     
@@ -34,9 +35,11 @@
     <text id="DescriptionSelectAddOnWindow">Wähle AddOns aus, die die QSB ergänzen. Die Auswahl hängt von den selektierten Bundles ab.</text>
     <text id="DescriptionExamplesWindow">Speichere eine Sammlung von Skriptbeispielen in einem ausgewählten Ordner. Die Beispiele zeigen Dir, wie einige der komplexeren Features der QSB richtig zu bedienen sind.</text>
     <text id="DescriptionBaseScriptWindow">Speichere die Basisskripte in einem ausgewählten Ordner. Die Basisskripte werden benötigt, damit die QSB ausgeführt werden kann. Die normalen Basisskripte, die der Editor vorgibt, reichen hierfür nicht aus! Die Skripte müssen über den Expertenmodus in die Map importiert werden.</text>
+    <text id="DescriptionSaveQsbWindow">Wähle ein Verzeichnis aus, in das die QSB gespeichert werden soll!</text>
     
     <!-- Labels -->
     
     <text id="CheckoutMaster">Aktualisiere auf ein stabiles Release.</text>
     <text id="CheckoutDevelopment">Aktualisiere auf den aktuellen Snapshot.</text>
+    <text id="SaveBaseScripts">Basisskripte hinzufügen</text>
 </root>

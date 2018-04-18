@@ -2,7 +2,7 @@
 <root>
     <id>addonquestdebug</id>
     <name>Quest Debug</name>
-    <description>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</description>
+    <description><![CDATA[Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.<br><b>benötigt:</b> Questerzeugung]]></description>
 
     <dependencies>
         <dependency>bundlequestgeneration</dependency>

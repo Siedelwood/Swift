@@ -1,8 +1,9 @@
 package twa.symfonia.config.xml;
 
 /**
+ * Exception, falls beim Ermitteln von String Tables Fehler auftreten.
  * 
- * @author mheller
+ * @author totalwarANGEL
  *
  */
 @SuppressWarnings("serial")
@@ -48,5 +49,4 @@ public class XmlReaderException extends Exception
     {
         super(cause);
     }
-
 }

@@ -15,9 +15,12 @@ import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.controller.ViewController;
 import twa.symfonia.view.component.SymfoniaJAddOn;
 import twa.symfonia.view.component.SymfoniaJAddOnScrollPane;
+import twa.symfonia.view.component.SymfoniaJBundle;
+import twa.symfonia.view.component.SymfoniaJBundleScrollPane;
 import twa.symfonia.view.component.SymfoniaJButton;
 
 /**
+ * Fenster zur Auswahl der Addons zu selektierten Bundles.
  * 
  * @author mheller
  *
@@ -25,55 +28,56 @@ import twa.symfonia.view.component.SymfoniaJButton;
 public class AddOnSelectionWindow extends AbstractWindow
 {
     /**
-     * 
+     * Liste der Bundles
      */
     private List<SymfoniaJAddOn> bundleList;
 
     /**
-     * 
+     * Scrollbox der Bundles
      */
     private SymfoniaJAddOnScrollPane bundleScrollPane;
 
     /**
-     * 
+     * Dimension des Fensters
      */
-    private final Dimension size;
+    protected final Dimension size;
 
     /**
-     * 
+     * Back Button
      */
-    private final SymfoniaJButton back;
+    protected final SymfoniaJButton back;
 
     /**
-     * 
+     * Next Button
      */
-    private final SymfoniaJButton next;
+    protected final SymfoniaJButton next;
 
     /**
-     * 
+     * Überschrift
      */
-    private final JXLabel title;
+    protected final JXLabel title;
 
     /**
-     * 
+     * Beschreibung
      */
-    private final JXLabel text;
+    protected final JXLabel text;
 
     /**
-     * 
+     * Select all Button
      */
-    private final SymfoniaJButton select;
+    protected final SymfoniaJButton select;
 
     /**
-     * 
+     * Deselect all button
      */
-    private final SymfoniaJButton deselect;
+    protected final SymfoniaJButton deselect;
 
     /**
+     * Constructor
      * 
-     * @param w
-     * @param h
-     * @throws WindowException 
+     * @param w Breite
+     * @param h Höhe
+     * @throws WindowException
      */
     public AddOnSelectionWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
@@ -139,6 +143,67 @@ public class AddOnSelectionWindow extends AbstractWindow
     }
 
     /**
+     * Behandelt die Abhängigkeiten der Addons. Addons mit unbefriedigten
+     * Abhängigkeiten werden deaktiviert.
+     */
+    private void disableUnsatisfiedAddOns()
+    {
+        for (final SymfoniaJAddOn a : getBundleList())
+        {
+            final BundleSelectionWindow bundleSelection = (BundleSelectionWindow) ViewController.getInstance()
+                    .getWindow("BundleSelectionWindow");
+            final SymfoniaJBundleScrollPane bundleScrollBox = bundleSelection.getBundleScrollPane();
+            boolean dependenciesSatisfied = true;
+
+            final List<String> dependencies = a.getDependencies();
+            for (final String d : dependencies)
+            {
+                // Behandele Bundles
+                final SymfoniaJBundle bundle = bundleScrollBox.getBundle(d);
+                if (bundle != null && (bundle.isEnabled() == false || bundle.isChecked() == false))
+                {
+                    dependenciesSatisfied = false;
+                }
+
+                // Behandle Addons
+                final SymfoniaJAddOn addon = bundleScrollPane.getBundle(d);
+                if (addon != null && (addon.isEnabled() == false || addon.isChecked() == false))
+                {
+                    dependenciesSatisfied = false;
+                }
+            }
+
+            if (!dependenciesSatisfied)
+            {
+                bundleScrollPane.getBundle(a.getID()).setUsable(false);
+            } else
+            {
+                bundleScrollPane.getBundle(a.getID()).setUsable(true);
+            }
+        }
+    }
+
+    /**
+     * Gibt die Liste der Bundles zurück.
+     * 
+     * @return Liste der Bundles
+     */
+    public List<SymfoniaJAddOn> getBundleList()
+    {
+        return bundleList;
+    }
+
+    /**
+     * Setzt die Liste der genutzten Bundles.
+     * 
+     * @param bundleList Liste der Bundles
+     */
+    public void setBundleList(final List<SymfoniaJAddOn> bundleList)
+    {
+        this.bundleList = bundleList;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -149,25 +214,9 @@ public class AddOnSelectionWindow extends AbstractWindow
         bundleScrollPane.setVisible(true);
         getRootPane().add(bundleScrollPane);
 
+        disableUnsatisfiedAddOns();
+
         getRootPane().setVisible(true);
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public List<SymfoniaJAddOn> getBundleList()
-    {
-        return bundleList;
-    }
-
-    /**
-     * 
-     * @param bundleList
-     */
-    public void setBundleList(final List<SymfoniaJAddOn> bundleList)
-    {
-        this.bundleList = bundleList;
     }
 
     /**
@@ -187,27 +236,29 @@ public class AddOnSelectionWindow extends AbstractWindow
         // Weiter
         else if (aE.getSource() == next)
         {
-            System.out.println("Display save qsb window");
+            ViewController.getInstance().getWindow("SaveQsbWindow").show();
+            bundleScrollPane.setVisible(false);
+            hide();
         }
 
         // Alle auswählen
         else if (aE.getSource() == select)
         {
-            System.out.println("Select all");
             bundleScrollPane.selectAll();
+            disableUnsatisfiedAddOns();
         }
 
         // Alle abwählen
         else if (aE.getSource() == deselect)
         {
-            System.out.println("Deselect all");
             bundleScrollPane.deselectAll();
+            disableUnsatisfiedAddOns();
         }
 
         // Checkboxen
         else
         {
-            System.out.println("Checkbox state changed");
+            disableUnsatisfiedAddOns();
         }
     }
 

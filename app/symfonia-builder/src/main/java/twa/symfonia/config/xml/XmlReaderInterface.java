@@ -3,6 +3,12 @@ package twa.symfonia.config.xml;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * Interface für einen XML-Reader.
+ * 
+ * @author totalwarANGEL
+ *
+ */
 public interface XmlReaderInterface
 {
     /**

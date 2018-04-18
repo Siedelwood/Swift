@@ -18,6 +18,7 @@ import twa.symfonia.view.component.SymfoniaJBundleScrollPane;
 import twa.symfonia.view.component.SymfoniaJButton;
 
 /**
+ * Fenster zur Auswahl der Kernfunktionen der QSB.
  * 
  * @author mheller
  *
@@ -25,55 +26,56 @@ import twa.symfonia.view.component.SymfoniaJButton;
 public class BundleSelectionWindow extends AbstractWindow
 {
     /**
-     * 
+     * Liste der Bundles
      */
     private List<SymfoniaJBundle> bundleList;
 
     /**
-     * 
+     * Scrollbox der Bundles
      */
     private SymfoniaJBundleScrollPane bundleScrollPane;
 
     /**
-     * 
+     * Dimension des Fensters
      */
-    private final Dimension size;
+    protected final Dimension size;
 
     /**
-     * 
+     * Back Button
      */
-    private final SymfoniaJButton back;
+    protected final SymfoniaJButton back;
 
     /**
-     * 
+     * Next Button
      */
-    private final SymfoniaJButton next;
+    protected final SymfoniaJButton next;
 
     /**
-     * 
+     * Überschrift
      */
-    private final JXLabel title;
+    protected final JXLabel title;
 
     /**
-     * 
+     * Beschreibung
      */
-    private final JXLabel text;
+    protected final JXLabel text;
 
     /**
-     * 
+     * Select all Button
      */
-    private final SymfoniaJButton select;
+    protected final SymfoniaJButton select;
 
     /**
-     * 
+     * Deselect all button
      */
-    private final SymfoniaJButton deselect;
+    protected final SymfoniaJButton deselect;
 
     /**
+     * Constructor
      * 
-     * @param w
-     * @param h
-     * @throws WindowException 
+     * @param w Breite
+     * @param h Höhe
+     * @throws WindowException
      */
     public BundleSelectionWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
@@ -139,6 +141,36 @@ public class BundleSelectionWindow extends AbstractWindow
     }
 
     /**
+     * Gibt die Liste der Bundles zurück.
+     * 
+     * @return Liste der Bundle
+     */
+    public List<SymfoniaJBundle> getBundleList()
+    {
+        return bundleList;
+    }
+
+    /**
+     * Gibt die Scrollbox zurück.
+     * 
+     * @return Scrollbox
+     */
+    public SymfoniaJBundleScrollPane getBundleScrollPane()
+    {
+        return bundleScrollPane;
+    }
+
+    /**
+     * Setzt die Liste der bekannten Bundles.
+     * 
+     * @param bundleList Liste der Bundles
+     */
+    public void setBundleList(final List<SymfoniaJBundle> bundleList)
+    {
+        this.bundleList = bundleList;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -150,24 +182,6 @@ public class BundleSelectionWindow extends AbstractWindow
         getRootPane().add(bundleScrollPane);
 
         getRootPane().setVisible(true);
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public List<SymfoniaJBundle> getBundleList()
-    {
-        return bundleList;
-    }
-
-    /**
-     * 
-     * @param bundleList
-     */
-    public void setBundleList(final List<SymfoniaJBundle> bundleList)
-    {
-        this.bundleList = bundleList;
     }
 
     /**
@@ -187,7 +201,6 @@ public class BundleSelectionWindow extends AbstractWindow
         // Weiter
         if (aE.getSource() == next)
         {
-            System.out.println("Display addon selection");
             ViewController.getInstance().getWindow("AddOnSelectionWindow").show();
             bundleScrollPane.setVisible(false);
             hide();
@@ -196,14 +209,12 @@ public class BundleSelectionWindow extends AbstractWindow
         // Alle auswählen
         if (aE.getSource() == select)
         {
-            System.out.println("Select all");
             bundleScrollPane.selectAll();
         }
 
         // Alle abwählen
         if (aE.getSource() == deselect)
         {
-            System.out.println("Deselect all");
             bundleScrollPane.deselectAll();
         }
     }
