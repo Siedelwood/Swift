@@ -38,68 +38,57 @@ public class XmlReaderStringTableImpl implements XmlReaderInterface
     }
 
     /**
-     * Erzeugt eine Instanz des Readers und öffnet die XML-Datei.
-     * 
-     * @param path Path to XML-File
-     * @throws XmlReaderException
+     * {@inheritDoc}
      */
-    public XmlReaderStringTableImpl(final String path) throws XmlReaderException
+    @Override
+    public String getString(final String key) throws XmlReaderException
     {
-        openXml(path);
+        return (String) xPath(key, XPathConstants.STRING);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getString(final String xPath) throws XmlReaderException
+    public Node getNode(final String key) throws XmlReaderException
     {
-        return (String) xPath(xPath, XPathConstants.STRING);
+        return (Node) xPath(key, XPathConstants.NODE);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Node getNode(final String xPath) throws XmlReaderException
+    public NodeList getNodeSet(final String key) throws XmlReaderException
     {
-        return (Node) xPath(xPath, XPathConstants.NODE);
+        return (NodeList) xPath(key, XPathConstants.NODESET);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public NodeList getNodeSet(final String xPath) throws XmlReaderException
+    public boolean getBoolean(final String key) throws XmlReaderException
     {
-        return (NodeList) xPath(xPath, XPathConstants.NODESET);
+        return (boolean) xPath(key, XPathConstants.BOOLEAN);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean getBoolean(final String xPath) throws XmlReaderException
+    public double getDouble(final String key) throws XmlReaderException
     {
-        return (boolean) xPath(xPath, XPathConstants.BOOLEAN);
+        return (double) xPath(key, XPathConstants.NUMBER);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public double getDouble(final String xPath) throws XmlReaderException
+    public int getInteger(final String key) throws XmlReaderException
     {
-        return (double) xPath(xPath, XPathConstants.NUMBER);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getInteger(final String xPath) throws XmlReaderException
-    {
-        return (int) xPath(xPath, XPathConstants.NUMBER);
+        return (int) xPath(key, XPathConstants.NUMBER);
     }
 
     /**
@@ -129,19 +118,29 @@ public class XmlReaderStringTableImpl implements XmlReaderInterface
      * Wendet einen XPath auf das übergebene XML-Dokument an und gibt das Ergebnis
      * zurück.
      * 
-     * @param xPath XPath
+     * @param key Suchpfad
      * @param type Rückgabetyp
      * @return Ergebnis des XPath
      * @throws XmlReaderException
      */
-    private Object xPath(final String xPath, final QName type) throws XmlReaderException
+    private Object xPath(final String key, final QName type) throws XmlReaderException
     {
         Object nodes = null;
         try
         {
+            // Datei und Key ermitteln
+            final int FileIndex = key.indexOf("/");
+            final int IdIndex = key.indexOf("/") + 1;
+            final String fileName = key.substring(0, FileIndex);
+            final String id = key.substring(IdIndex);
+            openXml("config/text/" + fileName + ".xml");
+            
+            // Text ermitteln
+            System.out.println(id);
+            final String xPathString = "/root/text[@id='" + id + "']/text()";
             final XPathFactory xPathfactory = XPathFactory.newInstance();
             final XPath xpath = xPathfactory.newXPath();
-            final XPathExpression expr = xpath.compile(xPath);
+            final XPathExpression expr = xpath.compile(xPathString);
             nodes = expr.evaluate(xmlDocument, type);
         } catch (final Exception e)
         {

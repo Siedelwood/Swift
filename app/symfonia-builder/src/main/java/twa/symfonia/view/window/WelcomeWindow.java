@@ -51,9 +51,9 @@ public class WelcomeWindow extends AbstractWindow
 
         try
         {
-            final String welcomeTitle = reader.getString("windows/window[@id='welcome']/label[@id='caption']/text()");
-            final String welcomeText = reader.getString("windows/window[@id='welcome']/label[@id='description']/text()");
-            final String button = reader.getString("windows/window[@id='welcome']/button[@id='next']/text()");
+            final String welcomeTitle = reader.getString("UiText/CaptionWelcomeWindow");
+            final String welcomeText = reader.getString("UiText/DescriptionWelcomeWindow");
+            final String button = reader.getString("UiText/ButtonNext");
 
             title = new JLabel(welcomeTitle);
             title.setHorizontalAlignment(SwingConstants.CENTER);

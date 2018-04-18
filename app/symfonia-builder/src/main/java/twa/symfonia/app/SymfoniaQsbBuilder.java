@@ -69,7 +69,7 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        final XmlReaderInterface reader = new XmlReaderStringTableImpl("config/windows.xml");
+        final XmlReaderInterface reader = new XmlReaderStringTableImpl();
         
         // Willkommensfenster hinzufügen
         controller.addWindow("WelcomeWindow", new WelcomeWindow(size.width, size.height, reader));
