@@ -11,6 +11,7 @@ import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
+import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.controller.ViewController;
 import twa.symfonia.view.component.SymfoniaJAddOn;
 import twa.symfonia.view.component.SymfoniaJAddOnScrollPane;
@@ -52,9 +53,9 @@ public class AddOnSelectionWindow extends AbstractWindow
      * @param w
      * @param h
      */
-    public AddOnSelectionWindow(final int w, final int h)
+    public AddOnSelectionWindow(final int w, final int h, final XmlReaderInterface reader)
     {
-        super(w, h);
+        super(w, h, reader);
         size = new Dimension(w, h);
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");

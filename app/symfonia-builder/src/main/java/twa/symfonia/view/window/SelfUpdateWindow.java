@@ -9,6 +9,7 @@ import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
+import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.controller.ViewController;
 import twa.symfonia.view.component.SymfoniaJButton;
 
@@ -56,8 +57,8 @@ public class SelfUpdateWindow extends AbstractWindow {
     /**
      * {@inheritDoc}
      */
-    public SelfUpdateWindow(final int w, final int h) {
-        super(w, h);
+    public SelfUpdateWindow(final int w, final int h, final XmlReaderInterface reader) {
+        super(w, h, reader);
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
         final int textSize = Configuration.getInteger("defaults.font.text.size");

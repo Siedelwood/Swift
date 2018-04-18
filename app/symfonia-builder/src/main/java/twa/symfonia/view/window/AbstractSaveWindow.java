@@ -13,6 +13,7 @@ import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
+import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJButton;
 
 /**
@@ -64,8 +65,8 @@ abstract public class AbstractSaveWindow extends AbstractWindow {
      * @param w Breite des Fenster
      * @param h Höhe des Fenster
      */
-    public AbstractSaveWindow(final int w, final int h) {
-        super(w, h);
+    public AbstractSaveWindow(final int w, final int h, final XmlReaderInterface reader) {
+        super(w, h, reader);
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
         final int textSize = Configuration.getInteger("defaults.font.text.size");

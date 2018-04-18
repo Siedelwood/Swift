@@ -9,6 +9,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 
 import twa.symfonia.config.Configuration;
+import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.controller.ViewController;
 import twa.symfonia.view.component.SymfoniaJButton;
 
@@ -37,8 +38,8 @@ public class OptionSelectionWindow extends AbstractWindow {
 	/**
 	 * {@inheritDoc}
 	 */
-	public OptionSelectionWindow(final int w, final int h) {
-		super(w, h);
+	public OptionSelectionWindow(final int w, final int h, final XmlReaderInterface reader) {
+		super(w, h, reader);
 
 		final int titleSize = Configuration.getInteger("defaults.font.title.size");
 		final int textSize = Configuration.getInteger("defaults.font.text.size");
@@ -115,14 +116,5 @@ public class OptionSelectionWindow extends AbstractWindow {
 	@Override
 	public void handleValueChanged(final ListSelectionEvent a) {
 
-	}
-
-	/**
-	 * 
-	 * @param args
-	 */
-	public static void main(final String[] args) {
-		final OptionSelectionWindow osw = new OptionSelectionWindow(600, 400);
-		
 	}
 }

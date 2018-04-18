@@ -6,6 +6,7 @@ import java.io.File;
 import javax.swing.event.ListSelectionEvent;
 
 import twa.symfonia.config.Configuration;
+import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.controller.ApplicationException;
 import twa.symfonia.controller.ViewController;
 
@@ -24,9 +25,9 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow
      * @param w Breite
      * @param h Höhe
      */
-    public SaveBaseScriptsWindow(final int w, final int h)
+    public SaveBaseScriptsWindow(final int w, final int h, final XmlReaderInterface reader)
     {
-	super(w, h);
+	super(w, h, reader);
 
 	final String exampleTitle = Configuration.getString("defaults.label.title.base");
 	final String exampleText = Configuration.getString("defaults.label.text.base");

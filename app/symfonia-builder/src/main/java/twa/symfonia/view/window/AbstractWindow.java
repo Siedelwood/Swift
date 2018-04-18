@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.event.ListSelectionEvent;
 
+import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJPanel;
 
 /**
@@ -17,11 +18,17 @@ public abstract class AbstractWindow implements WindowInterface {
      * 
      */
     protected SymfoniaJPanel root;
+    
+    /**
+     * 
+     */
+    protected final XmlReaderInterface reader;
 
     /**
      * 
      */
-    public AbstractWindow(final int w, final int h) {
+    public AbstractWindow(final int w, final int h, final XmlReaderInterface reader) {
+        this.reader = reader;
         root = new SymfoniaJPanel(null);
         root.setBounds(0, 0, w, h);
         root.setVisible(true);
