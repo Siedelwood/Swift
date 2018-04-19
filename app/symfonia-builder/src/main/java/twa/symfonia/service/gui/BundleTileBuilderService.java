@@ -1,11 +1,11 @@
-package twa.symfonia.service;
+package twa.symfonia.service.gui;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import twa.symfonia.config.xml.BundleInfoMapper;
 import twa.symfonia.model.BundleModel;
+import twa.symfonia.service.xml.BundleInfoMapper;
 import twa.symfonia.view.component.SymfoniaJAddOn;
 import twa.symfonia.view.component.SymfoniaJBundle;
 

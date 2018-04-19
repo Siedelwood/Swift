@@ -1,4 +1,4 @@
-package twa.symfonia.config.xml;
+package twa.symfonia.service.xml;
 
 /**
  * Exception, falls beim Ermitteln von String Tables Fehler auftreten.

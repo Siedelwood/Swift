@@ -1,4 +1,4 @@
-package twa.symfonia.config.xml;
+package twa.symfonia.service.xml;
 
 /**
  * Exception, falls das Mappen von Bundle-Informationen fehlschlägt.

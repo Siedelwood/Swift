@@ -5,9 +5,9 @@ import java.io.File;
 
 import javax.swing.event.ListSelectionEvent;
 
-import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.controller.ApplicationException;
 import twa.symfonia.controller.ViewController;
+import twa.symfonia.service.xml.XmlReaderInterface;
 
 /**
  * 
@@ -92,7 +92,7 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow
     public void onSelectionFinished(File selected)
     {
         selected = (selected == null) ? new File(".") : selected;
-        fileNameField.setText(unixfyPath(selected.getAbsolutePath()) + "/Basisskripte");
+        fileNameField.setText(unixfyPath(selected.getAbsolutePath()));
     }
 
 }

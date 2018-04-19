@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.event.ListSelectionEvent;
 
-import twa.symfonia.config.xml.XmlReaderInterface;
+import twa.symfonia.service.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJPanel;
 
 /**

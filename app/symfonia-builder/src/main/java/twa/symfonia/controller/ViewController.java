@@ -13,6 +13,7 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FileUtils;
 
+import twa.symfonia.config.Configuration;
 import twa.symfonia.view.window.AbstractSaveWindow;
 import twa.symfonia.view.window.WindowInterface;
 
@@ -191,7 +192,13 @@ public class ViewController implements ViewControllerInterface
             return false;
         }
 
-        final File sourceGlobal = new File("var/default/globalscript.lua");
+        File sourceGlobal;
+        if (Configuration.isDebug()) {
+            sourceGlobal = new File("../../var/default/globalscript.lua");
+        } else {
+            sourceGlobal = new File("var/default/globalscript.lua");
+        }
+        
         System.out.println("Save global script as: " + path + "/globalscript.lua");
         final File destGlobal = new File(path + "/globalscript.lua");
 
@@ -203,7 +210,13 @@ public class ViewController implements ViewControllerInterface
             throw new ApplicationException("Unable to save script files!", e);
         }
 
-        final File sourceLocal = new File("var/default/localscript.lua");
+        File sourceLocal;
+        if (Configuration.isDebug()) {
+            sourceLocal = new File("../../var/default/localscript.lua");
+        } else {
+            sourceLocal = new File("var/default/localscript.lua");
+        }
+        
         System.out.println("Save local script as: " + path + "/localscript.lua");
         final File destLocal = new File(path + "/localscript.lua");
 

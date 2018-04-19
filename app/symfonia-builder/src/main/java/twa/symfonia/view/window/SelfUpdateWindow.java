@@ -9,8 +9,8 @@ import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
-import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.controller.ViewController;
+import twa.symfonia.service.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJButton;
 
 /**

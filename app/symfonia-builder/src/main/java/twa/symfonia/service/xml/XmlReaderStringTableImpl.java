@@ -1,7 +1,6 @@
-package twa.symfonia.config.xml;
+package twa.symfonia.service.xml;
 
-import java.io.File;
-import java.util.regex.PatternSyntaxException;
+import java.io.InputStream;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -15,7 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import twa.symfonia.app.SymfoniaQsbBuilder;
+import twa.symfonia.config.Configuration;
 
 /**
  * Implementation eines XML-Readers für String Tables wie aus dem Spiel bekannt.
@@ -101,16 +100,16 @@ public class XmlReaderStringTableImpl implements XmlReaderInterface
         Document doc = null;
         try
         {
-            final File inputFile = new File(unixfyPath(SymfoniaQsbBuilder.class.getClassLoader().getResource(path)
-                    .getPath()));
+            final InputStream iF = XmlReaderStringTableImpl.class.getClassLoader().getResourceAsStream(path);
             final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder;
             dBuilder = dbFactory.newDocumentBuilder();
-            doc = dBuilder.parse(inputFile);
+            doc = dBuilder.parse(iF);
             doc.getDocumentElement().normalize();
         } catch (final Exception e)
         {
-            throw new XmlReaderException(e);
+            final String resourcePath = XmlReaderStringTableImpl.class.getClassLoader().getResource(path).getPath();
+            throw new XmlReaderException("Open XML file failed! (" + resourcePath + ")", e);
         }
         xmlDocument = doc;
     }
@@ -134,7 +133,13 @@ public class XmlReaderStringTableImpl implements XmlReaderInterface
             final int IdIndex = key.indexOf("/") + 1;
             final String fileName = key.substring(0, FileIndex);
             final String id = key.substring(IdIndex);
-            openXml("config/text/" + fileName + ".xml");
+            
+            // XML öffnen
+            String resourcePath = "config/text/" + fileName + ".xml";
+            if (Configuration.isDebug() == false) {
+                resourcePath = "resources/" + resourcePath;
+            }
+            openXml(resourcePath);
 
             // Text ermitteln
             final String xPathString = "/root/text[@id='" + id + "']/text()";
@@ -147,23 +152,5 @@ public class XmlReaderStringTableImpl implements XmlReaderInterface
             throw new XmlReaderException(e);
         }
         return nodes;
-    }
-
-    /**
-     * Wandelt einen Windows-Pfad in einen Unix-Pfad um.
-     * 
-     * @param path Pfad zum umwandeln
-     * @return Umgewandelter Pfad
-     */
-    private String unixfyPath(final String path)
-    {
-        try
-        {
-            final String newPath = path.replaceAll("\\\\", "/");
-            return newPath;
-        } catch (final PatternSyntaxException e)
-        {
-            return path;
-        }
     }
 }

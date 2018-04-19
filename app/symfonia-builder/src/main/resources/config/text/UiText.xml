@@ -11,9 +11,10 @@
     <text id="ButtonDeselect">Alle abwhälen</text>
     <text id="ButtonOptionWindow0">QSB zusammenstellen</text>
     <text id="ButtonOptionWindow1">Dokumantation anzeigen</text>
-    <text id="ButtonOptionWindow2">Beispiele anzeigen</text>
-    <text id="ButtonOptionWindow3">Basisskripte exportieren</text>
-    <text id="ButtonOptionWindow4">Anwendung aktualisieren</text>
+    <text id="ButtonOptionWindow2">Basisskripte exportieren</text>
+    <text id="ButtonOptionWindow3">Map-Datei in Ordner umwandeln</text>
+    <text id="ButtonOptionWindow4">Ordner in Map-Datei umwandeln</text>
+    <text id="ButtonOptionWindow5">Anwendung aktualisieren</text>
     
     <!-- Captions -->
     
@@ -42,4 +43,7 @@
     <text id="CheckoutMaster">Aktualisiere auf ein stabiles Release.</text>
     <text id="CheckoutDevelopment">Aktualisiere auf den aktuellen Snapshot.</text>
     <text id="SaveBaseScripts">Basisskripte hinzufügen</text>
+    <text id="SaveExampleScripts">Beispiele hinzufügen</text>
+    <text id="MinifyQsbScript">QSB-Skript komprimieren</text>
+    <text id="CopyDocumentation">Dokumentation hinzufügen</text>
 </root>

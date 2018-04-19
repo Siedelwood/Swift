@@ -6,11 +6,11 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import twa.symfonia.config.Configuration;
-import twa.symfonia.config.xml.XmlReaderInterface;
-import twa.symfonia.config.xml.XmlReaderStringTableImpl;
 import twa.symfonia.controller.ApplicationException;
 import twa.symfonia.controller.ViewController;
-import twa.symfonia.service.BundleTileBuilderService;
+import twa.symfonia.service.gui.BundleTileBuilderService;
+import twa.symfonia.service.xml.XmlReaderInterface;
+import twa.symfonia.service.xml.XmlReaderStringTableImpl;
 import twa.symfonia.view.component.SymfoniaJAddOn;
 import twa.symfonia.view.component.SymfoniaJBundle;
 import twa.symfonia.view.component.SymfoniaJFrame;
@@ -54,74 +54,76 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
     /**
      * Baut die Fenster der grafischen Oberfläche.
      * 
-     * @param debug Debug mode active
-     * @throws ApplicationException 
+     * @param args
+     * 
+     * @throws ApplicationException
      */
-    public void build(final boolean debug) throws ApplicationException
+    public void build(final String[] args) throws ApplicationException
     {
-        try {
-        final Dimension size = Configuration.getDimension("defaults.window.size");
-        final BundleTileBuilderService bundleListBuilder = new BundleTileBuilderService();
-        String bundlesSourcePath = Configuration.getString("value.path.qsb.bundles");
-        String addOnsSourcePath = Configuration.getString("value.path.qsb.addons");
-
-        frame = new SymfoniaJFrame();
-        frame.setTitle("Symfonia Builder");
-        frame.setBounds(0, 0, size.width, size.height);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        final XmlReaderInterface reader = new XmlReaderStringTableImpl();
+        // Activate debug mode
+        if (args.length > 0 && args[0] != null) {
+            Configuration.setDebug(true);
+            System.out.println("Entering dev mode!");
+        }
         
-        // Willkommensfenster hinzufügen
-        controller.addWindow("WelcomeWindow", new WelcomeWindow(size.width, size.height, reader));
-        frame.add(controller.getWindow("WelcomeWindow").getRootPane());
-
-        // Optionsfenster hinzufügen
-        controller.addWindow("OptionSelectionWindow", new OptionSelectionWindow(size.width, size.height, reader));
-        frame.add(controller.getWindow("OptionSelectionWindow").getRootPane());
-
-        // Selfupdate-Fenster hinzufügen
-        controller.addWindow("SelfUpdateWindow", new SelfUpdateWindow(size.width, size.height, reader));
-        frame.add(controller.getWindow("SelfUpdateWindow").getRootPane());
-
-        // Beispiele-Speichern-Fenster hinzufügen
-        controller.addWindow("SaveBaseScriptsWindow", new SaveBaseScriptsWindow(size.width, size.height, reader));
-        frame.add(controller.getWindow("SaveBaseScriptsWindow").getRootPane());
-        
-        // QSB-Speichern-Fenster hinzufügen
-        controller.addWindow("SaveQsbWindow", new SaveQsbWindow(size.width, size.height, reader));
-        frame.add(controller.getWindow("SaveQsbWindow").getRootPane());
-
-        // Bundle-Auswahl-Fenster hinzufügen
-        if (debug == true)
+        try
         {
-            bundlesSourcePath = "../../" + bundlesSourcePath;
-        }
-        final List<SymfoniaJBundle> constructedBundles = bundleListBuilder.prepareBundles(bundlesSourcePath);
-        controller.addWindow("BundleSelectionWindow", new BundleSelectionWindow(size.width, size.height, reader));
-        final BundleSelectionWindow bundleWindow = (BundleSelectionWindow) controller.getWindow(
-                "BundleSelectionWindow");
-        bundleWindow.setBundleList(constructedBundles);
-        frame.add(controller.getWindow("BundleSelectionWindow").getRootPane());
+            final Dimension size = Configuration.getDimension("defaults.window.size");
+            final BundleTileBuilderService bundleListBuilder = new BundleTileBuilderService();
+            final String bundlesSourcePath = Configuration.getString("value.path.qsb.bundles");
+            final String addOnsSourcePath = Configuration.getString("value.path.qsb.addons");
 
-        // AddOn-Bundle-Auswahl-Fenster hinzufügen
-        if (debug == true)
+            frame = new SymfoniaJFrame();
+            frame.setTitle("Symfonia Builder");
+            frame.setBounds(0, 0, size.width, size.height);
+            frame.setResizable(false);
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            final XmlReaderInterface reader = new XmlReaderStringTableImpl();
+
+            // Willkommensfenster hinzufügen
+            controller.addWindow("WelcomeWindow", new WelcomeWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("WelcomeWindow").getRootPane());
+
+            // Optionsfenster hinzufügen
+            controller.addWindow("OptionSelectionWindow", new OptionSelectionWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("OptionSelectionWindow").getRootPane());
+
+            // Selfupdate-Fenster hinzufügen
+            controller.addWindow("SelfUpdateWindow", new SelfUpdateWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("SelfUpdateWindow").getRootPane());
+
+            // Beispiele-Speichern-Fenster hinzufügen
+            controller.addWindow("SaveBaseScriptsWindow", new SaveBaseScriptsWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("SaveBaseScriptsWindow").getRootPane());
+
+            // QSB-Speichern-Fenster hinzufügen
+            controller.addWindow("SaveQsbWindow", new SaveQsbWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("SaveQsbWindow").getRootPane());
+
+            // Bundle-Auswahl-Fenster hinzufügen
+            final List<SymfoniaJBundle> constructedBundles = bundleListBuilder.prepareBundles(bundlesSourcePath);
+            controller.addWindow("BundleSelectionWindow", new BundleSelectionWindow(size.width, size.height, reader));
+            final BundleSelectionWindow bundleWindow = (BundleSelectionWindow) controller.getWindow(
+                    "BundleSelectionWindow");
+            bundleWindow.setBundleList(constructedBundles);
+            frame.add(controller.getWindow("BundleSelectionWindow").getRootPane());
+
+            // AddOn-Bundle-Auswahl-Fenster hinzufügen
+            controller.addWindow("AddOnSelectionWindow", new AddOnSelectionWindow(size.width, size.height, reader));
+            final AddOnSelectionWindow addOnWindow = (AddOnSelectionWindow) controller.getWindow(
+                    "AddOnSelectionWindow");
+            final List<SymfoniaJAddOn> constructedAddOns = bundleListBuilder.prepareAddOns(addOnsSourcePath,
+                    addOnWindow);
+            addOnWindow.setBundleList(constructedAddOns);
+            frame.add(controller.getWindow("AddOnSelectionWindow").getRootPane());
+
+            // Fenster anzeigen
+            controller.getWindow("WelcomeWindow").show();
+            frame.setVisible(true);
+        } catch (final Exception e)
         {
-            addOnsSourcePath = "../../" + addOnsSourcePath;
-        }
-        controller.addWindow("AddOnSelectionWindow", new AddOnSelectionWindow(size.width, size.height, reader));
-        final AddOnSelectionWindow addOnWindow = (AddOnSelectionWindow) controller.getWindow("AddOnSelectionWindow");
-        final List<SymfoniaJAddOn> constructedAddOns = bundleListBuilder.prepareAddOns(addOnsSourcePath, addOnWindow);
-        addOnWindow.setBundleList(constructedAddOns);
-        frame.add(controller.getWindow("AddOnSelectionWindow").getRootPane());
-
-        // Fenster anzeigen
-        controller.getWindow("WelcomeWindow").show();
-        frame.setVisible(true);
-        }
-        catch (final Exception e) {
             throw new ApplicationException(e);
         }
     }
@@ -145,11 +147,6 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
     public static void main(final String[] args) throws ApplicationException
     {
         final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder(ViewController.getInstance());
-        boolean debug = false;
-        if (args.length > 0 && args[0].equals("-debug"))
-        {
-            debug = true;
-        }
-        builder.build(debug);
+        builder.build(args);
     }
 }

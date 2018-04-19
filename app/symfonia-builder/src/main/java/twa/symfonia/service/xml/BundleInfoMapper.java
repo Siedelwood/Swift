@@ -1,4 +1,4 @@
-package twa.symfonia.config.xml;
+package twa.symfonia.service.xml;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import twa.symfonia.config.Configuration;
 import twa.symfonia.model.BundleModel;
 
 /**
@@ -70,8 +71,13 @@ public class BundleInfoMapper
      * @return Liste der Bundles
      * @throws BundleInfoMapperException
      */
-    public List<BundleModel> parseFolder(final String path) throws BundleInfoMapperException
+    public List<BundleModel> parseFolder(String path) throws BundleInfoMapperException
     {
+        // Set development location
+        if (Configuration.isDebug()) {
+            path = "../../" + path;
+        }
+        
         final List<File> folders = listBundleDirectories(path);
         if (folders.isEmpty())
         {
@@ -161,11 +167,15 @@ public class BundleInfoMapper
      * 
      * @param path Pfad des Ordners
      * @return Liste der Bundle-Ordner
+     * @throws BundleInfoMapperException 
      */
-    public List<File> listBundleDirectories(final String path)
+    public List<File> listBundleDirectories(final String path) throws BundleInfoMapperException
     {
-        final File folder = new File(unixfyPath(path));
+        final File folder = new File(path);
         final File[] listOfFiles = folder.listFiles();
+        if (listOfFiles == null) {
+            throw new BundleInfoMapperException("Could not find bundles!");
+        }
 
         final List<File> directories = new ArrayList<>();
         for (int i = 0; i < listOfFiles.length; i++)

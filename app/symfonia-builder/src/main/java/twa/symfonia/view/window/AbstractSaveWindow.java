@@ -13,7 +13,7 @@ import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
-import twa.symfonia.config.xml.XmlReaderInterface;
+import twa.symfonia.service.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJButton;
 
 /**
@@ -104,6 +104,8 @@ abstract public class AbstractSaveWindow extends AbstractWindow
             fileNameField = new JTextField();
             fileNameField.setBounds(25, (h / 2) + 35, w - 50, 28);
             fileNameField.addActionListener(this);
+            fileNameField.setText(System.getProperty("user.dir"));
+            fileNameField.setEditable(false);
             fileNameField.setVisible(true);
             getRootPane().add(fileNameField);
 

@@ -2,11 +2,9 @@ package twa.symfonia.config;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.io.FileReader;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
-
-import twa.symfonia.app.SymfoniaQsbBuilder;
 
 /**
  * Ließt die Konfiguration aus der app.properties aus.
@@ -16,12 +14,28 @@ import twa.symfonia.app.SymfoniaQsbBuilder;
  */
 public class Configuration
 {
+    /**
+     * 
+     */
+    private static boolean debug = false;
 
     /**
-     * Verzeichnit der Properties
+     * 
+     * @return
      */
-    public static URL PATH_TO_CONFIG = SymfoniaQsbBuilder.class.getClassLoader().getResource(
-            "config/symfonia-builder-config.properties");
+    public static boolean isDebug()
+    {
+        return debug;
+    }
+
+    /**
+     * 
+     * @param flag
+     */
+    public static void setDebug(final boolean flag)
+    {
+        debug = flag;
+    }
 
     /**
      * Ließt einen String aus den Properties aus und gibt ihn zurück.
@@ -34,11 +48,19 @@ public class Configuration
         final Properties property = new Properties();
         try
         {
-            property.load(new FileReader(PATH_TO_CONFIG.getPath()));
-            // ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(myString)
-            return new String(property.getProperty(key).getBytes(), "UTF-8");
+            String propertyPath = "config/symfonia-builder-config.properties";
+            if (!Configuration.isDebug()) {
+                propertyPath = "resources/config/symfonia-builder-config.properties";
+            }
+            
+            final InputStream propertyStream = Configuration.class.getClassLoader().getResourceAsStream(propertyPath);
+            final URL p = Configuration.class.getClassLoader().getResource(propertyPath);
+            property.load(propertyStream);
+            final String propertyValue = new String(property.getProperty(key).getBytes(), "UTF-8");
+            return propertyValue;
         } catch (final Exception e)
         {
+            e.printStackTrace();
             return null;
         }
     }
@@ -56,6 +78,7 @@ public class Configuration
             return Integer.parseInt(getString(key));
         } catch (final Exception e)
         {
+            e.printStackTrace();
             return 0;
         }
     }
@@ -73,6 +96,7 @@ public class Configuration
             return Double.parseDouble(getString(key));
         } catch (final Exception e)
         {
+            e.printStackTrace();
             return 0.0;
         }
     }
@@ -91,6 +115,7 @@ public class Configuration
             return Color.decode(getString(key));
         } catch (final Exception e)
         {
+            e.printStackTrace();
             return new Color(0, 0, 0);
         }
     }
@@ -111,6 +136,7 @@ public class Configuration
             y = getInteger(key + ".y");
         } catch (final Exception e)
         {
+            e.printStackTrace();
             x = 0;
             y = 0;
         }

@@ -9,14 +9,14 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 
 import twa.symfonia.config.Configuration;
-import twa.symfonia.config.xml.XmlReaderInterface;
 import twa.symfonia.controller.ViewController;
+import twa.symfonia.service.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJButton;
 
 /**
+ * Fenster zur Selektion der Aufgabe, die der Nutzer ausführen möchte.
  * 
  * @author angermanager
- *
  */
 public class OptionSelectionWindow extends AbstractWindow
 {
@@ -27,12 +27,12 @@ public class OptionSelectionWindow extends AbstractWindow
     private final Vector<SymfoniaJButton> options;
 
     /**
-     * 
+     * Titel
      */
     private final JLabel title;
 
     /**
-     * 
+     * Beschreibung
      */
     private final JLabel text;
 
@@ -68,7 +68,7 @@ public class OptionSelectionWindow extends AbstractWindow
             getRootPane().add(text);
 
             options = new Vector<SymfoniaJButton>();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
                 final String caption = this.reader.getString("UiText/ButtonOptionWindow" + i);
                 final SymfoniaJButton b = new SymfoniaJButton(caption);
@@ -78,6 +78,11 @@ public class OptionSelectionWindow extends AbstractWindow
                 getRootPane().add(b);
                 options.add(b);
             }
+            
+            // Not implemented!
+            options.get(3).setEnabled(false);
+            options.get(4).setEnabled(false);
+            options.get(5).setEnabled(false);
         } catch (final Exception e)
         {
             throw new WindowException(e);
@@ -102,24 +107,23 @@ public class OptionSelectionWindow extends AbstractWindow
         // Dokumentation anzeigen
         if (aE.getSource() == options.get(1))
         {
-            ViewController.getInstance().openLocalPage("doc/index.html");
-        }
-
-        // Beispiele anzeigen
-        if (aE.getSource() == options.get(2))
-        {
-
+            if (Configuration.isDebug()) {
+                ViewController.getInstance().openLocalPage("../../doc/index.html");
+            }
+            else {
+                ViewController.getInstance().openLocalPage("doc/index.html");
+            }
         }
 
         // Basisskripte exportieren
-        if (aE.getSource() == options.get(3))
+        if (aE.getSource() == options.get(2))
         {
             ViewController.getInstance().getWindow("SaveBaseScriptsWindow").show();
             hide();
         }
 
         // Self-Update
-        if (aE.getSource() == options.get(4))
+        if (aE.getSource() == options.get(5))
         {
             ViewController.getInstance().getWindow("SelfUpdateWindow").show();
             hide();
