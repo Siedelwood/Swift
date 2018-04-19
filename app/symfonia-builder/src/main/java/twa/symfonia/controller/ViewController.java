@@ -2,6 +2,7 @@ package twa.symfonia.controller;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -228,6 +229,24 @@ public class ViewController implements ViewControllerInterface
             throw new ApplicationException("Unable to save script files!", e);
         }
 
+        return true;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws ApplicationException
+     */
+    @Override
+    public boolean saveDocumentation(final String source, final String dest) throws ApplicationException
+    {
+        try
+        {
+            FileUtils.copyDirectory(new File(source), new File(dest));
+        } catch (final IOException e)
+        {
+            throw new ApplicationException("Unable to copy documentation!", e);
+        }
         return true;
     }
 }

@@ -9,7 +9,8 @@ import twa.symfonia.view.window.WindowInterface;
  * @author angermanager
  *
  */
-public interface ViewControllerInterface {
+public interface ViewControllerInterface
+{
     /**
      * 
      * @param name Name des Fensters
@@ -38,8 +39,8 @@ public interface ViewControllerInterface {
     public void selfUpdateDevelopment();
 
     /**
-     * Öffnet einen Dialog, indem der Nutzer ein Verzeichnis auswählt und gibt
-     * die Auswahl an das Fenster zurück.
+     * Öffnet einen Dialog, indem der Nutzer ein Verzeichnis auswählt und gibt die
+     * Auswahl an das Fenster zurück.
      * 
      * @param window Speicherfenster
      */
@@ -69,4 +70,14 @@ public interface ViewControllerInterface {
      * @throws ApplicationException
      */
     boolean saveBasicScripts(String path) throws ApplicationException;
+
+    /**
+     * Kopiert den ordner mit der Lua-Doc in den angegebenen Pfad.
+     * 
+     * @param source Pfad zum Quellordner
+     * @param dest Pfad des Ziels
+     * @return Erfolgreich
+     * @throws ApplicationException
+     */
+    boolean saveDocumentation(String source, String dest) throws ApplicationException;
 }

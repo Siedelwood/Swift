@@ -160,8 +160,7 @@ public class SaveQsbWindow extends AbstractSaveWindow
         // QSB zusammenstellen
         if (aE.getSource() == save)
         {
-            // ViewController.getInstance().getWindow("SaveQsbWindow").show();
-            // hide();
+            
         }
 
         // Zurück
