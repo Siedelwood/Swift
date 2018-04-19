@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class LuaMinifyerService
 {
+
     /**
      * Minimiert einen Lua-String, sodass unnötige Zeichen entfernt wurden.
      * 
@@ -24,12 +25,12 @@ public class LuaMinifyerService
      */
     public String minify(final String lua)
     {
-        return removeWhiteSpace(removeLineBreaks(removeComments(lua)));
+	return removeWhiteSpace(removeLineBreaks(removeComments(lua)));
     }
 
     /**
-     * Minimiert Lua-Code aus dem Stream und gibt minimierten Lua-Code als String
-     * zurück.
+     * Minimiert Lua-Code aus dem Stream und gibt minimierten Lua-Code als
+     * String zurück.
      * 
      * @param luaStream Stream mit Lua-Code
      * @return Minimierten Lua-String
@@ -37,20 +38,22 @@ public class LuaMinifyerService
      */
     public String minify(final InputStream luaStream) throws LuaMinifyerException
     {
-        try
-        {
-            final StringWriter writer = new StringWriter();
-            IOUtils.copy(luaStream, writer, "UTF-8");
-            final String lua = writer.toString();
-            return minify(lua);
-        } catch (final IOException e)
-        {
-            throw new LuaMinifyerException(e);
-        }
+	try
+	{
+	    final StringWriter writer = new StringWriter();
+	    IOUtils.copy(luaStream, writer, "UTF-8");
+	    final String lua = writer.toString();
+	    return minify(lua);
+	}
+	catch (final IOException e)
+	{
+	    throw new LuaMinifyerException(e);
+	}
     }
 
     /**
-     * Nimmt ein Lua-File und gibt einen String mit dem minimierten Lua-Code zurück.
+     * Nimmt ein Lua-File und gibt einen String mit dem minimierten Lua-Code
+     * zurück.
      * 
      * @param luaFile File Objekt
      * @return Minimierten Lua-String
@@ -58,39 +61,41 @@ public class LuaMinifyerService
      */
     public String minify(final File luaFile) throws LuaMinifyerException
     {
-        try
-        {
-            return minify(new FileInputStream(luaFile));
-        } catch (final FileNotFoundException e)
-        {
-            throw new LuaMinifyerException(e);
-        }
+	try
+	{
+	    return minify(new FileInputStream(luaFile));
+	}
+	catch (final FileNotFoundException e)
+	{
+	    throw new LuaMinifyerException(e);
+	}
     }
 
     /**
-     * Entfernt alle Single-Line Kommentare aus dem Lua-String und gibt den neuen
-     * String zurück.
+     * Entfernt alle Single-Line Kommentare aus dem Lua-String und gibt den
+     * neuen String zurück.
      * 
      * @param lua Lua-String
      * @return Lua-String ohne Kommentare
      */
     private String removeComments(final String lua)
     {
-        return lua.replaceAll("--.*\n", "");
+	return lua.replaceAll("--.*\\n", "");
     }
 
     /**
-     * Entfernt alle Linebreaks aus dem Lua-String und gibt den neuen String zurück.
+     * Entfernt alle Linebreaks aus dem Lua-String und gibt den neuen String
+     * zurück.
      * 
      * @param lua Lua-String
      * @return Lua-String ohne Line-Breaks
      */
     private String removeLineBreaks(String lua)
     {
-        lua = lua.replaceAll(";\\n", ";");
-        lua = lua.replaceAll(",\\n", ",");
-        lua = lua.replaceAll("\\n", " ");
-        return lua;
+	lua = lua.replaceAll(";\\n", ";");
+	lua = lua.replaceAll(",\\n", ",");
+	lua = lua.replaceAll("\\n", " ");
+	return lua;
     }
 
     /**
@@ -102,11 +107,16 @@ public class LuaMinifyerService
      */
     private String removeWhiteSpace(String lua)
     {
-        lua = lua.replaceAll("\\s\\s*", " ");
-        lua = lua.replaceAll("(\\s\\.\\.|\\.\\.\\s)", "..");
-        lua = lua.replaceAll(";\\s", ";");
-        lua = lua.replaceAll(",\\s", ",");
-        lua = lua.replaceAll("\\s*=\\s*", "=");
-        return lua;
+	lua = lua.replaceAll("(\\s\\s+\\.\\.|\\.\\.\\s\\s+)", " .. ");
+	lua = lua.replaceAll("(\\(\\s*|\\s*\\(|\\s*\\(\\s*)", "(");
+	lua = lua.replaceAll("(\\)\\s*|\\s*\\)|\\s*\\)\\s*)", ")");
+	lua = lua.replaceAll("(\\]\\s*|\\s*\\]|\\s*\\]\\s*)", "]");
+	lua = lua.replaceAll("(\\[\\s*|\\s*\\[|\\s*\\[\\s*)", "[");
+	lua = lua.replaceAll("(\\{\\s*|\\s*\\{|\\s*\\{\\s*)", "{");
+	lua = lua.replaceAll("(\\}\\s*|\\s*\\}|\\s*\\}\\s*)", "}");
+	lua = lua.replaceAll(";\\s\\s+", "; ");
+	lua = lua.replaceAll(",\\s\\s+", ", ");
+	lua = lua.replaceAll("\\s\\s+", " ");
+	return lua;
     }
 }

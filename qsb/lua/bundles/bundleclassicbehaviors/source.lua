@@ -6540,7 +6540,7 @@ function b_Reward_SendCart:GetCustomData( _Index )
         end
         table.sort( Data )
     elseif _Index == 5 then
-        table.insert( Data, "---" )
+        table.insert( Data, "-" )
         for i = 1, 8 do
             table.insert( Data, i )
         end

@@ -3,12 +3,10 @@ package twa.symfonia.service.qsb;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 
 /**
  * Packt die QSB inklusive der Zusatzoptionen in den angegebenen Pfad
@@ -16,22 +14,8 @@ import org.apache.commons.io.FileUtils;
  * @author totalwarANGEL
  *
  */
-public class QsbPackagingService
+public class QsbPackagingService implements QsbPackagingInterface
 {
-    /**
-     * 
-     */
-    private boolean copyDoc;
-
-    /**
-     * 
-     */
-    private boolean copyBaseScripts;
-
-    /**
-     * 
-     */
-    private boolean copyExamples;
 
     /**
      * 
@@ -46,63 +30,102 @@ public class QsbPackagingService
     /**
      * 
      */
+    private final String docPath;
+
+    /**
+     * 
+     */
     LuaMinifyerService minifyer;
 
     /**
      * 
      * @param basePath
+     * @param docPath
+     * @param minifyer
      */
-    public QsbPackagingService(final String basePath, final LuaMinifyerService minifyer)
+    public QsbPackagingService(final String basePath, final String docPath, final LuaMinifyerService minifyer)
     {
-        this.basePath = basePath;
-        this.minifyer = minifyer;
+	this.basePath = basePath;
+	this.docPath = docPath;
+	this.minifyer = minifyer;
     }
 
     /**
-     * 
-     * @param files
-     * @param dest
-     * @param copyDoc
-     * @param copyBaseScripts
-     * @param copyExamples
-     * @param minifyQsb
-     * @throws QsbPackagingException
+     * {@inheritDoc}
      */
-    public void pack(
-        final List<String> files,
-        final String dest,
-        final boolean copyDoc,
-        final boolean copyBaseScripts,
-        final boolean copyExamples,
-        final boolean minifyQsb) throws QsbPackagingException
+    @Override
+    public void pack(final List<String> files, final String dest, final boolean copyDoc, final boolean copyBaseScripts,
+	    final boolean copyExamples, final boolean minifyQsb) throws QsbPackagingException
     {
-        this.copyDoc = copyDoc;
-        this.copyBaseScripts = copyBaseScripts;
-        this.copyExamples = copyExamples;
-        this.minifyQsb = minifyQsb;
+	this.minifyQsb = minifyQsb;
 
-        save(files, dest);
-        saveDocumentation("foo", "bar");
+	save(files, dest);
+
+	if (copyBaseScripts)
+	{
+	    saveBasicScripts(dest);
+	}
+
+	if (copyExamples)
+	{
+	    saveExamples(dest);
+	}
+
+	if (copyDoc)
+	{
+	    saveDocumentation(dest);
+	}
     }
 
     /**
-     * 
-     * @param source
-     * @param dest
-     * @throws QsbPackagingException
+     * {@inheritDoc}
      */
-    public void saveDocumentation(final String source, final String dest) throws QsbPackagingException
+    @Override
+    public void saveExamples(final String path) throws QsbPackagingException
     {
-        if (copyDoc)
-        {
-            try
-            {
-                FileUtils.copyDirectory(new File(source), new File(dest));
-            } catch (final IOException e)
-            {
-                throw new QsbPackagingException("Unable to copy documentation!", e);
-            }
-        }
+	System.out.println("Not implemented");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveBasicScripts(final String path) throws QsbPackagingException
+    {
+	try
+	{
+	    final File sourceGlobal = new File(basePath + "/default/globalscript.lua");
+	    System.out.println("Save global script as: " + path + "/globalscript.lua");
+	    final File destGlobal = new File(path + "/globalscript.lua");
+	    FileUtils.copyFile(sourceGlobal, destGlobal);
+
+	    final File sourceLocal = new File(basePath + "/default/localscript.lua");
+	    System.out.println("Save local script as: " + path + "/localscript.lua");
+	    final File destLocal = new File(path + "/localscript.lua");
+	    FileUtils.copyFile(sourceLocal, destLocal);
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException("Unable to save script files!", e);
+	}
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveDocumentation(final String dest) throws QsbPackagingException
+    {
+	try
+	{
+	    final File folder = new File(dest);
+	    folder.mkdirs();
+	    FileUtils.copyDirectory(new File(docPath), folder);
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException("Unable to copy documentation!", e);
+	}
     }
 
     /**
@@ -113,19 +136,33 @@ public class QsbPackagingService
      */
     private void save(final List<String> files, final String dest) throws QsbPackagingException
     {
-        try
-        {
-            String content = "";
-            for (final String s : files)
-            {
-                content += load(s);
-            }
-            final BufferedWriter writer = new BufferedWriter(new FileWriter(dest + "/qsb.lua"));
-            writer.write(content);
-        } catch (final Exception e)
-        {
-            throw new QsbPackagingException(e);
-        }
+	try
+	{
+	    final StringBuffer stringBuffer = new StringBuffer();
+	    for (final String s : files)
+	    {
+		stringBuffer.append(load(s));
+	    }
+
+	    final File folder = new File(dest);
+	    folder.mkdirs();
+
+	    final BufferedWriter writer = new BufferedWriter(new FileWriter(dest + "/qsb.lua"));
+	    if (minifyQsb)
+	    {
+		writer.write(minifyer.minify(stringBuffer.toString()));
+	    }
+	    else
+	    {
+		writer.write(stringBuffer.toString());
+	    }
+	    writer.flush();
+	    writer.close();
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException(e);
+	}
     }
 
     /**
@@ -134,20 +171,27 @@ public class QsbPackagingService
      * @return
      * @throws QsbPackagingException
      */
-    private String load(final String file) throws QsbPackagingException
+    private StringBuffer load(final String file) throws QsbPackagingException
     {
-        try
-        {
-            final byte[] encoded = Files.readAllBytes(Paths.get(basePath + file));
-            String content = new String(encoded, "UTF-8");
-            if (minifyQsb)
-            {
-                content = minifyer.minify(content) + " ";
-            }
-            return content;
-        } catch (final Exception e)
-        {
-            throw new QsbPackagingException(e);
-        }
+	try
+	{
+	    final StringBuffer stringBuffer = new StringBuffer();
+	    final LineIterator it = FileUtils.lineIterator(new File(basePath + file), "UTF-8");
+	    while (it.hasNext())
+	    {
+		final String line = it.nextLine() + "\n";
+		// if (minifyQsb)
+		// {
+		// line = minifyer.minify(line);
+		// }
+		stringBuffer.append(line);
+	    }
+	    stringBuffer.append(" ");
+	    return stringBuffer;
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException(e);
+	}
     }
 }

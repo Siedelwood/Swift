@@ -42,7 +42,7 @@ public class ViewController implements ViewControllerInterface
      */
     private ViewController()
     {
-        windowMap = new HashMap<>();
+	windowMap = new HashMap<>();
     }
 
     /**
@@ -52,11 +52,11 @@ public class ViewController implements ViewControllerInterface
      */
     public static ViewController getInstance()
     {
-        if (instance == null)
-        {
-            instance = new ViewController();
-        }
-        return instance;
+	if (instance == null)
+	{
+	    instance = new ViewController();
+	}
+	return instance;
     }
 
     /**
@@ -65,7 +65,7 @@ public class ViewController implements ViewControllerInterface
     @Override
     public void addWindow(final String name, final WindowInterface window)
     {
-        windowMap.put(name, window);
+	windowMap.put(name, window);
     }
 
     /**
@@ -74,7 +74,7 @@ public class ViewController implements ViewControllerInterface
     @Override
     public WindowInterface getWindow(final String key)
     {
-        return windowMap.get(key);
+	return windowMap.get(key);
     }
 
     /**
@@ -83,7 +83,7 @@ public class ViewController implements ViewControllerInterface
     @Override
     public void selfUpdateMaster()
     {
-        System.out.println("Update Master");
+	System.out.println("Update Master");
     }
 
     /**
@@ -92,7 +92,7 @@ public class ViewController implements ViewControllerInterface
     @Override
     public void selfUpdateDevelopment()
     {
-        System.out.println("Update Development");
+	System.out.println("Update Development");
     }
 
     /**
@@ -103,16 +103,16 @@ public class ViewController implements ViewControllerInterface
     @Override
     public void chooseFolder(final AbstractSaveWindow window)
     {
-        final JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.resetChoosableFileFilters();
-        final int returnVal = chooser.showOpenDialog(window.getRootPane());
-        if (returnVal == JFileChooser.APPROVE_OPTION)
-        {
-            window.onSelectionFinished(chooser.getSelectedFile());
-            return;
-        }
-        window.onSelectionFinished(null);
+	final JFileChooser chooser = new JFileChooser();
+	chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	chooser.resetChoosableFileFilters();
+	final int returnVal = chooser.showOpenDialog(window.getRootPane());
+	if (returnVal == JFileChooser.APPROVE_OPTION)
+	{
+	    window.onSelectionFinished(chooser.getSelectedFile());
+	    return;
+	}
+	window.onSelectionFinished(null);
     }
 
     /**
@@ -123,19 +123,20 @@ public class ViewController implements ViewControllerInterface
      */
     private boolean openWebPage(final URI uri)
     {
-        final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE))
-        {
-            try
-            {
-                desktop.browse(uri);
-                return true;
-            } catch (final Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return false;
+	final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+	if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE))
+	{
+	    try
+	    {
+		desktop.browse(uri);
+		return true;
+	    }
+	    catch (final Exception e)
+	    {
+		e.printStackTrace();
+	    }
+	}
+	return false;
     }
 
     /**
@@ -148,17 +149,19 @@ public class ViewController implements ViewControllerInterface
     public boolean openWebPage(final String url)
     {
 
-        try
-        {
-            return openWebPage(new URL(url).toURI());
-        } catch (final URISyntaxException e)
-        {
-            e.printStackTrace();
-        } catch (final MalformedURLException e)
-        {
-            e.printStackTrace();
-        }
-        return false;
+	try
+	{
+	    return openWebPage(new URL(url).toURI());
+	}
+	catch (final URISyntaxException e)
+	{
+	    e.printStackTrace();
+	}
+	catch (final MalformedURLException e)
+	{
+	    e.printStackTrace();
+	}
+	return false;
     }
 
     /**
@@ -170,68 +173,78 @@ public class ViewController implements ViewControllerInterface
     @Override
     public boolean openLocalPage(final String url)
     {
-        final File f = new File(url);
-        if (!f.exists())
-        {
-            return false;
-        }
-        return openWebPage(f.toURI());
+	final File f = new File(url);
+	if (!f.exists())
+	{
+	    return false;
+	}
+	return openWebPage(f.toURI());
     }
 
     /**
      * {@inheritDoc}
      * 
      * @throws ApplicationException
+     * @deprecated
      */
+    @Deprecated
     @Override
     public boolean saveBasicScripts(final String path) throws ApplicationException
     {
-        final File directory = new File(path);
-        directory.mkdirs();
-        if (!directory.exists())
-        {
-            return false;
-        }
+	final File directory = new File(path);
+	directory.mkdirs();
+	if (!directory.exists())
+	{
+	    return false;
+	}
 
-        File sourceGlobal;
-        if (Configuration.isDebug()) {
-            sourceGlobal = new File("../../var/default/globalscript.lua");
-        } else {
-            sourceGlobal = new File("var/default/globalscript.lua");
-        }
-        
-        System.out.println("Save global script as: " + path + "/globalscript.lua");
-        final File destGlobal = new File(path + "/globalscript.lua");
+	File sourceGlobal;
+	if (Configuration.isDebug())
+	{
+	    sourceGlobal = new File("../../var/default/globalscript.lua");
+	}
+	else
+	{
+	    sourceGlobal = new File("var/default/globalscript.lua");
+	}
 
-        try
-        {
-            FileUtils.copyFile(sourceGlobal, destGlobal);
-        } catch (final Exception e)
-        {
-            throw new ApplicationException("Unable to save script files!", e);
-        }
+	System.out.println("Save global script as: " + path + "/globalscript.lua");
+	final File destGlobal = new File(path + "/globalscript.lua");
 
-        File sourceLocal;
-        if (Configuration.isDebug()) {
-            sourceLocal = new File("../../var/default/localscript.lua");
-        } else {
-            sourceLocal = new File("var/default/localscript.lua");
-        }
-        
-        System.out.println("Save local script as: " + path + "/localscript.lua");
-        final File destLocal = new File(path + "/localscript.lua");
+	try
+	{
+	    FileUtils.copyFile(sourceGlobal, destGlobal);
+	}
+	catch (final Exception e)
+	{
+	    throw new ApplicationException("Unable to save script files!", e);
+	}
 
-        try
-        {
-            FileUtils.copyFile(sourceLocal, destLocal);
-        } catch (final Exception e)
-        {
-            throw new ApplicationException("Unable to save script files!", e);
-        }
+	File sourceLocal;
+	if (Configuration.isDebug())
+	{
+	    sourceLocal = new File("../../var/default/localscript.lua");
+	}
+	else
+	{
+	    sourceLocal = new File("var/default/localscript.lua");
+	}
 
-        return true;
+	System.out.println("Save local script as: " + path + "/localscript.lua");
+	final File destLocal = new File(path + "/localscript.lua");
+
+	try
+	{
+	    FileUtils.copyFile(sourceLocal, destLocal);
+	}
+	catch (final Exception e)
+	{
+	    throw new ApplicationException("Unable to save script files!", e);
+	}
+
+	return true;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -240,13 +253,14 @@ public class ViewController implements ViewControllerInterface
     @Override
     public boolean saveDocumentation(final String source, final String dest) throws ApplicationException
     {
-        try
-        {
-            FileUtils.copyDirectory(new File(source), new File(dest));
-        } catch (final IOException e)
-        {
-            throw new ApplicationException("Unable to copy documentation!", e);
-        }
-        return true;
+	try
+	{
+	    FileUtils.copyDirectory(new File(source), new File(dest));
+	}
+	catch (final IOException e)
+	{
+	    throw new ApplicationException("Unable to copy documentation!", e);
+	}
+	return true;
     }
 }
