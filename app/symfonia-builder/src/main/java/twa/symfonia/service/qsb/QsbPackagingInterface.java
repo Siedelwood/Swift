@@ -1,6 +1,6 @@
 package twa.symfonia.service.qsb;
 
-import java.util.List;
+import twa.symfonia.model.LoadOrderModel;
 
 /**
  * Packt die QSB inklusive der Zusatzoptionen in den angegebenen Pfad
@@ -13,7 +13,7 @@ public interface QsbPackagingInterface
 
     /**
      * 
-     * @param files
+     * @param loadOrder
      * @param dest
      * @param copyDoc
      * @param copyBaseScripts
@@ -21,8 +21,14 @@ public interface QsbPackagingInterface
      * @param minifyQsb
      * @throws QsbPackagingException
      */
-    public void pack(final List<String> files, final String dest, final boolean copyDoc, final boolean copyBaseScripts,
-	    final boolean copyExamples, final boolean minifyQsb) throws QsbPackagingException;
+    public void pack(
+        final LoadOrderModel loadOrder,
+        final String dest,
+        final boolean copyDoc,
+        final boolean copyBaseScripts,
+        final boolean copyExamples,
+        final boolean minifyQsb
+    ) throws QsbPackagingException;
 
     /**
      * 

@@ -3,7 +3,6 @@ package twa.symfonia.view.window;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JCheckBox;
@@ -15,6 +14,7 @@ import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
 import twa.symfonia.controller.ViewController;
+import twa.symfonia.model.LoadOrderModel;
 import twa.symfonia.service.qsb.QsbPackagingException;
 import twa.symfonia.service.qsb.QsbPackagingInterface;
 import twa.symfonia.service.xml.XmlReaderInterface;
@@ -211,12 +211,12 @@ public class SaveQsbWindow extends AbstractSaveWindow
     /**
      * Gibt die Liste der zu ladenden Quelldateien zurück.
      * 
-     * @return Liste an Quelldateien
+     * @return Load Order
      */
-    private List<String> getScriptFiles()
+    private LoadOrderModel getScriptFiles()
     {
-        final List<String> files = new ArrayList<>();
-        files.add("/core.lua");
+        final LoadOrderModel loadOrder = new LoadOrderModel();
+        loadOrder.add("/core.lua");
 
         // Bundles
         final BundleSelectionWindow bundleWindow = (BundleSelectionWindow) ViewController.getInstance().getWindow(
@@ -226,7 +226,7 @@ public class SaveQsbWindow extends AbstractSaveWindow
         {
             if (b.isChecked())
             {
-                files.add("/bundles/" + b.getID() + "/source.lua");
+                loadOrder.add("/bundles/" + b.getID() + "/source.lua");
             }
         }
 
@@ -236,9 +236,9 @@ public class SaveQsbWindow extends AbstractSaveWindow
 
         for (final SymfoniaJAddOn a : addOnWindow.getBundleList())
         {
-            handleAddOnScriptDependencies(addOnWindow, a, files);
+            handleAddOnScriptDependencies(addOnWindow, a, loadOrder);
         }
-        return files;
+        return loadOrder;
     }
 
     /**
@@ -251,7 +251,7 @@ public class SaveQsbWindow extends AbstractSaveWindow
     private void handleAddOnScriptDependencies(
         final AddOnSelectionWindow addOnWindow,
         final SymfoniaJAddOn addOn,
-        final List<String> files
+        final LoadOrderModel loadOrder
     )
     {
         if (addOn.isChecked())
@@ -263,15 +263,14 @@ public class SaveQsbWindow extends AbstractSaveWindow
                 if (dependency.contains("addon"))
                 {
                     final SymfoniaJBundle addon = addOnWindow.getBundleScrollPane().getBundle(dependency);
-                    handleAddOnScriptDependencies(addOnWindow, addOn, files);
+                    handleAddOnScriptDependencies(addOnWindow, addOn, loadOrder);
                 }
             }
 
             // Quelldatei hinzufügen.
             final String fileName = "/addons/" + addOn.getID() + "/source.lua";
-            if (!files.contains(fileName))
-            {
-                files.add(fileName);
+            if (!loadOrder.isInside(fileName)) {
+                loadOrder.add(fileName);
             }
         }
     }

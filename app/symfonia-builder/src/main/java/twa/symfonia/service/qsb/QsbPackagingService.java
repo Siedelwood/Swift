@@ -3,10 +3,11 @@ package twa.symfonia.service.qsb;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
+
+import twa.symfonia.model.LoadOrderModel;
 
 /**
  * Packt die QSB inklusive der Zusatzoptionen in den angegebenen Pfad
@@ -56,7 +57,7 @@ public class QsbPackagingService implements QsbPackagingInterface
      */
     @Override
     public void pack(
-        final List<String> files,
+        final LoadOrderModel loadOrder,
         final String dest,
         final boolean copyDoc,
         final boolean copyBaseScripts,
@@ -66,7 +67,7 @@ public class QsbPackagingService implements QsbPackagingInterface
     {
         this.minifyQsb = minifyQsb;
 
-        save(files, dest);
+        save(loadOrder, dest);
 
         if (copyBaseScripts)
         {
@@ -137,17 +138,18 @@ public class QsbPackagingService implements QsbPackagingInterface
      * Speichert die QSB in das Verzeichnis. Die QSB beinhaltet alle Quellen aus der
      * Quellenliste.
      * 
-     * @param files Liste der Quelldateien
+     * @param loadOrder Liste der Quelldateien
      * @param dest Zielverzeichnis
      * @throws QsbPackagingException
      */
-    private void save(final List<String> files, final String dest) throws QsbPackagingException
+    private void save(final LoadOrderModel loadOrder, final String dest) throws QsbPackagingException
     {
         try
         {
             final StringBuffer stringBuffer = new StringBuffer();
-            for (final String s : files)
-            {
+            
+            String s;
+            while ((s = loadOrder.next()) != null) {
                 stringBuffer.append(load(s));
             }
 
