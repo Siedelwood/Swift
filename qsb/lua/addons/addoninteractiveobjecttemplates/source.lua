@@ -541,7 +541,7 @@ function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
             -- Bauwagen wurde zerstört
             if not IsExisting(v.ConstructionCart) then
                 AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
-                API.UnuseInteractiveObject(k);
+                API.InteractiveObjectActivate(k);
             end
             -- Bauwagen bewegt sich nicht zum Ziel
             if not Logic.IsEntityMoving(v.ConstructionCart) then
@@ -567,7 +567,7 @@ function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
             if not IsExisting(v.ConstructedTrebuchet) then
                 AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructedTrebuchet = 0;
                 Logic.SetVisible(SiteID, true);
-                API.UnuseInteractiveObject(k);
+                API.InteractiveObjectActivate(k);
             end
             -- Trebuchet hat keine Munition
             if Logic.GetAmmunitionAmount(v.ConstructedTrebuchet) == 0 and BundleEntitySelection.Local.Data.RefillTrebuchet == false then
@@ -581,7 +581,7 @@ function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
             -- Rückkehrwagen wurde zerstört
             if not IsExisting(v.ReturningCart) then
                 AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ReturningCart = 0;
-                API.UnuseInteractiveObject(k);
+                API.InteractiveObjectActivate(k);
             end
 
             local PlayerID = Logic.EntityGetPlayer(v.ReturningCart);
@@ -984,7 +984,7 @@ function AddOnInteractiveObjectTemplates.Global.ControlConstructionSite(_eID)
     if not IsExisting(_eID) then
         local Name = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID].Name;
         Logic.SetVisible(GetID(Name), true);
-        API.UnuseInteractiveObject(Name);
+        API.InteractiveObjectActivate(Name);
         return true;
     end
 end
