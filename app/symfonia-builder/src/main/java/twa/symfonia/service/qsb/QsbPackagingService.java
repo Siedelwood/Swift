@@ -47,42 +47,37 @@ public class QsbPackagingService implements QsbPackagingInterface
      */
     public QsbPackagingService(final String basePath, final String docPath, final LuaMinifyerService minifyer)
     {
-        this.basePath = basePath;
-        this.docPath = docPath;
-        this.minifier = minifyer;
+	this.basePath = basePath;
+	this.docPath = docPath;
+	this.minifier = minifyer;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void pack(
-        final LoadOrderModel loadOrder,
-        final String dest,
-        final boolean copyDoc,
-        final boolean copyBaseScripts,
-        final boolean copyExamples,
-        final boolean minifyQsb
-    ) throws QsbPackagingException
+    public void pack(final LoadOrderModel loadOrder, final String dest, final boolean copyDoc,
+	    final boolean copyBaseScripts, final boolean copyExamples, final boolean minifyQsb)
+	    throws QsbPackagingException
     {
-        this.minifyQsb = minifyQsb;
+	this.minifyQsb = minifyQsb;
 
-        save(loadOrder, dest);
+	save(loadOrder, dest);
 
-        if (copyBaseScripts)
-        {
-            saveBasicScripts(dest);
-        }
+	if (copyBaseScripts)
+	{
+	    saveBasicScripts(dest);
+	}
 
-        if (copyExamples)
-        {
-            saveExamples(dest);
-        }
+	if (copyExamples)
+	{
+	    saveExamples(dest);
+	}
 
-        if (copyDoc)
-        {
-            saveDocumentation(dest);
-        }
+	if (copyDoc)
+	{
+	    saveDocumentation(dest);
+	}
     }
 
     /**
@@ -91,7 +86,7 @@ public class QsbPackagingService implements QsbPackagingInterface
     @Override
     public void saveExamples(final String path) throws QsbPackagingException
     {
-        System.out.println("Not implemented");
+	System.out.println("Not implemented");
     }
 
     /**
@@ -100,21 +95,22 @@ public class QsbPackagingService implements QsbPackagingInterface
     @Override
     public void saveBasicScripts(final String path) throws QsbPackagingException
     {
-        try
-        {
-            final File sourceGlobal = new File(basePath + "/default/globalscript.lua");
-            System.out.println("Save global script as: " + path + "/globalscript.lua");
-            final File destGlobal = new File(path + "/globalscript.lua");
-            FileUtils.copyFile(sourceGlobal, destGlobal);
+	try
+	{
+	    final File sourceGlobal = new File(basePath + "/../default/globalscript.lua");
+	    System.out.println("Save global script as: " + path + "/globalscript.lua");
+	    final File destGlobal = new File(path + "/globalscript.lua");
+	    FileUtils.copyFile(sourceGlobal, destGlobal);
 
-            final File sourceLocal = new File(basePath + "/default/localscript.lua");
-            System.out.println("Save local script as: " + path + "/localscript.lua");
-            final File destLocal = new File(path + "/localscript.lua");
-            FileUtils.copyFile(sourceLocal, destLocal);
-        } catch (final Exception e)
-        {
-            throw new QsbPackagingException("Unable to save script files!", e);
-        }
+	    final File sourceLocal = new File(basePath + "/../default/localscript.lua");
+	    System.out.println("Save local script as: " + path + "/localscript.lua");
+	    final File destLocal = new File(path + "/localscript.lua");
+	    FileUtils.copyFile(sourceLocal, destLocal);
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException("Unable to save script files!", e);
+	}
     }
 
     /**
@@ -123,20 +119,21 @@ public class QsbPackagingService implements QsbPackagingInterface
     @Override
     public void saveDocumentation(final String dest) throws QsbPackagingException
     {
-        try
-        {
-            final File folder = new File(dest);
-            folder.mkdirs();
-            FileUtils.copyDirectory(new File(docPath), folder);
-        } catch (final Exception e)
-        {
-            throw new QsbPackagingException("Unable to copy documentation!", e);
-        }
+	try
+	{
+	    final File folder = new File(dest);
+	    folder.mkdirs();
+	    FileUtils.copyDirectory(new File(docPath), folder);
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException("Unable to copy documentation!", e);
+	}
     }
 
     /**
-     * Speichert die QSB in das Verzeichnis. Die QSB beinhaltet alle Quellen aus der
-     * Quellenliste.
+     * Speichert die QSB in das Verzeichnis. Die QSB beinhaltet alle Quellen aus
+     * der Quellenliste.
      * 
      * @param loadOrder Liste der Quelldateien
      * @param dest Zielverzeichnis
@@ -144,37 +141,40 @@ public class QsbPackagingService implements QsbPackagingInterface
      */
     private void save(final LoadOrderModel loadOrder, final String dest) throws QsbPackagingException
     {
-        try
-        {
-            final StringBuffer stringBuffer = new StringBuffer();
-            
-            String s;
-            while ((s = loadOrder.next()) != null) {
-                stringBuffer.append(load(s));
-            }
+	try
+	{
+	    final StringBuffer stringBuffer = new StringBuffer();
 
-            final File folder = new File(dest);
-            folder.mkdirs();
+	    String s;
+	    while ((s = loadOrder.next()) != null)
+	    {
+		stringBuffer.append(load(s));
+	    }
 
-            final BufferedWriter writer = new BufferedWriter(new FileWriter(dest + "/qsb.lua"));
-            if (minifyQsb)
-            {
-                writer.write(minifier.minify(stringBuffer.toString()));
-            } else
-            {
-                writer.write(stringBuffer.toString());
-            }
-            writer.flush();
-            writer.close();
-        } catch (final Exception e)
-        {
-            throw new QsbPackagingException(e);
-        }
+	    final File folder = new File(dest);
+	    folder.mkdirs();
+
+	    final BufferedWriter writer = new BufferedWriter(new FileWriter(dest + "/qsb.lua"));
+	    if (minifyQsb)
+	    {
+		writer.write(minifier.minify(stringBuffer.toString()));
+	    }
+	    else
+	    {
+		writer.write(stringBuffer.toString());
+	    }
+	    writer.flush();
+	    writer.close();
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException(e);
+	}
     }
 
     /**
-     * Läd eine Lua-Quelldatei und fügt sie dem Buffer hinzu. Line Separators der
-     * Quelldateien werden ignoriert. Es wird \n als Line Separator gesetzt.
+     * Läd eine Lua-Quelldatei und fügt sie dem Buffer hinzu. Line Separators
+     * der Quelldateien werden ignoriert. Es wird \n als Line Separator gesetzt.
      * 
      * @param file Datei zum Laden
      * @return Buffer
@@ -182,20 +182,21 @@ public class QsbPackagingService implements QsbPackagingInterface
      */
     private StringBuffer load(final String file) throws QsbPackagingException
     {
-        try
-        {
-            final StringBuffer stringBuffer = new StringBuffer();
-            final LineIterator it = FileUtils.lineIterator(new File(basePath + file), "UTF-8");
-            while (it.hasNext())
-            {
-                final String line = it.nextLine() + "\n";
-                stringBuffer.append(line);
-            }
-            stringBuffer.append(" ");
-            return stringBuffer;
-        } catch (final Exception e)
-        {
-            throw new QsbPackagingException(e);
-        }
+	try
+	{
+	    final StringBuffer stringBuffer = new StringBuffer();
+	    final LineIterator it = FileUtils.lineIterator(new File(basePath + file), "UTF-8");
+	    while (it.hasNext())
+	    {
+		final String line = it.nextLine() + "\n";
+		stringBuffer.append(line);
+	    }
+	    stringBuffer.append(" ");
+	    return stringBuffer;
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException(e);
+	}
     }
 }
