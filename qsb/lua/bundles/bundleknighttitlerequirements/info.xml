@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>bundleknighttitlerequirements</id>
     <name>Aufstiegsbedingungen</name>
     <description>Mit diesem Bundle können die vorgegebenen Aufstiegsbedinungen geändert werden.</description>
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>bundleentityhelperfunctions</id>
     <name>Hilfsfunktionen: Entities</name>
-    <description>Dieses Bundle enthält häufig gebrauchte Funktionen im Kontext zu Entities.
-    </description>
+    <description>Dieses Bundle enthält häufig gebrauchte Funktionen für Entities.</description>
 
     <dependencies>
     </dependencies>

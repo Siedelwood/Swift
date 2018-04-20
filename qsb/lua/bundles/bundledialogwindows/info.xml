@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>bundledialogwindows</id>
     <name>Dialogfenster</name>
-    <description>Mit diesem Bundle kommen verschiedene Dialog- und ein Textfenster hinzu, mit denen der Spieler interagieren kann.</description>
+    <description>Mit diesem Bundle kommen verschiedene Dialoge hinzu, mit denen der Spieler interagieren kann. Außerdem kann ein Textfenster mit automatisch angezeigter Bildlaufleiste genutzt werden.</description>
 
     <dependencies>
     </dependencies>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
+    <id>bundletradingfunctions</id>
     <name>Handelsfunktionen</name>
     <description>Bietet Funktionen zur Analyse und Manipulation von Angeboten in einem Lagerhaus.</description>
 
