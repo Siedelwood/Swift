@@ -182,6 +182,15 @@ public class AddOnSelectionWindow extends AbstractWindow
             }
         }
     }
+    
+    /**
+     * Gibt das Selektionsfeld mit allen seinen Bundles zurück.
+     * @return Bundle-Selektor
+     */
+    public SymfoniaJAddOnScrollPane getBundleScrollPane()
+    {
+        return bundleScrollPane;
+    }
 
     /**
      * Gibt die Liste der Bundles zurück.
