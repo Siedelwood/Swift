@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import twa.symfonia.config.Configuration;
-import twa.symfonia.controller.ApplicationException;
 import twa.symfonia.controller.ViewController;
 import twa.symfonia.service.gui.BundleTileBuilderService;
 import twa.symfonia.service.qsb.LuaMinifyerService;
@@ -24,6 +23,7 @@ import twa.symfonia.view.window.SaveBaseScriptsWindow;
 import twa.symfonia.view.window.SaveQsbWindow;
 import twa.symfonia.view.window.SelfUpdateWindow;
 import twa.symfonia.view.window.WelcomeWindow;
+import twa.symfonia.view.window.WorkInProgressWindow;
 
 /**
  * Hauptklasse des Symfonia-Builders.
@@ -51,7 +51,7 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      */
     public SymfoniaQsbBuilder(final ViewController controller)
     {
-	this.controller = controller;
+        this.controller = controller;
     }
 
     /**
@@ -63,84 +63,88 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      */
     public void build(final String[] args) throws ApplicationException
     {
-	// Activate debug mode
-	if (args.length > 0 && args[0] != null)
-	{
-	    Configuration.setDebug(true);
-	    System.out.println("Entering dev mode!");
-	}
+        // Activate debug mode
+        if (args.length > 0 && args[0] != null)
+        {
+            Configuration.setDebug(true);
+            System.out.println("Entering dev mode!");
+        }
 
-	try
-	{
-	    final Dimension size = Configuration.getDimension("defaults.window.size");
-	    final BundleTileBuilderService bundleListBuilder = new BundleTileBuilderService();
-	    final String bundlesSourcePath = Configuration.getString("value.path.qsb.bundles");
-	    final String addOnsSourcePath = Configuration.getString("value.path.qsb.addons");
+        try
+        {
+            final Dimension size = Configuration.getDimension("defaults.window.size");
+            final BundleTileBuilderService bundleListBuilder = new BundleTileBuilderService();
+            final String bundlesSourcePath = Configuration.getString("value.path.qsb.bundles");
+            final String addOnsSourcePath = Configuration.getString("value.path.qsb.addons");
 
-	    frame = new SymfoniaJFrame();
-	    frame.setTitle("Symfonia Builder");
-	    frame.setBounds(0, 0, size.width, size.height);
-	    frame.setResizable(false);
-	    frame.setLocationRelativeTo(null);
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame = new SymfoniaJFrame();
+            frame.setTitle("Symfonia Builder");
+            frame.setBounds(0, 0, size.width, size.height);
+            frame.setResizable(false);
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	    String basePath = "qsb/lua";
-	    String docPath = "doc";
-	    if (Configuration.isDebug())
-	    {
-		basePath = "../../qsb/lua";
-		docPath = "../../doc";
-	    }
-	    final QsbPackagingInterface packager = new QsbPackagingService(basePath, docPath, new LuaMinifyerService());
-	    final XmlReaderInterface reader = new XmlReaderStringTableImpl();
+            String basePath = "qsb/lua";
+            String docPath = "doc";
+            if (Configuration.isDebug())
+            {
+                basePath = "../../qsb/lua";
+                docPath = "../../doc";
+            }
+            final QsbPackagingInterface packager = new QsbPackagingService(basePath, docPath, new LuaMinifyerService());
+            final XmlReaderInterface reader = new XmlReaderStringTableImpl();
 
-	    // Willkommensfenster hinzufügen
-	    controller.addWindow("WelcomeWindow", new WelcomeWindow(size.width, size.height, reader));
-	    frame.add(controller.getWindow("WelcomeWindow").getRootPane());
+            // Willkommensfenster hinzufügen
+            controller.addWindow("WelcomeWindow", new WelcomeWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("WelcomeWindow").getRootPane());
 
-	    // Optionsfenster hinzufügen
-	    controller.addWindow("OptionSelectionWindow", new OptionSelectionWindow(size.width, size.height, reader));
-	    frame.add(controller.getWindow("OptionSelectionWindow").getRootPane());
+            // Optionsfenster hinzufügen
+            controller.addWindow("OptionSelectionWindow", new OptionSelectionWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("OptionSelectionWindow").getRootPane());
 
-	    // Selfupdate-Fenster hinzufügen
-	    controller.addWindow("SelfUpdateWindow", new SelfUpdateWindow(size.width, size.height, reader));
-	    frame.add(controller.getWindow("SelfUpdateWindow").getRootPane());
+            // Selfupdate-Fenster hinzufügen
+            controller.addWindow("SelfUpdateWindow", new SelfUpdateWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("SelfUpdateWindow").getRootPane());
 
-	    // Beispiele-Speichern-Fenster hinzufügen
-	    controller.addWindow("SaveBaseScriptsWindow", new SaveBaseScriptsWindow(size.width, size.height, reader));
-	    ((SaveBaseScriptsWindow) controller.getWindow("SaveBaseScriptsWindow")).setPackager(packager);
-	    frame.add(controller.getWindow("SaveBaseScriptsWindow").getRootPane());
+            // Beispiele-Speichern-Fenster hinzufügen
+            controller.addWindow("SaveBaseScriptsWindow", new SaveBaseScriptsWindow(size.width, size.height, reader));
+            ((SaveBaseScriptsWindow) controller.getWindow("SaveBaseScriptsWindow")).setPackager(packager);
+            frame.add(controller.getWindow("SaveBaseScriptsWindow").getRootPane());
 
-	    // QSB-Speichern-Fenster hinzufügen
-	    controller.addWindow("SaveQsbWindow", new SaveQsbWindow(size.width, size.height, reader));
-	    ((SaveQsbWindow) controller.getWindow("SaveQsbWindow")).setPackager(packager);
-	    frame.add(controller.getWindow("SaveQsbWindow").getRootPane());
+            // QSB-Speichern-Fenster hinzufügen
+            controller.addWindow("SaveQsbWindow", new SaveQsbWindow(size.width, size.height, reader));
+            ((SaveQsbWindow) controller.getWindow("SaveQsbWindow")).setPackager(packager);
+            frame.add(controller.getWindow("SaveQsbWindow").getRootPane());
 
-	    // Bundle-Auswahl-Fenster hinzufügen
-	    final List<SymfoniaJBundle> constructedBundles = bundleListBuilder.prepareBundles(bundlesSourcePath);
-	    controller.addWindow("BundleSelectionWindow", new BundleSelectionWindow(size.width, size.height, reader));
-	    final BundleSelectionWindow bundleWindow = (BundleSelectionWindow) controller
-		    .getWindow("BundleSelectionWindow");
-	    bundleWindow.setBundleList(constructedBundles);
-	    frame.add(controller.getWindow("BundleSelectionWindow").getRootPane());
+            // Unfertige-Aktion-Fenster hinzufügen
+            controller.addWindow("WorkInProgressWindow", new WorkInProgressWindow(size.width, size.height, reader));
+            frame.add(controller.getWindow("WorkInProgressWindow").getRootPane());
 
-	    // AddOn-Bundle-Auswahl-Fenster hinzufügen
-	    controller.addWindow("AddOnSelectionWindow", new AddOnSelectionWindow(size.width, size.height, reader));
-	    final AddOnSelectionWindow addOnWindow = (AddOnSelectionWindow) controller
-		    .getWindow("AddOnSelectionWindow");
-	    final List<SymfoniaJAddOn> constructedAddOns = bundleListBuilder.prepareAddOns(addOnsSourcePath,
-		    addOnWindow);
-	    addOnWindow.setBundleList(constructedAddOns);
-	    frame.add(controller.getWindow("AddOnSelectionWindow").getRootPane());
+            // Bundle-Auswahl-Fenster hinzufügen
+            final List<SymfoniaJBundle> constructedBundles = bundleListBuilder.prepareBundles(bundlesSourcePath);
+            controller.addWindow("BundleSelectionWindow", new BundleSelectionWindow(size.width, size.height, reader));
+            final BundleSelectionWindow bundleWindow = (BundleSelectionWindow) controller
+                .getWindow("BundleSelectionWindow");
+            bundleWindow.setBundleList(constructedBundles);
+            frame.add(controller.getWindow("BundleSelectionWindow").getRootPane());
 
-	    // Fenster anzeigen
-	    controller.getWindow("WelcomeWindow").show();
-	    frame.setVisible(true);
-	}
-	catch (final Exception e)
-	{
-	    throw new ApplicationException(e);
-	}
+            // AddOn-Bundle-Auswahl-Fenster hinzufügen
+            controller.addWindow("AddOnSelectionWindow", new AddOnSelectionWindow(size.width, size.height, reader));
+            final AddOnSelectionWindow addOnWindow = (AddOnSelectionWindow) controller
+                .getWindow("AddOnSelectionWindow");
+            final List<SymfoniaJAddOn> constructedAddOns = bundleListBuilder
+                .prepareAddOns(addOnsSourcePath, addOnWindow);
+            addOnWindow.setBundleList(constructedAddOns);
+            frame.add(controller.getWindow("AddOnSelectionWindow").getRootPane());
+
+            // Fenster anzeigen
+            controller.getWindow("WelcomeWindow").show();
+            frame.setVisible(true);
+        }
+        catch (final Exception e)
+        {
+            throw new ApplicationException(e);
+        }
     }
 
     /**
@@ -150,7 +154,7 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      */
     public SymfoniaJFrame getFrame()
     {
-	return frame;
+        return frame;
     }
 
     /**
@@ -161,7 +165,7 @@ public class SymfoniaQsbBuilder extends SymfoniaJFrame
      */
     public static void main(final String[] args) throws ApplicationException
     {
-	final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder(ViewController.getInstance());
-	builder.build(args);
+        final SymfoniaQsbBuilder builder = new SymfoniaQsbBuilder(ViewController.getInstance());
+        builder.build(args);
     }
 }

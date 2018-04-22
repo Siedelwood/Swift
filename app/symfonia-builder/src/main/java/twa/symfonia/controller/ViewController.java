@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FileUtils;
 
+import twa.symfonia.app.ApplicationException;
 import twa.symfonia.config.Configuration;
 import twa.symfonia.view.window.AbstractSaveWindow;
 import twa.symfonia.view.window.WindowInterface;

@@ -9,6 +9,7 @@
     <text id="ButtonSearch">Durchsuchen</text>
     <text id="ButtonSelect">Alle auswählen</text>
     <text id="ButtonDeselect">Alle abwhälen</text>
+    <text id="ButtonComplete">Fertigstellen</text>
     <text id="ButtonOptionWindow0">QSB zusammenstellen</text>
     <text id="ButtonOptionWindow1">Dokumantation anzeigen</text>
     <text id="ButtonOptionWindow2">Basisskripte exportieren</text>
@@ -26,6 +27,9 @@
     <text id="CaptionExamplesWindow">Beispiele kopieren</text>
     <text id="CaptionBaseScriptWindow">Basisskripte kopieren</text>
     <text id="CaptionSaveQsbWindow">QSB fertigstellen</text>
+    <text id="WorkInProgressWindowWorking">Etwas Geduld, bitte...</text>
+    <text id="WorkInProgressWindowReady">Fertig!</text>
+    <text id="WorkInProgressWindowError">Whoops!</text>
     
     <!-- Descriptions -->
     
@@ -46,4 +50,7 @@
     <text id="SaveExampleScripts">Beispiele hinzufügen</text>
     <text id="MinifyQsbScript">QSB-Skript komprimieren</text>
     <text id="CopyDocumentation">Dokumentation hinzufügen</text>
+    <text id="WorkInProgressText">Der Vorgang benötigt etwas Zeit um vollendet zu werden. Bitte schließe das Fenster nicht, solange das Programm noch arbeitet!</text>
+    <text id="WorkIsDoneText">Der Vorgang wurde erfolgreich abgeschlossen!</text>
+    <text id="WorkHasFailedText">Ein Fehler ist aufgetreten! der Vorgang konnte nicht vollendet werden!</text>
 </root>
