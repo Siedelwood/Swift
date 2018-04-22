@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Benutzerinterface]]>
-    </name>
-    <description>
-        <![CDATA[Bietet Funktionen zum Anzeigen/Verstecken von Widgets und
-           Beschriftung von Tooltips an. Außerdem können eigene Grafiken
-           auf Buttons gelegt werden.]]>
-    </description>
+    <id>bundleinterfaceapperance</id>
+    <name>Benutzerinterface</name>
+    <description>Bietet Funktionen zum Anzeigen/Verstecken von Widgets und Beschriftung von Tooltips und eigener Grafiken an.</description>
 
     <dependencies>
     </dependencies>

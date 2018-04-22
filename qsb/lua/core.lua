@@ -917,12 +917,12 @@ function API.ActivateIO(_ScriptName, _State)
         GUI.SendScriptCommand('API.AcrivateIO("' .._ScriptName.. '", ' ..State..')');
         return;
     end
-    if not IsExisting(eName) then
+    if not IsExisting(_ScriptName) then
         return
     end
-    Logic.InteractiveObjectSetAvailability(GetID(eName), true);
+    Logic.InteractiveObjectSetAvailability(GetID(_ScriptName), true);
     for i = 1, 8 do
-        Logic.InteractiveObjectSetPlayerState(GetID(eName), i, State);
+        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, State);
     end
 end
 InteractiveObjectActivate = API.AcrivateIO;

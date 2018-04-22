@@ -42,7 +42,6 @@ SymfoniaLoader = {
             {"BundleClassicBehaviors",              true},
             {"BundleSymfoniaBehaviors",             true},
             {"BundleQuestGeneration",               true},
-            {"BundleQuestDebug",                    true},
             {"BundleNonPlayerCharacter",            true},
             {"BundleKnightTitleRequirements",       true},
             {"BundleInterfaceApperance",            true},
@@ -64,9 +63,14 @@ SymfoniaLoader = {
         
         AddOnLoadOrder = {
             {
+            "AddOnQuestDebug",                      true,
+            "BundleQuestGeneration",
+            },
+            
+            {
             "AddOnInteractiveObjectTemplates",      true,
             "BundleInteractiveObjects",
-            "BundleEntitySelection"
+            "BundleEntitySelection",
             },
         },
     }

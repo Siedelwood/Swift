@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <id>addonquestdebug</id>
+    <name>Quest Debug</name>
+    <description><![CDATA[Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.<br><b>benötigt:</b> Questerzeugung]]></description>
+
+    <dependencies>
+        <dependency>bundlequestgeneration</dependency>
+    </dependencies>
+
+    <exclusions>
+    </exclusions>
+</root>

@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Spielstandfunktionen]]>
-    </name>
-    <description>
-        <![CDATA[Dieses Bundle bietet Funktionen an, mit denen Spielstände.
-           außerhalb des üblichen Ordners gespeichert und geladen werden
-           können.]]>
-    </description>
+    <id>bundlesavegametools</id>
+    <name>Spielstandfunktionen</name>
+    <description>Dieses Bundle bietet Funktionen an, mit denen Spielstände angelegt und geladen werden können.</description>
 
     <dependencies>
     </dependencies>

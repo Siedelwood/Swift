@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Aufstiegsbedingungen]]>
-    </name>
-    <description>
-        <![CDATA[Mit diesem Bundle können die vorgegebenen Aufstiegsbedinungen
-           geändert werden.]]>
-    </description>
+    <id>bundleknighttitlerequirements</id>
+    <name>Aufstiegsbedingungen</name>
+    <description>Mit diesem Bundle können die vorgegebenen Aufstiegsbedinungen geändert werden.</description>
 
     <dependencies>
     </dependencies>

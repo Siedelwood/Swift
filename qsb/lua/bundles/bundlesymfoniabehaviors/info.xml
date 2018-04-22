@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Symfonia Behavior]]>
-    </name>
-    <description>
-        <![CDATA[Dieses Bundle enthält einige weitere nützliche Standard-Behavior.]]>
-    </description>
+    <id>bundlesymfoniabehaviors</id>
+    <name>Symfonia Behavior</name>
+    <description>Dieses Bundle enthält einige weitere nützliche Standard-Behavior.</description>
 
     <dependencies>
     </dependencies>

@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Dialogfenster]]>
-    </name>
-    <description>
-        <![CDATA[Mit diesem Bundle kommen einige Funktionen für das lokale 
-           Skript hinzu, die es ermöglichen verschiedene Dialoge oder ein 
-           Textfenster anzuzeigen.]]>
-    </description>
+    <id>bundledialogwindows</id>
+    <name>Dialogfenster</name>
+    <description>Mit diesem Bundle kommen verschiedene Dialoge hinzu, mit denen der Spieler interagieren kann. Außerdem kann ein Textfenster mit automatisch angezeigter Bildlaufleiste genutzt werden.</description>
 
     <dependencies>
     </dependencies>

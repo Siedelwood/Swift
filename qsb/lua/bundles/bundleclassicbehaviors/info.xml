@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <name>
-        <![CDATA[Klassische Behavior]]>
-    </name>
-    <description>
-        <![CDATA[Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.]]>
-    </description>
+    <id>bundleclassicbehaviors</id>
+    <name>Klassische Behavior</name>
+    <description>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</description>
 
     <dependencies>
     </dependencies>

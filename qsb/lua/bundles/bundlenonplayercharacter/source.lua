@@ -690,10 +690,11 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
         end
     end
     
-    local Offset = 0;
+    local NpcOffset = 0;
     if Logic.IsKnight(GetID(self.Data.NpcName)) then
-        LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, 15);
+        NpcOffset = 15;
     end
+    LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, NpcOffset);
     LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.Data.NpcName, 15);
 end
 

@@ -930,14 +930,19 @@ end
 function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)
     if type(_Icon) == "table" then
         if type(_Icon[3]) == "string" then
+            local ButtonState = 1;
+            if XGUIEng.IsButton(_Widget) == 1 then
+                ButtonState = 7;
+            end
+            
             local u0, u1, v0, v1;
             u0 = (_Icon[1] - 1) * 64;
             v0 = (_Icon[2] - 1) * 64;
             u1 = (_Icon[1]) * 64;
             v1 = (_Icon[2]) * 64;
-            XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
-            XGUIEng.SetMaterialTexture(_Widget, 1, _Icon[3].. "big.png");
-            XGUIEng.SetMaterialUV(_Widget, 1, u0, v0, u1, v1);
+            XGUIEng.SetMaterialAlpha(_Widget, ButtonState, 255);
+            XGUIEng.SetMaterialTexture(_Widget, ButtonState, _Icon[3].. "big.png");
+            XGUIEng.SetMaterialUV(_Widget, ButtonState, u0, v0, u1, v1);
         else
             SetIcon(_Widget, _Icon);
         end
