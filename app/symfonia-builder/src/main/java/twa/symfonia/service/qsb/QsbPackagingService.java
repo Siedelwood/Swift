@@ -86,7 +86,16 @@ public class QsbPackagingService implements QsbPackagingInterface
     @Override
     public void saveExamples(final String path) throws QsbPackagingException
     {
-	System.out.println("Not implemented");
+	try
+	{
+	    final File folder = new File(path + "/Beispiele");
+	    folder.mkdirs();
+	    FileUtils.copyDirectory(new File(basePath + "/../example"), folder);
+	}
+	catch (final Exception e)
+	{
+	    throw new QsbPackagingException("Unable to save example files!", e);
+	}
     }
 
     /**
@@ -97,15 +106,9 @@ public class QsbPackagingService implements QsbPackagingInterface
     {
 	try
 	{
-	    final File sourceGlobal = new File(basePath + "/../default/globalscript.lua");
-	    System.out.println("Save global script as: " + path + "/globalscript.lua");
-	    final File destGlobal = new File(path + "/globalscript.lua");
-	    FileUtils.copyFile(sourceGlobal, destGlobal);
-
-	    final File sourceLocal = new File(basePath + "/../default/localscript.lua");
-	    System.out.println("Save local script as: " + path + "/localscript.lua");
-	    final File destLocal = new File(path + "/localscript.lua");
-	    FileUtils.copyFile(sourceLocal, destLocal);
+	    final File folder = new File(path + "/Basisskripte");
+	    folder.mkdirs();
+	    FileUtils.copyDirectory(new File(basePath + "/../default"), folder);
 	}
 	catch (final Exception e)
 	{
@@ -121,7 +124,7 @@ public class QsbPackagingService implements QsbPackagingInterface
     {
 	try
 	{
-	    final File folder = new File(dest);
+	    final File folder = new File(dest + "/Dokumentation");
 	    folder.mkdirs();
 	    FileUtils.copyDirectory(new File(docPath), folder);
 	}
