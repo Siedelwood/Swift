@@ -3,7 +3,6 @@ package twa.symfonia.config;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -14,6 +13,7 @@ import java.util.Properties;
  */
 public class Configuration
 {
+
     /**
      * 
      */
@@ -25,7 +25,7 @@ public class Configuration
      */
     public static boolean isDebug()
     {
-        return debug;
+	return debug;
     }
 
     /**
@@ -34,7 +34,7 @@ public class Configuration
      */
     public static void setDebug(final boolean flag)
     {
-        debug = flag;
+	debug = flag;
     }
 
     /**
@@ -45,24 +45,25 @@ public class Configuration
      */
     public static String getString(final String key)
     {
-        final Properties property = new Properties();
-        try
-        {
-            String propertyPath = "config/symfonia-builder-config.properties";
-            if (!Configuration.isDebug()) {
-                propertyPath = "resources/config/symfonia-builder-config.properties";
-            }
-            
-            final InputStream propertyStream = Configuration.class.getClassLoader().getResourceAsStream(propertyPath);
-            final URL p = Configuration.class.getClassLoader().getResource(propertyPath);
-            property.load(propertyStream);
-            final String propertyValue = new String(property.getProperty(key).getBytes(), "UTF-8");
-            return propertyValue;
-        } catch (final Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+	final Properties property = new Properties();
+	try
+	{
+	    String propertyPath = "config/symfonia-builder-config.properties";
+	    if (!Configuration.isDebug())
+	    {
+		propertyPath = "resources/config/symfonia-builder-config.properties";
+	    }
+
+	    final InputStream propertyStream = Configuration.class.getClassLoader().getResourceAsStream(propertyPath);
+	    property.load(propertyStream);
+	    final String propertyValue = new String(property.getProperty(key).getBytes(), "UTF-8");
+	    return propertyValue;
+	}
+	catch (final Exception e)
+	{
+	    e.printStackTrace();
+	    return null;
+	}
     }
 
     /**
@@ -73,14 +74,15 @@ public class Configuration
      */
     public static int getInteger(final String key)
     {
-        try
-        {
-            return Integer.parseInt(getString(key));
-        } catch (final Exception e)
-        {
-            e.printStackTrace();
-            return 0;
-        }
+	try
+	{
+	    return Integer.parseInt(getString(key));
+	}
+	catch (final Exception e)
+	{
+	    e.printStackTrace();
+	    return 0;
+	}
     }
 
     /**
@@ -91,14 +93,15 @@ public class Configuration
      */
     public static double getDouble(final String key)
     {
-        try
-        {
-            return Double.parseDouble(getString(key));
-        } catch (final Exception e)
-        {
-            e.printStackTrace();
-            return 0.0;
-        }
+	try
+	{
+	    return Double.parseDouble(getString(key));
+	}
+	catch (final Exception e)
+	{
+	    e.printStackTrace();
+	    return 0.0;
+	}
     }
 
     /**
@@ -110,36 +113,38 @@ public class Configuration
      */
     public static Color getColor(final String key)
     {
-        try
-        {
-            return Color.decode(getString(key));
-        } catch (final Exception e)
-        {
-            e.printStackTrace();
-            return new Color(0, 0, 0);
-        }
+	try
+	{
+	    return Color.decode(getString(key));
+	}
+	catch (final Exception e)
+	{
+	    e.printStackTrace();
+	    return new Color(0, 0, 0);
+	}
     }
 
     /**
-     * Ließt x und y zu einem beliebigen Eintrag in den Properties aus und gibt ein
-     * Dimension-Objekt zurück.
+     * Ließt x und y zu einem beliebigen Eintrag in den Properties aus und gibt
+     * ein Dimension-Objekt zurück.
      * 
      * @param key
      * @return Größe
      */
     public static Dimension getDimension(final String key)
     {
-        int x, y;
-        try
-        {
-            x = getInteger(key + ".x");
-            y = getInteger(key + ".y");
-        } catch (final Exception e)
-        {
-            e.printStackTrace();
-            x = 0;
-            y = 0;
-        }
-        return new Dimension(x, y);
+	int x, y;
+	try
+	{
+	    x = getInteger(key + ".x");
+	    y = getInteger(key + ".y");
+	}
+	catch (final Exception e)
+	{
+	    e.printStackTrace();
+	    x = 0;
+	    y = 0;
+	}
+	return new Dimension(x, y);
     }
 }

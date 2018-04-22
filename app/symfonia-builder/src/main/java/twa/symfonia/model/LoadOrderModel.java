@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Hält eine Reihenfolge von Strings, die nacheinander iteriert werden können.
  * 
  * @author totalwarANGEL
  *
@@ -11,33 +12,34 @@ import java.util.List;
 public class LoadOrderModel
 {
     /**
-     * 
+     * Liste mit Strings
      */
-    private List<String> loadOrder;
+    private final List<String> loadOrder;
 
     /**
-     * 
+     * Iterator
      */
     private int iterator = 0;
 
     /**
-     * 
+     * Constructor
      */
     public LoadOrderModel()
     {
-        final List<String> loadOrder = new ArrayList<>();
+        loadOrder = new ArrayList<>();
     }
 
     /**
+     * Prüft, ob der Text bereits in der Liste steht.
      * 
-     * @param id
-     * @return
+     * @param name Text
+     * @return Text vorhanden
      */
-    public boolean isInside(final String id)
+    public boolean isInside(final String name)
     {
         for (final String s : loadOrder)
         {
-            if (s.equals(id))
+            if (s.equals(name))
             {
                 return true;
             }
@@ -46,8 +48,9 @@ public class LoadOrderModel
     }
 
     /**
+     * Gibt die Liste mit den Texten zurück.
      * 
-     * @return
+     * @return Text-Liste
      */
     public List<String> getLoadOrder()
     {
@@ -55,20 +58,23 @@ public class LoadOrderModel
     }
 
     /**
+     * Fügt einen Text der Liste hinzu, wenn er noch nicht enthalten ist.
      * 
-     * @param id
+     * @param name Text
      */
-    public void add(final String id)
+    public void add(final String name)
     {
-        if (!isInside(id))
+        if (!isInside(name))
         {
-            loadOrder.add(id);
+            loadOrder.add(name);
         }
     }
 
     /**
+     * Iteriert bei jedem Aufruf über die Liste und gibt das nächste Element zurück.
+     * Wenn es kein nächstes Element wird null zurückgegeben.
      * 
-     * @return
+     * @return Text
      */
     public String next()
     {
@@ -83,10 +89,10 @@ public class LoadOrderModel
     }
 
     /**
-     * 
+     * Setzt den Iterator auf die angegebene Position.
      */
-    public void rewind()
+    public void rewind(final Integer idx)
     {
-        iterator = 0;
+        iterator = (idx == null) ? 0 : idx.intValue();
     }
 }
