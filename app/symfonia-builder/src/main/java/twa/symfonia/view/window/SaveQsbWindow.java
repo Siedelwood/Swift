@@ -3,7 +3,6 @@ package twa.symfonia.view.window;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -13,6 +12,7 @@ import javax.swing.event.ListSelectionEvent;
 
 import org.jdesktop.swingx.JXLabel;
 
+import twa.symfonia.app.SymfoniaQsbBuilder;
 import twa.symfonia.config.Configuration;
 import twa.symfonia.controller.ViewController;
 import twa.symfonia.jobs.SaveQsbJob;
@@ -32,9 +32,14 @@ public class SaveQsbWindow extends AbstractSaveWindow
 {
 
     /**
+     * Singleton-Instanz
+     */
+    private static SaveQsbWindow instance;
+
+    /**
      * Option: Basisskripte kopieren
      */
-    private final JCheckBox saveScriptsCheckbox;
+    private JCheckBox saveScriptsCheckbox;
 
     /**
      * Option: QSB komprimieren
@@ -52,9 +57,26 @@ public class SaveQsbWindow extends AbstractSaveWindow
     private JCheckBox copyDocCheckbox;
 
     /**
-     * Service, der die QSB baut
+     * Constructor
      */
-    private QsbPackagingInterface packager;
+    private SaveQsbWindow()
+    {
+        super();
+    }
+
+    /**
+     * Gibt die Singleton-Instanz dieses Fensters zurück.
+     * 
+     * @return Singleton
+     */
+    public static SaveQsbWindow getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new SaveQsbWindow();
+        }
+        return instance;
+    }
 
     /**
      * Constructor
@@ -64,9 +86,10 @@ public class SaveQsbWindow extends AbstractSaveWindow
      * @param reader XML-Reader
      * @throws WindowException
      */
-    public SaveQsbWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    @Override
+    public void initalizeComponents(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
-        super(w, h, reader);
+        super.initalizeComponents(w, h, reader);
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
         final int textSize = Configuration.getInteger("defaults.font.text.size");
@@ -159,6 +182,8 @@ public class SaveQsbWindow extends AbstractSaveWindow
         {
             throw new WindowException(e);
         }
+
+        getRootPane().setVisible(false);
     }
 
     /**
@@ -180,8 +205,6 @@ public class SaveQsbWindow extends AbstractSaveWindow
         // QSB zusammenstellen
         if (aE.getSource() == save)
         {
-            final List<String> files = null;
-
             try
             {
                 final QsbPackagingModel configuration = new QsbPackagingModel(
@@ -189,10 +212,14 @@ public class SaveQsbWindow extends AbstractSaveWindow
                     saveScriptsCheckbox.isSelected(), saveExampleCheckbox.isSelected(), minifyQsbCheckbox.isSelected()
                 );
 
-                final WorkInProgressWindow workInProgress = (WorkInProgressWindow) ViewController.getInstance()
-                    .getWindow("WorkInProgressWindow");
-                workInProgress.setFinishedWindow("OptionSelectionWindow");
-                final SaveQsbJob packagingJob = new SaveQsbJob(workInProgress, packager, configuration);
+                final WorkInProgressWindowManualContinueImpl workInProgress = WorkInProgressWindowManualContinueImpl
+                    .getInstance();
+                workInProgress.setFinishedWindow(OptionSelectionWindow.getInstance());
+
+                final SaveQsbJob packagingJob = new SaveQsbJob(
+                    workInProgress, SymfoniaQsbBuilder.getInstance().getPackager(), configuration
+                );
+
                 workInProgress.show();
                 hide();
 
@@ -207,7 +234,7 @@ public class SaveQsbWindow extends AbstractSaveWindow
         // Zurück
         if (aE.getSource() == back)
         {
-            ViewController.getInstance().getWindow("AddOnSelectionWindow").show();
+            AddOnSelectionWindow.getInstance().show();
             hide();
         }
 
@@ -230,8 +257,7 @@ public class SaveQsbWindow extends AbstractSaveWindow
         loadOrder.add("/core.lua");
 
         // Bundles
-        final BundleSelectionWindow bundleWindow = (BundleSelectionWindow) ViewController.getInstance()
-            .getWindow("BundleSelectionWindow");
+        final BundleSelectionWindow bundleWindow = BundleSelectionWindow.getInstance();
         for (final SymfoniaJBundle b : bundleWindow.getBundleList())
         {
             if (b.isChecked())
@@ -241,8 +267,7 @@ public class SaveQsbWindow extends AbstractSaveWindow
         }
 
         // AddOns
-        final AddOnSelectionWindow addOnWindow = (AddOnSelectionWindow) ViewController.getInstance()
-            .getWindow("AddOnSelectionWindow");
+        final AddOnSelectionWindow addOnWindow = AddOnSelectionWindow.getInstance();
 
         for (final SymfoniaJAddOn a : addOnWindow.getBundleList())
         {
@@ -265,13 +290,11 @@ public class SaveQsbWindow extends AbstractSaveWindow
         if (addOn.isChecked())
         {
             // Benötigte Bundles sind immer da, wenn das AddOn auswählbar ist.
-            // AddOns
-            // hingegen müssen geprüft werden.
+            // AddOns hingegen müssen geprüft werden.
             for (final String dependency : addOn.getDependencies())
             {
                 if (dependency.contains("addon"))
                 {
-                    final SymfoniaJBundle addon = addOnWindow.getBundleScrollPane().getBundle(dependency);
                     handleAddOnScriptDependencies(addOnWindow, addOn, loadOrder);
                 }
             }
@@ -289,6 +312,28 @@ public class SaveQsbWindow extends AbstractSaveWindow
      * {@inheritDoc}
      */
     @Override
+    public void show()
+    {
+        super.show();
+
+        System.out.println("Debug: Show " + this.getClass().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void hide()
+    {
+        super.hide();
+
+        System.out.println("Debug: Hide " + this.getClass().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void handleValueChanged(final ListSelectionEvent a)
     {
     }
@@ -300,7 +345,6 @@ public class SaveQsbWindow extends AbstractSaveWindow
      */
     public void setPackager(final QsbPackagingInterface packager)
     {
-        this.packager = packager;
     }
 
 }

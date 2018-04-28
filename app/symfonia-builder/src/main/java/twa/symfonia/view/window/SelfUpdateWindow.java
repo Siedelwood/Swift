@@ -20,49 +20,78 @@ import twa.symfonia.view.component.SymfoniaJButton;
  */
 public class SelfUpdateWindow extends AbstractWindow
 {
+
+    /**
+     * Singleton Instanz
+     */
+    private static SelfUpdateWindow instance;
+
     /**
      * Titel des Fensters (Label).
      */
-    private final JXLabel title;
+    private JXLabel title;
 
     /**
      * Beschreibungstext des Fensters.
      */
-    private final JXLabel text;
+    private JXLabel text;
 
     /**
      * Buttun zum anzeigen des nächsten Fensters.
      */
-    private final SymfoniaJButton updateMaster;
+    private SymfoniaJButton updateMaster;
 
     /**
      * Beschreibungstext des Fensters.
      */
-    private final JXLabel updateMasterLabel;
+    private JXLabel updateMasterLabel;
 
     /**
      * Buttun zum anzeigen des nächsten Fensters.
      */
-    private final SymfoniaJButton updateDev;
+    private SymfoniaJButton updateDev;
 
     /**
      * Beschreibungstext des Fensters.
      */
-    private final JXLabel updateDevLabel;
+    private JXLabel updateDevLabel;
 
     /**
      * Buttun zum anzeigen des vorherigen Fensters.
      */
-    private final SymfoniaJButton back;
+    private SymfoniaJButton back;
+
+    /**
+     * Constructor
+     */
+    public SelfUpdateWindow()
+    {
+        super();
+    }
+
+    /**
+     * Gibt die Singleton-Instanz des Fensters zurück.
+     * 
+     * @return Singleton
+     */
+    public static SelfUpdateWindow getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new SelfUpdateWindow();
+        }
+        return instance;
+    }
 
     /**
      * {@inheritDoc}
      * 
      * @throws WindowException
      */
-    public SelfUpdateWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    public void initalizeComponent(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
-        super(w, h, reader);
+        super.initalizeComponents(w, h, reader);
+        this.reader = reader;
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
         final int textSize = Configuration.getInteger("defaults.font.text.size");
@@ -124,12 +153,35 @@ public class SelfUpdateWindow extends AbstractWindow
             back.addActionListener(this);
             back.setVisible(true);
             getRootPane().add(back);
-        } catch (final Exception e)
+        }
+        catch (final Exception e)
         {
             throw new WindowException(e);
         }
-        
+
         getRootPane().setVisible(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void show()
+    {
+        super.show();
+
+        System.out.println("Debug: Show " + this.getClass().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void hide()
+    {
+        super.hide();
+
+        System.out.println("Debug: Hide " + this.getClass().getName());
     }
 
     /**
@@ -141,7 +193,7 @@ public class SelfUpdateWindow extends AbstractWindow
         // Zurück
         if (aE.getSource() == back)
         {
-            ViewController.getInstance().getWindow("OptionSelectionWindow").show();
+            OptionSelectionWindow.getInstance().show();
             hide();
         }
 
@@ -166,5 +218,4 @@ public class SelfUpdateWindow extends AbstractWindow
     {
 
     }
-
 }

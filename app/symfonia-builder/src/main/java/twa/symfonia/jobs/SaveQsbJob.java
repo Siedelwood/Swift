@@ -71,6 +71,7 @@ public class SaveQsbJob extends Thread implements JobInterface
         {
             try
             {
+                e.printStackTrace();
                 saveWindow.error();
             }
             catch (final WindowException e1)

@@ -11,7 +11,6 @@ import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
-import twa.symfonia.controller.ViewController;
 import twa.symfonia.service.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJAddOn;
 import twa.symfonia.view.component.SymfoniaJAddOnScrollPane;
@@ -27,6 +26,12 @@ import twa.symfonia.view.component.SymfoniaJButton;
  */
 public class AddOnSelectionWindow extends AbstractWindow
 {
+
+    /**
+     * Singleton instance
+     */
+    protected static AddOnSelectionWindow instance;
+
     /**
      * Liste der Bundles
      */
@@ -40,48 +45,59 @@ public class AddOnSelectionWindow extends AbstractWindow
     /**
      * Dimension des Fensters
      */
-    protected final Dimension size;
+    protected Dimension size;
 
     /**
      * Back Button
      */
-    protected final SymfoniaJButton back;
+    protected SymfoniaJButton back;
 
     /**
      * Next Button
      */
-    protected final SymfoniaJButton next;
+    protected SymfoniaJButton next;
 
     /**
      * Überschrift
      */
-    protected final JXLabel title;
+    protected JXLabel title;
 
     /**
      * Beschreibung
      */
-    protected final JXLabel text;
+    protected JXLabel text;
 
     /**
      * Select all Button
      */
-    protected final SymfoniaJButton select;
+    protected SymfoniaJButton select;
 
     /**
      * Deselect all button
      */
-    protected final SymfoniaJButton deselect;
+    protected SymfoniaJButton deselect;
 
     /**
      * Constructor
+     */
+    public AddOnSelectionWindow()
+    {
+        super();
+    }
+
+    /**
+     * Initalisiert die Komponenten des Fensters.
      * 
      * @param w Breite
      * @param h Höhe
+     * @param reader XML-Reader
      * @throws WindowException
      */
-    public AddOnSelectionWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    @Override
+    public void initalizeComponents(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
-        super(w, h, reader);
+        super.initalizeComponents(w, h, reader);
+        this.reader = reader;
         size = new Dimension(w, h);
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
@@ -134,12 +150,27 @@ public class AddOnSelectionWindow extends AbstractWindow
             deselect.addActionListener(this);
             deselect.setVisible(true);
             getRootPane().add(deselect);
-        } catch (final Exception e)
+        }
+        catch (final Exception e)
         {
             throw new WindowException(e);
         }
 
         getRootPane().setVisible(false);
+    }
+
+    /**
+     * Gibt die Singleton-Instanz dieses Fensters zurück.
+     * 
+     * @return Singleton
+     */
+    public static AddOnSelectionWindow getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new AddOnSelectionWindow();
+        }
+        return instance;
     }
 
     /**
@@ -150,8 +181,7 @@ public class AddOnSelectionWindow extends AbstractWindow
     {
         for (final SymfoniaJAddOn a : getBundleList())
         {
-            final BundleSelectionWindow bundleSelection = (BundleSelectionWindow) ViewController.getInstance()
-                    .getWindow("BundleSelectionWindow");
+            final BundleSelectionWindow bundleSelection = BundleSelectionWindow.getInstance();
             final SymfoniaJBundleScrollPane bundleScrollBox = bundleSelection.getBundleScrollPane();
             boolean dependenciesSatisfied = true;
 
@@ -176,15 +206,17 @@ public class AddOnSelectionWindow extends AbstractWindow
             if (!dependenciesSatisfied)
             {
                 bundleScrollPane.getBundle(a.getID()).setUsable(false);
-            } else
+            }
+            else
             {
                 bundleScrollPane.getBundle(a.getID()).setUsable(true);
             }
         }
     }
-    
+
     /**
      * Gibt das Selektionsfeld mit allen seinen Bundles zurück.
+     * 
      * @return Bundle-Selektor
      */
     public SymfoniaJAddOnScrollPane getBundleScrollPane()
@@ -226,6 +258,19 @@ public class AddOnSelectionWindow extends AbstractWindow
         disableUnsatisfiedAddOns();
 
         getRootPane().setVisible(true);
+
+        System.out.println("Debug: Show " + this.getClass().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void hide()
+    {
+        super.hide();
+
+        System.out.println("Debug: Hide " + this.getClass().getName());
     }
 
     /**
@@ -237,7 +282,7 @@ public class AddOnSelectionWindow extends AbstractWindow
         // Zurück
         if (aE.getSource() == back)
         {
-            ViewController.getInstance().getWindow("BundleSelectionWindow").show();
+            BundleSelectionWindow.getInstance().show();
             bundleScrollPane.setVisible(false);
             hide();
         }
@@ -245,9 +290,9 @@ public class AddOnSelectionWindow extends AbstractWindow
         // Weiter
         else if (aE.getSource() == next)
         {
-            ViewController.getInstance().getWindow("SaveQsbWindow").show();
             bundleScrollPane.setVisible(false);
             hide();
+            SaveQsbWindow.getInstance().show();
         }
 
         // Alle auswählen
