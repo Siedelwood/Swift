@@ -12,22 +12,29 @@ import twa.symfonia.view.component.SymfoniaJPanel;
  * @author angermanager
  *
  */
-public abstract class AbstractWindow implements WindowInterface {
+public abstract class AbstractWindow implements WindowInterface
+{
 
     /**
-     * 
+     * Frame des Fensters
      */
     protected SymfoniaJPanel root;
-    
-    /**
-     * 
-     */
-    protected final XmlReaderInterface reader;
 
     /**
-     * 
+     * XML-Reader
      */
-    public AbstractWindow(final int w, final int h, final XmlReaderInterface reader) {
+    protected XmlReaderInterface reader;
+
+    /**
+     * Initalisiert die Komponenten des Fensters.
+     * 
+     * @param w Breite
+     * @param h Höhe
+     * @param reader XML-Reader
+     * @throws WindowException
+     */
+    public void initalizeComponents(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    {
         this.reader = reader;
         root = new SymfoniaJPanel(null);
         root.setBounds(0, 0, w, h);
@@ -35,27 +42,38 @@ public abstract class AbstractWindow implements WindowInterface {
     }
 
     /**
-     * 
+     * Constructor
+     */
+    public AbstractWindow()
+    {
+    }
+
+    /**
+     * Zeigt den Fensterinhalt an.
      */
     @Override
-    public void show() {
+    public void show()
+    {
         root.setVisible(true);
     }
 
     /**
-     * 
+     * Versteckt den Fensterinhalt.
      */
     @Override
-    public void hide() {
+    public void hide()
+    {
         root.setVisible(false);
     }
 
     /**
+     * Gibt das Frame des Fensters zurück.
      * 
      * @return
      */
     @Override
-    public SymfoniaJPanel getRootPane() {
+    public SymfoniaJPanel getRootPane()
+    {
         return root;
     }
 
@@ -77,7 +95,8 @@ public abstract class AbstractWindow implements WindowInterface {
      * {@inheritDoc}
      */
     @Override
-    public void valueChanged(final ListSelectionEvent aE) {
+    public void valueChanged(final ListSelectionEvent aE)
+    {
         handleValueChanged(aE);
     }
 
@@ -85,10 +104,14 @@ public abstract class AbstractWindow implements WindowInterface {
      * {@inheritDoc}
      */
     @Override
-    public void actionPerformed(final ActionEvent aE) {
-        try {
+    public void actionPerformed(final ActionEvent aE)
+    {
+        try
+        {
             handleActionEvent(aE);
-        } catch (final WindowException e) {
+        }
+        catch (final WindowException e)
+        {
             e.printStackTrace();
         }
     }

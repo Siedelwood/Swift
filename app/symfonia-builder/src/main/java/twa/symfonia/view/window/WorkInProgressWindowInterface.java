@@ -35,6 +35,6 @@ public interface WorkInProgressWindowInterface extends WindowInterface
      * 
      * @param returnPoint
      */
-    public void setFinishedWindow(final String returnPoint);
+    public void setFinishedWindow(final WindowInterface returnPoint);
 
 }

@@ -6,9 +6,9 @@ import java.io.File;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 
+import twa.symfonia.app.SymfoniaQsbBuilder;
 import twa.symfonia.controller.ViewController;
 import twa.symfonia.jobs.SaveBaseScriptsJob;
-import twa.symfonia.service.qsb.QsbPackagingInterface;
 import twa.symfonia.service.xml.XmlReaderInterface;
 
 /**
@@ -21,20 +21,66 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow
 {
 
     /**
-     * Speicher-Service
+     * Singleton-Instanz
      */
-    private QsbPackagingInterface packager;
+    private static SaveBaseScriptsWindow instance;
 
     /**
      * Constructor
+     */
+    private SaveBaseScriptsWindow()
+    {
+        super();
+    }
+
+    /**
+     * Gibt die Singleton-Instanz dieses Fensters zurück.
+     * 
+     * @return Singleton
+     */
+    public static SaveBaseScriptsWindow getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new SaveBaseScriptsWindow();
+        }
+        return instance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void show()
+    {
+        super.show();
+
+        System.out.println("Debug: Show " + this.getClass().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void hide()
+    {
+        super.hide();
+
+        System.out.println("Debug: Hide " + this.getClass().getName());
+    }
+
+    /**
+     * Initalisiert die Komponenten des Fensters.
      * 
      * @param w Breite
      * @param h Höhe
      * @throws WindowException
      */
-    public SaveBaseScriptsWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    @Override
+    public void initalizeComponents(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
-        super(w, h, reader);
+        super.initalizeComponents(w, h, reader);
+        this.reader = reader;
 
         try
         {
@@ -48,15 +94,8 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow
         {
             throw new WindowException(e);
         }
-    }
 
-    /**
-     * 
-     * @param packager
-     */
-    public void setPackager(final QsbPackagingInterface packager)
-    {
-        this.packager = packager;
+        getRootPane().setVisible(false);
     }
 
     /**
@@ -70,12 +109,14 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow
         // Datei(en) speichern
         if (aE.getSource() == save)
         {
-            final WorkInProgressWindow workInProgress = (WorkInProgressWindow) ViewController.getInstance()
-                .getWindow("WorkInProgressWindow");
-            workInProgress.setFinishedWindow("OptionSelectionWindow");
+            final WorkInProgressWindowManualContinueImpl workInProgress = WorkInProgressWindowManualContinueImpl
+                .getInstance();
+            workInProgress.setFinishedWindow(OptionSelectionWindow.getInstance());
+
             final SaveBaseScriptsJob packagingJob = new SaveBaseScriptsJob(
-                workInProgress, packager, fileNameField.getText()
+                workInProgress, SymfoniaQsbBuilder.getInstance().getPackager(), fileNameField.getText()
             );
+
             workInProgress.show();
             hide();
 
@@ -91,7 +132,7 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow
         // Zurück
         if (aE.getSource() == back)
         {
-            ViewController.getInstance().getWindow("OptionSelectionWindow").show();
+            OptionSelectionWindow.getInstance().show();
             hide();
         }
     }
@@ -114,5 +155,4 @@ public class SaveBaseScriptsWindow extends AbstractSaveWindow
         selected = (selected == null) ? new File(".") : selected;
         fileNameField.setText(unixfyPath(selected.getAbsolutePath()));
     }
-
 }

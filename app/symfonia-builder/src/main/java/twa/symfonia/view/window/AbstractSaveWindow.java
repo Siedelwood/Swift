@@ -58,18 +58,25 @@ abstract public class AbstractSaveWindow extends AbstractWindow
     /**
      * Zurück
      */
-    protected final SymfoniaJButton back;
+    protected SymfoniaJButton back;
 
     /**
      * Constructor
-     * 
-     * @param w Breite des Fenster
-     * @param h Höhe des Fenster
-     * @throws WindowException 
      */
-    public AbstractSaveWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    public AbstractSaveWindow()
     {
-        super(w, h, reader);
+        super();
+    }
+
+    /**
+     * @throws WindowException
+     * 
+     */
+    @Override
+    public void initalizeComponents(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    {
+        super.initalizeComponents(w, h, reader);
+        this.reader = reader;
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
         final int textSize = Configuration.getInteger("defaults.font.text.size");
@@ -129,7 +136,8 @@ abstract public class AbstractSaveWindow extends AbstractWindow
             back.addActionListener(this);
             back.setVisible(true);
             getRootPane().add(back);
-        } catch (final Exception e)
+        }
+        catch (final Exception e)
         {
             throw new WindowException(e);
         }
@@ -179,13 +187,15 @@ abstract public class AbstractSaveWindow extends AbstractWindow
         {
             final String newPath = path.replaceAll("\\\\", "/");
             return newPath;
-        } catch (final PatternSyntaxException e)
+        }
+        catch (final PatternSyntaxException e)
         {
             return path;
         }
     }
 
     /**
+     * Gibt den Auswahlbutton zurück.
      * 
      * @return Auswahlbutton
      */
@@ -195,6 +205,7 @@ abstract public class AbstractSaveWindow extends AbstractWindow
     }
 
     /**
+     * Gibt das Feld mit dem Pfad zur ausgewählten Datei zurück.
      * 
      * @return Dateinamensfeld
      */
@@ -204,6 +215,7 @@ abstract public class AbstractSaveWindow extends AbstractWindow
     }
 
     /**
+     * Gibt den Speicher-Button zurück.
      * 
      * @return Speicherbutton
      */
@@ -213,6 +225,7 @@ abstract public class AbstractSaveWindow extends AbstractWindow
     }
 
     /**
+     * Ändert den angezeigten Informationstext.
      * 
      * @param text Neuer Text
      */
@@ -223,6 +236,7 @@ abstract public class AbstractSaveWindow extends AbstractWindow
     }
 
     /**
+     * Callback, nachdem eine Datei ausgewählt wurde.
      * 
      * @param selected Ausgewählte Datei
      */

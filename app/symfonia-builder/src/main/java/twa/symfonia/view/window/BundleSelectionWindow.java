@@ -11,7 +11,6 @@ import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
-import twa.symfonia.controller.ViewController;
 import twa.symfonia.service.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJBundle;
 import twa.symfonia.view.component.SymfoniaJBundleScrollPane;
@@ -25,6 +24,12 @@ import twa.symfonia.view.component.SymfoniaJButton;
  */
 public class BundleSelectionWindow extends AbstractWindow
 {
+
+    /**
+     * Singleton instance
+     */
+    private static BundleSelectionWindow instance;
+
     /**
      * Liste der Bundles
      */
@@ -38,48 +43,70 @@ public class BundleSelectionWindow extends AbstractWindow
     /**
      * Dimension des Fensters
      */
-    protected final Dimension size;
+    protected Dimension size;
 
     /**
      * Back Button
      */
-    protected final SymfoniaJButton back;
+    protected SymfoniaJButton back;
 
     /**
      * Next Button
      */
-    protected final SymfoniaJButton next;
+    protected SymfoniaJButton next;
 
     /**
      * Überschrift
      */
-    protected final JXLabel title;
+    protected JXLabel title;
 
     /**
      * Beschreibung
      */
-    protected final JXLabel text;
+    protected JXLabel text;
 
     /**
      * Select all Button
      */
-    protected final SymfoniaJButton select;
+    protected SymfoniaJButton select;
 
     /**
      * Deselect all button
      */
-    protected final SymfoniaJButton deselect;
+    protected SymfoniaJButton deselect;
 
     /**
      * Constructor
+     */
+    private BundleSelectionWindow()
+    {
+        super();
+    }
+
+    /**
+     * Gibt die Singleton-Instanz dieses Fensters zurück.
      * 
-     * @param w Breite
-     * @param h Höhe
+     * @return Singleton
+     */
+    public static BundleSelectionWindow getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new BundleSelectionWindow();
+        }
+        return instance;
+    }
+
+    /**
+     * Initalisiert die Komponenten dieses Fensters.
+     * 
      * @throws WindowException
      */
-    public BundleSelectionWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    @Override
+    public void initalizeComponents(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
-        super(w, h, reader);
+        super.initalizeComponents(w, h, reader);
+        this.reader = reader;
         size = new Dimension(w, h);
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
@@ -132,7 +159,8 @@ public class BundleSelectionWindow extends AbstractWindow
             deselect.addActionListener(this);
             deselect.setVisible(true);
             getRootPane().add(deselect);
-        } catch (final Exception e)
+        }
+        catch (final Exception e)
         {
             throw new WindowException(e);
         }
@@ -182,6 +210,20 @@ public class BundleSelectionWindow extends AbstractWindow
         getRootPane().add(bundleScrollPane);
 
         getRootPane().setVisible(true);
+
+        System.out.println("Debug: Show " + this.getClass().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void hide()
+    {
+        super.hide();
+        bundleScrollPane.setVisible(false);
+
+        System.out.println("Debug: Hide " + this.getClass().getName());
     }
 
     /**
@@ -193,17 +235,16 @@ public class BundleSelectionWindow extends AbstractWindow
         // Zurück
         if (aE.getSource() == back)
         {
-            ViewController.getInstance().getWindow("OptionSelectionWindow").show();
-            bundleScrollPane.setVisible(false);
+            OptionSelectionWindow.getInstance().show();
             hide();
         }
 
         // Weiter
         if (aE.getSource() == next)
         {
-            ViewController.getInstance().getWindow("AddOnSelectionWindow").show();
             bundleScrollPane.setVisible(false);
             hide();
+            AddOnSelectionWindow.getInstance().show();
         }
 
         // Alle auswählen
