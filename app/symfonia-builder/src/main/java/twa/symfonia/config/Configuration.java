@@ -11,8 +11,7 @@ import java.util.Properties;
  * @author angermanager
  *
  */
-public class Configuration
-{
+public class Configuration {
 
     /**
      * 
@@ -23,18 +22,16 @@ public class Configuration
      * 
      * @return
      */
-    public static boolean isDebug()
-    {
-	return debug;
+    public static boolean isDebug() {
+        return debug;
     }
 
     /**
      * 
      * @param flag
      */
-    public static void setDebug(final boolean flag)
-    {
-	debug = flag;
+    public static void setDebug(final boolean flag) {
+        debug = flag;
     }
 
     /**
@@ -43,27 +40,22 @@ public class Configuration
      * @param key Schlüssel des Wertes
      * @return Zeichenkette aus den Properties
      */
-    public static String getString(final String key)
-    {
-	final Properties property = new Properties();
-	try
-	{
-	    String propertyPath = "config/symfonia-builder-config.properties";
-	    if (!Configuration.isDebug())
-	    {
-		propertyPath = "resources/config/symfonia-builder-config.properties";
-	    }
+    public static String getString(final String key) {
+        final Properties property = new Properties();
+        try {
+            String propertyPath = "config/symfonia-builder-config.properties";
+            if (!Configuration.isDebug()) {
+                propertyPath = "resources/config/symfonia-builder-config.properties";
+            }
 
-	    final InputStream propertyStream = Configuration.class.getClassLoader().getResourceAsStream(propertyPath);
-	    property.load(propertyStream);
-	    final String propertyValue = new String(property.getProperty(key).getBytes(), "UTF-8");
-	    return propertyValue;
-	}
-	catch (final Exception e)
-	{
-	    e.printStackTrace();
-	    return null;
-	}
+            final InputStream propertyStream = Configuration.class.getClassLoader().getResourceAsStream(propertyPath);
+            property.load(propertyStream);
+            final String propertyValue = new String(property.getProperty(key).getBytes(), "UTF-8");
+            return propertyValue;
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -72,17 +64,13 @@ public class Configuration
      * @param key Schlüssel des Wertes
      * @return Ganzzahlwert aus den Properties
      */
-    public static int getInteger(final String key)
-    {
-	try
-	{
-	    return Integer.parseInt(getString(key));
-	}
-	catch (final Exception e)
-	{
-	    e.printStackTrace();
-	    return 0;
-	}
+    public static int getInteger(final String key) {
+        try {
+            return Integer.parseInt(getString(key));
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     /**
@@ -91,17 +79,13 @@ public class Configuration
      * @param key Schlüssel des Wertes
      * @return Fließkommazahl aus den Properties
      */
-    public static double getDouble(final String key)
-    {
-	try
-	{
-	    return Double.parseDouble(getString(key));
-	}
-	catch (final Exception e)
-	{
-	    e.printStackTrace();
-	    return 0.0;
-	}
+    public static double getDouble(final String key) {
+        try {
+            return Double.parseDouble(getString(key));
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return 0.0;
+        }
     }
 
     /**
@@ -111,17 +95,13 @@ public class Configuration
      * @param key Schlüssel des Wertes
      * @return Farbe aus den Properties
      */
-    public static Color getColor(final String key)
-    {
-	try
-	{
-	    return Color.decode(getString(key));
-	}
-	catch (final Exception e)
-	{
-	    e.printStackTrace();
-	    return new Color(0, 0, 0);
-	}
+    public static Color getColor(final String key) {
+        try {
+            return Color.decode(getString(key));
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return new Color(0, 0, 0);
+        }
     }
 
     /**
@@ -131,20 +111,16 @@ public class Configuration
      * @param key
      * @return Größe
      */
-    public static Dimension getDimension(final String key)
-    {
-	int x, y;
-	try
-	{
-	    x = getInteger(key + ".x");
-	    y = getInteger(key + ".y");
-	}
-	catch (final Exception e)
-	{
-	    e.printStackTrace();
-	    x = 0;
-	    y = 0;
-	}
-	return new Dimension(x, y);
+    public static Dimension getDimension(final String key) {
+        int x, y;
+        try {
+            x = getInteger(key + ".x");
+            y = getInteger(key + ".y");
+        } catch (final Exception e) {
+            e.printStackTrace();
+            x = 0;
+            y = 0;
+        }
+        return new Dimension(x, y);
     }
 }

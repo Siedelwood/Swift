@@ -6,10 +6,12 @@ import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 
 import twa.symfonia.config.Configuration;
 import twa.symfonia.controller.ViewController;
+import twa.symfonia.jobs.OptionWindowJob;
 import twa.symfonia.service.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJButton;
 
@@ -22,28 +24,57 @@ public class OptionSelectionWindow extends AbstractWindow
 {
 
     /**
+     * Singleton instance
+     */
+    private static OptionSelectionWindow instance;
+
+    /**
      * Optionsschalter
      */
-    private final Vector<SymfoniaJButton> options;
+    private Vector<SymfoniaJButton> options;
 
     /**
      * Titel
      */
-    private final JLabel title;
+    private JLabel title;
 
     /**
      * Beschreibung
      */
-    private final JLabel text;
+    private JLabel text;
+
+    /**
+     * Constructor
+     */
+    public OptionSelectionWindow()
+    {
+        super();
+    }
+
+    /**
+     * Gibt die Singleton-Instanz dieses Fensters zurück.
+     * 
+     * @return Singleton
+     */
+    public static OptionSelectionWindow getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new OptionSelectionWindow();
+        }
+        return instance;
+    }
 
     /**
      * {@inheritDoc}
      * 
      * @throws WindowException
      */
-    public OptionSelectionWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    @Override
+    public void initalizeComponents(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
-        super(w, h, reader);
+        super.initalizeComponents(w, h, reader);
+        this.reader = reader;
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
         final int textSize = Configuration.getInteger("defaults.font.text.size");
@@ -75,20 +106,67 @@ public class OptionSelectionWindow extends AbstractWindow
                 b.setBounds(60, 150 + (i * 35), w - 120, 30);
                 b.addActionListener(this);
                 b.setVisible(true);
+                b.setEnabled(false);
                 getRootPane().add(b);
                 options.add(b);
             }
-            
-            // Not implemented!
-            options.get(3).setEnabled(false);
-            options.get(4).setEnabled(false);
-            options.get(5).setEnabled(false);
-        } catch (final Exception e)
+        }
+        catch (final Exception e)
         {
             throw new WindowException(e);
         }
 
         getRootPane().setVisible(false);
+    }
+
+    /**
+     * Läd die Interfaces der Optionen, die dem Nutzer zur Verfügung stehen.
+     * 
+     * @throws WindowException
+     */
+    public void loadOptionWindows() throws WindowException
+    {
+        try
+        {
+            final OptionWindowJob optionWindowJob = new OptionWindowJob(this.reader);
+            SwingUtilities.invokeLater(optionWindowJob);
+        }
+        catch (final Exception e)
+        {
+            throw new WindowException(e);
+        }
+    }
+
+    /**
+     * Gibt die Options-Buttons zurück.
+     * 
+     * @return Options-Buttons
+     */
+    public Vector<SymfoniaJButton> getOptions()
+    {
+        return options;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void show()
+    {
+        super.show();
+
+        System.out.println("Debug: Show " + this.getClass().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void hide()
+    {
+        super.hide();
+
+        System.out.println("Debug: Hide " + this.getClass().getName());
     }
 
     /**
@@ -100,17 +178,19 @@ public class OptionSelectionWindow extends AbstractWindow
         // QSB zusammenstellen
         if (aE.getSource() == options.get(0))
         {
-            ViewController.getInstance().getWindow("BundleSelectionWindow").show();
+            BundleSelectionWindow.getInstance().show();
             hide();
         }
 
         // Dokumentation anzeigen
         if (aE.getSource() == options.get(1))
         {
-            if (Configuration.isDebug()) {
+            if (Configuration.isDebug())
+            {
                 ViewController.getInstance().openLocalPage("../../doc/index.html");
             }
-            else {
+            else
+            {
                 ViewController.getInstance().openLocalPage("doc/index.html");
             }
         }
@@ -118,14 +198,14 @@ public class OptionSelectionWindow extends AbstractWindow
         // Basisskripte exportieren
         if (aE.getSource() == options.get(2))
         {
-            ViewController.getInstance().getWindow("SaveBaseScriptsWindow").show();
+            SaveBaseScriptsWindow.getInstance().show();
             hide();
         }
 
         // Self-Update
         if (aE.getSource() == options.get(5))
         {
-            ViewController.getInstance().getWindow("SelfUpdateWindow").show();
+            SelfUpdateWindow.getInstance().show();
             hide();
         }
     }

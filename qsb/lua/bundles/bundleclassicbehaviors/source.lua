@@ -1666,7 +1666,7 @@ Core:RegisterBehavior(b_Goal_SettlersNumber);
 -- @within Goal
 --
 function Goal_Spouses(...)
-    return b_Goal_Spouses:new(...);    
+    return b_Goal_Spouses:new(...);
 end
 
 b_Goal_Spouses = {
@@ -2324,7 +2324,7 @@ Core:RegisterBehavior(b_Goal_InstantFailure);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Quest wird sofort erfüllt. 
+-- Der Quest wird sofort erfüllt.
 --
 -- @return Table mit Behavior
 -- @within Goal
@@ -7186,7 +7186,7 @@ Core:RegisterBehavior(b_Trigger_OnDiplomacy);
 -- @param _Amount   Menge an skreikenden Siedlern
 -- @return Table mit Behavior
 -- @within Trigger
--- 
+--
 function Trigger_OnNeedUnsatisfied(...)
     return b_Trigger_OnNeedUnsatisfied:new(...);
 end
@@ -7242,7 +7242,7 @@ Core:RegisterBehavior(b_Trigger_OnNeedUnsatisfied);
 
 ---
 -- Startet den Quest, wenn die angegebene Mine erschöpft ist.
--- 
+--
 -- @param _ScriptName Skriptname der Mine
 -- @return Table mit Behavior
 -- @within Trigger
@@ -7446,7 +7446,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestActive);
 -- @within Trigger
 --
 function Trigger_OnQuestFailure(...)
-    return b_Trigger_OnQuestFailure(...);
+    return b_Trigger_OnQuestFailure:new(...);
 end
 
 b_Trigger_OnQuestFailure = {
@@ -7525,7 +7525,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestFailure);
 -- @within Trigger
 --
 function Trigger_OnQuestNotTriggered(...)
-    return b_Trigger_OnQuestNotTriggered(...);
+    return b_Trigger_OnQuestNotTriggered:new(...);
 end
 
 b_Trigger_OnQuestNotTriggered = {
@@ -7580,7 +7580,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestNotTriggered);
 -- @within Trigger
 --
 function Trigger_OnQuestInterrupted(...)
-    return b_Trigger_OnQuestInterrupted(...);
+    return b_Trigger_OnQuestInterrupted:new(...);
 end
 
 b_Trigger_OnQuestInterrupted = {
@@ -7659,7 +7659,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestInterrupted);
 -- @within Trigger
 --
 function Trigger_OnQuestOver(...)
-    return b_Trigger_OnQuestOver(...);
+    return b_Trigger_OnQuestOver:new(...);
 end
 
 b_Trigger_OnQuestOver = {
@@ -8429,4 +8429,3 @@ function BundleClassicBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleClassicBehaviors");
-

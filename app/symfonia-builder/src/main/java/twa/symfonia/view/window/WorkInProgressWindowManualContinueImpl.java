@@ -11,7 +11,6 @@ import javax.swing.event.ListSelectionEvent;
 import org.jdesktop.swingx.JXLabel;
 
 import twa.symfonia.config.Configuration;
-import twa.symfonia.controller.ViewController;
 import twa.symfonia.service.xml.XmlReaderInterface;
 import twa.symfonia.view.component.SymfoniaJButton;
 
@@ -21,8 +20,13 @@ import twa.symfonia.view.component.SymfoniaJButton;
  * @author angermanager
  *
  */
-public class WorkInProgressWindow extends AbstractWindow implements WorkInProgressWindowInterface
+public class WorkInProgressWindowManualContinueImpl extends AbstractWindow implements WorkInProgressWindowInterface
 {
+
+    /**
+     * Singleton-Instanz
+     */
+    private static WorkInProgressWindowManualContinueImpl instance;
 
     /**
      * Informationstext
@@ -47,19 +51,43 @@ public class WorkInProgressWindow extends AbstractWindow implements WorkInProgre
     /**
      * Back Button
      */
-    private String returnPoint;
+    private WindowInterface returnPoint;
 
     /**
      * Constructor
+     */
+    private WorkInProgressWindowManualContinueImpl()
+    {
+        super();
+    }
+
+    /**
+     * Gibt die Singleton-Instanz dieses Fensters zurück.
+     * 
+     * @return Singleton
+     */
+    public static WorkInProgressWindowManualContinueImpl getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new WorkInProgressWindowManualContinueImpl();
+        }
+        return instance;
+    }
+
+    /**
+     * Initialisiert die Komponenten dieses Fensters.
      * 
      * @param w Breite
      * @param h Höhe
      * @param reader XML-Reader
      * @throws WindowException
      */
-    public WorkInProgressWindow(final int w, final int h, final XmlReaderInterface reader) throws WindowException
+    @Override
+    public void initalizeComponents(final int w, final int h, final XmlReaderInterface reader) throws WindowException
     {
-        super(w, h, reader);
+        super.initalizeComponents(w, h, reader);
+        this.reader = reader;
         new Dimension(w, h);
 
         final int titleSize = Configuration.getInteger("defaults.font.title.size");
@@ -106,6 +134,30 @@ public class WorkInProgressWindow extends AbstractWindow implements WorkInProgre
         {
             throw new WindowException(e);
         }
+
+        getRootPane().setVisible(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void show()
+    {
+        super.show();
+
+        System.out.println("Debug: Show " + this.getClass().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void hide()
+    {
+        super.hide();
+
+        System.out.println("Debug: Hide " + this.getClass().getName());
     }
 
     /**
@@ -175,7 +227,7 @@ public class WorkInProgressWindow extends AbstractWindow implements WorkInProgre
      * {@inheritDoc}
      */
     @Override
-    public void setFinishedWindow(final String returnPoint)
+    public void setFinishedWindow(final WindowInterface returnPoint)
     {
         this.returnPoint = returnPoint;
     }
@@ -191,7 +243,7 @@ public class WorkInProgressWindow extends AbstractWindow implements WorkInProgre
         {
             if (returnPoint != null)
             {
-                ViewController.getInstance().getWindow(returnPoint).show();
+                returnPoint.show();
                 reset();
                 hide();
             }
