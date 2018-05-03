@@ -4256,7 +4256,7 @@ Core:RegisterBehavior(b_Reward_ObjectDeactivate);
 -- @within Reward
 --
 function Reward_ObjectActivate(...)
-    return Reward_ObjectActivate:new(...);
+    return b_Reward_ObjectActivate:new(...);
 end
 
 b_Reward_ObjectActivate = API.InstanceTable(b_Reprisal_ObjectActivate);
@@ -4294,7 +4294,7 @@ Core:RegisterBehavior(b_Reward_ObjectActivate);
 -- @within Reward
 --
 function Reward_ObjectInit(...)
-    return Reward_ObjectInit:new(...);
+    return b_Reward_ObjectInit:new(...);
 end
 
 b_Reward_ObjectInit = {
