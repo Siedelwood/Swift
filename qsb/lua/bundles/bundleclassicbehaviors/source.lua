@@ -6143,26 +6143,26 @@ end
 
 function b_Reward_AI_SetNumericalFact:DEBUG(_Quest)
     if Logic.GetStoreHouse(self.AIPlayerID) == 0 then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong or dead")
-        return true
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong or dead!");
+        return true;
     elseif not self.NumericalFact then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": invalid numerical fact choosen")
-        return true
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": invalid numerical fact choosen!");
+        return true;
     else
         if self.NumericalFact == "BARB" or self.NumericalFact == "FCOP" or self.NumericalFact == "FMOP" then
             if self.Value ~= 0 and self.Value ~= 1 then
-                dbg(_Quest.Identifier .. " " .. self.Name .. ": BARB, FCOP, FMOP: value must be 1 or 0")
-                return true
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": BARB, FCOP, FMOP: value must be 1 or 0!");
+                return true;
             end
         elseif self.NumericalFact == "FEAR" then
             if self.Value <= 0 then
-                dbg(_Quest.Identifier .. " " .. self.Name .. ": FEAR: value must greater than 0")
-                return true
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": FEAR: value must greater than 0!");
+                return true;
             end
         else
             if self.Value < 0 then
-                dbg(_Quest.Identifier .. " " .. self.Name .. ": BPMX, FMBM, FMSM, FMRA, FMCA, FMAC, FMST, FMBA: value must greater than or equal 0")
-                return true
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": value must always greater than or equal 0!");
+                return true;
             end
         end
     end

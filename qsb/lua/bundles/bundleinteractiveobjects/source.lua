@@ -368,6 +368,8 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
         end
 
         GameCallback_OnObjectInteraction = function(__entityID_, _PlayerID)
+            OnInteractiveObjectOpened(__entityID_, _PlayerID);
+            OnTreasureFound(__entityID_, _PlayerID);
             local eName = Logic.GetEntityName(__entityID_);
             for k,v in pairs(IO)do
                 if k == eName then
@@ -377,8 +379,6 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
                     end
                 end
             end
-            OnInteractiveObjectOpened(__entityID_, _PlayerID);
-            OnTreasureFound(__entityID_, _PlayerID);
         end
 
         GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnID, _Type, _Amount)
@@ -566,7 +566,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                     GUI_Interaction.InteractiveObjectUpdateEx1(Widget, EntityType);
                 end
                 if IO[entityName] then
-                    BundleInteractiveObjects.Local:SetIcon(Widget,IO[entityName].Texture);
+                    BundleInteractiveObjects.Local:SetIcon(Widget, IO[entityName].Texture);
                 end
                 XGUIEng.ShowWidget(Widget, 1);
             end
@@ -920,6 +920,7 @@ end
 
 ---
 -- Ändert die Textur eines Icons des aktuellen Widget.
+-- TODO: Eigene Matrizen nicht - Grund unbekannt.
 --
 -- @param _Widget Icon Widget
 -- @param _Icon   Icon Textur

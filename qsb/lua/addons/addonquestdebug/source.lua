@@ -439,7 +439,7 @@ function AddOnQuestDebug.Global:LoadScript(_Arguments, _Flags)
         if _Flags == true then
             Logic.ExecuteInLuaLocalState([[Script.Load("]].._Arguments[2]..[[")]]);
         elseif _Flags == false then
-            Script.Load(__arguments_[2]);
+            Script.Load(_Arguments[2]);
         end
         if not self.Data.SurpassMessages then
             Logic.DEBUG_AddNote("load script ".._Arguments[2]);
