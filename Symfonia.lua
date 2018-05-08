@@ -3251,7 +3251,7 @@ Core:RegisterBehavior(b_Goal_SettlersNumber);
 -- @within Goal
 --
 function Goal_Spouses(...)
-    return b_Goal_Spouses:new(...);    
+    return b_Goal_Spouses:new(...);
 end
 
 b_Goal_Spouses = {
@@ -3909,7 +3909,7 @@ Core:RegisterBehavior(b_Goal_InstantFailure);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Quest wird sofort erfüllt. 
+-- Der Quest wird sofort erfüllt.
 --
 -- @return Table mit Behavior
 -- @within Goal
@@ -5841,7 +5841,7 @@ Core:RegisterBehavior(b_Reward_ObjectDeactivate);
 -- @within Reward
 --
 function Reward_ObjectActivate(...)
-    return Reward_ObjectActivate:new(...);
+    return b_Reward_ObjectActivate:new(...);
 end
 
 b_Reward_ObjectActivate = API.InstanceTable(b_Reprisal_ObjectActivate);
@@ -5879,7 +5879,7 @@ Core:RegisterBehavior(b_Reward_ObjectActivate);
 -- @within Reward
 --
 function Reward_ObjectInit(...)
-    return Reward_ObjectInit:new(...);
+    return b_Reward_ObjectInit:new(...);
 end
 
 b_Reward_ObjectInit = {
@@ -7728,26 +7728,26 @@ end
 
 function b_Reward_AI_SetNumericalFact:DEBUG(_Quest)
     if Logic.GetStoreHouse(self.AIPlayerID) == 0 then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong or dead")
-        return true
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong or dead!");
+        return true;
     elseif not self.NumericalFact then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": invalid numerical fact choosen")
-        return true
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": invalid numerical fact choosen!");
+        return true;
     else
         if self.NumericalFact == "BARB" or self.NumericalFact == "FCOP" or self.NumericalFact == "FMOP" then
             if self.Value ~= 0 and self.Value ~= 1 then
-                dbg(_Quest.Identifier .. " " .. self.Name .. ": BARB, FCOP, FMOP: value must be 1 or 0")
-                return true
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": BARB, FCOP, FMOP: value must be 1 or 0!");
+                return true;
             end
         elseif self.NumericalFact == "FEAR" then
             if self.Value <= 0 then
-                dbg(_Quest.Identifier .. " " .. self.Name .. ": FEAR: value must greater than 0")
-                return true
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": FEAR: value must greater than 0!");
+                return true;
             end
         else
             if self.Value < 0 then
-                dbg(_Quest.Identifier .. " " .. self.Name .. ": BPMX, FMBM, FMSM, FMRA, FMCA, FMAC, FMST, FMBA: value must greater than or equal 0")
-                return true
+                dbg(_Quest.Identifier .. " " .. self.Name .. ": value must always greater than or equal 0!");
+                return true;
             end
         end
     end
@@ -8771,7 +8771,7 @@ Core:RegisterBehavior(b_Trigger_OnDiplomacy);
 -- @param _Amount   Menge an skreikenden Siedlern
 -- @return Table mit Behavior
 -- @within Trigger
--- 
+--
 function Trigger_OnNeedUnsatisfied(...)
     return b_Trigger_OnNeedUnsatisfied:new(...);
 end
@@ -8827,7 +8827,7 @@ Core:RegisterBehavior(b_Trigger_OnNeedUnsatisfied);
 
 ---
 -- Startet den Quest, wenn die angegebene Mine erschöpft ist.
--- 
+--
 -- @param _ScriptName Skriptname der Mine
 -- @return Table mit Behavior
 -- @within Trigger
@@ -9031,7 +9031,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestActive);
 -- @within Trigger
 --
 function Trigger_OnQuestFailure(...)
-    return b_Trigger_OnQuestFailure(...);
+    return b_Trigger_OnQuestFailure:new(...);
 end
 
 b_Trigger_OnQuestFailure = {
@@ -9110,7 +9110,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestFailure);
 -- @within Trigger
 --
 function Trigger_OnQuestNotTriggered(...)
-    return b_Trigger_OnQuestNotTriggered(...);
+    return b_Trigger_OnQuestNotTriggered:new(...);
 end
 
 b_Trigger_OnQuestNotTriggered = {
@@ -9165,7 +9165,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestNotTriggered);
 -- @within Trigger
 --
 function Trigger_OnQuestInterrupted(...)
-    return b_Trigger_OnQuestInterrupted(...);
+    return b_Trigger_OnQuestInterrupted:new(...);
 end
 
 b_Trigger_OnQuestInterrupted = {
@@ -9244,7 +9244,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestInterrupted);
 -- @within Trigger
 --
 function Trigger_OnQuestOver(...)
-    return b_Trigger_OnQuestOver(...);
+    return b_Trigger_OnQuestOver:new(...);
 end
 
 b_Trigger_OnQuestOver = {
@@ -10014,7 +10014,6 @@ function BundleClassicBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleClassicBehaviors");
-
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia BundleSymfoniaBehaviors                                      # --
@@ -27294,10 +27293,8 @@ function BundleBuildingButtons.Local:OverwriteAutoToggle()
         or Logic.IsBuildingBeingKnockedDown(EntityID) == true
         or Logic.IsBurning(EntityID) == true
         or MaxHealth-Health > 0 then
-            XGUIEng.DisableButton(CurrentWidgetID, 1);
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
             return;
-        else
-            XGUIEng.DisableButton(CurrentWidgetID, 0);
         end
         BundleBuildingButtons.Local.Data.OptionalButton1.UpdateFunction(CurrentWidgetID, EntityID);
     end
@@ -27357,9 +27354,8 @@ function BundleBuildingButtons.Local:OverwriteGateOpenClose()
         or Logic.IsBuildingBeingKnockedDown(EntityID) == true
         or Logic.IsBurning(EntityID) == true
         or MaxHealth-Health > 0 then
-            XGUIEng.DisableButton(CurrentWidgetID, 1);
-        else
-            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            XGUIEng.ShowWidget(CurrentWidgetID, 0);
+            return;
         end
         BundleBuildingButtons.Local.Data.OptionalButton2.UpdateFunction(CurrentWidgetID, EntityID);
     end
@@ -28200,6 +28196,8 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
         end
 
         GameCallback_OnObjectInteraction = function(__entityID_, _PlayerID)
+            OnInteractiveObjectOpened(__entityID_, _PlayerID);
+            OnTreasureFound(__entityID_, _PlayerID);
             local eName = Logic.GetEntityName(__entityID_);
             for k,v in pairs(IO)do
                 if k == eName then
@@ -28209,8 +28207,6 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
                     end
                 end
             end
-            OnInteractiveObjectOpened(__entityID_, _PlayerID);
-            OnTreasureFound(__entityID_, _PlayerID);
         end
 
         GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnID, _Type, _Amount)
@@ -28398,7 +28394,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                     GUI_Interaction.InteractiveObjectUpdateEx1(Widget, EntityType);
                 end
                 if IO[entityName] then
-                    BundleInteractiveObjects.Local:SetIcon(Widget,IO[entityName].Texture);
+                    BundleInteractiveObjects.Local:SetIcon(Widget, IO[entityName].Texture);
                 end
                 XGUIEng.ShowWidget(Widget, 1);
             end
@@ -28752,6 +28748,7 @@ end
 
 ---
 -- Ändert die Textur eines Icons des aktuellen Widget.
+-- TODO: Eigene Matrizen nicht - Grund unbekannt.
 --
 -- @param _Widget Icon Widget
 -- @param _Icon   Icon Textur
@@ -29649,7 +29646,7 @@ function AddOnQuestDebug.Global:LoadScript(_Arguments, _Flags)
         if _Flags == true then
             Logic.ExecuteInLuaLocalState([[Script.Load("]].._Arguments[2]..[[")]]);
         elseif _Flags == false then
-            Script.Load(__arguments_[2]);
+            Script.Load(_Arguments[2]);
         end
         if not self.Data.SurpassMessages then
             Logic.DEBUG_AddNote("load script ".._Arguments[2]);
