@@ -56,11 +56,12 @@ end
 AddQuest = API.AddQuest;
 
 ---
+-- DO NOT USE THIS FUNCTION!
 -- Startet alle mittels API.AddQuest initalisierten Quests.
 --
 -- <b>Alias</b>: StartQuests
 --
--- @within Public
+-- @within Private
 --
 function API.StartQuests()
     if GUI then
@@ -138,7 +139,7 @@ function API.QuestDialog(_Messages)
         API.Log("API.QuestDialog: Could not execute in local script!");
         return;
     end
-    
+
     local QuestID, Quest
     local GeneratedQuests = {};
     for i= 1, #_Messages, 1 do
@@ -228,7 +229,7 @@ end
 --
 function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
     self.Data.QuestMessageID = self.Data.QuestMessageID +1;
-    
+
     -- Trigger-Nachbau
     local OnQuestOver = {
         Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
@@ -242,14 +243,14 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
             return false;
         end}
     }
-    
+
     -- Lokalisierung
     local Language = (Network.GetDesiredLanguage() == "de" or "de") or "en";
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
     assert(type(_Text) == "string");
-    
+
     return QuestTemplate:New(
         "QSB_QuestMessage_" ..self.Data.QuestMessageID,
         (_Sender or 1),
@@ -304,7 +305,8 @@ function BundleQuestGeneration.Global:NewQuest(_Data)
     table.insert(self.Data.GenerationList, QuestData);
     local ID = #self.Data.GenerationList;
     self:AttachBehavior(ID, _Data);
-    return ID;
+    self:StartQuests();
+    return Quests[0];
 end
 
 ---
@@ -506,4 +508,3 @@ function BundleQuestGeneration.Local:Install()
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
-
