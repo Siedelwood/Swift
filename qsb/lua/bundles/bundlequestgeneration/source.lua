@@ -245,7 +245,7 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
     }
 
     -- Lokalisierung
-    local Language = (Network.GetDesiredLanguage() == "de" or "de") or "en";
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
