@@ -32,7 +32,9 @@ QSB = QSB or {};
 ---
 -- Setzt den Zustand von Quest Timern während biefings.
 --
--- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
+-- Während eines Briefings vergeht generell keine Zeit. Folglich ist der
+-- Niederlage Timer generell inaktiv. Werden Quests während Briefings nicht
+-- pausiert, zählen Niederlage Timer unterdessen weiter!
 --
 -- <b>Alias</b>: PauseQuestsDuringBriefings
 --
@@ -143,6 +145,29 @@ function API.AddPages(_briefing)
     return BundleBriefingSystem.Global:AddPages(_briefing);
 end
 AddPages = API.AddPages;
+
+---
+-- Schreibt während eines Briefings eine zusätzliche Textnachricht auf den
+-- Bildschirm. Die Nachricht wird, in Abhängigkeit zur Textlänge, nach ein
+-- paar Sekunden verschrinden.
+--
+-- <b>Alias:</b> BriefingMessage
+--
+-- @param _Text	Anzuzeigender Text
+-- @within Public
+--
+function API.AddBriefingNote(_Text)
+    if type(_Text) ~= "string" and type(_Text) ~= "number" then
+        API.Dbg("API.BriefingNote: Text must be a string or a number!");
+        return;
+    end
+    if not GUI then
+        API.Bridge([[API.BriefingNote("]] .._Text.. [[")]]);
+        return;
+    end
+    return BriefingSystem.PushInformationText(_text);
+end
+BriefingMessage = API.AddBriefingNote;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -258,7 +283,7 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
     -- Index der Zielseite angebenen.
     -- Für Multiple Choice dienen leere AP-Seiten als Signal, dass
     -- ein Briefing an dieser Stelle endet.
-    -- 
+    --
     -- @param _page	Seite
     -- @return table: Page
     --
@@ -340,7 +365,7 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
         end
         return _page;
     end
-    
+
     ---
     -- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
     -- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
@@ -356,7 +381,7 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
     local ASP = function(_entity, _title, _text, _dialogCamera, _action)
         local Entity = Logic.GetEntityName(GetID(_entity));
         assert(Entity ~= nil and Entity ~= "");
-        
+
         local page  = {};
         page.zoom   = (_dialogCamera == true and 2400 ) or 6250;
         page.angle  = (_dialogCamera == true and 40 ) or 47;
@@ -382,7 +407,7 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
     local ASMC = function(_entity, _title, _text, _dialogCamera, ...)
         local Entity = Logic.GetEntityName(GetID(_entity));
         assert(Entity ~= nil and Entity ~= "");
-        
+
         local page    = {};
         page.zoom     = (_dialogCamera == true and 2400 ) or 6250;
         page.angle    = (_dialogCamera == true and 40 ) or 47;
@@ -509,7 +534,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
 
             return true
         end
-        
+
         BundleBriefingSystem:OverwriteGetPosition();
     end
 
@@ -637,7 +662,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         if _briefing.hideBorderPins then
             Logic.ExecuteInLuaLocalState([[Display.SetRenderBorderPins(0)]]);
         end
-        
+
         -- Himmel anzeigen
         if _briefing.showSky then
             Logic.ExecuteInLuaLocalState([[Display.SetRenderSky(1)]]);
@@ -655,7 +680,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
             if _briefing.hideBorderPins then
                 Logic.ExecuteInLuaLocalState([[Display.SetRenderBorderPins(1)]]);
             end
-            
+
             --
             if _briefing.showSky then
                 Logic.ExecuteInLuaLocalState([[Display.SetRenderSky(0)]]);
@@ -1109,9 +1134,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             GUI.ClearSelection();
         end
     end
-    
+
     -- ---------------------------------------------------------------------- --
-    
+
     DBlau     = "{@color:70,70,255,255}";
     Blau     = "{@color:153,210,234,255}";
     Weiss     = "{@color:255,255,255,255}";
@@ -1522,7 +1547,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             GUI.SendScriptCommand("BriefingSystem.SkipBriefingPage(" .. GUI.GetPlayerID() .. ")");
         end
     end
-    
+
     -- Zeigt die Rahmen an. Dabei gibt es schmale Rahmen, breite Rahmen
     -- und jeweils noch transparente Versionen. Es kann auch gar kein
     -- Rahmen angezeigt werden.
@@ -1657,7 +1682,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         table.remove(BriefingSystem.InformationTextQueue, 1);
     end
 
-    -- Kontrolliert die ANzeige der Notizen während eines Briefings.
+    -- Kontrolliert die Anzeige der Notizen während eines Briefings.
     -- Die Nachrichten werden solange angezeigt, wie ihre Anzeigezeit
     -- noch nicht abgelaufen ist.
     --
@@ -1916,20 +1941,26 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                     endPosition = startPosition;
                 end
 
-
+                -- Interpolationsfaktor
                 local factor = BriefingSystem.InterpolationFactor(startTime, currTime, flyTime, flight);
+
+                -- Kamera
                 local lookAtX, lookAtY, lookAtZ = BriefingSystem.GetCameraPosition(startPosition, endPosition, factor);
-                Camera.ThroneRoom_SetLookAt(lookAtX, lookAtY, lookAtZ);
                 local zoomDistance = startZoomDistance + (endZoomDistance - startZoomDistance) * factor;
                 local zoomAngle = startZoomAngle + (endZoomAngle - startZoomAngle) * factor;
                 local rotation = startRotation + (endRotation - startRotation) * factor;
                 local line = zoomDistance * math.cos(math.rad(zoomAngle));
+
+                Camera.ThroneRoom_SetLookAt(lookAtX, lookAtY, lookAtZ);
                 Camera.ThroneRoom_SetPosition(
                     lookAtX + math.cos(math.rad(rotation - 90)) * line,
                     lookAtY + math.sin(math.rad(rotation - 90)) * line,
                     lookAtZ + (zoomDistance) * math.sin(math.rad(zoomAngle))
                 );
                 Camera.ThroneRoom_SetFOV(startFOV + (endFOV - startFOV) * factor);
+
+                -- Splashscreen
+                -- FIXME
 
             -- ---------------------------------------------------------
             -- Cutscene notation by totalwarANGEL
@@ -1938,6 +1969,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             -- Die Cutscene Notation von totalwarANGEL ermöglicht es viele
             -- Kameraeffekte einfacher umzusetzen, da man die Kamera über
             -- eine Position und eine Blickrichtung steuert.
+            -- Es KANN vorkommen, dass die Bewegung flüssiger wird.
 
             else
                 local cutscene = BriefingSystem.Flight.Cutscene;
@@ -2006,6 +2038,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
 
                     -- Setzt den Bildschirmausschnitt
                     Camera.ThroneRoom_SetFOV(StartFOV + (EndFOV - StartFOV) * Factor);
+
+                    -- Splashscreen
+                    -- FIXME
                 end
             end
 
@@ -2291,7 +2326,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
         XGUIEng.ShowWidget(BG, 1);
     end
-    
+
     BundleBriefingSystem:OverwriteGetPosition();
 end
 
@@ -2527,4 +2562,3 @@ function b_Trigger_Briefing:DEBUG(__quest_)
 end
 
 Core:RegisterBehavior(b_Trigger_Briefing)
-
