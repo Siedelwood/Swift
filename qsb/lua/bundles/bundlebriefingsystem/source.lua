@@ -18,6 +18,9 @@
 -- und Ursprungspunkt) und sollten ausschließlich für szenerische Untermalung
 -- der Handlung eingesetzt werden.
 --
+-- Splashscreens stehen sowohl in Briefings als auch in Cutscenes zuer Verfügung
+-- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden.
+--
 -- @module BundleBriefingSystem
 -- @set sort=true
 --
@@ -43,7 +46,7 @@ QSB = QSB or {};
 --
 function API.PauseQuestsDuringBriefings(_Flag)
     if GUI then
-        API.Dbg("API.PauseQuestsDuringBriefings: Can only be used in the global script!");
+        API.Bridge("API.PauseQuestsDuringBriefings(" ..tostring(_Flag).. ")");
         return;
     end
     return BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag);
