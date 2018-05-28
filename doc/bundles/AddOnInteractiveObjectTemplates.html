@@ -75,7 +75,8 @@
 <h1>Bundle <code>AddOnInteractiveObjectTemplates</code></h1>
 <p>Dieses Bundle bietet fertige Schablonen für interaktive Objekte.</p>
 <p> Mit diesen
- Schablonen können interaktive Objekte einfach erstellt und gehandhabt werden.
+ Schablonen können komplexere interaktive Objekte einfach erstellt und durch
+ den Mapper genutzt werden.
 <p> <p>
  <b>Interaktive Baustellen:</b><br>
  Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei
@@ -85,19 +86,19 @@
  </p>
  <p>
  <b>Interaktive Schatztruhen:</b><br>
- Es werden Schatztruhen mit zufälligen Inhalt erzeugt. Diese Truhen werden
- aktiviert und der Inhalt wird in einem Karren abtranzportiert.
+ Es werden Schatztruhen mit zufälligem Inhalt erzeugt. Diese Truhen werden
+ aktiviert und der Inhalt wird in einem Karren abtransportiert.
  </p>
  <p>
  <b>Interaktive Minen:</b><br>
- Der Spieler kann eine Steinmine oder Eisenmine erzeugen, die zuerst durch
+ Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch
  Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.
- <br>Optional kann diese Mine auch nach dem Erschöpfen einstürzen.
+ <br>Optional kann die Mine einstürzen, wenn sie erschöpft wurde.
  </p>
  <p>
  <b>Trebuchet-Baustellen:</b><br>
- Der Spieler kann Trebuchets mieten. Das Trebuchet fährt als Karren vor,
- wird ausgebaut und kann anschließend benutzt werden.<br> Das Trebuchet fährt
+ Der Spieler kann Trebuchet mieten. Das Trebuchet fährt als Karren vor,
+ wird aufgebaut und kann anschließend benutzt werden.<br> Das Trebuchet fährt
  ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.<br>
  Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
  ankommt, wird die Baustelle wieder freigegeben.
@@ -109,19 +110,19 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateIOBuildingSite">API.CreateIOBuildingSite (_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)</a></td>
-	<td class="summary">Erzeugt eine Baustelle an der Position.</td>
+	<td class="summary">Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateIOIronMine">API.CreateIOIronMine (_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)</a></td>
-	<td class="summary">Erstelle eine Eisenmine.</td>
+	<td class="summary">Erstelle eine verschüttete Eisenmine.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateIOMine">API.CreateIOMine (_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)</a></td>
-	<td class="summary">Erstelle eine Mine eines bestimmten Typs.</td>
+	<td class="summary">Erstelle eine verschüttete Mine eines bestimmten Typs.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateIOStoneMine">API.CreateIOStoneMine (_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)</a></td>
-	<td class="summary">Erstelle eine Steinmine.</td>
+	<td class="summary">Erstelle eine verschüttete Steinmine.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateRandomChest">API.CreateRandomChest (_Name, _Good, _Min, _Max, _Callback)</a></td>
@@ -130,18 +131,17 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateRandomGoldChest">API.CreateRandomGoldChest (_Name)</a></td>
-	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Menge an Gold
- des angegebenen Typs.</td>
+	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateRandomLuxuryChest">API.CreateRandomLuxuryChest (_Name)</a></td>
-	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Menge an Luxus-
- gütern des angegebenen Typs.</td>
+	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+ an Luxusgütern.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateRandomResourceChest">API.CreateRandomResourceChest (_Name)</a></td>
-	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Menge an Gütern
- des angegebenen Typs.</td>
+	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+ an Gütern.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CreateTrebuchetConstructionSite">API.CreateTrebuchetConstructionSite (_Name, _GoldCost, _WoodCost)</a></td>
@@ -150,7 +150,19 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.DestroyTrebuchetConstructionSite">API.DestroyTrebuchetConstructionSite (_Name)</a></td>
-	<td class="summary">Zerstört eine Trebuchet-Baustelle.</td>
+	<td class="summary">Zerstört eine Trebuchet-Baustelle, aber nicht die Skript Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetConstructionCartByTrebuchetConstructionSite">API.GetConstructionCartByTrebuchetConstructionSite (_Name)</a></td>
+	<td class="summary">Gibt die EntityID des Abreisewagens der Trebuchet-Baustelle zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetReturningCartByTrebuchetConstructionSite">API.GetReturningCartByTrebuchetConstructionSite (_Name)</a></td>
+	<td class="summary">Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetTrebuchetByTrebuchetConstructionSite">API.GetTrebuchetByTrebuchetConstructionSite (_Name)</a></td>
+	<td class="summary">Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.</td>
 	</tr>
 </table>
 
@@ -166,7 +178,16 @@
     <strong>API.CreateIOBuildingSite (_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)</strong>
     </dt>
     <dd>
-    Erzeugt eine Baustelle an der Position.
+    Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.
+<p> Diese Baustelle kann durch einen Helden aktiviert werden. Dann wird ein
+ Siedler zur Baustelle eilen und das Gebäude aufbauen. Es ist egal, ob es
+ sich um ein Territorium des Spielers oder einer KI handelt.
+<p> Es ist dabei zu beachten, dass der Spieler, dem die Baustelle zugeordnet
+ wird, das Territorium besitzt, auf dem er bauen soll. Des weiteren muss
+ er über ein Lagerhaus/Hauptzelt verfügen.
+<p> <b>Hinweis:</b> Es kann vorkommen, dass das Model der Baustelle nicht
+ geladen wird. Dann ist der Boden der Baustelle schwarz. Sobald wenigstens
+ ein reguläres Gebäude gebaut wurde, sollte die Textur jedoch vorhanden sein.
 <p> <b>Alias</b>: CreateIOBuildingSite
 
 
@@ -198,13 +219,20 @@
              (optional) Text der Beschreibung
         </li>
         <li><span class="parameter">_Callback</span>
-         (optional) Funktion nach fertigstellung
+         (optional) Funktion nach Fertigstellung
         </li>
     </ul>
 
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Erzeugt eine Baustelle ohne besondere Einstellungen
+</span>API.CreateIOBuildingSite(<span class="string">"haus"</span>, <span class="number">1</span>, Entities.B_Bakery)
+<span class="comment">-- Baustelle mit Kosten und Aktivierungsdistanz
+</span>API.CreateIOBuildingSite(<span class="string">"haus"</span>, <span class="number">1</span>, Entities.B_Bakery, {Goods.G_Wood, <span class="number">4</span>}, <span class="number">1000</span>)</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -212,7 +240,7 @@
     <strong>API.CreateIOIronMine (_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)</strong>
     </dt>
     <dd>
-    Erstelle eine Eisenmine.
+    Erstelle eine verschüttete Eisenmine.
 <p> <b>Alias</b>: CreateIOIronMine
 
 
@@ -241,7 +269,16 @@
 
 
 
+    <h3>See also:</h3>
+    <ul>
+         <a href="../bundles/AddOnInteractiveObjectTemplates.html#API.CreateIOMine">API.CreateIOMine</a>
+    </ul>
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Beispiel für eine Mine
+</span>API.CreateIOMine(<span class="string">"mine"</span>, Goods.G_Wood, <span class="number">20</span>)</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -249,8 +286,23 @@
     <strong>API.CreateIOMine (_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)</strong>
     </dt>
     <dd>
-    Erstelle eine Mine eines bestimmten Typs.  Es können zudem eine Bedingung
- und zwei verschiedene Callbacks vereinbart werden.
+    Erstelle eine verschüttete Mine eines bestimmten Typs.  Es können zudem eine
+ Bedingung und zwei verschiedene Callbacks vereinbart werden.
+<p> Minen können als "nicht auffüllbar" markiert werden. In diesem Fall werden
+ sie zusammenstützen, sobald die Rohstoffe verbraucht sind.
+<p> Verschüttete Minen können durch einen Helden in normale Minen umgewandelt
+ werden. FÜr diese Umwandlung können Kosten anfallen, müssen aber nicht. Es
+ dürfen immer maximal 2 Waren als Kosten verwendet werden.
+<p> Es können weitere Funktionen hinzugefügt werden, um die Mine anzupassen:
+ <ul>
+ <li><u>Bedingung:</u> Eine Funktion, die true oder false zurückgeben muss.
+ Mit dieser Funktion wird bestimmt, ob die Mine gebaut werden darf.</li>
+ <li><u>Callback Aktivierung:</u> Eine Funktion, die ausgeführt wird, wenn
+ die Mine erfolgreich aktiviert wurde (evtl. Kosten bezahlt und/oder
+ Bedingung erfüllt).</li>
+ <li><u>Callback Erschöpft:</u> Eine Funktion, die ausgeführt wird, sobald
+ die Rohstoffe der Mine erschöpft sind.</li>
+ </ul>
 <p> <b>Alias</b>: CreateIOMine
 
 
@@ -283,6 +335,13 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Beispiel für eine Mine
+</span>API.CreateIOMine(<span class="string">"mine"</span>, Entities.B_IronMine, {Goods.G_Wood, <span class="number">20</span>}, <span class="keyword">true</span>)
+<span class="comment">-- Die Mine kann für 20 Holz erschlossen werden. Sobald die Rohstoffe
+</span><span class="comment">-- erschöpft sind, stürzt die Mine zusammen.</span></pre>
+    </ul>
 
 </dd>
     <dt>
@@ -290,7 +349,7 @@
     <strong>API.CreateIOStoneMine (_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)</strong>
     </dt>
     <dd>
-    Erstelle eine Steinmine.
+    Erstelle eine verschüttete Steinmine.
 <p> <b>Alias</b>: CreateIOStoneMine
 
 
@@ -319,7 +378,16 @@
 
 
 
+    <h3>See also:</h3>
+    <ul>
+         <a href="../bundles/AddOnInteractiveObjectTemplates.html#API.CreateIOMine">API.CreateIOMine</a>
+    </ul>
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Beispiel für eine Mine
+</span>API.CreateIOMine(<span class="string">"mine"</span>, Goods.G_Wood, <span class="number">20</span>)</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -329,6 +397,10 @@
     <dd>
     Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
  des angegebenen Typs.
+<p> Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
+ und dem Maximalwert. Optional kann eine Funktion angegeben werden, die
+ ausgeführt wird, wenn die Truhe geöffnet wird. Diese Funktion verhält sich
+ wie das Callback eines interaktiven Objektes.
 <p> <b>Alias</b>: CreateRandomChest
 
 
@@ -355,6 +427,10 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateRandomChest(<span class="string">"chest"</span>, Goods.G_Gems, <span class="number">100</span>, <span class="number">300</span>, OnChestOpened)</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -362,8 +438,7 @@
     <strong>API.CreateRandomGoldChest (_Name)</strong>
     </dt>
     <dd>
-    Erstellt eine Schatztruhe mit einer zufälligen Menge an Gold
- des angegebenen Typs.
+    Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.
 <p> <b>Alias</b>: CreateRandomGoldChest
 
 
@@ -385,10 +460,10 @@
     <strong>API.CreateRandomLuxuryChest (_Name)</strong>
     </dt>
     <dd>
-    Erstellt eine Schatztruhe mit einer zufälligen Menge an Luxus-
- gütern des angegebenen Typs.
- Güter können seien: Salz, Farben, Edelsteine, Musikinstrumente
- oder Weihrauch.
+    Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+ an Luxusgütern.
+<p> Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
+ Salz oder Weihrauch.
 <p> <b>Alias</b>: CreateRandomLuxuryChest
 
 
@@ -410,10 +485,10 @@
     <strong>API.CreateRandomResourceChest (_Name)</strong>
     </dt>
     <dd>
-    Erstellt eine Schatztruhe mit einer zufälligen Menge an Gütern
- des angegebenen Typs.
- Güter können seien: Eisen, Stein, HOlz, Wolle, Fleisch, Kräuter,
- Honigwaben, Milch, Fisch oder Getreide.
+    Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+ an Gütern.
+<p> Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
+ Honig, Kräuter, Milch, Stein, Wolle.
 <p> <b>Alias</b>: CreateRandomResourceChest
 
 
@@ -437,6 +512,15 @@
     <dd>
     Erstellt eine Trebuchet-Baustelle an der Position mit den
  angegebenen Baukosten.
+<p> Das Trebuchet kann von einem Helden aufgebaut werden. Es wird ein Karren
+ aus dem Lagerhaus zur Baustelle fahren. Erreicht der Karren die Baustelle,
+ wird er durch ein Trebuchet ersetzt.
+<p> Das Trebuchet hat dann 10 Schuss. Sind diese aufgebraucht wird das Trebuchet
+ abgebaut und fährt in das Lagerhaus zurück. Sobald der Karren angekommen
+ ist, kann die Baustelle erneut aktiviert werden.
+<p> <b>Achtung:</b>Das Auffüllen von Trebuchets wird deaktiviert, sobald eine
+ Baustelle erzeugt wird. Es wird NICHT empfohlen dem Spieler beides, normale
+ Trebuchets und Trebuchetbaustellen, zur gleichen Zeit zu geben!
 <p> <b>Alias</b>: CreateTrebuchetConstructionSite
 
 
@@ -464,7 +548,10 @@
     <strong>API.DestroyTrebuchetConstructionSite (_Name)</strong>
     </dt>
     <dd>
-    Zerstört eine Trebuchet-Baustelle.
+    Zerstört eine Trebuchet-Baustelle, aber nicht die Skript Entity.
+<p> Die Baustelle wird in jedem möglichen Status zerstört. Es ist egal, ob das
+ Trebuchet aufgebaut ist, gerade ein Karren unterwegs ist, oder die Baustelle
+ noch nie berührt wurde.
 <p> <b>Alias</b>: DestroyTrebuchetConstructionSite
 
 
@@ -481,6 +568,87 @@
 
 
 </dd>
+    <dt>
+    <a name = "API.GetConstructionCartByTrebuchetConstructionSite"></a>
+    <strong>API.GetConstructionCartByTrebuchetConstructionSite (_Name)</strong>
+    </dt>
+    <dd>
+    Gibt die EntityID des Abreisewagens der Trebuchet-Baustelle zurück.  Sollte
+ kein Abreisewagens unterwegs sein, wird 0 zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+         Skriptname der Trebuchet-Baustelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: EntityID des angeforderten Wagens
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetReturningCartByTrebuchetConstructionSite"></a>
+    <strong>API.GetReturningCartByTrebuchetConstructionSite (_Name)</strong>
+    </dt>
+    <dd>
+    Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.
+ Sollte kein Anforderungswagen unterwegs sein, wird 0 zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+         Skriptname der Trebuchet-Baustelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: EntityID des angeforderten Wagens
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetTrebuchetByTrebuchetConstructionSite"></a>
+    <strong>API.GetTrebuchetByTrebuchetConstructionSite (_Name)</strong>
+    </dt>
+    <dd>
+    Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.
+ Sollte kein Trebuchet aufgebaut sein, wird 0 zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+         Skriptname der Trebuchet-Baustelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: EntityID des Trebuchet
+    </ol>
+
+
+
+
+</dd>
 </dl>
 
 
@@ -488,7 +656,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-05-08 14:59:34 </i>
+<i style="float:right;">Last updated 2018-05-28 12:42:28 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
