@@ -26816,8 +26816,12 @@ Core:RegisterBundle("BundleCastleStore");
 -- -------------------------------------------------------------------------- --
 
 ---
--- Fügt Rückbau, Single Stop und Viehzucht hinzu. Außerdem bekommt der Mapper
--- die Möglichkeit bis zu 2 Gebäudeschalter an einem Gebäude anzubringen.
+-- Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere
+-- Funktionen. Es ist bspw. möglich ungenutzte Schalter frei zu programmieren.
+-- 
+-- Bekannte Funktionen, wie die Aufzucht von Tieren, das Anhalten der Produktion
+-- in einzelnen Gebäuden und der Abriss einzelner Gebäudestufen sind natürlich
+-- im Standard dabei.
 --
 -- @module BundleBuildingButtons
 -- @set sort=true
@@ -26831,13 +26835,18 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Aktiviert die Single Stop Buttons.
+-- Aktiviert die Single Stop Buttons. Single Stop ermöglicht das Anhalten
+-- eines einzelnen Betriebes, anstelle des Anhaltens aller Betriebe des 
+-- gleichen Typs.
 --
--- Single Stop belegt den Index 1 der zusätzlichen Gebäude-Buttons!
+-- Im Gegensatz zur Viehzucht und zum Rückbau, welche feste eigeständige
+-- Buttons sind, handelt es sich hierbei um einen Custom Button. Single
+-- Stop belegt Index 1.
 --
 -- <b>Alias:</b> ActivateSingleStop
 --
 -- @within Public
+-- @see API.AddCustomBuildingButton
 --
 function API.ActivateSingleStop()
     if not GUI then
@@ -26871,12 +26880,18 @@ end
 DeactivateSingleStop = API.DeactivateSingleStop;
 
 ---
--- Verwende Downgrade bei Stadt- und Rohstoffgebäuden.
+-- Verwende Downgrade bei Stadt- und Rohstoffgebäuden. Die Rückbaufunktion
+-- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
+-- jeweils eine Stufe zu zerstören. Der Überflüssige Arbeiter wird entlassen.
 --
 -- <b>Alias:</b> UseDowngrade
 --
 -- @param _flag Downgrade aktiv/inaktiv
 -- @within Public
+--
+-- @usage
+-- -- Rückbau ist deaktiviert
+-- API.UseDowngrade(false);
 --
 function API.UseDowngrade(_flag)
     if not GUI then
@@ -26888,39 +26903,16 @@ end
 UseDowngrade = API.UseDowngrade;
 
 ---
--- Erlaube oder verbiete dem Spieler Kühe zu züchten.
---
--- <b>Alias:</b> UseBreedCattle
---
--- @param _flag Kuhzucht aktiv/inaktiv
--- @within Public
---
-function API.UseBreedCattle(_flag)
-    if not GUI then
-        API.Bridge("API.UseBreedCattle(" ..tostring(_flag).. ")");
-        return;
-    end
-
-    BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
-    if _flag == true then
-        local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow];
-        MerchantSystem.BasePrices[Goods.G_Cow] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
-    else
-        local Price = BundleBuildingButtons.Local.Data.CattleMoneyCost;
-        MerchantSystem.BasePrices[Goods.G_Cow] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
-    end
-end
-UseBreedCattle = API.UseBreedCattle;
-
----
 -- Erlaube oder verbiete dem Spieler Schafe zu züchten.
 --
 -- <b>Alias:</b> UseBreedSheeps
 --
 -- @param _flag Schafzucht aktiv/inaktiv
 -- @within Public
+--
+-- @usage
+-- -- Schafsaufzucht ist erlaubt
+-- API.UseBreedSheeps(true);
 --
 function API.UseBreedSheeps(_flag)
     if not GUI then
@@ -26930,7 +26922,7 @@ function API.UseBreedSheeps(_flag)
 
     BundleBuildingButtons.Local.Data.BreedSheeps = _flag == true;
     if _flag == true then
-        local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Sheep]
+        local Price = MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Sheep]
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
     else
@@ -26949,6 +26941,10 @@ UseBreedSheeps = API.UseBreedSheeps;
 -- @param _flag Kuhzucht aktiv/inaktiv
 -- @within Public
 --
+-- @usage
+-- -- Es können keine Kühe gezüchtet werden
+-- API.UseBreedCattle(false);
+--
 function API.UseBreedCattle(_flag)
     if not GUI then
         API.Bridge("API.UseBreedCattle(" ..tostring(_flag).. ")");
@@ -26957,7 +26953,7 @@ function API.UseBreedCattle(_flag)
 
     BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
     if _flag == true then
-        local Price = MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow];
+        local Price = MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Cow];
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     else
@@ -26976,6 +26972,10 @@ UseBreedCattle = API.UseBreedCattle;
 -- @param _Amount Getreidekosten
 -- @within Public
 --
+-- @usage
+-- -- Wucherpreise zum Züchten!
+-- API.SetSheepGrainCost(50);
+--
 function API.SetSheepGrainCost(_Amount)
     if not GUI then
         API.Bridge("API.SetSheepGrainCost(" .._Amount.. ")");
@@ -26993,6 +26993,10 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 -- @param _Amount Getreidekosten
 -- @within Public
 --
+-- @usage
+-- -- Wucherpreise zum Züchten!
+-- API.SetCattleGrainCost(50);
+--
 function API.SetCattleGrainCost(_Amount)
     if not GUI then
         API.Bridge("API.SetCattleGrainCost(" .._Amount.. ")");
@@ -27009,6 +27013,10 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 --
 -- @param _Amount Benötigte Menge
 -- @within Public
+--
+-- @usage 
+-- -- Es wird ein volles Gatter zur Zucht benötigt:
+-- API.SetSheepNeeded(5);
 --
 function API.SetSheepNeeded(_Amount)
     if not GUI then
@@ -27030,6 +27038,10 @@ SetSheepNeeded = API.SetSheepNeeded;
 -- @param _Amount Benötigte Menge
 -- @within Public
 --
+-- @usage 
+-- -- Es werden keine Kühe zur Zucht benötigt:
+-- API.SetCattleNeeded(0);
+--
 function API.SetCattleNeeded(_Amount)
     if not GUI then
         API.Bridge("API.SetCattleNeeded(" .._Amount.. ")");
@@ -27041,6 +27053,102 @@ function API.SetCattleNeeded(_Amount)
     BundleBuildingButtons.Local.Data.CattleNeeded = _Amount;
 end
 SetCattleNeeded = API.SetCattleNeeded;
+
+---
+-- Fügt einen optionalen Gebäudeschalter hinzu. Der Index bestimmt, welcher
+-- der beiden möglichen Buttons verwendet wird.
+--
+-- Mit dieser Funktion können zwei ungenutzte Buttons im Gebäudemenu mit einer 
+-- Funktionalität versehen werden. Es obliegt dem Mapper für welche Gebäude
+-- der Button angezeigt wird und welche Funktion er hat. Es ist nicht möglich 
+-- Kosten im Tooltip anzuzeigen.
+--
+-- Jeder Button kann immer nur mit einer Aktion versehen werden. Soll die 
+-- Aktion für verschiedene Gebäudetypen unterschiedlich sein, muss in der 
+-- Aktion eine Fallunterscheidung durchgeführt werden.
+--
+-- Ein optionaler Button benötigt immer drei Funktionen:
+-- <ul>
+-- <li>Action: Steuert, was der Button tut.</li>
+-- <li>Tooltip: Steuert, welcher Beschreibungstext angezeigt wird.</li>
+-- <li>Update: Steuert, wann und wie der Button angezeigt wird.</li>
+-- </ul>
+-- Alle drei Funktionen erhalten die ID des Buttons und die ID des Gebäudes,
+-- das gerade selektiert ist.
+--
+-- <b>Achtung:</b> Wenn die Funktion aus dem globalen Skript ausgeführt wird,
+-- müssen sich die Buttonfunktionen im lokalen Skript befinden. Die Namen der
+-- Funktionen sind in diesem Fall als Zeichenkette zu übergeben!
+--
+-- <b>Alias:</b> AddBuildingButton
+--
+-- @param _Index   Index des Buttons
+-- @param _Action  Aktion des Buttons
+-- @param _Tooltip Tooltip Control
+-- @param _Update  Button Update
+-- @within Public
+--
+-- @usage
+-- -- Aktion 
+-- function ExampleButtonAction(_WidgetID, _BuildingID)
+--     GUI.AddNote("Hier passiert etwas!");
+-- end
+-- -- Tooltip 
+-- function ExampleButtonTooltip(_WidgetID, _BuildingID)
+--     UserSetTextNormal("Beschreibung", "Das ist die Beschreibung!");
+-- end
+-- -- Update 
+-- function ExampleButtonUpdate(_WidgetID, _BuildingID)
+--     SetIcon(_WidgetID, {1, 1});
+-- end
+--
+-- -- Beispiel für einen einfachen Button, der immer angezeigt wird, das Bild 
+-- -- eines Apfels trägt und eine Nachricht anzeigt.
+-- API.AddCustomBuildingButton(1, ExampleButtonAction, ExampleButtonTooltip, ExampleButtonUpdate);
+--
+function API.AddCustomBuildingButton(_Index, _Action, _Tooltip, _Update)
+    if not GUI then
+        API.Bridge("API.AddCustomBuildingButton("..tostring(_Index)..","..tostring(_Action)..","..tostring(_Tooltip)..","..tostring(_Update)..",)");
+        return;
+    end
+    if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) {
+        API.Dbg("API.AddCustomBuildingButton: Index must be 1 or 2!");
+        return;
+    }
+    if (type(_Action) ~= "function") or type(_Tooltip) ~= "function" or type(_Update) ~= "function")) {
+        API.Dbg("API.AddCustomBuildingButton: Action, tooltip and update must be functions!");
+        return;
+    }
+    return BundleBuildingButtons.Local:AddOptionalButton(
+        _Index, _Action, _Tooltip, _Update
+    );
+end
+AddBuildingButton = API.AddCustomBuildingButton;
+
+---
+-- Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.
+--
+-- <b>Alias:</b> DeleteBuildingButton
+-- 
+-- @param _Index   Index des Buttons
+-- @within Public
+--
+-- @usage
+-- -- Entfernt die Konfiguration für Button 1
+-- API.RemoveCustomBuildingButton(1);;
+--
+function API.RemoveCustomBuildingButton(_Index)
+    if not GUI then
+        API.Dbg("API.RemoveCustomBuildingButton("..tostring(_Index)..")");
+        return;
+    end
+    if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) {
+        API.Dbg("API.RemoveCustomBuildingButton: Index must be 1 or 2!");
+        return;
+    }
+    return BundleBuildingButtons.Local:DeleteOptionalButton(_Index);
+end
+DeleteBuildingButton = API.RemoveCustomBuildingButton;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -27142,11 +27250,13 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local:Install()
-    MerchantSystem.BasePricesOrigTHEA                = {};
-    MerchantSystem.BasePricesOrigTHEA[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
-    MerchantSystem.BasePrices[Goods.G_Sheep]         = BundleBuildingButtons.Local.Data.SheepMoneyCost;
-    MerchantSystem.BasePricesOrigTHEA[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
-    MerchantSystem.BasePrices[Goods.G_Cow]           = BundleBuildingButtons.Local.Data.CattleMoneyCost;
+    MerchantSystem.BasePricesOrigBundleBuildingButtons                = {};
+    
+    MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
+    MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
+    
+    MerchantSystem.BasePrices[Goods.G_Sheep] = BundleBuildingButtons.Local.Data.SheepMoneyCost;
+    MerchantSystem.BasePrices[Goods.G_Cow]   = BundleBuildingButtons.Local.Data.CattleMoneyCost;
 
     self:OverwriteHouseMenuButtons();
     self:OverwriteBuySiegeEngine();
@@ -27220,24 +27330,9 @@ end
 -- @param _updateFunction   Update-Funktion (String in Global)
 -- @within Private
 -- @local
+-- @see API.AddCustomBuildingButton
 --
 function BundleBuildingButtons.Local:AddOptionalButton(_idx, _actionFunction, _tooltipFunction, _updateFunction)
-    if not GUI then
-        assert(_idx == 1 or _idx == 2);
-        assert(type(_actionFunction) == "string");
-        assert(type(_tooltipFunction) == "string");
-        assert(type(_updateFunction) == "string");
-        Logic.ExecuteInLuaLocalState([[
-            BundleBuildingButtons.Local:AddOptionalButton(
-                ]] .._idx.. [[,
-                _G["]] .._actionFunction.. [["],
-                _G["]] .._tooltipFunction.. [["],
-                _G["]] .._updateFunction.. [["],
-            )
-        ]]);
-        return;
-    end
-
     assert(_idx == 1 or _idx == 2);
     local wID = {
         XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateAutoToggle"),
@@ -27258,14 +27353,6 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
-    if not GUI then
-        assert(_idx == 1 or _idx == 2);
-        Logic.ExecuteInLuaLocalState([[
-            BundleBuildingButtons.Local:DeleteOptionalButton(]] .._idx.. [[)
-        ]]);
-        return;
-    end
-
     assert(_idx == 1 or _idx == 2);
     local wID = {
         XGUIEng.GetWidgetID("/InGame/Root/Normal/BuildingButtons/GateAutoToggle"),
