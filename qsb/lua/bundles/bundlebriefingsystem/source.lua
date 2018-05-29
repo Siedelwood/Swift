@@ -19,7 +19,10 @@
 -- der Handlung eingesetzt werden.
 --
 -- Splashscreens stehen sowohl in Briefings als auch in Cutscenes zuer Verfügung
--- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden.
+-- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden. Diese 
+-- Grafiken können auch größer als eine Bildschirmfläche sein. Für diesen
+-- Fall kann über die Angabe von UV-Koordinaten zu einem Teil gesprungen oder
+-- geflogen werden.
 --
 -- @module BundleBriefingSystem
 -- @set sort=true
@@ -632,7 +635,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- Startet ein Briefing. Im Cutscene Mode wird die normale Kamera
     -- deaktiviert und durch die Cutsene Kamera ersetzt. Außerdem
     -- können Grenzsteine ausgeblendet und der Himmel angezeigt werden.
-    -- Die Okklusion wird abgeschaltet Alle Änderungen werden nach dem
+    -- Die Okklusion wird abgeschaltet. Alle Änderungen werden nach dem
     -- Briefing automatisch zurückgesetzt.
     -- Läuft bereits ein Briefing, kommt das neue in die Warteschlange.
     -- Es wird die ID des erstellten Briefings zurückgegeben.
@@ -1237,7 +1240,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/KnightInfo/Text", 100, yAlign);
 
         local page = BriefingSystem.currBriefing[1];
-        BriefingSystem.SetBriefingPageWidgetAppearance(page);
+        BriefingSystem.SetBriefingPageOrSplashscreen(page);
         BriefingSystem.SetBriefingPageTextPosition(page);
 
         if not Framework.IsNetworkGame() and Game.GameTimeGetFactor() ~= 0 then
@@ -1335,12 +1338,13 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if barStyle == nil then
             barStyle = BriefingSystem.currBriefing.barStyle;
         end
-
-        -- local paintItBlack = page.blackPage ~= nil and not page.mc;
-        BriefingSystem.SetBriefingPageWidgetAppearance(page, barStyle);
+        
+        BriefingSystem.SetBriefingPageOrSplashscreen(page, barStyle);
         BriefingSystem.SetBriefingPageTextPosition(page);
 
         local player = GUI.GetPlayerID();
+        
+        -- Text
         if page.text then
             local doNotCalc = page.duration ~= nil;
             local smallBarShown = ((barStyle == "small" or barStyle == "transsmall") and not page.splashscreen);
@@ -1355,6 +1359,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.ShowBriefingText(page.text[player] or page.text.default, doNotCalc, smallBarShown);
             end
         end
+        
+        -- Titel
         if page.title then
             if type(page.title) == "string" then
                 BriefingSystem.ShowBriefingTitle(page.title);
@@ -1362,8 +1368,17 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.ShowBriefingTitle(page.title[player] or page.title.default);
             end
         end
+        
+        -- Multiple Choice
         if page.mc then
             BriefingSystem.Briefing_MultipleChoice();
+        end
+        
+        -- Splashscreen UV
+        local UV0, UV1;
+        if type(page.splashscreen) == "table" then
+            UV0 = {page.splashscreen.uv[1], page.splashscreen.uv[2]};
+            UV1 = {page.splashscreen.uv[3], page.splashscreen.uv[4]};
         end
 
         if not _prepareBriefingStart then
@@ -1442,24 +1457,17 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.CutsceneStopFlight();
         BriefingSystem.StopFlight();
 
-        -- -------------------------------------------------------------
-        -- Cutscenes by totalwarANGEL                                 --
-        -- -------------------------------------------------------------
         -- Initialisierung der Kameraanimation
-
         if page.view then
             -- Flight speichern
             if BriefingSystem.GlobalSystem.page == 1 then -- or (page.view.FlyTime == nil or page.view.FlyTime == 0) then
                 BriefingSystem.CutsceneSaveFlight(page.view.Position, page.view.LookAt, FOV);
             end
-
             -- Kamera bewegen
             BriefingSystem.CutsceneFlyTo(page.view.Position,
                                          page.view.LookAt,
                                          FOV,
                                          page.flyTime or 0);
-
-        -- -------------------------------------------------------------
 
         elseif page.position then
             local position = page.position;
@@ -1484,9 +1492,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 Display.SetCameraLookAtEntity(0);
 
                 if BriefingSystem.GlobalSystem.page == 1 then
-                    BriefingSystem.SaveFlight(position, rotation, angle, zoom, FOV);
+                    BriefingSystem.SaveFlight(position, rotation, angle, zoom, FOV, UV0, UV1);
                 end
-                BriefingSystem.FlyTo(position, rotation, angle, zoom, FOV, page.flyTime or BriefingSystem.GlobalSystem.BRIEFING_FLYTIME);
+                BriefingSystem.FlyTo(position, rotation, angle, zoom, FOV, page.flyTime or BriefingSystem.GlobalSystem.BRIEFING_FLYTIME, UV0, UV1);
             end
 
         elseif page.followEntity then
@@ -1506,9 +1514,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             pos.Z = height;
 
             if BriefingSystem.GlobalSystem.page == 1 then
-                BriefingSystem.SaveFlight(pos, rotation, angle, zoom, FOV);
+                BriefingSystem.SaveFlight(pos, rotation, angle, zoom, FOV, UV0, UV1);
             end
-            BriefingSystem.FollowFlight(followEntity, rotation, angle, zoom, FOV, page.flyTime or 0, height);
+            BriefingSystem.FollowFlight(followEntity, rotation, angle, zoom, FOV, page.flyTime or 0, height, UV0, UV1);
         end
 
         if not _prepareBriefingStart then
@@ -1903,6 +1911,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             -- zum ursürunglichen Release der letzten Version.
 
             if flight.systemEnabled then
+                -- Kameraanimation
                 local startTime = flight.StartTime;
                 local flyTime = flight.FlyTime;
                 local startPosition = flight.StartPosition or flight.EndPosition;
@@ -1915,6 +1924,13 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 local endZoomDistance = flight.EndZoomDistance;
                 local startFOV = flight.StartFOV or flight.EndFOV;
                 local endFOV = flight.EndFOV;
+                
+                -- Splashscreen-Animation
+                local startUV0 = flight.StartUV0 or flight.EndUV0;
+                local endUV0 = flight.EndUV0;
+                local startUV1 = flight.StartUV1 or flight.EndUV1;
+                local endUV1 = flight.EndUV1;
+                
                 local currTime = Logic.GetTimeMs() / 1000;
                 local math = math;
                 if flight.Follow then
@@ -1963,7 +1979,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 Camera.ThroneRoom_SetFOV(startFOV + (endFOV - startFOV) * factor);
 
                 -- Splashscreen
-                -- FIXME
+                BriefingSystem.SetBriefingSplashscreenUV(startUV0, endUV0, startUV1, endUV1, factor);
 
             -- ---------------------------------------------------------
             -- Cutscene notation by totalwarANGEL
@@ -1978,6 +1994,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 local cutscene = BriefingSystem.Flight.Cutscene;
 
                 if cutscene then
+                    -- Kamera
                     local StartPosition = cutscene.StartPosition or cutscene.EndPosition;
                     local EndPosition = cutscene.EndPosition;
                     local StartLookAt = cutscene.StartLookAt or cutscene.EndLookAt;
@@ -1987,6 +2004,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                     local StartTime = cutscene.StartTime;
                     local FlyTime = cutscene.FlyTime;
                     local CurrTime = Logic.GetTimeMs()/1000;
+                    
+                    -- Splashscreen-Animation
+                    local startUV0 = cutscene.StartUV0 or cutscene.EndUV0;
+                    local endUV0 = cutscene.EndUV0;
+                    local startUV1 = cutscene.StartUV1 or cutscene.EndUV1;
+                    local endUV1 = cutscene.EndUV1;
 
                     local Factor = BriefingSystem.InterpolationFactor(StartTime, CurrTime, FlyTime, cutscene);
 
@@ -2043,7 +2066,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                     Camera.ThroneRoom_SetFOV(StartFOV + (EndFOV - StartFOV) * Factor);
 
                     -- Splashscreen
-                    -- FIXME
+                    BriefingSystem.SetBriefingSplashscreenUV(startUV0, endUV0, startUV1, endUV1, factor);
                 end
             end
 
@@ -2082,22 +2105,26 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         return X, Y, Z;
     end
 
-    function BriefingSystem.CutsceneSaveFlight(_cameraPosition, _cameraLookAt, _FOV)
+    function BriefingSystem.CutsceneSaveFlight(_cameraPosition, _cameraLookAt, _FOV, _UV0, _UV1)
         BriefingSystem.Flight.Cutscene = BriefingSystem.Flight.Cutscene or {};
         BriefingSystem.Flight.Cutscene.StartPosition = _cameraPosition;
         BriefingSystem.Flight.Cutscene.StartLookAt = _cameraLookAt;
         BriefingSystem.Flight.Cutscene.StartFOV = _FOV;
         BriefingSystem.Flight.Cutscene.StartTime = Logic.GetTimeMs()/1000;
         BriefingSystem.Flight.Cutscene.FlyTime = 0;
+        BriefingSystem.Flight.Cutscene.StartUV0 = _UV0;
+        BriefingSystem.Flight.Cutscene.StartUV1 = _UV1;
     end
 
-    function BriefingSystem.CutsceneFlyTo(_cameraPosition, _cameraLookAt, _FOV, _time)
+    function BriefingSystem.CutsceneFlyTo(_cameraPosition, _cameraLookAt, _FOV, _time, _UV0, _UV1)
         BriefingSystem.Flight.Cutscene = BriefingSystem.Flight.Cutscene or {};
         BriefingSystem.Flight.Cutscene.StartTime = Logic.GetTimeMs()/1000;
         BriefingSystem.Flight.Cutscene.FlyTime = _time;
         BriefingSystem.Flight.Cutscene.EndPosition = _cameraPosition;
         BriefingSystem.Flight.Cutscene.EndLookAt = _cameraLookAt;
         BriefingSystem.Flight.Cutscene.EndFOV = _FOV;
+        BriefingSystem.Flight.Cutscene.StartUV0 = _UV0;
+        BriefingSystem.Flight.Cutscene.StartUV1 = _UV1;
     end
 
     function BriefingSystem.CutsceneStopFlight()
@@ -2139,15 +2166,17 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         return lookAtX, lookAtY, lookAtZ;
     end
 
-    function BriefingSystem.SaveFlight(_position, _rotation, _angle, _distance, _FOV)
+    function BriefingSystem.SaveFlight(_position, _rotation, _angle, _distance, _FOV, _UV0, _UV1)
         BriefingSystem.Flight.StartZoomAngle = _angle;
         BriefingSystem.Flight.StartZoomDistance = _distance;
         BriefingSystem.Flight.StartRotation = _rotation;
         BriefingSystem.Flight.StartPosition = _position;
         BriefingSystem.Flight.StartFOV = _FOV;
+        BriefingSystem.Flight.StartUV0 = _UV0;
+        BriefingSystem.Flight.StartUV1 = _UV1;
     end
 
-    function BriefingSystem.FlyTo(_position, _rotation, _angle, _distance, _FOV, _time)
+    function BriefingSystem.FlyTo(_position, _rotation, _angle, _distance, _FOV, _time, _UV0, _UV1)
         local flight = BriefingSystem.Flight;
         flight.StartTime = Logic.GetTimeMs()/1000;
         flight.FlyTime = _time;
@@ -2156,6 +2185,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         flight.EndZoomAngle = _angle;
         flight.EndZoomDistance = _distance;
         flight.EndFOV = _FOV;
+        flight.EndUV0 = _UV0;
+        flight.EndUV1 = _UV1;
     end
 
     function BriefingSystem.StopFlight()
@@ -2165,15 +2196,17 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         flight.StartRotation = flight.EndRotation;
         flight.StartPosition = flight.EndPosition;
         flight.StartFOV = flight.EndFOV;
+        flight.StartUV0 = flight.EndUV0;
+        flight.StartUV1 = flight.EndUV1;
         if flight.Follow then
             flight.StartPosition = GetPosition(flight.Follow);
             flight.Follow = nil;
         end
     end
 
-    function BriefingSystem.FollowFlight(_follow, _rotation, _angle, _distance, _FOV, _time, _Z)
+    function BriefingSystem.FollowFlight(_follow, _rotation, _angle, _distance, _FOV, _time, _Z, _UV0, _UV1)
         local pos = GetPosition(_follow); pos.Z = _Z or 0;
-        BriefingSystem.FlyTo(pos, _rotation, _angle, _distance, _FOV, _time);
+        BriefingSystem.FlyTo(pos, _rotation, _angle, _distance, _FOV, _time, _UV0, _UV1);
         BriefingSystem.Flight.StartPosition = nil;
         BriefingSystem.Flight.Follow = _follow;
     end
@@ -2247,7 +2280,48 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text",x,42);
     end
 
-    function BriefingSystem.SetBriefingPageWidgetAppearance(_page, _style)
+    ---
+    -- Steuert die Scrollanimation des Splashscreen.
+    --
+    -- @param _StartUV0 Startposition UV0
+    -- @param _EndUV0   Endposition UV0
+    -- @param _StartUV1 Startposition UV1
+    -- @param _EndUV1   Endposition UV1
+    -- @param _Factor   Interpolation Factor
+    -- @local
+    --
+    function BriefingSystem.SetBriefingSplashscreenUV(_StartUV0, _EndUV0, _StartUV1, _EndUV1, _Factor);
+        if not _StartUV0 or not _EndUV0 or not _StartUV1 or not _EndUV1 then 
+            return;
+        end
+        
+        local BG     = "/InGame/ThroneRoomBars_2/BarTop";
+        local BB     = "/InGame/ThroneRoomBars_2/BarBottom";
+        local size   = {GUI.GetScreenSize()};
+        local is4To3 = math.floor((size[1]/size[2]) * 10) == 13;
+        
+        local u0 = _StartUV0[1] + (_EndUV0[1] - _StartUV0[1]) * _Factor;
+        local v0 = _StartUV0[2] + (_EndUV0[2] - _StartUV0[2]) * _Factor;
+        local u1 = _StartUV1[1] + (_EndUV1[1] - _StartUV1[1]) * _Factor;
+        local v1 = _StartUV1[2] + (_EndUV1[2] - _StartUV1[2]) * _Factor;
+        
+        -- Fix für 4:3
+        if is4To3 then 
+            u0 = u0 + (u0 * 0.125);
+            u1 = u1 - (u1 * 0.125);
+        end
+        
+        XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
+    end
+
+    ---
+    -- Schaltet zwischen Bars und Splashscreen um.
+    --
+    -- @param _page  Aktuelle Briefing-Seite 
+    -- @param _style Bar-Style
+    -- @local
+    --
+    function BriefingSystem.SetBriefingPageOrSplashscreen(_page, _style)
         local BG = "/InGame/ThroneRoomBars_2/BarTop";
         local BB = "/InGame/ThroneRoomBars_2/BarBottom";
         local size = {GUI.GetScreenSize()};
@@ -2271,47 +2345,10 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if _page.splashscreen == true then
             XGUIEng.SetMaterialTexture(BG, 1, "");
             XGUIEng.SetMaterialColor(BG, 1, 0, 0, 0, 255);
-        else
-            local u0 = 0;
-            local u1 = 1;
-            local v0 = 0;
-            local v1 = 1;
-
-            local resolution = math.floor((size[1]/size[2]) * 10);
-            if resolution == 13 then
-                u0 = 0.125;
-                u1 = 0.875;
-                v0 = 0;
-                v1 = 1;
-            end
-
-            -- Invertiertes X spiegelt
-            if _page.splashscreen.invertX then
-                local tmp = u0;
-                u0 = u1;
-                u1 = tmp;
-            end
-
-            -- Invertiertes Y dreht um 180°
-            if _page.splashscreen.invertY then
-                local tmp = v0;
-                v0 = v1;
-                v1 = tmp;
-            end
-
-            -- Einfärben
-            if _page.splashscreen.color then
-                local c = _page.splashscreen.color;
-                XGUIEng.SetMaterialColor(BG, 1, c[1], c[2], c[3], 225);
-                XGUIEng.SetMaterialAlpha(BG, 1, c[4]);
-            else
-                XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
-                XGUIEng.SetMaterialAlpha(BG, 1, 255);
-            end
-
+            XGUIEng.SetMaterialUV(BG, 1, 0, 0, 1, 1);
+        else 
             XGUIEng.SetMaterialColor(BB, 1, 0, 0, 0, 0);
             XGUIEng.SetMaterialTexture(BG, 1, _page.splashscreen.image);
-            XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
         end
 
         if not BriefingSystem.BriefingBarSizeBackup then
