@@ -1378,8 +1378,10 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         -- Splashscreen UV
         local UV0, UV1;
         if type(page.splashscreen) == "table" then
-            UV0 = {page.splashscreen.uv[1], page.splashscreen.uv[2]};
-            UV1 = {page.splashscreen.uv[3], page.splashscreen.uv[4]};
+            if page.splashscreen.uv then
+                UV0 = {page.splashscreen.uv[1], page.splashscreen.uv[2]};
+                UV1 = {page.splashscreen.uv[3], page.splashscreen.uv[4]};
+            end
         end
 
         if not _prepareBriefingStart then
@@ -2133,8 +2135,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.Flight.Cutscene.EndPosition = _cameraPosition;
         BriefingSystem.Flight.Cutscene.EndLookAt = _cameraLookAt;
         BriefingSystem.Flight.Cutscene.EndFOV = _FOV;
-        BriefingSystem.Flight.Cutscene.StartUV0 = _UV0;
-        BriefingSystem.Flight.Cutscene.StartUV1 = _UV1;
+        BriefingSystem.Flight.Cutscene.EndUV0 = _UV0;
+        BriefingSystem.Flight.Cutscene.EndUV1 = _UV1;
     end
 
     function BriefingSystem.CutsceneStopFlight()
@@ -2300,8 +2302,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @param _Factor   Interpolation Factor
     -- @local
     --
-    function BriefingSystem.SetBriefingSplashscreenUV(_StartUV0, _EndUV0, _StartUV1, _EndUV1, _Factor);
-        if not _StartUV0 or not _EndUV0 or not _StartUV1 or not _EndUV1 then 
+    function BriefingSystem.SetBriefingSplashscreenUV(_StartUV0, _EndUV0, _StartUV1, _EndUV1, _Factor)
+        if not _StartUV0 or not _EndUV0 or not _StartUV1 or not _EndUV1 then
             return;
         end
         
@@ -2358,6 +2360,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             XGUIEng.SetMaterialUV(BG, 1, 0, 0, 1, 1);
         else 
             XGUIEng.SetMaterialColor(BB, 1, 0, 0, 0, 0);
+            XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
             XGUIEng.SetMaterialTexture(BG, 1, _page.splashscreen.image);
         end
 
