@@ -21903,11 +21903,21 @@ end
 -- Öffnet einen Ja-Nein-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
+-- Um die Entscheigung des Spielers abzufragen, wird ein Callback benötigt.
+-- Das callback bekommt eine Boolean übergeben, sobald der Spieler die 
+-- Entscheidung getroffen hat.
+--
 -- @param _Title    Titel des Dialog
 -- @param _Text     Text des Dialog
 -- @param _Action   Callback-Funktion
 -- @param _OkCancel Okay/Abbrechen statt Ja/Nein
 -- @within Public
+--
+-- @usage
+-- function YesNoAction(_yes)
+--     if _yes then GUI.AddNote("Ja wurde gedrückt"); end
+-- end
+-- API.OpenRequesterDialog("Frage", "Möchtest du das wirklich tun?", YesNoAction, false);
 --
 function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
     if not GUI then
@@ -21929,11 +21939,21 @@ end
 -- Öffnet einen Auswahldialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
+-- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen 
+-- aus. Anschließend erhält das Callback den Index der selektierten Option.
+--
 -- @param _Title  Titel des Dialog
 -- @param _Text   Text des Dialog
 -- @param _Action Callback-Funktion
 -- @param _List   Liste der Optionen
 -- @within Public
+--
+-- @usage
+-- function OptionsAction(_idx)
+--     GUI.AddNote(_idx.. " wurde ausgewählt!");
+-- end
+-- local List = {"Option A", "Option B", "Option C"};
+-- API.OpenRequesterDialog("Auswahl", "Wähle etwas aus!", OptionsAction, List);
 --
 function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
     if not GUI then
