@@ -160,7 +160,7 @@ AddPages = API.AddPages;
 -- <b>Alias:</b> BriefingMessage
 --
 -- @param _Text	    Anzuzeigender Text
--- @param _Duration	Anzeigedauer
+-- @param _Duration	Anzeigedauer in Sekunden
 -- @within Public
 --
 function API.AddBriefingNote(_Text, _Duration)
@@ -172,7 +172,7 @@ function API.AddBriefingNote(_Text, _Duration)
         API.Bridge([[API.BriefingNote("]] .._Text.. [[", ]]..tostring(_Duration)..[[)]]);
         return;
     end
-    return BriefingSystem.PushInformationText(_Text, _Duration);
+    return BriefingSystem.PushInformationText(_Text, (_Duration * 10));
 end
 BriefingMessage = API.AddBriefingNote;
 
@@ -1700,13 +1700,21 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- noch nicht abgelaufen ist.
     --
     function BriefingSystem.ControlInformationText()
-        for i=1, #BriefingSystem.InformationTextQueue do
-            BriefingSystem.InformationTextQueue[i][2] = BriefingSystem.InformationTextQueue[i][2] -1;
-            if BriefingSystem.InformationTextQueue[i][2] <= 0 then
-                BriefingSystem.UnqueueInformationText(i);
-                break;
+        local LinesToDelete = {};
+        
+        -- Abgelaufene Texte markieren
+        for k, v in pairs(BriefingSystem.InformationTextQueue) do
+            BriefingSystem.InformationTextQueue[k][2] = v[2] -1;
+            if v[2] <= 0 then
+                table.insert(LinesToDelete, k);
             end
         end
+        
+        -- Abgelaufene Texte entfernen
+        for k, v in pairs(LinesToDelete) do
+            BriefingSystem.UnqueueInformationText(v);
+        end
+        
         BriefingSystem.ShowInformationText();
     end
 
