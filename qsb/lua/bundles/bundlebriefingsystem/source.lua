@@ -159,19 +159,20 @@ AddPages = API.AddPages;
 --
 -- <b>Alias:</b> BriefingMessage
 --
--- @param _Text	Anzuzeigender Text
+-- @param _Text	    Anzuzeigender Text
+-- @param _Duration	Anzeigedauer
 -- @within Public
 --
-function API.AddBriefingNote(_Text)
+function API.AddBriefingNote(_Text, _Duration)
     if type(_Text) ~= "string" and type(_Text) ~= "number" then
         API.Dbg("API.BriefingNote: Text must be a string or a number!");
         return;
     end
     if not GUI then
-        API.Bridge([[API.BriefingNote("]] .._Text.. [[")]]);
+        API.Bridge([[API.BriefingNote("]] .._Text.. [[", ]]..tostring(_Duration)..[[)]]);
         return;
     end
-    return BriefingSystem.PushInformationText(_text);
+    return BriefingSystem.PushInformationText(_Text, _Duration);
 end
 BriefingMessage = API.AddBriefingNote;
 
@@ -1681,16 +1682,17 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     --
     -- _text	Nachricht
     --
-    function BriefingSystem.PushInformationText(_text)
-        local length = string.len(_text) * 5;
-        length = (length < 800 and 800) or length;
+    function BriefingSystem.PushInformationText(_text, _Duration)
+        local length = _Duration or (string.len(_text) * 5);
         table.insert(BriefingSystem.InformationTextQueue, {_text, length});
     end
 
     -- Entfernt einen Text aus der Warteschlange.
     --
-    function BriefingSystem.PopInformationText()
-        table.remove(BriefingSystem.InformationTextQueue, 1);
+    function BriefingSystem.UnqueueInformationText(_Index)
+        if #BriefingSystem.InformationTextQueue >= _Index then
+            table.remove(BriefingSystem.InformationTextQueue, _Index);
+        end
     end
 
     -- Kontrolliert die Anzeige der Notizen während eines Briefings.
@@ -1701,7 +1703,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         for i=1, #BriefingSystem.InformationTextQueue do
             BriefingSystem.InformationTextQueue[i][2] = BriefingSystem.InformationTextQueue[i][2] -1;
             if BriefingSystem.InformationTextQueue[i][2] <= 0 then
-                BriefingSystem.PopInformationText();
+                BriefingSystem.UnqueueInformationText(i);
                 break;
             end
         end
