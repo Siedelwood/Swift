@@ -6,7 +6,8 @@
 
 ---
 -- Dieses Bundle bietet fertige Schablonen für interaktive Objekte. Mit diesen
--- Schablonen können interaktive Objekte einfach erstellt und gehandhabt werden.
+-- Schablonen können komplexere interaktive Objekte einfach erstellt und durch 
+-- den Mapper genutzt werden.
 --
 -- <p>
 -- <b>Interaktive Baustellen:</b><br>
@@ -17,19 +18,19 @@
 -- </p>
 -- <p>
 -- <b>Interaktive Schatztruhen:</b><br>
--- Es werden Schatztruhen mit zufälligen Inhalt erzeugt. Diese Truhen werden
--- aktiviert und der Inhalt wird in einem Karren abtranzportiert.
+-- Es werden Schatztruhen mit zufälligem Inhalt erzeugt. Diese Truhen werden
+-- aktiviert und der Inhalt wird in einem Karren abtransportiert.
 -- </p>
 -- <p>
 -- <b>Interaktive Minen:</b><br>
--- Der Spieler kann eine Steinmine oder Eisenmine erzeugen, die zuerst durch
+-- Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch
 -- Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.
--- <br>Optional kann diese Mine auch nach dem Erschöpfen einstürzen.
+-- <br>Optional kann die Mine einstürzen, wenn sie erschöpft wurde.
 -- </p>
 -- <p>
 -- <b>Trebuchet-Baustellen:</b><br>
--- Der Spieler kann Trebuchets mieten. Das Trebuchet fährt als Karren vor,
--- wird ausgebaut und kann anschließend benutzt werden.<br> Das Trebuchet fährt
+-- Der Spieler kann Trebuchet mieten. Das Trebuchet fährt als Karren vor,
+-- wird aufgebaut und kann anschließend benutzt werden.<br> Das Trebuchet fährt
 -- ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.<br>
 -- Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
 -- ankommt, wird die Baustelle wieder freigegeben.
@@ -47,8 +48,26 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erstelle eine Mine eines bestimmten Typs. Es können zudem eine Bedingung
--- und zwei verschiedene Callbacks vereinbart werden.
+-- Erstelle eine verschüttete Mine eines bestimmten Typs. Es können zudem eine 
+-- Bedingung und zwei verschiedene Callbacks vereinbart werden.
+--
+-- Minen können als "nicht auffüllbar" markiert werden. In diesem Fall werden 
+-- sie zusammenstützen, sobald die Rohstoffe verbraucht sind.
+--
+-- Verschüttete Minen können durch einen Helden in normale Minen umgewandelt
+-- werden. FÜr diese Umwandlung können Kosten anfallen, müssen aber nicht. Es
+-- dürfen immer maximal 2 Waren als Kosten verwendet werden.
+--
+-- Es können weitere Funktionen hinzugefügt werden, um die Mine anzupassen:
+-- <ul>
+-- <li><u>Bedingung:</u> Eine Funktion, die true oder false zurückgeben muss. 
+-- Mit dieser Funktion wird bestimmt, ob die Mine gebaut werden darf.</li>
+-- <li><u>Callback Aktivierung:</u> Eine Funktion, die ausgeführt wird, wenn 
+-- die Mine erfolgreich aktiviert wurde (evtl. Kosten bezahlt und/oder 
+-- Bedingung erfüllt).</li>
+-- <li><u>Callback Erschöpft:</u> Eine Funktion, die ausgeführt wird, sobald 
+-- die Rohstoffe der Mine erschöpft sind.</li>
+-- </ul>
 --
 -- <b>Alias</b>: CreateIOMine
 --
@@ -61,6 +80,12 @@ QSB = QSB or {};
 -- @param _CallbackDepleted (optional) Funktion nach Ausbeutung ausführen
 -- @within Public
 --
+-- @usage 
+-- -- Beispiel für eine Mine
+-- API.CreateIOMine("mine", Entities.B_IronMine, {Goods.G_Wood, 20}, true)
+-- -- Die Mine kann für 20 Holz erschlossen werden. Sobald die Rohstoffe
+-- -- erschöpft sind, stürzt die Mine zusammen.
+--
 function API.CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
     if GUI then
         API.Dbg("API.CreateIOMine: Can not be used from local script!");
@@ -71,7 +96,7 @@ end
 CreateIOMine = API.CreateIOMine;
 
 ---
--- Erstelle eine Eisenmine.
+-- Erstelle eine verschüttete Eisenmine.
 --
 -- <b>Alias</b>: CreateIOIronMine
 --
@@ -82,6 +107,11 @@ CreateIOMine = API.CreateIOMine;
 -- @param _Cost2Amount   (optional) Kostenmenge 2
 -- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
 -- @within Public
+-- @see API.CreateIOMine
+--
+-- @usage 
+-- -- Beispiel für eine Mine
+-- API.CreateIOMine("mine", Goods.G_Wood, 20)
 --
 function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     if GUI then
@@ -93,7 +123,7 @@ end
 CreateIOIronMine = API.CreateIOIronMine;
 
 ---
--- Erstelle eine Steinmine.
+-- Erstelle eine verschüttete Steinmine.
 --
 -- <b>Alias</b>: CreateIOStoneMine
 --
@@ -104,6 +134,11 @@ CreateIOIronMine = API.CreateIOIronMine;
 -- @param _Cost2Amount   (optional) Kostenmenge 2
 -- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
 -- @within Public
+-- @see API.CreateIOMine
+--
+-- @usage 
+-- -- Beispiel für eine Mine
+-- API.CreateIOMine("mine", Goods.G_Wood, 20)
 --
 function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     if GUI then
@@ -115,7 +150,19 @@ end
 CreateIOStoneMine = API.CreateIOStoneMine;
 
 ---
--- Erzeugt eine Baustelle an der Position.
+-- Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.
+--
+-- Diese Baustelle kann durch einen Helden aktiviert werden. Dann wird ein 
+-- Siedler zur Baustelle eilen und das Gebäude aufbauen. Es ist egal, ob es
+-- sich um ein Territorium des Spielers oder einer KI handelt.
+--
+-- Es ist dabei zu beachten, dass der Spieler, dem die Baustelle zugeordnet
+-- wird, das Territorium besitzt, auf dem er bauen soll. Des weiteren muss 
+-- er über ein Lagerhaus/Hauptzelt verfügen.
+--
+-- <b>Hinweis:</b> Es kann vorkommen, dass das Model der Baustelle nicht
+-- geladen wird. Dann ist der Boden der Baustelle schwarz. Sobald wenigstens
+-- ein reguläres Gebäude gebaut wurde, sollte die Textur jedoch vorhanden sein.
 --
 -- <b>Alias</b>: CreateIOBuildingSite
 --
@@ -127,8 +174,14 @@ CreateIOStoneMine = API.CreateIOStoneMine;
 -- @param _Icon     (optional) Icon des Schalters
 -- @param _Title    (optional) Titel der Beschreibung
 -- @param _Text     (optional) Text der Beschreibung
--- @param _Callback (optional) Funktion nach fertigstellung
+-- @param _Callback (optional) Funktion nach Fertigstellung
 -- @within Public
+--
+-- @usage
+-- -- Erzeugt eine Baustelle ohne besondere Einstellungen
+-- API.CreateIOBuildingSite("haus", 1, Entities.B_Bakery)
+-- -- Baustelle mit Kosten und Aktivierungsdistanz
+-- API.CreateIOBuildingSite("haus", 1, Entities.B_Bakery, {Goods.G_Wood, 4}, 1000)
 --
 function API.CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
     if GUI then
@@ -143,6 +196,11 @@ CreateIOBuildingSite = API.CreateIOBuildingSite;
 -- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
 -- des angegebenen Typs.
 --
+-- Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
+-- und dem Maximalwert. Optional kann eine Funktion angegeben werden, die 
+-- ausgeführt wird, wenn die Truhe geöffnet wird. Diese Funktion verhält sich 
+-- wie das Callback eines interaktiven Objektes.
+--
 -- <b>Alias</b>: CreateRandomChest
 --
 -- @param _Name     Name der zu ersetzenden Script Entity
@@ -151,6 +209,9 @@ CreateIOBuildingSite = API.CreateIOBuildingSite;
 -- @param _Max      Maximalmenge
 -- @param _Callback Callback-Funktion
 -- @within Public
+--
+-- @usage 
+-- API.CreateRandomChest("chest", Goods.G_Gems, 100, 300, OnChestOpened)
 --
 function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
     if GUI then
@@ -162,8 +223,7 @@ end
 CreateRandomChest = API.CreateRandomChest;
 
 ---
--- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gold
--- des angegebenen Typs.
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.
 --
 -- <b>Alias</b>: CreateRandomGoldChest
 -- 
@@ -180,10 +240,11 @@ end
 CreateRandomGoldChest = API.CreateRandomGoldChest;
 
 ---
--- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gütern
--- des angegebenen Typs.
--- Güter können seien: Eisen, Stein, HOlz, Wolle, Fleisch, Kräuter,
--- Honigwaben, Milch, Fisch oder Getreide.
+-- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+-- an Gütern.
+--
+-- Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
+-- Honig, Kräuter, Milch, Stein, Wolle.
 --
 -- <b>Alias</b>: CreateRandomResourceChest
 --
@@ -200,10 +261,11 @@ end
 CreateRandomResourceChest = API.CreateRandomResourceChest;
 
 ---
--- Erstellt eine Schatztruhe mit einer zufälligen Menge an Luxus-
--- gütern des angegebenen Typs.
--- Güter können seien: Salz, Farben, Edelsteine, Musikinstrumente
--- oder Weihrauch.
+-- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+-- an Luxusgütern.
+--
+-- Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
+-- Salz oder Weihrauch.
 --
 -- <b>Alias</b>: CreateRandomLuxuryChest
 --
@@ -223,6 +285,18 @@ CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
 -- Erstellt eine Trebuchet-Baustelle an der Position mit den
 -- angegebenen Baukosten.
 --
+-- Das Trebuchet kann von einem Helden aufgebaut werden. Es wird ein Karren
+-- aus dem Lagerhaus zur Baustelle fahren. Erreicht der Karren die Baustelle,
+-- wird er durch ein Trebuchet ersetzt.
+--
+-- Das Trebuchet hat dann 10 Schuss. Sind diese aufgebraucht wird das Trebuchet 
+-- abgebaut und fährt in das Lagerhaus zurück. Sobald der Karren angekommen
+-- ist, kann die Baustelle erneut aktiviert werden.
+--
+-- <b>Achtung:</b>Das Auffüllen von Trebuchets wird deaktiviert, sobald eine 
+-- Baustelle erzeugt wird. Es wird NICHT empfohlen dem Spieler beides, normale 
+-- Trebuchets und Trebuchetbaustellen, zur gleichen Zeit zu geben!
+--
 -- <b>Alias</b>: CreateTrebuchetConstructionSite
 --
 -- @param _Name     Skriptname Position
@@ -240,7 +314,11 @@ end
 CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
 
 ---
--- Zerstört eine Trebuchet-Baustelle.
+-- Zerstört eine Trebuchet-Baustelle, aber nicht die Skript Entity.
+--
+-- Die Baustelle wird in jedem möglichen Status zerstört. Es ist egal, ob das
+-- Trebuchet aufgebaut ist, gerade ein Karren unterwegs ist, oder die Baustelle
+-- noch nie berührt wurde.
 --
 -- <b>Alias</b>: DestroyTrebuchetConstructionSite
 --
@@ -255,6 +333,69 @@ function API.DestroyTrebuchetConstructionSite(_Name)
     AddOnInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name);
 end
 DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
+
+---
+-- Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.
+-- Sollte kein Trebuchet aufgebaut sein, wird 0 zurückgegeben.
+--
+-- @param _Name Skriptname der Trebuchet-Baustelle
+-- @return number: EntityID des Trebuchet
+-- @within Public
+--
+function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
+    if GUI then
+        API.Dbg("API.GetTrebuchetByTrebuchetConstructionSite: Can only be used in global script!");
+        return;
+    end
+    if not self.Data.Trebuchet.Sites[_Name] then 
+        API.Warn("API.GetTrebuchetByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        return 0;
+    end
+    return self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
+end
+GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
+
+---
+-- Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück. 
+-- Sollte kein Anforderungswagen unterwegs sein, wird 0 zurückgegeben.
+--
+-- @param _Name Skriptname der Trebuchet-Baustelle
+-- @return number: EntityID des angeforderten Wagens
+-- @within Public
+--
+function API.GetReturningCartByTrebuchetConstructionSite(_Name)
+    if GUI then
+        API.Dbg("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
+        return;
+    end
+    if not self.Data.Trebuchet.Sites[_Name] then 
+        API.Warn("API.GetReturningCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        return 0;
+    end
+    return self.Data.Trebuchet.Sites[_Name].ReturningCart;
+end
+GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
+
+---
+-- Gibt die EntityID des Abreisewagens der Trebuchet-Baustelle zurück. Sollte
+-- kein Abreisewagens unterwegs sein, wird 0 zurückgegeben.
+--
+-- @param _Name Skriptname der Trebuchet-Baustelle
+-- @return number: EntityID des angeforderten Wagens
+-- @within Public
+--
+function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
+    if GUI then
+        API.Dbg("API.GetConstructionCartByTrebuchetConstructionSite: Can only be used in global script!");
+        return;
+    end
+    if not self.Data.Trebuchet.Sites[_Name] then 
+        API.Warn("API.GetConstructionCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        return 0;
+    end
+    return self.Data.Trebuchet.Sites[_Name].ConstructionCart;
+end
+GetConstructionCart = API.GetConstructionCartByTrebuchetConstructionSite;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -272,7 +413,7 @@ AddOnInteractiveObjectTemplates = {
                         en = "Create building",
                     },
                     Text = {
-                        de = "Gib das Gebäude in Auftrag. Ein Siedler wird aus"..
+                        de = "Beauftragt den Bau eines Gebäudes. Ein Siedler wird aus"..
                              " dem Lagerhaus kommen und mit dem Bau beginnen.",
                         en = "Order a building. A worker will come out of the"..
                              " storehouse and erect it.",
@@ -312,7 +453,7 @@ AddOnInteractiveObjectTemplates = {
             
             Trebuchet = {
                 Error = {
-                    de = "Der Ritter benötigt einen höheren Titel!",
+                    de = "Euer Ritter benötigt einen höheren Titel!",
                     en = "Your knight need a higher title to use this site!",
                 },
                 Description = {
@@ -348,7 +489,7 @@ function AddOnInteractiveObjectTemplates.Global:Install()
 end
 
 ---
--- Initialisiert die interaktiven Baustellen.
+-- Initialisiert die interaktiven Trebuchet-Baustellen.
 -- @within Private
 -- @local
 --
@@ -449,7 +590,7 @@ function AddOnInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite
 
     self.Data.Trebuchet.Sites[_Name] = nil;
     Logic.SetVisible(GetID(_Name), false);
-    RemoveInteractiveObject(_name);
+    RemoveInteractiveObject(_Name);
 end
 
 ---
@@ -654,10 +795,10 @@ function AddOnInteractiveObjectTemplates.Global:CreateRandomGoldChest(_Name)
 end
 
 ---
--- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gütern
--- des angegebenen Typs.
--- Güter können seien: Eisen, Stein, HOlz, Wolle, Fleisch, Kräuter,
--- Honigwaben, Milch, Fisch oder Getreide.
+-- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+-- an Gütern.
+-- Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
+-- Honig, Kräuter, Milch, Stein, Wolle.
 --
 -- @param _Name Name der zu ersetzenden Script Entity
 -- @within Private
@@ -674,10 +815,10 @@ function AddOnInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name)
 end
 
 ---
--- Erstellt eine Schatztruhe mit einer zufälligen Menge an Luxus-
--- gütern des angegebenen Typs.
--- Güter können seien: Salz, Farben, Edelsteine, Musikinstrumente
--- oder Weihrauch
+-- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+-- an Luxusgütern.
+-- Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
+-- Salz oder Weihrauch.
 --
 -- @param _Name Name der zu ersetzenden Script Entity
 -- @within Private
@@ -890,7 +1031,8 @@ function AddOnInteractiveObjectTemplates.Global.OnConstructionComplete(_PlayerID
 end
 
 ---
--- Erzeugt eine Baustelle an der Position.
+-- Erzeugt eine echte Baustelle an der Position. Ein Siedler wird das Gebäude 
+-- aufbauen.
 --
 -- @param _Position Zielpunkt
 -- @param _PlayerID Besitzer des Gebäudes
@@ -925,7 +1067,7 @@ function AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, 
         ConditionUnfulfilled = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Description.Unfulfilled,
         PlayerID             = _PlayerID,
         CompletedCallback    = _Callback,
-        Callback             = AddOnInteractiveObjectTemplates.Global.Callback;
+        Callback             = AddOnInteractiveObjectTemplates.Global.CallbackIOConstructionSite;
     };
 end
 
@@ -935,7 +1077,7 @@ end
 -- @within Private
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.Callback(_Data)
+function AddOnInteractiveObjectTemplates.Global.CallbackIOConstructionSite(_Data)
     local pos  = GetPosition(_Data.Name);
     local eID  = GetID(_Data.Name);
     local ori  = Logic.GetEntityOrientation(eID);
@@ -971,7 +1113,7 @@ function AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite(_Data)
 end
 
 ---
--- Überwacht eine Gebäudebaustelle und reaktiviert sie fall nötig.
+-- Überwacht eine Gebäudebaustelle und reaktiviert sie falls nötig.
 -- @param _eID EntityID des Gebäudes
 -- @return boolean: Job beenden
 -- @within Private
