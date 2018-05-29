@@ -17,28 +17,6 @@
 -- gesperrt werden. Eine gesperrte Ware wird nicht wieder ausgelagert, auch
 -- wenn Platz im Lager frei wird.
 --
--- @usage
--- -- Ein Lager erzeugen:
--- MyStore = QSB.CastleStore:New(1);
---
--- -- Ein Lager löschen:
--- MyStore:Dispose();
---
--- -- Gesamtmenge aller Waren im Burglager:
--- local Amount = MyStore:GetTotalAmount();
--- -- Menge einer Ware ermitteln:
--- -- Sicheres ermitteln aller Waren mit und mit ohne Burglager
--- -- Achtung: Dies ist eine statische Methode!
--- local Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(Goods.G_Grain, 1, false);
--- Menge einer bestimmten Ware ermitteln:
--- local Amount = MyStore:GetAmount(Goods.G_Wood);
--- -- Aktuelles Limit erhalten:
--- MyStore:GetLimit();
---
--- -- Statisch das Lager eines Spielers erhalten:
--- local MyStore = QSB.CastleStore:GetInstance(1);
--- -- Nutzung der Instanz: s.o.
---
 -- @module BundleCastleStore
 -- @set sort=true
 --
@@ -112,7 +90,7 @@ BundleCastleStore = {
 
             CityTab = {
                 Title = {
-                    de = "Waren bunkern",
+                    de = "Güter verwaren",
                     en = "Keep goods",
                 },
                 Text = {
@@ -123,7 +101,7 @@ BundleCastleStore = {
 
             StorehouseTab = {
                 Title = {
-                    de = "Waren zwischenlagern",
+                    de = "Güter zwischenlagern",
                     en = "Store goods temporarily",
                 },
                 Text = {
@@ -166,8 +144,12 @@ end
 -- <b>Alias</b>: QSB.CastleStore:New
 --
 -- @param number _PlayerID     PlayerID des Spielers
--- @return QSB.CastleStore
+-- @return QSB.CastleStore Instanz
 -- @within QSB.CastleStore
+--
+-- @usage 
+-- -- Erstellt ein Burglager für Spieler 1
+-- local Store = QSB.CastleStore:new(1);
 --
 function BundleCastleStore.Global.CastleStore:New(_PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
@@ -188,11 +170,17 @@ end
 ---
 -- Gibt die Burglagerinstanz für den Spieler zurück.
 --
+-- Wurde kein Burglager für den Spieler erstellt, wird nil zurückgegeben.
+--
 -- <b>Alias</b>: QSB.CastleStore:GetInstance
 --
 -- @param number _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore
 -- @within QSB.CastleStore
+--
+-- @usage 
+-- -- Ermittelt das Burglager von Spieler 1
+-- local Store = QSB.CastleStore:GetInstance(1);
 --
 function BundleCastleStore.Global.CastleStore:GetInstance(_PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
@@ -211,10 +199,14 @@ end
 -- @return number
 -- @within QSB.CastleStore
 --
-function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _WithoutMarketplace)
+-- @usage 
+-- -- Menge an Holz in beiden Lagern
+-- local WoodAmount = QSB.CastleStore:GetGoodAmountWithCastleStore(Goods.G_Wood, 1);
+--
+function BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID)
     assert(self == BundleCastleStore.Global.CastleStore, "Can not be used from instance!");
     local CastleStore = self:GetInstance(_PlayerID);
-    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _WithoutMarketplace);
+    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
 
     if CastleStore ~= nil and _Good ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
         Amount = Amount + CastleStore:GetAmount(_Good);
@@ -228,6 +220,12 @@ end
 -- <b>Alias</b>: QSB.CastleStore:Dispose
 --
 -- @within QSB.CastleStore
+--
+-- @usage 
+-- -- Löschen des Burglagers von Spieler 1 ohne Referenz
+-- QSB.CastleStore:GetInstance(1):Dispose();
+-- -- Loschen mit Referenzvariable (z.B. Store)
+-- Store:Dispose();
 --
 function BundleCastleStore.Global.CastleStore:Dispose()
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -260,17 +258,30 @@ end
 ---
 -- Setzt den Basiswert für die maximale Kapazität des Burglagers.
 --
+-- Der Basiswert dient zur Berechnung der Kapazität für die Ausbaustufen und 
+-- muss durch 2 teilbar sein.
+--
+-- Ist also der Basiswert 150, ergibt sich daraus:
+-- <code>
+-- 150, 300, 600, 1200
+-- </code>
+--
 -- <b>Alias</b>: QSB.CastleStore:SetStorageLimit
 --
 -- @param number _Limit     Maximale Kapazität
 -- @return self
 -- @within QSB.CastleStore
 --
+-- @usage 
+-- -- Basiswert auf 100 setzen.
+-- -- -> [100, 200, 400, 800]
+-- QSB.CastleStore:GetInstance(1):SetStorageLimit(100);
+--
 function BundleCastleStore.Global.CastleStore:SetStorageLimit(_Limit)
     assert(self ~= BundleCastleStore.Global.CastleStore, "Can not be used in static context!");
-    self.Data.CapacityBase = _Limit;
+    self.Data.CapacityBase = math.floor(_Limit/2);
     Logic.ExecuteInLuaLocalState([[
-        BundleCastleStore.Local.Data.CastleStore[]] ..self.Data.PlayerID.. [[].CapacityBase = ]] .._Limit.. [[
+        BundleCastleStore.Local.Data.CastleStore[]] ..self.Data.PlayerID.. [[].CapacityBase = ]] ..math.floor(_Limit/2).. [[
     ]])
     return self;
 end
@@ -347,7 +358,7 @@ function BundleCastleStore.Global.CastleStore:IsGoodAccepted(_Good)
 end
 
 ---
--- Setzt den Akzeptanzstatus der Ware.
+-- Setzt, ob die Ware akzeptiert wird.
 --
 -- <b>Alias</b>: QSB.CastleStore:SetGoodAccepted
 --
@@ -420,7 +431,7 @@ function BundleCastleStore.Global.CastleStore:ActivateTemporaryMode()
 end
 
 ---
--- Setzt den Modus "Bunkern", als ob der Tab geklickt wird.
+-- Setzt den Modus "Verwahrung", als ob der Tab geklickt wird.
 --
 -- <b>Alias</b>: QSB.CastleStore:ActivateStockMode
 --
@@ -823,9 +834,9 @@ end
 -- @return number
 -- @within QSB.CastleStore
 --
-function BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID, _WithoutMarketplace)
+function BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID)
     assert(self == BundleCastleStore.Local.CastleStore, "Can not be used from instance!");
-    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, _WithoutMarketplace);
+    local Amount = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
     if self:HasCastleStore(_PlayerID) then
         if _Good ~= Goods.G_Gold and Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource then
             Amount = Amount + self:GetAmount(_PlayerID, _Good);
@@ -1043,7 +1054,7 @@ function BundleCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
 end
 
 ---
--- "Waren bunkern" wurde gedrückt.
+-- "Waren verwahren" wurde gedrückt.
 --
 -- <b>Alias</b>: QSB.CastleStore:OnCityTabClicked
 --
