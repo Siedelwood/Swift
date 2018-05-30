@@ -5,8 +5,16 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ermöglicht die Manipulation der Interaktiven Objekte und das Erstellen 
--- völlig neuer eigener Objekte.
+-- Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert
+-- werden kann. Diese Interaktion geschieht über einen Button. Ziel dieses 
+-- Bundels ist es, die funktionalität von interaktiven Objekten zu erweitern.
+-- Es ist möglich, beliebige Objekte zu interaktiven Objekten zu machen.
+--
+-- Die Einsatzmöglichkeiten sind vielfältig. Wenn ein Gegenstand oder ein 
+-- Objekt mit einer Funktion versehen ist, kann dies in versiedenem Kontext
+-- an die Geschichte angepasst werden: z.B. Helbel öffnen eine Geheimtür,
+-- ein Gegenstand wird vom Helden aufgehoben, ein Marktstand, der etwas
+-- verkauft, ....
 --
 -- @module BundleInteractiveObjects
 -- @set sort=true
@@ -32,6 +40,7 @@ QSB.IOList = {};
 -- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
 -- @within Public
+-- @see API.CreateObject
 --
 function API.SetupInteractiveObject(_Name, _Description)
     if GUI then
@@ -42,18 +51,114 @@ function API.SetupInteractiveObject(_Name, _Description)
         API.Dbg("API.SetupInteractiveObject: Entity \"" .._Name.. "\" is invalid!");
         return;
     end
+    _Description.Name = _Name;
     return BundleInteractiveObjects.Global:CreateObject(_Description);
 end
 SetupInteractiveObject = API.SetupInteractiveObject;
 
 ---
--- Erzeugt ein interaktives Objekt nach alter Schreibweise.
+-- Erzeugt ein interaktives Objekt.
+--
+-- Die Parameter des interaktiven Objektes werden durch seine Beschreibung 
+-- festgelegt. Die Beschreibung ist eine Table, die bestimmte Werte für das
+-- Objekt beinhaltet. Dabei müssen nicht immer alle Werte angegeben werden.
+--
+-- Mögliche Angaben:
+-- <table border="1">
+-- <tr>
+-- <td><b>Feldname</b></td>
+-- <td><b>Beschreibung</b></td>
+-- <td><b>Optional</b></td>
+-- </tr>
+-- <tr>
+-- <td>Name</td>
+-- <td>Der Skriptname des Entity, das zum interaktiven Objekt wird.</td>
+-- <td>nein</td>
+-- </tr>
+-- <tr>
+-- <td>Title</td>
+-- <td>Der angezeigter Name im Beschreibungsfeld.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Text</td>
+-- <td>Der Beschreibungstext, der im Tooltip angezeigt wird.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Texture</td>
+-- <td>Bestimmt die Icongrafik, die angezeigt wird. Dabei kann es sich um
+-- eine Ingame-Grafik oder eine eigene Grafik halten.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Distance</td>
+-- <td>Die minimale Entfernung zum Objekt, die ein Held benötigt um das
+-- objekt zu aktivieren.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Waittime</td>
+-- <td>Die Zeit, die ein Held benötigt, um das Objekt zu aktivieren. Die 
+-- Wartezeit ist nur für I_X_ Entities verfügbar.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Costs</td>
+-- <td>Eine Table mit dem Typ und der Menge der Kosten.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Reward</td>
+-- <td>Der Warentyp und die Menge der gefundenen Waren im Objekt.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Callback</td>
+-- <td>Eine Funktion, die ausgeführt wird, sobald das Objekt aktiviert wird.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Condition</td>
+-- <td>Eine Funktion, die vor der Aktivierung eine Beringung prüft.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>ConditionUnfulfilled</td>
+-- <td>Eine Nachricht, die angezeigt wird, falls die Bedingung nicht
+-- erfüllt ist.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>Opener</td>
+-- <td>Ein spezieller Held, der als einziger das Objekt aktivieren kann.</td>
+-- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>WrongKnight</td>
+-- <td>Nachricht, die angezeigt wird, wenn der falsche Held das Objekt 
+-- aktivieren will.</td>
+-- <td>ja</td>
+-- </table>
+--
+-- Zusätzlich können beliebige weitere Felder an das Objekt angehangen
+-- werden. Sie sind ausnahmslos im Callback und in der Condition des Objektes
+-- abrufbar.
 --
 -- <b>Alias:</b> CreateObject
 --
--- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
 -- @within Public
+--
+-- @usage
+-- -- Ein einfaches Objekt erstellen:
+-- CreateObject {
+--     Name		= "hut",
+--     Distance = 1500,
+--     Callback = function(_Data)
+--         API.Note("Do something...");
+--     end,
+-- }
 --
 function API.CreateObject(_Description)
     if GUI then
@@ -89,8 +194,12 @@ end
 RemoveInteractiveObject = API.RemoveInteractiveObject;
 
 ---
--- Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
+-- Aktiviert ein Interaktives Objekt, sodass es vom Spieler
 -- aktiviert werden kann.
+--
+-- Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
+-- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
+-- Held das Objekt aktivieren.
 -- 
 -- <b>Alias</b>: InteractiveObjectActivate
 --
@@ -120,11 +229,8 @@ end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
 
 ---
--- Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.
---
--- Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
--- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
--- Held das Objekt aktivieren.
+-- Deaktiviert ein interaktives Objekt, sodass es nicht mehr vom Spieler 
+-- benutzt werden kann.
 -- 
 -- <b>Alias</b>: InteractiveObjectDeactivate
 --
@@ -159,7 +265,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 --
 -- <b>Alias:</b> AddCustomIOName
 --
--- @param _Key  Identifier der Beschriftung
+-- @param _Key  Typname des Entity
 -- @param _Text Text der Beschriftung
 -- @within Public
 --
@@ -920,7 +1026,7 @@ end
 
 ---
 -- Ändert die Textur eines Icons des aktuellen Widget.
--- TODO: Eigene Matrizen nicht - Grund unbekannt.
+-- TODO: Eigene Matrizen funktionieren nicht - Grund unbekannt.
 --
 -- @param _Widget Icon Widget
 -- @param _Icon   Icon Textur
