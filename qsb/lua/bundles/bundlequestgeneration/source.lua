@@ -26,7 +26,7 @@ QSB = QSB or {};
 --
 -- Ein Quest besteht aus verschiedenen Parametern und Behavior, die nicht
 -- alle zwingend gesetzt werden müssen. Behavior werden einfach nach den
--- Feldern nacheinander aufgerufen.
+-- Feldern nacheinander angegeben.
 -- <p><u>Parameter:</u></p>
 -- <ul>
 -- <li>Name: Der eindeutige Name des Quests</li>
@@ -36,7 +36,7 @@ QSB = QSB or {};
 -- <li>Success: Erfolgsnachricht des Quest</li>
 -- <li>Failure: Fehlschlagnachricht des Quest</li>
 -- <li>Description: Aufgabenbeschreibung (Nur bei Custom)</li>
--- <li>Time: Zeit bis zu, Fehlschlag</li>
+-- <li>Time: Zeit bis zu, Fehlschlag/Abschluss</li>
 -- <li>Loop: Funktion, die während der Laufzeit des Quests aufgerufen wird</li>
 -- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
 -- </ul>
@@ -56,11 +56,12 @@ end
 AddQuest = API.AddQuest;
 
 ---
+-- DO NOT USE THIS FUNCTION!
 -- Startet alle mittels API.AddQuest initalisierten Quests.
 --
 -- <b>Alias</b>: StartQuests
 --
--- @within Public
+-- @within Private
 --
 function API.StartQuests()
     if GUI then
@@ -138,7 +139,7 @@ function API.QuestDialog(_Messages)
         API.Log("API.QuestDialog: Could not execute in local script!");
         return;
     end
-    
+
     local QuestID, Quest
     local GeneratedQuests = {};
     for i= 1, #_Messages, 1 do
@@ -228,7 +229,7 @@ end
 --
 function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
     self.Data.QuestMessageID = self.Data.QuestMessageID +1;
-    
+
     -- Trigger-Nachbau
     local OnQuestOver = {
         Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
@@ -242,14 +243,14 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
             return false;
         end}
     }
-    
+
     -- Lokalisierung
-    local Language = (Network.GetDesiredLanguage() == "de" or "de") or "en";
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
     assert(type(_Text) == "string");
-    
+
     return QuestTemplate:New(
         "QSB_QuestMessage_" ..self.Data.QuestMessageID,
         (_Sender or 1),
@@ -304,7 +305,8 @@ function BundleQuestGeneration.Global:NewQuest(_Data)
     table.insert(self.Data.GenerationList, QuestData);
     local ID = #self.Data.GenerationList;
     self:AttachBehavior(ID, _Data);
-    return ID;
+    self:StartQuests();
+    return Quests[0];
 end
 
 ---
@@ -352,6 +354,7 @@ function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
 end
 
 ---
+-- DO NOT USE THIS FUNCTION!
 -- Startet alle Quests in der GenerationList.
 --
 -- @within Private
@@ -506,4 +509,3 @@ function BundleQuestGeneration.Local:Install()
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
-

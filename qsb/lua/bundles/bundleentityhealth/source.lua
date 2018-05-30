@@ -5,8 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle soll dem Mapper ermöglichen die Trigger, die auslösen, wenn 
--- Entities kämpfen, besser zu nutzen. Außerdem werden einige Hilfsfunktionen 
+-- Dieses Bundle soll dem Mapper ermöglichen die Trigger, die auslösen, wenn
+-- Entities kämpfen, besser zu nutzen. Außerdem werden einige Hilfsfunktionen
 -- bereitgestellt.
 --
 -- @module BundleEntityHealth
@@ -20,7 +20,7 @@
 ---
 -- Gibt die Gesundheit des Entity in prozent zurück.
 --
--- Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen, 
+-- Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen,
 -- Gebäude und Raubtiere haben Gesundheit.
 --
 -- <b>Alias</b>: GetHealth
@@ -37,7 +37,7 @@ GetHealth = API.GetHealth;
 ---
 -- Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.
 --
--- Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen, 
+-- Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen,
 -- Gebäude und Raubtiere haben Gesundheit.
 --
 -- <b>Alias</b>: SetHealth
@@ -61,7 +61,7 @@ function API.SetHealth(_Entity, _Percentage)
         API.Dbg("_Percentage must be a number!");
         return;
     end
-    
+
     _Percentage = (_Percentage < 0 and 0) or _Percentage;
     if _Percentage > 100 then
         API.Warn("_Percentage is larger than 100%. This could cause problems!");
@@ -152,7 +152,7 @@ BundleEntityHealth = {
 function BundleEntityHealth.Global:Install()
     BundleEntityHealth_EntityHurtEntityController = BundleEntityHealth.Global.EntityHurtEntityController;
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "BundleEntityHealth_EntityHurtEntityController", 1);
-    
+
     BundleEntityHealth_EntityDestroyedController = BundleEntityHealth.Global.EntityDestroyedController;
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "BundleEntityHealth_EntityDestroyedController", 1);
 end
@@ -173,7 +173,7 @@ function BundleEntityHealth.Global:SetEntityHealth(_Entity, _Percentage)
     local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
     local Health    = Logic.GetEntityHealth(EntityID);
     local SetHealth = math.floor((MaxHealth * (_Percentage / 100)) + 0.5);
-    
+
     Logic.HealEntity(EntityID, MaxHealth - Health);
     Logic.HurtEntity(EntityID, MaxHealth - SetHealth);
 end
@@ -193,14 +193,14 @@ end
 
 ---
 -- Führt alle registrierten Events aus, wenn ein Entity ein anderes angreift.
--- 
+--
 -- @within Private
 -- @local
 --
 function BundleEntityHealth.Global.EntityHurtEntityController()
     local AttackerIDs = {Event.GetEntityID1()};
     local DefenderIDs = {Event.GetEntityID2()};
-    
+
     for i=1, #AttackerIDs, 1 do
         for j=1, #DefenderIDs, 1 do
             local Attacker = AttackerIDs[i];
@@ -224,7 +224,7 @@ end
 -- @local
 --
 function BundleEntityHealth.Local:Install()
-    
+
 end
 
 -- Shared Script ---------------------------------------------------------------
@@ -384,7 +384,7 @@ function b_Trigger_EntityHealth:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_StealGold:GetCustomData(_Index)
+function b_Trigger_EntityHealth:GetCustomData(_Index)
     if _Index == 1 then
         return { "<", ">=" };
     end

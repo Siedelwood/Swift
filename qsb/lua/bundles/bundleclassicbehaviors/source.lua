@@ -3569,6 +3569,8 @@ function b_Reprisal_FakeDefeat:GetReprisalTable()
     return { Reprisal.FakeDefeat }
 end
 
+Core:RegisterBehavior(b_Reprisal_FakeDefeat);
+
 -- -------------------------------------------------------------------------- --
 
 ---

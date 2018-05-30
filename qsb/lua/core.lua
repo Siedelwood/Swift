@@ -914,7 +914,7 @@ GetPosition = API.LocateEntity;
 function API.ActivateIO(_ScriptName, _State)
     State = State or 0;
     if GUI then
-        GUI.SendScriptCommand('API.AcrivateIO("' .._ScriptName.. '", ' ..State..')');
+        GUI.SendScriptCommand('API.ActivateIO("' .._ScriptName.. '", ' ..State..')');
         return;
     end
     if not IsExisting(_ScriptName) then
@@ -925,7 +925,7 @@ function API.ActivateIO(_ScriptName, _State)
         Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, State);
     end
 end
-InteractiveObjectActivate = API.AcrivateIO;
+InteractiveObjectActivate = API.ActivateIO;
 
 ---
 -- Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
@@ -1332,7 +1332,7 @@ end
 ---
 -- Registiert ein AddOn als Bundle, sodass es initialisiert wird.
 --
--- Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und 
+-- Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und
 -- existiert nur zur Übersichtlichkeit.
 --
 -- @param _Bundle Name des Moduls
@@ -1582,4 +1582,3 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
-
