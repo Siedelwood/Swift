@@ -26,9 +26,9 @@
 --
 
 dofile("qsb/lua/loader.lua");
-local fh = io.open("Symfonia.lua", "r");
+local fh = io.open("qsb.lua", "r");
 if fh then
     fh:close();
-    os.remove("Symfonia.lua");
+    os.remove("qsb.lua");
 end
 SymfoniaLoader:CreateQSB();

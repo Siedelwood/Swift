@@ -211,13 +211,13 @@ end
 function SymfoniaLoader:CreateQSB()
     local QsbContent = self:ConcatSources();
     -- Delete old file
-    local fh = io.open("Symfonia.lua", "r");
+    local fh = io.open("qsb.lua", "r");
     if fh ~= nil then
-        os.remove("Symfonia.lua");
+        os.remove("qsb.lua");
         fh:close();
     end
     -- Write new file
-    local fh = io.open("Symfonia.lua", "wt");
+    local fh = io.open("qsb.lua", "wt");
     assert(fh, "Output file can not be created!");
     fh:write(unpack(QsbContent));
     fh:close();

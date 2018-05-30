@@ -1,7 +1,7 @@
-@echo off
+#/bin/bash
 lua qsb/lua/writer.lua
 cd qsb/luaminifyer
-LuaMinify.bat ../../Symfonia.lua
+./LuaMinify.sh ../../qsb.lua
 cd ../../qsb
 lua ldoc/ldoc.lua --dir ../doc lua
 cd ..
