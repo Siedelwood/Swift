@@ -2360,7 +2360,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             XGUIEng.SetMaterialUV(BG, 1, 0, 0, 1, 1);
         else 
             XGUIEng.SetMaterialColor(BB, 1, 0, 0, 0, 0);
-            XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
+            if _page.splashscreen.color then 
+                XGUIEng.SetMaterialColor(BG, 1, unpack(_page.splashscreen.color));
+            else 
+                XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
+            end
             XGUIEng.SetMaterialTexture(BG, 1, _page.splashscreen.image);
         end
 
