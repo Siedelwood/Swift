@@ -15,10 +15,14 @@ Maps in der Community zu heben.
 # 2 Installation
 
 Um Symfonia zu nutzen, muss das Repository zuerst geklont werden. Im Ordner 
-"version" befinden sich die veröffentlichten Versionen der QSB+.
+"vsr" befinden sich die letzten 3 veröffentlichten Versionen.
 
-# 3 Bibliothek
+# 3 Build
 
+Um Symfonia zu bauen, führe die make.bat (Windows) oder die make.sh (Linux)
+aus. Anschließend befindet sich Symfonia im Verzeichnis var. Es wird eine 
+normale QSB und eine komprimierte QSB erzeugt. Außerdem wird die Dokumentation
+in diesen Ordner kopiert.
 
 # 4 Dokumentation
 

@@ -1,7 +1,7 @@
 .metadata
 doctest/
-bin/
 tmp/
+var/
 target/
 */target/
 *.tmp
