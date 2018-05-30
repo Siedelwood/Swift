@@ -1,6 +1,5 @@
 .metadata
 doctest/
-bin/
 tmp/
 target/
 */target/
