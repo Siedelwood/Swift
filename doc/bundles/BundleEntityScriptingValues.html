@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Public">Public</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
+  <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHealth.html">BundleEntityHealth</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><strong>BundleEntityScriptingValues</strong></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../bundles/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleEntityScriptingValues</code></h1>
+<p>Dieses Bundle ermöglicht die Manipulation einer Entität direkt im
+ Arbeitsspeicher.</p>
+<p></p>
+
+
+<h2><a href="#Public">Public</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.GetMovingTarget">API.GetMovingTarget (_Entity)</a></td>
+	<td class="summary">Gibt die Position zurück, zu der sich das Entity bewegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetPlayer">API.GetPlayer (_Entity)</a></td>
+	<td class="summary">Gibt den Besitzer des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetScale">API.GetScale (_Entity)</a></td>
+	<td class="summary">Gibt den Größenfaktor des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsNpc">API.IsNpc (_Entity)</a></td>
+	<td class="summary">Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsVisible">API.IsVisible (_Entity)</a></td>
+	<td class="summary">Gibt zurück, ob das Entity sichtbar ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetPlayer">API.SetPlayer (_Entity, _PlayerID)</a></td>
+	<td class="summary">Ändert den Besitzer des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetScale">API.SetScale (_Entity, _Scale)</a></td>
+	<td class="summary">Setzt den Größenfaktor des Entity.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Public"></a>Public</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.GetMovingTarget"></a>
+    <strong>API.GetMovingTarget (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Position zurück, zu der sich das Entity bewegt.
+<p> <b>Alias</b>: GetMovingTarget
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Positionstabelle
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetPlayer"></a>
+    <strong>API.GetPlayer (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Besitzer des Entity zurück.
+<p> <b>Alias</b>: GetPlayer
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Besitzer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetScale"></a>
+    <strong>API.GetScale (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Größenfaktor des Entity zurück.
+<p> <b>Alias</b>: GetScale
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Größenfaktor
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsNpc"></a>
+    <strong>API.IsNpc (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
+<p> <b>Alias</b>: IsNpc
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Ist NPC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsVisible"></a>
+    <strong>API.IsVisible (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das Entity sichtbar ist.
+<p> <b>Alias</b>: IsVisible
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Ist sichtbar
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetPlayer"></a>
+    <strong>API.SetPlayer (_Entity, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Ändert den Besitzer des Entity.
+<p> Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
+ möglich ein Raubtier einem Spieler zuzuweisen.
+<p> <b>Alias</b>: ChangePlayer
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Entity
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         Besitzer
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetScale"></a>
+    <strong>API.SetScale (_Entity, _Scale)</strong>
+    </dt>
+    <dd>
+    Setzt den Größenfaktor des Entity.
+<p> Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
+ die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
+<p> <b>Alias</b>: SetScale
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Entity
+        </li>
+        <li><span class="parameter">_Scale</span>
+          Größenfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-05-30 12:26:53 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

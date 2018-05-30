@@ -1,0 +1,957 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Reward">Reward</a></li>
+<li><a href="#Reprisal">Reprisal</a></li>
+<li><a href="#Trigger">Trigger</a></li>
+<li><a href="#Goal">Goal</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
+  <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHealth.html">BundleEntityHealth</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../bundles/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><strong>BundleSymfoniaBehaviors</strong></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleSymfoniaBehaviors</code></h1>
+<p>Dieses Bundle enthält einige weitere nützliche Standard-Behavior.</p>
+<p></p>
+
+
+<h2><a href="#Reward">Reward</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Reward_AI_SetEntityControlled">Reward_AI_SetEntityControlled (_ScriptName, _Controlled)</a></td>
+	<td class="summary">Gibt oder entzieht einem KI-Spieler die Kontrolle über ein Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_ChangePlayer">Reward_ChangePlayer (_ScriptName, _NewOwner)</a></td>
+	<td class="summary">Ändert den Eigentümer des Entity oder des Battalions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_MoveToPosition">Reward_MoveToPosition (_ScriptName, _Destination, _Distance, _Angle)</a></td>
+	<td class="summary">Bewegt einen Siedler relativ zu einem Zielpunkt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_RefillAmmunition">Reward_RefillAmmunition (_ScriptName)</a></td>
+	<td class="summary">Füllt die Munition in der Kriegsmaschine vollständig auf.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_SetModel">Reward_SetModel (_ScriptName, _Model)</a></td>
+	<td class="summary">Ändert das Model eines Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_SetPosition">Reward_SetPosition (_ScriptName, _Target, _LookAt, _Distance)</a></td>
+	<td class="summary">Ändert die Position eines Siedlers oder eines Gebäudes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_SetVulnerability">Reward_SetVulnerability (_ScriptName, _Vulnerable)</a></td>
+	<td class="summary">Macht das Entity verwundbar oder unverwundbar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_VictoryWithParty">Reward_VictoryWithParty ()</a></td>
+	<td class="summary">Der Spieler gewinnt das Spiel mit einem animierten Siegesfest.</td>
+	</tr>
+</table>
+<h2><a href="#Reprisal">Reprisal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_ChangePlayer">Reprisal_ChangePlayer (_ScriptName, _NewOwner)</a></td>
+	<td class="summary">Ändert den Eigentümer des Entity oder des Battalions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_SetModel">Reprisal_SetModel (_ScriptName, _Model)</a></td>
+	<td class="summary">Ändert das Model eines Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_SetPosition">Reprisal_SetPosition (_ScriptName, _Target, _LookAt, _Distance)</a></td>
+	<td class="summary">Ändert die Position eines Siedlers oder eines Gebäudes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_SetVisible">Reprisal_SetVisible (_ScriptName, _Visible)</a></td>
+	<td class="summary">Ändert die Sichtbarkeit eines Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_SetVulnerability">Reprisal_SetVulnerability (_ScriptName, _Vulnerable)</a></td>
+	<td class="summary">Macht das Entity verwundbar oder unverwundbar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reward_SetVisible">Reward_SetVisible (_ScriptName, _Visible)</a></td>
+	<td class="summary">Ändert die Sichtbarkeit eines Entity.</td>
+	</tr>
+</table>
+<h2><a href="#Trigger">Trigger</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_AmmunitionDepleted">Trigger_AmmunitionDepleted (_ScriptName)</a></td>
+	<td class="summary">Startet den Quest, sobald die Munition in der Kriegsmaschine erschöpft ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnAtLeastXOfYQuestsFailed">Trigger_OnAtLeastXOfYQuestsFailed (_MinAmount, _QuestAmount, _Quest1, _Quest2, _Quest3, _Quest4, _Quest5)</a></td>
+	<td class="summary">Startet den Quest, sobald mindestens X von Y Quests fehlgeschlagen sind.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnExactOneQuestIsLost">Trigger_OnExactOneQuestIsLost (_QuestName1, _QuestName2)</a></td>
+	<td class="summary">Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnExactOneQuestIsWon">Trigger_OnExactOneQuestIsWon (_QuestName1, _QuestName2)</a></td>
+	<td class="summary">Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.</td>
+	</tr>
+</table>
+<h2><a href="#Goal">Goal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Goal_AmmunitionAmount">Goal_AmmunitionAmount (_ScriptName, _Relation, _Amount)</a></td>
+	<td class="summary">Es muss eine Menge an Munition in der Kriegsmaschine erreicht werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_Infiltrate">Goal_Infiltrate (_ScriptName, _DeleteThief)</a></td>
+	<td class="summary">Der Spieler muss einen Dieb in ein Gebäude hineinschicken.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_MoveToPosition">Goal_MoveToPosition (_ScriptName, _Target, _Distance, _UseMarker)</a></td>
+	<td class="summary">Ein Entity muss sich zu einem Ziel bewegen und eine Distanz unterschreiten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_StealBuilding">Goal_StealBuilding (_ScriptName)</a></td>
+	<td class="summary">Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_StealGold">Goal_StealGold (_Amount, _ShowProgress)</a></td>
+	<td class="summary">Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_WinQuest">Goal_WinQuest (_QuestName)</a></td>
+	<td class="summary">Der Spieler muss einen bestimmten Quest abschließen.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Reward"></a>Reward</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Reward_AI_SetEntityControlled"></a>
+    <strong>Reward_AI_SetEntityControlled (_ScriptName, _Controlled)</strong>
+    </dt>
+    <dd>
+    Gibt oder entzieht einem KI-Spieler die Kontrolle über ein Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Controlled</span>
+         Durch KI kontrollieren an/aus
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_ChangePlayer"></a>
+    <strong>Reward_ChangePlayer (_ScriptName, _NewOwner)</strong>
+    </dt>
+    <dd>
+    Ändert den Eigentümer des Entity oder des Battalions.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_NewOwner</span>
+           PlayerID des Eigentümers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_MoveToPosition"></a>
+    <strong>Reward_MoveToPosition (_ScriptName, _Destination, _Distance, _Angle)</strong>
+    </dt>
+    <dd>
+    Bewegt einen Siedler relativ zu einem Zielpunkt.
+<p> Der Siedler wird sich zum Ziel ausrichten und in der angegeben Distanz
+ und dem angegebenen Winkel Position beziehen.
+<p> <b>Hinweis:</b> Funktioniert ähnlich wie MoveEntityToPositionToAnotherOne.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+          Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Destination</span>
+         Skriptname des Ziels
+        </li>
+        <li><span class="parameter">_Distance</span>
+            Entfernung
+        </li>
+        <li><span class="parameter">_Angle</span>
+               Winkel
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_RefillAmmunition"></a>
+    <strong>Reward_RefillAmmunition (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Füllt die Munition in der Kriegsmaschine vollständig auf.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_SetModel"></a>
+    <strong>Reward_SetModel (_ScriptName, _Model)</strong>
+    </dt>
+    <dd>
+    Ändert das Model eines Entity.
+<p> In Verbindung mit Reward_SetVisible oder Reprisal_SetVisible können
+ Script Entites ein neues Model erhalten und sichtbar gemacht werden.
+ Das hat den Vorteil, das Script Entities nicht überbaut werden können.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Model</span>
+              Neues Model
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_SetPosition"></a>
+    <strong>Reward_SetPosition (_ScriptName, _Target, _LookAt, _Distance)</strong>
+    </dt>
+    <dd>
+    Ändert die Position eines Siedlers oder eines Gebäudes.
+<p> Optional kann das Entity in einem bestimmten Abstand zum Ziel platziert
+ werden und das Ziel anschauen. Die Entfernung darf nicht kleiner sein
+ als 50!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+             Skriptname des Ziels
+        </li>
+        <li><span class="parameter">_LookAt</span>
+             Gegenüberstellen
+        </li>
+        <li><span class="parameter">_Distance</span>
+           Relative Entfernung (nur mit _LookAt)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_SetVulnerability"></a>
+    <strong>Reward_SetVulnerability (_ScriptName, _Vulnerable)</strong>
+    </dt>
+    <dd>
+    Macht das Entity verwundbar oder unverwundbar.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Vulnerable</span>
+         Verwundbarkeit an/aus
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_VictoryWithParty"></a>
+    <strong>Reward_VictoryWithParty ()</strong>
+    </dt>
+    <dd>
+    Der Spieler gewinnt das Spiel mit einem animierten Siegesfest.
+<p> Es ist nicht möglich weiterzuspielen!
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Reprisal"></a>Reprisal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Reprisal_ChangePlayer"></a>
+    <strong>Reprisal_ChangePlayer (_ScriptName, _NewOwner)</strong>
+    </dt>
+    <dd>
+    Ändert den Eigentümer des Entity oder des Battalions.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_NewOwner</span>
+           PlayerID des Eigentümers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_SetModel"></a>
+    <strong>Reprisal_SetModel (_ScriptName, _Model)</strong>
+    </dt>
+    <dd>
+    Ändert das Model eines Entity.
+<p> In Verbindung mit Reward_SetVisible oder Reprisal_SetVisible können
+ Script Entites ein neues Model erhalten und sichtbar gemacht werden.
+ Das hat den Vorteil, das Script Entities nicht überbaut werden können.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Model</span>
+              Neues Model
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_SetPosition"></a>
+    <strong>Reprisal_SetPosition (_ScriptName, _Target, _LookAt, _Distance)</strong>
+    </dt>
+    <dd>
+    Ändert die Position eines Siedlers oder eines Gebäudes.
+<p> Optional kann das Entity in einem bestimmten Abstand zum Ziel platziert
+ werden und das Ziel anschauen. Die Entfernung darf nicht kleiner sein
+ als 50!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+             Skriptname des Ziels
+        </li>
+        <li><span class="parameter">_LookAt</span>
+             Gegenüberstellen
+        </li>
+        <li><span class="parameter">_Distance</span>
+           Relative Entfernung (nur mit _LookAt)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_SetVisible"></a>
+    <strong>Reprisal_SetVisible (_ScriptName, _Visible)</strong>
+    </dt>
+    <dd>
+    Ändert die Sichtbarkeit eines Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Visible</span>
+            Sichtbarkeit an/aus
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_SetVulnerability"></a>
+    <strong>Reprisal_SetVulnerability (_ScriptName, _Vulnerable)</strong>
+    </dt>
+    <dd>
+    Macht das Entity verwundbar oder unverwundbar.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Vulnerable</span>
+         Verwundbarkeit an/aus
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reward_SetVisible"></a>
+    <strong>Reward_SetVisible (_ScriptName, _Visible)</strong>
+    </dt>
+    <dd>
+    Ändert die Sichtbarkeit eines Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Visible</span>
+            Sichtbarkeit an/aus
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Trigger"></a>Trigger</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Trigger_AmmunitionDepleted"></a>
+    <strong>Trigger_AmmunitionDepleted (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald die Munition in der Kriegsmaschine erschöpft ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnAtLeastXOfYQuestsFailed"></a>
+    <strong>Trigger_OnAtLeastXOfYQuestsFailed (_MinAmount, _QuestAmount, _Quest1, _Quest2, _Quest3, _Quest4, _Quest5)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald mindestens X von Y Quests fehlgeschlagen sind.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_MinAmount</span>
+         Mindestens zu verlieren (max. 5)
+        </li>
+        <li><span class="parameter">_QuestAmount</span>
+         Anzahl geprüfter Quests (max. 5 und >= _MinAmount)
+        </li>
+        <li><span class="parameter">_Quest1</span>
+              Name des 1. Quest
+        </li>
+        <li><span class="parameter">_Quest2</span>
+              Name des 2. Quest
+        </li>
+        <li><span class="parameter">_Quest3</span>
+              Name des 3. Quest
+        </li>
+        <li><span class="parameter">_Quest4</span>
+              Name des 4. Quest
+        </li>
+        <li><span class="parameter">_Quest5</span>
+              Name des 5. Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnExactOneQuestIsLost"></a>
+    <strong>Trigger_OnExactOneQuestIsLost (_QuestName1, _QuestName2)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName1</span>
+         Name des ersten Quest
+        </li>
+        <li><span class="parameter">_QuestName2</span>
+         Name des zweiten Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnExactOneQuestIsWon"></a>
+    <strong>Trigger_OnExactOneQuestIsWon (_QuestName1, _QuestName2)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName1</span>
+         Name des ersten Quest
+        </li>
+        <li><span class="parameter">_QuestName2</span>
+         Name des zweiten Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Goal"></a>Goal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Goal_AmmunitionAmount"></a>
+    <strong>Goal_AmmunitionAmount (_ScriptName, _Relation, _Amount)</strong>
+    </dt>
+    <dd>
+    Es muss eine Menge an Munition in der Kriegsmaschine erreicht werden.
+<p> <u>Relationen</u>
+ <ul>
+ <li>>= - Anzahl als Mindestmenge</li>
+ <li>< - Weniger als Anzahl</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+          Name des Kriegsgerät
+        </li>
+        <li><span class="parameter">_Relation</span>
+            Mengenrelation
+        </li>
+        <li><span class="parameter">_Amount</span>
+              Menge an Munition
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_Infiltrate"></a>
+    <strong>Goal_Infiltrate (_ScriptName, _DeleteThief)</strong>
+    </dt>
+    <dd>
+    Der Spieler muss einen Dieb in ein Gebäude hineinschicken.
+<p> Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt. Es
+ muss sich um ein Gebäude handeln, das bestohlen werden kann (Burg, Lager,
+ Kirche, Stadtgebäude mit Einnahmen)!
+<p> Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
+ es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+          Skriptname des Gebäudes
+        </li>
+        <li><span class="parameter">_DeleteThief</span>
+         Dieb nach Abschluss löschen
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_MoveToPosition"></a>
+    <strong>Goal_MoveToPosition (_ScriptName, _Target, _Distance, _UseMarker)</strong>
+    </dt>
+    <dd>
+    Ein Entity muss sich zu einem Ziel bewegen und eine Distanz unterschreiten.
+<p> Optional kann das Ziel mit einem Marker markiert werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+             Skriptname des Ziels
+        </li>
+        <li><span class="parameter">_Distance</span>
+           Entfernung
+        </li>
+        <li><span class="parameter">_UseMarker</span>
+          Ziel markieren
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_StealBuilding"></a>
+    <strong>Goal_StealBuilding (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.
+<p> Eine Kirche wird immer Sabotiert. Ein Lagerhaus verhält sich ähnlich zu
+ einer Burg.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Gebäudes
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_StealGold"></a>
+    <strong>Goal_StealGold (_Amount, _ShowProgress)</strong>
+    </dt>
+    <dd>
+    Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.
+<p> Dabei ist es egal von welchem Spieler. Diebe können Gold nur aus
+ Stadtgebäude stehlen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+               Menge an Gold
+        </li>
+        <li><span class="parameter">_ShowProgress</span>
+         Fortschritt ausgeben
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_WinQuest"></a>
+    <strong>Goal_WinQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Der Spieler muss einen bestimmten Quest abschließen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Behavior
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-05-30 12:26:53 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

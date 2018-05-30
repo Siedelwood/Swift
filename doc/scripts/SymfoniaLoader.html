@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#SymfoniaLoader">SymfoniaLoader</a></li>
+</ul>
+
+
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><strong>SymfoniaLoader</strong></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
+  <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHealth.html">BundleEntityHealth</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../bundles/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Script <code>SymfoniaLoader</code></h1>
+<p>Ermöglicht es den Quellcode von Symfonia zu nutzen, ohne vorher eine QSB
+ generieren zu lassen.</p>
+<p>
+<p> Vorallem während des Entwicklungsprozesses ist es störend, wenn man sich
+ immer wieder eine neue QSB bauen muss. Der Loader ermöglicht es, die QSB,
+ bzw. ihre Quelldateien, während der Entwicklung direkt aus dem Projektordner
+ zu nutzen. Alles nötige dazu ist, dieses Skript in die Map zu laden und
+ die Funktion SymfoniaLoader:Load auszuführen.
+<p> Über die Load Order können einzelne Bundles aktiviert und deaktiviert
+ werden. Die Reihenfolge in der Tabelle bestimmt zudem die Reihenfolge,
+ nach der die Skripte geladen wird. Es wird empfohlen diese Reihenfolge
+ beizubehalten, da es sonst möglicher Weise zu Problemen mit möglichen
+ unentdeckten Abhängigkeiten kommen könnte.
+<p> Neben den Bundles gibt es auch AddOns. AddOns sind spezielle Bundles, die
+ von einem oder mehr Bundles bzw. anderen AddOns abhängig sind. Ist eine
+ Abhängigkeit unbefriedigt, wird das AddOn nicht geladen! AddOns, die von
+ anderen AddOns abhängig sind, müssen in der Load Order hinter AddOns stehen
+ die sie benötigen. Desshalb wird auch hier empfohlen, die Load Order nicht
+ zu verändern.
+<p> Trotz allem muss nach Abschluss der Entwicklung eine normale QSB in die
+ Map eingefügt werden. Du kannst sie dann entsprechend zusammen bauen.
+</p>
+
+
+<h2><a href="#SymfoniaLoader">SymfoniaLoader</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Load">Load (_Path)</a></td>
+	<td class="summary">Lädt alle Bundles innerhalb der Load Order und initalisiert sie.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="SymfoniaLoader"></a>SymfoniaLoader</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Load"></a>
+    <strong>Load (_Path)</strong>
+    </dt>
+    <dd>
+    Lädt alle Bundles innerhalb der Load Order und initalisiert sie.  Diese
+ Funktion ist für die Verwendung im Spiel gedacht.
+ <br/><br/>
+ Die Liste der Bundles steuert welche Behavior geladen werden. Wird ein
+ Bundle auf false gesetzt, wird es nicht geladen. Die Reihenfolge der
+ Einträge bestimmt die Ladereihenfolge.
+<p> _Path ist der absolute Pfad, wo die QSB auf dem Rechner liegt oder der
+ relative Pfad in der Map, in den die Quellen gepackt wurden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Path</span>
+         Root-Verzeichnis
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">SymfoniaLoader:Load(<span class="string">"C:/My/Path/To/Symfonia"</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-05-30 12:26:53 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

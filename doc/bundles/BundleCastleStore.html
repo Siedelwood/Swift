@@ -1,0 +1,653 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#QSB_CastleStore">QSB.CastleStore</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
+  <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><strong>BundleCastleStore</strong></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHealth.html">BundleEntityHealth</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../bundles/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleCastleStore</code></h1>
+<p>Dieses Bundle stellt ein Burglager zur Verfügung, das sich ähnlich wie das
+ normale Lager verhält.</p>
+<p> Das Burglager ist von der Ausbaustufe der Burg
+ abhängig. Je weiter die Burg ausgebaut wird, desto höher ist das Limit.
+ Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit
+ der Ware im Lagerhaus erreicht wird.
+<p> Der Spieler kann das allgemeine Verhalten des Lagers für alle Waren wählen,
+ und zusätzlich für einzelne Waren andere Verhalten bestimmen. Waren können
+ eingelagert und ausgelagert werden. Eingelagerte Waren können zusätzlich
+ gesperrt werden. Eine gesperrte Ware wird nicht wieder ausgelagert, auch
+ wenn Platz im Lager frei wird.
+</p>
+
+
+<h2><a href="#QSB_CastleStore">QSB.CastleStore</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:Add">BundleCastleStore.Global.CastleStore:Add (number, number)</a></td>
+	<td class="summary">Fügt eine Menge an Waren dem Burglager hinzu, solange noch
+ Platz vorhanden ist und die Ware angenommen wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:Dispose">BundleCastleStore.Global.CastleStore:Dispose ()</a></td>
+	<td class="summary">Zerstört das Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:GetAmount">BundleCastleStore.Global.CastleStore:GetAmount (number)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Typs im Burglager zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore">BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore (number, number)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+ der Waren im Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:GetInstance">BundleCastleStore.Global.CastleStore:GetInstance (number)</a></td>
+	<td class="summary">Gibt die Burglagerinstanz für den Spieler zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:GetLimit">BundleCastleStore.Global.CastleStore:GetLimit ()</a></td>
+	<td class="summary">Gibt das aktuelle Lagerlimit zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:GetTotalAmount">BundleCastleStore.Global.CastleStore:GetTotalAmount ()</a></td>
+	<td class="summary">Gibt die Gesamtmenge aller Waren im Burglager zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:IsGoodAccepted">BundleCastleStore.Global.CastleStore:IsGoodAccepted (number)</a></td>
+	<td class="summary">Gibt zurück, ob die Ware akzeptiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:IsGoodLocked">BundleCastleStore.Global.CastleStore:IsGoodLocked (number)</a></td>
+	<td class="summary">Gibt zurück, ob die Ware gesperrt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:New">BundleCastleStore.Global.CastleStore:New (number)</a></td>
+	<td class="summary">Erzeugt ein neues Burglager-Objekt und gibt es zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:Remove">BundleCastleStore.Global.CastleStore:Remove (number, number)</a></td>
+	<td class="summary">Entfernt eine Menge an Waren aus dem Burglager ohne sie ins
+ Lagerhaus zu legen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:SetGoodAccepted">BundleCastleStore.Global.CastleStore:SetGoodAccepted (number, boolean)</a></td>
+	<td class="summary">Setzt, ob die Ware akzeptiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:SetGoodLocked">BundleCastleStore.Global.CastleStore:SetGoodLocked (number, boolean)</a></td>
+	<td class="summary">Setzt ob die Ware gesperrt ist, also nicht ausgelagert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:SetStorageLimit">BundleCastleStore.Global.CastleStore:SetStorageLimit (number)</a></td>
+	<td class="summary">Setzt den Basiswert für die maximale Kapazität des Burglagers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType">BundleCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType (number, number)</a></td>
+	<td class="summary">Setzt die Obergrenze für eine Ware, ab der ins Burglager
+ ausgelagert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore">BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore (number, number)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+ der Waren im Burglager.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="QSB_CastleStore"></a>QSB.CastleStore</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:Add"></a>
+    <strong>BundleCastleStore.Global.CastleStore:Add (number, number)</strong>
+    </dt>
+    <dd>
+    Fügt eine Menge an Waren dem Burglager hinzu, solange noch
+ Platz vorhanden ist und die Ware angenommen wird.
+<p> <b>Alias</b>: QSB.CastleStore:Add
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Amount    Menge
+        </li>
+        <li><span class="parameter">number</span>
+         _Amount    Menge
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:Dispose"></a>
+    <strong>BundleCastleStore.Global.CastleStore:Dispose ()</strong>
+    </dt>
+    <dd>
+    Zerstört das Burglager.
+<p> <b>Alias</b>: QSB.CastleStore:Dispose
+
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Löschen des Burglagers von Spieler 1 ohne Referenz
+</span>QSB.CastleStore:GetInstance(<span class="number">1</span>):Dispose();
+<span class="comment">-- Loschen mit Referenzvariable (z.B. Store)
+</span>Store:Dispose();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:GetAmount"></a>
+    <strong>BundleCastleStore.Global.CastleStore:GetAmount (number)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Typs im Burglager zurück.
+<p> <b>Alias</b>: QSB.CastleStore:GetAmount
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Good  Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore"></a>
+    <strong>BundleCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore (number, number)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+ der Waren im Burglager.  Hat der Spieler kein Burglager, wird
+ nur die Menge im Lagerhaus zurückgegeben.
+<p> <b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _PlayeriD      ID des Spielers
+        </li>
+        <li><span class="parameter">number</span>
+         _PlayeriD      ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Menge an Holz in beiden Lagern
+</span><span class="keyword">local</span> WoodAmount = QSB.CastleStore:GetGoodAmountWithCastleStore(Goods.G_Wood, <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:GetInstance"></a>
+    <strong>BundleCastleStore.Global.CastleStore:GetInstance (number)</strong>
+    </dt>
+    <dd>
+    Gibt die Burglagerinstanz für den Spieler zurück.
+<p> Wurde kein Burglager für den Spieler erstellt, wird nil zurückgegeben.
+<p> <b>Alias</b>: QSB.CastleStore:GetInstance
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _PlayerID     PlayerID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        QSB.CastleStore
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Ermittelt das Burglager von Spieler 1
+</span><span class="keyword">local</span> Store = QSB.CastleStore:GetInstance(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:GetLimit"></a>
+    <strong>BundleCastleStore.Global.CastleStore:GetLimit ()</strong>
+    </dt>
+    <dd>
+    Gibt das aktuelle Lagerlimit zurück.
+<p> <b>Alias</b>: QSB.CastleStore:GetLimit
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:GetTotalAmount"></a>
+    <strong>BundleCastleStore.Global.CastleStore:GetTotalAmount ()</strong>
+    </dt>
+    <dd>
+    Gibt die Gesamtmenge aller Waren im Burglager zurück.
+<p> <b>Alias</b>: QSB.CastleStore:GetTotalAmount
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:IsGoodAccepted"></a>
+    <strong>BundleCastleStore.Global.CastleStore:IsGoodAccepted (number)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob die Ware akzeptiert wird.
+<p> <b>Alias</b>: QSB.CastleStore:IsGoodAccepted
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Good  Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:IsGoodLocked"></a>
+    <strong>BundleCastleStore.Global.CastleStore:IsGoodLocked (number)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob die Ware gesperrt ist.
+<p> <b>Alias</b>: QSB.CastleStore:IsGoodLocked
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Good  Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:New"></a>
+    <strong>BundleCastleStore.Global.CastleStore:New (number)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein neues Burglager-Objekt und gibt es zurück.
+<p> <b>Alias</b>: QSB.CastleStore:New
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _PlayerID     PlayerID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        QSB.CastleStore Instanz
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Erstellt ein Burglager für Spieler 1
+</span><span class="keyword">local</span> Store = QSB.CastleStore:new(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:Remove"></a>
+    <strong>BundleCastleStore.Global.CastleStore:Remove (number, number)</strong>
+    </dt>
+    <dd>
+    Entfernt eine Menge an Waren aus dem Burglager ohne sie ins
+ Lagerhaus zu legen.
+<p> <b>Alias</b>: QSB.CastleStore:Remove
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Amount    Menge
+        </li>
+        <li><span class="parameter">number</span>
+         _Amount    Menge
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:SetGoodAccepted"></a>
+    <strong>BundleCastleStore.Global.CastleStore:SetGoodAccepted (number, boolean)</strong>
+    </dt>
+    <dd>
+    Setzt, ob die Ware akzeptiert wird.
+<p> <b>Alias</b>: QSB.CastleStore:SetGoodAccepted
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Good      Watentyp
+        </li>
+        <li><span class="parameter">boolean</span>
+         _Flag     Akzeptanz-Flag
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:SetGoodLocked"></a>
+    <strong>BundleCastleStore.Global.CastleStore:SetGoodLocked (number, boolean)</strong>
+    </dt>
+    <dd>
+    Setzt ob die Ware gesperrt ist, also nicht ausgelagert wird.
+<p> <b>Alias</b>: QSB.CastleStore:SetGoodLocked
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Good      Watentyp
+        </li>
+        <li><span class="parameter">boolean</span>
+         _Flag     Akzeptanz-Flag
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:SetStorageLimit"></a>
+    <strong>BundleCastleStore.Global.CastleStore:SetStorageLimit (number)</strong>
+    </dt>
+    <dd>
+    Setzt den Basiswert für die maximale Kapazität des Burglagers.
+<p> Der Basiswert dient zur Berechnung der Kapazität für die Ausbaustufen und
+ muss durch 2 teilbar sein.
+<p> Ist also der Basiswert 150, ergibt sich daraus:
+ <code>
+ 150, 300, 600, 1200
+ </code>
+<p> <b>Alias</b>: QSB.CastleStore:SetStorageLimit
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Limit     Maximale Kapazität
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Basiswert auf 100 setzen.
+</span><span class="comment">-- -&gt; [100, 200, 400, 800]
+</span>QSB.CastleStore:GetInstance(<span class="number">1</span>):SetStorageLimit(<span class="number">100</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType"></a>
+    <strong>BundleCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType (number, number)</strong>
+    </dt>
+    <dd>
+    Setzt die Obergrenze für eine Ware, ab der ins Burglager
+ ausgelagert wird.
+<p> <b>Alias</b>: QSB.CastleStore:SetUperLimitInStorehouseForGoodType
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _Limit     Obergrenze
+        </li>
+        <li><span class="parameter">number</span>
+         _Limit     Obergrenze
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore"></a>
+    <strong>BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore (number, number)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+ der Waren im Burglager.  Hat der Spieler kein Burglager, wird
+ nur die Menge im Lagerhaus zurückgegeben.
+<p> <b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         _PlayeriD      ID des Spielers
+        </li>
+        <li><span class="parameter">number</span>
+         _PlayeriD      ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-05-30 12:26:53 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
