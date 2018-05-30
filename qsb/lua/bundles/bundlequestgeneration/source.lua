@@ -26,7 +26,7 @@ QSB = QSB or {};
 --
 -- Ein Quest besteht aus verschiedenen Parametern und Behavior, die nicht
 -- alle zwingend gesetzt werden müssen. Behavior werden einfach nach den
--- Feldern nacheinander aufgerufen.
+-- Feldern nacheinander angegeben.
 -- <p><u>Parameter:</u></p>
 -- <ul>
 -- <li>Name: Der eindeutige Name des Quests</li>
@@ -36,7 +36,7 @@ QSB = QSB or {};
 -- <li>Success: Erfolgsnachricht des Quest</li>
 -- <li>Failure: Fehlschlagnachricht des Quest</li>
 -- <li>Description: Aufgabenbeschreibung (Nur bei Custom)</li>
--- <li>Time: Zeit bis zu, Fehlschlag</li>
+-- <li>Time: Zeit bis zu, Fehlschlag/Abschluss</li>
 -- <li>Loop: Funktion, die während der Laufzeit des Quests aufgerufen wird</li>
 -- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
 -- </ul>
@@ -354,6 +354,7 @@ function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
 end
 
 ---
+-- DO NOT USE THIS FUNCTION!
 -- Startet alle Quests in der GenerationList.
 --
 -- @within Private
