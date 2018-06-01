@@ -19,7 +19,7 @@
 -- der Handlung eingesetzt werden.
 --
 -- Splashscreens stehen sowohl in Briefings als auch in Cutscenes zuer Verfügung
--- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden. Diese 
+-- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden. Diese
 -- Grafiken können auch größer als eine Bildschirmfläche sein. Für diesen
 -- Fall kann über die Angabe von UV-Koordinaten zu einem Teil gesprungen oder
 -- geflogen werden.
@@ -139,7 +139,7 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 -- <b>Alias</b>: AddPages
 --
--- @param _briefing Quest Timer pausiert
+-- @param _briefing Briefing
 -- @return function(3): AP, ASP, ASMC
 -- @within Public
 --
@@ -151,6 +151,24 @@ function API.AddPages(_briefing)
     return BundleBriefingSystem.Global:AddPages(_briefing);
 end
 AddPages = API.AddPages;
+
+---
+-- Initalisiert die Flight-Funktionen für die übergebene Cutscene.
+--
+-- <b>Alias</b>: AddFlightPages
+--
+-- @param _briefing Briefing
+-- @return function(3): AP, ASP, ASMC
+-- @within Public
+--
+function API.AddFlightPages(_briefing)
+    if GUI then
+        API.Dbg("API.AddFlightPages: Can only be used in the global script!");
+        return;
+    end
+    return BundleBriefingSystem.Global:AddFlightPages(_cutscene);
+end
+AddFlightPages = API.AddFlightPages;
 
 ---
 -- Schreibt während eines Briefings eine zusätzliche Textnachricht auf den
@@ -332,10 +350,57 @@ function BundleBriefingSystem.Global:GetCurrentBriefing()
 end
 
 ---
+-- Initalisiert die Flight-Funktionen für Cutscenes.
+--
+-- @param _cutscene Cutscene
+-- @return function: AF
+-- @return function: AP
+-- @within Private
+-- @local
+--
+function BundleBriefingSystem.Global:AddFlightPages(_cutscene)
+    local AP = self:AddPages(_cutscene);
+
+    local AF = function(_Flight)
+        assert(_Flight.StartPosition);
+        AP {
+            view            = {
+                LookAt      = _Flight.StartPosition.LookAt,
+                Position    = _Flight.StartPosition.Position,
+                Duration    = 0.0,
+            },
+            faderAlpha = 1,
+            action     = v.Action,
+        };
+
+        assert(_Flight.Flights);
+        for k, v in pairs(_Flight.Flights) do
+            AP {
+                view            = {
+                    LookAt      = v.LookAt,
+                    Position    = v.Position,
+                    Duration    = v.Duration,
+                    FlyTime     = v.Duration,
+                },
+                title      = v.Title,
+                text       = v.Text,
+                faderAlpha = ((v.FadeIn or v.FadeOut) and nil) or 0;
+                fadeOut    = (-1) * v.FadeOut,
+                fadeIn     = v.FadeIn,
+                action     = v.Action,
+            };
+        end
+    end
+    return AF, AP;
+end
+
+---
 -- Initalisiert die Page-Funktionen für das übergebene Briefing
 --
--- @param _briefing Quest Timer pausiert
--- @return function(3): AP, ASP, ASMC
+-- @param _briefing
+-- @return function: AP
+-- @return function: ASP
+-- @return function: ASMC
 -- @within Private
 -- @local
 --
@@ -1361,12 +1426,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if barStyle == nil then
             barStyle = BriefingSystem.currBriefing.barStyle;
         end
-        
+
         BriefingSystem.SetBriefingPageOrSplashscreen(page, barStyle);
         BriefingSystem.SetBriefingPageTextPosition(page);
 
         local player = GUI.GetPlayerID();
-        
+
         -- Text
         if page.text then
             local doNotCalc = page.duration ~= nil;
@@ -1382,7 +1447,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.ShowBriefingText(page.text[player] or page.text.default, doNotCalc, smallBarShown);
             end
         end
-        
+
         -- Titel
         if page.title then
             if type(page.title) == "string" then
@@ -1391,12 +1456,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.ShowBriefingTitle(page.title[player] or page.title.default);
             end
         end
-        
+
         -- Multiple Choice
         if page.mc then
             BriefingSystem.Briefing_MultipleChoice();
         end
-        
+
         -- Splashscreen UV
         local UV0, UV1;
         if type(page.splashscreen) == "table" then
@@ -1725,7 +1790,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     --
     function BriefingSystem.ControlInformationText()
         local LinesToDelete = {};
-        
+
         -- Abgelaufene Texte markieren
         for k, v in pairs(BriefingSystem.InformationTextQueue) do
             BriefingSystem.InformationTextQueue[k][2] = v[2] -1;
@@ -1733,12 +1798,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 table.insert(LinesToDelete, k);
             end
         end
-        
+
         -- Abgelaufene Texte entfernen
         for k, v in pairs(LinesToDelete) do
             BriefingSystem.UnqueueInformationText(v);
         end
-        
+
         BriefingSystem.ShowInformationText();
     end
 
@@ -1958,13 +2023,13 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 local endZoomDistance = flight.EndZoomDistance;
                 local startFOV = flight.StartFOV or flight.EndFOV;
                 local endFOV = flight.EndFOV;
-                
+
                 -- Splashscreen-Animation
                 local startUV0 = flight.StartUV0 or flight.EndUV0;
                 local endUV0 = flight.EndUV0;
                 local startUV1 = flight.StartUV1 or flight.EndUV1;
                 local endUV1 = flight.EndUV1;
-                
+
                 local currTime = Logic.GetTimeMs() / 1000;
                 local math = math;
                 if flight.Follow then
@@ -2038,7 +2103,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                     local StartTime = cutscene.StartTime;
                     local FlyTime = cutscene.FlyTime;
                     local CurrTime = Logic.GetTimeMs()/1000;
-                    
+
                     -- Splashscreen-Animation
                     local startUV0 = cutscene.StartUV0 or cutscene.EndUV0;
                     local endUV0 = cutscene.EndUV0;
@@ -2328,30 +2393,30 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if not _StartUV0 or not _EndUV0 or not _StartUV1 or not _EndUV1 then
             return;
         end
-        
+
         local BG     = "/InGame/ThroneRoomBars_2/BarTop";
         local BB     = "/InGame/ThroneRoomBars_2/BarBottom";
         local size   = {GUI.GetScreenSize()};
         local is4To3 = math.floor((size[1]/size[2]) * 10) == 13;
-        
+
         local u0 = _StartUV0[1] + (_EndUV0[1] - _StartUV0[1]) * _Factor;
         local v0 = _StartUV0[2] + (_EndUV0[2] - _StartUV0[2]) * _Factor;
         local u1 = _StartUV1[1] + (_EndUV1[1] - _StartUV1[1]) * _Factor;
         local v1 = _StartUV1[2] + (_EndUV1[2] - _StartUV1[2]) * _Factor;
-        
+
         -- Fix für 4:3
-        if is4To3 then 
+        if is4To3 then
             u0 = u0 + (u0 * 0.125);
             u1 = u1 - (u1 * 0.125);
         end
-        
+
         XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
     end
 
     ---
     -- Schaltet zwischen Bars und Splashscreen um.
     --
-    -- @param _page  Aktuelle Briefing-Seite 
+    -- @param _page  Aktuelle Briefing-Seite
     -- @param _style Bar-Style
     -- @local
     --
@@ -2380,11 +2445,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             XGUIEng.SetMaterialTexture(BG, 1, "");
             XGUIEng.SetMaterialColor(BG, 1, 0, 0, 0, 255);
             XGUIEng.SetMaterialUV(BG, 1, 0, 0, 1, 1);
-        else 
+        else
             XGUIEng.SetMaterialColor(BB, 1, 0, 0, 0, 0);
-            if _page.splashscreen.color then 
+            if _page.splashscreen.color then
                 XGUIEng.SetMaterialColor(BG, 1, unpack(_page.splashscreen.color));
-            else 
+            else
                 XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
             end
             XGUIEng.SetMaterialTexture(BG, 1, _page.splashscreen.image);
