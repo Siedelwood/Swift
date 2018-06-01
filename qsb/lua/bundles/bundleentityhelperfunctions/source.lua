@@ -173,13 +173,12 @@ MoveEntityToPositionToAnotherOne = API.MoveToPosition;
 -- @param _Entity       Zu bewegendes Entity
 -- @param _Position     Ziel
 -- @param _Distance     Entfernung zum Ziel
--- @param _Angle        Winkel
 -- @param _moveAsEntity Blocking ignorieren
 -- @within Public
 --
-function API.MoveAndLookAt(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+function API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
     if GUI then
-        API.Bridge("API.MoveAndLookAt(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ", " ..tostring(_moveAsEntity).. ")")
+        API.Bridge("API.MoveAndLookAt(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " ..tostring(_moveAsEntity).. ")")
         return;
     end
     if not IsExisting(_Entity) then
@@ -192,7 +191,7 @@ function API.MoveAndLookAt(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
         API.Dbg("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
         return;
     end
-    return BundleEntityHelperFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+    return BundleEntityHelperFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
 end
 MoveEntityFaceToFaceToAnotherOne = API.MoveAndLookAt;
 MoveEx = API.MoveAndLookAt;
@@ -200,7 +199,6 @@ MoveEx = API.MoveAndLookAt;
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.
 --
--- <b>Alias:</b> SetPositionEx<br>
 -- <b>Alias:</b> PlaceEntityToPositionToAnotherOne
 --
 -- @param _Entity       Zu bewegendes Entity
@@ -228,29 +226,29 @@ function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
     API.SetPosition(_Entity, Position);
 end
 PlaceEntityToPositionToAnotherOne = API.PlaceToPosition;
-SetPositionEx = API.PlaceToPosition;
 
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
 -- das Ziel an.
 --
 -- <b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne
+-- <b>Alias:</b> SetPositionEx<br>
 --
 -- @param _Entity       Zu bewegendes Entity
 -- @param _Position     Ziel
 -- @param _Distance     Entfernung zum Ziel
--- @param _Angle        Winkel
 -- @within Public
 --
-function API.PlaceAndLookAt(_Entity, _Position, _Distance, _Angle)
+function API.PlaceAndLookAt(_Entity, _Position, _Distance)
     if GUI then
-        API.Bridge("API.PlaceAndLookAt(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ")")
+        API.Bridge("API.PlaceAndLookAt(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ")")
         return;
     end
-    API.PlaceToPosition(_Entity, _Position, _Distance, _Angle);
+    API.PlaceToPosition(_Entity, _Position, _Distance, 0);
     LookAt(_Entity, _Position);
 end
 PlaceEntityFaceToFaceToAnotherOne = API.PlaceAndLookAt;
+SetPositionEx = API.PlaceAndLookAt;
 
 ---
 -- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
@@ -659,12 +657,11 @@ end
 -- @param _Entity       Zu bewegendes Entity
 -- @param _Position     Ziel
 -- @param _Distance     Entfernung zum Ziel
--- @param _Angle        Winkel
 -- @param _moveAsEntity Blocking ignorieren
 -- @within Private
 -- @local
 --
-function BundleEntityHelperFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+function BundleEntityHelperFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
     if not IsExisting(_Entity)then
         return
     end
@@ -672,13 +669,13 @@ function BundleEntityHelperFunctions.Global:MoveAndLookAt(_Entity, _Position, _D
         _Distance = 0;
     end
     
-    self:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
+    self:MoveToPosition(_Entity, _Position, _Distance, 0, _moveAsEntity);
     StartSimpleJobEx( function(_EntityID, _TargetID)
         if not Logic.IsEntityMoving(_EntityID) then
             LookAt(_EntityID, _TargetID);
             return true;
         end
-    end, eID, tID);
+    end, GetID(_Entity), GetID(_Position));
 end
 
 ---
