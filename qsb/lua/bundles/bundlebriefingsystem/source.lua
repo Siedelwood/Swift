@@ -153,24 +153,6 @@ end
 AddPages = API.AddPages;
 
 ---
--- Initalisiert die Flight-Funktionen für die übergebene Cutscene.
---
--- <b>Alias</b>: AddFlightPages
---
--- @param _briefing Briefing
--- @return function(3): AP, ASP, ASMC
--- @within Public
---
-function API.AddFlightPages(_briefing)
-    if GUI then
-        API.Dbg("API.AddFlightPages: Can only be used in the global script!");
-        return;
-    end
-    return BundleBriefingSystem.Global:AddFlightPages(_cutscene);
-end
-AddFlightPages = API.AddFlightPages;
-
----
 -- Schreibt während eines Briefings eine zusätzliche Textnachricht auf den
 -- Bildschirm. Die Nachricht wird, in Abhängigkeit zur Textlänge, nach ein
 -- paar Sekunden verschrinden.
@@ -347,51 +329,6 @@ end
 --
 function BundleBriefingSystem.Global:GetCurrentBriefing()
     return BriefingSystem.currBriefing;
-end
-
----
--- Initalisiert die Flight-Funktionen für Cutscenes.
---
--- @param _cutscene Cutscene
--- @return function: AF
--- @return function: AP
--- @within Private
--- @local
---
-function BundleBriefingSystem.Global:AddFlightPages(_cutscene)
-    local AP = self:AddPages(_cutscene);
-
-    local AF = function(_Flight)
-        assert(_Flight.StartPosition);
-        AP {
-            view            = {
-                LookAt      = _Flight.StartPosition.LookAt,
-                Position    = _Flight.StartPosition.Position,
-                Duration    = 0.0,
-            },
-            faderAlpha = 1,
-            action     = v.Action,
-        };
-
-        assert(_Flight.Flights);
-        for k, v in pairs(_Flight.Flights) do
-            AP {
-                view            = {
-                    LookAt      = v.LookAt,
-                    Position    = v.Position,
-                    Duration    = v.Duration,
-                    FlyTime     = v.Duration,
-                },
-                title      = v.Title,
-                text       = v.Text,
-                faderAlpha = ((v.FadeIn or v.FadeOut) and nil) or 0;
-                fadeOut    = (-1) * v.FadeOut,
-                fadeIn     = v.FadeIn,
-                action     = v.Action,
-            };
-        end
-    end
-    return AF, AP;
 end
 
 ---
