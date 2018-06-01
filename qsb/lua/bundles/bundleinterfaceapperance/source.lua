@@ -26,8 +26,8 @@ QSB.PlayerNames = {};
 ---
 -- Graut die Minimap aus oder macht sie wieder verwendbar.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -51,8 +51,8 @@ end
 ---
 -- Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -72,8 +72,8 @@ end
 ---
 -- Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -93,8 +93,8 @@ end
 ---
 -- Versteckt den Button des Produktionsmenü oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -114,8 +114,8 @@ end
 ---
 -- Versteckt den Button des Wettermenüs oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -135,8 +135,8 @@ end
 ---
 -- Versteckt den Button zum Territorienkauf oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -156,8 +156,8 @@ end
 ---
 -- Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -181,8 +181,8 @@ end
 ---
 -- Versteckt den Button zur Heldenselektion oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -214,8 +214,8 @@ end
 ---
 -- Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public
@@ -237,8 +237,8 @@ end
 ---
 -- Versteckt das Baumenü oder blendet es ein.
 --
--- <b>Hinweis:</b> Diese Änderung persistiert auch nach dem Laden eines 
--- Spielstandes und muss explizit mit dieser Funktion zurückgenommen werden!
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
 -- @within Public

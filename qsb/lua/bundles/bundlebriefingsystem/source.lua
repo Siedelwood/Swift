@@ -177,6 +177,62 @@ end
 BriefingMessage = API.AddBriefingNote;
 
 -- -------------------------------------------------------------------------- --
+-- Dummy-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erstellt eine Seite in normaler Syntax oder als Cutscene.
+-- AP kann auch für Sprungbefehle genutzt werden. Dabei wird der
+-- Index der Zielseite angebenen.
+-- Für Multiple Choice dienen leere AP-Seiten als Signal, dass
+-- ein Briefing an dieser Stelle endet.
+--
+-- @param _page	Seite
+-- @return table: Page
+-- @within Page-Functionen
+--
+function AP(_Page)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("AP: Please use the function provides by AddPages!");
+end
+
+---
+-- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
+-- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
+-- schaut den Siedler an.
+--
+-- @param _entity		Zielentity
+-- @param _title		Titel der Seite
+-- @param _text		    Text der Seite
+-- @param _dialogCamera Nahsicht an/aus
+-- @param _action       Callback-Funktion
+-- @return table: Page
+-- @within Page-Functionen
+--
+function ASP(_entity, _title, _text, _dialogCamera, _action)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("ASP: Please use the function provides by AddPages!");
+end
+
+---
+-- Erstellt eine Multiple Choise Seite in vereinfachter Syntax. Es
+-- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
+-- Kamera schaut den Siedler an.
+--
+-- @param _entity		Zielentity
+-- @param _title		Titel der Seite
+-- @param _text		    Text der Seite
+-- @param _dialogCamera Nahsicht an/aus
+-- @param ...			Liste der Antworten und Sprungziele
+-- @return table: Page
+-- @within Page-Functionen
+--
+function ASMC(_entity, _title, _text, _dialogCamera, ...)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("ASMC: Please use the function provides by AddPages!");
+end
+
+-- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
@@ -284,16 +340,6 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:AddPages(_briefing)
-    ---
-    -- Erstellt eine Seite in normaler Syntax oder als Cutscene.
-    -- AP kann auch für Sprungbefehle genutzt werden. Dabei wird der
-    -- Index der Zielseite angebenen.
-    -- Für Multiple Choice dienen leere AP-Seiten als Signal, dass
-    -- ein Briefing an dieser Stelle endet.
-    --
-    -- @param _page	Seite
-    -- @return table: Page
-    --
     local AP = function(_page)
         if _page and type(_page) == "table" then
             local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -373,18 +419,6 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
         return _page;
     end
 
-    ---
-    -- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
-    -- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
-    -- schaut den Siedler an.
-    --
-    -- @param _entity		Zielentity
-    -- @param _title		Titel der Seite
-    -- @param _text		    Text der Seite
-    -- @param _dialogCamera Nahsicht an/aus
-    -- @param _action       Callback-Funktion
-    -- @return table: Page
-    --
     local ASP = function(_entity, _title, _text, _dialogCamera, _action)
         local Entity = Logic.GetEntityName(GetID(_entity));
         assert(Entity ~= nil and Entity ~= "");
@@ -399,18 +433,6 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
         return AP(page);
     end
 
-    ---
-    -- Erstellt eine Multiple Choise Seite in vereinfachter Syntax. Es
-    -- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
-    -- Kamera schaut den Siedler an.
-    --
-    -- @param _entity		Zielentity
-    -- @param _title		Titel der Seite
-    -- @param _text		    Text der Seite
-    -- @param _dialogCamera Nahsicht an/aus
-    -- @param ...			Liste der Antworten und Sprungziele
-    -- @return table: Page
-    --
     local ASMC = function(_entity, _title, _text, _dialogCamera, ...)
         local Entity = Logic.GetEntityName(GetID(_entity));
         assert(Entity ~= nil and Entity ~= "");
