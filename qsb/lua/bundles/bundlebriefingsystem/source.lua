@@ -158,7 +158,7 @@ AddPages = API.AddPages;
 -- <b>Alias</b>: AddPages
 --
 -- @param _Cutscene Cutscene
--- @return function(3): AP, ASP, ASMC
+-- @return function(3): AF, ASF
 -- @within Public
 --
 function API.AddFlights(_Cutscene)
@@ -221,7 +221,7 @@ BriefingMessage = API.AddBriefingNote;
 -- eines Briefings darf kein Sprung sein!.
 -- Eine Leerseite kann benutzt werden um hinter einem von einer Auswahl
 -- aufgeschlagenen Pfad im Briefing selbiges zu beenden. Sonst würde das
--- Briefing einfach mit der nächsten Seite weiter machen. Sprungbefehle 
+-- Briefing einfach mit der nächsten Seite weiter machen. Sprungbefehle
 -- können alternativ verwendet werden.
 --
 -- <b>Splashscreens</b>
@@ -313,7 +313,7 @@ end
 -- };
 --
 function AF(_Flight)
-    
+
 end
 
 ---
@@ -338,7 +338,7 @@ end
 -- ASF ("Das ist ein Text....", 10, nil, true, 12300, 23000, 3400, 22000, 34050, 200, 12300, 23000, 3400, 22500, 31050, 350);
 --
 function ASF(_Text, _Duration, _Action, _Fading, ...)
-    
+
 end
 
 ---
@@ -497,7 +497,7 @@ function BundleBriefingSystem.Global:AddFlights(_Cutscene)
         assert(type(_Flight) == "table" and #_Flight > 0);
         local Duration  = _Flight.Duration / (#_Flight -1);
         local i = 0;
-        
+
         for i= 1, #_Flight, 1 do
             local Title = _Flight[i].Title or "";
             if type(Title) == "table" then
@@ -507,7 +507,7 @@ function BundleBriefingSystem.Global:AddFlights(_Cutscene)
             if type(Text) == "table" then
                 Text = Text[lang];
             end
-            
+
             local Flight = {
                 cutscene = {
                     Position = _Flight[i].Position,
@@ -525,7 +525,7 @@ function BundleBriefingSystem.Global:AddFlights(_Cutscene)
             table.insert(_Cutscene, Flight);
         end
     end
-    
+
     local ASF = function(_Text, _Duration, _Action, _Fading, ...)
         local Flights = {};
         for i= 1, #arg, 6 do
