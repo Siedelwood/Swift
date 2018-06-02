@@ -44,6 +44,8 @@ QSB = QSB or {};
 -- <b>Alias:</b> AddQuest
 --
 -- @param _Data Questdefinition
+-- @return string: Name des Quests 
+-- @return number: Gesamtzahl Quests
 -- @within Public
 --
 function API.AddQuest(_Data)
@@ -267,6 +269,8 @@ end
 -- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
 --
 -- @param _Data Daten des Quest.
+-- @return string: Name des erzeugten Quests
+-- @return number: Gesamtanzahl Quests
 -- @within Private
 -- @local
 --
@@ -306,7 +310,7 @@ function BundleQuestGeneration.Global:NewQuest(_Data)
     local ID = #self.Data.GenerationList;
     self:AttachBehavior(ID, _Data);
     self:StartQuests();
-    return Quests[0];
+    return _Data.Name, Quests[0];
 end
 
 ---

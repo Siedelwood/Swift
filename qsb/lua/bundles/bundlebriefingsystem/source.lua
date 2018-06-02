@@ -19,7 +19,7 @@
 -- der Handlung eingesetzt werden.
 --
 -- Splashscreens stehen sowohl in Briefings als auch in Cutscenes zuer Verfügung
--- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden. Diese 
+-- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden. Diese
 -- Grafiken können auch größer als eine Bildschirmfläche sein. Für diesen
 -- Fall kann über die Angabe von UV-Koordinaten zu einem Teil gesprungen oder
 -- geflogen werden.
@@ -139,18 +139,36 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 -- <b>Alias</b>: AddPages
 --
--- @param _briefing Quest Timer pausiert
+-- @param _Briefing Briefing
 -- @return function(3): AP, ASP, ASMC
 -- @within Public
 --
-function API.AddPages(_briefing)
+function API.AddPages(_Briefing)
     if GUI then
         API.Dbg("API.AddPages: Can only be used in the global script!");
         return;
     end
-    return BundleBriefingSystem.Global:AddPages(_briefing);
+    return BundleBriefingSystem.Global:AddPages(_Briefing);
 end
 AddPages = API.AddPages;
+
+---
+-- Initalisiert die Flight-Funktionen für die übergebene Cutscene.
+--
+-- <b>Alias</b>: AddPages
+--
+-- @param _Cutscene Cutscene
+-- @return function(3): AF, ASF
+-- @within Public
+--
+function API.AddFlights(_Cutscene)
+    if GUI then
+        API.Dbg("API.AddFlights: Can only be used in the global script!");
+        return;
+    end
+    return BundleBriefingSystem.Global:AddFlights(_Cutscene);
+end
+AddFlights = API.AddFlights;
 
 ---
 -- Schreibt während eines Briefings eine zusätzliche Textnachricht auf den
@@ -175,6 +193,196 @@ function API.AddBriefingNote(_Text, _Duration)
     return BriefingSystem.PushInformationText(_Text, (_Duration * 10));
 end
 BriefingMessage = API.AddBriefingNote;
+
+-- -------------------------------------------------------------------------- --
+-- Dummy-Space                                                                --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erstellt eine Seite in normaler Syntax oder als Cutscene.
+--
+-- Die Möglichkeiten von AP sind so zahlreich, dass hier nicht genauer darauf
+-- eingegangen werden kann.
+-- TODO: AP in mehrere kleinere Funktionen aufteilen!
+--
+-- <b>Normale Seite</b>
+-- Die üblichen Parameter können angegeben werden. Beispiele sind zoom, text,
+-- oder action. Zusätzlich hinzugekommen sind lookAt und zOffset. Mittels
+-- lookAt kann die Kamera zum Angesicht eines Siedlers ausgerichtet werden.
+-- zOffset ermöglicht die Nutzung der Z-Achse.
+--
+-- <b>Multiple Choice, Sprünge und Leerseiten</b>
+-- Eine Multiple Choice Seite enthält die Unterseite mc. In mc wird der Text,
+-- der Titel und die möglichen Antwortmöglichkeiten notiiert. Alle Antworten
+-- stehen innerhalb von answers. Jede mögliche Antwort ist eine Table mit dem
+-- Text der Auswahl, dem Sprungziel und einigen Optionen.
+-- Mittels eines Sprungs kann zu einer anderen Seite eines Briefings gegangen
+-- werden. Dazu muss der Index der Zielseite angegeben werden. Die erste Seite
+-- eines Briefings darf kein Sprung sein!.
+-- Eine Leerseite kann benutzt werden um hinter einem von einer Auswahl
+-- aufgeschlagenen Pfad im Briefing selbiges zu beenden. Sonst würde das
+-- Briefing einfach mit der nächsten Seite weiter machen. Sprungbefehle
+-- können alternativ verwendet werden.
+--
+-- <b>Splashscreens</b>
+-- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
+-- über die Grafik zu scrollen oder zu zoomen.
+--
+-- @param _page	Seite
+-- @return table: Page
+-- @within Page-Functionen
+--
+function AP(_Page)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("AP: Please use the function provides by AddPages!");
+end
+
+---
+-- Erstellt einen Flight einer Cutscene.
+--
+-- Flights bestehen aus einem Startpunkt und mindestens einer weitere Position.
+-- Ein Flight kann aus unbegrenzt vielen Punkten bestehen, die alle innerhalb
+-- der Duration abgefahren werden.
+--
+-- Aufbau einer Station eines Flights:
+-- <table border="1">
+-- <tr>
+-- <td><b>Eigenschaft</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Position</td>
+-- <td>Die Kameraposition der Station</td>
+-- </tr>
+-- <tr>
+-- <td>LookAt</td>
+-- <td>Der Kamerablickpunkt der Station</td>
+-- </tr>
+-- <tr>
+-- <td>Title</td>
+-- <td>Der angezeigte Sprecher</td>
+-- </tr>
+-- <tr>
+-- <td>Text</td>
+-- <td>Der gesprochende Text</td>
+-- </tr>
+-- <tr>
+-- <td>Action</td>
+-- <td>Aktion zu Beginn der Kamerabewegung</td>
+-- </tr>
+-- </table>
+--
+-- Allgemeine Angaben eines Flight:
+-- <table border="1">
+-- <tr>
+-- <td><b>Eigenschaft</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Duration</td>
+-- <td>Dauer des gesamten Flights</td>
+-- </tr>
+-- <tr>
+-- <td>FadeIn</td>
+-- <td>Einblendedauer am Anfang des Flight</td>
+-- </tr>
+-- <tr>
+-- <td>FadeOut</td>
+-- <td>Abblendedauer am Ende des Flight</td>
+-- </tr>
+-- </table>
+--
+-- @param _page	Seite
+-- @within Page-Functionen
+--
+-- @usage
+-- AF {
+--     {
+--         Position = {X= 12300, Y= 23000, Z= 3400},
+--         LookAt   = {X= 22000, Y= 34050, Z= 200},
+--         Text     = "Das ist ein Text....",
+--     },
+--     {
+--         Position = {X= 12300, Y= 23000, Z= 3400},
+--         LookAt   = {X= 22500, Y= 31050, Z= 350},
+--         Text     = "Das ist ein Text....",
+--     },
+--     FadeOut  = 0.5,
+--     FadeIn   = 0.5,
+--     Duration = 24,
+-- };
+--
+function AF(_Flight)
+
+end
+
+---
+-- Ermäglicht einen Flight als Einzeiler zu notieren. Allerdings sind nicht
+-- alle Optionen verfügbar.
+--
+-- Bei der Notation der Koordinaten ist zu beachten, dass zuerst das Triple
+-- der Kameraposition und danach das Triple des Blickpunktes angegeben wird.
+-- Für jeden Punkt müssen also 6 Zahlen angegeben werden.
+--
+-- <b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
+-- wenigen Kamerastationen.
+--
+-- @param _Text     Angezeigter Text
+-- @param _Duration Dauer des Flight
+-- @param _Action   Aktion zu Beginn des Flight
+-- @param _Fading   Einblenden und Abblenden
+-- @param ...       Liste der XYZ-Koordinaten
+-- @within Page-Functionen
+--
+-- @usage
+-- ASF ("Das ist ein Text....", 10, nil, true, 12300, 23000, 3400, 22000, 34050, 200, 12300, 23000, 3400, 22500, 31050, 350);
+--
+function ASF(_Text, _Duration, _Action, _Fading, ...)
+
+end
+
+---
+-- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
+-- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
+-- schaut den Siedler an.
+--
+-- @param _entity		Zielentity
+-- @param _title		Titel der Seite
+-- @param _text		    Text der Seite
+-- @param _dialogCamera Nahsicht an/aus
+-- @param _action       Callback-Funktion
+-- @return table: Page
+-- @within Page-Functionen
+--
+-- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein", true);
+--
+function ASP(_entity, _title, _text, _dialogCamera, _action)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("ASP: Please use the function provides by AddPages!");
+end
+
+---
+-- Erstellt eine Multiple Choise Seite in vereinfachter Syntax. Es
+-- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
+-- Kamera schaut den Siedler an.
+--
+-- @param _entity		Zielentity
+-- @param _title		Titel der Seite
+-- @param _text		    Text der Seite
+-- @param _dialogCamera Nahsicht an/aus
+-- @param ...			Liste der Antworten und Sprungziele
+-- @return table: Page
+-- @within Page-Functionen
+--
+-- @usage
+-- ASMC("hans", "", "In welche Richtung soll Hänschen-Klein gehen?", false,
+--      "Nach links gehen.", 2,
+--      "Lieber nach rechts.", 4)
+--
+function ASMC(_entity, _title, _text, _dialogCamera, ...)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("ASMC: Please use the function provides by AddPages!");
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -276,24 +484,78 @@ function BundleBriefingSystem.Global:GetCurrentBriefing()
 end
 
 ---
+-- Initalisiert die Flight-Funktionen für die übergebene Cutscene.
+--
+-- @param _Cutscene Cutscene
+-- @return function: AF
+-- @within Private
+-- @local
+--
+function BundleBriefingSystem.Global:AddFlights(_Cutscene)
+    local AF = function(_Flight)
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        assert(type(_Flight) == "table" and #_Flight > 0);
+        local Duration  = _Flight.Duration / (#_Flight -1);
+        local i = 0;
+
+        for i= 1, #_Flight, 1 do
+            local Title = _Flight[i].Title or "";
+            if type(Title) == "table" then
+                Title = Title[lang];
+            end
+            local Text = _Flight[i].Text or "";
+            if type(Text) == "table" then
+                Text = Text[lang];
+            end
+
+            local Flight = {
+                cutscene = {
+                    Position = _Flight[i].Position,
+                    LookAt   = _Flight[i].LookAt,
+                },
+                title      = Title,
+                text       = Text,
+                action     = _Flight[i].Action,
+                faderAlpha = (i == 1 and _Flight.FadeIn and 1) or nil,
+                fadeIn     = (i == 1 and _Flight.FadeIn) or nil,
+                fadeOut    = (i == #_Flight and _Flight.FadeOut and (-_Flight.FadeOut)) or nil,
+                duration   = (i == 1 and 0) or Duration,
+                flyTime    = (i > 1 and Duration) or nil,
+            };
+            table.insert(_Cutscene, Flight);
+        end
+    end
+
+    local ASF = function(_Text, _Duration, _Action, _Fading, ...)
+        local Flights = {};
+        for i= 1, #arg, 6 do
+            local Action = (i == 1 and _Action) or nil;
+            table.insert(Flights, {
+                Position = {X= arg[i],   Y= arg[i+1], Z= arg[i+2]},
+                LookAt   = {X= arg[i+3], Y= arg[i+4], Z= arg[i+5]},
+                Text     = _Text,
+                Action   = Action,
+            });
+        end
+        Flights.FadeIn   = (_Fading == true and 0.5) or 0;
+        Flights.FadeOut  = (_Fading == true and 0.5) or 0;
+        Flights.Duration = _Duration;
+        AF(Flights);
+    end
+    return AF, ASF;
+end
+
+---
 -- Initalisiert die Page-Funktionen für das übergebene Briefing
 --
--- @param _briefing Quest Timer pausiert
--- @return function(3): AP, ASP, ASMC
+-- @param _briefing
+-- @return function: AP
+-- @return function: ASP
+-- @return function: ASMC
 -- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:AddPages(_briefing)
-    ---
-    -- Erstellt eine Seite in normaler Syntax oder als Cutscene.
-    -- AP kann auch für Sprungbefehle genutzt werden. Dabei wird der
-    -- Index der Zielseite angebenen.
-    -- Für Multiple Choice dienen leere AP-Seiten als Signal, dass
-    -- ein Briefing an dieser Stelle endet.
-    --
-    -- @param _page	Seite
-    -- @return table: Page
-    --
     local AP = function(_page)
         if _page and type(_page) == "table" then
             local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -329,10 +591,10 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
                 end
             end
 
-            -- Cutscene Support
-            if _page.view then
-                _page.flyTime  = _page.view.FlyTime or 0;
-                _page.duration = _page.view.Duration or 0;
+            _page.cutscene = _page.cutscene or _page.view;
+            if _page.cutscene then
+                _page.flyTime  = _page.cutscene.FlyTime or 0;
+                _page.duration = _page.cutscene.Duration or 0;
             else
                 if type(_page.position) == "table" then
                     if not _page.position.X then
@@ -373,18 +635,6 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
         return _page;
     end
 
-    ---
-    -- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
-    -- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
-    -- schaut den Siedler an.
-    --
-    -- @param _entity		Zielentity
-    -- @param _title		Titel der Seite
-    -- @param _text		    Text der Seite
-    -- @param _dialogCamera Nahsicht an/aus
-    -- @param _action       Callback-Funktion
-    -- @return table: Page
-    --
     local ASP = function(_entity, _title, _text, _dialogCamera, _action)
         local Entity = Logic.GetEntityName(GetID(_entity));
         assert(Entity ~= nil and Entity ~= "");
@@ -399,18 +649,6 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
         return AP(page);
     end
 
-    ---
-    -- Erstellt eine Multiple Choise Seite in vereinfachter Syntax. Es
-    -- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
-    -- Kamera schaut den Siedler an.
-    --
-    -- @param _entity		Zielentity
-    -- @param _title		Titel der Seite
-    -- @param _text		    Text der Seite
-    -- @param _dialogCamera Nahsicht an/aus
-    -- @param ...			Liste der Antworten und Sprungziele
-    -- @return table: Page
-    --
     local ASMC = function(_entity, _title, _text, _dialogCamera, ...)
         local Entity = Logic.GetEntityName(GetID(_entity));
         assert(Entity ~= nil and Entity ~= "");
@@ -1339,12 +1577,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if barStyle == nil then
             barStyle = BriefingSystem.currBriefing.barStyle;
         end
-        
+
         BriefingSystem.SetBriefingPageOrSplashscreen(page, barStyle);
         BriefingSystem.SetBriefingPageTextPosition(page);
 
         local player = GUI.GetPlayerID();
-        
+
         -- Text
         if page.text then
             local doNotCalc = page.duration ~= nil;
@@ -1360,7 +1598,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.ShowBriefingText(page.text[player] or page.text.default, doNotCalc, smallBarShown);
             end
         end
-        
+
         -- Titel
         if page.title then
             if type(page.title) == "string" then
@@ -1369,12 +1607,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.ShowBriefingTitle(page.title[player] or page.title.default);
             end
         end
-        
+
         -- Multiple Choice
         if page.mc then
             BriefingSystem.Briefing_MultipleChoice();
         end
-        
+
         -- Splashscreen UV
         local UV0, UV1;
         if type(page.splashscreen) == "table" then
@@ -1461,14 +1699,14 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.StopFlight();
 
         -- Initialisierung der Kameraanimation
-        if page.view then
+        if page.cutscene then
             -- Flight speichern
-            if BriefingSystem.GlobalSystem.page == 1 then -- or (page.view.FlyTime == nil or page.view.FlyTime == 0) then
-                BriefingSystem.CutsceneSaveFlight(page.view.Position, page.view.LookAt, FOV);
+            if BriefingSystem.GlobalSystem.page == 1 then
+                BriefingSystem.CutsceneSaveFlight(page.cutscene.Position, page.cutscene.LookAt, FOV);
             end
             -- Kamera bewegen
-            BriefingSystem.CutsceneFlyTo(page.view.Position,
-                                         page.view.LookAt,
+            BriefingSystem.CutsceneFlyTo(page.cutscene.Position,
+                                         page.cutscene.LookAt,
                                          FOV,
                                          page.flyTime or 0);
 
@@ -1703,7 +1941,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     --
     function BriefingSystem.ControlInformationText()
         local LinesToDelete = {};
-        
+
         -- Abgelaufene Texte markieren
         for k, v in pairs(BriefingSystem.InformationTextQueue) do
             BriefingSystem.InformationTextQueue[k][2] = v[2] -1;
@@ -1711,12 +1949,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 table.insert(LinesToDelete, k);
             end
         end
-        
+
         -- Abgelaufene Texte entfernen
         for k, v in pairs(LinesToDelete) do
             BriefingSystem.UnqueueInformationText(v);
         end
-        
+
         BriefingSystem.ShowInformationText();
     end
 
@@ -1936,13 +2174,13 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 local endZoomDistance = flight.EndZoomDistance;
                 local startFOV = flight.StartFOV or flight.EndFOV;
                 local endFOV = flight.EndFOV;
-                
+
                 -- Splashscreen-Animation
                 local startUV0 = flight.StartUV0 or flight.EndUV0;
                 local endUV0 = flight.EndUV0;
                 local startUV1 = flight.StartUV1 or flight.EndUV1;
                 local endUV1 = flight.EndUV1;
-                
+
                 local currTime = Logic.GetTimeMs() / 1000;
                 local math = math;
                 if flight.Follow then
@@ -2016,7 +2254,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                     local StartTime = cutscene.StartTime;
                     local FlyTime = cutscene.FlyTime;
                     local CurrTime = Logic.GetTimeMs()/1000;
-                    
+
                     -- Splashscreen-Animation
                     local startUV0 = cutscene.StartUV0 or cutscene.EndUV0;
                     local endUV0 = cutscene.EndUV0;
@@ -2306,30 +2544,30 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if not _StartUV0 or not _EndUV0 or not _StartUV1 or not _EndUV1 then
             return;
         end
-        
+
         local BG     = "/InGame/ThroneRoomBars_2/BarTop";
         local BB     = "/InGame/ThroneRoomBars_2/BarBottom";
         local size   = {GUI.GetScreenSize()};
         local is4To3 = math.floor((size[1]/size[2]) * 10) == 13;
-        
+
         local u0 = _StartUV0[1] + (_EndUV0[1] - _StartUV0[1]) * _Factor;
         local v0 = _StartUV0[2] + (_EndUV0[2] - _StartUV0[2]) * _Factor;
         local u1 = _StartUV1[1] + (_EndUV1[1] - _StartUV1[1]) * _Factor;
         local v1 = _StartUV1[2] + (_EndUV1[2] - _StartUV1[2]) * _Factor;
-        
+
         -- Fix für 4:3
-        if is4To3 then 
+        if is4To3 then
             u0 = u0 + (u0 * 0.125);
             u1 = u1 - (u1 * 0.125);
         end
-        
+
         XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
     end
 
     ---
     -- Schaltet zwischen Bars und Splashscreen um.
     --
-    -- @param _page  Aktuelle Briefing-Seite 
+    -- @param _page  Aktuelle Briefing-Seite
     -- @param _style Bar-Style
     -- @local
     --
@@ -2358,11 +2596,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             XGUIEng.SetMaterialTexture(BG, 1, "");
             XGUIEng.SetMaterialColor(BG, 1, 0, 0, 0, 255);
             XGUIEng.SetMaterialUV(BG, 1, 0, 0, 1, 1);
-        else 
+        else
             XGUIEng.SetMaterialColor(BB, 1, 0, 0, 0, 0);
-            if _page.splashscreen.color then 
+            if _page.splashscreen.color then
                 XGUIEng.SetMaterialColor(BG, 1, unpack(_page.splashscreen.color));
-            else 
+            else
                 XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
             end
             XGUIEng.SetMaterialTexture(BG, 1, _page.splashscreen.image);
