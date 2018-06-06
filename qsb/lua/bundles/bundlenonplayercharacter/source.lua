@@ -88,7 +88,8 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
     local npc = CopyTableRecursive(self);
     npc.Data.NpcName = _ScriptName;
     BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[_ScriptName] = npc;
-    self:HideMarker();
+    npc:CreateMarker();
+    npc:HideMarker();
     return npc;
 end
 
@@ -542,8 +543,8 @@ function BundleNonPlayerCharacter.Global:Install()
     --
     StartSimpleJobEx( function()
         for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
-            NonPlayerCharacter:Control(k);
-            NonPlayerCharacter:ControlMarker(k);
+            v:Control();
+            v:ControlMarker();
         end
     end);
 
@@ -736,23 +737,19 @@ end
 -- @within NonPlayerCharacter
 -- @local
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Control(_ScriptName)
-    assert(self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
-    if not IsExisting(_ScriptName) then
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Control()
+    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+    if not IsExisting(self.Data.NpcName) then
         return;
     end
 
-    local NPC = NonPlayerCharacter:GetInstance(_ScriptName);
-    if not NPC then
-        return;
-    end
-    if not NPC:IsActive() then
+    if not self:IsActive() then
         return;
     end
 
-    if NPC.Data.FollowTarget ~= nil then
-        local NpcID  = NPC:GetID();
-        local HeroID = GetID(NPC.Data.FollowTarget);
+    if self.Data.FollowTarget ~= nil then
+        local NpcID  = self:GetID();
+        local HeroID = GetID(self.Data.FollowTarget);
         local DistanceToHero = Logic.GetDistanceBetweenEntities(NpcID, HeroID);
 
         local MinDistance = 400;
@@ -770,10 +767,10 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Control(_ScriptName)
         end
     end
 
-    if NPC.Data.PrecedeTarget ~= nil then
-        local NpcID    = NPC:GetID();
-        local HeroID   = GetID(NPC.Data.PrecedeTarget);
-        local TargetID = GetID(NPC.Data.PrecedeDestination);
+    if self.Data.PrecedeTarget ~= nil then
+        local NpcID    = self:GetID();
+        local HeroID   = GetID(self.Data.PrecedeTarget);
+        local TargetID = GetID(self.Data.PrecedeDestination);
 
         local DistanceToHero   = Logic.GetDistanceBetweenEntities(NpcID, HeroID);
         local DistanceToTarget = Logic.GetDistanceBetweenEntities(NpcID, TargetID);
