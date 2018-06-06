@@ -31,8 +31,9 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/npc/qsb.lua")
-    API.Install()
+    local Path = "E:/Repositories/symfonia/qsb/lua";
+    Script.Load(Path .. "/loader.lua");
+    SymfoniaLoader:Load(Path);
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -88,8 +89,8 @@ end
 
 function GuideNpc()
     NonPlayerCharacter:New("christian")
-        :SetGuideParams("posNpc1", "meredith")
+        :SetPrecedeParams("posNpc1", "meredith")
         :SetCallback(function() API.Note("Ziel erreicht!") end)
-        :SetGuideAction(function() API.Note("Unterwegs!") end)
+        :SetPrecedeAction(function() API.Note("Unterwegs!") end)
         :Activate()
 end
