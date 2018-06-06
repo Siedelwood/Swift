@@ -10,6 +10,8 @@
 -- Hand. Klickt man dann links, wird sich der Held zum NPC bewegen. Sobald er
 -- ihn errecht, wird eine Aktion ausgeführt.
 --
+-- Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
+--
 -- Folgt ein NPC einem Helden, wird er stehen bleiben, wenn der Held zu weit
 -- entfernt ist. Wenn ein Ziel angegeben ist, dann wird das Callback erst
 -- ausgelöst, wenn man den NPC in der Nähe des Ziels anspricht. Ist kein
@@ -58,34 +60,36 @@ BundleNonPlayerCharacter = {
 --
 -- @usage -- Einfachen NPC erzeugen:
 -- local NPC = NonPlayerCharacter:New("npc")
---              :SetDialogPartner("hero")               -- Optional
---              :SetCallback(Briefing1)                 -- Optional
+--              :SetDialogPartner("hero")                -- Optional
+--              :SetCallback(Briefing1)                  -- Optional
 --              :Activate();
 --
 -- -- Folgenden NPC erzeugen:
 -- local NPC = NonPlayerCharacter:New("npc")
---              :SetDialogPartner("hero")               -- Optional
+--              :SetDialogPartner("hero")                -- Optional
 --              :SetFollowTarget("hero")
---              :SetFollowDestination("destination")    -- Optional
---              :SetFollowAction(NotArrivedFunction)    -- Optional
---              :SetCallback(Briefing1)                 -- Optional
+--              :SetFollowDestination("destination")     -- Optional
+--              :SetFollowAction(NotArrivedFunction)     -- Optional
+--              :SetCallback(Briefing1)                  -- Optional
 --              :Activate();
 --
 -- -- Führenden NPC erzeugen:
 -- local NPC = NonPlayerCharacter:New("npc")
---              :SetDialogPartner("hero")               -- Optional
---              :SetGuideParams("destination", "hero")
---              :SetGuideAction(NotArrivedFunction)     -- Optional
---              :SetCallback(Briefing1)                 -- Optional
+--              :SetDialogPartner("hero")                -- Optional
+--              :SetPrecedeParams("destination", "hero")
+--              :SetPrecedeAction(NotArrivedFunction)    -- Optional
+--              :SetCallback(Briefing1)                  -- Optional
 --              :Activate();
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
     assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
     assert(IsExisting(_ScriptName), 'entity "' .._ScriptName.. '" does not exist!');
-    
+
     local npc = CopyTableRecursive(self);
     npc.Data.NpcName = _ScriptName;
     BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[_ScriptName] = npc;
+    npc:CreateMarker();
+    npc:HideMarker();
     return npc;
 end
 
@@ -174,16 +178,17 @@ end
 --
 -- @usage -- NPC löschen
 -- NPC:Dispose();
--- 
+--
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
     self:Deactivate();
+    self:DestroyMarker();
     BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[self.Data.NpcName] = nil;
 end
 
 ---
 -- Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.
--- 
+--
 -- <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
 --
 -- @return Instanz von NonPlayerCharacter
@@ -195,13 +200,14 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
     if IsExisting(self.Data.NpcName) then
         Logic.SetOnScreenInformation(self:GetID(), 1);
+        self:ShowMarker();
     end
     return self;
 end
 
 ---
 -- Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.
--- 
+--
 -- <p><b>Alias:</b> NonPlayerCharacter:Deactivate</p>
 --
 -- @return Instanz von NonPlayerCharacter
@@ -213,6 +219,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
     if IsExisting(self.Data.NpcName) then
         Logic.SetOnScreenInformation(self:GetID(), 0);
+        self:HideMarker();
     end
     return self;
 end
@@ -243,6 +250,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset()
     if IsExisting(self.Data.NpcName) then
         Logic.SetOnScreenInformation(self:GetID(), 0);
         self.Data.TalkedTo = nil;
+        self:HideMarker();
     end
     return self;
 end
@@ -349,17 +357,17 @@ end
 -- Setzt das Ziel zu dem der NPC läuft und den Helden, der dem
 -- NPC folgen muss.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetGuideParams
+-- <b>Alias:</b> NonPlayerCharacter:SetPrecedeParams
 --
 -- @param _ScriptName     Skriptname des Ziel
 -- @param _Target         Striptname des Helden
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideParams(_ScriptName, _Target)
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetPrecedeParams(_ScriptName, _Target)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.GuideDestination = _ScriptName;
-    self.Data.GuideTarget = _Target;
+    self.Data.PrecedeDestination = _ScriptName;
+    self.Data.PrecedeTarget = _Target;
     return self;
 end
 
@@ -368,15 +376,15 @@ end
 -- das Ziel noch nicht erreicht ist, anstelle des Callback beim
 -- Ansprechen ausgeführt wird.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetGuideAction
+-- <b>Alias:</b> NonPlayerCharacter:SetPrecedeAction
 --
 -- @param _Function     Action
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetGuideAction(_Function)
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetPrecedeAction(_Function)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.GuideAction = _Function;
+    self.Data.PrecedeAction = _Function;
     return self;
 end
 
@@ -529,24 +537,25 @@ Core:RegisterBehavior(b_Trigger_NPC);
 --
 function BundleNonPlayerCharacter.Global:Install()
     NonPlayerCharacter = BundleNonPlayerCharacter.Global.NonPlayerCharacter;
-    
+
     ---
     -- Führt die statische Steuerungsfunktion für alle NPC aus.
     --
     StartSimpleJobEx( function()
         for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
-            NonPlayerCharacter:Control(k);
+            v:Control();
+            v:ControlMarker();
         end
     end);
-    
+
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+
     GameCallback_OnNPCInteraction_Orig_QSB_NPC_Rewrite = GameCallback_OnNPCInteraction
     GameCallback_OnNPCInteraction = function(_EntityID, _PlayerID)
         GameCallback_OnNPCInteraction_Orig_QSB_NPC_Rewrite(_EntityID, _PlayerID)
         Quest_OnNPCInteraction(_EntityID, _PlayerID)
     end
-    
+
     Quest_OnNPCInteraction = function(_EntityID, _PlayerID)
         local KnightIDs = {};
         Logic.GetKnights(_PlayerID, KnightIDs);
@@ -563,36 +572,35 @@ function BundleNonPlayerCharacter.Global:Install()
         BundleNonPlayerCharacter.Global.LastHeroEntityID = ClosestKnightID;
         local NPC = NonPlayerCharacter:GetInstance(_EntityID);
         BundleNonPlayerCharacter.Global.LastNpcEntityID = NPC:GetID();
-        
+
         if NPC then
             if NPC.Data.FollowTarget ~= nil then
                 if NPC.Data.FollowDestination then
-                    API.Note(Logic.GetDistanceBetweenEntities(_EntityID, GetID(NPC.Data.FollowDestination)))
                     if Logic.GetDistanceBetweenEntities(_EntityID, GetID(NPC.Data.FollowDestination)) > 2000 then
-                        if NPC.Data.FollowAction then 
+                        if NPC.Data.FollowAction then
                             NPC.Data.FollowAction(self);
                         end
-                        return
+                        return;
                     end
                 else
                     if NPC.Data.FollowAction then
                         NPC.Data.FollowAction(self);
                     end
-                    return
+                    return;
                 end
             end
 
-            if NPC.Data.GuideTarget ~= nil then
-                local TargetID = GetID(NPC.Data.GuideDestination);
+            if NPC.Data.PrecedeTarget ~= nil then
+                local TargetID = GetID(NPC.Data.PrecedeDestination);
                 if Logic.GetDistanceBetweenEntities(_EntityID, TargetID) > 2000 then
-                    if NPC.Data.GuideAction then
-                        NPC.Data.GuideAction(NPC);
+                    if NPC.Data.PrecedeAction then
+                        NPC.Data.PrecedeAction(NPC);
                     end
                     return;
                 end
                 Logic.SetTaskList(_EntityID, TaskLists.TL_NPC_IDLE);
             end
-            
+
             NPC:RotateActors();
             NPC.Data.TalkedTo = ClosestKnightID;
             if NPC:HasTalkedTo() then
@@ -607,11 +615,11 @@ function BundleNonPlayerCharacter.Global:Install()
             end
         end
     end
-    
+
     function QuestTemplate:RemoveQuestMarkers()
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
-                if ((type(self.Objectives[i].Data[1]) == "number" and self.Objectives[i].Data[1] > 0) 
+                if ((type(self.Objectives[i].Data[1]) == "number" and self.Objectives[i].Data[1] > 0)
                 or (type(self.Objectives[i].Data[1]) ~= "number")) and self.Objectives[i].Data[4] then
                     DestroyQuestMarker(self.Objectives[i].Data[2]);
                 end
@@ -622,15 +630,36 @@ function BundleNonPlayerCharacter.Global:Install()
     function QuestTemplate:ShowQuestMarkers()
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
-                if ((type(self.Objectives[i].Data[1]) == "number" and self.Objectives[i].Data[1] > 0) 
+                if ((type(self.Objectives[i].Data[1]) == "number" and self.Objectives[i].Data[1] > 0)
                 or (type(self.Objectives[i].Data[1]) ~= "number")) and self.Objectives[i].Data[4] then
                     ShowQuestMarker(self.Objectives[i].Data[2]);
                 end
             end
         end
     end
-    
-    QuestTemplate.IsObjectiveCompleted_QSBU_NPC_Rewrite = QuestTemplate.IsObjectiveCompleted;
+
+    function QuestTemplate:RemoveNPCMarkers()
+        for i=1, self.Objectives[0] do
+            if type(self.Objectives[i].Data) == "table" then
+                if self.Objectives[i].Data[1] == -65565 then
+                    if type(self.Objectives[i].Data[4]) == "table" then
+                        if self.Objectives[i].Data[4].NpcInstance then
+                            self.Objectives[i].Data[4].NpcInstance:Dispose();
+                            self.Objectives[i].Data[4].NpcInstance = nil;
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    QuestTemplate.Interrupt_Orig_BundleNonPlayerCharacter = QuestTemplate.Interrupt;
+    QuestTemplate.Interrupt = function(_quest, i)
+        QuestTemplate.Interrupt_Orig_BundleNonPlayerCharacter(_quest, i);
+        _quest:RemoveNPCMarkers();
+    end
+
+    QuestTemplate.IsObjectiveCompleted_Orig_BundleNonPlayerCharacter = QuestTemplate.IsObjectiveCompleted;
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
         local data = objective.Data;
@@ -639,7 +668,7 @@ function BundleNonPlayerCharacter.Global:Install()
         end
 
         if objectiveType ~= Objective.Distance then
-            return self:IsObjectiveCompleted_QSBU_NPC_Rewrite(objective);
+            return self:IsObjectiveCompleted_Orig_BundleNonPlayerCharacter(objective);
         else
             if data[1] == -65565 then
                 if not IsExisting(data[3]) then
@@ -661,7 +690,7 @@ function BundleNonPlayerCharacter.Global:Install()
                     end
                 end
             else
-                return self:IsObjectiveCompleted_QSBU_NPC_Rewrite(objective);
+                return self:IsObjectiveCompleted_Orig_BundleNonPlayerCharacter(objective);
             end
         end
     end
@@ -676,7 +705,7 @@ end
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    
+
     local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
     local KnightIDs = {};
     Logic.GetKnights(PlayerID, KnightIDs);
@@ -689,7 +718,7 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
             LookAt(KnightIDs[i], self.Data.NpcName);
         end
     end
-    
+
     local NpcOffset = 0;
     if Logic.IsKnight(GetID(self.Data.NpcName)) then
         NpcOffset = 15;
@@ -708,25 +737,21 @@ end
 -- @within NonPlayerCharacter
 -- @local
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Control(_ScriptName)
-    assert(self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
-    if not IsExisting(_ScriptName) then
-        return;
-    end
-    
-    local NPC = NonPlayerCharacter:GetInstance(_ScriptName);
-    if not NPC then
-        return;
-    end
-    if not NPC:IsActive() then
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Control()
+    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+    if not IsExisting(self.Data.NpcName) then
         return;
     end
 
-    if NPC.Data.FollowTarget ~= nil then
-        local NpcID  = NPC:GetID();
-        local HeroID = GetID(NPC.Data.FollowTarget);
+    if not self:IsActive() then
+        return;
+    end
+
+    if self.Data.FollowTarget ~= nil then
+        local NpcID  = self:GetID();
+        local HeroID = GetID(self.Data.FollowTarget);
         local DistanceToHero = Logic.GetDistanceBetweenEntities(NpcID, HeroID);
-        
+
         local MinDistance = 400;
         if Logic.IsEntityInCategory(NpcID, EntityCategories.Hero) == 1 then
             MinDistance = 800;
@@ -742,11 +767,11 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Control(_ScriptName)
         end
     end
 
-    if NPC.Data.GuideTarget ~= nil then
-        local NpcID    = NPC:GetID();
-        local HeroID   = GetID(NPC.Data.GuideTarget);
-        local TargetID = GetID(NPC.Data.GuideDestination);
-        
+    if self.Data.PrecedeTarget ~= nil then
+        local NpcID    = self:GetID();
+        local HeroID   = GetID(self.Data.PrecedeTarget);
+        local TargetID = GetID(self.Data.PrecedeDestination);
+
         local DistanceToHero   = Logic.GetDistanceBetweenEntities(NpcID, HeroID);
         local DistanceToTarget = Logic.GetDistanceBetweenEntities(NpcID, TargetID);
 
@@ -762,6 +787,111 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Control(_ScriptName)
     end
 end
 
+---
+-- Erzeugt das Entity des NPC-Markers.
+--
+-- @within NonPlayerCharacter
+-- @local
+--
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:CreateMarker()
+    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+    local x,y,z = Logic.EntityGetPos(self:GetID());
+    local MarkerID = Logic.CreateEntity(Entities.XD_ScriptEntity, x, y, 0, 0);
+    DestroyEntity(self.Data.MarkerID);
+    self.Data.MarkerID = MarkerID;
+    self:HideMarker();
+    return self;
+end
+
+---
+-- Entfernt das Entity des NPC-Markers.
+--
+-- @within NonPlayerCharacter
+-- @local
+--
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:DestroyMarker()
+    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+    if self.Data.MarkerID then
+        DestroyEntity(self.Data.MarkerID);
+        self.Data.MarkerID = nil;
+    end
+    return self;
+end
+
+---
+-- Zeigt den NPC-Marker des NPC an.
+--
+-- @within NonPlayerCharacter
+-- @local
+--
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:ShowMarker()
+    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+    if IsExisting(self.Data.MarkerID) then
+        local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), -45);
+        Logic.SetEntityScriptingValue(self.Data.MarkerID, -45, EntityScale);
+        Logic.SetModel(self.Data.MarkerID, Models.Effects_E_Wealth);
+        Logic.SetVisible(self.Data.MarkerID, true);
+    end
+    self.Data.MarkerVisibility = true;
+    return self;
+end
+
+---
+-- Versteckt den NPC-Marker des NPC.
+--
+-- @within NonPlayerCharacter
+-- @local
+--
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:HideMarker()
+    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+    if IsExisting(self.Data.MarkerID) then
+        Logic.SetModel(self.Data.MarkerID, Models.Effects_E_NullFX);
+        Logic.SetVisible(self.Data.MarkerID, false);
+    end
+    self.Data.MarkerVisibility = false;
+    return self;
+end
+
+---
+-- Gibt true zurück, wenn der Marker des NPC sichtbar ist.
+--
+-- @return boolen: Sichtbarkeit
+-- @within NonPlayerCharacter
+-- @local
+--
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsMarkerVisible()
+    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+    return IsExisting(self.Data.MarkerID) and self.Data.MarkerVisibility == true;
+end
+
+---
+-- Kontrolliert die Sichtbarkeit und die Position des NPC-Markers.
+--
+-- @within NonPlayerCharacter
+-- @local
+--
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:ControlMarker()
+    if self:IsActive() and not self:HasTalkedTo() then
+        -- Blinken
+        if self:IsMarkerVisible() then
+            self:HideMarker();
+        else
+            self:ShowMarker();
+        end
+
+        -- Repositionierung
+        local x1,y1,z1 = Logic.EntityGetPos(self.Data.MarkerID);
+        local x2,y2,z2 = Logic.EntityGetPos(self:GetID());
+        if math.abs(x1-x2) > 20 or math.abs(y1-y2) > 20 then
+            Logic.DEBUG_SetPosition(self.Data.MarkerID, x2, y2);
+        end
+    end
+    -- Während Briefings immer verstecken
+    if IsBriefingActive and IsBriefingActive() then
+        self:HideMarker();
+    end
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -772,7 +902,7 @@ end
 function BundleNonPlayerCharacter.Local:Install()
     g_CurrentDisplayedQuestID = 0;
 
-    GUI_Interaction.DisplayQuestObjective_Orig_QSBU_NPC_Rewrite = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective_Orig_BundleNonPlayerCharacter = GUI_Interaction.DisplayQuestObjective
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
         local lang = Network.GetDesiredLanguage();
         if lang ~= "de" then lang = "en" end
@@ -836,14 +966,14 @@ function BundleNonPlayerCharacter.Local:Install()
                 XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
                 XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
             else
-                GUI_Interaction.DisplayQuestObjective_Orig_QSBU_NPC_Rewrite(_QuestIndex, _MessageKey);
+                GUI_Interaction.DisplayQuestObjective_Orig_BundleNonPlayerCharacter(_QuestIndex, _MessageKey);
             end
         else
-            GUI_Interaction.DisplayQuestObjective_Orig_QSBU_NPC_Rewrite(_QuestIndex, _MessageKey);
+            GUI_Interaction.DisplayQuestObjective_Orig_BundleNonPlayerCharacter(_QuestIndex, _MessageKey);
         end
     end
-    
-    GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_QSBU_NPC_Rewrite = GUI_Interaction.GetEntitiesOrTerritoryListForQuest
+
+    GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_BundleNonPlayerCharacter = GUI_Interaction.GetEntitiesOrTerritoryListForQuest
     GUI_Interaction.GetEntitiesOrTerritoryListForQuest = function( _Quest, _QuestType )
         local EntityOrTerritoryList = {}
         local IsEntity = true
@@ -853,15 +983,14 @@ function BundleNonPlayerCharacter.Local:Install()
                 local Entity = GetEntityId(_Quest.Objectives[1].Data[3]);
                 table.insert(EntityOrTerritoryList, Entity);
             else
-                return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_QSBU_NPC_Rewrite( _Quest, _QuestType );
+                return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_BundleNonPlayerCharacter( _Quest, _QuestType );
             end
 
         else
-            return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_QSBU_NPC_Rewrite( _Quest, _QuestType );
+            return GUI_Interaction.GetEntitiesOrTerritoryListForQuest_Orig_BundleNonPlayerCharacter( _Quest, _QuestType );
         end
         return EntityOrTerritoryList, IsEntity
     end
 end
 
 Core:RegisterBundle("BundleNonPlayerCharacter");
-

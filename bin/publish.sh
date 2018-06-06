@@ -22,6 +22,7 @@ echo "Copy documentation..."
 cp -r var/doc Release/doc &>/dev/null
 mkdir Release/guide &>/dev/null
 cp hlp/*.pdf Release/guide &>/dev/null
+cp hlp/readme.txt Release/start.txt &>/dev/null
 echo "Done!"
 
 echo "Creating archive..."
