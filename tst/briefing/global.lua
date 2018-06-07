@@ -31,8 +31,9 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/briefing/qsb.lua")
-    API.Install()
+    local Path = "E:/Repositories/symfonia/qsb/lua";
+    Script.Load(Path .. "/loader.lua");
+    SymfoniaLoader:Load(Path);
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -62,31 +63,31 @@ function BriefingTest()
     };
     local AP, ASP, ASMC = API.AddPages(briefing)
     
-    --[[1]]  ASP("castle1", "Lorem ipsum (1)", "dolor sit amet, consetetur"..
+    --[[1]]  ASP("meredith", "Lorem ipsum (1)", "dolor sit amet, consetetur"..
         " sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore"..
         " et dolore magna aliquyam erat, sed diam voluptua. At vero eos et"..
         " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
         " gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
          false)
-    --[[2]]  ASP("store1", "Lorem ipsum (2)", "dolor sit amet, consetetur"..
+    --[[2]]  ASP("christian", "Lorem ipsum (2)", "dolor sit amet, consetetur"..
         " sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore"..
         " et dolore magna aliquyam erat, sed diam voluptua. At vero eos et"..
         " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
         " gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
           false)
           
-    --[[3]]  local CP1 = ASMC("cathedral1", "", "Entscheidung", false,
+    --[[3]]  local CP1 = ASMC("meredith", "Entscheidung", "Entscheidung", false,
         "Option 1", 4,
         "Option 2", 7)
           
           
-    --[[4]]  ASP("castle1", "Lorem ipsum (4)", "dolor sit amet, consetetur"..
+    --[[4]]  ASP("meredith", "Lorem ipsum (4)", "dolor sit amet, consetetur"..
         " sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore"..
         " et dolore magna aliquyam erat, sed diam voluptua. At vero eos et"..
         " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
         " gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
         false)
-    --[[5]]  ASP("store1", "Lorem ipsum (5)", "dolor sit amet, consetetur"..
+    --[[5]]  ASP("meredith", "Lorem ipsum (5)", "dolor sit amet, consetetur"..
         " sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore"..
         " et dolore magna aliquyam erat, sed diam voluptua. At vero eos et"..
         " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
@@ -95,13 +96,13 @@ function BriefingTest()
             
     AP()
         
-    --[[7]]  ASP("castle1", "Lorem ipsum (7)", "dolor sit amet, consetetur"..
+    --[[7]]  ASP("meredith", "Lorem ipsum (7)", "dolor sit amet, consetetur"..
         " sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore"..
         " et dolore magna aliquyam erat, sed diam voluptua. At vero eos et"..
         " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
         " gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
          false)
-     --[[8]]  ASP("store1", "Lorem ipsum (8)", "dolor sit amet, consetetur"..
+     --[[8]]  ASP("meredith", "Lorem ipsum (8)", "dolor sit amet, consetetur"..
          " sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore"..
          " et dolore magna aliquyam erat, sed diam voluptua. At vero eos et"..
          " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
