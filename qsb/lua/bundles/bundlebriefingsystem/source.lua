@@ -1634,6 +1634,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.SetBriefingPageTextPosition(page);
 
         if not Framework.IsNetworkGame() and Game.GameTimeGetFactor() ~= 0 then
+            if BriefingSystem.currBriefing.restoreGameSpeed and not BriefingSystem.currBriefing.gameSpeedBackup then
+                BriefingSystem.currBriefing.gameSpeedBackup = Game.GameTimeGetFactor();
+            end
             Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
         end
         if BriefingSystem.currBriefing.restoreCamera then
@@ -1699,7 +1702,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             Camera.RTS_SetLookAtPosition(unpack(BriefingSystem.cameraRestore));
         end
         if not Framework.IsNetworkGame() then
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+            local GameSpeed = (BriefingSystem.currBriefing.gameSpeedBackup or 1);
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), GameSpeed);
         end
 
         XGUIEng.PopPage();
