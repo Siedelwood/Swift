@@ -1000,7 +1000,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
 
         Logic.ExecuteInLuaLocalState("BriefingSystem.PrepareBriefing()");
-        BriefingSystem.currBriefing = BriefingSystem.RemoveObsolateAnswers(BriefingSystem.currBriefing);
+        BriefingSystem.currBriefing = BriefingSystem.UpdateMCAnswers(BriefingSystem.currBriefing);
         BriefingSystem.job = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "BriefingSystem_Condition_Briefing", "BriefingSystem_Action_Briefing", 1);
         if not BriefingSystem.loadScreenHidden then
             Logic.ExecuteInLuaLocalState("BriefingSystem.Briefing(true)");
@@ -1012,7 +1012,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- Entfernt Multiple Choice Optionen, wenn die Remove Condition
     -- zutrifft. Diese Optionen sind dann nicht mehr auswählbar.
 
-    function BriefingSystem.RemoveObsolateAnswers(_briefing)
+    function BriefingSystem.UpdateMCAnswers(_briefing)
         if _briefing then
             local i = 1;
             while (_briefing[i] ~= nil and #_briefing >= i)
@@ -1022,20 +1022,26 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
                     local j = 1;
                     while (_briefing[i].mc.answers[j] ~= nil)
                     do
-                        -- vorhandene IDs dürfen sich nicht mehr ändern
+                        -- Speichert die ID der Antwort
                         if not _briefing[i].mc.answers[j].ID then
                             _briefing[i].mc.answers[j].ID = aswID;
                         end
-                        if type(_briefing[i].mc.answers[j][3]) == "function" and _briefing[i].mc.answers[j][3](_briefing[i].mc.answers[j]) then
+
+                        -- Entferne Antwort
+                        if _briefing[i].mc.answers[j].remove then
+                            table.remove(BriefingSystem.currBriefing[i].mc.answers, j);
+                            if #BriefingSystem.currBriefing[i].mc.answers < j then
+                                BriefingSystem.currBriefing[i].mc.current = #BriefingSystem.currBriefing[i].mc.answers
+                            end
                             Logic.ExecuteInLuaLocalState([[
-                                local b = BriefingSystem.currBriefing
-                                if b and b[]]..i..[[] and b[]]..i..[[].mc then
-                                    table.remove(BriefingSystem.currBriefing[]]..i..[[].mc.answers, ]]..j..[[)
+                                table.remove(BriefingSystem.currBriefing[]]..i..[[].mc.answers, ]]..j..[[)
+                                if #BriefingSystem.currBriefing[]]..i..[[].mc.answers < ]]..j..[[ then
+                                    BriefingSystem.currBriefing[]]..i..[[].mc.current = #BriefingSystem.currBriefing[]]..i..[[].mc.answers
                                 end
                             ]]);
-                            table.remove(_briefing[i].mc.answers,j);
-                            j = j -1;
                         end
+
+                        -- ID hochzählen
                         aswID = aswID +1;
                         j = j +1;
                     end
@@ -1337,19 +1343,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         else
             BriefingSystem.page = jump-1;
         end
-        if page.mc.answers[current] and page.mc.answers[current].remove then
-            table.remove(BriefingSystem.currBriefing[pageNumber].mc.answers, _currentAnswer);
-            if #BriefingSystem.currBriefing[pageNumber].mc.answers < _currentAnswer then
-                BriefingSystem.currBriefing[pageNumber].mc.current = #BriefingSystem.currBriefing[pageNumber].mc.answers
-            end
-            Logic.ExecuteInLuaLocalState([[
-                table.remove(BriefingSystem.currBriefing[]]..pageNumber..[[].mc.answers, ]].._currentAnswer..[[)
-                if #BriefingSystem.currBriefing[]]..pageNumber..[[].mc.answers < ]].._currentAnswer..[[ then
-                    BriefingSystem.currBriefing[]]..pageNumber..[[].mc.current = #BriefingSystem.currBriefing[]]..pageNumber..[[].mc.answers
-                end
-            ]]);
-        end
-        BriefingSystem.currBriefing = BriefingSystem.RemoveObsolateAnswers(BriefingSystem.currBriefing);
+        BriefingSystem.currBriefing = BriefingSystem.UpdateMCAnswers(BriefingSystem.currBriefing);
     end
 end
 
