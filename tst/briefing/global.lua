@@ -49,13 +49,19 @@ function Mission_FirstMapAction()
     
     -----
     
-    
+    StartSimpleJobEx(function()
+        if Logic.GetTime() >= 10 then
+            BriefingTest()
+            return true;
+        end
+    end)
 end
 
 function BriefingTest()
     local briefing = {
         barStyle = "big",
         restoreCamera = true,
+        restoreGameSpeed = false,
         skipPerPage = true,
         hideFoW = true,
         showSky = true,
