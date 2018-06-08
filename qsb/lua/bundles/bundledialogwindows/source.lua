@@ -6,7 +6,7 @@
 
 ---
 -- Mit diesem Bundle kommen einige Funktionen für das lokale Skript hinzu, die
--- es ermöglichen verschiedene Dialoge oder ein Textfenster anzuzeigen.
+-- es ermöglichen, verschiedene Dialoge oder ein Textfenster anzuzeigen.
 --
 -- @module BundleDialogWindows
 -- @set sort=true
@@ -49,7 +49,7 @@ end
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
 -- Um die Entscheigung des Spielers abzufragen, wird ein Callback benötigt.
--- Das callback bekommt eine Boolean übergeben, sobald der Spieler die 
+-- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
 -- Entscheidung getroffen hat.
 --
 -- @param _Title    Titel des Dialog
@@ -84,7 +84,7 @@ end
 -- Öffnet einen Auswahldialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen 
+-- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
 -- aus. Anschließend erhält das Callback den Index der selektierten Option.
 --
 -- @param _Title  Titel des Dialog
@@ -489,6 +489,9 @@ end
 -- @return TextWindow: Konfiguriertes Fenster
 -- @within TextWindow
 --
+-- @usage
+-- local MyWindow = TextWindow:New("Fenster", "Das ist ein Text");
+--
 function BundleDialogWindows.Local.TextWindow:New(...)
     assert(self == BundleDialogWindows.Local.TextWindow, "Can not be used from instance!")
     local window           = API.InstanceTable(self);
@@ -512,6 +515,9 @@ end
 -- @return self
 -- @within TextWindow
 --
+-- @usage
+-- MyWindow:AddParameter("Name", "Horst");
+--
 function BundleDialogWindows.Local.TextWindow:AddParamater(_Key, _Value)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
     assert(self.Data[_Key] ~= nil, "Key '" .._Key.. "' already exists!");
@@ -527,6 +533,9 @@ end
 -- @param _Text Titel des Textfenster
 -- @return self
 -- @within TextWindow
+--
+-- @usage
+-- MyWindow:SetCaption("Das ist der Titel");
 --
 function BundleDialogWindows.Local.TextWindow:SetCaption(_Text)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
@@ -544,6 +553,9 @@ end
 -- @return self
 -- @within TextWindow
 --
+-- @usage
+-- MyWindow:SetCaption("Das ist der Text. Er ist sehr informativ!");
+--
 function BundleDialogWindows.Local.TextWindow:SetContent(_Text)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
     assert(type(_Text) == "string");
@@ -560,6 +572,12 @@ end
 -- @param _Function Close Callback
 -- @return self
 -- @within TextWindow
+--
+-- @usage
+-- local MyAction = function(_Window)
+--     -- Something is done here!
+-- end
+-- MyWindow:SetAction(MyAction);
 --
 function BundleDialogWindows.Local.TextWindow:SetAction(_Function)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
@@ -581,6 +599,12 @@ end
 -- @return self
 -- @within TextWindow
 --
+-- @usage
+-- local MyButtonAction = function(_Window)
+--     -- Something is done here!
+-- end
+-- MyWindow:SetAction("Button Text", MyButtonAction);
+--
 function BundleDialogWindows.Local.TextWindow:SetButton(_Text, _Callback)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
     if _Text then
@@ -598,6 +622,9 @@ end
 -- <b>Alias</b>: TextWindow:Show
 --
 -- @within TextWindow
+--
+-- @usage
+-- MyWindow:Show();
 --
 function BundleDialogWindows.Local.TextWindow:Show()
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
@@ -729,4 +756,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleDialogWindows");
-

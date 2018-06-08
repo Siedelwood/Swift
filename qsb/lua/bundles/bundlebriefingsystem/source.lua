@@ -5,12 +5,13 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ermöglicht es Briefings und Cutscenes zu verwenden.
+-- Ermöglicht es Briefings und Fake-Cutscenes zu verwenden.
 --
 -- Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
 -- der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
 -- Antwortmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
--- oder Menüstrukturen abgebildet werden.
+-- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiden
+-- kann innerhalb des Multiple Choice Briefings navigiert werden.
 --
 -- Cutscenes dürfen kein Multiple Choice enthalten und werden immer nur ganz
 -- abgespielt oder abgebrochen. Das Überspringen einzelner Seiten ist nicht
@@ -19,10 +20,10 @@
 -- der Handlung eingesetzt werden.
 --
 -- Splashscreens stehen sowohl in Briefings als auch in Cutscenes zuer Verfügung
--- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden. Diese
+-- und bieten die Möglichkeit, Bildschirmfüllende Grafiken zu verwenden. Diese
 -- Grafiken können auch größer als eine Bildschirmfläche sein. Für diesen
--- Fall kann über die Angabe von UV-Koordinaten zu einem Teil gesprungen oder
--- geflogen werden.
+-- Fall kann über die Angabe von UV-Koordinaten zu einem bestimmten Abschnitt
+-- der Grafik gesprungen oder geflogen werden.
 --
 -- @module BundleBriefingSystem
 -- @set sort=true
@@ -36,7 +37,8 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Setzt den Zustand von Quest Timern während biefings.
+-- Setzt den Zustand von Quest Timern währenddessen ein Biefings oder eine
+-- Fake-Cutscene aktiv ist.
 --
 -- Während eines Briefings vergeht generell keine Zeit. Folglich ist der
 -- Niederlage Timer generell inaktiv. Werden Quests während Briefings nicht
@@ -57,7 +59,7 @@ end
 PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 
 ---
--- Prüft, ob ein Briefing abgespielt wurde (beendet ist).
+-- Prüft, ob das Briefing mit der angegebenen ID abgespielt wurde (beendet ist).
 --
 -- <b>Alias</b>: IsBriefingFinished
 --
@@ -86,17 +88,17 @@ IsBriefingFinished = API.IsBriefingFinished;
 -- @return number: Gewählte Antwort
 -- @within Public
 --
-function API.MCGetSelectedAnswer(_page)
+function API.GetSelectedAnswerFromMCPage(_page)
     if GUI then
-        API.Dbg("API.MCGetSelectedAnswer: Can only be used in the global script!");
+        API.Dbg("API.GetSelectedAnswerFromMCPage: Can only be used in the global script!");
         return;
     end
     return BundleBriefingSystem.Global:MCGetSelectedAnswer(_page);
 end
-MCGetSelectedAnswer = API.MCGetSelectedAnswer;
+MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 
 ---
--- Gibt die Seite im aktuellen Briefing zurück.
+-- Gibt die definition der Seite im aktuellen Briefing zurück.
 --
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
@@ -153,7 +155,7 @@ end
 AddPages = API.AddPages;
 
 ---
--- Initalisiert die Flight-Funktionen für die übergebene Cutscene.
+-- Initalisiert die Flight-Funktionen für die übergebene Fake-Cutscene.
 --
 -- <b>Alias</b>: AddPages
 --
@@ -199,10 +201,7 @@ BriefingMessage = API.AddBriefingNote;
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erstellt eine Seite in normaler Syntax oder als Cutscene.
---
--- Die Möglichkeiten von AP sind so zahlreich, dass hier nicht genauer darauf
--- eingegangen werden kann.
+-- Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.
 --
 -- <b>Normale Seite</b>
 -- Die üblichen Parameter können angegeben werden. Beispiele sind zoom, text,
@@ -237,11 +236,14 @@ function AP(_Page)
 end
 
 ---
--- Erstellt einen Flight einer Cutscene.
+-- Erstellt einen Flight einer Fake-Cutscene.
 --
 -- Flights bestehen aus einem Startpunkt und mindestens einer weitere Position.
--- Ein Flight kann aus unbegrenzt vielen Punkten bestehen, die alle innerhalb
--- der Duration abgefahren werden.
+-- Ein Flight kann aus nahezu unbegrenzt vielen Punkten bestehen, die alle
+-- innerhalb der Duration abgefahren werden.
+--
+-- <b>Hinweis:</b> Es ist prinzipiell Möglich mehr als 10 Punkte pro Sekunde
+-- anzusteuern, aber nicht sehr sinnvoll. ;)
 --
 -- Aufbau einer Station eines Flights:
 -- <table border="1">
@@ -279,7 +281,8 @@ end
 -- </tr>
 -- <tr>
 -- <td>Duration</td>
--- <td>Dauer des gesamten Flights</td>
+-- <td>Dauer des gesamten Flights. Die Zeit wird auf alle Positionen des
+-- Flights der Fake-Cutscene aufgeteilt (mit Ausnahme der Startposition).</td>
 -- </tr>
 -- <tr>
 -- <td>FadeIn</td>
@@ -325,7 +328,7 @@ end
 -- Für jeden Punkt müssen also 6 Zahlen angegeben werden.
 --
 -- <b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
--- wenigen Kamerastationen.
+-- wenigen Kamerastationen oder für eine generische Nutzung.
 --
 -- @param _Text     Angezeigter Text
 -- @param _Duration Dauer des Flight
@@ -355,7 +358,7 @@ end
 -- @return table: Page
 -- @within Page-Functionen
 --
--- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein", true);
+-- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
 --
 function ASP(_entity, _title, _text, _dialogCamera, _action)
     -- Diese Funktion ist ein Dummy für LDoc!
@@ -415,7 +418,7 @@ function BundleBriefingSystem.Global:Install()
 end
 
 ---
--- Setzt den Zustand von Quest Timern während biefings.
+-- Setzt den Zustand von Quest Timern während Biefings und Fake-Cutscenes.
 --
 -- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
 --
@@ -676,7 +679,7 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
 end
 
 ---
--- Initalisiert das Briefing System im globalen Skript.
+-- Initalisiert das Briefing System im lokalen Skript.
 --
 -- @within Private
 -- @local
@@ -785,7 +788,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         BundleBriefingSystem:OverwriteGetPosition();
     end
 
--- Briefing System Beginn ----------------------------------------------
+-- Briefing System Beginn --------------------------------------------------- --
 
     BriefingSystem = {
         isActive = false,
@@ -833,6 +836,10 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- wie seitenweises Überspringen oder Multiple Choice, sind deaktiviert
     -- bzw. verhindern den Start der Cutscene.
     --
+    -- <b>Hinweis:</b> Bei diesen Cutscenes handelt es sich nicht um echte
+    -- Cutscenes sondern um eine Simulation. Die Kamerabewegung wird
+    -- dementsprechend nicht so flüssig sein und es kann ruckeln!
+    --
     -- <b>Alias</b>: BriefingSystem.StartCutscene <br/>
     -- <b>Alias</b>: StartCutscene
     --
@@ -866,20 +873,18 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
                 return;
             end
         end
-
         return BriefingSystem.StartBriefing(_briefing, true);
     end
     BriefingSystem.StartCutscene = API.StartCutscene;
     StartCutscene = API.StartCutscene;
 
     ---
-    -- Startet ein Briefing. Im Cutscene Mode wird die normale Kamera
-    -- deaktiviert und durch die Cutsene Kamera ersetzt. Außerdem
-    -- können Grenzsteine ausgeblendet und der Himmel angezeigt werden.
-    -- Die Okklusion wird abgeschaltet. Alle Änderungen werden nach dem
-    -- Briefing automatisch zurückgesetzt.
-    -- Läuft bereits ein Briefing, kommt das neue in die Warteschlange.
-    -- Es wird die ID des erstellten Briefings zurückgegeben.
+    -- Startet ein normales Briefing oder eine Fake-Cutscene.
+    --
+    -- Briefings können mittels Multiple Choice Dialogen über Verzweigungen
+    -- verfügen und so komplexe Dialoge oder Menüstrukturen abbilden. Briefings
+    -- sollten eingesetzt werden, wenn Quests nicht mehr ausreichen um die
+    -- Handlung zu erzählen oder um multiple Handlungsstränge zu starten.
     --
     -- <b>Alias</b>: BriefingSystem.StartBriefing <br/>
     -- <b>Alias</b>: StartBriefing
@@ -959,7 +964,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     StartBriefing = API.StartBriefing;
 
     ---
-    -- Beendet ein laufendes Briefing oder eine laufende Cutscene.
+    -- Beendet ein laufendes Briefing oder eine laufende Fake-Cutscene.
     --
     -- @within BriefingSystem
     -- @local
@@ -1264,7 +1269,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
 
     ---
     -- Deckt einen bestimmten Bereich auf der Spielwelt auf.
-    -- FIXME: Diese Funktion dekt komplette Territorien auf!
+    -- FIXME: Diese Funktion deckt komplette Territorien auf!
     --
     -- @param _page        Aktuelle Seite
     -- @param _exploration Aufdeckungsradius
@@ -2888,7 +2893,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.Flight.Follow = _follow;
     end
 
-    ---
+    --
     -- Prüft, ob ein Briefing aktiv ist.
     --
     -- <b>Alias:</b> IsBriefingActive

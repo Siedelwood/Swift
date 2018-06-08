@@ -24,7 +24,7 @@ QSB = QSB or {};
 --
 -- <b>Alias:</b> StartMusic
 --
--- Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre 
+-- Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
 -- sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
 -- gespielt werden kann! Alle als Sprache abgespielten Sounds werden die
 -- gleiche Lautstärke haben, wie die Musik.
@@ -39,8 +39,18 @@ QSB = QSB or {};
 -- <li>MuteUI   - GUI-Sounds aus</li>
 -- </ul>
 --
--- @param _Description 
+-- @param _Description
 -- @within Public
+--
+-- @usage
+-- API.StartMusic({
+--     File     = "music/s6_10_antagonist.mp3",
+--     Volume   = 70,
+--     Length   = 49,
+--     Fadeout  = 20,
+--     MuteAtmo = true;
+--     MuteUI   = true,
+-- });
 --
 function API.StartMusic(_Description)
     if GUI then
@@ -61,6 +71,9 @@ StartMusic = API.StartMusic;
 -- @param _Length  Abspieldower (<= Dauer Musikstück)
 -- @param _FadeOut Ausblenden in Sekunden
 -- @within Public
+--
+-- @usage
+-- API.StartMusicSimple("music/s6_10_antagonist.mp3", 70, 49, 1)
 --
 function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     if GUI then
@@ -90,8 +103,29 @@ StartMusicSimple = API.StartMusicSimple;
 -- Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
 -- sich die Playlist endlos wiederholt.
 --
--- @param _Playlist 
+-- @param _Playlist
 -- @within Public
+--
+-- @usage
+-- local Playlist = {
+--     {
+--         File     = "music/s6_10_antagonist.mp3",
+--         Volume   = 70,
+--         Length   = 49,
+--         Fadeout  = 20,
+--         MuteAtmo = true;
+--         MuteUI   = true,
+--     },
+--     {
+--         File     = "music/s6_04_blaze.mp3",
+--         Volume   = 70,
+--         Length   = 65,
+--         Fadeout  = 20,
+--         MuteAtmo = false;
+--         MuteUI   = true,
+--     },
+-- }
+-- API.StartPlaylist(Playlist);
 --
 function API.StartPlaylist(_Playlist)
     if GUI then
@@ -109,7 +143,7 @@ StartPlaylist = API.StartPlaylist;
 --
 -- <b>Alias:</b> StartPlaylistTitle
 --
--- @param _Title 
+-- @param _Title
 -- @within Public
 --
 function API.StartPlaylistTitle(_Title)
@@ -422,4 +456,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleMusicTools");
-

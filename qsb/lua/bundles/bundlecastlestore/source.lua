@@ -11,7 +11,7 @@
 -- Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit
 -- der Ware im Lagerhaus erreicht wird.
 --
--- Der Spieler kann das allgemeine Verhalten des Lagers für alle Waren wählen,
+-- Der Spieler kann das allgemeine Verhalten des Lagers für alle Waren wählen
 -- und zusätzlich für einzelne Waren andere Verhalten bestimmen. Waren können
 -- eingelagert und ausgelagert werden. Eingelagerte Waren können zusätzlich
 -- gesperrt werden. Eine gesperrte Ware wird nicht wieder ausgelagert, auch
@@ -143,11 +143,11 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:New
 --
--- @param number _PlayerID     PlayerID des Spielers
+-- @param _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore Instanz
 -- @within QSB.CastleStore
 --
--- @usage 
+-- @usage
 -- -- Erstellt ein Burglager für Spieler 1
 -- local Store = QSB.CastleStore:new(1);
 --
@@ -174,11 +174,11 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetInstance
 --
--- @param number _PlayerID     PlayerID des Spielers
+-- @param _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore
 -- @within QSB.CastleStore
 --
--- @usage 
+-- @usage
 -- -- Ermittelt das Burglager von Spieler 1
 -- local Store = QSB.CastleStore:GetInstance(1);
 --
@@ -194,12 +194,12 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore
 --
--- @param number _Good          Warentyp
--- @param number _PlayeriD      ID des Spielers
--- @return number
+-- @param _Good          Warentyp
+-- @param _PlayeriD      ID des Spielers
+-- @return number: Warenmenge mit Menge in Burglager
 -- @within QSB.CastleStore
 --
--- @usage 
+-- @usage
 -- -- Menge an Holz in beiden Lagern
 -- local WoodAmount = QSB.CastleStore:GetGoodAmountWithCastleStore(Goods.G_Wood, 1);
 --
@@ -217,11 +217,13 @@ end
 ---
 -- Zerstört das Burglager.
 --
+-- Die Burg wird dabei natürlich nicht zerstört.
+--
 -- <b>Alias</b>: QSB.CastleStore:Dispose
 --
 -- @within QSB.CastleStore
 --
--- @usage 
+-- @usage
 -- -- Löschen des Burglagers von Spieler 1 ohne Referenz
 -- QSB.CastleStore:GetInstance(1):Dispose();
 -- -- Loschen mit Referenzvariable (z.B. Store)
@@ -241,8 +243,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:SetUperLimitInStorehouseForGoodType
 --
--- @param number _Good      Warentyp
--- @param number _Limit     Obergrenze
+-- @param _Good      Warentyp
+-- @param _Limit     Obergrenze
 -- @return self
 -- @within QSB.CastleStore
 --
@@ -258,7 +260,7 @@ end
 ---
 -- Setzt den Basiswert für die maximale Kapazität des Burglagers.
 --
--- Der Basiswert dient zur Berechnung der Kapazität für die Ausbaustufen und 
+-- Der Basiswert dient zur Berechnung der Kapazität für die Ausbaustufen und
 -- muss durch 2 teilbar sein.
 --
 -- Ist also der Basiswert 150, ergibt sich daraus:
@@ -268,11 +270,11 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:SetStorageLimit
 --
--- @param number _Limit     Maximale Kapazität
+-- @param _Limit     Maximale Kapazität
 -- @return self
 -- @within QSB.CastleStore
 --
--- @usage 
+-- @usage
 -- -- Basiswert auf 100 setzen.
 -- -- -> [100, 200, 400, 800]
 -- QSB.CastleStore:GetInstance(1):SetStorageLimit(100);
@@ -291,8 +293,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetAmount
 --
--- @param number _Good  Warentyp
--- @return number
+-- @param _Good  Warentyp
+-- @return number: Menge an Waren im Burglager
 -- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetAmount(_Good)
@@ -308,7 +310,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetTotalAmount
 --
--- @return number
+-- @return number: Gesamtmenge aller Waren
 -- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetTotalAmount()
@@ -325,7 +327,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetLimit
 --
--- @return number
+-- @return number: Lagerlimt in der Burg
 -- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:GetLimit()
@@ -348,8 +350,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:IsGoodAccepted
 --
--- @param number _Good  Warentyp
--- @return boolean
+-- @param _Good  Warentyp
+-- @return boolean: Ware wird akzeptiert
 -- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:IsGoodAccepted(_Good)
@@ -362,8 +364,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:SetGoodAccepted
 --
--- @param number _Good      Watentyp
--- @param boolean _Flag     Akzeptanz-Flag
+-- @param _Good      Watentyp
+-- @param _Flag     Akzeptanz-Flag
 -- @return self
 -- @within QSB.CastleStore
 --
@@ -383,8 +385,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:IsGoodLocked
 --
--- @param number _Good  Warentyp
--- @return boolean
+-- @param _Good  Warentyp
+-- @return boolean: Ware ist gesperrt
 -- @within QSB.CastleStore
 --
 function BundleCastleStore.Global.CastleStore:IsGoodLocked(_Good)
@@ -397,8 +399,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:SetGoodLocked
 --
--- @param number _Good      Watentyp
--- @param boolean _Flag     Akzeptanz-Flag
+-- @param _Good      Watentyp
+-- @param _Flag     Akzeptanz-Flag
 -- @return self
 -- @within QSB.CastleStore
 --
@@ -469,8 +471,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:Store
 --
--- @param number _Good      Watentyp
--- @param number _Amount    Menge
+-- @param _Good      Watentyp
+-- @param _Amount    Menge
 -- @return self
 -- @within Private
 -- @local
@@ -499,8 +501,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:Outsource
 --
--- @param number _Good      Watentyp
--- @param number _Amount    Menge
+-- @param _Good      Watentyp
+-- @param _Amount    Menge
 -- @return self
 -- @within Private
 -- @local
@@ -528,8 +530,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:Add
 --
--- @param number _Good      Watentyp
--- @param number _Amount    Menge
+-- @param _Good      Watentyp
+-- @param _Amount    Menge
 -- @return self
 -- @within QSB.CastleStore
 --
@@ -556,8 +558,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:Remove
 --
--- @param number _Good      Watentyp
--- @param number _Amount    Menge
+-- @param _Good      Watentyp
+-- @param _Amount    Menge
 -- @return self
 -- @within QSB.CastleStore
 --
@@ -764,7 +766,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:CreateStore
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -794,7 +796,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:DeleteStore
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -808,9 +810,9 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetAmount
 --
--- @param number _PlayerID      ID des Spielers
--- @param number _Good          Warentyp
--- @return number
+-- @param _PlayerID      ID des Spielers
+-- @param _Good          Warentyp
+-- @return number: Menge an Waren
 -- @within Private
 -- @local
 --
@@ -829,9 +831,9 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore
 --
--- @param number _Good          Warentyp
--- @param number _PlayeriD      ID des Spielers
--- @return number
+-- @param _Good          Warentyp
+-- @param _PlayeriD      ID des Spielers
+-- @return number: Menge an Waren
 -- @within QSB.CastleStore
 --
 function BundleCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID)
@@ -850,8 +852,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetTotalAmount
 --
--- @param number _PlayerID      ID des Spielers
--- @param number _Good          Warentyp
+-- @param _PlayerID      ID des Spielers
+-- @param _Good          Warentyp
 -- @return number
 -- @within Private
 -- @local
@@ -873,9 +875,9 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:SetAmount
 --
--- @param number _PlayerID      ID des Spielers
--- @param number _Good          Warentyp
--- @param number _Amount        Warenmenge
+-- @param _PlayerID      ID des Spielers
+-- @param _Good          Warentyp
+-- @param _Amount        Warenmenge
 -- @return self
 -- @within Private
 -- @local
@@ -894,9 +896,9 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:IsAccepted
 --
--- @param number _PlayerID      ID des Spielers
--- @param number _Good          Warentyp
--- @return boolean
+-- @param _PlayerID      ID des Spielers
+-- @param _Good          Warentyp
+-- @return boolean: Ware wird angenommen
 -- @within Private
 -- @local
 --
@@ -916,9 +918,9 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:SetAccepted
 --
--- @param number _PlayerID      ID des Spielers
--- @param number _Good          Warentyp
--- @param boolean _Good         Akzeptanz-Flag
+-- @param _PlayerID      ID des Spielers
+-- @param _Good          Warentyp
+-- @param _Good         Akzeptanz-Flag
 -- @return self
 -- @within Private
 -- @local
@@ -938,9 +940,9 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:IsLocked
 --
--- @param number _PlayerID      ID des Spielers
--- @param number _Good          Warentyp
--- @return boolean
+-- @param _PlayerID      ID des Spielers
+-- @param _Good          Warentyp
+-- @return boolean: Ware ist gesperrt
 -- @within Private
 -- @local
 --
@@ -960,9 +962,9 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:SetLocked
 --
--- @param number _PlayerID      ID des Spielers
--- @param number _Good          Warentyp
--- @param boolean _Good         Akzeptanz-Flag
+-- @param _PlayerID      ID des Spielers
+-- @param _Good          Warentyp
+-- @param _Good         Akzeptanz-Flag
 -- @return self
 -- @within Private
 -- @local
@@ -982,8 +984,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:HasCastleStore
 --
--- @param number _PlayerID      ID des Spielers
--- @return boolean
+-- @param _PlayerID      ID des Spielers
+-- @return boolean: Spieler hat ein Burglager
 -- @within Private
 -- @local
 --
@@ -997,8 +999,8 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetStore
 --
--- @param number _PlayerID      ID des Spielers
--- @return table
+-- @param _PlayerID      ID des Spielers
+-- @return table: Instanz des Burglagers
 -- @within Private
 -- @local
 --
@@ -1012,7 +1014,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GetLimit
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1036,7 +1038,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:OnStorehouseTabClicked
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1058,7 +1060,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:OnCityTabClicked
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1080,7 +1082,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:OnMultiTabClicked
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1101,7 +1103,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:GoodClicked
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1122,7 +1124,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:DestroyGoodsClicked
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1138,7 +1140,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:SelectionChanged
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1159,7 +1161,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:UpdateBehaviorTabs
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1189,7 +1191,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1231,7 +1233,7 @@ end
 --
 -- <b>Alias</b>: QSB.CastleStore:UpdateStorageLimit
 --
--- @param number _PlayerID      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @within Private
 -- @local
 --
@@ -1685,4 +1687,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleCastleStore");
-

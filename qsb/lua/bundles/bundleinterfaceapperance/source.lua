@@ -5,8 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche 
--- des Spiels. Es gibt Funktionen zum Ausblenden einiger Buttons und Menüs und 
+-- Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche
+-- des Spiels. Es gibt Funktionen zum Ausblenden einiger Buttons und Menüs und
 -- die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
 -- zu setzen.
 --
@@ -26,7 +26,7 @@ QSB.PlayerNames = {};
 ---
 -- Graut die Minimap aus oder macht sie wieder verwendbar.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -51,7 +51,7 @@ end
 ---
 -- Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -72,7 +72,7 @@ end
 ---
 -- Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -93,7 +93,7 @@ end
 ---
 -- Versteckt den Button des Produktionsmenü oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -114,7 +114,7 @@ end
 ---
 -- Versteckt den Button des Wettermenüs oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -135,7 +135,7 @@ end
 ---
 -- Versteckt den Button zum Territorienkauf oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -156,7 +156,7 @@ end
 ---
 -- Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -181,7 +181,7 @@ end
 ---
 -- Versteckt den Button zur Heldenselektion oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -192,15 +192,15 @@ function API.HideKnightButton(_Flag)
         Logic.ExecuteInLuaLocalState("API.HideKnightButton(" ..tostring(_Flag).. ")");
         return;
     end
-    
+
     local KnightID = Logic.GetKnightID(GUI.GetPlayerID());
-    if _Flag == true then 
+    if _Flag == true then
         GUI.SendScriptCommand("Logic.SetEntitySelectableFlag("..KnightID..", 0)");
         GUI.DeselectEntity(KnightID);
-    else 
+    else
         GUI.SendScriptCommand("Logic.SetEntitySelectableFlag("..KnightID..", 1)");
     end
-    
+
     BundleInterfaceApperance.Local:HideInterfaceButton(
         "/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButtonProgress",
         _Flag
@@ -214,7 +214,7 @@ end
 ---
 -- Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -227,7 +227,7 @@ function API.HideSelectionButton(_Flag)
     end
     API.HideKnightButton(_Flag);
     GUI.ClearSelection();
-    
+
     BundleInterfaceApperance.Local:HideInterfaceButton(
         "/InGame/Root/Normal/AlignBottomRight/MapFrame/BattalionButton",
         _Flag
@@ -237,7 +237,7 @@ end
 ---
 -- Versteckt das Baumenü oder blendet es ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes 
+-- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
@@ -248,7 +248,7 @@ function API.HideBuildMenu(_Flag)
         Logic.ExecuteInLuaLocalState("API.HideBuildMenu(" ..tostring(_Flag).. ")");
         return;
     end
-    
+
     BundleInterfaceApperance.Local:HideInterfaceButton(
         "/InGame/Root/Normal/AlignBottomRight/BuildMenu",
         _Flag
@@ -263,9 +263,9 @@ end
 -- muss jedoch immer der korrekte Pfad angegeben werden.
 --
 -- <b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
--- sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel 
+-- sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
 -- unterschiedlich ist.
--- 
+--
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
 -- @within Public
@@ -286,7 +286,7 @@ UserSetTexture = API.SetTexture;
 -- Jede Map muss einen eigenen eindeutigen Namen für jede Grafik verwenden.
 --
 -- <u>Größen:</u>
--- Die gesamtgrßee ergibt sich aus der Anzahl der Buttons und der Pixelbreite
+-- Die Gesamtgröße ergibt sich aus der Anzahl der Buttons und der Pixelbreite
 -- für die jeweilige Grö0e. z.B. 64 Buttons -> Größe * 8 x Größe * 8
 -- <ul>
 -- <li>768: 41x41</li>
@@ -295,7 +295,7 @@ UserSetTexture = API.SetTexture;
 -- </ul>
 --
 -- <u>Namenskonvention:</u>
--- Die Namenskonvention wird durch das Spiel vorgegeben. Je nach größe sind 
+-- Die Namenskonvention wird durch das Spiel vorgegeben. Je nach Größe sind
 -- die Namen der Matrizen erweitert mit .png, big.png und verybig.png. Du
 -- gibst also niemals die Dateiendung mit an!
 -- <ul>
@@ -303,7 +303,7 @@ UserSetTexture = API.SetTexture;
 -- <li>Für große Icons: _Name .. big.png</li>
 -- <li>Für riesige Icons: _Name .. verybig.png</li>
 -- </ul>
--- 
+--
 -- @param _WidgetID    Widgetpfad oder ID
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
@@ -323,22 +323,22 @@ UserSetIcon = API.SetIcon;
 --
 -- <b>Alias:</b> UserSetTextNormal
 --
--- Die Funtion ermittelt das aktuelle GUI Widget und ändert den Text des 
--- Tooltip. Dazu muss die Funktion innerhalb der Mouseover-Funktion eines 
+-- Die Funtion ermittelt das aktuelle GUI Widget und ändert den Text des
+-- Tooltip. Dazu muss die Funktion innerhalb der Mouseover-Funktion eines
 -- Buttons oder Widgets mit Tooltip aufgerufen werden.
 --
--- Die Funktion kann auch mit deutsch/english lokalisierten Tabellen als 
+-- Die Funktion kann auch mit deutsch/english lokalisierten Tabellen als
 -- Text gefüttert werden. In diesem Fall wird der deutsche Text genommen,
 -- wenn es sich um eine deutsche Spielversion handelt. Andernfalls wird
 -- immer der englische Text verwendet.
--- 
+--
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @within Public
 --
 function API.SetTooltipNormal(_title, _text, _disabledText)
-    if not GUI then 
+    if not GUI then
         return;
     end
     BundleInterfaceApperance.Local:TextNormal(_title, _text, _disabledText);
@@ -351,7 +351,7 @@ UserSetTextNormal = API.SetTooltipNormal;
 -- <b>Alias:</b> UserSetTextBuy
 --
 -- @see API.SetTooltipNormal
--- 
+--
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
@@ -372,8 +372,8 @@ UserSetTextBuy = API.SetTooltipCosts;
 --
 -- <b>Alias:</b> GetTerritoryName
 --
--- @return _TerritoryID ID des Territoriums
--- @return Name des Territorium
+-- @param _TerritoryID ID des Territoriums
+-- @return string: Name des Territorium
 -- @within Public
 --
 function API.GetTerritoryName(_TerritoryID)
@@ -399,8 +399,8 @@ GetTerritoryName = API.GetTerritoryName;
 --
 -- <b>Alias:</b> GetPlayerName
 --
--- @return _PlayerID ID des Spielers
--- @return Name des Territorium
+-- @param _PlayerID ID des Spielers
+-- @return string: Name des Territorium
 -- @within Public
 --
 function API.GetPlayerName(_PlayerID)
@@ -432,9 +432,9 @@ GetPlayerName = API.GetPlayerName;
 --
 -- <b>Alias:</b> SetPlayerName
 --
--- @return _playerID ID des Spielers
--- @return _name     Name des Spielers
--- @return Name des Territorium
+-- @param _playerID ID des Spielers
+-- @param _name     Name des Spielers
+-- @return string: Name des Territorium
 -- @within Public
 --
 function API.SetPlayerName(_playerID,_name)
@@ -453,11 +453,11 @@ SetPlayerName = API.SetPlayerName;
 ---
 -- Setzt zu Spielbeginn eine andere Spielerfarbe.
 --
--- @return _PlayerID ID des Spielers
--- @return _Color    Spielerfarbe
--- @return _Logo     Logo (optional)
--- @return _Pattern  Pattern (optional)
--- @return Name des Territorium
+-- @param _PlayerID ID des Spielers
+-- @param _Color    Spielerfarbe
+-- @param _Logo     Logo (optional)
+-- @param _Pattern  Pattern (optional)
+-- @return string: Name des Territorium
 -- @within Public
 --
 function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
@@ -468,10 +468,10 @@ function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     local Col     = (type(_Color) == "string" and g_ColorIndex[_Color]) or _Color;
     local Logo    = _Logo or -1;
     local Pattern = _Pattern or -1;
-    
+
     g_ColorIndex["ExtraColor1"] = 16;
     g_ColorIndex["ExtraColor2"] = 17;
-    
+
     StartSimpleJobEx( function(Col, _PlayerID, _Logo, _Pattern)
         Logic.PlayerSetPlayerColor(_PlayerID, Col, _Logo, _Pattern);
         return true;
@@ -537,7 +537,7 @@ function BundleInterfaceApperance.Local:Install()
 
         XGUIEng.ShowWidget("/InGame/Root/Normal/MissionGoodOrEntityCounter", 1);
     end
-    
+
     GUI_Knight.ClaimTerritoryUpdate_Orig_QSB_InterfaceApperance = GUI_Knight.ClaimTerritoryUpdate;
     GUI_Knight.ClaimTerritoryUpdate = function()
         local Key = "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Knight/ClaimTerritory";
@@ -569,7 +569,7 @@ end
 --
 function BundleInterfaceApperance.Local:RestoreAfterLoad()
     for k, v in pairs(self.Data.HiddenWidgets) do
-        if v then 
+        if v then
             XGUIEng.ShowWidget(k, 0);
         end
     end
@@ -592,7 +592,7 @@ function BundleInterfaceApperance.Local:SetTexture(_widget, _file)
     if XGUIEng.IsButton(wID) == 1 then
         state = 7;
     end
-    
+
     local Scale = 330;
     if screenSize[2] >= 800 then
         Scale = 260;
@@ -622,7 +622,7 @@ function BundleInterfaceApperance.Local:SetIcon(_WidgetID, _Coordinates, _Size, 
     if _Size == nil then
         _Size = 64;
     end
-    
+
     if _Size == 44 then
         _Name = _Name .. ".png"
     end
@@ -632,13 +632,13 @@ function BundleInterfaceApperance.Local:SetIcon(_WidgetID, _Coordinates, _Size, 
     if _Size == 128 then
         _Name = _Name .. "verybig.png"
     end
-    
+
     local u0, u1, v0, v1;
     u0 = (_Coordinates[1] - 1) * _Size;
     v0 = (_Coordinates[2] - 1) * _Size;
     u1 = (_Coordinates[1]) * _Size;
     v1 = (_Coordinates[2]) * _Size;
-    
+
     State = 1;
     if XGUIEng.IsButton(_WidgetID) == 1 then
         State = 7;
@@ -755,4 +755,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleInterfaceApperance");
-

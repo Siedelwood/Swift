@@ -44,9 +44,20 @@ QSB = QSB or {};
 -- <b>Alias:</b> AddQuest
 --
 -- @param _Data Questdefinition
--- @return string: Name des Quests 
+-- @return string: Name des Quests
 -- @return number: Gesamtzahl Quests
 -- @within Public
+--
+-- @usage
+-- AddQuest {
+--     Name        = "ExampleQuest",
+--     Suggestion  = "Wir müssen das Kloster finden.",
+--     Success     = "Dies sind die berümten Heilermönche.",
+--
+--     Goal_DiscoverPlayer(4),
+--     Reward_Diplomacy(1, 4, "EstablishedContact"),
+--     Trigger_Time(0),
+-- }
 --
 function API.AddQuest(_Data)
     if GUI then
@@ -64,6 +75,7 @@ AddQuest = API.AddQuest;
 -- <b>Alias</b>: StartQuests
 --
 -- @within Private
+-- @local
 --
 function API.StartQuests()
     if GUI then
@@ -96,8 +108,10 @@ StartQuests = API.StartQuests;
 -- @param _Callback   Callback
 -- @return number: QuestID
 -- @return table: Quest
---
 -- @within Public
+--
+-- @usage
+-- API.QuestMessage("Das ist ein Text", 4, 1);
 --
 function API.QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
     if GUI then
@@ -133,8 +147,14 @@ QuestMessage = API.QuestMessage;
 --
 -- @param _Messages Table with Quests
 -- @return table: List of generated Quests
---
 -- @within Public
+--
+-- @usage
+-- API.QuestDialog{
+--     {"Hallo, wie geht es dir?", 1, 4},
+--     {"Mir geht es gut, wie immer!", 1, 1},
+--     {"Das ist doch schön.", 1, 4},
+-- };
 --
 function API.QuestDialog(_Messages)
     if GUI then

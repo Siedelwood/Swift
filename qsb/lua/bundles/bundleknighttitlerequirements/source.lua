@@ -46,7 +46,7 @@
 -- Eine Anzahl an Gebäuden muss durch Einnahmen Reichtum erlangen.
 -- </li>
 -- <li><b>Benutzerdefiniert</b><br/>
--- Eine benutzerdefinierte Funktion, die entweder als Schalter oder als Zähler 
+-- Eine benutzerdefinierte Funktion, die entweder als Schalter oder als Zähler
 -- fungieren kann und true oder false zurückgeben muss.
 -- </li>
 -- </ul>
@@ -132,7 +132,7 @@ end
 -- @within BundleKnightTitleRequirements
 -- @local
 --
-function BundleKnightTitleRequirements.Local:Install()    
+function BundleKnightTitleRequirements.Local:Install()
     self:OverwriteTooltips();
     self:InitTexturePositions();
     self:OverwriteUpdateRequirements();
@@ -178,7 +178,7 @@ function BundleKnightTitleRequirements.Local:InitTexturePositions()
     g_TexturePositions.EntityCategories[EntityCategories.Range]                     = { 9, 8};
     g_TexturePositions.EntityCategories[EntityCategories.Melee]                     = { 9, 7};
     g_TexturePositions.EntityCategories[EntityCategories.SiegeEngine]               = { 2,15};
-    
+
     g_TexturePositions.Entities[Entities.B_Outpost]                                 = {12, 3};
     g_TexturePositions.Entities[Entities.B_Outpost_AS]                              = {12, 3};
     g_TexturePositions.Entities[Entities.B_Outpost_ME]                              = {12, 3};
@@ -630,7 +630,7 @@ function BundleKnightTitleRequirements.Local:OverwriteTooltips()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Selected = GUI.GetSelectedEntity();
         local PlayerID = GUI.GetPlayerID();
-    
+
         for k,v in pairs(BundleKnightTitleRequirements.Local.Data.RequirementWidgets) do
             if v .. "/Icon" == XGUIEng.GetWidgetPathByID(CurrentWidgetID) then
                 local key = QSB.RequirementTooltipTypes[k];
@@ -644,7 +644,7 @@ function BundleKnightTitleRequirements.Local:OverwriteTooltips()
         end
         GUI_Tooltip.SetNameAndDescription_Orig_QSB_Requirements(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean);
     end
-    
+
     GUI_Knight.RequiredGoodTooltip = function()
         local key = QSB.RequirementTooltipTypes[2];
         local num = tonumber(string.sub(key, string.len(key)));
@@ -653,7 +653,7 @@ function BundleKnightTitleRequirements.Local:OverwriteTooltips()
         end
         BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(key, num);
     end
-    
+
     if Framework.GetGameExtraNo() ~= 0 then
         BundleKnightTitleRequirements.Local.Data.BuffTypeNames[Buffs.Buff_Gems] = {
             de = "Edelsteine beschaffen", en = "Obtain gems"
@@ -689,7 +689,7 @@ function BundleKnightTitleRequirements.Local:RequirementIcon(_Widget, _Icon)
             if XGUIEng.IsButton(_Widget) == 1 then
                 ButtonState = 7;
             end
-            
+
             local u0, u1, v0, v1;
             u0 = (_Icon[1] - 1) * 64;
             v0 = (_Icon[2] - 1) * 64;
@@ -797,12 +797,12 @@ function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
         local Custom = KnightTitleRequirements[KnightTitle+1].Custom[_i];
         Title = Custom[3];
         Text  = Custom[4];
-        
+
     elseif _key == "Buff" then
         local BuffTypeNames = BundleKnightTitleRequirements.Local.Data.BuffTypeNames;
         local BuffType = KnightTitleRequirements[KnightTitle+1][_key][_i];
         local BuffTitle = BuffTypeNames[BuffType][lang];
-        
+
         if BuffTitle == nil then
             BuffTitle = "ERROR: Name missng!";
         end
@@ -813,7 +813,7 @@ function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
         Title = BundleKnightTitleRequirements.Local.Data.Description[_key].Title;
         Text  = BundleKnightTitleRequirements.Local.Data.Description[_key].Text;
     end
-    
+
     Title = (type(Title) == "table" and Title[lang]) or Title;
     Text  = (type(Text) == "table" and Text[lang]) or Text;
     self:RequirementTooltip(Title, Text);
@@ -876,7 +876,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed number of settlers",
         },
     },
-    
+
     RichBuildings = {
         Title = {
             de = "Reiche Stadtgebäude",
@@ -887,7 +887,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount of rich city buildings",
         },
     },
-    
+
     Goods = {
         Title = {
             de = "Waren lagern",
@@ -898,7 +898,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount",
         },
     },
-    
+
     FullDecoratedBuildings = {
         Title = {
             de = "Dekorierte Stadtgebäude",
@@ -909,7 +909,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Amount of full decoraded city buildings",
         },
     },
-    
+
     DecoratedBuildings = {
         Title = {
             de = "Dekoration",
@@ -920,7 +920,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Amount of decoration goods in settlement",
         },
     },
-    
+
     Headquarters = {
         Title = {
             de = "Burgstufe",
@@ -931,7 +931,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed castle upgrades",
         },
     },
-    
+
     Storehouse = {
         Title = {
             de = "Lagerhausstufe",
@@ -942,7 +942,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed storehouse upgrades",
         },
     },
-    
+
     Cathedrals = {
         Title = {
             de = "Kirchenstufe",
@@ -975,7 +975,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount",
         },
     },
-    
+
     Cattle = {
         Title = {
             de = "Kühe",
@@ -986,7 +986,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount of cattle",
         },
     },
-    
+
     Sheep = {
         Title = {
             de = "Schafe",
@@ -997,7 +997,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount of sheeps",
         },
     },
-    
+
     Outposts = {
         Title = {
             de = "Territorien",
@@ -1008,7 +1008,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Territories to claim",
         },
     },
-    
+
     CityBuilding = {
         Title = {
             de = "Stadtgebäude",
@@ -1019,7 +1019,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount of city buildings",
         },
     },
-    
+
     OuterRimBuilding = {
         Title = {
             de = "Rohstoffgebäude",
@@ -1030,7 +1030,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount of gatherer",
         },
     },
-    
+
     Consume = {
         Title = {
             de = "",
@@ -1041,7 +1041,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Amount to be consumed by the settlers",
         },
     },
-    
+
     Products = {
         Title = {
             de = "",
@@ -1052,7 +1052,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount",
         },
     },
-    
+
     Buff = {
         Title = {
             de = "Bonus aktivieren",
@@ -1063,7 +1063,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Raise the city reputatition with this buff",
         },
     },
-    
+
     Soldiers = {
         Title = {
             de = "Soldaten",
@@ -1074,7 +1074,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Soldiers you need under your command",
         },
     },
-    
+
     Worker = {
         Title = {
             de = "Arbeiter",
@@ -1085,7 +1085,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Workers you need under your reign",
         },
     },
-    
+
     Entities = {
         Title = {
             de = "",
@@ -1096,7 +1096,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed Amount",
         },
     },
-    
+
     Buildings = {
         Title = {
             de = "Gebäude",
@@ -1107,7 +1107,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Amount of buildings",
         },
     },
-    
+
     Weapons = {
         Title = {
             de = "Waffen",
@@ -1118,7 +1118,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount of weapons",
         },
     },
-    
+
     HeavyWeapons = {
         Title = {
             de = "Belagerungsgeräte",
@@ -1129,7 +1129,7 @@ BundleKnightTitleRequirements.Local.Data.Description = {
             en = "- Needed amount of siege engine",
         },
     },
-    
+
     Spouse = {
         Title = {
             de = "Ehefrauen",
@@ -1617,8 +1617,6 @@ end
 -- das Schema für Aufstiegsbedingungen und Rechtevergabe immer beibehalten
 -- werden.
 --
--- TODO: Fehlererkennung muss noch implementiert werden!
---
 -- @within BB-Funktionen
 --
 InitKnightTitleTables = function()
@@ -1869,4 +1867,3 @@ InitKnightTitleTables = function()
     -- Einstellungen Aktivieren
     CreateTechnologyKnightTitleTable()
 end
-

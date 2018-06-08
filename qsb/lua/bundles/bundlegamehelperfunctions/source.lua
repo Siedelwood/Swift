@@ -5,8 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle gibt dem Mapper einige Werkzeuge in die Hand, um einige
--- Features zu gewähren oder zu verwähren.
+-- Dieses Bundle gibt dem Mapper Werkzeuge in die Hand, um einige Features zu
+-- gewähren oder zu entziehen.
 --
 -- @module BundleGameHelperFunctions
 -- @set sort=true
@@ -79,7 +79,7 @@ end
 SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 
 ---
--- Entsperrt einen gesperrten Titel für den Spieler.
+-- Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.
 --
 -- <b>Alias:</b> UnlockTitleForPlayer
 --
@@ -148,14 +148,14 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 -- @param _Limit Obergrenze
 -- @within Public
 --
-function API.SetSpeedLimit(_Limit)
+function API.SpeedLimitSet(_Limit)
     if not GUI then
-        API.Bridge("API.SetSpeedLimit(" .._Limit.. ")");
+        API.Bridge("API.SpeedLimitSet(" .._Limit.. ")");
         return;
     end
     return BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit);
 end
-SetSpeedLimit = API.SetSpeedLimit
+SetSpeedLimit = API.SpeedLimitSet
 
 ---
 -- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
@@ -166,14 +166,14 @@ SetSpeedLimit = API.SetSpeedLimit
 -- @param _Flag Speedbremse ist aktiv
 -- @within Public
 --
-function API.ActivateSpeedLimit(_Flag)
+function API.SpeedLimitActivate(_Flag)
     if GUI then
-        API.Bridge("API.ActivateSpeedLimit(" ..tostring(_Flag).. ")");
+        API.Bridge("API.SpeedLimitActivate(" ..tostring(_Flag).. ")");
         return;
     end
     return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
 end
-ActivateSpeedLimit = API.ActivateSpeedLimit;
+ActivateSpeedLimit = API.SpeedLimitActivate;
 
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
@@ -298,7 +298,7 @@ function API.ForbidFestival(_PlayerID)
         API.Bridge("API.ForbidFestival(".. _PlayerID ..")");
         return;
     end
-    
+
     local KnightTitle = Logic.GetKnightTitle(_PlayerID)
     local Technology = Technologies.R_Festival;
     local State = TechnologyStates.Locked;
@@ -447,16 +447,16 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- @return number: Job-ID
 -- @within Public
 --
-function API.AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
+function API.FollowKnightSaveStart(_Entity, _Knight, _Distance, _Angle)
     if GUI then
         local Target = (type(_Entity) == "string" and "'".._Entity.."'") or _Entity;
         local Knight = (type(_Knight) == "string" and "'".._Knight.."'") or _Knight;
-        API.Bridge("API.StopFollowKnightSave(" ..Target.. ", " ..Knight.. ", " .._Distance.. "," .._Angle.. ")");
+        API.Bridge("API.FollowKnightSaveStart(" ..Target.. ", " ..Knight.. ", " .._Distance.. "," .._Angle.. ")");
         return;
     end
     return BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle);
 end
-AddFollowKnightSave = API.AddFollowKnightSave;
+AddFollowKnightSave = API.FollowKnightSaveStart;
 
 ---
 -- Beendet einen Verfolgungsjob.
@@ -466,19 +466,22 @@ AddFollowKnightSave = API.AddFollowKnightSave;
 -- @param _JobID Job-ID
 -- @within Public
 --
-function API.StopFollowKnightSave(_JobID)
+function API.FollowKnightSaveStop(_JobID)
     if GUI then
-        API.Bridge("API.StopFollowKnightSave(" .._JobID.. ")");
+        API.Bridge("API.FollowKnightSaveStop(" .._JobID.. ")");
         return;
     end
     return BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
 end
 
-StopFollowKnightSave = API.StopFollowKnightSave;
+StopFollowKnightSave = API.FollowKnightSaveStop;
 
 ---
 -- Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
 -- Abstände der Eckpunkte zum Zentralpunkt.
+--
+-- <b>Hinweis:</b> Für weitere Informationen zu Terraintexturen siehe
+-- https://siedelwood-neu.de/23879-2/
 --
 -- <b>Alias:</b> TerrainType
 --
@@ -487,17 +490,20 @@ StopFollowKnightSave = API.StopFollowKnightSave;
 -- @param _TerrainType     Textur ID
 -- @within Public
 --
+-- @usage
+-- API.ChangeTerrainTypeInSquare("area", 500, 48)
+--
 function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
     if GUI then
         local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
         API.Bridge("API.ChangeTerrainTypeInSquare(" ..Target.. ", " .._Offset.. ", " .._TerrainType.. ")");
         return;
     end
-    if not IsExisting(_Center) then 
+    if not IsExisting(_Center) then
         API.Dbg("API.ChangeTerrainTypeInSquare: Central point does not exist!");
         return;
     end
-    if _Offset < 100 then 
+    if _Offset < 100 then
         API.Warn("API.ChangeTerrainTypeInSquare: Check your offset! It seems to small!");
     end
     return BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType);
@@ -506,9 +512,12 @@ TerrainType = API.ChangeTerrainTypeInSquare;
 
 ---
 -- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
--- der Eckpunkte zum WaterHeight.
+-- der Eckpunkte zum Zentrum.
 --
--- <b>Alias:</b> TerrainHeight
+-- Wird die relative Höhe verwendet, wird die Wasserhöhe nicht absolut
+-- gesetzt sondern von der aktuellen Wasserhöhe ausgegangen.
+--
+-- <b>Alias:</b> WaterHeight
 --
 -- @param _Center      Zentralpunkt
 -- @param _Offset      Entfernung der Ecken zum Zentrum
@@ -516,17 +525,20 @@ TerrainType = API.ChangeTerrainTypeInSquare;
 -- @param _Relative    Relative Höhe benutzen
 -- @within Public
 --
+-- @usage
+-- API.ChangeWaterHeightInSquare("area", 500, 5555, true);
+--
 function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
     if GUI then
         local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
         API.Bridge("API.ChangeWaterHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
         return;
     end
-    if not IsExisting(_Center) then 
+    if not IsExisting(_Center) then
         API.Dbg("API.ChangeWaterHeightInSquare: Central point does not exist!");
         return;
     end
-    if _Offset < 100 then 
+    if _Offset < 100 then
         API.Warn("API.ChangeWaterHeightInSquare: Check your offset! It seems to small!");
     end
     return BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative);
@@ -537,6 +549,10 @@ WaterHeight = API.ChangeWaterHeightInSquare;
 -- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
 -- der Eckpunkte zum Zentralpunkt.
 --
+-- Wird die relative Höhe verwendet, wird die Landhöhe nicht absolut
+-- gesetzt sondern von der aktuellen Landhöhe ausgegangen. Das Land muss nicht
+-- eben sein. Auf diese Weise können Strukturen unverändert angehoben werden.
+--
 -- <b>Alias:</b> TerrainHeight
 --
 -- @param _Center      Zentralpunkt
@@ -545,17 +561,20 @@ WaterHeight = API.ChangeWaterHeightInSquare;
 -- @param _Relative    Relative Höhe benutzen
 -- @within Public
 --
+-- @usage
+-- API.ChangeTerrainHeightInSquare("area", 500, 5555, true);
+--
 function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
     if GUI then
         local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
         API.Bridge("API.ChangeTerrainHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
         return;
     end
-    if not IsExisting(_Center) then 
+    if not IsExisting(_Center) then
         API.Dbg("API.ChangeTerrainHeightInSquare: Central point does not exist!");
         return;
     end
-    if _Offset < 100 then 
+    if _Offset < 100 then
         API.Warn("API.ChangeTerrainHeightInSquare: Check your offset! It seems to small!");
     end
     return BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative);
@@ -607,7 +626,7 @@ BundleGameHelperFunctions = {
 function BundleGameHelperFunctions.Global:Install()
     self:InitExtendedZoom();
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
-    
+
     QSB.TimeLine = BundleGameHelperFunctions.Shared.TimeLine;
     TimeLine = QSB.TimeLine;
 end
@@ -1115,7 +1134,7 @@ ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSa
 -- @param _Center          Zentralpunkt
 -- @param _Offset          Entfernung der Ecken zum Zentrum
 -- @param _TerrainType     Textur ID
--- @within Private 
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
@@ -1140,7 +1159,7 @@ end
 -- @param _Offset      Entfernung der Ecken zum Zentrum
 -- @param _Hight       Neue Höhe
 -- @param _Relative    Relative Höhe benutzen
--- @within Private 
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
@@ -1170,7 +1189,7 @@ end
 -- @param _Offset      Entfernung der Ecken zum Zentrum
 -- @param _Hight       Neue Höhe
 -- @param _Relative    Relative Höhe benutzen
--- @within Private 
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
@@ -1212,7 +1231,7 @@ end
 -- @return number: X-Koordinate von Punkt 2
 -- @return number: Y-Koordinate von Punkt 2
 -- @return number: Bodenhöhe
--- @within Private 
+-- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain(_Center, _Offset)
@@ -1591,7 +1610,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+--
 --
 -- @within Private
 -- @local
@@ -1737,4 +1756,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleGameHelperFunctions");
-
