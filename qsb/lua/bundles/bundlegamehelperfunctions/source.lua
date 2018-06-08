@@ -5,8 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle gibt dem Mapper einige Werkzeuge in die Hand, um einige
--- Features zu gewähren oder zu verwähren.
+-- Dieses Bundle gibt dem Mapper Werkzeuge in die Hand, um einige Features zu
+-- gewähren oder zu entziehen.
 --
 -- @module BundleGameHelperFunctions
 -- @set sort=true
@@ -79,8 +79,7 @@ end
 SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 
 ---
--- Entsperrt einen gesperrten Titel für den Spieler, sofern dieser
--- Titel gesperrt wurde.
+-- Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.
 --
 -- <b>Alias:</b> UnlockTitleForPlayer
 --
@@ -149,14 +148,14 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 -- @param _Limit Obergrenze
 -- @within Public
 --
-function API.SetSpeedLimit(_Limit)
+function API.SpeedLimitSet(_Limit)
     if not GUI then
-        API.Bridge("API.SetSpeedLimit(" .._Limit.. ")");
+        API.Bridge("API.SpeedLimitSet(" .._Limit.. ")");
         return;
     end
     return BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit);
 end
-SetSpeedLimit = API.SetSpeedLimit
+SetSpeedLimit = API.SpeedLimitSet
 
 ---
 -- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
@@ -167,14 +166,14 @@ SetSpeedLimit = API.SetSpeedLimit
 -- @param _Flag Speedbremse ist aktiv
 -- @within Public
 --
-function API.ActivateSpeedLimit(_Flag)
+function API.SpeedLimitActivate(_Flag)
     if GUI then
-        API.Bridge("API.ActivateSpeedLimit(" ..tostring(_Flag).. ")");
+        API.Bridge("API.SpeedLimitActivate(" ..tostring(_Flag).. ")");
         return;
     end
     return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
 end
-ActivateSpeedLimit = API.ActivateSpeedLimit;
+ActivateSpeedLimit = API.SpeedLimitActivate;
 
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
@@ -299,7 +298,7 @@ function API.ForbidFestival(_PlayerID)
         API.Bridge("API.ForbidFestival(".. _PlayerID ..")");
         return;
     end
-    
+
     local KnightTitle = Logic.GetKnightTitle(_PlayerID)
     local Technology = Technologies.R_Festival;
     local State = TechnologyStates.Locked;
@@ -439,6 +438,8 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
 -- zurück, der die Verfolgung steuert.
 --
+-- <b>Alias:</b> AddFollowKnightSave
+--
 -- @param _Entity   Entity das folgt
 -- @param _Knight   Held
 -- @param _Distance Entfernung, die uberschritten sein muss
@@ -446,29 +447,139 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- @return number: Job-ID
 -- @within Public
 --
-function API.AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
+function API.FollowKnightSaveStart(_Entity, _Knight, _Distance, _Angle)
     if GUI then
         local Target = (type(_Entity) == "string" and "'".._Entity.."'") or _Entity;
         local Knight = (type(_Knight) == "string" and "'".._Knight.."'") or _Knight;
-        API.Bridge("API.StopFollowKnightSave(" ..Target.. ", " ..Knight.. ", " .._Distance.. "," .._Angle.. ")");
+        API.Bridge("API.FollowKnightSaveStart(" ..Target.. ", " ..Knight.. ", " .._Distance.. "," .._Angle.. ")");
         return;
     end
     return BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle);
 end
+AddFollowKnightSave = API.FollowKnightSaveStart;
 
 ---
 -- Beendet einen Verfolgungsjob.
 --
+-- <b>Alias:</b> StopFollowKnightSave
+--
 -- @param _JobID Job-ID
 -- @within Public
 --
-function API.StopFollowKnightSave(_JobID)
+function API.FollowKnightSaveStop(_JobID)
     if GUI then
-        API.Bridge("API.StopFollowKnightSave(" .._JobID.. ")");
+        API.Bridge("API.FollowKnightSaveStop(" .._JobID.. ")");
         return;
     end
     return BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
 end
+
+StopFollowKnightSave = API.FollowKnightSaveStop;
+
+---
+-- Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
+-- Abstände der Eckpunkte zum Zentralpunkt.
+--
+-- <b>Hinweis:</b> Für weitere Informationen zu Terraintexturen siehe
+-- https://siedelwood-neu.de/23879-2/
+--
+-- <b>Alias:</b> TerrainType
+--
+-- @param _Center          Zentralpunkt
+-- @param _Offset          Entfernung der Ecken zum Zentrum
+-- @param _TerrainType     Textur ID
+-- @within Public
+--
+-- @usage
+-- API.ChangeTerrainTypeInSquare("area", 500, 48)
+--
+function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
+    if GUI then
+        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
+        API.Bridge("API.ChangeTerrainTypeInSquare(" ..Target.. ", " .._Offset.. ", " .._TerrainType.. ")");
+        return;
+    end
+    if not IsExisting(_Center) then
+        API.Dbg("API.ChangeTerrainTypeInSquare: Central point does not exist!");
+        return;
+    end
+    if _Offset < 100 then
+        API.Warn("API.ChangeTerrainTypeInSquare: Check your offset! It seems to small!");
+    end
+    return BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType);
+end
+TerrainType = API.ChangeTerrainTypeInSquare;
+
+---
+-- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
+-- der Eckpunkte zum Zentrum.
+--
+-- Wird die relative Höhe verwendet, wird die Wasserhöhe nicht absolut
+-- gesetzt sondern von der aktuellen Wasserhöhe ausgegangen.
+--
+-- <b>Alias:</b> WaterHeight
+--
+-- @param _Center      Zentralpunkt
+-- @param _Offset      Entfernung der Ecken zum Zentrum
+-- @param _Hight       Neue Höhe
+-- @param _Relative    Relative Höhe benutzen
+-- @within Public
+--
+-- @usage
+-- API.ChangeWaterHeightInSquare("area", 500, 5555, true);
+--
+function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
+    if GUI then
+        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
+        API.Bridge("API.ChangeWaterHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
+        return;
+    end
+    if not IsExisting(_Center) then
+        API.Dbg("API.ChangeWaterHeightInSquare: Central point does not exist!");
+        return;
+    end
+    if _Offset < 100 then
+        API.Warn("API.ChangeWaterHeightInSquare: Check your offset! It seems to small!");
+    end
+    return BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative);
+end
+WaterHeight = API.ChangeWaterHeightInSquare;
+
+---
+-- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
+-- der Eckpunkte zum Zentralpunkt.
+--
+-- Wird die relative Höhe verwendet, wird die Landhöhe nicht absolut
+-- gesetzt sondern von der aktuellen Landhöhe ausgegangen. Das Land muss nicht
+-- eben sein. Auf diese Weise können Strukturen unverändert angehoben werden.
+--
+-- <b>Alias:</b> TerrainHeight
+--
+-- @param _Center      Zentralpunkt
+-- @param _Offset      Entfernung der Ecken zum Zentrum
+-- @param _Hight       Neue Höhe
+-- @param _Relative    Relative Höhe benutzen
+-- @within Public
+--
+-- @usage
+-- API.ChangeTerrainHeightInSquare("area", 500, 5555, true);
+--
+function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
+    if GUI then
+        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
+        API.Bridge("API.ChangeTerrainHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
+        return;
+    end
+    if not IsExisting(_Center) then
+        API.Dbg("API.ChangeTerrainHeightInSquare: Central point does not exist!");
+        return;
+    end
+    if _Offset < 100 then
+        API.Warn("API.ChangeTerrainHeightInSquare: Check your offset! It seems to small!");
+    end
+    return BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative);
+end
+TerrainHeight = API.ChangeTerrainHeightInSquare;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -495,10 +606,12 @@ BundleGameHelperFunctions = {
         }
     },
     Shared = {
-        Data = {
-            TimeLineUniqueJobID = 1,
-            TimeLineJobs = {},
-        },
+        TimeLine = {
+            Data = {
+                TimeLineUniqueJobID = 1,
+                TimeLineJobs = {},
+            }
+        }
     }
 }
 
@@ -513,7 +626,9 @@ BundleGameHelperFunctions = {
 function BundleGameHelperFunctions.Global:Install()
     self:InitExtendedZoom();
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
-    QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
+
+    QSB.TimeLine = BundleGameHelperFunctions.Shared.TimeLine;
+    TimeLine = QSB.TimeLine;
 end
 
 ---
@@ -592,8 +707,7 @@ function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State
 end
 
 ---
--- Entsperrt einen gesperrten Titel für den Spieler, sofern dieser
--- Titel gesperrt wurde.
+-- Entsperrt einen gesperrten Titel für den Spieler.
 --
 -- @param _PlayerID    Zielpartei
 -- @param _KnightTitle Titel zum Entsperren
@@ -1015,6 +1129,132 @@ ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSa
 -- -------------------------------------------------------------------------- --
 
 ---
+-- Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
+-- Abstände der Eckpunkte zum Zentralpunkt.
+-- @param _Center          Zentralpunkt
+-- @param _Offset          Entfernung der Ecken zum Zentrum
+-- @param _TerrainType     Textur ID
+-- @within Private
+-- @local
+--
+function BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
+    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
+    if Xmin == -1 or Xmin == -2 then
+        return Xmin;
+    end
+    if type(_TerrainType) == "number" then
+        for x10 = Xmin, Xmax do
+            for y10 = Ymin, Ymax do
+                Logic.SetTerrainNodeType( x10, y10, _TerrainType );
+            end
+        end
+    end
+    Logic.UpdateBlocking( x11, y11, x12, y12);
+end
+
+---
+-- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
+-- der Eckpunkte zum Zentralpunkt.
+-- @param _Center      Zentralpunkt
+-- @param _Offset      Entfernung der Ecken zum Zentrum
+-- @param _Hight       Neue Höhe
+-- @param _Relative    Relative Höhe benutzen
+-- @within Private
+-- @local
+--
+function BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
+    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
+    if Xmin == -1 or Xmin == -2 then
+        return Xmin;
+    end
+    if not _Relative then
+        if _Height < 0 then
+            return -3;
+        end
+        Logic.WaterSetAbsoluteHeight(Xmin, Ymin, Xmax, Ymax, _Height);
+    else
+        if z+_Height < 0 then
+            return -3;
+        end
+        Logic.WaterSetAbsoluteHeight(Xmin, Ymin, Xmax, Ymax, z+_Height);
+    end
+    Logic.UpdateBlocking(Xmin, Ymin, Xmax, Ymax);
+    return 0;
+end
+
+---
+-- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
+-- der Eckpunkte zum Zentralpunkt.
+-- @param _Center      Zentralpunkt
+-- @param _Offset      Entfernung der Ecken zum Zentrum
+-- @param _Hight       Neue Höhe
+-- @param _Relative    Relative Höhe benutzen
+-- @within Private
+-- @local
+--
+function BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
+    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
+    if Xmin == -1 or Xmin == -2 then
+        return Xmin;
+    end
+    local Height;
+    if not _Relative then
+        if _Height < 0 then
+            return -3;
+        end
+        Height = _Height;
+    else
+        if z+_Height < 0 then
+            return -3;
+        end
+        Height = z+_Height;
+    end
+
+    for x10 = Xmin, Xmax do
+        for y10 = Ymin, Ymax do
+            Logic.SetTerrainNodeHeight(x10, y10, Height);
+        end
+    end
+    Logic.UpdateBlocking(Xmin, Ymin, Xmax, Ymax);
+    return 0;
+end
+
+---
+-- Gibt ein Quadrat für Land- und Wassermanipulation zurück.
+--
+-- Wird verwendet von: WaterHeight, TerrainHeight, TerrainType
+--
+-- @param _Center Zentralpunkt des Quadrat
+-- @param _Offset Abstand der Ecken zum Zentrum
+-- @return number: X-Koordinate von Punkt 1
+-- @return number: Y-Koordinate von Punkt 1
+-- @return number: X-Koordinate von Punkt 2
+-- @return number: Y-Koordinate von Punkt 2
+-- @return number: Bodenhöhe
+-- @within Private
+-- @local
+--
+function BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain(_Center, _Offset)
+    local Type = type(_Center);
+    if (Type ~= "string" and Type ~= "number") or not IsExisting(_Center) then
+        return -1;
+    end
+    local Xmin, Ymin, Xmax, Ymax;
+    local eID = GetID(_Center);
+    local x,y,z = Logic.EntityGetPos(eID);
+    Xmin = math.floor((x - _Offset)/100);
+    Ymin = math.floor((y - _Offset)/100);
+    Xmax = math.floor((x + _Offset)/100);
+    Ymax = math.floor((y + _Offset)/100);
+    if IsValidPosition({X= Xmin, Y= Ymin}) == false or IsValidPosition({X= Xmax, Y= Ymax}) == false then
+        return -2;
+    end
+    return Xmin, Ymin, Xmax, Ymax, z;
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
 -- Stellt nicht-persistente Änderungen nach dem laden wieder her.
 --
 -- @within Private
@@ -1065,7 +1305,8 @@ function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSaveGame();
     self:InitForbidFestival();
 
-    QSB.TimeLineStart = BundleGameHelperFunctions.Shared.TimeLineStart;
+    QSB.TimeLine = BundleGameHelperFunctions.Shared.TimeLine;
+    TimeLine = QSB.TimeLine;
 end
 
 ---
@@ -1369,7 +1610,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+--
 --
 -- @within Private
 -- @local
@@ -1392,13 +1633,14 @@ end
 -- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
 -- an denen eine Aktion ausgeführt wird.
 --
--- <b>Alias:</b> QSB.TimeLineStart:TimeLineStart
+-- <b>Alias:</b> QSB.TimeLine:Start
+-- <b>Alias:</b> TimeLine:Start
 --
 -- @param _description     Beschreibung
 -- @return number
 -- @within QSB.TimeLine
 --
-function BundleGameHelperFunctions.Shared:TimeLineStart(_description)
+function BundleGameHelperFunctions.Shared.TimeLine:Start(_description)
     local JobID = self.Data.TimeLineUniqueJobID;
     self.Data.TimeLineUniqueJobID = JobID +1;
 
@@ -1417,7 +1659,7 @@ function BundleGameHelperFunctions.Shared:TimeLineStart(_description)
 
     self.Data.TimeLineJobs[JobID] = _description;
     if not self.Data.ControlerID then
-        local Controler = StartSimpleJobEx( BundleGameHelperFunctions.Shared.TimeLineControler );
+        local Controler = StartSimpleJobEx( BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler );
         self.Data.ControlerID = Controler;
     end
     return JobID;
@@ -1427,12 +1669,13 @@ end
 -- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
 -- beendet, beginnt er dennoch von vorn.
 --
--- <b>Alias:</b> QSB.TimeLineStart:TimeLineRestart
+-- <b>Alias:</b> QSB.TimeLine:Restart
+-- <b>Alias:</b> TimeLine:Restart
 --
 -- @param _ID  ID des Zeitstrahl
 -- @within QSB.TimeLine
 --
-function BundleGameHelperFunctions.Shared:TimeLineRestart(_ID)
+function BundleGameHelperFunctions.Shared.TimeLine:Restart(_ID)
     if not self.Data.TimeLineJobs[_ID] then
         return;
     end
@@ -1444,13 +1687,14 @@ end
 ---
 -- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
 --
--- <b>Alias:</b> QSB.TimeLineStart:TimeLineIsRunning
+-- <b>Alias:</b> QSB.TimeLine:IsRunning
+-- <b>Alias:</b> TimeLine:IsRunning
 --
 -- @param _ID  ID des Zeitstrahl
 -- @return boolean
 -- @within QSB.TimeLine
 --
-function BundleGameHelperFunctions.Shared:TimeLineIsRunning(_ID)
+function BundleGameHelperFunctions.Shared.TimeLine:IsRunning(_ID)
     if self.Data.TimeLineJobs[_ID] then
         return self.Data.TimeLineJobs[_ID].Running == true;
     end
@@ -1460,12 +1704,13 @@ end
 ---
 -- Hält einen Zeitstrahl an.
 --
--- <b>Alias:</b> QSB.TimeLineStart:TimeLineYield
+-- <b>Alias:</b> QSB.TimeLine:Yield
+-- <b>Alias:</b> TimeLine:Yield
 --
 -- @param _ID  ID des Zeitstrahl
 -- @within QSB.TimeLine
 --
-function BundleGameHelperFunctions.Shared:TimeLineYield(_ID)
+function BundleGameHelperFunctions.Shared.TimeLine:Yield(_ID)
     if not self.Data.TimeLineJobs[_ID] then
         return;
     end
@@ -1475,12 +1720,13 @@ end
 ---
 -- Stößt einen angehaltenen Zeitstrahl wieder an.
 --
--- <b>Alias:</b> QSB.TimeLineStart:TimeLineResume
+-- <b>Alias:</b> QSB.TimeLine:Resume
+-- <b>Alias:</b> TimeLine:Resume
 --
 -- @param _ID  ID des Zeitstrahl
 -- @within QSB.TimeLine
 --
-function BundleGameHelperFunctions.Shared:TimeLineResume(_ID)
+function BundleGameHelperFunctions.Shared.TimeLine:Resume(_ID)
     if not self.Data.TimeLineJobs[_ID] then
         return;
     end
@@ -1492,16 +1738,16 @@ end
 -- @within QSB.TimeLine
 -- @local
 --
-function BundleGameHelperFunctions.Shared.TimeLineControler()
-    for k,v in pairs(BundleGameHelperFunctions.Shared.Data.Jobs) do
+function BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler()
+    for k,v in pairs(BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs) do
         if v.Iterator > #v then
-            BundleGameHelperFunctions.Shared.Data.Jobs[k].Running = false;
+            BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs[k].Running = false;
         end
 
         if v.Running then
             if (v[v.Iterator].Time + v.StartTime) <= Logic.GetTime() then
                 v[v.Iterator].Action(v[v.Iterator]);
-                BundleGameHelperFunctions.Shared.Data.Jobs[k].Iterator = v.Iterator +1;
+                BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs[k].Iterator = v.Iterator +1;
             end
         end
     end
@@ -1510,4 +1756,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleGameHelperFunctions");
-

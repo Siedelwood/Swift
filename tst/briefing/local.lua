@@ -13,8 +13,9 @@ end
 -- Wird zum Spielstart einmalig aufgerufen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_LocalOnMapStart()
-    Script.Load("E:/Repositories/symfonia/test/briefing/qsb.lua")
-    API.Install()
+    local Path = "E:/Repositories/symfonia/qsb/lua";
+    Script.Load(Path .. "/loader.lua");
+    SymfoniaLoader:Load(Path);
 end
 
 

@@ -16,7 +16,5 @@ cd ../../qsb
 
 echo "Generating Documentation ..."
 lua ldoc/ldoc.lua --dir ../var/doc lua &>/dev/null
-echo "Done!"
-
 cd ..
-echo "Please enjoy the product!"
+echo "Done!"

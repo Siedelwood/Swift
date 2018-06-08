@@ -6,12 +6,12 @@
 
 ---
 -- Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert
--- werden kann. Diese Interaktion geschieht über einen Button. Ziel dieses 
+-- werden kann. Diese Interaktion geschieht über einen Button. Ziel dieses
 -- Bundels ist es, die funktionalität von interaktiven Objekten zu erweitern.
 -- Es ist möglich, beliebige Objekte zu interaktiven Objekten zu machen.
 --
--- Die Einsatzmöglichkeiten sind vielfältig. Wenn ein Gegenstand oder ein 
--- Objekt mit einer Funktion versehen ist, kann dies in versiedenem Kontext
+-- Die Einsatzmöglichkeiten sind vielfältig. Wenn ein Gegenstand oder ein
+-- Objekt mit einer Funktion versehen ist, kann dies in verschiedenem Kontext
 -- an die Geschichte angepasst werden: z.B. Helbel öffnen eine Geheimtür,
 -- ein Gegenstand wird vom Helden aufgehoben, ein Marktstand, der etwas
 -- verkauft, ....
@@ -59,7 +59,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 ---
 -- Erzeugt ein interaktives Objekt.
 --
--- Die Parameter des interaktiven Objektes werden durch seine Beschreibung 
+-- Die Parameter des interaktiven Objektes werden durch seine Beschreibung
 -- festgelegt. Die Beschreibung ist eine Table, die bestimmte Werte für das
 -- Objekt beinhaltet. Dabei müssen nicht immer alle Werte angegeben werden.
 --
@@ -99,7 +99,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 -- </tr>
 -- <tr>
 -- <td>Waittime</td>
--- <td>Die Zeit, die ein Held benötigt, um das Objekt zu aktivieren. Die 
+-- <td>Die Zeit, die ein Held benötigt, um das Objekt zu aktivieren. Die
 -- Wartezeit ist nur für I_X_ Entities verfügbar.</td>
 -- <td>ja</td>
 -- </tr>
@@ -136,7 +136,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 -- </tr>
 -- <tr>
 -- <td>WrongKnight</td>
--- <td>Nachricht, die angezeigt wird, wenn der falsche Held das Objekt 
+-- <td>Nachricht, die angezeigt wird, wenn der falsche Held das Objekt
 -- aktivieren will.</td>
 -- <td>ja</td>
 -- </table>
@@ -153,7 +153,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 -- @usage
 -- -- Ein einfaches Objekt erstellen:
 -- CreateObject {
---     Name		= "hut",
+--     Name     = "hut",
 --     Distance = 1500,
 --     Callback = function(_Data)
 --         API.Note("Do something...");
@@ -200,7 +200,7 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 -- Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
 -- Held das Objekt aktivieren.
--- 
+--
 -- <b>Alias</b>: InteractiveObjectActivate
 --
 -- @param _EntityName Skriptname des Objektes
@@ -216,7 +216,7 @@ function API.InteractiveObjectActivate(_EntityName, _State)
         API.Warn("API.InteractiveObjectActivate: Entity \"" .._EntityName.. "\" is invalid!");
         return;
     end
-    
+
     if not Logic.IsInteractiveObject(GetID(_EntityName)) then
         if IO[_EntityName] then
             IO[_EntityName].Inactive = false;
@@ -229,9 +229,9 @@ end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
 
 ---
--- Deaktiviert ein interaktives Objekt, sodass es nicht mehr vom Spieler 
+-- Deaktiviert ein interaktives Objekt, sodass es nicht mehr vom Spieler
 -- benutzt werden kann.
--- 
+--
 -- <b>Alias</b>: InteractiveObjectDeactivate
 --
 -- @param _EntityName Scriptname des Objektes
@@ -246,7 +246,7 @@ function API.InteractiveObjectDeactivate(_EntityName)
         API.Warn("API.InteractiveObjectDeactivate: Entity \"" .._EntityName.. "\" is invalid!");
         return;
     end
-    
+
     if not Logic.IsInteractiveObject(GetID(_EntityName)) then
         if IO[_EntityName] then
             IO[_EntityName].Inactive = true;
@@ -268,6 +268,10 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- @param _Key  Typname des Entity
 -- @param _Text Text der Beschriftung
 -- @within Public
+--
+-- @usage
+-- API.AddCustomIOName("D_X_ChestClosed", "Schatztruhe");
+-- API.AddCustomIOName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
 function API.AddCustomIOName(_Key, _Text)
     if type(_Text == "table") then
@@ -532,7 +536,7 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
 end
 
 ---
--- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt 
+-- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt
 -- ist und erlaubt die Benutzung.
 --
 -- @within Private
@@ -1040,7 +1044,7 @@ function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)
             if XGUIEng.IsButton(_Widget) == 1 then
                 ButtonState = 7;
             end
-            
+
             local u0, u1, v0, v1;
             u0 = (_Icon[1] - 1) * 64;
             v0 = (_Icon[2] - 1) * 64;
@@ -1070,4 +1074,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleInteractiveObjects");
-

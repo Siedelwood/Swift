@@ -7,7 +7,7 @@
 ---
 -- Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere
 -- Funktionen. Es ist bspw. möglich ungenutzte Schalter frei zu programmieren.
--- 
+--
 -- Bekannte Funktionen, wie die Aufzucht von Tieren, das Anhalten der Produktion
 -- in einzelnen Gebäuden und der Abriss einzelner Gebäudestufen sind natürlich
 -- im Standard dabei.
@@ -25,7 +25,7 @@ QSB = QSB or {};
 
 ---
 -- Aktiviert die Single Stop Buttons. Single Stop ermöglicht das Anhalten
--- eines einzelnen Betriebes, anstelle des Anhaltens aller Betriebe des 
+-- eines einzelnen Betriebes, anstelle des Anhaltens aller Betriebe des
 -- gleichen Typs.
 --
 -- Im Gegensatz zur Viehzucht und zum Rückbau, welche feste eigeständige
@@ -71,7 +71,7 @@ DeactivateSingleStop = API.DeactivateSingleStop;
 ---
 -- Verwende Downgrade bei Stadt- und Rohstoffgebäuden. Die Rückbaufunktion
 -- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
--- jeweils eine Stufe zu zerstören. Der Überflüssige Arbeiter wird entlassen.
+-- jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
 --
 -- <b>Alias:</b> UseDowngrade
 --
@@ -196,14 +196,14 @@ end
 SetCattleGrainCost = API.SetCattleGrainCost;
 
 ---
--- Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.
+-- Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
 --
 -- <b>Alias:</b> SetSheepNeeded
 --
 -- @param _Amount Benötigte Menge
 -- @within Public
 --
--- @usage 
+-- @usage
 -- -- Es wird ein volles Gatter zur Zucht benötigt:
 -- API.SetSheepNeeded(5);
 --
@@ -220,14 +220,14 @@ end
 SetSheepNeeded = API.SetSheepNeeded;
 
 ---
--- Setzt die zur Zucht Menge an benötigten Tieren in einem Gatter.
+-- Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
 --
 -- <b>Alias:</b> SetCattleNeeded
 --
 -- @param _Amount Benötigte Menge
 -- @within Public
 --
--- @usage 
+-- @usage
 -- -- Es werden keine Kühe zur Zucht benötigt:
 -- API.SetCattleNeeded(0);
 --
@@ -247,13 +247,13 @@ SetCattleNeeded = API.SetCattleNeeded;
 -- Fügt einen optionalen Gebäudeschalter hinzu. Der Index bestimmt, welcher
 -- der beiden möglichen Buttons verwendet wird.
 --
--- Mit dieser Funktion können zwei ungenutzte Buttons im Gebäudemenu mit einer 
+-- Mit dieser Funktion können zwei ungenutzte Buttons im Gebäudemenu mit einer
 -- Funktionalität versehen werden. Es obliegt dem Mapper für welche Gebäude
--- der Button angezeigt wird und welche Funktion er hat. Es ist nicht möglich 
+-- der Button angezeigt wird und welche Funktion er hat. Es ist nicht möglich
 -- Kosten im Tooltip anzuzeigen.
 --
--- Jeder Button kann immer nur mit einer Aktion versehen werden. Soll die 
--- Aktion für verschiedene Gebäudetypen unterschiedlich sein, muss in der 
+-- Jeder Button kann immer nur mit einer Aktion versehen werden. Soll die
+-- Aktion für verschiedene Gebäudetypen unterschiedlich sein, muss in der
 -- Aktion eine Fallunterscheidung durchgeführt werden.
 --
 -- Ein optionaler Button benötigt immer drei Funktionen:
@@ -278,20 +278,20 @@ SetCattleNeeded = API.SetCattleNeeded;
 -- @within Public
 --
 -- @usage
--- -- Aktion 
+-- -- Aktion
 -- function ExampleButtonAction(_WidgetID, _BuildingID)
 --     GUI.AddNote("Hier passiert etwas!");
 -- end
--- -- Tooltip 
+-- -- Tooltip
 -- function ExampleButtonTooltip(_WidgetID, _BuildingID)
 --     UserSetTextNormal("Beschreibung", "Das ist die Beschreibung!");
 -- end
--- -- Update 
+-- -- Update
 -- function ExampleButtonUpdate(_WidgetID, _BuildingID)
 --     SetIcon(_WidgetID, {1, 1});
 -- end
 --
--- -- Beispiel für einen einfachen Button, der immer angezeigt wird, das Bild 
+-- -- Beispiel für einen einfachen Button, der immer angezeigt wird, das Bild
 -- -- eines Apfels trägt und eine Nachricht anzeigt.
 -- API.AddCustomBuildingButton(1, ExampleButtonAction, ExampleButtonTooltip, ExampleButtonUpdate);
 --
@@ -318,13 +318,13 @@ AddBuildingButton = API.AddCustomBuildingButton;
 -- Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.
 --
 -- <b>Alias:</b> DeleteBuildingButton
--- 
+--
 -- @param _Index   Index des Buttons
 -- @within Public
 --
 -- @usage
 -- -- Entfernt die Konfiguration für Button 1
--- API.RemoveCustomBuildingButton(1);;
+-- API.RemoveCustomBuildingButton(1);
 --
 function API.RemoveCustomBuildingButton(_Index)
     if not GUI then
@@ -440,10 +440,10 @@ end
 --
 function BundleBuildingButtons.Local:Install()
     MerchantSystem.BasePricesOrigBundleBuildingButtons                = {};
-    
+
     MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
     MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
-    
+
     MerchantSystem.BasePrices[Goods.G_Sheep] = BundleBuildingButtons.Local.Data.SheepMoneyCost;
     MerchantSystem.BasePrices[Goods.G_Cow]   = BundleBuildingButtons.Local.Data.CattleMoneyCost;
 
@@ -971,7 +971,7 @@ function BundleBuildingButtons.Local:HouseMenuIcon(_Widget, _Icon)
             if XGUIEng.IsButton(_Widget) == 1 then
                 ButtonState = 7;
             end
-            
+
             local u0, u1, v0, v1;
             u0 = (_Coordinates[1] - 1) * 64;
             v0 = (_Coordinates[2] - 1) * 64;
@@ -1140,4 +1140,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleBuildingButtons");
-

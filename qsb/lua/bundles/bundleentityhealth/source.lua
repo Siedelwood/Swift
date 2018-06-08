@@ -216,6 +216,10 @@ function BundleEntityHealth.Global.EntityHurtEntityController()
     end
 end
 
+function BundleEntityHealth.Global.EntityDestroyedController()
+    -- FIXME: Implement me! :(
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---

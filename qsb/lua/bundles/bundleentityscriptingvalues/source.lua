@@ -5,7 +5,7 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle ermöglicht die Manipulation einer Entität direkt im 
+-- Dieses Bundle ermöglicht die Manipulation einer Entität direkt im
 -- Arbeitsspeicher.
 --
 -- @module BundleEntityScriptingValues
@@ -22,21 +22,26 @@ QSB = QSB or {};
 ---
 -- Gibt den Größenfaktor des Entity zurück.
 --
+-- Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
+--
 -- <b>Alias</b>: GetScale
 --
 -- @param _Entity Entity
 -- @return Größenfaktor
 -- @within Public
 --
-function API.GetScale(_Entity)
+-- @usage
+-- local Scale = API.GetEntityScale("alandra")
+--
+function API.GetEntityScale(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.GetScale: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.GetEntityScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return BundleEntityScriptingValues:GetEntitySize(_Entity);
 end
-GetScale = API.GetScale;
+GetScale = API.GetEntityScale;
 
 ---
 -- Gibt den Besitzer des Entity zurück.
@@ -47,24 +52,34 @@ GetScale = API.GetScale;
 -- @return Besitzer
 -- @within Public
 --
-function API.GetPlayer(_Entity)
+function API.GetEntityPlayer(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.GetPlayer: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return BundleEntityScriptingValues:GetPlayerID(_entity);
 end
-AGetPlayer = API.GetPlayer;
+GetPlayer = API.GetEntityPlayer;
 
 ---
 -- Gibt die Position zurück, zu der sich das Entity bewegt.
+--
+-- Über diese Koordinaten könnte man prüfen, ob ein Entity sich in einen
+-- Bereich bewegt, in dem es nichts zu suchen hat.
 --
 -- <b>Alias</b>: GetMovingTarget
 --
 -- @param _Entity Entity
 -- @return Positionstabelle
 -- @within Public
+--
+-- @usage
+-- local Destination = API.GetMovingTarget("hakim");
+-- if GetDistance(Destination, "LockedArea") < 2000 then
+--     local x,y,z = Logic.EntityGetPos(GetID("hakim"));
+--     Logic.DEBUG_SetSettlerPosition(GetID("hakim"), x, y):
+-- end
 --
 function API.GetMovingTarget(_Entity)
     if not IsExisting(_Entity) then
@@ -79,21 +94,29 @@ GetMovingTarget = API.GetMovingTarget;
 ---
 -- Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
 --
+-- Auf diese Weise kann geprüft werden, ob ein NPC auf dem Entity aktiv ist.
+--
 -- <b>Alias</b>: IsNpc
 --
 -- @param _Entity Entity
 -- @return Ist NPC
 -- @within Public
 --
-function API.IsNpc(_Entity)
+-- @usage
+-- local Active = API.IsEntityNpc("alandra");
+-- if Active then
+--     API.Note("NPC is active");
+-- end
+--
+function API.IsEntityNpc(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsNpc: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.IsEntityNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues:IsOnScreenInformationActive(_Entity);
 end
-IsNpc = API.IsNpc;
+IsNpc = API.IsEntityNpc;
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
@@ -104,15 +127,15 @@ IsNpc = API.IsNpc;
 -- @return Ist sichtbar
 -- @within Public
 --
-function API.IsVisible(_Entity)
+function API.IsEntityVisible(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsVisible: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues:IsEntityVisible(_Entity);
 end
-IsVisible = API.IsVisible;
+IsVisible = API.IsEntityVisible;
 
 ---
 -- Setzt den Größenfaktor des Entity.
@@ -126,19 +149,19 @@ IsVisible = API.IsVisible;
 -- @param _Scale  Größenfaktor
 -- @within Public
 --
-function API.SetScale(_Entity, _Scale)
+function API.SetEntityScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.SetScale: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.SetEntityScale: Target " ..Subject.. " is invalid!");
         return;
     end
     if type(_Scale) ~= "number" then
-        API.Dbg("API.SetScale: Scale must be a number!");
+        API.Dbg("API.SetEntityScale: Scale must be a number!");
         return;
     end
     return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
 end
-SetScale = API.SetScale;
+SetScale = API.SetEntityScale;
 
 ---
 -- Ändert den Besitzer des Entity.
@@ -152,19 +175,19 @@ SetScale = API.SetScale;
 -- @param _PlayerID Besitzer
 -- @within Public
 --
-function API.SetPlayer(_Entity, _PlayerID)
+function API.SetEntityPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.SetPlayer: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.SetEntityPlayer: Target " ..Subject.. " is invalid!");
         return;
     end
     if type(_PlayerID) ~= "number" or _PlayerID <= 0 or _PlayerID > 8 then
-        API.Dbg("API.SetPlayer: Player-ID must between 0 and 8!");
+        API.Dbg("API.SetEntityPlayer: Player-ID must between 0 and 8!");
         return;
     end
     return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
 end
-ChangePlayer = API.SetPlayer;
+ChangePlayer = API.SetEntityPlayer;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -214,7 +237,7 @@ end
 -- @param _PlayerID Neuer Besitzer
 -- @within Private
 -- @local
--- 
+--
 function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
     local EntityID = GetID(_entity);
     Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
@@ -447,4 +470,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleEntityScriptingValues");
-

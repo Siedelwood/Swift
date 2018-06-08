@@ -5,12 +5,13 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ermöglicht es Briefings und Cutscenes zu verwenden.
+-- Ermöglicht es Briefings und Fake-Cutscenes zu verwenden.
 --
 -- Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
 -- der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
 -- Antwortmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
--- oder Menüstrukturen abgebildet werden.
+-- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiden
+-- kann innerhalb des Multiple Choice Briefings navigiert werden.
 --
 -- Cutscenes dürfen kein Multiple Choice enthalten und werden immer nur ganz
 -- abgespielt oder abgebrochen. Das Überspringen einzelner Seiten ist nicht
@@ -19,10 +20,10 @@
 -- der Handlung eingesetzt werden.
 --
 -- Splashscreens stehen sowohl in Briefings als auch in Cutscenes zuer Verfügung
--- und bieten die Möglichkeit Bildschirmfüllende Grafiken zu verwenden. Diese 
+-- und bieten die Möglichkeit, Bildschirmfüllende Grafiken zu verwenden. Diese
 -- Grafiken können auch größer als eine Bildschirmfläche sein. Für diesen
--- Fall kann über die Angabe von UV-Koordinaten zu einem Teil gesprungen oder
--- geflogen werden.
+-- Fall kann über die Angabe von UV-Koordinaten zu einem bestimmten Abschnitt
+-- der Grafik gesprungen oder geflogen werden.
 --
 -- @module BundleBriefingSystem
 -- @set sort=true
@@ -36,7 +37,8 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Setzt den Zustand von Quest Timern während biefings.
+-- Setzt den Zustand von Quest Timern währenddessen ein Biefings oder eine
+-- Fake-Cutscene aktiv ist.
 --
 -- Während eines Briefings vergeht generell keine Zeit. Folglich ist der
 -- Niederlage Timer generell inaktiv. Werden Quests während Briefings nicht
@@ -57,7 +59,7 @@ end
 PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 
 ---
--- Prüft, ob ein Briefing abgespielt wurde (beendet ist).
+-- Prüft, ob das Briefing mit der angegebenen ID abgespielt wurde (beendet ist).
 --
 -- <b>Alias</b>: IsBriefingFinished
 --
@@ -86,17 +88,17 @@ IsBriefingFinished = API.IsBriefingFinished;
 -- @return number: Gewählte Antwort
 -- @within Public
 --
-function API.MCGetSelectedAnswer(_page)
+function API.GetSelectedAnswerFromMCPage(_page)
     if GUI then
-        API.Dbg("API.MCGetSelectedAnswer: Can only be used in the global script!");
+        API.Dbg("API.GetSelectedAnswerFromMCPage: Can only be used in the global script!");
         return;
     end
     return BundleBriefingSystem.Global:MCGetSelectedAnswer(_page);
 end
-MCGetSelectedAnswer = API.MCGetSelectedAnswer;
+MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 
 ---
--- Gibt die Seite im aktuellen Briefing zurück.
+-- Gibt die definition der Seite im aktuellen Briefing zurück.
 --
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
@@ -139,18 +141,36 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 -- <b>Alias</b>: AddPages
 --
--- @param _briefing Quest Timer pausiert
+-- @param _Briefing Briefing
 -- @return function(3): AP, ASP, ASMC
 -- @within Public
 --
-function API.AddPages(_briefing)
+function API.AddPages(_Briefing)
     if GUI then
         API.Dbg("API.AddPages: Can only be used in the global script!");
         return;
     end
-    return BundleBriefingSystem.Global:AddPages(_briefing);
+    return BundleBriefingSystem.Global:AddPages(_Briefing);
 end
 AddPages = API.AddPages;
+
+---
+-- Initalisiert die Flight-Funktionen für die übergebene Fake-Cutscene.
+--
+-- <b>Alias</b>: AddPages
+--
+-- @param _Cutscene Cutscene
+-- @return function(3): AF, ASF
+-- @within Public
+--
+function API.AddFlights(_Cutscene)
+    if GUI then
+        API.Dbg("API.AddFlights: Can only be used in the global script!");
+        return;
+    end
+    return BundleBriefingSystem.Global:AddFlights(_Cutscene);
+end
+AddFlights = API.AddFlights;
 
 ---
 -- Schreibt während eines Briefings eine zusätzliche Textnachricht auf den
@@ -175,6 +195,198 @@ function API.AddBriefingNote(_Text, _Duration)
     return BriefingSystem.PushInformationText(_Text, (_Duration * 10));
 end
 BriefingMessage = API.AddBriefingNote;
+
+-- -------------------------------------------------------------------------- --
+-- Dummy-Space                                                                --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.
+--
+-- <b>Normale Seite</b>
+-- Die üblichen Parameter können angegeben werden. Beispiele sind zoom, text,
+-- oder action. Zusätzlich hinzugekommen sind lookAt und zOffset. Mittels
+-- lookAt kann die Kamera zum Angesicht eines Siedlers ausgerichtet werden.
+-- zOffset ermöglicht die Nutzung der Z-Achse.
+--
+-- <b>Multiple Choice, Sprünge und Leerseiten</b>
+-- Eine Multiple Choice Seite enthält die Unterseite mc. In mc wird der Text,
+-- der Titel und die möglichen Antwortmöglichkeiten notiiert. Alle Antworten
+-- stehen innerhalb von answers. Jede mögliche Antwort ist eine Table mit dem
+-- Text der Auswahl, dem Sprungziel und einigen Optionen.
+-- Mittels eines Sprungs kann zu einer anderen Seite eines Briefings gegangen
+-- werden. Dazu muss der Index der Zielseite angegeben werden. Die erste Seite
+-- eines Briefings darf kein Sprung sein!.
+-- Eine Leerseite kann benutzt werden um hinter einem von einer Auswahl
+-- aufgeschlagenen Pfad im Briefing selbiges zu beenden. Sonst würde das
+-- Briefing einfach mit der nächsten Seite weiter machen. Sprungbefehle
+-- können alternativ verwendet werden.
+--
+-- <b>Splashscreens</b>
+-- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
+-- über die Grafik zu scrollen oder zu zoomen.
+--
+-- @param _page	Seite
+-- @return table: Page
+-- @within Page-Functionen
+--
+function AP(_Page)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("AP: Please use the function provides by AddPages!");
+end
+
+---
+-- Erstellt einen Flight einer Fake-Cutscene.
+--
+-- Flights bestehen aus einem Startpunkt und mindestens einer weitere Position.
+-- Ein Flight kann aus nahezu unbegrenzt vielen Punkten bestehen, die alle
+-- innerhalb der Duration abgefahren werden.
+--
+-- <b>Hinweis:</b> Es ist prinzipiell Möglich mehr als 10 Punkte pro Sekunde
+-- anzusteuern, aber nicht sehr sinnvoll. ;)
+--
+-- Aufbau einer Station eines Flights:
+-- <table border="1">
+-- <tr>
+-- <td><b>Eigenschaft</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Position</td>
+-- <td>Die Kameraposition der Station</td>
+-- </tr>
+-- <tr>
+-- <td>LookAt</td>
+-- <td>Der Kamerablickpunkt der Station</td>
+-- </tr>
+-- <tr>
+-- <td>Title</td>
+-- <td>Der angezeigte Sprecher</td>
+-- </tr>
+-- <tr>
+-- <td>Text</td>
+-- <td>Der gesprochende Text</td>
+-- </tr>
+-- <tr>
+-- <td>Action</td>
+-- <td>Aktion zu Beginn der Kamerabewegung</td>
+-- </tr>
+-- </table>
+--
+-- Allgemeine Angaben eines Flight:
+-- <table border="1">
+-- <tr>
+-- <td><b>Eigenschaft</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Duration</td>
+-- <td>Dauer des gesamten Flights. Die Zeit wird auf alle Positionen des
+-- Flights der Fake-Cutscene aufgeteilt (mit Ausnahme der Startposition).</td>
+-- </tr>
+-- <tr>
+-- <td>FadeIn</td>
+-- <td>Einblendedauer am Anfang des Flight</td>
+-- </tr>
+-- <tr>
+-- <td>FadeOut</td>
+-- <td>Abblendedauer am Ende des Flight</td>
+-- </tr>
+-- </table>
+--
+-- @param _page	Seite
+-- @within Page-Functionen
+--
+-- @usage
+-- AF {
+--     {
+--         Position = {X= 12300, Y= 23000, Z= 3400},
+--         LookAt   = {X= 22000, Y= 34050, Z= 200},
+--         Text     = "Das ist ein Text....",
+--     },
+--     {
+--         Position = {X= 12300, Y= 23000, Z= 3400},
+--         LookAt   = {X= 22500, Y= 31050, Z= 350},
+--         Text     = "Das ist ein Text....",
+--     },
+--     FadeOut  = 0.5,
+--     FadeIn   = 0.5,
+--     Duration = 24,
+-- };
+--
+function AF(_Flight)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("AF: Please use the function provides by AddFlights!");
+end
+
+---
+-- Ermäglicht einen Flight als Einzeiler zu notieren. Allerdings sind nicht
+-- alle Optionen verfügbar.
+--
+-- Bei der Notation der Koordinaten ist zu beachten, dass zuerst das Triple
+-- der Kameraposition und danach das Triple des Blickpunktes angegeben wird.
+-- Für jeden Punkt müssen also 6 Zahlen angegeben werden.
+--
+-- <b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
+-- wenigen Kamerastationen oder für eine generische Nutzung.
+--
+-- @param _Text     Angezeigter Text
+-- @param _Duration Dauer des Flight
+-- @param _Action   Aktion zu Beginn des Flight
+-- @param _Fading   Einblenden und Abblenden
+-- @param ...       Liste der XYZ-Koordinaten
+-- @within Page-Functionen
+--
+-- @usage
+-- ASF ("Das ist ein Text....", 10, nil, true, 12300, 23000, 3400, 22000, 34050, 200, 12300, 23000, 3400, 22500, 31050, 350);
+--
+function ASF(_Text, _Duration, _Action, _Fading, ...)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("ASF: Please use the function provides by AddFlights!");
+end
+
+---
+-- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
+-- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
+-- schaut den Siedler an.
+--
+-- @param _entity		Zielentity
+-- @param _title		Titel der Seite
+-- @param _text		    Text der Seite
+-- @param _dialogCamera Nahsicht an/aus
+-- @param _action       Callback-Funktion
+-- @return table: Page
+-- @within Page-Functionen
+--
+-- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+--
+function ASP(_entity, _title, _text, _dialogCamera, _action)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("ASP: Please use the function provides by AddPages!");
+end
+
+---
+-- Erstellt eine Multiple Choise Seite in vereinfachter Syntax. Es
+-- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
+-- Kamera schaut den Siedler an.
+--
+-- @param _entity		Zielentity
+-- @param _title		Titel der Seite
+-- @param _text		    Text der Seite
+-- @param _dialogCamera Nahsicht an/aus
+-- @param ...			Liste der Antworten und Sprungziele
+-- @return table: Page
+-- @within Page-Functionen
+--
+-- @usage
+-- ASMC("hans", "", "In welche Richtung soll Hänschen-Klein gehen?", false,
+--      "Nach links gehen.", 2,
+--      "Lieber nach rechts.", 4)
+--
+function ASMC(_entity, _title, _text, _dialogCamera, ...)
+    -- Diese Funktion ist ein Dummy für LDoc!
+    API.Dbg("ASMC: Please use the function provides by AddPages!");
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -206,7 +418,7 @@ function BundleBriefingSystem.Global:Install()
 end
 
 ---
--- Setzt den Zustand von Quest Timern während biefings.
+-- Setzt den Zustand von Quest Timern während Biefings und Fake-Cutscenes.
 --
 -- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
 --
@@ -276,24 +488,79 @@ function BundleBriefingSystem.Global:GetCurrentBriefing()
 end
 
 ---
+-- Initalisiert die Flight-Funktionen für die übergebene Cutscene.
+--
+-- @param _Cutscene Cutscene
+-- @return function: AF
+-- @within Private
+-- @local
+--
+function BundleBriefingSystem.Global:AddFlights(_Cutscene)
+    local AF = function(_Flight)
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        assert(type(_Flight) == "table" and #_Flight > 0);
+        local Duration  = _Flight.Duration / (#_Flight -1);
+        local i = 0;
+
+        for i= 1, #_Flight, 1 do
+            local Title = _Flight[i].Title or "";
+            if type(Title) == "table" then
+                Title = Title[lang];
+            end
+            local Text = _Flight[i].Text or "";
+            if type(Text) == "table" then
+                Text = Text[lang];
+            end
+
+            local Flight = {
+                cutscene = {
+                    Position = _Flight[i].Position,
+                    LookAt   = _Flight[i].LookAt,
+                },
+                title        = Title,
+                text         = Text,
+                action       = _Flight[i].Action,
+                faderAlpha   = (i == 1 and _Flight.FadeIn and 1) or nil,
+                fadeIn       = (i == 1 and _Flight.FadeIn) or nil,
+                fadeOut      = (i == #_Flight and _Flight.FadeOut and (-_Flight.FadeOut)) or nil,
+                duration     = (i == 1 and 0) or Duration,
+                flyTime      = (i > 1 and Duration) or nil,
+                splashscreen = _Flight.Splashscreen
+            };
+            table.insert(_Cutscene, Flight);
+        end
+    end
+
+    local ASF = function(_Text, _Duration, _Action, _Fading, ...)
+        local Flights = {};
+        for i= 1, #arg, 6 do
+            local Action = (i == 1 and _Action) or nil;
+            table.insert(Flights, {
+                Position = {X= arg[i],   Y= arg[i+1], Z= arg[i+2]},
+                LookAt   = {X= arg[i+3], Y= arg[i+4], Z= arg[i+5]},
+                Text     = _Text,
+                Action   = Action,
+            });
+        end
+        Flights.FadeIn   = (_Fading == true and 0.5) or 0;
+        Flights.FadeOut  = (_Fading == true and 0.5) or 0;
+        Flights.Duration = _Duration;
+        AF(Flights);
+    end
+    return AF, ASF;
+end
+
+---
 -- Initalisiert die Page-Funktionen für das übergebene Briefing
 --
--- @param _briefing Quest Timer pausiert
--- @return function(3): AP, ASP, ASMC
+-- @param _briefing
+-- @return function: AP
+-- @return function: ASP
+-- @return function: ASMC
 -- @within Private
 -- @local
 --
 function BundleBriefingSystem.Global:AddPages(_briefing)
-    ---
-    -- Erstellt eine Seite in normaler Syntax oder als Cutscene.
-    -- AP kann auch für Sprungbefehle genutzt werden. Dabei wird der
-    -- Index der Zielseite angebenen.
-    -- Für Multiple Choice dienen leere AP-Seiten als Signal, dass
-    -- ein Briefing an dieser Stelle endet.
-    --
-    -- @param _page	Seite
-    -- @return table: Page
-    --
     local AP = function(_page)
         if _page and type(_page) == "table" then
             local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -329,10 +596,10 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
                 end
             end
 
-            -- Cutscene Support
-            if _page.view then
-                _page.flyTime  = _page.view.FlyTime or 0;
-                _page.duration = _page.view.Duration or 0;
+            _page.cutscene = _page.cutscene or _page.view;
+            if _page.cutscene then
+                _page.flyTime  = _page.cutscene.FlyTime or 0;
+                _page.duration = _page.cutscene.Duration or 0;
             else
                 if type(_page.position) == "table" then
                     if not _page.position.X then
@@ -373,18 +640,6 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
         return _page;
     end
 
-    ---
-    -- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
-    -- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
-    -- schaut den Siedler an.
-    --
-    -- @param _entity		Zielentity
-    -- @param _title		Titel der Seite
-    -- @param _text		    Text der Seite
-    -- @param _dialogCamera Nahsicht an/aus
-    -- @param _action       Callback-Funktion
-    -- @return table: Page
-    --
     local ASP = function(_entity, _title, _text, _dialogCamera, _action)
         local Entity = Logic.GetEntityName(GetID(_entity));
         assert(Entity ~= nil and Entity ~= "");
@@ -399,18 +654,6 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
         return AP(page);
     end
 
-    ---
-    -- Erstellt eine Multiple Choise Seite in vereinfachter Syntax. Es
-    -- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
-    -- Kamera schaut den Siedler an.
-    --
-    -- @param _entity		Zielentity
-    -- @param _title		Titel der Seite
-    -- @param _text		    Text der Seite
-    -- @param _dialogCamera Nahsicht an/aus
-    -- @param ...			Liste der Antworten und Sprungziele
-    -- @return table: Page
-    --
     local ASMC = function(_entity, _title, _text, _dialogCamera, ...)
         local Entity = Logic.GetEntityName(GetID(_entity));
         assert(Entity ~= nil and Entity ~= "");
@@ -436,7 +679,7 @@ function BundleBriefingSystem.Global:AddPages(_briefing)
 end
 
 ---
--- Initalisiert das Briefing System im globalen Skript.
+-- Initalisiert das Briefing System im lokalen Skript.
 --
 -- @within Private
 -- @local
@@ -545,7 +788,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         BundleBriefingSystem:OverwriteGetPosition();
     end
 
--- Briefing System Beginn ----------------------------------------------
+-- Briefing System Beginn --------------------------------------------------- --
 
     BriefingSystem = {
         isActive = false,
@@ -593,6 +836,10 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- wie seitenweises Überspringen oder Multiple Choice, sind deaktiviert
     -- bzw. verhindern den Start der Cutscene.
     --
+    -- <b>Hinweis:</b> Bei diesen Cutscenes handelt es sich nicht um echte
+    -- Cutscenes sondern um eine Simulation. Die Kamerabewegung wird
+    -- dementsprechend nicht so flüssig sein und es kann ruckeln!
+    --
     -- <b>Alias</b>: BriefingSystem.StartCutscene <br/>
     -- <b>Alias</b>: StartCutscene
     --
@@ -626,20 +873,18 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
                 return;
             end
         end
-
         return BriefingSystem.StartBriefing(_briefing, true);
     end
     BriefingSystem.StartCutscene = API.StartCutscene;
     StartCutscene = API.StartCutscene;
 
     ---
-    -- Startet ein Briefing. Im Cutscene Mode wird die normale Kamera
-    -- deaktiviert und durch die Cutsene Kamera ersetzt. Außerdem
-    -- können Grenzsteine ausgeblendet und der Himmel angezeigt werden.
-    -- Die Okklusion wird abgeschaltet. Alle Änderungen werden nach dem
-    -- Briefing automatisch zurückgesetzt.
-    -- Läuft bereits ein Briefing, kommt das neue in die Warteschlange.
-    -- Es wird die ID des erstellten Briefings zurückgegeben.
+    -- Startet ein normales Briefing oder eine Fake-Cutscene.
+    --
+    -- Briefings können mittels Multiple Choice Dialogen über Verzweigungen
+    -- verfügen und so komplexe Dialoge oder Menüstrukturen abbilden. Briefings
+    -- sollten eingesetzt werden, wenn Quests nicht mehr ausreichen um die
+    -- Handlung zu erzählen oder um multiple Handlungsstränge zu starten.
     --
     -- <b>Alias</b>: BriefingSystem.StartBriefing <br/>
     -- <b>Alias</b>: StartBriefing
@@ -718,6 +963,12 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     BriefingSystem.StartBriefing = API.StartBriefing;
     StartBriefing = API.StartBriefing;
 
+    ---
+    -- Beendet ein laufendes Briefing oder eine laufende Fake-Cutscene.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.EndBriefing()
         BriefingSystem.isActive = false;
         Logic.SetGlobalInvulnerability(0);
@@ -731,6 +982,13 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Wartet, bis ein Briefing beendet ist und führt dann das nächste
+    -- Briefing in der Warteschlange aus.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem_WaitForBriefingEnd()
         if not BriefingSystem.isActive and BriefingSystem.loadScreenHidden then
             BriefingSystem.ExecuteBriefing(table.remove(BriefingSystem.waitList), 1);
@@ -741,6 +999,13 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Führt das aktuelle Briefing aus.
+    --
+    -- @param _briefing Aktuelles Briefing
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.ExecuteBriefing(_briefing)
         if not BriefingSystem.isInitialized then
             Logic.ExecuteInLuaLocalState("BriefingSystem.InitializeBriefingSystem()");
@@ -762,7 +1027,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
 
         Logic.ExecuteInLuaLocalState("BriefingSystem.PrepareBriefing()");
-        BriefingSystem.currBriefing = BriefingSystem.RemoveObsolateAnswers(BriefingSystem.currBriefing);
+        BriefingSystem.currBriefing = BriefingSystem.UpdateMCAnswers(BriefingSystem.currBriefing);
         BriefingSystem.job = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "BriefingSystem_Condition_Briefing", "BriefingSystem_Action_Briefing", 1);
         if not BriefingSystem.loadScreenHidden then
             Logic.ExecuteInLuaLocalState("BriefingSystem.Briefing(true)");
@@ -771,10 +1036,14 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
-    -- Entfernt Multiple Choice Optionen, wenn die Remove Condition
-    -- zutrifft. Diese Optionen sind dann nicht mehr auswählbar.
-
-    function BriefingSystem.RemoveObsolateAnswers(_briefing)
+    ---
+    -- Aktualisiert die verfügbaren Optionen wärhend eines Multiple Choice
+    -- Dialogs.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
+    function BriefingSystem.UpdateMCAnswers(_briefing)
         if _briefing then
             local i = 1;
             while (_briefing[i] ~= nil and #_briefing >= i)
@@ -784,20 +1053,26 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
                     local j = 1;
                     while (_briefing[i].mc.answers[j] ~= nil)
                     do
-                        -- vorhandene IDs dürfen sich nicht mehr ändern
+                        -- Speichert die ID der Antwort
                         if not _briefing[i].mc.answers[j].ID then
                             _briefing[i].mc.answers[j].ID = aswID;
                         end
-                        if type(_briefing[i].mc.answers[j][3]) == "function" and _briefing[i].mc.answers[j][3](_briefing[i].mc.answers[j]) then
+
+                        -- Entferne Antwort
+                        if _briefing[i].mc.answers[j].remove then
+                            table.remove(BriefingSystem.currBriefing[i].mc.answers, j);
+                            if #BriefingSystem.currBriefing[i].mc.answers < j then
+                                BriefingSystem.currBriefing[i].mc.current = #BriefingSystem.currBriefing[i].mc.answers
+                            end
                             Logic.ExecuteInLuaLocalState([[
-                                local b = BriefingSystem.currBriefing
-                                if b and b[]]..i..[[] and b[]]..i..[[].mc then
-                                    table.remove(BriefingSystem.currBriefing[]]..i..[[].mc.answers, ]]..j..[[)
+                                table.remove(BriefingSystem.currBriefing[]]..i..[[].mc.answers, ]]..j..[[)
+                                if #BriefingSystem.currBriefing[]]..i..[[].mc.answers < ]]..j..[[ then
+                                    BriefingSystem.currBriefing[]]..i..[[].mc.current = #BriefingSystem.currBriefing[]]..i..[[].mc.answers
                                 end
                             ]]);
-                            table.remove(_briefing[i].mc.answers,j);
-                            j = j -1;
                         end
+
+                        -- ID hochzählen
                         aswID = aswID +1;
                         j = j +1;
                     end
@@ -812,11 +1087,25 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         return _briefing;
     end
 
+    ---
+    -- Prüft, ob ein Briefing aktiv ist.
+    --
+    -- <b>Alias:</b> IsBriefingActive
+    --
+    -- @return boolean: Briefing aktiv
+    -- @within BriefingSystem
+    --
     function BriefingSystem.IsBriefingActive()
         return BriefingSystem.isActive;
     end
     IsBriefingActive = BriefingSystem.IsBriefingActive
 
+    ---
+    -- Condition des Briefing-Job: Prüft, ob die Action ausgeführt wird.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem_Condition_Briefing()
         if not BriefingSystem.loadScreenHidden then
             return false;
@@ -825,6 +1114,12 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         return BriefingSystem.timer <= 0;
     end
 
+    ---
+    -- Action des Briefing-Job: Führt das eigentliche Briefing aus.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem_Action_Briefing()
         BriefingSystem.page = BriefingSystem.page + 1;
 
@@ -916,6 +1211,13 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Überspringt ein Briefing.
+    --
+    -- @param _player ID des aktiven Spielers
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.SkipBriefing(_player)
         if not BriefingSystem.disableSkipping then
             if BriefingSystem.skipPerPage then
@@ -934,6 +1236,13 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Überspringt eine Briefing-Seite.
+    --
+    -- @param _player ID des aktiven Spielers
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.SkipBriefingPage(_player)
         if not BriefingSystem.disableSkipping then
             if not BriefingSystem.LastSkipTimeStemp or Logic.GetTimeMs() > BriefingSystem.LastSkipTimeStemp + 500 then
@@ -958,6 +1267,18 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Deckt einen bestimmten Bereich auf der Spielwelt auf.
+    -- FIXME: Diese Funktion deckt komplette Territorien auf!
+    --
+    -- @param _page        Aktuelle Seite
+    -- @param _exploration Aufdeckungsradius
+    -- @param _entityType  Typ des Exploration Entity
+    -- @param _player      PlayerID, für die aufgedeckt wird
+    -- @param _position    Mittelpunkt der Aufdeckung
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.CreateExploreEntity(_page, _exploration, _entityType, _player, _position)
         local position = _position or _page.position;
         if position then
@@ -987,6 +1308,14 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         table.insert(_page.exploreEntities, entity);
     end
 
+    ---
+    -- Erstellt einen Questmarker auf der Spielwelt.
+    --
+    -- @param _page    Aktuelle Seite
+    -- @param _pointer Aufdeckungsradius
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.CreatePointer(_page, _pointer)
         local pointerType = _pointer.type or BriefingSystem.POINTER_VERTICAL;
         local position = _pointer.position;
@@ -1019,12 +1348,28 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Zerstört den Marker der aktuellen Briefing-Seite.
+    --
+    -- @param _page  Aktuelle Seite
+    -- @param _index Index des Markers
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.DestroyPageMarker(_page, _index)
         if _page.marker then
             Logic.ExecuteInLuaLocalState("BriefingSystem.DestroyPageMarker(" .. _page.markerList .. ", " .. _index .. ")");
         end
     end
 
+    ---
+    -- Aktualisiert alle Marker der Briefing-Seite oder erstellt sie neu.
+    --
+    -- @param _page     Aktuelle Seite
+    -- @param _position Position des markers
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.RedeployPageMarkers(_page, _position)
         if _page.marker then
             if type(_position) ~= "table" then
@@ -1034,6 +1379,15 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Aktualisiert einen Marker der Briefing-Seite oder erstellt ihn neu.
+    --
+    -- @param _page     Aktuelle Seite
+    -- @param _index Index des Markers
+    -- @param _position Position des markers
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.RedeployPageMarker(_page, _index, _position)
         if _page.marker then
             if type(_position) ~= "table" then
@@ -1043,18 +1397,42 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Erneuert alle Marker der Briefing-Seite.
+    --
+    -- @param _page     Aktuelle Seite
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.RefreshPageMarkers(_page)
         if _page.marker then
             Logic.ExecuteInLuaLocalState("BriefingSystem.RefreshMarkerList(" .. _page.markerList .. ")");
         end
     end
 
+    ---
+    -- Erneuert einen Marker der Briefing-Seite.
+    --
+    -- @param _page     Aktuelle Seite
+    -- @param _index Index des Markers
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.RefreshPageMarker(_page, _index)
         if _page.marker then
             Logic.ExecuteInLuaLocalState("BriefingSystem.RefreshMarkerOfList(" .. _page.markerList .. ", " .. _index .. ")");
         end
     end
 
+    ---
+    -- Entfernt alle Effekte, die mit der Briefing-Seite verbunden sind.
+    --
+    -- Effekte können sein: Aufdeckungsbereiche, Marker, Pointer.
+    --
+    -- @param _page     Aktuelle Seite
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.ResolveBriefingPage(_page)
         if _page.explore and _page.exploreEntities then
             for i, v in ipairs(_page.exploreEntities) do
@@ -1079,13 +1457,16 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     end
     ResolveBriefingPage = BriefingSystem.ResolveBriefingPage;
 
+    ---
     -- Wenn eine Antwort ausgewählt wurde, wird der entsprechende
     -- Sprung durchgeführt. Wenn remove = true ist, wird die Option
     -- für den Rest des Briefings deaktiviert (für Rücksprünge).
     --
-    -- _aswID			Index der Antwort
-    -- _currentPage		Aktuelle Seite
-    -- _currentAnswer	Gegebene Antwort
+    -- @param _aswID			Index der Antwort
+    -- @param _currentPage		Aktuelle Seite
+    -- @param _currentAnswer	Gegebene Antwort
+    -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.OnConfirmed(_aswID, _currentPage, _currentAnswer)
         BriefingSystem.timer = 0
@@ -1099,19 +1480,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         else
             BriefingSystem.page = jump-1;
         end
-        if page.mc.answers[current] and page.mc.answers[current].remove then
-            table.remove(BriefingSystem.currBriefing[pageNumber].mc.answers, _currentAnswer);
-            if #BriefingSystem.currBriefing[pageNumber].mc.answers < _currentAnswer then
-                BriefingSystem.currBriefing[pageNumber].mc.current = #BriefingSystem.currBriefing[pageNumber].mc.answers
-            end
-            Logic.ExecuteInLuaLocalState([[
-                table.remove(BriefingSystem.currBriefing[]]..pageNumber..[[].mc.answers, ]].._currentAnswer..[[)
-                if #BriefingSystem.currBriefing[]]..pageNumber..[[].mc.answers < ]].._currentAnswer..[[ then
-                    BriefingSystem.currBriefing[]]..pageNumber..[[].mc.current = #BriefingSystem.currBriefing[]]..pageNumber..[[].mc.answers
-                end
-            ]]);
-        end
-        BriefingSystem.currBriefing = BriefingSystem.RemoveObsolateAnswers(BriefingSystem.currBriefing);
+        BriefingSystem.currBriefing = BriefingSystem.UpdateMCAnswers(BriefingSystem.currBriefing);
     end
 end
 
@@ -1166,6 +1535,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         InformationTextQueue = {},
     };
 
+    ---
+    -- Initalisiert den Kern des Briefing System.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.InitializeBriefingSystem()
         BriefingSystem.GlobalSystem = Logic.CreateReferenceToTableInGlobaLuaState("BriefingSystem");
         assert(BriefingSystem.GlobalSystem);
@@ -1182,12 +1557,25 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.Flight.Job = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, nil, "ThroneRoomCameraControl", 0);
     end
 
+    ---
+    -- Startet den Job, der darauf wartet, dass der Loadscreen verlassen wird.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.StartLoadScreenSupervising()
         if not BriefingSystem_LoadScreenSupervising() then
             Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, nil, "BriefingSystem_LoadScreenSupervising", 1);
         end
     end
 
+    ---
+    -- Setzt das LoadScreenHidden-Flag um dem globalen Skript mitzuteilen,
+    -- das der Loadscreen verlassen ist.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem_LoadScreenSupervising()
         if  XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
             GUI.SendScriptCommand("BriefingSystem.loadScreenHidden = true;");
@@ -1195,6 +1583,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Bereitet das Interface auf das Briefing / die Cutsene vor.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.PrepareBriefing()
         BriefingSystem.barType = nil;
         BriefingSystem.InformationTextQueue = {};
@@ -1245,6 +1639,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.SetBriefingPageTextPosition(page);
 
         if not Framework.IsNetworkGame() and Game.GameTimeGetFactor() ~= 0 then
+            if BriefingSystem.currBriefing.restoreGameSpeed and not BriefingSystem.currBriefing.gameSpeedBackup then
+                BriefingSystem.currBriefing.gameSpeedBackup = Game.GameTimeGetFactor();
+            end
             Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
         end
         if BriefingSystem.currBriefing.restoreCamera then
@@ -1272,6 +1669,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Baut die Änderungen im Interface nach dem Ende des Briefings ab.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.EndBriefing()
         if BriefingSystem.faderJob then
             Trigger.UnrequestTrigger(BriefingSystem.faderJob);
@@ -1304,7 +1707,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             Camera.RTS_SetLookAtPosition(unpack(BriefingSystem.cameraRestore));
         end
         if not Framework.IsNetworkGame() then
-            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+            local GameSpeed = (BriefingSystem.currBriefing.gameSpeedBackup or 1);
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), GameSpeed);
         end
 
         XGUIEng.PopPage();
@@ -1324,6 +1728,13 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.ConvertInformationToNote();
     end
 
+    ---
+    -- Führt das Briefing aus.
+    --
+    -- @param _prepareBriefingStart Briefing muss vorbereitet werden
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.Briefing(_prepareBriefingStart)
         if not _prepareBriefingStart then
             if BriefingSystem.faderJob then
@@ -1339,12 +1750,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if barStyle == nil then
             barStyle = BriefingSystem.currBriefing.barStyle;
         end
-        
+
         BriefingSystem.SetBriefingPageOrSplashscreen(page, barStyle);
         BriefingSystem.SetBriefingPageTextPosition(page);
 
         local player = GUI.GetPlayerID();
-        
+
         -- Text
         if page.text then
             local doNotCalc = page.duration ~= nil;
@@ -1360,7 +1771,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.ShowBriefingText(page.text[player] or page.text.default, doNotCalc, smallBarShown);
             end
         end
-        
+
         -- Titel
         if page.title then
             if type(page.title) == "string" then
@@ -1369,12 +1780,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.ShowBriefingTitle(page.title[player] or page.title.default);
             end
         end
-        
+
         -- Multiple Choice
         if page.mc then
             BriefingSystem.Briefing_MultipleChoice();
         end
-        
+
         -- Splashscreen UV
         local UV0, UV1;
         if type(page.splashscreen) == "table" then
@@ -1461,14 +1872,14 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.StopFlight();
 
         -- Initialisierung der Kameraanimation
-        if page.view then
+        if page.cutscene then
             -- Flight speichern
-            if BriefingSystem.GlobalSystem.page == 1 then -- or (page.view.FlyTime == nil or page.view.FlyTime == 0) then
-                BriefingSystem.CutsceneSaveFlight(page.view.Position, page.view.LookAt, FOV);
+            if BriefingSystem.GlobalSystem.page == 1 then
+                BriefingSystem.CutsceneSaveFlight(page.cutscene.Position, page.cutscene.LookAt, FOV);
             end
             -- Kamera bewegen
-            BriefingSystem.CutsceneFlyTo(page.view.Position,
-                                         page.view.LookAt,
+            BriefingSystem.CutsceneFlyTo(page.cutscene.Position,
+                                         page.cutscene.LookAt,
                                          FOV,
                                          page.flyTime or 0);
 
@@ -1548,6 +1959,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Callback: Überspringen wurde geklickt.
+    --
+    -- @local
+    --
     function OnSkipButtonPressed()
         local index = BriefingSystem.GlobalSystem.page;
         if BriefingSystem.currBriefing[index] and not BriefingSystem.currBriefing[index].mc then
@@ -1555,6 +1971,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Überspringt eine Briefing-Seite.
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.SkipBriefingPage()
         local index = BriefingSystem.GlobalSystem.page;
         if BriefingSystem.currBriefing[index] and not BriefingSystem.currBriefing[index].mc then
@@ -1562,11 +1984,14 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
     -- Zeigt die Rahmen an. Dabei gibt es schmale Rahmen, breite Rahmen
     -- und jeweils noch transparente Versionen. Es kann auch gar kein
     -- Rahmen angezeigt werden.
     --
-    -- _type	Typ der Bar
+    -- @param _type	Typ der Bar
+    -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.ShowBriefingBar(_type)
         _type = _type or "big";
@@ -1597,7 +2022,15 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.barType = _type;
     end
 
+    ---
+    -- Zeigt den Text einer Briefingseite an und berechnet ggf. die Dauer
+    -- der Anzeige.
     --
+    -- @param _text      Anzuzeigender Text
+    -- @param _doNotCalc Anzeigedauer nicht berechnen
+    -- @param _smallBar  Die schmalen bars werden benutzt
+    -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.ShowBriefingText(_text, _doNotCalc, _smallBar)
         local text = XGUIEng.GetStringTableText(_text);
@@ -1614,7 +2047,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", "{center}"..text);
     end
 
+    ---
+    -- Zeigt den Titel aka Sprecher der Seite an.
     --
+    -- @param _title Anzuzeigender Titel
+    -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.ShowBriefingTitle(_title)
         local title = XGUIEng.GetStringTableText(_title);
@@ -1628,9 +2066,14 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetText("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", title);
     end
 
+    ---
+    -- Zeigt den Multiple Choice Dialog mit den Verzweigungen an.
     --
+    -- @param _page Briefing-Seite
+    -- @within BriefingSystem
+    -- @local
     --
-    function BriefingSystem.SchowBriefingAnswers(_page)
+    function BriefingSystem.SchowBriefingOptionDialog(_page)
         local Screen = {GUI.GetScreenSize()};
         local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
         BriefingSystem.OriginalBoxPosition = {
@@ -1657,10 +2100,14 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.MCSelectionIsShown = true;
     end
 
+    --
     -- Zeigt alle Nachrichten in der Warteschlange an und schreibt
     -- sie in das KnightInfo Widget.
     --
-    function BriefingSystem.ShowInformationText()
+    -- @within BriefingSystem
+    -- @local
+    --
+    function BriefingSystem.ShowBriefingInfoText()
         XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", "");
         local text = "";
         for i=1, #BriefingSystem.InformationTextQueue do
@@ -1669,10 +2116,14 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", text);
     end
 
+    ---
     -- Konvertiert die Notizen zu einer Debug Note und zeigt sie im
     -- Debug Window an. Dies passiert dann, wenn ein Briefing endet
     -- aber die Anzeigezeit einer oder mehrerer Nachrichten noch nicht
     -- abgelaufen ist.
+    --
+    -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.ConvertInformationToNote()
         for i=1, #BriefingSystem.InformationTextQueue do
@@ -1680,16 +2131,24 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
     -- Fügt einen text in die Warteschlange ein.
     --
-    -- _text	Nachricht
+    -- @param _Text	    Nachricht
+    -- @param _Duration Anzeigedauer
+    -- @within BriefingSystem
+    -- @local
     --
-    function BriefingSystem.PushInformationText(_text, _Duration)
-        local length = _Duration or (string.len(_text) * 5);
-        table.insert(BriefingSystem.InformationTextQueue, {_text, length});
+    function BriefingSystem.PushInformationText(_Text, _Duration)
+        local length = _Duration or (string.len(_Text) * 5);
+        table.insert(BriefingSystem.InformationTextQueue, {_Text, length});
     end
 
+    ---
     -- Entfernt einen Text aus der Warteschlange.
+    --
+    -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.UnqueueInformationText(_Index)
         if #BriefingSystem.InformationTextQueue >= _Index then
@@ -1697,13 +2156,17 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
     -- Kontrolliert die Anzeige der Notizen während eines Briefings.
     -- Die Nachrichten werden solange angezeigt, wie ihre Anzeigezeit
     -- noch nicht abgelaufen ist.
     --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.ControlInformationText()
         local LinesToDelete = {};
-        
+
         -- Abgelaufene Texte markieren
         for k, v in pairs(BriefingSystem.InformationTextQueue) do
             BriefingSystem.InformationTextQueue[k][2] = v[2] -1;
@@ -1711,15 +2174,16 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 table.insert(LinesToDelete, k);
             end
         end
-        
+
         -- Abgelaufene Texte entfernen
         for k, v in pairs(LinesToDelete) do
             BriefingSystem.UnqueueInformationText(v);
         end
-        
-        BriefingSystem.ShowInformationText();
+
+        BriefingSystem.ShowBriefingInfoText();
     end
 
+    ---
     -- Setzt den Text, den Titel und die Antworten einer Multiple Choice
     -- Seite. Setzt außerdem die Dauer der Seite auf 11 1/2 Tage (in
     -- der echten Welt). Leider ist es ohne größeren Änderungen nicht
@@ -1728,6 +2192,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- Tage vor dem Briefing sitzt, ohne etwas zu tun.
     -- Das Fehlverhalten in diesem Fall ist unerforscht. Es würde dann
     -- wahrscheinlich die 1 Antwort selektiert.
+    --
+    -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.Briefing_MultipleChoice()
         local page = BriefingSystem.currBriefing[BriefingSystem.GlobalSystem.page];
@@ -1743,17 +2210,21 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             end
             -- set answers
             if page.mc.answers then
-                BriefingSystem.SchowBriefingAnswers(page);
+                BriefingSystem.SchowBriefingOptionDialog(page);
             end
             -- set page length
             GUI.SendScriptCommand("BriefingSystem.currBriefing[BriefingSystem.page].dusation = 999999");
         end
     end
 
+    ----
     -- Eine Antwort wurde ausgewählt (lokales Skript). Die Auswahl wird
     -- gepopt und ein Event an das globale Skript gesendet. Das Event
     -- erhält die Page ID, den Index der selektierten Antwort in der
     -- Listbox und die reale ID der Antwort in der Table.
+    --
+    -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.OnConfirmed()
         local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
@@ -1774,6 +2245,19 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Erzeugt eine Markierung auf der Minikarte.
+    --
+    -- @param _t          Aktuelle Seite
+    -- @param _marterType Typ der Markierung
+    -- @param _markerList Liste der Markierungen
+    -- @param _r          Magenta-Wert
+    -- @param _g          Yellow-Wert
+    -- @param _b          Cyan-Wert
+    -- @param _alpha      Alpha-Wert
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.CreateMarker(_t, _markerType, _markerList, _r, _g, _b, _alpha)
         local position = _t.position;
         if position then
@@ -1813,6 +2297,13 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.markerUniqueID = BriefingSystem.markerUniqueID + 1;
     end
 
+    ---
+    -- Zerstört eine Liste von Markern auf der Minimap.
+    --
+    -- @param _index Index der Liste
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.DestroyMarkerList(_index)
         if BriefingSystem.listOfMarkers[_index] then
             for _, v in ipairs(BriefingSystem.listOfMarkers[_index]) do
@@ -1824,6 +2315,14 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Zerstört einen Marker innerhalb einer Liste.
+    --
+    -- @param _index  Index der Liste
+    -- @param _marker ID des Marker
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.DestroyMarkerOfList(_index, _marker)
         if BriefingSystem.listOfMarkers[_index] then
             local marker = BriefingSystem.listOfMarkers[_index][_marker];
@@ -1834,6 +2333,16 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Aktualisiert die Position aller marker in der Liste oder erstellt sie
+    -- neu, falls er nicht existiert.
+    --
+    -- @param _index Index der Marker-List
+    -- @param _x     X-Position
+    -- @param _y     Y-Position
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.RedeployMarkerList(_index, _x, _y)
         if BriefingSystem.listOfMarkers[_index] then
             for _, v in ipairs(BriefingSystem.listOfMarkers[_index]) do
@@ -1850,6 +2359,17 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Aktualisiert einen Marker aus einer Liste von Markern. Existiert der
+    -- Marker nicht, wird er erstellt.
+    --
+    -- @param _index  Index der Marker-List
+    -- @param _marker ID des Markers
+    -- @param _x      X-Position
+    -- @param _y      Y-Position
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.RedeployMarkerOfList(_index, _marker, _x, _y)
         if BriefingSystem.listOfMarkers[_index] then
             local marker = BriefingSystem.listOfMarkers[_index][_marker];
@@ -1865,6 +2385,14 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Aktualisiert die Position aller marker in der Liste oder erstellt sie
+    -- neu, falls er nicht existiert.
+    --
+    -- @param _index  Index der Marker-List
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.RefreshMarkerList(_index)
         if BriefingSystem.listOfMarkers[_index] then
             for _, v in ipairs(BriefingSystem.listOfMarkers[_index]) do
@@ -1879,6 +2407,15 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Aktualisiert einen Marker aus einer Liste von Markern. Existiert der
+    -- Marker nicht, wird er erstellt.
+    --
+    -- @param _index  Index der Marker-List
+    -- @param _marker ID des Markers
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.RefreshMarkerOfList(_index, _marker)
         if BriefingSystem.listOfMarkers[_index] then
             local marker = BriefingSystem.listOfMarkers[_index][_marker];
@@ -1892,12 +2429,28 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Macht den Skip-Button sichtbar oder versteckt ihn.
+    --
+    -- @param _player Spieler
+    -- @param _flag   Sichtbarkeit
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.EnableBriefingSkipButton(_player, _flag)
         if _player == nil or _player == GUI.GetPlayerID() then
             XGUIEng.DisableButton("/InGame/ThroneRoom/Main/Skip", _flag and 0 or 1);
         end
     end
 
+    ---
+    -- Steuert die schwarze Maske, die für Übergänge genutzt wird.
+    --
+    -- @param _fadeIn     Einblenden verwenden
+    -- @param _timerValue Dauer des Blendvorgangs
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem_CheckFader(_fadeIn, _timerValue)
         if BriefingSystem.GlobalSystem.timer < _timerValue then
             if _fadeIn == 1 then
@@ -1910,13 +2463,19 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Steuert die Kamera während eines Briefings. Es wird entweder das alte
+    -- System von OldMacDonald oder das neue von totalwarANGEL genutzt.
+    --
+    -- @local
+    --
     function ThroneRoomCameraControl()
         if Camera.GetCameraBehaviour(5) == 5 then
             local flight = BriefingSystem.Flight;
 
-            -- ---------------------------------------------------------
+            -- -------------------------------------------------------------- --
             -- Briefing Notation von OldMacDonald
-            -- ---------------------------------------------------------
+            -- -------------------------------------------------------------- --
 
             -- Dies steuert die altbekannte Notation, entwickelt von OMD.
             -- Bis auf wenige Erweiterungen von totalwarANGEL ist es wie
@@ -1936,13 +2495,13 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 local endZoomDistance = flight.EndZoomDistance;
                 local startFOV = flight.StartFOV or flight.EndFOV;
                 local endFOV = flight.EndFOV;
-                
+
                 -- Splashscreen-Animation
                 local startUV0 = flight.StartUV0 or flight.EndUV0;
                 local endUV0 = flight.EndUV0;
                 local startUV1 = flight.StartUV1 or flight.EndUV1;
                 local endUV1 = flight.EndUV1;
-                
+
                 local currTime = Logic.GetTimeMs() / 1000;
                 local math = math;
                 if flight.Follow then
@@ -1993,9 +2552,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 -- Splashscreen
                 BriefingSystem.SetBriefingSplashscreenUV(startUV0, endUV0, startUV1, endUV1, factor);
 
-            -- ---------------------------------------------------------
+            -- -------------------------------------------------------------- --
             -- Cutscene notation by totalwarANGEL
-            -- ---------------------------------------------------------
+            -- -------------------------------------------------------------- --
 
             -- Die Cutscene Notation von totalwarANGEL ermöglicht es viele
             -- Kameraeffekte einfacher umzusetzen, da man die Kamera über
@@ -2016,7 +2575,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                     local StartTime = cutscene.StartTime;
                     local FlyTime = cutscene.FlyTime;
                     local CurrTime = Logic.GetTimeMs()/1000;
-                    
+
                     -- Splashscreen-Animation
                     local startUV0 = cutscene.StartUV0 or cutscene.EndUV0;
                     local endUV0 = cutscene.EndUV0;
@@ -2082,7 +2641,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 end
             end
 
-            ----------------------------------------------------------------
+            -- -------------------------------------------------------------- --
 
             -- Notizen im Briefing
             -- Blendet zusätzlichen Text während eines Briefings ein. Siehe
@@ -2104,12 +2663,25 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     end
 
     function ThroneRoomLeftClick()
+        -- TODO: Prüfen, ob man das hier sinnvoll nutzen kann.
     end
 
-    -- -----------------------------------------------------------------
+    -- ---------------------------------------------------------------------- --
     -- Cutscene Functions by totalwarANGEL
-    -- -----------------------------------------------------------------
+    -- ---------------------------------------------------------------------- --
 
+    ---
+    -- Berechnet die Kameraposition wärhend eines Cutscene Flights.
+    --
+    -- @param _Start  Startposition des Flight
+    -- @param _End    Endposition des Flight
+    -- @param _Factor Interpolation Factor
+    -- @return number: X-Position
+    -- @return number: Y-Position
+    -- @return number: Z-Position
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.CutsceneGetPosition(_Start, _End, _Factor)
         local X = _Start.X + (_End.X - _Start.X) * _Factor;
         local Y = _Start.Y + (_End.Y - _Start.Y) * _Factor;
@@ -2117,6 +2689,15 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         return X, Y, Z;
     end
 
+    ---
+    -- Speichert die Startposition der nächsten Kameraanimation.
+    --
+    -- @param _FOV      Field of View
+    -- @param _UV0      UV0 des Splashscreen
+    -- @param _UV1      UV1 des Splashscreen
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.CutsceneSaveFlight(_cameraPosition, _cameraLookAt, _FOV, _UV0, _UV1)
         BriefingSystem.Flight.Cutscene = BriefingSystem.Flight.Cutscene or {};
         BriefingSystem.Flight.Cutscene.StartPosition = _cameraPosition;
@@ -2128,10 +2709,20 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.Flight.Cutscene.StartUV1 = _UV1;
     end
 
-    function BriefingSystem.CutsceneFlyTo(_cameraPosition, _cameraLookAt, _FOV, _time, _UV0, _UV1)
+    ---
+    -- Initalisiert den Flug der Kamera zu einer Position auf der Welt.
+    --
+    -- @param _FOV      Field of View
+    -- @param _Time     Animationszeit
+    -- @param _UV0      UV0 des Splashscreen
+    -- @param _UV1      UV1 des Splashscreen
+    -- @within BriefingSystem
+    -- @local
+    --
+    function BriefingSystem.CutsceneFlyTo(_cameraPosition, _cameraLookAt, _FOV, _Time, _UV0, _UV1)
         BriefingSystem.Flight.Cutscene = BriefingSystem.Flight.Cutscene or {};
         BriefingSystem.Flight.Cutscene.StartTime = Logic.GetTimeMs()/1000;
-        BriefingSystem.Flight.Cutscene.FlyTime = _time;
+        BriefingSystem.Flight.Cutscene.FlyTime = _Time;
         BriefingSystem.Flight.Cutscene.EndPosition = _cameraPosition;
         BriefingSystem.Flight.Cutscene.EndLookAt = _cameraLookAt;
         BriefingSystem.Flight.Cutscene.EndFOV = _FOV;
@@ -2139,6 +2730,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.Flight.Cutscene.EndUV1 = _UV1;
     end
 
+    ---
+    --
+    --
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.CutsceneStopFlight()
         BriefingSystem.Flight.Cutscene = BriefingSystem.Flight.Cutscene or {};
         BriefingSystem.Flight.Cutscene.StartPosition = BriefingSystem.Flight.Cutscene.EndPosition;
@@ -2146,8 +2743,19 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.Flight.Cutscene.StartFOV = BriefingSystem.Flight.Cutscene.EndFOV;
     end
 
-    --------------------------------------------------------------------
+    -- ---------------------------------------------------------------------- --
 
+    ---
+    -- Errechnet den Interpolation Factor für den aktuellen Flight.
+    --
+    -- @param _start         Startzeit
+    -- @param _curr          Aktuelle Zeit
+    -- @param _total         Absolute Zeit
+    -- @param _dataContainer Game Tame Backup
+    -- @return number: Interpolation Factor
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.InterpolationFactor(_start, _curr, _total, _dataContainer)
         local factor = 1;
 
@@ -2166,6 +2774,21 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         return factor;
     end
 
+    ---
+    -- Berechnet die aktuelle Position der Kamera für den aktuellen Flight.
+    --
+    -- Der Interpolation Factor wird für eine Vektormultiplikation des
+    -- Richtungsvektors zwischen S(x,y,z) und E(x,y,z) verwendet.
+    --
+    -- @param _start  Startposition des Flight
+    -- @param _end    Endposition des Flight
+    -- @param _factor Interpolation Factor
+    -- @return number: X-Position
+    -- @return number: Y-Position
+    -- @return number: Z-Position
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.GetCameraPosition(_start, _end, _factor)
         local lookAtX = _start.X + (_end.X - _start.X) * _factor;
         local lookAtY = _start.Y + (_end.Y - _start.Y) * _factor;
@@ -2178,6 +2801,19 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         return lookAtX, lookAtY, lookAtZ;
     end
 
+    ---
+    -- Speichert die Startposition der nächsten Kameraanimation.
+    --
+    -- @param _position Blickziel der Kamera
+    -- @param _rotation Rotation der Kamera
+    -- @param _angle    Winkel der Kamera
+    -- @param _distance Entfernung der Kamera
+    -- @param _FOV      Field of View
+    -- @param _UV0      UV0 des Splashscreen
+    -- @param _UV1      UV1 des Splashscreen
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.SaveFlight(_position, _rotation, _angle, _distance, _FOV, _UV0, _UV1)
         BriefingSystem.Flight.StartZoomAngle = _angle;
         BriefingSystem.Flight.StartZoomDistance = _distance;
@@ -2188,6 +2824,20 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.Flight.StartUV1 = _UV1;
     end
 
+    ---
+    -- Initalisiert den Flug der Kamera zu einem Entity.
+    --
+    -- @param _position Blickziel der Kamera
+    -- @param _rotation Rotation der Kamera
+    -- @param _angle    Winkel der Kamera
+    -- @param _distance Entfernung der Kamera
+    -- @param _FOV      Field of View
+    -- @param _time     Animationszeit
+    -- @param _UV0      UV0 des Splashscreen
+    -- @param _UV1      UV1 des Splashscreen
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.FlyTo(_position, _rotation, _angle, _distance, _FOV, _time, _UV0, _UV1)
         local flight = BriefingSystem.Flight;
         flight.StartTime = Logic.GetTimeMs()/1000;
@@ -2201,6 +2851,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         flight.EndUV1 = _UV1;
     end
 
+    ---
+    -- Stoppt die aktuelle Kameraanimation des Briefings.
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.StopFlight()
         local flight = BriefingSystem.Flight;
         flight.StartZoomAngle = flight.EndZoomAngle;
@@ -2216,6 +2871,21 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Initalisiert die Verfolgung eines Entities durch die Kamera.
+    --
+    -- @param _follow   Blickziel der Kamera
+    -- @param _rotation Rotation der Kamera
+    -- @param _angle    Winkel der Kamera
+    -- @param _distance Entfernung der Kamera
+    -- @param _FOV      Field of View
+    -- @param _time     Animationszeit
+    -- @param _Z        Z-Offset des Blickziels
+    -- @param _UV0      UV0 des Splashscreen
+    -- @param _UV1      UV1 des Splashscreen
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.FollowFlight(_follow, _rotation, _angle, _distance, _FOV, _time, _Z, _UV0, _UV1)
         local pos = GetPosition(_follow); pos.Z = _Z or 0;
         BriefingSystem.FlyTo(pos, _rotation, _angle, _distance, _FOV, _time, _UV0, _UV1);
@@ -2223,11 +2893,25 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         BriefingSystem.Flight.Follow = _follow;
     end
 
+    --
+    -- Prüft, ob ein Briefing aktiv ist.
+    --
+    -- <b>Alias:</b> IsBriefingActive
+    --
+    -- @return boolean: Briefing aktiv
+    -- @within BriefingSystem
+    --
     function BriefingSystem.IsBriefingActive()
         return BriefingSystem.GlobalSystem ~= nil and BriefingSystem.GlobalSystem.isActive;
     end
     IsBriefingActive = BriefingSystem.IsBriefingActive;
 
+    ---
+    -- Setzt die Position des Textes und des Titels einer Briefing-Seite.
+    -- @param _page Briefing-Seite
+    -- @within BriefingSystem
+    -- @local
+    --
     function BriefingSystem.SetBriefingPageTextPosition(_page)
         local size = {GUI.GetScreenSize()};
 
@@ -2262,7 +2946,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
 
                         -- Relativ
                         local Screen = {GUI.GetScreenSize()};
-                        Height = (Screen[2]/2) - (Height*10);
+                        Height = (Screen[2]/2) - (Height*15);
                     end
 
                     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 0 + Height);
@@ -2274,7 +2958,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text", x, 38 + Height);
                 end
             end
-
             return;
         end
 
@@ -2300,37 +2983,39 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @param _StartUV1 Startposition UV1
     -- @param _EndUV1   Endposition UV1
     -- @param _Factor   Interpolation Factor
+    -- @within BriefingSystem
     -- @local
     --
     function BriefingSystem.SetBriefingSplashscreenUV(_StartUV0, _EndUV0, _StartUV1, _EndUV1, _Factor)
         if not _StartUV0 or not _EndUV0 or not _StartUV1 or not _EndUV1 then
             return;
         end
-        
+
         local BG     = "/InGame/ThroneRoomBars_2/BarTop";
         local BB     = "/InGame/ThroneRoomBars_2/BarBottom";
         local size   = {GUI.GetScreenSize()};
         local is4To3 = math.floor((size[1]/size[2]) * 10) == 13;
-        
+
         local u0 = _StartUV0[1] + (_EndUV0[1] - _StartUV0[1]) * _Factor;
         local v0 = _StartUV0[2] + (_EndUV0[2] - _StartUV0[2]) * _Factor;
         local u1 = _StartUV1[1] + (_EndUV1[1] - _StartUV1[1]) * _Factor;
         local v1 = _StartUV1[2] + (_EndUV1[2] - _StartUV1[2]) * _Factor;
-        
+
         -- Fix für 4:3
-        if is4To3 then 
+        if is4To3 then
             u0 = u0 + (u0 * 0.125);
             u1 = u1 - (u1 * 0.125);
         end
-        
+
         XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
     end
 
     ---
     -- Schaltet zwischen Bars und Splashscreen um.
     --
-    -- @param _page  Aktuelle Briefing-Seite 
+    -- @param _page  Aktuelle Briefing-Seite
     -- @param _style Bar-Style
+    -- @within BriefingSystem
     -- @local
     --
     function BriefingSystem.SetBriefingPageOrSplashscreen(_page, _style)
@@ -2358,9 +3043,13 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             XGUIEng.SetMaterialTexture(BG, 1, "");
             XGUIEng.SetMaterialColor(BG, 1, 0, 0, 0, 255);
             XGUIEng.SetMaterialUV(BG, 1, 0, 0, 1, 1);
-        else 
+        else
             XGUIEng.SetMaterialColor(BB, 1, 0, 0, 0, 0);
-            XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
+            if _page.splashscreen.color then
+                XGUIEng.SetMaterialColor(BG, 1, unpack(_page.splashscreen.color));
+            else
+                XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
+            end
             XGUIEng.SetMaterialTexture(BG, 1, _page.splashscreen.image);
         end
 
@@ -2537,7 +3226,7 @@ function b_Reprisal_Briefing:Reset(__quest_)
     Quests[QuestID].EmbeddedBriefing = nil;
 end
 
-Core:RegisterBehavior(b_Reprisal_Briefing)
+Core:RegisterBehavior(b_Reprisal_Briefing);
 
 ---
 -- Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
@@ -2614,4 +3303,4 @@ function b_Trigger_Briefing:DEBUG(__quest_)
     return false;
 end
 
-Core:RegisterBehavior(b_Trigger_Briefing)
+Core:RegisterBehavior(b_Trigger_Briefing);

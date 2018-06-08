@@ -5,7 +5,7 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erlaubt es Gebiete oder Territorien auf der Map zu definieren, auf der ein
+-- Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
 -- Gebäude oder ein Typ nicht gebaut bzw. nicht abgerissen werden darf.
 --
 -- @module BundleConstructionControl
@@ -27,7 +27,7 @@ QSB = QSB or {};
 --
 function API.AddEntity(_entity)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
+        API.Bridge([[
             API.AddEntity("]].._entity..[[")
         ]]);
     else
@@ -45,7 +45,7 @@ end
 --
 function API.AddEntityType(_entity)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
+        API.Bridge([[
             API.AddEntityType(]].._entity..[[)
         ]]);
     else
@@ -63,7 +63,7 @@ end
 --
 function API.AddCategory(_entity)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
+        API.Bridge([[
             API.AddCategory(]].._entity..[[)
         ]]);
     else
@@ -81,7 +81,7 @@ end
 --
 function API.AddTerritory(_entity)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
+        API.Bridge([[
             API.AddTerritory(]].._entity..[[)
         ]]);
     else
@@ -99,7 +99,7 @@ end
 --
 function API.RemoveEntity(_entry)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
+        API.Bridge([[
             API.RemoveEntity("]].._entry..[[")
         ]]);
     else
@@ -120,7 +120,7 @@ end
 --
 function API.RemoveEntityType(_entry)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
+        API.Bridge([[
             API.RemoveEntityType(]].._entry..[[)
         ]]);
     else
@@ -141,7 +141,7 @@ end
 --
 function API.RemoveCategory(_entry)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
+        API.Bridge([[
             API.RemoveCategory(]].._entry..[[)
         ]]);
     else
@@ -162,7 +162,7 @@ end
 --
 function API.RemoveTerritory(_entry)
     if not GUI then
-        Logic.ExecuteInLuaLocalState([[
+        API.Bridge([[
             API.RemoveTerritory(]].._entry..[[)
         ]]);
     else
@@ -537,4 +537,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleConstructionControl");
-
