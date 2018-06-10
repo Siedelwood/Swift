@@ -464,13 +464,13 @@ function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     if GUI then
         return;
     end
+    g_ColorIndex["ExtraColor1"] = 16;
+    g_ColorIndex["ExtraColor2"] = 17;
+    
     local Type    = type(_Color);
     local Col     = (type(_Color) == "string" and g_ColorIndex[_Color]) or _Color;
     local Logo    = _Logo or -1;
     local Pattern = _Pattern or -1;
-
-    g_ColorIndex["ExtraColor1"] = 16;
-    g_ColorIndex["ExtraColor2"] = 17;
 
     StartSimpleJobEx( function(Col, _PlayerID, _Logo, _Pattern)
         Logic.PlayerSetPlayerColor(_PlayerID, Col, _Logo, _Pattern);

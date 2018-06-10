@@ -4597,7 +4597,7 @@ function Reward_Diplomacy(...)
 end
 
 b_Reward_Diplomacy = API.InstanceTable(b_Reprisal_Diplomacy);
-b_Reward_Diplomacy.Name             = "Reward_ObjectDeactivate";
+b_Reward_Diplomacy.Name             = "Reward_Diplomacy";
 b_Reward_Diplomacy.Description.de   = "Reward: Sets Diplomacy state of two Players to a stated value.";
 b_Reward_Diplomacy.Description.en   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
 b_Reward_Diplomacy.GetReprisalTable = nil;
