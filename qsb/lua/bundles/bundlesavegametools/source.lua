@@ -5,7 +5,7 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle bietet Funktionen an, mit denen Spielstände. außerhalb des
+-- Dieses Bundle bietet Funktionen an, mit denen Spielstände außerhalb des
 -- üblichen Ordners gespeichert und geladen werden können.
 --
 -- @module BundleSaveGameTools

@@ -1375,6 +1375,12 @@ function Core:RegisterBehavior(_Behavior)
                 return behavior;
             end
         end
+        
+        for i= 1, #g_QuestBehaviorTypes, 1 do
+            if g_QuestBehaviorTypes[i].Name == _Behavior.Name then
+                return;
+            end
+        end
         table.insert(g_QuestBehaviorTypes, _Behavior);
     end
 end

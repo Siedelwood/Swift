@@ -989,7 +989,7 @@ b_Reward_SetPosition.Description.de = "Lohn: Setzt eine Entity relativ zur Posit
 b_Reward_SetPosition.GetReprisalTable = nil;
 
 b_Reward_SetPosition.GetRewardTable = function(self, _Quest)
-    return { Reward.Custom, { self, self.CustomFunction } }
+    return { Reward.Custom, { self, self.CustomFunction } };
 end
 
 Core:RegisterBehavior(b_Reward_SetPosition);
@@ -1005,7 +1005,7 @@ Core:RegisterBehavior(b_Reward_SetPosition);
 -- @within Reward
 --
 function Reward_ChangePlayer(...)
-    return b_Reprisal_ChangePlayer:new(...)
+    return b_Reward_ChangePlayer:new(...);
 end
 
 b_Reward_ChangePlayer = API.InstanceTable(b_Reprisal_ChangePlayer);
@@ -1015,7 +1015,7 @@ b_Reward_ChangePlayer.Description.de = "Lohn: Aendert den Besitzer einer Entity 
 b_Reward_ChangePlayer.GetReprisalTable = nil;
 
 b_Reward_ChangePlayer.GetRewardTable = function(self, _Quest)
-    return { Reward.Custom, { self, self.CustomFunction } }
+    return { Reward.Custom, { self, self.CustomFunction } };
 end
 
 Core:RegisterBehavior(b_Reward_ChangePlayer);
