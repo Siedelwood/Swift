@@ -101,7 +101,11 @@ function API.InstanceTable(_Source, _Dest)
 
     for k, v in pairs(_Source) do
         if type(v) == "table" then
-            _Dest[k] = API.InstanceTable(v);
+            local SubTable = API.InstanceTable(v);
+            _Dest[k] = _Dest[k] or {};
+            for kk, vv in pairs(SubTable) do
+                _Dest[k][kk] = vv;
+            end
         else
             _Dest[k] = v;
         end
@@ -1375,7 +1379,7 @@ function Core:RegisterBehavior(_Behavior)
                 return behavior;
             end
         end
-        
+
         for i= 1, #g_QuestBehaviorTypes, 1 do
             if g_QuestBehaviorTypes[i].Name == _Behavior.Name then
                 return;
