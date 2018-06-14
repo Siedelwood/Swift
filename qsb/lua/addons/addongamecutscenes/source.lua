@@ -1,11 +1,11 @@
--- -------------------------------------------------------------------------- --
+﻿-- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia AddOnGameCutscenes                                           # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle verwaltet den Aufruf der mit dem SCA-Tool erstellten 
+-- Dieses Bundle verwaltet den Aufruf der mit dem SCA-Tool erstellten
 -- Cutscenes. Ausserdem ermöglicht es das direkte Erfassen der
 -- Kamerapositionen aus der Map heraus.
 --
@@ -462,19 +462,16 @@ end
 -- @local
 --
 function AddOnGameCutscenes.Local:Install()
-    -- Fader
-    if not InitializeFader then
-        Script.Load("Script\\MainMenu\\Fader.lua");
-    end
-    InitializeFader();
-    g_Fade.To = 0;
-    SetFaderAlpha(0);
-    
     self.Data.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text")
-    self.Data.Positions.Text = {X = x, Y = y}
-    local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight")
-    self.Data.Positions.Title = {X = x, Y = y}
+    local _, screenY = GUI.GetScreenSize()
+    local xp, yp = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text")
+    self.Data.Positions.Text = {X = xp, Y = yp}
+    local _, ys = XGUIEng.GetWidgetSize("/InGame/ThroneRoomBars_2/BarBottom")
+    self.Data.Positions.TextSmall = {X = xp, Y = screenY - ys + 30}
+    local xp, yp = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight")
+    self.Data.Positions.Title = {X = xp, Y = yp}
+    local _, ys = XGUIEng.GetWidgetSize("/InGame/ThroneRoomBars_2/BarTop")
+    self.Data.Positions.TitleSmall = {X = xp, Y = ys / 2 - 30}
 
     self.Data.GameCallback_Escape = GameCallback_Escape;
     GameCallback_Escape = function()
@@ -517,13 +514,6 @@ end
 -- @local
 --
 function AddOnGameCutscenes.Local:CheckWaitList()
-    if BriefingSystem.faderJob then
-        Trigger.UnrequestTrigger(BriefingSystem.faderJob);
-        BriefingSystem.faderJob = nil;
-    end
-    g_Fade.To = 0;
-    SetFaderAlpha(0);
-    
     self.Data.Name = nil
     if #self.Data.WaitList > 0 then
         AddOnGameCutscenes.Local:StartCutscene(table.remove(self.Data.WaitList))
@@ -669,7 +659,6 @@ end
 ---
 -- Verwaltet die Anzeige der Texte.
 --
--- @param _show true Wenn der Text gezeigt werden soll
 -- @param _text Text der angezeigt werden soll
 -- @param _title Titel der angezeigt werden soll
 -- @param _centered true wenn der Text zentriert sein soll
@@ -714,59 +703,23 @@ function AddOnGameCutscenes.Local:ShowText(_text, _title, _centered, _showBars, 
         XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text", self.Data.Positions.Text.X, 38 + Height)
     else
         local xTitle = self.Data.Positions.Title.X
-        local yTitle = self.Data.Positions.Title.Y
         local xText = self.Data.Positions.Text.X
-        local yText = self.Data.Positions.Text.Y
-        if not big then
-            yText = yText + 100
-            yTitle = yTitle - 80
+        if big then
+            local yTitle = self.Data.Positions.Title.Y
+            local yText = self.Data.Positions.Text.Y
+            XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", xTitle, yTitle)
+            XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text", xText, yText)
+        else
+            local yTitle = self.Data.Positions.TitleSmall.Y
+            local yText = self.Data.Positions.TextSmall.Y
+            XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", xTitle, yTitle)
+            XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text", xText, yText)
         end
-        XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", xTitle, yTitle)
-        XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text", xText, yText)
     end
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1)
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", 1)
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", "{center}"..text)
     XGUIEng.SetText("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", "{center}{darkshadow}{@color:244,184,0,255}"..title)
-end
-
----
--- Setzt die Einblendezeit für den aktuellen Flight.
--- @param _FadeIn Fading time
--- @within Private
--- @local
---
-function AddOnGameCutscenes.Local:FadeIn(_FadeIn)
-    if _FadeIn < 0 then
-        BriefingSystem.faderJob = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, nil, "BriefingSystem_CheckFader", 1, {}, { 1, math.abs(_FadeIn) });
-    else
-        FadeIn(_FadeIn);
-    end
-end
-
----
--- Setzt die Abblendezeit für den aktuellen Flight.
--- @param _FadeOut Fading time
--- @within Private
--- @local
---
-function AddOnGameCutscenes.Local:FadeOut(_FadeOut)
-    if _FadeOut < 0 then
-        BriefingSystem.faderJob = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, nil, "BriefingSystem_CheckFader", 1, {}, { 0, math.abs(_FadeOut) });
-    else
-        FadeIn(_FadeOut);
-    end
-end
-
----
--- Setzt den Alphawert der Maske.
--- @param _FaderAlpha Alpha des Fader
--- @within Private
--- @local
---
-function AddOnGameCutscenes.Local:FaderAlpha(_FaderAlpha)
-    g_Fade.To = 0;
-    SetFaderAlpha(_FaderAlpha);
 end
 
 ---
