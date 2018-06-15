@@ -4597,7 +4597,7 @@ function Reward_Diplomacy(...)
 end
 
 b_Reward_Diplomacy = API.InstanceTable(b_Reprisal_Diplomacy);
-b_Reward_Diplomacy.Name             = "Reward_ObjectDeactivate";
+b_Reward_Diplomacy.Name             = "Reward_Diplomacy";
 b_Reward_Diplomacy.Description.de   = "Reward: Sets Diplomacy state of two Players to a stated value.";
 b_Reward_Diplomacy.Description.en   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
 b_Reward_Diplomacy.GetReprisalTable = nil;
@@ -6789,7 +6789,7 @@ function Reward_MapScriptFunction(...)
 end
 
 b_Reward_MapScriptFunction = API.InstanceTable(b_Reprisal_MapScriptFunction);
-b_Reward_MapScriptFunction.Name = "Reprisal_MapScriptFunction";
+b_Reward_MapScriptFunction.Name = "Reward_MapScriptFunction";
 b_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
 b_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
 b_Reward_MapScriptFunction.GetReprisalTable = nil;
