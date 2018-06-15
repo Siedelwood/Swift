@@ -1,10 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>eu.jlmb</groupId>
-  <artifactId>MapIcon</artifactId>
+  <artifactId>SiedelwoodCutsceneAssistant</artifactId>
   <version>1.0</version>
-  <name>Siedelwood Mapiconator</name>
-  <description>Erstellt autonom für die zuletzt im Editor geöffnete Map ein passendes Icon</description>
+  <packaging>jar</packaging>
+
+  <name>Siedelwood Cutscene Assistant</name>
+  <url>http://maven.apache.org</url>
   
   <properties>
         <project.java.version>1.8</project.java.version>
@@ -22,11 +26,20 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>eu.jlmb.MapIcon.Main</mainClass>
+              <mainClass>eu.jlmb.CutsceneAssistent.Assistant</mainClass>
             </manifest>
           </archive>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
