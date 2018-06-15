@@ -989,7 +989,7 @@ b_Reward_SetPosition.Description.de = "Lohn: Setzt eine Entity relativ zur Posit
 b_Reward_SetPosition.GetReprisalTable = nil;
 
 b_Reward_SetPosition.GetRewardTable = function(self, _Quest)
-    return { Reward.Custom, { self, self.CustomFunction } }
+    return { Reward.Custom, { self, self.CustomFunction } };
 end
 
 Core:RegisterBehavior(b_Reward_SetPosition);
@@ -1005,7 +1005,7 @@ Core:RegisterBehavior(b_Reward_SetPosition);
 -- @within Reward
 --
 function Reward_ChangePlayer(...)
-    return b_Reprisal_ChangePlayer:new(...)
+    return b_Reward_ChangePlayer:new(...);
 end
 
 b_Reward_ChangePlayer = API.InstanceTable(b_Reprisal_ChangePlayer);
@@ -1015,7 +1015,7 @@ b_Reward_ChangePlayer.Description.de = "Lohn: Aendert den Besitzer einer Entity 
 b_Reward_ChangePlayer.GetReprisalTable = nil;
 
 b_Reward_ChangePlayer.GetRewardTable = function(self, _Quest)
-    return { Reward.Custom, { self, self.CustomFunction } }
+    return { Reward.Custom, { self, self.CustomFunction } };
 end
 
 Core:RegisterBehavior(b_Reward_ChangePlayer);
@@ -1203,7 +1203,7 @@ function Reward_SetVisible(...)
 end
 
 b_Reward_SetVisible = API.InstanceTable(b_Reprisal_SetVisible);
-b_Reward_SetVisible.Name = "Reward_ChangePlayer";
+b_Reward_SetVisible.Name = "Reward_SetVisible";
 b_Reward_SetVisible.Description.en = "Reward: Changes the visibility of an entity. If the entity is a spawner the spawned entities will be affected.";
 b_Reward_SetVisible.Description.de = "Lohn: Setzt die Sichtbarkeit einer Entity. Handelt es sich um einen Spawner werden auch die gespawnten Entities beeinflusst.";
 b_Reward_SetVisible.GetReprisalTable = nil;
@@ -1702,7 +1702,7 @@ function b_Trigger_OnExactOneQuestIsLost:DEBUG(_Quest)
     return false;
 end
 
-Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsWon);
+Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsLost);
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
