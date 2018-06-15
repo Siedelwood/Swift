@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <id>addongamecutscenes</id>
+    <name>Echte Cutscenes</name>
+    <description><![CDATA[Ermöglicht das Erstellen und Abspielen von echten Cutscenes.<br><b>benötigt:</b> BriefingSystem]]></description>
+
+    <dependencies>
+        <dependency>bundlebriefingsystem</dependency>
+    </dependencies>
+
+    <exclusions>
+    </exclusions>
+</root>
