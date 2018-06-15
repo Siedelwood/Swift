@@ -80,6 +80,11 @@ SymfoniaLoader = {
             "BundleInterfaceApperance",
             "BundleDialogWindows",
             },
+            
+            {
+            "AddOnGameCutscenes",                   true,
+            "BundleBriefingSystem",
+            },
         },
     }
 }
