@@ -1633,7 +1633,7 @@ end
 -- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
 -- an denen eine Aktion ausgeführt wird.
 --
--- <b>Alias:</b> QSB.TimeLine:Start
+-- <b>Alias:</b> QSB.TimeLine:Start<br>
 -- <b>Alias:</b> TimeLine:Start
 --
 -- @param _description     Beschreibung
@@ -1669,7 +1669,7 @@ end
 -- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
 -- beendet, beginnt er dennoch von vorn.
 --
--- <b>Alias:</b> QSB.TimeLine:Restart
+-- <b>Alias:</b> QSB.TimeLine:Restart<br>
 -- <b>Alias:</b> TimeLine:Restart
 --
 -- @param _ID  ID des Zeitstrahl
@@ -1687,7 +1687,7 @@ end
 ---
 -- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
 --
--- <b>Alias:</b> QSB.TimeLine:IsRunning
+-- <b>Alias:</b> QSB.TimeLine:IsRunning<br>
 -- <b>Alias:</b> TimeLine:IsRunning
 --
 -- @param _ID  ID des Zeitstrahl
@@ -1704,7 +1704,7 @@ end
 ---
 -- Hält einen Zeitstrahl an.
 --
--- <b>Alias:</b> QSB.TimeLine:Yield
+-- <b>Alias:</b> QSB.TimeLine:Yield<br>
 -- <b>Alias:</b> TimeLine:Yield
 --
 -- @param _ID  ID des Zeitstrahl
@@ -1720,7 +1720,7 @@ end
 ---
 -- Stößt einen angehaltenen Zeitstrahl wieder an.
 --
--- <b>Alias:</b> QSB.TimeLine:Resume
+-- <b>Alias:</b> QSB.TimeLine:Resume<br>
 -- <b>Alias:</b> TimeLine:Resume
 --
 -- @param _ID  ID des Zeitstrahl

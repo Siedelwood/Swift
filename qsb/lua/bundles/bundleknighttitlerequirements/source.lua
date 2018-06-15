@@ -12,42 +12,117 @@
 -- <ul>
 -- <li><b>Entitytyp besitzen</b><br/>
 -- Der Spieler muss eine bestimmte Anzahl von Entities eines Typs besitzen.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Entities = {
+--     {Entities.B_Bakery, 2},
+--     ...
+-- }
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Entitykategorie besitzen</b><br/>
 -- Der Spieler muss eine bestimmte Anzahl von Entities einer Kategorie besitzen.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Category = {
+--     {EntitiyCategories.CattlePasture, 10},
+--     ...
+-- }
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Gütertyp besitzen</b><br/>
 -- Der Spieler muss Rohstoffe oder Güter eines Typs besitzen.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Goods = {
+--     {Goods.G_RawFish, 35},
+--     ...
+-- }
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Produkte erzeugen</b><br/>
 -- Der Spieler muss Gebrauchsgegenstände für ein Bedürfnis bereitstellen.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Products = {
+--     {GoodCategories.GC_Clothes, 6},
+--     ...
+-- }
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Güter konsumieren</b><br/>
 -- Die Siedler müssen eine Menge einer bestimmten Waren konsumieren.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Consume = {
+--     {Goods.G_Bread, 30},
+--     ...
+-- }
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Vielfältigkeit bereitstellen</b><br/>
 -- Der Spieler muss einen Vielfältigkeits-Buff aktivieren.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Buff = {
+--     Buffs.Buff_FoodDiversity,
+--     ...
+-- }
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Stadtruf erreichen</b><br/>
 -- Der Ruf der Stadt muss einen bestimmten Wert erreichen oder überschreiten.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Reputation = 20
+-- </code></pre>
+--
 -- <li><b>Anzahl an Dekorationen</b><br/>
 -- Der Spieler muss mindestens die Anzahl der angegebenen Dekoration besitzen.
+-- <code><pre>
+-- KnightTitleRequirements[KnightTitles.Mayor].DecoratedBuildings = {
+--     {Goods.G_Banner, 9 },
+-- }
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Anzahl voll dekorierter Gebäude</b><br/>
 -- Anzahl an Gebäuden, an die alle vier Dekorationen angebracht sein müssen.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].FullDecoratedBuildings = 12
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Spezialgebäude ausbauen</b><br/>
 -- Ein Spezielgebäude muss ausgebaut werden.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Headquarters = 1
+-- KnightTitleRequirements[KnightTitles.Mayor].Storehouse = 1
+-- KnightTitleRequirements[KnightTitles.Mayor].Cathedrals = 1
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Anzahl Siedler</b><br/>
 -- Der Spieler benötigt eine Gesamtzahl an Siedlern.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Settlers = 40
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Anzahl reiche Stadtgebäude</b><br/>
 -- Eine Anzahl an Gebäuden muss durch Einnahmen Reichtum erlangen.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].RichBuildings = 30
+-- </code></pre>
 -- </li>
+--
 -- <li><b>Benutzerdefiniert</b><br/>
 -- Eine benutzerdefinierte Funktion, die entweder als Schalter oder als Zähler
 -- fungieren kann und true oder false zurückgeben muss.
+-- <pre><code>
+-- KnightTitleRequirements[KnightTitles.Mayor].Custom = {
+--     {SomeFunction, {1, 1}, "Überschrift", "Beschreibung"}
+-- }
+-- </code></pre>
 -- </li>
 -- </ul>
 --

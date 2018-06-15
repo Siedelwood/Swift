@@ -72,6 +72,11 @@ SymfoniaLoader = {
             "BundleInteractiveObjects",
             "BundleEntitySelection",
             },
+            
+            {
+            "AddOnGameCutscenes",                   true,
+            "BundleBriefingSystem",
+            },
         },
     }
 }

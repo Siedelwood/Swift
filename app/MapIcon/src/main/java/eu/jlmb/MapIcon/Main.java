@@ -15,8 +15,15 @@ public final class Main {
 	 * @param args are unused
 	 */
 	public static void main(String[] args) {
-		WindowWorker worker = new WindowWorker();
-		worker.buildGUI();
+		PrefManager manager = new PrefManager();
+		boolean ready = manager.loadData();
+		if (ready) {
+			WindowWorker worker = new WindowWorker(manager);
+			worker.buildGUI();
+		} else {
+			FirstStarter starter = new FirstStarter(manager);
+			starter.buildGUI();
+		}
 	}
 
 }
