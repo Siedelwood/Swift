@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -23,9 +22,8 @@ import javax.swing.SpringLayout;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- * 
+ * Main Window of the MapIconator
  * @author Jean Baumgarten
- *
  */
 public class WindowWorker implements ActionListener {
 
@@ -38,20 +36,48 @@ public class WindowWorker implements ActionListener {
 	private JLabel transformerPreview = null;
 	private JComboBox<String> iconType = null;
 	private final String[] iconNames;
-	private Preferences preferences;
 	private String path;
+	private String gameVersion = null;
+	private final String[] gameVersions;
+	private JComboBox<String> settlerVersion = null;
+	private final PrefManager manager;
 	
 	/**
 	 * Constructor of the Working window
+	 * @param manager of the preferences
 	 */
-	public WindowWorker() {
-		String[] icons = {"Ring", "Original"};
+	public WindowWorker(PrefManager manager) {
+		this.manager = manager;
+		String[] icons = {
+				"Standard", "CelticRing1", "CelticRing2",
+				"DecoRing", "StarRing", "GoldenRing",
+				"BlueRing", "FlowerRing", "OtherRing", "Original"
+				};
 		this.iconNames = icons;
-		this.preferences = Preferences.userNodeForPackage(WindowWorker.class);
-		this.path = this.preferences.get("dummyPath", "");
-		if ("".equals(this.path)) {
-			this.path = System.getProperty("user.home") + File.separator;
-			this.path += "Documents/DIE SIEDLER - Aufstieg eines Königreichs/MapEditor/Temp/Dummy.png";
+		String[] versions = {
+				"Die Siedler - Aufstieg eines Königreichs",
+				"Die Siedler - Das Erbe der Könige"
+		};
+		this.gameVersions = versions;
+		this.gameVersion = this.manager.getVersion();
+	}
+	
+	/**
+	 * Gets the Path for the Dummy to be shown
+	 */
+	private void getDummyPath() {
+		if ("Die Siedler - Aufstieg eines Königreichs".equals(this.gameVersion)) {
+			this.path = this.manager.getS6Path();
+			if ("".equals(this.path)) {
+				this.path = System.getProperty("user.home") + File.separator;
+				this.path += "Documents/DIE SIEDLER - Aufstieg eines Königreichs/MapEditor/Temp/Dummy.png";
+			}
+		} else {
+			this.path = this.manager.getS5Path();
+			if ("".equals(this.path)) {
+				this.path = System.getProperty("user.home") + File.separator;
+				this.path += "Documents/DIE SIEDLER - DEdK/MapEditor/Temp/Dummy.png";
+			}
 		}
 	}
 	
@@ -63,12 +89,22 @@ public class WindowWorker implements ActionListener {
         Container contentPane = frame.getContentPane();
         SpringLayout layout = new SpringLayout();
         contentPane.setLayout(layout);
+        
+        // Chose Settlers Version
+        this.settlerVersion = new JComboBox<String>(this.gameVersions);
+        this.settlerVersion.setName("settlerVersion");
+        contentPane.add(this.settlerVersion);
+        layout.putConstraint(SpringLayout.EAST, this.settlerVersion, -30, SpringLayout.EAST, contentPane);
+        layout.putConstraint(SpringLayout.WEST, this.settlerVersion, 30, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, this.settlerVersion, 30, SpringLayout.NORTH, contentPane);
+        this.settlerVersion.setSelectedItem(this.gameVersion);
+        this.settlerVersion.addActionListener(this);
 
         // make labels to contain the pictures
         this.originalDummy = new JLabel();
         contentPane.add(this.originalDummy);
         layout.putConstraint(SpringLayout.WEST, this.originalDummy, 30, SpringLayout.WEST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, this.originalDummy, 30, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, this.originalDummy, 30, SpringLayout.SOUTH, this.settlerVersion);
 
         this.changedDummy = new JLabel();
         contentPane.add(this.changedDummy);
@@ -78,7 +114,7 @@ public class WindowWorker implements ActionListener {
         this.transformerPreview = new JLabel();
         contentPane.add(this.transformerPreview);
         layout.putConstraint(SpringLayout.EAST, this.transformerPreview, -30, SpringLayout.EAST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, this.transformerPreview, 30, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, this.transformerPreview, 30, SpringLayout.SOUTH, this.settlerVersion);
         
         // set content in the picture labels
         this.iconType = new JComboBox<String>(this.iconNames);
@@ -89,10 +125,11 @@ public class WindowWorker implements ActionListener {
         layout.putConstraint(SpringLayout.NORTH, this.iconType, 30, SpringLayout.SOUTH, this.transformerPreview);
         this.iconType.addActionListener(this);
         
+        this.getDummyPath();
         this.iconChanged();
         
         File file = new File(this.path);
-        this.loadStartImage(file);
+        this.loadStartImage(file, this.gameVersion);
 
         // make the buttons
         JButton restart = new JButton("Neu anfangen");
@@ -158,7 +195,7 @@ public class WindowWorker implements ActionListener {
         save3.addActionListener(this);
 
         // finalize window and show it
-        int height = 180 + this.image.getHeight() * 2;
+        int height = 250 + 175 * 2;
         frame.setSize(500, height > 300 ? height : 300);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -170,7 +207,7 @@ public class WindowWorker implements ActionListener {
 	 * puts the image stored in Dummy.png into the window
 	 * @param inputFile is the Dummy.png file
 	 */
-	private void loadStartImage(File inputFile) {
+	private void loadStartImage(File inputFile, String gameVersion) {
 		File file = inputFile;
         if (file.exists()) {
         	this.trySetStartImages(file);
@@ -186,9 +223,13 @@ public class WindowWorker implements ActionListener {
                 opener.setAcceptAllFileFilterUsed(false);
                 int returnVal = opener.showOpenDialog(this.frame);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    file = opener.getSelectedFile();
-                    if (file.exists()) {
-                    	this.preferences.put("dummyPath", file.getPath());
+                    File fileO = opener.getSelectedFile();
+                    if (fileO.exists()) {
+                    	if ("Die Siedler - Aufstieg eines Königreichs".equals(gameVersion)) {
+                    		this.manager.setS6Path(fileO.getPath());
+                    	} else {
+                    		this.manager.setS5Path(fileO.getPath());
+                    	}
                     }
                     this.trySetStartImages(file);
                 }
@@ -207,6 +248,8 @@ public class WindowWorker implements ActionListener {
             BufferedImage dummy = ImageIO.read(file);
             this.image = dummy;
             this.changedImage = copyImage(dummy);
+            this.originalDummy.setText("");
+            this.changedDummy.setText("");
             this.originalDummy.setIcon(new ImageIcon(dummy));
             this.changedDummy.setIcon(new ImageIcon(dummy));
         } catch (IOException e) {
@@ -233,6 +276,8 @@ public class WindowWorker implements ActionListener {
 			this.cutout();
 		} else if ("iconType".equals(name)) {
 			this.iconChanged();
+		} else if ("settlerVersion".equals(name)) {
+			this.versionChanged();
 		} else if ("landscape".equals(name)) {
 			this.cutLandscape();
 		} else if ("saveDesktop".equals(name)) {
@@ -243,7 +288,7 @@ public class WindowWorker implements ActionListener {
 			this.saveOnYourOwn();
 		}
 	}
-	
+
 	/**
 	 * action behind the restart button
 	 * loads Dummy.png again
@@ -292,6 +337,19 @@ public class WindowWorker implements ActionListener {
         } catch (IOException e) {
             this.transformerPreview.setText(e.getLocalizedMessage());
         }
+	}
+	
+	/**
+	 * action when the settler version has been changed
+	 * reloads the map icons
+	 */
+	private void versionChanged() {
+		int index = this.settlerVersion.getSelectedIndex();
+		this.gameVersion = this.gameVersions[index];
+		this.manager.setVersion(this.gameVersion);
+		this.getDummyPath();
+		File file = new File(this.path);
+        this.loadStartImage(file, this.gameVersion);
 	}
 	
 	/**
