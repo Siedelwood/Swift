@@ -20,9 +20,9 @@
 -- beizubehalten, da es sonst möglicher Weise zu Problemen mit möglichen
 -- unentdeckten Abhängigkeiten kommen könnte.
 --
--- Neben den Bundles gibt es auch AddOns. AddOns sind spezielle Bundles, die 
--- von einem oder mehr Bundles bzw. anderen AddOns abhängig sind. Ist eine 
--- Abhängigkeit unbefriedigt, wird das AddOn nicht geladen! AddOns, die von 
+-- Neben den Bundles gibt es auch AddOns. AddOns sind spezielle Bundles, die
+-- von einem oder mehr Bundles bzw. anderen AddOns abhängig sind. Ist eine
+-- Abhängigkeit unbefriedigt, wird das AddOn nicht geladen! AddOns, die von
 -- anderen AddOns abhängig sind, müssen in der Load Order hinter AddOns stehen
 -- die sie benötigen. Desshalb wird auch hier empfohlen, die Load Order nicht
 -- zu verändern.
@@ -60,31 +60,39 @@ SymfoniaLoader = {
             {"BundleInteractiveObjects",            true},
             {"BundleEntityHealth",                  true},
         },
-        
+
         AddOnLoadOrder = {
             {
             "AddOnQuestDebug",                      true,
             "BundleQuestGeneration",
             },
-            
+
             {
             "AddOnInteractiveObjectTemplates",      true,
             "BundleInteractiveObjects",
             "BundleEntitySelection",
+            },
+
+            {
+            "AddOnRolePlayingGame",                 false,
+            "BundleEntityHealth",
+            "BundleEntityHelperFunctions",
+            "BundleInterfaceApperance",
+            "BundleDialogWindows",
             },
         },
     }
 }
 
 ---
--- Lädt alle Bundles innerhalb der Load Order und initalisiert sie. Diese 
+-- Lädt alle Bundles innerhalb der Load Order und initalisiert sie. Diese
 -- Funktion ist für die Verwendung im Spiel gedacht.
 -- <br/><br/>
 -- Die Liste der Bundles steuert welche Behavior geladen werden. Wird ein
 -- Bundle auf false gesetzt, wird es nicht geladen. Die Reihenfolge der
 -- Einträge bestimmt die Ladereihenfolge.
 --
--- _Path ist der absolute Pfad, wo die QSB auf dem Rechner liegt oder der 
+-- _Path ist der absolute Pfad, wo die QSB auf dem Rechner liegt oder der
 -- relative Pfad in der Map, in den die Quellen gepackt wurden.
 --
 -- @param _Path Root-Verzeichnis
@@ -93,7 +101,7 @@ SymfoniaLoader = {
 --
 function SymfoniaLoader:Load(_Path)
     Script.Load(_Path.. "/core.lua");
-    
+
     -- Lade alle Bundles
     for i= 1, #self.Data.LoadOrder, 1 do
         if self.Data.LoadOrder[i][2] then
@@ -102,11 +110,11 @@ function SymfoniaLoader:Load(_Path)
             API.Log("Load bundle '" .. _Path.. "/bundles/" ..Name.. "/source.lua'");
         end
     end
-    
+
     assert(API ~= nil);
-    
-    -- Lade alle AddOns 
-    for i= 1, #self.Data.AddOnLoadOrder, 1 do        
+
+    -- Lade alle AddOns
+    for i= 1, #self.Data.AddOnLoadOrder, 1 do
         if self.Data.AddOnLoadOrder[i][2] then
             -- Prüfe Abhängigkeiten
             local LoadAddon = true;
@@ -126,7 +134,7 @@ function SymfoniaLoader:Load(_Path)
             end
         end
     end
-    
+
     assert(API ~= nil);
     API.Install();
 end
@@ -155,7 +163,7 @@ end
 function SymfoniaLoader:ConcatSources()
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
-    
+
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";
         if v[2] then
@@ -163,7 +171,7 @@ function SymfoniaLoader:ConcatSources()
         end
         table.insert(QsbContent, FileContent);
     end
-    
+
     for k, v in pairs(self.Data.AddOnLoadOrder) do
         local FileContent = "";
         if v[2] then
@@ -179,7 +187,7 @@ function SymfoniaLoader:ConcatSources()
             end
         end
     end
-    
+
     return QsbContent;
 end
 
