@@ -133,9 +133,9 @@ BundleCastleStore = {
 -- @local
 --
 function BundleCastleStore.Global:Install()
-    QSB.CastleStore = BundleCastleStore.Global.CastleStore;
+    QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions()
-    API.AddSaveGameAction(BundleCastleStore.Global.OnSaveGameLoaded);
+    API.AddSaveGameAction(self.OnSaveGameLoaded);
 end
 
 ---
@@ -756,7 +756,7 @@ end
 -- @local
 --
 function BundleCastleStore.Local:Install()
-    QSB.CastleStore = BundleCastleStore.Local.CastleStore;
+    QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions();
     self:OverwriteGetStringTableText();
 end
