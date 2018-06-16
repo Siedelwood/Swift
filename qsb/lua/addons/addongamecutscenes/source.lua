@@ -24,6 +24,7 @@ CS = CS or {};
 -- Startet eine Cutscene.
 --
 -- @param _cutscene  Name der Cutscene
+-- @return boolean: Cutscene gestartet
 -- @within Public
 --
 function CS.StartCutscene(_cutscene)
@@ -38,19 +39,29 @@ function CS.StartCutscene(_cutscene)
         end
         AddOnGameCutscenes.Local.Data.Active = true
         AddOnGameCutscenes.Local:StartCutscene(_cutscene)
+        return true
     else
-        AddOnGameCutscenes.Local:AddToWaitList(_cutscene)
+        if BriefingSystem then
+            if BriefingSystem.IsBriefingActive() then
+                return false
+            end
+        else
+            AddOnGameCutscenes.Local:AddToWaitList(_cutscene)
+        end
     end
 end
 
 ---
--- Prüft, ob eine Cutscene activ ist.
+-- Prüft, ob eine Cutscene aktiv ist.
 --
--- @param _cutscene  Name der Cutscene
 -- @within Public
 --
 function CS.IsCutsceneActive()
 	-- local function, needs some change to be globaly used
+    if not GUI then
+        assert(false, "CS.IsCutsceneActive : is local function.")
+        return
+    end
     return AddOnGameCutscenes.Local:IsCutsceneActive()
 end
 
@@ -142,7 +153,6 @@ end
 -- Startet den CutsceneMaker
 --
 -- @within Private
--- @local
 --
 function AddOnGameCutscenes.Global:StartCutsceneMaker()
     self.Data.csMaker.pages = {}
@@ -162,7 +172,6 @@ end
 -- Beendet den CutsceneMaker
 --
 -- @within Private
--- @local
 --
 function AddOnGameCutscenes.Global:EndCutsceneMaker()
     EndJob(self.Data.csMaker.job)
@@ -789,7 +798,6 @@ end
 -- Beendet den CutsceneMaker
 --
 -- @within Private
--- @local
 --
 function AddOnGameCutscenes.Local:EndCutsceneMaker()
     Display.SetRenderSky(0)
@@ -845,4 +853,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("AddOnGameCutscenes");
-
