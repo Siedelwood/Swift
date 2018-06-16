@@ -103,7 +103,7 @@ function API.StartMap(_map, _knight, _folder, _needButton)
         API.Bridge('API.StartMap("'.._map..'", "'.._knight..'", "'.._needButton..'", "'.._needButton..'")');
         return;
     end
-    BundleSaveGameTools.Local:LoadGameFromFolder(_map, _knight, _folder, _needButton);
+    BundleSaveGameTools.Local:StartMap(_map, _knight, _folder, _needButton);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -258,7 +258,7 @@ end
 -- @within Private
 -- @local
 --
-function BundleSaveGameTools.Local:LoadGameFromFolder(_map, _knight, _folder, _needButton)
+function BundleSaveGameTools.Local:StartMap(_map, _knight, _folder, _needButton)
     _needButton = _needButton or 1;
     _knight = _knight or 0;
     _folder = _folder or 3;
