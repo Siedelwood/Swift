@@ -210,7 +210,7 @@ end
 function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
     self.Data.RefillTrebuchet = not _Boolean;
     Logic.ExecuteInLuaLocalState([[
-        function BundleEntitySelection.Local:DeactivateRefillTrebuchet(]]..tostring(_Boolean)..[[)
+        BundleEntitySelection.Local:DeactivateRefillTrebuchet(]]..tostring(_Boolean)..[[)
     ]]);
 end
 
