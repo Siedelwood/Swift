@@ -1147,10 +1147,12 @@ function Core:InitalizeBundles()
         if not GUI then
             if Bundle.Global ~= nil and Bundle.Global.Install ~= nil then
                 Bundle.Global:Install();
+                Bundle.Local = nil;
             end
         else
             if Bundle.Local ~= nil and Bundle.Local.Install ~= nil then
                 Bundle.Local:Install();
+                Bundle.Global = nil;
             end
         end
     end

@@ -193,7 +193,7 @@ function BundleKnightTitleRequirements.Global:OverwriteConsumedGoods()
         local PlayerID = Logic.EntityGetPlayer(_Consumer);
         BundleKnightTitleRequirements.Global:RegisterConsumedGoods(PlayerID, _Good);
         Logic.ExecuteInLuaLocalState([[
-            BundleKnightTitleRequirements.Global:RegisterConsumedGoods(
+            BundleKnightTitleRequirements.Local:RegisterConsumedGoods(
                 ]] ..PlayerID.. [[, ]] .._Good.. [[
             );
         ]]);

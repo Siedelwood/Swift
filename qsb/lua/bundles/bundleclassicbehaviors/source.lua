@@ -6662,7 +6662,7 @@ function Reward_QuestFailure(...)
     return b_Reward_QuestFailure:new(...)
 end
 
-b_Reward_QuestFailure = API.InstanceTable(b_Reprisal_ReplaceEntity);
+b_Reward_QuestFailure = API.InstanceTable(b_Reprisal_QuestFailure);
 b_Reward_QuestFailure.Name = "Reward_QuestFailure";
 b_Reward_QuestFailure.Description.en = "Reward: Lets another active quest fail.";
 b_Reward_QuestFailure.Description.de = "Lohn: Lässt eine andere aktive Quest fehlschlagen.";
