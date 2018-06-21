@@ -743,7 +743,6 @@ function AddOnGameCutscenes.Local:StartCutsceneMaker()
     Display.SetRenderSky(1)
     Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)
     Camera.SwitchCameraBehaviour(5)
-    Input.CutsceneMode()
     Display.SetRenderFogOfWar(0)
     GUI.MiniMap_SetRenderFogOfWar(0)
     GUI.ActivateCutSceneState()
@@ -845,4 +844,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("AddOnGameCutscenes");
-
