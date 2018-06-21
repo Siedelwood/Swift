@@ -1739,15 +1739,15 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler()
-    for k,v in pairs(BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs) do
+    for k,v in pairs(BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs) do
         if v.Iterator > #v then
-            BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs[k].Running = false;
+            BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs[k].Running = false;
         end
 
         if v.Running then
             if (v[v.Iterator].Time + v.StartTime) <= Logic.GetTime() then
                 v[v.Iterator].Action(v[v.Iterator]);
-                BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs[k].Iterator = v.Iterator +1;
+                BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs[k].Iterator = v.Iterator +1;
             end
         end
     end
