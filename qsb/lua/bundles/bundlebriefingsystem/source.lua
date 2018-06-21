@@ -142,7 +142,9 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 -- <b>Alias</b>: AddPages
 --
 -- @param _Briefing Briefing
--- @return function(3): AP, ASP, ASMC
+-- @return function: AP
+-- @return function: ASP
+-- @return function: ASMC
 -- @within Public
 --
 function API.AddPages(_Briefing)
@@ -160,7 +162,8 @@ AddPages = API.AddPages;
 -- <b>Alias</b>: AddPages
 --
 -- @param _Cutscene Cutscene
--- @return function(3): AF, ASF
+-- @return function: AF
+-- @return function: ASF
 -- @within Public
 --
 function API.AddFlights(_Cutscene)
@@ -203,26 +206,26 @@ BriefingMessage = API.AddBriefingNote;
 ---
 -- Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.
 --
--- <b>Normale Seite</b>
+-- <b>Normale Seite</b><br>
 -- Die üblichen Parameter können angegeben werden. Beispiele sind zoom, text,
 -- oder action. Zusätzlich hinzugekommen sind lookAt und zOffset. Mittels
 -- lookAt kann die Kamera zum Angesicht eines Siedlers ausgerichtet werden.
 -- zOffset ermöglicht die Nutzung der Z-Achse.
 --
--- <b>Multiple Choice, Sprünge und Leerseiten</b>
--- Eine Multiple Choice Seite enthält die Unterseite mc. In mc wird der Text,
+-- <b>Multiple Choice, Sprünge und Leerseiten</b><br>
+-- Eine Multiple-Choice-Seite enthält die Unterseite mc. In mc wird der Text,
 -- der Titel und die möglichen Antwortmöglichkeiten notiiert. Alle Antworten
 -- stehen innerhalb von answers. Jede mögliche Antwort ist eine Table mit dem
--- Text der Auswahl, dem Sprungziel und einigen Optionen.
+-- Text der Auswahl, dem Sprungziel und einigen Optionen.<br>
 -- Mittels eines Sprungs kann zu einer anderen Seite eines Briefings gegangen
 -- werden. Dazu muss der Index der Zielseite angegeben werden. Die erste Seite
--- eines Briefings darf kein Sprung sein!.
+-- eines Briefings darf kein Sprung sein!.<br>
 -- Eine Leerseite kann benutzt werden um hinter einem von einer Auswahl
 -- aufgeschlagenen Pfad im Briefing selbiges zu beenden. Sonst würde das
 -- Briefing einfach mit der nächsten Seite weiter machen. Sprungbefehle
 -- können alternativ verwendet werden.
 --
--- <b>Splashscreens</b>
+-- <b>Splashscreens</b><br>
 -- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
 -- über die Grafik zu scrollen oder zu zoomen.
 --
@@ -2470,7 +2473,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @local
     --
     function ThroneRoomCameraControl()
-        if Camera.GetCameraBehaviour(5) == 5 then
+        if Camera.GetCameraBehaviour(5) == 5 and BriefingSystem.GlobalSystem.isActive == true then
             local flight = BriefingSystem.Flight;
 
             -- -------------------------------------------------------------- --

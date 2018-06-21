@@ -109,7 +109,7 @@ SetOnFire = API.SetOnFire;
 -- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity von einem
 -- anderen Entity verwundet wird.
 --
--- <b>Alias</b>: AddOnEntityHurtAction
+-- <b>Alias</b>: AddEntityHurtAction
 --
 -- @param _Function Funktion, die ausgeführt wird.
 -- @within Public
@@ -125,7 +125,49 @@ function API.AddOnEntityHurtAction(_Function)
     end
     BundleEntityHealth.Global.AddOnEntityHurtAction(_Function);
 end
-AddOnEntityHurtAction = API.AddOnEntityHurtAction;
+AddEntityHurtAction = API.AddOnEntityHurtAction;
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity zerstört wird.
+--
+-- <b>Alias</b>: AddEntityKilledAction
+--
+-- @param _Function Funktion, die ausgeführt wird.
+-- @within Public
+--
+function API.AddOnEntityDestroyedAction(_Function)
+    if GUI then
+        API.Dbg("API.AddOnEntityDestroyedAction: Can not be used in local script!");
+        return;
+    end
+    if type(_Function) ~= "function" then
+        API.Dbg("_Function must be a function!");
+        return;
+    end
+    BundleEntityHealth.Global.AddOnEntityDestroyedAction(_Function);
+end
+AddEntityKilledAction = API.AddOnEntityDestroyedAction;
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt wird.
+--
+-- <b>Alias</b>: AddSettlerSpawnedAction
+--
+-- @param _Function Funktion, die ausgeführt wird.
+-- @within Public
+--
+function API.AddOnEntityCreatedAction(_Function)
+    if GUI then
+        API.Dbg("API.AddOnEntityCreatedAction: Can not be used in local script!");
+        return;
+    end
+    if type(_Function) ~= "function" then
+        API.Dbg("_Function must be a function!");
+        return;
+    end
+    BundleEntityHealth.Global.AddOnEntityCreatedAction(_Function);
+end
+AddSettlerSpawnedAction = API.AddOnEntityCreatedAction;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -134,6 +176,8 @@ AddOnEntityHurtAction = API.AddOnEntityHurtAction;
 BundleEntityHealth = {
     Global = {
         Data = {
+            OnEntityCreatedAction = {},
+            OnEntityDestroyedAction = {},
             OnEntityHurtAction = {},
         },
     },
@@ -150,11 +194,13 @@ BundleEntityHealth = {
 -- @local
 --
 function BundleEntityHealth.Global:Install()
-    BundleEntityHealth_EntityHurtEntityController = BundleEntityHealth.Global.EntityHurtEntityController;
+    BundleEntityHealth_EntityHurtEntityController = self.EntityHurtEntityController;
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "BundleEntityHealth_EntityHurtEntityController", 1);
 
-    BundleEntityHealth_EntityDestroyedController = BundleEntityHealth.Global.EntityDestroyedController;
+    BundleEntityHealth_EntityDestroyedController = self.EntityDestroyedController;
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "BundleEntityHealth_EntityDestroyedController", 1);
+    
+    Core:AppendFunction("GameCallback_SettlerSpawned", self.EntityCreatedController);
 end
 
 ---
@@ -192,6 +238,30 @@ function BundleEntityHealth.Global.AddOnEntityHurtAction(_Function)
 end
 
 ---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity zerstört
+-- wird. Die EntityID des zerstörten Entity wird übergeben.
+--
+-- @param _Function Funktion, die ausgeführt wird
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global.AddOnEntityDestroyedAction(_Function)
+    table.insert(BundleEntityHealth.Global.Data.OnEntityDestroyedAction, _Function);
+end
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt
+-- wird. Die EntityID des zerstörten Entity wird übergeben.
+--
+-- @param _Function Funktion, die ausgeführt wird
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global.AddOnEntityCreatedAction(_Function)
+    table.insert(BundleEntityHealth.Global.Data.OnEntityCreatedAction, _Function);
+end
+
+---
 -- Führt alle registrierten Events aus, wenn ein Entity ein anderes angreift.
 --
 -- @within Private
@@ -216,8 +286,37 @@ function BundleEntityHealth.Global.EntityHurtEntityController()
     end
 end
 
+---
+-- Führt alle registrierten Events aus, wenn ein Entity zerstört wird.
+--
+-- @within Private
+-- @local
+--
 function BundleEntityHealth.Global.EntityDestroyedController()
-    -- FIXME: Implement me! :(
+    local EntityIDs = {Event.GetEntityID()};
+    
+    for i=1, #EntityIDs, 1 do
+        local EntityID = EntityIDs[i];
+        for k, v in pairs(BundleEntityHealth.Global.Data.OnEntityDestroyedAction) do
+            if v then
+                v(EntityIDs);
+            end
+        end
+    end
+end
+
+---
+-- Führt alle registrierten Events aus, wenn ein Entity erzeugt wird.
+--
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global.EntityCreatedController(_EntityID)
+    for k, v in pairs(BundleEntityHealth.Global.Data.OnEntityDestroyedAction) do
+        if v then
+            v(_EntityID);
+        end
+    end
 end
 
 -- Local Script ----------------------------------------------------------------

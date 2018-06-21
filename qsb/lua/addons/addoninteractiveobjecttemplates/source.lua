@@ -435,6 +435,10 @@ AddOnInteractiveObjectTemplates = {
                         de = "An diesem Ort könnt Ihr eine Mine errichten!",
                         en = "You're able to create a pit at this location!",
                     },
+                    Unfulfilled = {
+                        de = "Die Mine kann nicht umgewandelt werden!",
+                        en = "The mine can not be transformed!",
+                    },
                 },
             },
             
@@ -873,7 +877,7 @@ function AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _
         Distance             = 1500,
         Condition            = self.ConditionBuildIOMine,
         CustomCondition      = _Condition,
-        ConditionUnfulfilled = "Not implemented yet!",
+        ConditionUnfulfilled = self.Data.Mines.Description.Unfulfilled,
         CallbackCreate       = _CreationCallback,
         CallbackDepleted     = _CallbackDepleted,
         Callback             = self.ActionBuildIOMine,
@@ -881,7 +885,7 @@ function AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _
 end
 
 ---
--- Erstelle eine Eisenmine.
+-- Erstelle eine verschüttete Eisenmine.
 --
 -- @param _Position      Script Entity, die mit Mine ersetzt wird
 -- @param _Cost1Type     (optional) Kostenware 1
@@ -911,7 +915,7 @@ function AddOnInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cos
 end
 
 ---
--- Erstelle eine Steinmine.
+-- Erstelle eine verschüttete Steinmine.
 --
 -- @param _Position      Script Entity, die mit Mine ersetzt wird
 -- @param _Cost1Type     (optional) Kostenware 1
@@ -1106,7 +1110,7 @@ function AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite(_Data)
     if Logic.GetStoreHouse(_Data.PlayerID) == 0 then
         return false;
     end
-    if _Data.PlayerID ~= tID then
+    if _Data.PlayerID ~= pID then
         return false;
     end
     return true;
@@ -1142,3 +1146,4 @@ function AddOnInteractiveObjectTemplates.Local:Install()
 end
 
 Core:RegisterAddOn("AddOnInteractiveObjectTemplates");
+

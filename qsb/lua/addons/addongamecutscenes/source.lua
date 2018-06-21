@@ -1,4 +1,4 @@
-﻿-- -------------------------------------------------------------------------- --
+-- -------------------------------------------------------------------------- --
 -- ########################################################################## --
 -- #  Symfonia AddOnGameCutscenes                                           # --
 -- ########################################################################## --
@@ -142,6 +142,7 @@ end
 -- Startet den CutsceneMaker
 --
 -- @within Private
+-- @local
 --
 function AddOnGameCutscenes.Global:StartCutsceneMaker()
     self.Data.csMaker.pages = {}
@@ -161,6 +162,7 @@ end
 -- Beendet den CutsceneMaker
 --
 -- @within Private
+-- @local
 --
 function AddOnGameCutscenes.Global:EndCutsceneMaker()
     EndJob(self.Data.csMaker.job)
@@ -787,6 +789,7 @@ end
 -- Beendet den CutsceneMaker
 --
 -- @within Private
+-- @local
 --
 function AddOnGameCutscenes.Local:EndCutsceneMaker()
     Display.SetRenderSky(0)
@@ -842,3 +845,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("AddOnGameCutscenes");
+
