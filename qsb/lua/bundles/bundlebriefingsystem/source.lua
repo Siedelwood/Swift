@@ -2473,7 +2473,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @local
     --
     function ThroneRoomCameraControl()
-        if Camera.GetCameraBehaviour(5) == 5 then
+        if Camera.GetCameraBehaviour(5) == 5 and BriefingSystem.GlobalSystem.isActive == true then
             local flight = BriefingSystem.Flight;
 
             -- -------------------------------------------------------------- --
