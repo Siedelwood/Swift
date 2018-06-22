@@ -193,7 +193,7 @@ function BundleKnightTitleRequirements.Global:OverwriteConsumedGoods()
         local PlayerID = Logic.EntityGetPlayer(_Consumer);
         BundleKnightTitleRequirements.Global:RegisterConsumedGoods(PlayerID, _Good);
         Logic.ExecuteInLuaLocalState([[
-            BundleKnightTitleRequirements.Global:RegisterConsumedGoods(
+            BundleKnightTitleRequirements.Local:RegisterConsumedGoods(
                 ]] ..PlayerID.. [[, ]] .._Good.. [[
             );
         ]]);
@@ -250,6 +250,7 @@ function BundleKnightTitleRequirements.Local:InitTexturePositions()
     g_TexturePositions.EntityCategories[EntityCategories.GrainField]                = {14, 2};
     g_TexturePositions.EntityCategories[EntityCategories.OuterRimBuilding]          = { 3, 4};
     g_TexturePositions.EntityCategories[EntityCategories.CityBuilding]              = { 8, 1};
+    g_TexturePositions.EntityCategories[EntityCategories.Leader]                    = { 7, 11};
     g_TexturePositions.EntityCategories[EntityCategories.Range]                     = { 9, 8};
     g_TexturePositions.EntityCategories[EntityCategories.Melee]                     = { 9, 7};
     g_TexturePositions.EntityCategories[EntityCategories.SiegeEngine]               = { 2,15};
@@ -500,6 +501,8 @@ function BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements()
                     QSB.RequirementTooltipTypes[RequirementsIndex] = "Worker" .. i;
                 elseif Logic.IsEntityTypeInCategory(EntitiesInCategory[1], EntityCategories.Soldier) == 1 then
                     QSB.RequirementTooltipTypes[RequirementsIndex] = "Soldiers" .. i;
+                elseif Logic.IsEntityTypeInCategory(EntitiesInCategory[1], EntityCategories.Leader) == 1 then
+                    QSB.RequirementTooltipTypes[RequirementsIndex] = "Leader" .. i;
                 elseif Logic.IsEntityTypeInCategory(EntitiesInCategory[1], EntityCategories.Outpost) == 1 then
                     QSB.RequirementTooltipTypes[RequirementsIndex] = "Outposts" .. i;
                 elseif Logic.IsEntityTypeInCategory(EntitiesInCategory[1], EntityCategories.CattlePasture) == 1 then
@@ -1136,6 +1139,17 @@ BundleKnightTitleRequirements.Local.Data.Description = {
         Text = {
             de = "- Aktiviere diesen Bonus auf den Ruf der Stadt",
             en = "- Raise the city reputatition with this buff",
+        },
+    },
+
+    Leader = {
+        Title = {
+            de = "Batalione",
+            en = "Battalions",
+        },
+        Text = {
+            de = "- Menge an Batalionen unterhalten",
+            en = "- Battalions you need under your command",
         },
     },
 
