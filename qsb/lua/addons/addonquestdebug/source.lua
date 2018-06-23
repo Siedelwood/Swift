@@ -149,7 +149,7 @@ function AddOnQuestDebug.Global:Install()
         {"restartmap",          AddOnQuestDebug.Global.RestartMap,},
         {"shareview",           AddOnQuestDebug.Global.ShareView,},
         {"setposition",         AddOnQuestDebug.Global.SetPosition,},
-        {"unfreeze",            AddOnQuestDebug.Global.Unfreeze,},
+        {"version",             AddOnQuestDebug.Global.ShowVersion,},
         -- quest control
         {"win",                 AddOnQuestDebug.Global.QuestSuccess,      true,},
         {"winall",              AddOnQuestDebug.Global.QuestSuccess,      false,},
@@ -523,6 +523,16 @@ function AddOnQuestDebug.Global:SetPosition(_Arguments)
         x,y = Logic.GetBuildingApproachPosition(target);
     end
     Logic.DEBUG_SetSettlerPosition(entity, x, y);
+end
+
+---
+-- Konsolenbefehl: Zeigt die Version der QSB an.
+--
+-- @within AddOnQuestDebug.Global
+-- @local
+--
+function AddOnQuestDebug.Global:ShowVersion()
+    API.Note(QSB.Version);
 end
 
 ---
