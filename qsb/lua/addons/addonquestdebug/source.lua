@@ -532,7 +532,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global:ShowVersion()
-    API.Note(QSB.Version);
+    API.Bridge("GUI.AddStaticNote(QSB.Version)");
 end
 
 ---
