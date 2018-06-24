@@ -5,7 +5,9 @@
 -- -------------------------------------------------------------------------- --
 
 ---
---
+-- Bietet dem Mapper ein vereinfachtes Interface für RPG-Maps. Das Bundle
+-- basiert auf dem RPG-Skript von Schwarzer Schmetterling 2, allerdings
+-- wurden einige Elemente ausgespart um das Konzept einfacher zu presentieren.
 --
 -- @module AddOnRolePlayingGame
 -- @set sort=true
@@ -16,7 +18,11 @@ QSB = QSB or {};
 
 AddOnRolePlayingGame = {
     Global =  {
-        Data = {},
+        Data = {
+            LearnpointsPerLevel = 3,
+            UseInformPlayer = true,
+            UseAutoLevel = true,
+        },
     },
     Local = {
         Data = {},
@@ -26,6 +32,18 @@ AddOnRolePlayingGame = {
         ErrorAbility = {
             de = "Die Fähigkeit kann nicht benutzt werden!",
             en = "The ability can not be used!",
+        },
+        HeroLevelUp = {
+            de = "{@color:244,184,0,255}Eure Helden sind eine Stufe aufgestiegen!",
+            en = "{@color:244,184,0,255}Your heroes reached a higher level!",
+        },
+        AutoLevelUp = {
+            de = "Die {@color:0,255,255,255}Statuswerte{@color:255,255,255,255} Eurer Helden haben sich verbessert!",
+            en = "The {@color:0,255,255,255}properties{@color:255,255,255,255} of your heroes have improved!",
+        },
+        ManualLevelUp = {
+            de = "Alle Helden erhalten {@color:0,255,255,255}%d{@color:255,255,255,255} Lernpunkte!",
+            en = "All heroes gained {@color:0,255,255,255}%d{@color:255,255,255,255} learnpoints!",
         },
     },
 }
@@ -49,7 +67,82 @@ AddOnRolePlayingGame = {
 -- @local
 --
 function AddOnRolePlayingGame.Global:Install()
+    -- Kampf Controller
+    API.AddOnEntityHurtAction(self.EntityFightingController);
+    -- Level-Up Controller
+    Core:AppendFunction("GameCallback_KnightTitleChanged", self.LevelUpController);
+end
 
+---
+-- Kontrolliert den Kampf von Einheiten und verrechten den absoluten Schaden.
+--
+-- @param _Attacker Attacking Entity
+-- @param _Defender Defending Entity
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.EntityFightingController(_Attacker, _Defender)
+    if IsExisting(_Attacker) and IsExisting(_Defender) and Logic.IsBuilding(_Attacker) == 0 and Logic.IsBuilding(_Defender) == 0 then
+        -- Angreiferstatus
+        local AttackerName = GiveEntityName(_Attacker);
+        local AttackerUnit = AddOnRolePlayingGame.Unit:GetInstance(AttackerName);
+        if AttackerUnit == nil then
+            AttackerUnit = AddOnRolePlayingGame.Unit:New(AttackerName);
+        end
+        
+        -- Verteidigerstatus
+        local DefenderName = GiveEntityName(_Defender);
+        local DefenderUnit = AddOnRolePlayingGame.Unit:GetInstance(DefenderName);
+        if DefenderUnit == nil then
+            DefenderUnit = AddOnRolePlayingGame.Unit:New(DefenderName);
+        end
+        
+        -- Verwunde das Ziel
+        local DefenderHero = AddOnRolePlayingGame.Hero:GetInstance(DefenderName);
+        
+        local Damage = DefenderUnit:CalculateEnduredDamage(AttackerUnit);
+        API.HurtEntity(DefenderName, Damage, AttackerName);
+        if DefenderHero ~= nil then
+            DefenderHero.Health = DefenderHero.Health - Damage;
+        end
+    end
+end
+
+---
+-- Hebt das Level aller Helden eines Spielers an, wenn der Spieler
+-- befördert wird. Dabei werden entweder Lernpunkte vergeben oder automatisch
+-- Statuswerte erhöht.
+--
+-- @param _PlayerID ID des Spielers
+-- @param _NewTitle Neuer Titel
+-- @param _OldTitle Alter Titel
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.LevelUpController(_PlayerID, _NewTitle, _OldTitle)
+    for k, v in pairs(AddOnRolePlayingGame.HeroList) do
+        if v then
+            local PlayerID = Logic.EntityGetPlayer(GetID(k));
+            if PlayerID == _PlayerID then
+                local Learnpoints = AddOnRolePlayingGame.Global.Data.LearnpointsPerLevel;
+                local AutoLevel   = AddOnRolePlayingGame.Global.Data.UseAutoLevel;
+                v:LevelUp(Learnpoints, AutoLevel == true);
+                
+                -- Den Spieler informieren
+                if API.GetControllingPlayer() == _PlayerID then
+                    if AddOnRolePlayingGame.Global.Data.UseInformPlayer then
+                        API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
+                        if AutoLevel then
+                            API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
+                        else
+                            local Text = string.format(AddOnRolePlayingGame.Texts.ManualLevelUp, Learnpoints);
+                            API.Note(Text);
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
 -- local Script ----------------------------------------------------------------
@@ -61,7 +154,20 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Local:Install()
+    self:DeactivateAbilityBlabering();
+end
 
+---
+-- Deaktiviert die Information über aktive und passive Fähigkeit der Helden.
+--
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:DeactivateAbilityBlabering()
+    StartKnightVoiceForActionSpecialAbility = function(_KnightType, _NoPriority)
+    end
+    StartKnightVoiceForPermanentSpecialAbility = function(_KnightType)
+    end
 end
 
 -- -------------------------------------------------------------------------- --
@@ -174,7 +280,24 @@ end
 function AddOnRolePlayingGame.Unit:GetDamage()
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Unit);
-    return self.BaseDamage * self:GetStrength();
+    return self.BaseDamage + (self:GetStrength() * (self.BaseDamage * 0.2));
+end
+
+---
+-- Gibt den tatsächlich erlittenen Schaden zurück.
+-- @param _Attacker Unit des Angreifers
+-- @return number: Schaden
+-- @within AddOnRolePlayingGame.Unit
+--
+function AddOnRolePlayingGame.Unit:CalculateEnduredDamage(_Attacker)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Unit);
+    
+    local Damage = _Attacker:GetDamage();
+    for i= 1, self:GetEndurance(), 1 do
+        Damage = Damage - (0.1 * Damage);
+    end
+    return Damage;
 end
 
 ---
@@ -186,7 +309,7 @@ end
 --
 -- Buffs haben folgendes Format:
 -- <pre><code>
--- {DURATION, STRENGTH_BONUS, MAGIC_BONUS, ENDURANCE_BONUS, BUFF_NAME}
+-- {DURATION, STRENGTH, MAGIC, ENDURANCE, BUFF_NAME}
 -- </pre></code>
 --
 -- @param _Buff Buff-Table
@@ -196,6 +319,12 @@ end
 function AddOnRolePlayingGame.Unit:BuffAdd(_Buff)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Unit);
+    for k, v in pairs(self.Buffs) do
+        if v and _Buff[5] and v[5] == _Buff[5] then
+            API.Warn("AddOnRolePlayingGame.Unit:BuffAdd: A buff with the identifier '" .._Buff[5].. "' already exists!");
+            return;
+        end
+    end
     table.insert(_Buff[1], _Buff);
     return self;
 end
@@ -229,9 +358,9 @@ function AddOnRolePlayingGame.Unit.UpdateBuffs(_ScriptName)
         return true;
     end
     for k, v in pairs(AddOnRolePlayingGame.Unit[_ScriptName].Buffs) do
-        if v and v[1] > -1 then
+        if v and v[1] > 0 then
             v[1] = v[1] -1;
-            if v[1] <= 0 then
+            if v[1] == 0 then
                 AddOnRolePlayingGame.Unit[_ScriptName].Buffs[k] = nil;
             end
         end
@@ -253,6 +382,7 @@ function AddOnRolePlayingGame.Hero:New(_ScriptName)
     assert(self == AddOnRolePlayingGame.Hero);
 
     local hero = API.InstanceTable(self, AddOnRolePlayingGame.Unit:New(_ScriptName));
+    hero.Level        = 0;
     hero.Learnpoints  = 0;
     hero.Health       = 400;
     hero.MaxHealth    = 400;
@@ -282,6 +412,36 @@ function AddOnRolePlayingGame.Unit:GetInstance(_ScriptName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Hero);
     return AddOnRolePlayingGame.HeroList[_ScriptName];
+end
+
+---
+-- Erhöht das Level des Helden. Es kann entweder automatisch gelevelt werdern.
+-- In diesem Fall werden die Statuswerte automatisch erhöht. Andernfalls werden
+-- Lernpunkte gutgeschrieben.
+-- @param _LP        Menge an Lernpunkten
+-- @param _AutoLevel Lernpunkte automatisch verwenden
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:LevelUp(_LP, _AutoLevel)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Hero);
+    if _AutoLevel == true then
+        for i=1, _LP, 1 do
+            local RandomStat = math.random(1, 3);
+            if RandomStat == 1 then
+                self.Strength = self.Strength +1;
+            elseif RandomStat == 2 then
+                self.Magic = self.Magic +1;
+            else
+                self.Endurance = self.Endurance +1;
+            end
+        end
+    else
+        self.Learnpoints = self.Learnpoints + _LP;
+    end
+    self.Level = self.Level +1;
+    return self;
 end
 
 ---
@@ -327,7 +487,7 @@ function AddOnRolePlayingGame.Hero:GetAbilityRecharge()
     assert(not GUI);
     assert(self ~= AddOnRolePlayingGame.Hero);
     if self.Ability then
-        return (self.Magic * 0.05) +1;
+        return (self.GetMagic() * 0.2) +1;
     end
     return 1;
 end
@@ -340,7 +500,7 @@ end
 function AddOnRolePlayingGame.Hero:GetRegerneration()
     assert(not GUI);
     assert(self ~= AddOnRolePlayingGame.Hero);
-    return (self.Endurance * 0.1) +5;
+    return (self.GetEndurance() * 0.2) +5;
 end
 
 ---
@@ -596,6 +756,7 @@ AddOnRolePlayingGame.Item = {};
 -- @within AddOnRolePlayingGame.Item
 --
 function AddOnRolePlayingGame.Item:New(_Identifier)
+    assert(not GUI);
     assert(self == AddOnRolePlayingGame.Item);
 
     local item = API.InstanceTable(self);
