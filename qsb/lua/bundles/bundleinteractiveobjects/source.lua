@@ -139,6 +139,12 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 -- <td>Nachricht, die angezeigt wird, wenn der falsche Held das Objekt
 -- aktivieren will.</td>
 -- <td>ja</td>
+-- </tr>
+-- <tr>
+-- <td>State</td>
+-- <td>Bestimmt, wie sich der Button des interaktiven Objektes verhält.</td>
+-- <td>ja</td>
+-- </tr>
 -- </table>
 --
 -- Zusätzlich können beliebige weitere Felder an das Objekt angehangen

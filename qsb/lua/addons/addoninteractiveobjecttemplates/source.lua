@@ -1110,7 +1110,7 @@ function AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite(_Data)
     if Logic.GetStoreHouse(_Data.PlayerID) == 0 then
         return false;
     end
-    if _Data.PlayerID ~= tID then
+    if _Data.PlayerID ~= pID then
         return false;
     end
     return true;

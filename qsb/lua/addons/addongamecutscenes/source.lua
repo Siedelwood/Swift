@@ -24,6 +24,7 @@ CS = CS or {};
 -- Startet eine Cutscene.
 --
 -- @param _cutscene  Name der Cutscene
+-- @return boolean: Cutscene gestartet
 -- @within Public
 --
 function CS.StartCutscene(_cutscene)
@@ -38,19 +39,29 @@ function CS.StartCutscene(_cutscene)
         end
         AddOnGameCutscenes.Local.Data.Active = true
         AddOnGameCutscenes.Local:StartCutscene(_cutscene)
+        return true
     else
-        AddOnGameCutscenes.Local:AddToWaitList(_cutscene)
+        if BriefingSystem then
+            if BriefingSystem.IsBriefingActive() then
+                return false
+            end
+        else
+            AddOnGameCutscenes.Local:AddToWaitList(_cutscene)
+        end
     end
 end
 
 ---
--- Prüft, ob eine Cutscene activ ist.
+-- Prüft, ob eine Cutscene aktiv ist.
 --
--- @param _cutscene  Name der Cutscene
 -- @within Public
 --
 function CS.IsCutsceneActive()
 	-- local function, needs some change to be globaly used
+    if not GUI then
+        assert(false, "CS.IsCutsceneActive : is local function.")
+        return
+    end
     return AddOnGameCutscenes.Local:IsCutsceneActive()
 end
 
@@ -741,7 +752,6 @@ function AddOnGameCutscenes.Local:StartCutsceneMaker()
     Display.SetRenderSky(1)
     Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)
     Camera.SwitchCameraBehaviour(5)
-    Input.CutsceneMode()
     Display.SetRenderFogOfWar(0)
     GUI.MiniMap_SetRenderFogOfWar(0)
     GUI.ActivateCutSceneState()
@@ -842,4 +852,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("AddOnGameCutscenes");
-
