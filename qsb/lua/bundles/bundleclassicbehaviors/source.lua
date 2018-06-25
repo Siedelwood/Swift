@@ -6638,7 +6638,7 @@ function Reward_QuestRestart(...)
 end
 
 b_Reward_QuestRestart = API.InstanceTable(b_Reprisal_QuestRestart);
-b_Reward_QuestRestart.Name = "Reward_ReplaceEntity";
+b_Reward_QuestRestart.Name = "Reward_QuestRestart";
 b_Reward_QuestRestart.Description.en = "Reward: Restarts a (completed) quest so it can be triggered and completed again.";
 b_Reward_QuestRestart.Description.de = "Lohn: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann.";
 b_Reward_QuestRestart.GetReprisalTable = nil;
