@@ -145,6 +145,9 @@ Core:RegisterBehavior(b_Goal_WinQuest);
 -- Dabei ist es egal von welchem Spieler. Diebe können Gold nur aus
 -- Stadtgebäude stehlen.
 --
+-- <b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
+-- Gebäuden, damit der Quest stets erfüllbar bleibt.
+--
 -- @param _Amount       Menge an Gold
 -- @param _ShowProgress Fortschritt ausgeben
 -- @return Table mit Behavior
@@ -203,14 +206,20 @@ function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
     end
     
     -- Cheat earnings
+    local PlayerIDs = {self.Target};
     if self.Target == -1 then
-        for i= 1, 8, 1 do
-            if i ~= _Quest.ReceivingPlayer and Logic.GetStoreHouse(i) ~= 0 then
-                API.SetEarningsOfPlayerCity(i, math.random(20, 100));
+        PlayerIDs = {1, 2, 3, 4, 5, 6, 7, 8};
+    end
+    for i= 1, #PlayerIDs, 1 do
+        if i ~= _Quest.ReceivingPlayer and Logic.GetStoreHouse(i) ~= 0 then
+            local CityBuildings = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.CityBuilding)};
+            for j= 1, #CityBuildings, 1 do
+                local CurrentEarnings = Logic.GetBuildingProductEarnings(CityBuildings[j]);
+                if CurrentEarnings < 45 and Logic.GetTime() % 5 == 0 then
+                    Logic.SetBuildingEarnings(CityBuildings[j], CurrentEarnings +1);
+                end
             end
         end
-    else
-        API.SetEarningsOfPlayerCity(self.Target, math.random(20, 100));
     end
     
     local amount = self.Amount-self.StohlenGold;
@@ -256,6 +265,9 @@ Core:RegisterBehavior(b_Goal_StealGold)
 --
 -- Eine Kirche wird immer Sabotiert. Ein Lagerhaus verhält sich ähnlich zu
 -- einer Burg.
+--
+-- <b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
+-- ein Dieb entsandt werden kann.
 --
 -- @param _ScriptName Skriptname des Gebäudes
 -- @return Table mit Behavior
@@ -391,6 +403,9 @@ Core:RegisterBehavior(b_Goal_StealBuilding)
 --
 -- Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
 -- es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.
+--
+-- <b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
+-- ein Dieb entsandt werden kann.
 --
 -- @param _ScriptName  Skriptname des Gebäudes
 -- @param _DeleteThief Dieb nach Abschluss löschen
