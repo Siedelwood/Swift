@@ -202,6 +202,17 @@ function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
         end
     end
     
+    -- Cheat earnings
+    if self.Target == -1 then
+        for i= 1, 8, 1 do
+            if i ~= _Quest.ReceivingPlayer and Logic.GetStoreHouse(i) ~= 0 then
+                API.SetEarningsOfPlayerCity(i, math.random(20, 100));
+            end
+        end
+    else
+        API.SetEarningsOfPlayerCity(self.Target, math.random(20, 100));
+    end
+    
     local amount = self.Amount-self.StohlenGold;
     amount = (amount > 0 and amount) or 0;
     local text = {
@@ -212,7 +223,7 @@ function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
 end
 
 function b_Goal_StealGold:CustomFunction(_Quest)
-    Core:ChangeCustomQuestCaptionText(_Quest.Identifier, self:SetDescriptionOverwrite(_Quest));
+    Core:ChangeCustomQuestCaptionText(self:SetDescriptionOverwrite(_Quest), _Quest);
 
     if self.StohlenGold >= self.Amount then
         return true;
@@ -318,6 +329,13 @@ function b_Goal_StealBuilding:CustomFunction(_Quest)
     if not self.Marker then
         local pos = GetPosition(self.Building);
         self.Marker = Logic.CreateEffect(EGL_Effects.E_Questmarker, pos.X, pos.Y, 0);
+    end
+    
+    -- Cheat earnings
+    local BuildingID = GetID(self.Building);
+    if  Logic.IsEntityInCategory(BuildingID, EntityCategories.CityBuilding) == 1
+    and Logic.GetBuildingEarnings(BuildingID) < 10 then
+        Logic.SetBuildingEarnings(BuildingID, 10);
     end
 
     if self.SuccessfullyStohlen then
@@ -439,6 +457,13 @@ function b_Goal_SpyBuilding:CustomFunction(_Quest)
     if not self.Marker then
         local pos = GetPosition(self.Building);
         self.Marker = Logic.CreateEffect(EGL_Effects.E_Questmarker, pos.X, pos.Y, 0);
+    end
+    
+    -- Cheat earnings
+    local BuildingID = GetID(self.Building);
+    if  Logic.IsEntityInCategory(BuildingID, EntityCategories.CityBuilding) == 1
+    and Logic.GetBuildingEarnings(BuildingID) < 10 then
+        Logic.SetBuildingEarnings(BuildingID, 10);
     end
 
     if self.Infiltrated then

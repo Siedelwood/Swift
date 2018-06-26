@@ -58,6 +58,33 @@ end
 UndiscoverTerritories = API.UndiscoverTerritories;
 
 ---
+-- Setzt die Einnahmen für alle Stadtgebäude eines Spielers. Stadtgebäude
+-- können nur Einnahmen zwischen 0 und 100 Talern haben.
+--
+-- <b>Alias:</b> SetPlayerEarnings
+--
+-- @param _PlayerID Partei oder nil für alle
+-- @param _Earnings Einnahmen [0 | 100]
+-- @within Public
+--
+function API.SetEarningsOfPlayerCity(_PlayerID, _Earnings)
+    if GUI then
+        API.Bridge("API.SetEarningsOfPlayerCity(" .._PlayerID.. ", " .._Earnings.. ")");
+        return;
+    end
+    if _PlayerID ~= -1 and Logic.GetStoreHouse(_PlayerID) == 0 then
+        API.Dbg("API.SetEarningsOfPlayerCity: Player " .._PlayerID.. " is dead! :(");
+        return;
+    end
+    if _Earnings == nil or (_Earnings < 0 or _Earnings > 100) then
+        API.Dbg("API.SetEarningsOfPlayerCity: _Earnings must be between 0 and 100!");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity(_PlayerID, _Earnings);
+end
+SetPlayerEarnings = API.SetEarningsOfPlayerCity;
+
+---
 -- Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
@@ -66,12 +93,20 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 --
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
--- @param _PlayerID Partei oder nil für alle
+-- @param _PlayerID Partei oder -1 für alle
 -- @within Public
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
     if GUI then
         API.Bridge("API.SetNeedSatisfaction(" .._Need.. ", " .._State.. ", " .._PlayerID.. ")")
+        return;
+    end
+    if _PlayerID ~= -1 and Logic.GetStoreHouse(_PlayerID) == 0 then
+        API.Dbg("API.SetNeedSatisfaction: Player " .._PlayerID.. " is dead! :(");
+        return;
+    end
+    if _State < 0 or _State > 1 then
+        API.Dbg("API.SetNeedSatisfaction: _State must be between 0 and 1!");
         return;
     end
     return BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID);
@@ -677,18 +712,42 @@ function BundleGameHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _Targ
 end
 
 ---
+-- Setzt die Einnahmen für alle Stadtgebäude eines Spielers. Stadtgebäude
+-- können nur Einnahmen zwischen 0 und 100 Talern haben.
+--
+-- <b>Alias:</b> SetPlayerEarnings
+--
+-- @param _PlayerID Partei oder nil für alle
+-- @param _Earnings Einnahmen [0 | 100]
+-- @within Private
+-- @local
+--
+function BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity(_PlayerID, _Earnings)
+    if _PlayerID == -1 then
+        for i=1, 8, 1 do
+            self:SetEarningsOfPlayerCity(i, _Earnings);
+        end
+    else
+        local City = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.CityBuilding)};
+        for i=1, #City, 1 do
+            Logic.SetBuildingEarnings(City[i], _Earnings);
+        end
+    end
+end
+
+---
 -- Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
 --
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
--- @param _PlayerID Partei oder nil für alle
+-- @param _PlayerID Partei oder -1 für alle
 -- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
-    if not _PlayerID then
+    if _PlayerID == -1 then
         for i=1, 8, 1 do
             self:SetNeedSatisfactionLevel(_Need, _State, i);
         end

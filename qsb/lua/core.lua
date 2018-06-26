@@ -1231,7 +1231,7 @@ function Core:SetupGlobal_HackQuestSystem()
         for i=1,_quest.Objectives[0] do
             if _quest.Objectives[i].Type == Objective.Custom2 and _quest.Objectives[i].Data[1].SetDescriptionOverwrite then
                 local Desc = _quest.Objectives[i].Data[1]:SetDescriptionOverwrite(_quest);
-                Core:ChangeCustomQuestCaptionText(_quest.Identifier, Desc);
+                Core:ChangeCustomQuestCaptionText(Desc, _quest);
                 break;
             end
         end
