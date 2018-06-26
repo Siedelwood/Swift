@@ -3700,18 +3700,14 @@ function b_Reprisal_QuestRestart:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_QuestRestart:CustomFunction(_Quest)
-    self:ResetQuest();
+    RestartQuestByName(self.QuestName, true);
 end
 
 function b_Reprisal_QuestRestart:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
-        return true
+        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
     end
-end
-
-function b_Reprisal_QuestRestart:ResetQuest()
-    RestartQuestByName(self.QuestName);
+    return false;
 end
 
 Core:RegisterBehavior(b_Reprisal_QuestRestart);
@@ -3751,13 +3747,12 @@ function b_Reprisal_QuestFailure:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_QuestFailure:CustomFunction(_Quest)
-    FailQuestByName(self.QuestName);
+    FailQuestByName(self.QuestName, true);
 end
 
 function b_Reprisal_QuestFailure:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid quest!");
-        return true;
+        warn("".._Quest.Identifier.." "..self.Name..": got an invalid quest!");
     end
     return false;
 end
@@ -3799,13 +3794,12 @@ function b_Reprisal_QuestSuccess:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_QuestSuccess:CustomFunction(_Quest)
-    WinQuestByName(self.QuestName);
+    WinQuestByName(self.QuestName, true);
 end
 
 function b_Reprisal_QuestSuccess:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
-        return true
+        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
     end
     return false;
 end
@@ -3849,14 +3843,14 @@ function b_Reprisal_QuestActivate:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_QuestActivate:CustomFunction(_Quest)
-    StartQuestByName(self.QuestName);
+    StartQuestByName(self.QuestName, true);
 end
 
 function b_Reprisal_QuestActivate:DEBUG(_Quest)
     if not IsValidQuest(self.QuestName) then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist")
-        return true
+        warn(_Quest.Identifier .. " " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist")
     end
+    return false;
 end
 
 Core:RegisterBehavior(b_Reprisal_QuestActivate)
@@ -3901,15 +3895,14 @@ function b_Reprisal_QuestInterrupt:CustomFunction(_Quest)
         local QuestID = GetQuestID(self.QuestName)
         local Quest = Quests[QuestID]
         if Quest.State == QuestState.Active then
-            StopQuestByName(self.QuestName);
+            StopQuestByName(self.QuestName, true);
         end
     end
 end
 
 function b_Reprisal_QuestInterrupt:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
-        return true
+        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
     end
     return false;
 end
@@ -3981,8 +3974,7 @@ end
 
 function b_Reprisal_QuestForceInterrupt:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
-        return true;
+        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
     end
     return false;
 end

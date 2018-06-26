@@ -51,17 +51,18 @@ function Mission_FirstMapAction()
     
     API.AddQuest {
         Name = "Test01",
+        EndMessage = true,
         Goal_InstantSuccess(),
-        Reward_Diplomacy(1, 2, "Enemy"),
-        Trigger_Time(0),
+        Reward_QuestRestart("Test02"),
+        Trigger_OnMonth(4),
     }
     
     API.AddQuest {
-        Name        = "Test01",
-        Visible     = true,
-        EndMessage  = true,
-        Goal_StealGold(500, 2, true),
-        Trigger_Time(0),
+        Name = "Test02",
+        EndMessage = true,
+        Goal_InstantSuccess(),
+        Reward_QuestRestart("Test01"),
+        Trigger_OnMonth(10),
     }
     
     -- -----
