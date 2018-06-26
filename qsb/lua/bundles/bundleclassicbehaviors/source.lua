@@ -7008,9 +7008,9 @@ end
 b_Reward_QuestRestartForceActive.ResetQuest = b_Reward_QuestRestart.CustomFunction;
 function b_Reward_QuestRestartForceActive:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist")
-        return true
+        warn(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
     end
+    return false;
 end
 
 Core:RegisterBehavior(b_Reward_QuestRestartForceActive)
