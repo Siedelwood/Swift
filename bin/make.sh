@@ -1,5 +1,6 @@
 #/bin/bash
 cd ..
+rm -rf var &>/dev/null
 mkdir var &>/dev/null
 
 echo "Building QSB ..."
@@ -15,6 +16,9 @@ echo "Done!"
 cd ../../qsb
 
 echo "Generating Documentation ..."
-lua ldoc/ldoc.lua --dir ../var/doc lua &>/dev/null
+lua ldoc/ldoc.lua . &>/dev/null
+mv doc ../var/doc
+rm config.ld
+
 cd ..
 echo "Done!"

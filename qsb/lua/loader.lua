@@ -161,9 +161,17 @@ function SymfoniaLoader:ConcatSources()
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
     
+    local fh = io.open("qsb/config.ld", "wt");
+    assert(fh, "Output file can not be created!");
+    fh:write("project = 'Symfonia'\n");    
+    fh:write("description = 'Just a test for configuration.'\n");
+    
+    local ActiveBundles = "file = {\n'./lua/core.lua',\n";
+    
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";
         if v[2] then
+            ActiveBundles = ActiveBundles.. "'./lua/bundles/" ..v[1]:lower().. "/source.lua',\n";
             FileContent = self:LoadSource(BasePath.. "bundles/" ..v[1]:lower().. "/source.lua");
         end
         table.insert(QsbContent, FileContent);
@@ -179,11 +187,16 @@ function SymfoniaLoader:ConcatSources()
                 end
             end
             if LoadAddOn == true then
+                ActiveBundles = ActiveBundles.. "'./lua/addons/" ..v[1]:lower().. "/source.lua',\n";
                 FileContent = self:LoadSource(BasePath.. "addons/" ..v[1]:lower().. "/source.lua");
                 table.insert(QsbContent, FileContent);
             end
         end
     end
+    
+    ActiveBundles = ActiveBundles.. "}";
+    fh:write(ActiveBundles.. "\n");  
+    fh:close();
     
     return QsbContent;
 end
