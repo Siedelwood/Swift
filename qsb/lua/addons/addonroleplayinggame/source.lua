@@ -530,29 +530,29 @@ end
 ---
 -- Fügt der Einheit einen Buff hinzu.
 --
--- Buffs können nicht gestackt werden, d.h. jeder Buff kann nur einmal auf
--- einer Einheit aktiv sein. Buffs sind entweder n Sekunden aktiv oder haben
+-- Ist ein Buff schon aktiv, dann wird die Dauer des Effekts um die Dauer des 
+-- neuen Buffs verlängert. Buffs sind entweder n Sekunden aktiv oder haben
 -- eine unbegrenzte Dauer. In diesem Fall wird die Duration -1 gesetzt.
 --
 -- Buffs haben folgendes Format:
 -- <pre><code>
--- {DURATION, STRENGTH, MAGIC, ENDURANCE, BUFF_NAME}
+-- {DURATION, STRENGTH, MAGIC, ENDURANCE}
 -- </pre></code>
 --
 -- @param _Buff Buff-Table
 -- @return self
 -- @within AddOnRolePlayingGame.Unit
 --
-function AddOnRolePlayingGame.Unit:BuffAdd(_Buff)
+function AddOnRolePlayingGame.Unit:BuffAdd(_BuffName, _Buff)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Unit);
-    for k, v in pairs(self.Buffs) do
-        if v and _Buff[5] and v[5] == _Buff[5] then
-            API.Warn("AddOnRolePlayingGame.Unit:BuffAdd: A buff with the identifier '" .._Buff[5].. "' already exists!");
-            return;
+    if not self.Buffs[_BuffName] then
+        self.Buffs[_BuffName] = _Buff;
+    else 
+        if self.Buffs[_BuffName][1] > 0 then 
+            self.Buffs[_BuffName][1] = self.Buffs[_BuffName][1] + _Buff[1];
         end
     end
-    table.insert(_Buff[1], _Buff);
     return self;
 end
 
@@ -566,11 +566,7 @@ end
 function AddOnRolePlayingGame.Unit:BuffRemove(_BuffName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Unit);
-    for k, v in pairs(self.Buffs) do
-        if v and v[5] == _BuffName then
-            self.Buffs[k] = nil;
-        end
-    end
+    self.Buffs[_BuffName] = nil;
     return self;
 end
 
