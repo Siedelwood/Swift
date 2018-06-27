@@ -31,8 +31,41 @@ AddOnRolePlayingGame = {
     Local = {
         Data = {},
     },
+    
+    KnightCommands = {
+        Strength = {
+            Mother	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/StartAttack",
+            Button	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/StartAttack/Button",
+            Timer	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/StartAttack/Time",
+        },
+        Magic = {
+            Mother	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/Trebuchet",
+            Button	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/Trebuchet/Button",
+            Timer	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/Trebuchet/Time",
+        },
+        Endurance = {
+            Mother	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/Bless",
+            Button	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/Bless/Button",
+            Timer	= "/InGame/Root/Normal/AlignTopLeft/KnightCommands/Bless/Time",
+        },
+    },
 
-    Texts = {
+    Texts = {        
+        UpgradeStrength = {
+            de = "Kraft verbessern",
+            en = "Improve Strength",
+        },
+        UpgradeMagic = {
+            de = "Magie verbessern",
+            en = "Improve Magic",
+        },
+        UpgradeEndurance = {
+            de = "Ausdauer verbessern",
+            en = "Improve Endurance",
+        }
+        
+        -- Messages --
+        
         ErrorAbility = {
             de = "Die Fähigkeit kann nicht benutzt werden!",
             en = "The ability can not be used!",
@@ -163,7 +196,47 @@ function AddOnRolePlayingGame.Global:Install()
     -- Level-Up Controller
     Core:AppendFunction("GameCallback_KnightTitleChanged", self.LevelUpController);
     -- Experience Level-Up Controller 
-    StartSimpleJobEx(self.ExperienceLevelUpController)
+    StartSimpleJobEx(self.ExperienceLevelUpController);
+    -- Save Game 
+    API.AddSaveGameAction(self.OnSaveGameLoaded);
+end
+
+---
+-- Aktualisiert die Statuswerte eines Helden.
+--
+-- Der Index steht für den geklickten Button.
+-- Die EntityID bestimmt den Helden.
+--
+-- @param _Idx      Button Index
+-- @param _EntityID ID des Entity
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:UpgradeHeroStatus(_Idx, _EntityID)
+    local ScriptName = Logic.GetEntityName(_EntityID);
+    local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(ScriptName);
+    if HeroInstance == nil then 
+        return;
+    end
+    if HeroInstance.Learnpoints < 1 then 
+        return;
+    end
+    
+    -- Lernpunkte entfernen
+    API.Bridge('AddOnRolePlayingGame.HeroList["' ..ScriptName.. '"].Learnpoints = '..(HeroInstance.Learnpoints-1));
+    HeroInstance.Learnpoints = HeroInstance.Learnpoints -1;
+
+    -- Statuswert verbessern
+    if _Idx == 0 then 
+        API.Note("TRACE: Attack clicked (Strength)");
+        HeroInstance.Strength = HeroInstance.Strength +1;
+    elseif _Idx == 1 then 
+        API.Note("TRACE: Bless clicked (Endurance)");
+        HeroInstance.Endurance = HeroInstance.Endurance +1;
+    else 
+        API.Note("TRACE: Trebuchet clicked (Magic)");
+        HeroInstance.Magic = HeroInstance.Magic +1;
+    end
 end
 
 ---
@@ -270,6 +343,17 @@ function AddOnRolePlayingGame.Global.LevelUpController(_PlayerID)
     end
 end
 
+---
+-- Wirt ausgeführt, nachdem ein Spielstand geladen wurde. Diese Funktion Stellt
+-- alle nicht persistenten Änderungen wieder her.
+--
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnSaveGameLoaded()
+    API.Bridge("BundleCastleStore.Local:OverrideStringKeys()");
+end
+
 -- local Script ----------------------------------------------------------------
 
 ---
@@ -281,6 +365,121 @@ end
 function AddOnRolePlayingGame.Local:Install()
     self:DeactivateAbilityBlabering();
     self:OverrideActiveAbility();
+    self:OverrideStringKeys();
+    self:OverrideKnightCommands();
+end
+
+---
+-- Überschreibt die KnightCommands, sodass sie für das Upgrade des Status 
+-- verwendet werden kann.
+--
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:OverrideKnightCommands()
+    Mission_SupportButtonClicked = function(_Idx)
+        local EntityID = GUI.GetSelectedEntity();
+        if eID == nil or eID == 0 then
+            return;
+        end
+        API.Bridge("AddOnRolePlayingGame.Global:UpgradeHeroStatus(" .._Idx.. ", "..EntityID..")");
+    end
+    
+    Mission_SupportUpdateButton = function()
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        if #SelectedEntities ~= 1 or SelectedEntities[1] == 0 then
+            return;
+        end
+        local x,y = GUI.GetEntityInfoScreenPosition(SelectedEntities[1]);
+        local ScriptName = Logic.GetEntityName(SelectedEntities[1]);
+        local Screensize = {GUI.GetScreenSize()};
+        local Hero = AddOnRolePlayingGame.HeroList[ScriptName];
+        if Hero == nil then 
+            return;
+        end
+        
+        XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Strength.Mother, 170, 20, 100, 100);
+        XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Magic.Mother, 245, 23, 100, 100);
+        XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Endurance.Mother, 320, 20, 100, 100);
+        
+        SetIcon(AddOnRolePlayingGame.KnightCommands.Strength.Button, {7,4});
+        SetIcon(AddOnRolePlayingGame.KnightCommands.Magic.Button, {11, 2});
+        SetIcon(AddOnRolePlayingGame.KnightCommands.Endurance.Button, {7,2});
+        
+        if x ~= 0 and y ~= 0 and x > -200 and y > -200 and x < (Screensize[1] + 50) and y < (Screensize[2] + 200) then
+            local WidgetID = "/InGame/Root/Normal/AlignTopLeft/KnightCommands";
+            XGUIEng.SetWidgetSize(widget,480,160);
+            local WidgetSize = {XGUIEng.GetWidgetScreenSize(WidgetID)};
+            XGUIEng.SetWidgetScreenPosition(WidgetID, x-(WidgetSize[1]*0.6), y-WidgetSize[2]);
+            
+            local relatedTeach = {"Strength", "Endurance", "Magic"};
+            local disabledButtons = 0;
+            for k,v in pairs(relatedTeach) do
+                if Hero.Learnpoints >= 1 then
+                    XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands[v].Button,0);
+                else
+                    XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands[v].Button,1);
+                    disabledButtons = disabledButtons +1;
+                end
+            end
+            
+            if disabledButtons == 3 then
+                XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Strength.Mother,0);
+                XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother,0);
+                XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Endurance.Mother,0);
+            end
+        else
+            local WidgetID = "/InGame/Root/Normal/AlignTopLeft/KnightCommands";
+            XGUIEng.SetWidgetScreenPosition(WidgetID, -1000, -1000);
+        end
+    end
+end
+
+---
+-- Überschreibt die Textausgabe mit den eigenen Texten.
+--
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:OverwriteGetStringTableText()
+    GetStringTableText_Orig_Orig_AddOnRolePlayingGame = XGUIEng.GetStringTableText;
+    XGUIEng.GetStringTableText = function(_key)
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local SelectedID = GUI.GetSelectedEntity();
+        local PlayerID = GUI.GetPlayerID();
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        
+        local ScriptName = Logic.GetEntityName(SelectedID)
+        local Hero = AddOnRolePlayingGame.HeroList[ScriptName];
+
+        if Hero then 
+            -- Strength upgrade
+            if _key == "UI_ObjectNames/MissionSpecific_StartAttack" then
+                return AddOnRolePlayingGame.Texts.UpgradeStrength[lang];
+            end
+            if _key == "UI_ObjectDescription/MissionSpecific_StartAttack" then
+                return "";
+            end
+            
+            -- Magic upgrade
+            if _key == "UI_ObjectNames/MissionSpecific_Trebuchet" then
+                return AddOnRolePlayingGame.Texts.UpgradeMagic[lang];
+            end
+            if _key == "UI_ObjectDescription/MissionSpecific_Trebuchet" then
+                return "";
+            end
+            
+            -- Endurance upgrade
+            if _key == "UI_ObjectNames/MissionSpecific_Bless" then
+                return AddOnRolePlayingGame.Texts.UpgradeEndurance[lang];
+            end
+            if _key == "UI_ObjectDescription/MissionSpecific_Bless" then
+                return "";
+            end
+        end
+
+        return GetStringTableText_Orig_Orig_AddOnRolePlayingGame(_key);
+    end
 end
 
 ---
@@ -290,7 +489,7 @@ end
 -- @within Private
 -- @local
 --
-function AddOnRolePlayingGame.Local:OverrideActiveAbility()
+function BundleCastleStore.Local:OverrideStringKeys()
     GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityClicked;
     GUI_Knight.StartAbilityClicked = function(_Ability)
         local KnightID   = GUI.GetSelectedEntity();
