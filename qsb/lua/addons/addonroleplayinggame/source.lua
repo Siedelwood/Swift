@@ -7,7 +7,8 @@
 ---
 -- Bietet dem Mapper ein vereinfachtes Interface für RPG-Maps. Das Bundle
 -- basiert auf dem RPG-Skript von Schwarzer Schmetterling 2, allerdings
--- wurden einige Elemente ausgespart um das Konzept einfacher zu presentieren.
+-- wurden einige Elemente ausgespart um es zu vereinfachen. Außerdem ist 
+-- die Steuerung benutzerfreundlicher gestaltet.
 --
 -- @module AddOnRolePlayingGame
 -- @set sort=true
@@ -19,8 +20,11 @@ QSB = QSB or {};
 AddOnRolePlayingGame = {
     Global =  {
         Data = {
+            PlayerExperience = {0, 0, 0, 0, 0, 0, 0, 0,},
+            BaseExperience = 500,
             LearnpointsPerLevel = 3,
             UseInformPlayer = true,
+            UseLevelUpByPromotion = true,
             UseAutoLevel = true,
         },
     },
@@ -33,12 +37,16 @@ AddOnRolePlayingGame = {
             de = "Die Fähigkeit kann nicht benutzt werden!",
             en = "The ability can not be used!",
         },
+        EarnedExperience = {
+            de = "Eure Helden haben {@color:0,255,255,255}%d{@color:255,255,255,255} Erfahrung erhalten!",
+            en = "Your heroes gained {@color:0,255,255,255}%d{@color:255,255,255,255} experience points!",
+        },
         HeroLevelUp = {
             de = "{@color:244,184,0,255}Eure Helden sind eine Stufe aufgestiegen!",
             en = "{@color:244,184,0,255}Your heroes reached a higher level!",
         },
         AutoLevelUp = {
-            de = "Die {@color:0,255,255,255}Statuswerte{@color:255,255,255,255} Eurer Helden haben sich verbessert!",
+            de = "Die {@color:0,255,255,255}Statuswerte{@color:255,255,255,255} Eure Helden haben sich verbessert!",
             en = "The {@color:0,255,255,255}properties{@color:255,255,255,255} of your heroes have improved!",
         },
         ManualLevelUp = {
@@ -52,7 +60,90 @@ AddOnRolePlayingGame = {
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
+---
+-- Aktiviert oder deaktivier den automatischen Stufenaufstieg der Helden.
+--
+-- @param _Flag Auto-Level Flag
+--
+function API.RpgConfig_UseAutoLevel(_Flag)
+    AddOnRolePlayingGame.Global.Data.UseAutoLevel = _Flag == true;
+end
 
+---
+-- Aktiviert oder deaktivier die Information über Ereignisse an den Spieler.
+--
+-- @param _Flag Inform Player Flag
+--
+function API.RpgConfig_UseInformPlayer(_Flag)
+    AddOnRolePlayingGame.Global.Data.UseInformPlayer = _Flag == true;
+end
+
+---
+-- Legt fest, ob die Helden automatisch bei Beförderung um eine Stufe steigen.
+--
+-- @param _Flag Promotion Level Up Flag
+--
+function API.RpgConfig_UseLevelUpByPromotion(_Flag)
+    AddOnRolePlayingGame.Global.Data.UseLevelUpByPromotion = _Flag == true;
+end
+
+---
+-- Legt fest, wie viele Lernpunkte Helden erhalten, wenn sie eine Stufe 
+-- aufsteigen.
+--
+-- @param _LP Menge an Lernpunkten
+--
+function API.RpgConfig_SetLernpointsPerLevel(_LP)
+    AddOnRolePlayingGame.Global.Data.LearnpointsPerLevel = _LP
+end
+
+---
+-- Setzt die Menge an Erfahrung, die für einen Stufenaufstieg benötigt wird.
+--
+-- @param _EXP Menge an Erfahrung
+--
+function API.RpgConfig_SetBaseExperience(_EXP)
+    AddOnRolePlayingGame.Global.Data.BaseExperience = _EXP
+end
+
+---
+-- Gibt einen Spieler eine Menge an Erfahrungspunkten.
+--
+-- @param _PlayerID Spieler, der Erfahrung erhält
+-- @param _EXP      Menge an Erfahrung
+--
+function API.Rpg_AddPlayerExperience(_PlayerID, _EXP)
+    assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
+    AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID] = AddOnRolePlayingGame.Global.Data.BaseExperience[_PlayerID] + _EXP;
+    if AddOnRolePlayingGame.Global.Data.UseInformPlayer then
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        API.Note(string.format(AddOnRolePlayingGame.Texts.EarnedExperience[lang], _EXP));
+    end
+end
+
+---
+-- Gibt die Erfahrungspunkte des Spielers zurück.
+--
+-- @param _PlayerID Spieler, der Erfahrung erhält
+-- @return number: Erfahrung des Spielers
+--
+function API.Rpg_GetPlayerExperience(_PlayerID)
+    assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
+    return AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID];
+end
+
+---
+-- Gibt die Erfahrungspunkte zurück, die für die nächste Stufe benötigt werden.
+--
+-- @param _PlayerID Spieler, der Erfahrung erhält
+-- @return number: Benötigte Erfahrung
+--
+function API.Rpg_GetPlayerNeededExperience(_PlayerID)
+    assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
+    local Current = AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID];
+    local Needed  = AddOnRolePlayingGame.Global.Data.BaseExperience;
+    return Needed - Current;
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -71,6 +162,62 @@ function AddOnRolePlayingGame.Global:Install()
     API.AddOnEntityHurtAction(self.EntityFightingController);
     -- Level-Up Controller
     Core:AppendFunction("GameCallback_KnightTitleChanged", self.LevelUpController);
+    -- Experience Level-Up Controller 
+    StartSimpleJobEx(self.ExperienceLevelUpController)
+end
+
+---
+-- Hebt das Level aller Helden eines Spielers an. Dabei werden entweder 
+-- Lernpunkte vergeben oder automatisch Statuswerte erhöht.
+--
+-- @param _PlayerID ID des Spielers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID)
+    for k, v in pairs(AddOnRolePlayingGame.HeroList) do
+        if v then
+            local PlayerID = Logic.EntityGetPlayer(GetID(k));
+            if PlayerID == _PlayerID then
+                v:LevelUp(self.Data.LearnpointsPerLevel, self.Data.UseAutoLevel == true);
+                
+                -- Den Spieler informieren
+                if API.GetControllingPlayer() == _PlayerID then
+                    if self.Data.UseInformPlayer then
+                        API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
+                        if self.Data.UseAutoLevel then
+                            API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
+                        else
+                            local Text = string.format(AddOnRolePlayingGame.Texts.ManualLevelUp, self.Data.LearnpointsPerLevel);
+                            API.Note(Text);
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+---
+-- Hebt das Level aller Helden eines Spielers an, wenn der Spieler die
+-- benötigte Erfahrung erreicht. Dabei werden entweder Lernpunkte vergeben
+-- oder automatisch Statuswerte erhöht.
+--
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.ExperienceLevelUpController()
+    if not AddOnRolePlayingGame.Global.Data.UseLevelUpByPromotion then
+        for i= 1, 8, 1 do
+            local Current = AddOnRolePlayingGame.Global.Data.PlayerExperience[i];
+            local Needed  = AddOnRolePlayingGame.Global.Data.BaseExperience;
+            if Needed - Current <= 0 then
+                AddOnRolePlayingGame.Global:LevelUpAction(i);
+                AddOnRolePlayingGame.Global.Data.PlayerExperience[i] = 0;
+                AddOnRolePlayingGame.Global.Data.BaseExperience = Needed + (Needed * 0.5);
+            end
+        end
+    end
 end
 
 ---
@@ -114,34 +261,12 @@ end
 -- Statuswerte erhöht.
 --
 -- @param _PlayerID ID des Spielers
--- @param _NewTitle Neuer Titel
--- @param _OldTitle Alter Titel
 -- @within Private
 -- @local
 --
-function AddOnRolePlayingGame.Global.LevelUpController(_PlayerID, _NewTitle, _OldTitle)
-    for k, v in pairs(AddOnRolePlayingGame.HeroList) do
-        if v then
-            local PlayerID = Logic.EntityGetPlayer(GetID(k));
-            if PlayerID == _PlayerID then
-                local Learnpoints = AddOnRolePlayingGame.Global.Data.LearnpointsPerLevel;
-                local AutoLevel   = AddOnRolePlayingGame.Global.Data.UseAutoLevel;
-                v:LevelUp(Learnpoints, AutoLevel == true);
-                
-                -- Den Spieler informieren
-                if API.GetControllingPlayer() == _PlayerID then
-                    if AddOnRolePlayingGame.Global.Data.UseInformPlayer then
-                        API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
-                        if AutoLevel then
-                            API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
-                        else
-                            local Text = string.format(AddOnRolePlayingGame.Texts.ManualLevelUp, Learnpoints);
-                            API.Note(Text);
-                        end
-                    end
-                end
-            end
-        end
+function AddOnRolePlayingGame.Global.LevelUpController(_PlayerID)
+    if AddOnRolePlayingGame.Global.Data.UseLevelUpByPromotion then
+        AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID);
     end
 end
 
@@ -155,6 +280,108 @@ end
 --
 function AddOnRolePlayingGame.Local:Install()
     self:DeactivateAbilityBlabering();
+    self:OverrideActiveAbility();
+end
+
+---
+-- Überschreibt die Sterung der aktiven Fähigkeit um eigene Fähigkeiten
+-- auszulösen, falls vorhanden.
+--
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:OverrideActiveAbility()
+    GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityClicked;
+    GUI_Knight.StartAbilityClicked = function(_Ability)
+        local KnightID   = GUI.GetSelectedEntity();
+        local PlayerID   = GUI.GetPlayerID();
+        local KnightType = Logic.GetEntityType(KnightID);
+        local KnightName = Logic.GetEntityName(KnightID);
+
+        local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(KnightName);
+        if HeroInstance == nil or HeroInstance.Ability == nil then
+            GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame(_Ability);
+            return;
+        end
+        if not HeroInstance.Ability:Condition(HeroInstance) then
+            if HeroInstance.Ability.ImpossibleMessage then 
+                API.Message(HeroInstance.Ability.ImpossibleMessage);
+            end
+            return;
+        end
+        HeroInstance.Ability:Action(HeroInstance);
+    end
+
+    GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityMouseOver;
+    GUI_Knight.StartAbilityMouseOver = function()
+        local KnightID   = GUI.GetSelectedEntity();
+        local KnightType = Logic.GetEntityType(KnightID);
+        local KnightName = Logic.GetEntityName(KnightID);
+
+        local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(KnightName);
+        if HeroInstance == nil or HeroInstance.Ability = nil then
+            GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame();
+            return;
+        end
+        SetTextNormal(HeroInstance.Ability.Caption, HeroInstance.Ability.Description);
+    end
+
+    GUI_Knight.StartAbilityUpdate_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityUpdate;
+    GUI_Knight.StartAbilityUpdate = function()
+        local WidgetID   = "/InGame/Root/Normal/AlignBottomRight/DialogButtons/Knight/StartAbility";
+        local KnightID   = GUI.GetSelectedEntity();
+        local KnightType = Logic.GetEntityType(KnightID);
+        local KnightName = Logic.GetEntityName(KnightID);
+
+        local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(KnightName);
+        if HeroInstance == nil or HeroInstance.Ability == nil then
+            GUI_Knight.StartAbilityUpdate_Orig_AddOnRolePlayingGame();
+            return;
+        end
+    
+        -- Icon
+        if type(HeroInstance.Ability.Icon) == "table" then
+            if HeroInstance.Ability.Icon[3] and type(HeroInstance.Ability.Icon[3]) == "string" then
+                API.SetIcon(WidgetID, HeroInstance.Ability.Icon, nil, HeroInstance.Ability.Icon[3]);
+            else
+                SetIcon(WidgetID, HeroInstance.Ability.Icon);
+            end
+        else
+            API.SetTexture(WidgetID, HeroInstance.Ability.Icon);
+        end
+    
+        -- Enable/Disable
+        if HeroInstance.ActionPoints < HeroInstance.Ability.RechargeTime or HeroInstance.AbilityDisabled then
+            XGUIEng.DisableButton(WidgetID, 1);
+        else
+            XGUIEng.DisableButton(WidgetID, 0);
+        end
+    end
+
+    GUI_Knight.AbilityProgressUpdate_Orig_AddOnRolePlayingGame = GUI_Knight.AbilityProgressUpdate;
+    GUI_Knight.AbilityProgressUpdate = function()
+        local WidgetID   = XGUIEng.GetCurrentWidgetID();
+        local PlayerID   = GUI.GetPlayerID();
+        local KnightID   = GUI.GetSelectedEntity();
+        local KnightName = Logic.GetEntityName(KnightID);
+
+        local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(KnightName);
+        if HeroInstance == nil or HeroInstance.Ability == nil then
+            GUI_Knight.AbilityProgressUpdate_Orig_AddOnRolePlayingGame(_Ability);
+            return;
+        end
+
+        local TotalRechargeTime = HeroInstance.Ability.RechargeTime or 6 * 60;
+        local ActionPoints = HeroInstance.ActionPoints;
+        local TimeAlreadyCharged = ActionPoints or TotalRechargeTime;
+        if TimeAlreadyCharged == TotalRechargeTime then
+            XGUIEng.SetMaterialColor(WidgetID, 0, 255, 255, 255, 0);
+        else
+            XGUIEng.SetMaterialColor(WidgetID, 0, 255, 255, 255, 150);
+            local Progress = math.floor((TimeAlreadyCharged / TotalRechargeTime) * 100);
+            XGUIEng.SetProgressBarValues(WidgetID, Progress + 10, 110);
+        end
+    end
 end
 
 ---
@@ -408,7 +635,7 @@ end
 -- @return table: Instanz des Helden
 -- @within AddOnRolePlayingGame.Hero
 --
-function AddOnRolePlayingGame.Unit:GetInstance(_ScriptName)
+function AddOnRolePlayingGame.Hero:GetInstance(_ScriptName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Hero);
     return AddOnRolePlayingGame.HeroList[_ScriptName];
