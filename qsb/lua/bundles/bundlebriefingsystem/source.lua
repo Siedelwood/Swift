@@ -188,14 +188,14 @@ AddFlights = API.AddFlights;
 --
 function API.AddBriefingNote(_Text, _Duration)
     if type(_Text) ~= "string" and type(_Text) ~= "number" then
-        API.Dbg("API.BriefingNote: Text must be a string or a number!");
+        API.Dbg("API.AddBriefingNote: Text must be a string or a number!");
         return;
     end
     if not GUI then
-        API.Bridge([[API.BriefingNote("]] .._Text.. [[", ]]..tostring(_Duration)..[[)]]);
+        API.Bridge([[API.AddBriefingNote("]] .._Text.. [[", ]]..tostring(_Duration)..[[)]]);
         return;
     end
-    return BriefingSystem.PushInformationText(_Text, (_Duration * 10));
+    return BriefingSystem.PushInformationText(_Text, (_Duration * 100));
 end
 BriefingMessage = API.AddBriefingNote;
 
@@ -1022,6 +1022,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         BriefingSystem.page = 0;
         BriefingSystem.skipPlayers = {};
         BriefingSystem.disableSkipping = BriefingSystem.currBriefing.disableSkipping;
+        BriefingSystem.activate3dOnScreenDisplay = BriefingSystem.currBriefing.activate3dOnScreenDisplay;
         BriefingSystem.skipAll = BriefingSystem.currBriefing.skipAll;
         BriefingSystem.skipPerPage = not BriefingSystem.skipAll and BriefingSystem.currBriefing.skipPerPage;
 
@@ -1503,7 +1504,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
         local Page = BriefingSystem.currBriefing[BriefingSystem.page];
         if Page.entityClicked then 
-            Page:entityClicked(_X, _Y);
+            Page:entityClicked(_EntityID);
         end
     end
 
@@ -1667,7 +1668,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if isLoadScreenVisible then
             XGUIEng.PopPage();
         end
-        XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
+        if BriefingSystem.GlobalSystem.activate3dOnScreenDisplay ~= true then
+            XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
+        end
         XGUIEng.ShowWidget("/InGame/Root/Normal", 0);
         XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", BriefingSystem.GlobalSystem.disableSkipping and 0 or 1);
@@ -1764,7 +1767,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         Mouse.CursorShow();
         GUI.EnableBattleSignals(true);
         GUI.SetFeedbackSoundOutputState(1);
-        GUI.ActivateSelectionState();
+        GUI.activate3dOnScreenDisplayState();
         GUI.PermitContextSensitiveCommandsInSelectionState();
         for _, v in ipairs(BriefingSystem.selectedEntities) do
             if not Logic.IsEntityDestroyed(v) then
