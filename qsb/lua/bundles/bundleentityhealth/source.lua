@@ -30,7 +30,7 @@
 -- @within Public
 --
 function API.GetHealth(_Entity)
-    return BundleEntityHealth:GetHealth(_Entity);
+    return BundleEntityHealth.Shared:GetHealth(_Entity);
 end
 GetHealth = API.GetHealth;
 
@@ -182,6 +182,9 @@ BundleEntityHealth = {
         },
     },
     Local = {
+        Data = {}
+    },
+    Shared = {
         Data = {}
     },
 }
@@ -340,7 +343,7 @@ end
 -- @within Private
 -- @local
 --
-function BundleEntityHealth:GetHealth(_Entity)
+function BundleEntityHealth.Shared:GetHealth(_Entity)
     if not IsExisting(_Entity) then
         return 0;
     end

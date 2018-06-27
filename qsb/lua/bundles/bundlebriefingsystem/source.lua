@@ -2812,7 +2812,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     end
 
     ---
-    --
+    -- Unterbricht eine Kamerabewegung der laufenden Cutscene.
     --
     -- @within BriefingSystem
     -- @local
