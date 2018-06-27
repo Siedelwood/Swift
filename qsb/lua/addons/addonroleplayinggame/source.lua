@@ -62,7 +62,7 @@ AddOnRolePlayingGame = {
         UpgradeEndurance = {
             de = "Ausdauer verbessern",
             en = "Improve Endurance",
-        }
+        },
         
         -- Messages --
         
@@ -351,7 +351,7 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Global.OnSaveGameLoaded()
-    API.Bridge("BundleCastleStore.Local:OverrideStringKeys()");
+    API.Bridge("AddOnRolePlayingGame.Local:OverrideStringKeys()");
 end
 
 -- local Script ----------------------------------------------------------------
@@ -441,7 +441,7 @@ end
 -- @within Private
 -- @local
 --
-function AddOnRolePlayingGame.Local:OverwriteGetStringTableText()
+function AddOnRolePlayingGame.Local:OverrideStringKeys()
     GetStringTableText_Orig_Orig_AddOnRolePlayingGame = XGUIEng.GetStringTableText;
     XGUIEng.GetStringTableText = function(_key)
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -489,7 +489,7 @@ end
 -- @within Private
 -- @local
 --
-function BundleCastleStore.Local:OverrideStringKeys()
+function AddOnRolePlayingGame.Local:OverrideActiveAbility()
     GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityClicked;
     GUI_Knight.StartAbilityClicked = function(_Ability)
         local KnightID   = GUI.GetSelectedEntity();
@@ -497,7 +497,7 @@ function BundleCastleStore.Local:OverrideStringKeys()
         local KnightType = Logic.GetEntityType(KnightID);
         local KnightName = Logic.GetEntityName(KnightID);
 
-        local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(KnightName);
+        local HeroInstance = AddOnRolePlayingGame.HeroList[KnightName];
         if HeroInstance == nil or HeroInstance.Ability == nil then
             GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame(_Ability);
             return;
@@ -517,8 +517,8 @@ function BundleCastleStore.Local:OverrideStringKeys()
         local KnightType = Logic.GetEntityType(KnightID);
         local KnightName = Logic.GetEntityName(KnightID);
 
-        local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(KnightName);
-        if HeroInstance == nil or HeroInstance.Ability = nil then
+        local HeroInstance = AddOnRolePlayingGame.HeroList[KnightName];
+        if HeroInstance == nil or HeroInstance.Ability == nil then
             GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame();
             return;
         end
@@ -532,7 +532,7 @@ function BundleCastleStore.Local:OverrideStringKeys()
         local KnightType = Logic.GetEntityType(KnightID);
         local KnightName = Logic.GetEntityName(KnightID);
 
-        local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(KnightName);
+        local HeroInstance = AddOnRolePlayingGame.HeroList[KnightName];
         if HeroInstance == nil or HeroInstance.Ability == nil then
             GUI_Knight.StartAbilityUpdate_Orig_AddOnRolePlayingGame();
             return;
@@ -564,7 +564,7 @@ function BundleCastleStore.Local:OverrideStringKeys()
         local KnightID   = GUI.GetSelectedEntity();
         local KnightName = Logic.GetEntityName(KnightID);
 
-        local HeroInstance = AddOnRolePlayingGame.Hero:GetInstance(KnightName);
+        local HeroInstance = AddOnRolePlayingGame.HeroList[KnightName];
         if HeroInstance == nil or HeroInstance.Ability == nil then
             GUI_Knight.AbilityProgressUpdate_Orig_AddOnRolePlayingGame(_Ability);
             return;
@@ -651,7 +651,7 @@ end
 --
 function AddOnRolePlayingGame.Unit:GetStrength()
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Unit);
+    assert(self ~= AddOnRolePlayingGame.Unit);
 
     local Strength = self.Strength;
     for k, v in pairs(self.Buffs) do
@@ -669,7 +669,7 @@ end
 --
 function AddOnRolePlayingGame.Unit:GetMagic()
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Unit);
+    assert(self ~= AddOnRolePlayingGame.Unit);
 
     local Magic = self.Magic;
     for k, v in pairs(self.Buffs) do
@@ -687,7 +687,7 @@ end
 --
 function AddOnRolePlayingGame.Unit:GetEndurance()
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Unit);
+    assert(self ~= AddOnRolePlayingGame.Unit);
 
     local Endurance = self.Endurance;
     for k, v in pairs(self.Buffs) do
@@ -705,7 +705,7 @@ end
 --
 function AddOnRolePlayingGame.Unit:GetDamage()
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Unit);
+    assert(self ~= AddOnRolePlayingGame.Unit);
     return self.BaseDamage + (self:GetStrength() * (self.BaseDamage * 0.2));
 end
 
@@ -717,7 +717,7 @@ end
 --
 function AddOnRolePlayingGame.Unit:CalculateEnduredDamage(_Attacker)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Unit);
+    assert(self ~= AddOnRolePlayingGame.Unit);
     
     local Damage = _Attacker:GetDamage();
     for i= 1, self:GetEndurance(), 1 do
@@ -744,7 +744,7 @@ end
 --
 function AddOnRolePlayingGame.Unit:BuffAdd(_BuffName, _Buff)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Unit);
+    assert(self ~= AddOnRolePlayingGame.Unit);
     if not self.Buffs[_BuffName] then
         self.Buffs[_BuffName] = _Buff;
     else 
@@ -764,7 +764,7 @@ end
 --
 function AddOnRolePlayingGame.Unit:BuffRemove(_BuffName)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Unit);
+    assert(self ~= AddOnRolePlayingGame.Unit);
     self.Buffs[_BuffName] = nil;
     return self;
 end
@@ -803,7 +803,8 @@ function AddOnRolePlayingGame.Hero:New(_ScriptName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Hero);
 
-    local hero = API.InstanceTable(self, AddOnRolePlayingGame.Unit:New(_ScriptName));
+    local hero = API.InstanceTable(self, {});
+    hero.Unit         = AddOnRolePlayingGame.Unit:New(_ScriptName);
     hero.Level        = 0;
     hero.Learnpoints  = 0;
     hero.Health       = 400;
@@ -909,7 +910,7 @@ function AddOnRolePlayingGame.Hero:GetAbilityRecharge()
     assert(not GUI);
     assert(self ~= AddOnRolePlayingGame.Hero);
     if self.Ability then
-        return (self.GetMagic() * 0.2) +1;
+        return (self.Unit:GetMagic() * 0.2) +1;
     end
     return 1;
 end
@@ -919,10 +920,10 @@ end
 -- @return number: Regenerationsrate
 -- @within AddOnRolePlayingGame.Hero
 --
-function AddOnRolePlayingGame.Hero:GetRegerneration()
+function AddOnRolePlayingGame.Hero:GetRegeneration()
     assert(not GUI);
     assert(self ~= AddOnRolePlayingGame.Hero);
-    return (self.GetEndurance() * 0.2) +5;
+    return (self.Unit:GetEndurance() * 0.2) +5;
 end
 
 ---
@@ -998,24 +999,24 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
-    if AddOnRolePlayingGame.Hero[_ScriptName] == nil then
+    local Hero = AddOnRolePlayingGame.Hero:GetInstance(_ScriptName);
+    if Hero == nil then
         return true;
     end
 
     API.Bridge([[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Learnpoints  = ]] ..AddOnRolePlayingGame.HeroList[ScriptName].Learnpoints.. [[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Strength     = ]] ..AddOnRolePlayingGame.HeroList[ScriptName].Strength.. [[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Magic        = ]] ..AddOnRolePlayingGame.HeroList[ScriptName].Magic.. [[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Endurance    = ]] ..AddOnRolePlayingGame.HeroList[ScriptName].Endurance.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Learnpoints  = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Learnpoints.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Strength     = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Strength.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Magic        = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Magic.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Endurance    = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Endurance.. [[
     ]]);
 
     local EntityID = GetID(_ScriptName);
     if EntityID ~= nil and EntityID ~= 0 then
-        local Hero = AddOnRolePlayingGame.Hero[_ScriptName];
         if Logic.KnightGetResurrectionProgress(EntityID) ~= 1 then
-            AddOnRolePlayingGame.Hero[_ScriptName].Health = Hero.MaxHealth;
+            AddOnRolePlayingGame.HeroList[_ScriptName].Health = Hero.MaxHealth;
             if Hero.Ability then
-                AddOnRolePlayingGame.Hero[_ScriptName].ActionPoints = Ability.RechargeTime;
+                AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints = Ability.RechargeTime;
             end
         else
             -- Aktualisiere Gesundheit
@@ -1023,19 +1024,24 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
                 local Health = Hero.Health + Hero:GetRegeneration();
                 Health = (Health > Hero.MaxHealth and Hero.MaxHealth) or Health;
                 Health = (Health < 0 and 0) or Health;
-                AddOnRolePlayingGame.Hero[_ScriptName].Health = Health;
+                AddOnRolePlayingGame.HeroList[_ScriptName].Health = Health;
             end
+            
+            MakeVulnerable(_ScriptName);
+            local Health = (Hero.Health / Hero.MaxHealth) * 100;
+            SetHealth(_ScriptName, Health);
+            MakeInvulnerable(_ScriptName);
 
             -- Aktualisiere Aktionspunkte
             if Hero.Ability and Hero.ActionPoints < Ability.RechargeTime then
                 local ActionPoints = Hero.ActionPoints + Hero:GetAbilityRecharge();
                 ActionPoints = (ActionPoints > Ability.RechargeTime and Ability.RechargeTime) or ActionPoints;
                 ActionPoints = (ActionPoints < 0 and 0) or ActionPoints;
-                AddOnRolePlayingGame.Hero[_ScriptName].Health = ActionPoints;
+                AddOnRolePlayingGame.HeroList[_ScriptName].Health = ActionPoints;
 
                 API.Bridge([[
-                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].ActionPoints = ]] ..AddOnRolePlayingGame.HeroList[ScriptName].ActionPoints.. [[
-                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].RechargeTime = ]] ..AddOnRolePlayingGame.HeroList[ScriptName].Ability.RechargeTime.. [[
+                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].ActionPoints = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints.. [[
+                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].RechargeTime = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Ability.RechargeTime.. [[
                 ]]);
             end
         end
