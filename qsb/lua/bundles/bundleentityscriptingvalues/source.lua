@@ -324,8 +324,8 @@ end
 --
 function BundleEntityScriptingValues:GetMovingTargetPosition(_entity)
     local pos = {};
-    pos.X = self:GetValueAsFloat(_entity, 19);
-    pos.Y = self:GetValueAsFloat(_entity, 20);
+    pos.X = self:GetValueAsFloat(_entity, 19) or 0;
+    pos.Y = self:GetValueAsFloat(_entity, 20) or 0;
     return pos;
 end
 
@@ -354,7 +354,7 @@ end
 --
 function BundleEntityScriptingValues:GetValueAsFloat(_entity, _index)
     local value = Logic.GetEntityScriptingValue(GetID(_entity),_index);
-    return SV.Int2Float(value);
+    return BundleEntityScriptingValues:Int2Float(value);
 end
 
 ---

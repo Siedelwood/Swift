@@ -47,10 +47,10 @@ b_Goal_MoveToPosition = {
         de = "Ziel: Eine Entity muss sich einer anderen bis auf eine bestimmte Distanz nähern. Die Lupe wird angezeigt, das Ziel kann markiert werden.",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Entity",      de = "Entity" },
-        { ParameterType.ScriptName, en = "Target",      de = "Ziel" },
+        { ParameterType.ScriptName, en = "Entity",   de = "Entity" },
+        { ParameterType.ScriptName, en = "Target",   de = "Ziel" },
         { ParameterType.Number,     en = "Distance", de = "Entfernung" },
-        { ParameterType.Custom,     en = "Marker",      de = "Ziel markieren" },
+        { ParameterType.Custom,     en = "Marker",   de = "Ziel markieren" },
     },
 }
 
@@ -145,6 +145,9 @@ Core:RegisterBehavior(b_Goal_WinQuest);
 -- Dabei ist es egal von welchem Spieler. Diebe können Gold nur aus
 -- Stadtgebäude stehlen.
 --
+-- <b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
+-- Gebäuden, damit der Quest stets erfüllbar bleibt.
+--
 -- @param _Amount       Menge an Gold
 -- @param _ShowProgress Fortschritt ausgeben
 -- @return Table mit Behavior
@@ -161,8 +164,9 @@ b_Goal_StealGold = {
         de = "Ziel: Diebe sollen eine bestimmte Menge Gold aus feindlichen Stadtgebäuden stehlen.",
     },
     Parameter = {
-        { ParameterType.Number, en = "Amount on Gold", de = "Zu stehlende Menge" },
-        { ParameterType.Custom, en = "Print progress", de = "Fortschritt ausgeben" },
+        { ParameterType.Number,   en = "Amount on Gold", de = "Zu stehlende Menge" },
+        { ParameterType.Custom,   en = "Target player",  de = "Spieler von dem gestohlen wird" },
+        { ParameterType.Custom,   en = "Print progress", de = "Fortschritt ausgeben" },
     },
 }
 
@@ -174,6 +178,9 @@ function b_Goal_StealGold:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Amount = _Parameter * 1;
     elseif (_Index == 1) then
+        local PlayerID = tonumber(_Paramater) or -1;
+        self.Target = PlayerID * 1;
+    elseif (_Index == 2) then
         _Parameter = _Parameter or "true"
         self.Printout = AcceptAlternativeBoolean(_Parameter);
     end
@@ -182,23 +189,50 @@ end
 
 function b_Goal_StealGold:GetCustomData(_Index)
     if _Index == 1 then
+        return { "-", 1, 2, 3, 4, 5, 6, 7, 8 };
+    elseif _Index == 2 then
         return { "true", "false" };
     end
 end
 
 function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local TargetPlayerName = (lang == "de" and " anderen Spielern ") or " different parties";
+    if self.Target ~= -1 then 
+        TargetPlayerName = GetPlayerName(self.Target);
+        if TargetPlayerName == nil or TargetPlayerName == "" then 
+            TargetPlayerName = " PLAYER_NAME_MISSING ";
+        end
+    end
+    
+    -- Cheat earnings
+    local PlayerIDs = {self.Target};
+    if self.Target == -1 then
+        PlayerIDs = {1, 2, 3, 4, 5, 6, 7, 8};
+    end
+    for i= 1, #PlayerIDs, 1 do
+        if i ~= _Quest.ReceivingPlayer and Logic.GetStoreHouse(i) ~= 0 then
+            local CityBuildings = {Logic.GetPlayerEntitiesInCategory(i, EntityCategories.CityBuilding)};
+            for j= 1, #CityBuildings, 1 do
+                local CurrentEarnings = Logic.GetBuildingProductEarnings(CityBuildings[j]);
+                if CurrentEarnings < 45 and Logic.GetTime() % 5 == 0 then
+                    Logic.SetBuildingEarnings(CityBuildings[j], CurrentEarnings +1);
+                end
+            end
+        end
+    end
+    
     local amount = self.Amount-self.StohlenGold;
     amount = (amount > 0 and amount) or 0;
     local text = {
-        de = "Gold stehlen {cr}{cr}Aus Stadtgebäuden zu stehlende Goldmenge: ",
-        en = "Steal gold {cr}{cr}Amount on gold to steal from city buildings: ",
+        de = "Gold von %s stehlen {cr}{cr}Aus Stadtgebäuden zu stehlende Goldmenge: %d",
+        en = "Steal gold from %s {cr}{cr}Amount on gold to steal from city buildings: %d",
     };
-    return "{center}" .. text[lang] .. amount
+    return "{center}" ..string.format(text[lang], TargetPlayerName, amount);
 end
 
 function b_Goal_StealGold:CustomFunction(_Quest)
-    Core:ChangeCustomQuestCaptionText(_Quest.Identifier, self:SetDescriptionOverwrite(_Quest));
+    Core:ChangeCustomQuestCaptionText(self:SetDescriptionOverwrite(_Quest), _Quest);
 
     if self.StohlenGold >= self.Amount then
         return true;
@@ -231,6 +265,9 @@ Core:RegisterBehavior(b_Goal_StealGold)
 --
 -- Eine Kirche wird immer Sabotiert. Ein Lagerhaus verhält sich ähnlich zu
 -- einer Burg.
+--
+-- <b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
+-- ein Dieb entsandt werden kann.
 --
 -- @param _ScriptName Skriptname des Gebäudes
 -- @return Table mit Behavior
@@ -286,7 +323,7 @@ function b_Goal_StealBuilding:SetDescriptionOverwrite(_Quest)
         };
     else
         text = {
-            de = "Geb�ude bestehlen {cr}{cr} Bestehlt das durch einen Pfeil markierte Gebäude.",
+            de = "Gebäude bestehlen {cr}{cr} Bestehlt das durch einen Pfeil markierte Gebäude.",
             en = "Steal from building {cr}{cr} Steal from the building marked by an arrow.",
         };
     end
@@ -304,6 +341,13 @@ function b_Goal_StealBuilding:CustomFunction(_Quest)
     if not self.Marker then
         local pos = GetPosition(self.Building);
         self.Marker = Logic.CreateEffect(EGL_Effects.E_Questmarker, pos.X, pos.Y, 0);
+    end
+    
+    -- Cheat earnings
+    local BuildingID = GetID(self.Building);
+    if  Logic.IsEntityInCategory(BuildingID, EntityCategories.CityBuilding) == 1
+    and Logic.GetBuildingEarnings(BuildingID) < 10 then
+        Logic.SetBuildingEarnings(BuildingID, 10);
     end
 
     if self.SuccessfullyStohlen then
@@ -351,7 +395,7 @@ Core:RegisterBehavior(b_Goal_StealBuilding)
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Spieler muss einen Dieb in ein Gebäude hineinschicken.
+-- Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.
 --
 -- Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt. Es
 -- muss sich um ein Gebäude handeln, das bestohlen werden kann (Burg, Lager,
@@ -360,21 +404,24 @@ Core:RegisterBehavior(b_Goal_StealBuilding)
 -- Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
 -- es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.
 --
+-- <b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
+-- ein Dieb entsandt werden kann.
+--
 -- @param _ScriptName  Skriptname des Gebäudes
 -- @param _DeleteThief Dieb nach Abschluss löschen
 -- @return Table mit Behavior
 -- @within Goal
 --
-function Goal_Infiltrate(...)
-    return b_Goal_Infiltrate:new(...)
+function Goal_SpyBuilding(...)
+    return b_Goal_SpyBuilding:new(...)
 end
 
-b_Goal_Infiltrate = {
-    Name = "Goal_Infiltrate",
+b_Goal_SpyBuilding = {
+    Name = "Goal_SpyBuilding",
     IconOverwrite = {5,13},
     Description = {
         en = "Goal: Infiltrate a building with a thief. A thief must be able to steal from the target building.",
-        de = "Ziel: Infiltriere ein Gebäude mit einem Dieb. Nur mit Gebaueden moeglich, die bestohlen werden koennen.",
+        de = "Ziel: Infiltriere ein Gebäude mit einem Dieb. Nur mit Gebaueden möglich, die bestohlen werden koennen.",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Target Building", de = "Zielgebäude" },
@@ -382,11 +429,11 @@ b_Goal_Infiltrate = {
     },
 }
 
-function b_Goal_Infiltrate:GetGoalTable(_Quest)
+function b_Goal_SpyBuilding:GetGoalTable(_Quest)
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Goal_Infiltrate:AddParameter(_Index, _Parameter)
+function b_Goal_SpyBuilding:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Building = _Parameter
     elseif (_Index == 1) then
@@ -395,13 +442,13 @@ function b_Goal_Infiltrate:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_Infiltrate:GetCustomData(_Index)
+function b_Goal_SpyBuilding:GetCustomData(_Index)
     if _Index == 1 then
         return { "true", "false" };
     end
 end
 
-function b_Goal_Infiltrate:SetDescriptionOverwrite(_Quest)
+function b_Goal_SpyBuilding:SetDescriptionOverwrite(_Quest)
     if not _Quest.QuestDescription then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local text = {
@@ -414,7 +461,7 @@ function b_Goal_Infiltrate:SetDescriptionOverwrite(_Quest)
     end
 end
 
-function b_Goal_Infiltrate:CustomFunction(_Quest)
+function b_Goal_SpyBuilding:CustomFunction(_Quest)
     if not IsExisting(self.Building) then
         if self.Marker then
             Logic.DestroyEffect(self.Marker);
@@ -426,6 +473,13 @@ function b_Goal_Infiltrate:CustomFunction(_Quest)
         local pos = GetPosition(self.Building);
         self.Marker = Logic.CreateEffect(EGL_Effects.E_Questmarker, pos.X, pos.Y, 0);
     end
+    
+    -- Cheat earnings
+    local BuildingID = GetID(self.Building);
+    if  Logic.IsEntityInCategory(BuildingID, EntityCategories.CityBuilding) == 1
+    and Logic.GetBuildingEarnings(BuildingID) < 10 then
+        Logic.SetBuildingEarnings(BuildingID, 10);
+    end
 
     if self.Infiltrated then
         Logic.DestroyEffect(self.Marker);
@@ -434,11 +488,11 @@ function b_Goal_Infiltrate:CustomFunction(_Quest)
     return nil;
 end
 
-function b_Goal_Infiltrate:GetIcon()
+function b_Goal_SpyBuilding:GetIcon()
     return self.IconOverwrite;
 end
 
-function b_Goal_Infiltrate:DEBUG(_Quest)
+function b_Goal_SpyBuilding:DEBUG(_Quest)
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
         dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
@@ -449,16 +503,16 @@ function b_Goal_Infiltrate:DEBUG(_Quest)
     return false;
 end
 
-function b_Goal_Infiltrate:Reset()
+function b_Goal_SpyBuilding:Reset()
     self.Infiltrated = false;
     self.Marker = nil;
 end
 
-function b_Goal_Infiltrate:Interrupt(_Quest)
+function b_Goal_SpyBuilding:Interrupt(_Quest)
     Logic.DestroyEffect(self.Marker);
 end
 
-Core:RegisterBehavior(b_Goal_Infiltrate);
+Core:RegisterBehavior(b_Goal_SpyBuilding);
 
 -- -------------------------------------------------------------------------- --
 
@@ -1747,12 +1801,18 @@ function BundleSymfoniaBehaviors.Global:Install()
                             end
 
                         elseif Quests[i].Objectives[j].Data[1].Name == "Goal_StealGold" then
+                            local CurrentObjective = Quests[i].Objectives[j].Data[1];
+                            local TargetPlayerID = Logic.EntityGetPlayer(_BuildingID);
+                            
+                            if CurrentObjective.Target ~= -1 and CurrentObjective.Target ~= TargetPlayerID then
+                                return;
+                            end
                             Quests[i].Objectives[j].Data[1].StohlenGold = Quests[i].Objectives[j].Data[1].StohlenGold + _GoodAmount;
-                            if Quests[i].Objectives[j].Data[1].Printout then
+                            if CurrentObjective.Printout then
                                 local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
                                 local msg  = {de = "Talern gestohlen",en = "gold stolen",};
-                                local curr = Quests[i].Objectives[j].Data[1].StohlenGold;
-                                local need = Quests[i].Objectives[j].Data[1].Amount;
+                                local curr = CurrentObjective.StohlenGold;
+                                local need = CurrentObjective.Amount;
                                 API.Note(string.format("%d/%d %s", curr, need, msg[lang]));
                             end
                         end
@@ -1770,7 +1830,7 @@ function BundleSymfoniaBehaviors.Global:Install()
             if Quests[i] and Quests[i].State == QuestState.Active then
                 for j=1, Quests[i].Objectives[0] do
                     if Quests[i].Objectives[j].Type == Objective.Custom2 then
-                        if Quests[i].Objectives[j].Data[1].Name == "Goal_Infiltrate" then
+                        if Quests[i].Objectives[j].Data[1].Name == "Goal_SpyBuilding" then
                             if  GetID(Quests[i].Objectives[j].Data[1].Building) == _BuildingID and Quests[i].ReceivingPlayer == _ThiefPlayerID then
                                 Quests[i].Objectives[j].Data[1].Infiltrated = true;
                                 if Quests[i].Objectives[j].Data[1].Delete then
