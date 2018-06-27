@@ -1485,71 +1485,6 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
         BriefingSystem.currBriefing = BriefingSystem.UpdateMCAnswers(BriefingSystem.currBriefing);
     end
-    
-    ---
-    -- Diese Funktion wird aufgerufen, wenn der Spieler während eines
-    -- Briefings auf ein Entity klickt.
-    --
-    -- @param _EntityID	Selected Entity
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.LeftClickOnEntity(_EntityID)
-        if _EntityID == nil then
-            return;
-        end
-        if BriefingSystem.IsBriefingActive == false then 
-            return;
-        end
-        local Page = BriefingSystem.currBriefing[BriefingSystem.page];
-        if Page.entityClicked then 
-            Page:entityClicked(_X, _Y);
-        end
-    end
-
-    ---
-    -- Diese Funktion wird aufgerufen, wenn der Spieler während eines
-    -- Briefings in die Spielwelt klickt.
-    --
-    -- @param _X X-Position
-    -- @param _Y Y-Position
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.LeftClickOnPosition(_X, _Y)
-        if _X == nil or _Y == nil then
-            return;
-        end
-        if BriefingSystem.IsBriefingActive == false then 
-            return;
-        end
-        local Page = BriefingSystem.currBriefing[BriefingSystem.page];
-        if Page.positionClicked then 
-            Page:positionClicked(_X, _Y);
-        end
-    end
-    
-    ---
-    -- Diese Funktion wird aufgerufen, wenn der Spieler während eines
-    -- Briefings auf die Anzeige klickt.
-    --
-    -- @param _X X-Position
-    -- @param _Y Y-Position
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.LeftClickOnScreen(_X, _Y)
-        if _X == nil or _Y == nil then
-            return;
-        end
-        if BriefingSystem.IsBriefingActive == false then 
-            return;
-        end
-        local Page = BriefingSystem.currBriefing[BriefingSystem.page];
-        if Page.screenClicked then 
-            Page:screenClicked(_X, _Y);
-        end
-    end
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -2535,7 +2470,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- Steuert die Kamera während eines Briefings. Es wird entweder das alte
     -- System von OldMacDonald oder das neue von totalwarANGEL genutzt.
     --
-    -- @within BB-Funktionen
     -- @local
     --
     function ThroneRoomCameraControl()
@@ -2731,20 +2665,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
-    ---
-    -- Wird immer dann aufgerufen, wenn der Spieler innerhalb des Throneroom 
-    -- Mode links klickt.
-    --
-    -- @within BB-Funktionen
-    -- @local
-    --
     function ThroneRoomLeftClick()
-        local EntityID = GUI.GetMouseOverEntity();
-        API.Bridge("BriefingSystem.LeftClickOnEntity(" ..tostring(EntityID).. ")");
-        local x,y = GUI.Debug_GetMapPositionUnderMouse();
-        API.Bridge("BriefingSystem.LeftClickOnPosition(" ..tostring(x).. ", " ..tostring(y).. ")");
-        local x,y = GUI.GetMousePosition();
-        API.Bridge("BriefingSystem.LeftClickOnScreen(" ..tostring(x).. ", " ..tostring(y).. ")");
+        -- TODO: Prüfen, ob man das hier sinnvoll nutzen kann.
     end
 
     -- ---------------------------------------------------------------------- --
