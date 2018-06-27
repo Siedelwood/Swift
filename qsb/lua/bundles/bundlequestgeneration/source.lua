@@ -421,6 +421,9 @@ function BundleQuestGeneration.Global:StartQuests()
             if QuestData.Arguments then
                 Quest.Arguments = API.InstanceTable(QuestData.Arguments);
             end
+            
+            -- Quest wurde erzeugt
+            Quests[QuestID].IsGenerated = true;
         end
     end
 end
