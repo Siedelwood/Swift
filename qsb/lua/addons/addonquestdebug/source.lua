@@ -137,7 +137,7 @@ Core:RegisterBehavior(b_Reward_DEBUG);
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:Install()
@@ -211,7 +211,7 @@ end
 -- @param _CheckAtRun     Prüfe Quests zur Laufzeit
 -- @param _TraceQuests    Aktiviert Questverfolgung
 -- @param _DevelopingMode Aktiviert Cheats und Konsole
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
@@ -240,7 +240,7 @@ end
 -- Aktiviert die Questverfolgung. Jede Statusänderung wird am Bildschirm
 -- angezeigt.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:ActivateQuestTrace()
@@ -257,7 +257,7 @@ end
 -- <p>Die Konsole des Debug wird mit SHIFT + ^ geöffnet.</p>
 -- <p>Die Konsole bietet folgende Kommandos:</p>
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:ActivateDevelopingMode()
@@ -269,7 +269,7 @@ end
 ---
 -- Ließt eingegebene Kommandos aus und führt entsprechende Funktionen aus.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:Parser(_Input)
@@ -292,7 +292,7 @@ end
 -- Zerlegt die Eingabe in einzelne Tokens und gibt diese zurück.
 --
 -- @return Table mit Tokens
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:Tokenize(_Input)
@@ -319,7 +319,7 @@ end
 -- Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
 -- sein und der Speicher vollgemüllt werden.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:CollectGarbage()
@@ -330,7 +330,7 @@ end
 ---
 -- Gibt die Speicherauslastung von Lua zurück.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:CountLuaLoad()
@@ -342,7 +342,7 @@ end
 ---
 -- Zeigt alle Quests nach einem Filter an.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:PrintQuests(_Arguments, _Flags)
@@ -431,7 +431,7 @@ end
 ---
 -- Läd ein Lua-Skript in das Enviorment.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:LoadScript(_Arguments, _Flags)
@@ -450,7 +450,7 @@ end
 ---
 -- Führt ein Lua-Kommando im Enviorment aus.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:ExecuteCommand(_Arguments, _Flags)
@@ -472,7 +472,7 @@ end
 ---
 -- Konsolenbefehl: Leert das Debug Window.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:Clear()
@@ -482,7 +482,7 @@ end
 ---
 -- Konsolenbefehl: Ändert die Diplomatie zwischen zwei Spielern.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:Diplomacy(_Arguments)
@@ -492,7 +492,7 @@ end
 ---
 --  Konsolenbefehl: Startet die Map umgehend neu.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:RestartMap()
@@ -502,7 +502,7 @@ end
 ---
 -- Konsolenbefehl: Aktiviert/deaktiviert die geteilte Sicht zweier Spieler.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:ShareView(_Arguments)
@@ -512,7 +512,7 @@ end
 ---
 -- Konsolenbefehl: Setzt die Position eines Entity.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:SetPosition(_Arguments)
@@ -528,7 +528,7 @@ end
 ---
 -- Konsolenbefehl: Zeigt die Version der QSB an.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:ShowVersion()
@@ -538,7 +538,7 @@ end
 ---
 -- Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:QuestSuccess(_QuestName, _ExactName)
@@ -552,7 +552,7 @@ end
 ---
 -- Lässt einen Quest, oder mehrere Quests mit ähnlichen Namen, fehlschlagen.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:QuestFailure(_QuestName, _ExactName)
@@ -566,7 +566,7 @@ end
 ---
 -- Stoppt einen Quest, oder mehrere Quests mit ähnlichen Namen.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:QuestInterrupt(_QuestName, _ExactName)
@@ -580,7 +580,7 @@ end
 ---
 -- Startet einen Quest, oder mehrere Quests mit ähnlichen Namen.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:QuestTrigger(_QuestName, _ExactName)
@@ -594,7 +594,7 @@ end
 ---
 -- Setzt den Quest / die Quests zurück, sodass er neu gestartet werden kann.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:QuestReset(_QuestName, _ExactName)
@@ -609,7 +609,7 @@ end
 -- Überschreibt CreateQuests, sodass Assistentenquests über das Skript erzeugt 
 -- werden um diese sinnvoll überprüfen zu können.
 --
--- @within AddOnQuestDebug.Global
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global:OverwriteCreateQuests()
@@ -661,6 +661,7 @@ end
 --
 -- @param _Arguments Argumente der überschriebenen Funktion
 -- @param _Original  Referenz auf Save-Funktion
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global.OnSaveGameLoad(_Arguments, _Original)
@@ -676,6 +677,7 @@ end
 -- können nicht debugt werden!
 --
 -- @param _List Liste der Quests
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Global.DebugQuest(self, _Quest)
@@ -725,7 +727,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within AddOnQuestDebug.Local
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Local:Install()
@@ -739,7 +741,7 @@ end
 -- Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
 -- sein und der Speicher vollgemüllt werden.
 --
--- @within AddOnQuestDebug.Local
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Local:CollectGarbage()
@@ -749,7 +751,7 @@ end
 ---
 -- Gibt die Speicherauslastung von Lua zurück.
 --
--- @within AddOnQuestDebug.Local
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Local:CountLuaLoad()
@@ -762,7 +764,7 @@ end
 -- angezeigt.
 --
 -- @see AddOnQuestDebug.Global:ActivateDevelopingMode
--- @within AddOnQuestDebug.Local
+-- @within Private
 -- @local
 --
 function AddOnQuestDebug.Local:ActivateDevelopingMode()

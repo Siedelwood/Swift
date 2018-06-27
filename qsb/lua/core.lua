@@ -176,6 +176,7 @@ end
 -- String ist, wird als Adresse geschrieben.
 -- @param _Table Table zum konvertieren
 -- @return string: Converted table
+-- @within Public
 --
 function API.ConvertTableToString(_Table)
     assert(type(_Table) == "table");
@@ -1016,6 +1017,7 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- zurückgegeben.
 -- @param _EntityID Entity ID
 -- @return string: Skriptname
+-- @within Public
 --
 function API.EnsureScriptName(_EntityID)
     if type(_EntityID) == "string" then
@@ -1044,6 +1046,7 @@ GiveEntityName = API.EnsureScriptName;
 --
 -- @param _Command Lua-Befehl als String
 -- @param _Flag    FIXME
+-- @within Public
 --
 function API.Bridge(_Command, _Flag)
     if not GUI then

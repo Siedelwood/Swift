@@ -140,6 +140,7 @@ end
 -- Läd den Inhalt der Datei und gibt ihn als String zurück.
 -- @param _Path Pfad zur Datei
 -- @return Dateiinhalt als String
+-- @within SymfoniaLoader
 -- @local
 --
 function SymfoniaLoader:LoadSource(_Path)
@@ -155,6 +156,7 @@ end
 -- Läd alle Inhalte der QSB und gibt sie als Table zurück. Jeder Index des
 -- Tables enthält den Inhalt einer Quelldatei.
 -- @return Table mit Inhalten
+-- @within SymfoniaLoader
 -- @local
 --
 function SymfoniaLoader:ConcatSources()
@@ -206,6 +208,7 @@ end
 -- @param _Name Name of dependency
 -- @param _i    Current addon index
 -- @return boolean: Will be loaded
+-- @within SymfoniaLoader
 -- @local
 --
 function SymfoniaLoader:IsDependencyLoaded(_Name, _i)
@@ -224,6 +227,7 @@ end
 
 ---
 -- Fügt die Quelldateien von Symfonia zu einer QSB zusammen.
+-- @within SymfoniaLoader
 -- @local
 --
 function SymfoniaLoader:CreateQSB()
