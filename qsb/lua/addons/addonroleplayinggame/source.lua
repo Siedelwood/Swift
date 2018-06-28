@@ -382,7 +382,6 @@ end
 --
 function AddOnRolePlayingGame.Local:Install()
     self:CreateHotkeys();
-    self:DescribeHotkeys();
     self:DeactivateAbilityBlabering();
     self:OverrideActiveAbility();
     self:OverrideStringKeys();
@@ -706,6 +705,10 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Local:DescribeHotkeys()
+    if AddOnRolePlayingGame.Local.Data.HotkeyDescribed == true then
+        return;
+    end
+    
     -- Inventar anzeigen
     API.AddHotKey({de = "I", en = "I"}, {de = "Inventar öffnen", en = "Open inventory"});
 end
@@ -918,6 +921,9 @@ AddOnRolePlayingGame.Hero = {};
 function AddOnRolePlayingGame.Hero:New(_ScriptName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Hero);
+    
+    -- Hotkeys erst mit ersten Helden eintragen.
+    API.Bridge("AddOnRolePlayingGame.Local:DescribeHotkeys()");
 
     local hero = API.InstanceTable(self, {});
     hero.Unit         = AddOnRolePlayingGame.Unit:New(_ScriptName);
