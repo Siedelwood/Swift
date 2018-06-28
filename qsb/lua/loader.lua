@@ -74,7 +74,7 @@ SymfoniaLoader = {
             },
 
             {
-            "AddOnRolePlayingGame",                 false,
+            "AddOnRolePlayingGame",                 true,
             "BundleEntityHealth",
             "BundleEntityHelperFunctions",
             "BundleGameHelperFunctions",
