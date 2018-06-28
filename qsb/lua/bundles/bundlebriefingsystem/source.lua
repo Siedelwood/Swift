@@ -142,7 +142,9 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 -- <b>Alias</b>: AddPages
 --
 -- @param _Briefing Briefing
--- @return function(3): AP, ASP, ASMC
+-- @return function: AP
+-- @return function: ASP
+-- @return function: ASMC
 -- @within Public
 --
 function API.AddPages(_Briefing)
@@ -160,7 +162,8 @@ AddPages = API.AddPages;
 -- <b>Alias</b>: AddPages
 --
 -- @param _Cutscene Cutscene
--- @return function(3): AF, ASF
+-- @return function: AF
+-- @return function: ASF
 -- @within Public
 --
 function API.AddFlights(_Cutscene)
@@ -185,14 +188,14 @@ AddFlights = API.AddFlights;
 --
 function API.AddBriefingNote(_Text, _Duration)
     if type(_Text) ~= "string" and type(_Text) ~= "number" then
-        API.Dbg("API.BriefingNote: Text must be a string or a number!");
+        API.Dbg("API.AddBriefingNote: Text must be a string or a number!");
         return;
     end
     if not GUI then
-        API.Bridge([[API.BriefingNote("]] .._Text.. [[", ]]..tostring(_Duration)..[[)]]);
+        API.Bridge([[API.AddBriefingNote("]] .._Text.. [[", ]]..tostring(_Duration)..[[)]]);
         return;
     end
-    return BriefingSystem.PushInformationText(_Text, (_Duration * 10));
+    return BriefingSystem.PushInformationText(_Text, (_Duration * 100));
 end
 BriefingMessage = API.AddBriefingNote;
 
@@ -203,26 +206,26 @@ BriefingMessage = API.AddBriefingNote;
 ---
 -- Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.
 --
--- <b>Normale Seite</b>
+-- <b>Normale Seite</b><br>
 -- Die üblichen Parameter können angegeben werden. Beispiele sind zoom, text,
 -- oder action. Zusätzlich hinzugekommen sind lookAt und zOffset. Mittels
 -- lookAt kann die Kamera zum Angesicht eines Siedlers ausgerichtet werden.
 -- zOffset ermöglicht die Nutzung der Z-Achse.
 --
--- <b>Multiple Choice, Sprünge und Leerseiten</b>
--- Eine Multiple Choice Seite enthält die Unterseite mc. In mc wird der Text,
+-- <b>Multiple Choice, Sprünge und Leerseiten</b><br>
+-- Eine Multiple-Choice-Seite enthält die Unterseite mc. In mc wird der Text,
 -- der Titel und die möglichen Antwortmöglichkeiten notiiert. Alle Antworten
 -- stehen innerhalb von answers. Jede mögliche Antwort ist eine Table mit dem
--- Text der Auswahl, dem Sprungziel und einigen Optionen.
+-- Text der Auswahl, dem Sprungziel und einigen Optionen.<br>
 -- Mittels eines Sprungs kann zu einer anderen Seite eines Briefings gegangen
 -- werden. Dazu muss der Index der Zielseite angegeben werden. Die erste Seite
--- eines Briefings darf kein Sprung sein!.
+-- eines Briefings darf kein Sprung sein!.<br>
 -- Eine Leerseite kann benutzt werden um hinter einem von einer Auswahl
 -- aufgeschlagenen Pfad im Briefing selbiges zu beenden. Sonst würde das
 -- Briefing einfach mit der nächsten Seite weiter machen. Sprungbefehle
 -- können alternativ verwendet werden.
 --
--- <b>Splashscreens</b>
+-- <b>Splashscreens</b><br>
 -- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
 -- über die Grafik zu scrollen oder zu zoomen.
 --
@@ -1019,6 +1022,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         BriefingSystem.page = 0;
         BriefingSystem.skipPlayers = {};
         BriefingSystem.disableSkipping = BriefingSystem.currBriefing.disableSkipping;
+        BriefingSystem.activate3dOnScreenDisplay = BriefingSystem.currBriefing.activate3dOnScreenDisplay;
         BriefingSystem.skipAll = BriefingSystem.currBriefing.skipAll;
         BriefingSystem.skipPerPage = not BriefingSystem.skipAll and BriefingSystem.currBriefing.skipPerPage;
 
@@ -1482,6 +1486,71 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
         BriefingSystem.currBriefing = BriefingSystem.UpdateMCAnswers(BriefingSystem.currBriefing);
     end
+    
+    ---
+    -- Diese Funktion wird aufgerufen, wenn der Spieler während eines
+    -- Briefings auf ein Entity klickt.
+    --
+    -- @param _EntityID	Selected Entity
+    -- @within BriefingSystem
+    -- @local
+    --
+    function BriefingSystem.LeftClickOnEntity(_EntityID)
+        if _EntityID == nil then
+            return;
+        end
+        if BriefingSystem.IsBriefingActive == false then 
+            return;
+        end
+        local Page = BriefingSystem.currBriefing[BriefingSystem.page];
+        if Page.entityClicked then 
+            Page:entityClicked(_EntityID);
+        end
+    end
+
+    ---
+    -- Diese Funktion wird aufgerufen, wenn der Spieler während eines
+    -- Briefings in die Spielwelt klickt.
+    --
+    -- @param _X X-Position
+    -- @param _Y Y-Position
+    -- @within BriefingSystem
+    -- @local
+    --
+    function BriefingSystem.LeftClickOnPosition(_X, _Y)
+        if _X == nil or _Y == nil then
+            return;
+        end
+        if BriefingSystem.IsBriefingActive == false then 
+            return;
+        end
+        local Page = BriefingSystem.currBriefing[BriefingSystem.page];
+        if Page.positionClicked then 
+            Page:positionClicked(_X, _Y);
+        end
+    end
+    
+    ---
+    -- Diese Funktion wird aufgerufen, wenn der Spieler während eines
+    -- Briefings auf die Anzeige klickt.
+    --
+    -- @param _X X-Position
+    -- @param _Y Y-Position
+    -- @within BriefingSystem
+    -- @local
+    --
+    function BriefingSystem.LeftClickOnScreen(_X, _Y)
+        if _X == nil or _Y == nil then
+            return;
+        end
+        if BriefingSystem.IsBriefingActive == false then 
+            return;
+        end
+        local Page = BriefingSystem.currBriefing[BriefingSystem.page];
+        if Page.screenClicked then 
+            Page:screenClicked(_X, _Y);
+        end
+    end
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -1599,7 +1668,9 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if isLoadScreenVisible then
             XGUIEng.PopPage();
         end
-        XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
+        if BriefingSystem.GlobalSystem.activate3dOnScreenDisplay ~= true then
+            XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
+        end
         XGUIEng.ShowWidget("/InGame/Root/Normal", 0);
         XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", BriefingSystem.GlobalSystem.disableSkipping and 0 or 1);
@@ -1696,7 +1767,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         Mouse.CursorShow();
         GUI.EnableBattleSignals(true);
         GUI.SetFeedbackSoundOutputState(1);
-        GUI.ActivateSelectionState();
+        GUI.activate3dOnScreenDisplayState();
         GUI.PermitContextSensitiveCommandsInSelectionState();
         for _, v in ipairs(BriefingSystem.selectedEntities) do
             if not Logic.IsEntityDestroyed(v) then
@@ -2467,10 +2538,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- Steuert die Kamera während eines Briefings. Es wird entweder das alte
     -- System von OldMacDonald oder das neue von totalwarANGEL genutzt.
     --
+    -- @within BB-Funktionen
     -- @local
     --
     function ThroneRoomCameraControl()
-        if Camera.GetCameraBehaviour(5) == 5 then
+        if Camera.GetCameraBehaviour(5) == 5 and BriefingSystem.GlobalSystem.isActive == true then
             local flight = BriefingSystem.Flight;
 
             -- -------------------------------------------------------------- --
@@ -2662,8 +2734,20 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
     end
 
+    ---
+    -- Wird immer dann aufgerufen, wenn der Spieler innerhalb des Throneroom 
+    -- Mode links klickt.
+    --
+    -- @within BB-Funktionen
+    -- @local
+    --
     function ThroneRoomLeftClick()
-        -- TODO: Prüfen, ob man das hier sinnvoll nutzen kann.
+        local EntityID = GUI.GetMouseOverEntity();
+        API.Bridge("BriefingSystem.LeftClickOnEntity(" ..tostring(EntityID).. ")");
+        local x,y = GUI.Debug_GetMapPositionUnderMouse();
+        API.Bridge("BriefingSystem.LeftClickOnPosition(" ..tostring(x).. ", " ..tostring(y).. ")");
+        local x,y = GUI.GetMousePosition();
+        API.Bridge("BriefingSystem.LeftClickOnScreen(" ..tostring(x).. ", " ..tostring(y).. ")");
     end
 
     -- ---------------------------------------------------------------------- --
@@ -2731,7 +2815,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     end
 
     ---
-    --
+    -- Unterbricht eine Kamerabewegung der laufenden Cutscene.
     --
     -- @within BriefingSystem
     -- @local
@@ -3304,3 +3388,4 @@ function b_Trigger_Briefing:DEBUG(__quest_)
 end
 
 Core:RegisterBehavior(b_Trigger_Briefing);
+

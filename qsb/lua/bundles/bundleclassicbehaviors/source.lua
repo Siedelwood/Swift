@@ -3700,18 +3700,14 @@ function b_Reprisal_QuestRestart:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_QuestRestart:CustomFunction(_Quest)
-    self:ResetQuest();
+    RestartQuestByName(self.QuestName, true);
 end
 
 function b_Reprisal_QuestRestart:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
-        return true
+        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
     end
-end
-
-function b_Reprisal_QuestRestart:ResetQuest()
-    RestartQuestByName(self.QuestName);
+    return false;
 end
 
 Core:RegisterBehavior(b_Reprisal_QuestRestart);
@@ -3751,13 +3747,12 @@ function b_Reprisal_QuestFailure:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_QuestFailure:CustomFunction(_Quest)
-    FailQuestByName(self.QuestName);
+    FailQuestByName(self.QuestName, true);
 end
 
 function b_Reprisal_QuestFailure:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid quest!");
-        return true;
+        warn("".._Quest.Identifier.." "..self.Name..": got an invalid quest!");
     end
     return false;
 end
@@ -3799,13 +3794,12 @@ function b_Reprisal_QuestSuccess:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_QuestSuccess:CustomFunction(_Quest)
-    WinQuestByName(self.QuestName);
+    WinQuestByName(self.QuestName, true);
 end
 
 function b_Reprisal_QuestSuccess:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
-        return true
+        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
     end
     return false;
 end
@@ -3849,14 +3843,14 @@ function b_Reprisal_QuestActivate:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_QuestActivate:CustomFunction(_Quest)
-    StartQuestByName(self.QuestName);
+    StartQuestByName(self.QuestName, true);
 end
 
 function b_Reprisal_QuestActivate:DEBUG(_Quest)
     if not IsValidQuest(self.QuestName) then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist")
-        return true
+        warn(_Quest.Identifier .. " " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist")
     end
+    return false;
 end
 
 Core:RegisterBehavior(b_Reprisal_QuestActivate)
@@ -3901,15 +3895,14 @@ function b_Reprisal_QuestInterrupt:CustomFunction(_Quest)
         local QuestID = GetQuestID(self.QuestName)
         local Quest = Quests[QuestID]
         if Quest.State == QuestState.Active then
-            StopQuestByName(self.QuestName);
+            StopQuestByName(self.QuestName, true);
         end
     end
 end
 
 function b_Reprisal_QuestInterrupt:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
-        return true
+        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
     end
     return false;
 end
@@ -3981,8 +3974,7 @@ end
 
 function b_Reprisal_QuestForceInterrupt:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
-        return true;
+        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
     end
     return false;
 end
@@ -4597,7 +4589,7 @@ function Reward_Diplomacy(...)
 end
 
 b_Reward_Diplomacy = API.InstanceTable(b_Reprisal_Diplomacy);
-b_Reward_Diplomacy.Name             = "Reward_ObjectDeactivate";
+b_Reward_Diplomacy.Name             = "Reward_Diplomacy";
 b_Reward_Diplomacy.Description.de   = "Reward: Sets Diplomacy state of two Players to a stated value.";
 b_Reward_Diplomacy.Description.en   = "Lohn: Setzt den Diplomatiestatus zweier Spieler auf den angegebenen Wert.";
 b_Reward_Diplomacy.GetReprisalTable = nil;
@@ -6638,7 +6630,7 @@ function Reward_QuestRestart(...)
 end
 
 b_Reward_QuestRestart = API.InstanceTable(b_Reprisal_QuestRestart);
-b_Reward_QuestRestart.Name = "Reward_ReplaceEntity";
+b_Reward_QuestRestart.Name = "Reward_QuestRestart";
 b_Reward_QuestRestart.Description.en = "Reward: Restarts a (completed) quest so it can be triggered and completed again.";
 b_Reward_QuestRestart.Description.de = "Lohn: Startet eine (beendete) Quest neu, damit diese neu ausgelöst und beendet werden kann.";
 b_Reward_QuestRestart.GetReprisalTable = nil;
@@ -6662,7 +6654,7 @@ function Reward_QuestFailure(...)
     return b_Reward_QuestFailure:new(...)
 end
 
-b_Reward_QuestFailure = API.InstanceTable(b_Reprisal_ReplaceEntity);
+b_Reward_QuestFailure = API.InstanceTable(b_Reprisal_QuestFailure);
 b_Reward_QuestFailure.Name = "Reward_QuestFailure";
 b_Reward_QuestFailure.Description.en = "Reward: Lets another active quest fail.";
 b_Reward_QuestFailure.Description.de = "Lohn: Lässt eine andere aktive Quest fehlschlagen.";
@@ -6789,7 +6781,7 @@ function Reward_MapScriptFunction(...)
 end
 
 b_Reward_MapScriptFunction = API.InstanceTable(b_Reprisal_MapScriptFunction);
-b_Reward_MapScriptFunction.Name = "Reprisal_MapScriptFunction";
+b_Reward_MapScriptFunction.Name = "Reward_MapScriptFunction";
 b_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
 b_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
 b_Reward_MapScriptFunction.GetReprisalTable = nil;
@@ -7016,9 +7008,9 @@ end
 b_Reward_QuestRestartForceActive.ResetQuest = b_Reward_QuestRestart.CustomFunction;
 function b_Reward_QuestRestartForceActive:DEBUG(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
-        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist")
-        return true
+        warn(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
     end
+    return false;
 end
 
 Core:RegisterBehavior(b_Reward_QuestRestartForceActive)

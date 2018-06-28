@@ -58,6 +58,33 @@ end
 UndiscoverTerritories = API.UndiscoverTerritories;
 
 ---
+-- Setzt die Einnahmen für alle Stadtgebäude eines Spielers. Stadtgebäude
+-- können nur Einnahmen zwischen 0 und 100 Talern haben.
+--
+-- <b>Alias:</b> SetPlayerEarnings
+--
+-- @param _PlayerID Partei oder nil für alle
+-- @param _Earnings Einnahmen [0 | 100]
+-- @within Public
+--
+function API.SetEarningsOfPlayerCity(_PlayerID, _Earnings)
+    if GUI then
+        API.Bridge("API.SetEarningsOfPlayerCity(" .._PlayerID.. ", " .._Earnings.. ")");
+        return;
+    end
+    if _PlayerID ~= -1 and Logic.GetStoreHouse(_PlayerID) == 0 then
+        API.Dbg("API.SetEarningsOfPlayerCity: Player " .._PlayerID.. " is dead! :(");
+        return;
+    end
+    if _Earnings == nil or (_Earnings < 0 or _Earnings > 100) then
+        API.Dbg("API.SetEarningsOfPlayerCity: _Earnings must be between 0 and 100!");
+        return;
+    end
+    return BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity(_PlayerID, _Earnings);
+end
+SetPlayerEarnings = API.SetEarningsOfPlayerCity;
+
+---
 -- Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
@@ -66,12 +93,20 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 --
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
--- @param _PlayerID Partei oder nil für alle
+-- @param _PlayerID Partei oder -1 für alle
 -- @within Public
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
     if GUI then
         API.Bridge("API.SetNeedSatisfaction(" .._Need.. ", " .._State.. ", " .._PlayerID.. ")")
+        return;
+    end
+    if _PlayerID ~= -1 and Logic.GetStoreHouse(_PlayerID) == 0 then
+        API.Dbg("API.SetNeedSatisfaction: Player " .._PlayerID.. " is dead! :(");
+        return;
+    end
+    if _State < 0 or _State > 1 then
+        API.Dbg("API.SetNeedSatisfaction: _State must be between 0 and 1!");
         return;
     end
     return BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID);
@@ -386,8 +421,7 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Private
--- @local
+-- @within Public
 --
 function API.ThridPersonActivate(_Hero, _MaxZoom)
     if GUI then
@@ -404,8 +438,7 @@ HeroCameraActivate = API.ThridPersonActivate;
 --
 -- <b>Alias:</b> HeroCameraDeactivate
 --
--- @within Private
--- @local
+-- @within Public
 --
 function API.ThridPersonDeactivate()
     if GUI then
@@ -422,8 +455,7 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 -- <b>Alias:</b> HeroCameraIsRuning
 --
 -- @return boolean: Kamera aktiv
--- @within Private
--- @local
+-- @within Public
 --
 function API.ThridPersonIsRuning()
     if not GUI then
@@ -677,18 +709,42 @@ function BundleGameHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _Targ
 end
 
 ---
+-- Setzt die Einnahmen für alle Stadtgebäude eines Spielers. Stadtgebäude
+-- können nur Einnahmen zwischen 0 und 100 Talern haben.
+--
+-- <b>Alias:</b> SetPlayerEarnings
+--
+-- @param _PlayerID Partei oder nil für alle
+-- @param _Earnings Einnahmen [0 | 100]
+-- @within Private
+-- @local
+--
+function BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity(_PlayerID, _Earnings)
+    if _PlayerID == -1 then
+        for i=1, 8, 1 do
+            self:SetEarningsOfPlayerCity(i, _Earnings);
+        end
+    else
+        local City = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.CityBuilding)};
+        for i=1, #City, 1 do
+            Logic.SetBuildingEarnings(City[i], _Earnings);
+        end
+    end
+end
+
+---
 -- Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
 --
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
--- @param _PlayerID Partei oder nil für alle
+-- @param _PlayerID Partei oder -1 für alle
 -- @within Private
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
-    if not _PlayerID then
+    if _PlayerID == -1 then
         for i=1, 8, 1 do
             self:SetNeedSatisfactionLevel(_Need, _State, i);
         end
@@ -1633,7 +1689,7 @@ end
 -- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
 -- an denen eine Aktion ausgeführt wird.
 --
--- <b>Alias:</b> QSB.TimeLine:Start
+-- <b>Alias:</b> QSB.TimeLine:Start<br>
 -- <b>Alias:</b> TimeLine:Start
 --
 -- @param _description     Beschreibung
@@ -1669,7 +1725,7 @@ end
 -- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
 -- beendet, beginnt er dennoch von vorn.
 --
--- <b>Alias:</b> QSB.TimeLine:Restart
+-- <b>Alias:</b> QSB.TimeLine:Restart<br>
 -- <b>Alias:</b> TimeLine:Restart
 --
 -- @param _ID  ID des Zeitstrahl
@@ -1687,7 +1743,7 @@ end
 ---
 -- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
 --
--- <b>Alias:</b> QSB.TimeLine:IsRunning
+-- <b>Alias:</b> QSB.TimeLine:IsRunning<br>
 -- <b>Alias:</b> TimeLine:IsRunning
 --
 -- @param _ID  ID des Zeitstrahl
@@ -1704,7 +1760,7 @@ end
 ---
 -- Hält einen Zeitstrahl an.
 --
--- <b>Alias:</b> QSB.TimeLine:Yield
+-- <b>Alias:</b> QSB.TimeLine:Yield<br>
 -- <b>Alias:</b> TimeLine:Yield
 --
 -- @param _ID  ID des Zeitstrahl
@@ -1720,7 +1776,7 @@ end
 ---
 -- Stößt einen angehaltenen Zeitstrahl wieder an.
 --
--- <b>Alias:</b> QSB.TimeLine:Resume
+-- <b>Alias:</b> QSB.TimeLine:Resume<br>
 -- <b>Alias:</b> TimeLine:Resume
 --
 -- @param _ID  ID des Zeitstrahl
@@ -1739,15 +1795,15 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler()
-    for k,v in pairs(BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs) do
+    for k,v in pairs(BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs) do
         if v.Iterator > #v then
-            BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs[k].Running = false;
+            BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs[k].Running = false;
         end
 
         if v.Running then
             if (v[v.Iterator].Time + v.StartTime) <= Logic.GetTime() then
                 v[v.Iterator].Action(v[v.Iterator]);
-                BundleGameHelperFunctions.Shared.TimeLine.Data.Jobs[k].Iterator = v.Iterator +1;
+                BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs[k].Iterator = v.Iterator +1;
             end
         end
     end

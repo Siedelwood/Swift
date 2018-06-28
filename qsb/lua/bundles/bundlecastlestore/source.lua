@@ -133,9 +133,9 @@ BundleCastleStore = {
 -- @local
 --
 function BundleCastleStore.Global:Install()
-    QSB.CastleStore = BundleCastleStore.Global.CastleStore;
+    QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions()
-    API.AddSaveGameAction(BundleCastleStore.Global.OnSaveGameLoaded);
+    API.AddSaveGameAction(self.OnSaveGameLoaded);
 end
 
 ---
@@ -756,7 +756,7 @@ end
 -- @local
 --
 function BundleCastleStore.Local:Install()
-    QSB.CastleStore = BundleCastleStore.Local.CastleStore;
+    QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions();
     self:OverwriteGetStringTableText();
 end
@@ -1392,10 +1392,12 @@ function BundleCastleStore.Local:OverwriteGetStringTableText()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
 
         if _key == "UI_ObjectNames/DestroyGoods" then
-            if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignBottomRight/Selection/Castle") == 1 then
-                return BundleCastleStore.Local.Description.ShowCastleStore.Text[lang];
-            else
-                return BundleCastleStore.Local.Description.ShowCastle.Text[lang];
+            if Logic.GetHeadquarters(PlayerID) == SelectedID then
+                if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignBottomRight/Selection/Castle") == 1 then
+                    return BundleCastleStore.Local.Description.ShowCastleStore.Text[lang];
+                else
+                    return BundleCastleStore.Local.Description.ShowCastle.Text[lang];
+                end
             end
         end
         if _key == "UI_ObjectDescription/DestroyGoods" then

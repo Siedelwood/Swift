@@ -30,7 +30,7 @@
 -- @within Public
 --
 function API.GetHealth(_Entity)
-    return BundleEntityHealth:GetHealth(_Entity);
+    return BundleEntityHealth.Shared:GetHealth(_Entity);
 end
 GetHealth = API.GetHealth;
 
@@ -54,17 +54,17 @@ function API.SetHealth(_Entity, _Percentage)
     end
     if not IsExisting(_Entity) then
         local Sublect = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("_Entity " ..Sublect.. " does not exist!");
+        API.Dbg("API.SetHealth: _Entity " ..Sublect.. " does not exist!");
         return;
     end
     if type(_Percentage) ~= "number" then
-        API.Dbg("_Percentage must be a number!");
+        API.Dbg("API.SetHealth: _Percentage must be a number!");
         return;
     end
 
     _Percentage = (_Percentage < 0 and 0) or _Percentage;
     if _Percentage > 100 then
-        API.Warn("_Percentage is larger than 100%. This could cause problems!");
+        API.Warn("API.SetHealth: _Percentage is larger than 100%. This could cause problems!");
     end
     BundleEntityHealth.Global:SetEntityHealth(_Entity, _Percentage);
 end
@@ -89,15 +89,15 @@ function API.SetOnFire(_Entity, _Strength)
     end
     if not IsExisting(_Entity) then
         local Sublect = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("Entity " ..Sublect.. " does not exist!");
+        API.Dbg("API.SetOnFire: Entity " ..Sublect.. " does not exist!");
         return;
     end
     if Logic.IsBuilding(GetID(_Entity)) == 0 then
-        API.Dbg("Only buildings can be set on fire!");
+        API.Dbg("API.SetOnFire: Only buildings can be set on fire!");
         return;
     end
     if type(_Strength) ~= "number" then
-        API.Dbg("_Strength must be a number!");
+        API.Dbg("API.SetOnFire: _Strength must be a number!");
         return;
     end
     _Strength = (_Strength < 0 and 0) or _Strength;
@@ -105,11 +105,46 @@ function API.SetOnFire(_Entity, _Strength)
 end
 SetOnFire = API.SetOnFire;
 
+
+---
+-- Verwundet ein Entity oder ein Battalion um den angegebenen Wert. Wird ein
+-- Battalion verwundet, werden der reihe nach alle Soldaten verwunden, bis
+-- der gesamte Schaden verrechnet wurde.
+--
+-- <b>Alias</b>: HurtEntityEx
+--
+-- @param _Target         Ziel des Schadens
+-- @param _AmountOfDamage Menge an Schaden
+-- @param _Attacker       (Optional) Angreifendes Entity
+-- @within Public
+--
+function API.HurtEntity(_Target, _AmountOfDamage, _Attacker)
+    if GUI then
+        local Target = (type(_Target) == "string" and "'" .._Target.. "'") or _Target;
+        local Attacker = (type(_Attacker) == "string" and "'" .._Attacker.. "'") or _Attacker;
+        API.Bridge("API.HurtEntity(" ..Target.. ", " .._AmountOfDamage.. ", " ..tostring(Attacker).. ")");
+        return;
+    end
+    if not IsExisting(_Target) then
+        local Sublect = (type(_Target) == "string" and "'" .._Target.. "'") or _Target;
+        API.Dbg("API.HurtEntity: Entity " .._Target.. " does not exist!");
+        return;
+    end
+    if type(_AmountOfDamage) ~= "number" or _AmountOfDamage < 0 then
+        API.Dbg("API.SetOnFire: _Strength must be a number greater or equal 0!");
+        return;
+    end
+    local EntityID = GetID(_Target);
+    local AttackerID = GetID(_Attacker);
+    return BundleEntityHealth.Global:HurtEntityEx(EntityID, _AmountOfDamage, AttackerID);
+end
+HurtEntityEx = API.HurtEntity;
+
 ---
 -- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity von einem
 -- anderen Entity verwundet wird.
 --
--- <b>Alias</b>: AddOnEntityHurtAction
+-- <b>Alias</b>: AddEntityHurtAction
 --
 -- @param _Function Funktion, die ausgeführt wird.
 -- @within Public
@@ -125,7 +160,49 @@ function API.AddOnEntityHurtAction(_Function)
     end
     BundleEntityHealth.Global.AddOnEntityHurtAction(_Function);
 end
-AddOnEntityHurtAction = API.AddOnEntityHurtAction;
+AddEntityHurtAction = API.AddOnEntityHurtAction;
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity zerstört wird.
+--
+-- <b>Alias</b>: AddEntityKilledAction
+--
+-- @param _Function Funktion, die ausgeführt wird.
+-- @within Public
+--
+function API.AddOnEntityDestroyedAction(_Function)
+    if GUI then
+        API.Dbg("API.AddOnEntityDestroyedAction: Can not be used in local script!");
+        return;
+    end
+    if type(_Function) ~= "function" then
+        API.Dbg("_Function must be a function!");
+        return;
+    end
+    BundleEntityHealth.Global.AddOnEntityDestroyedAction(_Function);
+end
+AddEntityKilledAction = API.AddOnEntityDestroyedAction;
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt wird.
+--
+-- <b>Alias</b>: AddSettlerSpawnedAction
+--
+-- @param _Function Funktion, die ausgeführt wird.
+-- @within Public
+--
+function API.AddOnEntityCreatedAction(_Function)
+    if GUI then
+        API.Dbg("API.AddOnEntityCreatedAction: Can not be used in local script!");
+        return;
+    end
+    if type(_Function) ~= "function" then
+        API.Dbg("_Function must be a function!");
+        return;
+    end
+    BundleEntityHealth.Global.AddOnEntityCreatedAction(_Function);
+end
+AddSettlerSpawnedAction = API.AddOnEntityCreatedAction;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -134,10 +211,15 @@ AddOnEntityHurtAction = API.AddOnEntityHurtAction;
 BundleEntityHealth = {
     Global = {
         Data = {
+            OnEntityCreatedAction = {},
+            OnEntityDestroyedAction = {},
             OnEntityHurtAction = {},
         },
     },
     Local = {
+        Data = {}
+    },
+    Shared = {
         Data = {}
     },
 }
@@ -150,11 +232,13 @@ BundleEntityHealth = {
 -- @local
 --
 function BundleEntityHealth.Global:Install()
-    BundleEntityHealth_EntityHurtEntityController = BundleEntityHealth.Global.EntityHurtEntityController;
+    BundleEntityHealth_EntityHurtEntityController = self.EntityHurtEntityController;
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "BundleEntityHealth_EntityHurtEntityController", 1);
 
-    BundleEntityHealth_EntityDestroyedController = BundleEntityHealth.Global.EntityDestroyedController;
+    BundleEntityHealth_EntityDestroyedController = self.EntityDestroyedController;
     Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "BundleEntityHealth_EntityDestroyedController", 1);
+    
+    Core:AppendFunction("GameCallback_SettlerSpawned", self.EntityCreatedController);
 end
 
 ---
@@ -179,6 +263,109 @@ function BundleEntityHealth.Global:SetEntityHealth(_Entity, _Percentage)
 end
 
 ---
+-- Verwundet ein Entity um den angegebenen Wert. Wird die ID des
+-- Angreifers übergeben, werden die entsprechenden Callbacks für
+-- Kampfhandlungen ausgelöst.
+--
+-- @param _EntityID       ID des Opfers
+-- @param _AmountOfDamage Menge an Schaden
+-- @param _AttackerID     (optional) ID des Angreifers
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global:HurtEntityEx(_EntityID, _AmountOfDamage, _AttackerID)
+    if IsExisting(_EntityID)then
+        local leader = 0
+        if Logic.IsEntityInCategory(_EntityID,EntityCategories.Soldier) == 1 then
+            leader = Logic.SoldierGetLeaderEntityID(_EntityID)
+        end
+        if Logic.IsEntityInCategory(_EntityID, EntityCategories.Leader) == 1 then
+            leader = _EntityID
+        end
+
+        if leader ~= nil and leader ~= 0 then
+            local soldiers = {Logic.GetSoldiersAttachedToLeader(leader)}
+            if soldiers[1] == nil then soldiers[1] = 0 end
+
+            if soldiers[1] > 0 then
+                local victim = 0
+                local lowestHealth = 1000
+                for i=1,#soldiers do
+                    local currentHealth = Logic.GetEntityHealth(soldiers[i])
+                    if currentHealth < lowestHealth and currentHealth > 0 then
+                        lowestHealth = currentHealth
+                        victim = soldiers[i]
+                    end
+                end
+
+                local damageVictim = soldiers[#soldiers]
+                if victim ~= nil and victim ~= 0 then
+                    damageVictim = victim
+                end
+
+                local hpEntity = 0
+                local overkill = _AmountOfDamage
+                if IsExisting(damageVictim)then
+                    hpEntity = Logic.GetEntityHealth(damageVictim)
+                    overkill = _AmountOfDamage - hpEntity
+                    if hpEntity <= _AmountOfDamage then
+                        if _AttackerID and hpEntity > 0 then
+                            GameCallback_EntityKilled(_EntityID,
+                                                      Logic.EntityGetPlayer(_EntityID),
+                                                      _AttackerID,
+                                                      Logic.EntityGetPlayer(_AttackerID),
+                                                      Logic.GetEntityType(_EntityID),
+                                                      Logic.GetEntityType(_AttackerID));
+
+                            local x,y,z = Logic.EntityGetPos(_EntityID)
+                            Logic.ExecuteInLuaLocalState("GameCallback_Feedback_EntityKilled("..
+                                                         "".._EntityID..","..
+                                                         ""..Logic.EntityGetPlayer(_EntityID)..","..
+                                                         "".._AttackerID..","..
+                                                         ""..Logic.EntityGetPlayer(_AttackerID)..","..
+                                                         ""..Logic.GetEntityType(_EntityID)..","..
+                                                         ""..Logic.GetEntityType(_AttackerID)..","..
+                                                         ""..x..","..y..")")
+                        end
+                        Logic.HurtEntity(damageVictim,hpEntity)
+                    else
+                        Logic.HurtEntity(damageVictim,_AmountOfDamage)
+                    end
+                end
+                if overkill > 0 then
+                    HurtEntityEx(leader,overkill,_AttackerID)
+                end
+            end
+        else
+            local hpEntity = Logic.GetEntityHealth(_EntityID)
+            if hpEntity <= _AmountOfDamage then
+                if _AttackerID and hpEntity > 0 then
+                    GameCallback_EntityKilled(_EntityID,
+                                              Logic.EntityGetPlayer(_EntityID),
+                                              _AttackerID,
+                                              Logic.EntityGetPlayer(_AttackerID),
+                                              Logic.GetEntityType(_EntityID),
+                                              Logic.GetEntityType(_AttackerID))
+
+                    local x,y,z = Logic.EntityGetPos(_EntityID)
+                    Logic.ExecuteInLuaLocalState("GameCallback_Feedback_EntityKilled("..
+                                                 "".._EntityID..","..
+                                                 ""..Logic.EntityGetPlayer(_EntityID)..","..
+                                                 "".._AttackerID..","..
+                                                 ""..Logic.EntityGetPlayer(_AttackerID)..","..
+                                                 ""..Logic.GetEntityType(_EntityID)..","..
+                                                 ""..Logic.GetEntityType(_AttackerID)..","..
+                                                 ""..x..","..y..")")
+                end
+                Logic.HurtEntity(_EntityID,hpEntity)
+            else
+                Logic.HurtEntity(_EntityID,_AmountOfDamage)
+            end
+        end
+    end
+end
+
+---
 -- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity ein anderes
 -- verwundet. Dabei wird EntityID des Angreifers und des Verteidigers an die
 -- Funktion übergeben.
@@ -189,6 +376,30 @@ end
 --
 function BundleEntityHealth.Global.AddOnEntityHurtAction(_Function)
     table.insert(BundleEntityHealth.Global.Data.OnEntityHurtAction, _Function);
+end
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity zerstört
+-- wird. Die EntityID des zerstörten Entity wird übergeben.
+--
+-- @param _Function Funktion, die ausgeführt wird
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global.AddOnEntityDestroyedAction(_Function)
+    table.insert(BundleEntityHealth.Global.Data.OnEntityDestroyedAction, _Function);
+end
+
+---
+-- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt
+-- wird. Die EntityID des zerstörten Entity wird übergeben.
+--
+-- @param _Function Funktion, die ausgeführt wird
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global.AddOnEntityCreatedAction(_Function)
+    table.insert(BundleEntityHealth.Global.Data.OnEntityCreatedAction, _Function);
 end
 
 ---
@@ -216,8 +427,37 @@ function BundleEntityHealth.Global.EntityHurtEntityController()
     end
 end
 
+---
+-- Führt alle registrierten Events aus, wenn ein Entity zerstört wird.
+--
+-- @within Private
+-- @local
+--
 function BundleEntityHealth.Global.EntityDestroyedController()
-    -- FIXME: Implement me! :(
+    local EntityIDs = {Event.GetEntityID()};
+    
+    for i=1, #EntityIDs, 1 do
+        local EntityID = EntityIDs[i];
+        for k, v in pairs(BundleEntityHealth.Global.Data.OnEntityDestroyedAction) do
+            if v then
+                v(EntityIDs);
+            end
+        end
+    end
+end
+
+---
+-- Führt alle registrierten Events aus, wenn ein Entity erzeugt wird.
+--
+-- @within Private
+-- @local
+--
+function BundleEntityHealth.Global.EntityCreatedController(_EntityID)
+    for k, v in pairs(BundleEntityHealth.Global.Data.OnEntityDestroyedAction) do
+        if v then
+            v(_EntityID);
+        end
+    end
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -241,7 +481,7 @@ end
 -- @within Private
 -- @local
 --
-function BundleEntityHealth:GetHealth(_Entity)
+function BundleEntityHealth.Shared:GetHealth(_Entity)
     if not IsExisting(_Entity) then
         return 0;
     end

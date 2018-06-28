@@ -35,7 +35,7 @@ QSB = QSB or {};
 -- local Result = API.GetEntitiesOfCategoriesInTerritories({1, 2, 3}, EntityCategories.Hero, {5, 12, 23, 24});
 --
 function API.GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
-    return BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
+    return BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
 end
 GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
 EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
@@ -54,7 +54,7 @@ EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
 -- local Result = API.GetEntitiesByPrefix("entranceCave");
 --
 function API.GetEntitiesByPrefix(_Prefix)
-    return BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix);
+    return BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix(_Prefix);
 end
 GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 
@@ -109,7 +109,7 @@ function API.GetRelativePosition(_target, _distance, _angle, _buildingRealPos)
             return;
         end
     end
-    return BundleEntityHelperFunctions:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
+    return BundleEntityHelperFunctions.Shared:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
 end
 GetRelativePos = API.GetRelativePosition;
 
@@ -564,7 +564,7 @@ function API.GetNearestEntity(_eID, _entities)
             return;
         end
     end
-    return BundleEntityHelperFunctions:GetNearestEntity(_eID,_entities);
+    return BundleEntityHelperFunctions.Shared:GetNearestEntity(_eID,_entities);
 end
 GetClosestEntity = API.GetNearestEntity;
 
@@ -579,6 +579,9 @@ BundleEntityHelperFunctions = {
         }
     },
     Local = {
+        Data = {}
+    },
+    Shared = {
         Data = {}
     },
 }
@@ -690,7 +693,7 @@ function BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _
     local tID = GetID(_Position);
     local pos = GetRelativePos(_Position, _Distance);
     if type(_Angle) == "number" then
-        pos = BundleEntityHelperFunctions:GetRelativePos(_Position, _Distance, _Angle);
+        pos = BundleEntityHelperFunctions.Shared:GetRelativePos(_Position, _Distance, _Angle);
     end
 
     if _moveAsEntity then
@@ -742,7 +745,7 @@ end
 --
 -- @param _EntityID Entity ID
 -- @return string: Vergebener Name
--- @within Public
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:GiveEntityName(_EntityID)
@@ -765,7 +768,7 @@ end
 --
 -- @param_Entity  Angreifendes Entity
 -- @param _Target Angegriffenes Entity
--- @within Public
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Attack(_Entity, _Target)
@@ -780,7 +783,7 @@ end
 --
 -- @param _Entity   Angreifendes Entity
 -- @param _Position Positionstable
--- @within Public
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:AttackMove(_Entity, _Position)
@@ -793,7 +796,7 @@ end
 --
 -- @param _Entity   Bewegendes Entity
 -- @param _Position Positionstable
--- @within Public
+-- @within Private
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Move(_Entity, _Position)
@@ -828,7 +831,7 @@ end
 -- @within Private
 -- @local
 --
-function BundleEntityHelperFunctions:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
+function BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
     -- Tables erzwingen
     local p = (type(_player) == "table" and _player) or {_player};
     local c = (type(_category) == "table" and _category) or {_category};
@@ -854,7 +857,7 @@ end
 -- @within Private
 -- @local
 --
-function BundleEntityHelperFunctions:GetEntitiesByPrefix(_Prefix)
+function BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix(_Prefix)
     local list = {};
     local i = 1;
     local bFound = true;
@@ -882,7 +885,7 @@ end
 -- @within Private
 -- @local
 --
-function BundleEntityHelperFunctions:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
+function BundleEntityHelperFunctions.Shared:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
     if not type(_target) == "table" and not IsExisting(_target)then
         return
     end
@@ -921,7 +924,7 @@ end
 -- @within Private
 -- @local
 --
-function BundleEntityHelperFunctions:GetNearestEntity(_eID,_entities)
+function BundleEntityHelperFunctions.Shared:GetNearestEntity(_eID,_entities)
     local bestDistance = Logic.WorldGetSize();
     local best = nil;
     for i=1,#_entities do
