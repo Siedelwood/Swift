@@ -37,6 +37,7 @@
 <li><a href="#Private">Private</a></li>
 <li><a href="#Page_Functionen">Page-Functionen</a></li>
 <li><a href="#BriefingSystem">BriefingSystem</a></li>
+<li><a href="#BB_Funktionen">BB-Funktionen</a></li>
 <li><a href="#Reward">Reward</a></li>
 <li><a href="#Reprisal">Reprisal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
@@ -48,6 +49,7 @@
   <li><a href="../bundles/AddOnGameCutscenes.html">AddOnGameCutscenes</a></li>
   <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
   <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
+  <li><a href="../bundles/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
   <li><strong>BundleBriefingSystem</strong></li>
   <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
   <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
@@ -106,10 +108,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#OnSkipButtonPressed">OnSkipButtonPressed ()</a></td>
 	<td class="summary">Callback: Überspringen wurde geklickt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#ThroneRoomCameraControl">ThroneRoomCameraControl ()</a></td>
-	<td class="summary">Steuert die Kamera während eines Briefings.</td>
 	</tr>
 </table>
 <h2><a href="#Public">Public</a></h2>
@@ -297,11 +295,11 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BriefingSystem.EndBriefing">BriefingSystem.EndBriefing ()</a></td>
-	<td class="summary">Baut die Änderungen im Interface nach dem Ende des Briefings ab.</td>
+	<td class="summary">Beendet ein laufendes Briefing oder eine laufende Fake-Cutscene.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BriefingSystem.EndBriefing">BriefingSystem.EndBriefing ()</a></td>
-	<td class="summary">Beendet ein laufendes Briefing oder eine laufende Fake-Cutscene.</td>
+	<td class="summary">Baut die Änderungen im Interface nach dem Ende des Briefings ab.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BriefingSystem.ExecuteBriefing">BriefingSystem.ExecuteBriefing (_briefing)</a></td>
@@ -332,13 +330,28 @@
 	<td class="summary">Prüft, ob ein Briefing aktiv ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BriefingSystem.OnConfirmed">BriefingSystem.OnConfirmed ()</a></td>
-	<td class="summary">Eine Antwort wurde ausgewählt (lokales Skript).</td>
+	<td class="name" nowrap><a href="#BriefingSystem.LeftClickOnEntity">BriefingSystem.LeftClickOnEntity (_EntityID)</a></td>
+	<td class="summary">Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings auf ein Entity klickt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.LeftClickOnPosition">BriefingSystem.LeftClickOnPosition (_X, _Y)</a></td>
+	<td class="summary">Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings in die Spielwelt klickt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.LeftClickOnScreen">BriefingSystem.LeftClickOnScreen (_X, _Y)</a></td>
+	<td class="summary">Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings auf die Anzeige klickt.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BriefingSystem.OnConfirmed">BriefingSystem.OnConfirmed (_aswID, _currentPage, _currentAnswer)</a></td>
 	<td class="summary">Wenn eine Antwort ausgewählt wurde, wird der entsprechende
  Sprung durchgeführt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.OnConfirmed">BriefingSystem.OnConfirmed ()</a></td>
+	<td class="summary">Eine Antwort wurde ausgewählt (lokales Skript).</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BriefingSystem.PrepareBriefing">BriefingSystem.PrepareBriefing ()</a></td>
@@ -423,11 +436,11 @@
 	<td class="summary">Überspringt ein Briefing.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BriefingSystem.SkipBriefingPage">BriefingSystem.SkipBriefingPage (_player)</a></td>
+	<td class="name" nowrap><a href="#BriefingSystem.SkipBriefingPage">BriefingSystem.SkipBriefingPage ()</a></td>
 	<td class="summary">Überspringt eine Briefing-Seite.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BriefingSystem.SkipBriefingPage">BriefingSystem.SkipBriefingPage ()</a></td>
+	<td class="name" nowrap><a href="#BriefingSystem.SkipBriefingPage">BriefingSystem.SkipBriefingPage (_player)</a></td>
 	<td class="summary">Überspringt eine Briefing-Seite.</td>
 	</tr>
 	<tr>
@@ -470,6 +483,18 @@
  Briefing in der Warteschlange aus.</td>
 	</tr>
 </table>
+<h2><a href="#BB_Funktionen">BB-Funktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ThroneRoomCameraControl">ThroneRoomCameraControl ()</a></td>
+	<td class="summary">Steuert die Kamera während eines Briefings.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ThroneRoomLeftClick">ThroneRoomLeftClick ()</a></td>
+	<td class="summary">Wird immer dann aufgerufen, wenn der Spieler innerhalb des Throneroom
+ Mode links klickt.</td>
+	</tr>
+</table>
 <h2><a href="#Reward">Reward</a></h2>
 <table class="function_list">
 	<tr>
@@ -508,22 +533,6 @@
     </dt>
     <dd>
     Callback: Überspringen wurde geklickt.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "ThroneRoomCameraControl"></a>
-    <strong>ThroneRoomCameraControl ()</strong>
-    </dt>
-    <dd>
-    Steuert die Kamera während eines Briefings.  Es wird entweder das alte
- System von OldMacDonald oder das neue von totalwarANGEL genutzt.
-
 
 
 
@@ -1722,7 +1731,7 @@
     <strong>BriefingSystem.EndBriefing ()</strong>
     </dt>
     <dd>
-    Baut die Änderungen im Interface nach dem Ende des Briefings ab.
+    Beendet ein laufendes Briefing oder eine laufende Fake-Cutscene.
 
 
 
@@ -1736,7 +1745,7 @@
     <strong>BriefingSystem.EndBriefing ()</strong>
     </dt>
     <dd>
-    Beendet ein laufendes Briefing oder eine laufende Fake-Cutscene.
+    Baut die Änderungen im Interface nach dem Ende des Briefings ab.
 
 
 
@@ -1958,17 +1967,68 @@
 
 </dd>
     <dt>
-    <a name = "BriefingSystem.OnConfirmed"></a>
-    <strong>BriefingSystem.OnConfirmed ()</strong>
+    <a name = "BriefingSystem.LeftClickOnEntity"></a>
+    <strong>BriefingSystem.LeftClickOnEntity (_EntityID)</strong>
     </dt>
     <dd>
-    Eine Antwort wurde ausgewählt (lokales Skript).  Die Auswahl wird
- gepopt und ein Event an das globale Skript gesendet. Das Event
- erhält die Page ID, den Index der selektierten Antwort in der
- Listbox und die reale ID der Antwort in der Table.
+    Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings auf ein Entity klickt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+        	Selected Entity
+        </li>
+    </ul>
 
 
 
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.LeftClickOnPosition"></a>
+    <strong>BriefingSystem.LeftClickOnPosition (_X, _Y)</strong>
+    </dt>
+    <dd>
+    Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings in die Spielwelt klickt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_X</span>
+         X-Position
+        </li>
+        <li><span class="parameter">_Y</span>
+         Y-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.LeftClickOnScreen"></a>
+    <strong>BriefingSystem.LeftClickOnScreen (_X, _Y)</strong>
+    </dt>
+    <dd>
+    Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings auf die Anzeige klickt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_X</span>
+         X-Position
+        </li>
+        <li><span class="parameter">_Y</span>
+         Y-Position
+        </li>
+    </ul>
 
 
 
@@ -1998,6 +2058,24 @@
         	Gegebene Antwort
         </li>
     </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.OnConfirmed"></a>
+    <strong>BriefingSystem.OnConfirmed ()</strong>
+    </dt>
+    <dd>
+    Eine Antwort wurde ausgewählt (lokales Skript).  Die Auswahl wird
+ gepopt und ein Event an das globale Skript gesendet. Das Event
+ erhält die Page ID, den Index der selektierten Antwort in der
+ Listbox und die reale ID der Antwort in der Table.
+
+
+
 
 
 
@@ -2485,6 +2563,20 @@
 </dd>
     <dt>
     <a name = "BriefingSystem.SkipBriefingPage"></a>
+    <strong>BriefingSystem.SkipBriefingPage ()</strong>
+    </dt>
+    <dd>
+    Überspringt eine Briefing-Seite.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SkipBriefingPage"></a>
     <strong>BriefingSystem.SkipBriefingPage (_player)</strong>
     </dt>
     <dd>
@@ -2497,20 +2589,6 @@
          ID des aktiven Spielers
         </li>
     </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BriefingSystem.SkipBriefingPage"></a>
-    <strong>BriefingSystem.SkipBriefingPage ()</strong>
-    </dt>
-    <dd>
-    Überspringt eine Briefing-Seite.
-
-
 
 
 
@@ -2668,6 +2746,41 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="BB_Funktionen"></a>BB-Funktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "ThroneRoomCameraControl"></a>
+    <strong>ThroneRoomCameraControl ()</strong>
+    </dt>
+    <dd>
+    Steuert die Kamera während eines Briefings.  Es wird entweder das alte
+ System von OldMacDonald oder das neue von totalwarANGEL genutzt.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ThroneRoomLeftClick"></a>
+    <strong>ThroneRoomLeftClick ()</strong>
+    </dt>
+    <dd>
+    Wird immer dann aufgerufen, wenn der Spieler innerhalb des Throneroom
+ Mode links klickt.
+
+
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Reward"></a>Reward</h2>
 
     <dl class="function">
@@ -2773,7 +2886,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-06-27 18:52:28 </i>
+<i style="float:right;">Last updated 2018-06-28 20:21:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

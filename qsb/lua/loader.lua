@@ -174,8 +174,7 @@ function SymfoniaLoader:ConcatSources()
     
     local fh = io.open("qsb/config.ld", "wt");
     assert(fh, "Output file can not be created!");
-    fh:write("project = 'Symfonia'\n");    
-    fh:write("description = 'Just a test for configuration.'\n");
+    fh:write("project = 'Symfonia'\n");
     
     local ActiveBundles = "file = {\n'./lua/core.lua',\n";
     
