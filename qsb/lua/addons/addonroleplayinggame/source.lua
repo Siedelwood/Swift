@@ -446,19 +446,11 @@ function AddOnRolePlayingGame.Local:OverrideKnightCommands()
             XGUIEng.SetWidgetSize(widget,480,160);
             local WidgetSize = {XGUIEng.GetWidgetScreenSize(WidgetID)};
             XGUIEng.SetWidgetScreenPosition(WidgetID, x-(WidgetSize[1]*0.6), y-WidgetSize[2]);
+            XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands.Strength.Mother,0);
+            XGUIEng.ShowWDisableButtonidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother,0);
+            XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands.Endurance.Mother,0);
             
-            local relatedTeach = {"Strength", "Endurance", "Magic"};
-            local disabledButtons = 0;
-            for k,v in pairs(relatedTeach) do
-                if Hero.Learnpoints >= 1 then
-                    XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands[v].Button,0);
-                else
-                    XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands[v].Button,1);
-                    disabledButtons = disabledButtons +1;
-                end
-            end
-            
-            if disabledButtons == 3 then
+            if Hero.Learnpoints == 0 then
                 XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Strength.Mother,0);
                 XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother,0);
                 XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Endurance.Mother,0);
@@ -847,8 +839,8 @@ function AddOnRolePlayingGame.Hero:New(_ScriptName)
     hero.Inventory    = nil;
     hero.Level        = 0;
     hero.Learnpoints  = 0;
-    hero.Health       = 400;
-    hero.MaxHealth    = 400;
+    hero.Health       = 1000;
+    hero.MaxHealth    = 1000;
     hero.ActionPoints = 4*60;
     hero.Caption      = nil;
     hero.Description  = nil;
@@ -1390,6 +1382,8 @@ function AddOnRolePlayingGame.Item:New(_Identifier)
     item.Caption      = nil;
     item.OnRemoved    = nil;
     item.OnInserted   = nil;
+    item.OnEquipped   = nil;
+    item.OnUnequipped = nil;
 
     AddOnRolePlayingGame.ItemList[_Identifier] = item;
     API.Bridge([[
