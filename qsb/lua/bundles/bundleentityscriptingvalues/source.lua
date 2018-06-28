@@ -39,7 +39,7 @@ function API.GetEntityScale(_Entity)
         API.Dbg("API.GetEntityScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
-    return BundleEntityScriptingValues:GetEntitySize(_Entity);
+    return BundleEntityScriptingValues.Shared:GetEntitySize(_Entity);
 end
 GetScale = API.GetEntityScale;
 
@@ -58,7 +58,7 @@ function API.GetEntityPlayer(_Entity)
         API.Dbg("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
-    return BundleEntityScriptingValues:GetPlayerID(_entity);
+    return BundleEntityScriptingValues.Shared:GetPlayerID(_entity);
 end
 GetPlayer = API.GetEntityPlayer;
 
@@ -87,7 +87,7 @@ function API.GetMovingTarget(_Entity)
         API.Dbg("API.GetMovingTarget: Target " ..Subject.. " is invalid!");
         return nil;
     end
-    return BundleEntityScriptingValues:GetMovingTargetPosition(_Entity);
+    return BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity);
 end
 GetMovingTarget = API.GetMovingTarget;
 
@@ -114,7 +114,7 @@ function API.IsEntityNpc(_Entity)
         API.Dbg("API.IsEntityNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
-    return BundleEntityScriptingValues:IsOnScreenInformationActive(_Entity);
+    return BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity);
 end
 IsNpc = API.IsEntityNpc;
 
@@ -133,7 +133,7 @@ function API.IsEntityVisible(_Entity)
         API.Dbg("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
-    return BundleEntityScriptingValues:IsEntityVisible(_Entity);
+    return BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity);
 end
 IsVisible = API.IsEntityVisible;
 
@@ -200,6 +200,9 @@ BundleEntityScriptingValues = {
     Local = {
         Data = {}
     },
+    Shared = {
+        Data = {}
+    },
 }
 
 -- Global Script ---------------------------------------------------------------
@@ -224,7 +227,7 @@ end
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
     local EntityID = GetID(_entity);
-    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues:Float2Int(_size));
+    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_size));
     if Logic.IsSettler(EntityID) == 1 then
         Logic.SetSpeedFactor(EntityID, _size);
     end
@@ -265,7 +268,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:GetEntitySize(_entity)
+function BundleEntityScriptingValues.Shared:GetEntitySize(_entity)
     local EntityID = GetID(_entity);
     local size = Logic.GetEntityScriptingValue(EntityID, -45);
     return self.Int2Float(size);
@@ -280,7 +283,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:GetPlayerID(_entity)
+function BundleEntityScriptingValues.Shared:GetPlayerID(_entity)
     local EntityID = GetID(_entity);
     return Logic.GetEntityScriptingValue(EntityID, -71);
 end
@@ -293,7 +296,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:IsEntityVisible(_entity)
+function BundleEntityScriptingValues.Shared:IsEntityVisible(_entity)
     local EntityID = GetID(_entity);
     return Logic.GetEntityScriptingValue(EntityID, -50) == 801280;
 end
@@ -306,7 +309,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:IsOnScreenInformationActive(_entity)
+function BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_entity)
     local EntityID = GetID(_entity);
     if Logic.IsSettler(EntityID) == 0 then
         return false;
@@ -322,7 +325,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:GetMovingTargetPosition(_entity)
+function BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_entity)
     local pos = {};
     pos.X = self:GetValueAsFloat(_entity, 19) or 0;
     pos.Y = self:GetValueAsFloat(_entity, 20) or 0;
@@ -338,7 +341,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:GetValueAsInteger(_entity, _index)
+function BundleEntityScriptingValues.Shared:GetValueAsInteger(_entity, _index)
     local value = Logic.GetEntityScriptingValue(GetID(_entity),_index);
     return value;
 end
@@ -352,9 +355,9 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:GetValueAsFloat(_entity, _index)
+function BundleEntityScriptingValues.Shared:GetValueAsFloat(_entity, _index)
     local value = Logic.GetEntityScriptingValue(GetID(_entity),_index);
-    return BundleEntityScriptingValues:Int2Float(value);
+    return BundleEntityScriptingValues.Shared:Int2Float(value);
 end
 
 ---
@@ -366,7 +369,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:qmod(a, b)
+function BundleEntityScriptingValues.Shared:qmod(a, b)
     return a - math.floor(a/b)*b
 end
 
@@ -378,7 +381,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:Int2Float(num)
+function BundleEntityScriptingValues.Shared:Int2Float(num)
     if(num == 0) then return 0 end
     local sign = 1
     if(num < 0) then num = 2147483648 + num; sign = -1 end
@@ -404,7 +407,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:bitsInt(num)
+function BundleEntityScriptingValues.Shared:bitsInt(num)
     local t={}
     while num>0 do
         rest=self:qmod(num, 2) table.insert(t,1,rest) num=(num-rest)/2
@@ -422,7 +425,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:bitsFrac(num, t)
+function BundleEntityScriptingValues.Shared:bitsFrac(num, t)
     for i = 1, 48 do
         num = num * 2
         if(num >= 1) then table.insert(t, 1); num = num - 1 else table.insert(t, 0) end
@@ -439,7 +442,7 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues:Float2Int(fval)
+function BundleEntityScriptingValues.Shared:Float2Int(fval)
     if(fval == 0) then return 0 end
     local signed = false
     if(fval < 0) then signed = true; fval = fval * -1 end

@@ -1040,7 +1040,7 @@ end
 --
 -- @param _Widget Icon Widget
 -- @param _Icon   Icon Textur
--- @within BundleBuildingButtons
+-- @within Private
 -- @local
 --
 function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)

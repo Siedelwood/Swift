@@ -272,6 +272,23 @@ function AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID)
 end
 
 ---
+-- 
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:ToggleInventory(_SelectedEntity)
+    if _SelectedEntity == 0 then
+        return;
+    end
+    local ScriptName = Logic.GetEntityName(_SelectedEntity);
+    local Hero = AddOnRolePlayingGame.Hero:GetInstance(ScriptName);
+    if not Hero or Hero.Inventory == nil then
+        return;
+    end
+    API.Bridge("AddOnRolePlayingGame.Local:DisplayInventory('" ..Hero.Inventory.Identifier.. "', false)");
+end
+
+---
 -- Hebt das Level aller Helden eines Spielers an, wenn der Spieler die
 -- benötigte Erfahrung erreicht. Dabei werden entweder Lernpunkte vergeben
 -- oder automatisch Statuswerte erhöht.
@@ -351,6 +368,7 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Global.OnSaveGameLoaded()
+    API.Bridge("AddOnRolePlayingGame.Local:CreateHotkeys()");
     API.Bridge("AddOnRolePlayingGame.Local:OverrideStringKeys()");
 end
 
@@ -363,6 +381,8 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Local:Install()
+    self:CreateHotkeys();
+    self:DescribeHotkeys();
     self:DeactivateAbilityBlabering();
     self:OverrideActiveAbility();
     self:OverrideStringKeys();
@@ -376,32 +396,79 @@ end
 -- @within Private
 -- @local
 --
-function AddOnRolePlayingGame.Local:DisplayInventory(_Identifier)
+function AddOnRolePlayingGame.Local:DisplayInventory(_Identifier, _FilterEquipped)
     if AddOnRolePlayingGame.InventoryList[_Identifier] == nil then 
         return;
     end
     
+    -- Setze dargestellte Liste
+    local ItemList = AddOnRolePlayingGame.InventoryList[_Identifier].Items;
+    if _FilterEquipped then
+        ItemList = AddOnRolePlayingGame.InventoryList[_Identifier].Equipped;
+    end
+    
+    -- Ermittele Inhalte
     local DisplayedItems = {};
-    for k, v in pairs(AddOnRolePlayingGame.InventoryList[_Identifier].Items) do
+    for k, v in pairs(ItemList) do
         if v then 
             local Caption = AddOnRolePlayingGame.ItemList[k].Caption;
             local Description = AddOnRolePlayingGame.ItemList[k].Description;
-            table.insert(DisplayedItems, {Caption, v, Description});
+            table.insert(DisplayedItems, {Caption, Description, v});
         end
     end
     
+    -- Sortiere Inhalte
+    local function sortFunc(_a, _b)
+        return _a[1] < _b[1];
+    end
+    table.sort(DisplayedItems, sortFunc);
+    
+    -- Baue Fensterinhalt
     local ContentString = "";
-    local Line = "%s (%d){cr}%s{cr}{cr}";
     for i= 1, #DisplayedItems, 1 do
-        ContentString = ContentString .. string.format(
-            Line, DisplayedItems[1], DisplayedItems[2], DisplayedItems[3]
-        );
+        if _FilterEquipped then
+            local Line = "%s{cr}%s{cr}{cr}";
+            ContentString = ContentString .. string.format(
+                Line, DisplayedItems[i][1], DisplayedItems[i][2]
+            );
+        else
+            local Line = "%s (%d){cr}%s{cr}{cr}";
+            ContentString = ContentString .. string.format(
+                Line, DisplayedItems[i][1], DisplayedItems[i][3], DisplayedItems[i][2]
+            );
+        end
     end
     
-    TextWindow:New()
-        :SetCaption({de = "Rucksack", en = "Inventory"})
-        :SetContent(ContentString)
-        :Show();
+    -- Texte anpassen
+    local Caption = {de = "Rucksack", en = "Inventory"};
+    local Button  = {de = "Ausrüstung anzeigen", en = "Show equipment"};
+    if _FilterEquipped then
+        Caption = {de = "Ausrüstung", en = "Equipment"};
+        Button  = {de = "Rucksack anzeigen", en = "Show inventory"};
+    end
+    
+    -- Fenster anzeigen
+    local function ToggleCallback(_Data)
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        AddOnRolePlayingGame.Local:ToggleInventory(_Data.InventoryIdentifier, _Data.FilterEquipped);
+    end
+    local Window = TextWindow:New();
+    Window.FilterEquipped = not _FilterEquipped;
+    Window.InventoryIdentifier = _Identifier;
+    Window:SetCaption(Caption);
+    Window:SetContent(ContentString);
+    Window:SetButton(Button, ToggleCallback);
+    Window:Show();
+end
+
+---
+-- 
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:ToggleInventory(_Identifier, _FilterEquipped)
+    _FilterEquipped = _FilterEquipped or false;
+    AddOnRolePlayingGame.Local:DisplayInventory(_Identifier, _FilterEquipped);
 end
 
 ---
@@ -621,6 +688,26 @@ function AddOnRolePlayingGame.Local:DeactivateAbilityBlabering()
     end
     StartKnightVoiceForPermanentSpecialAbility = function(_KnightType)
     end
+end
+
+---
+-- 
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:CreateHotkeys()
+    -- Inventar anzeigen
+    Input.KeyBindDown(Keys.I, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('AddOnRolePlayingGame.Global:ToggleInventory(' ..Sel.. ')')", 2, false);
+end
+
+---
+-- 
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:DescribeHotkeys()
+    -- Inventar anzeigen
+    API.AddHotKey({de = "I", en = "I"}, {de = "Inventar öffnen", en = "Open inventory"});
 end
 
 -- -------------------------------------------------------------------------- --
@@ -845,6 +932,12 @@ function AddOnRolePlayingGame.Hero:New(_ScriptName)
     hero.Caption      = nil;
     hero.Description  = nil;
     
+    -- Equipment
+    hero.Armor        = nil;
+    hero.Jewellery    = nil;
+    hero.Weapon       = nil;
+    
+    -- Basisschaden setzen
     hero.Unit.BaseDamage = 25;
     
     API.Bridge([[
@@ -870,31 +963,72 @@ function AddOnRolePlayingGame.Hero:GetInstance(_ScriptName)
 end
 
 ---
--- Gibt das Inventar des Helden zurück.
+-- 
 --
--- Die Funktion setzt implizit den Owner des Inventar auf den Helden.
---
--- @return table: Inventar des Helden
+-- @param _ItemType Ausrüstungsgegenstand
+-- @return self
 -- @within AddOnRolePlayingGame.Hero
 --
-function AddOnRolePlayingGame.Hero:GetInventory()
+function AddOnRolePlayingGame.Hero:EquipArmor(_ItemType)
     assert(not GUI);
-    assert(self ~= AddOnRolePlayingGame.Hero);
-    if self.Inventory then 
-        self.Inventory.Owner = self;
-        return self.Inventory;
+    assert(self == AddOnRolePlayingGame.Hero);
+    
+    if self.Inventory ~= nil then
+        if self.Armor then
+            self.Inventory:Unequip(self.Armor);
+        end
+        self.Armor = _ItemType;
+        if self.Armor then
+            self.Inventory:Equip(self.Armor);
+        end
     end
+    return self;
 end
 
 ---
--- Gibt die aktive Fähigkeit des Helden zurück.
--- @return table: Fähigkeit des Helden
+-- 
+--
+-- @param _ItemType Ausrüstungsgegenstand
+-- @return self
 -- @within AddOnRolePlayingGame.Hero
 --
-function AddOnRolePlayingGame.Hero:GetAbility()
+function AddOnRolePlayingGame.Hero:EquipWeapon(_ItemType)
     assert(not GUI);
-    assert(self ~= AddOnRolePlayingGame.Hero);
-    return self.Ability;
+    assert(self == AddOnRolePlayingGame.Hero);
+    
+    if self.Inventory ~= nil then
+        if self.Weapon then
+            self.Inventory:Unequip(self.Weapon);
+        end
+        self.Weapon = _ItemType;
+        if self.Weapon then
+            self.Inventory:Equip(self.Weapon);
+        end
+    end
+    return self;
+end
+
+---
+-- 
+--
+-- @param _ItemType Ausrüstungsgegenstand
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:EquipJewellery(_ItemType)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Hero);
+    
+    if self.Inventory ~= nil then
+        if self.Jewellery then
+            self.Inventory:Unequip(self.Jewellery);
+        end
+        self.Jewellery = _ItemType;
+        if self.Jewellery then
+            self.Inventory:Equip(self.Jewellery);
+        end
+    end
+    return self;
 end
 
 ---
@@ -1009,7 +1143,7 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
     if EntityID ~= nil and EntityID ~= 0 then
         if Logic.KnightGetResurrectionProgress(EntityID) ~= 1 then
             AddOnRolePlayingGame.HeroList[_ScriptName].Health = Hero.MaxHealth;
-            if Hero:GetAbility() then
+            if Hero.Ability then
                 AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints = Ability.RechargeTime;
             end
         else
@@ -1027,7 +1161,7 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
             MakeInvulnerable(_ScriptName);
 
             -- Aktualisiere Aktionspunkte
-            if Hero:GetAbility() and Hero.ActionPoints < Ability.RechargeTime then
+            if Hero.Ability and Hero.ActionPoints < Ability.RechargeTime then
                 local ActionPoints = Hero.ActionPoints + Hero:GetAbilityRecharge();
                 ActionPoints = (ActionPoints > Ability.RechargeTime and Ability.RechargeTime) or ActionPoints;
                 ActionPoints = (ActionPoints < 0 and 0) or ActionPoints;
@@ -1035,7 +1169,7 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
 
                 API.Bridge([[
                     AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].ActionPoints = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints.. [[
-                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].RechargeTime = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName]:GetAbility().RechargeTime.. [[
+                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].RechargeTime = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Ability.RechargeTime.. [[
                 ]]);
             end
         end
@@ -1180,15 +1314,16 @@ AddOnRolePlayingGame.Inventory = {};
 ---
 -- Erzeugt eine neue Instanz eines Items.
 -- @param _Identifier Name des Item
+-- @param _Owner      Referenz auf den Helden
 -- @return table: Instanz
 -- @within AddOnRolePlayingGame.Inventory
 --
-function AddOnRolePlayingGame.Inventory:New(_Identifier)
+function AddOnRolePlayingGame.Inventory:New(_Identifier, _Owner)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Inventory);
 
     local inventory = API.InstanceTable(self);
-    inventory.Owner        = nil,
+    inventory.Owner        = _Owner;
     inventory.Identifier   = _Identifier;
     inventory.Items        = {};
     inventory.Equipped     = {};
@@ -1196,6 +1331,7 @@ function AddOnRolePlayingGame.Inventory:New(_Identifier)
     AddOnRolePlayingGame.InventoryList[_Identifier] = inventory;
     API.Bridge([[
         AddOnRolePlayingGame.InventoryList["]] .._Identifier.. [["]          = {}
+        AddOnRolePlayingGame.InventoryList["]] .._Identifier.. [["].Items    = {}
         AddOnRolePlayingGame.InventoryList["]] .._Identifier.. [["].Equipped = {}
     ]]);
     return inventory;
@@ -1236,7 +1372,7 @@ end
 ---
 -- Legt einen Gegenstand als Ausrüstung an.
 -- @param _ItemType Typ des Item
--- @return self
+-- @return boolean: Erfolgreich angelegt
 -- @within AddOnRolePlayingGame.Inventory
 --
 function AddOnRolePlayingGame.Inventory:Equip(_ItemType)
@@ -1244,22 +1380,24 @@ function AddOnRolePlayingGame.Inventory:Equip(_ItemType)
     assert(self ~= AddOnRolePlayingGame.Inventory);
     local Item = AddOnRolePlayingGame.ItemList[_ItemType];
     if Item and self.Items[_ItemType] > 0 and not self.Equipped[_ItemType] then
+        self:Remove(_ItemType, 1);
         API.Bridge([[
-            AddOnRolePlayingGame.InventoryList["]] .._Identifier.. [["].Equipped["]] .._ItemType.. [["] = true
+            AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = true
         ]]);
         
         self.Equipped[_ItemType] = true;
         if Item.OnEquipped then
             Item:OnEquipped(self.Owner);
         end
+        return true;
     end
-    return self;
+    return false;
 end
 
 ---
 -- Legt einen Gegenstand ab, der als Ausrüstung angelegt ist.
 -- @param _ItemType Typ des Item
--- @return self
+-- @return boolean: Erfolgreich abgelegt
 -- @within AddOnRolePlayingGame.Inventory
 --
 function AddOnRolePlayingGame.Inventory:Unequip(_ItemType)
@@ -1267,16 +1405,19 @@ function AddOnRolePlayingGame.Inventory:Unequip(_ItemType)
     assert(self ~= AddOnRolePlayingGame.Inventory);
     local Item = AddOnRolePlayingGame.ItemList[_ItemType];
     if self.Equipped[_ItemType] then
+        self:Insert(_ItemType, 1);
         API.Bridge([[
-            AddOnRolePlayingGame.InventoryList["]] .._Identifier.. [["].Equipped["]] .._ItemType.. [["] = nil
+            AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = nil
         ]]);
         
+        self.Items[_ItemType] = self.Items[_ItemType] +1;
         self.Equipped[_ItemType] = nil;
         if Item.OnUnequipped then
             Item:OnUnequipped(self.Owner);
         end
+        return false;
     end
-    return self;
+    return true;
 end
 
 ---
@@ -1294,15 +1435,11 @@ function AddOnRolePlayingGame.Inventory:Insert(_ItemType, _Amount)
     local Item = AddOnRolePlayingGame.ItemList[_ItemType];
     if Item then
         self.Items[_ItemType] = (self.Items[_ItemType] or 0) + _Amount;
-        if self.Items[_ItemType] <= 0 then
-            self.Items[_ItemType] = nil;
-        else
-            local CurrentAmount = self.Items[_ItemType];
-            API.Bridge([[
-                AddOnRolePlayingGame.InventoryList["]] .._Identifier.. [["].Items["]] .._ItemType.. [["] = ]] ..CurrentAmount.. [[
-            ]]);
-        end
         
+        local CurrentAmount = self.Items[_ItemType];
+        API.Bridge([[
+            AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["] = ]] ..CurrentAmount.. [[
+        ]]);
         if Item.OnInserted then
             Item:OnInserted(self.Owner, _Amount);
         end
@@ -1327,10 +1464,13 @@ function AddOnRolePlayingGame.Inventory:Remove(_ItemType, _Amount)
         self.Items[_ItemType] = (self.Items[_ItemType] or 0) - _Amount;
         if self.Items[_ItemType] <= 0 then
             self.Items[_ItemType] = nil;
+            API.Bridge([[
+                AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["] = nil
+            ]]);
         else
             local CurrentAmount = self.Items[_ItemType];
             API.Bridge([[
-                AddOnRolePlayingGame.InventoryList["]] .._Identifier.. [["].Items["]] .._ItemType.. [["] = ]] ..CurrentAmount.. [[
+                AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["] = ]] ..CurrentAmount.. [[
             ]]);
         end
         if Item.OnRemoved then
