@@ -51,6 +51,39 @@ AddOnRolePlayingGame = {
     },
 
     Texts = {        
+        Strength = {
+            Caption = {
+                de = "Kraft",
+                en = "Strength",
+            },
+            Description = {
+                de = "Kaft bestimmt, wie viel Schaden ein Held im Kampf gegen"..
+                     " andere Einheiten und Helden verursacht.",
+                en = "",
+            },
+        },
+        Magic = {
+            Caption = {
+                de = "Magie",
+                en = "Magic",
+            },
+            Description = {
+                de = "Magie bestimmt, wie schnell die besondere Fähigkeit des"..
+                     " Helden wieder einsatzbereit wird.",
+                en = "",
+            },
+        },
+        Endurance = {
+            Caption = {
+                de = "Widerstandskraft",
+                en = "Endurance",
+            },
+            Description = {
+                de = "Widerstandskraft bestimmt, wie gut ein Held erlittenen"..
+                     " durch Feinde erlittenen Schaden aushalten kann.",
+                en = "",
+            },
+        },
         UpgradeStrength = {
             de = "Kraft verbessern",
             en = "Improve Strength",
@@ -67,9 +100,21 @@ AddOnRolePlayingGame = {
             Caption = {de = "Rucksack", en = "Inventory"},
             Button  = {de = "Ausrüstung anzeigen", en = "Show equipment"},
         },
-        InventoryEuipment = {
+        InventoryEquipment = {
             Caption = {de = "Ausrüstung", en = "Equipment"},
             Button  = {de = "Rucksack anzeigen", en = "Show inventory"},
+        },
+        CharacterStatus = {
+            Caption = {de = "Status", en = "Status"},
+            Button  = {de = "Effekte anzeigen", en = "Show effects"},
+        },
+        PoitiveEffects = {
+            Caption = {de = "Erworbene Tugenden", en = "Aquired Virtues"},
+            Button  = {de = "Flüche anzeigen", en = "Show Vices"},
+        },
+        NegativeEffects = {
+            Caption = {de = "Erworbene Laster", en = "Aquired Vices"},
+            Button  = {de = "Tugenden anzeigen", en = "Show virtues"},
         },
         
         -- Messages --
@@ -83,7 +128,7 @@ AddOnRolePlayingGame = {
             en = "You've gained {@color:0,255,255,255}%d{@color:255,255,255,255} experience points!",
         },
         HeroLevelUp = {
-            de = "{@color:244,184,0,255}Eure Helden sind eine Stufe aufgestiegen!",
+            de = "{@color:244,184,0,255}Eure Helden haben eine neue Stufe erreicht!",
             en = "{@color:244,184,0,255}Your heroes reached a higher level!",
         },
         AutoLevelUp = {
@@ -155,7 +200,7 @@ end
 --
 function API.RpgHelper_AddPlayerExperience(_PlayerID, _EXP)
     assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
-    AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID] = AddOnRolePlayingGame.Global.Data.BaseExperience[_PlayerID] + _EXP;
+    AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID] = AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID] + _EXP;
     if AddOnRolePlayingGame.Global.Data.UseInformPlayer then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         API.Note(string.format(AddOnRolePlayingGame.Texts.EarnedExperience[lang], _EXP));
@@ -315,19 +360,19 @@ function AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID)
             local PlayerID = Logic.EntityGetPlayer(GetID(k));
             if PlayerID == _PlayerID then
                 v:LevelUp(self.Data.LearnpointsPerLevel, self.Data.UseAutoLevel == true);
-                
-                -- Den Spieler informieren
-                if API.GetControllingPlayer() == _PlayerID then
-                    if self.Data.UseInformPlayer then
-                        API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
-                        if self.Data.UseAutoLevel then
-                            API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
-                        else
-                            local Text = string.format(AddOnRolePlayingGame.Texts.ManualLevelUp, self.Data.LearnpointsPerLevel);
-                            API.Note(Text);
-                        end
-                    end
-                end
+            end
+        end
+    end
+    
+    -- Den Spieler informieren
+    if API.GetControllingPlayer() == _PlayerID then
+        if self.Data.UseInformPlayer then
+            API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
+            if self.Data.UseAutoLevel then
+                API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
+            else
+                local Text = string.format(AddOnRolePlayingGame.Texts.ManualLevelUp, self.Data.LearnpointsPerLevel);
+                API.Note(Text);
             end
         end
     end
@@ -349,6 +394,24 @@ function AddOnRolePlayingGame.Global:ToggleInventory(_SelectedEntity)
         return;
     end
     API.Bridge("AddOnRolePlayingGame.Local:DisplayInventory('" ..Hero.Inventory.Identifier.. "', false)");
+end
+
+---
+-- Wechselt zwischen Rücksack und angelegten Gegenständen des Helden.
+--
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:ToggleEffects(_SelectedEntity)
+    if _SelectedEntity == 0 then
+        return;
+    end
+    local ScriptName = Logic.GetEntityName(_SelectedEntity);
+    local Hero = AddOnRolePlayingGame.Hero:GetInstance(ScriptName);
+    if not Hero then
+        return;
+    end
+    API.Bridge("AddOnRolePlayingGame.Local:DisplayEffects('" ..Hero.ScriptName.. "', false)");
 end
 
 ---
@@ -393,8 +456,8 @@ function AddOnRolePlayingGame.Global.ExperienceLevelUpController()
             local Needed  = AddOnRolePlayingGame.Global.Data.BaseExperience;
             if Needed - Current <= 0 then
                 AddOnRolePlayingGame.Global:LevelUpAction(i);
-                AddOnRolePlayingGame.Global.Data.PlayerExperience[i] = 0;
-                AddOnRolePlayingGame.Global.Data.BaseExperience = Needed + (Needed * 0.5);
+                AddOnRolePlayingGame.Global.Data.PlayerExperience[i] = Current - Needed;
+                AddOnRolePlayingGame.Global.Data.BaseExperience = Needed + math.floor(Needed * 0.25);
             end
         end
     end
@@ -653,10 +716,76 @@ function AddOnRolePlayingGame.Local.OnSermonFinished(_PlayerID, _NumSettlers)
     API.Bridge("AddOnRolePlayingGame.Global.OnSermonFinished(" .._PlayerID.. ", " .._NumSettlers.. ")")
 end
 
+
 ---
 -- Zeigt die Inhalte des Inventars eines Helden an.
 --
--- @param _Identifier Name des Inventars
+-- @param _Identifier  Name des Inventars
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:DisplayCharacter(_Identifier)
+    if AddOnRolePlayingGame.HeroList[_Identifier] == nil then 
+        return;
+    end
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local FormatString = "%s{cr}%s{cr}%s{cr}{cr}%s{cr}%s{cr}%s{cr}{cr}%s{cr}%s{cr}%s{cr}{cr}";
+    
+    local LabelStrength  = AddOnRolePlayingGame.Texts.Strength.Caption[Language];
+    local LabelMagic     = AddOnRolePlayingGame.Texts.Magic.Caption[Language];
+    local LabelEndurance = AddOnRolePlayingGame.Texts.Endurance.Caption[Language];
+    
+    local DescStrength  = AddOnRolePlayingGame.Texts.Strength.Description[Language];
+    local DescMagic     = AddOnRolePlayingGame.Texts.Magic.Description[Language];
+    local DescEndurance = AddOnRolePlayingGame.Texts.Endurance.Description[Language];
+    
+    local Strength = AddOnRolePlayingGame.HeroList[_Identifier].Strength;
+    local StrengthStars = string.rep("*", (Strength > 49 and 50) or Strength+1);
+    local Magic = AddOnRolePlayingGame.HeroList[_Identifier].Magic;
+    local MagicStars = string.rep("*", (Magic > 49 and 50) or Magic+1);
+    local Endurance = AddOnRolePlayingGame.HeroList[_Identifier].Endurance;
+    local EnduranceStars = string.rep("*", (Endurance > 49 and 50) or Endurance+1);
+    
+    local ContentString = string.format(
+        FormatString,
+        LabelStrength,
+        StrengthStars,
+        DescStrength,
+        LabelMagic,
+        MagicStars,
+        DescMagic,
+        LabelEndurance,
+        EnduranceStars,
+        DescEndurance
+    );
+    
+    -- Fenster anzeigen
+    local Window = TextWindow:New();
+    Window:SetCaption(AddOnRolePlayingGame.Texts.CharacterStatus.Caption);
+    Window:SetContent(ContentString);
+    Window:Show();
+end
+
+---
+-- Zeigt die Inhalte des Inventars eines Helden an.
+--
+-- @param _Identifier     Name des Inventars
+-- @param _FilterEquipped Equipment anzeigen
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:DisplayEffects(_Identifier, _FilterVices)
+    if AddOnRolePlayingGame.HeroList[_Identifier] == nil then 
+        return;
+    end
+    API.Note("Display effects");
+end
+
+---
+-- Zeigt die Inhalte des Inventars eines Helden an.
+--
+-- @param _Identifier     Name des Inventars
+-- @param _FilterEquipped Equipment anzeigen
 -- @within Private
 -- @local
 --
@@ -726,6 +855,16 @@ end
 function AddOnRolePlayingGame.Local:ToggleInventory(_Identifier, _FilterEquipped)
     _FilterEquipped = _FilterEquipped or false;
     AddOnRolePlayingGame.Local:DisplayInventory(_Identifier, _FilterEquipped);
+end
+
+---
+-- 
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:ToggleEffects(_Identifier, _FilterVices)
+    _FilterEquipped = _FilterEquipped or false;
+    AddOnRolePlayingGame.Local:DisplayEffects(_Identifier, _FilterVices);
 end
 
 ---
@@ -954,7 +1093,11 @@ end
 --
 function AddOnRolePlayingGame.Local:CreateHotkeys()
     -- Inventar anzeigen
-    Input.KeyBindDown(Keys.I, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('AddOnRolePlayingGame.Global:ToggleInventory(' ..Sel.. ')')", 2, false);
+    Input.KeyBindDown(Keys.I, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('AddOnRolePlayingGame.Global:ToggleInventory(' ..Sel.. ')');", 2, false);
+    -- Effekte anzeigen
+    Input.KeyBindDown(Keys.K, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('AddOnRolePlayingGame.Global:ToggleEffects(' ..Sel.. ')');", 2, false);
+    -- Charackter anzeigen
+    Input.KeyBindDown(Keys.C, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); AddOnRolePlayingGame.Local:DisplayCharacter(Sel);", 2, false);
 end
 
 ---
@@ -969,6 +1112,10 @@ function AddOnRolePlayingGame.Local:DescribeHotkeys()
     
     -- Inventar anzeigen
     API.AddHotKey({de = "I", en = "I"}, {de = "Inventar öffnen", en = "Open inventory"});
+    -- Effecte anzeigen
+    API.AddHotKey({de = "C", en = "C"}, {de = "Charakter anzeigen", en = "Display character"});
+    -- Effecte anzeigen
+    API.AddHotKey({de = "K", en = "K"}, {de = "Effekte anzeigen", en = "Display effects"});
 end
 
 -- -------------------------------------------------------------------------- --

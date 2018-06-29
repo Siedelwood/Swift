@@ -43,6 +43,11 @@ function Mission_FirstMapAction()
     end
     
     API.ActivateDebugMode(true, true, true, true);
+    
+    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    local Inventory = AddOnRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
+    Inventory.Owner = Meredith;
+    Meredith.Inventory = Inventory;
 end
 
 --

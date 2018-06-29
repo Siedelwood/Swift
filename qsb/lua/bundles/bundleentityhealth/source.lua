@@ -127,11 +127,11 @@ function API.HurtEntity(_Target, _AmountOfDamage, _Attacker)
     end
     if not IsExisting(_Target) then
         local Sublect = (type(_Target) == "string" and "'" .._Target.. "'") or _Target;
-        API.Dbg("API.HurtEntity: Entity " .._Target.. " does not exist!");
+        API.Warn("API.HurtEntity: Entity " .._Target.. " does not exist!");
         return;
     end
     if type(_AmountOfDamage) ~= "number" or _AmountOfDamage < 0 then
-        API.Dbg("API.SetOnFire: _Strength must be a number greater or equal 0!");
+        API.Dbg("API.HurtEntity: _AmountOfDamage must be a number greater or equal 0!");
         return;
     end
     local EntityID = GetID(_Target);
