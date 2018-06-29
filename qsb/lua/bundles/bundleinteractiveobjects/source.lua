@@ -727,11 +727,27 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         end
     end
 
+    GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectMouseOver;
     GUI_Interaction.InteractiveObjectMouseOver = function()
         local PlayerID = GUI.GetPlayerID();
         local ButtonNumber = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
         local ObjectID = g_Interaction.ActiveObjectsOnScreen[ButtonNumber];
         local EntityType = Logic.GetEntityType(ObjectID);
+
+        -- Führe für Minen und Brunnen Originalfunction aus
+        if g_GameExtraNo > 0 then
+            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+                GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
+                return;
+            end
+        end
+
+        -- Führe für Ruinen Originalfunktion aus, wenn Skriptname Nummer ist
+        local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+        if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(ObjectID)) ~= nil then
+            GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
+            return;
+        end
 
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
@@ -771,12 +787,28 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         end
     end
 
-    GUI_Interaction.InteractiveObjectClicked_Orig_QSB_IO = GUI_Interaction.InteractiveObjectClicked
+    GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectClicked
     GUI_Interaction.InteractiveObjectClicked = function()
         local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
         local lang = Network.GetDesiredLanguage();
         local eID = g_Interaction.ActiveObjectsOnScreen[i];
         local pID = GUI.GetPlayerID();
+        local EntityType = Logic.GetEntityType(eID);
+
+        -- Führe für Minen und Brunnen Originalfunction aus
+        if g_GameExtraNo > 0 then
+            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+                GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+                return;
+            end
+        end
+
+        -- Führe für Ruinen Originalfunktion aus, wenn Skriptname Nummer ist
+        local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+        if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(eID)) ~= nil then
+            GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+            return;
+        end
 
         for k,v in pairs(IO)do
             if eID == GetID(k)then
@@ -896,7 +928,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         end
     end
 
-    GUI_Interaction.DisplayQuestObjective_Orig_QSB_IO = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects = GUI_Interaction.DisplayQuestObjective
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
         local lang = Network.GetDesiredLanguage();
         if lang ~= "de" then lang = "en" end
@@ -976,7 +1008,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
             XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
         else
-            GUI_Interaction.DisplayQuestObjective_Orig_QSB_IO(_QuestIndex, _MessageKey);
+            GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects(_QuestIndex, _MessageKey);
         end
     end
 end
