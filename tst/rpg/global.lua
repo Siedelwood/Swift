@@ -34,6 +34,7 @@ function Mission_FirstMapAction()
     local Path = "E:/Repositories/symfonia/qsb/lua";
     Script.Load(Path .. "/loader.lua");
     SymfoniaLoader:Load(Path);
+    InitKnightTitleTables();
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -42,9 +43,33 @@ function Mission_FirstMapAction()
     end
     
     API.ActivateDebugMode(true, true, true, true);
+end
+
+--
+-- Test Case: Event auslösen
+--
+-- Events müssen durch ihre Trigger ausgelöst werden. Dabei werden sie dann
+-- für alle Helden oder eine Auswahl aller Helden ausgeführt.
+--
+function TestEvets()
+    local Event1 = AddOnRolePlayingGame.Event:New("Dummy1");
+    Event1.Action = function(_Event, _Hero, _Trigger, ...)
+        API.Note(_Event.Identifier .. ":" .. _Trigger .. " triggered!");
+        API.Note("Hero: " .. _Hero.ScriptName);
+        API.Note("Arguments: " .. #arg);
+    end
+    Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
+    local Event2 = AddOnRolePlayingGame.Event:New("Dummy2");
+    Event2.Action = function(_Event, _Hero, _Trigger, ...)
+        API.Note(_Event.Identifier .. ":" .. _Trigger .. " triggered!");
+        API.Note("Hero: " .. _Hero.ScriptName);
+        API.Note("Arguments: " .. #arg);
+    end
+    Event2:AddTrigger("Trigger_SermonFinished");
+    Event2:AddTrigger("Trigger_EntityHurt");
     
-    
+    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
 end
 
 --

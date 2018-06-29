@@ -364,11 +364,12 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Global:InvokeEvent(_HeroList, _Trigger, ...)
-    for i= 1, #Heroes, 1 do
-        if Heroes[i] then 
-            for k, v in pairs(AddOnRolePlayingGame.EventList) do
-                if v and v.Action and v:HasTrigger(_Trigger) then 
-                    v:Action(Heroes[i], _Trigger, ...);
+    _HeroList = _HeroList or {};
+    for k, v in pairs(_HeroList) do
+        if v then 
+            for kk, vv in pairs(AddOnRolePlayingGame.EventList) do
+                if vv and vv.Action and vv:HasTrigger(_Trigger) then 
+                    vv:Action(v, _Trigger, ...);
                 end
             end
         end
@@ -429,8 +430,8 @@ function AddOnRolePlayingGame.Global.EntityFightingController(_Attacker, _Defend
         local Damage = DefenderUnit:CalculateEnduredDamage(AttackerUnit:GetDamage());
         API.HurtEntity(DefenderName, Damage, AttackerName);
         if DefenderHero ~= nil then
-            if DefendingHero.Vulnerable then 
-                DefendingHero:Hurt(Damage, AttackerName);
+            if DefenderHero.Vulnerable then 
+                DefenderHero:Hurt(Damage, AttackerName);
             end
         end
     end
@@ -476,7 +477,7 @@ end
 -- @within Private
 -- @local
 --
-function AddOnRolePlayingGame.Global.EntityKilledController(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType)
+function AddOnRolePlayingGame.Global.OnEntityKilledController(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType)
     AddOnRolePlayingGame.Global:InvokeEvent(
         AddOnRolePlayingGame.HeroList,
         "Trigger_EntityKilled",
@@ -494,7 +495,7 @@ end
 -- @within Private
 -- @local        
 --
-function AddOnRolePlayingGame.Global.EntityHurtController(_DefenderPlayerID, _DefenderName, _AttackingPlayerID, _AttackerName, _Damage)
+function AddOnRolePlayingGame.Global.OnEntityHurtController(_DefenderPlayerID, _DefenderName, _AttackingPlayerID, _AttackerName, _Damage)
     AddOnRolePlayingGame.Global:InvokeEvent(
         AddOnRolePlayingGame.HeroList,
         "Trigger_EntityHurt",
@@ -632,7 +633,7 @@ end
 --
 function AddOnRolePlayingGame.Local:Install()
     -- Event 
-    ore:AppendFunction("GameCallback_Feedback_OnSermonFinished", self.OnSermonFinished);
+    Core:AppendFunction("GameCallback_Feedback_OnSermonFinished", self.OnSermonFinished);
     -- Interface
     self:CreateHotkeys();
     self:DeactivateAbilityBlabering();
@@ -1281,7 +1282,7 @@ end
 --
 function AddOnRolePlayingGame.Hero:SetVulnerable(_Flag)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     self.Vulnerable = _Flag == true;
     return self
 end
@@ -1295,7 +1296,7 @@ end
 --
 function AddOnRolePlayingGame.Hero:Hurt(_Amount, _AttackerName)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     self.Health = self.Health - _Amount;
     AddOnRolePlayingGame.Global:InvokeEvent({self}, "Trigger_DamageSustained", _Amount, _AttackerName);
     if self.Health < 0 then 
@@ -1313,7 +1314,7 @@ end
 --
 function AddOnRolePlayingGame.Hero:Heal(_Amount, _HealerName)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     self.Health = self.Health + _Amount;
     AddOnRolePlayingGame.Global:InvokeEvent({self}, "Trigger_HealthRegenerated", _Amount, _HealerName);
     if self.Health > self.MaxHealth then 
@@ -1333,7 +1334,7 @@ end
 --
 function AddOnRolePlayingGame.Hero:EquipArmor(_ItemType)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     
     if self.Inventory ~= nil then
         if self.Armor then
@@ -1362,7 +1363,7 @@ end
 --
 function AddOnRolePlayingGame.Hero:EquipWeapon(_ItemType)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     
     if self.Inventory ~= nil then
         if self.Weapon then
@@ -1390,7 +1391,7 @@ end
 --
 function AddOnRolePlayingGame.Hero:EquipJewellery(_ItemType)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     
     if self.Inventory ~= nil then
         if self.Jewellery then
@@ -1423,11 +1424,11 @@ function AddOnRolePlayingGame.Hero:LevelUp(_LP, _AutoLevel)
         for i=1, _LP, 1 do
             local RandomStat = math.random(1, 3);
             if RandomStat == 1 then
-                self.Strength = self.Strength +1;
+                self.Unit.Strength = self.Unit.Strength +1;
             elseif RandomStat == 2 then
-                self.Magic = self.Magic +1;
+                self.Unit.Magic = self.Unit.Magic +1;
             else
-                self.Endurance = self.Endurance +1;
+                self.Unit.Endurance = self.Unit.Endurance +1;
             end
         end
     else
@@ -2068,7 +2069,7 @@ function AddOnRolePlayingGame.Event:New(_Identifier)
         AddOnRolePlayingGame.EventList[']] .._Identifier.. [[']          = {}
         AddOnRolePlayingGame.EventList[']] .._Identifier.. [['].Triggers = {}
     ]]);
-    return item;
+    return event;
 end
 
 ---
@@ -2129,11 +2130,10 @@ function AddOnRolePlayingGame.Event:AddTrigger(_Event)
 
     local EventTrigger = "";
     for k, v in pairs(self.Triggers) do 
-        EventTrigger = EventTrigger .. v .. ", ";
+        EventTrigger = EventTrigger .. "'" .. v .. "', ";
     end
     local CommandString = "AddOnRolePlayingGame.EventList['%s'].Triggers = {%s}";
-    API.Bridge(CommandString, self.Identifier, EventTrigger);
-
+    API.Bridge(string.format(CommandString, self.Identifier, EventTrigger));
     return self;
 end
 
