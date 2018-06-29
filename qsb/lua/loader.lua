@@ -55,7 +55,6 @@ SymfoniaLoader = {
             {"BundleGameHelperFunctions",           true},
             {"BundleDialogWindows",                 true},
             {"BundleBriefingSystem",                true},
-            {"BundleCastleStore",                   true},
             {"BundleBuildingButtons",               true},
             {"BundleInteractiveObjects",            true},
             {"BundleEntityHealth",                  true},
@@ -72,6 +71,16 @@ SymfoniaLoader = {
             "BundleInteractiveObjects",
             "BundleEntitySelection",
             },
+            
+            {
+            "AddOnGameCutscenes",                   true,
+            "BundleBriefingSystem",
+            },
+            
+            {
+            "AddOnCastleStore",                     true,
+            "BundleInteractiveObjects",
+            },
 
             {
             "AddOnRolePlayingGame",                 true,
@@ -80,11 +89,6 @@ SymfoniaLoader = {
             "BundleGameHelperFunctions",
             "BundleInterfaceApperance",
             "BundleDialogWindows",
-            },
-            
-            {
-            "AddOnGameCutscenes",                   true,
-            "BundleBriefingSystem",
             },
         },
     }

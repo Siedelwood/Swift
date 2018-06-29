@@ -32,21 +32,21 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Public">Public</a></li>
 <li><a href="#Private">Private</a></li>
+<li><a href="#Public">Public</a></li>
 <li><a href="#Deprecated">Deprecated</a></li>
 </ul>
 
 
 <h2>Bundles</h2>
 <ul class="nowrap">
+  <li><a href="../bundles/AddOnCastleStore.html">AddOnCastleStore</a></li>
   <li><a href="../bundles/AddOnGameCutscenes.html">AddOnGameCutscenes</a></li>
   <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
   <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
   <li><a href="../bundles/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
   <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
   <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
-  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
   <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
@@ -81,22 +81,6 @@
 <p></p>
 
 
-<h2><a href="#Public">Public</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.AddQuest">API.AddQuest (_Data)</a></td>
-	<td class="summary">Erstellt einen Quest, startet ihn jedoch noch nicht.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.QuestDialog">API.QuestDialog (_Messages)</a></td>
-	<td class="summary">Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
- einander angezeigt werden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.QuestMessage">API.QuestMessage (_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)</a></td>
-	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
-	</tr>
-</table>
 <h2><a href="#Private">Private</a></h2>
 <table class="function_list">
 	<tr>
@@ -133,6 +117,22 @@
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 </table>
+<h2><a href="#Public">Public</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AddQuest">API.AddQuest (_Data)</a></td>
+	<td class="summary">Erstellt einen Quest, startet ihn jedoch noch nicht.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.QuestDialog">API.QuestDialog (_Messages)</a></td>
+	<td class="summary">Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
+ einander angezeigt werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.QuestMessage">API.QuestMessage (_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)</a></td>
+	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
+	</tr>
+</table>
 <h2><a href="#Deprecated">Deprecated</a></h2>
 <table class="function_list">
 	<tr>
@@ -146,174 +146,6 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Public"></a>Public</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.AddQuest"></a>
-    <strong>API.AddQuest (_Data)</strong>
-    </dt>
-    <dd>
-    Erstellt einen Quest, startet ihn jedoch noch nicht.
-<p> Ein Quest braucht immer wenigstens ein Goal und einen Trigger. Hat ein Quest
- keinen Namen, erhält er automatisch einen mit fortlaufender Nummerierung.
-<p> Ein Quest besteht aus verschiedenen Parametern und Behavior, die nicht
- alle zwingend gesetzt werden müssen. Behavior werden einfach nach den
- Feldern nacheinander angegeben.
- <p><u>Parameter:</u></p>
- <ul>
- <li>Name: Der eindeutige Name des Quests</li>
- <li>Sender: PlayerID des Auftraggeber (Default 1)</li>
- <li>Receiver: PlayerID des Auftragnehmer (Default 1)</li>
- <li>Suggestion: Vorschlagnachricht des Quests</li>
- <li>Success: Erfolgsnachricht des Quest</li>
- <li>Failure: Fehlschlagnachricht des Quest</li>
- <li>Description: Aufgabenbeschreibung (Nur bei Custom)</li>
- <li>Time: Zeit bis zu, Fehlschlag/Abschluss</li>
- <li>Loop: Funktion, die während der Laufzeit des Quests aufgerufen wird</li>
- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
- </ul>
-<p> <b>Alias:</b> AddQuest
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Data</span>
-         Questdefinition
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-        string: Name des Quests</li>
-        <li>
-        number: Gesamtzahl Quests</li>
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">AddQuest {
-    Name        = <span class="string">"ExampleQuest"</span>,
-    Suggestion  = <span class="string">"Wir müssen das Kloster finden."</span>,
-    Success     = <span class="string">"Dies sind die berümten Heilermönche."</span>,
-
-    Goal_DiscoverPlayer(<span class="number">4</span>),
-    Reward_Diplomacy(<span class="number">1</span>, <span class="number">4</span>, <span class="string">"EstablishedContact"</span>),
-    Trigger_Time(<span class="number">0</span>),
-}</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.QuestDialog"></a>
-    <strong>API.QuestDialog (_Messages)</strong>
-    </dt>
-    <dd>
-    Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
- einander angezeigt werden.
-<p> Der Vorgänger-Quest und die Wartezeit müssen nur beim ersten Eintrag
- angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
- sie nicht angegeben sein. Es können Einträge von rechts nach links
- weggelassen werden.
-<p> Diese Funktion ist geeignet um Dialoge zu konfigurieren!
-<p> <b>Alias</b>: QuestDialog
-<p> Einzelne Einträge pro Quest:
- <ul>
- <li>Anzeigetext der Nachricht</li>
- <li>Sender der Nachricht</li>
- <li>Receiver der Nachricht</li>
- <li>Vorgänger-Quest</li>
- <li>Wartezeit</li>
- <li>Callback</li>
- </ul>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Messages</span>
-         Table with Quests
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        table: List of generated Quests
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.QuestDialog{
-    {<span class="string">"Hallo, wie geht es dir?"</span>, <span class="number">1</span>, <span class="number">4</span>},
-    {<span class="string">"Mir geht es gut, wie immer!"</span>, <span class="number">1</span>, <span class="number">1</span>},
-    {<span class="string">"Das ist doch schön."</span>, <span class="number">1</span>, <span class="number">4</span>},
-};</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.QuestMessage"></a>
-    <strong>API.QuestMessage (_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Nachricht im Questfenster.
-<p> Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
- des Quests ausgeführt wird.
-<p> Alle Paramater sind optional und können von rechts nach links weggelassen
- oder mit nil aufgefüllt werden.
-<p> <b>Alias</b>: QuestMessage
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Text</span>
-               Anzeigetext der Nachricht
-        </li>
-        <li><span class="parameter">_Sender</span>
-             Sender der Nachricht
-        </li>
-        <li><span class="parameter">_Receiver</span>
-           Receiver der Nachricht
-        </li>
-        <li><span class="parameter">_Ancestor</span>
-           Vorgänger-Quest
-        </li>
-        <li><span class="parameter">_AncestorWt</span>
-         Wartezeit
-        </li>
-        <li><span class="parameter">_Callback</span>
-           Callback
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-        number: QuestID</li>
-        <li>
-        table: Quest</li>
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.QuestMessage(<span class="string">"Das ist ein Text"</span>, <span class="number">4</span>, <span class="number">1</span>);</pre>
-    </ul>
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Private"></a>Private</h2>
 
     <dl class="function">
@@ -501,6 +333,174 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Public"></a>Public</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AddQuest"></a>
+    <strong>API.AddQuest (_Data)</strong>
+    </dt>
+    <dd>
+    Erstellt einen Quest, startet ihn jedoch noch nicht.
+<p> Ein Quest braucht immer wenigstens ein Goal und einen Trigger. Hat ein Quest
+ keinen Namen, erhält er automatisch einen mit fortlaufender Nummerierung.
+<p> Ein Quest besteht aus verschiedenen Parametern und Behavior, die nicht
+ alle zwingend gesetzt werden müssen. Behavior werden einfach nach den
+ Feldern nacheinander angegeben.
+ <p><u>Parameter:</u></p>
+ <ul>
+ <li>Name: Der eindeutige Name des Quests</li>
+ <li>Sender: PlayerID des Auftraggeber (Default 1)</li>
+ <li>Receiver: PlayerID des Auftragnehmer (Default 1)</li>
+ <li>Suggestion: Vorschlagnachricht des Quests</li>
+ <li>Success: Erfolgsnachricht des Quest</li>
+ <li>Failure: Fehlschlagnachricht des Quest</li>
+ <li>Description: Aufgabenbeschreibung (Nur bei Custom)</li>
+ <li>Time: Zeit bis zu, Fehlschlag/Abschluss</li>
+ <li>Loop: Funktion, die während der Laufzeit des Quests aufgerufen wird</li>
+ <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
+ </ul>
+<p> <b>Alias:</b> AddQuest
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+         Questdefinition
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        string: Name des Quests</li>
+        <li>
+        number: Gesamtzahl Quests</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">AddQuest {
+    Name        = <span class="string">"ExampleQuest"</span>,
+    Suggestion  = <span class="string">"Wir müssen das Kloster finden."</span>,
+    Success     = <span class="string">"Dies sind die berümten Heilermönche."</span>,
+
+    Goal_DiscoverPlayer(<span class="number">4</span>),
+    Reward_Diplomacy(<span class="number">1</span>, <span class="number">4</span>, <span class="string">"EstablishedContact"</span>),
+    Trigger_Time(<span class="number">0</span>),
+}</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.QuestDialog"></a>
+    <strong>API.QuestDialog (_Messages)</strong>
+    </dt>
+    <dd>
+    Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
+ einander angezeigt werden.
+<p> Der Vorgänger-Quest und die Wartezeit müssen nur beim ersten Eintrag
+ angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
+ sie nicht angegeben sein. Es können Einträge von rechts nach links
+ weggelassen werden.
+<p> Diese Funktion ist geeignet um Dialoge zu konfigurieren!
+<p> <b>Alias</b>: QuestDialog
+<p> Einzelne Einträge pro Quest:
+ <ul>
+ <li>Anzeigetext der Nachricht</li>
+ <li>Sender der Nachricht</li>
+ <li>Receiver der Nachricht</li>
+ <li>Vorgänger-Quest</li>
+ <li>Wartezeit</li>
+ <li>Callback</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Messages</span>
+         Table with Quests
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: List of generated Quests
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.QuestDialog{
+    {<span class="string">"Hallo, wie geht es dir?"</span>, <span class="number">1</span>, <span class="number">4</span>},
+    {<span class="string">"Mir geht es gut, wie immer!"</span>, <span class="number">1</span>, <span class="number">1</span>},
+    {<span class="string">"Das ist doch schön."</span>, <span class="number">1</span>, <span class="number">4</span>},
+};</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.QuestMessage"></a>
+    <strong>API.QuestMessage (_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Nachricht im Questfenster.
+<p> Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
+ Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+ Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+ Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+ des Quests ausgeführt wird.
+<p> Alle Paramater sind optional und können von rechts nach links weggelassen
+ oder mit nil aufgefüllt werden.
+<p> <b>Alias</b>: QuestMessage
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+               Anzeigetext der Nachricht
+        </li>
+        <li><span class="parameter">_Sender</span>
+             Sender der Nachricht
+        </li>
+        <li><span class="parameter">_Receiver</span>
+           Receiver der Nachricht
+        </li>
+        <li><span class="parameter">_Ancestor</span>
+           Vorgänger-Quest
+        </li>
+        <li><span class="parameter">_AncestorWt</span>
+         Wartezeit
+        </li>
+        <li><span class="parameter">_Callback</span>
+           Callback
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        number: QuestID</li>
+        <li>
+        table: Quest</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.QuestMessage(<span class="string">"Das ist ein Text"</span>, <span class="number">4</span>, <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Deprecated"></a>Deprecated</h2>
 
     <dl class="function">
@@ -528,7 +528,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-06-28 20:21:30 </i>
+<i style="float:right;">Last updated 2018-06-29 21:16:07 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
