@@ -63,6 +63,14 @@ AddOnRolePlayingGame = {
             de = "Widerstandskraft verbessern",
             en = "Improve Endurance",
         },
+        InventoryBackpack = {
+            Caption = {de = "Rucksack", en = "Inventory"},
+            Button  = {de = "Ausrüstung anzeigen", en = "Show equipment"},
+        },
+        InventoryEuipment = {
+            Caption = {de = "Ausrüstung", en = "Equipment"},
+            Button  = {de = "Rucksack anzeigen", en = "Show inventory"},
+        },
         
         -- Messages --
         
@@ -191,6 +199,16 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Global:Install()
+    -- Event 
+    Core:AppendFunction("GameCallback_EntityKilled", self.OnEntityKilledController);
+    Core:AppendFunction("GameCallback_EntityHurt", self.OnEntityHurtController);
+    Core:AppendFunction("GameCallback_TaxCollectionFinished", self.OnTaxCollectionFinished);
+    Core:AppendFunction("GameCallback_RegularFestivalEnded", self.OnRegularFestivalEnded);
+    Core:AppendFunction("GameCallback_EndOfMonth", self.OnEndOfMonth);
+    Core:AppendFunction("GameCallback_OnBuildingUpgradeFinished", self.OnBuildingUpgradeFinished);
+    Core:AppendFunction("GameCallback_OnBuildingConstructionComplete", self.OnBuildingConstructionComplete);
+    Core:AppendFunction("GameCallback_OnGeologistRefill", self.OnGeologistRefill);
+    StartSimpleJobEx(self.OnEverySecond);
     -- Kampf Controller
     API.AddOnEntityHurtAction(self.EntityFightingController);
     -- Level-Up Controller
@@ -300,7 +318,7 @@ function AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID)
                 
                 -- Den Spieler informieren
                 if API.GetControllingPlayer() == _PlayerID then
-                    if self.Data.UseInformPlayer and then
+                    if self.Data.UseInformPlayer then
                         API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
                         if self.Data.UseAutoLevel then
                             API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
@@ -331,6 +349,30 @@ function AddOnRolePlayingGame.Global:ToggleInventory(_SelectedEntity)
         return;
     end
     API.Bridge("AddOnRolePlayingGame.Local:DisplayInventory('" ..Hero.Inventory.Identifier.. "', false)");
+end
+
+---
+-- Löst für die angegebenen Helden alle Events aus, die durch den Trigger 
+-- aktiviert werden. Es wird die Action eines Events aufgerufen. Die Action 
+-- erhält den Helden, den Auslöser, und optionale Argumente des originalen
+-- Triggers (vom Spiel).
+--
+-- @param _HeroList Liste der Helden
+-- @param _Trigger  Auslöser
+-- @param ...       Optionale Argumente
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:InvokeEvent(_HeroList, _Trigger, ...)
+    for i= 1, #Heroes, 1 do
+        if Heroes[i] then 
+            for k, v in pairs(AddOnRolePlayingGame.EventList) do
+                if v and v.Action and v:HasTrigger(_Trigger) then 
+                    v:Action(Heroes[i], _Trigger, ...);
+                end
+            end
+        end
+    end
 end
 
 -- Jobs --
@@ -388,7 +430,7 @@ function AddOnRolePlayingGame.Global.EntityFightingController(_Attacker, _Defend
         API.HurtEntity(DefenderName, Damage, AttackerName);
         if DefenderHero ~= nil then
             if DefendingHero.Vulnerable then 
-                DefendingHero:Hurt(Damage);
+                DefendingHero:Hurt(Damage, AttackerName);
             end
         end
     end
@@ -421,6 +463,165 @@ function AddOnRolePlayingGame.Global.OnSaveGameLoaded()
     API.Bridge("AddOnRolePlayingGame.Local:OverrideStringKeys()");
 end
 
+-- Events --
+
+---
+-- Trigger: Ein Entity wird durch ein anderes Entity zerstört.
+-- @param _AttackedEntityID    Entity ID of defender
+-- @param _AttackedPlayerID    Player ID of defender
+-- @param _AttackingEntityID   Entity ID of attacker
+-- @param _AttackingPlayerID   Player ID of attacker
+-- @param _AttackedEntityType  Type of defender
+-- @param _AttackingEntityType Type of attacker
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.EntityKilledController(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.HeroList,
+        "Trigger_EntityKilled",
+        _AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType
+    );
+end
+
+---
+-- Trigger: Ein Entity wurd durch ein anderes verwundet.
+-- @param _DefenderPlayerID  Player ID of defender
+-- @param _DefenderName      Script name of defender
+-- @param _AttackingPlayerID Player ID of attacker
+-- @param _AttackerName      Script name of attacker
+-- @param _Damage    
+-- @within Private
+-- @local        
+--
+function AddOnRolePlayingGame.Global.EntityHurtController(_DefenderPlayerID, _DefenderName, _AttackingPlayerID, _AttackerName, _Damage)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.HeroList,
+        "Trigger_EntityHurt",
+        _DefenderPlayerID, _DefenderName, _AttackingPlayerID, _AttackerName, _Damage
+    );
+end
+
+---
+-- Trigger: Zahltag
+-- @param _PlayerID                 Player ID
+-- @param _TotalTaxAmountCollected  Total collected tax
+-- @param _AdditionalTaxesByAbility Hero ability bonus
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnTaxCollectionFinished(_PlayerID, _TotalTaxAmountCollected, _AdditionalTaxesByAbility)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_TaxCollectionFinished",
+        _PlayerID, _TotalTaxAmountCollected, _AdditionalTaxesByAbility
+    );
+end
+
+---
+-- Trigger: Ein normales Fest ist beendet.
+-- @param _PlayerID Player ID
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnRegularFestivalEnded(_PlayerID)
+    -- "Trigger_RegularFestivalEnded"
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_RegularFestivalEnded",
+        _PlayerID
+    );
+end
+
+---
+-- Trigger: Ein Monat ist zuende.
+-- @param _LastMonth    Elapsed month
+-- @param _CurrentMonth Started month
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnEndOfMonth(_LastMonth, _CurrentMonth)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.HeroList,
+        "Trigger_EndOfMonth",
+        _LastMonth, _CurrentMonth
+    );
+end
+
+---
+-- Trigger: Der Ausbau eines Gebäudes ist abgeschlossen.
+-- @param _PlayerID        Player ID
+-- @param _EntityID        Entity ID
+-- @param _NewUpgradeLevel New upgrade level
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnBuildingUpgradeFinished(_PlayerID, _EntityID, _NewUpgradeLevel)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_BuildingUpgradeFinished",
+        _PlayerID, _EntityID, _NewUpgradeLevel
+    );
+end
+
+---
+-- Trigger: Der Bau eines Gebäudes ist abgeschlossen.
+-- @param _PlayerID Player ID
+-- @param _EntityID Entity ID
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnBuildingConstructionComplete(_PlayerID, _EntityID)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_BuildingConstructionFinished",
+        _PlayerID, _EntityID
+    );
+end
+
+---
+-- Trigger: Ein Geologe füllt eine Mine wieder auf.
+-- @param _PlayerID    Player ID
+-- @param _TargetID    Entity ID of mine
+-- @param _GeologistID Entity ID of geologist
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnGeologistRefill(_PlayerID, _TargetID, _GeologistID)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_GeologistRefill",
+        _PlayerID, _TargetID, _GeologistID
+    );
+end
+
+---
+-- Trigger: Eine Predigt ist beendet.
+-- @param _PlayerID    Player ID
+-- @param _NumSettlers Number of settlers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnSermonFinished(_PlayerID, _NumSettlers)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_SermonFinished",
+        _PlayerID, _NumSettlers
+    );
+end
+
+---
+-- Trigger: Eine Sekunde ist vergangen.
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnEverySecond()
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.HeroList,
+        "Trigger_EverySecond"
+    );
+end
+
 -- local Script ----------------------------------------------------------------
 
 ---
@@ -430,11 +631,25 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Local:Install()
+    -- Event 
+    ore:AppendFunction("GameCallback_Feedback_OnSermonFinished", self.OnSermonFinished);
+    -- Interface
     self:CreateHotkeys();
     self:DeactivateAbilityBlabering();
     self:OverrideActiveAbility();
     self:OverrideStringKeys();
     self:OverrideKnightCommands();
+end
+
+---
+-- Trigger: Eine Predigt ist beendet.
+-- @param _PlayerID    Player ID
+-- @param _NumSettlers Number of settlers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local.OnSermonFinished(_PlayerID, _NumSettlers)
+    API.Bridge("AddOnRolePlayingGame.Global.OnSermonFinished(" .._PlayerID.. ", " .._NumSettlers.. ")")
 end
 
 ---
@@ -486,26 +701,19 @@ function AddOnRolePlayingGame.Local:DisplayInventory(_Identifier, _FilterEquippe
             );
         end
     end
-    
-    -- Texte anpassen
-    local Caption = {de = "Rucksack", en = "Inventory"};
-    local Button  = {de = "Ausrüstung anzeigen", en = "Show equipment"};
-    if _FilterEquipped then
-        Caption = {de = "Ausrüstung", en = "Equipment"};
-        Button  = {de = "Rucksack anzeigen", en = "Show inventory"};
-    end
-    
+
     -- Fenster anzeigen
     local function ToggleCallback(_Data)
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
         AddOnRolePlayingGame.Local:ToggleInventory(_Data.InventoryIdentifier, _Data.FilterEquipped);
     end
+    local Key = (_FilterEquipped == true and "InventoryEquipment") or "InventoryBackpack";
     local Window = TextWindow:New();
     Window.FilterEquipped = not _FilterEquipped;
     Window.InventoryIdentifier = _Identifier;
-    Window:SetCaption(Caption);
+    Window:SetCaption(AddOnRolePlayingGame.Texts[Key].Caption);
     Window:SetContent(ContentString);
-    Window:SetButton(Button, ToggleCallback);
+    Window:SetButton(AddOnRolePlayingGame.Texts[Key].Button, ToggleCallback);
     Window:Show();
 end
 
@@ -1010,6 +1218,7 @@ function AddOnRolePlayingGame.Hero:New(_ScriptName)
     local hero = API.InstanceTable(self, {});
     hero.Unit         = AddOnRolePlayingGame.Unit:New(_ScriptName);
     hero.ScriptName   = _ScriptName;
+    hero.Events       = {};
     hero.Ability      = nil;
     hero.Inventory    = nil;
     hero.Level        = 0;
@@ -1079,14 +1288,16 @@ end
 
 ---
 -- Verwundet den Helden um die angegebene Menge.
--- @param _Amount Menge an Gesundheit
+-- @param _Amount       Menge an Gesundheit
+-- @param _AttackerName (Optional) Name des Verursachers
 -- @return self
 -- @within AddOnRolePlayingGame.Hero
 --
-function AddOnRolePlayingGame.Hero:Hurt(_Amount)
+function AddOnRolePlayingGame.Hero:Hurt(_Amount, _AttackerName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Hero);
     self.Health = self.Health - _Amount;
+    AddOnRolePlayingGame.Global:InvokeEvent({self}, "Trigger_DamageSustained", _Amount, _AttackerName);
     if self.Health < 0 then 
         self.Health = 0;
     end
@@ -1095,14 +1306,16 @@ end
 
 ---
 -- Heilt den Helden um die angegebene Menge.
--- @param _Amount Menge an Gesundheit
+-- @param _Amount     Menge an Gesundheit
+-- @param _HealerName Name des Heilers
 -- @return self
 -- @within AddOnRolePlayingGame.Hero
 --
-function AddOnRolePlayingGame.Hero:Heal(_Amount)
+function AddOnRolePlayingGame.Hero:Heal(_Amount, _HealerName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Hero);
     self.Health = self.Health + _Amount;
+    AddOnRolePlayingGame.Global:InvokeEvent({self}, "Trigger_HealthRegenerated", _Amount, _HealerName);
     if self.Health > self.MaxHealth then 
         self.Health = self.MaxHealth;
     end
@@ -1312,10 +1525,7 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
         else
             -- Aktualisiere Gesundheit
             if Hero.Health < Hero.MaxHealth then
-                local Health = Hero.Health + Hero:GetRegeneration();
-                Health = (Health > Hero.MaxHealth and Hero.MaxHealth) or Health;
-                Health = (Health < 0 and 0) or Health;
-                AddOnRolePlayingGame.HeroList[_ScriptName].Health = Health;
+                Hero:Heal(Hero:GetRegeneration(), nil);
             end
             
             MakeVulnerable(_ScriptName);
@@ -1329,6 +1539,8 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
                 ActionPoints = (ActionPoints > Ability.RechargeTime and Ability.RechargeTime) or ActionPoints;
                 ActionPoints = (ActionPoints < 0 and 0) or ActionPoints;
                 AddOnRolePlayingGame.HeroList[_ScriptName].Health = ActionPoints;
+                
+                AddOnRolePlayingGame.Global:InvokeEvent({Hero}, "Trigger_ActionPointsRegenerated", Hero:GetAbilityRecharge());
 
                 API.Bridge([[
                     AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].ActionPoints = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints.. [[
@@ -1413,6 +1625,7 @@ function AddOnRolePlayingGame.Ability:Callback(_HeroName)
         end
         Hero.ActionPoints = 0;
         self:Action(Hero);
+        AddOnRolePlayingGame.Global:InvokeEvent({Hero}, "Trigger_AbilityStarted", self);
     end
     return self;
 end
@@ -1717,7 +1930,7 @@ function AddOnRolePlayingGame.Item:New(_Identifier)
 
     local item = API.InstanceTable(self);
     item.Identifier   = _Identifier;
-    item.Categories   = {},
+    item.Categories   = {};
     item.Description  = nil;
     item.Caption      = nil;
     item.OnRemoved    = nil;
@@ -1775,8 +1988,8 @@ function AddOnRolePlayingGame.Item:AddCategory(_Category)
     for i= 1, #self.Categories, 1 do
         CategoriesString = CategoriesString .. self.Categories[i] .. ", ";
     end
-    local CommandString = "AddOnRolePlayingGame.ItemList['" ..self.Identifier.. "'].Categories = {$s}";
-    API.Bridge(string.format(CommandString, CategoriesString));
+    local CommandString = "AddOnRolePlayingGame.ItemList['$s'].Categories = {$s}";
+    API.Bridge(string.format(CommandString, self.Identifier, CategoriesString));
     return self;
 end
 
@@ -1824,6 +2037,116 @@ function AddOnRolePlayingGame.Item:SetDescription(_Text)
         AddOnRolePlayingGame.ItemList["]] ..self.Identifier.. [["].Description  = "]] ..self.Description.. [["
     ]]);
     return self;
+end
+
+-- Event ---------------------------------------------------------------------
+
+-- Events sind bestimmte Aktionen, die ausgeführt werden, wenn einer ihrer 
+-- Auslöser aktiviert wird.
+
+AddOnRolePlayingGame.EventList = {};
+
+AddOnRolePlayingGame.Event = {};
+
+---
+-- Erzeugt einen neues Event.
+-- @param _Identifier Name des Event
+-- @return table: Instanz
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:New(_Identifier)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Event);
+
+    local event = API.InstanceTable(self);
+    event.Identifier   = _Identifier;
+    event.Triggers     = {};
+    event.Action       = nil;
+
+    AddOnRolePlayingGame.EventList[_Identifier] = event;
+    API.Bridge([[
+        AddOnRolePlayingGame.EventList[']] .._Identifier.. [[']          = {}
+        AddOnRolePlayingGame.EventList[']] .._Identifier.. [['].Triggers = {}
+    ]]);
+    return item;
+end
+
+---
+-- Gibt die Instanz des Event mit dem Identifier zurück.
+-- @param _Identifier Name des Event
+-- @return table: Instanz des Event
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:GetInstance(_Identifier)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Event);
+    return AddOnRolePlayingGame.EventList[_Identifier];
+end
+
+---
+-- Entfernt das Event aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Event
+-- @local
+--
+function AddOnRolePlayingGame.Event:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Event);
+    AddOnRolePlayingGame.EventList[self.Identifier] = nil;
+    API.Bridge("AddOnRolePlayingGame.EventList['" ..self.Identifier.. "'] = nil");
+end
+
+---
+-- Fügt dem Event einen Trigger hinzu.
+--
+-- Liste der möglichen Trigger:
+-- <ul>
+-- <li>Trigger_AbilityStarted</li>
+-- <li>Trigger_ActionPointsRegenerated</li>
+-- <li>Trigger_HealthRegenerated</li>
+-- <li>Trigger_DamageSustained</li>
+-- <li>Trigger_EverySecond</li>
+-- <li>Trigger_SermonFinished</li>
+-- <li>Trigger_GeologistRefill</li>
+-- <li>Trigger_BuildingConstructionFinished</li>
+-- <li>Trigger_BuildingUpgradeFinished</li>
+-- <li>Trigger_EndOfMonth</li>
+-- <li>Trigger_RegularFestivalEnded</li>
+-- <li>Trigger_TaxCollectionFinished</li>
+-- <li>Trigger_EntityHurt</li>
+-- <li>Trigger_EntityKilled</li>
+-- </ul>
+--
+-- @param _Trigger Bezeichner des Trigger
+-- @return self
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:AddTrigger(_Event)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Event);
+    if API.TraverseTable(_Event, self.Triggers) == false then 
+        table.insert(self.Triggers, _Event);
+    end
+
+    local EventTrigger = "";
+    for k, v in pairs(self.Triggers) do 
+        EventTrigger = EventTrigger .. v .. ", ";
+    end
+    local CommandString = "AddOnRolePlayingGame.EventList['%s'].Triggers = {%s}";
+    API.Bridge(CommandString, self.Identifier, EventTrigger);
+
+    return self;
+end
+
+---
+-- Gibt true zurück, wenn das Event den Trigger besitzt.
+-- @param _Trigger Bezeichner des Trigger
+-- @return boolean: Ist in Kategorie
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:HasTrigger(_Trigger)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Event);
+    return API.TraverseTable(_Trigger, self.Triggers) == true;
 end
 
 -- -------------------------------------------------------------------------- --

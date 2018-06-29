@@ -74,6 +74,7 @@ function TestInventoryListing()
     local Dummy4 = AddOnRolePlayingGame.Item:New("Dummy4");
     Dummy4:SetCaption("Dummy 4");
     Dummy4:SetDescription("This ist Dummy 4!");
+    Dummy4:AddCategory(AddOnRolePlayingGame.ItemCategories.Equipment);
     
     
     local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
