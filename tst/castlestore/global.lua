@@ -51,18 +51,12 @@ function Mission_FirstMapAction()
     
     QSB.CastleStore:New(1)
     
-    API.AddQuest {
-        Name = "ABC",
-        Visible = true,
-        EndMessage = true,
-        Sender = 2,
-        Goal_Deliver("G_RawFish", 100),
-        Trigger_Time(5),
+    CreateObject {
+        Name = "well",
+        Costs = {Goods.G_Gold, 10, Goods.G_RawFish, 100},
+        Waittime = 0,
+        Callback = function(_Data)
+            API.Note("Activated")
+        end
     }
-    
-    API.StartQuests()
-end
-
-function AmountInCastleStore()
-    API.Note(QSB.CastleStore:GetGoodAmountWithCastleStore(1, Goods.G_Grain, true))
 end
