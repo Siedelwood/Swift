@@ -676,43 +676,43 @@ end
 -- Reward.Custom2 und Triggers.Custom überprüft werden. Die anderen Typen
 -- können nicht debugt werden!
 --
--- @param _List Liste der Quests
+-- @param _QuestData Daten des Quest
 -- @within Private
 -- @local
 --
-function AddOnQuestDebug.Global.DebugQuest(self, _Quest)
+function AddOnQuestDebug.Global.DebugQuest(self, _QuestData)
     if AddOnQuestDebug.Global.Data.CheckAtStart then
-        if _Quest.Goals then
-            for i=1, #_Quest.Goals, 1 do
-                if type(_Quest.Goals[i][2]) == "table" and type(_Quest.Goals[i][2][1]) == "table" then
-                    if _Quest.Goals[i][2][1].DEBUG and _Quest.Goals[i][2][1]:DEBUG(_Quest) then
+        if _QuestData.Goals then
+            for i=1, #_QuestData.Goals, 1 do
+                if type(_QuestData.Goals[i][2]) == "table" and type(_QuestData.Goals[i][2][1]) == "table" then
+                    if _QuestData.Goals[i][2][1].DEBUG and _QuestData.Goals[i][2][1]:DEBUG(_QuestData) then
                         return false;
                     end
                 end
             end
         end
-        if _Quest.Reprisals then
-            for i=1, #_Quest.Reprisals, 1 do
-                if type(_Quest.Reprisals[i][2]) == "table" and type(_Quest.Reprisals[i][2][1]) == "table" then
-                    if _Quest.Reprisals[i][2][1].DEBUG and _Quest.Reprisals[i][2][1]:DEBUG(_Quest) then
+        if _QuestData.Reprisals then
+            for i=1, #_QuestData.Reprisals, 1 do
+                if type(_QuestData.Reprisals[i][2]) == "table" and type(_QuestData.Reprisals[i][2][1]) == "table" then
+                    if _QuestData.Reprisals[i][2][1].DEBUG and _QuestData.Reprisals[i][2][1]:DEBUG(_QuestData) then
                         return false;
                     end
                 end
             end
         end
-        if _Quest.Rewards then
-            for i=1, #_Quest.Rewards, 1 do
-                if type(_Quest.Rewards[i][2]) == "table" and type(_Quest.Rewards[i][2][1]) == "table" then
-                    if _Quest.Rewards[i][2][1].DEBUG and _Quest.Rewards[i][2][1]:DEBUG(_Quest) then
+        if _QuestData.Rewards then
+            for i=1, #_QuestData.Rewards, 1 do
+                if type(_QuestData.Rewards[i][2]) == "table" and type(_QuestData.Rewards[i][2][1]) == "table" then
+                    if _QuestData.Rewards[i][2][1].DEBUG and _QuestData.Rewards[i][2][1]:DEBUG(_QuestData) then
                         return false;
                     end
                 end
             end
         end
-        if _Quest.Triggers then
-            for i=1, #_Quest.Triggers, 1 do
-                if type(_Quest.Triggers[i][2]) == "table" and type(_Quest.Triggers[i][2][1]) == "table" then
-                    if _Quest.Triggers[i][2][1].DEBUG and _Quest.Triggers[i][2][1]:DEBUG(_Quest) then
+        if _QuestData.Triggers then
+            for i=1, #_QuestData.Triggers, 1 do
+                if type(_QuestData.Triggers[i][2]) == "table" and type(_QuestData.Triggers[i][2][1]) == "table" then
+                    if _QuestData.Triggers[i][2][1].DEBUG and _QuestData.Triggers[i][2][1]:DEBUG(_QuestData) then
                         return false;
                     end
                 end

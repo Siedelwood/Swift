@@ -820,8 +820,12 @@ end
 
 function b_Goal_EntityDistance:DEBUG(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
-        dbg("".._Quest.Identifier.." "..self.Name..": At least 1 of the entities for distance check don't exist!");
-        return true;
+        if _Quest.IsGenerated then
+            dbg("".._Quest.Identifier.." "..self.Name..": At least 1 of the entities for distance check don't exist!");
+            return true;
+        else
+            warn("".._Quest.Identifier.." "..self.Name..": At least 1 of the entities for distance check don't exist!");
+        end
     end
     return false;
 end
@@ -964,7 +968,7 @@ function b_Goal_UnitsOnTerritory:DEBUG(_Quest)
         dbg("".._Quest.Identifier.." "..self.Name..": got an invalid playerID!");
         return true;
     elseif not EntityCategories[self.Category] then
-        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid playerID!");
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid entity category!");
         return true;
     elseif tonumber(self.NumberOfUnits) == nil or self.NumberOfUnits < 0 then
         dbg("".._Quest.Identifier.." "..self.Name..": amount is negative or nil!");
@@ -2284,8 +2288,12 @@ end
 
 function b_Goal_ResourceAmount:DEBUG(_Quest)
     if not IsExisting(self.ScriptName) then
-        dbg("".._Quest.Identifier.." "..self.Name..": entity '" ..self.ScriptName.. "' does not exist!");
-        return true;
+        if _Quest.IsGenerated then
+            dbg("".._Quest.Identifier.." "..self.Name..": entity '" ..self.ScriptName.. "' does not exist!");
+            return true;
+        else 
+            warn("".._Quest.Identifier.." "..self.Name..": entity '" ..self.ScriptName.. "' does not exist!");
+        end
     elseif tonumber(self.Amount) == nil or self.Amount < 0 then
         dbg("".._Quest.Identifier.." "..self.Name..": error at amount! (nil or below 0)");
         return true;
@@ -3458,7 +3466,7 @@ function b_Reprisal_DestroyEntity:CustomFunction(_Quest)
 end
 
 function b_Reprisal_DestroyEntity:DEBUG(_Quest)
-    if not IsExisting(self.ScriptName) then
+    if _Quest.IsGenerated and not IsExisting(self.ScriptName) then
         warn(_Quest.Identifier.." " ..self.Name..": '" ..self.ScriptName.. "' is already destroyed!");
         self.WarningPrinted = true;
     end
@@ -3509,7 +3517,7 @@ function b_Reprisal_DestroyEffect:CustomFunction(_Quest)
 end
 
 function b_Reprisal_DestroyEffect:DEBUG(_Quest)
-    if not QSB.EffectNameToID[self.EffectName] then
+    if _Quest.IsGenerated and not QSB.EffectNameToID[self.EffectName] then
         dbg(_Quest.Identifier .. " " .. self.Name .. ": Effect " .. self.EffectName .. " never created")
     end
     return false;
@@ -3656,7 +3664,7 @@ function b_Reprisal_ReplaceEntity:DEBUG(_Quest)
         return true;
     end
 
-    if not IsExisting(self.ScriptName) then
+    if _Quest.IsGenerated and not IsExisting(self.ScriptName) then
         self.WarningPrinted = true;
         warn(_Quest.Identifier.." "..self.Name..": '" ..self.ScriptName.. "' does not exist!");
     end
@@ -3704,8 +3712,9 @@ function b_Reprisal_QuestRestart:CustomFunction(_Quest)
 end
 
 function b_Reprisal_QuestRestart:DEBUG(_Quest)
-    if not Quests[GetQuestID(self.QuestName)] then
-        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!")
+    if _Quest.IsGenerated and not Quests[GetQuestID(self.QuestName)] then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
+        return true;
     end
     return false;
 end
@@ -3751,8 +3760,9 @@ function b_Reprisal_QuestFailure:CustomFunction(_Quest)
 end
 
 function b_Reprisal_QuestFailure:DEBUG(_Quest)
-    if not Quests[GetQuestID(self.QuestName)] then
-        warn("".._Quest.Identifier.." "..self.Name..": got an invalid quest!");
+    if _Quest.IsGenerated and not Quests[GetQuestID(self.QuestName)] then
+        dbg("".._Quest.Identifier.." "..self.Name..": got an invalid quest!");
+        return true;
     end
     return false;
 end
@@ -3798,8 +3808,9 @@ function b_Reprisal_QuestSuccess:CustomFunction(_Quest)
 end
 
 function b_Reprisal_QuestSuccess:DEBUG(_Quest)
-    if not Quests[GetQuestID(self.QuestName)] then
-        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
+    if _Quest.IsGenerated and not Quests[GetQuestID(self.QuestName)] then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
+        return true;
     end
     return false;
 end
@@ -3847,8 +3858,9 @@ function b_Reprisal_QuestActivate:CustomFunction(_Quest)
 end
 
 function b_Reprisal_QuestActivate:DEBUG(_Quest)
-    if not IsValidQuest(self.QuestName) then
-        warn(_Quest.Identifier .. " " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist")
+    if _Quest.IsGenerated and not IsValidQuest(self.QuestName) then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
+        return true;
     end
     return false;
 end
@@ -3901,8 +3913,9 @@ function b_Reprisal_QuestInterrupt:CustomFunction(_Quest)
 end
 
 function b_Reprisal_QuestInterrupt:DEBUG(_Quest)
-    if not Quests[GetQuestID(self.QuestName)] then
-        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
+    if _Quest.IsGenerated and not Quests[GetQuestID(self.QuestName)] then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
+        return true;
     end
     return false;
 end
@@ -3973,8 +3986,9 @@ function b_Reprisal_QuestForceInterrupt:CustomFunction(_Quest)
 end
 
 function b_Reprisal_QuestForceInterrupt:DEBUG(_Quest)
-    if not Quests[GetQuestID(self.QuestName)] then
-        warn(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
+    if _Quest.IsGenerated and not Quests[GetQuestID(self.QuestName)] then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
+        return true;
     end
     return false;
 end
@@ -5166,7 +5180,7 @@ function b_Reward_CreateEffect:DEBUG(_Quest)
         dbg("".._Quest.Identifier.." "..self.Name..": effect already exists!");
         return true;
     elseif not IsExisting(self.Location) then
-        sbg("".._Quest.Identifier.." "..self.Name..": location '" ..self.Location.. "' is missing!");
+        dbg("".._Quest.Identifier.." "..self.Name..": location '" ..self.Location.. "' is missing!");
         return true;
     elseif self.PlayerID and (self.PlayerID < 0 or self.PlayerID > 8) then
         dbg("".._Quest.Identifier.." "..self.Name..": invalid playerID!");
@@ -5487,7 +5501,7 @@ function b_Reward_MoveSettler:CustomFunction(_Quest)
 end
 
 function b_Reward_MoveSettler:DEBUG(_Quest)
-    if not not IsExisting(self.ScriptNameUnit) then
+    if _Quest.IsGenerated and not not IsExisting(self.ScriptNameUnit) then
         dbg(_Quest.Identifier .. " " .. self.Name .. ": mover entity does not exist!");
         return true;
     elseif not IsExisting(self.ScriptNameDest) then
@@ -6289,12 +6303,11 @@ function b_Reward_AI_SetEnemy:CustomFunction()
 end
 
 function b_Reward_AI_SetEnemy:DEBUG(_Quest)
-
     if self.AIPlayer <= 1 or self.AIPlayer >= 8 or Logic.PlayerGetIsHumanFlag(self.AIPlayer) then
         dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong")
-        return true
+        return true;
     end
-
+    return false;
 end
 Core:RegisterBehavior(b_Reward_AI_SetEnemy)
 
@@ -6381,7 +6394,7 @@ function b_Reward_SetResourceAmount:CustomFunction(_Quest)
 end
 
 function b_Reward_SetResourceAmount:DEBUG(_Quest)
-    if not IsExisting(self.ScriptName) then
+    if _Quest.IsGenerated and not IsExisting(self.ScriptName) then
         dbg(_Quest.Identifier .. " " .. self.Name .. ": resource entity does not exist!")
         return true
     elseif not type(self.Amount) == "number" or self.Amount < 0 then
@@ -7007,8 +7020,9 @@ end
 
 b_Reward_QuestRestartForceActive.ResetQuest = b_Reward_QuestRestart.CustomFunction;
 function b_Reward_QuestRestartForceActive:DEBUG(_Quest)
-    if not Quests[GetQuestID(self.QuestName)] then
-        warn(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
+    if _Quest.IsGenerated and not Quests[GetQuestID(self.QuestName)] then
+        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
+        return true;
     end
     return false;
 end
