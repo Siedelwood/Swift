@@ -33,8 +33,8 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Fields">Fields</a></li>
-<li><a href="#Public">Public</a></li>
 <li><a href="#Private">Private</a></li>
+<li><a href="#Public">Public</a></li>
 </ul>
 
 
@@ -46,13 +46,13 @@
 </ul>
 <h2>Bundles</h2>
 <ul class="nowrap">
+  <li><a href="../bundles/AddOnCastleStore.html">AddOnCastleStore</a></li>
   <li><a href="../bundles/AddOnGameCutscenes.html">AddOnGameCutscenes</a></li>
   <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
   <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
   <li><a href="../bundles/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
   <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
   <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
-  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
   <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
@@ -112,6 +112,70 @@
 	<tr>
 	<td class="name" nowrap><a href="#g_GameExtraNo">g_GameExtraNo</a></td>
 	<td class="summary">AddOn Versionsnummer</td>
+	</tr>
+</table>
+<h2><a href="#Private">Private</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Core:AppendFunction">Core:AppendFunction (_FunctionName, _AppendFunction, _Index)</a></td>
+	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ChangeCustomQuestCaptionText">Core:ChangeCustomQuestCaptionText (_Text, _Quest)</a></td>
+	<td class="summary">Ändert den Text des Beschreibungsfensters eines Quests.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:CheckQuestName">Core:CheckQuestName (_Name)</a></td>
+	<td class="summary">Prüft, ob der Questname formal korrekt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:GetFunctionInString">Core:GetFunctionInString (_FunctionName, _Reference)</a></td>
+	<td class="summary">Sucht eine Funktion mit dem angegebenen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:InitalizeBundles">Core:InitalizeBundles ()</a></td>
+	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterAddOn">Core:RegisterAddOn (_Bundle)</a></td>
+	<td class="summary">Registiert ein AddOn als Bundle, sodass es initialisiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBehavior">Core:RegisterBehavior (_Behavior)</a></td>
+	<td class="summary">Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
+	<td class="summary">Prüft, ob das Bundle bereits initalisiert ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
+	<td class="summary">Registiert ein Bundle, sodass es initialisiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ReplaceFunction">Core:ReplaceFunction (_FunctionName, _NewFunction)</a></td>
+	<td class="summary">Überschreibt eine Funktion mit einer anderen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupGlobal_HackQuestSystem">Core:SetupGlobal_HackQuestSystem ()</a></td>
+	<td class="summary">FIXME</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupGobal_HackCreateQuest">Core:SetupGobal_HackCreateQuest ()</a></td>
+	<td class="summary">FIXME</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupLocal_HackRegisterHotkey">Core:SetupLocal_HackRegisterHotkey ()</a></td>
+	<td class="summary">Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
+ angezeigt werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:StackFunction">Core:StackFunction (_FunctionName, _StackFunction, _Index)</a></td>
+	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ToBoolean">Core:ToBoolean (_Input)</a></td>
+	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
 	</tr>
 </table>
 <h2><a href="#Public">Public</a></h2>
@@ -294,66 +358,6 @@
 	<td class="summary">Gewinnt den Quest.</td>
 	</tr>
 </table>
-<h2><a href="#Private">Private</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#Core:AppendFunction">Core:AppendFunction (_FunctionName, _AppendFunction, _Index)</a></td>
-	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:ChangeCustomQuestCaptionText">Core:ChangeCustomQuestCaptionText (_Text, _Quest)</a></td>
-	<td class="summary">Ändert den Text des Beschreibungsfensters eines Quests.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:CheckQuestName">Core:CheckQuestName (_Name)</a></td>
-	<td class="summary">Prüft, ob der Questname formal korrekt ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:GetFunctionInString">Core:GetFunctionInString (_FunctionName, _Reference)</a></td>
-	<td class="summary">Sucht eine Funktion mit dem angegebenen Namen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:InitalizeBundles">Core:InitalizeBundles ()</a></td>
-	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:RegisterAddOn">Core:RegisterAddOn (_Bundle)</a></td>
-	<td class="summary">Registiert ein AddOn als Bundle, sodass es initialisiert wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:RegisterBehavior">Core:RegisterBehavior (_Behavior)</a></td>
-	<td class="summary">Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
-	<td class="summary">Registiert ein Bundle, sodass es initialisiert wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:ReplaceFunction">Core:ReplaceFunction (_FunctionName, _NewFunction)</a></td>
-	<td class="summary">Überschreibt eine Funktion mit einer anderen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:SetupGlobal_HackQuestSystem">Core:SetupGlobal_HackQuestSystem ()</a></td>
-	<td class="summary">FIXME</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:SetupGobal_HackCreateQuest">Core:SetupGobal_HackCreateQuest ()</a></td>
-	<td class="summary">FIXME</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:SetupLocal_HackRegisterHotkey">Core:SetupLocal_HackRegisterHotkey ()</a></td>
-	<td class="summary">Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
- angezeigt werden können.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:StackFunction">Core:StackFunction (_FunctionName, _StackFunction, _Index)</a></td>
-	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:ToBoolean">Core:ToBoolean (_Input)</a></td>
-	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
-	</tr>
-</table>
 
 <br/>
 <br/>
@@ -371,6 +375,364 @@
 
 
 
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Private"></a>Private</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Core:AppendFunction"></a>
+    <strong>Core:AppendFunction (_FunctionName, _AppendFunction, _Index)</strong>
+    </dt>
+    <dd>
+    Erweitert eine Funktion um eine andere Funktion.
+<p> Jede hinzugefügte Funktion wird nach der Originalfunktion ausgeführt. Es
+ ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
+ Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
+ im Spiel sollte eine API-Funktion erstellt werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+
+        </li>
+        <li><span class="parameter">_AppendFunction</span>
+
+        </li>
+        <li><span class="parameter">_Index</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ChangeCustomQuestCaptionText"></a>
+    <strong>Core:ChangeCustomQuestCaptionText (_Text, _Quest)</strong>
+    </dt>
+    <dd>
+    Ändert den Text des Beschreibungsfensters eines Quests.  Die Beschreibung
+ wird erst dann aktualisiert, wenn der Quest ausgeblendet wird.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+           Neuer Text
+        </li>
+        <li><span class="parameter">_Quest</span>
+          Identifier des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:CheckQuestName"></a>
+    <strong>Core:CheckQuestName (_Name)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Questname formal korrekt ist.  Questnamen dürfen i.d.R. nur
+ die Zeichen A-Z, a-7, 0-9, - und _ enthalten.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+             Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Questname ist fehlerfrei
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:GetFunctionInString"></a>
+    <strong>Core:GetFunctionInString (_FunctionName, _Reference)</strong>
+    </dt>
+    <dd>
+    Sucht eine Funktion mit dem angegebenen Namen.
+<p> Ist die Funktionen innerhalb einer Table, so sind alle Ebenen bis zum
+ Funktionsnamen mit anzugeben, abgetrennt durch einen Punkt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+         Name der Funktion
+        </li>
+        <li><span class="parameter">_Reference</span>
+            Aktuelle Referenz (für Rekursion)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        function: Gefundene Funktion
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:InitalizeBundles"></a>
+    <strong>Core:InitalizeBundles ()</strong>
+    </dt>
+    <dd>
+    Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
+ Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:RegisterAddOn"></a>
+    <strong>Core:RegisterAddOn (_Bundle)</strong>
+    </dt>
+    <dd>
+    Registiert ein AddOn als Bundle, sodass es initialisiert wird.
+<p> Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und
+ existiert nur zur Übersichtlichkeit.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Bundle</span>
+         Name des Moduls
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:RegisterBehavior"></a>
+    <strong>Core:RegisterBehavior (_Behavior)</strong>
+    </dt>
+    <dd>
+    Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.
+ Erzeugt zudem den Konstruktor.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            Behavior-Objekt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:RegisterBundle"></a>
+    <strong>Core:RegisterBundle (_Bundle)</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Bundle bereits initalisiert ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Bundle</span>
+         Name des Moduls
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Bundle initalisiert
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:RegisterBundle"></a>
+    <strong>Core:RegisterBundle (_Bundle)</strong>
+    </dt>
+    <dd>
+    Registiert ein Bundle, sodass es initialisiert wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Bundle</span>
+         Name des Moduls
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ReplaceFunction"></a>
+    <strong>Core:ReplaceFunction (_FunctionName, _NewFunction)</strong>
+    </dt>
+    <dd>
+    Überschreibt eine Funktion mit einer anderen.
+<p> Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
+ sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+
+        </li>
+        <li><span class="parameter">_NewFunction</span>
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">A = {foo = <span class="keyword">function</span>() API.Note(<span class="string">"bar"</span>) <span class="keyword">end</span>}
+B = <span class="keyword">function</span>() API.Note(<span class="string">"muh"</span>) <span class="keyword">end</span>
+Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
+<span class="comment">-- A.foo() == B() =&gt; "muh"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Core:SetupGlobal_HackQuestSystem"></a>
+    <strong>Core:SetupGlobal_HackQuestSystem ()</strong>
+    </dt>
+    <dd>
+    FIXME
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:SetupGobal_HackCreateQuest"></a>
+    <strong>Core:SetupGobal_HackCreateQuest ()</strong>
+    </dt>
+    <dd>
+    FIXME
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:SetupLocal_HackRegisterHotkey"></a>
+    <strong>Core:SetupLocal_HackRegisterHotkey ()</strong>
+    </dt>
+    <dd>
+    Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
+ angezeigt werden können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:StackFunction"></a>
+    <strong>Core:StackFunction (_FunctionName, _StackFunction, _Index)</strong>
+    </dt>
+    <dd>
+    Erweitert eine Funktion um eine andere Funktion.
+<p> Jede hinzugefügte Funktion wird vor der Originalfunktion ausgeführt. Es
+ ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
+ Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
+ im Spiel sollte eine API-Funktion erstellt werden.
+<p> Wichtig: Die gestapelten Funktionen, die vor der Originalfunktion
+ ausgeführt werden, müssen etwas zurückgeben, um die Funktion an
+ gegebener Stelle zu verlassen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+
+        </li>
+        <li><span class="parameter">_StackFunction</span>
+
+        </li>
+        <li><span class="parameter">_Index</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ToBoolean"></a>
+    <strong>Core:ToBoolean (_Input)</strong>
+    </dt>
+    <dd>
+    Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Input</span>
+         Boolean-Darstellung
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Konvertierte Boolean
+    </ol>
 
 
 
@@ -1595,346 +1957,13 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Private"></a>Private</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "Core:AppendFunction"></a>
-    <strong>Core:AppendFunction (_FunctionName, _AppendFunction, _Index)</strong>
-    </dt>
-    <dd>
-    Erweitert eine Funktion um eine andere Funktion.
-<p> Jede hinzugefügte Funktion wird nach der Originalfunktion ausgeführt. Es
- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
- im Spiel sollte eine API-Funktion erstellt werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_FunctionName</span>
-
-        </li>
-        <li><span class="parameter">_AppendFunction</span>
-
-        </li>
-        <li><span class="parameter">_Index</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:ChangeCustomQuestCaptionText"></a>
-    <strong>Core:ChangeCustomQuestCaptionText (_Text, _Quest)</strong>
-    </dt>
-    <dd>
-    Ändert den Text des Beschreibungsfensters eines Quests.  Die Beschreibung
- wird erst dann aktualisiert, wenn der Quest ausgeblendet wird.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Text</span>
-           Neuer Text
-        </li>
-        <li><span class="parameter">_Quest</span>
-          Identifier des Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:CheckQuestName"></a>
-    <strong>Core:CheckQuestName (_Name)</strong>
-    </dt>
-    <dd>
-    Prüft, ob der Questname formal korrekt ist.  Questnamen dürfen i.d.R. nur
- die Zeichen A-Z, a-7, 0-9, - und _ enthalten.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Name</span>
-             Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        boolean: Questname ist fehlerfrei
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:GetFunctionInString"></a>
-    <strong>Core:GetFunctionInString (_FunctionName, _Reference)</strong>
-    </dt>
-    <dd>
-    Sucht eine Funktion mit dem angegebenen Namen.
-<p> Ist die Funktionen innerhalb einer Table, so sind alle Ebenen bis zum
- Funktionsnamen mit anzugeben, abgetrennt durch einen Punkt.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_FunctionName</span>
-         Name der Funktion
-        </li>
-        <li><span class="parameter">_Reference</span>
-            Aktuelle Referenz (für Rekursion)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        function: Gefundene Funktion
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:InitalizeBundles"></a>
-    <strong>Core:InitalizeBundles ()</strong>
-    </dt>
-    <dd>
-    Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:RegisterAddOn"></a>
-    <strong>Core:RegisterAddOn (_Bundle)</strong>
-    </dt>
-    <dd>
-    Registiert ein AddOn als Bundle, sodass es initialisiert wird.
-<p> Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und
- existiert nur zur Übersichtlichkeit.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Bundle</span>
-         Name des Moduls
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:RegisterBehavior"></a>
-    <strong>Core:RegisterBehavior (_Behavior)</strong>
-    </dt>
-    <dd>
-    Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.
- Erzeugt zudem den Konstruktor.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Behavior</span>
-            Behavior-Objekt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:RegisterBundle"></a>
-    <strong>Core:RegisterBundle (_Bundle)</strong>
-    </dt>
-    <dd>
-    Registiert ein Bundle, sodass es initialisiert wird.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Bundle</span>
-         Name des Moduls
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:ReplaceFunction"></a>
-    <strong>Core:ReplaceFunction (_FunctionName, _NewFunction)</strong>
-    </dt>
-    <dd>
-    Überschreibt eine Funktion mit einer anderen.
-<p> Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_FunctionName</span>
-
-        </li>
-        <li><span class="parameter">_NewFunction</span>
-
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">A = {foo = <span class="keyword">function</span>() API.Note(<span class="string">"bar"</span>) <span class="keyword">end</span>}
-B = <span class="keyword">function</span>() API.Note(<span class="string">"muh"</span>) <span class="keyword">end</span>
-Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
-<span class="comment">-- A.foo() == B() =&gt; "muh"</span></pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "Core:SetupGlobal_HackQuestSystem"></a>
-    <strong>Core:SetupGlobal_HackQuestSystem ()</strong>
-    </dt>
-    <dd>
-    FIXME
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:SetupGobal_HackCreateQuest"></a>
-    <strong>Core:SetupGobal_HackCreateQuest ()</strong>
-    </dt>
-    <dd>
-    FIXME
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:SetupLocal_HackRegisterHotkey"></a>
-    <strong>Core:SetupLocal_HackRegisterHotkey ()</strong>
-    </dt>
-    <dd>
-    Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
- angezeigt werden können.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:StackFunction"></a>
-    <strong>Core:StackFunction (_FunctionName, _StackFunction, _Index)</strong>
-    </dt>
-    <dd>
-    Erweitert eine Funktion um eine andere Funktion.
-<p> Jede hinzugefügte Funktion wird vor der Originalfunktion ausgeführt. Es
- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
- im Spiel sollte eine API-Funktion erstellt werden.
-<p> Wichtig: Die gestapelten Funktionen, die vor der Originalfunktion
- ausgeführt werden, müssen etwas zurückgeben, um die Funktion an
- gegebener Stelle zu verlassen.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_FunctionName</span>
-
-        </li>
-        <li><span class="parameter">_StackFunction</span>
-
-        </li>
-        <li><span class="parameter">_Index</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Core:ToBoolean"></a>
-    <strong>Core:ToBoolean (_Input)</strong>
-    </dt>
-    <dd>
-    Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Input</span>
-         Boolean-Darstellung
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        boolean: Konvertierte Boolean
-    </ol>
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-06-28 20:21:30 </i>
+<i style="float:right;">Last updated 2018-06-29 20:15:09 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

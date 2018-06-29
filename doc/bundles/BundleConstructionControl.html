@@ -32,20 +32,20 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Public">Public</a></li>
 <li><a href="#Private">Private</a></li>
+<li><a href="#Public">Public</a></li>
 </ul>
 
 
 <h2>Bundles</h2>
 <ul class="nowrap">
+  <li><a href="../bundles/AddOnCastleStore.html">AddOnCastleStore</a></li>
   <li><a href="../bundles/AddOnGameCutscenes.html">AddOnGameCutscenes</a></li>
   <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
   <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
   <li><a href="../bundles/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
   <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
   <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
-  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><strong>BundleConstructionControl</strong></li>
   <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
@@ -82,6 +82,25 @@
 </p>
 
 
+<h2><a href="#Private">Private</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Global.CanPlayerPlaceBuilding">BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</a></td>
+	<td class="summary">Verhindert den Bau von Entities in Gebieten und Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Global:Install">BundleConstructionControl.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Local.DeleteEntityStateBuilding">BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</a></td>
+	<td class="summary">Verhindert den Abriss von Entities.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Local:Install">BundleConstructionControl.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+</table>
 <h2><a href="#Public">Public</a></h2>
 <table class="function_list">
 	<tr>
@@ -149,30 +168,92 @@
 	<td class="summary">Gibt einen Typ zum Bau im Gebiet wieder frei.</td>
 	</tr>
 </table>
-<h2><a href="#Private">Private</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Global.CanPlayerPlaceBuilding">BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</a></td>
-	<td class="summary">Verhindert den Bau von Entities in Gebieten und Territorien.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Global:Install">BundleConstructionControl.Global:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Local.DeleteEntityStateBuilding">BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</a></td>
-	<td class="summary">Verhindert den Abriss von Entities.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Local:Install">BundleConstructionControl.Local:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
-	</tr>
-</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Private"></a>Private</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleConstructionControl.Global.CanPlayerPlaceBuilding"></a>
+    <strong>BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</strong>
+    </dt>
+    <dd>
+    Verhindert den Bau von Entities in Gebieten und Territorien.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Spieler
+        </li>
+        <li><span class="parameter">_Type</span>
+             Gebäudetyp
+        </li>
+        <li><span class="parameter">_x</span>
+                X-Position
+        </li>
+        <li><span class="parameter">_y</span>
+                Y-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleConstructionControl.Global:Install"></a>
+    <strong>BundleConstructionControl.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleConstructionControl.Local.DeleteEntityStateBuilding"></a>
+    <strong>BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</strong>
+    </dt>
+    <dd>
+    Verhindert den Abriss von Entities.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_BuildingID</span>
+         EntityID des Gebäudes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleConstructionControl.Local:Install"></a>
+    <strong>BundleConstructionControl.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Public"></a>Public</h2>
 
     <dl class="function">
@@ -527,94 +608,13 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Private"></a>Private</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "BundleConstructionControl.Global.CanPlayerPlaceBuilding"></a>
-    <strong>BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</strong>
-    </dt>
-    <dd>
-    Verhindert den Bau von Entities in Gebieten und Territorien.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         Spieler
-        </li>
-        <li><span class="parameter">_Type</span>
-             Gebäudetyp
-        </li>
-        <li><span class="parameter">_x</span>
-                X-Position
-        </li>
-        <li><span class="parameter">_y</span>
-                Y-Position
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleConstructionControl.Global:Install"></a>
-    <strong>BundleConstructionControl.Global:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im globalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleConstructionControl.Local.DeleteEntityStateBuilding"></a>
-    <strong>BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</strong>
-    </dt>
-    <dd>
-    Verhindert den Abriss von Entities.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_BuildingID</span>
-         EntityID des Gebäudes
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleConstructionControl.Local:Install"></a>
-    <strong>BundleConstructionControl.Local:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im lokalen Skript.
-
-
-
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-06-28 20:21:30 </i>
+<i style="float:right;">Last updated 2018-06-29 20:15:09 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
