@@ -1,0 +1,882 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#BB_Funktionen">BB-Funktionen</a></li>
+<li><a href="#BundleKnightTitleRequirements">BundleKnightTitleRequirements</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/AddOnCastleStore.html">AddOnCastleStore</a></li>
+  <li><a href="../bundles/AddOnGameCutscenes.html">AddOnGameCutscenes</a></li>
+  <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
+  <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
+  <li><a href="../bundles/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHealth.html">BundleEntityHealth</a></li>
+  <li><a href="../bundles/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../bundles/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><strong>BundleKnightTitleRequirements</strong></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleKnightTitleRequirements</code></h1>
+<p>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell
+ an die eigenen Vorstellungen anzupassen.</p>
+<p>
+<p> Mögliche Aufstiegsbedingungen:
+ <ul>
+ <li><b>Entitytyp besitzen</b><br/>
+ Der Spieler muss eine bestimmte Anzahl von Entities eines Typs besitzen.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Entities = {
+     {Entities.B_Bakery, 2},
+     ...
+ }
+ </code></pre>
+ </li>
+<p> <li><b>Entitykategorie besitzen</b><br/>
+ Der Spieler muss eine bestimmte Anzahl von Entities einer Kategorie besitzen.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Category = {
+     {EntitiyCategories.CattlePasture, 10},
+     ...
+ }
+ </code></pre>
+ </li>
+<p> <li><b>Gütertyp besitzen</b><br/>
+ Der Spieler muss Rohstoffe oder Güter eines Typs besitzen.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Goods = {
+     {Goods.G_RawFish, 35},
+     ...
+ }
+ </code></pre>
+ </li>
+<p> <li><b>Produkte erzeugen</b><br/>
+ Der Spieler muss Gebrauchsgegenstände für ein Bedürfnis bereitstellen.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Products = {
+     {GoodCategories.GC_Clothes, 6},
+     ...
+ }
+ </code></pre>
+ </li>
+<p> <li><b>Güter konsumieren</b><br/>
+ Die Siedler müssen eine Menge einer bestimmten Waren konsumieren.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Consume = {
+     {Goods.G_Bread, 30},
+     ...
+ }
+ </code></pre>
+ </li>
+<p> <li><b>Vielfältigkeit bereitstellen</b><br/>
+ Der Spieler muss einen Vielfältigkeits-Buff aktivieren.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Buff = {
+     Buffs.Buff_FoodDiversity,
+     ...
+ }
+ </code></pre>
+ </li>
+<p> <li><b>Stadtruf erreichen</b><br/>
+ Der Ruf der Stadt muss einen bestimmten Wert erreichen oder überschreiten.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Reputation = 20
+ </code></pre>
+<p> <li><b>Anzahl an Dekorationen</b><br/>
+ Der Spieler muss mindestens die Anzahl der angegebenen Dekoration besitzen.
+ <code><pre>
+ KnightTitleRequirements[KnightTitles.Mayor].DecoratedBuildings = {
+     {Goods.G_Banner, 9 },
+ }
+ </code></pre>
+ </li>
+<p> <li><b>Anzahl voll dekorierter Gebäude</b><br/>
+ Anzahl an Gebäuden, an die alle vier Dekorationen angebracht sein müssen.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].FullDecoratedBuildings = 12
+ </code></pre>
+ </li>
+<p> <li><b>Spezialgebäude ausbauen</b><br/>
+ Ein Spezielgebäude muss ausgebaut werden.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Headquarters = 1
+ KnightTitleRequirements[KnightTitles.Mayor].Storehouse = 1
+ KnightTitleRequirements[KnightTitles.Mayor].Cathedrals = 1
+ </code></pre>
+ </li>
+<p> <li><b>Anzahl Siedler</b><br/>
+ Der Spieler benötigt eine Gesamtzahl an Siedlern.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Settlers = 40
+ </code></pre>
+ </li>
+<p> <li><b>Anzahl reiche Stadtgebäude</b><br/>
+ Eine Anzahl an Gebäuden muss durch Einnahmen Reichtum erlangen.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].RichBuildings = 30
+ </code></pre>
+ </li>
+<p> <li><b>Benutzerdefiniert</b><br/>
+ Eine benutzerdefinierte Funktion, die entweder als Schalter oder als Zähler
+ fungieren kann und true oder false zurückgeben muss.
+ <pre><code>
+ KnightTitleRequirements[KnightTitles.Mayor].Custom = {
+     {SomeFunction, {1, 1}, "Überschrift", "Beschreibung"}
+ }
+ </code></pre>
+ </li>
+ </ul>
+</p>
+
+
+<h2><a href="#BB_Funktionen">BB-Funktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CanKnightBePromoted">CanKnightBePromoted (_PlayerID, _KnightTitle)</a></td>
+	<td class="summary">Prüft, ob der Spieler befördert werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoCustomFunctionForKnightTitleSucceed">DoCustomFunctionForKnightTitleSucceed (_PlayerID, _KnightTitle, _i)</a></td>
+	<td class="summary">Prüft, ob die Custom Function true vermeldet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoNeededDiversityBuffForKnightTitleExist">DoNeededDiversityBuffForKnightTitleExist (_PlayerID, _KnightTitle, _i)</a></td>
+	<td class="summary">Prüft, ob ein bestimmter Buff für den Spieler aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoNeededNumberOfConsumedGoodsForKnightTitleExist">DoNeededNumberOfConsumedGoodsForKnightTitleExist (_PlayerID, _KnightTitle, _i)</a></td>
+	<td class="summary">Prüft, ob die Siedler genug Einheiten einer Ware konsumiert haben.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoNeededNumberOfDecoratedBuildingsForKnightTitleExist">DoNeededNumberOfDecoratedBuildingsForKnightTitleExist (_PlayerID, _KnightTitle, _i)</a></td>
+	<td class="summary">Prüft, ob genug Dekoration eines Typs angebracht wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoNeededNumberOfFullDecoratedBuildingsForKnightTitleExist">DoNeededNumberOfFullDecoratedBuildingsForKnightTitleExist (_PlayerID, _KnightTitle)</a></td>
+	<td class="summary">Prüft, ob genug Gebäude vollständig dekoriert sind.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoNeededSpecialBuildingUpgradeForKnightTitleExist">DoNeededSpecialBuildingUpgradeForKnightTitleExist (_PlayerID, _KnightTitle, _EntityCategory)</a></td>
+	<td class="summary">Prüft, ob die Spezialgebäude weit genug ausgebaut sind.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoNumberOfProductsInCategoryExist">DoNumberOfProductsInCategoryExist (_PlayerID, _KnightTitle, _i)</a></td>
+	<td class="summary">Prüft, ob genug Waren der Kategorie hergestellt wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoesNeededCityReputationForKnightTitleExist">DoesNeededCityReputationForKnightTitleExist (_PlayerID, _KnightTitle)</a></td>
+	<td class="summary">Prüft, ob der Ruf der Stadt hoch genug ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoesNeededNumberOfEntitiesInCategoryForKnightTitleExist">DoesNeededNumberOfEntitiesInCategoryForKnightTitleExist (_PlayerID, _KnightTitle, _i)</a></td>
+	<td class="summary">Prüft, ob genug Entities in einer bestimmten Kategorie existieren.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoesNeededNumberOfEntitiesOfTypeForKnightTitleExist">DoesNeededNumberOfEntitiesOfTypeForKnightTitleExist (_PlayerID, _KnightTitle, _i)</a></td>
+	<td class="summary">Prüft, ob genug Entities eines bestimmten Typs existieren.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DoesNeededNumberOfGoodTypesForKnightTitleExist">DoesNeededNumberOfGoodTypesForKnightTitleExist (_PlayerID, _KnightTitle, _i)</a></td>
+	<td class="summary">Prüft, ob es genug Einheiten eines Warentyps gibt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#InitKnightTitleTables">InitKnightTitleTables ()</a></td>
+	<td class="summary">Definiert andere Aufstiegsbedingungen für den Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VictroryBecauseOfTitle">VictroryBecauseOfTitle ()</a></td>
+	<td class="summary">Der Spieler gewinnt das Spiel</td>
+	</tr>
+</table>
+<h2><a href="#BundleKnightTitleRequirements">BundleKnightTitleRequirements</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Global:Install">BundleKnightTitleRequirements.Global:Install ()</a></td>
+	<td class="summary">Installiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Global:OverwriteConsumedGoods">BundleKnightTitleRequirements.Global:OverwriteConsumedGoods ()</a></td>
+	<td class="summary">Überschreibt GameCallback_ConsumeGood, sodass konsumierte Waren gezählt
+ werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Global:RegisterConsumedGoods">BundleKnightTitleRequirements.Global:RegisterConsumedGoods (_PlayerID, _Good)</a></td>
+	<td class="summary">Zählt den Konsumzähler rauf, sobald eine Ware konsumiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:InitTexturePositions">BundleKnightTitleRequirements.Local:InitTexturePositions ()</a></td>
+	<td class="summary">Fügt einige weitere Einträge zu den Texturpositionen hinzu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:Install">BundleKnightTitleRequirements.Local:Install ()</a></td>
+	<td class="summary">Installiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:OverwritePromotionCelebration">BundleKnightTitleRequirements.Local:OverwritePromotionCelebration ()</a></td>
+	<td class="summary">Überschreibt die Beförderung des Primary Knight.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:OverwriteTooltips">BundleKnightTitleRequirements.Local:OverwriteTooltips ()</a></td>
+	<td class="summary">Überschreibt die Tooltips im Aufstiegsmenü.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements">BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements ()</a></td>
+	<td class="summary">Überschreibt die Aktualisierungsfunktion der Aufstiegsbedingungen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:RegisterConsumedGoods">BundleKnightTitleRequirements.Local:RegisterConsumedGoods (_PlayerID, _Good)</a></td>
+	<td class="summary">Zählt den Konsumzähler rauf, sobald eine Ware konsumiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:RequirementIcon">BundleKnightTitleRequirements.Local:RequirementIcon (_Widget, _Icon)</a></td>
+	<td class="summary">Ändert die Textur eines Icons in den Aufstiegsbedingungen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:RequirementTooltip">BundleKnightTitleRequirements.Local:RequirementTooltip (_Title, _Text)</a></td>
+	<td class="summary">Setzt einen für den Tooltip des aktuellen Widget einen neuen Text.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleKnightTitleRequirements.Local:RequirementTooltipWrapped">BundleKnightTitleRequirements.Local:RequirementTooltipWrapped (_key, _i)</a></td>
+	<td class="summary">Ermittelt die veränderten Texte für den Tooltip hinter dem angegebenen Key.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="BB_Funktionen"></a>BB-Funktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CanKnightBePromoted"></a>
+    <strong>CanKnightBePromoted (_PlayerID, _KnightTitle)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Spieler befördert werden kann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoCustomFunctionForKnightTitleSucceed"></a>
+    <strong>DoCustomFunctionForKnightTitleSucceed (_PlayerID, _KnightTitle, _i)</strong>
+    </dt>
+    <dd>
+    Prüft, ob die Custom Function true vermeldet.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+        <li><span class="parameter">_i</span>
+                   Button Index
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoNeededDiversityBuffForKnightTitleExist"></a>
+    <strong>DoNeededDiversityBuffForKnightTitleExist (_PlayerID, _KnightTitle, _i)</strong>
+    </dt>
+    <dd>
+    Prüft, ob ein bestimmter Buff für den Spieler aktiv ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+        <li><span class="parameter">_i</span>
+                   Button Index
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoNeededNumberOfConsumedGoodsForKnightTitleExist"></a>
+    <strong>DoNeededNumberOfConsumedGoodsForKnightTitleExist (_PlayerID, _KnightTitle, _i)</strong>
+    </dt>
+    <dd>
+    Prüft, ob die Siedler genug Einheiten einer Ware konsumiert haben.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+        <li><span class="parameter">_i</span>
+                   Button Index
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoNeededNumberOfDecoratedBuildingsForKnightTitleExist"></a>
+    <strong>DoNeededNumberOfDecoratedBuildingsForKnightTitleExist (_PlayerID, _KnightTitle, _i)</strong>
+    </dt>
+    <dd>
+    Prüft, ob genug Dekoration eines Typs angebracht wurde.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+        <li><span class="parameter">_i</span>
+                   Button Index
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoNeededNumberOfFullDecoratedBuildingsForKnightTitleExist"></a>
+    <strong>DoNeededNumberOfFullDecoratedBuildingsForKnightTitleExist (_PlayerID, _KnightTitle)</strong>
+    </dt>
+    <dd>
+    Prüft, ob genug Gebäude vollständig dekoriert sind.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoNeededSpecialBuildingUpgradeForKnightTitleExist"></a>
+    <strong>DoNeededSpecialBuildingUpgradeForKnightTitleExist (_PlayerID, _KnightTitle, _EntityCategory)</strong>
+    </dt>
+    <dd>
+    Prüft, ob die Spezialgebäude weit genug ausgebaut sind.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+               ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+            Nächster Titel
+        </li>
+        <li><span class="parameter">_EntityCategory</span>
+         Entity Category
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoNumberOfProductsInCategoryExist"></a>
+    <strong>DoNumberOfProductsInCategoryExist (_PlayerID, _KnightTitle, _i)</strong>
+    </dt>
+    <dd>
+    Prüft, ob genug Waren der Kategorie hergestellt wurde.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+        <li><span class="parameter">_i</span>
+                   Button Index
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoesNeededCityReputationForKnightTitleExist"></a>
+    <strong>DoesNeededCityReputationForKnightTitleExist (_PlayerID, _KnightTitle)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Ruf der Stadt hoch genug ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoesNeededNumberOfEntitiesInCategoryForKnightTitleExist"></a>
+    <strong>DoesNeededNumberOfEntitiesInCategoryForKnightTitleExist (_PlayerID, _KnightTitle, _i)</strong>
+    </dt>
+    <dd>
+    Prüft, ob genug Entities in einer bestimmten Kategorie existieren.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+        <li><span class="parameter">_i</span>
+                   Button Index
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoesNeededNumberOfEntitiesOfTypeForKnightTitleExist"></a>
+    <strong>DoesNeededNumberOfEntitiesOfTypeForKnightTitleExist (_PlayerID, _KnightTitle, _i)</strong>
+    </dt>
+    <dd>
+    Prüft, ob genug Entities eines bestimmten Typs existieren.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+        <li><span class="parameter">_i</span>
+                   Button Index
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DoesNeededNumberOfGoodTypesForKnightTitleExist"></a>
+    <strong>DoesNeededNumberOfGoodTypesForKnightTitleExist (_PlayerID, _KnightTitle, _i)</strong>
+    </dt>
+    <dd>
+    Prüft, ob es genug Einheiten eines Warentyps gibt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            ID des Spielers
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         Nächster Titel
+        </li>
+        <li><span class="parameter">_i</span>
+                   Button Index
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "InitKnightTitleTables"></a>
+    <strong>InitKnightTitleTables ()</strong>
+    </dt>
+    <dd>
+    Definiert andere Aufstiegsbedingungen für den Spieler.  Muss stets nach dem
+ Laden der QSB im globalen und lokalen Skript aufgerufen werden!
+<p> Diese Funktion muss entweder in der QSB modifiziert oder sowohl im globalen
+ als auch im lokalen Skript überschrieben werden. Bei Modifikationen muss
+ das Schema für Aufstiegsbedingungen und Rechtevergabe immer beibehalten
+ werden.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VictroryBecauseOfTitle"></a>
+    <strong>VictroryBecauseOfTitle ()</strong>
+    </dt>
+    <dd>
+    Der Spieler gewinnt das Spiel
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="BundleKnightTitleRequirements"></a>BundleKnightTitleRequirements</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Global:Install"></a>
+    <strong>BundleKnightTitleRequirements.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Installiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Global:OverwriteConsumedGoods"></a>
+    <strong>BundleKnightTitleRequirements.Global:OverwriteConsumedGoods ()</strong>
+    </dt>
+    <dd>
+    Überschreibt GameCallback_ConsumeGood, sodass konsumierte Waren gezählt
+ werden können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Global:RegisterConsumedGoods"></a>
+    <strong>BundleKnightTitleRequirements.Global:RegisterConsumedGoods (_PlayerID, _Good)</strong>
+    </dt>
+    <dd>
+    Zählt den Konsumzähler rauf, sobald eine Ware konsumiert wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+             Warentyp
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:InitTexturePositions"></a>
+    <strong>BundleKnightTitleRequirements.Local:InitTexturePositions ()</strong>
+    </dt>
+    <dd>
+    Fügt einige weitere Einträge zu den Texturpositionen hinzu.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:Install"></a>
+    <strong>BundleKnightTitleRequirements.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Installiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:OverwritePromotionCelebration"></a>
+    <strong>BundleKnightTitleRequirements.Local:OverwritePromotionCelebration ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Beförderung des Primary Knight.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:OverwriteTooltips"></a>
+    <strong>BundleKnightTitleRequirements.Local:OverwriteTooltips ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Tooltips im Aufstiegsmenü.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements"></a>
+    <strong>BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Aktualisierungsfunktion der Aufstiegsbedingungen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:RegisterConsumedGoods"></a>
+    <strong>BundleKnightTitleRequirements.Local:RegisterConsumedGoods (_PlayerID, _Good)</strong>
+    </dt>
+    <dd>
+    Zählt den Konsumzähler rauf, sobald eine Ware konsumiert wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+             Warentyp
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:RequirementIcon"></a>
+    <strong>BundleKnightTitleRequirements.Local:RequirementIcon (_Widget, _Icon)</strong>
+    </dt>
+    <dd>
+    Ändert die Textur eines Icons in den Aufstiegsbedingungen.
+<p> Icons für Aufstiegsbedingungen können sein:
+ <ul>
+ <li>Koordinaten auf der Spielinternen Icon Matrix</li>
+ <li>Koordinaten auf einer externen Icon Matrix (Name .. "big.png")</li>
+ <li>Pfad zu einelnem Icon (200x200 Pixel)</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Widget</span>
+         Icon Widget
+        </li>
+        <li><span class="parameter">_Icon</span>
+           Icon Textur
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:RequirementTooltip"></a>
+    <strong>BundleKnightTitleRequirements.Local:RequirementTooltip (_Title, _Text)</strong>
+    </dt>
+    <dd>
+    Setzt einen für den Tooltip des aktuellen Widget einen neuen Text.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+         Titel des Tooltip
+        </li>
+        <li><span class="parameter">_Text</span>
+          Text des Tooltip
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleKnightTitleRequirements.Local:RequirementTooltipWrapped"></a>
+    <strong>BundleKnightTitleRequirements.Local:RequirementTooltipWrapped (_key, _i)</strong>
+    </dt>
+    <dd>
+    Ermittelt die veränderten Texte für den Tooltip hinter dem angegebenen Key.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_key</span>
+         Index in Description
+        </li>
+        <li><span class="parameter">_i</span>
+           Buttonindex
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-06-29 21:16:07 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

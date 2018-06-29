@@ -41,9 +41,11 @@
 --
 
 API = API or {};
-QSB = QSB or {
-    Version = "0.0.6"
-};
+QSB = QSB or {};
+-- Das ist die Version der QSB.
+-- Bei jedem Release wird die Tausenderstelle hochgezählt.
+-- Bei Bugfixes werden die anderen Stellen hochgezählt.
+QSB.Version = "Symfonia Build 1000";
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -174,6 +176,7 @@ end
 -- String ist, wird als Adresse geschrieben.
 -- @param _Table Table zum konvertieren
 -- @return string: Converted table
+-- @within Public
 --
 function API.ConvertTableToString(_Table)
     assert(type(_Table) == "table");
@@ -268,12 +271,15 @@ FailQuestsByName = API.FailAllQuests;
 -- <b>Alias:</b> FailQuestByName
 --
 -- @param _QuestName  Name des Quest
+-- @param _Quiet      Keine Meldung anzeigen
 -- @within Public
 --
-function API.FailQuest(_QuestName)
+function API.FailQuest(_QuestName, _Quiet)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        API.Info("fail quest " .._QuestName);
+        if not _Quiet then
+            API.Info("fail quest " .._QuestName);
+        end
         Quest:RemoveQuestMarkers();
         Quest:Fail();
     end
@@ -309,13 +315,17 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <b>Alias:</b> RestartQuestByName
 --
 -- @param _QuestName  Name des Quest
+-- @param _Quiet      Keine Meldung anzeigen
 -- @within Public
 --
-function API.RestartQuest(_QuestName)
+function API.RestartQuest(_QuestName, _Quiet)
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then
-        API.Info("restart quest " .._QuestName);
+        if not _Quiet then
+            API.Info("restart quest " .._QuestName);
+        end
+        
         if Quest.Objectives then
             local questObjectives = Quest.Objectives;
             for i = 1, questObjectives[0] do
@@ -402,12 +412,15 @@ StartQuestsByName = API.StartAllQuests;
 -- <b>Alias:</b> StartQuestByName
 --
 -- @param _QuestName  Name des Quest
+-- @param _Quiet      Keine Meldung anzeigen
 -- @within Public
 --
-function API.StartQuest(_QuestName)
+function API.StartQuest(_QuestName, _Quiet)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        API.Info("start quest " .._QuestName);
+        if not _Quiet then
+            API.Info("start quest " .._QuestName);
+        end
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
         Quest:Trigger();
@@ -439,12 +452,15 @@ StopQuestwByName = API.StopAllQuests;
 -- <b>Alias:</b> StopQuestByName
 --
 -- @param _QuestName  Name des Quest
+-- @param _Quiet      Keine Meldung anzeigen
 -- @within Public
 --
-function API.StopQuest(_QuestName)
+function API.StopQuest(_QuestName, _Quiet)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        API.Info("interrupt quest " .._QuestName);
+        if not _Quiet then
+            API.Info("interrupt quest " .._QuestName);
+        end
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
     end
@@ -476,12 +492,15 @@ WinQuestsByName = API.WinAllQuests;
 -- <b>Alias:</b> WinQuestByName
 --
 -- @param _QuestName  Name des Quest
+-- @param _Quiet      Keine Meldung anzeigen
 -- @within Public
 --
-function API.WinQuest(_QuestName)
+function API.WinQuest(_QuestName, _Quiet)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        API.Info("win quest " .._QuestName);
+        if not _Quiet then
+            API.Info("win quest " .._QuestName);
+        end
         Quest:RemoveQuestMarkers();
         Quest:Success();
     end
@@ -576,7 +595,7 @@ end
 -- @within Public
 --
 function API.Dbg(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.ERROR then
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.DEBUG then
         API.StaticNote("DEBUG: " .._Message)
     end
     API.Log("DEBUG: " .._Message);
@@ -635,15 +654,16 @@ info = API.Info;
 QSB.Log = {
     Level = {
         OFF      = 90000,
-        ERROR    = 3000,
-        WARNING  = 2000,
-        INFO     = 1000,
+        DEBUG    = 4000,
+        WARNING  = 3000,
+        INFO     = 2000,
+        TRACE    = 1000,
         ALL      = 0,
     },
 }
 
 -- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
+QSB.Log.CurrentLevel = QSB.Log.Level.DEBUG;
 
 ---
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.
@@ -671,7 +691,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.ALL;
 -- </td>
 -- <tr>
 -- <td>
--- QSB.Log.Level.ERROR
+-- QSB.Log.Level.DEBUG
 -- </td>
 -- <td>
 -- Es werden nur Fehler angezeigt.
@@ -998,6 +1018,7 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- zurückgegeben.
 -- @param _EntityID Entity ID
 -- @return string: Skriptname
+-- @within Public
 --
 function API.EnsureScriptName(_EntityID)
     if type(_EntityID) == "string" then
@@ -1026,6 +1047,7 @@ GiveEntityName = API.EnsureScriptName;
 --
 -- @param _Command Lua-Befehl als String
 -- @param _Flag    FIXME
+-- @within Public
 --
 function API.Bridge(_Command, _Flag)
     if not GUI then
@@ -1125,6 +1147,7 @@ Core = {
         },
         HotkeyDescriptions = {},
         BundleInitializerList = {},
+        InitalizedBundles = {},
     }
 }
 
@@ -1147,12 +1170,15 @@ function Core:InitalizeBundles()
         if not GUI then
             if Bundle.Global ~= nil and Bundle.Global.Install ~= nil then
                 Bundle.Global:Install();
+                Bundle.Local = nil;
             end
         else
             if Bundle.Local ~= nil and Bundle.Local.Install ~= nil then
                 Bundle.Local:Install();
+                Bundle.Global = nil;
             end
         end
+        self.Data.InitalizedBundles[v] = true;
     end
 end
 
@@ -1227,7 +1253,7 @@ function Core:SetupGlobal_HackQuestSystem()
         for i=1,_quest.Objectives[0] do
             if _quest.Objectives[i].Type == Objective.Custom2 and _quest.Objectives[i].Data[1].SetDescriptionOverwrite then
                 local Desc = _quest.Objectives[i].Data[1]:SetDescriptionOverwrite(_quest);
-                Core:ChangeCustomQuestCaptionText(_quest.Identifier, Desc);
+                Core:ChangeCustomQuestCaptionText(Desc, _quest);
                 break;
             end
         end
@@ -1318,6 +1344,18 @@ function Core:SetupLocal_HackRegisterHotkey()
             XGUIEng.ListBoxPushItem(g_KeyBindingsOptions.Widget.ActionList,   Desc[2]);
         end
     end
+end
+
+---
+-- Prüft, ob das Bundle bereits initalisiert ist.
+--
+-- @param _Bundle Name des Moduls
+-- @return boolean: Bundle initalisiert
+-- @within Private
+-- @local
+--
+function Core:RegisterBundle(_Bundle)
+    return self.Data.InitalizedBundles[Bundle] == true;
 end
 
 ---

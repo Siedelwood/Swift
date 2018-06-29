@@ -74,7 +74,7 @@ AddQuest = API.AddQuest;
 --
 -- <b>Alias</b>: StartQuests
 --
--- @within Private
+-- @within Deprecated
 -- @local
 --
 function API.StartQuests()
@@ -421,6 +421,9 @@ function BundleQuestGeneration.Global:StartQuests()
             if QuestData.Arguments then
                 Quest.Arguments = API.InstanceTable(QuestData.Arguments);
             end
+            
+            -- Quest wurde erzeugt
+            Quests[QuestID].IsGenerated = true;
         end
     end
 end

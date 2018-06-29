@@ -72,6 +72,29 @@ function API.DisableMilitaryRelease(_Flag)
     BundleEntitySelection.Local.Data.MilitaryRelease = _Flag == true;
 end
 
+---
+-- Prüpft ob das Entity selektiert ist.
+-- @param _Entity Skriptname oder EntityID
+-- @within Public
+-- 
+function API.IsEntityInSelection(_Entity)
+    if not GUI then
+        API.Dbg("API.IsEntityInSelection: Can not be used in global script!");
+        return;
+    end
+    if IsExisting(_Entity) then
+        local EntityID = GetID(_Entity);
+        local SelectedEntities = {GUI.GetSelectedEntities()};
+        for i= 1, #SelectedEntities, 1 do
+            if SelectedEntities[i] == EntityID then
+                return true;
+            end
+        end
+    end
+    return false;
+end
+IsEntitySelected = API.IsEntityInSelection;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -187,7 +210,7 @@ end
 function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
     self.Data.RefillTrebuchet = not _Boolean;
     Logic.ExecuteInLuaLocalState([[
-        function BundleEntitySelection.Local:DeactivateRefillTrebuchet(]]..tostring(_Boolean)..[[)
+        BundleEntitySelection.Local:DeactivateRefillTrebuchet(]]..tostring(_Boolean)..[[)
     ]]);
 end
 

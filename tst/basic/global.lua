@@ -31,8 +31,9 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/basic/qsb.lua")
-    API.Install()
+    local Path = "E:/Repositories/symfonia/qsb/lua";
+    Script.Load(Path .. "/loader.lua");
+    SymfoniaLoader:Load(Path);
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -46,39 +47,55 @@ function Mission_FirstMapAction()
     AddGood(Goods.G_Wood,    30, 1)
     AddGood(Goods.G_Grain,   25, 1)
     
-    -----
+    Logic.SetKnightTitle(1, 3);
     
     API.AddQuest {
-        Name        = "Test01",
-        Visible     = true,
-        EndMessage  = true,
-        Goal_DiscoverPlayer(2),
-        Trigger_Time(0),
+        Name = "Test01",
+        Goal_InstantSuccess(),
+        Reward_AI_SetEntityControlled("christian", false),
+        Trigger_Time(10),
     }
     
-    API.AddQuest {
-        Name        = "Test02",
-        Visible     = true,
-        EndMessage  = true,
-        Goal_MoveToPosition("meredith", "christian", 1000, true),
-        Trigger_OnQuestSuccess("Test01")
-    }
+    -- API.AddQuest {
+    --     Name = "Test02",
+    --     Goal_InstantSuccess(),
+    --     Reward_QuestActivate("Test01"),
+    --     Trigger_OnMonth(4),
+    -- }
     
-    API.AddQuest {
-        Name        = "Test03",
-        Visible     = true,
-        EndMessage  = true,
-        Goal_KnightTitle("Mayor"),
-        Trigger_OnQuestSuccess("Test01"),
-    }
-    
-    API.StartQuests()
-    
-    -----
-    
-    API.QuestDialog {
-        {"Das ist ein Test!",        1, 1, "Test03",  10, function() API.Note("Dialog Quest 1") end},
-        {"Das ist noch ein Test!",   1, 1, nil,      nil, function() API.Note("Dialog Quest 2") end},
-        {"Das ist der letzte Test!", 1, 1, nil,      nil, function() API.Note("Dialog Quest 3") end},
-    }
+    -- -----
+    -- 
+    -- API.AddQuest {
+    --     Name        = "Test01",
+    --     Visible     = true,
+    --     EndMessage  = true,
+    --     Goal_DiscoverPlayer(2),
+    --     Trigger_Time(0),
+    -- }
+    -- 
+    -- API.AddQuest {
+    --     Name        = "Test02",
+    --     Visible     = true,
+    --     EndMessage  = true,
+    --     Goal_MoveToPosition("meredith", "christian", 1000, true),
+    --     Trigger_OnQuestSuccess("Test01")
+    -- }
+    -- 
+    -- API.AddQuest {
+    --     Name        = "Test03",
+    --     Visible     = true,
+    --     EndMessage  = true,
+    --     Goal_KnightTitle("Mayor"),
+    --     Trigger_OnQuestSuccess("Test01"),
+    -- }
+    -- 
+    -- API.StartQuests()
+    -- 
+    -- -----
+    -- 
+    -- API.QuestDialog {
+    --     {"Das ist ein Test!",        1, 1, "Test03",  10, function() API.Note("Dialog Quest 1") end},
+    --     {"Das ist noch ein Test!",   1, 1, nil,      nil, function() API.Note("Dialog Quest 2") end},
+    --     {"Das ist der letzte Test!", 1, 1, nil,      nil, function() API.Note("Dialog Quest 3") end},
+    -- }
 end
