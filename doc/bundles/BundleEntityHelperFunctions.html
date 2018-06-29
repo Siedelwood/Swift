@@ -1,0 +1,1172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Private">Private</a></li>
+<li><a href="#Public">Public</a></li>
+</ul>
+
+
+<h2>Bundles</h2>
+<ul class="nowrap">
+  <li><a href="../bundles/AddOnCastleStore.html">AddOnCastleStore</a></li>
+  <li><a href="../bundles/AddOnGameCutscenes.html">AddOnGameCutscenes</a></li>
+  <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
+  <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
+  <li><a href="../bundles/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
+  <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../bundles/BundleEntityHealth.html">BundleEntityHealth</a></li>
+  <li><strong>BundleEntityHelperFunctions</strong></li>
+  <li><a href="../bundles/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../bundles/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../bundles/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../bundles/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
+  <li><a href="../bundles/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../bundles/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../bundles/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../bundles/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../bundles/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../bundles/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../bundles/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../bundles/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaCore.html">SymfoniaCore</a></li>
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Bundle <code>BundleEntityHelperFunctions</code></h1>
+<p>Dieses Bundle enthält häufig gebrauchte Funktionen im Kontext zu Entities.</p>
+<p></p>
+
+
+<h2><a href="#Private">Private</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:Attack">BundleEntityHelperFunctions.Global:Attack (_Entity, _Target)</a></td>
+	<td class="summary">Das Entity greift ein anderes Entity an, sofern möglich.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:AttackMove">BundleEntityHelperFunctions.Global:AttackMove (_Entity, _Position)</a></td>
+	<td class="summary">Ein Entity oder ein Battalion wird zu einer Position laufen und
+ alle gültigen Ziele auf dem Weg angreifen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:GiveEntityName">BundleEntityHelperFunctions.Global:GiveEntityName (_EntityID)</a></td>
+	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:Install">BundleEntityHelperFunctions.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:Move">BundleEntityHelperFunctions.Global:Move (_Entity, _Position)</a></td>
+	<td class="summary">Bewegt das Entity zur Zielposition.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:MoveAndLookAt">BundleEntityHelperFunctions.Global:MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt und schaut
+ das Ziel anschließend an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:MoveToPosition">BundleEntityHelperFunctions.Global:MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:OverwriteGeologistRefill">BundleEntityHelperFunctions.Global:OverwriteGeologistRefill ()</a></td>
+	<td class="summary">Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
+ auch während des Spiels setzen zu können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Local:Install">BundleEntityHelperFunctions.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix">BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix (_Prefix)</a></td>
+	<td class="summary">Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories">BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</a></td>
+	<td class="summary">Ermittelt alle Entities in den Kategorien auf den Territorien für die
+ Liste von Parteien und gibt sie als Liste zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetNearestEntity">BundleEntityHelperFunctions.Shared:GetNearestEntity (_eID, _entities)</a></td>
+	<td class="summary">Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+ am nächsten ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetRelativePos">BundleEntityHelperFunctions.Shared:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</a></td>
+	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.</td>
+	</tr>
+</table>
+<h2><a href="#Public">Public</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.EntityAttack">API.EntityAttack (_Entity, _Target)</a></td>
+	<td class="summary">Das Entity greift ein anderes Entity an, sofern möglich.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.EntityAttackMove">API.EntityAttackMove (_Entity, _Position)</a></td>
+	<td class="summary">Ein Entity oder ein Battalion wird zu einer Position laufen und
+ alle gültigen Ziele auf dem Weg angreifen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.EntityMove">API.EntityMove (_Entity, _Position)</a></td>
+	<td class="summary">Bewegt das Entity zur Zielposition.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntitiesByPrefix">API.GetEntitiesByPrefix (_Prefix)</a></td>
+	<td class="summary">Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntitiesOfCategoriesInTerritories">API.GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</a></td>
+	<td class="summary">Ermittelt alle Entities in den Kategorien auf den Territorien für die
+ Liste von Parteien und gibt sie als Liste zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityName">API.GetEntityName (_entity)</a></td>
+	<td class="summary">Gibt den Skriptnamen des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetLeaderBySoldier">API.GetLeaderBySoldier (_soldier)</a></td>
+	<td class="summary">Gibt die Battalion-ID (Entity-ID des Leaders) eines Soldaten zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetNearestEntity">API.GetNearestEntity (_eID, _entities)</a></td>
+	<td class="summary">Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+ am nächsten ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetNearestKnight">API.GetNearestKnight (_eID, _playerID)</a></td>
+	<td class="summary">Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetOrientation">API.GetOrientation (_entity)</a></td>
+	<td class="summary">Gibt die Orientierung des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetRelativePosition">API.GetRelativePosition (_target, _distance, _angle, _buildingRealPos)</a></td>
+	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GiveEntityName">API.GiveEntityName (_EntityID)</a></td>
+	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.MoveAndLookAt">API.MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
+ anschließend an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.MoveToPosition">API.MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Ziel bewegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.PlaceAndLookAt">API.PlaceAndLookAt (_Entity, _Position, _Distance)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
+ das Ziel an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.PlaceToPosition">API.PlaceToPosition (_Entity, _Position, _Distance, _Angle)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEntityName">API.SetEntityName (_entity, _name)</a></td>
+	<td class="summary">Setzt den Skriptnamen des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetOrientation">API.SetOrientation (_entity, _ori)</a></td>
+	<td class="summary">Setzt die Orientierung des Entity.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Private"></a>Private</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:Attack"></a>
+    <strong>BundleEntityHelperFunctions.Global:Attack (_Entity, _Target)</strong>
+    </dt>
+    <dd>
+    Das Entity greift ein anderes Entity an, sofern möglich.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+         Angegriffenes Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:AttackMove"></a>
+    <strong>BundleEntityHelperFunctions.Global:AttackMove (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Ein Entity oder ein Battalion wird zu einer Position laufen und
+ alle gültigen Ziele auf dem Weg angreifen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+         Positionstable
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:GiveEntityName"></a>
+    <strong>BundleEntityHelperFunctions.Global:GiveEntityName (_EntityID)</strong>
+    </dt>
+    <dd>
+    Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+ Hat das Entity einen Namen, bleibt dieser unverändert und wird
+ zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         Entity ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Vergebener Name
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:Install"></a>
+    <strong>BundleEntityHelperFunctions.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:Move"></a>
+    <strong>BundleEntityHelperFunctions.Global:Move (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Bewegt das Entity zur Zielposition.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+         Positionstable
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:MoveAndLookAt"></a>
+    <strong>BundleEntityHelperFunctions.Global:MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt und schaut
+ das Ziel anschließend an.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_moveAsEntity</span>
+         Blocking ignorieren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:MoveToPosition"></a>
+    <strong>BundleEntityHelperFunctions.Global:MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_Angle</span>
+                Winkel
+        </li>
+        <li><span class="parameter">_moveAsEntity</span>
+         Blocking ignorieren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:OverwriteGeologistRefill"></a>
+    <strong>BundleEntityHelperFunctions.Global:OverwriteGeologistRefill ()</strong>
+    </dt>
+    <dd>
+    Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
+ auch während des Spiels setzen zu können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Local:Install"></a>
+    <strong>BundleEntityHelperFunctions.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix"></a>
+    <strong>BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix (_Prefix)</strong>
+    </dt>
+    <dd>
+    Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Prefix</span>
+         Präfix des Skriptnamen
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Liste mit Entities
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories"></a>
+    <strong>BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</strong>
+    </dt>
+    <dd>
+    Ermittelt alle Entities in den Kategorien auf den Territorien für die
+ Liste von Parteien und gibt sie als Liste zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_player</span>
+               PlayerID [0-8] oder Table mit PlayerIDs
+        </li>
+        <li><span class="parameter">_category</span>
+             Kategorien oder Table mit Kategorien
+        </li>
+        <li><span class="parameter">_territory</span>
+            Zielterritorium oder Table mit Territorien
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Liste mit Entities
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Shared:GetNearestEntity"></a>
+    <strong>BundleEntityHelperFunctions.Shared:GetNearestEntity (_eID, _entities)</strong>
+    </dt>
+    <dd>
+    Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+ am nächsten ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eID</span>
+              Basis-Entity
+        </li>
+        <li><span class="parameter">_entities</span>
+         Liste von Entities
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Nächstes Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Shared:GetRelativePos"></a>
+    <strong>BundleEntityHelperFunctions.Shared:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</strong>
+    </dt>
+    <dd>
+    Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.  Die Basis kann ein Entity oder eine Positionstabelle sein.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_target</span>
+                  Basisposition
+        </li>
+        <li><span class="parameter">_distance</span>
+                Entfernung
+        </li>
+        <li><span class="parameter">_angle</span>
+                   Winkel
+        </li>
+        <li><span class="parameter">_buildingRealPos</span>
+         Gebäudemitte statt Gebäudeeingang
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Position
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Public"></a>Public</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.EntityAttack"></a>
+    <strong>API.EntityAttack (_Entity, _Target)</strong>
+    </dt>
+    <dd>
+    Das Entity greift ein anderes Entity an, sofern möglich.
+<p> <b>Alias:</b> Attack
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+         Angegriffenes Entity
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.EntityAttack(<span class="string">"hakim"</span>, <span class="string">"marcus"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.EntityAttackMove"></a>
+    <strong>API.EntityAttackMove (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Ein Entity oder ein Battalion wird zu einer Position laufen und
+ alle gültigen Ziele auf dem Weg angreifen.
+<p> <b>Alias:</b> AttackMove
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+         Skriptname, EntityID oder Positionstable
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.EntityAttackMove(<span class="string">"hakim"</span>, <span class="string">"area"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.EntityMove"></a>
+    <strong>API.EntityMove (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Bewegt das Entity zur Zielposition.
+<p> <b>Alias:</b> Move
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+         Skriptname, EntityID oder Positionstable
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.EntityMove(<span class="string">"hakim"</span>, <span class="string">"pos"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetEntitiesByPrefix"></a>
+    <strong>API.GetEntitiesByPrefix (_Prefix)</strong>
+    </dt>
+    <dd>
+    Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.
+<p> <b>Alias:</b> GetEntitiesNamedWith
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Prefix</span>
+         Präfix des Skriptnamen
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Liste mit Entities
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Alle Entities mit "entranceCave" -&gt; entranceCave1, entranceCave2, ...
+</span><span class="keyword">local</span> Result = API.GetEntitiesByPrefix(<span class="string">"entranceCave"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetEntitiesOfCategoriesInTerritories"></a>
+    <strong>API.GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</strong>
+    </dt>
+    <dd>
+    Ermittelt alle Entities in den Kategorien auf den Territorien für die
+ Liste von Parteien und gibt sie als Liste zurück.
+<p> <b>Alias:</b> GetEntitiesOfCategoriesInTerritories<br>
+ <b>Alias:</b> EntitiesInCategories
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_player</span>
+               PlayerID [0-8] oder Table mit PlayerIDs
+        </li>
+        <li><span class="parameter">_category</span>
+             Kategorien oder Table mit Kategorien
+        </li>
+        <li><span class="parameter">_territory</span>
+            Zielterritorium oder Table mit Territorien
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Liste mit Entities
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Result = API.GetEntitiesOfCategoriesInTerritories({<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>}, EntityCategories.Hero, {<span class="number">5</span>, <span class="number">12</span>, <span class="number">23</span>, <span class="number">24</span>});</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityName"></a>
+    <strong>API.GetEntityName (_entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Skriptnamen des Entity zurück.
+<p> <b>Alias:</b> GetEntityName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+         Gesuchtes Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Skriptname
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Name = API.GetEntityName(SomeEntityID);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetLeaderBySoldier"></a>
+    <strong>API.GetLeaderBySoldier (_soldier)</strong>
+    </dt>
+    <dd>
+    Gibt die Battalion-ID (Entity-ID des Leaders) eines Soldaten zurück.
+<p> <b>Alias:</b> GetLeaderBySoldier
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_soldier</span>
+         Soldier
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: ID des Battalion
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetNearestEntity"></a>
+    <strong>API.GetNearestEntity (_eID, _entities)</strong>
+    </dt>
+    <dd>
+    Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+ am nächsten ist.
+<p> <b>Alias:</b> GetClosestEntity
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eID</span>
+              Basis-Entity
+        </li>
+        <li><span class="parameter">_entities</span>
+         Liste von Entities
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Nächstes Entity
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> EntityList = API.GetEntitiesOfCategoriesInTerritories({<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>}, EntityCategories.Hero, {<span class="number">5</span>, <span class="number">12</span>, <span class="number">23</span>, <span class="number">24</span>});
+<span class="keyword">local</span> Knight = API.GetNearestEntity(GetID(<span class="string">"IO1"</span>), EntityList);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetNearestKnight"></a>
+    <strong>API.GetNearestKnight (_eID, _playerID)</strong>
+    </dt>
+    <dd>
+    Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.
+<p> <b>Alias:</b> GetClosestKnight
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eID</span>
+              Basis-Entity
+        </li>
+        <li><span class="parameter">_playerID</span>
+         Besitzer der Helden
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Nächstes Entity
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Knight = API.GetNearestKnight(GetID(<span class="string">"IO1"</span>), <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetOrientation"></a>
+    <strong>API.GetOrientation (_entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Orientierung des Entity zurück.
+<p> <b>Alias:</b> GetOrientation
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+         Gesuchtes Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Orientierung in Grad
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Orientation = API.GetOrientation(<span class="string">"marcus"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetRelativePosition"></a>
+    <strong>API.GetRelativePosition (_target, _distance, _angle, _buildingRealPos)</strong>
+    </dt>
+    <dd>
+    Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.  Die Basis kann ein Entity oder eine Positionstabelle sein.
+<p> <b>Alias:</b> GetRelativePos
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_target</span>
+                  Basisposition
+        </li>
+        <li><span class="parameter">_distance</span>
+                Entfernung
+        </li>
+        <li><span class="parameter">_angle</span>
+                   Winkel
+        </li>
+        <li><span class="parameter">_buildingRealPos</span>
+         Gebäudemitte statt Gebäudeeingang
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Position
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> RelativePostion = API.GetRelativePosition(<span class="string">"pos1"</span>, <span class="number">1000</span>, <span class="number">32</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GiveEntityName"></a>
+    <strong>API.GiveEntityName (_EntityID)</strong>
+    </dt>
+    <dd>
+    Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+ Hat das Entity einen Namen, bleibt dieser unverändert und wird
+ zurückgegeben.
+<p> <b>Alias:</b> GiveEntityName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         Entity ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Vergebener Name
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Name = GiveEntityName(Logic.CreateEntity(Entities.XD_ScriptEntity, <span class="number">23500</span>, <span class="number">34070</span>, <span class="number">0</span>, <span class="number">8</span>));</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.MoveAndLookAt"></a>
+    <strong>API.MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
+ anschließend an.
+<p> <b>Alias:</b> MoveEx</br>
+ <b>Alias:</b> MoveEntityFaceToFaceToAnotherOne
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_moveAsEntity</span>
+         Blocking ignorieren
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.MoveAndLookAt(<span class="string">"hakim"</span>, <span class="string">"saraya"</span>, <span class="number">300</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.MoveToPosition"></a>
+    <strong>API.MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Ziel bewegt.
+<p> <b>Alias:</b> MoveEntityToPositionToAnotherOne
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_Angle</span>
+                Winkel
+        </li>
+        <li><span class="parameter">_moveAsEntity</span>
+         Blocking ignorieren
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.MoveToPosition(<span class="string">"hakim"</span>, <span class="string">"saraya"</span>, <span class="number">300</span>, <span class="number">0</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.PlaceAndLookAt"></a>
+    <strong>API.PlaceAndLookAt (_Entity, _Position, _Distance)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
+ das Ziel an.
+<p> <b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne
+ <b>Alias:</b> SetPositionEx<br>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             Entfernung zum Ziel
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.PlaceAndLookAt(<span class="string">"hakim"</span>, <span class="string">"saraya"</span>, <span class="number">300</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.PlaceToPosition"></a>
+    <strong>API.PlaceToPosition (_Entity, _Position, _Distance, _Angle)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.
+<p> <b>Alias:</b> PlaceEntityToPositionToAnotherOne
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_Angle</span>
+                Winkel
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.PlaceToPosition(<span class="string">"hakim"</span>, <span class="string">"saraya"</span>, <span class="number">300</span>, <span class="number">45</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityName"></a>
+    <strong>API.SetEntityName (_entity, _name)</strong>
+    </dt>
+    <dd>
+    Setzt den Skriptnamen des Entity.
+<p> <b>Alias:</b> SetEntityName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+         Entity
+        </li>
+        <li><span class="parameter">_name</span>
+           Skriptname
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Skriptname
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SetEntityName(SomeEntityID, <span class="string">"myEntity"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetOrientation"></a>
+    <strong>API.SetOrientation (_entity, _ori)</strong>
+    </dt>
+    <dd>
+    Setzt die Orientierung des Entity.
+<p> <b>Alias:</b> SetOrientation
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+         Gesuchtes Entity
+        </li>
+        <li><span class="parameter">_ori</span>
+            Ausrichtung in Grad
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SetOrientation(<span class="string">"marcus"</span>, <span class="number">52</span>);</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-06-29 20:15:09 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

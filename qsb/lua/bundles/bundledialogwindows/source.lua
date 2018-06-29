@@ -539,6 +539,10 @@ end
 --
 function BundleDialogWindows.Local.TextWindow:SetCaption(_Text)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Text) == "table" then
+        _Text = _Text[Language];
+    end
     assert(type(_Text) == "string");
     self.Data.Caption = _Text;
     return self;
@@ -558,6 +562,10 @@ end
 --
 function BundleDialogWindows.Local.TextWindow:SetContent(_Text)
     assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Text) == "table" then
+        _Text = _Text[Language];
+    end
     assert(type(_Text) == "string");
     self.Data.Text = _Text;
     return self;
@@ -606,8 +614,12 @@ end
 -- MyWindow:SetAction("Button Text", MyButtonAction);
 --
 function BundleDialogWindows.Local.TextWindow:SetButton(_Text, _Callback)
-    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
+    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");    
     if _Text then
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if type(_Text) == "table" then
+            _Text = _Text[Language];
+        end
         assert(type(_Text) == "string");
         assert(type(_Callback) == "function");
     end

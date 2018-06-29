@@ -176,6 +176,7 @@ end
 -- String ist, wird als Adresse geschrieben.
 -- @param _Table Table zum konvertieren
 -- @return string: Converted table
+-- @within Public
 --
 function API.ConvertTableToString(_Table)
     assert(type(_Table) == "table");
@@ -653,9 +654,10 @@ info = API.Info;
 QSB.Log = {
     Level = {
         OFF      = 90000,
-        DEBUG    = 3000,
-        WARNING  = 2000,
-        INFO     = 1000,
+        DEBUG    = 4000,
+        WARNING  = 3000,
+        INFO     = 2000,
+        TRACE    = 1000,
         ALL      = 0,
     },
 }
@@ -1016,6 +1018,7 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- zurückgegeben.
 -- @param _EntityID Entity ID
 -- @return string: Skriptname
+-- @within Public
 --
 function API.EnsureScriptName(_EntityID)
     if type(_EntityID) == "string" then
@@ -1044,6 +1047,7 @@ GiveEntityName = API.EnsureScriptName;
 --
 -- @param _Command Lua-Befehl als String
 -- @param _Flag    FIXME
+-- @within Public
 --
 function API.Bridge(_Command, _Flag)
     if not GUI then
@@ -1143,6 +1147,7 @@ Core = {
         },
         HotkeyDescriptions = {},
         BundleInitializerList = {},
+        InitalizedBundles = {},
     }
 }
 
@@ -1173,6 +1178,7 @@ function Core:InitalizeBundles()
                 Bundle.Global = nil;
             end
         end
+        self.Data.InitalizedBundles[v] = true;
     end
 end
 
@@ -1338,6 +1344,18 @@ function Core:SetupLocal_HackRegisterHotkey()
             XGUIEng.ListBoxPushItem(g_KeyBindingsOptions.Widget.ActionList,   Desc[2]);
         end
     end
+end
+
+---
+-- Prüft, ob das Bundle bereits initalisiert ist.
+--
+-- @param _Bundle Name des Moduls
+-- @return boolean: Bundle initalisiert
+-- @within Private
+-- @local
+--
+function Core:RegisterBundle(_Bundle)
+    return self.Data.InitalizedBundles[Bundle] == true;
 end
 
 ---

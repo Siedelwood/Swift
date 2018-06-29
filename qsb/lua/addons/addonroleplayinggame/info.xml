@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <id>addonquestdebug</id>
+    <name>Role Playing Game</name>
+    <description><![CDATA[]]></description>
+
+    <dependencies>
+        <dependency>bundleentityhealth</dependency>
+        <dependency>bundleentityhelperfunctions</dependency>
+        <dependency>bundleinterfaceapperance</dependency>
+        <dependency>bundledialogwindows</dependency>
+    </dependencies>
+
+    <exclusions>
+    </exclusions>
+</root>

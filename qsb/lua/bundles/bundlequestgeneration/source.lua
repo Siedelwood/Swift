@@ -74,7 +74,7 @@ AddQuest = API.AddQuest;
 --
 -- <b>Alias</b>: StartQuests
 --
--- @within Private
+-- @within Deprecated
 -- @local
 --
 function API.StartQuests()

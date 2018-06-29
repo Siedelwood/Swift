@@ -49,12 +49,45 @@ function Mission_FirstMapAction()
     
     -----
     
-    StartSimpleJobEx(function()
-        if Logic.GetTime() >= 10 then
-            BriefingTest()
-            return true;
-        end
-    end)
+    -- StartSimpleJobEx(function()
+    --     if Logic.GetTime() >= 10 then
+    --         BriefingTest()
+    --         return true;
+    --     end
+    -- end)
+end
+
+function BriefingSelectionTest()
+    local briefing = {
+        barStyle = "big",
+        restoreCamera = true,
+        restoreGameSpeed = false,
+        skipPerPage = true,
+        hideFoW = true,
+        showSky = true,
+        hideBorderPins = true,
+    };
+    local AP, ASP, ASMC = API.AddPages(briefing);
+    
+    AP {
+        text = "Foo",
+        position = "meredith",
+        dialogCamera = false,
+        duration = 9999,
+        entityClicked = function(_Page, _EntityID)
+            API.AddBriefingNote("EntityID: " .._EntityID, 50);
+        end,
+        -- positionClicked = function(_Page, _X, _Y)
+        --     API.AddBriefingNote("X: " .._X.." | Y: " .._Y, 50);
+        -- end,
+        -- screenClicked = function(_Page, _X, _Y)
+        --     API.AddBriefingNote("X: " .._X.." | Y: " .._Y, 10);
+        -- end,
+    }
+    
+    briefing.finished = function()
+    end
+    return API.StartBriefing(briefing);
 end
 
 function BriefingTest()

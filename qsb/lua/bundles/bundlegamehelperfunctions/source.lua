@@ -421,8 +421,7 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Private
--- @local
+-- @within Public
 --
 function API.ThridPersonActivate(_Hero, _MaxZoom)
     if GUI then
@@ -439,8 +438,7 @@ HeroCameraActivate = API.ThridPersonActivate;
 --
 -- <b>Alias:</b> HeroCameraDeactivate
 --
--- @within Private
--- @local
+-- @within Public
 --
 function API.ThridPersonDeactivate()
     if GUI then
@@ -457,8 +455,7 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 -- <b>Alias:</b> HeroCameraIsRuning
 --
 -- @return boolean: Kamera aktiv
--- @within Private
--- @local
+-- @within Public
 --
 function API.ThridPersonIsRuning()
     if not GUI then
