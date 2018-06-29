@@ -51,19 +51,17 @@ function Mission_FirstMapAction()
     
     API.AddQuest {
         Name = "Test01",
-        EndMessage = true,
         Goal_InstantSuccess(),
-        Reward_QuestRestart("Test02"),
-        Trigger_OnMonth(4),
+        Reward_AI_SetEntityControlled("christian", false),
+        Trigger_Time(10),
     }
     
-    API.AddQuest {
-        Name = "Test02",
-        EndMessage = true,
-        Goal_InstantSuccess(),
-        Reward_QuestRestart("Test01"),
-        Trigger_OnMonth(10),
-    }
+    -- API.AddQuest {
+    --     Name = "Test02",
+    --     Goal_InstantSuccess(),
+    --     Reward_QuestActivate("Test01"),
+    --     Trigger_OnMonth(4),
+    -- }
     
     -- -----
     -- 
