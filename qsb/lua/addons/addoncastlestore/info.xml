@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
-    <id>bundlecastlestore</id>
+    <id>addoncastlestore</id>
     <name>Burglager 3.0</name>
     <description>Stellt ein Burglager zur Verfügung. Das Fassungsvermögen ist von der Ausbaustufe der Burg abhängig. Die Steuerung funktioniert ähnlich der des Lagerhauses.</description>
 
     <dependencies>
+        <dependency>bundleinteractiveobjects</dependency>
     </dependencies>
 
     <exclusions>
