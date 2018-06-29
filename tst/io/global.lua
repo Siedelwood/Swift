@@ -31,8 +31,9 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/io/qsb.lua")
-    API.Install()
+    local Path = "E:/Repositories/symfonia/qsb/lua";
+    Script.Load(Path .. "/loader.lua");
+    SymfoniaLoader:Load(Path);
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -48,8 +49,7 @@ function Mission_FirstMapAction()
     
     -----
 
-    QSB.CastleStore:New(1);
-    ObjectsWithCastleStore()
+    ObjectsWithCosts()
 end
 
 function SimpleObjects()

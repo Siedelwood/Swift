@@ -387,15 +387,11 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
         Logic.InteractiveObjectSetInteractionDistance(eID,_Description.Distance);
         Logic.InteractiveObjectSetTimeToOpen(eID,_Description.Waittime);
         Logic.InteractiveObjectAddRewards(eID,_Description.Reward[1],_Description.Reward[2]);
-        Logic.InteractiveObjectAddCosts(eID,_Description.Costs[1],_Description.Costs[2]);
-        Logic.InteractiveObjectAddCosts(eID,_Description.Costs[3],_Description.Costs[4]);
 
         Logic.InteractiveObjectSetAvailability(eID, true);
         Logic.InteractiveObjectSetPlayerState(eID, _Description.PlayerID or 1, _Description.State);
         Logic.InteractiveObjectSetRewardResourceCartType(eID, Entities.U_ResourceMerchant);
         Logic.InteractiveObjectSetRewardGoldCartType(eID, Entities.U_GoldCart);
-        Logic.InteractiveObjectSetCostGoldCartType(eID, Entities.U_GoldCart);
-        Logic.InteractiveObjectSetCostResourceCartType(eID, Entities.U_ResourceMerchant);
         table.insert(HiddenTreasures,eID);
     end
 end
@@ -521,17 +517,16 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
                     objectList[-i] = GetEntityId(objectList[i]);
                 end
                 local EntityName = Logic.GetEntityName(objectList[-i]);
-                local interactive = IO[EntityName];
 
                 if Logic.IsInteractiveObject(objectList[-i]) then
                     if not IsInteractiveObjectOpen(objectList[-i]) then
                         return false;
                     end
                 else
-                    if not interactive then
+                    if not IO[EntityName] then
                         return false;
                     end
-                    if interactive.Used ~= true then
+                    if IO[EntityName].Used ~= true then
                         return false;
                     end
                 end
@@ -732,11 +727,27 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         end
     end
 
+    GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectMouseOver;
     GUI_Interaction.InteractiveObjectMouseOver = function()
         local PlayerID = GUI.GetPlayerID();
         local ButtonNumber = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
         local ObjectID = g_Interaction.ActiveObjectsOnScreen[ButtonNumber];
         local EntityType = Logic.GetEntityType(ObjectID);
+
+        -- Führe für Minen und Brunnen Originalfunction aus
+        if g_GameExtraNo > 0 then
+            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+                GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
+                return;
+            end
+        end
+
+        -- Führe für Ruinen Originalfunktion aus, wenn Skriptname Nummer ist
+        local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+        if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(ObjectID)) ~= nil then
+            GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
+            return;
+        end
 
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
@@ -767,24 +778,37 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                 title = IO[eName].Title or "";
                 text  = IO[eName].Text or "";
             end
-            if Logic.IsInteractiveObject(ObjectID) == false then
-                Costs = IO[eName].Costs;
-                if Costs and Costs[1] and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
-                    CheckSettlement = true;
-                end
+            Costs = IO[eName].Costs;
+            if Costs and Costs[1] and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
+                CheckSettlement = true;
             end
             BundleInteractiveObjects.Local:TextCosts(title, text, nil, {Costs[1], Costs[2], Costs[3], Costs[4]}, CheckSettlement);
             return;
         end
-        GUI_Tooltip.TooltipBuy(Costs, TooltipTextKey, TooltipDisabledTextKey, nil, CheckSettlement);
     end
 
-    GUI_Interaction.InteractiveObjectClicked_Orig_QSB_IO = GUI_Interaction.InteractiveObjectClicked
+    GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectClicked
     GUI_Interaction.InteractiveObjectClicked = function()
         local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
         local lang = Network.GetDesiredLanguage();
         local eID = g_Interaction.ActiveObjectsOnScreen[i];
         local pID = GUI.GetPlayerID();
+        local EntityType = Logic.GetEntityType(eID);
+
+        -- Führe für Minen und Brunnen Originalfunction aus
+        if g_GameExtraNo > 0 then
+            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+                GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+                return;
+            end
+        end
+
+        -- Führe für Ruinen Originalfunktion aus, wenn Skriptname Nummer ist
+        local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+        if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(eID)) ~= nil then
+            GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+            return;
+        end
 
         for k,v in pairs(IO)do
             if eID == GetID(k)then
@@ -852,20 +876,18 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                     end
 
                     if CanBuyBoolean == true then
-                        if Costs[1] ~= nil and not Logic.IsInteractiveObject(eID) then
+                        if Costs[1] ~= nil then
                             BundleInteractiveObjects.Local:BuyObject(pID, Costs[1], Costs[2]);
                         end
-                        if Costs[3] ~= nil and not Logic.IsInteractiveObject(eID) then
+                        if Costs[3] ~= nil then
                             BundleInteractiveObjects.Local:BuyObject(pID, Costs[3], Costs[4]);
                         end
                         -- reward
                         if #Reward > 0 then
                             GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..pID..",'"..k.."',"..Reward[1]..","..Reward[2]..")");
                         end
-                        if Logic.IsInteractiveObject(eID) ~= true then
-                            Play2DSound(pID, ActivationSound);
-                            GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
-                        end
+                        Play2DSound(pID, ActivationSound);
+                        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
                     else
                         Message(CanNotBuyString)
                     end
@@ -899,17 +921,14 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                     if #Reward > 0 then
                         GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..pID..",'"..k.."',"..Reward[1]..","..Reward[2]..")");
                     end
-                    if Logic.IsInteractiveObject(eID) ~= true then
-                        Play2DSound(pID, ActivationSound);
-                        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
-                    end
+                    Play2DSound(pID, ActivationSound);
+                    GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
                 end
             end
         end
-        GUI_Interaction.InteractiveObjectClicked_Orig_QSB_IO();
     end
 
-    GUI_Interaction.DisplayQuestObjective_Orig_QSB_IO = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects = GUI_Interaction.DisplayQuestObjective
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
         local lang = Network.GetDesiredLanguage();
         if lang ~= "de" then lang = "en" end
@@ -989,7 +1008,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
             XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
         else
-            GUI_Interaction.DisplayQuestObjective_Orig_QSB_IO(_QuestIndex, _MessageKey);
+            GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects(_QuestIndex, _MessageKey);
         end
     end
 end

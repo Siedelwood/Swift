@@ -32,20 +32,20 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Public">Public</a></li>
 <li><a href="#Private">Private</a></li>
+<li><a href="#Public">Public</a></li>
 </ul>
 
 
 <h2>Bundles</h2>
 <ul class="nowrap">
+  <li><a href="../bundles/AddOnCastleStore.html">AddOnCastleStore</a></li>
   <li><strong>AddOnGameCutscenes</strong></li>
   <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
   <li><a href="../bundles/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
   <li><a href="../bundles/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
   <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
   <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
-  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
   <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
@@ -83,25 +83,6 @@
 </p>
 
 
-<h2><a href="#Public">Public</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#CS.CreateCutsceneRealtime_DEV_ONLY">CS.CreateCutsceneRealtime_DEV_ONLY ()</a></td>
-	<td class="summary">Erstellen einer Echtzeit Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#CS.CreateCutscene_DEV_ONLY">CS.CreateCutscene_DEV_ONLY ()</a></td>
-	<td class="summary">Erstellen einer Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#CS.IsCutsceneActive">CS.IsCutsceneActive ()</a></td>
-	<td class="summary">Prüft, ob eine Cutscene aktiv ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#CS.StartCutscene">CS.StartCutscene (_cutscene)</a></td>
-	<td class="summary">Startet eine Cutscene.</td>
-	</tr>
-</table>
 <h2><a href="#Private">Private</a></h2>
 <table class="function_list">
 	<tr>
@@ -157,82 +138,30 @@
 	<td class="summary">Stellt die UI für das Spiel wieder her.</td>
 	</tr>
 </table>
+<h2><a href="#Public">Public</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CS.CreateCutsceneRealtime_DEV_ONLY">CS.CreateCutsceneRealtime_DEV_ONLY ()</a></td>
+	<td class="summary">Erstellen einer Echtzeit Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CS.CreateCutscene_DEV_ONLY">CS.CreateCutscene_DEV_ONLY ()</a></td>
+	<td class="summary">Erstellen einer Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CS.IsCutsceneActive">CS.IsCutsceneActive ()</a></td>
+	<td class="summary">Prüft, ob eine Cutscene aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CS.StartCutscene">CS.StartCutscene (_cutscene)</a></td>
+	<td class="summary">Startet eine Cutscene.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
-    <h2 class="section-header "><a name="Public"></a>Public</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "CS.CreateCutsceneRealtime_DEV_ONLY"></a>
-    <strong>CS.CreateCutsceneRealtime_DEV_ONLY ()</strong>
-    </dt>
-    <dd>
-    Erstellen einer Echtzeit Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "CS.CreateCutscene_DEV_ONLY"></a>
-    <strong>CS.CreateCutscene_DEV_ONLY ()</strong>
-    </dt>
-    <dd>
-    Erstellen einer Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "CS.IsCutsceneActive"></a>
-    <strong>CS.IsCutsceneActive ()</strong>
-    </dt>
-    <dd>
-    Prüft, ob eine Cutscene aktiv ist.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "CS.StartCutscene"></a>
-    <strong>CS.StartCutscene (_cutscene)</strong>
-    </dt>
-    <dd>
-    Startet eine Cutscene.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_cutscene</span>
-          Name der Cutscene
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        boolean: Cutscene gestartet
-    </ol>
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Private"></a>Private</h2>
 
     <dl class="function">
@@ -452,13 +381,84 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Public"></a>Public</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CS.CreateCutsceneRealtime_DEV_ONLY"></a>
+    <strong>CS.CreateCutsceneRealtime_DEV_ONLY ()</strong>
+    </dt>
+    <dd>
+    Erstellen einer Echtzeit Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CS.CreateCutscene_DEV_ONLY"></a>
+    <strong>CS.CreateCutscene_DEV_ONLY ()</strong>
+    </dt>
+    <dd>
+    Erstellen einer Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CS.IsCutsceneActive"></a>
+    <strong>CS.IsCutsceneActive ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob eine Cutscene aktiv ist.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CS.StartCutscene"></a>
+    <strong>CS.StartCutscene (_cutscene)</strong>
+    </dt>
+    <dd>
+    Startet eine Cutscene.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_cutscene</span>
+          Name der Cutscene
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Cutscene gestartet
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-06-28 20:21:30 </i>
+<i style="float:right;">Last updated 2018-06-29 21:16:07 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

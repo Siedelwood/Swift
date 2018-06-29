@@ -32,21 +32,21 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Public">Public</a></li>
 <li><a href="#Private">Private</a></li>
+<li><a href="#Public">Public</a></li>
 <li><a href="#Rewards">Rewards</a></li>
 </ul>
 
 
 <h2>Bundles</h2>
 <ul class="nowrap">
+  <li><a href="../bundles/AddOnCastleStore.html">AddOnCastleStore</a></li>
   <li><a href="../bundles/AddOnGameCutscenes.html">AddOnGameCutscenes</a></li>
   <li><a href="../bundles/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
   <li><strong>AddOnQuestDebug</strong></li>
   <li><a href="../bundles/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
   <li><a href="../bundles/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
   <li><a href="../bundles/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
-  <li><a href="../bundles/BundleCastleStore.html">BundleCastleStore</a></li>
   <li><a href="../bundles/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
   <li><a href="../bundles/BundleConstructionControl.html">BundleConstructionControl</a></li>
   <li><a href="../bundles/BundleDialogWindows.html">BundleDialogWindows</a></li>
@@ -91,17 +91,10 @@
 </p>
 
 
-<h2><a href="#Public">Public</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.ActivateDebugMode">API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</a></td>
-	<td class="summary">Aktiviert den Debug.</td>
-	</tr>
-</table>
 <h2><a href="#Private">Private</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.DebugQuest">AddOnQuestDebug.Global.DebugQuest (_List)</a></td>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.DebugQuest">AddOnQuestDebug.Global.DebugQuest (_QuestData)</a></td>
 	<td class="summary">Prüft die Quests in der Initalisierungsliste der Quests auf Korrektheit.</td>
 	</tr>
 	<tr>
@@ -218,6 +211,13 @@
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 </table>
+<h2><a href="#Public">Public</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ActivateDebugMode">API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</a></td>
+	<td class="summary">Aktiviert den Debug.</td>
+	</tr>
+</table>
 <h2><a href="#Rewards">Rewards</a></h2>
 <table class="function_list">
 	<tr>
@@ -230,50 +230,12 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Public"></a>Public</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.ActivateDebugMode"></a>
-    <strong>API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</strong>
-    </dt>
-    <dd>
-    Aktiviert den Debug.
-<p> Der Developing Mode bietet viele Hotkeys und eine Konsole. Die Konsole ist
- ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
- sogar Funktionen während des Spiels zu überschreiben.
-<p> <b>Alias:</b> ActivateDebugMode
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_CheckAtStart</span>
-           Prüfe Quests zur Erzeugunszeit
-        </li>
-        <li><span class="parameter">_CheckAtRun</span>
-             Prüfe Quests zur Laufzeit
-        </li>
-        <li><span class="parameter">_TraceQuests</span>
-            Aktiviert Questverfolgung
-        </li>
-        <li><span class="parameter">_DevelopingMode</span>
-         Aktiviert Cheats und Konsole
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Private"></a>Private</h2>
 
     <dl class="function">
     <dt>
     <a name = "AddOnQuestDebug.Global.DebugQuest"></a>
-    <strong>AddOnQuestDebug.Global.DebugQuest (_List)</strong>
+    <strong>AddOnQuestDebug.Global.DebugQuest (_QuestData)</strong>
     </dt>
     <dd>
     Prüft die Quests in der Initalisierungsliste der Quests auf Korrektheit.
@@ -285,8 +247,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_List</span>
-         Liste der Quests
+        <li><span class="parameter">_QuestData</span>
+         Daten des Quest
         </li>
     </ul>
 
@@ -845,6 +807,44 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Public"></a>Public</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ActivateDebugMode"></a>
+    <strong>API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</strong>
+    </dt>
+    <dd>
+    Aktiviert den Debug.
+<p> Der Developing Mode bietet viele Hotkeys und eine Konsole. Die Konsole ist
+ ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
+ sogar Funktionen während des Spiels zu überschreiben.
+<p> <b>Alias:</b> ActivateDebugMode
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_CheckAtStart</span>
+           Prüfe Quests zur Erzeugunszeit
+        </li>
+        <li><span class="parameter">_CheckAtRun</span>
+             Prüfe Quests zur Laufzeit
+        </li>
+        <li><span class="parameter">_TraceQuests</span>
+            Aktiviert Questverfolgung
+        </li>
+        <li><span class="parameter">_DevelopingMode</span>
+         Aktiviert Cheats und Konsole
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Rewards"></a>Rewards</h2>
 
     <dl class="function">
@@ -899,7 +899,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-06-28 20:21:30 </i>
+<i style="float:right;">Last updated 2018-06-29 21:16:07 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

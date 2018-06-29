@@ -654,9 +654,10 @@ info = API.Info;
 QSB.Log = {
     Level = {
         OFF      = 90000,
-        DEBUG    = 3000,
-        WARNING  = 2000,
-        INFO     = 1000,
+        DEBUG    = 4000,
+        WARNING  = 3000,
+        INFO     = 2000,
+        TRACE    = 1000,
         ALL      = 0,
     },
 }
@@ -1146,6 +1147,7 @@ Core = {
         },
         HotkeyDescriptions = {},
         BundleInitializerList = {},
+        InitalizedBundles = {},
     }
 }
 
@@ -1176,6 +1178,7 @@ function Core:InitalizeBundles()
                 Bundle.Global = nil;
             end
         end
+        self.Data.InitalizedBundles[v] = true;
     end
 end
 
@@ -1341,6 +1344,18 @@ function Core:SetupLocal_HackRegisterHotkey()
             XGUIEng.ListBoxPushItem(g_KeyBindingsOptions.Widget.ActionList,   Desc[2]);
         end
     end
+end
+
+---
+-- Prüft, ob das Bundle bereits initalisiert ist.
+--
+-- @param _Bundle Name des Moduls
+-- @return boolean: Bundle initalisiert
+-- @within Private
+-- @local
+--
+function Core:RegisterBundle(_Bundle)
+    return self.Data.InitalizedBundles[Bundle] == true;
 end
 
 ---
