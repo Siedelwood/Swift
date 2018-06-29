@@ -60,7 +60,7 @@ AddOnRolePlayingGame = {
             en = "Improve Magic",
         },
         UpgradeEndurance = {
-            de = "Ausdauer verbessern",
+            de = "Widerstandskraft verbessern",
             en = "Improve Endurance",
         },
         
@@ -71,8 +71,8 @@ AddOnRolePlayingGame = {
             en = "The ability can not be used!",
         },
         EarnedExperience = {
-            de = "Eure Helden haben {@color:0,255,255,255}%d{@color:255,255,255,255} Erfahrung erhalten!",
-            en = "Your heroes gained {@color:0,255,255,255}%d{@color:255,255,255,255} experience points!",
+            de = "Ihr habt {@color:0,255,255,255}%d{@color:255,255,255,255} Erfahrung erhalten!",
+            en = "You've gained {@color:0,255,255,255}%d{@color:255,255,255,255} experience points!",
         },
         HeroLevelUp = {
             de = "{@color:244,184,0,255}Eure Helden sind eine Stufe aufgestiegen!",
@@ -145,7 +145,7 @@ end
 -- @param _PlayerID Spieler, der Erfahrung erhält
 -- @param _EXP      Menge an Erfahrung
 --
-function API.Rpg_AddPlayerExperience(_PlayerID, _EXP)
+function API.RpgHelper_AddPlayerExperience(_PlayerID, _EXP)
     assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
     AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID] = AddOnRolePlayingGame.Global.Data.BaseExperience[_PlayerID] + _EXP;
     if AddOnRolePlayingGame.Global.Data.UseInformPlayer then
@@ -160,7 +160,7 @@ end
 -- @param _PlayerID Spieler, der Erfahrung erhält
 -- @return number: Erfahrung des Spielers
 --
-function API.Rpg_GetPlayerExperience(_PlayerID)
+function API.RpgHelper_GetPlayerExperience(_PlayerID)
     assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
     return AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID];
 end
@@ -171,7 +171,7 @@ end
 -- @param _PlayerID Spieler, der Erfahrung erhält
 -- @return number: Benötigte Erfahrung
 --
-function API.Rpg_GetPlayerNeededExperience(_PlayerID)
+function API.RpgHelper_GetPlayerNeededExperience(_PlayerID)
     assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
     local Current = AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID];
     local Needed  = AddOnRolePlayingGame.Global.Data.BaseExperience;
@@ -200,6 +200,50 @@ function AddOnRolePlayingGame.Global:Install()
     -- Save Game 
     API.AddSaveGameAction(self.OnSaveGameLoaded);
 end
+
+-- Core Functunality --
+
+---
+-- Gibt alle instanzierten Helden zurück, die dem Spieler gehören.
+-- 
+-- @param _EntityID ID des Entity
+-- @return table: Helden des Spielers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:GetHeroes(_PlayerID)
+    local HeroesOfPlayer = {};
+    for k, v in pairs(AddOnRolePlayingGame.HeroList) do
+        if v and IsExisting(v.ScriptName) and Logic.EntityGetPlayer(GetID(v.ScriptName)) == _PlayerID then 
+            table.insert(HeroesOfPlayer, v);
+        end
+    end 
+    return HeroesOfPlayer;
+end
+
+---
+-- Gibt alle Inventare der Helden eines Spielers zurück.
+--
+-- Hat ein Held kein Inventar, wird dieser Held ausgelassen.
+-- 
+-- @param _EntityID ID des Entity
+-- @return table: Helden des Spielers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:GetInventories(_PlayerID)
+    local InventoriesOfPlayer = {};
+    for k, v in pairs(AddOnRolePlayingGame.HeroList) do
+        if v and IsExisting(v.ScriptName) and Logic.EntityGetPlayer(GetID(v.ScriptName)) == _PlayerID then 
+            if v.Inventory then
+                table.insert(InventoriesOfPlayer, v.Inventory);
+            end
+        end
+    end 
+    return InventoriesOfPlayer;
+end
+
+-- Callbacks --
 
 ---
 -- Aktualisiert die Statuswerte eines Helden.
@@ -256,7 +300,7 @@ function AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID)
                 
                 -- Den Spieler informieren
                 if API.GetControllingPlayer() == _PlayerID then
-                    if self.Data.UseInformPlayer then
+                    if self.Data.UseInformPlayer and then
                         API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
                         if self.Data.UseAutoLevel then
                             API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
@@ -272,7 +316,8 @@ function AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID)
 end
 
 ---
--- 
+-- Wechselt zwischen Rücksack und angelegten Gegenständen des Helden.
+--
 -- @within Private
 -- @local
 --
@@ -287,6 +332,8 @@ function AddOnRolePlayingGame.Global:ToggleInventory(_SelectedEntity)
     end
     API.Bridge("AddOnRolePlayingGame.Local:DisplayInventory('" ..Hero.Inventory.Identifier.. "', false)");
 end
+
+-- Jobs --
 
 ---
 -- Hebt das Level aller Helden eines Spielers an, wenn der Spieler die
@@ -337,10 +384,12 @@ function AddOnRolePlayingGame.Global.EntityFightingController(_Attacker, _Defend
         -- Verwunde das Ziel
         local DefenderHero = AddOnRolePlayingGame.Hero:GetInstance(DefenderName);
         
-        local Damage = DefenderUnit:CalculateEnduredDamage(AttackerUnit);
+        local Damage = DefenderUnit:CalculateEnduredDamage(AttackerUnit:GetDamage());
         API.HurtEntity(DefenderName, Damage, AttackerName);
         if DefenderHero ~= nil then
-            DefenderHero.Health = DefenderHero.Health - Damage;
+            if DefendingHero.Vulnerable then 
+                DefendingHero:Hurt(Damage);
+            end
         end
     end
 end
@@ -762,6 +811,17 @@ function AddOnRolePlayingGame.Unit:GetInstance(_ScriptName)
 end
 
 ---
+-- Entfernt die Einheit aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Unit
+-- @local
+--
+function AddOnRolePlayingGame.Unit:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Unit);
+    AddOnRolePlayingGame.UnitList[self.Identifier] = nil;
+end
+
+---
 -- Gibt die Kraft der Einheit zurück.
 -- @return number: Kraft
 -- @within AddOnRolePlayingGame.Unit
@@ -827,20 +887,42 @@ function AddOnRolePlayingGame.Unit:GetDamage()
 end
 
 ---
--- Gibt den tatsächlich erlittenen Schaden zurück.
--- @param _Attacker Unit des Angreifers
+-- Gibt den tatsächlich erlittenen physischen Schaden zurück.
+--
+-- Der tatsächlich erlittene physische Schaden ist die Menge an Schaden, die
+-- übrig bleibt, wenn der Basischaden mit der Widerstandskraft der Unit
+-- verrechnet wird.
+--
+-- @param _Damage Basisschaden
 -- @return number: Schaden
 -- @within AddOnRolePlayingGame.Unit
 --
-function AddOnRolePlayingGame.Unit:CalculateEnduredDamage(_Attacker)
+function AddOnRolePlayingGame.Unit:CalculateEnduredDamage(_Damage)
     assert(not GUI);
     assert(self ~= AddOnRolePlayingGame.Unit);
-    
-    local Damage = _Attacker:GetDamage();
     for i= 1, self:GetEndurance(), 1 do
-        Damage = Damage - (0.1 * Damage);
+        _Damage = _Damage - (0.1 * _Damage);
     end
-    return Damage;
+    return _Damage;
+end
+
+---
+-- Gibt den tatsächlich erlittenen magischen Schaden zurück.
+--
+-- Der tatsächlich erlittene Magieschaden ist die Menge an Schaden, die übrig
+-- bleibt, wenn der Basischaden mit der Magie der Unit verrechnet wird.
+--
+-- @param _Damage Basisschaden
+-- @return number: Schaden
+-- @within AddOnRolePlayingGame.Unit
+--
+function AddOnRolePlayingGame.Unit:CalculateEnduredMagicDamage(_Damage)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Unit);
+    for i= 1, self:GetMagic(), 1 do
+        _Damage = _Damage - (0.1 * _Damage);
+    end
+    return _Damage;
 end
 
 ---
@@ -937,6 +1019,7 @@ function AddOnRolePlayingGame.Hero:New(_ScriptName)
     hero.ActionPoints = 4*60;
     hero.Caption      = nil;
     hero.Description  = nil;
+    hero.Vulnerable   = true;
     
     -- Equipment
     hero.Armor        = nil;
@@ -969,10 +1052,70 @@ function AddOnRolePlayingGame.Hero:GetInstance(_ScriptName)
 end
 
 ---
--- 
+-- Entfernt den Helden aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Hero
+-- @local
+--
+function AddOnRolePlayingGame.Hero:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Hero);
+    self.Unit:Dispose();
+    API.Bridge("AddOnRolePlayingGame.HeroList['" ..self.Identifier.. "'] = nil");
+    AddOnRolePlayingGame.HeroList[self.Identifier] = nil;
+end
+
+---
+-- Macht einen Helden verwundbar oder unverwundbar.
+-- @param _Flag Unverwundbar-Flag
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:SetVulnerable(_Flag)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Hero);
+    self.Vulnerable = _Flag == true;
+    return self
+end
+
+---
+-- Verwundet den Helden um die angegebene Menge.
+-- @param _Amount Menge an Gesundheit
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:Hurt(_Amount)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Hero);
+    self.Health = self.Health - _Amount;
+    if self.Health < 0 then 
+        self.Health = 0;
+    end
+    return self
+end
+
+---
+-- Heilt den Helden um die angegebene Menge.
+-- @param _Amount Menge an Gesundheit
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:Heal(_Amount)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Hero);
+    self.Health = self.Health + _Amount;
+    if self.Health > self.MaxHealth then 
+        self.Health = self.MaxHealth;
+    end
+    return self
+end
+
+---
+-- Legt einen Ausrüstungsgegenstand als Rüstung an.
+--
+-- Ist bereits eine Rüstung angelegt, wird diese zuvor abgelegt.
 --
 -- @param _ItemType Ausrüstungsgegenstand
--- @return self
+-- @return boolean: Rüstung angelegt
 -- @within AddOnRolePlayingGame.Hero
 --
 function AddOnRolePlayingGame.Hero:EquipArmor(_ItemType)
@@ -983,19 +1126,25 @@ function AddOnRolePlayingGame.Hero:EquipArmor(_ItemType)
         if self.Armor then
             self.Inventory:Unequip(self.Armor);
         end
-        self.Armor = _ItemType;
-        if self.Armor then
-            self.Inventory:Equip(self.Armor);
+        
+        local Item = AddOnRolePlayingGame.ItemList[_ItemType];
+        if Item and Item:IsInCategory(AddOnRolePlayingGame.ItemCategories.Armor) then
+            self.Armor = _ItemType;
+            if self.Armor then
+                return self.Inventory:Equip(self.Armor);
+            end
         end
     end
-    return self;
+    return false;
 end
 
 ---
--- 
+-- Legt einen Ausrüstungsgegenstand als Waffe an.
+--
+-- Ist bereits eine Waffe angelegt, wird diese zuvor abgelegt.
 --
 -- @param _ItemType Ausrüstungsgegenstand
--- @return self
+-- @return boolean: Waffe angelegt
 -- @within AddOnRolePlayingGame.Hero
 --
 function AddOnRolePlayingGame.Hero:EquipWeapon(_ItemType)
@@ -1006,19 +1155,24 @@ function AddOnRolePlayingGame.Hero:EquipWeapon(_ItemType)
         if self.Weapon then
             self.Inventory:Unequip(self.Weapon);
         end
-        self.Weapon = _ItemType;
-        if self.Weapon then
-            self.Inventory:Equip(self.Weapon);
+        local Item = AddOnRolePlayingGame.ItemList[_ItemType];
+        if Item and Item:IsInCategory(AddOnRolePlayingGame.ItemCategories.Weapon) then
+            self.Weapon = _ItemType;
+            if self.Weapon then
+                return self.Inventory:Equip(self.Weapon);
+            end
         end
     end
-    return self;
+    return false;
 end
 
 ---
--- 
+-- Legt einen Ausrüstungsgegenstand als Schmuck an.
+--
+-- Ist bereits Schmuck angelegt, wird dieser zuvor abgelegt.
 --
 -- @param _ItemType Ausrüstungsgegenstand
--- @return self
+-- @return boolean: Schmuck angelegt
 -- @within AddOnRolePlayingGame.Hero
 --
 function AddOnRolePlayingGame.Hero:EquipJewellery(_ItemType)
@@ -1029,12 +1183,15 @@ function AddOnRolePlayingGame.Hero:EquipJewellery(_ItemType)
         if self.Jewellery then
             self.Inventory:Unequip(self.Jewellery);
         end
-        self.Jewellery = _ItemType;
-        if self.Jewellery then
-            self.Inventory:Equip(self.Jewellery);
+        local Item = AddOnRolePlayingGame.ItemList[_ItemType];
+        if Item and Item:IsInCategory(AddOnRolePlayingGame.ItemCategories.Jewellery) then
+            self.Jewellery = _ItemType;
+            if self.Jewellery then
+                return self.Inventory:Equip(self.Jewellery);
+            end
         end
     end
-    return self;
+    return false;
 end
 
 ---
@@ -1228,6 +1385,18 @@ function AddOnRolePlayingGame.Ability:GetInstance(_Identifier)
 end
 
 ---
+-- Entfernt die Fähigkeit aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Ability
+-- @local
+--
+function AddOnRolePlayingGame.Ability:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Ability);
+    API.Bridge("AddOnRolePlayingGame.AbilityList['" ..self.Identifier.. "'] = nil");
+    AddOnRolePlayingGame.AbilityList[self.Identifier] = nil;
+end
+
+---
 -- Führt die Fähigkeit für den übergebenen Helden aus.
 -- @param _HeroName Skriptname des Helden
 -- @return self
@@ -1356,6 +1525,18 @@ function AddOnRolePlayingGame.Inventory:GetInstance(_Identifier)
 end
 
 ---
+-- Entfernt das Inventar aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Inventory
+-- @local
+--
+function AddOnRolePlayingGame.Inventory:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Inventory);
+    API.Bridge("AddOnRolePlayingGame.InventoryList['" ..self.Identifier.. "'] = nil");
+    AddOnRolePlayingGame.InventoryList[self.Identifier] = nil;
+end
+
+---
 -- Gibt die Inhalte des Inventars am Bildschirm aus.
 -- @return self
 -- @within AddOnRolePlayingGame.Inventory
@@ -1368,7 +1549,7 @@ function AddOnRolePlayingGame.Inventory:Dump()
     ListOfItems = "Item types of " ..self.Identifier.. ":{cr}";
     for k, v in pairs(self.Items) do
         if v and v > 0 then 
-            ListOfItems = ListOfItems .. k .. " = " ..v.. "{cr}";
+            ListOfItems = ListOfItems .. k .. " (" ..v.. "), ";
         end
     end
     API.Note(ListOfItems);
@@ -1386,16 +1567,18 @@ function AddOnRolePlayingGame.Inventory:Equip(_ItemType)
     assert(self ~= AddOnRolePlayingGame.Inventory);
     local Item = AddOnRolePlayingGame.ItemList[_ItemType];
     if Item and self.Items[_ItemType] > 0 and not self.Equipped[_ItemType] then
-        self:Remove(_ItemType, 1);
-        API.Bridge([[
-            AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = true
-        ]]);
-        
-        self.Equipped[_ItemType] = true;
-        if Item.OnEquipped then
-            Item:OnEquipped(self.Owner);
+        if Item:IsInCategory(AddOnRolePlayingGame.ItemCategories.Equipment) then
+            self:Remove(_ItemType, 1);
+            API.Bridge([[
+                AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = true
+            ]]);
+            
+            self.Equipped[_ItemType] = true;
+            if Item.OnEquipped then
+                Item:OnEquipped(self.Owner);
+            end
+            return true;
         end
-        return true;
     end
     return false;
 end
@@ -1508,6 +1691,16 @@ end
 -- benutzen oder einfach nur besitzen kann. Gegenstände können einen Effekt 
 -- anwenden, wenn sie ins Inventar gelegt oder aus ihm entfernt werden.
 
+AddOnRolePlayingGame.ItemCategories = {
+    Quest     = 1, -- Gegenstände wichtig für die Handlung
+    Trade     = 2, -- Handelsware
+    Resource  = 3, -- Rohstoff
+    Equipment = 4, -- Ausrüstungsgegenstand
+    Weapon    = 5, -- Waffe
+    Armor     = 6, -- Rüstung
+    Jewellery = 7, -- Schmuck
+};
+
 AddOnRolePlayingGame.ItemList = {};
 
 AddOnRolePlayingGame.Item = {};
@@ -1524,6 +1717,7 @@ function AddOnRolePlayingGame.Item:New(_Identifier)
 
     local item = API.InstanceTable(self);
     item.Identifier   = _Identifier;
+    item.Categories   = {},
     item.Description  = nil;
     item.Caption      = nil;
     item.OnRemoved    = nil;
@@ -1534,6 +1728,7 @@ function AddOnRolePlayingGame.Item:New(_Identifier)
     AddOnRolePlayingGame.ItemList[_Identifier] = item;
     API.Bridge([[
         AddOnRolePlayingGame.ItemList["]] .._Identifier.. [["] = {}
+        AddOnRolePlayingGame.ItemList["]] .._Identifier.. [["].Categories = {}
     ]]);
     return item;
 end
@@ -1548,6 +1743,53 @@ function AddOnRolePlayingGame.Item:GetInstance(_Identifier)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Item);
     return AddOnRolePlayingGame.ItemList[_Identifier];
+end
+
+---
+-- Entfernt das Item aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Item
+-- @local
+--
+function AddOnRolePlayingGame.Item:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Item);
+    API.Bridge("AddOnRolePlayingGame.ItemList['" ..self.Identifier.. "'] = nil");
+    AddOnRolePlayingGame.ItemList[self.Identifier] = nil;
+end
+
+---
+-- Fügt dem Item eine Kategorie hinzu.
+-- @param _Category Nummer der Kategorie
+-- @return self
+-- @within AddOnRolePlayingGame.Item
+--
+function AddOnRolePlayingGame.Item:AddCategory(_Category)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Item);
+    if API.TraverseTable(_Category, self.Categories) == false then 
+        table.insert(self.Categories, _Category);
+    end
+    
+    -- Update in local script
+    local CategoriesString = "";
+    for i= 1, #self.Categories, 1 do
+        CategoriesString = CategoriesString .. self.Categories[i] .. ", ";
+    end
+    local CommandString = "AddOnRolePlayingGame.ItemList['" ..self.Identifier.. "'].Categories = {$s}";
+    API.Bridge(string.format(CommandString, CategoriesString));
+    return self;
+end
+
+---
+-- Gibt true zurück, wenn das Item die Kategorie besitzt.
+-- @param _Category Nummer der Kategorie
+-- @return boolean: Ist in Kategorie
+-- @within AddOnRolePlayingGame.Item
+--
+function AddOnRolePlayingGame.Item:IsInCategory(_Category)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Item);
+    return API.TraverseTable(_Category, self.Categories) == true;
 end
 
 ---
