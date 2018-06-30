@@ -67,6 +67,7 @@ function TestUserAbility()
     end
     
     local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    Meredith:SetCaption("Meredith");
     Meredith.Ability = Dummy1;
 end
 

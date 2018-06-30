@@ -707,6 +707,7 @@ function AddOnRolePlayingGame.Local:Install()
     self:OverrideActiveAbility();
     self:OverrideStringKeys();
     self:OverrideKnightCommands();
+    self:OverwriteHeroName();
 end
 
 ---
@@ -899,6 +900,55 @@ end
 function AddOnRolePlayingGame.Local:ToggleEffects(_Identifier, _FilterVices)
     _FilterEquipped = _FilterEquipped or false;
     AddOnRolePlayingGame.Local:DisplayEffects(_Identifier, _FilterVices);
+end
+
+---
+-- Überschreibt den Namen und die Beschreibung des Helden im Selektions-
+-- und Beförderungsmenü.
+--
+function AddOnRolePlayingGame.Local:OverwriteHeroName()
+    GUI_MultiSelection.IconMouseOver_Orig_RolePlayingGame = GUI_MultiSelection.IconMouseOver
+    GUI_MultiSelection.IconMouseOver = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local CurrentMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
+        local CurrentMotherName = XGUIEng.GetWidgetNameByID(CurrentMotherID);
+        local Index = tonumber(CurrentMotherName);
+        local EntityID = g_MultiSelection.EntityList[Index];
+        local EntityName = Logic.GetEntityName(EntityID);
+
+        if AddOnRolePlayingGame.HeroList[EntityName] then
+            local Caption = AddOnRolePlayingGame.HeroList[EntityName].Caption;
+            local Description = AddOnRolePlayingGame.HeroList[EntityName].Description or "";
+            if Caption then
+                UserSetTextNormal(Caption, Description);
+                return;
+            end
+        end
+        GUI_MultiSelection.IconMouseOver_Orig_RolePlayingGame();
+    end
+    
+    GUI_Knight.PromoteKnightUpdate_Orig_RolePlayingGame = GUI_Knight.PromoteKnightUpdate;
+    GUI_Knight.PromoteKnightUpdate = function()
+        GUI_Knight.PromoteKnightUpdate_Orig_RolePlayingGame();
+        if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignBottomRight/KnightTitleMenu") == 0 then
+            return;
+        end
+        local PlayerID = GUI.GetPlayerID();
+        if EnableRights ~= true or CanKnightBePromoted( PlayerID ) then
+            local KnightID = Logic.GetKnightID(PlayerID);
+            local ScriptName = Logic.GetEntityName(KnightID);
+            if AddOnRolePlayingGame.HeroList[ScriptName] then
+                local CurrentTitle = Logic.GetKnightTitle(PlayerID);
+                local KnightType = Logic.GetEntityType(KnightID);
+                local CurrentTitleName  = GUI_Knight.GetTitleNameByTitleID(KnightType, CurrentTitle);    
+                local KnightName = AddOnRolePlayingGame.HeroList[ScriptName].Caption;
+                if KnightName then
+                    XGUIEng.SetText("/InGame/Root/Normal/AlignTopCenter/KnightTitleMenuBig/TheRest/Title/Name", "{center}" .. CurrentTitleName .. " " .. KnightName);
+                    XGUIEng.SetText("/InGame/Root/Normal/AlignTopCenter/KnightTitleMenuBig/TheRest/Title/NameWhite", "{center}" .. CurrentTitleName .. " " .. KnightName);
+                end
+            end
+        end
+    end
 end
 
 ---
