@@ -44,11 +44,39 @@ function Mission_FirstMapAction()
     
     API.ActivateDebugMode(true, true, true, true);
     
-    TestLevelUp();
+    TestUserAbility();
+end
+
+---
+-- Test Case: Spezialfähigkeit
+--
+-- Die Spezialfähigkeit wird ausgelöst und rediziert die Action Points auf 0.
+-- Die Erholung hängt vom Magielevel ab.
+--
+function TestUserAbility()
+    local Dummy1 = AddOnRolePlayingGame.Ability:New("Dummy1");
+    Dummy1.RechargeTime = 2*60;
+    Dummy1:SetCaption("Bla");
+    Dummy1:SetDescription("Bla Bla Bla");
+    Dummy1:SetIcon({1,1});
+    Dummy1.Condition = function()
+        return false;
+    end
+    Dummy1.Action = function()
+        API.Note("Ability used!")
+    end
+    
+    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    Meredith:SetCaption("Meredith");
+    Meredith.Ability = Dummy1;
 end
 
 ---
 -- Test Case: EXP und Fortbildung
+--
+-- Der Held erhält Erfahrung und kann diese für verbesserte Statuswerte
+-- ausgeben. Die verbesserten Statuswerte beeinflussen seine Effektivität
+-- im Kampf.
 --
 function TestLevelUp()
     local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
