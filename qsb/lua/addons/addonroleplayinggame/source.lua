@@ -788,7 +788,17 @@ function AddOnRolePlayingGame.Local:DisplayEffects(_Identifier, _FilterVices)
         EffectList = AddOnRolePlayingGame.HeroList[_Identifier].Vices;
     end
     
-    ContentString = "";
+    local ContentString = "";
+    for k, v in pairs(EffectList) do
+        if v and AddOnRolePlayingGame.EventList[v] then
+            local Caption = AddOnRolePlayingGame.EventList[v].Caption;
+            local Description = AddOnRolePlayingGame.EventList[v].Description;
+            if Caption and Description then
+                ContentString = ContentString .. Caption .. "{cr}";
+                ContentString = ContentString .. Description .. "{cr}{cr}";
+            end
+        end
+    end
     
     -- Fenster anzeigen
     local function ToggleCallback(_Data)
@@ -1519,15 +1529,16 @@ function AddOnRolePlayingGame.Hero:ActivateVirtue(_EventName, _Flag)
     assert(self ~= AddOnRolePlayingGame.Hero);
     if AddOnRolePlayingGame.Event:GetInstance(_EventName) then
         self.Virtues[_EventName] = _Flag == true;
+        API.Note(_EventName);
     end
     
     -- Update in local script
     local VirtuesString = "";
     for k, v in pairs(self.Virtues) do
-        if v then VirtuesString = VirtuesString .. v .. ", "; end
+        if v then VirtuesString = VirtuesString .. "'" .. k .. "', "; end
     end
-    local CommandString = "AddOnRolePlayingGame.ItemList['$s'].Virtues = {$s}";
-    API.Bridge(string.format(CommandString, self.Identifier, VirtuesString));
+    local CommandString = "AddOnRolePlayingGame.HeroList['%s'].Virtues = {%s}";
+    API.Bridge(string.format(CommandString, self.ScriptName, VirtuesString));
     return self;
 end
 
@@ -1548,10 +1559,10 @@ function AddOnRolePlayingGame.Hero:ActivateVice(_EventName, _Flag)
     -- Update in local script
     local VicesString = "";
     for k, v in pairs(self.Vices) do
-        if v then VicesString = VicesString .. v .. ", "; end
+        if v then VicesString = VicesString .. "'" .. k .. "', "; end
     end
-    local CommandString = "AddOnRolePlayingGame.ItemList['$s'].Vices = {$s}";
-    API.Bridge(string.format(CommandString, self.Identifier, VicesString));
+    local CommandString = "AddOnRolePlayingGame.HeroList['%s'].Vices = {%s}";
+    API.Bridge(string.format(CommandString, self.ScriptName, VicesString));
     return self;
 end
 
@@ -2273,7 +2284,7 @@ function AddOnRolePlayingGame.Item:AddCategory(_Category)
     for i= 1, #self.Categories, 1 do
         CategoriesString = CategoriesString .. self.Categories[i] .. ", ";
     end
-    local CommandString = "AddOnRolePlayingGame.ItemList['$s'].Categories = {$s}";
+    local CommandString = "AddOnRolePlayingGame.ItemList['%s'].Categories = {%s}";
     API.Bridge(string.format(CommandString, self.Identifier, CategoriesString));
     return self;
 end

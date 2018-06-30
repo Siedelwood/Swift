@@ -43,28 +43,22 @@ function Mission_FirstMapAction()
     end
     
     API.ActivateDebugMode(true, true, true, true);
-    
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
-    Meredith.MagicCosts = 5;
-    local Inventory = AddOnRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
-    Inventory.Owner = Meredith;
-    Meredith.Inventory = Inventory;
-    
-    API.RpgConfig_UseLevelUpByPromotion(false);
-    API.RpgConfig_UseAutoLevel(false);
-    API.RpgConfig_UseLevelUpByPromotion(false);
-    API.RpgConfig_UseInformPlayer(false);
-    API.RpgHelper_AddPlayerExperience(1, 100000);
 end
 
 --
--- Test Case: Event auslösen
+-- Test Case: Event auslösen / Tugend und Laster
 --
 -- Events müssen durch ihre Trigger ausgelöst werden. Dabei werden sie dann
 -- für alle Helden oder eine Auswahl aller Helden ausgeführt.
 --
+-- Events können auch als Tugend oder Laster an einen Helden angebunden
+-- werden. Dabei kann das Event dann alle Helden in der übegebenen Liste
+-- betreffen oder nur den Besitzer.
+--
 function TestEvets()
     local Event1 = AddOnRolePlayingGame.Event:New("Dummy1");
+    Event1:SetCaption("Bla");
+    Event1:SetDescription("Bla Bla Bla");
     Event1.Action = function(_Event, _Hero, _Trigger, ...)
         API.Note(_Event.Identifier .. ":" .. _Trigger .. " triggered!");
         API.Note("Hero: " .. _Hero.ScriptName);
@@ -73,15 +67,29 @@ function TestEvets()
     Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
     local Event2 = AddOnRolePlayingGame.Event:New("Dummy2");
+    Event2:SetCaption("Bla");
+    Event2:SetDescription("Bla Bla Bla");
     Event2.Action = function(_Event, _Hero, _Trigger, ...)
         API.Note(_Event.Identifier .. ":" .. _Trigger .. " triggered!");
         API.Note("Hero: " .. _Hero.ScriptName);
         API.Note("Arguments: " .. #arg);
     end
-    Event2:AddTrigger("Trigger_SermonFinished");
-    Event2:AddTrigger("Trigger_EntityHurt");
+    Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
+    
+    local Event3 = AddOnRolePlayingGame.Event:New("Dummy3");
+    Event3:SetCaption("Bla");
+    Event3:SetDescription("Bla Bla Bla");
+    Event3.Action = function(_Event, _Hero, _Trigger, ...)
+        API.Note(_Event.Identifier .. ":" .. _Trigger .. " triggered!");
+        API.Note("Hero: " .. _Hero.ScriptName);
+        API.Note("Arguments: " .. #arg);
+    end
+    Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
     local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    Meredith:ActivateVirtue("Dummy1", true);
+    Meredith:ActivateVice("Dummy2", true);
+    Meredith:ActivateVice("Dummy3", true);
 end
 
 --
