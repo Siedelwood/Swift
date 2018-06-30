@@ -45,9 +45,16 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, true, true, true);
     
     local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    Meredith.MagicCosts = 5;
     local Inventory = AddOnRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
     Inventory.Owner = Meredith;
     Meredith.Inventory = Inventory;
+    
+    API.RpgConfig_UseLevelUpByPromotion(false);
+    API.RpgConfig_UseAutoLevel(false);
+    API.RpgConfig_UseLevelUpByPromotion(false);
+    API.RpgConfig_UseInformPlayer(false);
+    API.RpgHelper_AddPlayerExperience(1, 100000);
 end
 
 --
