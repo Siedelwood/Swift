@@ -127,12 +127,12 @@ AddOnRolePlayingGame = {
             en = "The ability can not be used!",
         },
         EarnedExperience = {
-            de = "Ihr habt {@color:0,255,255,255}%d{@color:255,255,255,255} Erfahrung erhalten!",
-            en = "You've gained {@color:0,255,255,255}%d{@color:255,255,255,255} experience points!",
+            de = "+{@color:0,255,255,255}%d{@color:255,255,255,255} Erfahrung",
+            en = "+{@color:0,255,255,255}%d{@color:255,255,255,255} Experience",
         },
         HeroLevelUp = {
-            de = "{@color:244,184,0,255}Eure Helden haben eine neue Stufe erreicht!",
-            en = "{@color:244,184,0,255}Your heroes reached a higher level!",
+            de = "{@color:244,184,0,255}Level up!",
+            en = "{@color:244,184,0,255}Level up!",
         },
         AutoLevelUp = {
             de = "Die {@color:0,255,255,255}Statuswerte{@color:255,255,255,255} Eure Helden haben sich verbessert!",
@@ -982,9 +982,13 @@ function AddOnRolePlayingGame.Local:OverrideKnightCommands()
         
         if x ~= 0 and y ~= 0 and x > -200 and y > -200 and x < (Screensize[1] + 50) and y < (Screensize[2] + 200) then
             local WidgetID = "/InGame/Root/Normal/AlignTopLeft/KnightCommands";
-            XGUIEng.SetWidgetSize(widget, 500, 200);
+            XGUIEng.SetWidgetSize(WidgetID, 300, 200);
             local WidgetSize = {XGUIEng.GetWidgetScreenSize(WidgetID)};
-            XGUIEng.SetWidgetScreenPosition(WidgetID, x-110, y-130);
+            
+            local relativeX = x - (WidgetSize[1] * 0.40);
+            local relativeY = y - (130 * (Screensize[2]/1080));
+            XGUIEng.SetWidgetScreenPosition(WidgetID, relativeX, relativeY);
+            
             XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Strength.Mother, 0, 20, 100, 100);
             XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Magic.Mother, 80, 23, 100, 100);
             XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Endurance.Mother, 160, 26, 100, 100);
@@ -1529,7 +1533,6 @@ function AddOnRolePlayingGame.Hero:ActivateVirtue(_EventName, _Flag)
     assert(self ~= AddOnRolePlayingGame.Hero);
     if AddOnRolePlayingGame.Event:GetInstance(_EventName) then
         self.Virtues[_EventName] = _Flag == true;
-        API.Note(_EventName);
     end
     
     -- Update in local script

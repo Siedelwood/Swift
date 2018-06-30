@@ -43,6 +43,18 @@ function Mission_FirstMapAction()
     end
     
     API.ActivateDebugMode(true, true, true, true);
+    
+    TestLevelUp();
+end
+
+---
+-- Test Case: EXP und Fortbildung
+--
+function TestLevelUp()
+    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    API.RpgConfig_UseAutoLevel(false)
+    API.RpgConfig_UseLevelUpByPromotion(false)
+    API.RpgHelper_AddPlayerExperience(1, 100000)
 end
 
 --
