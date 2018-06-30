@@ -1087,13 +1087,17 @@ function AddOnRolePlayingGame.Local:OverrideActiveAbility()
             GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame(_Ability);
             return;
         end
-        if not HeroInstance.Ability:Condition(HeroInstance) then
-            if HeroInstance.Ability.ImpossibleMessage then 
-                API.Message(HeroInstance.Ability.ImpossibleMessage);
+        
+        -- Doppelklick vermeiden
+        AddOnRolePlayingGame.HeroList[KnightName].ActionPoints = 0;
+        
+        -- Fähigkeit ausführen
+        API.Bridge([[
+            local AbilityInstance = AddOnRolePlayingGame.Ability:GetInstance("]] ..HeroInstance.Ability.. [[")
+            if AbilityInstance then
+                AbilityInstance:Callback("]] ..KnightName.. [[")
             end
-            return;
-        end
-        HeroInstance.Ability:Action(HeroInstance);
+        ]]);
     end
 
     GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityMouseOver;
@@ -1107,7 +1111,10 @@ function AddOnRolePlayingGame.Local:OverrideActiveAbility()
             GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame();
             return;
         end
-        SetTextNormal(HeroInstance.Ability.Caption, HeroInstance.Ability.Description);
+        
+        local Caption     = AddOnRolePlayingGame.AbilityList[HeroInstance.Ability].Caption;
+        local Description = AddOnRolePlayingGame.AbilityList[HeroInstance.Ability].Description;
+        UserSetTextNormal(Caption, Description);
     end
 
     GUI_Knight.StartAbilityUpdate_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityUpdate;
@@ -1122,20 +1129,24 @@ function AddOnRolePlayingGame.Local:OverrideActiveAbility()
             GUI_Knight.StartAbilityUpdate_Orig_AddOnRolePlayingGame();
             return;
         end
+        
+        local Icon = AddOnRolePlayingGame.AbilityList[HeroInstance.Ability].Icon;
+        local RechargeTime = HeroInstance.RechargeTime;
+        local ActionPoints = HeroInstance.ActionPoints;
     
         -- Icon
-        if type(HeroInstance.Ability.Icon) == "table" then
-            if HeroInstance.Ability.Icon[3] and type(HeroInstance.Ability.Icon[3]) == "string" then
-                API.SetIcon(WidgetID, HeroInstance.Ability.Icon, nil, HeroInstance.Ability.Icon[3]);
+        if type(Icon) == "table" then
+            if Icon[3] and type(Icon[3]) == "string" then
+                API.SetIcon(WidgetID, Icon, nil, Icon[3]);
             else
-                SetIcon(WidgetID, HeroInstance.Ability.Icon);
+                SetIcon(WidgetID, Icon);
             end
         else
-            API.SetTexture(WidgetID, HeroInstance.Ability.Icon);
+            API.SetTexture(WidgetID, Icon);
         end
     
         -- Enable/Disable
-        if HeroInstance.ActionPoints < HeroInstance.Ability.RechargeTime or HeroInstance.AbilityDisabled then
+        if ActionPoints < RechargeTime or HeroInstance.AbilityDisabled then
             XGUIEng.DisableButton(WidgetID, 1);
         else
             XGUIEng.DisableButton(WidgetID, 0);
@@ -1155,9 +1166,13 @@ function AddOnRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
-        local TotalRechargeTime = HeroInstance.Ability.RechargeTime or 6 * 60;
+        local TotalRechargeTime = HeroInstance.RechargeTime or 6 * 60;
         local ActionPoints = HeroInstance.ActionPoints;
         local TimeAlreadyCharged = ActionPoints or TotalRechargeTime;
+        
+        -- Fix for over 100% charge
+        TimeAlreadyCharged = (TimeAlreadyCharged > TotalRechargeTime and TotalRechargeTime) or TimeAlreadyCharged;
+        
         if TimeAlreadyCharged == TotalRechargeTime then
             XGUIEng.SetMaterialColor(WidgetID, 0, 255, 255, 255, 0);
         else
@@ -1819,7 +1834,7 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
         if Logic.KnightGetResurrectionProgress(EntityID) ~= 1 then
             AddOnRolePlayingGame.HeroList[_ScriptName].Health = Hero.MaxHealth;
             if Hero.Ability then
-                AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints = Ability.RechargeTime;
+                AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints = Hero.Ability.RechargeTime;
             end
         else
             -- Aktualisiere Gesundheit
@@ -1833,17 +1848,23 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
             MakeInvulnerable(_ScriptName);
 
             -- Aktualisiere Aktionspunkte
-            if Hero.Ability and Hero.ActionPoints < Ability.RechargeTime then
-                local ActionPoints = Hero.ActionPoints + Hero:GetAbilityRecharge();
-                ActionPoints = (ActionPoints > Ability.RechargeTime and Ability.RechargeTime) or ActionPoints;
-                ActionPoints = (ActionPoints < 0 and 0) or ActionPoints;
-                AddOnRolePlayingGame.HeroList[_ScriptName].Health = ActionPoints;
-                
-                AddOnRolePlayingGame.Global:InvokeEvent({Hero}, "Trigger_ActionPointsRegenerated", Hero:GetAbilityRecharge());
-
+            if Hero.Ability then
                 API.Bridge([[
+                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Ability = "]] ..Hero.Ability.Identifier.. [["
                     AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].ActionPoints = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints.. [[
                     AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].RechargeTime = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Ability.RechargeTime.. [[
+                ]]);
+                if Hero.ActionPoints < Hero.Ability.RechargeTime then
+                    local ActionPoints = Hero.ActionPoints + Hero:GetAbilityRecharge();
+                    ActionPoints = (ActionPoints > Hero.Ability.RechargeTime and Hero.Ability.RechargeTime) or ActionPoints;
+                    ActionPoints = (ActionPoints < 0 and 0) or ActionPoints;
+                    AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints = ActionPoints;
+                    
+                    AddOnRolePlayingGame.Global:InvokeEvent({Hero}, "Trigger_ActionPointsRegenerated", Hero:GetAbilityRecharge());
+                end
+            else
+                API.Bridge([[
+                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Ability = nil
                 ]]);
             end
         end
@@ -1949,7 +1970,7 @@ function AddOnRolePlayingGame.Ability:SetIcon(_Icon)
     end
 
     API.Bridge([[
-        AddOnRolePlayingGame.AbilityList["]] .._Identifier.. [["].Icon = ]] ..Icon.. [[
+        AddOnRolePlayingGame.AbilityList["]] ..self.Identifier.. [["].Icon = ]] ..Icon.. [[
     ]]);
     return self;
 end
