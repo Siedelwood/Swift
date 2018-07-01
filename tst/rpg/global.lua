@@ -34,6 +34,7 @@ function Mission_FirstMapAction()
     local Path = "E:/Repositories/symfonia/qsb/lua";
     Script.Load(Path .. "/loader.lua");
     SymfoniaLoader:Load(Path);
+    InitKnightTitleTables();
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -43,8 +44,92 @@ function Mission_FirstMapAction()
     
     API.ActivateDebugMode(true, true, true, true);
     
+    TestUserAbility();
+end
+
+---
+-- Test Case: Spezialfähigkeit
+--
+-- Die Spezialfähigkeit wird ausgelöst und rediziert die Action Points auf 0.
+-- Die Erholung hängt vom Magielevel ab.
+--
+function TestUserAbility()
+    local Dummy1 = AddOnRolePlayingGame.Ability:New("Dummy1");
+    Dummy1.RechargeTime = 2*60;
+    Dummy1:SetCaption("Bla");
+    Dummy1:SetDescription("Bla Bla Bla");
+    Dummy1:SetIcon({1,1});
+    Dummy1.Condition = function()
+        return false;
+    end
+    Dummy1.Action = function()
+        API.Note("Ability used!")
+    end
     
+    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    Meredith:SetCaption("Meredith");
+    Meredith.Ability = Dummy1;
+end
+
+---
+-- Test Case: EXP und Fortbildung
+--
+-- Der Held erhält Erfahrung und kann diese für verbesserte Statuswerte
+-- ausgeben. Die verbesserten Statuswerte beeinflussen seine Effektivität
+-- im Kampf.
+--
+function TestLevelUp()
+    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    API.RpgConfig_UseAutoLevel(false)
+    API.RpgConfig_UseLevelUpByPromotion(false)
+    API.RpgHelper_AddPlayerExperience(1, 100000)
+end
+
+--
+-- Test Case: Event auslösen / Tugend und Laster
+--
+-- Events müssen durch ihre Trigger ausgelöst werden. Dabei werden sie dann
+-- für alle Helden oder eine Auswahl aller Helden ausgeführt.
+--
+-- Events können auch als Tugend oder Laster an einen Helden angebunden
+-- werden. Dabei kann das Event dann alle Helden in der übegebenen Liste
+-- betreffen oder nur den Besitzer.
+--
+function TestEvets()
+    local Event1 = AddOnRolePlayingGame.Event:New("Dummy1");
+    Event1:SetCaption("Bla");
+    Event1:SetDescription("Bla Bla Bla");
+    Event1.Action = function(_Event, _Hero, _Trigger, ...)
+        API.Note(_Event.Identifier .. ":" .. _Trigger .. " triggered!");
+        API.Note("Hero: " .. _Hero.ScriptName);
+        API.Note("Arguments: " .. #arg);
+    end
+    Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
+    local Event2 = AddOnRolePlayingGame.Event:New("Dummy2");
+    Event2:SetCaption("Bla");
+    Event2:SetDescription("Bla Bla Bla");
+    Event2.Action = function(_Event, _Hero, _Trigger, ...)
+        API.Note(_Event.Identifier .. ":" .. _Trigger .. " triggered!");
+        API.Note("Hero: " .. _Hero.ScriptName);
+        API.Note("Arguments: " .. #arg);
+    end
+    Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
+    
+    local Event3 = AddOnRolePlayingGame.Event:New("Dummy3");
+    Event3:SetCaption("Bla");
+    Event3:SetDescription("Bla Bla Bla");
+    Event3.Action = function(_Event, _Hero, _Trigger, ...)
+        API.Note(_Event.Identifier .. ":" .. _Trigger .. " triggered!");
+        API.Note("Hero: " .. _Hero.ScriptName);
+        API.Note("Arguments: " .. #arg);
+    end
+    Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
+    
+    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    Meredith:ActivateVirtue("Dummy1", true);
+    Meredith:ActivateVice("Dummy2", true);
+    Meredith:ActivateVice("Dummy3", true);
 end
 
 --
@@ -74,6 +159,7 @@ function TestInventoryListing()
     local Dummy4 = AddOnRolePlayingGame.Item:New("Dummy4");
     Dummy4:SetCaption("Dummy 4");
     Dummy4:SetDescription("This ist Dummy 4!");
+    Dummy4:AddCategory(AddOnRolePlayingGame.ItemCategories.Equipment);
     
     
     local Meredith = AddOnRolePlayingGame.Hero:New("meredith");

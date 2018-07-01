@@ -51,6 +51,42 @@ AddOnRolePlayingGame = {
     },
 
     Texts = {        
+        Strength = {
+            Caption = {
+                de = "Kraft",
+                en = "Strength",
+            },
+            Description = {
+                de = "Kaft bestimmt, wie viel Schaden ein Held im Kampf gegen"..
+                     " andere Einheiten und Helden verursacht.",
+                en = "Strength indicates how much damage a hero can inflict"..
+                     " to enemie units and heroes.",
+            },
+        },
+        Magic = {
+            Caption = {
+                de = "Magie",
+                en = "Magic",
+            },
+            Description = {
+                de = "Magie bestimmt, wie schnell die besondere Fähigkeit des"..
+                     " Helden wieder einsatzbereit wird.",
+                en = "The magic shortens the time needed to restore the"..
+                     " special ability of the hero.",
+            },
+        },
+        Endurance = {
+            Caption = {
+                de = "Widerstandskraft",
+                en = "Endurance",
+            },
+            Description = {
+                de = "Widerstandskraft bestimmt, wie gut ein Held erlittenen"..
+                     " durch Feinde erlittenen Schaden aushalten kann.",
+                en = "Endurance indicates how much damage a hero can endure"..
+                     " while fighting against enemies.",
+            },
+        },
         UpgradeStrength = {
             de = "Kraft verbessern",
             en = "Improve Strength",
@@ -60,8 +96,28 @@ AddOnRolePlayingGame = {
             en = "Improve Magic",
         },
         UpgradeEndurance = {
-            de = "Ausdauer verbessern",
+            de = "Widerstandskraft verbessern",
             en = "Improve Endurance",
+        },
+        InventoryBackpack = {
+            Caption = {de = "Rucksack", en = "Inventory"},
+            Button  = {de = "Ausrüstung anzeigen", en = "Show equipment"},
+        },
+        InventoryEquipment = {
+            Caption = {de = "Ausrüstung", en = "Equipment"},
+            Button  = {de = "Rucksack anzeigen", en = "Show inventory"},
+        },
+        CharacterStatus = {
+            Caption = {de = "Status", en = "Status"},
+            Button  = {de = "Effekte anzeigen", en = "Show effects"},
+        },
+        PositiveEffects = {
+            Caption = {de = "Erworbene Tugenden", en = "Aquired Virtues"},
+            Button  = {de = "Laster anzeigen", en = "Show Vices"},
+        },
+        NegativeEffects = {
+            Caption = {de = "Erworbene Laster", en = "Aquired Vices"},
+            Button  = {de = "Tugenden anzeigen", en = "Show virtues"},
         },
         
         -- Messages --
@@ -71,12 +127,12 @@ AddOnRolePlayingGame = {
             en = "The ability can not be used!",
         },
         EarnedExperience = {
-            de = "Eure Helden haben {@color:0,255,255,255}%d{@color:255,255,255,255} Erfahrung erhalten!",
-            en = "Your heroes gained {@color:0,255,255,255}%d{@color:255,255,255,255} experience points!",
+            de = "+{@color:0,255,255,255}%d{@color:255,255,255,255} Erfahrung",
+            en = "+{@color:0,255,255,255}%d{@color:255,255,255,255} Experience",
         },
         HeroLevelUp = {
-            de = "{@color:244,184,0,255}Eure Helden sind eine Stufe aufgestiegen!",
-            en = "{@color:244,184,0,255}Your heroes reached a higher level!",
+            de = "{@color:244,184,0,255}Level up!",
+            en = "{@color:244,184,0,255}Level up!",
         },
         AutoLevelUp = {
             de = "Die {@color:0,255,255,255}Statuswerte{@color:255,255,255,255} Eure Helden haben sich verbessert!",
@@ -145,9 +201,9 @@ end
 -- @param _PlayerID Spieler, der Erfahrung erhält
 -- @param _EXP      Menge an Erfahrung
 --
-function API.Rpg_AddPlayerExperience(_PlayerID, _EXP)
+function API.RpgHelper_AddPlayerExperience(_PlayerID, _EXP)
     assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
-    AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID] = AddOnRolePlayingGame.Global.Data.BaseExperience[_PlayerID] + _EXP;
+    AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID] = AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID] + _EXP;
     if AddOnRolePlayingGame.Global.Data.UseInformPlayer then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         API.Note(string.format(AddOnRolePlayingGame.Texts.EarnedExperience[lang], _EXP));
@@ -160,7 +216,7 @@ end
 -- @param _PlayerID Spieler, der Erfahrung erhält
 -- @return number: Erfahrung des Spielers
 --
-function API.Rpg_GetPlayerExperience(_PlayerID)
+function API.RpgHelper_GetPlayerExperience(_PlayerID)
     assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
     return AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID];
 end
@@ -171,7 +227,7 @@ end
 -- @param _PlayerID Spieler, der Erfahrung erhält
 -- @return number: Benötigte Erfahrung
 --
-function API.Rpg_GetPlayerNeededExperience(_PlayerID)
+function API.RpgHelper_GetPlayerNeededExperience(_PlayerID)
     assert(AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID]);
     local Current = AddOnRolePlayingGame.Global.Data.PlayerExperience[_PlayerID];
     local Needed  = AddOnRolePlayingGame.Global.Data.BaseExperience;
@@ -191,6 +247,16 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Global:Install()
+    -- Event 
+    Core:AppendFunction("GameCallback_EntityKilled", self.OnEntityKilledController);
+    Core:AppendFunction("GameCallback_EntityHurt", self.OnEntityHurtController);
+    Core:AppendFunction("GameCallback_TaxCollectionFinished", self.OnTaxCollectionFinished);
+    Core:AppendFunction("GameCallback_RegularFestivalEnded", self.OnRegularFestivalEnded);
+    Core:AppendFunction("GameCallback_EndOfMonth", self.OnEndOfMonth);
+    Core:AppendFunction("GameCallback_OnBuildingUpgradeFinished", self.OnBuildingUpgradeFinished);
+    Core:AppendFunction("GameCallback_OnBuildingConstructionComplete", self.OnBuildingConstructionComplete);
+    Core:AppendFunction("GameCallback_OnGeologistRefill", self.OnGeologistRefill);
+    StartSimpleJobEx(self.OnEverySecond);
     -- Kampf Controller
     API.AddOnEntityHurtAction(self.EntityFightingController);
     -- Level-Up Controller
@@ -200,6 +266,50 @@ function AddOnRolePlayingGame.Global:Install()
     -- Save Game 
     API.AddSaveGameAction(self.OnSaveGameLoaded);
 end
+
+-- Core Functunality --
+
+---
+-- Gibt alle instanzierten Helden zurück, die dem Spieler gehören.
+-- 
+-- @param _EntityID ID des Entity
+-- @return table: Helden des Spielers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:GetHeroes(_PlayerID)
+    local HeroesOfPlayer = {};
+    for k, v in pairs(AddOnRolePlayingGame.HeroList) do
+        if v and IsExisting(v.ScriptName) and Logic.EntityGetPlayer(GetID(v.ScriptName)) == _PlayerID then 
+            table.insert(HeroesOfPlayer, v);
+        end
+    end 
+    return HeroesOfPlayer;
+end
+
+---
+-- Gibt alle Inventare der Helden eines Spielers zurück.
+--
+-- Hat ein Held kein Inventar, wird dieser Held ausgelassen.
+-- 
+-- @param _EntityID ID des Entity
+-- @return table: Helden des Spielers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:GetInventories(_PlayerID)
+    local InventoriesOfPlayer = {};
+    for k, v in pairs(AddOnRolePlayingGame.HeroList) do
+        if v and IsExisting(v.ScriptName) and Logic.EntityGetPlayer(GetID(v.ScriptName)) == _PlayerID then 
+            if v.Inventory then
+                table.insert(InventoriesOfPlayer, v.Inventory);
+            end
+        end
+    end 
+    return InventoriesOfPlayer;
+end
+
+-- Callbacks --
 
 ---
 -- Aktualisiert die Statuswerte eines Helden.
@@ -221,22 +331,22 @@ function AddOnRolePlayingGame.Global:UpgradeHeroStatus(_Idx, _EntityID)
     if HeroInstance.Learnpoints < 1 then 
         return;
     end
-    
-    -- Lernpunkte entfernen
-    API.Bridge('AddOnRolePlayingGame.HeroList["' ..ScriptName.. '"].Learnpoints = '..(HeroInstance.Learnpoints-1));
-    HeroInstance.Learnpoints = HeroInstance.Learnpoints -1;
 
     -- Statuswert verbessern
     if _Idx == 0 then 
-        API.Note("TRACE: Attack clicked (Strength)");
-        HeroInstance.Strength = HeroInstance.Strength +1;
-    elseif _Idx == 1 then 
-        API.Note("TRACE: Bless clicked (Endurance)");
-        HeroInstance.Endurance = HeroInstance.Endurance +1;
-    else 
-        API.Note("TRACE: Trebuchet clicked (Magic)");
-        HeroInstance.Magic = HeroInstance.Magic +1;
+        local Costs = HeroInstance.StrengthCosts or 1;
+        HeroInstance.Learnpoints = HeroInstance.Learnpoints - Costs;
+        HeroInstance.Unit.Strength = HeroInstance.Unit.Strength +1;
+    elseif _Idx == 1 then
+        local Costs = HeroInstance.EnduranceCosts or 1;
+        HeroInstance.Learnpoints = HeroInstance.Learnpoints - Costs;
+        HeroInstance.Unit.Endurance = HeroInstance.Unit.Endurance +1;
+    else
+        local Costs = HeroInstance.MagicCosts or 1;
+        HeroInstance.Learnpoints = HeroInstance.Learnpoints - Costs;
+        HeroInstance.Unit.Magic = HeroInstance.Unit.Magic +1;
     end
+    API.Bridge('AddOnRolePlayingGame.HeroList["' ..ScriptName.. '"].Learnpoints = '..HeroInstance.Learnpoints);
 end
 
 ---
@@ -253,26 +363,28 @@ function AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID)
             local PlayerID = Logic.EntityGetPlayer(GetID(k));
             if PlayerID == _PlayerID then
                 v:LevelUp(self.Data.LearnpointsPerLevel, self.Data.UseAutoLevel == true);
-                
-                -- Den Spieler informieren
-                if API.GetControllingPlayer() == _PlayerID then
-                    if self.Data.UseInformPlayer then
-                        API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
-                        if self.Data.UseAutoLevel then
-                            API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
-                        else
-                            local Text = string.format(AddOnRolePlayingGame.Texts.ManualLevelUp, self.Data.LearnpointsPerLevel);
-                            API.Note(Text);
-                        end
-                    end
-                end
+            end
+        end
+    end
+    
+    -- Den Spieler informieren
+    if API.GetControllingPlayer() == _PlayerID then
+        if self.Data.UseInformPlayer then
+            API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
+            if self.Data.UseAutoLevel then
+                API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
+            else
+                local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+                local Text = string.format(AddOnRolePlayingGame.Texts.ManualLevelUp[Language], self.Data.LearnpointsPerLevel);
+                API.Note(Text);
             end
         end
     end
 end
 
 ---
--- 
+-- Wechselt zwischen Rücksack und angelegten Gegenständen des Helden.
+--
 -- @within Private
 -- @local
 --
@@ -289,6 +401,51 @@ function AddOnRolePlayingGame.Global:ToggleInventory(_SelectedEntity)
 end
 
 ---
+-- Wechselt zwischen Rücksack und angelegten Gegenständen des Helden.
+--
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:ToggleEffects(_SelectedEntity)
+    if _SelectedEntity == 0 then
+        return;
+    end
+    local ScriptName = Logic.GetEntityName(_SelectedEntity);
+    local Hero = AddOnRolePlayingGame.Hero:GetInstance(ScriptName);
+    if not Hero then
+        return;
+    end
+    API.Bridge("AddOnRolePlayingGame.Local:DisplayEffects('" ..Hero.ScriptName.. "', false)");
+end
+
+---
+-- Löst für die angegebenen Helden alle Events aus, die durch den Trigger 
+-- aktiviert werden. Es wird die Action eines Events aufgerufen. Die Action 
+-- erhält den Helden, den Auslöser, und optionale Argumente des originalen
+-- Triggers (vom Spiel).
+--
+-- @param _HeroList Liste der Helden
+-- @param _Trigger  Auslöser
+-- @param ...       Optionale Argumente
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global:InvokeEvent(_HeroList, _Trigger, ...)
+    _HeroList = _HeroList or {};
+    for k, v in pairs(_HeroList) do
+        if v then 
+            for kk, vv in pairs(AddOnRolePlayingGame.EventList) do
+                if vv and vv.Action and vv:HasTrigger(_Trigger) then 
+                    vv:Action(v, _Trigger, ...);
+                end
+            end
+        end
+    end
+end
+
+-- Jobs --
+
+---
 -- Hebt das Level aller Helden eines Spielers an, wenn der Spieler die
 -- benötigte Erfahrung erreicht. Dabei werden entweder Lernpunkte vergeben
 -- oder automatisch Statuswerte erhöht.
@@ -303,8 +460,8 @@ function AddOnRolePlayingGame.Global.ExperienceLevelUpController()
             local Needed  = AddOnRolePlayingGame.Global.Data.BaseExperience;
             if Needed - Current <= 0 then
                 AddOnRolePlayingGame.Global:LevelUpAction(i);
-                AddOnRolePlayingGame.Global.Data.PlayerExperience[i] = 0;
-                AddOnRolePlayingGame.Global.Data.BaseExperience = Needed + (Needed * 0.5);
+                AddOnRolePlayingGame.Global.Data.PlayerExperience[i] = Current - Needed;
+                AddOnRolePlayingGame.Global.Data.BaseExperience = Needed + math.floor(Needed * 0.25);
             end
         end
     end
@@ -337,10 +494,12 @@ function AddOnRolePlayingGame.Global.EntityFightingController(_Attacker, _Defend
         -- Verwunde das Ziel
         local DefenderHero = AddOnRolePlayingGame.Hero:GetInstance(DefenderName);
         
-        local Damage = DefenderUnit:CalculateEnduredDamage(AttackerUnit);
+        local Damage = DefenderUnit:CalculateEnduredDamage(AttackerUnit:GetDamage());
         API.HurtEntity(DefenderName, Damage, AttackerName);
         if DefenderHero ~= nil then
-            DefenderHero.Health = DefenderHero.Health - Damage;
+            if DefenderHero.Vulnerable then 
+                DefenderHero:Hurt(Damage, AttackerName);
+            end
         end
     end
 end
@@ -372,6 +531,165 @@ function AddOnRolePlayingGame.Global.OnSaveGameLoaded()
     API.Bridge("AddOnRolePlayingGame.Local:OverrideStringKeys()");
 end
 
+-- Events --
+
+---
+-- Trigger: Ein Entity wird durch ein anderes Entity zerstört.
+-- @param _AttackedEntityID    Entity ID of defender
+-- @param _AttackedPlayerID    Player ID of defender
+-- @param _AttackingEntityID   Entity ID of attacker
+-- @param _AttackingPlayerID   Player ID of attacker
+-- @param _AttackedEntityType  Type of defender
+-- @param _AttackingEntityType Type of attacker
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnEntityKilledController(_AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.HeroList,
+        "Trigger_EntityKilled",
+        _AttackedEntityID, _AttackedPlayerID, _AttackingEntityID, _AttackingPlayerID, _AttackedEntityType, _AttackingEntityType
+    );
+end
+
+---
+-- Trigger: Ein Entity wurd durch ein anderes verwundet.
+-- @param _DefenderPlayerID  Player ID of defender
+-- @param _DefenderName      Script name of defender
+-- @param _AttackingPlayerID Player ID of attacker
+-- @param _AttackerName      Script name of attacker
+-- @param _Damage    
+-- @within Private
+-- @local        
+--
+function AddOnRolePlayingGame.Global.OnEntityHurtController(_DefenderPlayerID, _DefenderName, _AttackingPlayerID, _AttackerName, _Damage)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.HeroList,
+        "Trigger_EntityHurt",
+        _DefenderPlayerID, _DefenderName, _AttackingPlayerID, _AttackerName, _Damage
+    );
+end
+
+---
+-- Trigger: Zahltag
+-- @param _PlayerID                 Player ID
+-- @param _TotalTaxAmountCollected  Total collected tax
+-- @param _AdditionalTaxesByAbility Hero ability bonus
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnTaxCollectionFinished(_PlayerID, _TotalTaxAmountCollected, _AdditionalTaxesByAbility)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_TaxCollectionFinished",
+        _PlayerID, _TotalTaxAmountCollected, _AdditionalTaxesByAbility
+    );
+end
+
+---
+-- Trigger: Ein normales Fest ist beendet.
+-- @param _PlayerID Player ID
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnRegularFestivalEnded(_PlayerID)
+    -- "Trigger_RegularFestivalEnded"
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_RegularFestivalEnded",
+        _PlayerID
+    );
+end
+
+---
+-- Trigger: Ein Monat ist zuende.
+-- @param _LastMonth    Elapsed month
+-- @param _CurrentMonth Started month
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnEndOfMonth(_LastMonth, _CurrentMonth)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.HeroList,
+        "Trigger_EndOfMonth",
+        _LastMonth, _CurrentMonth
+    );
+end
+
+---
+-- Trigger: Der Ausbau eines Gebäudes ist abgeschlossen.
+-- @param _PlayerID        Player ID
+-- @param _EntityID        Entity ID
+-- @param _NewUpgradeLevel New upgrade level
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnBuildingUpgradeFinished(_PlayerID, _EntityID, _NewUpgradeLevel)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_BuildingUpgradeFinished",
+        _PlayerID, _EntityID, _NewUpgradeLevel
+    );
+end
+
+---
+-- Trigger: Der Bau eines Gebäudes ist abgeschlossen.
+-- @param _PlayerID Player ID
+-- @param _EntityID Entity ID
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnBuildingConstructionComplete(_PlayerID, _EntityID)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_BuildingConstructionFinished",
+        _PlayerID, _EntityID
+    );
+end
+
+---
+-- Trigger: Ein Geologe füllt eine Mine wieder auf.
+-- @param _PlayerID    Player ID
+-- @param _TargetID    Entity ID of mine
+-- @param _GeologistID Entity ID of geologist
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnGeologistRefill(_PlayerID, _TargetID, _GeologistID)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_GeologistRefill",
+        _PlayerID, _TargetID, _GeologistID
+    );
+end
+
+---
+-- Trigger: Eine Predigt ist beendet.
+-- @param _PlayerID    Player ID
+-- @param _NumSettlers Number of settlers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnSermonFinished(_PlayerID, _NumSettlers)
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.Global:GetHeroes(_PlayerID),
+        "Trigger_SermonFinished",
+        _PlayerID, _NumSettlers
+    );
+end
+
+---
+-- Trigger: Eine Sekunde ist vergangen.
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Global.OnEverySecond()
+    AddOnRolePlayingGame.Global:InvokeEvent(
+        AddOnRolePlayingGame.HeroList,
+        "Trigger_EverySecond"
+    );
+end
+
 -- local Script ----------------------------------------------------------------
 
 ---
@@ -381,18 +699,128 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Local:Install()
+    -- Event 
+    Core:AppendFunction("GameCallback_Feedback_OnSermonFinished", self.OnSermonFinished);
+    -- Interface
     self:CreateHotkeys();
-    self:DescribeHotkeys();
     self:DeactivateAbilityBlabering();
     self:OverrideActiveAbility();
     self:OverrideStringKeys();
     self:OverrideKnightCommands();
+    self:OverwriteHeroName();
+end
+
+---
+-- Trigger: Eine Predigt ist beendet.
+-- @param _PlayerID    Player ID
+-- @param _NumSettlers Number of settlers
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local.OnSermonFinished(_PlayerID, _NumSettlers)
+    API.Bridge("AddOnRolePlayingGame.Global.OnSermonFinished(" .._PlayerID.. ", " .._NumSettlers.. ")")
+end
+
+
+---
+-- Zeigt die Inhalte des Inventars eines Helden an.
+--
+-- @param _Identifier  Name des Inventars
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:DisplayCharacter(_Identifier)
+    if AddOnRolePlayingGame.HeroList[_Identifier] == nil then 
+        return;
+    end
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local FormatString = "%s{cr}%s{cr}%s{cr}{cr}%s{cr}%s{cr}%s{cr}{cr}%s{cr}%s{cr}%s{cr}{cr}";
+    
+    local LabelStrength  = AddOnRolePlayingGame.Texts.Strength.Caption[Language];
+    local LabelMagic     = AddOnRolePlayingGame.Texts.Magic.Caption[Language];
+    local LabelEndurance = AddOnRolePlayingGame.Texts.Endurance.Caption[Language];
+    
+    local DescStrength  = AddOnRolePlayingGame.Texts.Strength.Description[Language];
+    local DescMagic     = AddOnRolePlayingGame.Texts.Magic.Description[Language];
+    local DescEndurance = AddOnRolePlayingGame.Texts.Endurance.Description[Language];
+    
+    local Strength = AddOnRolePlayingGame.HeroList[_Identifier].Strength;
+    local StrengthStars = string.rep("*", (Strength > 49 and 50) or Strength+1);
+    local Magic = AddOnRolePlayingGame.HeroList[_Identifier].Magic;
+    local MagicStars = string.rep("*", (Magic > 49 and 50) or Magic+1);
+    local Endurance = AddOnRolePlayingGame.HeroList[_Identifier].Endurance;
+    local EnduranceStars = string.rep("*", (Endurance > 49 and 50) or Endurance+1);
+    
+    local ContentString = string.format(
+        FormatString,
+        LabelStrength,
+        StrengthStars,
+        DescStrength,
+        LabelMagic,
+        MagicStars,
+        DescMagic,
+        LabelEndurance,
+        EnduranceStars,
+        DescEndurance
+    );
+    
+    -- Fenster anzeigen
+    local Window = TextWindow:New();
+    Window:SetCaption(AddOnRolePlayingGame.Texts.CharacterStatus.Caption);
+    Window:SetContent(ContentString);
+    Window:Show();
 end
 
 ---
 -- Zeigt die Inhalte des Inventars eines Helden an.
 --
--- @param _Identifier Name des Inventars
+-- @param _Identifier     Name des Inventars
+-- @param _FilterEquipped Equipment anzeigen
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:DisplayEffects(_Identifier, _FilterVices)
+    if AddOnRolePlayingGame.HeroList[_Identifier] == nil then 
+        return;
+    end
+    
+    local EffectList = AddOnRolePlayingGame.HeroList[_Identifier].Virtues;
+    if _FilterVices then
+        EffectList = AddOnRolePlayingGame.HeroList[_Identifier].Vices;
+    end
+    
+    local ContentString = "";
+    for k, v in pairs(EffectList) do
+        if v and AddOnRolePlayingGame.EventList[v] then
+            local Caption = AddOnRolePlayingGame.EventList[v].Caption;
+            local Description = AddOnRolePlayingGame.EventList[v].Description;
+            if Caption and Description then
+                ContentString = ContentString .. Caption .. "{cr}";
+                ContentString = ContentString .. Description .. "{cr}{cr}";
+            end
+        end
+    end
+    
+    -- Fenster anzeigen
+    local function ToggleCallback(_Data)
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        AddOnRolePlayingGame.Local:ToggleEffects(_Data.ScriptName, _Data.FilterVices);
+    end
+    local Key = (_FilterVices == true and "NegativeEffects") or "PositiveEffects";
+    local Window = TextWindow:New();
+    Window.FilterVices = not _FilterVices;
+    Window.ScriptName = _Identifier;
+    Window:SetCaption(AddOnRolePlayingGame.Texts[Key].Caption);
+    Window:SetContent(ContentString);
+    Window:SetButton(AddOnRolePlayingGame.Texts[Key].Button, ToggleCallback);
+    Window:Show();
+end
+
+---
+-- Zeigt die Inhalte des Inventars eines Helden an.
+--
+-- @param _Identifier     Name des Inventars
+-- @param _FilterEquipped Equipment anzeigen
 -- @within Private
 -- @local
 --
@@ -438,26 +866,19 @@ function AddOnRolePlayingGame.Local:DisplayInventory(_Identifier, _FilterEquippe
             );
         end
     end
-    
-    -- Texte anpassen
-    local Caption = {de = "Rucksack", en = "Inventory"};
-    local Button  = {de = "Ausrüstung anzeigen", en = "Show equipment"};
-    if _FilterEquipped then
-        Caption = {de = "Ausrüstung", en = "Equipment"};
-        Button  = {de = "Rucksack anzeigen", en = "Show inventory"};
-    end
-    
+
     -- Fenster anzeigen
     local function ToggleCallback(_Data)
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
         AddOnRolePlayingGame.Local:ToggleInventory(_Data.InventoryIdentifier, _Data.FilterEquipped);
     end
+    local Key = (_FilterEquipped == true and "InventoryEquipment") or "InventoryBackpack";
     local Window = TextWindow:New();
     Window.FilterEquipped = not _FilterEquipped;
     Window.InventoryIdentifier = _Identifier;
-    Window:SetCaption(Caption);
+    Window:SetCaption(AddOnRolePlayingGame.Texts[Key].Caption);
     Window:SetContent(ContentString);
-    Window:SetButton(Button, ToggleCallback);
+    Window:SetButton(AddOnRolePlayingGame.Texts[Key].Button, ToggleCallback);
     Window:Show();
 end
 
@@ -472,6 +893,65 @@ function AddOnRolePlayingGame.Local:ToggleInventory(_Identifier, _FilterEquipped
 end
 
 ---
+-- 
+-- @within Private
+-- @local
+--
+function AddOnRolePlayingGame.Local:ToggleEffects(_Identifier, _FilterVices)
+    _FilterEquipped = _FilterEquipped or false;
+    AddOnRolePlayingGame.Local:DisplayEffects(_Identifier, _FilterVices);
+end
+
+---
+-- Überschreibt den Namen und die Beschreibung des Helden im Selektions-
+-- und Beförderungsmenü.
+--
+function AddOnRolePlayingGame.Local:OverwriteHeroName()
+    GUI_MultiSelection.IconMouseOver_Orig_RolePlayingGame = GUI_MultiSelection.IconMouseOver
+    GUI_MultiSelection.IconMouseOver = function()
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local CurrentMotherID = XGUIEng.GetWidgetsMotherID(CurrentWidgetID);
+        local CurrentMotherName = XGUIEng.GetWidgetNameByID(CurrentMotherID);
+        local Index = tonumber(CurrentMotherName);
+        local EntityID = g_MultiSelection.EntityList[Index];
+        local EntityName = Logic.GetEntityName(EntityID);
+
+        if AddOnRolePlayingGame.HeroList[EntityName] then
+            local Caption = AddOnRolePlayingGame.HeroList[EntityName].Caption;
+            local Description = AddOnRolePlayingGame.HeroList[EntityName].Description or "";
+            if Caption then
+                UserSetTextNormal(Caption, Description);
+                return;
+            end
+        end
+        GUI_MultiSelection.IconMouseOver_Orig_RolePlayingGame();
+    end
+    
+    GUI_Knight.PromoteKnightUpdate_Orig_RolePlayingGame = GUI_Knight.PromoteKnightUpdate;
+    GUI_Knight.PromoteKnightUpdate = function()
+        GUI_Knight.PromoteKnightUpdate_Orig_RolePlayingGame();
+        if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignBottomRight/KnightTitleMenu") == 0 then
+            return;
+        end
+        local PlayerID = GUI.GetPlayerID();
+        if EnableRights ~= true or CanKnightBePromoted( PlayerID ) then
+            local KnightID = Logic.GetKnightID(PlayerID);
+            local ScriptName = Logic.GetEntityName(KnightID);
+            if AddOnRolePlayingGame.HeroList[ScriptName] then
+                local CurrentTitle = Logic.GetKnightTitle(PlayerID);
+                local KnightType = Logic.GetEntityType(KnightID);
+                local CurrentTitleName  = GUI_Knight.GetTitleNameByTitleID(KnightType, CurrentTitle);    
+                local KnightName = AddOnRolePlayingGame.HeroList[ScriptName].Caption;
+                if KnightName then
+                    XGUIEng.SetText("/InGame/Root/Normal/AlignTopCenter/KnightTitleMenuBig/TheRest/Title/Name", "{center}" .. CurrentTitleName .. " " .. KnightName);
+                    XGUIEng.SetText("/InGame/Root/Normal/AlignTopCenter/KnightTitleMenuBig/TheRest/Title/NameWhite", "{center}" .. CurrentTitleName .. " " .. KnightName);
+                end
+            end
+        end
+    end
+end
+
+---
 -- Überschreibt die KnightCommands, sodass sie für das Upgrade des Status 
 -- verwendet werden kann.
 --
@@ -479,12 +959,55 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Local:OverrideKnightCommands()
+    GameCallback_GUI_SelectionChanged_Orig_AddOnRolePlayingGame = GameCallback_GUI_SelectionChanged
+    GameCallback_GUI_SelectionChanged = function(a, b)
+        GameCallback_GUI_SelectionChanged_Orig_AddOnRolePlayingGame(a, b);
+        XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignTopLeft/KnightCommands",1);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/KnightCommands",1);
+        local eIDs = {GUI.GetSelectedEntities()};
+        
+        if #eIDs == 1 then
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Strength.Mother, 1);
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother, 1);
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Endurance.Mother, 1);
+        else
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Strength.Mother, 0);
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother, 0);
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Endurance.Mother, 0);
+        end
+    end
+    
     Mission_SupportButtonClicked = function(_Idx)
         local EntityID = GUI.GetSelectedEntity();
-        if eID == nil or eID == 0 then
+        if EntityID == nil or EntityID == 0 then
             return;
         end
         API.Bridge("AddOnRolePlayingGame.Global:UpgradeHeroStatus(" .._Idx.. ", "..EntityID..")");
+    end
+    
+    Mission_SupportUpdateTimer = function()
+        local EntityID = GUI.GetSelectedEntity();
+        if EntityID == nil or EntityID == 0 then
+            return;
+        end
+        local ScriptName = Logic.GetEntityName(EntityID);
+        if AddOnRolePlayingGame.HeroList[ScriptName] == nil then 
+            return;
+        end
+        
+        local WidgetID = XGUIEng.GetCurrentWidgetID();
+        local LP = AddOnRolePlayingGame.HeroList[ScriptName].Learnpoints;
+        
+        local Costs = 999;
+        if WidgetID == XGUIEng.GetWidgetID(AddOnRolePlayingGame.KnightCommands.Strength.Timer) then
+            Costs = AddOnRolePlayingGame.HeroList[ScriptName].StrengthCosts or 1;
+        elseif WidgetID == XGUIEng.GetWidgetID(AddOnRolePlayingGame.KnightCommands.Magic.Timer) then
+            Costs = AddOnRolePlayingGame.HeroList[ScriptName].MagicCosts or 1;
+        elseif WidgetID == XGUIEng.GetWidgetID(AddOnRolePlayingGame.KnightCommands.Endurance.Timer) then
+            Costs = AddOnRolePlayingGame.HeroList[ScriptName].EndurenceCosts or 1;
+        end
+        
+        XGUIEng.SetText(WidgetID, "{center}" ..Costs.. "/" ..LP);
     end
     
     Mission_SupportUpdateButton = function()
@@ -497,12 +1020,11 @@ function AddOnRolePlayingGame.Local:OverrideKnightCommands()
         local Screensize = {GUI.GetScreenSize()};
         local Hero = AddOnRolePlayingGame.HeroList[ScriptName];
         if Hero == nil then 
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Strength.Mother,0);
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother,0);
+            XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Endurance.Mother,0);
             return;
         end
-        
-        XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Strength.Mother, 170, 20, 100, 100);
-        XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Magic.Mother, 245, 23, 100, 100);
-        XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Endurance.Mother, 320, 20, 100, 100);
         
         SetIcon(AddOnRolePlayingGame.KnightCommands.Strength.Button, {7,4});
         SetIcon(AddOnRolePlayingGame.KnightCommands.Magic.Button, {11, 2});
@@ -510,17 +1032,36 @@ function AddOnRolePlayingGame.Local:OverrideKnightCommands()
         
         if x ~= 0 and y ~= 0 and x > -200 and y > -200 and x < (Screensize[1] + 50) and y < (Screensize[2] + 200) then
             local WidgetID = "/InGame/Root/Normal/AlignTopLeft/KnightCommands";
-            XGUIEng.SetWidgetSize(widget,480,160);
+            XGUIEng.SetWidgetSize(WidgetID, 300, 200);
             local WidgetSize = {XGUIEng.GetWidgetScreenSize(WidgetID)};
-            XGUIEng.SetWidgetScreenPosition(WidgetID, x-(WidgetSize[1]*0.6), y-WidgetSize[2]);
+            
+            local relativeX = x - (WidgetSize[1] * 0.40);
+            local relativeY = y - (130 * (Screensize[2]/1080));
+            XGUIEng.SetWidgetScreenPosition(WidgetID, relativeX, relativeY);
+            
+            XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Strength.Mother, 0, 20, 100, 100);
+            XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Magic.Mother, 80, 23, 100, 100);
+            XGUIEng.SetWidgetPositionAndSize(AddOnRolePlayingGame.KnightCommands.Endurance.Mother, 160, 26, 100, 100);
             XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands.Strength.Mother,0);
-            XGUIEng.ShowWDisableButtonidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother,0);
+            XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands.Magic.Mother,0);
             XGUIEng.DisableButton(AddOnRolePlayingGame.KnightCommands.Endurance.Mother,0);
             
-            if Hero.Learnpoints == 0 then
+            if Hero.Learnpoints < (AddOnRolePlayingGame.HeroList[ScriptName].StrengthCosts or 1) then
                 XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Strength.Mother,0);
+            else
+                XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Strength.Mother,1);
+            end
+            
+            if Hero.Learnpoints < (AddOnRolePlayingGame.HeroList[ScriptName].MagicCosts or 1) then
                 XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother,0);
+            else
+                XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Magic.Mother,1);
+            end
+            
+            if Hero.Learnpoints < (AddOnRolePlayingGame.HeroList[ScriptName].EndurenceCosts or 1) then
                 XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Endurance.Mother,0);
+            else
+                XGUIEng.ShowWidget(AddOnRolePlayingGame.KnightCommands.Endurance.Mother,1);
             end
         else
             local WidgetID = "/InGame/Root/Normal/AlignTopLeft/KnightCommands";
@@ -596,13 +1137,17 @@ function AddOnRolePlayingGame.Local:OverrideActiveAbility()
             GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame(_Ability);
             return;
         end
-        if not HeroInstance.Ability:Condition(HeroInstance) then
-            if HeroInstance.Ability.ImpossibleMessage then 
-                API.Message(HeroInstance.Ability.ImpossibleMessage);
+        
+        -- Doppelklick vermeiden
+        AddOnRolePlayingGame.HeroList[KnightName].ActionPoints = 0;
+        
+        -- Fähigkeit ausführen
+        API.Bridge([[
+            local AbilityInstance = AddOnRolePlayingGame.Ability:GetInstance("]] ..HeroInstance.Ability.. [[")
+            if AbilityInstance then
+                AbilityInstance:Callback("]] ..KnightName.. [[")
             end
-            return;
-        end
-        HeroInstance.Ability:Action(HeroInstance);
+        ]]);
     end
 
     GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityMouseOver;
@@ -616,7 +1161,10 @@ function AddOnRolePlayingGame.Local:OverrideActiveAbility()
             GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame();
             return;
         end
-        SetTextNormal(HeroInstance.Ability.Caption, HeroInstance.Ability.Description);
+        
+        local Caption     = AddOnRolePlayingGame.AbilityList[HeroInstance.Ability].Caption;
+        local Description = AddOnRolePlayingGame.AbilityList[HeroInstance.Ability].Description;
+        UserSetTextNormal(Caption, Description);
     end
 
     GUI_Knight.StartAbilityUpdate_Orig_AddOnRolePlayingGame = GUI_Knight.StartAbilityUpdate;
@@ -631,20 +1179,24 @@ function AddOnRolePlayingGame.Local:OverrideActiveAbility()
             GUI_Knight.StartAbilityUpdate_Orig_AddOnRolePlayingGame();
             return;
         end
+        
+        local Icon = AddOnRolePlayingGame.AbilityList[HeroInstance.Ability].Icon;
+        local RechargeTime = HeroInstance.RechargeTime;
+        local ActionPoints = HeroInstance.ActionPoints;
     
         -- Icon
-        if type(HeroInstance.Ability.Icon) == "table" then
-            if HeroInstance.Ability.Icon[3] and type(HeroInstance.Ability.Icon[3]) == "string" then
-                API.SetIcon(WidgetID, HeroInstance.Ability.Icon, nil, HeroInstance.Ability.Icon[3]);
+        if type(Icon) == "table" then
+            if Icon[3] and type(Icon[3]) == "string" then
+                API.SetIcon(WidgetID, Icon, nil, Icon[3]);
             else
-                SetIcon(WidgetID, HeroInstance.Ability.Icon);
+                SetIcon(WidgetID, Icon);
             end
         else
-            API.SetTexture(WidgetID, HeroInstance.Ability.Icon);
+            API.SetTexture(WidgetID, Icon);
         end
     
         -- Enable/Disable
-        if HeroInstance.ActionPoints < HeroInstance.Ability.RechargeTime or HeroInstance.AbilityDisabled then
+        if ActionPoints < RechargeTime or HeroInstance.AbilityDisabled then
             XGUIEng.DisableButton(WidgetID, 1);
         else
             XGUIEng.DisableButton(WidgetID, 0);
@@ -664,9 +1216,13 @@ function AddOnRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
-        local TotalRechargeTime = HeroInstance.Ability.RechargeTime or 6 * 60;
+        local TotalRechargeTime = HeroInstance.RechargeTime or 6 * 60;
         local ActionPoints = HeroInstance.ActionPoints;
         local TimeAlreadyCharged = ActionPoints or TotalRechargeTime;
+        
+        -- Fix for over 100% charge
+        TimeAlreadyCharged = (TimeAlreadyCharged > TotalRechargeTime and TotalRechargeTime) or TimeAlreadyCharged;
+        
         if TimeAlreadyCharged == TotalRechargeTime then
             XGUIEng.SetMaterialColor(WidgetID, 0, 255, 255, 255, 0);
         else
@@ -697,7 +1253,11 @@ end
 --
 function AddOnRolePlayingGame.Local:CreateHotkeys()
     -- Inventar anzeigen
-    Input.KeyBindDown(Keys.I, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('AddOnRolePlayingGame.Global:ToggleInventory(' ..Sel.. ')')", 2, false);
+    Input.KeyBindDown(Keys.I, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('AddOnRolePlayingGame.Global:ToggleInventory(' ..Sel.. ')');", 2, false);
+    -- Effekte anzeigen
+    Input.KeyBindDown(Keys.K, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('AddOnRolePlayingGame.Global:ToggleEffects(' ..Sel.. ')');", 2, false);
+    -- Charackter anzeigen
+    Input.KeyBindDown(Keys.C, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); AddOnRolePlayingGame.Local:DisplayCharacter(Sel);", 2, false);
 end
 
 ---
@@ -706,8 +1266,16 @@ end
 -- @local
 --
 function AddOnRolePlayingGame.Local:DescribeHotkeys()
+    if AddOnRolePlayingGame.Local.Data.HotkeyDescribed == true then
+        return;
+    end
+    
     -- Inventar anzeigen
     API.AddHotKey({de = "I", en = "I"}, {de = "Inventar öffnen", en = "Open inventory"});
+    -- Effecte anzeigen
+    API.AddHotKey({de = "C", en = "C"}, {de = "Charakter anzeigen", en = "Display character"});
+    -- Effecte anzeigen
+    API.AddHotKey({de = "K", en = "K"}, {de = "Effekte anzeigen", en = "Display effects"});
 end
 
 -- -------------------------------------------------------------------------- --
@@ -756,6 +1324,17 @@ function AddOnRolePlayingGame.Unit:GetInstance(_ScriptName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Unit);
     return AddOnRolePlayingGame.UnitList[_ScriptName];
+end
+
+---
+-- Entfernt die Einheit aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Unit
+-- @local
+--
+function AddOnRolePlayingGame.Unit:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Unit);
+    AddOnRolePlayingGame.UnitList[self.Identifier] = nil;
 end
 
 ---
@@ -824,20 +1403,42 @@ function AddOnRolePlayingGame.Unit:GetDamage()
 end
 
 ---
--- Gibt den tatsächlich erlittenen Schaden zurück.
--- @param _Attacker Unit des Angreifers
+-- Gibt den tatsächlich erlittenen physischen Schaden zurück.
+--
+-- Der tatsächlich erlittene physische Schaden ist die Menge an Schaden, die
+-- übrig bleibt, wenn der Basischaden mit der Widerstandskraft der Unit
+-- verrechnet wird.
+--
+-- @param _Damage Basisschaden
 -- @return number: Schaden
 -- @within AddOnRolePlayingGame.Unit
 --
-function AddOnRolePlayingGame.Unit:CalculateEnduredDamage(_Attacker)
+function AddOnRolePlayingGame.Unit:CalculateEnduredDamage(_Damage)
     assert(not GUI);
     assert(self ~= AddOnRolePlayingGame.Unit);
-    
-    local Damage = _Attacker:GetDamage();
     for i= 1, self:GetEndurance(), 1 do
-        Damage = Damage - (0.1 * Damage);
+        _Damage = _Damage - (0.1 * _Damage);
     end
-    return Damage;
+    return _Damage;
+end
+
+---
+-- Gibt den tatsächlich erlittenen magischen Schaden zurück.
+--
+-- Der tatsächlich erlittene Magieschaden ist die Menge an Schaden, die übrig
+-- bleibt, wenn der Basischaden mit der Magie der Unit verrechnet wird.
+--
+-- @param _Damage Basisschaden
+-- @return number: Schaden
+-- @within AddOnRolePlayingGame.Unit
+--
+function AddOnRolePlayingGame.Unit:CalculateEnduredMagicDamage(_Damage)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Unit);
+    for i= 1, self:GetMagic(), 1 do
+        _Damage = _Damage - (0.1 * _Damage);
+    end
+    return _Damage;
 end
 
 ---
@@ -918,6 +1519,9 @@ AddOnRolePlayingGame.Hero = {};
 function AddOnRolePlayingGame.Hero:New(_ScriptName)
     assert(not GUI);
     assert(self == AddOnRolePlayingGame.Hero);
+    
+    -- Hotkeys erst mit ersten Helden eintragen.
+    API.Bridge("AddOnRolePlayingGame.Local:DescribeHotkeys()");
 
     local hero = API.InstanceTable(self, {});
     hero.Unit         = AddOnRolePlayingGame.Unit:New(_ScriptName);
@@ -931,17 +1535,24 @@ function AddOnRolePlayingGame.Hero:New(_ScriptName)
     hero.ActionPoints = 4*60;
     hero.Caption      = nil;
     hero.Description  = nil;
+    hero.Vulnerable   = true;
     
     -- Equipment
     hero.Armor        = nil;
     hero.Jewellery    = nil;
     hero.Weapon       = nil;
     
+    -- Events
+    hero.Vices        = {};
+    hero.Virtues      = {};
+    
     -- Basisschaden setzen
     hero.Unit.BaseDamage = 25;
     
     API.Bridge([[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["] = {}
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["]         = {}
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Vices   = {}
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Virtues = {}
     ]]);
     AddOnRolePlayingGame.HeroList[_ScriptName] = hero;
     if not GUI then
@@ -963,72 +1574,198 @@ function AddOnRolePlayingGame.Hero:GetInstance(_ScriptName)
 end
 
 ---
--- 
+-- Entfernt den Helden aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Hero
+-- @local
+--
+function AddOnRolePlayingGame.Hero:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Hero);
+    self.Unit:Dispose();
+    API.Bridge("AddOnRolePlayingGame.HeroList['" ..self.Identifier.. "'] = nil");
+    AddOnRolePlayingGame.HeroList[self.Identifier] = nil;
+end
+
+---
+-- Aktiviert oder deaktiviert eine Tugend.
+-- @param _EventName Name des Event
+-- @param _Flag      Active Flag
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:ActivateVirtue(_EventName, _Flag)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Hero);
+    if AddOnRolePlayingGame.Event:GetInstance(_EventName) then
+        self.Virtues[_EventName] = _Flag == true;
+    end
+    
+    -- Update in local script
+    local VirtuesString = "";
+    for k, v in pairs(self.Virtues) do
+        if v then VirtuesString = VirtuesString .. "'" .. k .. "', "; end
+    end
+    local CommandString = "AddOnRolePlayingGame.HeroList['%s'].Virtues = {%s}";
+    API.Bridge(string.format(CommandString, self.ScriptName, VirtuesString));
+    return self;
+end
+
+---
+-- Aktiviert oder deaktiviert ein Laster.
+-- @param _EventName Name des Event
+-- @param _Flag      Active Flag
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:ActivateVice(_EventName, _Flag)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Hero);
+    if AddOnRolePlayingGame.Event:GetInstance(_EventName) then
+        self.Vices[_EventName] = _Flag == true;
+    end
+    
+    -- Update in local script
+    local VicesString = "";
+    for k, v in pairs(self.Vices) do
+        if v then VicesString = VicesString .. "'" .. k .. "', "; end
+    end
+    local CommandString = "AddOnRolePlayingGame.HeroList['%s'].Vices = {%s}";
+    API.Bridge(string.format(CommandString, self.ScriptName, VicesString));
+    return self;
+end
+
+---
+-- Macht einen Helden verwundbar oder unverwundbar.
+-- @param _Flag Unverwundbar-Flag
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:SetVulnerable(_Flag)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Hero);
+    self.Vulnerable = _Flag == true;
+    return self
+end
+
+---
+-- Verwundet den Helden um die angegebene Menge.
+-- @param _Amount       Menge an Gesundheit
+-- @param _AttackerName (Optional) Name des Verursachers
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:Hurt(_Amount, _AttackerName)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Hero);
+    self.Health = self.Health - _Amount;
+    AddOnRolePlayingGame.Global:InvokeEvent({self}, "Trigger_DamageSustained", _Amount, _AttackerName);
+    if self.Health < 0 then 
+        self.Health = 0;
+    end
+    return self
+end
+
+---
+-- Heilt den Helden um die angegebene Menge.
+-- @param _Amount     Menge an Gesundheit
+-- @param _HealerName Name des Heilers
+-- @return self
+-- @within AddOnRolePlayingGame.Hero
+--
+function AddOnRolePlayingGame.Hero:Heal(_Amount, _HealerName)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Hero);
+    self.Health = self.Health + _Amount;
+    AddOnRolePlayingGame.Global:InvokeEvent({self}, "Trigger_HealthRegenerated", _Amount, _HealerName);
+    if self.Health > self.MaxHealth then 
+        self.Health = self.MaxHealth;
+    end
+    return self
+end
+
+---
+-- Legt einen Ausrüstungsgegenstand als Rüstung an.
+--
+-- Ist bereits eine Rüstung angelegt, wird diese zuvor abgelegt.
 --
 -- @param _ItemType Ausrüstungsgegenstand
--- @return self
+-- @return boolean: Rüstung angelegt
 -- @within AddOnRolePlayingGame.Hero
 --
 function AddOnRolePlayingGame.Hero:EquipArmor(_ItemType)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     
     if self.Inventory ~= nil then
         if self.Armor then
             self.Inventory:Unequip(self.Armor);
         end
-        self.Armor = _ItemType;
-        if self.Armor then
-            self.Inventory:Equip(self.Armor);
+        
+        local Item = AddOnRolePlayingGame.ItemList[_ItemType];
+        if Item and Item:IsInCategory(AddOnRolePlayingGame.ItemCategories.Armor) then
+            self.Armor = _ItemType;
+            if self.Armor then
+                return self.Inventory:Equip(self.Armor);
+            end
         end
     end
-    return self;
+    return false;
 end
 
 ---
--- 
+-- Legt einen Ausrüstungsgegenstand als Waffe an.
+--
+-- Ist bereits eine Waffe angelegt, wird diese zuvor abgelegt.
 --
 -- @param _ItemType Ausrüstungsgegenstand
--- @return self
+-- @return boolean: Waffe angelegt
 -- @within AddOnRolePlayingGame.Hero
 --
 function AddOnRolePlayingGame.Hero:EquipWeapon(_ItemType)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     
     if self.Inventory ~= nil then
         if self.Weapon then
             self.Inventory:Unequip(self.Weapon);
         end
-        self.Weapon = _ItemType;
-        if self.Weapon then
-            self.Inventory:Equip(self.Weapon);
+        local Item = AddOnRolePlayingGame.ItemList[_ItemType];
+        if Item and Item:IsInCategory(AddOnRolePlayingGame.ItemCategories.Weapon) then
+            self.Weapon = _ItemType;
+            if self.Weapon then
+                return self.Inventory:Equip(self.Weapon);
+            end
         end
     end
-    return self;
+    return false;
 end
 
 ---
--- 
+-- Legt einen Ausrüstungsgegenstand als Schmuck an.
+--
+-- Ist bereits Schmuck angelegt, wird dieser zuvor abgelegt.
 --
 -- @param _ItemType Ausrüstungsgegenstand
--- @return self
+-- @return boolean: Schmuck angelegt
 -- @within AddOnRolePlayingGame.Hero
 --
 function AddOnRolePlayingGame.Hero:EquipJewellery(_ItemType)
     assert(not GUI);
-    assert(self == AddOnRolePlayingGame.Hero);
+    assert(self ~= AddOnRolePlayingGame.Hero);
     
     if self.Inventory ~= nil then
         if self.Jewellery then
             self.Inventory:Unequip(self.Jewellery);
         end
-        self.Jewellery = _ItemType;
-        if self.Jewellery then
-            self.Inventory:Equip(self.Jewellery);
+        local Item = AddOnRolePlayingGame.ItemList[_ItemType];
+        if Item and Item:IsInCategory(AddOnRolePlayingGame.ItemCategories.Jewellery) then
+            self.Jewellery = _ItemType;
+            if self.Jewellery then
+                return self.Inventory:Equip(self.Jewellery);
+            end
         end
     end
-    return self;
+    return false;
 end
 
 ---
@@ -1047,11 +1784,11 @@ function AddOnRolePlayingGame.Hero:LevelUp(_LP, _AutoLevel)
         for i=1, _LP, 1 do
             local RandomStat = math.random(1, 3);
             if RandomStat == 1 then
-                self.Strength = self.Strength +1;
+                self.Unit.Strength = self.Unit.Strength +1;
             elseif RandomStat == 2 then
-                self.Magic = self.Magic +1;
+                self.Unit.Magic = self.Unit.Magic +1;
             else
-                self.Endurance = self.Endurance +1;
+                self.Unit.Endurance = self.Unit.Endurance +1;
             end
         end
     else
@@ -1133,10 +1870,13 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
     end
 
     API.Bridge([[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Learnpoints  = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Learnpoints.. [[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Strength     = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Strength.. [[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Magic        = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Magic.. [[
-        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Endurance    = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Endurance.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Learnpoints       = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Learnpoints.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Strength          = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Strength.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].StrengthCosts     = ]] ..(AddOnRolePlayingGame.HeroList[_ScriptName].StrengthCosts or 1).. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Magic             = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Magic.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].MagicCosts        = ]] ..(AddOnRolePlayingGame.HeroList[_ScriptName].MagicCosts or 1).. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Endurance         = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Unit.Endurance.. [[
+        AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].EnduranceCosts    = ]] ..(AddOnRolePlayingGame.HeroList[_ScriptName].EnduranceCosts or 1).. [[
     ]]);
 
     local EntityID = GetID(_ScriptName);
@@ -1144,15 +1884,12 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
         if Logic.KnightGetResurrectionProgress(EntityID) ~= 1 then
             AddOnRolePlayingGame.HeroList[_ScriptName].Health = Hero.MaxHealth;
             if Hero.Ability then
-                AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints = Ability.RechargeTime;
+                AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints = Hero.Ability.RechargeTime;
             end
         else
             -- Aktualisiere Gesundheit
             if Hero.Health < Hero.MaxHealth then
-                local Health = Hero.Health + Hero:GetRegeneration();
-                Health = (Health > Hero.MaxHealth and Hero.MaxHealth) or Health;
-                Health = (Health < 0 and 0) or Health;
-                AddOnRolePlayingGame.HeroList[_ScriptName].Health = Health;
+                Hero:Heal(Hero:GetRegeneration(), nil);
             end
             
             MakeVulnerable(_ScriptName);
@@ -1161,15 +1898,23 @@ function AddOnRolePlayingGame.Hero.UpdateStatus(_ScriptName)
             MakeInvulnerable(_ScriptName);
 
             -- Aktualisiere Aktionspunkte
-            if Hero.Ability and Hero.ActionPoints < Ability.RechargeTime then
-                local ActionPoints = Hero.ActionPoints + Hero:GetAbilityRecharge();
-                ActionPoints = (ActionPoints > Ability.RechargeTime and Ability.RechargeTime) or ActionPoints;
-                ActionPoints = (ActionPoints < 0 and 0) or ActionPoints;
-                AddOnRolePlayingGame.HeroList[_ScriptName].Health = ActionPoints;
-
+            if Hero.Ability then
                 API.Bridge([[
+                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Ability = "]] ..Hero.Ability.Identifier.. [["
                     AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].ActionPoints = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints.. [[
                     AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].RechargeTime = ]] ..AddOnRolePlayingGame.HeroList[_ScriptName].Ability.RechargeTime.. [[
+                ]]);
+                if Hero.ActionPoints < Hero.Ability.RechargeTime then
+                    local ActionPoints = Hero.ActionPoints + Hero:GetAbilityRecharge();
+                    ActionPoints = (ActionPoints > Hero.Ability.RechargeTime and Hero.Ability.RechargeTime) or ActionPoints;
+                    ActionPoints = (ActionPoints < 0 and 0) or ActionPoints;
+                    AddOnRolePlayingGame.HeroList[_ScriptName].ActionPoints = ActionPoints;
+                    
+                    AddOnRolePlayingGame.Global:InvokeEvent({Hero}, "Trigger_ActionPointsRegenerated", Hero:GetAbilityRecharge());
+                end
+            else
+                API.Bridge([[
+                    AddOnRolePlayingGame.HeroList["]] .._ScriptName.. [["].Ability = nil
                 ]]);
             end
         end
@@ -1222,6 +1967,18 @@ function AddOnRolePlayingGame.Ability:GetInstance(_Identifier)
 end
 
 ---
+-- Entfernt die Fähigkeit aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Ability
+-- @local
+--
+function AddOnRolePlayingGame.Ability:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Ability);
+    API.Bridge("AddOnRolePlayingGame.AbilityList['" ..self.Identifier.. "'] = nil");
+    AddOnRolePlayingGame.AbilityList[self.Identifier] = nil;
+end
+
+---
 -- Führt die Fähigkeit für den übergebenen Helden aus.
 -- @param _HeroName Skriptname des Helden
 -- @return self
@@ -1238,6 +1995,7 @@ function AddOnRolePlayingGame.Ability:Callback(_HeroName)
         end
         Hero.ActionPoints = 0;
         self:Action(Hero);
+        AddOnRolePlayingGame.Global:InvokeEvent({Hero}, "Trigger_AbilityStarted", self);
     end
     return self;
 end
@@ -1262,7 +2020,7 @@ function AddOnRolePlayingGame.Ability:SetIcon(_Icon)
     end
 
     API.Bridge([[
-        AddOnRolePlayingGame.AbilityList["]] .._Identifier.. [["].Icon = ]] ..Icon.. [[
+        AddOnRolePlayingGame.AbilityList["]] ..self.Identifier.. [["].Icon = ]] ..Icon.. [[
     ]]);
     return self;
 end
@@ -1350,6 +2108,18 @@ function AddOnRolePlayingGame.Inventory:GetInstance(_Identifier)
 end
 
 ---
+-- Entfernt das Inventar aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Inventory
+-- @local
+--
+function AddOnRolePlayingGame.Inventory:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Inventory);
+    API.Bridge("AddOnRolePlayingGame.InventoryList['" ..self.Identifier.. "'] = nil");
+    AddOnRolePlayingGame.InventoryList[self.Identifier] = nil;
+end
+
+---
 -- Gibt die Inhalte des Inventars am Bildschirm aus.
 -- @return self
 -- @within AddOnRolePlayingGame.Inventory
@@ -1362,7 +2132,7 @@ function AddOnRolePlayingGame.Inventory:Dump()
     ListOfItems = "Item types of " ..self.Identifier.. ":{cr}";
     for k, v in pairs(self.Items) do
         if v and v > 0 then 
-            ListOfItems = ListOfItems .. k .. " = " ..v.. "{cr}";
+            ListOfItems = ListOfItems .. k .. " (" ..v.. "), ";
         end
     end
     API.Note(ListOfItems);
@@ -1380,16 +2150,18 @@ function AddOnRolePlayingGame.Inventory:Equip(_ItemType)
     assert(self ~= AddOnRolePlayingGame.Inventory);
     local Item = AddOnRolePlayingGame.ItemList[_ItemType];
     if Item and self.Items[_ItemType] > 0 and not self.Equipped[_ItemType] then
-        self:Remove(_ItemType, 1);
-        API.Bridge([[
-            AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = true
-        ]]);
-        
-        self.Equipped[_ItemType] = true;
-        if Item.OnEquipped then
-            Item:OnEquipped(self.Owner);
+        if Item:IsInCategory(AddOnRolePlayingGame.ItemCategories.Equipment) then
+            self:Remove(_ItemType, 1);
+            API.Bridge([[
+                AddOnRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = true
+            ]]);
+            
+            self.Equipped[_ItemType] = true;
+            if Item.OnEquipped then
+                Item:OnEquipped(self.Owner);
+            end
+            return true;
         end
-        return true;
     end
     return false;
 end
@@ -1502,6 +2274,16 @@ end
 -- benutzen oder einfach nur besitzen kann. Gegenstände können einen Effekt 
 -- anwenden, wenn sie ins Inventar gelegt oder aus ihm entfernt werden.
 
+AddOnRolePlayingGame.ItemCategories = {
+    Quest     = 1, -- Gegenstände wichtig für die Handlung
+    Trade     = 2, -- Handelsware
+    Resource  = 3, -- Rohstoff
+    Equipment = 4, -- Ausrüstungsgegenstand
+    Weapon    = 5, -- Waffe
+    Armor     = 6, -- Rüstung
+    Jewellery = 7, -- Schmuck
+};
+
 AddOnRolePlayingGame.ItemList = {};
 
 AddOnRolePlayingGame.Item = {};
@@ -1518,6 +2300,7 @@ function AddOnRolePlayingGame.Item:New(_Identifier)
 
     local item = API.InstanceTable(self);
     item.Identifier   = _Identifier;
+    item.Categories   = {};
     item.Description  = nil;
     item.Caption      = nil;
     item.OnRemoved    = nil;
@@ -1528,6 +2311,7 @@ function AddOnRolePlayingGame.Item:New(_Identifier)
     AddOnRolePlayingGame.ItemList[_Identifier] = item;
     API.Bridge([[
         AddOnRolePlayingGame.ItemList["]] .._Identifier.. [["] = {}
+        AddOnRolePlayingGame.ItemList["]] .._Identifier.. [["].Categories = {}
     ]]);
     return item;
 end
@@ -1545,8 +2329,55 @@ function AddOnRolePlayingGame.Item:GetInstance(_Identifier)
 end
 
 ---
--- Setzt den im 2D-Interface angezeigten Namen der Fähigkeit.
--- @param _Text Name des Item
+-- Entfernt das Item aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Item
+-- @local
+--
+function AddOnRolePlayingGame.Item:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Item);
+    API.Bridge("AddOnRolePlayingGame.ItemList['" ..self.Identifier.. "'] = nil");
+    AddOnRolePlayingGame.ItemList[self.Identifier] = nil;
+end
+
+---
+-- Fügt dem Item eine Kategorie hinzu.
+-- @param _Category Nummer der Kategorie
+-- @return self
+-- @within AddOnRolePlayingGame.Item
+--
+function AddOnRolePlayingGame.Item:AddCategory(_Category)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Item);
+    if API.TraverseTable(_Category, self.Categories) == false then 
+        table.insert(self.Categories, _Category);
+    end
+    
+    -- Update in local script
+    local CategoriesString = "";
+    for i= 1, #self.Categories, 1 do
+        CategoriesString = CategoriesString .. self.Categories[i] .. ", ";
+    end
+    local CommandString = "AddOnRolePlayingGame.ItemList['%s'].Categories = {%s}";
+    API.Bridge(string.format(CommandString, self.Identifier, CategoriesString));
+    return self;
+end
+
+---
+-- Gibt true zurück, wenn das Item die Kategorie besitzt.
+-- @param _Category Nummer der Kategorie
+-- @return boolean: Ist in Kategorie
+-- @within AddOnRolePlayingGame.Item
+--
+function AddOnRolePlayingGame.Item:IsInCategory(_Category)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Item);
+    return API.TraverseTable(_Category, self.Categories) == true;
+end
+
+---
+-- Setzt den im 2D-Interface angezeigten Namen des Item.
+-- @param _Text Text des Item
 -- @return self
 -- @within AddOnRolePlayingGame.Item
 --
@@ -1576,6 +2407,151 @@ function AddOnRolePlayingGame.Item:SetDescription(_Text)
         AddOnRolePlayingGame.ItemList["]] ..self.Identifier.. [["].Description  = "]] ..self.Description.. [["
     ]]);
     return self;
+end
+
+-- Event ---------------------------------------------------------------------
+
+-- Events sind bestimmte Aktionen, die ausgeführt werden, wenn einer ihrer 
+-- Auslöser aktiviert wird.
+
+AddOnRolePlayingGame.EventList = {};
+
+AddOnRolePlayingGame.Event = {};
+
+---
+-- Erzeugt einen neues Event.
+-- @param _Identifier Name des Event
+-- @return table: Instanz
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:New(_Identifier)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Event);
+
+    local event = API.InstanceTable(self);
+    event.Identifier  = _Identifier;
+    event.Triggers    = {};
+    event.Caption     = nil;
+    event.Description = nil;
+    event.Action      = nil;
+
+    AddOnRolePlayingGame.EventList[_Identifier] = event;
+    API.Bridge([[
+        AddOnRolePlayingGame.EventList[']] .._Identifier.. [[']          = {}
+        AddOnRolePlayingGame.EventList[']] .._Identifier.. [['].Triggers = {}
+    ]]);
+    return event;
+end
+
+---
+-- Gibt die Instanz des Event mit dem Identifier zurück.
+-- @param _Identifier Name des Event
+-- @return table: Instanz des Event
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:GetInstance(_Identifier)
+    assert(not GUI);
+    assert(self == AddOnRolePlayingGame.Event);
+    return AddOnRolePlayingGame.EventList[_Identifier];
+end
+
+---
+-- Entfernt das Event aus globalen und lokalen Skript.
+-- @within AddOnRolePlayingGame.Event
+-- @local
+--
+function AddOnRolePlayingGame.Event:Dispose()
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Event);
+    AddOnRolePlayingGame.EventList[self.Identifier] = nil;
+    API.Bridge("AddOnRolePlayingGame.EventList['" ..self.Identifier.. "'] = nil");
+end
+
+---
+-- Setzt den im 2D-Interface angezeigten Namen des Event.
+-- @param _Text Text des Event
+-- @return self
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:SetCaption(_Text)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Event);
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    self.Caption = (type(_Text) == "table" and _Text[Language]) or _Text;
+    API.Bridge([[
+        AddOnRolePlayingGame.EventList["]] ..self.Identifier.. [["].Caption  = "]] ..self.Caption.. [["
+    ]]);
+    return self;
+end
+
+---
+-- Setzt die im 2D-Interface angezeigte Beschreibung des Event.
+-- @param _Text Beschreibung des Event
+-- @return self
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:SetDescription(_Text)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Event);
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    self.Description = (type(_Text) == "table" and _Text[Language]) or _Text;
+    API.Bridge([[
+        AddOnRolePlayingGame.EventList["]] ..self.Identifier.. [["].Description  = "]] ..self.Description.. [["
+    ]]);
+    return self;
+end
+
+---
+-- Fügt dem Event einen Trigger hinzu.
+--
+-- Liste der möglichen Trigger:
+-- <ul>
+-- <li>Trigger_AbilityStarted</li>
+-- <li>Trigger_ActionPointsRegenerated</li>
+-- <li>Trigger_HealthRegenerated</li>
+-- <li>Trigger_DamageSustained</li>
+-- <li>Trigger_EverySecond</li>
+-- <li>Trigger_SermonFinished</li>
+-- <li>Trigger_GeologistRefill</li>
+-- <li>Trigger_BuildingConstructionFinished</li>
+-- <li>Trigger_BuildingUpgradeFinished</li>
+-- <li>Trigger_EndOfMonth</li>
+-- <li>Trigger_RegularFestivalEnded</li>
+-- <li>Trigger_TaxCollectionFinished</li>
+-- <li>Trigger_EntityHurt</li>
+-- <li>Trigger_EntityKilled</li>
+-- </ul>
+--
+-- @param _Trigger Bezeichner des Trigger
+-- @return self
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:AddTrigger(_Event)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Event);
+    if API.TraverseTable(_Event, self.Triggers) == false then 
+        table.insert(self.Triggers, _Event);
+    end
+
+    local EventTrigger = "";
+    for k, v in pairs(self.Triggers) do 
+        EventTrigger = EventTrigger .. "'" .. v .. "', ";
+    end
+    local CommandString = "AddOnRolePlayingGame.EventList['%s'].Triggers = {%s}";
+    API.Bridge(string.format(CommandString, self.Identifier, EventTrigger));
+    return self;
+end
+
+---
+-- Gibt true zurück, wenn das Event den Trigger besitzt.
+-- @param _Trigger Bezeichner des Trigger
+-- @return boolean: Ist in Kategorie
+-- @within AddOnRolePlayingGame.Event
+--
+function AddOnRolePlayingGame.Event:HasTrigger(_Trigger)
+    assert(not GUI);
+    assert(self ~= AddOnRolePlayingGame.Event);
+    return API.TraverseTable(_Trigger, self.Triggers) == true;
 end
 
 -- -------------------------------------------------------------------------- --
