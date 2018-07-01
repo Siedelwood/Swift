@@ -5,28 +5,16 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Implementiert ansprechbare Spielfiguren. Ein NPC wird angesprochen, indem
--- man mit einem selektierten Held über ihn zeigt. Der Mauszeiger wird zu einer
--- Hand. Klickt man dann links, wird sich der Held zum NPC bewegen. Sobald er
--- ihn errecht, wird eine Aktion ausgeführt.
+-- Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere
+-- bereitgestellt. Die Helden eines Spielers können mit diesen NPCs sprechen.
+-- Dazu muss der Held selektiert sein. Dann kann der Spieler ihm mit einem
+-- Rechtsklick befehlen, den NPC anzusprechen. Dabei wird der Mauszeiger zu
+-- einer Hand.
 --
 -- Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
 --
--- Folgt ein NPC einem Helden, wird er stehen bleiben, wenn der Held zu weit
--- entfernt ist. Wenn ein Ziel angegeben ist, dann wird das Callback erst
--- ausgelöst, wenn man den NPC in der Nähe des Ziels anspricht. Ist kein
--- Ziel angegeben, wird das Callback niemals ausgelöst.
--- Optional kann eine Action angegeben werden, die anstelle des Callback
--- ausgeführt wird, wenn das Ziel nicht erreicht ist.
---
--- Führt ein NPC einen Helden, wird er stehen bleiben, wenn der Held zu weit
--- entfernt ist. Andernfalls bewegt sich der NPC zum Zielpunkt. Das Callback
--- wird nur ausgelöst, wenn sich der NPC in der Nähe des Ziels befindet. Es
--- kann eine Action angegeben werden, die anstelle des Callback ausgeführt
--- wird, wenn das Ziel nicht erreicht ist.
---
 -- @module BundleNonPlayerCharacter
--- @set sort=true
+-- @set sort=false
 --
 
 API = API or {};
@@ -34,6 +22,177 @@ QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erstellt einen neuen NPC für den angegebenen Siedler.
+--
+-- Der NPC wird sofort aktiviert und kann angesprochen werden. Er wird durch
+-- eine glitzernde Aura hervorgehoben.
+--
+-- Mögliche Einstellungen für den NPC:
+-- <table border="1">
+-- <tr>
+-- <th><b>Eigenschaft</b></th>
+-- <th><b>Beschreibung</b></th>
+-- </tr>
+-- <tr>
+-- <td>Name</td>
+-- <td>Stringname des Siedlers, der zum NPC werden soll.</td>
+-- </tr>
+-- <tr>
+-- <td>Hero</td>
+-- <td>Skriptname eines Helden, mit dem der NPC sprechen will.</td>
+-- </tr>
+-- <tr>
+-- <td>WrongHeroMessage</td>
+-- <td>Eine optionale Nachricht, wenn der falsche Held angesprochen wird.</td>
+-- </tr>
+-- <tr>
+-- <td>Callback</td>
+-- <td>Eine Funktion, die aufgerufen wird, wenn der NPC angesprochen wird.</td>
+-- </tr>
+-- </table>
+--
+-- <b>Alias:</b> CreateNPC
+--
+-- @param _Entity [string|number] Nichtspieler-Charakter
+-- @return [table] NPC-Objekt
+-- @within Public
+--
+-- @usage
+-- API.NpcCompose {
+--     Name     = "horst",
+--     Callback = function(_Npc, _Hero)
+--        -- Hier kann was passieren
+--     end,
+-- }
+--
+function API.NpcCompose(_Data)
+    local WronHeroCallback = function(_Npc)
+        if _Npc.WrongHeroMessage then
+            API.Note(_Npc.WrongHeroMessage);
+        end
+    end
+    
+    local NPC = NonPlayerCharacter:New(_Data.Name);
+    NPC:SetDialogPartner(_Data.Hero);
+    NPC:SetWrongPartnerCallback(WronHeroCallback);
+    NPC:SetWrongPartnerCallback(_Data.Callback);
+    return NPC:Activate();
+end
+CreateNPC = API.NpcCompose;
+
+---
+-- Entfernt den NPC komplett vom Entity. Das Entity bleibt dabei erhalten.
+--
+-- <b>Alias:</b> DestroyNPC
+--
+-- @param _Entity [string|number] Nichtspieler-Charakter
+-- @within Public
+--
+-- @usage
+-- API.NpcDispose("horst")
+--
+function API.NpcDispose(_Entity)
+    local ScriptName = Logic.GetEntityName(GetID(_Entity));
+    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    if not NPC then
+        return;
+    end
+    NPC:Dispose();
+end
+DestroyNPC = API.NpcDispose;
+
+---
+-- Aktiviert einen inaktiven NPC. Wenn ein NPC bereits gesprochen hat, muss
+-- er zuvor zurückgesetzt werden.
+--
+-- <b>Alias:</b> EnableNPC
+--
+-- @param _Entity [string|number] Nichtspieler-Charakter
+-- @within Public
+--
+-- @usage
+-- API.NpcActivate("horst")
+--
+function API.NpcActivate(_Entity)
+    local ScriptName = Logic.GetEntityName(GetID(_Entity));
+    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    if not NPC then
+        return;
+    end
+    NPC:Activate();
+end
+EnableNPC = API.NpcActivate;
+
+---
+-- Deaktiviert einen NPC, sodass dieser nicht angesprochen werden kann.
+--
+-- <b>Alias:</b> DisableNPC
+--
+-- @param _Entity [string|number] Nichtspieler-Charakter
+-- @within Public
+--
+-- @usage
+-- API.NpcDeactivate("horst")
+--
+function API.NpcDeactivate(_Entity)
+    local ScriptName = Logic.GetEntityName(GetID(_Entity));
+    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    if not NPC then
+        return;
+    end
+    NPC:Deactivate();
+end
+DisableNPC = API.NpcDeactivate;
+
+---
+-- Setzt einen NPC zurück, sodass er nicht mehr als angesprochen gilt.
+--
+-- <b>Alias:</b> ResetNPC
+--
+-- @param _Entity [string|number] Nichtspieler-Charakter
+-- @within Public
+--
+-- @usage
+-- API.NpcReset("horst")
+--
+function API.NpcReset(_Entity)
+    local ScriptName = Logic.GetEntityName(GetID(_Entity));
+    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    if not NPC then
+        return;
+    end
+    NPC:Reset();
+end
+ResetNPC = API.NpcReset;
+
+---
+-- Prüft, ob der NPC bereits angesprochen wurde. Wenn ein Ansprechpartner
+-- vorgegeben ist, muss dieser den NPC ansprechen.
+--
+-- <b>Alias:</b> TalkedToNPC
+--
+-- @param _Entity [string|number] Nichtspieler-Charakter
+-- @return [boolean] NPC wurde angesprochen
+-- @within Public
+--
+-- @usage
+-- API.NpcHasSpoken("horst")
+--
+function API.NpcHasSpoken(_Entity)
+    local ScriptName = Logic.GetEntityName(GetID(_Entity));
+    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    if not NPC then
+        return;
+    end
+    return NPC:HasTalkedTo();
+end
+TalkedToNPC = API.NpcHasSpoken;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleNonPlayerCharacter = {
@@ -49,37 +208,40 @@ BundleNonPlayerCharacter = {
 };
 
 ---
--- Erzeugt eine neue Instanz von NonPlayerCharacter für das Entity
--- mit dem angegebenen Skriptnamen.
+-- Erzeugt ein neues Objekt von NonPlayerCharacter und bindet es an den
+-- angegebenen Siedler. Dadurch wird der Siedler zu einem NPC, ist allerdings
+-- noch nicht aktiv.
 --
 -- <b>Alias:</b> NonPlayerCharacter:New
 --
--- @param _ScriptName Skriptname des NPC
--- @return object
+-- @param _ScriptName [string] Skriptname des NPC
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
--- @usage -- Einfachen NPC erzeugen:
+-- @usage
+-- Einen normalen NPC erzeugen:
 -- local NPC = NonPlayerCharacter:New("npc")
---              :SetDialogPartner("hero")                -- Optional
---              :SetCallback(Briefing1)                  -- Optional
---              :Activate();
+--     :SetDialogPartner("hero")                -- Optional
+--     :SetCallback(Briefing1)                  -- Optional
+--     :Activate();
 --
--- -- Folgenden NPC erzeugen:
+-- -- Einen NPC erzeugen, der deim Spieler folgt:
 -- local NPC = NonPlayerCharacter:New("npc")
---              :SetDialogPartner("hero")                -- Optional
---              :SetFollowTarget("hero")
---              :SetFollowDestination("destination")     -- Optional
---              :SetFollowAction(NotArrivedFunction)     -- Optional
---              :SetCallback(Briefing1)                  -- Optional
---              :Activate();
+--     :SetDialogPartner("hero")                -- Optional
+--     :SetFollowTarget("hero")
+--     :SetFollowDestination("destination")     -- Optional
+--     :SetFollowAction(NotArrivedFunction)     -- Optional
+--     :SetCallback(Briefing1)                  -- Optional
+--     :Activate();
 --
 -- -- Führenden NPC erzeugen:
 -- local NPC = NonPlayerCharacter:New("npc")
---              :SetDialogPartner("hero")                -- Optional
---              :SetPrecedeParams("destination", "hero")
---              :SetPrecedeAction(NotArrivedFunction)    -- Optional
---              :SetCallback(Briefing1)                  -- Optional
---              :Activate();
+--     :SetDialogPartner("hero")                -- Optional
+--     :SetPrecedeParams("destination", "hero")
+--     :SetPrecedeAction(NotArrivedFunction)    -- Optional
+--     :SetCallback(Briefing1)                  -- Optional
+--     :Activate();
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
     assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
@@ -94,15 +256,16 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
 end
 
 ---
--- Gibt die Inztanz des NPC mit dem angegebenen Skriptnamen zurück.
--- Handelt es sich um einen Soldaten, wird versucht die Instanz
--- über den Leader zu ermitteln.
+-- Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.
+-- 
+-- Wurde noch kein NPC für diesen Skriptnamen erzeugt, wird nil zurückgegeben.
 --
 -- <b>Alias:</b> NonPlayerCharacter:GetInstance
 --
 -- @param _ScriptName Skriptname des NPC
 -- @return object
 -- @within NonPlayerCharacter
+-- @local
 -- @usage -- NPC ermitteln
 -- local NPC = NonPlayerCharacter:GetInstance("horst");
 -- -- Etwas mit dem NPC tun
@@ -128,6 +291,7 @@ end
 --
 -- @return number
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId()
     assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
@@ -142,6 +306,7 @@ end
 --
 -- @return number
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId()
     assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
@@ -156,6 +321,7 @@ end
 --
 -- @return number
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -175,6 +341,7 @@ end
 -- <b>Alias:</b> NonPlayerCharacter:Dispose
 --
 -- @within NonPlayerCharacter
+-- @local
 --
 -- @usage -- NPC löschen
 -- NPC:Dispose();
@@ -193,6 +360,7 @@ end
 --
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 -- @usage -- NPC aktivieren:
 -- NPC:Activate();
 --
@@ -212,6 +380,7 @@ end
 --
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 -- @usage -- NPC deaktivieren:
 -- NPC:Deactivate();
 --
@@ -231,6 +400,7 @@ end
 --
 -- @return boolean
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -244,6 +414,7 @@ end
 --
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -264,6 +435,7 @@ end
 --
 -- @return boolean
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -281,6 +453,7 @@ end
 -- @param _HeroName     Skriptname des Helden
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner(_HeroName)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -297,6 +470,7 @@ end
 -- @param _Callback     Callback
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback(_Callback)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -314,6 +488,7 @@ end
 -- @param _ScriptName     Skriptname des Ziel
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowDestination(_ScriptName)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -330,6 +505,7 @@ end
 -- @param _ScriptName     Skriptname des Helden
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowTarget(_ScriptName)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -347,6 +523,7 @@ end
 -- @param _Function     Action
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowAction(_Function)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -363,6 +540,7 @@ end
 -- @param _Target         Striptname des Helden
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetPrecedeParams(_ScriptName, _Target)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -381,6 +559,7 @@ end
 -- @param _Function     Action
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetPrecedeAction(_Function)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -396,6 +575,7 @@ end
 -- @param _Callback     Callback
 -- @return Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
+-- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback(_Callback)
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
@@ -411,9 +591,11 @@ end
 ---
 -- Der Held muss einen Nichtspielercharakter ansprechen.
 --
--- @param _NpcName  Skriptname des NPC
--- @param _HeroName Skriptname des Helden (optional)
--- @return Table mit Behavior
+-- Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
+-- aktiviert wurde.
+--
+-- @param _NpcName  [string] Skriptname des NPC
+-- @param _HeroName [string] Skriptname des Helden (optional)
 -- @within Behavior
 --
 function Goal_NPC(...)
@@ -458,9 +640,11 @@ Core:RegisterBehavior(b_Goal_NPC);
 ---
 -- Startet den Quest, sobald der NPC angesprochen wurde.
 --
--- @param _NpcName  Skriptname des NPC
--- @param _HeroName Skriptname des Helden (optional)
--- @return Table mit Behavior
+-- Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
+-- erzeugt wurde.
+--
+-- @param _NpcName  [string] Skriptname des NPC
+-- @param _HeroName [string] Skriptname des Helden (optional)
 -- @within Behavior
 --
 function Trigger_NPC(...)
