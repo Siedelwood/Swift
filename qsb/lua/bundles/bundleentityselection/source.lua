@@ -5,8 +5,7 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle implementiert verschiedene Selektionsmodi. Es gibt keine
--- öffentlichen Funktionen. Das Bundle arbeitet autonom ohne zutun.
+-- Mit diesem Bundle kann die Selektion von Entities gesteuert werden.
 --
 -- @module BundleEntitySelection
 -- @set sort=true
@@ -21,8 +20,11 @@ QSB = QSB or {};
 
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param _Flag Deaktiviert
+-- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
 -- @within Public
+--
+-- @usage
+-- API.DisableRefillTrebuchet(true);
 -- 
 function API.DisableRefillTrebuchet(_Flag)
     if not GUI then
@@ -35,8 +37,11 @@ end
 
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Dieben.
--- @param _Flag Deaktiviert
+-- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
 -- @within Public
+--
+-- @usage
+-- API.DisableThiefRelease(false);
 -- 
 function API.DisableThiefRelease(_Flag)
     if not GUI then
@@ -48,8 +53,11 @@ end
 
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.
--- @param _Flag Deaktiviert
+-- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
 -- @within Public
+--
+-- @usage
+-- API.DisableSiegeEngineRelease(true);
 -- 
 function API.DisableSiegeEngineRelease(_Flag)
     if not GUI then
@@ -61,8 +69,11 @@ end
 
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Soldaten.
--- @param _Flag Deaktiviert
+-- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
 -- @within Public
+--
+-- @usage
+-- API.DisableMilitaryRelease(false);
 -- 
 function API.DisableMilitaryRelease(_Flag)
     if not GUI then
@@ -74,17 +85,23 @@ end
 
 ---
 -- Prüpft ob das Entity selektiert ist.
--- @param _Entity Skriptname oder EntityID
+-- 
+-- @param _Entity [string|number] Entity das selektiert sein soll
+-- @return [boolean] Entity ist selektiert
 -- @within Public
+--
+-- @usage
+-- if API.IsEntityInSelection("hakim") then
+--     -- Do something
+-- end
 -- 
 function API.IsEntityInSelection(_Entity)
-    if not GUI then
-        API.Dbg("API.IsEntityInSelection: Can not be used in global script!");
-        return;
-    end
     if IsExisting(_Entity) then
         local EntityID = GetID(_Entity);
-        local SelectedEntities = {GUI.GetSelectedEntities()};
+        local SelectedEntities = BundleEntitySelection.Global.Data.SelectedEntities;
+        if GUI then
+            SelectedEntities = {GUI.GetSelectedEntities()};
+        end
         for i= 1, #SelectedEntities, 1 do
             if SelectedEntities[i] == EntityID then
                 return true;
@@ -94,6 +111,45 @@ function API.IsEntityInSelection(_Entity)
     return false;
 end
 IsEntitySelected = API.IsEntityInSelection;
+
+---
+-- Gibt die ID des selektierten Entity zurück.
+--
+-- Wenn mehr als ein Entity selektiert sind, wird das erste Entity
+-- zurückgegeben. Sind keine Entities selektiert, wird 0 zurückgegeben.
+-- 
+-- @return [number] ID des selektierten Entities
+-- @within Public
+--
+-- @usage
+-- local SelectedEntity = API.GetSelectedEntity();
+-- 
+function API.GetSelectedEntity()
+    local SelectedEntity = BundleEntitySelection.Global.Data.SelectedEntities[1];
+    if GUI then
+        SelectedEntity = GUI.GetSelectedEntity();
+    end
+    return SelectedEntity or 0;
+end
+GetSelectedEntity = API.GetSelectedEntity;
+
+---
+-- Gibt alle selektierten Entities zurück.
+-- 
+-- @return [table] ID des selektierten Entities
+-- @within Public
+--
+-- @usage
+-- local Selection = API.GetSelectedEntities();
+-- 
+function API.GetSelectedEntities()
+    local SelectedEntities = BundleEntitySelection.Global.Data.SelectedEntities;
+    if GUI then
+        SelectedEntities = {GUI.GetSelectedEntities()};
+    end
+    return SelectedEntities;
+end
+GetSelectedEntities = API.GetSelectedEntities;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -105,6 +161,7 @@ BundleEntitySelection = {
             RefillTrebuchet = true,
             AmmunitionUnderway = {},
             TrebuchetIDToCart = {},
+            SelectedEntities = {};
         },
     },
     Local = {
@@ -198,7 +255,6 @@ BundleEntitySelection = {
 -- @local
 --
 function BundleEntitySelection.Global:Install()
-
 end
 
 ---
@@ -415,6 +471,10 @@ function BundleEntitySelection.Local.OnSelectionCanged(_Source)
     local PlayerID = GUI.GetPlayerID();
     local EntityID = GUI.GetSelectedEntity();
     local EntityType = Logic.GetEntityType(EntityID);
+
+    -- Schreibe die selektierten Entities ins globale Skript
+    local SelectedEntitiesString = API.ConvertTableToString(SelectedEntities);
+    API.Bridge("BundleEntitySelection.Global.Data.SelectedEntities = " ..SelectedEntitiesString);
 
     if EntityID ~= nil then
         if EntityType == Entities.U_SiegeEngineCart then
