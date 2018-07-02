@@ -500,7 +500,7 @@ Core:RegisterBundle("BundleEntityHealth");
 --
 -- @param _Entity     Entity
 -- @param _Percentage Prozentwert
--- @return Table mit Behavior
+-- 
 -- @within Reprisal
 --
 function Reprisal_SetHealth(...)
@@ -556,7 +556,7 @@ Core:RegisterBehavior(b_Reprisal_SetHealth);
 --
 -- @param _Entity     Entity
 -- @param _Percentage Prozentwert
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_SetHealth(...)
@@ -594,7 +594,7 @@ Core:RegisterBehavior(b_Reward_SetHealth);
 --
 -- @param _Entity Entity, das überwacht wird
 -- @param _Amount Menge in Prozent
--- @return Table mit Behavior
+-- 
 -- @within Trigger
 --
 function Trigger_EntityHealth(...)

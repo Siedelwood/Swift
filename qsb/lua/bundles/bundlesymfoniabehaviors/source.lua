@@ -33,7 +33,7 @@ QSB = QSB or {};
 -- @param _Target     Skriptname des Ziels
 -- @param _Distance   Entfernung
 -- @param _UseMarker  Ziel markieren
--- @return Table mit Behavior
+-- 
 -- @within Goal
 --
 function Goal_MoveToPosition(...)
@@ -86,7 +86,7 @@ Core:RegisterBehavior(b_Goal_MoveToPosition);
 -- Der Spieler muss einen bestimmten Quest abschließen.
 --
 -- @param _QuestName Name des Quest
--- @return Table mit Behavior
+-- 
 -- @within Goal
 --
 function Goal_WinQuest(...)
@@ -150,7 +150,7 @@ Core:RegisterBehavior(b_Goal_WinQuest);
 --
 -- @param _Amount       Menge an Gold
 -- @param _ShowProgress Fortschritt ausgeben
--- @return Table mit Behavior
+-- 
 -- @within Goal
 --
 function Goal_StealGold(...)
@@ -270,7 +270,7 @@ Core:RegisterBehavior(b_Goal_StealGold)
 -- ein Dieb entsandt werden kann.
 --
 -- @param _ScriptName Skriptname des Gebäudes
--- @return Table mit Behavior
+-- 
 -- @within Goal
 --
 function Goal_StealBuilding(...)
@@ -409,7 +409,7 @@ Core:RegisterBehavior(b_Goal_StealBuilding)
 --
 -- @param _ScriptName  Skriptname des Gebäudes
 -- @param _DeleteThief Dieb nach Abschluss löschen
--- @return Table mit Behavior
+-- 
 -- @within Goal
 --
 function Goal_SpyBuilding(...)
@@ -528,7 +528,7 @@ Core:RegisterBehavior(b_Goal_SpyBuilding);
 -- @param _ScriptName  Name des Kriegsgerät
 -- @param _Relation    Mengenrelation
 -- @param _Amount      Menge an Munition
--- @return Table mit Behavior
+-- 
 -- @within Goal
 --
 function Goal_AmmunitionAmount(...)
@@ -604,7 +604,7 @@ Core:RegisterBehavior(b_Goal_AmmunitionAmount)
 -- @param _Target     Skriptname des Ziels
 -- @param _LookAt     Gegenüberstellen
 -- @param _Distance   Relative Entfernung (nur mit _LookAt)
--- @return Table mit Behavior
+-- 
 -- @within Reprisal
 --
 function Reprisal_SetPosition(...)
@@ -696,7 +696,7 @@ Core:RegisterBehavior(b_Reprisal_SetPosition);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _NewOwner   PlayerID des Eigentümers
--- @return Table mit Behavior
+-- 
 -- @within Reprisal
 --
 function Reprisal_ChangePlayer(...)
@@ -762,7 +762,7 @@ Core:RegisterBehavior(b_Reprisal_ChangePlayer);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Visible    Sichtbarkeit an/aus
--- @return Table mit Behavior
+-- 
 -- @within Reprisal
 --
 function Reprisal_SetVisible(...)
@@ -855,7 +855,7 @@ Core:RegisterBehavior(b_Reprisal_SetVisible);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Vulnerable Verwundbarkeit an/aus
--- @return Table mit Behavior
+-- 
 -- @within Reprisal
 --
 function Reprisal_SetVulnerability(...)
@@ -959,7 +959,7 @@ Core:RegisterBehavior(b_Reprisal_SetVulnerability);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Model      Neues Model
--- @return Table mit Behavior
+-- 
 -- @within Reprisal
 --
 function Reprisal_SetModel(...)
@@ -1041,7 +1041,7 @@ Core:RegisterBehavior(b_Reprisal_SetModel);
 -- @param _Target     Skriptname des Ziels
 -- @param _LookAt     Gegenüberstellen
 -- @param _Distance   Relative Entfernung (nur mit _LookAt)
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_SetPosition(...)
@@ -1067,7 +1067,7 @@ Core:RegisterBehavior(b_Reward_SetPosition);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _NewOwner   PlayerID des Eigentümers
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_ChangePlayer(...)
@@ -1100,7 +1100,7 @@ Core:RegisterBehavior(b_Reward_ChangePlayer);
 -- @param _Destination Skriptname des Ziels
 -- @param _Distance    Entfernung
 -- @param _Angle       Winkel
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_MoveToPosition(...)
@@ -1182,7 +1182,7 @@ Core:RegisterBehavior(b_Reward_MoveToPosition);
 --
 -- Es ist nicht möglich weiterzuspielen!
 --
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_VictoryWithParty()
@@ -1261,7 +1261,7 @@ Core:RegisterBehavior(b_Reward_VictoryWithParty)
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Visible    Sichtbarkeit an/aus
--- @return Table mit Behavior
+-- 
 -- @within Reprisal
 --
 function Reward_SetVisible(...)
@@ -1287,7 +1287,7 @@ Core:RegisterBehavior(b_Reward_SetVisible);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Controlled Durch KI kontrollieren an/aus
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_AI_SetEntityControlled(...)
@@ -1362,7 +1362,7 @@ Core:RegisterBehavior(b_Reward_AI_SetEntityControlled);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Vulnerable Verwundbarkeit an/aus
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_SetVulnerability(...)
@@ -1392,7 +1392,7 @@ Core:RegisterBehavior(b_Reward_SetVulnerability);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Model      Neues Model
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_SetModel(...)
@@ -1417,7 +1417,7 @@ Core:RegisterBehavior(b_Reward_SetModel);
 -- Füllt die Munition in der Kriegsmaschine vollständig auf.
 --
 -- @param _ScriptName Skriptname des Entity
--- @return Table mit Behavior
+-- 
 -- @within Reward
 --
 function Reward_RefillAmmunition(...)
@@ -1483,7 +1483,7 @@ Core:RegisterBehavior(b_Reward_RefillAmmunition)
 -- @param _Quest3      Name des 3. Quest
 -- @param _Quest4      Name des 4. Quest
 -- @param _Quest5      Name des 5. Quest
--- @return Table mit Behavior
+-- 
 -- @within Trigger
 --
 function Trigger_OnAtLeastXOfYQuestsFailed(...)
@@ -1581,7 +1581,7 @@ Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsFailed)
 -- Startet den Quest, sobald die Munition in der Kriegsmaschine erschöpft ist.
 --
 -- @param _ScriptName Skriptname des Entity
--- @return Table mit Behavior
+-- 
 -- @within Trigger
 --
 function Trigger_AmmunitionDepleted(...)
@@ -1639,7 +1639,7 @@ Core:RegisterBehavior(b_Trigger_AmmunitionDepleted)
 --
 -- @param _QuestName1 Name des ersten Quest
 -- @param _QuestName2 Name des zweiten Quest
--- @return Table mit Behavior
+-- 
 -- @within Trigger
 --
 function Trigger_OnExactOneQuestIsWon(...)
@@ -1708,7 +1708,7 @@ Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsWon);
 --
 -- @param _QuestName1 Name des ersten Quest
 -- @param _QuestName2 Name des zweiten Quest
--- @return Table mit Behavior
+-- 
 -- @within Trigger
 --
 function Trigger_OnExactOneQuestIsLost(...)
