@@ -5,8 +5,13 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Mit diesem Bundle kommen einige Funktionen für das lokale Skript hinzu, die
--- es ermöglichen, verschiedene Dialoge oder ein Textfenster anzuzeigen.
+-- Mit diesem Bundle können Dialogfenster ernstellt werden. Über Dialogfenster
+-- kann der Spieler informiert werden. Er kann aber auch aufgefordert werden
+-- eine Antwort auf eine Frage zu geben.
+--
+-- Zudem bietet das Bundle ein Textfenster an, welches eine nicht limitierte
+-- Menge an Text anzeigen kann. Erreicht der Text eine entsprechende Menge,
+-- wird automatisch eine Scrollbar eingeblendet.
 --
 -- @module BundleDialogWindows
 -- @set sort=true
@@ -23,10 +28,13 @@ QSB = QSB or {};
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- @param _Title  Titel des Dialog
--- @param _Text   Text des Dialog
--- @param _Action Callback-Funktion
+-- @param _Title  [string] Titel des Dialog
+-- @param _Text   [string] Text des Dialog
+-- @param _Action [function] Callback-Funktion
 -- @within Public
+--
+-- @usage
+-- API.OpenDialog("Wichtige Information", "Diese Information ist Spielentscheidend!");
 --
 function API.OpenDialog(_Title, _Text, _Action)
     if not GUI then
@@ -52,10 +60,10 @@ end
 -- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
 -- Entscheidung getroffen hat.
 --
--- @param _Title    Titel des Dialog
--- @param _Text     Text des Dialog
--- @param _Action   Callback-Funktion
--- @param _OkCancel Okay/Abbrechen statt Ja/Nein
+-- @param _Title    [string] Titel des Dialog
+-- @param _Text     [string] Text des Dialog
+-- @param _Action   [function] Callback-Funktion
+-- @param _OkCancel [boolean] Okay/Abbrechen statt Ja/Nein
 -- @within Public
 --
 -- @usage
@@ -87,10 +95,10 @@ end
 -- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
 -- aus. Anschließend erhält das Callback den Index der selektierten Option.
 --
--- @param _Title  Titel des Dialog
--- @param _Text   Text des Dialog
--- @param _Action Callback-Funktion
--- @param _List   Liste der Optionen
+-- @param _Title  [string] Titel des Dialog
+-- @param _Text   [string] Text des Dialog
+-- @param _Action [function] Callback-Funktion
+-- @param _List   [table] Liste der Optionen
 -- @within Public
 --
 -- @usage
@@ -115,6 +123,45 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
     end
     _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
+end
+
+---
+-- Öffnet ein einfaches Textfenster mit dem angegebenen Text.
+--
+-- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
+-- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
+--
+-- @param _Caption [string] Titel des Fensters
+-- @param _Content [string] Inhalt des Fensters
+-- @within Public
+--
+-- @usage
+-- local Text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
+--              "sed diam nonumy eirmod tempor invidunt ut labore et dolore"..
+--              "magna aliquyam erat, sed diam voluptua. At vero eos et"..
+--              " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
+--              " gubergren, no sea takimata sanctus est Lorem ipsum dolor"..
+--              " sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"..
+--              " elitr, sed diam nonumy eirmod tempor invidunt ut labore et"..
+--              " dolore magna aliquyam erat, sed diam voluptua. At vero eos"..
+--              " et accusam et justo duo dolores et ea rebum. Stet clita"..
+--              " kasd gubergren, no sea takimata sanctus est Lorem ipsum"..
+--              " dolor sit amet.";
+-- API.OpenTextWindow("Überschrift", Text);
+--
+function API.OpenTextWindow(_Caption, _Content)
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Caption) == "table" then
+       _Caption = _Caption[lang];
+    end
+    if type(_Content) == "table" then
+       _Content = _Content[lang];
+    end
+    if not GUI then
+        API.Bridge("API.OpenTextWindow('" .._Caption.. "', '" .._Content.. "')");
+        return;
+    end
+    BundleDialogWindows.Local.TextWindow:New(_Caption, _Content);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -191,7 +238,7 @@ end
 ---
 -- Führt das Callback eines Ja-Nein-Dialogs aus.
 --
--- @param _yes Gegebene Antwort
+-- @param _yes [boolean] Gegebene Antwort
 -- @within Private
 -- @local
 --
@@ -238,8 +285,8 @@ end
 ---
 -- Fügt der Dialogwarteschlange einen neuen Dialog hinten an.
 --
--- @param _Methode Dialogfunktion als String
--- @param _Args    Argumente als Table
+-- @param _Methode [string] Dialogfunktion als String
+-- @param _Args    [table] Argumente als Table
 -- @within Private
 -- @local
 --
@@ -252,9 +299,9 @@ end
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- @param _Title  Titel des Dialog
--- @param _Text   Text des Dialog
--- @param _Action Callback-Funktion
+-- @param _Title  [string] Titel des Dialog
+-- @param _Text   [string] Text des Dialog
+-- @param _Action [function] Callback-Funktion
 -- @within Private
 -- @local
 --
@@ -312,10 +359,10 @@ end
 -- Öffnet einen Ja-Nein-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- @param _Title    Titel des Dialog
--- @param _Text     Text des Dialog
--- @param _Action   Callback-Funktion
--- @param _OkCancel Okay/Abbrechen statt Ja/Nein
+-- @param _Title    [string] Titel des Dialog
+-- @param _Text     [string] Text des Dialog
+-- @param _Action   [function] Callback-Funktion
+-- @param _OkCancel [boolean] Okay/Abbrechen statt Ja/Nein
 -- @within Private
 -- @local
 --
@@ -360,10 +407,10 @@ end
 -- Öffnet einen Auswahldialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- @param _Title  Titel des Dialog
--- @param _Text   Text des Dialog
--- @param _Action Callback-Funktion
--- @param _List   Liste der Optionen
+-- @param _Title  [string] Titel des Dialog
+-- @param _Text   [string] Text des Dialog
+-- @param _Action [function] Callback-Funktion
+-- @param _List   [table] Liste der Optionen
 -- @within Private
 -- @local
 --
@@ -485,9 +532,10 @@ end
 -- </tr>
 -- </table>
 --
--- @param ... Parameterliste
--- @return TextWindow: Konfiguriertes Fenster
+-- @param ... [mixed..] Parameterliste
+-- @return [table] Instanz des konfigurierten Fensters
 -- @within TextWindow
+-- @local
 --
 -- @usage
 -- local MyWindow = TextWindow:New("Fenster", "Das ist ein Text");
@@ -510,10 +558,11 @@ end
 --
 -- <b>Alias</b>: TextWindow:AddParamater
 --
--- @param _Key   Schlüssel
--- @param _Value Wert
+-- @param _Key   [string] Schlüssel
+-- @param _Value [mixed] Wert
 -- @return self
 -- @within TextWindow
+-- @local
 --
 -- @usage
 -- MyWindow:AddParameter("Name", "Horst");
@@ -530,9 +579,10 @@ end
 --
 -- <b>Alias</b>: TextWindow:SetCaption
 --
--- @param _Text Titel des Textfenster
+-- @param _Text [string] Titel des Textfenster
 -- @return self
 -- @within TextWindow
+-- @local
 --
 -- @usage
 -- MyWindow:SetCaption("Das ist der Titel");
@@ -553,9 +603,10 @@ end
 --
 -- <b>Alias</b>: TextWindow:SetContent
 --
--- @param _Text Inhalt des Textfenster
+-- @param _Text [string] Inhalt des Textfenster
 -- @return self
 -- @within TextWindow
+-- @local
 --
 -- @usage
 -- MyWindow:SetCaption("Das ist der Text. Er ist sehr informativ!");
@@ -577,9 +628,10 @@ end
 --
 -- <b>Alias</b>: TextWindow:SetAction
 --
--- @param _Function Close Callback
+-- @param _Function [function] Close Callback
 -- @return self
 -- @within TextWindow
+-- @local
 --
 -- @usage
 -- local MyAction = function(_Window)
@@ -602,10 +654,11 @@ end
 --
 -- <b>Alias</b>: TextWindow:SetButton
 --
--- @param _Text     Beschriftung des Buttons
--- @param _Callback Aktion des Buttons
+-- @param _Text     [string] Beschriftung des Buttons
+-- @param _Callback [function] Aktion des Buttons
 -- @return self
 -- @within TextWindow
+-- @local
 --
 -- @usage
 -- local MyButtonAction = function(_Window)
@@ -614,7 +667,7 @@ end
 -- MyWindow:SetAction("Button Text", MyButtonAction);
 --
 function BundleDialogWindows.Local.TextWindow:SetButton(_Text, _Callback)
-    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");    
+    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
     if _Text then
         local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         if type(_Text) == "table" then
@@ -634,6 +687,7 @@ end
 -- <b>Alias</b>: TextWindow:Show
 --
 -- @within TextWindow
+-- @local
 --
 -- @usage
 -- MyWindow:Show();
@@ -677,7 +731,7 @@ end
 ---
 -- Initialisiert das TextWindow, bevor es angezeigt wird.
 --
--- @within Private
+-- @within TextWindow
 -- @local
 --
 function BundleDialogWindows.Local.TextWindow:Prepare()
