@@ -92,7 +92,7 @@ SymfoniaLoader = {
             },
         },
 
-        ExamplesLoadOrder = {
+        ManualsLoadOrder = {
             {"bockwurst",                           false},
         },
     }
@@ -183,11 +183,11 @@ function SymfoniaLoader:ConcatSources()
     local fh = io.open("qsb/config.ld", "wt");
     assert(fh, "Output file can not be created!");
     fh:write("project = 'Symfonia'\n");
-    fh:write("kind_names = {script = 'Skripte', topic = 'Anleitungen', module = 'Bibliotheken'}\n");
+    fh:write("kind_names = {script = 'Skripte', topic = 'Hilfsfunktionen', module = 'Bibliotheken'}\n");
 
     local ActiveBundles = "file = {\n'./lua/core.lua',\n";
 
-    for k, v in pairs(self.Data.ExamplesLoadOrder) do
+    for k, v in pairs(self.Data.ManualsLoadOrder) do
         if v[2] then
             ActiveBundles = ActiveBundles.. "'./lua/manual/" ..v[1]:lower().. ".lua',\n";
         end

@@ -4,7 +4,7 @@
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
----
+--
 -- Die Hauptaufgabe des Framework ist es, Funktionen zur Installation und der
 -- Verwaltung der einzelnen Bundles bereitzustellen. Bundles sind in sich
 -- geschlossene Module, die wenig bis gar keine Abhänigkeiten haben. Damit
@@ -36,8 +36,12 @@
 -- der er einfach arbeiten kann. Kenntnis über die komplexen Prozesse hinter
 -- den Kulissen sind dafür nicht notwendig.
 --
+
+---
+-- Hier werden wichtige Basisfunktionen bereitgestellt. Diese Funktionen sind
+-- immer Bestandteil der QSB, egal welche Bundles gewält werden.
 -- @script SymfoniaCore
--- @set sort=true
+-- @set sort=false
 --
 
 API = API or {};
@@ -81,17 +85,18 @@ end
 -- Tables --------------------------------------------------------------------
 
 ---
--- Kopiert eine komplette Table und gibt die Kopie zurück. Wenn ein Ziel
--- angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
+-- Kopiert eine komplette Table und gibt die Kopie zurück. Tables können
+-- nicht durch Zuweisungen kopiert werden. Verwende diese Funktion. Wenn ein
+-- Ziel angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
 -- angegebenen Tables.
 -- Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
 -- Funktion kann benutzt werden, um Klassen zu instanzieren.
 --
 -- <b>Alias:</b> CopyTableRecursive
 --
--- @param _Source    Quelltabelle
--- @param _Dest      Zieltabelle
--- @return Kopie der Tabelle
+-- @param _Source    [table] Quelltabelle
+-- @param _Dest      [table] (optional) Zieltabelle
+-- @return [table] Kopie der Tabelle
 -- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- Copy = API.InstanceTable(Table)
@@ -122,9 +127,9 @@ CopyTableRecursive = API.InstanceTable;
 --
 -- <b>Alias:</b> Inside
 --
--- @param _Data     Datum, das gesucht wird
--- @param _Table    Tabelle, die durchquert wird
--- @return booelan: Wert gefunden
+-- @param _Data  [mixed] Datum, das gesucht wird
+-- @param _Table [table] Tabelle, die durchquert wird
+-- @return [booelan] Wert gefunden
 -- @within Public
 -- @usage Table = {1, 2, 3, {a = true}}
 -- local Found = API.TraverseTable(3, Table)
@@ -143,9 +148,10 @@ Inside = API.TraverseTable;
 -- Schreibt ein genaues Abbild der Table ins Log. Funktionen, Threads und
 -- Metatables werden als Adresse geschrieben.
 --
--- @param _Table Tabelle, die gedumpt wird
--- @param _Name Optionaler Name im Log
+-- @param _Table [table] Tabelle, die gedumpt wird
+-- @param _Name  [name] Optionaler Name im Log
 -- @within Public
+-- @local
 -- @usage Table = {1, 2, 3, {a = true}}
 -- API.DumpTable(Table)
 --
@@ -174,9 +180,10 @@ end
 -- einen String. Die Funktion ist rekursiv, d.h. es werden auch alle
 -- Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
 -- String ist, wird als Adresse geschrieben.
--- @param _Table Table zum konvertieren
--- @return string: Converted table
+-- @param _Table [table] Table zum konvertieren
+-- @return [string] Converted table
 -- @within Public
+-- @local
 --
 function API.ConvertTableToString(_Table)
     assert(type(_Table) == "table");
@@ -213,8 +220,8 @@ end
 --
 -- <b>Alias:</b> GetQuestID
 --
--- @param _Name     Identifier des Quest
--- @return number: ID des Quest
+-- @param _Name [string] Name des Quest
+-- @return [number] ID des Quest
 -- @within Public
 --
 function API.GetQuestID(_Name)
@@ -237,8 +244,8 @@ GetQuestID = API.GetQuestID;
 --
 -- <b>Alias:</b> IsValidQuest
 --
--- @param _QuestID   ID oder Name des Quest
--- @return boolean: Quest existiert
+-- @param _QuestID [number] ID oder Name des Quest
+-- @return [boolean] Quest existiert
 -- @within Public
 --
 function API.IsValidateQuest(_QuestID)
@@ -253,8 +260,9 @@ IsValidQuest = API.IsValidateQuest;
 --
 -- <b>Alias:</b> FailQuestsByName
 --
--- @param ...  Liste mit Quests
+-- @param ...  [string..] Liste mit Quests
 -- @within Public
+-- @local
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
@@ -270,8 +278,8 @@ FailQuestsByName = API.FailAllQuests;
 --
 -- <b>Alias:</b> FailQuestByName
 --
--- @param _QuestName  Name des Quest
--- @param _Quiet      Keine Meldung anzeigen
+-- @param _QuestName  [string] Name des Quest
+-- @param _Quiet      [boolean] Keine Meldung anzeigen
 -- @within Public
 --
 function API.FailQuest(_QuestName, _Quiet)
@@ -291,8 +299,9 @@ FailQuestByName = API.FailQuest;
 --
 -- <b>Alias:</b> StartQuestsByName
 --
--- @param ...  Liste mit Quests
+-- @param ...  [string..] Liste mit Quests
 -- @within Public
+-- @local
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
@@ -314,8 +323,8 @@ RestartQuestsByName = API.RestartAllQuests;
 --
 -- <b>Alias:</b> RestartQuestByName
 --
--- @param _QuestName  Name des Quest
--- @param _Quiet      Keine Meldung anzeigen
+-- @param _QuestName  [string] Name des Quest
+-- @param _Quiet      [boolean] Keine Meldung anzeigen
 -- @within Public
 --
 function API.RestartQuest(_QuestName, _Quiet)
@@ -325,7 +334,7 @@ function API.RestartQuest(_QuestName, _Quiet)
         if not _Quiet then
             API.Info("restart quest " .._QuestName);
         end
-        
+
         if Quest.Objectives then
             local questObjectives = Quest.Objectives;
             for i = 1, questObjectives[0] do
@@ -394,8 +403,9 @@ RestartQuestByName = API.RestartQuest;
 --
 -- <b>Alias:</b> StartQuestsByName
 --
--- @param ...  Liste mit Quests
+-- @param ...  [string..] Liste mit Quests
 -- @within Public
+-- @local
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
@@ -411,8 +421,8 @@ StartQuestsByName = API.StartAllQuests;
 --
 -- <b>Alias:</b> StartQuestByName
 --
--- @param _QuestName  Name des Quest
--- @param _Quiet      Keine Meldung anzeigen
+-- @param _QuestName  [string] Name des Quest
+-- @param _Quiet      [boolean] Keine Meldung anzeigen
 -- @within Public
 --
 function API.StartQuest(_QuestName, _Quiet)
@@ -433,8 +443,9 @@ StartQuestByName = API.StartQuest;
 --
 -- <b>Alias:</b> StopQuestsByName
 --
--- @param ...  Liste mit Quests
+-- @param ...  [string..] Liste mit Quests
 -- @within Public
+-- @local
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
@@ -451,8 +462,8 @@ StopQuestwByName = API.StopAllQuests;
 --
 -- <b>Alias:</b> StopQuestByName
 --
--- @param _QuestName  Name des Quest
--- @param _Quiet      Keine Meldung anzeigen
+-- @param _QuestName  [string] Name des Quest
+-- @param _Quiet      [boolean] Keine Meldung anzeigen
 -- @within Public
 --
 function API.StopQuest(_QuestName, _Quiet)
@@ -474,8 +485,9 @@ StopQuestByName = API.StopQuest;
 --
 -- <b>Alias:</b> WinQuestsByName
 --
--- @param ...  Liste mit Quests
+-- @param ...  [string..] Liste mit Quests
 -- @within Public
+-- @local
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
@@ -491,8 +503,8 @@ WinQuestsByName = API.WinAllQuests;
 --
 -- <b>Alias:</b> WinQuestByName
 --
--- @param _QuestName  Name des Quest
--- @param _Quiet      Keine Meldung anzeigen
+-- @param _QuestName  [string] Name des Quest
+-- @param _Quiet      [boolean] Keine Meldung anzeigen
 -- @within Public
 --
 function API.WinQuest(_QuestName, _Quiet)
@@ -515,8 +527,9 @@ WinQuestByName = API.WinQuest;
 --
 -- <b>Alias:</b> GUI_Note
 --
--- @param _Message Anzeigetext
+-- @param _Message [string] Anzeigetext
 -- @within Public
+-- @local
 --
 function API.Note(_Message)
     _Message = API.EnsureMessage(_Message);
@@ -532,7 +545,7 @@ GUI_Note = API.Note;
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
--- @param _Message Anzeigetext
+-- @param _Message [string] Anzeigetext
 -- @within Public
 --
 function API.StaticNote(_Message)
@@ -562,8 +575,9 @@ end
 -- globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
 -- Spiels die Nachricht gesendet wurde.
 --
--- @param _Message Nachricht für's Log
+-- @param _Message [string] Nachricht für's Log
 -- @within Public
+-- @local
 --
 function API.Log(_Message)
     local Env  = (GUI and "Local") or "Global";
@@ -574,7 +588,7 @@ end
 ---
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
--- @param _Message Anzeigetext
+-- @param _Message [string] Anzeigetext
 -- @within Public
 --
 function API.Message(_Message)
@@ -591,8 +605,9 @@ end
 --
 -- <b>Alias:</b> dbg
 --
--- @param _Message Anzeigetext
+-- @param _Message [string] Anzeigetext
 -- @within Public
+-- @local
 --
 function API.Dbg(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.DEBUG then
@@ -606,9 +621,10 @@ dbg = API.Dbg;
 -- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
 -- übergeben wird.
 --
--- @param _Message Anzeigetext
+-- @param _Message [string] Anzeigetext
 -- @return string: Message
 -- @within Public
+-- @local
 --
 function API.EnsureMessage(_Message)
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -623,8 +639,9 @@ end
 --
 -- <p><b>Alias:</b> warn</p>
 --
--- @param _Message Anzeigetext
+-- @param _Message [string] Anzeigetext
 -- @within Public
+-- @local
 --
 function API.Warn(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
@@ -639,8 +656,9 @@ warn = API.Warn;
 --
 -- <b>Alias:</b> info
 --
--- @param _Message Anzeigetext
+-- @param _Message [string] Anzeigetext
 -- @within Public
+-- @local
 --
 function API.Info(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
@@ -715,8 +733,9 @@ QSB.Log.CurrentLevel = QSB.Log.Level.DEBUG;
 -- </tr>
 -- </table>
 --
--- @param _Level Level
+-- @param _Level [number] Level
 -- @within Public
+-- @local
 --
 function API.SetLogLevel(_Level)
     assert(type(_Level) == "number");
@@ -731,12 +750,12 @@ end
 --
 -- <b>Alias:</b> SendCart
 --
--- @param _position            Position
--- @param _player              Zielspieler
--- @param _good                Warentyp
--- @param _amount              Warenmenge
--- @param _cartOverlay         (optional) Overlay für Goldkarren
--- @param _ignoreReservation   (optional) Marktplatzreservation ignorieren
+-- @param _position            [string|number] Position
+-- @param _player              [number] Zielspieler
+-- @param _good                [number] Warentyp
+-- @param _amount              [number] Warenmenge
+-- @param _cartOverlay         [number] (optional) Overlay für Goldkarren
+-- @param _ignoreReservation   [boolean] (optional) Marktplatzreservation ignorieren
 -- @return number: Entity-ID des erzeugten Wagens
 -- @within Public
 -- @usage -- API-Call
@@ -782,10 +801,10 @@ SendCart = API.SendCart;
 --
 -- <b>Alias:</b> ReplaceEntity
 --
--- @param _Entity     Entity
--- @param _Type       Neuer Typ
--- @param _NewOwner   (optional) Neuer Besitzer
--- @return number: Entity-ID des Entity
+-- @param _Entity   [string|number] Entity
+-- @param _Type     [number] Neuer Typ
+-- @param _NewOwner [number] (optional) Neuer Besitzer
+-- @return [number] Entity-ID des Entity
 -- @within Public
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
@@ -812,9 +831,8 @@ ReplaceEntity = API.ReplaceEntity;
 --
 -- <b>Alias:</b> LookAt
 --
--- @param _entity           Entity
--- @param _entityToLookAt   Ziel
--- @param _offsetEntity     Winkel-Offset
+-- @param _entity           [string|number] Entity
+-- @param _entityToLookAt   [string|number] Ziel
 -- @within Public
 -- @usage API.LookAt("Hakim", "Alandra")
 --
@@ -836,8 +854,8 @@ LookAt = API.LookAt;
 ---
 -- Lässt zwei Entities sich gegenseitig anschauen.
 --
--- @param _entity           Erstes Entity
--- @param _entityToLookAt   Zweites Entity
+-- @param _entity           [string|number] Erstes Entity
+-- @param _entityToLookAt   [string|number] Zweites Entity
 -- @within Public
 -- @usage API.Confront("Hakim", "Alandra")
 --
@@ -852,9 +870,9 @@ end
 --
 -- <b>Alias:</b> GetDistance
 --
--- @param _pos1 Erste Vergleichsposition
--- @param _pos2 Zweite Vergleichsposition
--- @return number: Entfernung zwischen den Punkten
+-- @param _pos1 [string|number|table] Erste Vergleichsposition
+-- @param _pos2 [string|number|table] Zweite Vergleichsposition
+-- @return [number] Entfernung zwischen den Punkten
 -- @within Public
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
@@ -879,8 +897,8 @@ GetDistance = API.GetDistance;
 --
 -- <b>Alias:</b> IsValidPosition
 --
--- @param _pos Positionstable
--- @return boolean: Position ist valide
+-- @param _pos [table] Positionstable {X= x, Y= y}
+-- @return [boolean] Position ist valide
 -- @within Public
 --
 function API.ValidatePosition(_pos)
@@ -903,8 +921,8 @@ IsValidPosition = API.ValidatePosition;
 --
 -- <b>Alias:</b> GetPosition
 --
--- @param _Entity   Entity, dessen Position bestimmt wird.
--- @return table: Positionstabelle {X= x, Y= y, Z= z}
+-- @param _Entity [string|number] Entity, dessen Position bestimmt wird.
+-- @return [table] Positionstabelle {X= x, Y= y, Z= z}
 -- @within Public
 -- @usage local Position = API.LocateEntity("Hans")
 --
@@ -929,8 +947,8 @@ GetPosition = API.LocateEntity;
 --
 -- <b>Alias:</b> InteractiveObjectActivate
 --
--- @param _ScriptName  Skriptname des IO
--- @param _State       Aktivierungszustand
+-- @param _ScriptName  [string] Skriptname des IO
+-- @param _State       [number] Aktivierungszustand
 -- @within Public
 -- @usage API.ActivateIO("Haus1", 0)
 -- API.ActivateIO("Hut1")
@@ -957,7 +975,7 @@ InteractiveObjectActivate = API.ActivateIO;
 --
 -- <b>Alias:</b> InteractiveObjectDeactivate
 --
--- @param _ScriptName Skriptname des IO
+-- @param _ScriptName [string] Skriptname des IO
 -- @within Public
 -- @usage API.DeactivateIO("Hut1")
 --
@@ -982,9 +1000,9 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 --
 -- <b>Alias:</b> GetEntitiesOfCategoryInTerritory
 --
--- @param _player    PlayerID [0-8] oder -1 für alle
--- @param _category  Kategorie, der die Entities angehören
--- @param _territory Zielterritorium
+-- @param _player    [number] PlayerID [0-8] oder -1 für alle
+-- @param _category  [number] Kategorie, der die Entities angehören
+-- @param _territory [number] Zielterritorium
 -- @within Public
 -- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
@@ -1016,8 +1034,8 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
 -- Hat das Entity einen Namen, bleibt dieser unverändert und wird
 -- zurückgegeben.
--- @param _EntityID Entity ID
--- @return string: Skriptname
+-- @param _EntityID [number] Entity ID
+-- @return [string] Skriptname
 -- @within Public
 --
 function API.EnsureScriptName(_EntityID)
@@ -1045,8 +1063,7 @@ GiveEntityName = API.EnsureScriptName;
 -- Befehl an das lokale Skript. Wird diese Funktion im lokalen Skript genutzt,
 -- wird der Befehl an das globale Skript geschickt.
 --
--- @param _Command Lua-Befehl als String
--- @param _Flag    FIXME
+-- @param _Command [string] Lua-Befehl als String
 -- @within Public
 --
 function API.Bridge(_Command, _Flag)
@@ -1065,9 +1082,10 @@ end
 --
 -- <b>Alias:</b> AcceptAlternativeBoolean
 --
--- @param _Value Wahrheitswert
--- @return boolean: Wahrheitswert
+-- @param _Value [mixed] Wahrheitswert
+-- @return [boolean] Wahrheitswert
 -- @within Public
+-- @local
 --
 -- @usage local Bool = API.ToBoolean("+")  --> Bool = true
 -- local Bool = API.ToBoolean("no") --> Bool = false
@@ -1083,7 +1101,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 --
 -- <b>Alias</b>: AddOnSaveGameLoadedAction
 --
--- @param _Function Funktion, die ausgeführt werden soll
+-- @param _Function [function] Funktion, die ausgeführt werden soll
 -- @within Public
 -- @usage SaveGame = function()
 --     API.Note("foo")
@@ -1102,10 +1120,11 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
 --
--- @param _Key         Tastenkombination
--- @param _Description Beschreibung des Hotkey
--- @return number: Index
+-- @param _Key         [string] Tastenkombination
+-- @param _Description [string] Beschreibung des Hotkey
+-- @return [number] Index
 -- @within Public
+-- @local
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
@@ -1119,8 +1138,9 @@ end
 ---
 -- Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
 --
--- @param _Index Index in Table
+-- @param _Index [number] Index in Table
 -- @within Public
+-- @local
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
