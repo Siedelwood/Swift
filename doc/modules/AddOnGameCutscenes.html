@@ -1,0 +1,469 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Private">Private</a></li>
+<li><a href="#Public">Public</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/AddOnCastleStore.html">AddOnCastleStore</a></li>
+  <li><strong>AddOnGameCutscenes</strong></li>
+  <li><a href="../modules/AddOnInteractiveObjectTemplates.html">AddOnInteractiveObjectTemplates</a></li>
+  <li><a href="../modules/AddOnQuestDebug.html">AddOnQuestDebug</a></li>
+  <li><a href="../modules/AddOnRolePlayingGame.html">AddOnRolePlayingGame</a></li>
+  <li><a href="../modules/BundleBriefingSystem.html">BundleBriefingSystem</a></li>
+  <li><a href="../modules/BundleBuildingButtons.html">BundleBuildingButtons</a></li>
+  <li><a href="../modules/BundleClassicBehaviors.html">BundleClassicBehaviors</a></li>
+  <li><a href="../modules/BundleConstructionControl.html">BundleConstructionControl</a></li>
+  <li><a href="../modules/BundleDialogWindows.html">BundleDialogWindows</a></li>
+  <li><a href="../modules/BundleEntityHealth.html">BundleEntityHealth</a></li>
+  <li><a href="../modules/BundleEntityHelperFunctions.html">BundleEntityHelperFunctions</a></li>
+  <li><a href="../modules/BundleEntityScriptingValues.html">BundleEntityScriptingValues</a></li>
+  <li><a href="../modules/BundleEntitySelection.html">BundleEntitySelection</a></li>
+  <li><a href="../modules/BundleGameHelperFunctions.html">BundleGameHelperFunctions</a></li>
+  <li><a href="../modules/BundleInteractiveObjects.html">BundleInteractiveObjects</a></li>
+  <li><a href="../modules/BundleInterfaceApperance.html">BundleInterfaceApperance</a></li>
+  <li><a href="../modules/BundleKnightTitleRequirements.html">BundleKnightTitleRequirements</a></li>
+  <li><a href="../modules/BundleMusicTools.html">BundleMusicTools</a></li>
+  <li><a href="../modules/BundleNonPlayerCharacter.html">BundleNonPlayerCharacter</a></li>
+  <li><a href="../modules/BundleQuestGeneration.html">BundleQuestGeneration</a></li>
+  <li><a href="../modules/BundleSaveGameTools.html">BundleSaveGameTools</a></li>
+  <li><a href="../modules/BundleSymfoniaBehaviors.html">BundleSymfoniaBehaviors</a></li>
+  <li><a href="../modules/BundleTradingFunctions.html">BundleTradingFunctions</a></li>
+  <li><a href="../modules/Core.html">Core</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="../topics/Das.html">Das</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>AddOnGameCutscenes</code></h1>
+<p>Dieses Bundle verwaltet den Aufruf der mit dem SCA-Tool erstellten
+ Cutscenes.</p>
+<p> Ausserdem ermöglicht es das direkte Erfassen der
+ Kamerapositionen aus der Map heraus.
+</p>
+
+
+<h2><a href="#Private">Private</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Global:EndCutsceneMaker">AddOnGameCutscenes.Global:EndCutsceneMaker ()</a></td>
+	<td class="summary">Beendet den CutsceneMaker</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Global:Install">AddOnGameCutscenes.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Global:StartCutsceneMaker">AddOnGameCutscenes.Global:StartCutsceneMaker ()</a></td>
+	<td class="summary">Startet den CutsceneMaker</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:AddToWaitList">AddOnGameCutscenes.Local:AddToWaitList (_cutscene)</a></td>
+	<td class="summary">Fügt eine Cutscene zur warteliste hinzu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:CheckWaitList">AddOnGameCutscenes.Local:CheckWaitList ()</a></td>
+	<td class="summary">Prüf, ob eine Cutscene in der Warteliste steht und führt diese gegebenenfalls aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:EndCutsceneMaker">AddOnGameCutscenes.Local:EndCutsceneMaker ()</a></td>
+	<td class="summary">Beendet den CutsceneMaker</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:Install">AddOnGameCutscenes.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:IsCutsceneActive">AddOnGameCutscenes.Local:IsCutsceneActive ()</a></td>
+	<td class="summary">Prüft, ob eine Cutscene oder ein Briefing activ ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:ShowText">AddOnGameCutscenes.Local:ShowText (_text, _title, _centered, _show, _big, _black)</a></td>
+	<td class="summary">Verwaltet die Anzeige der Texte.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:StartCutscene">AddOnGameCutscenes.Local:StartCutscene (_cutscene)</a></td>
+	<td class="summary">Bereitet die Daten für die kommende Cutscene vor und startet diese dann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:StartCutsceneMaker">AddOnGameCutscenes.Local:StartCutsceneMaker ()</a></td>
+	<td class="summary">Startet den Cutscene Maker</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:StartCutsceneOptic">AddOnGameCutscenes.Local:StartCutsceneOptic ()</a></td>
+	<td class="summary">Bereitet die UI für die Cutscene vor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:UndoCutsceneOptic">AddOnGameCutscenes.Local:UndoCutsceneOptic ()</a></td>
+	<td class="summary">Stellt die UI für das Spiel wieder her.</td>
+	</tr>
+</table>
+<h2><a href="#Public">Public</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CS.CreateCutsceneRealtime_DEV_ONLY">CS.CreateCutsceneRealtime_DEV_ONLY ()</a></td>
+	<td class="summary">Erstellen einer Echtzeit Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CS.CreateCutscene_DEV_ONLY">CS.CreateCutscene_DEV_ONLY ()</a></td>
+	<td class="summary">Erstellen einer Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CS.IsCutsceneActive">CS.IsCutsceneActive ()</a></td>
+	<td class="summary">Prüft, ob eine Cutscene aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CS.StartCutscene">CS.StartCutscene (_cutscene)</a></td>
+	<td class="summary">Startet eine Cutscene.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Private"></a>Private</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AddOnGameCutscenes.Global:EndCutsceneMaker"></a>
+    <strong>AddOnGameCutscenes.Global:EndCutsceneMaker ()</strong>
+    </dt>
+    <dd>
+    Beendet den CutsceneMaker
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Global:Install"></a>
+    <strong>AddOnGameCutscenes.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Global:StartCutsceneMaker"></a>
+    <strong>AddOnGameCutscenes.Global:StartCutsceneMaker ()</strong>
+    </dt>
+    <dd>
+    Startet den CutsceneMaker
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:AddToWaitList"></a>
+    <strong>AddOnGameCutscenes.Local:AddToWaitList (_cutscene)</strong>
+    </dt>
+    <dd>
+    Fügt eine Cutscene zur warteliste hinzu.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_cutscene</span>
+         Name der Cutscene
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:CheckWaitList"></a>
+    <strong>AddOnGameCutscenes.Local:CheckWaitList ()</strong>
+    </dt>
+    <dd>
+    Prüf, ob eine Cutscene in der Warteliste steht und führt diese gegebenenfalls aus.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:EndCutsceneMaker"></a>
+    <strong>AddOnGameCutscenes.Local:EndCutsceneMaker ()</strong>
+    </dt>
+    <dd>
+    Beendet den CutsceneMaker
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:Install"></a>
+    <strong>AddOnGameCutscenes.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:IsCutsceneActive"></a>
+    <strong>AddOnGameCutscenes.Local:IsCutsceneActive ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob eine Cutscene oder ein Briefing activ ist.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:ShowText"></a>
+    <strong>AddOnGameCutscenes.Local:ShowText (_text, _title, _centered, _show, _big, _black)</strong>
+    </dt>
+    <dd>
+    Verwaltet die Anzeige der Texte.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_text</span>
+         Text der angezeigt werden soll
+        </li>
+        <li><span class="parameter">_title</span>
+         Titel der angezeigt werden soll
+        </li>
+        <li><span class="parameter">_centered</span>
+         true wenn der Text zentriert sein soll
+        </li>
+        <li><span class="parameter">_show</span>
+         true wenn bar gezeigt werden soll
+        </li>
+        <li><span class="parameter">_big</span>
+         true wenn breiter Balken
+        </li>
+        <li><span class="parameter">_black</span>
+         true wenn Schwarz
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:StartCutscene"></a>
+    <strong>AddOnGameCutscenes.Local:StartCutscene (_cutscene)</strong>
+    </dt>
+    <dd>
+    Bereitet die Daten für die kommende Cutscene vor und startet diese dann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_cutscene</span>
+         String, name der cutscene
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:StartCutsceneMaker"></a>
+    <strong>AddOnGameCutscenes.Local:StartCutsceneMaker ()</strong>
+    </dt>
+    <dd>
+    Startet den Cutscene Maker
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:StartCutsceneOptic"></a>
+    <strong>AddOnGameCutscenes.Local:StartCutsceneOptic ()</strong>
+    </dt>
+    <dd>
+    Bereitet die UI für die Cutscene vor.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnGameCutscenes.Local:UndoCutsceneOptic"></a>
+    <strong>AddOnGameCutscenes.Local:UndoCutsceneOptic ()</strong>
+    </dt>
+    <dd>
+    Stellt die UI für das Spiel wieder her.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Public"></a>Public</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CS.CreateCutsceneRealtime_DEV_ONLY"></a>
+    <strong>CS.CreateCutsceneRealtime_DEV_ONLY ()</strong>
+    </dt>
+    <dd>
+    Erstellen einer Echtzeit Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CS.CreateCutscene_DEV_ONLY"></a>
+    <strong>CS.CreateCutscene_DEV_ONLY ()</strong>
+    </dt>
+    <dd>
+    Erstellen einer Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CS.IsCutsceneActive"></a>
+    <strong>CS.IsCutsceneActive ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob eine Cutscene aktiv ist.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CS.StartCutscene"></a>
+    <strong>CS.StartCutscene (_cutscene)</strong>
+    </dt>
+    <dd>
+    Startet eine Cutscene.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_cutscene</span>
+          Name der Cutscene
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Cutscene gestartet
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-07-02 13:01:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
