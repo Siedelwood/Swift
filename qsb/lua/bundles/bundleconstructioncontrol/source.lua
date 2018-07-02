@@ -6,10 +6,10 @@
 
 ---
 -- Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
--- Gebäude oder ein Typ nicht gebaut bzw. nicht abgerissen werden darf.
+-- Gebäude nicht gebaut bzw. nicht abgerissen werden darf.
 --
 -- @module BundleConstructionControl
--- @set sort=true
+-- @set sort=false
 --
 
 API = API or {};
@@ -22,7 +22,7 @@ QSB = QSB or {};
 ---
 -- Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbares Entity
+-- @param _entry [string] Nicht abreißbares Entity
 -- @within Public
 --
 function API.AddEntity(_entity)
@@ -40,7 +40,7 @@ end
 ---
 -- Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbarer Typ
+-- @param _entry [number] Nicht abreißbarer Typ
 -- @within Public
 --
 function API.AddEntityType(_entity)
@@ -58,7 +58,7 @@ end
 ---
 -- Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbare Kategorie
+-- @param _entry [number] Nicht abreißbare Kategorie
 -- @within Public
 --
 function API.AddCategory(_entity)
@@ -76,7 +76,7 @@ end
 ---
 -- Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
 --
--- @param _entry Geschütztes Territorium
+-- @param _entry [number] Geschütztes Territorium
 -- @within Public
 --
 function API.AddTerritory(_entity)
@@ -94,7 +94,7 @@ end
 ---
 -- Entfernt ein Entity, dass nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbares Entity
+-- @param _entry [string] Nicht abreißbares Entity
 -- @within Public
 --
 function API.RemoveEntity(_entry)
@@ -115,7 +115,7 @@ end
 ---
 -- Entfernt einen Entitytyp, der nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbarer Typ
+-- @param _entry [number] Nicht abreißbarer Typ
 -- @within Public
 --
 function API.RemoveEntityType(_entry)
@@ -136,7 +136,7 @@ end
 ---
 -- Entfernt eine Kategorie, die nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbare Kategorie
+-- @param _entry [number] Nicht abreißbare Kategorie
 -- @within Public
 --
 function API.RemoveCategory(_entry)
@@ -157,7 +157,7 @@ end
 ---
 -- Entfernt ein Territory, auf dem nichts abgerissen werden kann.
 --
--- @param _entry Geschütztes Territorium
+-- @param _entry [number] Geschütztes Territorium
 -- @within Public
 --
 function API.RemoveTerritory(_entry)
@@ -178,8 +178,8 @@ end
 ---
 -- Untersagt den Bau des Typs im Territorium.
 --
--- @param _type      Entitytyp
--- @param _territory Territorium
+-- @param _type      [number] Entitytyp
+-- @param _territory [number] Territorium
 -- @within Public
 --
 function API.BanTypeAtTerritory(_type, _territory)
@@ -201,8 +201,8 @@ end
 ---
 -- Untersagt den Bau der Kategorie im Territorium.
 --
--- @param _eCat      Entitykategorie
--- @param _territory Territorium
+-- @param _eCat      [number] Entitykategorie
+-- @param _territory [number] Territorium
 -- @within Public
 --
 function API.BanCategoryAtTerritory(_eCat, _territory)
@@ -224,9 +224,9 @@ end
 ---
 -- Untersagt den Bau des Typs im Gebiet.
 --
--- @param _type   Entitytyp
--- @param _center Gebietszentrum
--- @param _area   Gebietsgröße
+-- @param _type   [number] Entitytyp
+-- @param _center [string] Gebietszentrum
+-- @param _area   [number] Gebietsgröße
 -- @within Public
 --
 function API.BanTypeInArea(_type, _center, _area)
@@ -245,9 +245,9 @@ end
 ---
 -- Untersagt den Bau der Kategorie im Gebiet.
 --
--- @param _eCat   Entitykategorie
--- @param _center Gebietszentrum
--- @param _area   Gebietsgröße
+-- @param _eCat   [number] Entitytyp
+-- @param _center [string] Gebietszentrum
+-- @param _area   [number] Gebietsgröße
 -- @within Public
 --
 function API.BanCategoryInArea(_eCat, _center, _area)
@@ -266,8 +266,8 @@ end
 ---
 -- Gibt einen Typ zum Bau im Territorium wieder frei.
 --
--- @param _type      Entitytyp
--- @param _territory Territorium
+-- @param _type      [number] Entitytyp
+-- @param _territory [number] Territorium
 -- @within Public
 --
 function API.UnBanTypeAtTerritory(_type, _territory)
@@ -294,8 +294,8 @@ end
 ---
 -- Gibt eine Kategorie zum Bau im Territorium wieder frei.
 --
--- @param _ecat      Entitykategorie
--- @param _territory Territorium
+-- @param _ecat      [number] Entitykategorie
+-- @param _territory [number] Territorium
 -- @within Public
 --
 function API.UnBanCategoryAtTerritory(_eCat, _territory)
@@ -322,8 +322,8 @@ end
 ---
 -- Gibt einen Typ zum Bau im Gebiet wieder frei.
 --
--- @param _type   Entitytyp
--- @param _center Gebiet
+-- @param _type   [number] Entitytyp
+-- @param _center [string] Gebiet
 -- @within Public
 --
 function API.UnBanTypeInArea (_type, _center)
@@ -347,8 +347,8 @@ end
 ---
 -- Gibt eine Kategorie zum Bau im Gebiet wieder frei.
 --
--- @param _eCat   Entitykategorie
--- @param _center Gebiet
+-- @param _eCat   [number] Entitykategorie
+-- @param _center [string] Gebiet
 -- @within Public
 --
 function API.UnBanCategoryInArea(_eCat, _center)
