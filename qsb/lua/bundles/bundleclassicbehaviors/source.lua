@@ -35,7 +35,7 @@ QSB.DestroyedSoldiers = QSB.DestroyedSoldiers or {};
 -- Ein Interaktives Objekt muss benutzt werden.
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
--- 
+--
 -- @within Goal
 --
 function Goal_ActivateObject(...)
@@ -76,15 +76,14 @@ Core:RegisterBehavior(b_Goal_ActivateObject);
 --
 -- In der Regel wird zum Auftraggeber gesendet. Es ist aber möglich auch zu
 -- einem anderen Zielspieler schicken zu lassen. Wird ein Wagen gefangen
--- genommen, dann muss erneut geschickt werden. Optional kann auch gesagt
--- werden, dass keine erneute Forderung erfolgt, wenn der Karren von einem
--- Feind abgefangen wird.
+-- genommen, dann muss erneut geschickt werden. Optional kann dem Spieler
+-- auch erlaubt werden, den Karren zurückzuerobern.
 --
 -- @param _GoodType      Typ der Ware
 -- @param _GoodAmount    Menga der Ware
 -- @param _OtherTarget   Anderes Ziel als Auftraggeber
--- @param _IgnoreCapture Bei Gefangennahme nicht erneut schicken
--- 
+-- @param _IgnoreCapture Wagen kann zurückerobert werden
+--
 -- @within Goal
 --
 function Goal_Deliver(...)
@@ -179,19 +178,9 @@ Core:RegisterBehavior(b_Goal_Deliver);
 -- Es muss ein bestimmter Diplomatiestatus zu einer anderen Datei erreicht
 -- werden.
 --
--- Dabei muss, je nach angegebener Relation entweder wenigstens oder auch
--- minbdestens erreicht werden.
---
--- Muss z.B. mindestens der Status Handelspartner erreicht werden (mit der
--- Relation >=), so ist der Quest auch dann erfüllt, wenn der Spieler
---  Verbündeter wird.
---
--- Im Gegenzug, bei der Relation <=, wäre der Quest erfüllt, sobald der
--- Spieler Handelspartner oder einen niedrigeren Status erreicht.
---
 -- @param _PlayerID Partei, die Entdeckt werden muss
 -- @param _State    Diplomatiestatus
--- 
+--
 -- @within Goal
 --
 function Goal_Diplomacy(...)
@@ -237,7 +226,7 @@ Core:RegisterBehavior(b_Goal_Diplomacy);
 -- zu entdeckenden Partei befinden.
 --
 -- @param _PlayerID ID der zu entdeckenden Partei
--- 
+--
 -- @within Goal
 --
 function Goal_DiscoverPlayer(...)
@@ -291,7 +280,7 @@ Core:RegisterBehavior(b_Goal_DiscoverPlayer);
 -- Ein Territorium muss erstmalig vom Auftragnehmer betreten werden.
 --
 -- @param _Territory Name oder ID des Territorium
--- 
+--
 -- @within Goal
 --
 function Goal_DiscoverTerritory(...)
@@ -338,7 +327,7 @@ Core:RegisterBehavior(b_Goal_DiscoverTerritory);
 -- zerstört wurde. <b>Achtung:</b> Funktioniert nicht bei Banditen!
 --
 -- @param _PlayerID ID des Spielers
--- 
+--
 -- @within Goal
 --
 function Goal_DestroyPlayer(...)
@@ -397,7 +386,7 @@ Core:RegisterBehavior(b_Goal_DestroyPlayer)
 -- stehlen. <b>Achtung:</b> Das ist nur bei Feinden möglich!
 --
 -- @param _PlayerID ID der Partei
--- 
+--
 -- @within Goal
 --
 function Goal_StealInformation(...)
@@ -447,7 +436,7 @@ Core:RegisterBehavior(b_Goal_StealInformation);
 -- Alle Einheiten des Spielers müssen zerstört werden.
 --
 -- @param _PlayerID ID des Spielers
--- 
+--
 -- @within Goal
 --
 function Goal_DestroyAllPlayerUnits(...)
@@ -502,7 +491,7 @@ Core:RegisterBehavior(b_Goal_DestroyAllPlayerUnits);
 -- Ein benanntes Entity muss zerstört werden.
 --
 -- @param _ScriptName Skriptname des Ziels
--- 
+--
 -- @within Goal
 --
 function Goal_DestroyScriptEntity(...)
@@ -570,7 +559,7 @@ Core:RegisterBehavior(b_Goal_DestroyScriptEntity);
 -- @param _EntityType Typ des Entity
 -- @param _Amount     Menge an Entities des Typs
 -- @param _PlayerID   Besitzer des Entity
--- 
+--
 -- @within Goal
 --
 function Goal_DestroyType(...)
@@ -669,7 +658,7 @@ end
 -- @param _PlayerA Angreifende Partei
 -- @param _PlayerB Zielpartei
 -- @param _Amount Menga an Soldaten
--- 
+--
 -- @within Goal
 --
 function Goal_DestroySoldiers(...)
@@ -758,7 +747,7 @@ Core:RegisterBehavior(b_Goal_DestroySoldiers)
 -- @param _ScriptName2  Zweites Entity
 -- @param _Relation     Relation
 -- @param _Distance     Entfernung
--- 
+--
 -- @within Goal
 --
 function Goal_EntityDistance(...)
@@ -839,7 +828,7 @@ Core:RegisterBehavior(b_Goal_EntityDistance);
 --
 -- @param _PlayerID   PlayerID des Helden
 -- @param _ScriptName Skriptname des Ziels
--- 
+--
 -- @within Goal
 --
 function Goal_KnightDistance(...)
@@ -884,7 +873,7 @@ Core:RegisterBehavior(b_Goal_KnightDistance);
 -- @param _Category   Kategorie der Einheiten
 -- @param _Relation   Mengenrelation (< oder >=)
 -- @param _Amount     Menge an Einheiten
--- 
+--
 -- @within Goal
 --
 function Goal_UnitsOnTerritory(...)
@@ -1006,7 +995,7 @@ Core:RegisterBehavior(b_Goal_UnitsOnTerritory);
 --
 -- @param _PlayerID Spieler, der den Buff aktivieren muss
 -- @param _Buff     Buff, der aktiviert werden soll
--- 
+--
 -- @within Goal
 --
 function Goal_ActivateBuff(...)
@@ -1152,7 +1141,7 @@ Core:RegisterBehavior(b_Goal_ActivateBuff);
 -- @param _Position1 Erster Endpunkt der Straße
 -- @param _Position2 Zweiter Endpunkt der Straße
 -- @param _OnlyRoads Keine Wege akzeptieren
--- 
+--
 -- @within Goal
 --
 function Goal_BuildRoad(...)
@@ -1221,7 +1210,7 @@ Core:RegisterBehavior(b_Goal_BuildRoad);
 -- @param _PlayerID  PlayerID, die blockiert wird
 -- @param _Position1 Erste Position
 -- @param _Position2 Zweite Position
--- 
+--
 -- @within Goal
 --
 function Goal_BuildWall(...)
@@ -1313,7 +1302,7 @@ Core:RegisterBehavior(b_Goal_BuildWall);
 -- Ein bestimmtes Territorium muss vom Auftragnehmer eingenommen werden.
 --
 -- @param _Territory Territorium-ID oder Territoriumname
--- 
+--
 -- @within Goal
 --
 function Goal_Claim(...)
@@ -1358,7 +1347,7 @@ Core:RegisterBehavior(b_Goal_Claim);
 -- Das Heimatterritorium des Spielers wird mitgezählt!
 --
 -- @param _Amount Anzahl Territorien
--- 
+--
 -- @within Goal
 --
 function Goal_ClaimXTerritories(...)
@@ -1400,7 +1389,7 @@ Core:RegisterBehavior(b_Goal_ClaimXTerritories);
 -- @param _Type      Typ des Entity
 -- @param _Amount    Menge an Entities
 -- @param _Territory Territorium
--- 
+--
 -- @within Goal
 --
 function Goal_Create(...)
@@ -1450,7 +1439,7 @@ Core:RegisterBehavior(b_Goal_Create);
 --
 -- @param _Type   Typ des Rohstoffs
 -- @param _Amount Menge an Rohstoffen
--- 
+--
 -- @within Goal
 --
 function Goal_Produce(...)
@@ -1496,7 +1485,7 @@ Core:RegisterBehavior(b_Goal_Produce);
 -- @param _Type     Typ der Ware
 -- @param _Amount   Menge an Waren
 -- @param _Relation Mengenrelation
--- 
+--
 -- @within Goal
 --
 function Goal_GoodAmount(...)
@@ -1567,7 +1556,7 @@ Core:RegisterBehavior(b_Goal_GoodAmount);
 --
 -- @param _PlayerID ID des Spielers
 -- @param _Need     Bedürfnis
--- 
+--
 -- @within Goal
 --
 function Goal_SatisfyNeed(...)
@@ -1626,7 +1615,7 @@ Core:RegisterBehavior(b_Goal_SatisfyNeed);
 -- Der Auftragnehmer muss eine Menge an Siedlern in der Stadt haben.
 --
 -- @param _Amount Menge an Siedlern
--- 
+--
 -- @within Goal
 --
 function Goal_SettlersNumber(...)
@@ -1666,7 +1655,7 @@ Core:RegisterBehavior(b_Goal_SettlersNumber);
 -- Der Auftragnehmer muss eine Menge von Ehefrauen in der Stadt haben.
 --
 -- @param _Amount Menge an Ehefrauen
--- 
+--
 -- @within Goal
 --
 function Goal_Spouses(...)
@@ -1714,7 +1703,7 @@ Core:RegisterBehavior(b_Goal_Spouses);
 -- @param _PlayerID ID des Spielers
 -- @param _Relation Mengenrelation
 -- @param _Amount   Menge an Soldaten
--- 
+--
 -- @within Goal
 --
 function Goal_SoldierCount(...)
@@ -1815,7 +1804,7 @@ Core:RegisterBehavior(b_Goal_SoldierCount);
 -- Der Auftragnehmer muss wenigstens einen bestimmten Titel erreichen.
 --
 -- @param _Title Titel, der erreicht werden muss
--- 
+--
 -- @within Goal
 --
 function Goal_KnightTitle(...)
@@ -1860,7 +1849,7 @@ Core:RegisterBehavior(b_Goal_KnightTitle);
 --
 -- @param _PlayerID ID des Spielers
 -- @param _Amount   Menge an Festen
--- 
+--
 -- @within Goal
 --
 function Goal_Festivals(...)
@@ -1961,7 +1950,7 @@ Core:RegisterBehavior(b_Goal_Festivals)
 -- Der Auftragnehmer muss eine Einheit gefangen nehmen.
 --
 -- @param _ScriptName Ziel
--- 
+--
 -- @within Goal
 --
 function Goal_Capture(...)
@@ -2022,7 +2011,7 @@ Core:RegisterBehavior(b_Goal_Capture);
 -- @param _Typ      Typ, der gefangen werden soll
 -- @param _Amount   Menge an Einheiten
 -- @param _PlayerID Besitzer der Einheiten
--- 
+--
 -- @within Goal
 --
 function Goal_CaptureType(...)
@@ -2099,11 +2088,11 @@ Core:RegisterBehavior(b_Goal_CaptureType);
 ---
 -- Der Auftragnehmer muss das angegebene Entity beschützen.
 --
--- Gefangennahme (bzw. Besitzerwechsel) oder Zerstörung des Entity werden als
--- Fehlschlag gewertet.
+-- Wird der Wagen zerstört oder in das Lagerhaus / die Burg eines Feindes
+-- gebracht, schlägt das Ziel fehl.
 --
 -- @param _ScriptName
--- 
+--
 -- @within Goal
 --
 function Goal_Protect(...)
@@ -2114,7 +2103,7 @@ b_Goal_Protect = {
     Name = "Goal_Protect",
     Description = {
         en = "Goal: Protect an entity (entity needs a script name",
-        de = "Ziel: Beschuetze eine Entität (Entität benötigt einen Skriptnamen)",
+        de = "Ziel: Beschütze eine Entität (Entität benötigt einen Skriptnamen)",
     },
     Parameter = {
         { ParameterType.ScriptName, en = "Script name", de = "Skriptname" },
@@ -2181,7 +2170,7 @@ Core:RegisterBehavior(b_Goal_Protect);
 -- <b>Achtung:</b> Ausschließlich im Reich des Ostens verfügbar!
 --
 -- @param _ScriptName Skriptname der Mine
--- 
+--
 -- @within Goal
 --
 function Goal_Refill(...)
@@ -2230,7 +2219,7 @@ Core:RegisterBehavior(b_Goal_Refill);
 -- @param _ScriptName Skriptname der Mine
 -- @param _Relation   Mengenrelation
 -- @param _Amount     Menge an Rohstoffen
--- 
+--
 -- @within Goal
 --
 function Goal_ResourceAmount(...)
@@ -2291,7 +2280,7 @@ function b_Goal_ResourceAmount:DEBUG(_Quest)
         if _Quest.IsGenerated then
             dbg("".._Quest.Identifier.." "..self.Name..": entity '" ..self.ScriptName.. "' does not exist!");
             return true;
-        else 
+        else
             warn("".._Quest.Identifier.." "..self.Name..": entity '" ..self.ScriptName.. "' does not exist!");
         end
     elseif tonumber(self.Amount) == nil or self.Amount < 0 then
@@ -2308,7 +2297,7 @@ Core:RegisterBehavior(b_Goal_ResourceAmount);
 ---
 -- Der Quest schlägt sofort fehl.
 --
--- 
+--
 -- @within Goal
 --
 function Goal_InstantFailure()
@@ -2334,7 +2323,7 @@ Core:RegisterBehavior(b_Goal_InstantFailure);
 ---
 -- Der Quest wird sofort erfüllt.
 --
--- 
+--
 -- @within Goal
 --
 function Goal_InstantSuccess()
@@ -2360,7 +2349,7 @@ Core:RegisterBehavior(b_Goal_InstantSuccess);
 ---
 -- Der Zustand des Quests ändert sich niemals
 --
--- 
+--
 -- @within Goal
 --
 function Goal_NoChange()
@@ -2394,7 +2383,7 @@ Core:RegisterBehavior(b_Goal_NoChange);
 -- </ul>
 --
 -- @param _FunctionName Name der Funktion
--- 
+--
 -- @within Goal
 --
 function Goal_MapScriptFunction(...)
@@ -2456,7 +2445,7 @@ Core:RegisterBehavior(b_Goal_MapScriptFunction);
 -- @param _Name     Name der Variable
 -- @param _Relation Vergleichsoperator
 -- @param _Value    Wert oder andere Custom Variable mit wert.
--- 
+--
 -- @within Goal
 --
 function Goal_CustomVariables(...)
@@ -2558,7 +2547,7 @@ Core:RegisterBehavior(b_Goal_CustomVariables)
 -- @param _Message   Nachricht bei Falscheingabe
 -- @param _Passwords Liste der Passwörter
 -- @param _Trials    Anzahl versuche (-1 für unendlich)
--- 
+--
 -- @within Goal
 --
 function Goal_InputDialog(...)
@@ -2739,7 +2728,7 @@ Core:RegisterBehavior(b_Goal_InputDialog);
 -- @param _Title  Fenstertitel
 -- @param _Text   Fenstertext
 -- @param _Labels Label der Buttons
--- 
+--
 -- @within Goal
 --
 function Goal_Decide(...)
@@ -2833,7 +2822,7 @@ Core:RegisterBehavior(b_Goal_Decide);
 -- @param _SuccessMsg Erfolgsnachricht
 -- @param _FailureMsg Fehlschlagnachricht
 -- @param _Restart    Nach nichtbezahlen neu starten
--- 
+--
 -- @within Goal
 --
 function Goal_TributeDiplomacy(...)
@@ -2982,7 +2971,7 @@ Core:RegisterBehavior(b_Goal_TributeDiplomacy)
 -- @param _HowOften   Anzahl an Zahlungen (0 = endlos)
 -- @param _OtherOwner Eroberung durch Dritte beendet Quest
 -- @param _Abort      Nach nichtbezahlen abbrechen
--- 
+--
 -- @within Goal
 --
 function Goal_TributeClaim(...)
@@ -3201,7 +3190,7 @@ Core:RegisterBehavior(b_Goal_TributeClaim)
 -- Deaktiviert ein interaktives Objekt
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_ObjectDeactivate(...)
@@ -3263,7 +3252,7 @@ Core:RegisterBehavior(b_Reprisal_ObjectDeactivate);
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
 -- @param _State Status des Objektes
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_ObjectActivate(...)
@@ -3329,7 +3318,7 @@ Core:RegisterBehavior(b_Reprisal_ObjectActivate);
 -- Der diplomatische Status zwischen Sender und Empfänger verschlechtert sich
 -- um eine Stufe.
 --
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_DiplomacyDecrease()
@@ -3373,7 +3362,7 @@ Core:RegisterBehavior(b_Reprisal_DiplomacyDecrease);
 -- @param _Party1   ID der ersten Partei
 -- @param _Party2   ID der zweiten Partei
 -- @param _State    Neuer Diplomatiestatus
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_Diplomacy(...)
@@ -3433,7 +3422,7 @@ Core:RegisterBehavior(b_Reprisal_Diplomacy);
 -- Ein benanntes Entity wird zerstört.
 --
 -- @param _ScriptName Skriptname des Entity
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_DestroyEntity(...)
@@ -3481,7 +3470,7 @@ Core:RegisterBehavior(b_Reprisal_DestroyEntity);
 -- Zerstört einen über die QSB erzeugten Effekt.
 --
 -- @param _EffectName Name des Effekts
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_DestroyEffect(...)
@@ -3530,7 +3519,7 @@ Core:RegisterBehavior(b_Reprisal_DestroyEffect);
 ---
 -- Der Spieler verliert das Spiel.
 --
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_Defeat()
@@ -3558,7 +3547,7 @@ Core:RegisterBehavior(b_Reprisal_Defeat);
 --
 -- Es handelt sich dabei um reine Optik! Der Spieler wird nicht verlieren.
 --
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_FakeDefeat()
@@ -3589,7 +3578,7 @@ Core:RegisterBehavior(b_Reprisal_FakeDefeat);
 -- @param _Entity Skriptname oder ID des Entity
 -- @param _Type   Neuer Typ des Entity
 -- @param _Owner  Besitzer des Entity
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_ReplaceEntity(...)
@@ -3679,7 +3668,7 @@ Core:RegisterBehavior(b_Reprisal_ReplaceEntity);
 -- Startet einen Quest neu.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_QuestRestart(...)
@@ -3727,7 +3716,7 @@ Core:RegisterBehavior(b_Reprisal_QuestRestart);
 -- Lässt einen Quest fehlschlagen.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_QuestFailure(...)
@@ -3775,7 +3764,7 @@ Core:RegisterBehavior(b_Reprisal_QuestFailure);
 -- Wertet einen Quest als erfolgreich.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_QuestSuccess(...)
@@ -3823,7 +3812,7 @@ Core:RegisterBehavior(b_Reprisal_QuestSuccess);
 -- Triggert einen Quest.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_QuestActivate(...)
@@ -3873,7 +3862,7 @@ Core:RegisterBehavior(b_Reprisal_QuestActivate)
 -- Unterbricht einen Quest.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_QuestInterrupt(...)
@@ -3929,7 +3918,7 @@ Core:RegisterBehavior(b_Reprisal_QuestInterrupt);
 --
 -- @param _QuestName   Name des Quest
 -- @param _EndetQuests Bereits beendete unterbrechen
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_QuestForceInterrupt(...)
@@ -4001,7 +3990,7 @@ Core:RegisterBehavior(b_Reprisal_QuestForceInterrupt);
 -- Führt eine Funktion im Skript als Reprisal aus.
 --
 -- @param _FunctionName Name der Funktion
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_MapScriptFunction(...)
@@ -4063,7 +4052,7 @@ Core:RegisterBehavior(b_Reprisal_MapScriptFunction);
 -- @param _Name     Name der Variable
 -- @param _Operator Rechen- oder Zuweisungsoperator
 -- @param _Value    Wert oder andere Custom Variable
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_CustomVariables(...)
@@ -4145,7 +4134,7 @@ Core:RegisterBehavior(b_Reprisal_CustomVariables)
 -- @param _PlayerID   ID des Spielers
 -- @param _Lock       Sperren/Entsperren
 -- @param _Technology Name der Technologie
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_Technology(...)
@@ -4228,7 +4217,7 @@ Core:RegisterBehavior(b_Reprisal_Technology);
 -- Deaktiviert ein interaktives Objekt
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
--- 
+--
 -- @within Reward
 --
 function Reward_ObjectDeactivate(...)
@@ -4260,7 +4249,7 @@ Core:RegisterBehavior(b_Reward_ObjectDeactivate);
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
 -- @param _State Status des Objektes
--- 
+--
 -- @within Reward
 --
 function Reward_ObjectActivate(...)
@@ -4298,7 +4287,7 @@ Core:RegisterBehavior(b_Reward_ObjectActivate);
 -- @param _CType2     Typ der 2. Ware
 -- @param _CAmount2   Menge der 2. Ware
 -- @param _Status     Aktivierung (0: Held, 1: immer, 2: niemals)
--- 
+--
 -- @within Reward
 --
 function Reward_ObjectInit(...)
@@ -4498,7 +4487,7 @@ Core:RegisterBehavior(b_Reward_ObjectInit);
 -- @param _CostGoldType         Wagen für Goldkosten
 -- @param _RewResourceType      Wagen für Rohstofflieferung
 -- @param _RewGoldType          Wagen für Goldlieferung
--- 
+--
 -- @within Reward
 --
 function Reward_ObjectSetCarts(...)
@@ -4595,7 +4584,7 @@ Core:RegisterBehavior(b_Reward_ObjectSetCarts);
 -- @param _Party1   ID der ersten Partei
 -- @param _Party2   ID der zweiten Partei
 -- @param _State    Neuer Diplomatiestatus
--- 
+--
 -- @within Reward
 --
 function Reward_Diplomacy(...)
@@ -4620,7 +4609,7 @@ Core:RegisterBehavior(b_Reward_Diplomacy);
 -- Verbessert die diplomatischen Beziehungen zwischen Sender und Empfänger
 -- um einen Grad.
 --
--- 
+--
 -- @within Reward
 --
 function Reward_DiplomacyIncrease()
@@ -4674,7 +4663,7 @@ Core:RegisterBehavior(b_Reward_DiplomacyIncrease);
 -- @param _Type3    Ware oder Typ des 3. Angebot
 -- @param _Amount4  Menge des 4. Angebot
 -- @param _Type4    Ware oder Typ des 4. Angebot
--- 
+--
 -- @within Reward
 --
 function Reward_TradeOffers(...)
@@ -4829,7 +4818,7 @@ Core:RegisterBehavior(b_Reward_TradeOffers)
 -- Ein benanntes Entity wird zerstört.
 --
 -- @param _ScriptName Skriptname des Entity
--- 
+--
 -- @within Reward
 --
 function Reward_DestroyEntity(...)
@@ -4854,7 +4843,7 @@ Core:RegisterBehavior(b_Reward_DestroyEntity);
 -- Zerstört einen über die QSB erzeugten Effekt.
 --
 -- @param _EffectName Name des Effekts
--- 
+--
 -- @within Reward
 --
 function Reward_DestroyEffect(...)
@@ -4887,7 +4876,7 @@ Core:RegisterBehavior(b_Reward_DestroyEffect);
 -- @param _Orientation Ausrichtung in °
 -- @param _Soldiers    Anzahl an Soldaten
 -- @param _HideFromAI  Vor KI verstecken
--- 
+--
 -- @within Reward
 --
 function Reward_CreateBattalion(...)
@@ -4998,7 +4987,7 @@ Core:RegisterBehavior(b_Reward_CreateBattalion);
 -- @param _Orientation Ausrichtung in °
 -- @param _Soldiers    Anzahl an Soldaten
 -- @param _HideFromAI  Vor KI verstecken
--- 
+--
 -- @within Reward
 --
 function Reward_CreateSeveralBattalions(...)
@@ -5116,7 +5105,7 @@ Core:RegisterBehavior(b_Reward_CreateSeveralBattalions);
 -- @param _PlayerID    PlayerID des Effekt
 -- @param _Location    Position des Effekt
 -- @param _Orientation Ausrichtung in °
--- 
+--
 -- @within Reward
 --
 function Reward_CreateEffect(...)
@@ -5216,7 +5205,7 @@ Core:RegisterBehavior(b_Reward_CreateEffect);
 -- @param _TypeName    Einzigartiger Effektname
 -- @param _Orientation Ausrichtung in °
 -- @param _HideFromAI  Vor KI verstecken
--- 
+--
 -- @within Reward
 --
 function Reward_CreateEntity(...)
@@ -5336,7 +5325,7 @@ Core:RegisterBehavior(b_Reward_CreateEntity);
 -- @param _TypeName    Einzigartiger Effektname
 -- @param _Orientation Ausrichtung in °
 -- @param _HideFromAI  Vor KI verstecken
--- 
+--
 -- @within Reward
 --
 function Reward_CreateSeveralEntities(...)
@@ -5457,7 +5446,7 @@ Core:RegisterBehavior(b_Reward_CreateSeveralEntities);
 --
 -- @param _Settler     Einheit, die bewegt wird
 -- @param _Destination Bewegungsziel
--- 
+--
 -- @within Reward
 --
 function Reward_MoveSettler(...)
@@ -5518,7 +5507,7 @@ Core:RegisterBehavior(b_Reward_MoveSettler);
 ---
 -- Der Spieler gewinnt das Spiel.
 --
--- 
+--
 -- @within Reward
 --
 function Reward_Victory()
@@ -5544,7 +5533,7 @@ Core:RegisterBehavior(b_Reward_Victory);
 ---
 -- Der Spieler verliert das Spiel.
 --
--- 
+--
 -- @within Reward
 --
 function Reward_Defeat()
@@ -5578,7 +5567,7 @@ Core:RegisterBehavior(b_Reward_Defeat);
 --
 -- Dies ist reine Optik! Der Spieler wird dadurch nicht das Spiel gewinnen.
 --
--- 
+--
 -- @within Reward
 --
 function Reward_FakeVictory()
@@ -5621,7 +5610,7 @@ Core:RegisterBehavior(b_Reward_FakeVictory);
 -- @param _Ammo       Anzahl Munitionswagen
 -- @param _Type       Typ der Soldaten
 -- @param _Reuse      Freie Truppen wiederverwenden
--- 
+--
 -- @within Reward
 --
 function Reward_AI_SpawnAndAttackTerritory(...)
@@ -5780,7 +5769,7 @@ Core:RegisterBehavior(b_Reward_AI_SpawnAndAttackTerritory);
 -- @param _Bow        Anzahl Bogenschützen (Battalione)
 -- @param _Soldier    Typ der Soldaten
 -- @param _Reuse      Freie Truppen wiederverwenden
--- 
+--
 -- @within Reward
 --
 function Reward_AI_SpawnAndAttackArea(...)
@@ -5908,7 +5897,7 @@ Core:RegisterBehavior(b_Reward_AI_SpawnAndAttackArea);
 -- @param _CaptureCarts Soldaten greifen Karren an
 -- @param _Type         Typ der Soldaten
 -- @param _Reuse        Freie Truppen wiederverwenden
--- 
+--
 -- @within Reward
 --
 function Reward_AI_SpawnAndProtectArea(...)
@@ -6065,7 +6054,7 @@ Core:RegisterBehavior(b_Reward_AI_SpawnAndProtectArea);
 -- @param _PlayerID PlayerID des KI
 -- @param _Fact     Konfigurationseintrag
 -- @param _Value    Neuer Wert
--- 
+--
 -- @within Reward
 --
 function Reward_AI_SetNumericalFact(...)
@@ -6186,7 +6175,7 @@ Core:RegisterBehavior(b_Reward_AI_SetNumericalFact);
 --
 -- @param _PlayerID         PlayerID des KI-Spielers
 -- @param _Aggressiveness   Aggressivitätswert (1 bis 3)
--- 
+--
 -- @within Reward
 --
 function Reward_AI_Aggressiveness(...)
@@ -6257,7 +6246,7 @@ Core:RegisterBehavior(b_Reward_AI_Aggressiveness)
 --
 -- @param _PlayerID      PlayerID des KI
 -- @param _EnemyPlayerID PlayerID des Feindes
--- 
+--
 -- @within Reward
 --
 function Reward_AI_SetEnemy(...)
@@ -6321,7 +6310,7 @@ Core:RegisterBehavior(b_Reward_AI_SetEnemy)
 -- @param _Entity Skriptname oder ID des Entity
 -- @param _Type   Neuer Typ des Entity
 -- @param _Owner  Besitzer des Entity
--- 
+--
 -- @within Reward
 --
 function Reward_ReplaceEntity(...)
@@ -6349,7 +6338,7 @@ Core:RegisterBehavior(b_Reward_ReplaceEntity);
 --
 -- @param _ScriptName Skriptname der Mine
 -- @param _Amount     Menge an Rohstoffen
--- 
+--
 -- @within Reward
 --
 function Reward_SetResourceAmount(...)
@@ -6413,7 +6402,7 @@ Core:RegisterBehavior(b_Reward_SetResourceAmount);
 --
 -- @param _Type   Rohstofftyp
 -- @param _Amount Menge an Rohstoffen
--- 
+--
 -- @within Reward
 --
 function Reward_Resources(...)
@@ -6464,7 +6453,7 @@ Core:RegisterBehavior(b_Reward_Resources);
 -- @param _OtherPlayer   Anderer Empfänger als Auftraggeber
 -- @param _NoReservation Platzreservation auf dem Markt ignorieren (Sinnvoll?)
 -- @param _Replace       Spawnpoint ersetzen
--- 
+--
 -- @within Reward
 --
 function Reward_SendCart(...)
@@ -6596,7 +6585,7 @@ Core:RegisterBehavior(b_Reward_SendCart);
 --
 -- @param _Type   Typ der Einheit
 -- @param _Amount Menge an Einheiten
--- 
+--
 -- @within Reward
 --
 function Reward_Units(...)
@@ -6635,7 +6624,7 @@ Core:RegisterBehavior(b_Reward_Units);
 -- Startet einen Quest neu.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reward
 --
 function Reward_QuestRestart(...)
@@ -6660,7 +6649,7 @@ Core:RegisterBehavior(b_Reward_QuestRestart);
 -- Lässt einen Quest fehlschlagen.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reward
 --
 function Reward_QuestFailure(...)
@@ -6685,7 +6674,7 @@ Core:RegisterBehavior(b_Reward_QuestFailure);
 -- Wertet einen Quest als erfolgreich.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reward
 --
 function Reward_QuestSuccess(...)
@@ -6710,7 +6699,7 @@ Core:RegisterBehavior(b_Reward_QuestSuccess);
 -- Triggert einen Quest.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reward
 --
 function Reward_QuestActivate(...)
@@ -6735,7 +6724,7 @@ Core:RegisterBehavior(b_Reward_QuestActivate)
 -- Unterbricht einen Quest.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reward
 --
 function Reward_QuestInterrupt(...)
@@ -6761,7 +6750,7 @@ Core:RegisterBehavior(b_Reward_QuestInterrupt);
 --
 -- @param _QuestName   Name des Quest
 -- @param _EndetQuests Bereits beendete unterbrechen
--- 
+--
 -- @within Reward
 --
 function Reward_QuestForceInterrupt(...)
@@ -6786,7 +6775,7 @@ Core:RegisterBehavior(b_Reward_QuestForceInterrupt);
 -- Führt eine Funktion im Skript als Reward aus.
 --
 -- @param _FunctionName Name der Funktion
--- 
+--
 -- @within Reward
 --
 function Reward_MapScriptFunction(...)
@@ -6825,7 +6814,7 @@ Core:RegisterBehavior(b_Reward_MapScriptFunction);
 -- @param _Name     Name der Variable
 -- @param _Operator Rechen- oder Zuweisungsoperator
 -- @param _Value    Wert oder andere Custom Variable
--- 
+--
 -- @within Reward
 --
 function Reward_CustomVariables(...)
@@ -6852,7 +6841,7 @@ Core:RegisterBehavior(b_Reward_CustomVariables)
 -- @param _PlayerID   ID des Spielers
 -- @param _Lock       Sperren/Entsperren
 -- @param _Technology Name der Technologie
--- 
+--
 -- @within Reward
 --
 function Reward_Technology(...)
@@ -6875,7 +6864,7 @@ Core:RegisterBehavior(b_Reward_Technology);
 -- Gibt dem Auftragnehmer eine Anzahl an Prestigepunkten.
 --
 -- @param _Amount Menge an Prestige
--- 
+--
 -- @within Reward
 --
 function Reward_PrestigePoints(...)
@@ -6912,7 +6901,7 @@ Core:RegisterBehavior(b_Reward_PrestigePoints);
 --
 -- @param _ScriptName Skriptname des Außenposten
 -- @param _Type       Soldatentyp
--- 
+--
 -- @within Reward
 --
 function Reward_AI_MountOutpost(...)
@@ -6982,7 +6971,7 @@ Core:RegisterBehavior(b_Reward_AI_MountOutpost)
 -- Startet einen Quest neu und lößt ihn sofort aus.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Reward
 --
 function Reward_QuestRestartForceActive(...)
@@ -7038,7 +7027,7 @@ Core:RegisterBehavior(b_Reward_QuestRestartForceActive)
 -- weiterer Ausbau begonnen werden kann!
 --
 -- @param _ScriptName Skriptname des Gebäudes
--- 
+--
 -- @within Reward
 --
 function Reward_UpgradeBuilding(...)
@@ -7113,7 +7102,7 @@ Core:RegisterBehavior(b_Reward_UpgradeBuilding)
 -- Ein Spieler ist dann entdeckt, wenn sein Heimatterritorium aufgedeckt wird.
 --
 -- @param _PlayerID Zu entdeckender Spieler
--- 
+--
 -- @within Trigger
 --
 function Trigger_PlayerDiscovered(...)
@@ -7151,7 +7140,7 @@ Core:RegisterBehavior(b_Trigger_PlayerDiscovered);
 --
 -- @param _PlayerID ID der Partei
 -- @param _State    Diplomatie-Status
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnDiplomacy(...)
@@ -7192,7 +7181,7 @@ Core:RegisterBehavior(b_Trigger_OnDiplomacy);
 -- @param _PlayerID ID des Spielers
 -- @param _Need     Bedürfnis
 -- @param _Amount   Menge an skreikenden Siedlern
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnNeedUnsatisfied(...)
@@ -7252,7 +7241,7 @@ Core:RegisterBehavior(b_Trigger_OnNeedUnsatisfied);
 -- Startet den Quest, wenn die angegebene Mine erschöpft ist.
 --
 -- @param _ScriptName Skriptname der Mine
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnResourceDepleted(...)
@@ -7296,7 +7285,7 @@ Core:RegisterBehavior(b_Trigger_OnResourceDepleted);
 -- @param  _PlayerID ID des Spielers
 -- @param  _Type     Typ des Rohstoffes
 -- @param _Amount    Menge an Rohstoffen
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnAmountOfGoods(...)
@@ -7819,7 +7808,7 @@ Core:RegisterBehavior(b_Trigger_OnQuestSuccess);
 -- @param _Name     Name der Variable
 -- @param _Relation Vergleichsoperator
 -- @param _Value    Wert oder Custom Variable
--- 
+--
 -- @within Trigger
 --
 function Trigger_CustomVariables(...)
@@ -7901,7 +7890,7 @@ Core:RegisterBehavior(b_Trigger_CustomVariables)
 ---
 -- Startet den Quest sofort.
 --
--- 
+--
 -- @within Trigger
 --
 function Trigger_AlwaysActive()
@@ -7928,7 +7917,7 @@ Core:RegisterBehavior(b_Trigger_AlwaysActive);
 -- Startet den Quest im angegebenen Monat.
 --
 -- @param _Month Monat
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnMonth(...)
@@ -7989,7 +7978,7 @@ Core:RegisterBehavior(b_Trigger_OnMonth);
 --
 -- <b>Achtung:</b> Dieses Behavior ist nur für Reich des Ostens verfügbar.
 --
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnMonsoon()
@@ -8025,7 +8014,7 @@ Core:RegisterBehavior(b_Trigger_OnMonsoon);
 -- Der Timer zählt immer vom Start der Map an.
 --
 -- @param _Time Zeit bis zum Start
--- 
+--
 -- @within Trigger
 --
 function Trigger_Time(...)
@@ -8060,7 +8049,7 @@ Core:RegisterBehavior(b_Trigger_Time);
 ---
 -- Startet den Quest sobald das Wasser gefriert.
 --
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnWaterFreezes()
@@ -8095,7 +8084,7 @@ Core:RegisterBehavior(b_Trigger_OnWaterFreezes);
 -- Quests, für die dieser Trigger gesetzt ist, müssen durch einen anderen
 -- Quest über Reward_QuestActive oder Reprisal_QuestActive gestartet werden.
 --
--- 
+--
 -- @within Trigger
 --
 function Trigger_NeverTriggered()
@@ -8125,7 +8114,7 @@ Core:RegisterBehavior(b_Trigger_NeverTriggered)
 --
 -- @param _QuestName1 Name des ersten Quest
 -- @param _QuestName2 Name des zweiten Quest
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnAtLeastOneQuestFailure(...)
@@ -8191,7 +8180,7 @@ Core:RegisterBehavior(b_Trigger_OnAtLeastOneQuestFailure);
 --
 -- @param _QuestName1 Name des ersten Quest
 -- @param _QuestName2 Name des zweiten Quest
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnAtLeastOneQuestSuccess(...)
@@ -8262,7 +8251,7 @@ Core:RegisterBehavior(b_Trigger_OnAtLeastOneQuestSuccess);
 -- @param _Quest3      Name des 3. Quest
 -- @param _Quest4      Name des 4. Quest
 -- @param _Quest5      Name des 5. Quest
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnAtLeastXOfYQuestsSuccess(...)
@@ -8362,7 +8351,7 @@ Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
 -- Die Funktion muss entweder true or false zurückgeben.
 --
 -- @param _FunctionName Name der Funktion
--- 
+--
 -- @within Trigger
 --
 function Trigger_MapScriptFunction(...)

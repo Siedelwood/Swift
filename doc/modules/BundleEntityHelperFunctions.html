@@ -80,7 +80,7 @@
 <div id="content">
 
 <h1>Module <code>BundleEntityHelperFunctions</code></h1>
-<p>Dieses Bundle enthält häufig gebrauchte Funktionen im Kontext zu Entities.</p>
+<p>Dieses Bundle enthält häufig gebrauchte Funktionen für Entities.</p>
 <p></p>
 
 
@@ -94,10 +94,6 @@
 	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:AttackMove">BundleEntityHelperFunctions.Global:AttackMove (_Entity, _Position)</a></td>
 	<td class="summary">Ein Entity oder ein Battalion wird zu einer Position laufen und
  alle gültigen Ziele auf dem Weg angreifen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:GiveEntityName">BundleEntityHelperFunctions.Global:GiveEntityName (_EntityID)</a></td>
-	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:Install">BundleEntityHelperFunctions.Global:Install ()</a></td>
@@ -166,16 +162,12 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.GetEntitiesOfCategoriesInTerritories">API.GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</a></td>
-	<td class="summary">Ermittelt alle Entities in den Kategorien auf den Territorien für die
- Liste von Parteien und gibt sie als Liste zurück.</td>
+	<td class="summary">Sucht auf den angegebenen Territorium nach Entities mit bestimmten
+ Kategorien.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.GetEntityName">API.GetEntityName (_entity)</a></td>
 	<td class="summary">Gibt den Skriptnamen des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GetLeaderBySoldier">API.GetLeaderBySoldier (_soldier)</a></td>
-	<td class="summary">Gibt die Battalion-ID (Entity-ID des Leaders) eines Soldaten zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.GetNearestEntity">API.GetNearestEntity (_eID, _entities)</a></td>
@@ -194,10 +186,6 @@
 	<td class="name" nowrap><a href="#API.GetRelativePosition">API.GetRelativePosition (_target, _distance, _angle, _buildingRealPos)</a></td>
 	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
  Basisposition.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GiveEntityName">API.GiveEntityName (_EntityID)</a></td>
-	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.MoveAndLookAt">API.MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</a></td>
@@ -245,10 +233,10 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-          Angreifendes Entity
+          [string|number] Angreifendes Entity
         </li>
         <li><span class="parameter">_Target</span>
-         Angegriffenes Entity
+         [string|number] Angegriffenes Entity
         </li>
     </ul>
 
@@ -269,41 +257,13 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-           Angreifendes Entity
+           [string|number] Angreifendes Entity
         </li>
         <li><span class="parameter">_Position</span>
-         Positionstable
+         [string] Skriptname, EntityID oder Positionstable
         </li>
     </ul>
 
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleEntityHelperFunctions.Global:GiveEntityName"></a>
-    <strong>BundleEntityHelperFunctions.Global:GiveEntityName (_EntityID)</strong>
-    </dt>
-    <dd>
-    Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
- Hat das Entity einen Namen, bleibt dieser unverändert und wird
- zurückgegeben.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_EntityID</span>
-         Entity ID
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        string: Vergebener Name
-    </ol>
 
 
 
@@ -334,10 +294,10 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-           Bewegendes Entity
+           [string|number] Bewegendes Entity
         </li>
         <li><span class="parameter">_Position</span>
-         Positionstable
+         [table] Positionstable
         </li>
     </ul>
 
@@ -358,16 +318,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-               Zu bewegendes Entity
+               [string|number] Zu bewegendes Entity
         </li>
         <li><span class="parameter">_Position</span>
-             Ziel
+             [string|number] Ziel
         </li>
         <li><span class="parameter">_Distance</span>
-             Entfernung zum Ziel
+             [number] Entfernung zum Ziel
         </li>
         <li><span class="parameter">_moveAsEntity</span>
-         Blocking ignorieren
+         [boolean] Blocking ignorieren
         </li>
     </ul>
 
@@ -387,19 +347,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-               Zu bewegendes Entity
+               [string|number] Zu bewegendes Entity
         </li>
         <li><span class="parameter">_Position</span>
-             Ziel
+             [string|number] Ziel
         </li>
         <li><span class="parameter">_Distance</span>
-             Entfernung zum Ziel
+             [number] Entfernung zum Ziel
         </li>
         <li><span class="parameter">_Angle</span>
-                Winkel
+                [number] Winkel
         </li>
         <li><span class="parameter">_moveAsEntity</span>
-         Blocking ignorieren
+         [boolean] Blocking ignorieren
         </li>
     </ul>
 
@@ -448,14 +408,14 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Prefix</span>
-         Präfix des Skriptnamen
+         [string] Präfix des Skriptnamen
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        table: Liste mit Entities
+        [table] Liste mit Entities
     </ol>
 
 
@@ -474,20 +434,20 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_player</span>
-               PlayerID [0-8] oder Table mit PlayerIDs
+               [number|table] PlayerID [0-8] oder Table mit PlayerIDs
         </li>
         <li><span class="parameter">_category</span>
-             Kategorien oder Table mit Kategorien
+             [number|table] Kategorien oder Table mit Kategorien
         </li>
         <li><span class="parameter">_territory</span>
-            Zielterritorium oder Table mit Territorien
+            [number|table] Zielterritorium oder Table mit Territorien
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        table: Liste mit Entities
+        [table] Liste mit Resultaten
     </ol>
 
 
@@ -506,17 +466,17 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_eID</span>
-              Basis-Entity
+              [number] Basis-Entity
         </li>
         <li><span class="parameter">_entities</span>
-         Liste von Entities
+         [table] Liste von Entities
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        number: Nächstes Entity
+        [number] Nächstes Entity
     </ol>
 
 
@@ -536,23 +496,23 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_target</span>
-                  Basisposition
+                  [string|number|table] Basisposition
         </li>
         <li><span class="parameter">_distance</span>
-                Entfernung
+                [number] Entfernung
         </li>
         <li><span class="parameter">_angle</span>
-                   Winkel
+                   [number] Winkel
         </li>
         <li><span class="parameter">_buildingRealPos</span>
-         Gebäudemitte statt Gebäudeeingang
+         [boolean] Gebäudemitte statt Gebäudeeingang
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        table: Position
+        [table] Position
     </ol>
 
 
@@ -576,10 +536,10 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-          Angreifendes Entity
+          [string|number] Angreifendes Entity
         </li>
         <li><span class="parameter">_Target</span>
-         Angegriffenes Entity
+         [string|number] Angegriffenes Entity
         </li>
     </ul>
 
@@ -606,10 +566,10 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-           Angreifendes Entity
+           [string|number] Angreifendes Entity
         </li>
         <li><span class="parameter">_Position</span>
-         Skriptname, EntityID oder Positionstable
+         [string] Skriptname, EntityID oder Positionstable
         </li>
     </ul>
 
@@ -635,10 +595,10 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-           Bewegendes Entity
+           [string|number] Bewegendes Entity
         </li>
         <li><span class="parameter">_Position</span>
-         Skriptname, EntityID oder Positionstable
+         [table] Positionstable
         </li>
     </ul>
 
@@ -664,14 +624,14 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Prefix</span>
-         Präfix des Skriptnamen
+         [string] Präfix des Skriptnamen
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        table: Liste mit Entities
+        [table] Liste mit Entities
     </ol>
 
 
@@ -688,8 +648,9 @@
     <strong>API.GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</strong>
     </dt>
     <dd>
-    Ermittelt alle Entities in den Kategorien auf den Territorien für die
- Liste von Parteien und gibt sie als Liste zurück.
+    Sucht auf den angegebenen Territorium nach Entities mit bestimmten
+ Kategorien.  Dabei kann für eine Partei oder für mehrere parteien gesucht
+ werden.
 <p> <b>Alias:</b> GetEntitiesOfCategoriesInTerritories<br>
  <b>Alias:</b> EntitiesInCategories
 
@@ -698,20 +659,20 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_player</span>
-               PlayerID [0-8] oder Table mit PlayerIDs
+               [number|table] PlayerID [0-8] oder Table mit PlayerIDs
         </li>
         <li><span class="parameter">_category</span>
-             Kategorien oder Table mit Kategorien
+             [number|table] Kategorien oder Table mit Kategorien
         </li>
         <li><span class="parameter">_territory</span>
-            Zielterritorium oder Table mit Territorien
+            [number|table] Zielterritorium oder Table mit Territorien
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        table: Liste mit Entities
+        [table] Liste mit Resultaten
     </ol>
 
 
@@ -735,14 +696,14 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-         Gesuchtes Entity
+         [number] Gesuchtes Entity
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        string: Skriptname
+        [string] Skriptname
     </ol>
 
 
@@ -751,33 +712,6 @@
     <ul>
         <pre class="example"><span class="keyword">local</span> Name = API.GetEntityName(SomeEntityID);</pre>
     </ul>
-
-</dd>
-    <dt>
-    <a name = "API.GetLeaderBySoldier"></a>
-    <strong>API.GetLeaderBySoldier (_soldier)</strong>
-    </dt>
-    <dd>
-    Gibt die Battalion-ID (Entity-ID des Leaders) eines Soldaten zurück.
-<p> <b>Alias:</b> GetLeaderBySoldier
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_soldier</span>
-         Soldier
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        number: ID des Battalion
-    </ol>
-
-
-
 
 </dd>
     <dt>
@@ -794,17 +728,17 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_eID</span>
-              Basis-Entity
+              [number] Basis-Entity
         </li>
         <li><span class="parameter">_entities</span>
-         Liste von Entities
+         [table] Liste von Entities
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        number: Nächstes Entity
+        [number] Nächstes Entity
     </ol>
 
 
@@ -829,17 +763,17 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_eID</span>
-              Basis-Entity
+              [number] Basis-Entity
         </li>
         <li><span class="parameter">_playerID</span>
-         Besitzer der Helden
+         [number] Besitzer der Helden
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        number: Nächstes Entity
+        [number] Nächstes Entity
     </ol>
 
 
@@ -863,14 +797,14 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-         Gesuchtes Entity
+         [string|number] Gesuchtes Entity
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        number: Orientierung in Grad
+        [number] Orientierung in Grad
     </ol>
 
 
@@ -895,23 +829,23 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_target</span>
-                  Basisposition
+                  [string|number|table] Basisposition
         </li>
         <li><span class="parameter">_distance</span>
-                Entfernung
+                [number] Entfernung
         </li>
         <li><span class="parameter">_angle</span>
-                   Winkel
+                   [number] Winkel
         </li>
         <li><span class="parameter">_buildingRealPos</span>
-         Gebäudemitte statt Gebäudeeingang
+         [boolean] Gebäudemitte statt Gebäudeeingang
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        table: Position
+        [table] Position
     </ol>
 
 
@@ -919,39 +853,6 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example"><span class="keyword">local</span> RelativePostion = API.GetRelativePosition(<span class="string">"pos1"</span>, <span class="number">1000</span>, <span class="number">32</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.GiveEntityName"></a>
-    <strong>API.GiveEntityName (_EntityID)</strong>
-    </dt>
-    <dd>
-    Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
- Hat das Entity einen Namen, bleibt dieser unverändert und wird
- zurückgegeben.
-<p> <b>Alias:</b> GiveEntityName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_EntityID</span>
-         Entity ID
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        string: Vergebener Name
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Name = GiveEntityName(Logic.CreateEntity(Entities.XD_ScriptEntity, <span class="number">23500</span>, <span class="number">34070</span>, <span class="number">0</span>, <span class="number">8</span>));</pre>
     </ul>
 
 </dd>
@@ -970,16 +871,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-               Zu bewegendes Entity
+               [string|number] Zu bewegendes Entity
         </li>
         <li><span class="parameter">_Position</span>
-             Ziel
+             [string|number] Ziel
         </li>
         <li><span class="parameter">_Distance</span>
-             Entfernung zum Ziel
+             [number] Entfernung zum Ziel
         </li>
         <li><span class="parameter">_moveAsEntity</span>
-         Blocking ignorieren
+         [boolean] Blocking ignorieren
         </li>
     </ul>
 
@@ -1005,19 +906,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-               Zu bewegendes Entity
+               [string|number] Zu bewegendes Entity
         </li>
         <li><span class="parameter">_Position</span>
-             Ziel
+             [string|number] Ziel
         </li>
         <li><span class="parameter">_Distance</span>
-             Entfernung zum Ziel
+             [number] Entfernung zum Ziel
         </li>
         <li><span class="parameter">_Angle</span>
-                Winkel
+                [number] Winkel
         </li>
         <li><span class="parameter">_moveAsEntity</span>
-         Blocking ignorieren
+         [boolean] Blocking ignorieren
         </li>
     </ul>
 
@@ -1045,13 +946,13 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-               Zu bewegendes Entity
+                  [string|number|table] Entity das bewegt wird
         </li>
         <li><span class="parameter">_Position</span>
-             Ziel
+                [string|number|table] Position zu der bewegt wird
         </li>
         <li><span class="parameter">_Distance</span>
-             Entfernung zum Ziel
+                [number] Entfernung
         </li>
     </ul>
 
@@ -1077,16 +978,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-               Zu bewegendes Entity
+                  [string|number|table] Entity das bewegt wird
         </li>
         <li><span class="parameter">_Position</span>
-             Ziel
+                [string|number|table] Position zu der bewegt wird
         </li>
         <li><span class="parameter">_Distance</span>
-             Entfernung zum Ziel
+                [number] Entfernung
         </li>
         <li><span class="parameter">_Angle</span>
-                Winkel
+                   [number] Winkel
         </li>
     </ul>
 
@@ -1112,17 +1013,17 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-         Entity
+         [number] Entity
         </li>
         <li><span class="parameter">_name</span>
-           Skriptname
+           [string] Skriptname
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        string: Skriptname
+        [string] Skriptname
     </ol>
 
 
@@ -1146,10 +1047,10 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-         Gesuchtes Entity
+         [string|number] Gesuchtes Entity
         </li>
         <li><span class="parameter">_ori</span>
-            Ausrichtung in Grad
+            [number] Ausrichtung in Grad
         </li>
     </ul>
 
@@ -1169,7 +1070,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-02 13:01:20 </i>
+<i style="float:right;">Last updated 2018-07-02 15:05:56 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
