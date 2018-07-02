@@ -60,7 +60,7 @@
 
 # if module then
 
-<h1>Bundle <code>$(module.name)</code></h1>
+<h1><code>$(module.name)</code></h1>
 
 <p>$(M(module.summary))</p>
 <p>$(M(module.description))</p>
@@ -132,4 +132,3 @@
 </div> <!-- id="container" -->
 </body>
 </html>
-
