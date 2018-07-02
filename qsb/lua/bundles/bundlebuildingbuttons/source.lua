@@ -13,7 +13,7 @@
 -- im Standard dabei.
 --
 -- @module BundleBuildingButtons
--- @set sort=true
+-- @set sort=false
 --
 
 API = API or {};
@@ -75,7 +75,7 @@ DeactivateSingleStop = API.DeactivateSingleStop;
 --
 -- <b>Alias:</b> UseDowngrade
 --
--- @param _flag Downgrade aktiv/inaktiv
+-- @param _flag [boolean] Downgrade aktiv/inaktiv
 -- @within Public
 --
 -- @usage
@@ -96,7 +96,7 @@ UseDowngrade = API.UseDowngrade;
 --
 -- <b>Alias:</b> UseBreedSheeps
 --
--- @param _flag Schafzucht aktiv/inaktiv
+-- @param _flag [boolean] Schafzucht aktiv/inaktiv
 -- @within Public
 --
 -- @usage
@@ -127,7 +127,7 @@ UseBreedSheeps = API.UseBreedSheeps;
 --
 -- <b>Alias:</b> UseBreedCattle
 --
--- @param _flag Kuhzucht aktiv/inaktiv
+-- @param _flag [boolean] Kuhzucht aktiv/inaktiv
 -- @within Public
 --
 -- @usage
@@ -158,7 +158,7 @@ UseBreedCattle = API.UseBreedCattle;
 --
 -- <b>Alias:</b> SetSheepGrainCost
 --
--- @param _Amount Getreidekosten
+-- @param _Amount [number] Getreidekosten
 -- @within Public
 --
 -- @usage
@@ -179,7 +179,7 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 --
 -- <b>Alias:</b> SetCattleGrainCost
 --
--- @param _Amount Getreidekosten
+-- @param _Amount [number] Getreidekosten
 -- @within Public
 --
 -- @usage
@@ -200,7 +200,7 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 --
 -- <b>Alias:</b> SetSheepNeeded
 --
--- @param _Amount Benötigte Menge
+-- @param _Amount [number] Benötigte Menge
 -- @within Public
 --
 -- @usage
@@ -224,7 +224,7 @@ SetSheepNeeded = API.SetSheepNeeded;
 --
 -- <b>Alias:</b> SetCattleNeeded
 --
--- @param _Amount Benötigte Menge
+-- @param _Amount [number] Benötigte Menge
 -- @within Public
 --
 -- @usage
@@ -271,10 +271,10 @@ SetCattleNeeded = API.SetCattleNeeded;
 --
 -- <b>Alias:</b> AddBuildingButton
 --
--- @param _Index   Index des Buttons
--- @param _Action  Aktion des Buttons
--- @param _Tooltip Tooltip Control
--- @param _Update  Button Update
+-- @param _Index   [number] Index des Buttons
+-- @param _Action  [function] Aktion des Buttons
+-- @param _Tooltip [function] Tooltip Control
+-- @param _Update  [function] Button Update
 -- @within Public
 --
 -- @usage
@@ -319,7 +319,7 @@ AddBuildingButton = API.AddCustomBuildingButton;
 --
 -- <b>Alias:</b> DeleteBuildingButton
 --
--- @param _Index   Index des Buttons
+-- @param _Index   [number] Index des Buttons
 -- @within Public
 --
 -- @usage
