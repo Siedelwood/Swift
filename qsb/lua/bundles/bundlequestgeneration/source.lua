@@ -7,8 +7,14 @@
 ---
 -- Mit diesem Bundle können Aufträge per Skript erstellt werden.
 --
+-- Normaler Weise werden Aufträge im Questassistenten erzeugt. Dies ist aber
+-- statisch und das Kopieren von Aufträgen ist nicht möglich. Wenn Aufträge
+-- im Skript erzeugt werden, verschwinden alle diese Nachteile. Aufträge
+-- können im Skript kopiert und angepasst werden. Es ist ebenfalls machbar,
+-- die Aufträge in Sequenzen zu erzeugen.
+--
 -- @module BundleQuestGeneration
--- @set sort=true
+-- @set sort=false
 --
 
 API = API or {};
@@ -19,15 +25,15 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erstellt einen Quest, startet ihn jedoch noch nicht.
+-- Erstellt einen Quest.
 --
 -- Ein Quest braucht immer wenigstens ein Goal und einen Trigger. Hat ein Quest
 -- keinen Namen, erhält er automatisch einen mit fortlaufender Nummerierung.
 --
--- Ein Quest besteht aus verschiedenen Parametern und Behavior, die nicht
+-- Ein Quest besteht aus verschiedenen Eigenschaften und Behavior, die nicht
 -- alle zwingend gesetzt werden müssen. Behavior werden einfach nach den
--- Feldern nacheinander angegeben.
--- <p><u>Parameter:</u></p>
+-- Eigenschaften nacheinander angegeben.
+-- <p><u>Eigenschaften:</u></p>
 -- <ul>
 -- <li>Name: Der eindeutige Name des Quests</li>
 -- <li>Sender: PlayerID des Auftraggeber (Default 1)</li>
@@ -43,9 +49,9 @@ QSB = QSB or {};
 --
 -- <b>Alias:</b> AddQuest
 --
--- @param _Data Questdefinition
--- @return string: Name des Quests
--- @return number: Gesamtzahl Quests
+-- @param _Data [table] Questdefinition
+-- @return [string] Name des Quests
+-- @return [number] Gesamtzahl Quests
 -- @within Public
 --
 -- @usage
@@ -70,10 +76,6 @@ AddQuest = API.AddQuest;
 
 ---
 -- DO NOT USE THIS FUNCTION!
--- Startet alle mittels API.AddQuest initalisierten Quests.
---
--- <b>Alias</b>: StartQuests
---
 -- @within Deprecated
 -- @local
 --
@@ -100,14 +102,14 @@ StartQuests = API.StartQuests;
 --
 -- <b>Alias</b>: QuestMessage
 --
--- @param _Text       Anzeigetext der Nachricht
--- @param _Sender     Sender der Nachricht
--- @param _Receiver   Receiver der Nachricht
--- @param _Ancestor   Vorgänger-Quest
--- @param _AncestorWt Wartezeit
--- @param _Callback   Callback
--- @return number: QuestID
--- @return table: Quest
+-- @param _Text       [string] Anzeigetext der Nachricht
+-- @param _Sender     [number] Sender der Nachricht
+-- @param _Receiver   [number] Receiver der Nachricht
+-- @param _Ancestor   [string] Vorgänger-Quest
+-- @param _AncestorWt [number] Wartezeit
+-- @param _Callback   [function] Callback
+-- @return [number] QuestID
+-- @return [table] Quest
 -- @within Public
 --
 -- @usage
@@ -138,15 +140,14 @@ QuestMessage = API.QuestMessage;
 -- Einzelne Einträge pro Quest:
 -- <ul>
 -- <li>Anzeigetext der Nachricht</li>
--- <li>Sender der Nachricht</li>
--- <li>Receiver der Nachricht</li>
--- <li>Vorgänger-Quest</li>
--- <li>Wartezeit</li>
--- <li>Callback</li>
+-- <li>PlayerID des Sender der Nachricht</li>
+-- <li>PlayerID des Empfängers der Nachricht</li>
+-- <li>Name des vorangegangenen Quest</li>
+-- <li>Wartezeit bis zum Start</li>
 -- </ul>
 --
--- @param _Messages Table with Quests
--- @return table: List of generated Quests
+-- @param _Messages [table] Liste der anzuzeigenden Nachrichten
+-- @return [table] List of generated Quests
 -- @within Public
 --
 -- @usage
@@ -421,7 +422,7 @@ function BundleQuestGeneration.Global:StartQuests()
             if QuestData.Arguments then
                 Quest.Arguments = API.InstanceTable(QuestData.Arguments);
             end
-            
+
             -- Quest wurde erzeugt
             Quests[QuestID].IsGenerated = true;
         end
