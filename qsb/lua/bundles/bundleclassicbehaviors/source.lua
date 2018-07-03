@@ -10,9 +10,10 @@
 -- Die Behavior sind weitesgehend unverändert und es dürfte keine Probleme mit
 -- Inkompatibelität geben, wenn die QSB ausgetauscht wird.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleClassicBehaviors = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -8407,7 +8408,7 @@ BundleClassicBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleClassicBehaviors.Global:Install()
@@ -8418,7 +8419,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleClassicBehaviors.Local:Install()

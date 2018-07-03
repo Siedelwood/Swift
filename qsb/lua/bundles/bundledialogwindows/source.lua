@@ -13,9 +13,10 @@
 -- Menge an Text anzeigen kann. Erreicht der Text eine entsprechende Menge,
 -- wird automatisch eine Scrollbar eingeblendet.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleDialogWindows = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -31,7 +32,7 @@ QSB = QSB or {};
 -- @param _Title  [string] Titel des Dialog
 -- @param _Text   [string] Text des Dialog
 -- @param _Action [function] Callback-Funktion
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.OpenDialog("Wichtige Information", "Diese Information ist Spielentscheidend!");
@@ -64,7 +65,7 @@ end
 -- @param _Text     [string] Text des Dialog
 -- @param _Action   [function] Callback-Funktion
 -- @param _OkCancel [boolean] Okay/Abbrechen statt Ja/Nein
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- function YesNoAction(_yes)
@@ -99,7 +100,7 @@ end
 -- @param _Text   [string] Text des Dialog
 -- @param _Action [function] Callback-Funktion
 -- @param _List   [table] Liste der Optionen
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- function OptionsAction(_idx)
@@ -133,7 +134,7 @@ end
 --
 -- @param _Caption [string] Titel des Fensters
 -- @param _Content [string] Inhalt des Fensters
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
@@ -200,7 +201,7 @@ BundleDialogWindows = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Global:Install()
@@ -214,7 +215,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:Install()
@@ -225,7 +226,7 @@ end
 ---
 -- Führt das Callback eines Info-Fensters oder eines Selektionsfensters aus.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:Callback()
@@ -239,7 +240,7 @@ end
 -- Führt das Callback eines Ja-Nein-Dialogs aus.
 --
 -- @param _yes [boolean] Gegebene Antwort
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:CallbackRequester(_yes)
@@ -253,7 +254,7 @@ end
 -- Läd den nächsten Dialog aus der Warteschlange und stellt die Speicher-Hotkeys
 -- wieder her.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:OnDialogClosed()
@@ -264,7 +265,7 @@ end
 ---
 -- Startet den nächsten Dialog in der Warteschlange, sofern möglich.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:DialogQueueStartNext()
@@ -287,7 +288,7 @@ end
 --
 -- @param _Methode [string] Dialogfunktion als String
 -- @param _Args    [table] Argumente als Table
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:DialogQueuePush(_Methode, _Args)
@@ -302,7 +303,7 @@ end
 -- @param _Title  [string] Titel des Dialog
 -- @param _Text   [string] Text des Dialog
 -- @param _Action [function] Callback-Funktion
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action)
@@ -363,7 +364,7 @@ end
 -- @param _Text     [string] Text des Dialog
 -- @param _Action   [function] Callback-Funktion
 -- @param _OkCancel [boolean] Okay/Abbrechen statt Ja/Nein
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
@@ -411,7 +412,7 @@ end
 -- @param _Text   [string] Text des Dialog
 -- @param _Action [function] Callback-Funktion
 -- @param _List   [table] Liste der Optionen
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List)
@@ -453,7 +454,7 @@ end
 ---
 -- Stellt die Hotkeys zum Speichern des Spiels wieder her.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:RestoreSaveGame()
@@ -469,7 +470,7 @@ end
 -- Überschreibt die originalen Dialogfunktionen, um Fehler in den vorhandenen
 -- Funktionen zu vermeiden.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleDialogWindows.Local:DialogOverwriteOriginal()

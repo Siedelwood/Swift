@@ -8,9 +8,10 @@
 -- Dieses Bundle bietet Funktionen an, mit denen Spielstände außerhalb des
 -- üblichen Ordners gespeichert und geladen werden können.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleSaveGameTools = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -25,7 +26,7 @@ QSB = QSB or {};
 -- zum nδchsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.AutoSaveGame(_name)
     assert(_name);
@@ -43,7 +44,7 @@ end
 --
 -- @param _path	Pfad zum Ziel
 -- @param _name	Name des Spielstandes
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SaveGameToFolder(_path, _name)
     assert(_path);
@@ -56,7 +57,7 @@ function API.SaveGameToFolder(_path, _name)
 end
 
 ---
--- Lδd einen Spielstand aus dem angegebenen Verzeichnis. Der Pfad 
+-- Lδd einen Spielstand aus dem angegebenen Verzeichnis. Der Pfad
 -- beginnt relativ vom Spielstandverzeichnis. Optional kann der
 -- Ladebildschirm gehalten werden, bis der Spieler das Spiel per
 -- Button startet.
@@ -64,7 +65,7 @@ end
 -- @param _path		  Pfad zum Ziel
 -- @param _name		  Name des Spielstandes
 -- @param _needButton Startbutton anzeigen (0 oder 1)
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.LoadGameFromFolder(_path, _name, _needButton)
     assert(_path);
@@ -92,7 +93,7 @@ end
 -- @param _knight		Index des Helden
 -- @param _folder		Mapordner
 -- @param _needButton	Startbutton nutzen
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.StartMap(_map, _knight, _folder, _needButton)
     assert(_map);
@@ -126,7 +127,7 @@ BundleSaveGameTools = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSaveGameTools.Global:Install()
@@ -140,7 +141,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSaveGameTools.Local:Install()
@@ -153,7 +154,7 @@ end
 -- zum nächsten mφglichen Zeitpunkt gewartet.
 --
 -- @param _Name	Name des Spielstandes
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSaveGameTools.Local:AutoSaveGame(_name)
@@ -186,7 +187,7 @@ end
 -- Prüft, ob das Spiel gerade gespeichert werden kann.
 --
 -- @return boolean: Kann speichern
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSaveGameTools.Local:CanGameBeSaved()
@@ -209,7 +210,7 @@ end
 --
 -- @param _path	Pfad zum Ziel
 -- @param _name	Name des Spielstandes
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSaveGameTools.Local:SaveGameToFolder(_path, _name)
@@ -218,7 +219,7 @@ function BundleSaveGameTools.Local:SaveGameToFolder(_path, _name)
 end
 
 ---
--- Läd einen Spielstand aus dem angegebenen Verzeichnis. Der Pfad 
+-- Läd einen Spielstand aus dem angegebenen Verzeichnis. Der Pfad
 -- beginnt relativ vom Spielstandverzeichnis. Optional kann der
 -- Ladebildschirm gehalten werden, bis der Spieler das Spiel per
 -- Button startet.
@@ -226,7 +227,7 @@ end
 -- @param _path		  Pfad zum Ziel
 -- @param _name		  Name des Spielstandes
 -- @param _needButton Startbutton anzeigen (0 oder 1)
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton)
@@ -255,7 +256,7 @@ end
 -- @param _knight		Index des Helden
 -- @param _folder		Mapordner
 -- @param _needButton	Startbutton nutzen
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSaveGameTools.Local:StartMap(_map, _knight, _folder, _needButton)
@@ -277,4 +278,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleSaveGameTools");
-

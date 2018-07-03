@@ -16,9 +16,10 @@
 -- ein Gegenstand wird vom Helden aufgehoben, ein Marktstand, der etwas
 -- verkauft, ....
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleInteractiveObjects = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -39,7 +40,7 @@ QSB.IOList = {};
 --
 -- @param _Name          Skriptname des Objekts
 -- @param _Description   Beschreibung
--- @within Public
+-- @within Anwenderfunktionen
 -- @see API.CreateObject
 --
 function API.SetupInteractiveObject(_Name, _Description)
@@ -154,7 +155,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 -- <b>Alias:</b> CreateObject
 --
 -- @param _Description   Beschreibung
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Ein einfaches Objekt erstellen:
@@ -184,7 +185,7 @@ CreateObject = API.CreateObject;
 -- <b>Alias:</b> RemoveInteractiveObject
 --
 -- @param _EntityName Skriptname des IO
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.RemoveInteractiveObject(_EntityName)
     if GUI then
@@ -211,7 +212,7 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 --
 -- @param _EntityName Skriptname des Objektes
 -- @param _State      State des Objektes
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.InteractiveObjectActivate(_EntityName, _State)
     if GUI then
@@ -241,7 +242,7 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 -- <b>Alias</b>: InteractiveObjectDeactivate
 --
 -- @param _EntityName Scriptname des Objektes
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.InteractiveObjectDeactivate(_EntityName)
     if GUI then
@@ -273,7 +274,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 --
 -- @param _Key  Typname des Entity
 -- @param _Text Text der Beschriftung
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.AddCustomIOName("D_X_ChestClosed", "Schatztruhe");
@@ -313,7 +314,7 @@ BundleInteractiveObjects = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:Install()
@@ -329,7 +330,7 @@ end
 -- Verwendungszweck ab.
 --
 -- @param _Description Beschreibung
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:CreateObject(_Description)
@@ -403,7 +404,7 @@ end
 -- Konfiguration des Objektes entfernt.
 --
 -- @param _EntityName Skriptname des IO
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName)
@@ -425,7 +426,7 @@ end
 --
 -- @param _Key  Identifier der Beschriftung
 -- @param _Text Text der Beschriftung
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text)
@@ -450,7 +451,7 @@ end
 -- Überschreibt die Events, die ausgelöst werden, wenn interaktive Objekte
 -- benutzt werden.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:HackOnInteractionEvent()
@@ -540,7 +541,7 @@ end
 -- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt
 -- ist und erlaubt die Benutzung.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global.ControlInteractiveObjects()
@@ -556,7 +557,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:Install()
@@ -569,7 +570,7 @@ end
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
@@ -586,7 +587,7 @@ end
 -- @param _PlayerID Spieler, der zahlt
 -- @param _Good     Typ der Ware
 -- @param _Amount   Menge der Ware
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
@@ -612,7 +613,7 @@ end
 ---
 -- Überschreibt die Spielfunktione, die interaktive Objekte steuern.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
@@ -1021,7 +1022,7 @@ end
 -- @param _DisabledText Textzusatz wenn inaktiv
 -- @param _Costs        Kostentabelle
 -- @param _InSettlement Kosten in Siedlung suchen
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
@@ -1059,7 +1060,7 @@ end
 --
 -- @param _Widget Icon Widget
 -- @param _Icon   Icon Textur
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)

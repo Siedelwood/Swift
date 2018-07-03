@@ -8,9 +8,10 @@
 -- Dieses Bundle stellt Funktionen bereit, mit denen die Gesundheit von
 -- Entities überwacht oder geändert werden kann.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=false
 --
+BundleEntityHealth = {};
 
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
@@ -26,7 +27,7 @@
 --
 -- @param _Entity [string|number] Angefragtes Entity
 -- @return [number] Gesundheit in Prozent
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Health = GetHealth("hakim");
@@ -46,7 +47,7 @@ GetHealth = API.GetEntityHealth;
 --
 -- @param _Entity     [string|number] Entity dessen Gesundheit geändert wird
 -- @param _Percentage [number] Gesundheit in Prozent
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- SetHealth("hakim", 50);
@@ -84,7 +85,7 @@ SetHealth = API.ChangeEntityHealth;
 --
 -- @param _Entity   [string|number] Skriptname oder EntityID
 -- @param _Strength [number] Stärke des Brandes
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- SetOnFire("headquarters1", 100);
@@ -124,7 +125,7 @@ SetOnFire = API.SetBuildingOnFire;
 -- @param _Target         [string|number] Ziel des Schadens
 -- @param _AmountOfDamage [number] Menge an Schaden
 -- @param _Attacker       [string|number] (Optional) Angreifendes Entity
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- HurtEntityEx("battalion", 250, "hakim");
@@ -160,7 +161,7 @@ HurtEntityEx = API.HurtEntity;
 -- <b>Alias</b>: AddHurtAction
 --
 -- @param _Function [function] Funktion, die ausgeführt wird.
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.AddOnEntityHurtAction(SomeFunctionReference);
@@ -187,7 +188,7 @@ AddHurtAction = API.AddOnEntityHurtAction;
 -- <b>Alias</b>: AddKilledAction
 --
 -- @param _Function [function] Funktion, die ausgeführt wird.
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.AddOnEntityCreatedAction(SomeFunctionReference);
@@ -211,7 +212,7 @@ AddKilledAction = API.AddOnEntityDestroyedAction;
 -- <b>Alias</b>: AddSpawnedAction
 --
 -- @param _Function [function] Funktion, die ausgeführt wird.
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.AddOnEntityCreatedAction(SomeFunctionReference);
@@ -253,7 +254,7 @@ BundleEntityHealth = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global:Install()
@@ -271,7 +272,7 @@ end
 --
 -- @param _Entity     [string|number] Entity to change
 -- @param _Percentage [number] Health amount
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global:SetEntityHealth(_Entity, _Percentage)
@@ -295,7 +296,7 @@ end
 -- @param _EntityID       [number] ID des Opfers
 -- @param _AmountOfDamage [number] Menge an Schaden
 -- @param _AttackerID     [number] (optional) ID des Angreifers
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global:HurtEntityEx(_EntityID, _AmountOfDamage, _AttackerID)
@@ -396,7 +397,7 @@ end
 -- Funktion übergeben.
 --
 -- @param _Function [function] Funktion, die ausgeführt wird
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global.AddOnEntityHurtAction(_Function)
@@ -408,7 +409,7 @@ end
 -- wird. Die EntityID des zerstörten Entity wird übergeben.
 --
 -- @param _Function [function] Funktion, die ausgeführt wird
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global.AddOnEntityDestroyedAction(_Function)
@@ -420,7 +421,7 @@ end
 -- wird. Die EntityID des zerstörten Entity wird übergeben.
 --
 -- @param _Function [function] Funktion, die ausgeführt wird
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global.AddOnEntityCreatedAction(_Function)
@@ -430,7 +431,7 @@ end
 ---
 -- Führt alle registrierten Events aus, wenn ein Entity ein anderes angreift.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global.EntityHurtEntityController()
@@ -455,7 +456,7 @@ end
 ---
 -- Führt alle registrierten Events aus, wenn ein Entity zerstört wird.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global.EntityDestroyedController()
@@ -475,7 +476,7 @@ end
 -- Führt alle registrierten Events aus, wenn ein Entity erzeugt wird.
 --
 -- @param _EntityID [number] ID des Entity
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Global.EntityCreatedController(_EntityID)
@@ -490,7 +491,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Local:Install()
@@ -504,7 +505,7 @@ end
 --
 -- @param _Entity [string|number] Entity to change
 -- @return [number] Health in percent
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHealth.Shared:GetHealth(_Entity)
@@ -527,7 +528,7 @@ Core:RegisterBundle("BundleEntityHealth");
 -- @param _Entity     [string] Entity
 -- @param _Percentage [number] Prozentwert
 --
--- @within Behavior
+-- @within Reprisal
 --
 function Reprisal_SetHealth(...)
     return b_Reprisal_SetHealth:new(...);
@@ -583,7 +584,7 @@ Core:RegisterBehavior(b_Reprisal_SetHealth);
 -- @param _Entity     [string] Entity
 -- @param _Percentage [number] Prozentwert
 --
--- @within Behavior
+-- @within Reward
 --
 function Reward_SetHealth(...)
     return b_Reward_SetHealth:new(...);
@@ -621,7 +622,7 @@ Core:RegisterBehavior(b_Reward_SetHealth);
 -- @param _Entity [string9 Entity, das überwacht wird
 -- @param _Amount [number] Menge in Prozent
 --
--- @within Behavior
+-- @within Trigger
 --
 function Trigger_EntityHealth(...)
     return b_Trigger_EntityHealth:new(...);

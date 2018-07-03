@@ -8,9 +8,10 @@
 -- Dieses Bundle gibt dem Mapper Werkzeuge in die Hand, um einige Features zu
 -- gewähren oder zu entziehen.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleGameHelperFunctions = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -27,7 +28,7 @@ QSB = QSB or {};
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.UndiscoverTerritory(_PlayerID, _TerritoryID)
     if GUI then
@@ -46,7 +47,7 @@ UndiscoverTerritory = API.UndiscoverTerritory;
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.UndiscoverTerritories(_PlayerID, _TargetPlayerID)
     if GUI then
@@ -65,7 +66,7 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 --
 -- @param _PlayerID Partei oder nil für alle
 -- @param _Earnings Einnahmen [0 | 100]
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetEarningsOfPlayerCity(_PlayerID, _Earnings)
     if GUI then
@@ -94,7 +95,7 @@ SetPlayerEarnings = API.SetEarningsOfPlayerCity;
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
 -- @param _PlayerID Partei oder -1 für alle
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
     if GUI then
@@ -120,7 +121,7 @@ SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 --
 -- @param _PlayerID    Zielpartei
 -- @param _KnightTitle Titel zum Entsperren
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.UnlockTitleForPlayer(_PlayerID, _KnightTitle)
     if GUI then
@@ -139,7 +140,7 @@ UnlockTitleForPlayer = API.UnlockTitleForPlayer;
 -- @param _Player     Partei
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
     if not GUI then
@@ -158,7 +159,7 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 -- @param _Entity     Entity
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
@@ -181,7 +182,7 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 -- <b>Alias:</b> SetSpeedLimit
 --
 -- @param _Limit Obergrenze
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SpeedLimitSet(_Limit)
     if not GUI then
@@ -199,7 +200,7 @@ SetSpeedLimit = API.SpeedLimitSet
 -- <b>Alias:</b> ActivateSpeedLimit
 --
 -- @param _Flag Speedbremse ist aktiv
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SpeedLimitActivate(_Flag)
     if GUI then
@@ -215,7 +216,7 @@ ActivateSpeedLimit = API.SpeedLimitActivate;
 --
 -- <b>Alias:</b> KillCheats
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.KillCheats()
     if GUI then
@@ -231,7 +232,7 @@ KillCheats = API.KillCheats;
 --
 -- <b>Alias:</b> RessurectCheats
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.RessurectCheats()
     if GUI then
@@ -248,7 +249,7 @@ RessurectCheats = API.RessurectCheats;
 -- <b>Alias:</b> ForbidSaveGame
 --
 -- @param _Flag Speichern gesperrt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.ForbidSaveGame(_Flag)
     if GUI then
@@ -268,7 +269,7 @@ ForbidSaveGame = API.ForbidSaveGame;
 -- <b>Alias:</b> ActivateExtendedZoom
 --
 -- @param _Flag Erweiterter Zoom gestattet
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.AllowExtendedZoom(_Flag)
     if GUI then
@@ -289,7 +290,7 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 -- <b>Alias:</b> StartNormalFestival
 --
 -- @param  _PlayerID Spieler
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.StartNormalFestival(_PlayerID)
     if GUI then
@@ -308,7 +309,7 @@ StartNormalFestival = API.StartNormalFestival;
 -- <b>Alias:</b> StartCityUpgradeFestival
 --
 -- @param _PlayerID Spieler
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.StartCityUpgradeFestival(_PlayerID)
     if GUI then
@@ -326,7 +327,7 @@ StartCityUpgradeFestival = API.StartCityUpgradeFestival;
 -- <b>Alias:</b> ForbidFestival
 --
 -- @param _PlayerID Spieler
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.ForbidFestival(_PlayerID)
     if GUI then
@@ -352,7 +353,7 @@ ForbidFestival = API.ForbidFestival;
 -- <b>Alias:</b> AllowFestival
 --
 -- @param _PlayerID Spieler
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.AllowFestival(_PlayerID)
     if GUI then
@@ -383,7 +384,7 @@ AllowFestival = API.AllowFestival;
 -- @param _NewID        Neue ID des menschlichen Spielers
 -- @param _NewName      Name in der Statistik
 -- @param _RetainKnight Ritter mitnehmen
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
     if GUI then
@@ -401,7 +402,7 @@ PlayerSetPlayerID = API.SetControllingPlayer;
 -- <b>Alias:</b> PlayerGetPlayerID
 --
 -- @return number: PlayerID
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.GetControllingPlayer()
     if not GUI then
@@ -421,7 +422,7 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.ThridPersonActivate(_Hero, _MaxZoom)
     if GUI then
@@ -438,7 +439,7 @@ HeroCameraActivate = API.ThridPersonActivate;
 --
 -- <b>Alias:</b> HeroCameraDeactivate
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.ThridPersonDeactivate()
     if GUI then
@@ -455,7 +456,7 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 -- <b>Alias:</b> HeroCameraIsRuning
 --
 -- @return boolean: Kamera aktiv
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.ThridPersonIsRuning()
     if not GUI then
@@ -477,7 +478,7 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
 -- @return number: Job-ID
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.FollowKnightSaveStart(_Entity, _Knight, _Distance, _Angle)
     if GUI then
@@ -496,7 +497,7 @@ AddFollowKnightSave = API.FollowKnightSaveStart;
 -- <b>Alias:</b> StopFollowKnightSave
 --
 -- @param _JobID Job-ID
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.FollowKnightSaveStop(_JobID)
     if GUI then
@@ -520,7 +521,7 @@ StopFollowKnightSave = API.FollowKnightSaveStop;
 -- @param _Center          Zentralpunkt
 -- @param _Offset          Entfernung der Ecken zum Zentrum
 -- @param _TerrainType     Textur ID
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.ChangeTerrainTypeInSquare("area", 500, 48)
@@ -555,7 +556,7 @@ TerrainType = API.ChangeTerrainTypeInSquare;
 -- @param _Offset      Entfernung der Ecken zum Zentrum
 -- @param _Hight       Neue Höhe
 -- @param _Relative    Relative Höhe benutzen
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.ChangeWaterHeightInSquare("area", 500, 5555, true);
@@ -591,7 +592,7 @@ WaterHeight = API.ChangeWaterHeightInSquare;
 -- @param _Offset      Entfernung der Ecken zum Zentrum
 -- @param _Hight       Neue Höhe
 -- @param _Relative    Relative Höhe benutzen
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.ChangeTerrainHeightInSquare("area", 500, 5555, true);
@@ -652,7 +653,7 @@ BundleGameHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
@@ -669,7 +670,7 @@ end
 --
 -- @param _PlayerID    Spieler-ID
 -- @param _TerritoryID Territorium-ID
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID)
@@ -690,7 +691,7 @@ end
 --
 -- @param _PlayerID       Spieler-ID
 -- @param _TargetPlayerID Zielpartei
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID)
@@ -716,7 +717,7 @@ end
 --
 -- @param _PlayerID Partei oder nil für alle
 -- @param _Earnings Einnahmen [0 | 100]
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity(_PlayerID, _Earnings)
@@ -740,7 +741,7 @@ end
 -- @param _Need     Bedürfnis
 -- @param _State    Erfüllung des Bedürfnisses
 -- @param _PlayerID Partei oder -1 für alle
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
@@ -767,7 +768,7 @@ end
 --
 -- @param _PlayerID    Zielpartei
 -- @param _KnightTitle Titel zum Entsperren
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _KnightTitle)
@@ -800,7 +801,7 @@ end
 -- @param _newPlayerID          Neue ID des menschlichen Spielers
 -- @param _newNameForStatistics Name in der Statistik
 -- @param _retainPrimaryKnight  Ritter mitnehmen
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)
@@ -877,7 +878,7 @@ end
 -- definierte Spieler wird als kontrollierender Spieler angenommen.
 --
 -- @return number: PlayerID
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:GetControllingPlayer()
@@ -897,7 +898,7 @@ end
 -- Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
 -- werden kann.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitFestival()
@@ -921,7 +922,7 @@ end
 -- @param _PlayerID ID des Spielers
 -- @param _Index    Index des Fest
 -- @param _Flag     Erlauben/verbieten
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, _Index, _Flag)
@@ -939,7 +940,7 @@ end
 ---
 -- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
@@ -955,7 +956,7 @@ end
 ---
 -- Aktiviert den erweiterten Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
@@ -966,7 +967,7 @@ end
 ---
 -- Deaktiviert den erweiterten Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
@@ -977,7 +978,7 @@ end
 ---
 -- Initialisiert den erweiterten Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitExtendedZoom()
@@ -992,7 +993,7 @@ end
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:KillCheats()
@@ -1003,7 +1004,7 @@ end
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:RessurectCheats()
@@ -1020,7 +1021,7 @@ end
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
@@ -1037,7 +1038,7 @@ end
 
 ---
 -- Deaktiviert die Heldenkamera.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonDeactivate()
@@ -1051,7 +1052,7 @@ end
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
 -- @return boolean: Kamera aktiv
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonIsRuning()
@@ -1061,7 +1062,7 @@ end
 ---
 -- Überschreibt StartBriefing und EndBriefing des Briefing System,
 -- wenn es vorhanden ist.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
@@ -1102,7 +1103,7 @@ end
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
 -- @return number: Job-ID
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
@@ -1125,7 +1126,7 @@ end
 -- Beendet einen Verfolgungsjob.
 --
 -- @param _JobID Job-ID
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
@@ -1145,7 +1146,7 @@ end
 -- @param _Knight   Held
 -- @param _Distance Entfernung, die uberschritten sein muss
 -- @param _Angle    Ausrichtung
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
@@ -1190,7 +1191,7 @@ ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSa
 -- @param _Center          Zentralpunkt
 -- @param _Offset          Entfernung der Ecken zum Zentrum
 -- @param _TerrainType     Textur ID
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
@@ -1215,7 +1216,7 @@ end
 -- @param _Offset      Entfernung der Ecken zum Zentrum
 -- @param _Hight       Neue Höhe
 -- @param _Relative    Relative Höhe benutzen
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
@@ -1245,7 +1246,7 @@ end
 -- @param _Offset      Entfernung der Ecken zum Zentrum
 -- @param _Hight       Neue Höhe
 -- @param _Relative    Relative Höhe benutzen
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
@@ -1287,7 +1288,7 @@ end
 -- @return number: X-Koordinate von Punkt 2
 -- @return number: Y-Koordinate von Punkt 2
 -- @return number: Bodenhöhe
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain(_Center, _Offset)
@@ -1313,7 +1314,7 @@ end
 ---
 -- Stellt nicht-persistente Änderungen nach dem laden wieder her.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
@@ -1353,7 +1354,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:Install()
@@ -1371,7 +1372,7 @@ end
 -- @param _Player     Partei
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor)
@@ -1384,7 +1385,7 @@ end
 -- @param _Entity     Entity
 -- @param _Rotation   Kamerawinkel
 -- @param _ZoomFactor Zoomfaktor
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
@@ -1402,7 +1403,7 @@ end
 -- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
 -- @param _Limit Obergrenze
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
@@ -1415,7 +1416,7 @@ end
 -- kann nicht mehr überschritten werden.
 --
 -- @param _Flag Speedbremse ist aktiv
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
@@ -1429,7 +1430,7 @@ end
 -- Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
 -- aufgerufen wird und installiert die Speedbremse.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
@@ -1449,7 +1450,7 @@ end
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:KillCheats()
@@ -1464,7 +1465,7 @@ end
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:RessurectCheats()
@@ -1481,7 +1482,7 @@ end
 ---
 -- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
@@ -1494,7 +1495,7 @@ end
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
@@ -1509,7 +1510,7 @@ end
 ---
 -- Wechselt zwischen erweitertem und normalen Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
@@ -1519,7 +1520,7 @@ end
 ---
 -- Erweitert die Zoomrestriktion auf das Maximum.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
@@ -1531,7 +1532,7 @@ end
 ---
 -- Stellt die normale Zoomrestriktion wieder her.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:DeactivateExtendedZoom()
@@ -1545,7 +1546,7 @@ end
 ---
 -- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidSaveGame()
@@ -1561,7 +1562,7 @@ end
 ---
 -- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:DisplaySaveButtons(_Flag)
@@ -1578,7 +1579,7 @@ end
 --
 -- @param _Hero    Skriptname/Entity-ID des Helden
 -- @param _MaxZoom Maximaler Zoomfaktor
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonActivate(_Hero, _MaxZoom)
@@ -1606,7 +1607,7 @@ end
 ---
 -- Deaktiviert die Heldenkamera.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonDeactivate()
@@ -1620,7 +1621,7 @@ end
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
 -- @return boolean: Kamera aktiv
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonIsRuning()
@@ -1633,7 +1634,7 @@ end
 -- Kamera um links oder rechts gedreht, abhänig von der Position
 -- der Mouse.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFactor()
@@ -1668,7 +1669,7 @@ end
 ---
 --
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidFestival()

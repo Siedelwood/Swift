@@ -126,9 +126,10 @@
 -- </li>
 -- </ul>
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleKnightTitleRequirements = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -1243,7 +1244,7 @@ Core:RegisterBundle("BundleKnightTitleRequirements");
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
 -- @param _i           Button Index
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoesNeededNumberOfEntitiesInCategoryForKnightTitleExist = function(_PlayerID, _KnightTitle, _i)
@@ -1292,7 +1293,7 @@ end
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
 -- @param _i           Button Index
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoesNeededNumberOfEntitiesOfTypeForKnightTitleExist = function(_PlayerID, _KnightTitle, _i)
@@ -1337,7 +1338,7 @@ end
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
 -- @param _i           Button Index
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoesNeededNumberOfGoodTypesForKnightTitleExist = function(_PlayerID, _KnightTitle, _i)
@@ -1371,7 +1372,7 @@ end
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
 -- @param _i           Button Index
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededNumberOfConsumedGoodsForKnightTitleExist = function( _PlayerID, _KnightTitle, _i)
@@ -1407,7 +1408,7 @@ end
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
 -- @param _i           Button Index
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoNumberOfProductsInCategoryExist = function(_PlayerID, _KnightTitle, _i)
@@ -1442,7 +1443,7 @@ end
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
 -- @param _i           Button Index
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededDiversityBuffForKnightTitleExist = function(_PlayerID, _KnightTitle, _i)
@@ -1473,7 +1474,7 @@ end
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
 -- @param _i           Button Index
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoCustomFunctionForKnightTitleSucceed = function(_PlayerID, _KnightTitle, _i)
@@ -1500,7 +1501,7 @@ end
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
 -- @param _i           Button Index
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededNumberOfDecoratedBuildingsForKnightTitleExist = function( _PlayerID, _KnightTitle, _i)
@@ -1545,7 +1546,7 @@ end
 -- @param _PlayerID       ID des Spielers
 -- @param _KnightTitle    Nächster Titel
 -- @param _EntityCategory Entity Category
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededSpecialBuildingUpgradeForKnightTitleExist = function( _PlayerID, _KnightTitle, _EntityCategory)
@@ -1584,7 +1585,7 @@ end
 --
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoesNeededCityReputationForKnightTitleExist = function(_PlayerID, _KnightTitle)
@@ -1607,7 +1608,7 @@ end
 --
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededNumberOfFullDecoratedBuildingsForKnightTitleExist = function( _PlayerID, _KnightTitle)
@@ -1651,7 +1652,7 @@ end
 --
 -- @param _PlayerID    ID des Spielers
 -- @param _KnightTitle Nächster Titel
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 CanKnightBePromoted = function(_PlayerID, _KnightTitle)
@@ -1685,7 +1686,7 @@ end
 
 ---
 -- Der Spieler gewinnt das Spiel
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 VictroryBecauseOfTitle = function()
@@ -1706,7 +1707,7 @@ end
 -- das Schema für Aufstiegsbedingungen und Rechtevergabe immer beibehalten
 -- werden.
 --
--- @within BB-Funktionen
+-- @within Originalfunktionen
 --
 InitKnightTitleTables = function()
     KnightTitles = {}

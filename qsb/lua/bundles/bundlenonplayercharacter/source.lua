@@ -13,9 +13,10 @@
 --
 -- Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=false
 --
+Modulbeschreibung = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -58,7 +59,7 @@ QSB = QSB or {};
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
 -- @return [table] NPC-Objekt
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcCompose {
@@ -74,7 +75,7 @@ function API.NpcCompose(_Data)
             API.Note(_Npc.WrongHeroMessage);
         end
     end
-    
+
     local NPC = NonPlayerCharacter:New(_Data.Name);
     NPC:SetDialogPartner(_Data.Hero);
     NPC:SetWrongPartnerCallback(WronHeroCallback);
@@ -89,7 +90,7 @@ CreateNPC = API.NpcCompose;
 -- <b>Alias:</b> DestroyNPC
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcDispose("horst")
@@ -111,7 +112,7 @@ DestroyNPC = API.NpcDispose;
 -- <b>Alias:</b> EnableNPC
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcActivate("horst")
@@ -132,7 +133,7 @@ EnableNPC = API.NpcActivate;
 -- <b>Alias:</b> DisableNPC
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcDeactivate("horst")
@@ -153,7 +154,7 @@ DisableNPC = API.NpcDeactivate;
 -- <b>Alias:</b> ResetNPC
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcReset("horst")
@@ -176,7 +177,7 @@ ResetNPC = API.NpcReset;
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
 -- @return [boolean] NPC wurde angesprochen
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcHasSpoken("horst")
@@ -257,7 +258,7 @@ end
 
 ---
 -- Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.
--- 
+--
 -- Wurde noch kein NPC für diesen Skriptnamen erzeugt, wird nil zurückgegeben.
 --
 -- <b>Alias:</b> NonPlayerCharacter:GetInstance
@@ -596,7 +597,7 @@ end
 --
 -- @param _NpcName  [string] Skriptname des NPC
 -- @param _HeroName [string] Skriptname des Helden (optional)
--- @within Behavior
+-- @within Goal
 --
 function Goal_NPC(...)
     return b_Goal_NPC:new(...);
@@ -645,7 +646,7 @@ Core:RegisterBehavior(b_Goal_NPC);
 --
 -- @param _NpcName  [string] Skriptname des NPC
 -- @param _HeroName [string] Skriptname des Helden (optional)
--- @within Behavior
+-- @within Trigger
 --
 function Trigger_NPC(...)
     return b_Trigger_NPC:new(...);
@@ -716,7 +717,7 @@ Core:RegisterBehavior(b_Trigger_NPC);
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
@@ -1080,7 +1081,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleNonPlayerCharacter.Local:Install()

@@ -13,9 +13,10 @@
 -- können im Skript kopiert und angepasst werden. Es ist ebenfalls machbar,
 -- die Aufträge in Sequenzen zu erzeugen.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=false
 --
+BundleQuestGeneration = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -52,7 +53,7 @@ QSB = QSB or {};
 -- @param _Data [table] Questdefinition
 -- @return [string] Name des Quests
 -- @return [number] Gesamtzahl Quests
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- AddQuest {
@@ -110,7 +111,7 @@ StartQuests = API.StartQuests;
 -- @param _Callback   [function] Callback
 -- @return [number] QuestID
 -- @return [table] Quest
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.QuestMessage("Das ist ein Text", 4, 1);
@@ -148,7 +149,7 @@ QuestMessage = API.QuestMessage;
 --
 -- @param _Messages [table] Liste der anzuzeigenden Nachrichten
 -- @return [table] List of generated Quests
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.QuestDialog{
@@ -219,7 +220,7 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
@@ -247,7 +248,7 @@ end
 -- @return number: QuestID
 -- @return table: Quest
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
@@ -292,7 +293,7 @@ end
 -- @param _Data Daten des Quest.
 -- @return string: Name des erzeugten Quests
 -- @return number: Gesamtanzahl Quests
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:NewQuest(_Data)
@@ -341,7 +342,7 @@ end
 --
 -- @param _ID   Id des Quests
 -- @param _Data Quest Data
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
@@ -382,7 +383,7 @@ end
 -- DO NOT USE THIS FUNCTION!
 -- Startet alle Quests in der GenerationList.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:StartQuests()
@@ -433,7 +434,7 @@ end
 -- Validiert alle Quests in der GenerationList. Verschiedene Standardfehler
 -- werden geprüft.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:ValidateQuests()
@@ -517,7 +518,7 @@ end
 -- in der Initalisiererliste zu testen.
 --
 -- @param _List Liste der Quests
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:DebugQuest(_List)
@@ -529,7 +530,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Local:Install()

@@ -8,9 +8,10 @@
 -- Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
 -- verändert werden, die sonst unzugänglich wären.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleEntityScriptingValues = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -28,7 +29,7 @@ QSB = QSB or {};
 --
 -- @param _Entity [string|number] Entity
 -- @return [number] Größenfaktor
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Scale = API.GetEntityScale("alandra")
@@ -50,7 +51,7 @@ GetScale = API.GetEntityScale;
 --
 -- @param _Entity [string|number] Entity
 -- @return [number] Besitzer
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.GetEntityPlayer(_Entity)
     if not IsExisting(_Entity) then
@@ -72,7 +73,7 @@ GetPlayer = API.GetEntityPlayer;
 --
 -- @param _Entity [string|number] Entity
 -- @return [table] Positionstabelle
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Destination = API.GetMovingTarget("hakim");
@@ -100,7 +101,7 @@ GetMovingTarget = API.GetMovingTarget;
 --
 -- @param _Entity [string|number] Entity
 -- @return [boolean] Ist NPC
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Active = API.IsEntityNpc("alandra");
@@ -125,7 +126,7 @@ IsNpc = API.IsEntityNpc;
 --
 -- @param _Entity [string|number] Entity
 -- @return [boolean] Ist sichtbar
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.IsEntityVisible(_Entity)
     if not IsExisting(_Entity) then
@@ -147,7 +148,7 @@ IsVisible = API.IsEntityVisible;
 --
 -- @param _Entity [string|number] Entity
 -- @param _Scale  [number] Größenfaktor
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetEntityScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
@@ -173,7 +174,7 @@ SetScale = API.SetEntityScale;
 --
 -- @param _Entity   [string|number] Entity
 -- @param _PlayerID [number] Besitzer
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetEntityPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
@@ -210,7 +211,7 @@ BundleEntityScriptingValues = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityScriptingValues.Global:Install()
@@ -221,7 +222,7 @@ end
 -- Ändert die Größe des Entity.
 -- @param _Entity [string|number] Entity
 -- @param _Scale  [number] Größenfaktor
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
@@ -237,7 +238,7 @@ end
 --
 -- @param _Entity   [string|number] Entity
 -- @param _PlayerID [number] Besitzer
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
@@ -250,7 +251,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityScriptingValues.Local:Install()

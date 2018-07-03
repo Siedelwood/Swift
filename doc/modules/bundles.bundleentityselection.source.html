@@ -1,0 +1,753 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.source.html">addons.addoncastlestore.source</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.source.html">addons.addongamecutscenes.source</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.source.html">addons.addoninteractiveobjecttemplates.source</a></li>
+  <li><a href="../modules/addons.addonquestdebug.source.html">addons.addonquestdebug.source</a></li>
+  <li><a href="../modules/addons.addonroleplayinggame.source.html">addons.addonroleplayinggame.source</a></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.source.html">bundles.bundlebriefingsystem.source</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.source.html">bundles.bundlebuildingbuttons.source</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.source.html">bundles.bundleclassicbehaviors.source</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.source.html">bundles.bundleconstructioncontrol.source</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.source.html">bundles.bundledialogwindows.source</a></li>
+  <li><a href="../modules/bundles.bundleentityhealth.source.html">bundles.bundleentityhealth.source</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.source.html">bundles.bundleentityhelperfunctions.source</a></li>
+  <li><a href="../modules/bundles.bundleentityscriptingvalues.source.html">bundles.bundleentityscriptingvalues.source</a></li>
+  <li><strong>bundles.bundleentityselection.source</strong></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.source.html">bundles.bundlegamehelperfunctions.source</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.source.html">bundles.bundleinteractiveobjects.source</a></li>
+  <li><a href="../modules/bundles.bundleinterfaceapperance.source.html">bundles.bundleinterfaceapperance.source</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.source.html">bundles.bundleknighttitlerequirements.source</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.source.html">bundles.bundlemusictools.source</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.source.html">bundles.bundlenonplayercharacter.source</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.source.html">bundles.bundlequestgeneration.source</a></li>
+  <li><a href="../modules/bundles.bundlesavegametools.source.html">bundles.bundlesavegametools.source</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.source.html">bundles.bundlesymfoniabehaviors.source</a></li>
+  <li><a href="../modules/bundles.bundletradingfunctions.source.html">bundles.bundletradingfunctions.source</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundleentityselection.source</code></h1>
+<p>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</p>
+<p></p>
+
+
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Global:DeactivateRefillTrebuchet">BundleEntitySelection.Global:DeactivateRefillTrebuchet (_Boolean)</a></td>
+	<td class="summary">Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Global:Install">BundleEntitySelection.Global:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Global:MilitaryCallForRefiller">BundleEntitySelection.Global:MilitaryCallForRefiller (_EntityID)</a></td>
+	<td class="summary">Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Global:MilitaryDisambleTrebuchet">BundleEntitySelection.Global:MilitaryDisambleTrebuchet (_EntityID)</a></td>
+	<td class="summary">Baut ein Trebuchet zu einem Trebuchet-Wagen ab.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Global:MilitaryErectTrebuchet">BundleEntitySelection.Global:MilitaryErectTrebuchet (_EntityID)</a></td>
+	<td class="summary">Baut einen Trebuchet-Wagen zu einem Trebuchet aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local.OnSelectionCanged">BundleEntitySelection.Local.OnSelectionCanged (_Source)</a></td>
+	<td class="summary">Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:DeactivateRefillTrebuchet">BundleEntitySelection.Local:DeactivateRefillTrebuchet (_Boolean)</a></td>
+	<td class="summary">Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:ExtendedLeaderSortOrder">BundleEntitySelection.Local:ExtendedLeaderSortOrder ()</a></td>
+	<td class="summary">Erzeugt die erweiterte Selektion mit Munitionswagen und Trebuchets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:Install">BundleEntitySelection.Local:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:NormalLeaderSortOrder">BundleEntitySelection.Local:NormalLeaderSortOrder ()</a></td>
+	<td class="summary">Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteGetStringTableText">BundleEntitySelection.Local:OverwriteGetStringTableText ()</a></td>
+	<td class="summary">Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
+ sodass eigene Texte für Keys angezeigt werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteMilitaryCommands">BundleEntitySelection.Local:OverwriteMilitaryCommands ()</a></td>
+	<td class="summary">Überschreibt die Millitärkommandos "Stop" und "Angreifen".</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteMilitaryDisamble">BundleEntitySelection.Local:OverwriteMilitaryDisamble ()</a></td>
+	<td class="summary">Überschreibt das Abbauen von Kriegsmaschinen, sodass auch Trebuchets
+ abgebaut werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteMilitaryDismount">BundleEntitySelection.Local:OverwriteMilitaryDismount ()</a></td>
+	<td class="summary">Überschreibt die Funktion zur Beendigung der Eskorte, damit Einheiten auch
+ entlassen werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteMilitaryErect">BundleEntitySelection.Local:OverwriteMilitaryErect ()</a></td>
+	<td class="summary">Überschreibt das Aufbauen von Kriegsmaschinen, sodass auch Trebuchets
+ auf- und abgebaut werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteMultiselectIcon">BundleEntitySelection.Local:OverwriteMultiselectIcon ()</a></td>
+	<td class="summary">Überschreibt die Multiselektion, damit Trebuchets ein Icon bekommen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteNamesAndDescription">BundleEntitySelection.Local:OverwriteNamesAndDescription ()</a></td>
+	<td class="summary">Hängt eine Funktion an die GUI_Tooltip.SetNameAndDescription an, sodass
+ Tooltips überschrieben werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteSelectAllUnits">BundleEntitySelection.Local:OverwriteSelectAllUnits ()</a></td>
+	<td class="summary">Überschreibt die Militärselektion, sodass der Spieler mit SHIFT zusätzlich
+ die Munitionswagen und Trebuchets selektieren kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteSelectKnight">BundleEntitySelection.Local:OverwriteSelectKnight ()</a></td>
+	<td class="summary">Überschreibt den SelectKnight-Button.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteThiefDeliver">BundleEntitySelection.Local:OverwriteThiefDeliver ()</a></td>
+	<td class="summary">Überschreibt "Beute abließern", sodass Diebe entlassen werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntitySelection.Local:SetTooltip">BundleEntitySelection.Local:SetTooltip (_TitleText, _DescText)</a></td>
+	<td class="summary">Schreibt einen anderen Text in einen normalen Tooltip.</td>
+	</tr>
+</table>
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.DisableMilitaryRelease">API.DisableMilitaryRelease (_Flag)</a></td>
+	<td class="summary">Deaktiviert oder aktiviert das Entlassen von Soldaten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DisableRefillTrebuchet">API.DisableRefillTrebuchet (_Flag)</a></td>
+	<td class="summary">Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DisableSiegeEngineRelease">API.DisableSiegeEngineRelease (_Flag)</a></td>
+	<td class="summary">Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DisableThiefRelease">API.DisableThiefRelease (_Flag)</a></td>
+	<td class="summary">Deaktiviert oder aktiviert das Entlassen von Dieben.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetSelectedEntities">API.GetSelectedEntities ()</a></td>
+	<td class="summary">Gibt alle selektierten Entities zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetSelectedEntity">API.GetSelectedEntity ()</a></td>
+	<td class="summary">Gibt die ID des selektierten Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsEntityInSelection">API.IsEntityInSelection (_Entity)</a></td>
+	<td class="summary">Prüpft ob das Entity selektiert ist.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleEntitySelection.Global:DeactivateRefillTrebuchet"></a>
+    <strong>BundleEntitySelection.Global:DeactivateRefillTrebuchet (_Boolean)</strong>
+    </dt>
+    <dd>
+    Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Boolean</span>
+         Nachfüllen deaktiviert
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Global:Install"></a>
+    <strong>BundleEntitySelection.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Global:MilitaryCallForRefiller"></a>
+    <strong>BundleEntitySelection.Global:MilitaryCallForRefiller (_EntityID)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         EntityID of Trebuchet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Global:MilitaryDisambleTrebuchet"></a>
+    <strong>BundleEntitySelection.Global:MilitaryDisambleTrebuchet (_EntityID)</strong>
+    </dt>
+    <dd>
+    Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         EntityID of Trebuchet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Global:MilitaryErectTrebuchet"></a>
+    <strong>BundleEntitySelection.Global:MilitaryErectTrebuchet (_EntityID)</strong>
+    </dt>
+    <dd>
+    Baut einen Trebuchet-Wagen zu einem Trebuchet aus.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         EntityID of Trebuchet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local.OnSelectionCanged"></a>
+    <strong>BundleEntitySelection.Local.OnSelectionCanged (_Source)</strong>
+    </dt>
+    <dd>
+    Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Source</span>
+         Selection Source
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:DeactivateRefillTrebuchet"></a>
+    <strong>BundleEntitySelection.Local:DeactivateRefillTrebuchet (_Boolean)</strong>
+    </dt>
+    <dd>
+    Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Boolean</span>
+         Nachfüllen deaktiviert
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:ExtendedLeaderSortOrder"></a>
+    <strong>BundleEntitySelection.Local:ExtendedLeaderSortOrder ()</strong>
+    </dt>
+    <dd>
+    Erzeugt die erweiterte Selektion mit Munitionswagen und Trebuchets.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:Install"></a>
+    <strong>BundleEntitySelection.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:NormalLeaderSortOrder"></a>
+    <strong>BundleEntitySelection.Local:NormalLeaderSortOrder ()</strong>
+    </dt>
+    <dd>
+    Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteGetStringTableText"></a>
+    <strong>BundleEntitySelection.Local:OverwriteGetStringTableText ()</strong>
+    </dt>
+    <dd>
+    Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
+ sodass eigene Texte für Keys angezeigt werden.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteMilitaryCommands"></a>
+    <strong>BundleEntitySelection.Local:OverwriteMilitaryCommands ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Millitärkommandos "Stop" und "Angreifen".
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteMilitaryDisamble"></a>
+    <strong>BundleEntitySelection.Local:OverwriteMilitaryDisamble ()</strong>
+    </dt>
+    <dd>
+    Überschreibt das Abbauen von Kriegsmaschinen, sodass auch Trebuchets
+ abgebaut werden können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteMilitaryDismount"></a>
+    <strong>BundleEntitySelection.Local:OverwriteMilitaryDismount ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Funktion zur Beendigung der Eskorte, damit Einheiten auch
+ entlassen werden können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteMilitaryErect"></a>
+    <strong>BundleEntitySelection.Local:OverwriteMilitaryErect ()</strong>
+    </dt>
+    <dd>
+    Überschreibt das Aufbauen von Kriegsmaschinen, sodass auch Trebuchets
+ auf- und abgebaut werden können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteMultiselectIcon"></a>
+    <strong>BundleEntitySelection.Local:OverwriteMultiselectIcon ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Multiselektion, damit Trebuchets ein Icon bekommen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteNamesAndDescription"></a>
+    <strong>BundleEntitySelection.Local:OverwriteNamesAndDescription ()</strong>
+    </dt>
+    <dd>
+    Hängt eine Funktion an die GUI_Tooltip.SetNameAndDescription an, sodass
+ Tooltips überschrieben werden können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteSelectAllUnits"></a>
+    <strong>BundleEntitySelection.Local:OverwriteSelectAllUnits ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Militärselektion, sodass der Spieler mit SHIFT zusätzlich
+ die Munitionswagen und Trebuchets selektieren kann.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteSelectKnight"></a>
+    <strong>BundleEntitySelection.Local:OverwriteSelectKnight ()</strong>
+    </dt>
+    <dd>
+    Überschreibt den SelectKnight-Button.  Durch drücken von CTLR können alle
+ Helden selektiert werden, die der Spieler kontrolliert.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:OverwriteThiefDeliver"></a>
+    <strong>BundleEntitySelection.Local:OverwriteThiefDeliver ()</strong>
+    </dt>
+    <dd>
+    Überschreibt "Beute abließern", sodass Diebe entlassen werden können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntitySelection.Local:SetTooltip"></a>
+    <strong>BundleEntitySelection.Local:SetTooltip (_TitleText, _DescText)</strong>
+    </dt>
+    <dd>
+    Schreibt einen anderen Text in einen normalen Tooltip.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_TitleText</span>
+         Titel des Tooltip
+        </li>
+        <li><span class="parameter">_DescText</span>
+          Text des Tooltip
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.DisableMilitaryRelease"></a>
+    <strong>API.DisableMilitaryRelease (_Flag)</strong>
+    </dt>
+    <dd>
+    Deaktiviert oder aktiviert das Entlassen von Soldaten.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Deaktiviert (false) / Aktiviert (true)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DisableMilitaryRelease(<span class="keyword">false</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DisableRefillTrebuchet"></a>
+    <strong>API.DisableRefillTrebuchet (_Flag)</strong>
+    </dt>
+    <dd>
+    Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Deaktiviert (false) / Aktiviert (true)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DisableRefillTrebuchet(<span class="keyword">true</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DisableSiegeEngineRelease"></a>
+    <strong>API.DisableSiegeEngineRelease (_Flag)</strong>
+    </dt>
+    <dd>
+    Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Deaktiviert (false) / Aktiviert (true)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DisableSiegeEngineRelease(<span class="keyword">true</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DisableThiefRelease"></a>
+    <strong>API.DisableThiefRelease (_Flag)</strong>
+    </dt>
+    <dd>
+    Deaktiviert oder aktiviert das Entlassen von Dieben.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Deaktiviert (false) / Aktiviert (true)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DisableThiefRelease(<span class="keyword">false</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetSelectedEntities"></a>
+    <strong>API.GetSelectedEntities ()</strong>
+    </dt>
+    <dd>
+    Gibt alle selektierten Entities zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] ID des selektierten Entities
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Selection = API.GetSelectedEntities();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetSelectedEntity"></a>
+    <strong>API.GetSelectedEntity ()</strong>
+    </dt>
+    <dd>
+    Gibt die ID des selektierten Entity zurück.
+<p> Wenn mehr als ein Entity selektiert sind, wird das erste Entity
+ zurückgegeben. Sind keine Entities selektiert, wird 0 zurückgegeben.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des selektierten Entities
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> SelectedEntity = API.GetSelectedEntity();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityInSelection"></a>
+    <strong>API.IsEntityInSelection (_Entity)</strong>
+    </dt>
+    <dd>
+    Prüpft ob das Entity selektiert ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity das selektiert sein soll
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Entity ist selektiert
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">if</span> API.IsEntityInSelection(<span class="string">"hakim"</span>) <span class="keyword">then</span>
+    <span class="comment">-- Do something
+</span><span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-07-03 08:40:10 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

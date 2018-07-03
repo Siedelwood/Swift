@@ -1,0 +1,914 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.source.html">addons.addoncastlestore.source</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.source.html">addons.addongamecutscenes.source</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.source.html">addons.addoninteractiveobjecttemplates.source</a></li>
+  <li><a href="../modules/addons.addonquestdebug.source.html">addons.addonquestdebug.source</a></li>
+  <li><a href="../modules/addons.addonroleplayinggame.source.html">addons.addonroleplayinggame.source</a></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.source.html">bundles.bundlebriefingsystem.source</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.source.html">bundles.bundlebuildingbuttons.source</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.source.html">bundles.bundleclassicbehaviors.source</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.source.html">bundles.bundleconstructioncontrol.source</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.source.html">bundles.bundledialogwindows.source</a></li>
+  <li><a href="../modules/bundles.bundleentityhealth.source.html">bundles.bundleentityhealth.source</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.source.html">bundles.bundleentityhelperfunctions.source</a></li>
+  <li><a href="../modules/bundles.bundleentityscriptingvalues.source.html">bundles.bundleentityscriptingvalues.source</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.source.html">bundles.bundleentityselection.source</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.source.html">bundles.bundlegamehelperfunctions.source</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.source.html">bundles.bundleinteractiveobjects.source</a></li>
+  <li><strong>bundles.bundleinterfaceapperance.source</strong></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.source.html">bundles.bundleknighttitlerequirements.source</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.source.html">bundles.bundlemusictools.source</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.source.html">bundles.bundlenonplayercharacter.source</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.source.html">bundles.bundlequestgeneration.source</a></li>
+  <li><a href="../modules/bundles.bundlesavegametools.source.html">bundles.bundlesavegametools.source</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.source.html">bundles.bundlesymfoniabehaviors.source</a></li>
+  <li><a href="../modules/bundles.bundletradingfunctions.source.html">bundles.bundletradingfunctions.source</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundleinterfaceapperance.source</code></h1>
+<p>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche
+ des Spiels.</p>
+<p> Es gibt Funktionen zum Ausblenden einiger Buttons und Menüs und
+ die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
+ zu setzen.
+</p>
+
+
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Global.RestoreAfterLoad">BundleInterfaceApperance.Global.RestoreAfterLoad ()</a></td>
+	<td class="summary">Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Global:Install">BundleInterfaceApperance.Global:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:HideInterfaceButton">BundleInterfaceApperance.Local:HideInterfaceButton (_Widget, _Hide)</a></td>
+	<td class="summary">Versteht ein Widget oder blendet es ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:Install">BundleInterfaceApperance.Local:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:RestoreAfterLoad">BundleInterfaceApperance.Local:RestoreAfterLoad ()</a></td>
+	<td class="summary">Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:SetIcon">BundleInterfaceApperance.Local:SetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
+	<td class="summary">Setzt einen Icon aus einer benutzerdefinierten Matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:SetTexture">BundleInterfaceApperance.Local:SetTexture (_widget, _file)</a></td>
+	<td class="summary">Setzt einen Icon aus einer benutzerdefinerten Datei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:TextCosts">BundleInterfaceApperance.Local:TextCosts (_title, _text, _disabledText, _costs, _inSettlement)</a></td>
+	<td class="summary">Setzt den Kostentooltip.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:TextNormal">BundleInterfaceApperance.Local:TextNormal (_title, _text, _disabledText)</a></td>
+	<td class="summary">Setzt einen Beschreibungstooltip.</td>
+	</tr>
+</table>
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.GetPlayerName">API.GetPlayerName (_PlayerID)</a></td>
+	<td class="summary">Gibt den Namen des Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetTerritoryName">API.GetTerritoryName (_TerritoryID)</a></td>
+	<td class="summary">Gibt den Namen des Territoriums zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideBuildMenu">API.HideBuildMenu (_Flag)</a></td>
+	<td class="summary">Versteckt das Baumenü oder blendet es ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideBuyTerritory">API.HideBuyTerritory (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zum Territorienkauf oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideDiplomacyMenu">API.HideDiplomacyMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Diplomatiemenü oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideKnightAbility">API.HideKnightAbility (_Flag)</a></td>
+	<td class="summary">Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideKnightButton">API.HideKnightButton (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zur Heldenselektion oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideMinimap">API.HideMinimap (_Flag)</a></td>
+	<td class="summary">Graut die Minimap aus oder macht sie wieder verwendbar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideProductionMenu">API.HideProductionMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Produktionsmenü oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideSelectionButton">API.HideSelectionButton (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideToggleMinimap">API.HideToggleMinimap (_Flag)</a></td>
+	<td class="summary">Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HideWeatherMenu">API.HideWeatherMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Wettermenüs oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetIcon">API.SetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
+	<td class="summary">Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetPlayerColor">API.SetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</a></td>
+	<td class="summary">Setzt zu Spielbeginn eine andere Spielerfarbe.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetPlayerName">API.SetPlayerName (_playerID, _name)</a></td>
+	<td class="summary">Gibt dem Spieler einen neuen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetTexture">API.SetTexture (_widget, _file)</a></td>
+	<td class="summary">Setzt eine Grafik als Bild für einen Icon oder einen Button.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetTooltipCosts">API.SetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</a></td>
+	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetTooltipNormal">API.SetTooltipNormal (_title, _text, _disabledText)</a></td>
+	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleInterfaceApperance.Global.RestoreAfterLoad"></a>
+    <strong>BundleInterfaceApperance.Global.RestoreAfterLoad ()</strong>
+    </dt>
+    <dd>
+    Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Global:Install"></a>
+    <strong>BundleInterfaceApperance.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:HideInterfaceButton"></a>
+    <strong>BundleInterfaceApperance.Local:HideInterfaceButton (_Widget, _Hide)</strong>
+    </dt>
+    <dd>
+    Versteht ein Widget oder blendet es ein.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Widget</span>
+         Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_Hide</span>
+           Hidden Flag
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:Install"></a>
+    <strong>BundleInterfaceApperance.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:RestoreAfterLoad"></a>
+    <strong>BundleInterfaceApperance.Local:RestoreAfterLoad ()</strong>
+    </dt>
+    <dd>
+    Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:SetIcon"></a>
+    <strong>BundleInterfaceApperance.Local:SetIcon (_WidgetID, _Coordinates, _Size, _Name)</strong>
+    </dt>
+    <dd>
+    Setzt einen Icon aus einer benutzerdefinierten Matrix.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_WidgetID</span>
+            Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_Coordinates</span>
+         Koordinaten
+        </li>
+        <li><span class="parameter">_Size</span>
+                Größe des Icon
+        </li>
+        <li><span class="parameter">_Name</span>
+                Name der Icon Matrix
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:SetTexture"></a>
+    <strong>BundleInterfaceApperance.Local:SetTexture (_widget, _file)</strong>
+    </dt>
+    <dd>
+    Setzt einen Icon aus einer benutzerdefinerten Datei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_widget</span>
+         Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_file</span>
+           Pfad zur Datei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:TextCosts"></a>
+    <strong>BundleInterfaceApperance.Local:TextCosts (_title, _text, _disabledText, _costs, _inSettlement)</strong>
+    </dt>
+    <dd>
+    Setzt den Kostentooltip.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+         Textzusatz wenn inaktiv
+        </li>
+        <li><span class="parameter">_costs</span>
+                Kostentabelle
+        </li>
+        <li><span class="parameter">_inSettlement</span>
+         Kosten in Siedlung suchen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:TextNormal"></a>
+    <strong>BundleInterfaceApperance.Local:TextNormal (_title, _text, _disabledText)</strong>
+    </dt>
+    <dd>
+    Setzt einen Beschreibungstooltip.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+         Textzusatz wenn inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.GetPlayerName"></a>
+    <strong>API.GetPlayerName (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt den Namen des Spielers zurück.
+<p> <b>Alias:</b> GetPlayerName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetTerritoryName"></a>
+    <strong>API.GetTerritoryName (_TerritoryID)</strong>
+    </dt>
+    <dd>
+    Gibt den Namen des Territoriums zurück.
+<p> <b>Alias:</b> GetTerritoryName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_TerritoryID</span>
+         ID des Territoriums
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideBuildMenu"></a>
+    <strong>API.HideBuildMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt das Baumenü oder blendet es ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideBuyTerritory"></a>
+    <strong>API.HideBuyTerritory (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zum Territorienkauf oder blendet ihn ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideDiplomacyMenu"></a>
+    <strong>API.HideDiplomacyMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideKnightAbility"></a>
+    <strong>API.HideKnightAbility (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideKnightButton"></a>
+    <strong>API.HideKnightButton (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zur Heldenselektion oder blendet ihn ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideMinimap"></a>
+    <strong>API.HideMinimap (_Flag)</strong>
+    </dt>
+    <dd>
+    Graut die Minimap aus oder macht sie wieder verwendbar.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideProductionMenu"></a>
+    <strong>API.HideProductionMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Produktionsmenü oder blendet ihn ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideSelectionButton"></a>
+    <strong>API.HideSelectionButton (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideToggleMinimap"></a>
+    <strong>API.HideToggleMinimap (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HideWeatherMenu"></a>
+    <strong>API.HideWeatherMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Wettermenüs oder blendet ihn ein.
+<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetIcon"></a>
+    <strong>API.SetIcon (_WidgetID, _Coordinates, _Size, _Name)</strong>
+    </dt>
+    <dd>
+    Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
+<p> Dabei müssen die Quellen nach gui_768, gui_920 und gui_1080 in der
+ entsprechenden Größe gepackt werden. Die Ordner liegen in graphics/textures.
+ Jede Map muss einen eigenen eindeutigen Namen für jede Grafik verwenden.
+<p> <u>Größen:</u>
+ Die Gesamtgröße ergibt sich aus der Anzahl der Buttons und der Pixelbreite
+ für die jeweilige Grö0e. z.B. 64 Buttons -> Größe * 8 x Größe * 8
+ <ul>
+ <li>768: 41x41</li>
+ <li>960: 52x52</li>
+ <li>1200: 64x64</li>
+ </ul>
+<p> <u>Namenskonvention:</u>
+ Die Namenskonvention wird durch das Spiel vorgegeben. Je nach Größe sind
+ die Namen der Matrizen erweitert mit .png, big.png und verybig.png. Du
+ gibst also niemals die Dateiendung mit an!
+ <ul>
+ <li>Für normale Icons: _Name .. .png</li>
+ <li>Für große Icons: _Name .. big.png</li>
+ <li>Für riesige Icons: _Name .. verybig.png</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_WidgetID</span>
+            Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_Coordinates</span>
+         Koordinaten
+        </li>
+        <li><span class="parameter">_Size</span>
+                Größe des Icon
+        </li>
+        <li><span class="parameter">_Name</span>
+                Name der Icon Matrix
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetPlayerColor"></a>
+    <strong>API.SetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</strong>
+    </dt>
+    <dd>
+    Setzt zu Spielbeginn eine andere Spielerfarbe.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Color</span>
+            Spielerfarbe
+        </li>
+        <li><span class="parameter">_Logo</span>
+             Logo (optional)
+        </li>
+        <li><span class="parameter">_Pattern</span>
+          Pattern (optional)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetPlayerName"></a>
+    <strong>API.SetPlayerName (_playerID, _name)</strong>
+    </dt>
+    <dd>
+    Gibt dem Spieler einen neuen Namen.
+<p> <b>Alias:</b> SetPlayerName
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_playerID</span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_name</span>
+             Name des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetTexture"></a>
+    <strong>API.SetTexture (_widget, _file)</strong>
+    </dt>
+    <dd>
+    Setzt eine Grafik als Bild für einen Icon oder einen Button.
+<p> Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem
+ beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
+ muss jedoch immer der korrekte Pfad angegeben werden.
+<p> <b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
+ sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
+ unterschiedlich ist.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_widget</span>
+         Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_file</span>
+           Pfad zur Datei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetTooltipCosts"></a>
+    <strong>API.SetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</strong>
+    </dt>
+    <dd>
+    Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.
+<p> <b>Alias:</b> UserSetTextBuy
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+         Textzusatz wenn inaktiv
+        </li>
+        <li><span class="parameter">_costs</span>
+                Kostentabelle
+        </li>
+        <li><span class="parameter">_inSettlement</span>
+         Kosten in Siedlung suchen
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/bundles.bundleinterfaceapperance.source.html#API.SetTooltipNormal">API.SetTooltipNormal</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "API.SetTooltipNormal"></a>
+    <strong>API.SetTooltipNormal (_title, _text, _disabledText)</strong>
+    </dt>
+    <dd>
+    Ändert den aktuellen Tooltip mit der Beschreibung.
+<p> <b>Alias:</b> UserSetTextNormal
+<p> Die Funtion ermittelt das aktuelle GUI Widget und ändert den Text des
+ Tooltip. Dazu muss die Funktion innerhalb der Mouseover-Funktion eines
+ Buttons oder Widgets mit Tooltip aufgerufen werden.
+<p> Die Funktion kann auch mit deutsch/english lokalisierten Tabellen als
+ Text gefüttert werden. In diesem Fall wird der deutsche Text genommen,
+ wenn es sich um eine deutsche Spielversion handelt. Andernfalls wird
+ immer der englische Text verwendet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+         Textzusatz wenn inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-07-03 08:40:10 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

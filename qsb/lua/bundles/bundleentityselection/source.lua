@@ -7,9 +7,10 @@
 ---
 -- Mit diesem Bundle kann die Selektion von Entities gesteuert werden.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleEntitySelection = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -21,11 +22,11 @@ QSB = QSB or {};
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.DisableRefillTrebuchet(true);
--- 
+--
 function API.DisableRefillTrebuchet(_Flag)
     if not GUI then
         API.Bridge("API.DisableRefillTrebuchet(" ..tostring(_Flag).. ")");
@@ -38,11 +39,11 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Dieben.
 -- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.DisableThiefRelease(false);
--- 
+--
 function API.DisableThiefRelease(_Flag)
     if not GUI then
         API.Bridge("API.DisableThiefRelease(" ..tostring(_Flag).. ")");
@@ -54,11 +55,11 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.
 -- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.DisableSiegeEngineRelease(true);
--- 
+--
 function API.DisableSiegeEngineRelease(_Flag)
     if not GUI then
         API.Bridge("API.DisableSiegeEngineRelease(" ..tostring(_Flag).. ")");
@@ -70,11 +71,11 @@ end
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Soldaten.
 -- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.DisableMilitaryRelease(false);
--- 
+--
 function API.DisableMilitaryRelease(_Flag)
     if not GUI then
         API.Bridge("API.DisableMilitaryRelease(" ..tostring(_Flag).. ")");
@@ -85,16 +86,16 @@ end
 
 ---
 -- Prüpft ob das Entity selektiert ist.
--- 
+--
 -- @param _Entity [string|number] Entity das selektiert sein soll
 -- @return [boolean] Entity ist selektiert
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- if API.IsEntityInSelection("hakim") then
 --     -- Do something
 -- end
--- 
+--
 function API.IsEntityInSelection(_Entity)
     if IsExisting(_Entity) then
         local EntityID = GetID(_Entity);
@@ -117,13 +118,13 @@ IsEntitySelected = API.IsEntityInSelection;
 --
 -- Wenn mehr als ein Entity selektiert sind, wird das erste Entity
 -- zurückgegeben. Sind keine Entities selektiert, wird 0 zurückgegeben.
--- 
+--
 -- @return [number] ID des selektierten Entities
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local SelectedEntity = API.GetSelectedEntity();
--- 
+--
 function API.GetSelectedEntity()
     local SelectedEntity = BundleEntitySelection.Global.Data.SelectedEntities[1];
     if GUI then
@@ -135,13 +136,13 @@ GetSelectedEntity = API.GetSelectedEntity;
 
 ---
 -- Gibt alle selektierten Entities zurück.
--- 
+--
 -- @return [table] ID des selektierten Entities
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Selection = API.GetSelectedEntities();
--- 
+--
 function API.GetSelectedEntities()
     local SelectedEntities = BundleEntitySelection.Global.Data.SelectedEntities;
     if GUI then
@@ -170,7 +171,7 @@ BundleEntitySelection = {
             ThiefRelease = true,
             SiegeEngineRelease = true,
             MilitaryRelease = true,
-            
+
             Tooltips = {
                 KnightButton = {
                     Title = {
@@ -182,7 +183,7 @@ BundleEntitySelection = {
                         en = "- Click selects the knight {cr}- Double click jumps to knight{cr}- Press CTRL to select all knights",
                     },
                 },
-                
+
                 BattalionButton = {
                     Title = {
                         de = "Militär selektieren",
@@ -193,7 +194,7 @@ BundleEntitySelection = {
                         en = "- Selects all military units {cr}- Press SHIFT to additionally select ammunition carts and trebuchets",
                     },
                 },
-                
+
                 ReleaseSoldiers = {
                     Title = {
                         de = "Militär entlassen",
@@ -208,7 +209,7 @@ BundleEntitySelection = {
                         en = "Releasing is impossible!",
                     },
                 },
-                
+
                 TrebuchetCart = {
                     Title = {
                         de = "Trebuchetwagen",
@@ -219,7 +220,7 @@ BundleEntitySelection = {
                         en = "- Can uniquely be transmuted into a trebuchet",
                     },
                 },
-        
+
                 Trebuchet = {
                     Title = {
                         de = "Trebuchet",
@@ -230,7 +231,7 @@ BundleEntitySelection = {
                         en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- Can only be filled by ammunition request {cr}- The trebuchet can be manually send back to the city",
                     },
                 },
-                
+
                 TrebuchetRefiller = {
                     Title = {
                         de = "Aufladen",
@@ -244,14 +245,14 @@ BundleEntitySelection = {
             },
         },
     },
-    
+
 };
 
 -- Global Script ---------------------------------------------------------------
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Global:Install()
@@ -260,7 +261,7 @@ end
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Boolean Nachfüllen deaktiviert
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
@@ -273,7 +274,7 @@ end
 ---
 -- Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
 -- @param _EntityID EntityID of Trebuchet
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryDisambleTrebuchet(_EntityID)
@@ -320,7 +321,7 @@ end
 ---
 -- Baut einen Trebuchet-Wagen zu einem Trebuchet aus.
 -- @param _EntityID EntityID of Trebuchet
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryErectTrebuchet(_EntityID)
@@ -362,7 +363,7 @@ end
 ---
 -- Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
 -- @param _EntityID EntityID of Trebuchet
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Global:MilitaryCallForRefiller(_EntityID)
@@ -428,7 +429,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:Install()
@@ -442,9 +443,9 @@ function BundleEntitySelection.Local:Install()
     self:OverwriteMilitaryErect();
     self:OverwriteMilitaryCommands();
     self:OverwriteGetStringTableText();
-    
+
     Core:AppendFunction(
-        "GameCallback_GUI_SelectionChanged", 
+        "GameCallback_GUI_SelectionChanged",
         self.OnSelectionCanged
     );
 end
@@ -452,7 +453,7 @@ end
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
 -- @param _Boolean Nachfüllen deaktiviert
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:DeactivateRefillTrebuchet(_Boolean)
@@ -463,7 +464,7 @@ end
 -- Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.
 --
 -- @param _Source Selection Source
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local.OnSelectionCanged(_Source)
@@ -507,7 +508,7 @@ end
 -- Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
 -- sodass eigene Texte für Keys angezeigt werden.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteGetStringTableText()
@@ -526,7 +527,7 @@ function BundleEntitySelection.Local:OverwriteGetStringTableText()
                 return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Title[Language];
             end
         end
-        
+
         return GetStringTableText_Orig_BundleEntitySelection(_key);
     end
 end
@@ -534,7 +535,7 @@ end
 ---
 -- Überschreibt die Millitärkommandos "Stop" und "Angreifen".
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryCommands()
@@ -601,7 +602,7 @@ end
 -- Überschreibt das Aufbauen von Kriegsmaschinen, sodass auch Trebuchets
 -- auf- und abgebaut werden können.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryErect()
@@ -620,7 +621,7 @@ function BundleEntitySelection.Local:OverwriteMilitaryErect()
             end
         end
     end
-    
+
     GUI_Military.ErectUpdate_Orig_BundleEntitySelection = GUI_Military.ErectUpdate;
     GUI_Military.ErectUpdate = function()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
@@ -635,7 +636,7 @@ function BundleEntitySelection.Local:OverwriteMilitaryErect()
             GUI_Military.ErectUpdate_Orig_BundleEntitySelection();
         end
     end
-    
+
     GUI_Military.ErectMouseOver_Orig_BundleEntitySelection = GUI_Military.ErectMouseOver;
     GUI_Military.ErectMouseOver = function()
         local SiegeCartID = GUI.GetSelectedEntity();
@@ -654,7 +655,7 @@ end
 -- Überschreibt das Abbauen von Kriegsmaschinen, sodass auch Trebuchets
 -- abgebaut werden können.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryDisamble()
@@ -693,7 +694,7 @@ end
 ---
 -- Überschreibt die Multiselektion, damit Trebuchets ein Icon bekommen.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMultiselectIcon()
@@ -746,7 +747,7 @@ function BundleEntitySelection.Local:OverwriteMultiselectIcon()
             GUI_MultiSelection.IconMouseOver_Orig_BundleEntitySelection();
             return;
         end
-        
+
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         if EntityType == Entities.U_SiegeEngineCart then
             local TooltipData = BundleEntitySelection.Local.Data.Tooltips.TrebuchetCart;
@@ -762,7 +763,7 @@ end
 -- Überschreibt die Funktion zur Beendigung der Eskorte, damit Einheiten auch
 -- entlassen werden können.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryDismount()
@@ -822,7 +823,7 @@ end
 ---
 -- Überschreibt "Beute abließern", sodass Diebe entlassen werden können.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteThiefDeliver()
@@ -849,7 +850,7 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
             GUI_Thief.ThiefDeliverMouseOver_Orig_BundleEntitySelection();
             return;
         end
-        
+
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         BundleEntitySelection.Local:SetTooltip(
             BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
@@ -879,7 +880,7 @@ end
 -- Hängt eine Funktion an die GUI_Tooltip.SetNameAndDescription an, sodass
 -- Tooltips überschrieben werden können.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
@@ -887,15 +888,15 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-        
+
         if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[lang], 
+                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[lang],
                 BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[lang]
             );
             return;
         end
-        
+
         if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/BattalionButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
                 BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[lang],
@@ -903,7 +904,7 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
             );
             return;
         end
-        
+
         if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Dismount") == CurrentWidgetID then
             local SelectedEntity = GUI.GetSelectedEntity();
             if SelectedEntity ~= 0 then
@@ -929,7 +930,7 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
                 end
             end
         end
-        
+
         GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean);
     end
 end
@@ -939,7 +940,7 @@ end
 --
 -- @param _TitleText Titel des Tooltip
 -- @param _DescText  Text des Tooltip
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText, _DisabledText)
@@ -948,14 +949,14 @@ function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText, _Disabled
     local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name");
     local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text");
     local PositionWidget = XGUIEng.GetCurrentWidgetID();
-    
+
     _DisabledText = _DisabledText or "";
     local DisabledText = "";
     if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText ~= "" and _text ~= "" then
         DisabledText = DisabledText .. "{cr}{@color:255,32,32,255}" .. _DisabledText;
     end
-    
-    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _TitleText);    
+
+    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _TitleText);
     XGUIEng.SetText(TooltipDescriptionWidget, _DescText .. DisabledText);
     local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
     local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
@@ -966,7 +967,7 @@ end
 -- Überschreibt den SelectKnight-Button. Durch drücken von CTLR können alle
 -- Helden selektiert werden, die der Spieler kontrolliert.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectKnight()
@@ -977,7 +978,7 @@ function BundleEntitySelection.Local:OverwriteSelectKnight()
             g_MultiSelection.EntityList = {};
             g_MultiSelection.Highlighted = {};
             GUI.ClearSelection();
-            
+
             if XGUIEng.IsModifierPressed(Keys.ModifierControl) then
                 local knights = {}
                 Logic.GetKnights(PlayerID, knights);
@@ -986,14 +987,14 @@ function BundleEntitySelection.Local:OverwriteSelectKnight()
                 end
             else
                 GUI.SelectEntity(Logic.GetKnightID(PlayerID));
-                
+
                 if ((Framework.GetTimeMs() - g_Selection.LastClickTime ) < g_Selection.MaxDoubleClickTime) then
                     local pos = GetPosition(KnightID);
                     Camera.RTS_SetLookAtPosition(pos.X, pos.Y);
                 else
                     Sound.FXPlay2DSound("ui\\mini_knight");
                 end
-                
+
                 g_Selection.LastClickTime = Framework.GetTimeMs();
             end
             GUI_MultiSelection.CreateMultiSelection(g_SelectionChangedSource.User);
@@ -1006,7 +1007,7 @@ end
 ---
 -- Überschreibt die Militärselektion, sodass der Spieler mit SHIFT zusätzlich
 -- die Munitionswagen und Trebuchets selektieren kann.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteSelectAllUnits()
@@ -1016,18 +1017,18 @@ function BundleEntitySelection.Local:OverwriteSelectAllUnits()
         else
             BundleEntitySelection.Local:NormalLeaderSortOrder();
         end
-        
+
         Sound.FXPlay2DSound("ui\\menu_click");
         GUI.ClearSelection();
-        
-        local PlayerID = GUI.GetPlayerID()   
+
+        local PlayerID = GUI.GetPlayerID()
         for i = 1, #LeaderSortOrder do
-            local EntitiesOfThisType = GetPlayerEntities(PlayerID, LeaderSortOrder[i])      
+            local EntitiesOfThisType = GetPlayerEntities(PlayerID, LeaderSortOrder[i])
             for j = 1, #EntitiesOfThisType do
                 GUI.SelectEntity(EntitiesOfThisType[j])
             end
         end
-        
+
         local Knights = {}
         Logic.GetKnights(PlayerID, Knights)
         for k = 1, #Knights do
@@ -1039,7 +1040,7 @@ end
 
 ---
 -- Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:NormalLeaderSortOrder()
@@ -1079,7 +1080,7 @@ end
 
 ---
 -- Erzeugt die erweiterte Selektion mit Munitionswagen und Trebuchets.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntitySelection.Local:ExtendedLeaderSortOrder()
@@ -1122,4 +1123,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleEntitySelection");
-

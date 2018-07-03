@@ -10,9 +10,10 @@
 -- die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
 -- zu setzen.
 --
---
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleInterfaceApperance = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -30,7 +31,7 @@ QSB.PlayerNames = {};
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideMinimap(_Flag)
     if not GUI then
@@ -55,7 +56,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideToggleMinimap(_Flag)
     if not GUI then
@@ -76,7 +77,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideDiplomacyMenu(_Flag)
     if not GUI then
@@ -97,7 +98,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideProductionMenu(_Flag)
     if not GUI then
@@ -118,7 +119,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideWeatherMenu(_Flag)
     if not GUI then
@@ -139,7 +140,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideBuyTerritory(_Flag)
     if not GUI then
@@ -160,7 +161,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideKnightAbility(_Flag)
     if not GUI then
@@ -185,7 +186,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideKnightButton(_Flag)
     if not GUI then
@@ -218,7 +219,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideSelectionButton(_Flag)
     if not GUI then
@@ -241,7 +242,7 @@ end
 -- aktiv und muss explizit zurückgenommen werden!
 --
 -- @param _Flag Widget versteckt
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.HideBuildMenu(_Flag)
     if not GUI then
@@ -268,7 +269,7 @@ end
 --
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetTexture(_widget, _file)
     if not GUI then
@@ -308,7 +309,7 @@ UserSetTexture = API.SetTexture;
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
 -- @param _Name        Name der Icon Matrix
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then
@@ -335,7 +336,7 @@ UserSetIcon = API.SetIcon;
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetTooltipNormal(_title, _text, _disabledText)
     if not GUI then
@@ -357,7 +358,7 @@ UserSetTextNormal = API.SetTooltipNormal;
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @param _costs        Kostentabelle
 -- @param _inSettlement Kosten in Siedlung suchen
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
     if not GUI then
@@ -374,7 +375,7 @@ UserSetTextBuy = API.SetTooltipCosts;
 --
 -- @param _TerritoryID ID des Territoriums
 -- @return string: Name des Territorium
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.GetTerritoryName(_TerritoryID)
     local Name = Logic.GetTerritoryName(_TerritoryID);
@@ -401,7 +402,7 @@ GetTerritoryName = API.GetTerritoryName;
 --
 -- @param _PlayerID ID des Spielers
 -- @return string: Name des Territorium
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.GetPlayerName(_PlayerID)
     local PlayerName = Logic.GetPlayerName(_PlayerID);
@@ -435,7 +436,7 @@ GetPlayerName = API.GetPlayerName;
 -- @param _playerID ID des Spielers
 -- @param _name     Name des Spielers
 -- @return string: Name des Territorium
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetPlayerName(_playerID,_name)
     assert(type(_playerID) == "number");
@@ -458,7 +459,7 @@ SetPlayerName = API.SetPlayerName;
 -- @param _Logo     Logo (optional)
 -- @param _Pattern  Pattern (optional)
 -- @return string: Name des Territorium
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     if GUI then
@@ -466,7 +467,7 @@ function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     end
     g_ColorIndex["ExtraColor1"] = 16;
     g_ColorIndex["ExtraColor2"] = 17;
-    
+
     local Type    = type(_Color);
     local Col     = (type(_Color) == "string" and g_ColorIndex[_Color]) or _Color;
     local Logo    = _Logo or -1;
@@ -495,7 +496,7 @@ BundleInterfaceApperance = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Global:Install()
@@ -504,7 +505,7 @@ end
 
 ---
 -- Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Global.RestoreAfterLoad()
@@ -517,7 +518,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Local:Install()
@@ -554,7 +555,7 @@ end
 --
 -- @param _Widget Widgetpfad oder ID
 -- @param _Hide   Hidden Flag
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Local:HideInterfaceButton(_Widget, _Hide)
@@ -564,7 +565,7 @@ end
 
 ---
 -- Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Local:RestoreAfterLoad()
@@ -580,7 +581,7 @@ end
 --
 -- @param _widget Widgetpfad oder ID
 -- @param _file   Pfad zur Datei
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Local:SetTexture(_widget, _file)
@@ -612,7 +613,7 @@ end
 -- @param _Coordinates Koordinaten
 -- @param _Size        Größe des Icon
 -- @param _Name        Name der Icon Matrix
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
@@ -654,7 +655,7 @@ end
 -- @param _title        Titel des Tooltip
 -- @param _text         Text des Tooltip
 -- @param _disabledText Textzusatz wenn inaktiv
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Local:TextNormal(_title, _text, _disabledText)
@@ -705,7 +706,7 @@ end
 -- @param _disabledText Textzusatz wenn inaktiv
 -- @param _costs        Kostentabelle
 -- @param _inSettlement Kosten in Siedlung suchen
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInterfaceApperance.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement)
