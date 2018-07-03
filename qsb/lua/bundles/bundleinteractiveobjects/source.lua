@@ -38,8 +38,8 @@ QSB.IOList = {};
 --
 -- <b>Alias:</b> SetupInteractiveObject
 --
--- @param _Name          Skriptname des Objekts
--- @param _Description   Beschreibung
+-- @param _Name [string] Skriptname des Objekts
+-- @param _Description [table] Beschreibung
 -- @within Anwenderfunktionen
 -- @see API.CreateObject
 --
@@ -154,7 +154,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 --
 -- <b>Alias:</b> CreateObject
 --
--- @param _Description   Beschreibung
+-- @param _Description [table] Beschreibung
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -184,7 +184,7 @@ CreateObject = API.CreateObject;
 --
 -- <b>Alias:</b> RemoveInteractiveObject
 --
--- @param _EntityName Skriptname des IO
+-- @param _EntityName [string] Skriptname des IO
 -- @within Anwenderfunktionen
 --
 function API.RemoveInteractiveObject(_EntityName)
@@ -210,8 +210,8 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 --
 -- <b>Alias</b>: InteractiveObjectActivate
 --
--- @param _EntityName Skriptname des Objektes
--- @param _State      State des Objektes
+-- @param _EntityName [string] Skriptname des Objektes
+-- @param _State [number] State des Objektes
 -- @within Anwenderfunktionen
 --
 function API.InteractiveObjectActivate(_EntityName, _State)
@@ -241,7 +241,7 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 --
 -- <b>Alias</b>: InteractiveObjectDeactivate
 --
--- @param _EntityName Scriptname des Objektes
+-- @param _EntityName [string] Scriptname des Objektes
 -- @within Anwenderfunktionen
 --
 function API.InteractiveObjectDeactivate(_EntityName)
@@ -272,8 +272,8 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 --
 -- <b>Alias:</b> AddCustomIOName
 --
--- @param _Key  Typname des Entity
--- @param _Text Text der Beschriftung
+-- @param _Key [string] Typname des Entity
+-- @param _Text [string] Text der Beschriftung
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -329,7 +329,7 @@ end
 -- Angaben hängen teilweise vom Typ der Entity, teilweise vom
 -- Verwendungszweck ab.
 --
--- @param _Description Beschreibung
+-- @param _Description [table] Beschreibung
 -- @within Internal
 -- @local
 --
@@ -403,7 +403,7 @@ end
 -- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
 -- Konfiguration des Objektes entfernt.
 --
--- @param _EntityName Skriptname des IO
+-- @param _EntityName [string] Skriptname des IO
 -- @within Internal
 -- @local
 --
@@ -424,8 +424,8 @@ end
 -- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
 -- Mit dieser Funktion kann ein Name angelegt werden.
 --
--- @param _Key  Identifier der Beschriftung
--- @param _Text Text der Beschriftung
+-- @param _Key [string] Identifier der Beschriftung
+-- @param _Text [string] Text der Beschriftung
 -- @within Internal
 -- @local
 --
@@ -567,9 +567,9 @@ end
 ---
 -- Prüft, ob die Kosten für ein interaktives Objekt beglichen werden können.
 --
--- @param _PlayerID Spieler, der zahlt
--- @param _Good     Typ der Ware
--- @param _Amount   Menge der Ware
+-- @param _PlayerID [number] Spieler, der zahlt
+-- @param _Good [number] Typ der Ware
+-- @param _Amount [number] Menge der Ware
 -- @within Internal
 -- @local
 --
@@ -584,9 +584,9 @@ end
 ---
 -- Zieht die Kosten des Objektes aus dem Lagerhaus des Spielers ab.
 --
--- @param _PlayerID Spieler, der zahlt
--- @param _Good     Typ der Ware
--- @param _Amount   Menge der Ware
+-- @param _PlayerID [number] Spieler, der zahlt
+-- @param _Good [number] Typ der Ware
+-- @param _Amount [number] Menge der Ware
 -- @within Internal
 -- @local
 --
@@ -1017,11 +1017,11 @@ end
 ---
 -- Setzt den Kostentooltip des aktuellen Widgets.
 --
--- @param _Title        Titel des Tooltip
--- @param _Text         Text des Tooltip
--- @param _DisabledText Textzusatz wenn inaktiv
--- @param _Costs        Kostentabelle
--- @param _InSettlement Kosten in Siedlung suchen
+-- @param _Title [string] Titel des Tooltip
+-- @param _Text [string] Text des Tooltip
+-- @param _DisabledText [string] Textzusatz wenn inaktiv
+-- @param _Costs [table] Kostentabelle
+-- @param _InSettlement [boolean] Kosten in Siedlung suchen
 -- @within Internal
 -- @local
 --
@@ -1058,8 +1058,8 @@ end
 -- Ändert die Textur eines Icons des aktuellen Widget.
 -- TODO: Eigene Matrizen funktionieren nicht - Grund unbekannt.
 --
--- @param _Widget Icon Widget
--- @param _Icon   Icon Textur
+-- @param _Widget [string|number] Icon Widget
+-- @param _Icon [string|table] Icon Textur
 -- @within Internal
 -- @local
 --
