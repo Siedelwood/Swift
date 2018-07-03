@@ -9,7 +9,7 @@
 -- Cutscenes. Ausserdem ermöglicht es das direkte Erfassen der
 -- Kamerapositionen aus der Map heraus.
 --
--- @module AddOnGameCutscenes
+--
 -- @set sort=true
 --
 

@@ -13,7 +13,7 @@
 -- einem Schiff anfährt. Dabei kann der Fahrtweg frei mit Wegpunkten bestimmt
 -- werden. Es können auch mehrere Spieler zu Händlern gemacht werden.
 --
--- @module BundleTradingFunctions
+--
 -- @set sort=true
 --
 

@@ -8,7 +8,7 @@
 -- Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
 -- Gebäude nicht gebaut bzw. nicht abgerissen werden darf.
 --
--- @module BundleConstructionControl
+--
 -- @set sort=false
 --
 

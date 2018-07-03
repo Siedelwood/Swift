@@ -18,7 +18,7 @@
 -- <li>Im Questassistenten über Reward_DEBUG</li>
 -- </ol>
 --
--- @module AddOnQuestDebug
+--
 -- @set sort=true
 --
 

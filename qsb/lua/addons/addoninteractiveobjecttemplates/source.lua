@@ -36,7 +36,7 @@
 -- ankommt, wird die Baustelle wieder freigegeben.
 -- </p>
 --
--- @module AddOnInteractiveObjectTemplates
+--
 -- @set sort=true
 --
 

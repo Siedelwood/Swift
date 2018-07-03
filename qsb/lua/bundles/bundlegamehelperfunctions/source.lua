@@ -8,7 +8,7 @@
 -- Dieses Bundle gibt dem Mapper Werkzeuge in die Hand, um einige Features zu
 -- gewähren oder zu entziehen.
 --
--- @module BundleGameHelperFunctions
+--
 -- @set sort=true
 --
 

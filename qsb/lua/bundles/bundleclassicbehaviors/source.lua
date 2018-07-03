@@ -10,7 +10,7 @@
 -- Die Behavior sind weitesgehend unverändert und es dürfte keine Probleme mit
 -- Inkompatibelität geben, wenn die QSB ausgetauscht wird.
 --
--- @module BundleClassicBehaviors
+--
 -- @set sort=true
 --
 

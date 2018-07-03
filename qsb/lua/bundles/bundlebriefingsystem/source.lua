@@ -34,7 +34,7 @@
 -- Fall kann über die Angabe von UV-Koordinaten zu einem bestimmten Abschnitt
 -- der Grafik gesprungen oder geflogen werden.
 --
--- @module BundleBriefingSystem
+--
 -- @set sort=false
 --
 

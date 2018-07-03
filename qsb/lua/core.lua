@@ -40,7 +40,7 @@
 ---
 -- Hier werden wichtige Basisfunktionen bereitgestellt. Diese Funktionen sind
 -- immer Bestandteil der QSB, egal welche Bundles gewält werden.
--- @module Core
+--
 -- @set sort=false
 --
 

@@ -12,7 +12,7 @@
 -- in einzelnen Gebäuden und der Abriss einzelner Gebäudestufen sind natürlich
 -- im Standard dabei.
 --
--- @module BundleBuildingButtons
+--
 -- @set sort=false
 --
 

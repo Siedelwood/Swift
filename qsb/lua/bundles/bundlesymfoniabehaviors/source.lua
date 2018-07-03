@@ -7,7 +7,7 @@
 ---
 -- Dieses Bundle enthält einige weitere nützliche Standard-Behavior.
 --
--- @module BundleSymfoniaBehaviors
+--
 -- @set sort=true
 --
 

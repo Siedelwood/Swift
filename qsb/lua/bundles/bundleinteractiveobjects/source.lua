@@ -16,7 +16,7 @@
 -- ein Gegenstand wird vom Helden aufgehoben, ein Marktstand, der etwas
 -- verkauft, ....
 --
--- @module BundleInteractiveObjects
+--
 -- @set sort=true
 --
 

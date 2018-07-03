@@ -8,7 +8,7 @@
 -- Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze Playlists als
 -- Stimme abzuspielen.
 --
--- @module BundleMusicTools
+--
 -- @set sort=true
 --
 

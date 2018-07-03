@@ -126,7 +126,7 @@
 -- </li>
 -- </ul>
 --
--- @module BundleKnightTitleRequirements
+--
 -- @set sort=true
 --
 

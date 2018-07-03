@@ -10,7 +10,7 @@
 -- die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
 -- zu setzen.
 --
--- @module BundleInterfaceApperance
+--
 -- @set sort=true
 --
 

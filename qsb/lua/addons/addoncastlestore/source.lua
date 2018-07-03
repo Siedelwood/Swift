@@ -17,7 +17,7 @@
 -- gesperrt werden. Eine gesperrte Ware wird nicht wieder ausgelagert, auch
 -- wenn Platz im Lager frei wird.
 --
--- @module AddOnCastleStore
+--
 -- @set sort=true
 --
 

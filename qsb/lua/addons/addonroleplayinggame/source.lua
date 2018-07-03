@@ -10,7 +10,7 @@
 -- wurden einige Elemente ausgespart um es zu vereinfachen. Außerdem ist 
 -- die Steuerung benutzerfreundlicher gestaltet.
 --
--- @module AddOnRolePlayingGame
+--
 -- @set sort=true
 --
 

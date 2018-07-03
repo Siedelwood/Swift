@@ -7,7 +7,7 @@
 ---
 -- Dieses Bundle enthält häufig gebrauchte Funktionen für Entities.
 --
--- @module BundleEntityHelperFunctions
+--
 -- @set sort=true
 --
 

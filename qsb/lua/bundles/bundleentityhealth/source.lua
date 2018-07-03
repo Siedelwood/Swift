@@ -8,7 +8,7 @@
 -- Dieses Bundle stellt Funktionen bereit, mit denen die Gesundheit von
 -- Entities überwacht oder geändert werden kann.
 --
--- @module BundleEntityHealth
+--
 -- @set sort=false
 --
 

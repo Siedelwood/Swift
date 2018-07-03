@@ -8,7 +8,7 @@
 -- Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
 -- verändert werden, die sonst unzugänglich wären.
 --
--- @module BundleEntityScriptingValues
+--
 -- @set sort=true
 --
 

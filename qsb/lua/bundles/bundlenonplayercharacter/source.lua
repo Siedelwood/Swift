@@ -13,7 +13,7 @@
 --
 -- Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
 --
--- @module BundleNonPlayerCharacter
+--
 -- @set sort=false
 --
 

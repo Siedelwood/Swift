@@ -13,7 +13,7 @@
 -- Menge an Text anzeigen kann. Erreicht der Text eine entsprechende Menge,
 -- wird automatisch eine Scrollbar eingeblendet.
 --
--- @module BundleDialogWindows
+--
 -- @set sort=true
 --
 

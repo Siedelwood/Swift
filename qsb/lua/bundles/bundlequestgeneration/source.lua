@@ -13,7 +13,7 @@
 -- können im Skript kopiert und angepasst werden. Es ist ebenfalls machbar,
 -- die Aufträge in Sequenzen zu erzeugen.
 --
--- @module BundleQuestGeneration
+--
 -- @set sort=false
 --
 

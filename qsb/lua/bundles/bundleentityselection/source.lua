@@ -7,7 +7,7 @@
 ---
 -- Mit diesem Bundle kann die Selektion von Entities gesteuert werden.
 --
--- @module BundleEntitySelection
+--
 -- @set sort=true
 --
 
