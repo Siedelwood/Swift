@@ -30,7 +30,7 @@ QSB.PlayerNames = {};
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideMinimap(_Flag)
@@ -55,7 +55,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideToggleMinimap(_Flag)
@@ -76,7 +76,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideDiplomacyMenu(_Flag)
@@ -97,7 +97,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideProductionMenu(_Flag)
@@ -118,7 +118,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideWeatherMenu(_Flag)
@@ -139,7 +139,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideBuyTerritory(_Flag)
@@ -160,7 +160,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideKnightAbility(_Flag)
@@ -185,7 +185,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideKnightButton(_Flag)
@@ -218,7 +218,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideSelectionButton(_Flag)
@@ -241,7 +241,7 @@ end
 -- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!
 --
--- @param _Flag Widget versteckt
+-- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.HideBuildMenu(_Flag)
@@ -267,8 +267,8 @@ end
 -- sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
 -- unterschiedlich ist.
 --
--- @param _widget Widgetpfad oder ID
--- @param _file   Pfad zur Datei
+-- @param _widget [string|number] Widgetpfad oder ID
+-- @param _file [string] Pfad zur Datei
 -- @within Anwenderfunktionen
 --
 function API.SetTexture(_widget, _file)
@@ -305,10 +305,10 @@ UserSetTexture = API.SetTexture;
 -- <li>Für riesige Icons: _Name .. verybig.png</li>
 -- </ul>
 --
--- @param _WidgetID    Widgetpfad oder ID
--- @param _Coordinates Koordinaten
--- @param _Size        Größe des Icon
--- @param _Name        Name der Icon Matrix
+-- @param _WidgetID [string|number] Widgetpfad oder ID
+-- @param _Coordinates [table] Koordinaten
+-- @param _Size [number] Größe des Icon
+-- @param _Name [string] Name der Icon Matrix
 -- @within Anwenderfunktionen
 --
 function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
@@ -333,9 +333,9 @@ UserSetIcon = API.SetIcon;
 -- wenn es sich um eine deutsche Spielversion handelt. Andernfalls wird
 -- immer der englische Text verwendet.
 --
--- @param _title        Titel des Tooltip
--- @param _text         Text des Tooltip
--- @param _disabledText Textzusatz wenn inaktiv
+-- @param _title [string] Titel des Tooltip
+-- @param _text [string] Text des Tooltip
+-- @param _disabledText [string] Textzusatz wenn inaktiv
 -- @within Anwenderfunktionen
 --
 function API.SetTooltipNormal(_title, _text, _disabledText)
@@ -353,11 +353,11 @@ UserSetTextNormal = API.SetTooltipNormal;
 --
 -- @see API.SetTooltipNormal
 --
--- @param _title        Titel des Tooltip
--- @param _text         Text des Tooltip
--- @param _disabledText Textzusatz wenn inaktiv
--- @param _costs        Kostentabelle
--- @param _inSettlement Kosten in Siedlung suchen
+-- @param _title [string] Titel des Tooltip
+-- @param _text [string] Text des Tooltip
+-- @param _disabledText [string] Textzusatz wenn inaktiv
+-- @param _costs [table] Kostentabelle
+-- @param _inSettlement [boolean] Kosten in Siedlung suchen
 -- @within Anwenderfunktionen
 --
 function API.SetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
@@ -373,8 +373,8 @@ UserSetTextBuy = API.SetTooltipCosts;
 --
 -- <b>Alias:</b> GetTerritoryName
 --
--- @param _TerritoryID ID des Territoriums
--- @return string: Name des Territorium
+-- @param _TerritoryID [number] ID des Territoriums
+-- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
 function API.GetTerritoryName(_TerritoryID)
@@ -400,8 +400,8 @@ GetTerritoryName = API.GetTerritoryName;
 --
 -- <b>Alias:</b> GetPlayerName
 --
--- @param _PlayerID ID des Spielers
--- @return string: Name des Territorium
+-- @param _PlayerID [number] ID des Spielers
+-- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
 function API.GetPlayerName(_PlayerID)
@@ -433,9 +433,9 @@ GetPlayerName = API.GetPlayerName;
 --
 -- <b>Alias:</b> SetPlayerName
 --
--- @param _playerID ID des Spielers
--- @param _name     Name des Spielers
--- @return string: Name des Territorium
+-- @param _PlayerID [number] ID des Spielers
+-- @param _Name [string] Name des Spielers
+-- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
 function API.SetPlayerName(_playerID,_name)
@@ -454,11 +454,11 @@ SetPlayerName = API.SetPlayerName;
 ---
 -- Setzt zu Spielbeginn eine andere Spielerfarbe.
 --
--- @param _PlayerID ID des Spielers
--- @param _Color    Spielerfarbe
--- @param _Logo     Logo (optional)
--- @param _Pattern  Pattern (optional)
--- @return string: Name des Territorium
+-- @param _PlayerID [number] ID des Spielers
+-- @param _Color [number] Spielerfarbe
+-- @param _Logo [number] Logo (optional)
+-- @param _Pattern [number] Pattern (optional)
+-- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
 function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
@@ -553,8 +553,8 @@ end
 ---
 -- Versteht ein Widget oder blendet es ein.
 --
--- @param _Widget Widgetpfad oder ID
--- @param _Hide   Hidden Flag
+-- @param _widget [string|number] Widgetpfad oder ID
+-- @param _Hide [boolean] Hidden Flag
 -- @within Internal
 -- @local
 --
@@ -579,8 +579,8 @@ end
 ---
 -- Setzt einen Icon aus einer benutzerdefinerten Datei.
 --
--- @param _widget Widgetpfad oder ID
--- @param _file   Pfad zur Datei
+-- @param _widget [string|number] Widgetpfad oder ID
+-- @param _file [string] Pfad zur Datei
 -- @within Internal
 -- @local
 --
@@ -609,10 +609,10 @@ end
 ---
 -- Setzt einen Icon aus einer benutzerdefinierten Matrix.
 --
--- @param _WidgetID    Widgetpfad oder ID
--- @param _Coordinates Koordinaten
--- @param _Size        Größe des Icon
--- @param _Name        Name der Icon Matrix
+-- @param _WidgetID [string|number] Widgetpfad oder ID
+-- @param _Coordinates [table] Koordinaten
+-- @param _Size [number] Größe des Icon
+-- @param _Name [string] Name der Icon Matrix
 -- @within Internal
 -- @local
 --
@@ -652,9 +652,9 @@ end
 ---
 -- Setzt einen Beschreibungstooltip.
 --
--- @param _title        Titel des Tooltip
--- @param _text         Text des Tooltip
--- @param _disabledText Textzusatz wenn inaktiv
+-- @param _title [string] Titel des Tooltip
+-- @param _text [string] Text des Tooltip
+-- @param _disabledText [string] Textzusatz wenn inaktiv
 -- @within Internal
 -- @local
 --
@@ -701,11 +701,11 @@ end
 ---
 -- Setzt den Kostentooltip.
 --
--- @param _title        Titel des Tooltip
--- @param _text         Text des Tooltip
--- @param _disabledText Textzusatz wenn inaktiv
--- @param _costs        Kostentabelle
--- @param _inSettlement Kosten in Siedlung suchen
+-- @param _title [string] Titel des Tooltip
+-- @param _text [string] Text des Tooltip
+-- @param _disabledText [string] Textzusatz wenn inaktiv
+-- @param _costs [table] Kostentabelle
+-- @param _inSettlement [boolean] Kosten in Siedlung suchen
 -- @within Internal
 -- @local
 --
