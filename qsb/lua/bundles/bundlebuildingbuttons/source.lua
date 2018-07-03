@@ -33,7 +33,7 @@ QSB = QSB or {};
 -- Buttons sind, handelt es sich hierbei um einen Custom Button. Single
 -- Stop belegt Index 1.
 --
--- <b>Alias:</b> ActivateSingleStop
+-- <p><b>Alias:</b> ActivateSingleStop</p>
 --
 -- @within Anwenderfunktionen
 -- @see API.AddCustomBuildingButton
@@ -56,7 +56,7 @@ ActivateSingleStop = API.ActivateSingleStop;
 ---
 -- Deaktiviert die Single Stop Buttons.
 --
--- <b>Alias:</b> DeactivateSingleStop
+-- <p><b>Alias:</b> DeactivateSingleStop</p>
 --
 -- @within Anwenderfunktionen
 --
@@ -74,7 +74,7 @@ DeactivateSingleStop = API.DeactivateSingleStop;
 -- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
 -- jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
 --
--- <b>Alias:</b> UseDowngrade
+-- <p><b>Alias:</b> UseDowngrade</p>
 --
 -- @param _flag [boolean] Downgrade aktiv/inaktiv
 -- @within Anwenderfunktionen
@@ -95,7 +95,7 @@ UseDowngrade = API.UseDowngrade;
 ---
 -- Erlaube oder verbiete dem Spieler Schafe zu züchten.
 --
--- <b>Alias:</b> UseBreedSheeps
+-- <p><b>Alias:</b> UseBreedSheeps</p>
 --
 -- @param _flag [boolean] Schafzucht aktiv/inaktiv
 -- @within Anwenderfunktionen
@@ -126,7 +126,7 @@ UseBreedSheeps = API.UseBreedSheeps;
 ---
 -- Erlaube oder verbiete dem Spieler Kühe zu züchten.
 --
--- <b>Alias:</b> UseBreedCattle
+-- <p><b>Alias:</b> UseBreedCattle</p>
 --
 -- @param _flag [boolean] Kuhzucht aktiv/inaktiv
 -- @within Anwenderfunktionen
@@ -157,7 +157,7 @@ UseBreedCattle = API.UseBreedCattle;
 ---
 -- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
 --
--- <b>Alias:</b> SetSheepGrainCost
+-- <p><b>Alias:</b> SetSheepGrainCost</p>
 --
 -- @param _Amount [number] Getreidekosten
 -- @within Anwenderfunktionen
@@ -178,7 +178,7 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 ---
 -- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
 --
--- <b>Alias:</b> SetCattleGrainCost
+-- <p><b>Alias:</b> SetCattleGrainCost</p>
 --
 -- @param _Amount [number] Getreidekosten
 -- @within Anwenderfunktionen
@@ -199,7 +199,7 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 ---
 -- Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
 --
--- <b>Alias:</b> SetSheepNeeded
+-- <p><b>Alias:</b> SetSheepNeeded</p>
 --
 -- @param _Amount [number] Benötigte Menge
 -- @within Anwenderfunktionen
@@ -223,7 +223,7 @@ SetSheepNeeded = API.SetSheepNeeded;
 ---
 -- Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
 --
--- <b>Alias:</b> SetCattleNeeded
+-- <p><b>Alias:</b> SetCattleNeeded</p>
 --
 -- @param _Amount [number] Benötigte Menge
 -- @within Anwenderfunktionen
@@ -270,7 +270,7 @@ SetCattleNeeded = API.SetCattleNeeded;
 -- müssen sich die Buttonfunktionen im lokalen Skript befinden. Die Namen der
 -- Funktionen sind in diesem Fall als Zeichenkette zu übergeben!
 --
--- <b>Alias:</b> AddBuildingButton
+-- <p><b>Alias:</b> AddBuildingButton</p>
 --
 -- @param _Index   [number] Index des Buttons
 -- @param _Action  [function] Aktion des Buttons
@@ -318,7 +318,7 @@ AddBuildingButton = API.AddCustomBuildingButton;
 ---
 -- Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.
 --
--- <b>Alias:</b> DeleteBuildingButton
+-- <p><b>Alias:</b> DeleteBuildingButton</p>
 --
 -- @param _Index   [number] Index des Buttons
 -- @within Anwenderfunktionen

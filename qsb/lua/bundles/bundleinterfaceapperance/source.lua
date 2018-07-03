@@ -322,7 +322,7 @@ UserSetIcon = API.SetIcon;
 ---
 -- Ändert den aktuellen Tooltip mit der Beschreibung.
 --
--- <b>Alias:</b> UserSetTextNormal
+-- <p><b>Alias:</b> UserSetTextNormal</p>
 --
 -- Die Funtion ermittelt das aktuelle GUI Widget und ändert den Text des
 -- Tooltip. Dazu muss die Funktion innerhalb der Mouseover-Funktion eines
@@ -349,7 +349,7 @@ UserSetTextNormal = API.SetTooltipNormal;
 ---
 -- Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.
 --
--- <b>Alias:</b> UserSetTextBuy
+-- <p><b>Alias:</b> UserSetTextBuy</p>
 --
 -- @see API.SetTooltipNormal
 --
@@ -371,7 +371,7 @@ UserSetTextBuy = API.SetTooltipCosts;
 ---
 -- Gibt den Namen des Territoriums zurück.
 --
--- <b>Alias:</b> GetTerritoryName
+-- <p><b>Alias:</b> GetTerritoryName</p>
 --
 -- @param _TerritoryID [number] ID des Territoriums
 -- @return [string]  Name des Territorium
@@ -398,7 +398,7 @@ GetTerritoryName = API.GetTerritoryName;
 ---
 -- Gibt den Namen des Spielers zurück.
 --
--- <b>Alias:</b> GetPlayerName
+-- <p><b>Alias:</b> GetPlayerName</p>
 --
 -- @param _PlayerID [number] ID des Spielers
 -- @return [string]  Name des Territorium
@@ -431,7 +431,7 @@ GetPlayerName = API.GetPlayerName;
 ---
 -- Gibt dem Spieler einen neuen Namen.
 --
--- <b>Alias:</b> SetPlayerName
+-- <p><b>Alias:</b> SetPlayerName</p>
 --
 -- @param _PlayerID [number] ID des Spielers
 -- @param _Name [string] Name des Spielers

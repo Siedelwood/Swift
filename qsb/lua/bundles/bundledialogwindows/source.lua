@@ -503,7 +503,7 @@ end
 -- Optional kann ein Button genutzt werden, der eine Aktion ausführt, wenn
 -- er gedrückt wird.
 --
--- <b>Alias</b>: TextWindow:New
+-- <p><b>Alias</b>: TextWindow:New</p>
 --
 -- Parameterliste:
 -- <table>
@@ -557,7 +557,7 @@ end
 -- Schlüssel-Wert-Paare angegeben werden und dürfen vorhandene Pare nicht
 -- überschreiben.
 --
--- <b>Alias</b>: TextWindow:AddParamater
+-- <p><b>Alias</b>: TextWindow:AddParamater</p>
 --
 -- @param _Key   [string] Schlüssel
 -- @param _Value [mixed] Wert
@@ -578,7 +578,7 @@ end
 ---
 -- Setzt die Überschrift des TextWindow.
 --
--- <b>Alias</b>: TextWindow:SetCaption
+-- <p><b>Alias</b>: TextWindow:SetCaption</p>
 --
 -- @param _Text [string] Titel des Textfenster
 -- @return self
@@ -602,7 +602,7 @@ end
 ---
 -- Setzt den Inhalt des TextWindow.
 --
--- <b>Alias</b>: TextWindow:SetContent
+-- <p><b>Alias</b>: TextWindow:SetContent</p>
 --
 -- @param _Text [string] Inhalt des Textfenster
 -- @return self
@@ -627,7 +627,7 @@ end
 -- Setzt die Close Action des TextWindow. Die Funktion wird beim schließen
 -- des Fensters ausgeführt.
 --
--- <b>Alias</b>: TextWindow:SetAction
+-- <p><b>Alias</b>: TextWindow:SetAction</p>
 --
 -- @param _Function [function] Close Callback
 -- @return self
@@ -653,7 +653,7 @@ end
 -- Der Button muss mit einer Funktion versehen werden. Sobald der Button
 -- betätigt wird, wird die Funktion ausgeführt.
 --
--- <b>Alias</b>: TextWindow:SetButton
+-- <p><b>Alias</b>: TextWindow:SetButton</p>
 --
 -- @param _Text     [string] Beschriftung des Buttons
 -- @param _Callback [function] Aktion des Buttons
@@ -685,7 +685,7 @@ end
 ---
 -- Zeigt ein erzeigtes Fenster an.
 --
--- <b>Alias</b>: TextWindow:Show
+-- <p><b>Alias</b>: TextWindow:Show</p>
 --
 -- @within TextWindow
 -- @local

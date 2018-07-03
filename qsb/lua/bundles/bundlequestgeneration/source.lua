@@ -48,7 +48,7 @@ QSB = QSB or {};
 -- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
 -- </ul>
 --
--- <b>Alias:</b> AddQuest
+-- <p><b>Alias:</b> AddQuest</p>
 --
 -- @param _Data [table] Questdefinition
 -- @return [string] Name des Quests
@@ -239,14 +239,14 @@ end
 -- Alle Paramater sind optional und können von rechts nach links weggelassen
 -- oder mit nil aufgefüllt werden.
 --
--- @param _Text       Anzeigetext der Nachricht
--- @param _Sender     Sender der Nachricht
--- @param _Receiver   Receiver der Nachricht
--- @param _Ancestor   Vorgänger-Quest
--- @param _AncestorWt Wartezeit
--- @param _Callback   Callback
--- @return number: QuestID
--- @return table: Quest
+-- @param _Text       [string] Anzeigetext der Nachricht
+-- @param _Sender     [number] Sender der Nachricht
+-- @param _Receiver   [number] Receiver der Nachricht
+-- @param _Ancestor   [string] Vorgänger-Quest
+-- @param _AncestorWt [number] Wartezeit
+-- @param _Callback   [function] Callback
+-- @return [number] QuestID
+-- @return [table] Quest
 --
 -- @within Internal
 -- @local
@@ -290,9 +290,9 @@ end
 ---
 -- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
 --
--- @param _Data Daten des Quest.
--- @return string: Name des erzeugten Quests
--- @return number: Gesamtanzahl Quests
+-- @param _Data [table] Daten des Quest.
+-- @return [string] Name des erzeugten Quests
+-- @return [number] Gesamtanzahl Quests
 -- @within Internal
 -- @local
 --
@@ -340,8 +340,8 @@ end
 --
 -- <b>Achtung: </b>Diese Funktion wird vom Code aufgerufen!
 --
--- @param _ID   Id des Quests
--- @param _Data Quest Data
+-- @param _ID   [number] Id des Quests
+-- @param _Data [table] Quest Data
 -- @within Internal
 -- @local
 --
@@ -380,10 +380,8 @@ function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
 end
 
 ---
--- DO NOT USE THIS FUNCTION!
--- Startet alle Quests in der GenerationList.
---
--- @within Internal
+-- DO NOT USE THIS FUNCTION!--
+-- @within Deprecated
 -- @local
 --
 function BundleQuestGeneration.Global:StartQuests()
@@ -517,7 +515,7 @@ end
 -- Diese Funktion muss durch ein Debug Bundle überschrieben werden um Quests
 -- in der Initalisiererliste zu testen.
 --
--- @param _List Liste der Quests
+-- @param _List [table] Liste der Quests
 -- @within Internal
 -- @local
 --

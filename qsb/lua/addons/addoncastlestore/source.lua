@@ -142,7 +142,7 @@ end
 ---
 -- Erzeugt ein neues Burglager-Objekt und gibt es zurück.
 --
--- <b>Alias</b>: QSB.CastleStore:New
+-- <p><b>Alias</b>: QSB.CastleStore:New</p>
 --
 -- @param _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore Instanz
@@ -173,7 +173,7 @@ end
 --
 -- Wurde kein Burglager für den Spieler erstellt, wird nil zurückgegeben.
 --
--- <b>Alias</b>: QSB.CastleStore:GetInstance
+-- <p><b>Alias</b>: QSB.CastleStore:GetInstance</p>
 --
 -- @param _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore
@@ -193,7 +193,7 @@ end
 -- der Waren im Burglager. Hat der Spieler kein Burglager, wird
 -- nur die Menge im Lagerhaus zurückgegeben.
 --
--- <b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore
+-- <p><b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore</p>
 --
 -- @param _Good          Warentyp
 -- @param _PlayeriD      ID des Spielers
@@ -220,7 +220,7 @@ end
 --
 -- Die Burg wird dabei natürlich nicht zerstört.
 --
--- <b>Alias</b>: QSB.CastleStore:Dispose
+-- <p><b>Alias</b>: QSB.CastleStore:Dispose</p>
 --
 -- @within QSB.CastleStore
 --
@@ -242,7 +242,7 @@ end
 -- Setzt die Obergrenze für eine Ware, ab der ins Burglager
 -- ausgelagert wird.
 --
--- <b>Alias</b>: QSB.CastleStore:SetUperLimitInStorehouseForGoodType
+-- <p><b>Alias</b>: QSB.CastleStore:SetUperLimitInStorehouseForGoodType</p>
 --
 -- @param _Good      Warentyp
 -- @param _Limit     Obergrenze
@@ -269,7 +269,7 @@ end
 -- 150, 300, 600, 1200
 -- </code>
 --
--- <b>Alias</b>: QSB.CastleStore:SetStorageLimit
+-- <p><b>Alias</b>: QSB.CastleStore:SetStorageLimit</p>
 --
 -- @param _Limit     Maximale Kapazität
 -- @return self
@@ -292,7 +292,7 @@ end
 ---
 -- Gibt die Menge an Waren des Typs im Burglager zurück.
 --
--- <b>Alias</b>: QSB.CastleStore:GetAmount
+-- <p><b>Alias</b>: QSB.CastleStore:GetAmount</p>
 --
 -- @param _Good  Warentyp
 -- @return number: Menge an Waren im Burglager
@@ -309,7 +309,7 @@ end
 ---
 -- Gibt die Gesamtmenge aller Waren im Burglager zurück.
 --
--- <b>Alias</b>: QSB.CastleStore:GetTotalAmount
+-- <p><b>Alias</b>: QSB.CastleStore:GetTotalAmount</p>
 --
 -- @return number: Gesamtmenge aller Waren
 -- @within QSB.CastleStore
@@ -326,7 +326,7 @@ end
 ---
 -- Gibt das aktuelle Lagerlimit zurück.
 --
--- <b>Alias</b>: QSB.CastleStore:GetLimit
+-- <p><b>Alias</b>: QSB.CastleStore:GetLimit</p>
 --
 -- @return number: Lagerlimt in der Burg
 -- @within QSB.CastleStore
@@ -349,7 +349,7 @@ end
 ---
 -- Gibt zurück, ob die Ware akzeptiert wird.
 --
--- <b>Alias</b>: QSB.CastleStore:IsGoodAccepted
+-- <p><b>Alias</b>: QSB.CastleStore:IsGoodAccepted</p>
 --
 -- @param _Good  Warentyp
 -- @return boolean: Ware wird akzeptiert
@@ -363,7 +363,7 @@ end
 ---
 -- Setzt, ob die Ware akzeptiert wird.
 --
--- <b>Alias</b>: QSB.CastleStore:SetGoodAccepted
+-- <p><b>Alias</b>: QSB.CastleStore:SetGoodAccepted</p>
 --
 -- @param _Good      Watentyp
 -- @param _Flag     Akzeptanz-Flag
@@ -384,7 +384,7 @@ end
 ---
 -- Gibt zurück, ob die Ware gesperrt ist.
 --
--- <b>Alias</b>: QSB.CastleStore:IsGoodLocked
+-- <p><b>Alias</b>: QSB.CastleStore:IsGoodLocked</p>
 --
 -- @param _Good  Warentyp
 -- @return boolean: Ware ist gesperrt
@@ -398,7 +398,7 @@ end
 ---
 -- Setzt ob die Ware gesperrt ist, also nicht ausgelagert wird.
 --
--- <b>Alias</b>: QSB.CastleStore:SetGoodLocked
+-- <p><b>Alias</b>: QSB.CastleStore:SetGoodLocked</p>
 --
 -- @param _Good      Watentyp
 -- @param _Flag     Akzeptanz-Flag
@@ -419,7 +419,7 @@ end
 ---
 -- Setzt den Modus "Zwischenlagerung", als ob der Tab geklickt wird.
 --
--- <b>Alias</b>: QSB.CastleStore:ActivateTemporaryMode
+-- <p><b>Alias</b>: QSB.CastleStore:ActivateTemporaryMode</p>
 --
 -- @return self
 -- @within Internal
@@ -436,7 +436,7 @@ end
 ---
 -- Setzt den Modus "Verwahrung", als ob der Tab geklickt wird.
 --
--- <b>Alias</b>: QSB.CastleStore:ActivateStockMode
+-- <p><b>Alias</b>: QSB.CastleStore:ActivateStockMode</p>
 --
 -- @return self
 -- @within Internal
@@ -453,7 +453,7 @@ end
 ---
 -- Setzt den Modus "Auslagerung", als ob der Tab geklickt wird.
 --
--- <b>Alias</b>: QSB.CastleStore:ActivateOutsourceMode
+-- <p><b>Alias</b>: QSB.CastleStore:ActivateOutsourceMode</p>
 --
 -- @return self
 -- @within Internal
@@ -470,7 +470,7 @@ end
 ---
 -- Lagert eine Menge von Waren im Burglager ein.
 --
--- <b>Alias</b>: QSB.CastleStore:Store
+-- <p><b>Alias</b>: QSB.CastleStore:Store</p>
 --
 -- @param _Good      Watentyp
 -- @param _Amount    Menge
@@ -500,7 +500,7 @@ end
 ---
 -- Lagert eine Menge von Waren aus dem Burglager aus.
 --
--- <b>Alias</b>: QSB.CastleStore:Outsource
+-- <p><b>Alias</b>: QSB.CastleStore:Outsource</p>
 --
 -- @param _Good      Watentyp
 -- @param _Amount    Menge
@@ -529,7 +529,7 @@ end
 -- Fügt eine Menge an Waren dem Burglager hinzu, solange noch
 -- Platz vorhanden ist und die Ware angenommen wird.
 --
--- <b>Alias</b>: QSB.CastleStore:Add
+-- <p><b>Alias</b>: QSB.CastleStore:Add</p>
 --
 -- @param _Good      Watentyp
 -- @param _Amount    Menge
@@ -557,7 +557,7 @@ end
 -- Entfernt eine Menge an Waren aus dem Burglager ohne sie ins
 -- Lagerhaus zu legen.
 --
--- <b>Alias</b>: QSB.CastleStore:Remove
+-- <p><b>Alias</b>: QSB.CastleStore:Remove</p>
 --
 -- @param _Good      Watentyp
 -- @param _Amount    Menge
@@ -581,7 +581,7 @@ end
 ---
 -- Aktualisiert die Waren im Lager und im Burglager.
 --
--- <b>Alias</b>: QSB.CastleStore.UpdateStores
+-- <p><b>Alias</b>: QSB.CastleStore.UpdateStores</p>
 --
 -- @within Internal
 -- @local
@@ -766,7 +766,7 @@ end
 ---
 -- Erzeugt eine neue lokale Referenz zum Burglager des Spielers.
 --
--- <b>Alias</b>: QSB.CastleStore:CreateStore
+-- <p><b>Alias</b>: QSB.CastleStore:CreateStore</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -796,7 +796,7 @@ end
 ---
 -- Entfernt eine lokale Referenz auf ein Burglager des Spielers.
 --
--- <b>Alias</b>: QSB.CastleStore:DeleteStore
+-- <p><b>Alias</b>: QSB.CastleStore:DeleteStore</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -810,7 +810,7 @@ end
 ---
 -- Gibt die Menge an Waren des Typs zurück.
 --
--- <b>Alias</b>: QSB.CastleStore:GetAmount
+-- <p><b>Alias</b>: QSB.CastleStore:GetAmount</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
@@ -831,7 +831,7 @@ end
 -- der Waren im Burglager. Hat der Spieler kein Burglager, wird
 -- nur die Menge im Lagerhaus zurückgegeben.
 --
--- <b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore
+-- <p><b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore</p>
 --
 -- @param _Good          Warentyp
 -- @param _PlayeriD      ID des Spielers
@@ -852,7 +852,7 @@ end
 ---
 -- Gibt die Gesamtmenge aller Waren im Burglager zurück.
 --
--- <b>Alias</b>: QSB.CastleStore:GetTotalAmount
+-- <p><b>Alias</b>: QSB.CastleStore:GetTotalAmount</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
@@ -875,7 +875,7 @@ end
 ---
 -- Ändert die Menge an Waren des Typs.
 --
--- <b>Alias</b>: QSB.CastleStore:SetAmount
+-- <p><b>Alias</b>: QSB.CastleStore:SetAmount</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
@@ -896,7 +896,7 @@ end
 ---
 -- Gibt zurück, ob die Ware des Typs akzeptiert wird.
 --
--- <b>Alias</b>: QSB.CastleStore:IsAccepted
+-- <p><b>Alias</b>: QSB.CastleStore:IsAccepted</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
@@ -918,7 +918,7 @@ end
 ---
 -- Setzt eine Ware als akzeptiert.
 --
--- <b>Alias</b>: QSB.CastleStore:SetAccepted
+-- <p><b>Alias</b>: QSB.CastleStore:SetAccepted</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
@@ -940,7 +940,7 @@ end
 ---
 -- Gibt zurück, ob die Ware des Typs gesperrt ist.
 --
--- <b>Alias</b>: QSB.CastleStore:IsLocked
+-- <p><b>Alias</b>: QSB.CastleStore:IsLocked</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
@@ -962,7 +962,7 @@ end
 ---
 -- Setzt eine Ware als gesperrt.
 --
--- <b>Alias</b>: QSB.CastleStore:SetLocked
+-- <p><b>Alias</b>: QSB.CastleStore:SetLocked</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
@@ -984,7 +984,7 @@ end
 ---
 -- Gibt zurück, ob der Spieler ein Burglager hat.
 --
--- <b>Alias</b>: QSB.CastleStore:HasCastleStore
+-- <p><b>Alias</b>: QSB.CastleStore:HasCastleStore</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @return boolean: Spieler hat ein Burglager
@@ -999,7 +999,7 @@ end
 ---
 -- Gibt die Referenz des Burglagers des Spielers zurück.
 --
--- <b>Alias</b>: QSB.CastleStore:GetStore
+-- <p><b>Alias</b>: QSB.CastleStore:GetStore</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @return table: Instanz des Burglagers
@@ -1014,7 +1014,7 @@ end
 ---
 -- Gibt das aktuelle Lagerlimit des Burglagers zurück.
 --
--- <b>Alias</b>: QSB.CastleStore:GetLimit
+-- <p><b>Alias</b>: QSB.CastleStore:GetLimit</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1038,7 +1038,7 @@ end
 ---
 -- "Waren einlagern" wurde geklickt.
 --
--- <b>Alias</b>: QSB.CastleStore:OnStorehouseTabClicked
+-- <p><b>Alias</b>: QSB.CastleStore:OnStorehouseTabClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1060,7 +1060,7 @@ end
 ---
 -- "Waren verwahren" wurde gedrückt.
 --
--- <b>Alias</b>: QSB.CastleStore:OnCityTabClicked
+-- <p><b>Alias</b>: QSB.CastleStore:OnCityTabClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1082,7 +1082,7 @@ end
 ---
 -- "Lager räumen" wurde gedrückt.
 --
--- <b>Alias</b>: QSB.CastleStore:OnMultiTabClicked
+-- <p><b>Alias</b>: QSB.CastleStore:OnMultiTabClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1103,7 +1103,7 @@ end
 ---
 -- Ein GoodType-Button wurde geklickt.
 --
--- <b>Alias</b>: QSB.CastleStore:GoodClicked
+-- <p><b>Alias</b>: QSB.CastleStore:GoodClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1124,7 +1124,7 @@ end
 ---
 -- Der Spieler wechselt zwischen den Ansichten in der Burg.
 --
--- <b>Alias</b>: QSB.CastleStore:DestroyGoodsClicked
+-- <p><b>Alias</b>: QSB.CastleStore:DestroyGoodsClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1140,7 +1140,7 @@ end
 ---
 -- Aktualisiert das Burgmenü, sobald sich die Selektion ändert.
 --
--- <b>Alias</b>: QSB.CastleStore:SelectionChanged
+-- <p><b>Alias</b>: QSB.CastleStore:SelectionChanged</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1161,7 +1161,7 @@ end
 ---
 -- Aktualisiert die Burglager-Tabs.
 --
--- <b>Alias</b>: QSB.CastleStore:UpdateBehaviorTabs
+-- <p><b>Alias</b>: QSB.CastleStore:UpdateBehaviorTabs</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1191,7 +1191,7 @@ end
 ---
 -- Aktualisiert die Mengenanzeige der Waren im Burglager.
 --
--- <b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay
+-- <p><b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1233,7 +1233,7 @@ end
 ---
 -- Aktualisiert die Lagerauslastungsanzeige des Burglagers.
 --
--- <b>Alias</b>: QSB.CastleStore:UpdateStorageLimit
+-- <p><b>Alias</b>: QSB.CastleStore:UpdateStorageLimit</p>
 --
 -- @param _PlayerID      ID des Spielers
 -- @within Internal
@@ -1256,7 +1256,7 @@ end
 ---
 -- Wechselt zwischen der Finanzansicht und dem Burglager.
 --
--- <b>Alias</b>: QSB.CastleStore:ToggleStore
+-- <p><b>Alias</b>: QSB.CastleStore:ToggleStore</p>
 --
 -- @within Internal
 -- @local
@@ -1277,7 +1277,7 @@ end
 ---
 -- Stellt das normale Lagerhausmenü wieder her.
 --
--- <b>Alias</b>: QSB.CastleStore:RestoreStorehouseMenu
+-- <p><b>Alias</b>: QSB.CastleStore:RestoreStorehouseMenu</p>
 --
 -- @within Internal
 -- @local
@@ -1307,7 +1307,7 @@ end
 ---
 -- Das normale Burgmenü wird angezeigt.
 --
--- <b>Alias</b>: QSB.CastleStore:ShowCastleMenu
+-- <p><b>Alias</b>: QSB.CastleStore:ShowCastleMenu</p>
 --
 -- @within Internal
 -- @local
@@ -1338,7 +1338,7 @@ end
 ---
 -- Das Burglager wird angezeigt.
 --
--- <b>Alias</b>: QSB.CastleStore:ShowCastleStoreMenu
+-- <p><b>Alias</b>: QSB.CastleStore:ShowCastleStoreMenu</p>
 --
 -- @within Internal
 -- @local

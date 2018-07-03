@@ -46,7 +46,7 @@ AddOnQuestDebug = {
 -- ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
 -- sogar Funktionen während des Spiels zu überschreiben.
 --
--- <b>Alias:</b> ActivateDebugMode
+-- <p><b>Alias:</b> ActivateDebugMode</p>
 --
 -- @param _CheckAtStart   Prüfe Quests zur Erzeugunszeit
 -- @param _CheckAtRun     Prüfe Quests zur Laufzeit

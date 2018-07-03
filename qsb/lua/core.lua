@@ -93,7 +93,7 @@ end
 -- Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
 -- Funktion kann benutzt werden, um Klassen zu instanzieren.
 --
--- <b>Alias:</b> CopyTableRecursive
+-- <p><b>Alias:</b> CopyTableRecursive</p>
 --
 -- @param _Source    [table] Quelltabelle
 -- @param _Dest      [table] (optional) Zieltabelle
@@ -126,7 +126,7 @@ CopyTableRecursive = API.InstanceTable;
 -- Sucht in einer Table nach einem Wert. Das erste Aufkommen des Suchwerts
 -- wird als Erfolg gewertet.
 --
--- <b>Alias:</b> Inside
+-- <p><b>Alias:</b> Inside</p>
 --
 -- @param _Data  [mixed] Datum, das gesucht wird
 -- @param _Table [table] Tabelle, die durchquert wird
@@ -219,7 +219,7 @@ end
 -- Gibt die ID des Quests mit dem angegebenen Namen zurück. Existiert der
 -- Quest nicht, wird nil zurückgegeben.
 --
--- <b>Alias:</b> GetQuestID
+-- <p><b>Alias:</b> GetQuestID</p>
 --
 -- @param _Name [string] Name des Quest
 -- @return [number] ID des Quest
@@ -243,7 +243,7 @@ GetQuestID = API.GetQuestID;
 -- Prüft, ob die ID zu einem Quest gehört bzw. der Quest existiert. Es kann
 -- auch ein Questname angegeben werden.
 --
--- <b>Alias:</b> IsValidQuest
+-- <p><b>Alias:</b> IsValidQuest</p>
 --
 -- @param _QuestID [number] ID oder Name des Quest
 -- @return [boolean] Quest existiert
@@ -259,7 +259,7 @@ IsValidQuest = API.IsValidateQuest;
 --
 -- Der Status wird auf Over und das Resultat auf Failure gesetzt.
 --
--- <b>Alias:</b> FailQuestsByName
+-- <p><b>Alias:</b> FailQuestsByName</p>
 --
 -- @param ...  [string..] Liste mit Quests
 -- @within Anwenderfunktionen
@@ -277,7 +277,7 @@ FailQuestsByName = API.FailAllQuests;
 --
 -- Der Status wird auf Over und das Resultat auf Failure gesetzt.
 --
--- <b>Alias:</b> FailQuestByName
+-- <p><b>Alias:</b> FailQuestByName</p>
 --
 -- @param _QuestName  [string] Name des Quest
 -- @param _Quiet      [boolean] Keine Meldung anzeigen
@@ -298,7 +298,7 @@ FailQuestByName = API.FailQuest;
 ---
 -- Startet eine Liste von Quests neu.
 --
--- <b>Alias:</b> StartQuestsByName
+-- <p><b>Alias:</b> StartQuestsByName</p>
 --
 -- @param ...  [string..] Liste mit Quests
 -- @within Anwenderfunktionen
@@ -322,7 +322,7 @@ RestartQuestsByName = API.RestartAllQuests;
 -- ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion
 -- angepasst oder überschrieben werden.
 --
--- <b>Alias:</b> RestartQuestByName
+-- <p><b>Alias:</b> RestartQuestByName</p>
 --
 -- @param _QuestName  [string] Name des Quest
 -- @param _Quiet      [boolean] Keine Meldung anzeigen
@@ -402,7 +402,7 @@ RestartQuestByName = API.RestartQuest;
 ---
 -- Startet eine Liste von Quests.
 --
--- <b>Alias:</b> StartQuestsByName
+-- <p><b>Alias:</b> StartQuestsByName</p>
 --
 -- @param ...  [string..] Liste mit Quests
 -- @within Anwenderfunktionen
@@ -420,7 +420,7 @@ StartQuestsByName = API.StartAllQuests;
 --
 -- Dabei ist es unerheblich, ob die Bedingungen zum Start erfüllt sind.
 --
--- <b>Alias:</b> StartQuestByName
+-- <p><b>Alias:</b> StartQuestByName</p>
 --
 -- @param _QuestName  [string] Name des Quest
 -- @param _Quiet      [boolean] Keine Meldung anzeigen
@@ -442,7 +442,7 @@ StartQuestByName = API.StartQuest;
 ---
 -- Unterbricht eine Liste von Quests.
 --
--- <b>Alias:</b> StopQuestsByName
+-- <p><b>Alias:</b> StopQuestsByName</p>
 --
 -- @param ...  [string..] Liste mit Quests
 -- @within Anwenderfunktionen
@@ -461,7 +461,7 @@ StopQuestwByName = API.StopAllQuests;
 -- Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
 -- gesetzt, werden diese entfernt.
 --
--- <b>Alias:</b> StopQuestByName
+-- <p><b>Alias:</b> StopQuestByName</p>
 --
 -- @param _QuestName  [string] Name des Quest
 -- @param _Quiet      [boolean] Keine Meldung anzeigen
@@ -484,7 +484,7 @@ StopQuestByName = API.StopQuest;
 --
 -- Der Status wird auf Over und das Resultat auf Success gesetzt.
 --
--- <b>Alias:</b> WinQuestsByName
+-- <p><b>Alias:</b> WinQuestsByName</p>
 --
 -- @param ...  [string..] Liste mit Quests
 -- @within Anwenderfunktionen
@@ -502,7 +502,7 @@ WinQuestsByName = API.WinAllQuests;
 --
 -- Der Status wird auf Over und das Resultat auf Success gesetzt.
 --
--- <b>Alias:</b> WinQuestByName
+-- <p><b>Alias:</b> WinQuestByName</p>
 --
 -- @param _QuestName  [string] Name des Quest
 -- @param _Quiet      [boolean] Keine Meldung anzeigen
@@ -526,7 +526,7 @@ WinQuestByName = API.WinQuest;
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und ist nicht statisch.
 --
--- <b>Alias:</b> GUI_Note
+-- <p><b>Alias:</b> GUI_Note</p>
 --
 -- @param _Message [string] Anzeigetext
 -- @within Anwenderfunktionen
@@ -604,7 +604,7 @@ end
 ---
 -- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
 --
--- <b>Alias:</b> dbg
+-- <p><b>Alias:</b> dbg</p>
 --
 -- @param _Message [string] Anzeigetext
 -- @within Anwenderfunktionen
@@ -638,7 +638,7 @@ end
 ---
 -- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
 --
--- <p><b>Alias:</b> warn</p>
+-- <p><p><b>Alias:</b> warn</p></p>
 --
 -- @param _Message [string] Anzeigetext
 -- @within Anwenderfunktionen
@@ -655,7 +655,7 @@ warn = API.Warn;
 ---
 -- Schreibt eine Information auf den Bildschirm und ins Log.
 --
--- <b>Alias:</b> info
+-- <p><b>Alias:</b> info</p>
 --
 -- @param _Message [string] Anzeigetext
 -- @within Anwenderfunktionen
@@ -749,7 +749,7 @@ end
 -- Sendet einen Handelskarren zu dem Spieler. Startet der Karren von einem
 -- Gebäude, wird immer die Position des Eingangs genommen.
 --
--- <b>Alias:</b> SendCart
+-- <p><b>Alias:</b> SendCart</p>
 --
 -- @param _position            [string|number] Position
 -- @param _player              [number] Zielspieler
@@ -800,7 +800,7 @@ SendCart = API.SendCart;
 -- Ersetzt ein Entity mit einem neuen eines anderen Typs. Skriptname,
 -- Rotation, Position und Besitzer werden übernommen.
 --
--- <b>Alias:</b> ReplaceEntity
+-- <p><b>Alias:</b> ReplaceEntity</p>
 --
 -- @param _Entity   [string|number] Entity
 -- @param _Type     [number] Neuer Typ
@@ -830,7 +830,7 @@ ReplaceEntity = API.ReplaceEntity;
 ---
 -- Rotiert ein Entity, sodass es zum Ziel schaut.
 --
--- <b>Alias:</b> LookAt
+-- <p><b>Alias:</b> LookAt</p>
 --
 -- @param _entity           [string|number] Entity
 -- @param _entityToLookAt   [string|number] Ziel
@@ -869,7 +869,7 @@ end
 -- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
 -- Skriptnamen oder Positionstables angegeben werden.
 --
--- <b>Alias:</b> GetDistance
+-- <p><b>Alias:</b> GetDistance</p>
 --
 -- @param _pos1 [string|number|table] Erste Vergleichsposition
 -- @param _pos2 [string|number|table] Zweite Vergleichsposition
@@ -896,7 +896,7 @@ GetDistance = API.GetDistance;
 ---
 -- Prüft, ob eine Positionstabelle eine gültige Position enthält.
 --
--- <b>Alias:</b> IsValidPosition
+-- <p><b>Alias:</b> IsValidPosition</p>
 --
 -- @param _pos [table] Positionstable {X= x, Y= y}
 -- @return [boolean] Position ist valide
@@ -920,7 +920,7 @@ IsValidPosition = API.ValidatePosition;
 -- IDs verwendet werden. Wenn das Entity nicht gefunden wird, wird eine
 -- Tabelle mit XYZ = 0 zurückgegeben.
 --
--- <b>Alias:</b> GetPosition
+-- <p><b>Alias:</b> GetPosition</p>
 --
 -- @param _Entity [string|number] Entity, dessen Position bestimmt wird.
 -- @return [table] Positionstabelle {X= x, Y= y, Z= z}
@@ -946,7 +946,7 @@ GetPosition = API.LocateEntity;
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
 -- Held das Objekt aktivieren.
 --
--- <b>Alias:</b> InteractiveObjectActivate
+-- <p><b>Alias:</b> InteractiveObjectActivate</p>
 --
 -- @param _ScriptName  [string] Skriptname des IO
 -- @param _State       [number] Aktivierungszustand
@@ -974,7 +974,7 @@ InteractiveObjectActivate = API.ActivateIO;
 -- Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
 -- aktiviert werden kann.
 --
--- <b>Alias:</b> InteractiveObjectDeactivate
+-- <p><b>Alias:</b> InteractiveObjectDeactivate</p>
 --
 -- @param _ScriptName [string] Skriptname des IO
 -- @within Anwenderfunktionen
@@ -999,7 +999,7 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 -- Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
 -- sie als Liste zurück.
 --
--- <b>Alias:</b> GetEntitiesOfCategoryInTerritory
+-- <p><b>Alias:</b> GetEntitiesOfCategoryInTerritory</p>
 --
 -- @param _player    [number] PlayerID [0-8] oder -1 für alle
 -- @param _category  [number] Kategorie, der die Entities angehören
@@ -1082,7 +1082,7 @@ end
 -- <p>Wahrheitsert true: true, "true", "yes", "on", "+"</p>
 -- <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
 --
--- <b>Alias:</b> AcceptAlternativeBoolean
+-- <p><b>Alias:</b> AcceptAlternativeBoolean</p>
 --
 -- @param _Value [mixed] Wahrheitswert
 -- @return [boolean] Wahrheitswert

@@ -70,7 +70,7 @@ QSB = QSB or {};
 -- die Rohstoffe der Mine erschöpft sind.</li>
 -- </ul>
 --
--- <b>Alias</b>: CreateIOMine
+-- <p><b>Alias</b>: CreateIOMine</p>
 --
 -- @param _Position         Script Entity, die mit Mine ersetzt wird
 -- @param _Type             Typ der Mine
@@ -99,7 +99,7 @@ CreateIOMine = API.CreateIOMine;
 ---
 -- Erstelle eine verschüttete Eisenmine.
 --
--- <b>Alias</b>: CreateIOIronMine
+-- <p><b>Alias</b>: CreateIOIronMine</p>
 --
 -- @param _Position      Script Entity, die mit Mine ersetzt wird
 -- @param _Cost1Type     (optional) Kostenware 1
@@ -126,7 +126,7 @@ CreateIOIronMine = API.CreateIOIronMine;
 ---
 -- Erstelle eine verschüttete Steinmine.
 --
--- <b>Alias</b>: CreateIOStoneMine
+-- <p><b>Alias</b>: CreateIOStoneMine</p>
 --
 -- @param _Position      Script Entity, die mit Mine ersetzt wird
 -- @param _Cost1Type     (optional) Kostenware 1
@@ -165,7 +165,7 @@ CreateIOStoneMine = API.CreateIOStoneMine;
 -- geladen wird. Dann ist der Boden der Baustelle schwarz. Sobald wenigstens
 -- ein reguläres Gebäude gebaut wurde, sollte die Textur jedoch vorhanden sein.
 --
--- <b>Alias</b>: CreateIOBuildingSite
+-- <p><b>Alias</b>: CreateIOBuildingSite</p>
 --
 -- @param _Position Zielpunkt
 -- @param _PlayerID Besitzer des Gebäudes
@@ -202,7 +202,7 @@ CreateIOBuildingSite = API.CreateIOBuildingSite;
 -- ausgeführt wird, wenn die Truhe geöffnet wird. Diese Funktion verhält sich
 -- wie das Callback eines interaktiven Objektes.
 --
--- <b>Alias</b>: CreateRandomChest
+-- <p><b>Alias</b>: CreateRandomChest</p>
 --
 -- @param _Name     Name der zu ersetzenden Script Entity
 -- @param _Good     Warentyp
@@ -226,7 +226,7 @@ CreateRandomChest = API.CreateRandomChest;
 ---
 -- Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.
 --
--- <b>Alias</b>: CreateRandomGoldChest
+-- <p><b>Alias</b>: CreateRandomGoldChest</p>
 --
 -- @param _Name Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
@@ -247,7 +247,7 @@ CreateRandomGoldChest = API.CreateRandomGoldChest;
 -- Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
 -- Honig, Kräuter, Milch, Stein, Wolle.
 --
--- <b>Alias</b>: CreateRandomResourceChest
+-- <p><b>Alias</b>: CreateRandomResourceChest</p>
 --
 -- @param _Name Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
@@ -268,7 +268,7 @@ CreateRandomResourceChest = API.CreateRandomResourceChest;
 -- Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
 -- Salz oder Weihrauch.
 --
--- <b>Alias</b>: CreateRandomLuxuryChest
+-- <p><b>Alias</b>: CreateRandomLuxuryChest</p>
 --
 -- @param _Name Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
@@ -298,7 +298,7 @@ CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
 -- Baustelle erzeugt wird. Es wird NICHT empfohlen dem Spieler beides, normale
 -- Trebuchets und Trebuchetbaustellen, zur gleichen Zeit zu geben!
 --
--- <b>Alias</b>: CreateTrebuchetConstructionSite
+-- <p><b>Alias</b>: CreateTrebuchetConstructionSite</p>
 --
 -- @param _Name     Skriptname Position
 -- @param _GoldCost Goldkosten
@@ -321,7 +321,7 @@ CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
 -- Trebuchet aufgebaut ist, gerade ein Karren unterwegs ist, oder die Baustelle
 -- noch nie berührt wurde.
 --
--- <b>Alias</b>: DestroyTrebuchetConstructionSite
+-- <p><b>Alias</b>: DestroyTrebuchetConstructionSite</p>
 --
 -- @param _Name Skriptname Position
 -- @within Anwenderfunktionen

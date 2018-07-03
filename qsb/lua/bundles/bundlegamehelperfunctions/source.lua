@@ -24,7 +24,7 @@ QSB = QSB or {};
 -- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
 -- der entdeckten Territorien.
 --
--- <b>Alias:</b> UndiscoverTerritory
+-- <p><b>Alias:</b> UndiscoverTerritory</p>
 --
 -- @param _PlayerID [number] Spieler-ID
 -- @param _TerritoryID [number] Territorium-ID
@@ -43,7 +43,7 @@ UndiscoverTerritory = API.UndiscoverTerritory;
 -- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
 -- Territorien. Als Nebeneffekt gild die Partei als unentdeckt.
 --
--- <b>Alias:</b> UndiscoverTerritories
+-- <p><b>Alias:</b> UndiscoverTerritories</p>
 --
 -- @param _PlayerID [number] Spieler-ID
 -- @param _TargetPlayerID [number] Zielpartei
@@ -62,7 +62,7 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 -- Setzt die Einnahmen für alle Stadtgebäude eines Spielers. Stadtgebäude
 -- können nur Einnahmen zwischen 0 und 100 Talern haben.
 --
--- <b>Alias:</b> SetPlayerEarnings
+-- <p><b>Alias:</b> SetPlayerEarnings</p>
 --
 -- @param _PlayerID [number] Partei oder nil für alle
 -- @param _Earnings [number] Einnahmen [0 | 100]
@@ -90,7 +90,7 @@ SetPlayerEarnings = API.SetEarningsOfPlayerCity;
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
 --
--- <b>Alias:</b> SetNeedSatisfactionLevel
+-- <p><b>Alias:</b> SetNeedSatisfactionLevel</p>
 --
 -- @param _Need [number] Bedürfnis
 -- @param _State [number] Erfüllung des Bedürfnisses
@@ -117,7 +117,7 @@ SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 ---
 -- Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.
 --
--- <b>Alias:</b> UnlockTitleForPlayer
+-- <p><b>Alias:</b> UnlockTitleForPlayer</p>
 --
 -- @param _PlayerID [number] Zielpartei
 -- @param _KnightTitle [number] Titel zum Entsperren
@@ -135,7 +135,7 @@ UnlockTitleForPlayer = API.UnlockTitleForPlayer;
 ---
 -- Fokusiert die Kamera auf dem Primärritter des Spielers.
 --
--- <b>Alias:</b> SetCameraToPlayerKnight
+-- <p><b>Alias:</b> SetCameraToPlayerKnight</p>
 --
 -- @param _Player [number] Partei
 -- @param _Rotation [number] Kamerawinkel
@@ -154,7 +154,7 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 ---
 -- Fokusiert die Kamera auf dem Entity.
 --
--- <b>Alias:</b> SetCameraToEntity
+-- <p><b>Alias:</b> SetCameraToEntity</p>
 --
 -- @param _Entity [string|number] Entity
 -- @param _Rotation [number] Kamerawinkel
@@ -179,7 +179,7 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 ---
 -- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
--- <b>Alias:</b> SetSpeedLimit
+-- <p><b>Alias:</b> SetSpeedLimit</p>
 --
 -- @param _Limit [number] Obergrenze
 -- @within Anwenderfunktionen
@@ -197,7 +197,7 @@ SetSpeedLimit = API.SpeedLimitSet
 -- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
 -- kann nicht mehr überschritten werden.
 --
--- <b>Alias:</b> ActivateSpeedLimit
+-- <p><b>Alias:</b> ActivateSpeedLimit</p>
 --
 -- @param _Flag [boolean] Speedbremse ist aktiv
 -- @within Anwenderfunktionen
@@ -214,7 +214,7 @@ ActivateSpeedLimit = API.SpeedLimitActivate;
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- <b>Alias:</b> KillCheats
+-- <p><b>Alias:</b> KillCheats</p>
 --
 -- @within Anwenderfunktionen
 --
@@ -230,7 +230,7 @@ KillCheats = API.KillCheats;
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- <b>Alias:</b> RessurectCheats
+-- <p><b>Alias:</b> RessurectCheats</p>
 --
 -- @within Anwenderfunktionen
 --
@@ -246,7 +246,7 @@ RessurectCheats = API.RessurectCheats;
 ---
 -- Sperrt das Speichern von Spielständen oder gibt es wieder frei.
 --
--- <b>Alias:</b> ForbidSaveGame
+-- <p><b>Alias:</b> ForbidSaveGame</p>
 --
 -- @param _Flag [boolean] Speichern gesperrt
 -- @within Anwenderfunktionen
@@ -266,7 +266,7 @@ ForbidSaveGame = API.ForbidSaveGame;
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
--- <b>Alias:</b> ActivateExtendedZoom
+-- <p><b>Alias:</b> ActivateExtendedZoom</p>
 --
 -- @param _Flag [boolean] Erweiterter Zoom gestattet
 -- @within Anwenderfunktionen
@@ -287,7 +287,7 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 -- Startet ein Fest für den Spieler. Ist dieser Typ von Fest für
 -- den Spieler verboten, wird er automatisch erlaubt.
 --
--- <b>Alias:</b> StartNormalFestival
+-- <p><b>Alias:</b> StartNormalFestival</p>
 --
 -- @param _PlayerID [number] Spieler
 -- @within Anwenderfunktionen
@@ -306,7 +306,7 @@ StartNormalFestival = API.StartNormalFestival;
 -- Startet ein Beförderungsfest für den Spieler. Ist dieser Typ
 -- von Fest für den Spieler verboten, wird er automatisch erlaubt.
 --
--- <b>Alias:</b> StartCityUpgradeFestival
+-- <p><b>Alias:</b> StartCityUpgradeFestival</p>
 --
 -- @param _PlayerID [number] Spieler
 -- @within Anwenderfunktionen
@@ -324,7 +324,7 @@ StartCityUpgradeFestival = API.StartCityUpgradeFestival;
 ---
 -- Verbietet ein normales Fest und sperrt die Technologie.
 --
--- <b>Alias:</b> ForbidFestival
+-- <p><b>Alias:</b> ForbidFestival</p>
 --
 -- @param _PlayerID [number] Spieler
 -- @within Anwenderfunktionen
@@ -350,7 +350,7 @@ ForbidFestival = API.ForbidFestival;
 ---
 -- Erlaubt ein normales Fest und gibt die Technologie frei.
 --
--- <b>Alias:</b> AllowFestival
+-- <p><b>Alias:</b> AllowFestival</p>
 --
 -- @param _PlayerID [number] Spieler
 -- @within Anwenderfunktionen
@@ -378,7 +378,7 @@ AllowFestival = API.AllowFestival;
 -- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
 -- Mode verwendet werden.
 --
--- <b>Alias:</b> PlayerSetPlayerID
+-- <p><b>Alias:</b> PlayerSetPlayerID</p>
 --
 -- @param _OldID [number] Alte ID des menschlichen Spielers
 -- @param _NewID [number] Neue ID des menschlichen Spielers
@@ -399,7 +399,7 @@ PlayerSetPlayerID = API.SetControllingPlayer;
 -- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
 -- definierte Spieler wird als kontrollierender Spieler angenommen.
 --
--- <b>Alias:</b> PlayerGetPlayerID
+-- <p><b>Alias:</b> PlayerGetPlayerID</p>
 --
 -- @return [number] PlayerID
 -- @within Anwenderfunktionen
@@ -418,7 +418,7 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 -- Held kann 0 sein, dann wird entweder der letzte Held verwendet
 -- oder über den GUI-Spieler ermittelt.
 --
--- <b>Alias:</b> HeroCameraActivate
+-- <p><b>Alias:</b> HeroCameraActivate</p>
 --
 -- @param _Hero [string|number] Skriptname/Entity-ID des Helden
 -- @param _MaxZoom [number] Maximaler Zoomfaktor
@@ -437,7 +437,7 @@ HeroCameraActivate = API.ThridPersonActivate;
 ---
 -- Deaktiviert die Heldenkamera.
 --
--- <b>Alias:</b> HeroCameraDeactivate
+-- <p><b>Alias:</b> HeroCameraDeactivate</p>
 --
 -- @within Anwenderfunktionen
 --
@@ -453,7 +453,7 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 ---
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
--- <b>Alias:</b> HeroCameraIsRuning
+-- <p><b>Alias:</b> HeroCameraIsRuning</p>
 --
 -- @return [boolean] Kamera aktiv
 -- @within Anwenderfunktionen
@@ -471,7 +471,7 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
 -- zurück, der die Verfolgung steuert.
 --
--- <b>Alias:</b> AddFollowKnightSave
+-- <p><b>Alias:</b> AddFollowKnightSave</p>
 --
 -- @param _Entity [string|number] Entity das folgt
 -- @param _Knight [string|number] Held
@@ -494,7 +494,7 @@ AddFollowKnightSave = API.FollowKnightSaveStart;
 ---
 -- Beendet einen Verfolgungsjob.
 --
--- <b>Alias:</b> StopFollowKnightSave
+-- <p><b>Alias:</b> StopFollowKnightSave</p>
 --
 -- @param _JobID [number] Job-ID
 -- @within Anwenderfunktionen
@@ -516,7 +516,7 @@ StopFollowKnightSave = API.FollowKnightSaveStop;
 -- <b>Hinweis:</b> Für weitere Informationen zu Terraintexturen siehe
 -- https://siedelwood-neu.de/23879-2/
 --
--- <b>Alias:</b> TerrainType
+-- <p><b>Alias:</b> TerrainType</p>
 --
 -- @param _Center [string|number] Zentralpunkt
 -- @param _Offset [number] Entfernung der Ecken zum Zentrum
@@ -550,7 +550,7 @@ TerrainType = API.ChangeTerrainTypeInSquare;
 -- Wird die relative Höhe verwendet, wird die Wasserhöhe nicht absolut
 -- gesetzt sondern von der aktuellen Wasserhöhe ausgegangen.
 --
--- <b>Alias:</b> WaterHeight
+-- <p><b>Alias:</b> WaterHeight</p>
 --
 -- @param _Center [string|number] Zentralpunkt
 -- @param _Offset [number] Entfernung der Ecken zum Zentrum
@@ -586,7 +586,7 @@ WaterHeight = API.ChangeWaterHeightInSquare;
 -- gesetzt sondern von der aktuellen Landhöhe ausgegangen. Das Land muss nicht
 -- eben sein. Auf diese Weise können Strukturen unverändert angehoben werden.
 --
--- <b>Alias:</b> TerrainHeight
+-- <p><b>Alias:</b> TerrainHeight</p>
 --
 -- @param _Center [string|number] Zentralpunkt
 -- @param _Offset [number] Entfernung der Ecken zum Zentrum
@@ -618,7 +618,7 @@ TerrainHeight = API.ChangeTerrainHeightInSquare;
 -- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
 -- an denen eine Aktion ausgeführt wird.
 --
--- <b>Alias:</b> QSB.TimeLine:Start<br>
+-- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
 --
 -- @param _description [table] Beschreibung
 -- @return [number] ID des Zeitstrahls
@@ -632,7 +632,7 @@ end
 -- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
 -- beendet, beginnt er dennoch von vorn.
 --
--- <b>Alias:</b> QSB.TimeLine:Restart<br>
+-- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
 --
 -- @param _ID [table] ID des Zeitstrahl
 -- @within Anwenderfunktionen
@@ -644,7 +644,7 @@ end
 ---
 -- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
 --
--- <b>Alias:</b> QSB.TimeLine:IsRunning<br>
+-- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
 --
 -- @param _ID [table] ID des Zeitstrahl
 -- @return [boolean] Zeitstrahl ist aktiv
@@ -657,7 +657,7 @@ end
 ---
 -- Hält einen Zeitstrahl an.
 --
--- <b>Alias:</b> QSB.TimeLine:Yield<br>
+-- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
 --
 -- @param _ID [table] ID des Zeitstrahl
 -- @within Anwenderfunktionen
@@ -669,7 +669,7 @@ end
 ---
 -- Stößt einen angehaltenen Zeitstrahl wieder an.
 --
--- <b>Alias:</b> QSB.TimeLine:Resume<br>
+-- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
 --
 -- @param _ID [table] ID des Zeitstrahl
 -- @within Anwenderfunktionen
@@ -1755,7 +1755,7 @@ end
 -- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
 -- an denen eine Aktion ausgeführt wird.
 --
--- <b>Alias:</b> QSB.TimeLine:Start<br>
+-- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
 --
 -- @param _description [table] Beschreibung
 -- @return [number] ID des Zeitstrahl
@@ -1791,7 +1791,7 @@ end
 -- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
 -- beendet, beginnt er dennoch von vorn.
 --
--- <b>Alias:</b> QSB.TimeLine:Restart<br>
+-- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
 --
 -- @param _ID [table] ID des Zeitstrahl
 -- @within QSB.TimeLine
@@ -1809,7 +1809,7 @@ end
 ---
 -- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
 --
--- <b>Alias:</b> QSB.TimeLine:IsRunning<br>
+-- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
 --
 -- @param _ID [table] ID des Zeitstrahl
 -- @return [boolean] Zeistrahl ist aktiv
@@ -1826,7 +1826,7 @@ end
 ---
 -- Hält einen Zeitstrahl an.
 --
--- <b>Alias:</b> QSB.TimeLine:Yield<br>
+-- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
 --
 -- @param _ID [table] ID des Zeitstrahl
 -- @within QSB.TimeLine
@@ -1842,7 +1842,7 @@ end
 ---
 -- Stößt einen angehaltenen Zeitstrahl wieder an.
 --
--- <b>Alias:</b> QSB.TimeLine:Resume<br>
+-- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
 --
 -- @param _ID [table] ID des Zeitstrahl
 -- @within QSB.TimeLine

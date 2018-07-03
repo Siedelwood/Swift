@@ -24,8 +24,8 @@ QSB = QSB or {};
 -- Kategorien. Dabei kann für eine Partei oder für mehrere parteien gesucht
 -- werden.
 --
--- <b>Alias:</b> GetEntitiesOfCategoriesInTerritories<br>
--- <b>Alias:</b> EntitiesInCategories
+-- <p><b>Alias:</b> GetEntitiesOfCategoriesInTerritories<br></p>
+-- <p><b>Alias:</b> EntitiesInCategories</p>
 --
 -- @param _player       [number|table] PlayerID [0-8] oder Table mit PlayerIDs
 -- @param _category     [number|table] Kategorien oder Table mit Kategorien
@@ -45,7 +45,7 @@ EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
 ---
 -- Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.
 --
--- <b>Alias:</b> GetEntitiesNamedWith
+-- <p><b>Alias:</b> GetEntitiesNamedWith</p>
 --
 -- @param _Prefix [string] Präfix des Skriptnamen
 -- @return [table] Liste mit Entities
@@ -63,7 +63,7 @@ GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 -- Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
 -- in einer Mine.
 --
--- <b>Alias:</b> SetResourceAmount
+-- <p><b>Alias:</b> SetResourceAmount</p>
 --
 -- @param _Entity       [string|number] Skriptname, EntityID der Mine
 -- @param _StartAmount  [number] Menge an Rohstoffen
@@ -92,7 +92,7 @@ SetResourceAmount = API.SetResourceAmount;
 -- Errechnet eine Position relativ im angegebenen Winkel und Position zur
 -- Basisposition. Die Basis kann ein Entity oder eine Positionstabelle sein.
 --
--- <b>Alias:</b> GetRelativePos
+-- <p><b>Alias:</b> GetRelativePos</p>
 --
 -- @param _target          [string|number|table] Basisposition
 -- @param _distance        [number] Entfernung
@@ -117,7 +117,7 @@ GetRelativePos = API.GetRelativePosition;
 
 -- Setzt ein Entity oder ein Battalion an eine neue Position.
 --
--- <b>Alias:</b> SetPosition
+-- <p><b>Alias:</b> SetPosition</p>
 --
 -- @param _Entity   [string|number] Entity zum versetzen
 -- @param _Position [string|number|table] Neue Position
@@ -153,7 +153,7 @@ SetPosition = API.SetPosition;
 ---
 -- Das Entity wird relativ zu einem Winkel zum Ziel bewegt.
 --
--- <b>Alias:</b> MoveEntityToPositionToAnotherOne
+-- <p><b>Alias:</b> MoveEntityToPositionToAnotherOne</p>
 --
 -- @param _Entity       [string|number] Zu bewegendes Entity
 -- @param _Position     [string|number] Ziel
@@ -188,8 +188,8 @@ MoveEntityToPositionToAnotherOne = API.MoveToPosition;
 -- Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
 -- anschließend an.
 --
--- <b>Alias:</b> MoveEx</br>
--- <b>Alias:</b> MoveEntityFaceToFaceToAnotherOne
+-- <p><b>Alias:</b> MoveEx</br></p>
+-- <p><b>Alias:</b> MoveEntityFaceToFaceToAnotherOne</p>
 --
 -- @param _Entity       [string|number] Zu bewegendes Entity
 -- @param _Position     [string|number] Ziel
@@ -223,7 +223,7 @@ MoveEx = API.MoveAndLookAt;
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.
 --
--- <b>Alias:</b> PlaceEntityToPositionToAnotherOne
+-- <p><b>Alias:</b> PlaceEntityToPositionToAnotherOne</p>
 --
 -- @param _Entity          [string|number|table] Entity das bewegt wird
 -- @param _Position        [string|number|table] Position zu der bewegt wird
@@ -258,8 +258,8 @@ PlaceEntityToPositionToAnotherOne = API.PlaceToPosition;
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
 -- das Ziel an.
 --
--- <b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne
--- <b>Alias:</b> SetPositionEx<br>
+-- <p><b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne</p>
+-- <p><b>Alias:</b> SetPositionEx<br></p>
 --
 -- @param _Entity          [string|number|table] Entity das bewegt wird
 -- @param _Position        [string|number|table] Position zu der bewegt wird
@@ -283,7 +283,7 @@ SetPositionEx = API.PlaceAndLookAt;
 ---
 -- Gibt den Skriptnamen des Entity zurück.
 --
--- <b>Alias:</b> GetEntityName
+-- <p><b>Alias:</b> GetEntityName</p>
 --
 -- @param _entity [number] Gesuchtes Entity
 -- @return [string] Skriptname
@@ -305,7 +305,7 @@ GetEntityName = API.GetEntityName;
 ---
 -- Setzt den Skriptnamen des Entity.
 --
--- <b>Alias:</b> SetEntityName
+-- <p><b>Alias:</b> SetEntityName</p>
 --
 -- @param _entity [number] Entity
 -- @param _name   [string] Skriptname
@@ -331,7 +331,7 @@ SetEntityName = API.SetEntityName;
 ---
 -- Setzt die Orientierung des Entity.
 --
--- <b>Alias:</b> SetOrientation
+-- <p><b>Alias:</b> SetOrientation</p>
 --
 -- @param _entity [string|number] Gesuchtes Entity
 -- @param _ori    [number] Ausrichtung in Grad
@@ -357,7 +357,7 @@ SetOrientation = API.SetOrientation;
 ---
 -- Gibt die Orientierung des Entity zurück.
 --
--- <b>Alias:</b> GetOrientation
+-- <p><b>Alias:</b> GetOrientation</p>
 --
 -- @param _entity [string|number] Gesuchtes Entity
 -- @return [number] Orientierung in Grad
@@ -379,7 +379,7 @@ GetOrientation = API.GetOrientation;
 ---
 -- Das Entity greift ein anderes Entity an, sofern möglich.
 --
--- <b>Alias:</b> Attack
+-- <p><b>Alias:</b> Attack</p>
 --
 -- @param_Entity  [string|number] Angreifendes Entity
 -- @param _Target [string|number] Angegriffenes Entity
@@ -411,7 +411,7 @@ Attack = API.EntityAttack;
 -- Ein Entity oder ein Battalion wird zu einer Position laufen und
 -- alle gültigen Ziele auf dem Weg angreifen.
 --
--- <b>Alias:</b> AttackMove
+-- <p><b>Alias:</b> AttackMove</p>
 --
 -- @param _Entity   [string|number] Angreifendes Entity
 -- @param _Position [string] Skriptname, EntityID oder Positionstable
@@ -442,7 +442,7 @@ AttackMove = API.EntityAttackMove;
 ---
 -- Bewegt das Entity zur Zielposition.
 --
--- <b>Alias:</b> Move
+-- <p><b>Alias:</b> Move</p>
 --
 -- @param _Entity   [string|number] Bewegendes Entity
 -- @param _Position [table] Positionstable
@@ -473,7 +473,7 @@ Move = API.EntityMove;
 ---
 -- Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.
 --
--- <b>Alias:</b> GetClosestKnight
+-- <p><b>Alias:</b> GetClosestKnight</p>
 --
 -- @param _eID      [number] Basis-Entity
 -- @param _playerID [number] Besitzer der Helden
@@ -494,7 +494,7 @@ GetClosestKnight = API.GetNearestKnight;
 -- Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
 -- am nächsten ist.
 --
--- <b>Alias:</b> GetClosestEntity
+-- <p><b>Alias:</b> GetClosestEntity</p>
 --
 -- @param _eID      [number] Basis-Entity
 -- @param _entities [table] Liste von Entities

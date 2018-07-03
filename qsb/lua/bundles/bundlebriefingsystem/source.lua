@@ -54,7 +54,7 @@ QSB = QSB or {};
 -- Niederlage Timer generell inaktiv. Werden Quests während Briefings nicht
 -- pausiert, zählen Niederlage Timer unterdessen weiter!
 --
--- <b>Alias</b>: PauseQuestsDuringBriefings
+-- <p><b>Alias</b>: PauseQuestsDuringBriefings</p>
 --
 -- @param _Flag [boolean] Quest Timer pausiert
 -- @within Anwenderfunktionen
@@ -71,7 +71,7 @@ PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 ---
 -- Prüft, ob das Briefing mit der angegebenen ID beendet ist.
 --
--- <b>Alias</b>: IsBriefingFinished
+-- <p><b>Alias</b>: IsBriefingFinished</p>
 --
 -- @param _briefingID [number] ID des Briefing
 -- @return [boolean] Briefing ist beendet
@@ -92,7 +92,7 @@ IsBriefingFinished = API.IsBriefingFinished;
 -- Wird eine Seite mehrmals durchlaufen, wird die jeweils letzte Antwort
 -- zurückgegeben.
 --
--- <b>Alias</b>: MCGetSelectedAnswer
+-- <p><b>Alias</b>: MCGetSelectedAnswer</p>
 --
 -- @param _page [table] Referenz auf die Seite
 -- @return [number] Gewählte Antwort
@@ -112,7 +112,7 @@ MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 --
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
--- <b>Alias</b>: GetCurrentBriefingPage
+-- <p><b>Alias</b>: GetCurrentBriefingPage</p>
 --
 -- @param _pageNumber [number] Index der Seite
 -- @return [table] Seite des aktuellen Briefing
@@ -132,7 +132,7 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 --
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
--- <b>Alias</b>: GetCurrentBriefing
+-- <p><b>Alias</b>: GetCurrentBriefing</p>
 --
 -- @return [table] Briefing mit allen Seiten
 -- @within Anwenderfunktionen
@@ -152,7 +152,7 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 -- Die zurückgegebenen Funktionen sind für Dialoge gedacht. Auch wenn AP alles
 -- kann, sollte man sich an diese konvention halten.
 --
--- <b>Alias</b>: AddPages
+-- <p><b>Alias</b>: AddPages</p>
 --
 -- @param _Briefing [table] Briefing
 -- @return [function] AP - Allround-Funktion zur Erzeugung von Seiten
@@ -175,7 +175,7 @@ AddPages = API.AddPages;
 -- Die zurückgegebenen Funktionen sind für Kameraflüge gedacht. Vermeide die
 -- Anzeige von langen Texten.
 --
--- <b>Alias</b>: AddPages
+-- <p><b>Alias</b>: AddPages</p>
 --
 -- @param _Cutscene [table] Cutscene
 -- @return [function] AF - Funktion für komfortable Notation von Flights
@@ -196,7 +196,7 @@ AddFlights = API.AddFlights;
 -- Bildschirm. Die Nachricht wird, in Abhängigkeit zur Textlänge, nach ein
 -- paar Sekunden verschrinden.
 --
--- <b>Alias:</b> BriefingMessage
+-- <p><b>Alias:</b> BriefingMessage</p>
 --
 -- @param _Text	    [string] Anzuzeigender Text
 -- @param _Duration	[number] Anzeigedauer in Sekunden
@@ -860,8 +860,8 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- Cutscenes sondern um eine Simulation. Die Kamerabewegung wird
     -- dementsprechend nicht so flüssig sein und es kann ruckeln!
     --
-    -- <b>Alias</b>: BriefingSystem.StartCutscene <br/>
-    -- <b>Alias</b>: StartCutscene
+    -- <p><b>Alias</b>: BriefingSystem.StartCutscene <br/></p>
+    -- <p><b>Alias</b>: StartCutscene</p>
     --
     -- @param _briefing [table] Briefing
     -- @return [number] Briefing-ID
@@ -906,8 +906,8 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- sollten eingesetzt werden, wenn Quests nicht mehr ausreichen um die
     -- Handlung zu erzählen oder um multiple Handlungsstränge zu starten.
     --
-    -- <b>Alias</b>: BriefingSystem.StartBriefing <br/>
-    -- <b>Alias</b>: StartBriefing
+    -- <p><b>Alias</b>: BriefingSystem.StartBriefing <br/></p>
+    -- <p><b>Alias</b>: StartBriefing</p>
     --
     -- @param _briefing     [table] Briefing
     -- @param _cutsceneMode [boolean] Cutscene-Mode nutzen
@@ -1111,7 +1111,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     ---
     -- Prüft, ob ein Briefing aktiv ist.
     --
-    -- <b>Alias:</b> IsBriefingActive
+    -- <p><b>Alias:</b> IsBriefingActive</p>
     --
     -- @return boolean: Briefing aktiv
     -- @within BriefingSystem

@@ -23,7 +23,7 @@ BundleEntityHealth = {};
 -- Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen,
 -- Gebäude und Raubtiere haben Gesundheit.
 --
--- <b>Alias</b>: GetHealth
+-- <p><b>Alias</b>: GetHealth</p>
 --
 -- @param _Entity [string|number] Angefragtes Entity
 -- @return [number] Gesundheit in Prozent
@@ -43,7 +43,7 @@ GetHealth = API.GetEntityHealth;
 -- Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen,
 -- Gebäude und Raubtiere haben Gesundheit.
 --
--- <b>Alias</b>: SetHealth
+-- <p><b>Alias</b>: SetHealth</p>
 --
 -- @param _Entity     [string|number] Entity dessen Gesundheit geändert wird
 -- @param _Percentage [number] Gesundheit in Prozent
@@ -81,7 +81,7 @@ SetHealth = API.ChangeEntityHealth;
 --
 -- Achtung: Nur Gebäude können in Brand gesteckt werden.
 --
--- <b>Alias</b>: SetOnFire
+-- <p><b>Alias</b>: SetOnFire</p>
 --
 -- @param _Entity   [string|number] Skriptname oder EntityID
 -- @param _Strength [number] Stärke des Brandes
@@ -120,7 +120,7 @@ SetOnFire = API.SetBuildingOnFire;
 -- Battalion verwundet, werden der Reihe nach alle Soldaten verwundet, bis
 -- der gesamte Schaden verrechnet wurde oder alle Sodaten tot sind.
 --
--- <b>Alias</b>: HurtEntityEx
+-- <p><b>Alias</b>: HurtEntityEx</p>
 --
 -- @param _Target         [string|number] Ziel des Schadens
 -- @param _AmountOfDamage [number] Menge an Schaden
@@ -158,7 +158,7 @@ HurtEntityEx = API.HurtEntity;
 -- Jede Funktion wird immer dann ausgeführt, wenn ein Entity durch ein anderes
 -- verwundet wird.
 --
--- <b>Alias</b>: AddHurtAction
+-- <p><b>Alias</b>: AddHurtAction</p>
 --
 -- @param _Function [function] Funktion, die ausgeführt wird.
 -- @within Anwenderfunktionen
@@ -185,7 +185,7 @@ AddHurtAction = API.AddOnEntityHurtAction;
 -- Jede Funktion wird immer dann ausgeführt, wenn ein Entity durch ein anderes
 -- Entity oder durch das Skript zerstört wird.
 --
--- <b>Alias</b>: AddKilledAction
+-- <p><b>Alias</b>: AddKilledAction</p>
 --
 -- @param _Function [function] Funktion, die ausgeführt wird.
 -- @within Anwenderfunktionen
@@ -209,7 +209,7 @@ AddKilledAction = API.AddOnEntityDestroyedAction;
 ---
 -- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt wird.
 --
--- <b>Alias</b>: AddSpawnedAction
+-- <p><b>Alias</b>: AddSpawnedAction</p>
 --
 -- @param _Function [function] Funktion, die ausgeführt wird.
 -- @within Anwenderfunktionen

@@ -25,7 +25,7 @@ QSB = QSB or {};
 --
 -- Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
 --
--- <b>Alias</b>: GetScale
+-- <p><b>Alias</b>: GetScale</p>
 --
 -- @param _Entity [string|number] Entity
 -- @return [number] Größenfaktor
@@ -47,7 +47,7 @@ GetScale = API.GetEntityScale;
 ---
 -- Gibt den Besitzer des Entity zurück.
 --
--- <b>Alias</b>: GetPlayer
+-- <p><b>Alias</b>: GetPlayer</p>
 --
 -- @param _Entity [string|number] Entity
 -- @return [number] Besitzer
@@ -69,7 +69,7 @@ GetPlayer = API.GetEntityPlayer;
 -- Über diese Koordinaten könnte man prüfen, ob ein Entity sich in einen
 -- Bereich bewegt, in dem es nichts zu suchen hat.
 --
--- <b>Alias</b>: GetMovingTarget
+-- <p><b>Alias</b>: GetMovingTarget</p>
 --
 -- @param _Entity [string|number] Entity
 -- @return [table] Positionstabelle
@@ -97,7 +97,7 @@ GetMovingTarget = API.GetMovingTarget;
 --
 -- Auf diese Weise kann geprüft werden, ob ein NPC auf dem Entity aktiv ist.
 --
--- <b>Alias</b>: IsNpc
+-- <p><b>Alias</b>: IsNpc</p>
 --
 -- @param _Entity [string|number] Entity
 -- @return [boolean] Ist NPC
@@ -122,7 +122,7 @@ IsNpc = API.IsEntityNpc;
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
 --
--- <b>Alias</b>: IsVisible
+-- <p><b>Alias</b>: IsVisible</p>
 --
 -- @param _Entity [string|number] Entity
 -- @return [boolean] Ist sichtbar
@@ -144,7 +144,7 @@ IsVisible = API.IsEntityVisible;
 -- Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
 -- die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
 --
--- <b>Alias</b>: SetScale
+-- <p><b>Alias</b>: SetScale</p>
 --
 -- @param _Entity [string|number] Entity
 -- @param _Scale  [number] Größenfaktor
@@ -170,7 +170,7 @@ SetScale = API.SetEntityScale;
 -- Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
 -- möglich ein Raubtier einem Spieler zuzuweisen.
 --
--- <b>Alias</b>: ChangePlayer
+-- <p><b>Alias</b>: ChangePlayer</p>
 --
 -- @param _Entity   [string|number] Entity
 -- @param _PlayerID [number] Besitzer

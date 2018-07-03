@@ -23,7 +23,7 @@ QSB = QSB or {};
 ---
 -- Startet ein Musikstück als Stimme.
 --
--- <b>Alias:</b> StartSong
+-- <p><b>Alias:</b> StartSong</p>
 --
 -- Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
 -- sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
@@ -65,7 +65,7 @@ StartSong = API.StartMusic;
 ---
 -- Vereinfachter einzeiliger Aufruf für StartSong.
 --
--- <b>Alias:</b> StartSongSimple
+-- <p><b>Alias:</b> StartSongSimple</p>
 --
 -- @param _File [string] Pfad zur Datei
 -- @param _Volume [number] Lautstärke
@@ -96,7 +96,7 @@ StartSongSimple = API.StartMusicSimple;
 ---
 -- Spielt eine Playlist ab.
 --
--- <b>Alias:</b> StartPlaylist
+-- <p><b>Alias:</b> StartPlaylist</p>
 --
 -- Eine im Skript definierte Playlist, nicht
 -- eine XML! Die Playlist kann einmal abgearbeitet oder auf Wiederholung
@@ -142,7 +142,7 @@ StartPlaylist = API.StartPlaylist;
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
 --
--- <b>Alias:</b> StartPlaylistTitle
+-- <p><b>Alias:</b> StartPlaylistTitle</p>
 --
 -- @param _Title [number] Index des Titels
 -- @within Anwenderfunktionen
@@ -159,7 +159,7 @@ StartPlaylistTitle = API.StartPlaylistTitle;
 ---
 -- Stopt Musik und stellt die alte Soundkonfiguration wieder her.
 --
--- <b>Alias:</b> StopSong
+-- <p><b>Alias:</b> StopSong</p>
 --
 -- @within Anwenderfunktionen
 --
@@ -176,7 +176,7 @@ StopSong = API.StopSong;
 -- Stopt den gerade laufenden Song und leert sowohl die Songdaten
 -- als auch die Playlist.
 --
--- <b>Alias:</b> AbortSongOrPlaylist
+-- <p><b>Alias:</b> AbortSongOrPlaylist</p>
 --
 -- @within Anwenderfunktionen
 --

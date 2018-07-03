@@ -36,7 +36,7 @@ QSB.IOList = {};
 -- Diese Funktion ist ein Mapping für die veraltete Schreibweise. Du kannst
 -- dich hiermit ermutigt fühlen, API.CreateObject zu verwenden!
 --
--- <b>Alias:</b> SetupInteractiveObject
+-- <p><b>Alias:</b> SetupInteractiveObject</p>
 --
 -- @param _Name [string] Skriptname des Objekts
 -- @param _Description [table] Beschreibung
@@ -152,7 +152,7 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 -- werden. Sie sind ausnahmslos im Callback und in der Condition des Objektes
 -- abrufbar.
 --
--- <b>Alias:</b> CreateObject
+-- <p><b>Alias:</b> CreateObject</p>
 --
 -- @param _Description [table] Beschreibung
 -- @within Anwenderfunktionen
@@ -182,7 +182,7 @@ CreateObject = API.CreateObject;
 -- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
 -- Konfiguration des Objektes entfernt.
 --
--- <b>Alias:</b> RemoveInteractiveObject
+-- <p><b>Alias:</b> RemoveInteractiveObject</p>
 --
 -- @param _EntityName [string] Skriptname des IO
 -- @within Anwenderfunktionen
@@ -208,7 +208,7 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
 -- Held das Objekt aktivieren.
 --
--- <b>Alias</b>: InteractiveObjectActivate
+-- <p><b>Alias</b>: InteractiveObjectActivate</p>
 --
 -- @param _EntityName [string] Skriptname des Objektes
 -- @param _State [number] State des Objektes
@@ -239,7 +239,7 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 -- Deaktiviert ein interaktives Objekt, sodass es nicht mehr vom Spieler
 -- benutzt werden kann.
 --
--- <b>Alias</b>: InteractiveObjectDeactivate
+-- <p><b>Alias</b>: InteractiveObjectDeactivate</p>
 --
 -- @param _EntityName [string] Scriptname des Objektes
 -- @within Anwenderfunktionen
@@ -270,7 +270,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
 -- Mit dieser Funktion kann ein Name angelegt werden.
 --
--- <b>Alias:</b> AddCustomIOName
+-- <p><b>Alias:</b> AddCustomIOName</p>
 --
 -- @param _Key [string] Typname des Entity
 -- @param _Text [string] Text der Beschriftung
