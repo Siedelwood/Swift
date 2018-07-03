@@ -23,7 +23,7 @@ QSB = QSB or {};
 ---
 -- Startet ein Musikstück als Stimme.
 --
--- <b>Alias:</b> StartMusic
+-- <b>Alias:</b> StartSong
 --
 -- Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
 -- sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
@@ -40,7 +40,7 @@ QSB = QSB or {};
 -- <li>MuteUI   - GUI-Sounds aus</li>
 -- </ul>
 --
--- @param _Description
+-- @param _Description [table] Definition des Musikstück
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -60,17 +60,17 @@ function API.StartMusic(_Description)
     end
     BundleMusicTools.Global:StartSong(_Description);
 end
-StartMusic = API.StartMusic;
+StartSong = API.StartMusic;
 
 ---
 -- Vereinfachter einzeiliger Aufruf für StartSong.
 --
--- <b>Alias:</b> StartMusicSimple
+-- <b>Alias:</b> StartSongSimple
 --
--- @param _File    Pfad zur Datei
--- @param _Volume  Lautstärke
--- @param _Length  Abspieldower (<= Dauer Musikstück)
--- @param _FadeOut Ausblenden in Sekunden
+-- @param _File [string] Pfad zur Datei
+-- @param _Volume [number] Lautstärke
+-- @param _Length [number] Abspieldower (<= Dauer Musikstück)
+-- @param _FadeOut [number] Ausblenden in Sekunden
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -91,7 +91,7 @@ function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     };
     BundleMusicTools.Global:StartSong(Data);
 end
-StartMusicSimple = API.StartMusicSimple;
+StartSongSimple = API.StartMusicSimple;
 
 ---
 -- Spielt eine Playlist ab.
@@ -104,7 +104,7 @@ StartMusicSimple = API.StartMusicSimple;
 -- Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
 -- sich die Playlist endlos wiederholt.
 --
--- @param _Playlist
+-- @param _Playlist [table] Definition der Playlist
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -144,7 +144,7 @@ StartPlaylist = API.StartPlaylist;
 --
 -- <b>Alias:</b> StartPlaylistTitle
 --
--- @param _Title
+-- @param _Title [number] Index des Titels
 -- @within Anwenderfunktionen
 --
 function API.StartPlaylistTitle(_Title)
@@ -223,7 +223,7 @@ end
 ---
 -- Startet ein Musikstück als Stimme.
 --
--- @param _Description Beschreibung des Musikstücks
+-- @param _Description [table] Beschreibung des Musikstücks
 -- @within Internal
 -- @local
 --
@@ -262,6 +262,7 @@ end
 ---
 -- Spielt eine Playlist ab.
 --
+-- @param _Playlist [table] Playlist
 -- @within Internal
 -- @local
 --
@@ -278,6 +279,7 @@ end
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
 --
+-- @param _Title [number] Index des Titels
 -- @within Internal
 -- @local
 --
@@ -396,10 +398,10 @@ end
 ---
 -- Speichert die Soundeinstellungen.
 --
--- @param _Volume   Lautstärke
--- @param _Song     Pfad zum Titel
--- @param _MuteAtmo Atmosphäre stumm schalten
--- @param _MuteUI   UI stumm schalten
+-- @param _Volume [number] Lautstärke
+-- @param _Song [string] Pfad zum Titel
+-- @param _MuteAtmo [boolean] Atmosphäre stumm schalten
+-- @param _MuteUI [boolean] UI stumm schalten
 -- @within Internal
 -- @local
 --
@@ -431,8 +433,8 @@ end
 ---
 -- Stellt die Soundeinstellungen wieder her.
 --
--- @param _File        Pfad zur Datei
--- @param _QueueLength Länge der Warteschlange
+-- @param _File [string] Pfad zur Datei
+-- @param _QueueLength [number] Länge der Warteschlange
 -- @within Internal
 -- @local
 --
