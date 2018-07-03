@@ -1066,6 +1066,7 @@ GiveEntityName = API.EnsureScriptName;
 --
 -- @param _Command [string] Lua-Befehl als String
 -- @within Anwenderfunktionen
+-- @local
 --
 function API.Bridge(_Command, _Flag)
     if not GUI then

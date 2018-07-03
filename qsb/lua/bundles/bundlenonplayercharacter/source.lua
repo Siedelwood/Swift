@@ -16,7 +16,7 @@
 -- @within Modulbeschreibung
 -- @set sort=false
 --
-Modulbeschreibung = {};
+BundleNonPlayerCharacter = {};
 
 API = API or {};
 QSB = QSB or {};
