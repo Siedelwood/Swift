@@ -41,8 +41,8 @@ QSB.TraderTypes = {
 -- ID des Spielers, ID des Lagerhaus, Menge an Angeboten insgesamt und
 -- alle Angebote der Händlertypen.
 --
--- @param _PlayerID Player ID
--- @return Angebotsinformationen
+-- @param _PlayerID [number] Player ID
+-- @return [table] Angebotsinformationen
 -- @within Anwenderfunktionen
 --
 -- @usage local Info = BundleTradingFunctions.Global:GetOfferInformation(2);
@@ -72,8 +72,8 @@ end
 -- Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück. Wenn
 -- der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
 --
--- @param _PlayerID ID des Spielers
--- @return number
+-- @param _PlayerID [number] ID des Spielers
+-- @return [number] Anzahl angebote
 -- @within Anwenderfunktionen
 --
 function API.GetOfferCount(_PlayerID)
@@ -88,9 +88,11 @@ end
 -- Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
 -- den Spieler zurück. Es wird immer das erste Angebot zurückgegeben.
 --
--- @param _PlayerID Player ID
--- @param _GoodType Warentyp oder Entitytyp
--- @return numer, number, number
+-- @param _PlayerID [number] Player ID
+-- @param _GoodType [number] Warentyp oder Entitytyp
+-- @return [number] ID des Angebots
+-- @return [number] ID des Händlers im Gebäude
+-- @return [number] Entity ID des Lagerhaus
 -- @within Anwenderfunktionen
 --
 function API.GetOfferAndTrader(_PlayerID, _GoodorEntityType)
@@ -137,7 +139,7 @@ end
 -- Entfernt das Angebot mit dem Index für den Händler im Handelsgebäude
 -- des Spielers.
 --
--- @param _PlayerID        Entity ID des Handelsgebäudes
+-- @param _PlayerID [number] Entity ID des Handelsgebäudes
 -- @param _TraderType      Typ des Händlers
 -- @param _OfferIndex      Index des Angebots
 -- @within Anwenderfunktionen
@@ -154,7 +156,7 @@ end
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
--- @param _PlayerID            Player ID
+-- @param _PlayerID [number] Player ID
 -- @param _GoodorEntityType    Warentyp oder Entitytyp
 -- @within Anwenderfunktionen
 --
@@ -191,7 +193,7 @@ end
 -- definiert werden.
 -- Es kann mehr als einen fliegenden Händler auf der Map geben.
 --
--- @param _PlayerID	  Spieler-ID des Händlers
+-- @param _PlayerID [number] Spieler-ID des Händlers
 -- @param _Offers	  Liste an Angeboten
 -- @param _Waypoints  Wegpunktliste Anfahrt
 -- @param _Reversed	  Wegpunktliste Abfahrt
@@ -260,7 +262,7 @@ end
 -- Zerstört den fliegenden Händler. Der Spieler wird dabei natürlich
 -- nicht zerstört.
 --
--- @param _PlayerID	Spieler-ID des Händlers
+-- @param _PlayerID [number] Spieler-ID des Händlers
 -- @within Anwenderfunktionen
 --
 function API.DisbandTravelingSalesman(_PlayerID)
@@ -310,7 +312,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     --
     -- @param _Merchant					Handelsgebäude
     -- @param _NumberOfOffers			Anzahl an Angeboten
-    -- @param _GoodType                 Warentyp
+    -- @param _GoodType [number] Warentyp
     -- @param _RefreshRate              Erneuerungsrate
     -- @param _optionalPlayersPlayerID	Optionale Spieler-ID
     -- @return Offer ID
@@ -451,7 +453,7 @@ end
 -- ID des Spielers, ID des Lagerhaus, Menge an Angeboten insgesamt und
 -- alle Angebote der Händlertypen.
 --
--- @param _PlayerID Player ID
+-- @param _PlayerID [number] Player ID
 -- @return Angebotsinformationen
 -- @within Internal
 -- @local
@@ -527,7 +529,7 @@ end
 -- Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück. Wenn
 -- der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
 --
--- @param _PlayerID ID des Spielers
+-- @param _PlayerID [number] ID des Spielers
 -- @return number
 -- @within Internal
 -- @local
@@ -541,8 +543,8 @@ end
 -- Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
 -- den Spieler zurück. Es wird immer das erste Angebot zurückgegeben.
 --
--- @param _PlayerID Player ID
--- @param _GoodType Warentyp oder Entitytyp
+-- @param _PlayerID [number] Player ID
+-- @param _GoodType [number] Warentyp oder Entitytyp
 -- @return numer, number, number
 -- @within Internal
 -- @local
@@ -609,7 +611,7 @@ end
 -- Entfernt das Angebot mit dem Index für den Händler im Handelsgebäude
 -- des Spielers.
 --
--- @param _PlayerID        Entity ID des Handelsgebäudes
+-- @param _PlayerID [number] Player ID des Handelsgebäudes
 -- @param _TraderType      Typ des Händlers
 -- @param _OfferIndex      Index des Angebots
 -- @within Internal
@@ -634,7 +636,7 @@ end
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
--- @param _PlayerID            Player ID
+-- @param _PlayerID [number] Player ID
 -- @param _GoodorEntityType    Warentyp oder Entitytyp
 -- @within Internal
 -- @local
@@ -691,7 +693,7 @@ end
 -- definiert werden.
 -- Es kann mehrere fliegende Händler auf der Map geben.
 --
--- @param _PlayerID	  Spieler-ID des Händlers
+-- @param _PlayerID [number] Spieler-ID des Händlers
 -- @param _Offers	  Liste an Angeboten
 -- @param _Appearance Wartezeit
 -- @param _Waypoints  Wegpunktliste Anfahrt
@@ -736,7 +738,7 @@ end
 -- Zerstört den fliegenden Händler. Der Spieler wird dabei natürlich
 -- nicht zerstört.
 --
--- @param _PlayerID	Spieler-ID des Händlers
+-- @param _PlayerID [number] Spieler-ID des Händlers
 -- @within Internal
 -- @local
 --
@@ -750,7 +752,7 @@ end
 ---
 -- Setzt die Angebote des Fliegenden Händlers.
 --
--- @param _PlayerID	Spieler-ID des Händlers
+-- @param _PlayerID [number] Spieler-ID des Händlers
 -- @within Internal
 -- @local
 --

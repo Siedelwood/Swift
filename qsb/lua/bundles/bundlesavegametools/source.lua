@@ -25,7 +25,7 @@ QSB = QSB or {};
 -- des Spielstandes. Wenn nicht gespeichert werden kann, wird bis
 -- zum nδchsten mφglichen Zeitpunkt gewartet.
 --
--- @param _Name	Name des Spielstandes
+-- @param _name [string] Name des Spielstandes
 -- @within Anwenderfunktionen
 --
 function API.AutoSaveGame(_name)
@@ -42,8 +42,8 @@ end
 -- keine Verzeichnise erzeugt werden. Der Pfad beginnt relativ vom
 -- Spielstandverzeichnis.
 --
--- @param _path	Pfad zum Ziel
--- @param _name	Name des Spielstandes
+-- @param _path [string] Pfad zum Ziel
+-- @param _name [string] Name des Spielstandes
 -- @within Anwenderfunktionen
 --
 function API.SaveGameToFolder(_path, _name)
@@ -62,9 +62,9 @@ end
 -- Ladebildschirm gehalten werden, bis der Spieler das Spiel per
 -- Button startet.
 --
--- @param _path		  Pfad zum Ziel
--- @param _name		  Name des Spielstandes
--- @param _needButton Startbutton anzeigen (0 oder 1)
+-- @param _path [string] Pfad zum Ziel
+-- @param _name [string] Name des Spielstandes
+-- @param _needButton [number] Startbutton anzeigen (0 oder 1)
 -- @within Anwenderfunktionen
 --
 function API.LoadGameFromFolder(_path, _name, _needButton)
@@ -89,10 +89,10 @@ end
 -- <li>Usermap: 3</li>
 -- </ul>
 --
--- @param _map			Name der Map
--- @param _knight		Index des Helden
--- @param _folder		Mapordner
--- @param _needButton	Startbutton nutzen
+-- @param _map [string] Name der Map
+-- @param _knight [number] Index des Helden
+-- @param _folder [number] Mapordner
+-- @param _needButton [number] Startbutton nutzen
 -- @within Anwenderfunktionen
 --
 function API.StartMap(_map, _knight, _folder, _needButton)
@@ -153,7 +153,7 @@ end
 -- des Spielstandes. Wenn nicht gespeichert werden kann, wird bis
 -- zum nächsten mφglichen Zeitpunkt gewartet.
 --
--- @param _Name	Name des Spielstandes
+-- @param _name [string] Name des Spielstandes
 -- @within Internal
 -- @local
 --
@@ -186,7 +186,7 @@ end
 ---
 -- Prüft, ob das Spiel gerade gespeichert werden kann.
 --
--- @return boolean: Kann speichern
+-- @return [boolean]  Kann speichern
 -- @within Internal
 -- @local
 --
@@ -208,8 +208,8 @@ end
 -- keine Verzeichnise erzeugt werden. Der Pfad beginnt relativ vom
 -- Spielstandverzeichnis.
 --
--- @param _path	Pfad zum Ziel
--- @param _name	Name des Spielstandes
+-- @param _path [string] Pfad zum Ziel
+-- @param _name [string] Name des Spielstandes
 -- @within Internal
 -- @local
 --
@@ -224,9 +224,9 @@ end
 -- Ladebildschirm gehalten werden, bis der Spieler das Spiel per
 -- Button startet.
 --
--- @param _path		  Pfad zum Ziel
--- @param _name		  Name des Spielstandes
--- @param _needButton Startbutton anzeigen (0 oder 1)
+-- @param _path [string] Pfad zum Ziel
+-- @param _name [string] Name des Spielstandes
+-- @param _needButton [number] Startbutton anzeigen (0 oder 1)
 -- @within Internal
 -- @local
 --
@@ -252,10 +252,10 @@ end
 -- <li>Usermap: 3</li>
 -- </ul>
 --
--- @param _map			Name der Map
--- @param _knight		Index des Helden
--- @param _folder		Mapordner
--- @param _needButton	Startbutton nutzen
+-- @param _map [string] Name der Map
+-- @param _knight [number] Index des Helden
+-- @param _folder [number] Mapordner
+-- @param _needButton [number] Startbutton nutzen
 -- @within Internal
 -- @local
 --
