@@ -211,8 +211,8 @@ function SymfoniaLoader:ConcatSources(_External)
 
     for i= 1, #_External, 1 do
         local FileContent = "";
-            ActiveBundles = ActiveBundles.. "'" .._External[1]:lower().. "/source.lua',\n";
-            FileContent = self:LoadSource(_External[1]:lower().. "/source.lua");
+            ActiveBundles = ActiveBundles.. "'" .._External[i]:lower().. "/source.lua',\n";
+            FileContent = self:LoadSource(_External[i]:lower().. "/source.lua");
         table.insert(QsbContent, FileContent);
     end
 

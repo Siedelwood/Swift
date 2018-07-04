@@ -26,7 +26,7 @@ echo "Done!"
 cd ../../qsb
 
 echo "Generating Documentation ..."
-lua ldoc/ldoc.lua . &>/dev/null
+lua ldoc/ldoc.lua ../var/qsb.lua &>/dev/null
 mv doc ../var/doc
 rm config.ld
 
