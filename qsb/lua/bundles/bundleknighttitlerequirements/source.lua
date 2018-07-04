@@ -126,9 +126,10 @@
 -- </li>
 -- </ul>
 --
--- @module BundleKnightTitleRequirements
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleKnightTitleRequirements = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -168,8 +169,8 @@ end
 ---
 -- Zählt den Konsumzähler rauf, sobald eine Ware konsumiert wird.
 --
--- @param _PlayerID ID des Spielers
--- @param _Good     Warentyp
+-- @param _PlayerID [number] ID des Spielers
+-- @param _Good [number] Warentyp
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -218,8 +219,8 @@ end
 ---
 -- Zählt den Konsumzähler rauf, sobald eine Ware konsumiert wird.
 --
--- @param _PlayerID ID des Spielers
--- @param _Good     Warentyp
+-- @param _PlayerID [number] ID des Spielers
+-- @param _Good [number] Warentyp
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -755,8 +756,8 @@ end
 -- <li>Pfad zu einelnem Icon (200x200 Pixel)</li>
 -- </ul>
 --
--- @param _Widget Icon Widget
--- @param _Icon   Icon Textur
+-- @param _Widget [string] Icon Widget
+-- @param _Icon [string|table] Icon Textur
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -797,8 +798,8 @@ end
 ---
 -- Setzt einen für den Tooltip des aktuellen Widget einen neuen Text.
 --
--- @param _Title Titel des Tooltip
--- @param _Text  Text des Tooltip
+-- @param _Title [string] Titel des Tooltip
+-- @param _Text [string] Text des Tooltip
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -825,8 +826,8 @@ end
 ---
 -- Ermittelt die veränderten Texte für den Tooltip hinter dem angegebenen Key.
 --
--- @param _key Index in Description
--- @param _i   Buttonindex
+-- @param _key [string] Index in Description
+-- @param _i   [number] Buttonindex
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -1240,10 +1241,10 @@ Core:RegisterBundle("BundleKnightTitleRequirements");
 ---
 -- Prüft, ob genug Entities in einer bestimmten Kategorie existieren.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @param _i           Button Index
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @param _i [number] Button Index
+-- @within Originalfunktionen
 -- @local
 --
 DoesNeededNumberOfEntitiesInCategoryForKnightTitleExist = function(_PlayerID, _KnightTitle, _i)
@@ -1289,10 +1290,10 @@ end
 ---
 -- Prüft, ob genug Entities eines bestimmten Typs existieren.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @param _i           Button Index
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @param _i [number] Button Index
+-- @within Originalfunktionen
 -- @local
 --
 DoesNeededNumberOfEntitiesOfTypeForKnightTitleExist = function(_PlayerID, _KnightTitle, _i)
@@ -1334,10 +1335,10 @@ end
 ---
 -- Prüft, ob es genug Einheiten eines Warentyps gibt.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @param _i           Button Index
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @param _i [number] Button Index
+-- @within Originalfunktionen
 -- @local
 --
 DoesNeededNumberOfGoodTypesForKnightTitleExist = function(_PlayerID, _KnightTitle, _i)
@@ -1368,10 +1369,10 @@ end
 ---
 -- Prüft, ob die Siedler genug Einheiten einer Ware konsumiert haben.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @param _i           Button Index
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @param _i [number] Button Index
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededNumberOfConsumedGoodsForKnightTitleExist = function( _PlayerID, _KnightTitle, _i)
@@ -1404,10 +1405,10 @@ end
 ---
 -- Prüft, ob genug Waren der Kategorie hergestellt wurde.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @param _i           Button Index
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @param _i [number] Button Index
+-- @within Originalfunktionen
 -- @local
 --
 DoNumberOfProductsInCategoryExist = function(_PlayerID, _KnightTitle, _i)
@@ -1439,10 +1440,10 @@ end
 ---
 -- Prüft, ob ein bestimmter Buff für den Spieler aktiv ist.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @param _i           Button Index
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @param _i [number] Button Index
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededDiversityBuffForKnightTitleExist = function(_PlayerID, _KnightTitle, _i)
@@ -1470,10 +1471,10 @@ end
 ---
 -- Prüft, ob die Custom Function true vermeldet.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @param _i           Button Index
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @param _i [number] Button Index
+-- @within Originalfunktionen
 -- @local
 --
 DoCustomFunctionForKnightTitleSucceed = function(_PlayerID, _KnightTitle, _i)
@@ -1497,10 +1498,10 @@ end
 ---
 -- Prüft, ob genug Dekoration eines Typs angebracht wurde.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @param _i           Button Index
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @param _i [number] Button Index
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededNumberOfDecoratedBuildingsForKnightTitleExist = function( _PlayerID, _KnightTitle, _i)
@@ -1542,10 +1543,10 @@ end
 ---
 -- Prüft, ob die Spezialgebäude weit genug ausgebaut sind.
 --
--- @param _PlayerID       ID des Spielers
--- @param _KnightTitle    Nächster Titel
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
 -- @param _EntityCategory Entity Category
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededSpecialBuildingUpgradeForKnightTitleExist = function( _PlayerID, _KnightTitle, _EntityCategory)
@@ -1582,9 +1583,9 @@ end
 ---
 -- Prüft, ob der Ruf der Stadt hoch genug ist.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @within Originalfunktionen
 -- @local
 --
 DoesNeededCityReputationForKnightTitleExist = function(_PlayerID, _KnightTitle)
@@ -1605,9 +1606,9 @@ end
 ---
 -- Prüft, ob genug Gebäude vollständig dekoriert sind.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @within Originalfunktionen
 -- @local
 --
 DoNeededNumberOfFullDecoratedBuildingsForKnightTitleExist = function( _PlayerID, _KnightTitle)
@@ -1649,9 +1650,9 @@ end
 ---
 -- Prüft, ob der Spieler befördert werden kann.
 --
--- @param _PlayerID    ID des Spielers
--- @param _KnightTitle Nächster Titel
--- @within BB-Funktionen
+-- @param _PlayerID [number] ID des Spielers
+-- @param _KnightTitle [number] Nächster Titel
+-- @within Originalfunktionen
 -- @local
 --
 CanKnightBePromoted = function(_PlayerID, _KnightTitle)
@@ -1685,7 +1686,7 @@ end
 
 ---
 -- Der Spieler gewinnt das Spiel
--- @within BB-Funktionen
+-- @within Originalfunktionen
 -- @local
 --
 VictroryBecauseOfTitle = function()
@@ -1706,7 +1707,7 @@ end
 -- das Schema für Aufstiegsbedingungen und Rechtevergabe immer beibehalten
 -- werden.
 --
--- @within BB-Funktionen
+-- @within Originalfunktionen
 --
 InitKnightTitleTables = function()
     KnightTitles = {}
@@ -1717,9 +1718,7 @@ InitKnightTitleTables = function()
     KnightTitles.Marquees   = 4
     KnightTitles.Duke       = 5
     KnightTitles.Archduke   = 6
-
-
-
+    
     -- ---------------------------------------------------------------------- --
     -- Rechte und Pflichten                                                   --
     -- ---------------------------------------------------------------------- --

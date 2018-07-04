@@ -8,9 +8,10 @@
 -- Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze Playlists als
 -- Stimme abzuspielen.
 --
--- @module BundleMusicTools
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleMusicTools = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -22,7 +23,7 @@ QSB = QSB or {};
 ---
 -- Startet ein Musikstück als Stimme.
 --
--- <b>Alias:</b> StartMusic
+-- <p><b>Alias:</b> StartSong</p>
 --
 -- Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
 -- sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
@@ -39,8 +40,8 @@ QSB = QSB or {};
 -- <li>MuteUI   - GUI-Sounds aus</li>
 -- </ul>
 --
--- @param _Description
--- @within Public
+-- @param _Description [table] Definition des Musikstück
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.StartMusic({
@@ -59,18 +60,18 @@ function API.StartMusic(_Description)
     end
     BundleMusicTools.Global:StartSong(_Description);
 end
-StartMusic = API.StartMusic;
+StartSong = API.StartMusic;
 
 ---
 -- Vereinfachter einzeiliger Aufruf für StartSong.
 --
--- <b>Alias:</b> StartMusicSimple
+-- <p><b>Alias:</b> StartSongSimple</p>
 --
--- @param _File    Pfad zur Datei
--- @param _Volume  Lautstärke
--- @param _Length  Abspieldower (<= Dauer Musikstück)
--- @param _FadeOut Ausblenden in Sekunden
--- @within Public
+-- @param _File [string] Pfad zur Datei
+-- @param _Volume [number] Lautstärke
+-- @param _Length [number] Abspieldower (<= Dauer Musikstück)
+-- @param _FadeOut [number] Ausblenden in Sekunden
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.StartMusicSimple("music/s6_10_antagonist.mp3", 70, 49, 1)
@@ -90,12 +91,12 @@ function API.StartMusicSimple(_File, _Volume, _Length, _FadeOut)
     };
     BundleMusicTools.Global:StartSong(Data);
 end
-StartMusicSimple = API.StartMusicSimple;
+StartSongSimple = API.StartMusicSimple;
 
 ---
 -- Spielt eine Playlist ab.
 --
--- <b>Alias:</b> StartPlaylist
+-- <p><b>Alias:</b> StartPlaylist</p>
 --
 -- Eine im Skript definierte Playlist, nicht
 -- eine XML! Die Playlist kann einmal abgearbeitet oder auf Wiederholung
@@ -103,8 +104,8 @@ StartMusicSimple = API.StartMusicSimple;
 -- Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
 -- sich die Playlist endlos wiederholt.
 --
--- @param _Playlist
--- @within Public
+-- @param _Playlist [table] Definition der Playlist
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Playlist = {
@@ -141,10 +142,10 @@ StartPlaylist = API.StartPlaylist;
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
 --
--- <b>Alias:</b> StartPlaylistTitle
+-- <p><b>Alias:</b> StartPlaylistTitle</p>
 --
--- @param _Title
--- @within Public
+-- @param _Title [number] Index des Titels
+-- @within Anwenderfunktionen
 --
 function API.StartPlaylistTitle(_Title)
     if GUI then
@@ -158,9 +159,9 @@ StartPlaylistTitle = API.StartPlaylistTitle;
 ---
 -- Stopt Musik und stellt die alte Soundkonfiguration wieder her.
 --
--- <b>Alias:</b> StopSong
+-- <p><b>Alias:</b> StopSong</p>
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.StopSong()
     if GUI then
@@ -175,9 +176,9 @@ StopSong = API.StopSong;
 -- Stopt den gerade laufenden Song und leert sowohl die Songdaten
 -- als auch die Playlist.
 --
--- <b>Alias:</b> AbortSongOrPlaylist
+-- <p><b>Alias:</b> AbortSongOrPlaylist</p>
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.AbortMusic()
     if GUI then
@@ -212,7 +213,7 @@ BundleMusicTools = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Global:Install()
@@ -222,8 +223,8 @@ end
 ---
 -- Startet ein Musikstück als Stimme.
 --
--- @param _Description Beschreibung des Musikstücks
--- @within Private
+-- @param _Description [table] Beschreibung des Musikstücks
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Global:StartSong(_Description)
@@ -261,7 +262,8 @@ end
 ---
 -- Spielt eine Playlist ab.
 --
--- @within Private
+-- @param _Playlist [table] Playlist
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Global:StartPlaylist(_Playlist)
@@ -277,7 +279,8 @@ end
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
 --
--- @within Private
+-- @param _Title [number] Index des Titels
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Global:StartPlaylistTitle(_Title)
@@ -299,7 +302,7 @@ end
 ---
 -- Stopt Musik und stellt die alte Soundkonfiguration wieder her.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Global:StopSong()
@@ -317,7 +320,7 @@ end
 -- Stopt den gerade laufenden Song und leert sowohl die Songdaten
 -- als auch die Playlist.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Global:AbortMusic()
@@ -335,7 +338,7 @@ end
 -- Ist die Warteschlange leer, endet der Job. Existiert eine Playlist,
 -- für die Repeat = true ist, dann wird die Playlist neu gestartet.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Global.StartSongControl()
@@ -385,7 +388,7 @@ StartSongControl = BundleMusicTools.Global.StartSongControl;
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Local:Install()
@@ -395,11 +398,11 @@ end
 ---
 -- Speichert die Soundeinstellungen.
 --
--- @param _Volume   Lautstärke
--- @param _Song     Pfad zum Titel
--- @param _MuteAtmo Atmosphäre stumm schalten
--- @param _MuteUI   UI stumm schalten
--- @within Private
+-- @param _Volume [number] Lautstärke
+-- @param _Song [string] Pfad zum Titel
+-- @param _MuteAtmo [boolean] Atmosphäre stumm schalten
+-- @param _MuteUI [boolean] UI stumm schalten
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Local:BackupSound(_Volume, _Song, _MuteAtmo, _MuteUI)
@@ -430,9 +433,9 @@ end
 ---
 -- Stellt die Soundeinstellungen wieder her.
 --
--- @param _File        Pfad zur Datei
--- @param _QueueLength Länge der Warteschlange
--- @within Private
+-- @param _File [string] Pfad zur Datei
+-- @param _QueueLength [number] Länge der Warteschlange
+-- @within Internal
 -- @local
 --
 function BundleMusicTools.Local:ResetSound(_File, _QueueLength)

@@ -39,31 +39,36 @@ QSB = QSB or {};
 SymfoniaLoader = {
     Data = {
         LoadOrder = {
-            {"BundleClassicBehaviors",              true},
-            {"BundleSymfoniaBehaviors",             true},
-            {"BundleQuestGeneration",               true},
-            {"BundleNonPlayerCharacter",            true},
-            {"BundleKnightTitleRequirements",       true},
-            {"BundleInterfaceApperance",            true},
-            {"BundleTradingFunctions",              true},
-            {"BundleMusicTools",                    true},
-            {"BundleEntityScriptingValues",         true},
-            {"BundleConstructionControl",           true},
-            {"BundleEntitySelection",               true},
-            {"BundleSaveGameTools",                 true},
-            {"BundleEntityHelperFunctions",         true},
-            {"BundleGameHelperFunctions",           true},
-            {"BundleDialogWindows",                 true},
             {"BundleBriefingSystem",                true},
             {"BundleBuildingButtons",               true},
-            {"BundleInteractiveObjects",            true},
+            {"BundleClassicBehaviors",              true},
+            {"BundleConstructionControl",           true},
+            {"BundleDialogWindows",                 true},
             {"BundleEntityHealth",                  true},
+            {"BundleEntityHelperFunctions",         true},
+            {"BundleEntityScriptingValues",         true},
+            {"BundleEntitySelection",               true},
+            {"BundleGameHelperFunctions",           true},
+            {"BundleInterfaceApperance",            true},
+            {"BundleKnightTitleRequirements",       true},
+            {"BundleMusicTools",                    true},
+            {"BundleNonPlayerCharacter",            true},
+            {"BundleQuestGeneration",               true},
+            {"BundleTradingFunctions",              true},
+            {"BundleInteractiveObjects",            true},
+            {"BundleSaveGameTools",                 true},
+            {"BundleSymfoniaBehaviors",             true},
         },
 
         AddOnLoadOrder = {
             {
-            "AddOnQuestDebug",                      true,
-            "BundleQuestGeneration",
+            "AddOnCastleStore",                     true,
+            "BundleInteractiveObjects",
+            },
+
+            {
+            "AddOnGameCutscenes",                   true,
+            "BundleBriefingSystem",
             },
 
             {
@@ -71,19 +76,14 @@ SymfoniaLoader = {
             "BundleInteractiveObjects",
             "BundleEntitySelection",
             },
-            
+
             {
-            "AddOnGameCutscenes",                   true,
-            "BundleBriefingSystem",
-            },
-            
-            {
-            "AddOnCastleStore",                     true,
-            "BundleInteractiveObjects",
+            "AddOnQuestDebug",                      true,
+            "BundleQuestGeneration",
             },
 
             {
-            "AddOnRolePlayingGame",                 true,
+            "AddOnRolePlayingGame",                 false,
             "BundleEntityHealth",
             "BundleEntityHelperFunctions",
             "BundleGameHelperFunctions",
@@ -175,13 +175,14 @@ end
 function SymfoniaLoader:ConcatSources()
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
-    
+
     local fh = io.open("qsb/config.ld", "wt");
     assert(fh, "Output file can not be created!");
     fh:write("project = 'Symfonia'\n");
-    
+    fh:write("kind_names = {script = 'Skripte', module = 'Bibliotheken'}\n");
+
     local ActiveBundles = "file = {\n'./lua/core.lua',\n";
-    
+
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";
         if v[2] then
@@ -207,11 +208,11 @@ function SymfoniaLoader:ConcatSources()
             end
         end
     end
-    
+
     ActiveBundles = ActiveBundles.. "}";
-    fh:write(ActiveBundles.. "\n");  
+    fh:write(ActiveBundles.. "\n");
     fh:close();
-    
+
     return QsbContent;
 end
 

@@ -7,27 +7,37 @@
 ---
 -- Ermöglicht es Briefings und Fake-Cutscenes zu verwenden.
 --
+-- <br><br><b>Briefing</b><br>
 -- Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
 -- der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
--- Antwortmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
--- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiden
+-- Auswahlmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
+-- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiten
 -- kann innerhalb des Multiple Choice Briefings navigiert werden.
 --
+-- <br><br><b>Cutscene</b><br>
 -- Cutscenes dürfen kein Multiple Choice enthalten und werden immer nur ganz
 -- abgespielt oder abgebrochen. Das Überspringen einzelner Seiten ist nicht
 -- möglich. Cutscenes verfügen über eine neue Kamerasteuerung (Blickrichtung
 -- und Ursprungspunkt) und sollten ausschließlich für szenerische Untermalung
 -- der Handlung eingesetzt werden.
 --
+-- <br><br><b>Behavior</b><br>
+-- Bisher war es schwer ein Briefing in den Ablauf einzubauen. Es wurde immer
+-- ein nebenher laufender Job oder eine Variable zur Steuerung benötigt. Wenn
+-- man nun ein Briefing oder eine Cutscene mit speziellen Behavior an einen
+-- Auftrag anbindet, handhabt das System die nachfolgenden Aufträge.
+--
+-- <br><br><b>Splashscreen</b><br>
 -- Splashscreens stehen sowohl in Briefings als auch in Cutscenes zuer Verfügung
 -- und bieten die Möglichkeit, Bildschirmfüllende Grafiken zu verwenden. Diese
 -- Grafiken können auch größer als eine Bildschirmfläche sein. Für diesen
 -- Fall kann über die Angabe von UV-Koordinaten zu einem bestimmten Abschnitt
 -- der Grafik gesprungen oder geflogen werden.
 --
--- @module BundleBriefingSystem
--- @set sort=true
+-- @within Modulbeschreibung
+-- @set sort=false
 --
+BundleBriefingSystem = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -44,10 +54,10 @@ QSB = QSB or {};
 -- Niederlage Timer generell inaktiv. Werden Quests während Briefings nicht
 -- pausiert, zählen Niederlage Timer unterdessen weiter!
 --
--- <b>Alias</b>: PauseQuestsDuringBriefings
+-- <p><b>Alias</b>: PauseQuestsDuringBriefings</p>
 --
--- @param _Flag Quest Timer pausiert
--- @within Public
+-- @param _Flag [boolean] Quest Timer pausiert
+-- @within Anwenderfunktionen
 --
 function API.PauseQuestsDuringBriefings(_Flag)
     if GUI then
@@ -59,13 +69,13 @@ end
 PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 
 ---
--- Prüft, ob das Briefing mit der angegebenen ID abgespielt wurde (beendet ist).
+-- Prüft, ob das Briefing mit der angegebenen ID beendet ist.
 --
--- <b>Alias</b>: IsBriefingFinished
+-- <p><b>Alias</b>: IsBriefingFinished</p>
 --
--- @param _Flag Quest Timer pausiert
--- @return boolean: Briefing ist beendet
--- @within Public
+-- @param _briefingID [number] ID des Briefing
+-- @return [boolean] Briefing ist beendet
+-- @within Anwenderfunktionen
 --
 function API.IsBriefingFinished(_briefingID)
     if GUI then
@@ -77,16 +87,16 @@ end
 IsBriefingFinished = API.IsBriefingFinished;
 
 ---
--- Gibt die gewähtle Antwort für die MC Page zurück.
+-- Gibt die gewähtle Antwort für die Multiple Choice Page zurück.
 --
 -- Wird eine Seite mehrmals durchlaufen, wird die jeweils letzte Antwort
 -- zurückgegeben.
 --
--- <b>Alias</b>: MCGetSelectedAnswer
+-- <p><b>Alias</b>: MCGetSelectedAnswer</p>
 --
--- @param _page Seite
--- @return number: Gewählte Antwort
--- @within Public
+-- @param _page [table] Referenz auf die Seite
+-- @return [number] Gewählte Antwort
+-- @within Anwenderfunktionen
 --
 function API.GetSelectedAnswerFromMCPage(_page)
     if GUI then
@@ -98,15 +108,15 @@ end
 MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 
 ---
--- Gibt die definition der Seite im aktuellen Briefing zurück.
+-- Gibt die Definition der Seite im aktuellen Briefing zurück.
 --
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
--- <b>Alias</b>: GetCurrentBriefingPage
+-- <p><b>Alias</b>: GetCurrentBriefingPage</p>
 --
--- @param _pageNumber Index der Page
--- @return table: Page
--- @within Public
+-- @param _pageNumber [number] Index der Seite
+-- @return [table] Seite des aktuellen Briefing
+-- @within Anwenderfunktionen
 --
 function API.GetCurrentBriefingPage(_pageNumber)
     if GUI then
@@ -122,10 +132,10 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 --
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
--- <b>Alias</b>: GetCurrentBriefing
+-- <p><b>Alias</b>: GetCurrentBriefing</p>
 --
--- @return table: Briefing
--- @within Public
+-- @return [table] Briefing mit allen Seiten
+-- @within Anwenderfunktionen
 --
 function API.GetCurrentBriefing()
     if GUI then
@@ -139,13 +149,16 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 ---
 -- Initalisiert die Page-Funktionen für das übergebene Briefing.
 --
--- <b>Alias</b>: AddPages
+-- Die zurückgegebenen Funktionen sind für Dialoge gedacht. Auch wenn AP alles
+-- kann, sollte man sich an diese konvention halten.
 --
--- @param _Briefing Briefing
--- @return function: AP
--- @return function: ASP
--- @return function: ASMC
--- @within Public
+-- <p><b>Alias</b>: AddPages</p>
+--
+-- @param _Briefing [table] Briefing
+-- @return [function] AP - Allround-Funktion zur Erzeugung von Seiten
+-- @return [function] ASP - Vereinfachte Funktion für Dialoge
+-- @return [function] ASMC - Vereinfachte Funktion für Auswahl-Dialoge
+-- @within Anwenderfunktionen
 --
 function API.AddPages(_Briefing)
     if GUI then
@@ -159,12 +172,15 @@ AddPages = API.AddPages;
 ---
 -- Initalisiert die Flight-Funktionen für die übergebene Fake-Cutscene.
 --
--- <b>Alias</b>: AddPages
+-- Die zurückgegebenen Funktionen sind für Kameraflüge gedacht. Vermeide die
+-- Anzeige von langen Texten.
 --
--- @param _Cutscene Cutscene
--- @return function: AF
--- @return function: ASF
--- @within Public
+-- <p><b>Alias</b>: AddPages</p>
+--
+-- @param _Cutscene [table] Cutscene
+-- @return [function] AF - Funktion für komfortable Notation von Flights
+-- @return [function] ASF - Kurzschreibweise für AF
+-- @within Anwenderfunktionen
 --
 function API.AddFlights(_Cutscene)
     if GUI then
@@ -180,11 +196,11 @@ AddFlights = API.AddFlights;
 -- Bildschirm. Die Nachricht wird, in Abhängigkeit zur Textlänge, nach ein
 -- paar Sekunden verschrinden.
 --
--- <b>Alias:</b> BriefingMessage
+-- <p><b>Alias:</b> BriefingMessage</p>
 --
--- @param _Text	    Anzuzeigender Text
--- @param _Duration	Anzeigedauer in Sekunden
--- @within Public
+-- @param _Text	    [string] Anzuzeigender Text
+-- @param _Duration	[number] Anzeigedauer in Sekunden
+-- @within Anwenderfunktionen
 --
 function API.AddBriefingNote(_Text, _Duration)
     if type(_Text) ~= "string" and type(_Text) ~= "number" then
@@ -229,9 +245,9 @@ BriefingMessage = API.AddBriefingNote;
 -- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
 -- über die Grafik zu scrollen oder zu zoomen.
 --
--- @param _page	Seite
--- @return table: Page
--- @within Page-Functionen
+-- @param _page	[table] Spezifikation der Seite
+-- @return [table] Refernez auf die angelegte Seite
+-- @within Briefing
 --
 function AP(_Page)
     -- Diese Funktion ist ein Dummy für LDoc!
@@ -297,8 +313,8 @@ end
 -- </tr>
 -- </table>
 --
--- @param _page	Seite
--- @within Page-Functionen
+-- @param _page	[table] Spezifikation des Flight
+-- @within Briefing
 --
 -- @usage
 -- AF {
@@ -333,12 +349,12 @@ end
 -- <b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
 -- wenigen Kamerastationen oder für eine generische Nutzung.
 --
--- @param _Text     Angezeigter Text
--- @param _Duration Dauer des Flight
--- @param _Action   Aktion zu Beginn des Flight
--- @param _Fading   Einblenden und Abblenden
--- @param ...       Liste der XYZ-Koordinaten
--- @within Page-Functionen
+-- @param _Text     [string] Angezeigter Text
+-- @param _Duration [number] Dauer des Flight
+-- @param _Action   [function] Aktion zu Beginn des Flight
+-- @param _Fading   [boolen] Einblenden und Abblenden
+-- @param ...       [number] Liste der XYZ-Koordinaten
+-- @within Briefing
 --
 -- @usage
 -- ASF ("Das ist ein Text....", 10, nil, true, 12300, 23000, 3400, 22000, 34050, 200, 12300, 23000, 3400, 22500, 31050, 350);
@@ -353,13 +369,13 @@ end
 -- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
 -- schaut den Siedler an.
 --
--- @param _entity		Zielentity
--- @param _title		Titel der Seite
--- @param _text		    Text der Seite
--- @param _dialogCamera Nahsicht an/aus
--- @param _action       Callback-Funktion
--- @return table: Page
--- @within Page-Functionen
+-- @param _entity		[string] Zielentity
+-- @param _title		[string] Titel der Seite
+-- @param _text		    [string] Text der Seite
+-- @param _dialogCamera [boolean] Nahsicht an/aus
+-- @param _action       [function] Callback-Funktion
+-- @return [table] Referenz auf die Seite
+-- @within Briefing
 --
 -- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
 --
@@ -373,13 +389,14 @@ end
 -- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
 -- Kamera schaut den Siedler an.
 --
--- @param _entity		Zielentity
--- @param _title		Titel der Seite
--- @param _text		    Text der Seite
--- @param _dialogCamera Nahsicht an/aus
--- @param ...			Liste der Antworten und Sprungziele
--- @return table: Page
--- @within Page-Functionen
+-- @param _entity		[string] Zielentity
+-- @param _title		[tring] Titel der Seite
+-- @param _text		    [string] Text der Seite
+-- @param _dialogCamera [boolean] Nahsicht an/aus
+-- @param ...			[mixed] Liste der Antworten und Sprungziele (string,
+-- number, string, number, ...)
+-- @return [table] Referenz auf die Seite
+-- @within Briefing
 --
 -- @usage
 -- ASMC("hans", "", "In welche Richtung soll Hänschen-Klein gehen?", false,
@@ -413,7 +430,7 @@ BundleBriefingSystem = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:Install()
@@ -426,7 +443,7 @@ end
 -- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
 --
 -- @param _Flag Quest Timer pausiert
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag)
@@ -438,7 +455,7 @@ end
 --
 -- @param _Flag Quest Timer pausiert
 -- @return boolean: Briefing ist beendet
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:IsBriefingFinished(_briefingID)
@@ -453,7 +470,7 @@ end
 --
 -- @param _page Seite
 -- @return number: Gewählte Antwort
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:MCGetSelectedAnswer(_page)
@@ -470,7 +487,7 @@ end
 --
 -- @param _pageNumber Index der Page
 -- @return table: Page
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber)
@@ -483,7 +500,7 @@ end
 -- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
 --
 -- @return table: Briefing
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:GetCurrentBriefing()
@@ -495,7 +512,7 @@ end
 --
 -- @param _Cutscene Cutscene
 -- @return function: AF
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:AddFlights(_Cutscene)
@@ -560,7 +577,7 @@ end
 -- @return function: AP
 -- @return function: ASP
 -- @return function: ASMC
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:AddPages(_briefing)
@@ -684,7 +701,7 @@ end
 ---
 -- Initalisiert das Briefing System im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:InitalizeBriefingSystem()
@@ -843,12 +860,12 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- Cutscenes sondern um eine Simulation. Die Kamerabewegung wird
     -- dementsprechend nicht so flüssig sein und es kann ruckeln!
     --
-    -- <b>Alias</b>: BriefingSystem.StartCutscene <br/>
-    -- <b>Alias</b>: StartCutscene
+    -- <p><b>Alias</b>: BriefingSystem.StartCutscene <br/></p>
+    -- <p><b>Alias</b>: StartCutscene</p>
     --
-    -- @param _briefing Briefing-Tabelle
-    -- @return number: Briefing-ID
-    -- @within Public
+    -- @param _briefing [table] Briefing
+    -- @return [number] Briefing-ID
+    -- @within Anwenderfunktionen
     --
     function API.StartCutscene(_briefing)
         -- Seitenweises abbrechen ist nicht erlaubt
@@ -889,13 +906,13 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- sollten eingesetzt werden, wenn Quests nicht mehr ausreichen um die
     -- Handlung zu erzählen oder um multiple Handlungsstränge zu starten.
     --
-    -- <b>Alias</b>: BriefingSystem.StartBriefing <br/>
-    -- <b>Alias</b>: StartBriefing
+    -- <p><b>Alias</b>: BriefingSystem.StartBriefing <br/></p>
+    -- <p><b>Alias</b>: StartBriefing</p>
     --
-    -- @param _briefing     Briefing-Table
-    -- @param _cutsceneMode Cutscene-Mode nutzen?
+    -- @param _briefing     [table] Briefing
+    -- @param _cutsceneMode [boolean] Cutscene-Mode nutzen
     -- @return number: Briefing-ID
-    -- @within Public
+    -- @within Anwenderfunktionen
     --
     function API.StartBriefing(_briefing, _cutsceneMode)
         -- view wird nur Ausgeführt, wenn es sich um eine Cutscene handelt
@@ -1094,10 +1111,11 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     ---
     -- Prüft, ob ein Briefing aktiv ist.
     --
-    -- <b>Alias:</b> IsBriefingActive
+    -- <p><b>Alias:</b> IsBriefingActive</p>
     --
     -- @return boolean: Briefing aktiv
     -- @within BriefingSystem
+    -- @local
     --
     function BriefingSystem.IsBriefingActive()
         return BriefingSystem.isActive;
@@ -1486,7 +1504,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
         BriefingSystem.currBriefing = BriefingSystem.UpdateMCAnswers(BriefingSystem.currBriefing);
     end
-    
+
     ---
     -- Diese Funktion wird aufgerufen, wenn der Spieler während eines
     -- Briefings auf ein Entity klickt.
@@ -1499,11 +1517,11 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         if _EntityID == nil then
             return;
         end
-        if BriefingSystem.IsBriefingActive == false then 
+        if BriefingSystem.IsBriefingActive == false then
             return;
         end
         local Page = BriefingSystem.currBriefing[BriefingSystem.page];
-        if Page.entityClicked then 
+        if Page.entityClicked then
             Page:entityClicked(_EntityID);
         end
     end
@@ -1521,15 +1539,15 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         if _X == nil or _Y == nil then
             return;
         end
-        if BriefingSystem.IsBriefingActive == false then 
+        if BriefingSystem.IsBriefingActive == false then
             return;
         end
         local Page = BriefingSystem.currBriefing[BriefingSystem.page];
-        if Page.positionClicked then 
+        if Page.positionClicked then
             Page:positionClicked(_X, _Y);
         end
     end
-    
+
     ---
     -- Diese Funktion wird aufgerufen, wenn der Spieler während eines
     -- Briefings auf die Anzeige klickt.
@@ -1543,11 +1561,11 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         if _X == nil or _Y == nil then
             return;
         end
-        if BriefingSystem.IsBriefingActive == false then 
+        if BriefingSystem.IsBriefingActive == false then
             return;
         end
         local Page = BriefingSystem.currBriefing[BriefingSystem.page];
-        if Page.screenClicked then 
+        if Page.screenClicked then
             Page:screenClicked(_X, _Y);
         end
     end
@@ -1558,7 +1576,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Local:Install()
@@ -1568,7 +1586,7 @@ end
 ---
 -- Initalisiert das Briefing System im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Local:InitalizeBriefingSystem()
@@ -2538,7 +2556,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- Steuert die Kamera während eines Briefings. Es wird entweder das alte
     -- System von OldMacDonald oder das neue von totalwarANGEL genutzt.
     --
-    -- @within BB-Funktionen
+    -- @within Originalfunktionen
     -- @local
     --
     function ThroneRoomCameraControl()
@@ -2735,10 +2753,10 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     end
 
     ---
-    -- Wird immer dann aufgerufen, wenn der Spieler innerhalb des Throneroom 
+    -- Wird immer dann aufgerufen, wenn der Spieler innerhalb des Throneroom
     -- Mode links klickt.
     --
-    -- @within BB-Funktionen
+    -- @within Originalfunktionen
     -- @local
     --
     function ThroneRoomLeftClick()
@@ -3160,7 +3178,7 @@ end
 
 ---
 -- Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBriefingSystem:OverwriteGetPosition()
@@ -3191,8 +3209,8 @@ Core:RegisterBundle("BundleBriefingSystem");
 -- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
 -- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
 --
--- @param _Briefing Funktionsname als String
--- @return table: Behavior
+-- @param _Briefing [string] Funktionsname als String
+--
 -- @within Reward
 --
 function Reward_Briefing(...)
@@ -3255,8 +3273,8 @@ Core:RegisterBehavior(b_Reward_Briefing);
 -- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
 -- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
 --
--- @param _Briefing Funktionsname als String
--- @return table: Behavior
+-- @param _Briefing [string] Funktionsname als String
+--
 -- @within Reprisal
 --
 function Reprisal_Briefing(...)
@@ -3316,9 +3334,8 @@ Core:RegisterBehavior(b_Reprisal_Briefing);
 -- Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
 -- angehangen ist, beendet ist.
 --
--- @param _QuestName Name des Quest
--- @param _Waittime  Wartezeit in Sekunden
--- @return table: Behavior
+-- @param _QuestName [string] Name des Quest
+-- @param _Waittime  [number] Wartezeit in Sekunden
 -- @within Trigger
 --
 function Trigger_Briefing(...)
@@ -3388,4 +3405,3 @@ function b_Trigger_Briefing:DEBUG(__quest_)
 end
 
 Core:RegisterBehavior(b_Trigger_Briefing);
-
