@@ -32,8 +32,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
 <li><a href="#Goal">Goal</a></li>
 <li><a href="#NonPlayerCharacter">NonPlayerCharacter</a></li>
@@ -89,17 +89,6 @@
 </p>
 
 
-<h2><a href="#Internal">Internal</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global:Install">BundleNonPlayerCharacter.Global:Install ()</a></td>
-	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Local:Install">BundleNonPlayerCharacter.Local:Install ()</a></td>
-	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
-	</tr>
-</table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
@@ -125,6 +114,17 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.NpcHasSpoken">API.NpcHasSpoken (_Entity)</a></td>
 	<td class="summary">Prüft, ob der NPC bereits angesprochen wurde.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global:Install">BundleNonPlayerCharacter.Global:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Local:Install">BundleNonPlayerCharacter.Local:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
 	</tr>
 </table>
 <h2><a href="#Trigger">Trigger</a></h2>
@@ -267,38 +267,6 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "BundleNonPlayerCharacter.Global:Install"></a>
-    <strong>BundleNonPlayerCharacter.Global:Install ()</strong>
-    </dt>
-    <dd>
-    Initialisiert das Bundle im globalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleNonPlayerCharacter.Local:Install"></a>
-    <strong>BundleNonPlayerCharacter.Local:Install ()</strong>
-    </dt>
-    <dd>
-    Initialisiert das Bundle im lokalen Skript.
-
-
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
@@ -333,7 +301,7 @@
  <td>Eine Funktion, die aufgerufen wird, wenn der NPC angesprochen wird.</td>
  </tr>
  </table>
-<p> <b>Alias:</b> CreateNPC
+<p> <p><b>Alias:</b> CreateNPC</p>
 
 
 
@@ -369,7 +337,7 @@
     </dt>
     <dd>
     Entfernt den NPC komplett vom Entity.  Das Entity bleibt dabei erhalten.
-<p> <b>Alias:</b> DestroyNPC
+<p> <p><b>Alias:</b> DestroyNPC</p>
 
 
 
@@ -396,7 +364,7 @@
     <dd>
     Aktiviert einen inaktiven NPC.  Wenn ein NPC bereits gesprochen hat, muss
  er zuvor zurückgesetzt werden.
-<p> <b>Alias:</b> EnableNPC
+<p> <p><b>Alias:</b> EnableNPC</P>
 
 
 
@@ -422,7 +390,7 @@
     </dt>
     <dd>
     Deaktiviert einen NPC, sodass dieser nicht angesprochen werden kann.
-<p> <b>Alias:</b> DisableNPC
+<p> <p><b>Alias:</b> DisableNPC</P>
 
 
 
@@ -448,7 +416,7 @@
     </dt>
     <dd>
     Setzt einen NPC zurück, sodass er nicht mehr als angesprochen gilt.
-<p> <b>Alias:</b> ResetNPC
+<p> <p><b>Alias:</b> ResetNPC<p>
 
 
 
@@ -475,7 +443,7 @@
     <dd>
     Prüft, ob der NPC bereits angesprochen wurde.  Wenn ein Ansprechpartner
  vorgegeben ist, muss dieser den NPC ansprechen.
-<p> <b>Alias:</b> TalkedToNPC
+<p> <p><b>Alias:</b> TalkedToNPC</p>
 
 
 
@@ -498,6 +466,38 @@
     <ul>
         <pre class="example">API.NpcHasSpoken(<span class="string">"horst"</span>)</pre>
     </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global:Install"></a>
+    <strong>BundleNonPlayerCharacter.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Local:Install"></a>
+    <strong>BundleNonPlayerCharacter.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
 
 </dd>
 </dl>
@@ -572,7 +572,7 @@
     Erzeugt ein neues Objekt von NonPlayerCharacter und bindet es an den
  angegebenen Siedler.  Dadurch wird der Siedler zu einem NPC, ist allerdings
  noch nicht aktiv.
-<p> <b>Alias:</b> NonPlayerCharacter:New
+<p> <p><b>Alias:</b> NonPlayerCharacter:New</p>
 
 
 
@@ -625,7 +625,7 @@
     <dd>
     Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.
 <p> Wurde noch kein NPC für diesen Skriptnamen erzeugt, wird nil zurückgegeben.
-<p> <b>Alias:</b> NonPlayerCharacter:GetInstance
+<p> <p><b>Alias:</b> NonPlayerCharacter:GetInstance</p>
 
 
 
@@ -659,7 +659,7 @@
     </dt>
     <dd>
     Gibt die Entity ID des letzten angesprochenen NPC zurück.
-<p> <b>Alias:</b> NonPlayerCharacter:GetNpcId
+<p> <p><b>Alias:</b> NonPlayerCharacter:GetNpcId</p>
 
 
 
@@ -681,7 +681,7 @@
     <dd>
     Gibt die Entity ID des letzten Helden zurück, der einen NPC
  angesprochen hat.
-<p> <b>Alias:</b> NonPlayerCharacter:GetHeroId
+<p> <p><b>Alias:</b> NonPlayerCharacter:GetHeroId</p>
 
 
 
@@ -703,7 +703,7 @@
     <dd>
     Gibt die Entity ID des NPC zurück.  Ist der NPC ein Leader, wird
  der erste Soldat zurückgegeben, wenn es einen gibt.
-<p> <b>Alias:</b> NonPlayerCharacter:GetID
+<p> <p><b>Alias:</b> NonPlayerCharacter:GetID</p>
 
 
 
@@ -724,7 +724,7 @@
     </dt>
     <dd>
     Löscht einen NPC.
-<p> <b>Alias:</b> NonPlayerCharacter:Dispose
+<p> <p><b>Alias:</b> NonPlayerCharacter:Dispose</p>
 
 
 
@@ -817,7 +817,7 @@
     </dt>
     <dd>
     Setzt den NPC zurück, sodass er erneut aktiviert werden kann.
-<p> <b>Alias:</b> NonPlayerCharacter:Reset
+<p> <p><b>Alias:</b> NonPlayerCharacter:Reset</p>
 
 
 
@@ -840,7 +840,7 @@
     Gibt true zurück, wenn der NPC angesprochen wurde.  Ist ein
  spezieller Ansprechpartner definiert, wird nur dann true
  zurückgegeben, wenn dieser Held mit dem NPC spricht.
-<p> <b>Alias:</b> NonPlayerCharacter:HasTalkedTo
+<p> <p><b>Alias:</b> NonPlayerCharacter:HasTalkedTo</p>
 
 
 
@@ -861,7 +861,7 @@
     </dt>
     <dd>
     Setzt den Ansprechpartner für diesen NPC.
-<p> <b>Alias:</b> NonPlayerCharacter:SetDialogPartner
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetDialogPartner</p>
 
 
 
@@ -889,7 +889,7 @@
     <dd>
     Setzt das Callback für den Fall, dass ein falscher Held den
  NPC anspricht.
-<p> <b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback</p>
 
 
 
@@ -918,7 +918,7 @@
     Setzt das Ziel, zu dem der NPC vom Helden geführt werden
  muss.  Wenn ein Ziel erreicht wird, kann der NPC erst dann
  angesprochen werden, wenn das Ziel erreicht ist.
-<p> <b>Alias:</b> NonPlayerCharacter:SetFollowDestination
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetFollowDestination</p>
 
 
 
@@ -946,7 +946,7 @@
     <dd>
     Setzt den Helden, dem der NPC folgt.  Ist Kein Ziel gesetzt,
  folgt der NPC dem Helden unbegrenzt.
-<p> <b>Alias:</b> NonPlayerCharacter:SetFollowTarget
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetFollowTarget</p>
 
 
 
@@ -975,7 +975,7 @@
     Setzt die Funktion, die während ein NPC einem Helden folgt und
  das Ziel noch nicht erreicht ist, anstelle des Callback beim
  Ansprechen ausgeführt wird.
-<p> <b>Alias:</b> NonPlayerCharacter:SetFollowAction
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetFollowAction</p>
 
 
 
@@ -1003,7 +1003,7 @@
     <dd>
     Setzt das Ziel zu dem der NPC läuft und den Helden, der dem
  NPC folgen muss.
-<p> <b>Alias:</b> NonPlayerCharacter:SetPrecedeParams
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetPrecedeParams</p>
 
 
 
@@ -1035,7 +1035,7 @@
     Setzt die Funktion, die während ein NPC einen Helden führt und
  das Ziel noch nicht erreicht ist, anstelle des Callback beim
  Ansprechen ausgeführt wird.
-<p> <b>Alias:</b> NonPlayerCharacter:SetPrecedeAction
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetPrecedeAction</p>
 
 
 
@@ -1062,7 +1062,7 @@
     </dt>
     <dd>
     Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.
-<p> <b>Alias:</b> NonPlayerCharacter:SetCallback
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetCallback</p>
 
 
 
@@ -1218,7 +1218,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-04 12:56:25 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

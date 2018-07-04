@@ -32,8 +32,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#Deprecated">Deprecated</a></li>
 </ul>
 
@@ -87,6 +87,22 @@
 </p>
 
 
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AddQuest">API.AddQuest (_Data)</a></td>
+	<td class="summary">Erstellt einen Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.QuestMessage">API.QuestMessage (_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)</a></td>
+	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.QuestDialog">API.QuestDialog (_Messages)</a></td>
+	<td class="summary">Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
+ einander angezeigt werden.</td>
+	</tr>
+</table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
@@ -106,11 +122,6 @@
 	<td class="summary">Fügt dem Quest mit der ID in der GenerationList seine Behavior hinzu.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:StartQuests">BundleQuestGeneration.Global:StartQuests ()</a></td>
-	<td class="summary">DO NOT USE THIS FUNCTION!
- Startet alle Quests in der GenerationList.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:ValidateQuests">BundleQuestGeneration.Global:ValidateQuests ()</a></td>
 	<td class="summary">Validiert alle Quests in der GenerationList.</td>
 	</tr>
@@ -123,221 +134,22 @@
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 </table>
-<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.AddQuest">API.AddQuest (_Data)</a></td>
-	<td class="summary">Erstellt einen Quest.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.QuestMessage">API.QuestMessage (_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)</a></td>
-	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.QuestDialog">API.QuestDialog (_Messages)</a></td>
-	<td class="summary">Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
- einander angezeigt werden.</td>
-	</tr>
-</table>
 <h2><a href="#Deprecated">Deprecated</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#API.StartQuests">API.StartQuests ()</a></td>
 	<td class="summary">DO NOT USE THIS FUNCTION!</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:StartQuests">BundleQuestGeneration.Global:StartQuests ()</a></td>
+	<td class="summary">DO NOT USE THIS FUNCTION!--</td>
+	</tr>
 </table>
 
 <br/>
 <br/>
 
 
-    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "BundleQuestGeneration.Global:Install"></a>
-    <strong>BundleQuestGeneration.Global:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im globalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Global:QuestMessage"></a>
-    <strong>BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Nachricht im Questfenster.
-<p> Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
- des Quests ausgeführt wird.
-<p> Alle Paramater sind optional und können von rechts nach links weggelassen
- oder mit nil aufgefüllt werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Text</span>
-               Anzeigetext der Nachricht
-        </li>
-        <li><span class="parameter">_Sender</span>
-             Sender der Nachricht
-        </li>
-        <li><span class="parameter">_Receiver</span>
-           Receiver der Nachricht
-        </li>
-        <li><span class="parameter">_Ancestor</span>
-           Vorgänger-Quest
-        </li>
-        <li><span class="parameter">_AncestorWt</span>
-         Wartezeit
-        </li>
-        <li><span class="parameter">_Callback</span>
-           Callback
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-        number: QuestID</li>
-        <li>
-        table: Quest</li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Global:NewQuest"></a>
-    <strong>BundleQuestGeneration.Global:NewQuest (_Data)</strong>
-    </dt>
-    <dd>
-    Erzeugt einen Quest und trägt ihn in die GenerationList ein.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Data</span>
-         Daten des Quest.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-        string: Name des erzeugten Quests</li>
-        <li>
-        number: Gesamtanzahl Quests</li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Global:AttachBehavior"></a>
-    <strong>BundleQuestGeneration.Global:AttachBehavior (_ID, _Data)</strong>
-    </dt>
-    <dd>
-    Fügt dem Quest mit der ID in der GenerationList seine Behavior hinzu.
-<p> <b>Achtung: </b>Diese Funktion wird vom Code aufgerufen!
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-           Id des Quests
-        </li>
-        <li><span class="parameter">_Data</span>
-         Quest Data
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Global:StartQuests"></a>
-    <strong>BundleQuestGeneration.Global:StartQuests ()</strong>
-    </dt>
-    <dd>
-    DO NOT USE THIS FUNCTION!
- Startet alle Quests in der GenerationList.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Global:ValidateQuests"></a>
-    <strong>BundleQuestGeneration.Global:ValidateQuests ()</strong>
-    </dt>
-    <dd>
-    Validiert alle Quests in der GenerationList.  Verschiedene Standardfehler
- werden geprüft.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Global:DebugQuest"></a>
-    <strong>BundleQuestGeneration.Global:DebugQuest (_List)</strong>
-    </dt>
-    <dd>
-    Dummy-Funktion zur Validierung der Behavior eines Quests  Diese Funktion muss durch ein Debug Bundle überschrieben werden um Quests
- in der Initalisiererliste zu testen.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_List</span>
-         Liste der Quests
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Local:Install"></a>
-    <strong>BundleQuestGeneration.Local:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im lokalen Skript.
-
-
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
@@ -365,7 +177,7 @@
  <li>Loop: Funktion, die während der Laufzeit des Quests aufgerufen wird</li>
  <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
  </ul>
-<p> <b>Alias:</b> AddQuest
+<p> <p><b>Alias:</b> AddQuest</p>
 
 
 
@@ -505,6 +317,178 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleQuestGeneration.Global:Install"></a>
+    <strong>BundleQuestGeneration.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:QuestMessage"></a>
+    <strong>BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Nachricht im Questfenster.
+<p> Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
+ Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+ Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+ Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+ des Quests ausgeführt wird.
+<p> Alle Paramater sind optional und können von rechts nach links weggelassen
+ oder mit nil aufgefüllt werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+               [string] Anzeigetext der Nachricht
+        </li>
+        <li><span class="parameter">_Sender</span>
+             [number] Sender der Nachricht
+        </li>
+        <li><span class="parameter">_Receiver</span>
+           [number] Receiver der Nachricht
+        </li>
+        <li><span class="parameter">_Ancestor</span>
+           [string] Vorgänger-Quest
+        </li>
+        <li><span class="parameter">_AncestorWt</span>
+         [number] Wartezeit
+        </li>
+        <li><span class="parameter">_Callback</span>
+           [function] Callback
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        [number] QuestID</li>
+        <li>
+        [table] Quest</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:NewQuest"></a>
+    <strong>BundleQuestGeneration.Global:NewQuest (_Data)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen Quest und trägt ihn in die GenerationList ein.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+         [table] Daten des Quest.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        [string] Name des erzeugten Quests</li>
+        <li>
+        [number] Gesamtanzahl Quests</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:AttachBehavior"></a>
+    <strong>BundleQuestGeneration.Global:AttachBehavior (_ID, _Data)</strong>
+    </dt>
+    <dd>
+    Fügt dem Quest mit der ID in der GenerationList seine Behavior hinzu.
+<p> <b>Achtung: </b>Diese Funktion wird vom Code aufgerufen!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+           [number] Id des Quests
+        </li>
+        <li><span class="parameter">_Data</span>
+         [table] Quest Data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:ValidateQuests"></a>
+    <strong>BundleQuestGeneration.Global:ValidateQuests ()</strong>
+    </dt>
+    <dd>
+    Validiert alle Quests in der GenerationList.  Verschiedene Standardfehler
+ werden geprüft.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:DebugQuest"></a>
+    <strong>BundleQuestGeneration.Global:DebugQuest (_List)</strong>
+    </dt>
+    <dd>
+    Dummy-Funktion zur Validierung der Behavior eines Quests  Diese Funktion muss durch ein Debug Bundle überschrieben werden um Quests
+ in der Initalisiererliste zu testen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_List</span>
+         [table] Liste der Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Local:Install"></a>
+    <strong>BundleQuestGeneration.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Deprecated"></a>Deprecated</h2>
 
     <dl class="function">
@@ -522,6 +506,20 @@
 
 
 </dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:StartQuests"></a>
+    <strong>BundleQuestGeneration.Global:StartQuests ()</strong>
+    </dt>
+    <dd>
+    DO NOT USE THIS FUNCTION!--
+
+
+
+
+
+
+
+</dd>
 </dl>
 
 
@@ -529,7 +527,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-04 12:56:25 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

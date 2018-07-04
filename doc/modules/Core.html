@@ -33,8 +33,8 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Fields">Fields</a></li>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -88,70 +88,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#g_GameExtraNo">g_GameExtraNo</a></td>
 	<td class="summary">AddOn Versionsnummer</td>
-	</tr>
-</table>
-<h2><a href="#Internal">Internal</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#Core:AppendFunction">Core:AppendFunction (_FunctionName, _AppendFunction, _Index)</a></td>
-	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:ChangeCustomQuestCaptionText">Core:ChangeCustomQuestCaptionText (_Text, _Quest)</a></td>
-	<td class="summary">Ändert den Text des Beschreibungsfensters eines Quests.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:CheckQuestName">Core:CheckQuestName (_Name)</a></td>
-	<td class="summary">Prüft, ob der Questname formal korrekt ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:GetFunctionInString">Core:GetFunctionInString (_FunctionName, _Reference)</a></td>
-	<td class="summary">Sucht eine Funktion mit dem angegebenen Namen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:InitalizeBundles">Core:InitalizeBundles ()</a></td>
-	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:RegisterAddOn">Core:RegisterAddOn (_Bundle)</a></td>
-	<td class="summary">Registiert ein AddOn als Bundle, sodass es initialisiert wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:RegisterBehavior">Core:RegisterBehavior (_Behavior)</a></td>
-	<td class="summary">Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
-	<td class="summary">Prüft, ob das Bundle bereits initalisiert ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
-	<td class="summary">Registiert ein Bundle, sodass es initialisiert wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:ReplaceFunction">Core:ReplaceFunction (_FunctionName, _NewFunction)</a></td>
-	<td class="summary">Überschreibt eine Funktion mit einer anderen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:SetupGlobal_HackQuestSystem">Core:SetupGlobal_HackQuestSystem ()</a></td>
-	<td class="summary">FIXME</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:SetupGobal_HackCreateQuest">Core:SetupGobal_HackCreateQuest ()</a></td>
-	<td class="summary">FIXME</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:SetupLocal_HackRegisterHotkey">Core:SetupLocal_HackRegisterHotkey ()</a></td>
-	<td class="summary">Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
- angezeigt werden können.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:StackFunction">Core:StackFunction (_FunctionName, _StackFunction, _Index)</a></td>
-	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Core:ToBoolean">Core:ToBoolean (_Input)</a></td>
-	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
 	</tr>
 </table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
@@ -333,6 +269,70 @@
 	<td class="summary">Gewinnt den Quest.</td>
 	</tr>
 </table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Core:AppendFunction">Core:AppendFunction (_FunctionName, _AppendFunction, _Index)</a></td>
+	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ChangeCustomQuestCaptionText">Core:ChangeCustomQuestCaptionText (_Text, _Quest)</a></td>
+	<td class="summary">Ändert den Text des Beschreibungsfensters eines Quests.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:CheckQuestName">Core:CheckQuestName (_Name)</a></td>
+	<td class="summary">Prüft, ob der Questname formal korrekt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:GetFunctionInString">Core:GetFunctionInString (_FunctionName, _Reference)</a></td>
+	<td class="summary">Sucht eine Funktion mit dem angegebenen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:InitalizeBundles">Core:InitalizeBundles ()</a></td>
+	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterAddOn">Core:RegisterAddOn (_Bundle)</a></td>
+	<td class="summary">Registiert ein AddOn als Bundle, sodass es initialisiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBehavior">Core:RegisterBehavior (_Behavior)</a></td>
+	<td class="summary">Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
+	<td class="summary">Prüft, ob das Bundle bereits initalisiert ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
+	<td class="summary">Registiert ein Bundle, sodass es initialisiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ReplaceFunction">Core:ReplaceFunction (_FunctionName, _NewFunction)</a></td>
+	<td class="summary">Überschreibt eine Funktion mit einer anderen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupGlobal_HackQuestSystem">Core:SetupGlobal_HackQuestSystem ()</a></td>
+	<td class="summary">FIXME</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupGobal_HackCreateQuest">Core:SetupGobal_HackCreateQuest ()</a></td>
+	<td class="summary">FIXME</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupLocal_HackRegisterHotkey">Core:SetupLocal_HackRegisterHotkey ()</a></td>
+	<td class="summary">Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
+ angezeigt werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:StackFunction">Core:StackFunction (_FunctionName, _StackFunction, _Index)</a></td>
+	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ToBoolean">Core:ToBoolean (_Input)</a></td>
+	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
@@ -349,6 +349,1218 @@
     AddOn Versionsnummer
 
 
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ActivateIO"></a>
+    <strong>API.ActivateIO (_ScriptName, _State)</strong>
+    </dt>
+    <dd>
+    Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.
+<p> Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
+ einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
+ Held das Objekt aktivieren.
+<p> <p><b>Alias:</b> InteractiveObjectActivate</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+          [string] Skriptname des IO
+        </li>
+        <li><span class="parameter">_State</span>
+               [number] Aktivierungszustand
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ActivateIO(<span class="string">"Haus1"</span>, <span class="number">0</span>)
+API.ActivateIO(<span class="string">"Hut1"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.AddHotKey"></a>
+    <strong>API.AddHotKey (_Key, _Description)</strong>
+    </dt>
+    <dd>
+    Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Key</span>
+                 [string] Tastenkombination
+        </li>
+        <li><span class="parameter">_Description</span>
+         [string] Beschreibung des Hotkey
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Index
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.AddSaveGameAction"></a>
+    <strong>API.AddSaveGameAction (_Function)</strong>
+    </dt>
+    <dd>
+    Registriert eine Funktion, die nach dem laden ausgeführt wird.
+<p> <b>Alias</b>: AddOnSaveGameLoadedAction
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         [function] Funktion, die ausgeführt werden soll
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">SaveGame = <span class="keyword">function</span>()
+    API.Note(<span class="string">"foo"</span>)
+<span class="keyword">end</span>
+API.AddSaveGameAction(SaveGame)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.Bridge"></a>
+    <strong>API.Bridge (_Command)</strong>
+    </dt>
+    <dd>
+    Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.
+<p> Wird diese Funktion als dem globalen Skript aufgerufen, sendet sie den
+ Befehl an das lokale Skript. Wird diese Funktion im lokalen Skript genutzt,
+ wird der Befehl an das globale Skript geschickt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Command</span>
+         [string] Lua-Befehl als String
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ClearNotes"></a>
+    <strong>API.ClearNotes ()</strong>
+    </dt>
+    <dd>
+    Löscht alle Nachrichten im Debug Window.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Confront"></a>
+    <strong>API.Confront (_entity, _entityToLookAt)</strong>
+    </dt>
+    <dd>
+    Lässt zwei Entities sich gegenseitig anschauen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+                   [string|number] Erstes Entity
+        </li>
+        <li><span class="parameter">_entityToLookAt</span>
+           [string|number] Zweites Entity
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.Confront(<span class="string">"Hakim"</span>, <span class="string">"Alandra"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.ConvertTableToString"></a>
+    <strong>API.ConvertTableToString (_Table)</strong>
+    </dt>
+    <dd>
+    Konvertiert alle Strings, Booleans und Numbers einer Tabelle in
+ einen String.  Die Funktion ist rekursiv, d.h. es werden auch alle
+ Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
+ String ist, wird als Adresse geschrieben.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Table</span>
+         [table] Table zum konvertieren
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] Converted table
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Dbg"></a>
+    <strong>API.Dbg (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
+<p> <p><b>Alias:</b> dbg</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.DeactivateIO"></a>
+    <strong>API.DeactivateIO (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
+ aktiviert werden kann.
+<p> <p><b>Alias:</b> InteractiveObjectDeactivate</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         [string] Skriptname des IO
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DeactivateIO(<span class="string">"Hut1"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DumpTable"></a>
+    <strong>API.DumpTable (_Table, _Name)</strong>
+    </dt>
+    <dd>
+    Schreibt ein genaues Abbild der Table ins Log.  Funktionen, Threads und
+ Metatables werden als Adresse geschrieben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Table</span>
+         [table] Tabelle, die gedumpt wird
+        </li>
+        <li><span class="parameter">_Name</span>
+          [name] Optionaler Name im Log
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
+API.DumpTable(Table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.EnsureMessage"></a>
+    <strong>API.EnsureMessage (_Message)</strong>
+    </dt>
+    <dd>
+    Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
+ übergeben wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Message
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.EnsureScriptName"></a>
+    <strong>API.EnsureScriptName (_EntityID)</strong>
+    </dt>
+    <dd>
+    Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
+ Hat das Entity einen Namen, bleibt dieser unverändert und wird
+ zurückgegeben.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         [number] Entity ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] Skriptname
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.FailAllQuests"></a>
+    <strong>API.FailAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Lässt eine Liste von Quests fehlschlagen.
+<p> Der Status wird auf Over und das Resultat auf Failure gesetzt.
+<p> <p><b>Alias:</b> FailQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.FailQuest"></a>
+    <strong>API.FailQuest (_QuestName, _Quiet)</strong>
+    </dt>
+    <dd>
+    Lässt den Quest fehlschlagen.
+<p> Der Status wird auf Over und das Resultat auf Failure gesetzt.
+<p> <p><b>Alias:</b> FailQuestByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          [string] Name des Quest
+        </li>
+        <li><span class="parameter">_Quiet</span>
+              [boolean] Keine Meldung anzeigen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetDistance"></a>
+    <strong>API.GetDistance (_pos1, _pos2)</strong>
+    </dt>
+    <dd>
+    Bestimmt die Distanz zwischen zwei Punkten.  Es können Entity-IDs,
+ Skriptnamen oder Positionstables angegeben werden.
+<p> <p><b>Alias:</b> GetDistance</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_pos1</span>
+         [string|number|table] Erste Vergleichsposition
+        </li>
+        <li><span class="parameter">_pos2</span>
+         [string|number|table] Zweite Vergleichsposition
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Entfernung zwischen den Punkten
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Distance = API.GetDistance(<span class="string">"HQ1"</span>, Logic.GetKnightID(<span class="number">1</span>))</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetEntitiesOfCategoryInTerritory"></a>
+    <strong>API.GetEntitiesOfCategoryInTerritory (_player, _category, _territory)</strong>
+    </dt>
+    <dd>
+    Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
+ sie als Liste zurück.
+<p> <p><b>Alias:</b> GetEntitiesOfCategoryInTerritory</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_player</span>
+            [number] PlayerID [0-8] oder -1 für alle
+        </li>
+        <li><span class="parameter">_category</span>
+          [number] Kategorie, der die Entities angehören
+        </li>
+        <li><span class="parameter">_territory</span>
+         [number] Zielterritorium
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Found = API.GetEntitiesOfCategoryInTerritory(<span class="number">1</span>, EntityCategories.Hero, <span class="number">5</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetQuestID"></a>
+    <strong>API.GetQuestID (_Name)</strong>
+    </dt>
+    <dd>
+    Gibt die ID des Quests mit dem angegebenen Namen zurück.  Existiert der
+ Quest nicht, wird nil zurückgegeben.
+<p> <p><b>Alias:</b> GetQuestID</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+         [string] Name des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des Quest
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Info"></a>
+    <strong>API.Info (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Information auf den Bildschirm und ins Log.
+<p> <p><b>Alias:</b> info</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Install"></a>
+    <strong>API.Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
+<p> Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
+ Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
+ werden, bevor die QSB verwendet werden kann.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InstanceTable"></a>
+    <strong>API.InstanceTable (_Source, _Dest)</strong>
+    </dt>
+    <dd>
+    Kopiert eine komplette Table und gibt die Kopie zurück.  Tables können
+ nicht durch Zuweisungen kopiert werden. Verwende diese Funktion. Wenn ein
+ Ziel angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
+ angegebenen Tables.
+ Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
+ Funktion kann benutzt werden, um Klassen zu instanzieren.
+<p> <p><b>Alias:</b> CopyTableRecursive</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Source</span>
+            [table] Quelltabelle
+        </li>
+        <li><span class="parameter">_Dest</span>
+              [table] (optional) Zieltabelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Kopie der Tabelle
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
+Copy = API.InstanceTable(Table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.IsValidateQuest"></a>
+    <strong>API.IsValidateQuest (_QuestID)</strong>
+    </dt>
+    <dd>
+    Prüft, ob die ID zu einem Quest gehört bzw.  der Quest existiert. Es kann
+ auch ein Questname angegeben werden.
+<p> <p><b>Alias:</b> IsValidQuest</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestID</span>
+         [number] ID oder Name des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Quest existiert
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.LocateEntity"></a>
+    <strong>API.LocateEntity (_Entity)</strong>
+    </dt>
+    <dd>
+    Lokalisiert ein Entity auf der Map.  Es können sowohl Skriptnamen als auch
+ IDs verwendet werden. Wenn das Entity nicht gefunden wird, wird eine
+ Tabelle mit XYZ = 0 zurückgegeben.
+<p> <p><b>Alias:</b> GetPosition</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity, dessen Position bestimmt wird.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Positionstabelle {X= x, Y= y, Z= z}
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Position = API.LocateEntity(<span class="string">"Hans"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.Log"></a>
+    <strong>API.Log (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine einzelne Zeile Text ins Log.  Vor dem Text steh, ob aus dem
+ globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
+ Spiels die Nachricht gesendet wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Nachricht für's Log
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.LookAt"></a>
+    <strong>API.LookAt (_entity, _entityToLookAt)</strong>
+    </dt>
+    <dd>
+    Rotiert ein Entity, sodass es zum Ziel schaut.
+<p> <p><b>Alias:</b> LookAt</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+                   [string|number] Entity
+        </li>
+        <li><span class="parameter">_entityToLookAt</span>
+           [string|number] Ziel
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.LookAt(<span class="string">"Hakim"</span>, <span class="string">"Alandra"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.Message"></a>
+    <strong>API.Message (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Note"></a>
+    <strong>API.Note (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Nachricht in das Debug Window.  Der Text erscheint links am
+ Bildschirm und ist nicht statisch.
+<p> <p><b>Alias:</b> GUI_Note</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.RemoveHotKey"></a>
+    <strong>API.RemoveHotKey (_Index)</strong>
+    </dt>
+    <dd>
+    Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Index</span>
+         [number] Index in Table
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ReplaceEntity"></a>
+    <strong>API.ReplaceEntity (_Entity, _Type, _NewOwner)</strong>
+    </dt>
+    <dd>
+    Ersetzt ein Entity mit einem neuen eines anderen Typs.  Skriptname,
+ Rotation, Position und Besitzer werden übernommen.
+<p> <p><b>Alias:</b> ReplaceEntity</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           [string|number] Entity
+        </li>
+        <li><span class="parameter">_Type</span>
+             [number] Neuer Typ
+        </li>
+        <li><span class="parameter">_NewOwner</span>
+         [number] (optional) Neuer Besitzer
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Entity-ID des Entity
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ReplaceEntity(<span class="string">"Stein"</span>, Entities.XD_ScriptEntity)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.RestartAllQuests"></a>
+    <strong>API.RestartAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Startet eine Liste von Quests neu.
+<p> <p><b>Alias:</b> StartQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.RestartQuest"></a>
+    <strong>API.RestartQuest (_QuestName, _Quiet)</strong>
+    </dt>
+    <dd>
+    Startet den Quest neu.
+<p> Der Quest muss beendet sein um ihn wieder neu zu starten. Wird ein Quest
+ neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
+ der Quest wird manuell getriggert.
+<p> Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
+ ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion
+ angepasst oder überschrieben werden.
+<p> <p><b>Alias:</b> RestartQuestByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          [string] Name des Quest
+        </li>
+        <li><span class="parameter">_Quiet</span>
+              [boolean] Keine Meldung anzeigen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SendCart"></a>
+    <strong>API.SendCart (_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)</strong>
+    </dt>
+    <dd>
+    Sendet einen Handelskarren zu dem Spieler.  Startet der Karren von einem
+ Gebäude, wird immer die Position des Eingangs genommen.
+<p> <p><b>Alias:</b> SendCart</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_position</span>
+                    [string|number] Position
+        </li>
+        <li><span class="parameter">_player</span>
+                      [number] Zielspieler
+        </li>
+        <li><span class="parameter">_good</span>
+                        [number] Warentyp
+        </li>
+        <li><span class="parameter">_amount</span>
+                      [number] Warenmenge
+        </li>
+        <li><span class="parameter">_cartOverlay</span>
+                 [number] (optional) Overlay für Goldkarren
+        </li>
+        <li><span class="parameter">_ignoreReservation</span>
+           [boolean] (optional) Marktplatzreservation ignorieren
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Entity-ID des erzeugten Wagens
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- API-Call
+</span>API.SendCart(Logic.GetStoreHouse(<span class="number">1</span>), <span class="number">2</span>, Goods.G_Grain, <span class="number">45</span>)
+<span class="comment">-- Legacy-Call mit ID-Speicherung
+</span><span class="keyword">local</span> ID = SendCart(<span class="string">"Position_1"</span>, <span class="number">5</span>, Goods.G_Wool, <span class="number">5</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetLogLevel"></a>
+    <strong>API.SetLogLevel (_Level)</strong>
+    </dt>
+    <dd>
+    Setzt das Log-Level für die aktuelle Skriptumgebung.
+<p> Als Voreinstellung werden alle Meldungen immer angezeigt!
+<p> Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
+ werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
+ angezeigt werden.
+<p> <table border="1">
+ <tr>
+ <th>
+ Level
+ </th>
+ <th>
+ Beschreibung
+ </th>
+ </tr>
+ <td>
+ QSB.Log.Level.OFF
+ </td>
+ <td>
+ Alle Meldungen werden unterdrückt.
+ </td>
+ <tr>
+ <td>
+ QSB.Log.Level.DEBUG
+ </td>
+ <td>
+ Es werden nur Fehler angezeigt.
+ </td>
+ </tr>
+ <tr>
+ <td>
+ QSB.Log.Level.WARNING
+ </td>
+ <td>
+ Es werden nur Warnungen und Fehler angezeigt.
+ </td>
+ </tr>
+ <tr>
+ <td>
+ QSB.Log.Level.INFO
+ </td>
+ <td>
+ Es werden Meldungen aller Stufen angezeigt.
+ </td>
+ </tr>
+ </table>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Level</span>
+         [number] Level
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartAllQuests"></a>
+    <strong>API.StartAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Startet eine Liste von Quests.
+<p> <p><b>Alias:</b> StartQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartQuest"></a>
+    <strong>API.StartQuest (_QuestName, _Quiet)</strong>
+    </dt>
+    <dd>
+    Startet den Quest sofort, sofern er existiert.
+<p> Dabei ist es unerheblich, ob die Bedingungen zum Start erfüllt sind.
+<p> <p><b>Alias:</b> StartQuestByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          [string] Name des Quest
+        </li>
+        <li><span class="parameter">_Quiet</span>
+              [boolean] Keine Meldung anzeigen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StaticNote"></a>
+    <strong>API.StaticNote (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Nachricht in das Debug Window.  Der Text erscheint links am
+ Bildschirm und verbleibt dauerhaft am Bildschirm.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StopAllQuests"></a>
+    <strong>API.StopAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Unterbricht eine Liste von Quests.
+<p> <p><b>Alias:</b> StopQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StopQuest"></a>
+    <strong>API.StopQuest (_QuestName, _Quiet)</strong>
+    </dt>
+    <dd>
+    Unterbricht den Quest.
+<p> Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
+ gesetzt, werden diese entfernt.
+<p> <p><b>Alias:</b> StopQuestByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          [string] Name des Quest
+        </li>
+        <li><span class="parameter">_Quiet</span>
+              [boolean] Keine Meldung anzeigen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ToBoolean"></a>
+    <strong>API.ToBoolean (_Value)</strong>
+    </dt>
+    <dd>
+    Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.
+<p> <p>Wahrheitsert true: true, "true", "yes", "on", "+"</p>
+ <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
+<p> <p><b>Alias:</b> AcceptAlternativeBoolean</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Value</span>
+         [mixed] Wahrheitswert
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Wahrheitswert
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Bool = API.ToBoolean(<span class="string">"+"</span>)  <span class="comment">--&gt; Bool = true
+</span><span class="keyword">local</span> Bool = API.ToBoolean(<span class="string">"no"</span>) <span class="comment">--&gt; Bool = false</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TraverseTable"></a>
+    <strong>API.TraverseTable (_Data, _Table)</strong>
+    </dt>
+    <dd>
+    Sucht in einer Table nach einem Wert.  Das erste Aufkommen des Suchwerts
+ wird als Erfolg gewertet.
+<p> <p><b>Alias:</b> Inside</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+          [mixed] Datum, das gesucht wird
+        </li>
+        <li><span class="parameter">_Table</span>
+         [table] Tabelle, die durchquert wird
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [booelan] Wert gefunden
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
+<span class="keyword">local</span> Found = API.TraverseTable(<span class="number">3</span>, Table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.ValidatePosition"></a>
+    <strong>API.ValidatePosition (_pos)</strong>
+    </dt>
+    <dd>
+    Prüft, ob eine Positionstabelle eine gültige Position enthält.
+<p> <p><b>Alias:</b> IsValidPosition</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_pos</span>
+         [table] Positionstable {X= x, Y= y}
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Position ist valide
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Warn"></a>
+    <strong>API.Warn (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
+<p> <p><p><b>Alias:</b> warn</p></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.WinAllQuests"></a>
+    <strong>API.WinAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Gewinnt eine Liste von Quests.
+<p> Der Status wird auf Over und das Resultat auf Success gesetzt.
+<p> <p><b>Alias:</b> WinQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.WinQuest"></a>
+    <strong>API.WinQuest (_QuestName, _Quiet)</strong>
+    </dt>
+    <dd>
+    Gewinnt den Quest.
+<p> Der Status wird auf Over und das Resultat auf Success gesetzt.
+<p> <p><b>Alias:</b> WinQuestByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+          [string] Name des Quest
+        </li>
+        <li><span class="parameter">_Quiet</span>
+              [boolean] Keine Meldung anzeigen
+        </li>
+    </ul>
 
 
 
@@ -714,1225 +1926,13 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.ActivateIO"></a>
-    <strong>API.ActivateIO (_ScriptName, _State)</strong>
-    </dt>
-    <dd>
-    Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.
-<p> Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
- Held das Objekt aktivieren.
-<p> <b>Alias:</b> InteractiveObjectActivate
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-          [string] Skriptname des IO
-        </li>
-        <li><span class="parameter">_State</span>
-               [number] Aktivierungszustand
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.ActivateIO(<span class="string">"Haus1"</span>, <span class="number">0</span>)
-API.ActivateIO(<span class="string">"Hut1"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.AddHotKey"></a>
-    <strong>API.AddHotKey (_Key, _Description)</strong>
-    </dt>
-    <dd>
-    Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Key</span>
-                 [string] Tastenkombination
-        </li>
-        <li><span class="parameter">_Description</span>
-         [string] Beschreibung des Hotkey
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] Index
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.AddSaveGameAction"></a>
-    <strong>API.AddSaveGameAction (_Function)</strong>
-    </dt>
-    <dd>
-    Registriert eine Funktion, die nach dem laden ausgeführt wird.
-<p> <b>Alias</b>: AddOnSaveGameLoadedAction
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Function</span>
-         [function] Funktion, die ausgeführt werden soll
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">SaveGame = <span class="keyword">function</span>()
-    API.Note(<span class="string">"foo"</span>)
-<span class="keyword">end</span>
-API.AddSaveGameAction(SaveGame)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.Bridge"></a>
-    <strong>API.Bridge (_Command)</strong>
-    </dt>
-    <dd>
-    Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.
-<p> Wird diese Funktion als dem globalen Skript aufgerufen, sendet sie den
- Befehl an das lokale Skript. Wird diese Funktion im lokalen Skript genutzt,
- wird der Befehl an das globale Skript geschickt.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Command</span>
-         [string] Lua-Befehl als String
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ClearNotes"></a>
-    <strong>API.ClearNotes ()</strong>
-    </dt>
-    <dd>
-    Löscht alle Nachrichten im Debug Window.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.Confront"></a>
-    <strong>API.Confront (_entity, _entityToLookAt)</strong>
-    </dt>
-    <dd>
-    Lässt zwei Entities sich gegenseitig anschauen.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-                   [string|number] Erstes Entity
-        </li>
-        <li><span class="parameter">_entityToLookAt</span>
-           [string|number] Zweites Entity
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.Confront(<span class="string">"Hakim"</span>, <span class="string">"Alandra"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.ConvertTableToString"></a>
-    <strong>API.ConvertTableToString (_Table)</strong>
-    </dt>
-    <dd>
-    Konvertiert alle Strings, Booleans und Numbers einer Tabelle in
- einen String.  Die Funktion ist rekursiv, d.h. es werden auch alle
- Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
- String ist, wird als Adresse geschrieben.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Table</span>
-         [table] Table zum konvertieren
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [string] Converted table
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.Dbg"></a>
-    <strong>API.Dbg (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
-<p> <b>Alias:</b> dbg
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.DeactivateIO"></a>
-    <strong>API.DeactivateIO (_ScriptName)</strong>
-    </dt>
-    <dd>
-    Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
- aktiviert werden kann.
-<p> <b>Alias:</b> InteractiveObjectDeactivate
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-         [string] Skriptname des IO
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.DeactivateIO(<span class="string">"Hut1"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.DumpTable"></a>
-    <strong>API.DumpTable (_Table, _Name)</strong>
-    </dt>
-    <dd>
-    Schreibt ein genaues Abbild der Table ins Log.  Funktionen, Threads und
- Metatables werden als Adresse geschrieben.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Table</span>
-         [table] Tabelle, die gedumpt wird
-        </li>
-        <li><span class="parameter">_Name</span>
-          [name] Optionaler Name im Log
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
-API.DumpTable(Table)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.EnsureMessage"></a>
-    <strong>API.EnsureMessage (_Message)</strong>
-    </dt>
-    <dd>
-    Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
- übergeben wird.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        string: Message
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.EnsureScriptName"></a>
-    <strong>API.EnsureScriptName (_EntityID)</strong>
-    </dt>
-    <dd>
-    Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
- Hat das Entity einen Namen, bleibt dieser unverändert und wird
- zurückgegeben.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_EntityID</span>
-         [number] Entity ID
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [string] Skriptname
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.FailAllQuests"></a>
-    <strong>API.FailAllQuests (...)</strong>
-    </dt>
-    <dd>
-    Lässt eine Liste von Quests fehlschlagen.
-<p> Der Status wird auf Over und das Resultat auf Failure gesetzt.
-<p> <b>Alias:</b> FailQuestsByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">...</span>
-          [string..] Liste mit Quests
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.FailQuest"></a>
-    <strong>API.FailQuest (_QuestName, _Quiet)</strong>
-    </dt>
-    <dd>
-    Lässt den Quest fehlschlagen.
-<p> Der Status wird auf Over und das Resultat auf Failure gesetzt.
-<p> <b>Alias:</b> FailQuestByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
-        </li>
-        <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GetDistance"></a>
-    <strong>API.GetDistance (_pos1, _pos2)</strong>
-    </dt>
-    <dd>
-    Bestimmt die Distanz zwischen zwei Punkten.  Es können Entity-IDs,
- Skriptnamen oder Positionstables angegeben werden.
-<p> <b>Alias:</b> GetDistance
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_pos1</span>
-         [string|number|table] Erste Vergleichsposition
-        </li>
-        <li><span class="parameter">_pos2</span>
-         [string|number|table] Zweite Vergleichsposition
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] Entfernung zwischen den Punkten
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Distance = API.GetDistance(<span class="string">"HQ1"</span>, Logic.GetKnightID(<span class="number">1</span>))</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.GetEntitiesOfCategoryInTerritory"></a>
-    <strong>API.GetEntitiesOfCategoryInTerritory (_player, _category, _territory)</strong>
-    </dt>
-    <dd>
-    Ermittelt alle Entities in der Kategorie auf dem Territorium und gibt
- sie als Liste zurück.
-<p> <b>Alias:</b> GetEntitiesOfCategoryInTerritory
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_player</span>
-            [number] PlayerID [0-8] oder -1 für alle
-        </li>
-        <li><span class="parameter">_category</span>
-          [number] Kategorie, der die Entities angehören
-        </li>
-        <li><span class="parameter">_territory</span>
-         [number] Zielterritorium
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Found = API.GetEntitiesOfCategoryInTerritory(<span class="number">1</span>, EntityCategories.Hero, <span class="number">5</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.GetQuestID"></a>
-    <strong>API.GetQuestID (_Name)</strong>
-    </dt>
-    <dd>
-    Gibt die ID des Quests mit dem angegebenen Namen zurück.  Existiert der
- Quest nicht, wird nil zurückgegeben.
-<p> <b>Alias:</b> GetQuestID
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Name</span>
-         [string] Name des Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] ID des Quest
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.Info"></a>
-    <strong>API.Info (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt eine Information auf den Bildschirm und ins Log.
-<p> <b>Alias:</b> info
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.Install"></a>
-    <strong>API.Install ()</strong>
-    </dt>
-    <dd>
-    Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
-<p> Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
- werden, bevor die QSB verwendet werden kann.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InstanceTable"></a>
-    <strong>API.InstanceTable (_Source, _Dest)</strong>
-    </dt>
-    <dd>
-    Kopiert eine komplette Table und gibt die Kopie zurück.  Tables können
- nicht durch Zuweisungen kopiert werden. Verwende diese Funktion. Wenn ein
- Ziel angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
- angegebenen Tables.
- Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
- Funktion kann benutzt werden, um Klassen zu instanzieren.
-<p> <b>Alias:</b> CopyTableRecursive
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Source</span>
-            [table] Quelltabelle
-        </li>
-        <li><span class="parameter">_Dest</span>
-              [table] (optional) Zieltabelle
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [table] Kopie der Tabelle
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
-Copy = API.InstanceTable(Table)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.IsValidateQuest"></a>
-    <strong>API.IsValidateQuest (_QuestID)</strong>
-    </dt>
-    <dd>
-    Prüft, ob die ID zu einem Quest gehört bzw.  der Quest existiert. Es kann
- auch ein Questname angegeben werden.
-<p> <b>Alias:</b> IsValidQuest
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestID</span>
-         [number] ID oder Name des Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [boolean] Quest existiert
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.LocateEntity"></a>
-    <strong>API.LocateEntity (_Entity)</strong>
-    </dt>
-    <dd>
-    Lokalisiert ein Entity auf der Map.  Es können sowohl Skriptnamen als auch
- IDs verwendet werden. Wenn das Entity nicht gefunden wird, wird eine
- Tabelle mit XYZ = 0 zurückgegeben.
-<p> <b>Alias:</b> GetPosition
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Entity, dessen Position bestimmt wird.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [table] Positionstabelle {X= x, Y= y, Z= z}
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Position = API.LocateEntity(<span class="string">"Hans"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.Log"></a>
-    <strong>API.Log (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt eine einzelne Zeile Text ins Log.  Vor dem Text steh, ob aus dem
- globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
- Spiels die Nachricht gesendet wurde.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-         [string] Nachricht für's Log
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.LookAt"></a>
-    <strong>API.LookAt (_entity, _entityToLookAt)</strong>
-    </dt>
-    <dd>
-    Rotiert ein Entity, sodass es zum Ziel schaut.
-<p> <b>Alias:</b> LookAt
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-                   [string|number] Entity
-        </li>
-        <li><span class="parameter">_entityToLookAt</span>
-           [string|number] Ziel
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.LookAt(<span class="string">"Hakim"</span>, <span class="string">"Alandra"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.Message"></a>
-    <strong>API.Message (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.Note"></a>
-    <strong>API.Note (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt eine Nachricht in das Debug Window.  Der Text erscheint links am
- Bildschirm und ist nicht statisch.
-<p> <b>Alias:</b> GUI_Note
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.RemoveHotKey"></a>
-    <strong>API.RemoveHotKey (_Index)</strong>
-    </dt>
-    <dd>
-    Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Index</span>
-         [number] Index in Table
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ReplaceEntity"></a>
-    <strong>API.ReplaceEntity (_Entity, _Type, _NewOwner)</strong>
-    </dt>
-    <dd>
-    Ersetzt ein Entity mit einem neuen eines anderen Typs.  Skriptname,
- Rotation, Position und Besitzer werden übernommen.
-<p> <b>Alias:</b> ReplaceEntity
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-           [string|number] Entity
-        </li>
-        <li><span class="parameter">_Type</span>
-             [number] Neuer Typ
-        </li>
-        <li><span class="parameter">_NewOwner</span>
-         [number] (optional) Neuer Besitzer
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] Entity-ID des Entity
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.ReplaceEntity(<span class="string">"Stein"</span>, Entities.XD_ScriptEntity)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.RestartAllQuests"></a>
-    <strong>API.RestartAllQuests (...)</strong>
-    </dt>
-    <dd>
-    Startet eine Liste von Quests neu.
-<p> <b>Alias:</b> StartQuestsByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">...</span>
-          [string..] Liste mit Quests
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.RestartQuest"></a>
-    <strong>API.RestartQuest (_QuestName, _Quiet)</strong>
-    </dt>
-    <dd>
-    Startet den Quest neu.
-<p> Der Quest muss beendet sein um ihn wieder neu zu starten. Wird ein Quest
- neu gestartet, müssen auch alle Trigger wieder neu ausgelöst werden, außer
- der Quest wird manuell getriggert.
-<p> Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
- ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion
- angepasst oder überschrieben werden.
-<p> <b>Alias:</b> RestartQuestByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
-        </li>
-        <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SendCart"></a>
-    <strong>API.SendCart (_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)</strong>
-    </dt>
-    <dd>
-    Sendet einen Handelskarren zu dem Spieler.  Startet der Karren von einem
- Gebäude, wird immer die Position des Eingangs genommen.
-<p> <b>Alias:</b> SendCart
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_position</span>
-                    [string|number] Position
-        </li>
-        <li><span class="parameter">_player</span>
-                      [number] Zielspieler
-        </li>
-        <li><span class="parameter">_good</span>
-                        [number] Warentyp
-        </li>
-        <li><span class="parameter">_amount</span>
-                      [number] Warenmenge
-        </li>
-        <li><span class="parameter">_cartOverlay</span>
-                 [number] (optional) Overlay für Goldkarren
-        </li>
-        <li><span class="parameter">_ignoreReservation</span>
-           [boolean] (optional) Marktplatzreservation ignorieren
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        number: Entity-ID des erzeugten Wagens
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- API-Call
-</span>API.SendCart(Logic.GetStoreHouse(<span class="number">1</span>), <span class="number">2</span>, Goods.G_Grain, <span class="number">45</span>)
-<span class="comment">-- Legacy-Call mit ID-Speicherung
-</span><span class="keyword">local</span> ID = SendCart(<span class="string">"Position_1"</span>, <span class="number">5</span>, Goods.G_Wool, <span class="number">5</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetLogLevel"></a>
-    <strong>API.SetLogLevel (_Level)</strong>
-    </dt>
-    <dd>
-    Setzt das Log-Level für die aktuelle Skriptumgebung.
-<p> Als Voreinstellung werden alle Meldungen immer angezeigt!
-<p> Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
- angezeigt werden.
-<p> <table border="1">
- <tr>
- <th>
- Level
- </th>
- <th>
- Beschreibung
- </th>
- </tr>
- <td>
- QSB.Log.Level.OFF
- </td>
- <td>
- Alle Meldungen werden unterdrückt.
- </td>
- <tr>
- <td>
- QSB.Log.Level.DEBUG
- </td>
- <td>
- Es werden nur Fehler angezeigt.
- </td>
- </tr>
- <tr>
- <td>
- QSB.Log.Level.WARNING
- </td>
- <td>
- Es werden nur Warnungen und Fehler angezeigt.
- </td>
- </tr>
- <tr>
- <td>
- QSB.Log.Level.INFO
- </td>
- <td>
- Es werden Meldungen aller Stufen angezeigt.
- </td>
- </tr>
- </table>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Level</span>
-         [number] Level
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StartAllQuests"></a>
-    <strong>API.StartAllQuests (...)</strong>
-    </dt>
-    <dd>
-    Startet eine Liste von Quests.
-<p> <b>Alias:</b> StartQuestsByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">...</span>
-          [string..] Liste mit Quests
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StartQuest"></a>
-    <strong>API.StartQuest (_QuestName, _Quiet)</strong>
-    </dt>
-    <dd>
-    Startet den Quest sofort, sofern er existiert.
-<p> Dabei ist es unerheblich, ob die Bedingungen zum Start erfüllt sind.
-<p> <b>Alias:</b> StartQuestByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
-        </li>
-        <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StaticNote"></a>
-    <strong>API.StaticNote (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt eine Nachricht in das Debug Window.  Der Text erscheint links am
- Bildschirm und verbleibt dauerhaft am Bildschirm.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StopAllQuests"></a>
-    <strong>API.StopAllQuests (...)</strong>
-    </dt>
-    <dd>
-    Unterbricht eine Liste von Quests.
-<p> <b>Alias:</b> StopQuestsByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">...</span>
-          [string..] Liste mit Quests
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StopQuest"></a>
-    <strong>API.StopQuest (_QuestName, _Quiet)</strong>
-    </dt>
-    <dd>
-    Unterbricht den Quest.
-<p> Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
- gesetzt, werden diese entfernt.
-<p> <b>Alias:</b> StopQuestByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
-        </li>
-        <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ToBoolean"></a>
-    <strong>API.ToBoolean (_Value)</strong>
-    </dt>
-    <dd>
-    Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.
-<p> <p>Wahrheitsert true: true, "true", "yes", "on", "+"</p>
- <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
-<p> <b>Alias:</b> AcceptAlternativeBoolean
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Value</span>
-         [mixed] Wahrheitswert
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [boolean] Wahrheitswert
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Bool = API.ToBoolean(<span class="string">"+"</span>)  <span class="comment">--&gt; Bool = true
-</span><span class="keyword">local</span> Bool = API.ToBoolean(<span class="string">"no"</span>) <span class="comment">--&gt; Bool = false</span></pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.TraverseTable"></a>
-    <strong>API.TraverseTable (_Data, _Table)</strong>
-    </dt>
-    <dd>
-    Sucht in einer Table nach einem Wert.  Das erste Aufkommen des Suchwerts
- wird als Erfolg gewertet.
-<p> <b>Alias:</b> Inside
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Data</span>
-          [mixed] Datum, das gesucht wird
-        </li>
-        <li><span class="parameter">_Table</span>
-         [table] Tabelle, die durchquert wird
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [booelan] Wert gefunden
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
-<span class="keyword">local</span> Found = API.TraverseTable(<span class="number">3</span>, Table)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.ValidatePosition"></a>
-    <strong>API.ValidatePosition (_pos)</strong>
-    </dt>
-    <dd>
-    Prüft, ob eine Positionstabelle eine gültige Position enthält.
-<p> <b>Alias:</b> IsValidPosition
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_pos</span>
-         [table] Positionstable {X= x, Y= y}
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [boolean] Position ist valide
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.Warn"></a>
-    <strong>API.Warn (_Message)</strong>
-    </dt>
-    <dd>
-    Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
-<p> <p><b>Alias:</b> warn</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.WinAllQuests"></a>
-    <strong>API.WinAllQuests (...)</strong>
-    </dt>
-    <dd>
-    Gewinnt eine Liste von Quests.
-<p> Der Status wird auf Over und das Resultat auf Success gesetzt.
-<p> <b>Alias:</b> WinQuestsByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">...</span>
-          [string..] Liste mit Quests
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.WinQuest"></a>
-    <strong>API.WinQuest (_QuestName, _Quiet)</strong>
-    </dt>
-    <dd>
-    Gewinnt den Quest.
-<p> Der Status wird auf Over und das Resultat auf Success gesetzt.
-<p> <b>Alias:</b> WinQuestByName
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
-        </li>
-        <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-04 12:56:25 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

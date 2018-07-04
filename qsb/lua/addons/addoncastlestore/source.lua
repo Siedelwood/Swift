@@ -17,6 +17,11 @@
 -- gesperrt werden. Eine gesperrte Ware wird nicht wieder ausgelagert, auch
 -- wenn Platz im Lager frei wird.
 --
+-- Muss ein Spieler einen Tribut aus dem lagerhaus begleichen, eine bestimmte
+-- Menge an Waren erreichen oder die Kosten Zur aktivierung eines interaktien
+-- Objektes bezahlen, werden die Güter im Burglager automatisch mit einbezogen,
+-- wenn sie nicht gesperrt wurden.
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -29,7 +34,106 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
--- Es gibt keine API-Funktionen!
+---
+-- Erstellt ein Burglager für den angegebenen Spieler.
+--
+-- @param _PlayerID [number] ID des Spielers
+-- @return [table] Burglager-Instanz
+-- @within Anwenderfunktionen
+-- @usage
+-- API.CastleStoreCreate(1);
+--
+function API.CastleStoreCreate(_PlayerID)
+    if GUI then
+        API.Bridge("API.CastleStoreCreate(" .._PlayerID.. ")");
+        return;
+    end
+    return QSB.CastleStore:New(_PlayerID);
+end
+
+---
+-- Zerstört das Burglager des angegebenen Spielers.
+--
+-- Alle Waren im Burglager werden dabei unwiederuflich gelöscht!
+--
+-- @param _PlayerID [number] ID des Spielers
+-- @within Anwenderfunktionen
+-- @usage
+-- API.CastleStoreDestroy(1)
+--
+function API.CastleStoreDestroy(_PlayerID)
+    if GUI then
+        API.Bridge("API.CastleStoreCreate(" .._PlayerID.. ")");
+        return;
+    end
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    if Store then
+        Store:Dispose();
+    end
+end
+
+---
+-- Fügt dem Burglager des Spielers eine Menga an Waren hinzu.
+--
+-- @param _PlayerID [number] ID des Spielers
+-- @param _Good [number] Typ der Ware
+-- @param _Amount [number] Menge der Ware
+-- @within Anwenderfunktionen
+-- @usage
+-- API.CastleStoreAddGood(1, Goods.G_Wood, 50);
+--
+function API.CastleStoreAddGood(_PlayerID, _Good, _Amount)
+    if GUI then
+        API.Bridge("API.CastleStoreAddGood(" .._PlayerID.. "," .._Good.. "," .._Amount.. ")");
+        return;
+    end
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    if Store then
+        Store:Add(_Good, _Amount);
+    end
+end
+
+---
+-- Entfernt eine Menge von Waren aus dem Burglager des Spielers.
+--
+-- @param _PlayerID [number] ID des Spielers
+-- @param _Good [number] Typ der Ware
+-- @param _Amount [number] Menge der Ware
+-- @within Anwenderfunktionen
+-- @usage
+-- API.CastleStoreRemoveGood(1, Goods.G_Iron, 15);
+--
+function API.CastleStoreRemoveGood(_PlayerID, _Good, _Amount)
+    if GUI then
+        API.Bridge("API.CastleStoreRemoveGood(" .._PlayerID.. "," .._Good.. "," .._Amount.. ")");
+        return;
+    end
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    if Store then
+        Store:Remove(_Good, _Amount);
+    end
+end
+
+---
+-- Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.
+--
+-- @param _PlayerID [number] ID des Spielers
+-- @param _Good [number] Typ der Ware
+-- @return [number] Menge an Waren
+-- @within Anwenderfunktionen
+-- @usage
+-- local Amount = API.CastleStoreCountGood(1, Goods.G_Milk);
+--
+function API.CastleStoreCountGood(_PlayerID, _Good)
+    if GUI then
+        return QSB.CastleStore:GetAmount(_PlayerID, _Good);
+    end
+    local Store = QSB.CastleStore:GetInstance(_PlayerID);
+    if Store then
+        return Store:GetAmount(_Good);
+    end
+    return 0;
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -147,6 +251,7 @@ end
 -- @param _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore Instanz
 -- @within QSB.CastleStore
+-- @local
 --
 -- @usage
 -- -- Erstellt ein Burglager für Spieler 1
@@ -178,6 +283,7 @@ end
 -- @param _PlayerID     PlayerID des Spielers
 -- @return QSB.CastleStore
 -- @within QSB.CastleStore
+-- @local
 --
 -- @usage
 -- -- Ermittelt das Burglager von Spieler 1
@@ -199,6 +305,7 @@ end
 -- @param _PlayeriD      ID des Spielers
 -- @return number: Warenmenge mit Menge in Burglager
 -- @within QSB.CastleStore
+-- @local
 --
 -- @usage
 -- -- Menge an Holz in beiden Lagern
@@ -223,6 +330,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:Dispose</p>
 --
 -- @within QSB.CastleStore
+-- @local
 --
 -- @usage
 -- -- Löschen des Burglagers von Spieler 1 ohne Referenz
@@ -248,6 +356,7 @@ end
 -- @param _Limit     Obergrenze
 -- @return self
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -274,6 +383,7 @@ end
 -- @param _Limit     Maximale Kapazität
 -- @return self
 -- @within QSB.CastleStore
+-- @local
 --
 -- @usage
 -- -- Basiswert auf 100 setzen.
@@ -297,6 +407,7 @@ end
 -- @param _Good  Warentyp
 -- @return number: Menge an Waren im Burglager
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:GetAmount(_Good)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -313,6 +424,7 @@ end
 --
 -- @return number: Gesamtmenge aller Waren
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:GetTotalAmount()
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -330,6 +442,7 @@ end
 --
 -- @return number: Lagerlimt in der Burg
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:GetLimit()
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -354,6 +467,7 @@ end
 -- @param _Good  Warentyp
 -- @return boolean: Ware wird akzeptiert
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:IsGoodAccepted(_Good)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -369,6 +483,7 @@ end
 -- @param _Flag     Akzeptanz-Flag
 -- @return self
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:SetGoodAccepted(_Good, _Flag)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -389,6 +504,7 @@ end
 -- @param _Good  Warentyp
 -- @return boolean: Ware ist gesperrt
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:IsGoodLocked(_Good)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -404,6 +520,7 @@ end
 -- @param _Flag     Akzeptanz-Flag
 -- @return self
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:SetGoodLocked(_Good, _Flag)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -422,7 +539,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:ActivateTemporaryMode</p>
 --
 -- @return self
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Global.CastleStore:ActivateTemporaryMode()
@@ -439,7 +556,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:ActivateStockMode</p>
 --
 -- @return self
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Global.CastleStore:ActivateStockMode()
@@ -456,7 +573,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:ActivateOutsourceMode</p>
 --
 -- @return self
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Global.CastleStore:ActivateOutsourceMode()
@@ -469,13 +586,15 @@ end
 
 ---
 -- Lagert eine Menge von Waren im Burglager ein.
+-- <p>Die Ware wird eingelagert wenn die Ware angenommen wird und noch
+-- Platz im Burglager vorhanden ist.</p>
 --
 -- <p><b>Alias</b>: QSB.CastleStore:Store</p>
 --
 -- @param _Good      Watentyp
 -- @param _Amount    Menge
 -- @return self
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Global.CastleStore:Store(_Good, _Amount)
@@ -499,13 +618,14 @@ end
 
 ---
 -- Lagert eine Menge von Waren aus dem Burglager aus.
+-- <p>Die Ware wird ausgelagert wenn noch Platz im Lagerhaus vorhanden ist.</p>
 --
 -- <p><b>Alias</b>: QSB.CastleStore:Outsource</p>
 --
 -- @param _Good      Watentyp
 -- @param _Amount    Menge
 -- @return self
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Global.CastleStore:Outsource(_Good, _Amount)
@@ -527,7 +647,7 @@ end
 
 ---
 -- Fügt eine Menge an Waren dem Burglager hinzu, solange noch
--- Platz vorhanden ist und die Ware angenommen wird.
+-- Platz vorhanden ist.
 --
 -- <p><b>Alias</b>: QSB.CastleStore:Add</p>
 --
@@ -535,21 +655,20 @@ end
 -- @param _Amount    Menge
 -- @return self
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:Add(_Good, _Amount)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
-    if self:IsGoodAccepted(_Good) then
-        for i= 1, _Amount, 1 do
-            if self:GetLimit() > self:GetTotalAmount() then
-                self.Data.Goods[_Good][1] = self.Data.Goods[_Good][1] + 1;
-            end
+    for i= 1, _Amount, 1 do
+        if self:GetLimit() > self:GetTotalAmount() then
+            self.Data.Goods[_Good][1] = self.Data.Goods[_Good][1] + 1;
         end
-        Logic.ExecuteInLuaLocalState([[
-            QSB.CastleStore:SetAmount(
-                ]] ..self.Data.PlayerID.. [[, ]] .._Good.. [[, ]] ..self.Data.Goods[_Good][1].. [[
-            )
-        ]]);
     end
+    Logic.ExecuteInLuaLocalState([[
+        QSB.CastleStore:SetAmount(
+            ]] ..self.Data.PlayerID.. [[, ]] .._Good.. [[, ]] ..self.Data.Goods[_Good][1].. [[
+        )
+    ]]);
     return self;
 end
 
@@ -563,6 +682,7 @@ end
 -- @param _Amount    Menge
 -- @return self
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Global.CastleStore:Remove(_Good, _Amount)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
@@ -583,7 +703,7 @@ end
 --
 -- <p><b>Alias</b>: QSB.CastleStore.UpdateStores</p>
 --
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Global.CastleStore.UpdateStores()
@@ -769,7 +889,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:CreateStore</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:CreateStore(_PlayerID)
@@ -799,7 +919,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:DeleteStore</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:DeleteStore(_PlayerID)
@@ -815,7 +935,7 @@ end
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
 -- @return number: Menge an Waren
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:GetAmount(_PlayerID, _Good)
@@ -837,6 +957,7 @@ end
 -- @param _PlayeriD      ID des Spielers
 -- @return number: Menge an Waren
 -- @within QSB.CastleStore
+-- @local
 --
 function AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore(_Good, _PlayerID)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
@@ -857,7 +978,7 @@ end
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
 -- @return number
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:GetTotalAmount(_PlayerID)
@@ -881,7 +1002,7 @@ end
 -- @param _Good          Warentyp
 -- @param _Amount        Warenmenge
 -- @return self
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:SetAmount(_PlayerID, _Good, _Amount)
@@ -901,7 +1022,7 @@ end
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
 -- @return boolean: Ware wird angenommen
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:IsAccepted(_PlayerID, _Good)
@@ -924,7 +1045,7 @@ end
 -- @param _Good          Warentyp
 -- @param _Good         Akzeptanz-Flag
 -- @return self
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:SetAccepted(_PlayerID, _Good, _Flag)
@@ -945,7 +1066,7 @@ end
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
 -- @return boolean: Ware ist gesperrt
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:IsLocked(_PlayerID, _Good)
@@ -968,7 +1089,7 @@ end
 -- @param _Good          Warentyp
 -- @param _Good         Akzeptanz-Flag
 -- @return self
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:SetLocked(_PlayerID, _Good, _Flag)
@@ -988,7 +1109,7 @@ end
 --
 -- @param _PlayerID      ID des Spielers
 -- @return boolean: Spieler hat ein Burglager
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:HasCastleStore(_PlayerID)
@@ -1003,7 +1124,7 @@ end
 --
 -- @param _PlayerID      ID des Spielers
 -- @return table: Instanz des Burglagers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:GetStore(_PlayerID)
@@ -1017,7 +1138,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:GetLimit</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:GetLimit(_PlayerID)
@@ -1041,7 +1162,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:OnStorehouseTabClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:OnStorehouseTabClicked(_PlayerID)
@@ -1063,7 +1184,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:OnCityTabClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
@@ -1085,7 +1206,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:OnMultiTabClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
@@ -1106,7 +1227,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:GoodClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
@@ -1127,7 +1248,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:DestroyGoodsClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:DestroyGoodsClicked(_PlayerID)
@@ -1143,7 +1264,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:SelectionChanged</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:SelectionChanged(_PlayerID)
@@ -1164,7 +1285,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:UpdateBehaviorTabs</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:UpdateBehaviorTabs(_PlayerID)
@@ -1194,7 +1315,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _CurrentWidget)
@@ -1236,7 +1357,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:UpdateStorageLimit</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:UpdateStorageLimit(_PlayerID)
@@ -1258,7 +1379,7 @@ end
 --
 -- <p><b>Alias</b>: QSB.CastleStore:ToggleStore</p>
 --
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:ToggleStore()
@@ -1279,7 +1400,7 @@ end
 --
 -- <p><b>Alias</b>: QSB.CastleStore:RestoreStorehouseMenu</p>
 --
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:RestoreStorehouseMenu()
@@ -1309,7 +1430,7 @@ end
 --
 -- <p><b>Alias</b>: QSB.CastleStore:ShowCastleMenu</p>
 --
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:ShowCastleMenu()
@@ -1340,7 +1461,7 @@ end
 --
 -- <p><b>Alias</b>: QSB.CastleStore:ShowCastleStoreMenu</p>
 --
--- @within Internal
+-- @within QSB.CastleStore
 -- @local
 --
 function AddOnCastleStore.Local.CastleStore:ShowCastleStoreMenu()
