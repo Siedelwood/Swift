@@ -4,7 +4,7 @@
 
 function scandir(_directory)
     local i, t, popen = 0, {}, io.popen
-    
+
     local ls = 'ls -a "'.._directory..'"';
     local pfile = popen(ls)
     for filename in pfile:lines() do
@@ -16,7 +16,7 @@ function scandir(_directory)
 end
 
 
-local files = scandir(".", true)
+local files = scandir(".")
 for i=1, #files, 1 do
     print(files[i]);
 end

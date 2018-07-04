@@ -1147,3 +1147,4 @@ function AddOnInteractiveObjectTemplates.Local:Install()
 end
 
 Core:RegisterAddOn("AddOnInteractiveObjectTemplates");
+ 

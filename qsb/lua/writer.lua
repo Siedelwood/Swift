@@ -32,4 +32,4 @@ if fh then
     fh:close();
     os.remove("var/qsb.lua");
 end
-SymfoniaLoader:CreateQSB();
+SymfoniaLoader:CreateQSB(arg);
