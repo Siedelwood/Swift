@@ -24,8 +24,8 @@ CS = CS or {};
 ---
 -- Startet eine Cutscene.
 --
--- @param _cutscene  Name der Cutscene
--- @return boolean: Cutscene gestartet
+-- @param _cutscene [string] Name der Cutscene
+-- @return [boolean] Cutscene gestartet
 -- @within Anwenderfunktionen
 --
 function CS.StartCutscene(_cutscene)
@@ -55,6 +55,7 @@ end
 ---
 -- Prüft, ob eine Cutscene aktiv ist.
 --
+-- @return [boolean] Cutscene ist aktiv
 -- @within Anwenderfunktionen
 --
 function CS.IsCutsceneActive()
