@@ -48,10 +48,10 @@ AddOnQuestDebug = {
 --
 -- <p><b>Alias:</b> ActivateDebugMode</p>
 --
--- @param _CheckAtStart   Prüfe Quests zur Erzeugunszeit
--- @param _CheckAtRun     Prüfe Quests zur Laufzeit
--- @param _TraceQuests    Aktiviert Questverfolgung
--- @param _DevelopingMode Aktiviert Cheats und Konsole
+-- @param _CheckAtStart [boolean] Prüfe Quests zur Erzeugunszeit
+-- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
+-- @param _TraceQuests [boolean] Aktiviert Questverfolgung
+-- @param _DevelopingMode [boolean] Aktiviert Cheats und Konsole
 -- @within Anwenderfunktionen
 --
 function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
@@ -78,11 +78,11 @@ ActivateDebugMode = API.ActivateDebugMode;
 --
 -- @see API.ActivateDebugMode
 --
--- @param _CheckAtStart   Prüfe Quests zur Erzeugunszeit
--- @param _CheckAtRun     Prüfe Quests zur Laufzeit
--- @param _TraceQuests    Aktiviert Questverfolgung
--- @param _DevelopingMode Aktiviert Cheats und Konsole
--- @return Table mit Behavior
+-- @param _CheckAtStart [boolean] Prüfe Quests zur Erzeugunszeit
+-- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
+-- @param _TraceQuests [boolean] Aktiviert Questverfolgung
+-- @param _DevelopingMode [boolean] Aktiviert Cheats und Konsole
+--
 -- @within Reward
 --
 function Reward_DEBUG(...)
@@ -208,10 +208,10 @@ end
 -- ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
 -- sogar Funktionen während des Spiels zu überschreiben.
 --
--- @param _CheckAtStart   Prüfe Quests zur Erzeugunszeit
--- @param _CheckAtRun     Prüfe Quests zur Laufzeit
--- @param _TraceQuests    Aktiviert Questverfolgung
--- @param _DevelopingMode Aktiviert Cheats und Konsole
+-- @param _CheckAtStart [boolean] Prüfe Quests zur Erzeugunszeit
+-- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
+-- @param _TraceQuests [boolean] Aktiviert Questverfolgung
+-- @param _DevelopingMode [boolean] Aktiviert Cheats und Konsole
 -- @within Internal
 -- @local
 --
