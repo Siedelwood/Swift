@@ -1,0 +1,558 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.source.html">addons.addoncastlestore.source</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.source.html">addons.addongamecutscenes.source</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.source.html">addons.addoninteractiveobjecttemplates.source</a></li>
+  <li><a href="../modules/addons.addonquestdebug.source.html">addons.addonquestdebug.source</a></li>
+  <li><a href="../modules/addons.addonroleplayinggame.source.html">addons.addonroleplayinggame.source</a></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.source.html">bundles.bundlebriefingsystem.source</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.source.html">bundles.bundlebuildingbuttons.source</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.source.html">bundles.bundleclassicbehaviors.source</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.source.html">bundles.bundleconstructioncontrol.source</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.source.html">bundles.bundledialogwindows.source</a></li>
+  <li><a href="../modules/bundles.bundleentityhealth.source.html">bundles.bundleentityhealth.source</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.source.html">bundles.bundleentityhelperfunctions.source</a></li>
+  <li><a href="../modules/bundles.bundleentityscriptingvalues.source.html">bundles.bundleentityscriptingvalues.source</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.source.html">bundles.bundleentityselection.source</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.source.html">bundles.bundlegamehelperfunctions.source</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.source.html">bundles.bundleinteractiveobjects.source</a></li>
+  <li><a href="../modules/bundles.bundleinterfaceapperance.source.html">bundles.bundleinterfaceapperance.source</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.source.html">bundles.bundleknighttitlerequirements.source</a></li>
+  <li><strong>bundles.bundlemusictools.source</strong></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.source.html">bundles.bundlenonplayercharacter.source</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.source.html">bundles.bundlequestgeneration.source</a></li>
+  <li><a href="../modules/bundles.bundlesavegametools.source.html">bundles.bundlesavegametools.source</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.source.html">bundles.bundlesymfoniabehaviors.source</a></li>
+  <li><a href="../modules/bundles.bundletradingfunctions.source.html">bundles.bundletradingfunctions.source</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/SymfoniaLoader.html">SymfoniaLoader</a></li>
+  <li><a href="../scripts/SymfoniaWriter.html">SymfoniaWriter</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundlemusictools.source</code></h1>
+<p>Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze Playlists als
+ Stimme abzuspielen.</p>
+<p></p>
+
+
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global.StartSongControl">BundleMusicTools.Global.StartSongControl ()</a></td>
+	<td class="summary">Kontrolliert den Song / die Playlist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:AbortMusic">BundleMusicTools.Global:AbortMusic ()</a></td>
+	<td class="summary">Stopt den gerade laufenden Song und leert sowohl die Songdaten
+ als auch die Playlist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:Install">BundleMusicTools.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:StartPlaylist">BundleMusicTools.Global:StartPlaylist (_Playlist)</a></td>
+	<td class="summary">Spielt eine Playlist ab.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:StartPlaylistTitle">BundleMusicTools.Global:StartPlaylistTitle (_Title)</a></td>
+	<td class="summary">Stoppt gerade gespielte Musik und startet die Playlist mit dem
+ angegebenen Titel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:StartSong">BundleMusicTools.Global:StartSong (_Description)</a></td>
+	<td class="summary">Startet ein Musikstück als Stimme.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:StopSong">BundleMusicTools.Global:StopSong ()</a></td>
+	<td class="summary">Stopt Musik und stellt die alte Soundkonfiguration wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Local:BackupSound">BundleMusicTools.Local:BackupSound (_Volume, _Song, _MuteAtmo, _MuteUI)</a></td>
+	<td class="summary">Speichert die Soundeinstellungen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Local:Install">BundleMusicTools.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Local:ResetSound">BundleMusicTools.Local:ResetSound (_File, _QueueLength)</a></td>
+	<td class="summary">Stellt die Soundeinstellungen wieder her.</td>
+	</tr>
+</table>
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AbortMusic">API.AbortMusic ()</a></td>
+	<td class="summary">Stopt den gerade laufenden Song und leert sowohl die Songdaten
+ als auch die Playlist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartMusic">API.StartMusic (_Description)</a></td>
+	<td class="summary">Startet ein Musikstück als Stimme.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartMusicSimple">API.StartMusicSimple (_File, _Volume, _Length, _FadeOut)</a></td>
+	<td class="summary">Vereinfachter einzeiliger Aufruf für StartSong.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartPlaylist">API.StartPlaylist (_Playlist)</a></td>
+	<td class="summary">Spielt eine Playlist ab.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartPlaylistTitle">API.StartPlaylistTitle (_Title)</a></td>
+	<td class="summary">Stoppt gerade gespielte Musik und startet die Playlist mit dem
+ angegebenen Titel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StopSong">API.StopSong ()</a></td>
+	<td class="summary">Stopt Musik und stellt die alte Soundkonfiguration wieder her.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleMusicTools.Global.StartSongControl"></a>
+    <strong>BundleMusicTools.Global.StartSongControl ()</strong>
+    </dt>
+    <dd>
+    Kontrolliert den Song / die Playlist.  Wenn ein Song durch ist, wird
+ der nächste Song in der Warteschlange gestartet, sofern vorhanden.
+ Ist die Warteschlange leer, endet der Job. Existiert eine Playlist,
+ für die Repeat = true ist, dann wird die Playlist neu gestartet.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:AbortMusic"></a>
+    <strong>BundleMusicTools.Global:AbortMusic ()</strong>
+    </dt>
+    <dd>
+    Stopt den gerade laufenden Song und leert sowohl die Songdaten
+ als auch die Playlist.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:Install"></a>
+    <strong>BundleMusicTools.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:StartPlaylist"></a>
+    <strong>BundleMusicTools.Global:StartPlaylist (_Playlist)</strong>
+    </dt>
+    <dd>
+    Spielt eine Playlist ab.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Playlist</span>
+         [table] Playlist
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:StartPlaylistTitle"></a>
+    <strong>BundleMusicTools.Global:StartPlaylistTitle (_Title)</strong>
+    </dt>
+    <dd>
+    Stoppt gerade gespielte Musik und startet die Playlist mit dem
+ angegebenen Titel.  Es muss eine Playlist existieren! Nachdem der
+ Titel abgespielt ist, wird die Playlist normal weiter gespielt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+         [number] Index des Titels
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:StartSong"></a>
+    <strong>BundleMusicTools.Global:StartSong (_Description)</strong>
+    </dt>
+    <dd>
+    Startet ein Musikstück als Stimme.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Description</span>
+         [table] Beschreibung des Musikstücks
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:StopSong"></a>
+    <strong>BundleMusicTools.Global:StopSong ()</strong>
+    </dt>
+    <dd>
+    Stopt Musik und stellt die alte Soundkonfiguration wieder her.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Local:BackupSound"></a>
+    <strong>BundleMusicTools.Local:BackupSound (_Volume, _Song, _MuteAtmo, _MuteUI)</strong>
+    </dt>
+    <dd>
+    Speichert die Soundeinstellungen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Volume</span>
+         [number] Lautstärke
+        </li>
+        <li><span class="parameter">_Song</span>
+         [string] Pfad zum Titel
+        </li>
+        <li><span class="parameter">_MuteAtmo</span>
+         [boolean] Atmosphäre stumm schalten
+        </li>
+        <li><span class="parameter">_MuteUI</span>
+         [boolean] UI stumm schalten
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Local:Install"></a>
+    <strong>BundleMusicTools.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Local:ResetSound"></a>
+    <strong>BundleMusicTools.Local:ResetSound (_File, _QueueLength)</strong>
+    </dt>
+    <dd>
+    Stellt die Soundeinstellungen wieder her.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_File</span>
+         [string] Pfad zur Datei
+        </li>
+        <li><span class="parameter">_QueueLength</span>
+         [number] Länge der Warteschlange
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AbortMusic"></a>
+    <strong>API.AbortMusic ()</strong>
+    </dt>
+    <dd>
+    Stopt den gerade laufenden Song und leert sowohl die Songdaten
+ als auch die Playlist.
+<p> <b>Alias:</b> AbortSongOrPlaylist
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartMusic"></a>
+    <strong>API.StartMusic (_Description)</strong>
+    </dt>
+    <dd>
+    Startet ein Musikstück als Stimme.
+<p> <b>Alias:</b> StartSong
+<p> Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
+ sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
+ gespielt werden kann! Alle als Sprache abgespielten Sounds werden die
+ gleiche Lautstärke haben, wie die Musik.
+<p> _Description hat folgendes Format:
+ <ul>
+ <li>File     - Path + Dateiname</li>
+ <li>Volume   - Lautstärke</li>
+ <li>length   - abgespielte Länge in Sekunden (nicht zwingend |Musikstück|)</li>
+ <li>Fadeout  - Ausblendzeit in Zehntels. (>= 5 oder 0 für sofort)</li>
+ <li>MuteAtmo - Hintergrundgeräusche aus</li>
+ <li>MuteUI   - GUI-Sounds aus</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Description</span>
+         [table] Definition des Musikstück
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.StartMusic({
+    File     = <span class="string">"music/s6_10_antagonist.mp3"</span>,
+    Volume   = <span class="number">70</span>,
+    Length   = <span class="number">49</span>,
+    Fadeout  = <span class="number">20</span>,
+    MuteAtmo = <span class="keyword">true</span>;
+    MuteUI   = <span class="keyword">true</span>,
+});</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.StartMusicSimple"></a>
+    <strong>API.StartMusicSimple (_File, _Volume, _Length, _FadeOut)</strong>
+    </dt>
+    <dd>
+    Vereinfachter einzeiliger Aufruf für StartSong.
+<p> <b>Alias:</b> StartSongSimple
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_File</span>
+         [string] Pfad zur Datei
+        </li>
+        <li><span class="parameter">_Volume</span>
+         [number] Lautstärke
+        </li>
+        <li><span class="parameter">_Length</span>
+         [number] Abspieldower (<= Dauer Musikstück)
+        </li>
+        <li><span class="parameter">_FadeOut</span>
+         [number] Ausblenden in Sekunden
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.StartMusicSimple(<span class="string">"music/s6_10_antagonist.mp3"</span>, <span class="number">70</span>, <span class="number">49</span>, <span class="number">1</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.StartPlaylist"></a>
+    <strong>API.StartPlaylist (_Playlist)</strong>
+    </dt>
+    <dd>
+    Spielt eine Playlist ab.
+<p> <b>Alias:</b> StartPlaylist
+<p> Eine im Skript definierte Playlist, nicht
+ eine XML! Die Playlist kann einmal abgearbeitet oder auf Wiederholung
+ gestellt werden. Alle Einträge haben das Format von StartSong!
+ Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
+ sich die Playlist endlos wiederholt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Playlist</span>
+         [table] Definition der Playlist
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Playlist = {
+    {
+        File     = <span class="string">"music/s6_10_antagonist.mp3"</span>,
+        Volume   = <span class="number">70</span>,
+        Length   = <span class="number">49</span>,
+        Fadeout  = <span class="number">20</span>,
+        MuteAtmo = <span class="keyword">true</span>;
+        MuteUI   = <span class="keyword">true</span>,
+    },
+    {
+        File     = <span class="string">"music/s6_04_blaze.mp3"</span>,
+        Volume   = <span class="number">70</span>,
+        Length   = <span class="number">65</span>,
+        Fadeout  = <span class="number">20</span>,
+        MuteAtmo = <span class="keyword">false</span>;
+        MuteUI   = <span class="keyword">true</span>,
+    },
+}
+API.StartPlaylist(Playlist);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.StartPlaylistTitle"></a>
+    <strong>API.StartPlaylistTitle (_Title)</strong>
+    </dt>
+    <dd>
+    Stoppt gerade gespielte Musik und startet die Playlist mit dem
+ angegebenen Titel.  Es muss eine Playlist existieren! Nachdem der
+ Titel abgespielt ist, wird die Playlist normal weiter gespielt.
+<p> <b>Alias:</b> StartPlaylistTitle
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+         [number] Index des Titels
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StopSong"></a>
+    <strong>API.StopSong ()</strong>
+    </dt>
+    <dd>
+    Stopt Musik und stellt die alte Soundkonfiguration wieder her.
+<p> <b>Alias:</b> StopSong
+
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

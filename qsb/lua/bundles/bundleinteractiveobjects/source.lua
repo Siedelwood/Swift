@@ -16,9 +16,10 @@
 -- ein Gegenstand wird vom Helden aufgehoben, ein Marktstand, der etwas
 -- verkauft, ....
 --
--- @module BundleInteractiveObjects
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleInteractiveObjects = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -35,11 +36,11 @@ QSB.IOList = {};
 -- Diese Funktion ist ein Mapping für die veraltete Schreibweise. Du kannst
 -- dich hiermit ermutigt fühlen, API.CreateObject zu verwenden!
 --
--- <b>Alias:</b> SetupInteractiveObject
+-- <p><b>Alias:</b> SetupInteractiveObject</p>
 --
--- @param _Name          Skriptname des Objekts
--- @param _Description   Beschreibung
--- @within Public
+-- @param _Name [string] Skriptname des Objekts
+-- @param _Description [table] Beschreibung
+-- @within Anwenderfunktionen
 -- @see API.CreateObject
 --
 function API.SetupInteractiveObject(_Name, _Description)
@@ -151,10 +152,10 @@ SetupInteractiveObject = API.SetupInteractiveObject;
 -- werden. Sie sind ausnahmslos im Callback und in der Condition des Objektes
 -- abrufbar.
 --
--- <b>Alias:</b> CreateObject
+-- <p><b>Alias:</b> CreateObject</p>
 --
--- @param _Description   Beschreibung
--- @within Public
+-- @param _Description [table] Beschreibung
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Ein einfaches Objekt erstellen:
@@ -181,10 +182,10 @@ CreateObject = API.CreateObject;
 -- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
 -- Konfiguration des Objektes entfernt.
 --
--- <b>Alias:</b> RemoveInteractiveObject
+-- <p><b>Alias:</b> RemoveInteractiveObject</p>
 --
--- @param _EntityName Skriptname des IO
--- @within Public
+-- @param _EntityName [string] Skriptname des IO
+-- @within Anwenderfunktionen
 --
 function API.RemoveInteractiveObject(_EntityName)
     if GUI then
@@ -207,11 +208,11 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 -- einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
 -- Held das Objekt aktivieren.
 --
--- <b>Alias</b>: InteractiveObjectActivate
+-- <p><b>Alias</b>: InteractiveObjectActivate</p>
 --
--- @param _EntityName Skriptname des Objektes
--- @param _State      State des Objektes
--- @within Public
+-- @param _EntityName [string] Skriptname des Objektes
+-- @param _State [number] State des Objektes
+-- @within Anwenderfunktionen
 --
 function API.InteractiveObjectActivate(_EntityName, _State)
     if GUI then
@@ -238,10 +239,10 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 -- Deaktiviert ein interaktives Objekt, sodass es nicht mehr vom Spieler
 -- benutzt werden kann.
 --
--- <b>Alias</b>: InteractiveObjectDeactivate
+-- <p><b>Alias</b>: InteractiveObjectDeactivate</p>
 --
--- @param _EntityName Scriptname des Objektes
--- @within Public
+-- @param _EntityName [string] Scriptname des Objektes
+-- @within Anwenderfunktionen
 --
 function API.InteractiveObjectDeactivate(_EntityName)
     if GUI then
@@ -269,11 +270,11 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
 -- Mit dieser Funktion kann ein Name angelegt werden.
 --
--- <b>Alias:</b> AddCustomIOName
+-- <p><b>Alias:</b> AddCustomIOName</p>
 --
--- @param _Key  Typname des Entity
--- @param _Text Text der Beschriftung
--- @within Public
+-- @param _Key [string] Typname des Entity
+-- @param _Text [string] Text der Beschriftung
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.AddCustomIOName("D_X_ChestClosed", "Schatztruhe");
@@ -313,7 +314,7 @@ BundleInteractiveObjects = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:Install()
@@ -328,8 +329,8 @@ end
 -- Angaben hängen teilweise vom Typ der Entity, teilweise vom
 -- Verwendungszweck ab.
 --
--- @param _Description Beschreibung
--- @within Private
+-- @param _Description [table] Beschreibung
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:CreateObject(_Description)
@@ -402,8 +403,8 @@ end
 -- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
 -- Konfiguration des Objektes entfernt.
 --
--- @param _EntityName Skriptname des IO
--- @within Private
+-- @param _EntityName [string] Skriptname des IO
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName)
@@ -423,9 +424,9 @@ end
 -- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
 -- Mit dieser Funktion kann ein Name angelegt werden.
 --
--- @param _Key  Identifier der Beschriftung
--- @param _Text Text der Beschriftung
--- @within Private
+-- @param _Key [string] Identifier der Beschriftung
+-- @param _Text [string] Text der Beschriftung
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text)
@@ -450,7 +451,7 @@ end
 -- Überschreibt die Events, die ausgelöst werden, wenn interaktive Objekte
 -- benutzt werden.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global:HackOnInteractionEvent()
@@ -540,7 +541,7 @@ end
 -- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt
 -- ist und erlaubt die Benutzung.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Global.ControlInteractiveObjects()
@@ -556,7 +557,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:Install()
@@ -566,10 +567,10 @@ end
 ---
 -- Prüft, ob die Kosten für ein interaktives Objekt beglichen werden können.
 --
--- @param _PlayerID Spieler, der zahlt
--- @param _Good     Typ der Ware
--- @param _Amount   Menge der Ware
--- @within Private
+-- @param _PlayerID [number] Spieler, der zahlt
+-- @param _Good [number] Typ der Ware
+-- @param _Amount [number] Menge der Ware
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
@@ -583,10 +584,10 @@ end
 ---
 -- Zieht die Kosten des Objektes aus dem Lagerhaus des Spielers ab.
 --
--- @param _PlayerID Spieler, der zahlt
--- @param _Good     Typ der Ware
--- @param _Amount   Menge der Ware
--- @within Private
+-- @param _PlayerID [number] Spieler, der zahlt
+-- @param _Good [number] Typ der Ware
+-- @param _Amount [number] Menge der Ware
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
@@ -612,7 +613,7 @@ end
 ---
 -- Überschreibt die Spielfunktione, die interaktive Objekte steuern.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
@@ -1016,12 +1017,12 @@ end
 ---
 -- Setzt den Kostentooltip des aktuellen Widgets.
 --
--- @param _Title        Titel des Tooltip
--- @param _Text         Text des Tooltip
--- @param _DisabledText Textzusatz wenn inaktiv
--- @param _Costs        Kostentabelle
--- @param _InSettlement Kosten in Siedlung suchen
--- @within Private
+-- @param _Title [string] Titel des Tooltip
+-- @param _Text [string] Text des Tooltip
+-- @param _DisabledText [string] Textzusatz wenn inaktiv
+-- @param _Costs [table] Kostentabelle
+-- @param _InSettlement [boolean] Kosten in Siedlung suchen
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
@@ -1057,9 +1058,9 @@ end
 -- Ändert die Textur eines Icons des aktuellen Widget.
 -- TODO: Eigene Matrizen funktionieren nicht - Grund unbekannt.
 --
--- @param _Widget Icon Widget
--- @param _Icon   Icon Textur
--- @within Private
+-- @param _Widget [string|number] Icon Widget
+-- @param _Icon [string|table] Icon Textur
+-- @within Internal
 -- @local
 --
 function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)

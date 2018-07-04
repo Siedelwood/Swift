@@ -9,9 +9,10 @@
 -- Cutscenes. Ausserdem ermöglicht es das direkte Erfassen der
 -- Kamerapositionen aus der Map heraus.
 --
--- @module AddOnGameCutscenes
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+AddOnGameCutscenes = {};
 
 API = API or {};
 CS = CS or {};
@@ -25,7 +26,7 @@ CS = CS or {};
 --
 -- @param _cutscene  Name der Cutscene
 -- @return boolean: Cutscene gestartet
--- @within Public
+-- @within Anwenderfunktionen
 --
 function CS.StartCutscene(_cutscene)
     if not GUI then
@@ -54,7 +55,7 @@ end
 ---
 -- Prüft, ob eine Cutscene aktiv ist.
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function CS.IsCutsceneActive()
 	-- local function, needs some change to be globaly used
@@ -68,7 +69,7 @@ end
 ---
 -- Erstellen einer Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function CS.CreateCutscene_DEV_ONLY()
     if GUI then
@@ -81,7 +82,7 @@ end
 ---
 -- Erstellen einer Echtzeit Cutscene, um diese mit dem SCA Tool in eine cs Datei umzuwandeln
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function CS.CreateCutsceneRealtime_DEV_ONLY()
     if GUI then
@@ -121,7 +122,7 @@ AddOnGameCutscenes = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Global:Install()
@@ -152,7 +153,8 @@ end
 ---
 -- Startet den CutsceneMaker
 --
--- @within Private
+-- @within Internal
+-- @local
 --
 function AddOnGameCutscenes.Global:StartCutsceneMaker()
     self.Data.csMaker.pages = {}
@@ -171,7 +173,8 @@ end
 ---
 -- Beendet den CutsceneMaker
 --
--- @within Private
+-- @within Internal
+-- @local
 --
 function AddOnGameCutscenes.Global:EndCutsceneMaker()
     EndJob(self.Data.csMaker.job)
@@ -469,7 +472,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:Install()
@@ -495,7 +498,7 @@ end
 ---
 -- Prüft, ob eine Cutscene oder ein Briefing activ ist.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:IsCutsceneActive()
@@ -511,7 +514,7 @@ end
 -- Fügt eine Cutscene zur warteliste hinzu.
 --
 -- @param _cutscene Name der Cutscene
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:AddToWaitList(_cutscene)
@@ -521,7 +524,7 @@ end
 ---
 -- Prüf, ob eine Cutscene in der Warteliste steht und führt diese gegebenenfalls aus.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:CheckWaitList()
@@ -541,7 +544,7 @@ end
 -- Bereitet die Daten für die kommende Cutscene vor und startet diese dann.
 --
 -- @param _cutscene String, name der cutscene
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:StartCutscene(_cutscene)
@@ -552,7 +555,7 @@ end
 ---
 -- Bereitet die UI für die Cutscene vor.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:StartCutsceneOptic()
@@ -621,7 +624,7 @@ end
 ---
 -- Stellt die UI für das Spiel wieder her.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:UndoCutsceneOptic()
@@ -676,7 +679,7 @@ end
 -- @param _show true wenn bar gezeigt werden soll
 -- @param _big true wenn breiter Balken
 -- @param _black true wenn Schwarz
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:ShowText(_text, _title, _centered, _showBars, _big, _black)
@@ -736,7 +739,7 @@ end
 ---
 -- Startet den Cutscene Maker
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function AddOnGameCutscenes.Local:StartCutsceneMaker()
@@ -796,7 +799,8 @@ end
 ---
 -- Beendet den CutsceneMaker
 --
--- @within Private
+-- @within Internal
+-- @local
 --
 function AddOnGameCutscenes.Local:EndCutsceneMaker()
     Display.SetRenderSky(0)

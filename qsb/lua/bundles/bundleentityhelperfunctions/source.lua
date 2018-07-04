@@ -7,9 +7,10 @@
 ---
 -- Dieses Bundle enthält häufig gebrauchte Funktionen für Entities.
 --
--- @module BundleEntityHelperFunctions
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleEntityHelperFunctions = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -23,14 +24,14 @@ QSB = QSB or {};
 -- Kategorien. Dabei kann für eine Partei oder für mehrere parteien gesucht
 -- werden.
 --
--- <b>Alias:</b> GetEntitiesOfCategoriesInTerritories<br>
--- <b>Alias:</b> EntitiesInCategories
+-- <p><b>Alias:</b> GetEntitiesOfCategoriesInTerritories<br></p>
+-- <p><b>Alias:</b> EntitiesInCategories</p>
 --
 -- @param _player       [number|table] PlayerID [0-8] oder Table mit PlayerIDs
 -- @param _category     [number|table] Kategorien oder Table mit Kategorien
 -- @param _territory    [number|table] Zielterritorium oder Table mit Territorien
 -- @return [table] Liste mit Resultaten
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Result = API.GetEntitiesOfCategoriesInTerritories({1, 2, 3}, EntityCategories.Hero, {5, 12, 23, 24});
@@ -44,11 +45,11 @@ EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
 ---
 -- Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.
 --
--- <b>Alias:</b> GetEntitiesNamedWith
+-- <p><b>Alias:</b> GetEntitiesNamedWith</p>
 --
 -- @param _Prefix [string] Präfix des Skriptnamen
 -- @return [table] Liste mit Entities
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Alle Entities mit "entranceCave" -> entranceCave1, entranceCave2, ...
@@ -62,7 +63,7 @@ GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 -- Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
 -- in einer Mine.
 --
--- <b>Alias:</b> SetResourceAmount
+-- <p><b>Alias:</b> SetResourceAmount</p>
 --
 -- @param _Entity       [string|number] Skriptname, EntityID der Mine
 -- @param _StartAmount  [number] Menge an Rohstoffen
@@ -91,14 +92,14 @@ SetResourceAmount = API.SetResourceAmount;
 -- Errechnet eine Position relativ im angegebenen Winkel und Position zur
 -- Basisposition. Die Basis kann ein Entity oder eine Positionstabelle sein.
 --
--- <b>Alias:</b> GetRelativePos
+-- <p><b>Alias:</b> GetRelativePos</p>
 --
 -- @param _target          [string|number|table] Basisposition
 -- @param _distance        [number] Entfernung
 -- @param _angle           [number] Winkel
 -- @param _buildingRealPos [boolean] Gebäudemitte statt Gebäudeeingang
 -- @return [table] Position
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local RelativePostion = API.GetRelativePosition("pos1", 1000, 32);
@@ -116,11 +117,11 @@ GetRelativePos = API.GetRelativePosition;
 
 -- Setzt ein Entity oder ein Battalion an eine neue Position.
 --
--- <b>Alias:</b> SetPosition
+-- <p><b>Alias:</b> SetPosition</p>
 --
 -- @param _Entity   [string|number] Entity zum versetzen
 -- @param _Position [string|number|table] Neue Position
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.SetPostion("hakim", "hakimPos1");
@@ -152,14 +153,14 @@ SetPosition = API.SetPosition;
 ---
 -- Das Entity wird relativ zu einem Winkel zum Ziel bewegt.
 --
--- <b>Alias:</b> MoveEntityToPositionToAnotherOne
+-- <p><b>Alias:</b> MoveEntityToPositionToAnotherOne</p>
 --
 -- @param _Entity       [string|number] Zu bewegendes Entity
 -- @param _Position     [string|number] Ziel
 -- @param _Distance     [number] Entfernung zum Ziel
 -- @param _Angle        [number] Winkel
 -- @param _moveAsEntity [boolean] Blocking ignorieren
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.MoveToPosition("hakim", "saraya", 300, 0);
@@ -187,14 +188,14 @@ MoveEntityToPositionToAnotherOne = API.MoveToPosition;
 -- Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
 -- anschließend an.
 --
--- <b>Alias:</b> MoveEx</br>
--- <b>Alias:</b> MoveEntityFaceToFaceToAnotherOne
+-- <p><b>Alias:</b> MoveEx</br></p>
+-- <p><b>Alias:</b> MoveEntityFaceToFaceToAnotherOne</p>
 --
 -- @param _Entity       [string|number] Zu bewegendes Entity
 -- @param _Position     [string|number] Ziel
 -- @param _Distance     [number] Entfernung zum Ziel
 -- @param _moveAsEntity [boolean] Blocking ignorieren
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.MoveAndLookAt("hakim", "saraya", 300);
@@ -222,13 +223,13 @@ MoveEx = API.MoveAndLookAt;
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.
 --
--- <b>Alias:</b> PlaceEntityToPositionToAnotherOne
+-- <p><b>Alias:</b> PlaceEntityToPositionToAnotherOne</p>
 --
 -- @param _Entity          [string|number|table] Entity das bewegt wird
 -- @param _Position        [string|number|table] Position zu der bewegt wird
 -- @param _Distance        [number] Entfernung
 -- @param _Angle           [number] Winkel
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.PlaceToPosition("hakim", "saraya", 300, 45);
@@ -257,13 +258,13 @@ PlaceEntityToPositionToAnotherOne = API.PlaceToPosition;
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
 -- das Ziel an.
 --
--- <b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne
--- <b>Alias:</b> SetPositionEx<br>
+-- <p><b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne</p>
+-- <p><b>Alias:</b> SetPositionEx<br></p>
 --
 -- @param _Entity          [string|number|table] Entity das bewegt wird
 -- @param _Position        [string|number|table] Position zu der bewegt wird
 -- @param _Distance        [number] Entfernung
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.PlaceAndLookAt("hakim", "saraya", 300);
@@ -282,11 +283,11 @@ SetPositionEx = API.PlaceAndLookAt;
 ---
 -- Gibt den Skriptnamen des Entity zurück.
 --
--- <b>Alias:</b> GetEntityName
+-- <p><b>Alias:</b> GetEntityName</p>
 --
 -- @param _entity [number] Gesuchtes Entity
 -- @return [string] Skriptname
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Name = API.GetEntityName(SomeEntityID);
@@ -304,12 +305,12 @@ GetEntityName = API.GetEntityName;
 ---
 -- Setzt den Skriptnamen des Entity.
 --
--- <b>Alias:</b> SetEntityName
+-- <p><b>Alias:</b> SetEntityName</p>
 --
 -- @param _entity [number] Entity
 -- @param _name   [string] Skriptname
 -- @return [string] Skriptname
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.SetEntityName(SomeEntityID, "myEntity");
@@ -330,11 +331,11 @@ SetEntityName = API.SetEntityName;
 ---
 -- Setzt die Orientierung des Entity.
 --
--- <b>Alias:</b> SetOrientation
+-- <p><b>Alias:</b> SetOrientation</p>
 --
 -- @param _entity [string|number] Gesuchtes Entity
 -- @param _ori    [number] Ausrichtung in Grad
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.SetOrientation("marcus", 52);
@@ -356,11 +357,11 @@ SetOrientation = API.SetOrientation;
 ---
 -- Gibt die Orientierung des Entity zurück.
 --
--- <b>Alias:</b> GetOrientation
+-- <p><b>Alias:</b> GetOrientation</p>
 --
 -- @param _entity [string|number] Gesuchtes Entity
 -- @return [number] Orientierung in Grad
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Orientation = API.GetOrientation("marcus");
@@ -378,11 +379,11 @@ GetOrientation = API.GetOrientation;
 ---
 -- Das Entity greift ein anderes Entity an, sofern möglich.
 --
--- <b>Alias:</b> Attack
+-- <p><b>Alias:</b> Attack</p>
 --
 -- @param_Entity  [string|number] Angreifendes Entity
 -- @param _Target [string|number] Angegriffenes Entity
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.EntityAttack("hakim", "marcus");
@@ -410,11 +411,11 @@ Attack = API.EntityAttack;
 -- Ein Entity oder ein Battalion wird zu einer Position laufen und
 -- alle gültigen Ziele auf dem Weg angreifen.
 --
--- <b>Alias:</b> AttackMove
+-- <p><b>Alias:</b> AttackMove</p>
 --
 -- @param _Entity   [string|number] Angreifendes Entity
 -- @param _Position [string] Skriptname, EntityID oder Positionstable
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.EntityAttackMove("hakim", "area");
@@ -441,11 +442,11 @@ AttackMove = API.EntityAttackMove;
 ---
 -- Bewegt das Entity zur Zielposition.
 --
--- <b>Alias:</b> Move
+-- <p><b>Alias:</b> Move</p>
 --
 -- @param _Entity   [string|number] Bewegendes Entity
 -- @param _Position [table] Positionstable
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.EntityMove("hakim", "pos");
@@ -472,12 +473,12 @@ Move = API.EntityMove;
 ---
 -- Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.
 --
--- <b>Alias:</b> GetClosestKnight
+-- <p><b>Alias:</b> GetClosestKnight</p>
 --
 -- @param _eID      [number] Basis-Entity
 -- @param _playerID [number] Besitzer der Helden
 -- @return [number] Nächstes Entity
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Knight = API.GetNearestKnight(GetID("IO1"), 1);
@@ -493,12 +494,12 @@ GetClosestKnight = API.GetNearestKnight;
 -- Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
 -- am nächsten ist.
 --
--- <b>Alias:</b> GetClosestEntity
+-- <p><b>Alias:</b> GetClosestEntity</p>
 --
 -- @param _eID      [number] Basis-Entity
 -- @param _entities [table] Liste von Entities
 -- @return [number] Nächstes Entity
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local EntityList = API.GetEntitiesOfCategoriesInTerritories({1, 2, 3}, EntityCategories.Hero, {5, 12, 23, 24});
@@ -545,7 +546,7 @@ BundleEntityHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Install()
@@ -556,7 +557,7 @@ end
 -- Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
 -- auch während des Spiels setzen zu können.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:OverwriteGeologistRefill()
@@ -580,7 +581,7 @@ end
 -- @param _StartAmount  [number] Menge an Rohstoffen
 -- @param _RefillAmount [number] Minimale Nachfüllmenge (> 0)
 -- @return [boolean] Operation erfolgreich
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
@@ -606,7 +607,7 @@ end
 --
 -- @param _Entity   [string|number] Entity zum versetzen
 -- @param _Position [string|number|table] Neue Position
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:SetPosition(_Entity,_Position)
@@ -633,7 +634,7 @@ end
 -- @param _Distance     [number] Entfernung zum Ziel
 -- @param _Angle        [number] Winkel
 -- @param _moveAsEntity [boolean] Blocking ignorieren
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
@@ -672,7 +673,7 @@ end
 -- @param _Position     [string|number] Ziel
 -- @param _Distance     [number] Entfernung zum Ziel
 -- @param _moveAsEntity [boolean] Blocking ignorieren
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
@@ -697,7 +698,7 @@ end
 --
 -- @param_Entity  [string|number] Angreifendes Entity
 -- @param _Target [string|number] Angegriffenes Entity
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Attack(_Entity, _Target)
@@ -712,7 +713,7 @@ end
 --
 -- @param _Entity   [string|number] Angreifendes Entity
 -- @param _Position [string] Skriptname, EntityID oder Positionstable
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:AttackMove(_Entity, _Position)
@@ -725,7 +726,7 @@ end
 --
 -- @param _Entity   [string|number] Bewegendes Entity
 -- @param _Position [table] Positionstable
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Global:Move(_Entity, _Position)
@@ -738,7 +739,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Local:Install()
@@ -757,7 +758,7 @@ end
 -- @param _category     [number|table] Kategorien oder Table mit Kategorien
 -- @param _territory    [number|table] Zielterritorium oder Table mit Territorien
 -- @return [table] Liste mit Resultaten
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
@@ -783,7 +784,7 @@ end
 --
 -- @param _Prefix [string] Präfix des Skriptnamen
 -- @return [table] Liste mit Entities
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix(_Prefix)
@@ -811,7 +812,7 @@ end
 -- @param _angle           [number] Winkel
 -- @param _buildingRealPos [boolean] Gebäudemitte statt Gebäudeeingang
 -- @return [table] Position
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Shared:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
@@ -850,7 +851,7 @@ end
 -- @param _eID      [number] Basis-Entity
 -- @param _entities [table] Liste von Entities
 -- @return [number] Nächstes Entity
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityHelperFunctions.Shared:GetNearestEntity(_eID,_entities)

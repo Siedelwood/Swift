@@ -13,9 +13,10 @@
 --
 -- Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
 --
--- @module BundleNonPlayerCharacter
+-- @within Modulbeschreibung
 -- @set sort=false
 --
+BundleNonPlayerCharacter = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -54,11 +55,11 @@ QSB = QSB or {};
 -- </tr>
 -- </table>
 --
--- <b>Alias:</b> CreateNPC
+-- <p><b>Alias:</b> CreateNPC</p>
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
 -- @return [table] NPC-Objekt
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcCompose {
@@ -74,7 +75,7 @@ function API.NpcCompose(_Data)
             API.Note(_Npc.WrongHeroMessage);
         end
     end
-    
+
     local NPC = NonPlayerCharacter:New(_Data.Name);
     NPC:SetDialogPartner(_Data.Hero);
     NPC:SetWrongPartnerCallback(WronHeroCallback);
@@ -86,10 +87,10 @@ CreateNPC = API.NpcCompose;
 ---
 -- Entfernt den NPC komplett vom Entity. Das Entity bleibt dabei erhalten.
 --
--- <b>Alias:</b> DestroyNPC
+-- <p><b>Alias:</b> DestroyNPC</p>
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcDispose("horst")
@@ -108,10 +109,10 @@ DestroyNPC = API.NpcDispose;
 -- Aktiviert einen inaktiven NPC. Wenn ein NPC bereits gesprochen hat, muss
 -- er zuvor zurückgesetzt werden.
 --
--- <b>Alias:</b> EnableNPC
+-- <p><b>Alias:</b> EnableNPC</P>
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcActivate("horst")
@@ -129,10 +130,10 @@ EnableNPC = API.NpcActivate;
 ---
 -- Deaktiviert einen NPC, sodass dieser nicht angesprochen werden kann.
 --
--- <b>Alias:</b> DisableNPC
+-- <p><b>Alias:</b> DisableNPC</P>
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcDeactivate("horst")
@@ -150,10 +151,10 @@ DisableNPC = API.NpcDeactivate;
 ---
 -- Setzt einen NPC zurück, sodass er nicht mehr als angesprochen gilt.
 --
--- <b>Alias:</b> ResetNPC
+-- <p><b>Alias:</b> ResetNPC<p>
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcReset("horst")
@@ -172,11 +173,11 @@ ResetNPC = API.NpcReset;
 -- Prüft, ob der NPC bereits angesprochen wurde. Wenn ein Ansprechpartner
 -- vorgegeben ist, muss dieser den NPC ansprechen.
 --
--- <b>Alias:</b> TalkedToNPC
+-- <p><b>Alias:</b> TalkedToNPC</p>
 --
 -- @param _Entity [string|number] Nichtspieler-Charakter
 -- @return [boolean] NPC wurde angesprochen
--- @within Public
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.NpcHasSpoken("horst")
@@ -212,7 +213,7 @@ BundleNonPlayerCharacter = {
 -- angegebenen Siedler. Dadurch wird der Siedler zu einem NPC, ist allerdings
 -- noch nicht aktiv.
 --
--- <b>Alias:</b> NonPlayerCharacter:New
+-- <p><b>Alias:</b> NonPlayerCharacter:New</p>
 --
 -- @param _ScriptName [string] Skriptname des NPC
 -- @return [table] Instanz von NonPlayerCharacter
@@ -257,13 +258,13 @@ end
 
 ---
 -- Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.
--- 
+--
 -- Wurde noch kein NPC für diesen Skriptnamen erzeugt, wird nil zurückgegeben.
 --
--- <b>Alias:</b> NonPlayerCharacter:GetInstance
+-- <p><b>Alias:</b> NonPlayerCharacter:GetInstance</p>
 --
--- @param _ScriptName Skriptname des NPC
--- @return object
+-- @param _ScriptName [string] Skriptname des NPC
+-- @return [table] Interaktives Objekt
 -- @within NonPlayerCharacter
 -- @local
 -- @usage -- NPC ermitteln
@@ -287,9 +288,9 @@ end
 ---
 -- Gibt die Entity ID des letzten angesprochenen NPC zurück.
 --
--- <b>Alias:</b> NonPlayerCharacter:GetNpcId
+-- <p><b>Alias:</b> NonPlayerCharacter:GetNpcId</p>
 --
--- @return number
+-- @return [number] ID des letzten NPC
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -302,9 +303,9 @@ end
 -- Gibt die Entity ID des letzten Helden zurück, der einen NPC
 -- angesprochen hat.
 --
--- <b>Alias:</b> NonPlayerCharacter:GetHeroId
+-- <p><b>Alias:</b> NonPlayerCharacter:GetHeroId</p>
 --
--- @return number
+-- @return [number] ID des letzten Heden
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -317,9 +318,9 @@ end
 -- Gibt die Entity ID des NPC zurück. Ist der NPC ein Leader, wird
 -- der erste Soldat zurückgegeben, wenn es einen gibt.
 --
--- <b>Alias:</b> NonPlayerCharacter:GetID
+-- <p><b>Alias:</b> NonPlayerCharacter:GetID</p>
 --
--- @return number
+-- @return [number] ID des NPC
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -338,7 +339,7 @@ end
 ---
 -- Löscht einen NPC.
 --
--- <b>Alias:</b> NonPlayerCharacter:Dispose
+-- <p><b>Alias:</b> NonPlayerCharacter:Dispose</p>
 --
 -- @within NonPlayerCharacter
 -- @local
@@ -358,7 +359,7 @@ end
 --
 -- <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
 --
--- @return Instanz von NonPlayerCharacter
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 -- @usage -- NPC aktivieren:
@@ -378,7 +379,7 @@ end
 --
 -- <p><b>Alias:</b> NonPlayerCharacter:Deactivate</p>
 --
--- @return Instanz von NonPlayerCharacter
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 -- @usage -- NPC deaktivieren:
@@ -398,7 +399,7 @@ end
 --
 -- <p><b>Alias:</b> NonPlayerCharacter:IsActive</p>
 --
--- @return boolean
+-- @return [boolean] NPC ist aktiv
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -410,9 +411,9 @@ end
 ---
 -- Setzt den NPC zurück, sodass er erneut aktiviert werden kann.
 --
--- <b>Alias:</b> NonPlayerCharacter:Reset
+-- <p><b>Alias:</b> NonPlayerCharacter:Reset</p>
 --
--- @return Instanz von NonPlayerCharacter
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -431,9 +432,9 @@ end
 -- spezieller Ansprechpartner definiert, wird nur dann true
 -- zurückgegeben, wenn dieser Held mit dem NPC spricht.
 --
--- <b>Alias:</b> NonPlayerCharacter:HasTalkedTo
+-- <p><b>Alias:</b> NonPlayerCharacter:HasTalkedTo</p>
 --
--- @return boolean
+-- @return [boolean] NPC wurde angesprochen
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -448,10 +449,10 @@ end
 ---
 -- Setzt den Ansprechpartner für diesen NPC.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetDialogPartner
+-- <p><b>Alias:</b> NonPlayerCharacter:SetDialogPartner</p>
 --
--- @param _HeroName     Skriptname des Helden
--- @return Instanz von NonPlayerCharacter
+-- @param _HeroName [string] Skriptname des Helden
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -465,10 +466,10 @@ end
 -- Setzt das Callback für den Fall, dass ein falscher Held den
 -- NPC anspricht.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback
+-- <p><b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback</p>
 --
--- @param _Callback     Callback
--- @return Instanz von NonPlayerCharacter
+-- @param _Callback [function] Callback
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -483,10 +484,10 @@ end
 -- muss. Wenn ein Ziel erreicht wird, kann der NPC erst dann
 -- angesprochen werden, wenn das Ziel erreicht ist.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetFollowDestination
+-- <p><b>Alias:</b> NonPlayerCharacter:SetFollowDestination</p>
 --
--- @param _ScriptName     Skriptname des Ziel
--- @return Instanz von NonPlayerCharacter
+-- @param _ScriptName [string] Skriptname des Ziel
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -500,10 +501,10 @@ end
 -- Setzt den Helden, dem der NPC folgt. Ist Kein Ziel gesetzt,
 -- folgt der NPC dem Helden unbegrenzt.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetFollowTarget
+-- <p><b>Alias:</b> NonPlayerCharacter:SetFollowTarget</p>
 --
--- @param _ScriptName     Skriptname des Helden
--- @return Instanz von NonPlayerCharacter
+-- @param _ScriptName [string] Skriptname des Helden
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -518,10 +519,10 @@ end
 -- das Ziel noch nicht erreicht ist, anstelle des Callback beim
 -- Ansprechen ausgeführt wird.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetFollowAction
+-- <p><b>Alias:</b> NonPlayerCharacter:SetFollowAction</p>
 --
--- @param _Function     Action
--- @return Instanz von NonPlayerCharacter
+-- @param _Function [function] Action
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -534,11 +535,11 @@ end
 -- Setzt das Ziel zu dem der NPC läuft und den Helden, der dem
 -- NPC folgen muss.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetPrecedeParams
+-- <p><b>Alias:</b> NonPlayerCharacter:SetPrecedeParams</p>
 --
--- @param _ScriptName     Skriptname des Ziel
--- @param _Target         Striptname des Helden
--- @return Instanz von NonPlayerCharacter
+-- @param _ScriptName [string] Skriptname des Ziel
+-- @param _Target [string] Striptname des Helden
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -554,10 +555,10 @@ end
 -- das Ziel noch nicht erreicht ist, anstelle des Callback beim
 -- Ansprechen ausgeführt wird.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetPrecedeAction
+-- <p><b>Alias:</b> NonPlayerCharacter:SetPrecedeAction</p>
 --
--- @param _Function     Action
--- @return Instanz von NonPlayerCharacter
+-- @param _Function [function] Action
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -570,10 +571,10 @@ end
 ---
 -- Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.
 --
--- <b>Alias:</b> NonPlayerCharacter:SetCallback
+-- <p><b>Alias:</b> NonPlayerCharacter:SetCallback</p>
 --
--- @param _Callback     Callback
--- @return Instanz von NonPlayerCharacter
+-- @param _Callback [function] Callback
+-- @return [table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -596,7 +597,7 @@ end
 --
 -- @param _NpcName  [string] Skriptname des NPC
 -- @param _HeroName [string] Skriptname des Helden (optional)
--- @within Behavior
+-- @within Goal
 --
 function Goal_NPC(...)
     return b_Goal_NPC:new(...);
@@ -645,7 +646,7 @@ Core:RegisterBehavior(b_Goal_NPC);
 --
 -- @param _NpcName  [string] Skriptname des NPC
 -- @param _HeroName [string] Skriptname des Helden (optional)
--- @within Behavior
+-- @within Trigger
 --
 function Trigger_NPC(...)
     return b_Trigger_NPC:new(...);
@@ -716,7 +717,7 @@ Core:RegisterBehavior(b_Trigger_NPC);
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
@@ -917,7 +918,7 @@ end
 -- er dem Helden zu nahe, oder zu weit von ihm entfernt ist.
 -- Soll ein NPC einen Helden führen, ...
 --
--- @param _ScriptName   Skriptname des NPC
+-- @param _ScriptName [string] Skriptname des NPC
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -1039,7 +1040,7 @@ end
 ---
 -- Gibt true zurück, wenn der Marker des NPC sichtbar ist.
 --
--- @return boolen: Sichtbarkeit
+-- @return [boolen] Sichtbarkeit
 -- @within NonPlayerCharacter
 -- @local
 --
@@ -1080,7 +1081,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleNonPlayerCharacter.Local:Install()

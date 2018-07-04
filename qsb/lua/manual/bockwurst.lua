@@ -1,4 +1,0 @@
----
--- Lecker
--- @topic Das&nbsp;ist&nbsp;lecker&nbsp;Wurst
---

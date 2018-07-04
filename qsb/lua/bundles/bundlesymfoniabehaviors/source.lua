@@ -7,9 +7,10 @@
 ---
 -- Dieses Bundle enthält einige weitere nützliche Standard-Behavior.
 --
--- @module BundleSymfoniaBehaviors
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleSymfoniaBehaviors = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -33,7 +34,7 @@ QSB = QSB or {};
 -- @param _Target     Skriptname des Ziels
 -- @param _Distance   Entfernung
 -- @param _UseMarker  Ziel markieren
--- 
+--
 -- @within Goal
 --
 function Goal_MoveToPosition(...)
@@ -86,7 +87,7 @@ Core:RegisterBehavior(b_Goal_MoveToPosition);
 -- Der Spieler muss einen bestimmten Quest abschließen.
 --
 -- @param _QuestName Name des Quest
--- 
+--
 -- @within Goal
 --
 function Goal_WinQuest(...)
@@ -150,7 +151,7 @@ Core:RegisterBehavior(b_Goal_WinQuest);
 --
 -- @param _Amount       Menge an Gold
 -- @param _ShowProgress Fortschritt ausgeben
--- 
+--
 -- @within Goal
 --
 function Goal_StealGold(...)
@@ -198,13 +199,13 @@ end
 function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     local TargetPlayerName = (lang == "de" and " anderen Spielern ") or " different parties";
-    if self.Target ~= -1 then 
+    if self.Target ~= -1 then
         TargetPlayerName = GetPlayerName(self.Target);
-        if TargetPlayerName == nil or TargetPlayerName == "" then 
+        if TargetPlayerName == nil or TargetPlayerName == "" then
             TargetPlayerName = " PLAYER_NAME_MISSING ";
         end
     end
-    
+
     -- Cheat earnings
     local PlayerIDs = {self.Target};
     if self.Target == -1 then
@@ -221,7 +222,7 @@ function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
             end
         end
     end
-    
+
     local amount = self.Amount-self.StohlenGold;
     amount = (amount > 0 and amount) or 0;
     local text = {
@@ -270,7 +271,7 @@ Core:RegisterBehavior(b_Goal_StealGold)
 -- ein Dieb entsandt werden kann.
 --
 -- @param _ScriptName Skriptname des Gebäudes
--- 
+--
 -- @within Goal
 --
 function Goal_StealBuilding(...)
@@ -342,7 +343,7 @@ function b_Goal_StealBuilding:CustomFunction(_Quest)
         local pos = GetPosition(self.Building);
         self.Marker = Logic.CreateEffect(EGL_Effects.E_Questmarker, pos.X, pos.Y, 0);
     end
-    
+
     -- Cheat earnings
     local BuildingID = GetID(self.Building);
     if  Logic.IsEntityInCategory(BuildingID, EntityCategories.CityBuilding) == 1
@@ -409,7 +410,7 @@ Core:RegisterBehavior(b_Goal_StealBuilding)
 --
 -- @param _ScriptName  Skriptname des Gebäudes
 -- @param _DeleteThief Dieb nach Abschluss löschen
--- 
+--
 -- @within Goal
 --
 function Goal_SpyBuilding(...)
@@ -473,7 +474,7 @@ function b_Goal_SpyBuilding:CustomFunction(_Quest)
         local pos = GetPosition(self.Building);
         self.Marker = Logic.CreateEffect(EGL_Effects.E_Questmarker, pos.X, pos.Y, 0);
     end
-    
+
     -- Cheat earnings
     local BuildingID = GetID(self.Building);
     if  Logic.IsEntityInCategory(BuildingID, EntityCategories.CityBuilding) == 1
@@ -528,7 +529,7 @@ Core:RegisterBehavior(b_Goal_SpyBuilding);
 -- @param _ScriptName  Name des Kriegsgerät
 -- @param _Relation    Mengenrelation
 -- @param _Amount      Menge an Munition
--- 
+--
 -- @within Goal
 --
 function Goal_AmmunitionAmount(...)
@@ -604,7 +605,7 @@ Core:RegisterBehavior(b_Goal_AmmunitionAmount)
 -- @param _Target     Skriptname des Ziels
 -- @param _LookAt     Gegenüberstellen
 -- @param _Distance   Relative Entfernung (nur mit _LookAt)
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_SetPosition(...)
@@ -696,7 +697,7 @@ Core:RegisterBehavior(b_Reprisal_SetPosition);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _NewOwner   PlayerID des Eigentümers
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_ChangePlayer(...)
@@ -762,7 +763,7 @@ Core:RegisterBehavior(b_Reprisal_ChangePlayer);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Visible    Sichtbarkeit an/aus
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_SetVisible(...)
@@ -839,7 +840,7 @@ function b_Reprisal_SetVisible:DEBUG(_Quest)
         if _Quest.IsGenerated then
             dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
             return true;
-        else 
+        else
             warn(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         end
     end
@@ -855,7 +856,7 @@ Core:RegisterBehavior(b_Reprisal_SetVisible);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Vulnerable Verwundbarkeit an/aus
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_SetVulnerability(...)
@@ -939,7 +940,7 @@ function b_Reprisal_SetVulnerability:DEBUG(_Quest)
         if _Quest.IsGenerated then
             dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
             return true;
-        else 
+        else
             warn(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         end
     end
@@ -959,7 +960,7 @@ Core:RegisterBehavior(b_Reprisal_SetVulnerability);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Model      Neues Model
--- 
+--
 -- @within Reprisal
 --
 function Reprisal_SetModel(...)
@@ -1017,7 +1018,7 @@ function b_Reprisal_SetModel:DEBUG(_Quest)
         if _Quest.IsGenerated then
             dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
             return true;
-        else 
+        else
             warn(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         end
     end
@@ -1041,7 +1042,7 @@ Core:RegisterBehavior(b_Reprisal_SetModel);
 -- @param _Target     Skriptname des Ziels
 -- @param _LookAt     Gegenüberstellen
 -- @param _Distance   Relative Entfernung (nur mit _LookAt)
--- 
+--
 -- @within Reward
 --
 function Reward_SetPosition(...)
@@ -1067,7 +1068,7 @@ Core:RegisterBehavior(b_Reward_SetPosition);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _NewOwner   PlayerID des Eigentümers
--- 
+--
 -- @within Reward
 --
 function Reward_ChangePlayer(...)
@@ -1100,7 +1101,7 @@ Core:RegisterBehavior(b_Reward_ChangePlayer);
 -- @param _Destination Skriptname des Ziels
 -- @param _Distance    Entfernung
 -- @param _Angle       Winkel
--- 
+--
 -- @within Reward
 --
 function Reward_MoveToPosition(...)
@@ -1182,7 +1183,7 @@ Core:RegisterBehavior(b_Reward_MoveToPosition);
 --
 -- Es ist nicht möglich weiterzuspielen!
 --
--- 
+--
 -- @within Reward
 --
 function Reward_VictoryWithParty()
@@ -1261,7 +1262,7 @@ Core:RegisterBehavior(b_Reward_VictoryWithParty)
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Visible    Sichtbarkeit an/aus
--- 
+--
 -- @within Reprisal
 --
 function Reward_SetVisible(...)
@@ -1287,7 +1288,7 @@ Core:RegisterBehavior(b_Reward_SetVisible);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Controlled Durch KI kontrollieren an/aus
--- 
+--
 -- @within Reward
 --
 function Reward_AI_SetEntityControlled(...)
@@ -1362,7 +1363,7 @@ Core:RegisterBehavior(b_Reward_AI_SetEntityControlled);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Vulnerable Verwundbarkeit an/aus
--- 
+--
 -- @within Reward
 --
 function Reward_SetVulnerability(...)
@@ -1392,7 +1393,7 @@ Core:RegisterBehavior(b_Reward_SetVulnerability);
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Model      Neues Model
--- 
+--
 -- @within Reward
 --
 function Reward_SetModel(...)
@@ -1417,7 +1418,7 @@ Core:RegisterBehavior(b_Reward_SetModel);
 -- Füllt die Munition in der Kriegsmaschine vollständig auf.
 --
 -- @param _ScriptName Skriptname des Entity
--- 
+--
 -- @within Reward
 --
 function Reward_RefillAmmunition(...)
@@ -1483,7 +1484,7 @@ Core:RegisterBehavior(b_Reward_RefillAmmunition)
 -- @param _Quest3      Name des 3. Quest
 -- @param _Quest4      Name des 4. Quest
 -- @param _Quest5      Name des 5. Quest
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnAtLeastXOfYQuestsFailed(...)
@@ -1581,7 +1582,7 @@ Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsFailed)
 -- Startet den Quest, sobald die Munition in der Kriegsmaschine erschöpft ist.
 --
 -- @param _ScriptName Skriptname des Entity
--- 
+--
 -- @within Trigger
 --
 function Trigger_AmmunitionDepleted(...)
@@ -1639,7 +1640,7 @@ Core:RegisterBehavior(b_Trigger_AmmunitionDepleted)
 --
 -- @param _QuestName1 Name des ersten Quest
 -- @param _QuestName2 Name des zweiten Quest
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnExactOneQuestIsWon(...)
@@ -1708,7 +1709,7 @@ Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsWon);
 --
 -- @param _QuestName1 Name des ersten Quest
 -- @param _QuestName2 Name des zweiten Quest
--- 
+--
 -- @within Trigger
 --
 function Trigger_OnExactOneQuestIsLost(...)
@@ -1783,7 +1784,7 @@ BundleSymfoniaBehaviors = {
 
 ---
 -- Initialisiert das Bundle im globalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSymfoniaBehaviors.Global:Install()
@@ -1815,7 +1816,7 @@ function BundleSymfoniaBehaviors.Global:Install()
                         elseif Quests[i].Objectives[j].Data[1].Name == "Goal_StealGold" then
                             local CurrentObjective = Quests[i].Objectives[j].Data[1];
                             local TargetPlayerID = Logic.EntityGetPlayer(_BuildingID);
-                            
+
                             if CurrentObjective.Target ~= -1 and CurrentObjective.Target ~= TargetPlayerID then
                                 return;
                             end
@@ -1955,7 +1956,7 @@ end
 
 ---
 -- Initialisiert das Bundle im lokalen Skript.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleSymfoniaBehaviors.Local:Install()

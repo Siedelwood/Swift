@@ -5,12 +5,13 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle ermöglicht die Manipulation einer Entität direkt im
--- Arbeitsspeicher.
+-- Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
+-- verändert werden, die sonst unzugänglich wären.
 --
--- @module BundleEntityScriptingValues
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleEntityScriptingValues = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -24,11 +25,11 @@ QSB = QSB or {};
 --
 -- Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
 --
--- <b>Alias</b>: GetScale
+-- <p><b>Alias</b>: GetScale</p>
 --
--- @param _Entity Entity
--- @return Größenfaktor
--- @within Public
+-- @param _Entity [string|number] Entity
+-- @return [number] Größenfaktor
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Scale = API.GetEntityScale("alandra")
@@ -46,11 +47,11 @@ GetScale = API.GetEntityScale;
 ---
 -- Gibt den Besitzer des Entity zurück.
 --
--- <b>Alias</b>: GetPlayer
+-- <p><b>Alias</b>: GetPlayer</p>
 --
--- @param _Entity Entity
--- @return Besitzer
--- @within Public
+-- @param _Entity [string|number] Entity
+-- @return [number] Besitzer
+-- @within Anwenderfunktionen
 --
 function API.GetEntityPlayer(_Entity)
     if not IsExisting(_Entity) then
@@ -68,11 +69,11 @@ GetPlayer = API.GetEntityPlayer;
 -- Über diese Koordinaten könnte man prüfen, ob ein Entity sich in einen
 -- Bereich bewegt, in dem es nichts zu suchen hat.
 --
--- <b>Alias</b>: GetMovingTarget
+-- <p><b>Alias</b>: GetMovingTarget</p>
 --
--- @param _Entity Entity
--- @return Positionstabelle
--- @within Public
+-- @param _Entity [string|number] Entity
+-- @return [table] Positionstabelle
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Destination = API.GetMovingTarget("hakim");
@@ -96,11 +97,11 @@ GetMovingTarget = API.GetMovingTarget;
 --
 -- Auf diese Weise kann geprüft werden, ob ein NPC auf dem Entity aktiv ist.
 --
--- <b>Alias</b>: IsNpc
+-- <p><b>Alias</b>: IsNpc</p>
 --
--- @param _Entity Entity
--- @return Ist NPC
--- @within Public
+-- @param _Entity [string|number] Entity
+-- @return [boolean] Ist NPC
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- local Active = API.IsEntityNpc("alandra");
@@ -121,11 +122,11 @@ IsNpc = API.IsEntityNpc;
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
 --
--- <b>Alias</b>: IsVisible
+-- <p><b>Alias</b>: IsVisible</p>
 --
--- @param _Entity Entity
--- @return Ist sichtbar
--- @within Public
+-- @param _Entity [string|number] Entity
+-- @return [boolean] Ist sichtbar
+-- @within Anwenderfunktionen
 --
 function API.IsEntityVisible(_Entity)
     if not IsExisting(_Entity) then
@@ -143,11 +144,11 @@ IsVisible = API.IsEntityVisible;
 -- Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
 -- die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
 --
--- <b>Alias</b>: SetScale
+-- <p><b>Alias</b>: SetScale</p>
 --
--- @param _Entity Entity
--- @param _Scale  Größenfaktor
--- @within Public
+-- @param _Entity [string|number] Entity
+-- @param _Scale  [number] Größenfaktor
+-- @within Anwenderfunktionen
 --
 function API.SetEntityScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
@@ -169,11 +170,11 @@ SetScale = API.SetEntityScale;
 -- Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
 -- möglich ein Raubtier einem Spieler zuzuweisen.
 --
--- <b>Alias</b>: ChangePlayer
+-- <p><b>Alias</b>: ChangePlayer</p>
 --
--- @param _Entity   Entity
--- @param _PlayerID Besitzer
--- @within Public
+-- @param _Entity   [string|number] Entity
+-- @param _PlayerID [number] Besitzer
+-- @within Anwenderfunktionen
 --
 function API.SetEntityPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
@@ -210,7 +211,7 @@ BundleEntityScriptingValues = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityScriptingValues.Global:Install()
@@ -219,10 +220,9 @@ end
 
 ---
 -- Ändert die Größe des Entity.
---
--- @param _entity Entity
--- @param _size   Größenfaktor
--- @within Private
+-- @param _Entity [string|number] Entity
+-- @param _Scale  [number] Größenfaktor
+-- @within Internal
 -- @local
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
@@ -236,9 +236,9 @@ end
 ---
 -- Ändert den Besitzer des Entity.
 --
--- @param _entity   Entity
--- @param _PlayerID Neuer Besitzer
--- @within Private
+-- @param _Entity   [string|number] Entity
+-- @param _PlayerID [number] Besitzer
+-- @within Internal
 -- @local
 --
 function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
@@ -251,7 +251,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleEntityScriptingValues.Local:Install()
@@ -263,8 +263,8 @@ end
 ---
 -- Gibt die relative Größe des Entity zurück.
 --
--- @param _entity Entity
--- @return Größenfaktor
+-- @param _Entity [string|number] Entity
+-- @return [number] Größenfaktor
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -278,8 +278,8 @@ end
 -- Gibt den Besitzer des Entity zurück.
 -- @internal
 --
--- @param _entity Entity
--- @return PlayerID
+-- @param _Entity [string|number] Entity
+-- @return [number] Besitzer
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -291,8 +291,8 @@ end
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
 --
--- @param _entity Entity
--- @return Entity ist sichtbar
+-- @param _Entity [string|number] Entity
+-- @return [boolean] Ist sichtbar
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -304,8 +304,8 @@ end
 ---
 -- Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
 --
--- @param _entity Entity
--- @return NPC ist aktiv
+-- @param _Entity [string|number] Entity
+-- @return [boolean] Ist NPC
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -320,8 +320,8 @@ end
 ---
 -- Gibt das Bewegungsziel des Entity zurück.
 --
--- @param _entity Entity
--- @return Position Table
+-- @param _Entity [string|number] Entity
+-- @return [table] Positionstabelle
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -335,9 +335,9 @@ end
 ---
 -- Gibt die Scripting Value des Entity als Ganzzahl zurück.
 --
--- @param _entity Zu untersuchendes Entity
--- @param _index  Index im RAM
--- @return Integer
+-- @param _entity [string|number] Zu untersuchendes Entity
+-- @param _index  [number] Index im RAM
+-- @return [number] Ganzzahl
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -349,9 +349,9 @@ end
 ---
 -- Gibt die Scripting Value des Entity als Dezimalzahl zurück.
 --
--- @param _entity Zu untersuchendes Entity
--- @param _index  Index im RAM
--- @return Float
+-- @param _entity [string|number] Zu untersuchendes Entity
+-- @param _index  [number] Index im RAM
+-- @return [number] Dezimalzahl
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -363,9 +363,9 @@ end
 ---
 -- Bestimmt das Modul b der Zahl a.
 --
--- @param a	Zahl
--- @param b	Modul
--- @return qmod der Zahl
+-- @param a	[number] Zahl
+-- @param b	[number] Modul
+-- @return [number] qmod der Zahl
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -376,8 +376,8 @@ end
 ---
 -- Konvertiert eine Ganzzahl in eine Dezimalzahl.
 --
--- @param num Integer
--- @return Integer als Float
+-- @param num [number] Integer
+-- @return [number] Integer als Float
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -402,8 +402,8 @@ end
 ---
 -- Gibt den Integer als Bits zurück
 --
--- @param num Bits
--- @return Table mit Bits
+-- @param num [number] Bits
+-- @return [table] Table mit Bits
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -417,11 +417,11 @@ function BundleEntityScriptingValues.Shared:bitsInt(num)
 end
 
 ---
--- Stellt eine Zahl als eine folge von Bits in einer Table dar.
+-- Stellt eine Zahl als eine Folge von Bits in einer Table dar.
 --
--- @param num Integer
--- @param t	  Table
--- @return Table mit Bits
+-- @param num [integer] Integer
+-- @param t	  [table] Table
+-- @return [table] Table mit Bits
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -437,8 +437,8 @@ end
 ---
 -- Konvertiert eine Dezimalzahl in eine Ganzzahl.
 --
--- @param fval Float
--- @return Float als Integer
+-- @param fval [number] Float
+-- @return [number] Float als Integer
 -- @within BundleEntityScriptingValues
 -- @local
 --
