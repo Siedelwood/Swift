@@ -32,8 +32,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#Reward">Reward</a></li>
 </ul>
 
@@ -91,6 +91,13 @@
 </p>
 
 
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ActivateDebugMode">API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</a></td>
+	<td class="summary">Aktiviert den Debug.</td>
+	</tr>
+</table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
@@ -211,13 +218,6 @@
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 </table>
-<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.ActivateDebugMode">API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</a></td>
-	<td class="summary">Aktiviert den Debug.</td>
-	</tr>
-</table>
 <h2><a href="#Reward">Reward</a></h2>
 <table class="function_list">
 	<tr>
@@ -230,6 +230,44 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ActivateDebugMode"></a>
+    <strong>API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</strong>
+    </dt>
+    <dd>
+    Aktiviert den Debug.
+<p> Der Developing Mode bietet viele Hotkeys und eine Konsole. Die Konsole ist
+ ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
+ sogar Funktionen während des Spiels zu überschreiben.
+<p> <p><b>Alias:</b> ActivateDebugMode</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_CheckAtStart</span>
+         [boolean] Prüfe Quests zur Erzeugunszeit
+        </li>
+        <li><span class="parameter">_CheckAtRun</span>
+         [boolean] Prüfe Quests zur Laufzeit
+        </li>
+        <li><span class="parameter">_TraceQuests</span>
+         [boolean] Aktiviert Questverfolgung
+        </li>
+        <li><span class="parameter">_DevelopingMode</span>
+         [boolean] Aktiviert Cheats und Konsole
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
@@ -295,16 +333,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_CheckAtStart</span>
-           Prüfe Quests zur Erzeugunszeit
+         [boolean] Prüfe Quests zur Erzeugunszeit
         </li>
         <li><span class="parameter">_CheckAtRun</span>
-             Prüfe Quests zur Laufzeit
+         [boolean] Prüfe Quests zur Laufzeit
         </li>
         <li><span class="parameter">_TraceQuests</span>
-            Aktiviert Questverfolgung
+         [boolean] Aktiviert Questverfolgung
         </li>
         <li><span class="parameter">_DevelopingMode</span>
-         Aktiviert Cheats und Konsole
+         [boolean] Aktiviert Cheats und Konsole
         </li>
     </ul>
 
@@ -807,44 +845,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.ActivateDebugMode"></a>
-    <strong>API.ActivateDebugMode (_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)</strong>
-    </dt>
-    <dd>
-    Aktiviert den Debug.
-<p> Der Developing Mode bietet viele Hotkeys und eine Konsole. Die Konsole ist
- ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
- sogar Funktionen während des Spiels zu überschreiben.
-<p> <b>Alias:</b> ActivateDebugMode
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_CheckAtStart</span>
-           Prüfe Quests zur Erzeugunszeit
-        </li>
-        <li><span class="parameter">_CheckAtRun</span>
-             Prüfe Quests zur Laufzeit
-        </li>
-        <li><span class="parameter">_TraceQuests</span>
-            Aktiviert Questverfolgung
-        </li>
-        <li><span class="parameter">_DevelopingMode</span>
-         Aktiviert Cheats und Konsole
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Reward"></a>Reward</h2>
 
     <dl class="function">
@@ -865,24 +865,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_CheckAtStart</span>
-           Prüfe Quests zur Erzeugunszeit
+         [boolean] Prüfe Quests zur Erzeugunszeit
         </li>
         <li><span class="parameter">_CheckAtRun</span>
-             Prüfe Quests zur Laufzeit
+         [boolean] Prüfe Quests zur Laufzeit
         </li>
         <li><span class="parameter">_TraceQuests</span>
-            Aktiviert Questverfolgung
+         [boolean] Aktiviert Questverfolgung
         </li>
         <li><span class="parameter">_DevelopingMode</span>
-         Aktiviert Cheats und Konsole
+         [boolean] Aktiviert Cheats und Konsole
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-        Table mit Behavior
-    </ol>
 
 
     <h3>See also:</h3>
@@ -899,7 +894,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-04 13:23:22 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

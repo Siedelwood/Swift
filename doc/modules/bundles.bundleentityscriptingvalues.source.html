@@ -32,8 +32,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#BundleEntityScriptingValues">BundleEntityScriptingValues</a></li>
 </ul>
 
@@ -82,25 +82,6 @@
 <p></p>
 
 
-<h2><a href="#Internal">Internal</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:Install">BundleEntityScriptingValues.Global:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:SetEntitySize">BundleEntityScriptingValues.Global:SetEntitySize (_Entity, _Scale)</a></td>
-	<td class="summary">Ändert die Größe des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:SetPlayerID">BundleEntityScriptingValues.Global:SetPlayerID (_Entity, _PlayerID)</a></td>
-	<td class="summary">Ändert den Besitzer des Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Local:Install">BundleEntityScriptingValues.Local:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
-	</tr>
-</table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
@@ -130,6 +111,25 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.SetEntityScale">API.SetEntityScale (_Entity, _Scale)</a></td>
 	<td class="summary">Setzt den Größenfaktor des Entity.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:Install">BundleEntityScriptingValues.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:SetEntitySize">BundleEntityScriptingValues.Global:SetEntitySize (_Entity, _Scale)</a></td>
+	<td class="summary">Ändert die Größe des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:SetPlayerID">BundleEntityScriptingValues.Global:SetPlayerID (_Entity, _PlayerID)</a></td>
+	<td class="summary">Ändert den Besitzer des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Local:Install">BundleEntityScriptingValues.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 </table>
 <h2><a href="#BundleEntityScriptingValues">BundleEntityScriptingValues</a></h2>
@@ -188,6 +188,222 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.GetEntityPlayer"></a>
+    <strong>API.GetEntityPlayer (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Besitzer des Entity zurück.
+<p> <p><b>Alias</b>: GetPlayer</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Besitzer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityScale"></a>
+    <strong>API.GetEntityScale (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Größenfaktor des Entity zurück.
+<p> Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
+<p> <p><b>Alias</b>: GetScale</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Größenfaktor
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Scale = API.GetEntityScale(<span class="string">"alandra"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetMovingTarget"></a>
+    <strong>API.GetMovingTarget (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Position zurück, zu der sich das Entity bewegt.
+<p> Über diese Koordinaten könnte man prüfen, ob ein Entity sich in einen
+ Bereich bewegt, in dem es nichts zu suchen hat.
+<p> <p><b>Alias</b>: GetMovingTarget</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Positionstabelle
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Destination = API.GetMovingTarget(<span class="string">"hakim"</span>);
+<span class="keyword">if</span> GetDistance(Destination, <span class="string">"LockedArea"</span>) &lt; <span class="number">2000</span> <span class="keyword">then</span>
+    <span class="keyword">local</span> x,y,z = Logic.EntityGetPos(GetID(<span class="string">"hakim"</span>));
+    Logic.DEBUG_SetSettlerPosition(GetID(<span class="string">"hakim"</span>), x, y):
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityNpc"></a>
+    <strong>API.IsEntityNpc (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
+<p> Auf diese Weise kann geprüft werden, ob ein NPC auf dem Entity aktiv ist.
+<p> <p><b>Alias</b>: IsNpc</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ist NPC
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Active = API.IsEntityNpc(<span class="string">"alandra"</span>);
+<span class="keyword">if</span> Active <span class="keyword">then</span>
+    API.Note(<span class="string">"NPC is active"</span>);
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityVisible"></a>
+    <strong>API.IsEntityVisible (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das Entity sichtbar ist.
+<p> <p><b>Alias</b>: IsVisible</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ist sichtbar
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityPlayer"></a>
+    <strong>API.SetEntityPlayer (_Entity, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Ändert den Besitzer des Entity.
+<p> Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
+ möglich ein Raubtier einem Spieler zuzuweisen.
+<p> <p><b>Alias</b>: ChangePlayer</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           [string|number] Entity
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Besitzer
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityScale"></a>
+    <strong>API.SetEntityScale (_Entity, _Scale)</strong>
+    </dt>
+    <dd>
+    Setzt den Größenfaktor des Entity.
+<p> Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
+ die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
+<p> <p><b>Alias</b>: SetScale</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+        <li><span class="parameter">_Scale</span>
+          [number] Größenfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
@@ -259,222 +475,6 @@
     Initalisiert das Bundle im lokalen Skript.
 
 
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.GetEntityPlayer"></a>
-    <strong>API.GetEntityPlayer (_Entity)</strong>
-    </dt>
-    <dd>
-    Gibt den Besitzer des Entity zurück.
-<p> <b>Alias</b>: GetPlayer
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] Besitzer
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GetEntityScale"></a>
-    <strong>API.GetEntityScale (_Entity)</strong>
-    </dt>
-    <dd>
-    Gibt den Größenfaktor des Entity zurück.
-<p> Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
-<p> <b>Alias</b>: GetScale
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] Größenfaktor
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Scale = API.GetEntityScale(<span class="string">"alandra"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.GetMovingTarget"></a>
-    <strong>API.GetMovingTarget (_Entity)</strong>
-    </dt>
-    <dd>
-    Gibt die Position zurück, zu der sich das Entity bewegt.
-<p> Über diese Koordinaten könnte man prüfen, ob ein Entity sich in einen
- Bereich bewegt, in dem es nichts zu suchen hat.
-<p> <b>Alias</b>: GetMovingTarget
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [table] Positionstabelle
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Destination = API.GetMovingTarget(<span class="string">"hakim"</span>);
-<span class="keyword">if</span> GetDistance(Destination, <span class="string">"LockedArea"</span>) &lt; <span class="number">2000</span> <span class="keyword">then</span>
-    <span class="keyword">local</span> x,y,z = Logic.EntityGetPos(GetID(<span class="string">"hakim"</span>));
-    Logic.DEBUG_SetSettlerPosition(GetID(<span class="string">"hakim"</span>), x, y):
-<span class="keyword">end</span></pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.IsEntityNpc"></a>
-    <strong>API.IsEntityNpc (_Entity)</strong>
-    </dt>
-    <dd>
-    Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
-<p> Auf diese Weise kann geprüft werden, ob ein NPC auf dem Entity aktiv ist.
-<p> <b>Alias</b>: IsNpc
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [boolean] Ist NPC
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Active = API.IsEntityNpc(<span class="string">"alandra"</span>);
-<span class="keyword">if</span> Active <span class="keyword">then</span>
-    API.Note(<span class="string">"NPC is active"</span>);
-<span class="keyword">end</span></pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.IsEntityVisible"></a>
-    <strong>API.IsEntityVisible (_Entity)</strong>
-    </dt>
-    <dd>
-    Gibt zurück, ob das Entity sichtbar ist.
-<p> <b>Alias</b>: IsVisible
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [boolean] Ist sichtbar
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SetEntityPlayer"></a>
-    <strong>API.SetEntityPlayer (_Entity, _PlayerID)</strong>
-    </dt>
-    <dd>
-    Ändert den Besitzer des Entity.
-<p> Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
- möglich ein Raubtier einem Spieler zuzuweisen.
-<p> <b>Alias</b>: ChangePlayer
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-           [string|number] Entity
-        </li>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Besitzer
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SetEntityScale"></a>
-    <strong>API.SetEntityScale (_Entity, _Scale)</strong>
-    </dt>
-    <dd>
-    Setzt den Größenfaktor des Entity.
-<p> Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
- die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
-<p> <b>Alias</b>: SetScale
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Entity
-        </li>
-        <li><span class="parameter">_Scale</span>
-          [number] Größenfaktor
-        </li>
-    </ul>
 
 
 
@@ -804,7 +804,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-04 13:23:22 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

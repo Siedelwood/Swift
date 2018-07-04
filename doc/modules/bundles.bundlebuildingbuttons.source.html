@@ -32,8 +32,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#BundleBuildingButtons">BundleBuildingButtons</a></li>
 </ul>
 
@@ -86,6 +86,53 @@
 </p>
 
 
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ActivateSingleStop">API.ActivateSingleStop ()</a></td>
+	<td class="summary">Aktiviert die Single Stop Buttons.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DeactivateSingleStop">API.DeactivateSingleStop ()</a></td>
+	<td class="summary">Deaktiviert die Single Stop Buttons.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseDowngrade">API.UseDowngrade (_flag)</a></td>
+	<td class="summary">Verwende Downgrade bei Stadt- und Rohstoffgebäuden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_flag)</a></td>
+	<td class="summary">Erlaube oder verbiete dem Spieler Schafe zu züchten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_flag)</a></td>
+	<td class="summary">Erlaube oder verbiete dem Spieler Kühe zu züchten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetSheepGrainCost">API.SetSheepGrainCost (_Amount)</a></td>
+	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetCattleGrainCost">API.SetCattleGrainCost (_Amount)</a></td>
+	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetSheepNeeded">API.SetSheepNeeded (_Amount)</a></td>
+	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetCattleNeeded">API.SetCattleNeeded (_Amount)</a></td>
+	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.AddCustomBuildingButton">API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</a></td>
+	<td class="summary">Fügt einen optionalen Gebäudeschalter hinzu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.RemoveCustomBuildingButton">API.RemoveCustomBuildingButton (_Index)</a></td>
+	<td class="summary">Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.</td>
+	</tr>
+</table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
@@ -155,53 +202,6 @@
 	<td class="summary">Diese Funktion wird aufgerufen, sobald sich die Selektion ändert.</td>
 	</tr>
 </table>
-<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.ActivateSingleStop">API.ActivateSingleStop ()</a></td>
-	<td class="summary">Aktiviert die Single Stop Buttons.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.DeactivateSingleStop">API.DeactivateSingleStop ()</a></td>
-	<td class="summary">Deaktiviert die Single Stop Buttons.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UseDowngrade">API.UseDowngrade (_flag)</a></td>
-	<td class="summary">Verwende Downgrade bei Stadt- und Rohstoffgebäuden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_flag)</a></td>
-	<td class="summary">Erlaube oder verbiete dem Spieler Schafe zu züchten.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_flag)</a></td>
-	<td class="summary">Erlaube oder verbiete dem Spieler Kühe zu züchten.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetSheepGrainCost">API.SetSheepGrainCost (_Amount)</a></td>
-	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetCattleGrainCost">API.SetCattleGrainCost (_Amount)</a></td>
-	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetSheepNeeded">API.SetSheepNeeded (_Amount)</a></td>
-	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetCattleNeeded">API.SetCattleNeeded (_Amount)</a></td>
-	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.AddCustomBuildingButton">API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</a></td>
-	<td class="summary">Fügt einen optionalen Gebäudeschalter hinzu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.RemoveCustomBuildingButton">API.RemoveCustomBuildingButton (_Index)</a></td>
-	<td class="summary">Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.</td>
-	</tr>
-</table>
 <h2><a href="#BundleBuildingButtons">BundleBuildingButtons</a></h2>
 <table class="function_list">
 	<tr>
@@ -218,6 +218,338 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ActivateSingleStop"></a>
+    <strong>API.ActivateSingleStop ()</strong>
+    </dt>
+    <dd>
+    Aktiviert die Single Stop Buttons.  Single Stop ermöglicht das Anhalten
+ eines einzelnen Betriebes, anstelle des Anhaltens aller Betriebe des
+ gleichen Typs.
+<p> Im Gegensatz zur Viehzucht und zum Rückbau, welche feste eigeständige
+ Buttons sind, handelt es sich hierbei um einen Custom Button. Single
+ Stop belegt Index 1.
+<p> <p><b>Alias:</b> ActivateSingleStop</p>
+
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/bundles.bundlebuildingbuttons.source.html#API.AddCustomBuildingButton">API.AddCustomBuildingButton</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "API.DeactivateSingleStop"></a>
+    <strong>API.DeactivateSingleStop ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Single Stop Buttons.
+<p> <p><b>Alias:</b> DeactivateSingleStop</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UseDowngrade"></a>
+    <strong>API.UseDowngrade (_flag)</strong>
+    </dt>
+    <dd>
+    Verwende Downgrade bei Stadt- und Rohstoffgebäuden.  Die Rückbaufunktion
+ erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
+ jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
+<p> <p><b>Alias:</b> UseDowngrade</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         [boolean] Downgrade aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Rückbau ist deaktiviert
+</span>API.UseDowngrade(<span class="keyword">false</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UseBreedSheeps"></a>
+    <strong>API.UseBreedSheeps (_flag)</strong>
+    </dt>
+    <dd>
+    Erlaube oder verbiete dem Spieler Schafe zu züchten.
+<p> <p><b>Alias:</b> UseBreedSheeps</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         [boolean] Schafzucht aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Schafsaufzucht ist erlaubt
+</span>API.UseBreedSheeps(<span class="keyword">true</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UseBreedCattle"></a>
+    <strong>API.UseBreedCattle (_flag)</strong>
+    </dt>
+    <dd>
+    Erlaube oder verbiete dem Spieler Kühe zu züchten.
+<p> <p><b>Alias:</b> UseBreedCattle</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         [boolean] Kuhzucht aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Es können keine Kühe gezüchtet werden
+</span>API.UseBreedCattle(<span class="keyword">false</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetSheepGrainCost"></a>
+    <strong>API.SetSheepGrainCost (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+<p> <p><b>Alias:</b> SetSheepGrainCost</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         [number] Getreidekosten
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
+</span>API.SetSheepGrainCost(<span class="number">50</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetCattleGrainCost"></a>
+    <strong>API.SetCattleGrainCost (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+<p> <p><b>Alias:</b> SetCattleGrainCost</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         [number] Getreidekosten
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
+</span>API.SetCattleGrainCost(<span class="number">50</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetSheepNeeded"></a>
+    <strong>API.SetSheepNeeded (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
+<p> <p><b>Alias:</b> SetSheepNeeded</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         [number] Benötigte Menge
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Es wird ein volles Gatter zur Zucht benötigt:
+</span>API.SetSheepNeeded(<span class="number">5</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetCattleNeeded"></a>
+    <strong>API.SetCattleNeeded (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
+<p> <p><b>Alias:</b> SetCattleNeeded</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         [number] Benötigte Menge
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Es werden keine Kühe zur Zucht benötigt:
+</span>API.SetCattleNeeded(<span class="number">0</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.AddCustomBuildingButton"></a>
+    <strong>API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</strong>
+    </dt>
+    <dd>
+    Fügt einen optionalen Gebäudeschalter hinzu.  Der Index bestimmt, welcher
+ der beiden möglichen Buttons verwendet wird.
+<p> Mit dieser Funktion können zwei ungenutzte Buttons im Gebäudemenu mit einer
+ Funktionalität versehen werden. Es obliegt dem Mapper für welche Gebäude
+ der Button angezeigt wird und welche Funktion er hat. Es ist nicht möglich
+ Kosten im Tooltip anzuzeigen.
+<p> Jeder Button kann immer nur mit einer Aktion versehen werden. Soll die
+ Aktion für verschiedene Gebäudetypen unterschiedlich sein, muss in der
+ Aktion eine Fallunterscheidung durchgeführt werden.
+<p> Ein optionaler Button benötigt immer drei Funktionen:
+ <ul>
+ <li>Action: Steuert, was der Button tut.</li>
+ <li>Tooltip: Steuert, welcher Beschreibungstext angezeigt wird.</li>
+ <li>Update: Steuert, wann und wie der Button angezeigt wird.</li>
+ </ul>
+ Alle drei Funktionen erhalten die ID des Buttons und die ID des Gebäudes,
+ das gerade selektiert ist.
+<p> <b>Achtung:</b> Wenn die Funktion aus dem globalen Skript ausgeführt wird,
+ müssen sich die Buttonfunktionen im lokalen Skript befinden. Die Namen der
+ Funktionen sind in diesem Fall als Zeichenkette zu übergeben!
+<p> <p><b>Alias:</b> AddBuildingButton</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Index</span>
+           [number] Index des Buttons
+        </li>
+        <li><span class="parameter">_Action</span>
+          [function] Aktion des Buttons
+        </li>
+        <li><span class="parameter">_Tooltip</span>
+         [function] Tooltip Control
+        </li>
+        <li><span class="parameter">_Update</span>
+          [function] Button Update
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Aktion
+</span><span class="keyword">function</span> ExampleButtonAction(_WidgetID, _BuildingID)
+    GUI.AddNote(<span class="string">"Hier passiert etwas!"</span>);
+<span class="keyword">end</span>
+<span class="comment">-- Tooltip
+</span><span class="keyword">function</span> ExampleButtonTooltip(_WidgetID, _BuildingID)
+    UserSetTextNormal(<span class="string">"Beschreibung"</span>, <span class="string">"Das ist die Beschreibung!"</span>);
+<span class="keyword">end</span>
+<span class="comment">-- Update
+</span><span class="keyword">function</span> ExampleButtonUpdate(_WidgetID, _BuildingID)
+    SetIcon(_WidgetID, {<span class="number">1</span>, <span class="number">1</span>});
+<span class="keyword">end</span>
+
+<span class="comment">-- Beispiel für einen einfachen Button, der immer angezeigt wird, das Bild
+</span><span class="comment">-- eines Apfels trägt und eine Nachricht anzeigt.
+</span>API.AddCustomBuildingButton(<span class="number">1</span>, ExampleButtonAction, ExampleButtonTooltip, ExampleButtonUpdate);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.RemoveCustomBuildingButton"></a>
+    <strong>API.RemoveCustomBuildingButton (_Index)</strong>
+    </dt>
+    <dd>
+    Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.
+<p> <p><b>Alias:</b> DeleteBuildingButton</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Index</span>
+           [number] Index des Buttons
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Entfernt die Konfiguration für Button 1
+</span>API.RemoveCustomBuildingButton(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
@@ -545,338 +877,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.ActivateSingleStop"></a>
-    <strong>API.ActivateSingleStop ()</strong>
-    </dt>
-    <dd>
-    Aktiviert die Single Stop Buttons.  Single Stop ermöglicht das Anhalten
- eines einzelnen Betriebes, anstelle des Anhaltens aller Betriebe des
- gleichen Typs.
-<p> Im Gegensatz zur Viehzucht und zum Rückbau, welche feste eigeständige
- Buttons sind, handelt es sich hierbei um einen Custom Button. Single
- Stop belegt Index 1.
-<p> <b>Alias:</b> ActivateSingleStop
-
-
-
-
-
-
-    <h3>See also:</h3>
-    <ul>
-         <a href="../modules/bundles.bundlebuildingbuttons.source.html#API.AddCustomBuildingButton">API.AddCustomBuildingButton</a>
-    </ul>
-
-
-</dd>
-    <dt>
-    <a name = "API.DeactivateSingleStop"></a>
-    <strong>API.DeactivateSingleStop ()</strong>
-    </dt>
-    <dd>
-    Deaktiviert die Single Stop Buttons.
-<p> <b>Alias:</b> DeactivateSingleStop
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UseDowngrade"></a>
-    <strong>API.UseDowngrade (_flag)</strong>
-    </dt>
-    <dd>
-    Verwende Downgrade bei Stadt- und Rohstoffgebäuden.  Die Rückbaufunktion
- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
- jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
-<p> <b>Alias:</b> UseDowngrade
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_flag</span>
-         [boolean] Downgrade aktiv/inaktiv
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Rückbau ist deaktiviert
-</span>API.UseDowngrade(<span class="keyword">false</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UseBreedSheeps"></a>
-    <strong>API.UseBreedSheeps (_flag)</strong>
-    </dt>
-    <dd>
-    Erlaube oder verbiete dem Spieler Schafe zu züchten.
-<p> <b>Alias:</b> UseBreedSheeps
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_flag</span>
-         [boolean] Schafzucht aktiv/inaktiv
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Schafsaufzucht ist erlaubt
-</span>API.UseBreedSheeps(<span class="keyword">true</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UseBreedCattle"></a>
-    <strong>API.UseBreedCattle (_flag)</strong>
-    </dt>
-    <dd>
-    Erlaube oder verbiete dem Spieler Kühe zu züchten.
-<p> <b>Alias:</b> UseBreedCattle
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_flag</span>
-         [boolean] Kuhzucht aktiv/inaktiv
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es können keine Kühe gezüchtet werden
-</span>API.UseBreedCattle(<span class="keyword">false</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetSheepGrainCost"></a>
-    <strong>API.SetSheepGrainCost (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
-<p> <b>Alias:</b> SetSheepGrainCost
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-         [number] Getreidekosten
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
-</span>API.SetSheepGrainCost(<span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetCattleGrainCost"></a>
-    <strong>API.SetCattleGrainCost (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
-<p> <b>Alias:</b> SetCattleGrainCost
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-         [number] Getreidekosten
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
-</span>API.SetCattleGrainCost(<span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetSheepNeeded"></a>
-    <strong>API.SetSheepNeeded (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
-<p> <b>Alias:</b> SetSheepNeeded
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-         [number] Benötigte Menge
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es wird ein volles Gatter zur Zucht benötigt:
-</span>API.SetSheepNeeded(<span class="number">5</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetCattleNeeded"></a>
-    <strong>API.SetCattleNeeded (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
-<p> <b>Alias:</b> SetCattleNeeded
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-         [number] Benötigte Menge
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es werden keine Kühe zur Zucht benötigt:
-</span>API.SetCattleNeeded(<span class="number">0</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.AddCustomBuildingButton"></a>
-    <strong>API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</strong>
-    </dt>
-    <dd>
-    Fügt einen optionalen Gebäudeschalter hinzu.  Der Index bestimmt, welcher
- der beiden möglichen Buttons verwendet wird.
-<p> Mit dieser Funktion können zwei ungenutzte Buttons im Gebäudemenu mit einer
- Funktionalität versehen werden. Es obliegt dem Mapper für welche Gebäude
- der Button angezeigt wird und welche Funktion er hat. Es ist nicht möglich
- Kosten im Tooltip anzuzeigen.
-<p> Jeder Button kann immer nur mit einer Aktion versehen werden. Soll die
- Aktion für verschiedene Gebäudetypen unterschiedlich sein, muss in der
- Aktion eine Fallunterscheidung durchgeführt werden.
-<p> Ein optionaler Button benötigt immer drei Funktionen:
- <ul>
- <li>Action: Steuert, was der Button tut.</li>
- <li>Tooltip: Steuert, welcher Beschreibungstext angezeigt wird.</li>
- <li>Update: Steuert, wann und wie der Button angezeigt wird.</li>
- </ul>
- Alle drei Funktionen erhalten die ID des Buttons und die ID des Gebäudes,
- das gerade selektiert ist.
-<p> <b>Achtung:</b> Wenn die Funktion aus dem globalen Skript ausgeführt wird,
- müssen sich die Buttonfunktionen im lokalen Skript befinden. Die Namen der
- Funktionen sind in diesem Fall als Zeichenkette zu übergeben!
-<p> <b>Alias:</b> AddBuildingButton
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Index</span>
-           [number] Index des Buttons
-        </li>
-        <li><span class="parameter">_Action</span>
-          [function] Aktion des Buttons
-        </li>
-        <li><span class="parameter">_Tooltip</span>
-         [function] Tooltip Control
-        </li>
-        <li><span class="parameter">_Update</span>
-          [function] Button Update
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Aktion
-</span><span class="keyword">function</span> ExampleButtonAction(_WidgetID, _BuildingID)
-    GUI.AddNote(<span class="string">"Hier passiert etwas!"</span>);
-<span class="keyword">end</span>
-<span class="comment">-- Tooltip
-</span><span class="keyword">function</span> ExampleButtonTooltip(_WidgetID, _BuildingID)
-    UserSetTextNormal(<span class="string">"Beschreibung"</span>, <span class="string">"Das ist die Beschreibung!"</span>);
-<span class="keyword">end</span>
-<span class="comment">-- Update
-</span><span class="keyword">function</span> ExampleButtonUpdate(_WidgetID, _BuildingID)
-    SetIcon(_WidgetID, {<span class="number">1</span>, <span class="number">1</span>});
-<span class="keyword">end</span>
-
-<span class="comment">-- Beispiel für einen einfachen Button, der immer angezeigt wird, das Bild
-</span><span class="comment">-- eines Apfels trägt und eine Nachricht anzeigt.
-</span>API.AddCustomBuildingButton(<span class="number">1</span>, ExampleButtonAction, ExampleButtonTooltip, ExampleButtonUpdate);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.RemoveCustomBuildingButton"></a>
-    <strong>API.RemoveCustomBuildingButton (_Index)</strong>
-    </dt>
-    <dd>
-    Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.
-<p> <b>Alias:</b> DeleteBuildingButton
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Index</span>
-           [number] Index des Buttons
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Entfernt die Konfiguration für Button 1
-</span>API.RemoveCustomBuildingButton(<span class="number">1</span>);</pre>
-    </ul>
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="BundleBuildingButtons"></a>BundleBuildingButtons</h2>
 
     <dl class="function">
@@ -936,7 +936,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-04 13:23:22 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -72,11 +72,11 @@ QSB = QSB or {};
 --
 -- <p><b>Alias</b>: CreateIOMine</p>
 --
--- @param _Position         Script Entity, die mit Mine ersetzt wird
--- @param _Type             Typ der Mine
--- @param _Costs            (optional) Kostentabelle
--- @param _NotRefillable    (optional) Die Mine wird weiterhin überwacht
--- @param _Condition        (optional) Bedingungsfunktion
+-- @param _Position [string] Script Entity, die mit Mine ersetzt wird
+-- @param _Type [number] Typ der Mine
+-- @param _Costs [table] (optional) Kostentabelle
+-- @param _NotRefillable [boolean] (optional) Die Mine wird weiterhin überwacht
+-- @param _Condition [function] (optional) Bedingungsfunktion
 -- @param _CreationCallback (optional) Funktion nach Kauf ausführen
 -- @param _CallbackDepleted (optional) Funktion nach Ausbeutung ausführen
 -- @within Anwenderfunktionen
@@ -101,12 +101,12 @@ CreateIOMine = API.CreateIOMine;
 --
 -- <p><b>Alias</b>: CreateIOIronMine</p>
 --
--- @param _Position      Script Entity, die mit Mine ersetzt wird
--- @param _Cost1Type     (optional) Kostenware 1
--- @param _Cost1Amount   (optional) Kostenmenge 1
--- @param _Cost2Type     (optional) Kostenware 2
--- @param _Cost2Amount   (optional) Kostenmenge 2
--- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- @param _Position [string] Script Entity, die mit Mine ersetzt wird
+-- @param _Cost1Type [number] (optional) Kostenware 1
+-- @param _Cost1Amount [number] (optional) Kostenmenge 1
+-- @param _Cost2Type [number] (optional) Kostenware 2
+-- @param _Cost2Amount [number] (optional) Kostenmenge 2
+-- @param _NotRefillable [boolean] (optional) Mine wird nach Ausbeutung zerstört
 -- @within Anwenderfunktionen
 -- @see API.CreateIOMine
 --
@@ -128,12 +128,12 @@ CreateIOIronMine = API.CreateIOIronMine;
 --
 -- <p><b>Alias</b>: CreateIOStoneMine</p>
 --
--- @param _Position      Script Entity, die mit Mine ersetzt wird
--- @param _Cost1Type     (optional) Kostenware 1
--- @param _Cost1Amount   (optional) Kostenmenge 1
--- @param _Cost2Type     (optional) Kostenware 2
--- @param _Cost2Amount   (optional) Kostenmenge 2
--- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- @param _Position [string] Script Entity, die mit Mine ersetzt wird
+-- @param _Cost1Type [number] (optional) Kostenware 1
+-- @param _Cost1Amount [number] (optional) Kostenmenge 1
+-- @param _Cost2Type [number] (optional) Kostenware 2
+-- @param _Cost2Amount [number] (optional) Kostenmenge 2
+-- @param _NotRefillable [boolean] (optional) Mine wird nach Ausbeutung zerstört
 -- @within Anwenderfunktionen
 -- @see API.CreateIOMine
 --
@@ -167,15 +167,15 @@ CreateIOStoneMine = API.CreateIOStoneMine;
 --
 -- <p><b>Alias</b>: CreateIOBuildingSite</p>
 --
--- @param _Position Zielpunkt
+-- @param _Position [string] Zielpunkt
 -- @param _PlayerID Besitzer des Gebäudes
--- @param _Type     Typ des Gebäudes
--- @param _Costs    (optional) Eigene Gebäudekosten
--- @param _Distance (optional) Aktivierungsentfernung
--- @param _Icon     (optional) Icon des Schalters
--- @param _Title    (optional) Titel der Beschreibung
--- @param _Text     (optional) Text der Beschreibung
--- @param _Callback (optional) Funktion nach Fertigstellung
+-- @param _Type [number] Typ des Gebäudes
+-- @param _Costs [table] (optional) Eigene Gebäudekosten
+-- @param _Distance [number] (optional) Aktivierungsentfernung
+-- @param _Icon [table] (optional) Icon des Schalters
+-- @param _Title [string] (optional) Titel der Beschreibung
+-- @param _Text [string] (optional) Text der Beschreibung
+-- @param _Callback [function] (optional) Funktion nach Fertigstellung
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -204,11 +204,11 @@ CreateIOBuildingSite = API.CreateIOBuildingSite;
 --
 -- <p><b>Alias</b>: CreateRandomChest</p>
 --
--- @param _Name     Name der zu ersetzenden Script Entity
--- @param _Good     Warentyp
--- @param _Min      Mindestmenge
--- @param _Max      Maximalmenge
--- @param _Callback Callback-Funktion
+-- @param _Name [string] Name der zu ersetzenden Script Entity
+-- @param _Good [number] Warentyp
+-- @param _Min [number] Mindestmenge
+-- @param _Max [number] Maximalmenge
+-- @param _Callback [function] Callback-Funktion
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -228,7 +228,7 @@ CreateRandomChest = API.CreateRandomChest;
 --
 -- <p><b>Alias</b>: CreateRandomGoldChest</p>
 --
--- @param _Name Name der zu ersetzenden Script Entity
+-- @param _Name [string] Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
 --
 function API.CreateRandomGoldChest(_Name)
@@ -249,7 +249,7 @@ CreateRandomGoldChest = API.CreateRandomGoldChest;
 --
 -- <p><b>Alias</b>: CreateRandomResourceChest</p>
 --
--- @param _Name Name der zu ersetzenden Script Entity
+-- @param _Name [string] Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
 --
 function API.CreateRandomResourceChest(_Name)
@@ -270,7 +270,7 @@ CreateRandomResourceChest = API.CreateRandomResourceChest;
 --
 -- <p><b>Alias</b>: CreateRandomLuxuryChest</p>
 --
--- @param _Name Name der zu ersetzenden Script Entity
+-- @param _Name [string] Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
 --
 function API.CreateRandomLuxuryChest(_Name)
@@ -300,7 +300,7 @@ CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
 --
 -- <p><b>Alias</b>: CreateTrebuchetConstructionSite</p>
 --
--- @param _Name     Skriptname Position
+-- @param _Name [string] Skriptname Position
 -- @param _GoldCost Goldkosten
 -- @param _WoodCost Holzkosten
 -- @within Anwenderfunktionen
@@ -323,7 +323,7 @@ CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
 --
 -- <p><b>Alias</b>: DestroyTrebuchetConstructionSite</p>
 --
--- @param _Name Skriptname Position
+-- @param _Name [string] Skriptname Position
 -- @within Anwenderfunktionen
 --
 function API.DestroyTrebuchetConstructionSite(_Name)
@@ -339,8 +339,8 @@ DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
 -- Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.
 -- Sollte kein Trebuchet aufgebaut sein, wird 0 zurückgegeben.
 --
--- @param _Name Skriptname der Trebuchet-Baustelle
--- @return number: EntityID des Trebuchet
+-- @param _Name [string] Skriptname der Trebuchet-Baustelle
+-- @return [number] EntityID des Trebuchet
 -- @within Anwenderfunktionen
 --
 function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
@@ -360,8 +360,8 @@ GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
 -- Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.
 -- Sollte kein Anforderungswagen unterwegs sein, wird 0 zurückgegeben.
 --
--- @param _Name Skriptname der Trebuchet-Baustelle
--- @return number: EntityID des angeforderten Wagens
+-- @param _Name [string] Skriptname der Trebuchet-Baustelle
+-- @return [number] EntityID des angeforderten Wagens
 -- @within Anwenderfunktionen
 --
 function API.GetReturningCartByTrebuchetConstructionSite(_Name)
@@ -381,8 +381,8 @@ GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
 -- Gibt die EntityID des Abreisewagens der Trebuchet-Baustelle zurück. Sollte
 -- kein Abreisewagens unterwegs sein, wird 0 zurückgegeben.
 --
--- @param _Name Skriptname der Trebuchet-Baustelle
--- @return number: EntityID des angeforderten Wagens
+-- @param _Name [string] Skriptname der Trebuchet-Baustelle
+-- @return [number] EntityID des angeforderten Wagens
 -- @within Anwenderfunktionen
 --
 function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
@@ -542,7 +542,7 @@ end
 -- Erstellt eine Trebuchet-Baustelle an der Position mit den
 -- angegebenen Baukosten.
 --
--- @param _Name     Skriptname Position
+-- @param _Name [string] Skriptname Position
 -- @param _GoldCost Goldkosten
 -- @param _WoodCost Holzkosten
 -- @within Internal
@@ -581,7 +581,7 @@ end
 ---
 -- Zerstört eine Trebuchet-Baustelle.
 --
--- @param _Name Skriptname Position
+-- @param _Name [string] Skriptname Position
 -- @within Internal
 -- @local
 --
@@ -750,11 +750,11 @@ end
 ---
 -- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
 -- des angegebenen Typs.
--- @param _Name     Name der zu ersetzenden Script Entity
--- @param _Good     Warentyp
--- @param _Min      Mindestmenge
--- @param _Max      Maximalmenge
--- @param _Callback Callback-Funktion
+-- @param _Name [string] Name der zu ersetzenden Script Entity
+-- @param _Good [number] Warentyp
+-- @param _Min [number] Mindestmenge
+-- @param _Max [number] Maximalmenge
+-- @param _Callback [function] Callback-Funktion
 -- @within Internal
 -- @local
 --
@@ -791,7 +791,7 @@ end
 -- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gold
 -- des angegebenen Typs.
 --
--- @param _Name Name der zu ersetzenden Script Entity
+-- @param _Name [string] Name der zu ersetzenden Script Entity
 -- @within Internal
 -- @local
 --
@@ -805,7 +805,7 @@ end
 -- Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
 -- Honig, Kräuter, Milch, Stein, Wolle.
 --
--- @param _Name Name der zu ersetzenden Script Entity
+-- @param _Name [string] Name der zu ersetzenden Script Entity
 -- @within Internal
 -- @local
 --
@@ -825,7 +825,7 @@ end
 -- Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
 -- Salz oder Weihrauch.
 --
--- @param _Name Name der zu ersetzenden Script Entity
+-- @param _Name [string] Name der zu ersetzenden Script Entity
 -- @within Internal
 -- @local
 --
@@ -844,11 +844,11 @@ end
 -- Erstelle eine Mine eines bestimmten Typs. Es können zudem eine Bedingung
 -- und zwei verschiedene Callbacks vereinbart werden.
 --
--- @param _Position         Script Entity, die mit Mine ersetzt wird
--- @param _Type             Typ der Mine
--- @param _Costs            (optional) Kostentabelle
--- @param _NotRefillable    (optional) Die Mine wird weiterhin überwacht
--- @param _Condition        (optional) Bedingungsfunktion
+-- @param _Position [string] Script Entity, die mit Mine ersetzt wird
+-- @param _Type [number] Typ der Mine
+-- @param _Costs [table] (optional) Kostentabelle
+-- @param _NotRefillable [boolean] (optional) Die Mine wird weiterhin überwacht
+-- @param _Condition [function] (optional) Bedingungsfunktion
 -- @param _CreationCallback (optional) Funktion nach Kauf ausführen
 -- @param _CallbackDepleted (optional) Funktion nach Ausbeutung ausführen
 -- @within Internal
@@ -888,12 +888,12 @@ end
 ---
 -- Erstelle eine verschüttete Eisenmine.
 --
--- @param _Position      Script Entity, die mit Mine ersetzt wird
--- @param _Cost1Type     (optional) Kostenware 1
--- @param _Cost1Amount   (optional) Kostenmenge 1
--- @param _Cost2Type     (optional) Kostenware 2
--- @param _Cost2Amount   (optional) Kostenmenge 2
--- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- @param _Position [string] Script Entity, die mit Mine ersetzt wird
+-- @param _Cost1Type [number] (optional) Kostenware 1
+-- @param _Cost1Amount [number] (optional) Kostenmenge 1
+-- @param _Cost2Type [number] (optional) Kostenware 2
+-- @param _Cost2Amount [number] (optional) Kostenmenge 2
+-- @param _NotRefillable [boolean] (optional) Mine wird nach Ausbeutung zerstört
 -- @within Internal
 -- @local
 --
@@ -918,12 +918,12 @@ end
 ---
 -- Erstelle eine verschüttete Steinmine.
 --
--- @param _Position      Script Entity, die mit Mine ersetzt wird
--- @param _Cost1Type     (optional) Kostenware 1
--- @param _Cost1Amount   (optional) Kostenmenge 1
--- @param _Cost2Type     (optional) Kostenware 2
--- @param _Cost2Amount   (optional) Kostenmenge 2
--- @param _NotRefillable (optional) Mine wird nach Ausbeutung zerstört
+-- @param _Position [string] Script Entity, die mit Mine ersetzt wird
+-- @param _Cost1Type [number] (optional) Kostenware 1
+-- @param _Cost1Amount [number] (optional) Kostenmenge 1
+-- @param _Cost2Type [number] (optional) Kostenware 2
+-- @param _Cost2Amount [number] (optional) Kostenmenge 2
+-- @param _NotRefillable [boolean] (optional) Mine wird nach Ausbeutung zerstört
 -- @within Internal
 -- @local
 --
@@ -1039,15 +1039,15 @@ end
 -- Erzeugt eine echte Baustelle an der Position. Ein Siedler wird das Gebäude
 -- aufbauen.
 --
--- @param _Position Zielpunkt
+-- @param _Position [string] Zielpunkt
 -- @param _PlayerID Besitzer des Gebäudes
--- @param _Type     Typ des Gebäudes
--- @param _Costs    (optional) Eigene Gebäudekosten
--- @param _Distance (optional) Aktivierungsentfernung
--- @param _Icon     (optional) Icon des Schalters
--- @param _Title    (optional) Titel der Beschreibung
--- @param _Text     (optional) Text der Beschreibung
--- @param _Callback (optional) Funktion nach fertigstellung
+-- @param _Type [number] Typ des Gebäudes
+-- @param _Costs [table] (optional) Eigene Gebäudekosten
+-- @param _Distance [number] (optional) Aktivierungsentfernung
+-- @param _Icon [table] (optional) Icon des Schalters
+-- @param _Title [string] (optional) Titel der Beschreibung
+-- @param _Text [string] (optional) Text der Beschreibung
+-- @param _Callback [function] (optional) Funktion nach fertigstellung
 -- @within Internal
 -- @local
 --

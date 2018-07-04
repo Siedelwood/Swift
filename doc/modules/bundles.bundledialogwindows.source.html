@@ -32,8 +32,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#TextWindow">TextWindow</a></li>
 </ul>
 
@@ -87,6 +87,25 @@
 </p>
 
 
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.OpenDialog">API.OpenDialog (_Title, _Text, _Action)</a></td>
+	<td class="summary">Öffnet einen Info-Dialog.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.OpenRequesterDialog">API.OpenRequesterDialog (_Title, _Text, _Action, _OkCancel)</a></td>
+	<td class="summary">Öffnet einen Ja-Nein-Dialog.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.OpenSelectionDialog">API.OpenSelectionDialog (_Title, _Text, _Action, _List)</a></td>
+	<td class="summary">Öffnet einen Auswahldialog.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.OpenTextWindow">API.OpenTextWindow (_Caption, _Content)</a></td>
+	<td class="summary">Öffnet ein einfaches Textfenster mit dem angegebenen Text.</td>
+	</tr>
+</table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
@@ -140,25 +159,6 @@
 	<td class="summary">Stellt die Hotkeys zum Speichern des Spiels wieder her.</td>
 	</tr>
 </table>
-<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.OpenDialog">API.OpenDialog (_Title, _Text, _Action)</a></td>
-	<td class="summary">Öffnet einen Info-Dialog.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.OpenRequesterDialog">API.OpenRequesterDialog (_Title, _Text, _Action, _OkCancel)</a></td>
-	<td class="summary">Öffnet einen Ja-Nein-Dialog.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.OpenSelectionDialog">API.OpenSelectionDialog (_Title, _Text, _Action, _List)</a></td>
-	<td class="summary">Öffnet einen Auswahldialog.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.OpenTextWindow">API.OpenTextWindow (_Caption, _Content)</a></td>
-	<td class="summary">Öffnet ein einfaches Textfenster mit dem angegebenen Text.</td>
-	</tr>
-</table>
 <h2><a href="#TextWindow">TextWindow</a></h2>
 <table class="function_list">
 	<tr>
@@ -199,6 +199,165 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.OpenDialog"></a>
+    <strong>API.OpenDialog (_Title, _Text, _Action)</strong>
+    </dt>
+    <dd>
+    Öffnet einen Info-Dialog.  Sollte bereits ein Dialog zu sehen sein, wird
+ der Dialog der Dialogwarteschlange hinzugefügt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+          [string] Titel des Dialog
+        </li>
+        <li><span class="parameter">_Text</span>
+           [string] Text des Dialog
+        </li>
+        <li><span class="parameter">_Action</span>
+         [function] Callback-Funktion
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.OpenDialog(<span class="string">"Wichtige Information"</span>, <span class="string">"Diese Information ist Spielentscheidend!"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.OpenRequesterDialog"></a>
+    <strong>API.OpenRequesterDialog (_Title, _Text, _Action, _OkCancel)</strong>
+    </dt>
+    <dd>
+    Öffnet einen Ja-Nein-Dialog.  Sollte bereits ein Dialog zu sehen sein, wird
+ der Dialog der Dialogwarteschlange hinzugefügt.
+<p> Um die Entscheigung des Spielers abzufragen, wird ein Callback benötigt.
+ Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
+ Entscheidung getroffen hat.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+            [string] Titel des Dialog
+        </li>
+        <li><span class="parameter">_Text</span>
+             [string] Text des Dialog
+        </li>
+        <li><span class="parameter">_Action</span>
+           [function] Callback-Funktion
+        </li>
+        <li><span class="parameter">_OkCancel</span>
+         [boolean] Okay/Abbrechen statt Ja/Nein
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">function</span> YesNoAction(_yes)
+    <span class="keyword">if</span> _yes <span class="keyword">then</span> GUI.AddNote(<span class="string">"Ja wurde gedrückt"</span>); <span class="keyword">end</span>
+<span class="keyword">end</span>
+API.OpenRequesterDialog(<span class="string">"Frage"</span>, <span class="string">"Möchtest du das wirklich tun?"</span>, YesNoAction, <span class="keyword">false</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.OpenSelectionDialog"></a>
+    <strong>API.OpenSelectionDialog (_Title, _Text, _Action, _List)</strong>
+    </dt>
+    <dd>
+    Öffnet einen Auswahldialog.  Sollte bereits ein Dialog zu sehen sein, wird
+ der Dialog der Dialogwarteschlange hinzugefügt.
+<p> In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
+ aus. Anschließend erhält das Callback den Index der selektierten Option.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+          [string] Titel des Dialog
+        </li>
+        <li><span class="parameter">_Text</span>
+           [string] Text des Dialog
+        </li>
+        <li><span class="parameter">_Action</span>
+         [function] Callback-Funktion
+        </li>
+        <li><span class="parameter">_List</span>
+           [table] Liste der Optionen
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">function</span> OptionsAction(_idx)
+    GUI.AddNote(_idx.. <span class="string">" wurde ausgewählt!"</span>);
+<span class="keyword">end</span>
+<span class="keyword">local</span> List = {<span class="string">"Option A"</span>, <span class="string">"Option B"</span>, <span class="string">"Option C"</span>};
+API.OpenRequesterDialog(<span class="string">"Auswahl"</span>, <span class="string">"Wähle etwas aus!"</span>, OptionsAction, List);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.OpenTextWindow"></a>
+    <strong>API.OpenTextWindow (_Caption, _Content)</strong>
+    </dt>
+    <dd>
+    Öffnet ein einfaches Textfenster mit dem angegebenen Text.
+<p> Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
+ Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Caption</span>
+         [string] Titel des Fensters
+        </li>
+        <li><span class="parameter">_Content</span>
+         [string] Inhalt des Fensters
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Text = <span class="string">"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "</span>..
+             <span class="string">"sed diam nonumy eirmod tempor invidunt ut labore et dolore"</span>..
+             <span class="string">"magna aliquyam erat, sed diam voluptua. At vero eos et"</span>..
+             <span class="string">" accusam et justo duo dolores et ea rebum. Stet clita kasd"</span>..
+             <span class="string">" gubergren, no sea takimata sanctus est Lorem ipsum dolor"</span>..
+             <span class="string">" sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"</span>..
+             <span class="string">" elitr, sed diam nonumy eirmod tempor invidunt ut labore et"</span>..
+             <span class="string">" dolore magna aliquyam erat, sed diam voluptua. At vero eos"</span>..
+             <span class="string">" et accusam et justo duo dolores et ea rebum. Stet clita"</span>..
+             <span class="string">" kasd gubergren, no sea takimata sanctus est Lorem ipsum"</span>..
+             <span class="string">" dolor sit amet."</span>;
+API.OpenTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
+    </ul>
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
@@ -436,165 +595,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.OpenDialog"></a>
-    <strong>API.OpenDialog (_Title, _Text, _Action)</strong>
-    </dt>
-    <dd>
-    Öffnet einen Info-Dialog.  Sollte bereits ein Dialog zu sehen sein, wird
- der Dialog der Dialogwarteschlange hinzugefügt.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Title</span>
-          [string] Titel des Dialog
-        </li>
-        <li><span class="parameter">_Text</span>
-           [string] Text des Dialog
-        </li>
-        <li><span class="parameter">_Action</span>
-         [function] Callback-Funktion
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.OpenDialog(<span class="string">"Wichtige Information"</span>, <span class="string">"Diese Information ist Spielentscheidend!"</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.OpenRequesterDialog"></a>
-    <strong>API.OpenRequesterDialog (_Title, _Text, _Action, _OkCancel)</strong>
-    </dt>
-    <dd>
-    Öffnet einen Ja-Nein-Dialog.  Sollte bereits ein Dialog zu sehen sein, wird
- der Dialog der Dialogwarteschlange hinzugefügt.
-<p> Um die Entscheigung des Spielers abzufragen, wird ein Callback benötigt.
- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
- Entscheidung getroffen hat.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Title</span>
-            [string] Titel des Dialog
-        </li>
-        <li><span class="parameter">_Text</span>
-             [string] Text des Dialog
-        </li>
-        <li><span class="parameter">_Action</span>
-           [function] Callback-Funktion
-        </li>
-        <li><span class="parameter">_OkCancel</span>
-         [boolean] Okay/Abbrechen statt Ja/Nein
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">function</span> YesNoAction(_yes)
-    <span class="keyword">if</span> _yes <span class="keyword">then</span> GUI.AddNote(<span class="string">"Ja wurde gedrückt"</span>); <span class="keyword">end</span>
-<span class="keyword">end</span>
-API.OpenRequesterDialog(<span class="string">"Frage"</span>, <span class="string">"Möchtest du das wirklich tun?"</span>, YesNoAction, <span class="keyword">false</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.OpenSelectionDialog"></a>
-    <strong>API.OpenSelectionDialog (_Title, _Text, _Action, _List)</strong>
-    </dt>
-    <dd>
-    Öffnet einen Auswahldialog.  Sollte bereits ein Dialog zu sehen sein, wird
- der Dialog der Dialogwarteschlange hinzugefügt.
-<p> In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
- aus. Anschließend erhält das Callback den Index der selektierten Option.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Title</span>
-          [string] Titel des Dialog
-        </li>
-        <li><span class="parameter">_Text</span>
-           [string] Text des Dialog
-        </li>
-        <li><span class="parameter">_Action</span>
-         [function] Callback-Funktion
-        </li>
-        <li><span class="parameter">_List</span>
-           [table] Liste der Optionen
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">function</span> OptionsAction(_idx)
-    GUI.AddNote(_idx.. <span class="string">" wurde ausgewählt!"</span>);
-<span class="keyword">end</span>
-<span class="keyword">local</span> List = {<span class="string">"Option A"</span>, <span class="string">"Option B"</span>, <span class="string">"Option C"</span>};
-API.OpenRequesterDialog(<span class="string">"Auswahl"</span>, <span class="string">"Wähle etwas aus!"</span>, OptionsAction, List);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.OpenTextWindow"></a>
-    <strong>API.OpenTextWindow (_Caption, _Content)</strong>
-    </dt>
-    <dd>
-    Öffnet ein einfaches Textfenster mit dem angegebenen Text.
-<p> Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Caption</span>
-         [string] Titel des Fensters
-        </li>
-        <li><span class="parameter">_Content</span>
-         [string] Inhalt des Fensters
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Text = <span class="string">"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "</span>..
-             <span class="string">"sed diam nonumy eirmod tempor invidunt ut labore et dolore"</span>..
-             <span class="string">"magna aliquyam erat, sed diam voluptua. At vero eos et"</span>..
-             <span class="string">" accusam et justo duo dolores et ea rebum. Stet clita kasd"</span>..
-             <span class="string">" gubergren, no sea takimata sanctus est Lorem ipsum dolor"</span>..
-             <span class="string">" sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"</span>..
-             <span class="string">" elitr, sed diam nonumy eirmod tempor invidunt ut labore et"</span>..
-             <span class="string">" dolore magna aliquyam erat, sed diam voluptua. At vero eos"</span>..
-             <span class="string">" et accusam et justo duo dolores et ea rebum. Stet clita"</span>..
-             <span class="string">" kasd gubergren, no sea takimata sanctus est Lorem ipsum"</span>..
-             <span class="string">" dolor sit amet."</span>;
-API.OpenTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
-    </ul>
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="TextWindow"></a>TextWindow</h2>
 
     <dl class="function">
@@ -606,7 +606,7 @@ API.OpenTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     Fügt einen beliebigen Parameter hinzu.  Parameter müssen immer als
  Schlüssel-Wert-Paare angegeben werden und dürfen vorhandene Pare nicht
  überschreiben.
-<p> <b>Alias</b>: TextWindow:AddParamater
+<p> <p><b>Alias</b>: TextWindow:AddParamater</p>
 
 
 
@@ -642,7 +642,7 @@ API.OpenTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     Erzeugt ein Textfenster, dass einen beliebig großen Text anzeigen kann.
  Optional kann ein Button genutzt werden, der eine Aktion ausführt, wenn
  er gedrückt wird.
-<p> <b>Alias</b>: TextWindow:New
+<p> <p><b>Alias</b>: TextWindow:New</p>
 <p> Parameterliste:
  <table>
  <tr>
@@ -715,7 +715,7 @@ API.OpenTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <dd>
     Setzt die Close Action des TextWindow.  Die Funktion wird beim schließen
  des Fensters ausgeführt.
-<p> <b>Alias</b>: TextWindow:SetAction
+<p> <p><b>Alias</b>: TextWindow:SetAction</p>
 
 
 
@@ -751,7 +751,7 @@ MyWindow:SetAction(MyAction);</pre>
     Setzt einen Aktionsbutton im TextWindow.
 <p> Der Button muss mit einer Funktion versehen werden. Sobald der Button
  betätigt wird, wird die Funktion ausgeführt.
-<p> <b>Alias</b>: TextWindow:SetButton
+<p> <p><b>Alias</b>: TextWindow:SetButton</p>
 
 
 
@@ -788,7 +788,7 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
     </dt>
     <dd>
     Setzt die Überschrift des TextWindow.
-<p> <b>Alias</b>: TextWindow:SetCaption
+<p> <p><b>Alias</b>: TextWindow:SetCaption</p>
 
 
 
@@ -819,7 +819,7 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
     </dt>
     <dd>
     Setzt den Inhalt des TextWindow.
-<p> <b>Alias</b>: TextWindow:SetContent
+<p> <p><b>Alias</b>: TextWindow:SetContent</p>
 
 
 
@@ -850,7 +850,7 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
     </dt>
     <dd>
     Zeigt ein erzeigtes Fenster an.
-<p> <b>Alias</b>: TextWindow:Show
+<p> <p><b>Alias</b>: TextWindow:Show</p>
 
 
 
@@ -871,7 +871,7 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-04 13:23:22 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
