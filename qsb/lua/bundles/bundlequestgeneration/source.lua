@@ -13,6 +13,8 @@
 -- können im Skript kopiert und angepasst werden. Es ist ebenfalls machbar,
 -- die Aufträge in Sequenzen zu erzeugen.
 --
+-- <a href="#API.CreateQuest">Quests erzeugen</a>
+--
 -- @within Modulbeschreibung
 -- @set sort=false
 --
@@ -66,14 +68,14 @@ QSB = QSB or {};
 --     Trigger_Time(0),
 -- }
 --
-function API.AddQuest(_Data)
+function API.CreateQuest(_Data)
     if GUI then
-        API.Log("API.AddQuest: Could not execute in local script!");
+        API.Log("API.CreateQuest: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:NewQuest(_Data);
 end
-AddQuest = API.AddQuest;
+AddQuest = API.CreateQuest;
 
 ---
 -- DO NOT USE THIS FUNCTION!
@@ -114,16 +116,16 @@ StartQuests = API.StartQuests;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.QuestMessage("Das ist ein Text", 4, 1);
+-- API.CreateQuestMessage("Das ist ein Text", 4, 1);
 --
-function API.QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+function API.CreateQuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
     if GUI then
-        API.Log("API.QuestMessage: Could not execute in local script!");
+        API.Log("API.CreateQuestMessage: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback);
 end
-QuestMessage = API.QuestMessage;
+QuestMessage = API.CreateQuestMessage;
 
 ---
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
@@ -152,15 +154,15 @@ QuestMessage = API.QuestMessage;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.QuestDialog{
+-- API.CreateQuestDialog{
 --     {"Hallo, wie geht es dir?", 1, 4},
 --     {"Mir geht es gut, wie immer!", 1, 1},
 --     {"Das ist doch schön.", 1, 4},
 -- };
 --
-function API.QuestDialog(_Messages)
+function API.CreateQuestDialog(_Messages)
     if GUI then
-        API.Log("API.QuestDialog: Could not execute in local script!");
+        API.Log("API.CreateQuestDialog: Could not execute in local script!");
         return;
     end
 
@@ -171,12 +173,12 @@ function API.QuestDialog(_Messages)
             _Messages[i][4] = _Messages[i][4] or Quest.Identifier;
             _Messages[i][5] = _Messages[i][5] or 12;
         end
-        QuestID, Quest = API.QuestMessage(unpack(_Messages[i]));
+        QuestID, Quest = API.CreateQuestMessage(unpack(_Messages[i]));
         table.insert(GeneratedQuests, {QuestID, Quest});
     end
     return GeneratedQuests;
 end
-QuestDialog = API.QuestDialog;
+QuestDialog = API.CreateQuestDialog;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
