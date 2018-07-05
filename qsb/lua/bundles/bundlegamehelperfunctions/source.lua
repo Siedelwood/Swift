@@ -8,6 +8,30 @@
 -- Dieses Bundle gibt dem Mapper Werkzeuge in die Hand, um einige Features zu
 -- gewähren oder zu entziehen.
 --
+-- Das wichtigste Auf einen Blick:
+-- <ul>
+-- <li>
+-- <a href="#API.AllowCheats">Features aktivieren</a><br>Cheats, Erweiterter
+-- Zoom, Feste feiern für KIs
+-- </li>
+-- <li>
+-- <a href="#API.ForbidCheats">Features deaktivieren</a><br>Cheats, Erweiterter
+-- Zoom, Feste feiern für KIs
+-- </li>
+-- <li>
+-- <a href="#API.SpeedLimitActivate">Spielgeschwindigkeit steuern</a><br>
+-- Maximale Spielgeschwindigkeit festlegen
+-- </li>
+-- <li>
+-- <a href="#API.TimeLineStart">Zeitstrahl erstellen</a><br>Eine Abfolge von
+-- Aktionen definieren, die zu gewissen Zeitpunkten ausgelöst werden.
+-- </li>
+-- <li>
+-- <a href="#API.ThridPersonActivate">Schulterblick aktivieren</a><br>Die
+-- Kamera folgt einem Entity in der 3rd-Person-Ansicht.
+-- </li>
+-- </ul>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -218,14 +242,14 @@ ActivateSpeedLimit = API.SpeedLimitActivate;
 --
 -- @within Anwenderfunktionen
 --
-function API.KillCheats()
+function API.ForbidCheats()
     if GUI then
-        API.Bridge("API.KillCheats()");
+        API.Bridge("API.ForbidCheats()");
         return;
     end
     return BundleGameHelperFunctions.Global:KillCheats();
 end
-KillCheats = API.KillCheats;
+KillCheats = API.ForbidCheats;
 
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
@@ -234,14 +258,14 @@ KillCheats = API.KillCheats;
 --
 -- @within Anwenderfunktionen
 --
-function API.RessurectCheats()
+function API.AllowCheats()
     if GUI then
-        API.Bridge("API.RessurectCheats()");
+        API.Bridge("API.AllowCheats()");
         return;
     end
     return BundleGameHelperFunctions.Global:RessurectCheats();
 end
-RessurectCheats = API.RessurectCheats;
+RessurectCheats = API.AllowCheats;
 
 ---
 -- Sperrt das Speichern von Spielständen oder gibt es wieder frei.

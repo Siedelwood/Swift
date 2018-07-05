@@ -7,32 +7,67 @@
 ---
 -- Ermöglicht es Briefings und Fake-Cutscenes zu verwenden.
 --
--- <br><br><b>Briefing</b><br>
+-- <p><b>Briefing</b><br>
 -- Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
 -- der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
 -- Auswahlmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
 -- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiten
--- kann innerhalb des Multiple Choice Briefings navigiert werden.
+-- kann innerhalb des Multiple Choice Briefings navigiert werden.</p>
 --
--- <br><br><b>Cutscene</b><br>
+-- <p>Das wichtigste auf einen Blick:
+-- <ul>
+-- <li><a href="#API.StartBriefing">Ein Briefing starten</a></li>
+-- <li><a href="#ASP">Dialogseiten erstellen</a></li>
+-- <li><a href="#ASMC">Auswahldialog erstellen</a></li>
+-- <li>
+-- <a href="#API.GetSelectedAnswerFromMCPage">Multiple Choice</a><br>
+-- Antworten aus einem Auswahldialog erhalten
+-- </li>
+-- <li>
+-- <a href="#API.PauseQuestsDuringBriefings">Quests anhalten</a><br>Während
+-- Briefings halten alle Timer an, sodass es nicht zu unerwünschten Niederlagen
+-- kommnt.
+-- </li>
+-- </ul></p>
+--
+-- <p><b>Cutscene</b><br>
 -- Cutscenes dürfen kein Multiple Choice enthalten und werden immer nur ganz
 -- abgespielt oder abgebrochen. Das Überspringen einzelner Seiten ist nicht
 -- möglich. Cutscenes verfügen über eine neue Kamerasteuerung (Blickrichtung
 -- und Ursprungspunkt) und sollten ausschließlich für szenerische Untermalung
--- der Handlung eingesetzt werden.
+-- der Handlung eingesetzt werden.</p>
 --
--- <br><br><b>Behavior</b><br>
+-- <p>Das wichtigste auf einen Blick:
+-- <ul>
+-- <li><a href="#API.StartCutscene">Eine Cutscene starten</a></li>
+-- <li><a href="#AF">Einen Kameraflug erstellen</a></li>
+-- </ul></p>
+--
+-- <p><b>Behavior</b><br>
 -- Bisher war es schwer ein Briefing in den Ablauf einzubauen. Es wurde immer
 -- ein nebenher laufender Job oder eine Variable zur Steuerung benötigt. Wenn
 -- man nun ein Briefing oder eine Cutscene mit speziellen Behavior an einen
--- Auftrag anbindet, handhabt das System die nachfolgenden Aufträge.
+-- Auftrag anbindet, handhabt das System die nachfolgenden Aufträge.</p>
 --
--- <br><br><b>Splashscreen</b><br>
+-- <p>Das wichtigste auf einen Blick:
+-- <ul>
+-- <li><a href="#Reprisal_Briefing">Reprisal_Briefing</a><br>
+-- Ein Briefing wird als Vergeltugn für einen Fehlschlag gestartet.
+-- </li>
+-- <li><a href="#Reward_Briefing">Reward_Briefing</a><br>
+-- Ein briefing wird als Lohn für einen Erfolg gestartet.
+-- </li>
+-- <li><a href="#Trigger_Briefing">Trigger_Briefing</a><br>
+-- Ein Quest wird gestartet, sobald ein Briefing abgeschlossen ist.
+-- </li>
+-- </ul></p>
+--
+-- <p><b>Splashscreen</b><br>
 -- Splashscreens stehen sowohl in Briefings als auch in Cutscenes zuer Verfügung
 -- und bieten die Möglichkeit, Bildschirmfüllende Grafiken zu verwenden. Diese
 -- Grafiken können auch größer als eine Bildschirmfläche sein. Für diesen
 -- Fall kann über die Angabe von UV-Koordinaten zu einem bestimmten Abschnitt
--- der Grafik gesprungen oder geflogen werden.
+-- der Grafik gesprungen oder geflogen werden.</p>
 --
 -- @within Modulbeschreibung
 -- @set sort=false

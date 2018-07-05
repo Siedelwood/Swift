@@ -8,6 +8,11 @@
 -- Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell
 -- an die eigenen Vorstellungen anzupassen.
 --
+-- Die Aufstiegsbedingungen werden in der Funktion InitKnightTitleTables
+-- angegeben und bearbeitet.
+--
+-- <a href="#InitKnightTitleTables">Aufstiegsbedingungen steuern</a>
+--
 -- Mögliche Aufstiegsbedingungen:
 -- <ul>
 -- <li><b>Entitytyp besitzen</b><br/>
@@ -1718,7 +1723,7 @@ InitKnightTitleTables = function()
     KnightTitles.Marquees   = 4
     KnightTitles.Duke       = 5
     KnightTitles.Archduke   = 6
-    
+
     -- ---------------------------------------------------------------------- --
     -- Rechte und Pflichten                                                   --
     -- ---------------------------------------------------------------------- --

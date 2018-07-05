@@ -79,43 +79,56 @@
 
 <h1>Module <code>bundles.bundleconstructioncontrol.source</code></h1>
 <p>Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
- Gebäude nicht gebaut bzw.</p>
-<p> nicht abgerissen werden darf.
+ Gebäude nicht gebaut oder nicht abgerissen werden darf.</p>
+<p>
+<p> Das wichtigste Auf einen Blick:
+ <ul>
+ <li>
+ Den Abriss für bestimmte Entities steuern.<br>
+ <a href="#API.ProtectCategory">Entities beschützen</a>,
+ <a href="#API.UnprotectCategory">Schutz aufheben</a>
+ </li>
+ <li>
+ Den Bau von Gebäuden an bestimmten Orten steuern.<br>
+ <a href="#API.BanCategoryInArea">Bau verbieten</a>,
+ <a href="#API.UnbanCategoryInArea">Bau erlauben</a>
+ </li>
+ </ul>
 </p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.AddEntity">API.AddEntity (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectEntity">API.ProtectEntity (_entry)</a></td>
 	<td class="summary">Fügt ein Entity hinzu, dass nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddEntityType">API.AddEntityType (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectEntityType">API.ProtectEntityType (_entry)</a></td>
 	<td class="summary">Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddCategory">API.AddCategory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectCategory">API.ProtectCategory (_entry)</a></td>
 	<td class="summary">Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddTerritory">API.AddTerritory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectTerritory">API.ProtectTerritory (_entry)</a></td>
 	<td class="summary">Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveEntity">API.RemoveEntity (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.UnprotectEntity">API.UnprotectEntity (_entry)</a></td>
 	<td class="summary">Entfernt ein Entity, dass nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveEntityType">API.RemoveEntityType (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.UnprotectEntityType">API.UnprotectEntityType (_entry)</a></td>
 	<td class="summary">Entfernt einen Entitytyp, der nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveCategory">API.RemoveCategory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.UnprotectCategory">API.UnprotectCategory (_entry)</a></td>
 	<td class="summary">Entfernt eine Kategorie, die nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveTerritory">API.RemoveTerritory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.UnprotectTerritory">API.UnprotectTerritory (_entry)</a></td>
 	<td class="summary">Entfernt ein Territory, auf dem nichts abgerissen werden kann.</td>
 	</tr>
 	<tr>
@@ -179,8 +192,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.AddEntity"></a>
-    <strong>API.AddEntity (_entry)</strong>
+    <a name = "API.ProtectEntity"></a>
+    <strong>API.ProtectEntity (_entry)</strong>
     </dt>
     <dd>
     Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
@@ -199,8 +212,8 @@
 
 </dd>
     <dt>
-    <a name = "API.AddEntityType"></a>
-    <strong>API.AddEntityType (_entry)</strong>
+    <a name = "API.ProtectEntityType"></a>
+    <strong>API.ProtectEntityType (_entry)</strong>
     </dt>
     <dd>
     Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
@@ -219,8 +232,8 @@
 
 </dd>
     <dt>
-    <a name = "API.AddCategory"></a>
-    <strong>API.AddCategory (_entry)</strong>
+    <a name = "API.ProtectCategory"></a>
+    <strong>API.ProtectCategory (_entry)</strong>
     </dt>
     <dd>
     Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
@@ -239,8 +252,8 @@
 
 </dd>
     <dt>
-    <a name = "API.AddTerritory"></a>
-    <strong>API.AddTerritory (_entry)</strong>
+    <a name = "API.ProtectTerritory"></a>
+    <strong>API.ProtectTerritory (_entry)</strong>
     </dt>
     <dd>
     Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
@@ -259,8 +272,8 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveEntity"></a>
-    <strong>API.RemoveEntity (_entry)</strong>
+    <a name = "API.UnprotectEntity"></a>
+    <strong>API.UnprotectEntity (_entry)</strong>
     </dt>
     <dd>
     Entfernt ein Entity, dass nicht abgerissen werden darf.
@@ -279,8 +292,8 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveEntityType"></a>
-    <strong>API.RemoveEntityType (_entry)</strong>
+    <a name = "API.UnprotectEntityType"></a>
+    <strong>API.UnprotectEntityType (_entry)</strong>
     </dt>
     <dd>
     Entfernt einen Entitytyp, der nicht abgerissen werden darf.
@@ -299,8 +312,8 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveCategory"></a>
-    <strong>API.RemoveCategory (_entry)</strong>
+    <a name = "API.UnprotectCategory"></a>
+    <strong>API.UnprotectCategory (_entry)</strong>
     </dt>
     <dd>
     Entfernt eine Kategorie, die nicht abgerissen werden darf.
@@ -319,8 +332,8 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveTerritory"></a>
-    <strong>API.RemoveTerritory (_entry)</strong>
+    <a name = "API.UnprotectTerritory"></a>
+    <strong>API.UnprotectTerritory (_entry)</strong>
     </dt>
     <dd>
     Entfernt ein Territory, auf dem nichts abgerissen werden kann.
@@ -616,7 +629,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-05 08:50:01 </i>
+<i style="float:right;">Last updated 2018-07-05 10:39:45 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
