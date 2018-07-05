@@ -49,7 +49,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1000";
+QSB.Version = "Symfonia Build 1100";
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;

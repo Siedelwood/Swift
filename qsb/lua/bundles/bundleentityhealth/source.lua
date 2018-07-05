@@ -8,6 +8,22 @@
 -- Dieses Bundle stellt Funktionen bereit, mit denen die Gesundheit von
 -- Entities überwacht oder geändert werden kann.
 --
+-- Das wichtigste Auf einen Blick:
+-- <ul>
+-- <li>
+-- <a href="#API.GetEntityHealth">Gesundheit ermitteln</a>
+-- </li>
+-- <li>
+-- <a href="#API.SetEntityHealth">Gesundheit verändern</a>
+-- </li>
+-- <li>
+-- <a href="#API.SetOnFire">Gebäude in Brand stecken</a>
+-- </li>
+-- <li>
+-- <a href="#API.AddOnEntityCreatedAction">Trigger anlegen</a>
+-- </li>
+-- </ul>
+--
 -- @within Modulbeschreibung
 -- @set sort=false
 --

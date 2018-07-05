@@ -12,6 +12,8 @@ return [==[
 </head>
 <body>
 
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
 <div id="container">
 
 <div id="product">
@@ -310,7 +312,24 @@ return [==[
 <i style="float:right;">Last updated $(ldoc.updatetime) </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
 </body>
 </html>
 ]==]
-
