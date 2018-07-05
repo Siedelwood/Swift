@@ -8,9 +8,10 @@
 -- Dieses Bundle gibt dem Mapper Werkzeuge in die Hand, um einige Features zu
 -- gewähren oder zu entziehen.
 --
--- @module BundleGameHelperFunctions
+-- @within Modulbeschreibung
 -- @set sort=true
 --
+BundleGameHelperFunctions = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -23,11 +24,11 @@ QSB = QSB or {};
 -- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
 -- der entdeckten Territorien.
 --
--- <b>Alias:</b> UndiscoverTerritory
+-- <p><b>Alias:</b> UndiscoverTerritory</p>
 --
--- @param _PlayerID    Spieler-ID
--- @param _TerritoryID Territorium-ID
--- @within Public
+-- @param _PlayerID [number] Spieler-ID
+-- @param _TerritoryID [number] Territorium-ID
+-- @within Anwenderfunktionen
 --
 function API.UndiscoverTerritory(_PlayerID, _TerritoryID)
     if GUI then
@@ -42,11 +43,11 @@ UndiscoverTerritory = API.UndiscoverTerritory;
 -- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
 -- Territorien. Als Nebeneffekt gild die Partei als unentdeckt.
 --
--- <b>Alias:</b> UndiscoverTerritories
+-- <p><b>Alias:</b> UndiscoverTerritories</p>
 --
--- @param _PlayerID       Spieler-ID
--- @param _TargetPlayerID Zielpartei
--- @within Public
+-- @param _PlayerID [number] Spieler-ID
+-- @param _TargetPlayerID [number] Zielpartei
+-- @within Anwenderfunktionen
 --
 function API.UndiscoverTerritories(_PlayerID, _TargetPlayerID)
     if GUI then
@@ -61,11 +62,11 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 -- Setzt die Einnahmen für alle Stadtgebäude eines Spielers. Stadtgebäude
 -- können nur Einnahmen zwischen 0 und 100 Talern haben.
 --
--- <b>Alias:</b> SetPlayerEarnings
+-- <p><b>Alias:</b> SetPlayerEarnings</p>
 --
--- @param _PlayerID Partei oder nil für alle
--- @param _Earnings Einnahmen [0 | 100]
--- @within Public
+-- @param _PlayerID [number] Partei oder nil für alle
+-- @param _Earnings [number] Einnahmen [0 | 100]
+-- @within Anwenderfunktionen
 --
 function API.SetEarningsOfPlayerCity(_PlayerID, _Earnings)
     if GUI then
@@ -89,12 +90,12 @@ SetPlayerEarnings = API.SetEarningsOfPlayerCity;
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
 --
--- <b>Alias:</b> SetNeedSatisfactionLevel
+-- <p><b>Alias:</b> SetNeedSatisfactionLevel</p>
 --
--- @param _Need     Bedürfnis
--- @param _State    Erfüllung des Bedürfnisses
--- @param _PlayerID Partei oder -1 für alle
--- @within Public
+-- @param _Need [number] Bedürfnis
+-- @param _State [number] Erfüllung des Bedürfnisses
+-- @param _PlayerID [number] Partei oder -1 für alle
+-- @within Anwenderfunktionen
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
     if GUI then
@@ -116,11 +117,11 @@ SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 ---
 -- Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.
 --
--- <b>Alias:</b> UnlockTitleForPlayer
+-- <p><b>Alias:</b> UnlockTitleForPlayer</p>
 --
--- @param _PlayerID    Zielpartei
--- @param _KnightTitle Titel zum Entsperren
--- @within Public
+-- @param _PlayerID [number] Zielpartei
+-- @param _KnightTitle [number] Titel zum Entsperren
+-- @within Anwenderfunktionen
 --
 function API.UnlockTitleForPlayer(_PlayerID, _KnightTitle)
     if GUI then
@@ -134,12 +135,12 @@ UnlockTitleForPlayer = API.UnlockTitleForPlayer;
 ---
 -- Fokusiert die Kamera auf dem Primärritter des Spielers.
 --
--- <b>Alias:</b> SetCameraToPlayerKnight
+-- <p><b>Alias:</b> SetCameraToPlayerKnight</p>
 --
--- @param _Player     Partei
--- @param _Rotation   Kamerawinkel
--- @param _ZoomFactor Zoomfaktor
--- @within Public
+-- @param _Player [number] Partei
+-- @param _Rotation [number] Kamerawinkel
+-- @param _ZoomFactor [number] Zoomfaktor
+-- @within Anwenderfunktionen
 --
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
     if not GUI then
@@ -153,12 +154,12 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 ---
 -- Fokusiert die Kamera auf dem Entity.
 --
--- <b>Alias:</b> SetCameraToEntity
+-- <p><b>Alias:</b> SetCameraToEntity</p>
 --
--- @param _Entity     Entity
--- @param _Rotation   Kamerawinkel
--- @param _ZoomFactor Zoomfaktor
--- @within Public
+-- @param _Entity [string|number] Entity
+-- @param _Rotation [number] Kamerawinkel
+-- @param _ZoomFactor [number] Zoomfaktor
+-- @within Anwenderfunktionen
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
@@ -178,10 +179,10 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 ---
 -- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
--- <b>Alias:</b> SetSpeedLimit
+-- <p><b>Alias:</b> SetSpeedLimit</p>
 --
--- @param _Limit Obergrenze
--- @within Public
+-- @param _Limit [number] Obergrenze
+-- @within Anwenderfunktionen
 --
 function API.SpeedLimitSet(_Limit)
     if not GUI then
@@ -196,10 +197,10 @@ SetSpeedLimit = API.SpeedLimitSet
 -- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
 -- kann nicht mehr überschritten werden.
 --
--- <b>Alias:</b> ActivateSpeedLimit
+-- <p><b>Alias:</b> ActivateSpeedLimit</p>
 --
--- @param _Flag Speedbremse ist aktiv
--- @within Public
+-- @param _Flag [boolean] Speedbremse ist aktiv
+-- @within Anwenderfunktionen
 --
 function API.SpeedLimitActivate(_Flag)
     if GUI then
@@ -213,9 +214,9 @@ ActivateSpeedLimit = API.SpeedLimitActivate;
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- <b>Alias:</b> KillCheats
+-- <p><b>Alias:</b> KillCheats</p>
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.KillCheats()
     if GUI then
@@ -229,9 +230,9 @@ KillCheats = API.KillCheats;
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- <b>Alias:</b> RessurectCheats
+-- <p><b>Alias:</b> RessurectCheats</p>
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.RessurectCheats()
     if GUI then
@@ -245,10 +246,10 @@ RessurectCheats = API.RessurectCheats;
 ---
 -- Sperrt das Speichern von Spielständen oder gibt es wieder frei.
 --
--- <b>Alias:</b> ForbidSaveGame
+-- <p><b>Alias:</b> ForbidSaveGame</p>
 --
--- @param _Flag Speichern gesperrt
--- @within Public
+-- @param _Flag [boolean] Speichern gesperrt
+-- @within Anwenderfunktionen
 --
 function API.ForbidSaveGame(_Flag)
     if GUI then
@@ -265,10 +266,10 @@ ForbidSaveGame = API.ForbidSaveGame;
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
--- <b>Alias:</b> ActivateExtendedZoom
+-- <p><b>Alias:</b> ActivateExtendedZoom</p>
 --
--- @param _Flag Erweiterter Zoom gestattet
--- @within Public
+-- @param _Flag [boolean] Erweiterter Zoom gestattet
+-- @within Anwenderfunktionen
 --
 function API.AllowExtendedZoom(_Flag)
     if GUI then
@@ -286,10 +287,10 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 -- Startet ein Fest für den Spieler. Ist dieser Typ von Fest für
 -- den Spieler verboten, wird er automatisch erlaubt.
 --
--- <b>Alias:</b> StartNormalFestival
+-- <p><b>Alias:</b> StartNormalFestival</p>
 --
--- @param  _PlayerID Spieler
--- @within Public
+-- @param _PlayerID [number] Spieler
+-- @within Anwenderfunktionen
 --
 function API.StartNormalFestival(_PlayerID)
     if GUI then
@@ -305,10 +306,10 @@ StartNormalFestival = API.StartNormalFestival;
 -- Startet ein Beförderungsfest für den Spieler. Ist dieser Typ
 -- von Fest für den Spieler verboten, wird er automatisch erlaubt.
 --
--- <b>Alias:</b> StartCityUpgradeFestival
+-- <p><b>Alias:</b> StartCityUpgradeFestival</p>
 --
--- @param _PlayerID Spieler
--- @within Public
+-- @param _PlayerID [number] Spieler
+-- @within Anwenderfunktionen
 --
 function API.StartCityUpgradeFestival(_PlayerID)
     if GUI then
@@ -323,10 +324,10 @@ StartCityUpgradeFestival = API.StartCityUpgradeFestival;
 ---
 -- Verbietet ein normales Fest und sperrt die Technologie.
 --
--- <b>Alias:</b> ForbidFestival
+-- <p><b>Alias:</b> ForbidFestival</p>
 --
--- @param _PlayerID Spieler
--- @within Public
+-- @param _PlayerID [number] Spieler
+-- @within Anwenderfunktionen
 --
 function API.ForbidFestival(_PlayerID)
     if GUI then
@@ -349,10 +350,10 @@ ForbidFestival = API.ForbidFestival;
 ---
 -- Erlaubt ein normales Fest und gibt die Technologie frei.
 --
--- <b>Alias:</b> AllowFestival
+-- <p><b>Alias:</b> AllowFestival</p>
 --
--- @param _PlayerID Spieler
--- @within Public
+-- @param _PlayerID [number] Spieler
+-- @within Anwenderfunktionen
 --
 function API.AllowFestival(_PlayerID)
     if GUI then
@@ -377,13 +378,13 @@ AllowFestival = API.AllowFestival;
 -- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
 -- Mode verwendet werden.
 --
--- <b>Alias:</b> PlayerSetPlayerID
+-- <p><b>Alias:</b> PlayerSetPlayerID</p>
 --
--- @param _OldID        Alte ID des menschlichen Spielers
--- @param _NewID        Neue ID des menschlichen Spielers
--- @param _NewName      Name in der Statistik
--- @param _RetainKnight Ritter mitnehmen
--- @within Public
+-- @param _OldID [number] Alte ID des menschlichen Spielers
+-- @param _NewID [number] Neue ID des menschlichen Spielers
+-- @param _NewName [string] Name in der Statistik
+-- @param _RetainKnight [boolean] Ritter mitnehmen
+-- @within Anwenderfunktionen
 --
 function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
     if GUI then
@@ -398,10 +399,10 @@ PlayerSetPlayerID = API.SetControllingPlayer;
 -- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
 -- definierte Spieler wird als kontrollierender Spieler angenommen.
 --
--- <b>Alias:</b> PlayerGetPlayerID
+-- <p><b>Alias:</b> PlayerGetPlayerID</p>
 --
--- @return number: PlayerID
--- @within Public
+-- @return [number] PlayerID
+-- @within Anwenderfunktionen
 --
 function API.GetControllingPlayer()
     if not GUI then
@@ -417,11 +418,11 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 -- Held kann 0 sein, dann wird entweder der letzte Held verwendet
 -- oder über den GUI-Spieler ermittelt.
 --
--- <b>Alias:</b> HeroCameraActivate
+-- <p><b>Alias:</b> HeroCameraActivate</p>
 --
--- @param _Hero    Skriptname/Entity-ID des Helden
--- @param _MaxZoom Maximaler Zoomfaktor
--- @within Public
+-- @param _Hero [string|number] Skriptname/Entity-ID des Helden
+-- @param _MaxZoom [number] Maximaler Zoomfaktor
+-- @within Anwenderfunktionen
 --
 function API.ThridPersonActivate(_Hero, _MaxZoom)
     if GUI then
@@ -436,9 +437,9 @@ HeroCameraActivate = API.ThridPersonActivate;
 ---
 -- Deaktiviert die Heldenkamera.
 --
--- <b>Alias:</b> HeroCameraDeactivate
+-- <p><b>Alias:</b> HeroCameraDeactivate</p>
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.ThridPersonDeactivate()
     if GUI then
@@ -452,10 +453,10 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 ---
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
--- <b>Alias:</b> HeroCameraIsRuning
+-- <p><b>Alias:</b> HeroCameraIsRuning</p>
 --
--- @return boolean: Kamera aktiv
--- @within Public
+-- @return [boolean] Kamera aktiv
+-- @within Anwenderfunktionen
 --
 function API.ThridPersonIsRuning()
     if not GUI then
@@ -470,14 +471,14 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
 -- zurück, der die Verfolgung steuert.
 --
--- <b>Alias:</b> AddFollowKnightSave
+-- <p><b>Alias:</b> AddFollowKnightSave</p>
 --
--- @param _Entity   Entity das folgt
--- @param _Knight   Held
--- @param _Distance Entfernung, die uberschritten sein muss
--- @param _Angle    Ausrichtung
--- @return number: Job-ID
--- @within Public
+-- @param _Entity [string|number] Entity das folgt
+-- @param _Knight [string|number] Held
+-- @param _Distance [number] Entfernung, die uberschritten sein muss
+-- @param _Angle [number] Ausrichtung
+-- @return [number] Job-ID
+-- @within Anwenderfunktionen
 --
 function API.FollowKnightSaveStart(_Entity, _Knight, _Distance, _Angle)
     if GUI then
@@ -493,10 +494,10 @@ AddFollowKnightSave = API.FollowKnightSaveStart;
 ---
 -- Beendet einen Verfolgungsjob.
 --
--- <b>Alias:</b> StopFollowKnightSave
+-- <p><b>Alias:</b> StopFollowKnightSave</p>
 --
--- @param _JobID Job-ID
--- @within Public
+-- @param _JobID [number] Job-ID
+-- @within Anwenderfunktionen
 --
 function API.FollowKnightSaveStop(_JobID)
     if GUI then
@@ -515,12 +516,12 @@ StopFollowKnightSave = API.FollowKnightSaveStop;
 -- <b>Hinweis:</b> Für weitere Informationen zu Terraintexturen siehe
 -- https://siedelwood-neu.de/23879-2/
 --
--- <b>Alias:</b> TerrainType
+-- <p><b>Alias:</b> TerrainType</p>
 --
--- @param _Center          Zentralpunkt
--- @param _Offset          Entfernung der Ecken zum Zentrum
--- @param _TerrainType     Textur ID
--- @within Public
+-- @param _Center [string|number] Zentralpunkt
+-- @param _Offset [number] Entfernung der Ecken zum Zentrum
+-- @param _TerrainType [number] Textur ID
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.ChangeTerrainTypeInSquare("area", 500, 48)
@@ -549,13 +550,13 @@ TerrainType = API.ChangeTerrainTypeInSquare;
 -- Wird die relative Höhe verwendet, wird die Wasserhöhe nicht absolut
 -- gesetzt sondern von der aktuellen Wasserhöhe ausgegangen.
 --
--- <b>Alias:</b> WaterHeight
+-- <p><b>Alias:</b> WaterHeight</p>
 --
--- @param _Center      Zentralpunkt
--- @param _Offset      Entfernung der Ecken zum Zentrum
--- @param _Hight       Neue Höhe
--- @param _Relative    Relative Höhe benutzen
--- @within Public
+-- @param _Center [string|number] Zentralpunkt
+-- @param _Offset [number] Entfernung der Ecken zum Zentrum
+-- @param _Hight [number] Neue Höhe
+-- @param _Relative [boolean] Relative Höhe benutzen
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.ChangeWaterHeightInSquare("area", 500, 5555, true);
@@ -585,13 +586,13 @@ WaterHeight = API.ChangeWaterHeightInSquare;
 -- gesetzt sondern von der aktuellen Landhöhe ausgegangen. Das Land muss nicht
 -- eben sein. Auf diese Weise können Strukturen unverändert angehoben werden.
 --
--- <b>Alias:</b> TerrainHeight
+-- <p><b>Alias:</b> TerrainHeight</p>
 --
--- @param _Center      Zentralpunkt
--- @param _Offset      Entfernung der Ecken zum Zentrum
--- @param _Hight       Neue Höhe
--- @param _Relative    Relative Höhe benutzen
--- @within Public
+-- @param _Center [string|number] Zentralpunkt
+-- @param _Offset [number] Entfernung der Ecken zum Zentrum
+-- @param _Hight [number] Neue Höhe
+-- @param _Relative [boolean] Relative Höhe benutzen
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.ChangeTerrainHeightInSquare("area", 500, 5555, true);
@@ -612,6 +613,70 @@ function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
     return BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative);
 end
 TerrainHeight = API.ChangeTerrainHeightInSquare;
+
+---
+-- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
+-- an denen eine Aktion ausgeführt wird.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
+--
+-- @param _description [table] Beschreibung
+-- @return [number] ID des Zeitstrahls
+-- @within Anwenderfunktionen
+--
+function API.TimeLineStart(_Description)
+    return BundleGameHelperFunctions.Shared.TimeLine:Start(_Description);
+end
+
+---
+-- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
+-- beendet, beginnt er dennoch von vorn.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
+--
+-- @param _ID [table] ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+function API.TimeLineRestart(_ID)
+    return BundleGameHelperFunctions.Shared.TimeLine:Restart(_ID)
+end
+
+---
+-- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
+--
+-- @param _ID [table] ID des Zeitstrahl
+-- @return [boolean] Zeitstrahl ist aktiv
+-- @within Anwenderfunktionen
+--
+function API.TimeLineIsRunning(_ID)
+    return BundleGameHelperFunctions.Shared.TimeLine:IsRunning(_ID);
+end
+
+---
+-- Hält einen Zeitstrahl an.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
+--
+-- @param _ID [table] ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+function API.TimeLineYield(_ID)
+    return BundleGameHelperFunctions.Shared.TimeLine:Yield(_ID);
+end
+
+---
+-- Stößt einen angehaltenen Zeitstrahl wieder an.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
+--
+-- @param _ID [table] ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+function API.TimeLineResume(_ID)
+    return BundleGameHelperFunctions.Shared.TimeLine:Resume(_ID);
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -652,7 +717,7 @@ BundleGameHelperFunctions = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
@@ -667,9 +732,9 @@ end
 -- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
 -- der entdeckten Territorien.
 --
--- @param _PlayerID    Spieler-ID
--- @param _TerritoryID Territorium-ID
--- @within Private
+-- @param _PlayerID [number] Spieler-ID
+-- @param _TerritoryID [number] Territorium-ID
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID)
@@ -688,9 +753,9 @@ end
 -- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
 -- Territorien. Als Nebeneffekt gild die Partei als unentdeckt-
 --
--- @param _PlayerID       Spieler-ID
--- @param _TargetPlayerID Zielpartei
--- @within Private
+-- @param _PlayerID [number] Spieler-ID
+-- @param _TargetPlayerID [number] Zielpartei
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID)
@@ -714,9 +779,9 @@ end
 --
 -- <b>Alias:</b> SetPlayerEarnings
 --
--- @param _PlayerID Partei oder nil für alle
--- @param _Earnings Einnahmen [0 | 100]
--- @within Private
+-- @param _PlayerID [number] Partei oder nil für alle
+-- @param _Earnings [number] Einnahmen [0 | 100]
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity(_PlayerID, _Earnings)
@@ -737,10 +802,10 @@ end
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
 --
--- @param _Need     Bedürfnis
--- @param _State    Erfüllung des Bedürfnisses
--- @param _PlayerID Partei oder -1 für alle
--- @within Private
+-- @param _Need [number] Bedürfnis
+-- @param _State [number] Erfüllung des Bedürfnisses
+-- @param _PlayerID [number] Partei oder -1 für alle
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID)
@@ -765,9 +830,9 @@ end
 ---
 -- Entsperrt einen gesperrten Titel für den Spieler.
 --
--- @param _PlayerID    Zielpartei
--- @param _KnightTitle Titel zum Entsperren
--- @within Private
+-- @param _PlayerID [number] Zielpartei
+-- @param _KnightTitle [number] Titel zum Entsperren
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _KnightTitle)
@@ -796,11 +861,11 @@ end
 -- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
 -- Mode verwendet werden.
 --
--- @param _oldPlayerID          Alte ID des menschlichen Spielers
--- @param _newPlayerID          Neue ID des menschlichen Spielers
--- @param _newNameForStatistics Name in der Statistik
--- @param _retainPrimaryKnight  Ritter mitnehmen
--- @within Private
+-- @param _oldPlayerID [number]Alte ID des menschlichen Spielers
+-- @param _newPlayerID [number]Neue ID des menschlichen Spielers
+-- @param _newNameForStatistics [string]Name in der Statistik
+-- @param _retainPrimaryKnight [boolean]Ritter mitnehmen
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)
@@ -876,8 +941,8 @@ end
 -- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
 -- definierte Spieler wird als kontrollierender Spieler angenommen.
 --
--- @return number: PlayerID
--- @within Private
+-- @return [number] PlayerID
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:GetControllingPlayer()
@@ -897,7 +962,7 @@ end
 -- Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
 -- werden kann.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitFestival()
@@ -918,10 +983,10 @@ end
 ---
 -- Erlaubt oder verbietet ein Fest für den angegebenen Spieler.
 --
--- @param _PlayerID ID des Spielers
+-- @param _PlayerID [number] ID des Spielers
 -- @param _Index    Index des Fest
--- @param _Flag     Erlauben/verbieten
--- @within Private
+-- @param _Flag [boolean] Erlauben/verbieten
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, _Index, _Flag)
@@ -939,7 +1004,7 @@ end
 ---
 -- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
@@ -955,7 +1020,7 @@ end
 ---
 -- Aktiviert den erweiterten Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
@@ -966,7 +1031,7 @@ end
 ---
 -- Deaktiviert den erweiterten Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
@@ -977,7 +1042,7 @@ end
 ---
 -- Initialisiert den erweiterten Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:InitExtendedZoom()
@@ -992,7 +1057,7 @@ end
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:KillCheats()
@@ -1003,7 +1068,7 @@ end
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:RessurectCheats()
@@ -1018,9 +1083,9 @@ end
 -- Held kann 0 sein, dann wird entweder der letzte Held verwendet
 -- oder über den GUI-Spieler ermittelt.
 --
--- @param _Hero    Skriptname/Entity-ID des Helden
--- @param _MaxZoom Maximaler Zoomfaktor
--- @within Private
+-- @param _Hero [string|number] Skriptname/Entity-ID des Helden
+-- @param _MaxZoom [number] Maximaler Zoomfaktor
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
@@ -1037,7 +1102,7 @@ end
 
 ---
 -- Deaktiviert die Heldenkamera.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonDeactivate()
@@ -1050,8 +1115,8 @@ end
 ---
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
--- @return boolean: Kamera aktiv
--- @within Private
+-- @return [boolean] Kamera aktiv
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonIsRuning()
@@ -1061,7 +1126,7 @@ end
 ---
 -- Überschreibt StartBriefing und EndBriefing des Briefing System,
 -- wenn es vorhanden ist.
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
@@ -1097,12 +1162,12 @@ end
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
 -- zurück, der die Verfolgung steuert.
 --
--- @param _Entity   Entity das folgt
--- @param _Knight   Held
--- @param _Distance Entfernung, die uberschritten sein muss
--- @param _Angle    Ausrichtung
--- @return number: Job-ID
--- @within Private
+-- @param _Entity [string|number] Entity das folgt
+-- @param _Knight [string|number] Held
+-- @param _Distance [number] Entfernung, die uberschritten sein muss
+-- @param _Angle [number] Ausrichtung
+-- @return [number] Job-ID
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
@@ -1124,8 +1189,8 @@ end
 ---
 -- Beendet einen Verfolgungsjob.
 --
--- @param _JobID Job-ID
--- @within Private
+-- @param _JobID [number] Job-ID
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
@@ -1141,11 +1206,11 @@ end
 -- Kontrolliert die Verfolgung eines Helden durch einen Siedler.
 -- @internal
 --
--- @param _Entity   Entity das folgt
--- @param _Knight   Held
--- @param _Distance Entfernung, die uberschritten sein muss
--- @param _Angle    Ausrichtung
--- @within Private
+-- @param _EntityID [number]Entity das folgt
+-- @param _KnightID [number]Held
+-- @param _Distance [number] Entfernung, die uberschritten sein muss
+-- @param _Angle [number] Ausrichtung
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
@@ -1187,10 +1252,10 @@ ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSa
 ---
 -- Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
 -- Abstände der Eckpunkte zum Zentralpunkt.
--- @param _Center          Zentralpunkt
--- @param _Offset          Entfernung der Ecken zum Zentrum
--- @param _TerrainType     Textur ID
--- @within Private
+-- @param _Center [string|number] Zentralpunkt
+-- @param _Offset [number] Entfernung der Ecken zum Zentrum
+-- @param _TerrainType [number] Textur ID
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
@@ -1211,11 +1276,11 @@ end
 ---
 -- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
 -- der Eckpunkte zum Zentralpunkt.
--- @param _Center      Zentralpunkt
--- @param _Offset      Entfernung der Ecken zum Zentrum
--- @param _Hight       Neue Höhe
--- @param _Relative    Relative Höhe benutzen
--- @within Private
+-- @param _Center [string|number] Zentralpunkt
+-- @param _Offset [number] Entfernung der Ecken zum Zentrum
+-- @param _Hight [number] Neue Höhe
+-- @param _Relative [boolean] Relative Höhe benutzen
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
@@ -1241,11 +1306,11 @@ end
 ---
 -- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
 -- der Eckpunkte zum Zentralpunkt.
--- @param _Center      Zentralpunkt
--- @param _Offset      Entfernung der Ecken zum Zentrum
--- @param _Hight       Neue Höhe
--- @param _Relative    Relative Höhe benutzen
--- @within Private
+-- @param _Center [string|number] Zentralpunkt
+-- @param _Offset [number] Entfernung der Ecken zum Zentrum
+-- @param _Hight [number] Neue Höhe
+-- @param _Relative [boolean] Relative Höhe benutzen
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
@@ -1280,14 +1345,14 @@ end
 --
 -- Wird verwendet von: WaterHeight, TerrainHeight, TerrainType
 --
--- @param _Center Zentralpunkt des Quadrat
--- @param _Offset Abstand der Ecken zum Zentrum
--- @return number: X-Koordinate von Punkt 1
--- @return number: Y-Koordinate von Punkt 1
--- @return number: X-Koordinate von Punkt 2
--- @return number: Y-Koordinate von Punkt 2
--- @return number: Bodenhöhe
--- @within Private
+-- @param _Center [string|number] Zentralpunkt des Quadrat
+-- @param _Offset [number] Abstand der Ecken zum Zentrum
+-- @return [number] X-Koordinate von Punkt 1
+-- @return [number] Y-Koordinate von Punkt 1
+-- @return [number] X-Koordinate von Punkt 2
+-- @return [number] Y-Koordinate von Punkt 2
+-- @return [number] Bodenhöhe
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain(_Center, _Offset)
@@ -1313,7 +1378,7 @@ end
 ---
 -- Stellt nicht-persistente Änderungen nach dem laden wieder her.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
@@ -1353,7 +1418,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:Install()
@@ -1368,10 +1433,10 @@ end
 ---
 -- Fokusiert die Kamera auf dem Primärritter des Spielers.
 --
--- @param _Player     Partei
--- @param _Rotation   Kamerawinkel
--- @param _ZoomFactor Zoomfaktor
--- @within Private
+-- @param _Player [number] Partei
+-- @param _Rotation [number] Kamerawinkel
+-- @param _ZoomFactor [number] Zoomfaktor
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor)
@@ -1381,10 +1446,10 @@ end
 ---
 -- Fokusiert die Kamera auf dem Entity.
 --
--- @param _Entity     Entity
--- @param _Rotation   Kamerawinkel
--- @param _ZoomFactor Zoomfaktor
--- @within Private
+-- @param _Entity [string|number] Entity
+-- @param _Rotation [number] Kamerawinkel
+-- @param _ZoomFactor [number] Zoomfaktor
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
@@ -1401,8 +1466,8 @@ end
 ---
 -- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
--- @param _Limit Obergrenze
--- @within Private
+-- @param _Limit [number] Obergrenze
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
@@ -1414,8 +1479,8 @@ end
 -- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
 -- kann nicht mehr überschritten werden.
 --
--- @param _Flag Speedbremse ist aktiv
--- @within Private
+-- @param _Flag [boolean] Speedbremse ist aktiv
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
@@ -1429,7 +1494,7 @@ end
 -- Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
 -- aufgerufen wird und installiert die Speedbremse.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
@@ -1449,7 +1514,7 @@ end
 ---
 -- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:KillCheats()
@@ -1464,7 +1529,7 @@ end
 ---
 -- Aktiviert die Tastenkombination zum Einschalten der Cheats.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:RessurectCheats()
@@ -1481,7 +1546,7 @@ end
 ---
 -- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
@@ -1494,7 +1559,7 @@ end
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
@@ -1509,7 +1574,7 @@ end
 ---
 -- Wechselt zwischen erweitertem und normalen Zoom.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
@@ -1519,7 +1584,7 @@ end
 ---
 -- Erweitert die Zoomrestriktion auf das Maximum.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
@@ -1531,7 +1596,7 @@ end
 ---
 -- Stellt die normale Zoomrestriktion wieder her.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:DeactivateExtendedZoom()
@@ -1545,7 +1610,7 @@ end
 ---
 -- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidSaveGame()
@@ -1561,7 +1626,8 @@ end
 ---
 -- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
 --
--- @within Private
+-- @param _Flag [boolean] Speicherbuttons sichtbar
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:DisplaySaveButtons(_Flag)
@@ -1576,9 +1642,9 @@ end
 -- Held kann 0 sein, dann wird entweder der letzte Held verwendet
 -- oder über den GUI-Spieler ermittelt.
 --
--- @param _Hero    Skriptname/Entity-ID des Helden
--- @param _MaxZoom Maximaler Zoomfaktor
--- @within Private
+-- @param _Hero [string|number] Skriptname/Entity-ID des Helden
+-- @param _MaxZoom [number] Maximaler Zoomfaktor
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonActivate(_Hero, _MaxZoom)
@@ -1606,7 +1672,7 @@ end
 ---
 -- Deaktiviert die Heldenkamera.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonDeactivate()
@@ -1619,8 +1685,8 @@ end
 ---
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
--- @return boolean: Kamera aktiv
--- @within Private
+-- @return [boolean] Kamera aktiv
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonIsRuning()
@@ -1633,7 +1699,7 @@ end
 -- Kamera um links oder rechts gedreht, abhänig von der Position
 -- der Mouse.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFactor()
@@ -1668,7 +1734,7 @@ end
 ---
 --
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleGameHelperFunctions.Local:InitForbidFestival()
@@ -1689,12 +1755,12 @@ end
 -- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
 -- an denen eine Aktion ausgeführt wird.
 --
--- <b>Alias:</b> QSB.TimeLine:Start<br>
--- <b>Alias:</b> TimeLine:Start
+-- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
 --
--- @param _description     Beschreibung
--- @return number
+-- @param _description [table] Beschreibung
+-- @return [number] ID des Zeitstrahl
 -- @within QSB.TimeLine
+-- @local
 --
 function BundleGameHelperFunctions.Shared.TimeLine:Start(_description)
     local JobID = self.Data.TimeLineUniqueJobID;
@@ -1725,11 +1791,11 @@ end
 -- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
 -- beendet, beginnt er dennoch von vorn.
 --
--- <b>Alias:</b> QSB.TimeLine:Restart<br>
--- <b>Alias:</b> TimeLine:Restart
+-- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
 --
--- @param _ID  ID des Zeitstrahl
+-- @param _ID [table] ID des Zeitstrahl
 -- @within QSB.TimeLine
+-- @local
 --
 function BundleGameHelperFunctions.Shared.TimeLine:Restart(_ID)
     if not self.Data.TimeLineJobs[_ID] then
@@ -1743,12 +1809,12 @@ end
 ---
 -- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
 --
--- <b>Alias:</b> QSB.TimeLine:IsRunning<br>
--- <b>Alias:</b> TimeLine:IsRunning
+-- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
 --
--- @param _ID  ID des Zeitstrahl
--- @return boolean
+-- @param _ID [table] ID des Zeitstrahl
+-- @return [boolean] Zeistrahl ist aktiv
 -- @within QSB.TimeLine
+-- @local
 --
 function BundleGameHelperFunctions.Shared.TimeLine:IsRunning(_ID)
     if self.Data.TimeLineJobs[_ID] then
@@ -1760,11 +1826,11 @@ end
 ---
 -- Hält einen Zeitstrahl an.
 --
--- <b>Alias:</b> QSB.TimeLine:Yield<br>
--- <b>Alias:</b> TimeLine:Yield
+-- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
 --
--- @param _ID  ID des Zeitstrahl
+-- @param _ID [table] ID des Zeitstrahl
 -- @within QSB.TimeLine
+-- @local
 --
 function BundleGameHelperFunctions.Shared.TimeLine:Yield(_ID)
     if not self.Data.TimeLineJobs[_ID] then
@@ -1776,11 +1842,11 @@ end
 ---
 -- Stößt einen angehaltenen Zeitstrahl wieder an.
 --
--- <b>Alias:</b> QSB.TimeLine:Resume<br>
--- <b>Alias:</b> TimeLine:Resume
+-- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
 --
--- @param _ID  ID des Zeitstrahl
+-- @param _ID [table] ID des Zeitstrahl
 -- @within QSB.TimeLine
+-- @local
 --
 function BundleGameHelperFunctions.Shared.TimeLine:Resume(_ID)
     if not self.Data.TimeLineJobs[_ID] then

@@ -12,9 +12,10 @@
 -- in einzelnen Gebäuden und der Abriss einzelner Gebäudestufen sind natürlich
 -- im Standard dabei.
 --
--- @module BundleBuildingButtons
--- @set sort=true
+-- @within Modulbeschreibung
+-- @set sort=false
 --
+BundleBuildingButtons = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -32,9 +33,9 @@ QSB = QSB or {};
 -- Buttons sind, handelt es sich hierbei um einen Custom Button. Single
 -- Stop belegt Index 1.
 --
--- <b>Alias:</b> ActivateSingleStop
+-- <p><b>Alias:</b> ActivateSingleStop</p>
 --
--- @within Public
+-- @within Anwenderfunktionen
 -- @see API.AddCustomBuildingButton
 --
 function API.ActivateSingleStop()
@@ -55,9 +56,9 @@ ActivateSingleStop = API.ActivateSingleStop;
 ---
 -- Deaktiviert die Single Stop Buttons.
 --
--- <b>Alias:</b> DeactivateSingleStop
+-- <p><b>Alias:</b> DeactivateSingleStop</p>
 --
--- @within Public
+-- @within Anwenderfunktionen
 --
 function API.DeactivateSingleStop()
     if not GUI then
@@ -73,10 +74,10 @@ DeactivateSingleStop = API.DeactivateSingleStop;
 -- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
 -- jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
 --
--- <b>Alias:</b> UseDowngrade
+-- <p><b>Alias:</b> UseDowngrade</p>
 --
--- @param _flag Downgrade aktiv/inaktiv
--- @within Public
+-- @param _flag [boolean] Downgrade aktiv/inaktiv
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Rückbau ist deaktiviert
@@ -94,10 +95,10 @@ UseDowngrade = API.UseDowngrade;
 ---
 -- Erlaube oder verbiete dem Spieler Schafe zu züchten.
 --
--- <b>Alias:</b> UseBreedSheeps
+-- <p><b>Alias:</b> UseBreedSheeps</p>
 --
--- @param _flag Schafzucht aktiv/inaktiv
--- @within Public
+-- @param _flag [boolean] Schafzucht aktiv/inaktiv
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Schafsaufzucht ist erlaubt
@@ -125,10 +126,10 @@ UseBreedSheeps = API.UseBreedSheeps;
 ---
 -- Erlaube oder verbiete dem Spieler Kühe zu züchten.
 --
--- <b>Alias:</b> UseBreedCattle
+-- <p><b>Alias:</b> UseBreedCattle</p>
 --
--- @param _flag Kuhzucht aktiv/inaktiv
--- @within Public
+-- @param _flag [boolean] Kuhzucht aktiv/inaktiv
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Es können keine Kühe gezüchtet werden
@@ -156,10 +157,10 @@ UseBreedCattle = API.UseBreedCattle;
 ---
 -- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
 --
--- <b>Alias:</b> SetSheepGrainCost
+-- <p><b>Alias:</b> SetSheepGrainCost</p>
 --
--- @param _Amount Getreidekosten
--- @within Public
+-- @param _Amount [number] Getreidekosten
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Wucherpreise zum Züchten!
@@ -177,10 +178,10 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 ---
 -- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
 --
--- <b>Alias:</b> SetCattleGrainCost
+-- <p><b>Alias:</b> SetCattleGrainCost</p>
 --
--- @param _Amount Getreidekosten
--- @within Public
+-- @param _Amount [number] Getreidekosten
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Wucherpreise zum Züchten!
@@ -198,10 +199,10 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 ---
 -- Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
 --
--- <b>Alias:</b> SetSheepNeeded
+-- <p><b>Alias:</b> SetSheepNeeded</p>
 --
--- @param _Amount Benötigte Menge
--- @within Public
+-- @param _Amount [number] Benötigte Menge
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Es wird ein volles Gatter zur Zucht benötigt:
@@ -222,10 +223,10 @@ SetSheepNeeded = API.SetSheepNeeded;
 ---
 -- Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
 --
--- <b>Alias:</b> SetCattleNeeded
+-- <p><b>Alias:</b> SetCattleNeeded</p>
 --
--- @param _Amount Benötigte Menge
--- @within Public
+-- @param _Amount [number] Benötigte Menge
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Es werden keine Kühe zur Zucht benötigt:
@@ -269,13 +270,13 @@ SetCattleNeeded = API.SetCattleNeeded;
 -- müssen sich die Buttonfunktionen im lokalen Skript befinden. Die Namen der
 -- Funktionen sind in diesem Fall als Zeichenkette zu übergeben!
 --
--- <b>Alias:</b> AddBuildingButton
+-- <p><b>Alias:</b> AddBuildingButton</p>
 --
--- @param _Index   Index des Buttons
--- @param _Action  Aktion des Buttons
--- @param _Tooltip Tooltip Control
--- @param _Update  Button Update
--- @within Public
+-- @param _Index   [number] Index des Buttons
+-- @param _Action  [function] Aktion des Buttons
+-- @param _Tooltip [function] Tooltip Control
+-- @param _Update  [function] Button Update
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Aktion
@@ -317,10 +318,10 @@ AddBuildingButton = API.AddCustomBuildingButton;
 ---
 -- Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.
 --
--- <b>Alias:</b> DeleteBuildingButton
+-- <p><b>Alias:</b> DeleteBuildingButton</p>
 --
--- @param _Index   Index des Buttons
--- @within Public
+-- @param _Index   [number] Index des Buttons
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Entfernt die Konfiguration für Button 1
@@ -422,7 +423,7 @@ BundleBuildingButtons = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Global:Install()
@@ -435,7 +436,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:Install()
@@ -459,7 +460,7 @@ end
 ---
 -- Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:BuyAnimal(_eID)
@@ -490,7 +491,7 @@ end
 --
 -- Ein Gebäude der Stufe 1 wird zerstört. Aktuell ist dies aber inaktiv.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:DowngradeBuilding()
@@ -517,7 +518,7 @@ end
 -- @param _actionFunction   Action-Funktion (String in Global)
 -- @param _tooltipFunction  Tooltip-Funktion (String in Global)
 -- @param _updateFunction   Update-Funktion (String in Global)
--- @within Private
+-- @within Internal
 -- @local
 -- @see API.AddCustomBuildingButton
 --
@@ -538,7 +539,7 @@ end
 -- Entfernt den Zusatz-Button auf dem Index.
 --
 -- @param _idx Indexposition des Button (1 oder 2)
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:DeleteOptionalButton(_idx)
@@ -560,7 +561,7 @@ end
 --
 -- Diese Funktion implementiert den optionalen Schalter #1.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteAutoToggle()
@@ -620,7 +621,7 @@ end
 --
 -- Diese Funktion implementiert den optionalen Schalter #2.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteGateOpenClose()
@@ -681,7 +682,7 @@ end
 --
 -- Diese Funktion implementiert den Rückbau.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteToggleTrap()
@@ -774,7 +775,7 @@ end
 -- Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung. Dabei
 -- wird die Nutztierzucht implementiert.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
@@ -935,7 +936,7 @@ end
 -- Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
 -- funktioniert.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteHouseMenuButtons()
@@ -1041,7 +1042,7 @@ end
 -- @param _DisabledText Textzusatz wenn inaktiv
 -- @param _Costs        Kostentabelle
 -- @param _InSettlement Kosten in Siedlung suchen
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
@@ -1076,7 +1077,7 @@ end
 ---
 -- Diese Funktion ist die Action von Single Stop.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action(WidgetID, EntityID)
@@ -1088,7 +1089,7 @@ end
 ---
 -- Diese Funktion steuert den Tooltip von Single Stop.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
@@ -1102,7 +1103,7 @@ end
 ---
 -- Diese Funktion ist der Update Job von Single Stop.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update(_WidgetID, _EntityID)
@@ -1125,7 +1126,7 @@ end
 -- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
 -- @param _Source Quelle der Änderung
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleBuildingButtons.Local.OnSelectionChanged(_Source)

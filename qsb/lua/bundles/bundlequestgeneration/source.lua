@@ -7,9 +7,16 @@
 ---
 -- Mit diesem Bundle können Aufträge per Skript erstellt werden.
 --
--- @module BundleQuestGeneration
--- @set sort=true
+-- Normaler Weise werden Aufträge im Questassistenten erzeugt. Dies ist aber
+-- statisch und das Kopieren von Aufträgen ist nicht möglich. Wenn Aufträge
+-- im Skript erzeugt werden, verschwinden alle diese Nachteile. Aufträge
+-- können im Skript kopiert und angepasst werden. Es ist ebenfalls machbar,
+-- die Aufträge in Sequenzen zu erzeugen.
 --
+-- @within Modulbeschreibung
+-- @set sort=false
+--
+BundleQuestGeneration = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -19,15 +26,15 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erstellt einen Quest, startet ihn jedoch noch nicht.
+-- Erstellt einen Quest.
 --
 -- Ein Quest braucht immer wenigstens ein Goal und einen Trigger. Hat ein Quest
 -- keinen Namen, erhält er automatisch einen mit fortlaufender Nummerierung.
 --
--- Ein Quest besteht aus verschiedenen Parametern und Behavior, die nicht
+-- Ein Quest besteht aus verschiedenen Eigenschaften und Behavior, die nicht
 -- alle zwingend gesetzt werden müssen. Behavior werden einfach nach den
--- Feldern nacheinander angegeben.
--- <p><u>Parameter:</u></p>
+-- Eigenschaften nacheinander angegeben.
+-- <p><u>Eigenschaften:</u></p>
 -- <ul>
 -- <li>Name: Der eindeutige Name des Quests</li>
 -- <li>Sender: PlayerID des Auftraggeber (Default 1)</li>
@@ -41,12 +48,12 @@ QSB = QSB or {};
 -- <li>Callback: Funktion, die nach Abschluss aufgerufen wird</li>
 -- </ul>
 --
--- <b>Alias:</b> AddQuest
+-- <p><b>Alias:</b> AddQuest</p>
 --
--- @param _Data Questdefinition
--- @return string: Name des Quests
--- @return number: Gesamtzahl Quests
--- @within Public
+-- @param _Data [table] Questdefinition
+-- @return [string] Name des Quests
+-- @return [number] Gesamtzahl Quests
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- AddQuest {
@@ -70,10 +77,6 @@ AddQuest = API.AddQuest;
 
 ---
 -- DO NOT USE THIS FUNCTION!
--- Startet alle mittels API.AddQuest initalisierten Quests.
---
--- <b>Alias</b>: StartQuests
---
 -- @within Deprecated
 -- @local
 --
@@ -100,15 +103,15 @@ StartQuests = API.StartQuests;
 --
 -- <b>Alias</b>: QuestMessage
 --
--- @param _Text       Anzeigetext der Nachricht
--- @param _Sender     Sender der Nachricht
--- @param _Receiver   Receiver der Nachricht
--- @param _Ancestor   Vorgänger-Quest
--- @param _AncestorWt Wartezeit
--- @param _Callback   Callback
--- @return number: QuestID
--- @return table: Quest
--- @within Public
+-- @param _Text       [string] Anzeigetext der Nachricht
+-- @param _Sender     [number] Sender der Nachricht
+-- @param _Receiver   [number] Receiver der Nachricht
+-- @param _Ancestor   [string] Vorgänger-Quest
+-- @param _AncestorWt [number] Wartezeit
+-- @param _Callback   [function] Callback
+-- @return [number] QuestID
+-- @return [table] Quest
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.QuestMessage("Das ist ein Text", 4, 1);
@@ -138,16 +141,15 @@ QuestMessage = API.QuestMessage;
 -- Einzelne Einträge pro Quest:
 -- <ul>
 -- <li>Anzeigetext der Nachricht</li>
--- <li>Sender der Nachricht</li>
--- <li>Receiver der Nachricht</li>
--- <li>Vorgänger-Quest</li>
--- <li>Wartezeit</li>
--- <li>Callback</li>
+-- <li>PlayerID des Sender der Nachricht</li>
+-- <li>PlayerID des Empfängers der Nachricht</li>
+-- <li>Name des vorangegangenen Quest</li>
+-- <li>Wartezeit bis zum Start</li>
 -- </ul>
 --
--- @param _Messages Table with Quests
--- @return table: List of generated Quests
--- @within Public
+-- @param _Messages [table] Liste der anzuzeigenden Nachrichten
+-- @return [table] List of generated Quests
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.QuestDialog{
@@ -218,7 +220,7 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
@@ -237,16 +239,16 @@ end
 -- Alle Paramater sind optional und können von rechts nach links weggelassen
 -- oder mit nil aufgefüllt werden.
 --
--- @param _Text       Anzeigetext der Nachricht
--- @param _Sender     Sender der Nachricht
--- @param _Receiver   Receiver der Nachricht
--- @param _Ancestor   Vorgänger-Quest
--- @param _AncestorWt Wartezeit
--- @param _Callback   Callback
--- @return number: QuestID
--- @return table: Quest
+-- @param _Text       [string] Anzeigetext der Nachricht
+-- @param _Sender     [number] Sender der Nachricht
+-- @param _Receiver   [number] Receiver der Nachricht
+-- @param _Ancestor   [string] Vorgänger-Quest
+-- @param _AncestorWt [number] Wartezeit
+-- @param _Callback   [function] Callback
+-- @return [number] QuestID
+-- @return [table] Quest
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
@@ -288,10 +290,10 @@ end
 ---
 -- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
 --
--- @param _Data Daten des Quest.
--- @return string: Name des erzeugten Quests
--- @return number: Gesamtanzahl Quests
--- @within Private
+-- @param _Data [table] Daten des Quest.
+-- @return [string] Name des erzeugten Quests
+-- @return [number] Gesamtanzahl Quests
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:NewQuest(_Data)
@@ -338,9 +340,9 @@ end
 --
 -- <b>Achtung: </b>Diese Funktion wird vom Code aufgerufen!
 --
--- @param _ID   Id des Quests
--- @param _Data Quest Data
--- @within Private
+-- @param _ID   [number] Id des Quests
+-- @param _Data [table] Quest Data
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
@@ -378,10 +380,8 @@ function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
 end
 
 ---
--- DO NOT USE THIS FUNCTION!
--- Startet alle Quests in der GenerationList.
---
--- @within Private
+-- DO NOT USE THIS FUNCTION!--
+-- @within Deprecated
 -- @local
 --
 function BundleQuestGeneration.Global:StartQuests()
@@ -421,7 +421,7 @@ function BundleQuestGeneration.Global:StartQuests()
             if QuestData.Arguments then
                 Quest.Arguments = API.InstanceTable(QuestData.Arguments);
             end
-            
+
             -- Quest wurde erzeugt
             Quests[QuestID].IsGenerated = true;
         end
@@ -432,7 +432,7 @@ end
 -- Validiert alle Quests in der GenerationList. Verschiedene Standardfehler
 -- werden geprüft.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:ValidateQuests()
@@ -515,8 +515,8 @@ end
 -- Diese Funktion muss durch ein Debug Bundle überschrieben werden um Quests
 -- in der Initalisiererliste zu testen.
 --
--- @param _List Liste der Quests
--- @within Private
+-- @param _List [table] Liste der Quests
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:DebugQuest(_List)
@@ -528,7 +528,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Local:Install()

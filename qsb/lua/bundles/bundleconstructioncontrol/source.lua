@@ -6,11 +6,12 @@
 
 ---
 -- Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
--- Gebäude oder ein Typ nicht gebaut bzw. nicht abgerissen werden darf.
+-- Gebäude nicht gebaut bzw. nicht abgerissen werden darf.
 --
--- @module BundleConstructionControl
--- @set sort=true
+-- @within Modulbeschreibung
+-- @set sort=false
 --
+BundleConstructionControl = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -22,8 +23,8 @@ QSB = QSB or {};
 ---
 -- Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbares Entity
--- @within Public
+-- @param _entry [string] Nicht abreißbares Entity
+-- @within Anwenderfunktionen
 --
 function API.AddEntity(_entity)
     if not GUI then
@@ -40,8 +41,8 @@ end
 ---
 -- Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbarer Typ
--- @within Public
+-- @param _entry [number] Nicht abreißbarer Typ
+-- @within Anwenderfunktionen
 --
 function API.AddEntityType(_entity)
     if not GUI then
@@ -58,8 +59,8 @@ end
 ---
 -- Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbare Kategorie
--- @within Public
+-- @param _entry [number] Nicht abreißbare Kategorie
+-- @within Anwenderfunktionen
 --
 function API.AddCategory(_entity)
     if not GUI then
@@ -76,8 +77,8 @@ end
 ---
 -- Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
 --
--- @param _entry Geschütztes Territorium
--- @within Public
+-- @param _entry [number] Geschütztes Territorium
+-- @within Anwenderfunktionen
 --
 function API.AddTerritory(_entity)
     if not GUI then
@@ -94,8 +95,8 @@ end
 ---
 -- Entfernt ein Entity, dass nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbares Entity
--- @within Public
+-- @param _entry [string] Nicht abreißbares Entity
+-- @within Anwenderfunktionen
 --
 function API.RemoveEntity(_entry)
     if not GUI then
@@ -115,8 +116,8 @@ end
 ---
 -- Entfernt einen Entitytyp, der nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbarer Typ
--- @within Public
+-- @param _entry [number] Nicht abreißbarer Typ
+-- @within Anwenderfunktionen
 --
 function API.RemoveEntityType(_entry)
     if not GUI then
@@ -136,8 +137,8 @@ end
 ---
 -- Entfernt eine Kategorie, die nicht abgerissen werden darf.
 --
--- @param _entry Nicht abreißbare Kategorie
--- @within Public
+-- @param _entry [number] Nicht abreißbare Kategorie
+-- @within Anwenderfunktionen
 --
 function API.RemoveCategory(_entry)
     if not GUI then
@@ -157,8 +158,8 @@ end
 ---
 -- Entfernt ein Territory, auf dem nichts abgerissen werden kann.
 --
--- @param _entry Geschütztes Territorium
--- @within Public
+-- @param _entry [number] Geschütztes Territorium
+-- @within Anwenderfunktionen
 --
 function API.RemoveTerritory(_entry)
     if not GUI then
@@ -178,9 +179,9 @@ end
 ---
 -- Untersagt den Bau des Typs im Territorium.
 --
--- @param _type      Entitytyp
--- @param _territory Territorium
--- @within Public
+-- @param _type      [number] Entitytyp
+-- @param _territory [number] Territorium
+-- @within Anwenderfunktionen
 --
 function API.BanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -201,9 +202,9 @@ end
 ---
 -- Untersagt den Bau der Kategorie im Territorium.
 --
--- @param _eCat      Entitykategorie
--- @param _territory Territorium
--- @within Public
+-- @param _eCat      [number] Entitykategorie
+-- @param _territory [number] Territorium
+-- @within Anwenderfunktionen
 --
 function API.BanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -224,10 +225,10 @@ end
 ---
 -- Untersagt den Bau des Typs im Gebiet.
 --
--- @param _type   Entitytyp
--- @param _center Gebietszentrum
--- @param _area   Gebietsgröße
--- @within Public
+-- @param _type   [number] Entitytyp
+-- @param _center [string] Gebietszentrum
+-- @param _area   [number] Gebietsgröße
+-- @within Anwenderfunktionen
 --
 function API.BanTypeInArea(_type, _center, _area)
     if GUI then
@@ -245,10 +246,10 @@ end
 ---
 -- Untersagt den Bau der Kategorie im Gebiet.
 --
--- @param _eCat   Entitykategorie
--- @param _center Gebietszentrum
--- @param _area   Gebietsgröße
--- @within Public
+-- @param _eCat   [number] Entitytyp
+-- @param _center [string] Gebietszentrum
+-- @param _area   [number] Gebietsgröße
+-- @within Anwenderfunktionen
 --
 function API.BanCategoryInArea(_eCat, _center, _area)
     if GUI then
@@ -266,9 +267,9 @@ end
 ---
 -- Gibt einen Typ zum Bau im Territorium wieder frei.
 --
--- @param _type      Entitytyp
--- @param _territory Territorium
--- @within Public
+-- @param _type      [number] Entitytyp
+-- @param _territory [number] Territorium
+-- @within Anwenderfunktionen
 --
 function API.UnBanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -294,9 +295,9 @@ end
 ---
 -- Gibt eine Kategorie zum Bau im Territorium wieder frei.
 --
--- @param _ecat      Entitykategorie
--- @param _territory Territorium
--- @within Public
+-- @param _ecat      [number] Entitykategorie
+-- @param _territory [number] Territorium
+-- @within Anwenderfunktionen
 --
 function API.UnBanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -322,9 +323,9 @@ end
 ---
 -- Gibt einen Typ zum Bau im Gebiet wieder frei.
 --
--- @param _type   Entitytyp
--- @param _center Gebiet
--- @within Public
+-- @param _type   [number] Entitytyp
+-- @param _center [string] Gebiet
+-- @within Anwenderfunktionen
 --
 function API.UnBanTypeInArea (_type, _center)
     if GUI then
@@ -347,9 +348,9 @@ end
 ---
 -- Gibt eine Kategorie zum Bau im Gebiet wieder frei.
 --
--- @param _eCat   Entitykategorie
--- @param _center Gebiet
--- @within Public
+-- @param _eCat   [number] Entitykategorie
+-- @param _center [string] Gebiet
+-- @within Anwenderfunktionen
 --
 function API.UnBanCategoryInArea(_eCat, _center)
     if GUI then
@@ -397,7 +398,7 @@ BundleConstructionControl = {
 ---
 -- Initalisiert das Bundle im globalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleConstructionControl.Global:Install()
@@ -414,7 +415,7 @@ end
 -- @param _Type     Gebäudetyp
 -- @param _x        X-Position
 -- @param _y        Y-Position
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Type, _x, _y)
@@ -483,7 +484,7 @@ end
 ---
 -- Initalisiert das Bundle im lokalen Skript.
 --
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleConstructionControl.Local:Install()
@@ -497,7 +498,7 @@ end
 -- Verhindert den Abriss von Entities.
 --
 -- @param _BuildingID EntityID des Gebäudes
--- @within Private
+-- @within Internal
 -- @local
 --
 function BundleConstructionControl.Local.DeleteEntityStateBuilding(_BuildingID)
