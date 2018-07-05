@@ -5,10 +5,10 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
--- verändert werden, die sonst unzugänglich wären.
+-- <p>Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
+-- verändert werden, die sonst unzugänglich wären.</p>
 --
--- <a href="#SV.GetEntityPlayer">Scripting Values</a>
+-- <p><a href="#SV.GetEntityPlayer">Scripting Values</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -24,9 +24,10 @@ SV = SV or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Gibt den Größenfaktor des Entity zurück.
+-- </p>Gibt den Größenfaktor des Entity zurück.</p>
 --
--- Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
+-- <p>Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
+-- </p>
 --
 -- <p><b>Alias</b>: GetScale</p>
 --

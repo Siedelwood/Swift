@@ -5,15 +5,16 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere
+-- <p>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere
 -- bereitgestellt. Die Helden eines Spielers können mit diesen NPCs sprechen.
 -- Dazu muss der Held selektiert sein. Dann kann der Spieler ihm mit einem
 -- Rechtsklick befehlen, den NPC anzusprechen. Dabei wird der Mauszeiger zu
--- einer Hand.
+-- einer Hand.</p>
 --
--- Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
+-- <p>Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
+-- </p>
 --
--- <a href="#API.NpcCompose">NPCs erzeugen und verwalten</a>
+-- <p><a href="#API.NpcCompose">NPCs erzeugen und verwalten</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=false

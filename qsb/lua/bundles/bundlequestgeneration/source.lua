@@ -13,7 +13,7 @@
 -- können im Skript kopiert und angepasst werden. Es ist ebenfalls machbar,
 -- die Aufträge in Sequenzen zu erzeugen.
 --
--- <a href="#API.CreateQuest">Quests erzeugen</a>
+-- <p><a href="#API.CreateQuest">Quests erzeugen</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=false

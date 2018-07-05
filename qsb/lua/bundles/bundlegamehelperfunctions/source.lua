@@ -534,11 +534,11 @@ end
 StopFollowKnightSave = API.FollowKnightSaveStop;
 
 ---
--- Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
--- Abstände der Eckpunkte zum Zentralpunkt.
+-- <p>Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
+-- Abstände der Eckpunkte zum Zentralpunkt.</p>
 --
--- <b>Hinweis:</b> Für weitere Informationen zu Terraintexturen siehe
--- https://siedelwood-neu.de/23879-2/
+-- <p><b>Hinweis:</b> Für weitere Informationen zu Terraintexturen siehe
+-- https://siedelwood-neu.de/23879-2/</p>
 --
 -- <p><b>Alias:</b> TerrainType</p>
 --

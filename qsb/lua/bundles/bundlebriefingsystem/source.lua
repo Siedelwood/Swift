@@ -296,8 +296,8 @@ end
 -- Ein Flight kann aus nahezu unbegrenzt vielen Punkten bestehen, die alle
 -- innerhalb der Duration abgefahren werden.
 --
--- <b>Hinweis:</b> Es ist prinzipiell Möglich mehr als 10 Punkte pro Sekunde
--- anzusteuern, aber nicht sehr sinnvoll. ;)
+-- <p><b>Hinweis:</b> Es ist prinzipiell Möglich mehr als 10 Punkte pro Sekunde
+-- anzusteuern, aber nicht sehr sinnvoll. ;)</p>
 --
 -- Aufbau einer Station eines Flights:
 -- <table border="1">
@@ -381,8 +381,8 @@ end
 -- der Kameraposition und danach das Triple des Blickpunktes angegeben wird.
 -- Für jeden Punkt müssen also 6 Zahlen angegeben werden.
 --
--- <b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
--- wenigen Kamerastationen oder für eine generische Nutzung.
+-- <p><b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
+-- wenigen Kamerastationen oder für eine generische Nutzung.</p>
 --
 -- @param _Text     [string] Angezeigter Text
 -- @param _Duration [number] Dauer des Flight
@@ -891,9 +891,9 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- wie seitenweises Überspringen oder Multiple Choice, sind deaktiviert
     -- bzw. verhindern den Start der Cutscene.
     --
-    -- <b>Hinweis:</b> Bei diesen Cutscenes handelt es sich nicht um echte
+    -- <p><b>Hinweis:</b> Bei diesen Cutscenes handelt es sich nicht um echte
     -- Cutscenes sondern um eine Simulation. Die Kamerabewegung wird
-    -- dementsprechend nicht so flüssig sein und es kann ruckeln!
+    -- dementsprechend nicht so flüssig sein und es kann ruckeln!</p>
     --
     -- <p><b>Alias</b>: BriefingSystem.StartCutscene <br/></p>
     -- <p><b>Alias</b>: StartCutscene</p>

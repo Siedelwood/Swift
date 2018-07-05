@@ -10,7 +10,7 @@
 -- die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
 -- zu setzen.
 --
--- <a href="#API.InterfaceHideBuildMenu">Interface-Steuerung</a>
+-- <p><a href="#API.InterfaceHideBuildMenu">Interface-Steuerung</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -29,8 +29,8 @@ QSB.PlayerNames = {};
 ---
 -- Graut die Minimap aus oder macht sie wieder verwendbar.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -54,8 +54,8 @@ end
 ---
 -- Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -75,8 +75,8 @@ end
 ---
 -- Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -96,8 +96,8 @@ end
 ---
 -- Versteckt den Button des Produktionsmenü oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -117,8 +117,8 @@ end
 ---
 -- Versteckt den Button des Wettermenüs oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -138,8 +138,8 @@ end
 ---
 -- Versteckt den Button zum Territorienkauf oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -159,8 +159,8 @@ end
 ---
 -- Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -184,8 +184,8 @@ end
 ---
 -- Versteckt den Button zur Heldenselektion oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -217,8 +217,8 @@ end
 ---
 -- Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -240,8 +240,8 @@ end
 ---
 -- Versteckt das Baumenü oder blendet es ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
@@ -265,9 +265,9 @@ end
 -- beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
 -- muss jedoch immer der korrekte Pfad angegeben werden.
 --
--- <b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
+-- <p><b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
 -- sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
--- unterschiedlich ist.
+-- unterschiedlich ist.</p>
 --
 -- @param _widget [string|number] Widgetpfad oder ID
 -- @param _file [string] Pfad zur Datei

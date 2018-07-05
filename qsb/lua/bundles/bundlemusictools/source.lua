@@ -5,8 +5,10 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze Playlists als
--- Stimme abzuspielen.
+-- <p>Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze Playlists als
+-- Stimme abzuspielen.</p>
+--
+-- <p><a href="#API.StartMusic">Musik abspielen</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true

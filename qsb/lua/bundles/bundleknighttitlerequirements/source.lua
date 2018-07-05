@@ -11,9 +11,9 @@
 -- Die Aufstiegsbedingungen werden in der Funktion InitKnightTitleTables
 -- angegeben und bearbeitet.
 --
--- <a href="#InitKnightTitleTables">Aufstiegsbedingungen steuern</a>
+-- <p><a href="#InitKnightTitleTables">Aufstiegsbedingungen steuern</a></p>
 --
--- Mögliche Aufstiegsbedingungen:
+-- <p>Mögliche Aufstiegsbedingungen:
 -- <ul>
 -- <li><b>Entitytyp besitzen</b><br/>
 -- Der Spieler muss eine bestimmte Anzahl von Entities eines Typs besitzen.
@@ -129,7 +129,7 @@
 -- }
 -- </code></pre>
 -- </li>
--- </ul>
+-- </ul></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true

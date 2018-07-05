@@ -165,9 +165,10 @@ CreateIOStoneMine = API.CreateIOStoneMine;
 -- wird, das Territorium besitzt, auf dem er bauen soll. Des weiteren muss
 -- er über ein Lagerhaus/Hauptzelt verfügen.
 --
--- <b>Hinweis:</b> Es kann vorkommen, dass das Model der Baustelle nicht
+-- <p><b>Hinweis:</b> Es kann vorkommen, dass das Model der Baustelle nicht
 -- geladen wird. Dann ist der Boden der Baustelle schwarz. Sobald wenigstens
 -- ein reguläres Gebäude gebaut wurde, sollte die Textur jedoch vorhanden sein.
+-- </p>
 --
 -- <p><b>Alias</b>: CreateIOBuildingSite</p>
 --
