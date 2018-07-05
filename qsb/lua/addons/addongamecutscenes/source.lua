@@ -9,7 +9,7 @@
 -- Cutscenes. Ausserdem ermöglicht es das direkte Erfassen der
 -- Kamerapositionen aus der Map heraus.</p>
 --
--- <p><a href="#CS.StartCutscene">Cutscene starten"</a></p>
+-- <p><a href="#CS.StartCutscene">Cutscene starten</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true

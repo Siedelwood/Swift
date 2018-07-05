@@ -6,7 +6,8 @@
 
 ---
 -- <p>Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
--- verändert werden, die sonst unzugänglich wären.</p>
+-- verändert werden, die sonst unzugänglich wären. Dazu zählen beispielsweise
+-- die Größe des Entity und das Bewegungsziel.</p>
 --
 -- <p><a href="#SV.GetEntityPlayer">Scripting Values</a></p>
 --
