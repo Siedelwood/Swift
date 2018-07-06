@@ -56,7 +56,7 @@ SymfoniaLoader = {
             {"BundleQuestGeneration",               true},
             {"BundleTradingFunctions",              true},
             {"BundleInteractiveObjects",            true},
-            {"BundleSaveGameTools",                 true},
+            {"BundleSaveGameTools",                 false},
             {"BundleSymfoniaBehaviors",             true},
         },
 

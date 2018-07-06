@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
 <div id="container">
 
 <div id="product">
@@ -77,39 +79,43 @@
 <div id="content">
 
 <h1>Module <code>bundles.bundleentityscriptingvalues.source</code></h1>
-<p>Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
+<p><p>Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
  verändert werden, die sonst unzugänglich wären.</p>
-<p></p>
+<p> Dazu zählen beispielsweise
+ die Größe des Entity und das Bewegungsziel.</p>
+<p> <p><a href="#SV.GetEntityPlayer">Scripting Values</a></p>
+</p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.GetEntityPlayer">API.GetEntityPlayer (_Entity)</a></td>
+	<td class="name" nowrap><a href="#SV.GetEntityPlayer">SV.GetEntityPlayer (_Entity)</a></td>
 	<td class="summary">Gibt den Besitzer des Entity zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.GetEntityScale">API.GetEntityScale (_Entity)</a></td>
-	<td class="summary">Gibt den Größenfaktor des Entity zurück.</td>
+	<td class="name" nowrap><a href="#SV.GetEntityScale">SV.GetEntityScale (_Entity)</a></td>
+	<td class="summary"></p>Gibt den Größenfaktor des Entity zurück.</p>
+<p> <p>Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.GetMovingTarget">API.GetMovingTarget (_Entity)</a></td>
+	<td class="name" nowrap><a href="#SV.GetMovementTarget">SV.GetMovementTarget (_Entity)</a></td>
 	<td class="summary">Gibt die Position zurück, zu der sich das Entity bewegt.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.IsEntityNpc">API.IsEntityNpc (_Entity)</a></td>
+	<td class="name" nowrap><a href="#SV.IsActiveNpc">SV.IsActiveNpc (_Entity)</a></td>
 	<td class="summary">Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.IsEntityVisible">API.IsEntityVisible (_Entity)</a></td>
+	<td class="name" nowrap><a href="#SV.IsEntityVisible">SV.IsEntityVisible (_Entity)</a></td>
 	<td class="summary">Gibt zurück, ob das Entity sichtbar ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetEntityPlayer">API.SetEntityPlayer (_Entity, _PlayerID)</a></td>
+	<td class="name" nowrap><a href="#SV.SetEntityPlayer">SV.SetEntityPlayer (_Entity, _PlayerID)</a></td>
 	<td class="summary">Ändert den Besitzer des Entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetEntityScale">API.SetEntityScale (_Entity, _Scale)</a></td>
+	<td class="name" nowrap><a href="#SV.SetEntityScale">SV.SetEntityScale (_Entity, _Scale)</a></td>
 	<td class="summary">Setzt den Größenfaktor des Entity.</td>
 	</tr>
 </table>
@@ -192,8 +198,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.GetEntityPlayer"></a>
-    <strong>API.GetEntityPlayer (_Entity)</strong>
+    <a name = "SV.GetEntityPlayer"></a>
+    <strong>SV.GetEntityPlayer (_Entity)</strong>
     </dt>
     <dd>
     Gibt den Besitzer des Entity zurück.
@@ -219,12 +225,13 @@
 
 </dd>
     <dt>
-    <a name = "API.GetEntityScale"></a>
-    <strong>API.GetEntityScale (_Entity)</strong>
+    <a name = "SV.GetEntityScale"></a>
+    <strong>SV.GetEntityScale (_Entity)</strong>
     </dt>
     <dd>
-    Gibt den Größenfaktor des Entity zurück.
-<p> Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
+    </p>Gibt den Größenfaktor des Entity zurück.</p>
+<p> <p>Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
+ </p>
 <p> <p><b>Alias</b>: GetScale</p>
 
 
@@ -246,13 +253,13 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="keyword">local</span> Scale = API.GetEntityScale(<span class="string">"alandra"</span>)</pre>
+        <pre class="example"><span class="keyword">local</span> Scale = SV.GetEntityScale(<span class="string">"alandra"</span>)</pre>
     </ul>
 
 </dd>
     <dt>
-    <a name = "API.GetMovingTarget"></a>
-    <strong>API.GetMovingTarget (_Entity)</strong>
+    <a name = "SV.GetMovementTarget"></a>
+    <strong>SV.GetMovementTarget (_Entity)</strong>
     </dt>
     <dd>
     Gibt die Position zurück, zu der sich das Entity bewegt.
@@ -279,7 +286,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="keyword">local</span> Destination = API.GetMovingTarget(<span class="string">"hakim"</span>);
+        <pre class="example"><span class="keyword">local</span> Destination = SV.GetMovementTarget(<span class="string">"hakim"</span>);
 <span class="keyword">if</span> GetDistance(Destination, <span class="string">"LockedArea"</span>) &lt; <span class="number">2000</span> <span class="keyword">then</span>
     <span class="keyword">local</span> x,y,z = Logic.EntityGetPos(GetID(<span class="string">"hakim"</span>));
     Logic.DEBUG_SetSettlerPosition(GetID(<span class="string">"hakim"</span>), x, y):
@@ -288,8 +295,8 @@
 
 </dd>
     <dt>
-    <a name = "API.IsEntityNpc"></a>
-    <strong>API.IsEntityNpc (_Entity)</strong>
+    <a name = "SV.IsActiveNpc"></a>
+    <strong>SV.IsActiveNpc (_Entity)</strong>
     </dt>
     <dd>
     Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
@@ -315,7 +322,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="keyword">local</span> Active = API.IsEntityNpc(<span class="string">"alandra"</span>);
+        <pre class="example"><span class="keyword">local</span> Active = SV.IsActiveNpc(<span class="string">"alandra"</span>);
 <span class="keyword">if</span> Active <span class="keyword">then</span>
     API.Note(<span class="string">"NPC is active"</span>);
 <span class="keyword">end</span></pre>
@@ -323,8 +330,8 @@
 
 </dd>
     <dt>
-    <a name = "API.IsEntityVisible"></a>
-    <strong>API.IsEntityVisible (_Entity)</strong>
+    <a name = "SV.IsEntityVisible"></a>
+    <strong>SV.IsEntityVisible (_Entity)</strong>
     </dt>
     <dd>
     Gibt zurück, ob das Entity sichtbar ist.
@@ -350,8 +357,8 @@
 
 </dd>
     <dt>
-    <a name = "API.SetEntityPlayer"></a>
-    <strong>API.SetEntityPlayer (_Entity, _PlayerID)</strong>
+    <a name = "SV.SetEntityPlayer"></a>
+    <strong>SV.SetEntityPlayer (_Entity, _PlayerID)</strong>
     </dt>
     <dd>
     Ändert den Besitzer des Entity.
@@ -377,8 +384,8 @@
 
 </dd>
     <dt>
-    <a name = "API.SetEntityScale"></a>
-    <strong>API.SetEntityScale (_Entity, _Scale)</strong>
+    <a name = "SV.SetEntityScale"></a>
+    <strong>SV.SetEntityScale (_Entity, _Scale)</strong>
     </dt>
     <dd>
     Setzt den Größenfaktor des Entity.
@@ -804,8 +811,26 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-04 13:23:22 </i>
+<i style="float:right;">Last updated 2018-07-05 11:41:50 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
 </body>
 </html>

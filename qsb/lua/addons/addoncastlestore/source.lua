@@ -22,6 +22,22 @@
 -- Objektes bezahlen, werden die Güter im Burglager automatisch mit einbezogen,
 -- wenn sie nicht gesperrt wurden.
 --
+-- Das wichtigste Auf einen Blick:
+-- <ul>
+-- <li>
+-- <a href="#API.CastleStoreCreate">Burglager in der Burg anlegen</a>
+-- </li>
+-- <li>
+-- <a href="#API.CastleStoreCountGood">Warenmenge in der Burg abfragen</a>
+-- </li>
+-- <li>
+-- <a href="#API.CastleStoreAddGood">Waren dem Burglager hinzufügen</a>
+-- </li>
+-- <li>
+-- <a href="#API.CastleStoreRemoveGood">Waren aus der Burg entfernen</a>
+-- </li>
+-- </ul>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
