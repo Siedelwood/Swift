@@ -39,7 +39,7 @@ QSB = QSB or {};
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- <b>Alias</b>:
+-- <b>Alias</b>: UserOpenDialog
 --
 -- @param _Title  [string] Titel des Dialog
 -- @param _Text   [string] Text des Dialog
