@@ -495,6 +495,9 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
 -- zurück, der die Verfolgung steuert.
 --
+-- <p><b>Hinweis:</b> Wenn eines der Entities zerstört wird, oder ins
+-- Koma fällt, wird der Job beendet!</p>
+--
 -- <p><b>Alias:</b> AddFollowKnightSave</p>
 --
 -- @param _Entity [string|number] Entity das folgt
@@ -745,8 +748,8 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
-    self:InitExtendedZoomHotkeyDescription();
-    self:InitExtendedZoomHotkey();
+    self:InitExtendedZoomHotkeyFunction();
+    self:InitExtendedZoomHotkeyDescription()
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
 
     QSB.TimeLine = BundleGameHelperFunctions.Shared.TimeLine;
@@ -1070,7 +1073,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:InitExtendedZoomHotkey()
+function BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyFunction()
     API.Bridge([[
         BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
     ]]);
@@ -1426,7 +1429,7 @@ function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
     if BundleGameHelperFunctions.Global.Data.ExtendedZoomActive then
         BundleGameHelperFunctions.Global:ActivateExtendedZoom();
     end
-    BundleGameHelperFunctions.Global:InitExtendedZoomHotkey();
+    BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyFunction();
 
     -- Cheats sperren --
     if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
