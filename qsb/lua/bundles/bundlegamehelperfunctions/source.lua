@@ -495,6 +495,9 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
 -- zurück, der die Verfolgung steuert.
 --
+-- <p><b>Hinweis:</b> Wenn eines der Entities zerstört wird, oder ins
+-- Koma fällt, wird der Job beendet!</p>
+--
 -- <p><b>Alias:</b> AddFollowKnightSave</p>
 --
 -- @param _Entity [string|number] Entity das folgt
