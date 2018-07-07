@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
 <div id="container">
 
 <div id="product">
@@ -32,8 +34,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -77,62 +79,56 @@
 
 <h1>Module <code>bundles.bundleconstructioncontrol.source</code></h1>
 <p>Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
- Gebäude nicht gebaut bzw.</p>
-<p> nicht abgerissen werden darf.
+ Gebäude nicht gebaut oder nicht abgerissen werden darf.</p>
+<p>
+<p> Das wichtigste Auf einen Blick:
+ <ul>
+ <li>
+ Den Abriss für bestimmte Entities steuern.<br>
+ <a href="#API.ProtectCategory">Entities beschützen</a>,
+ <a href="#API.UnprotectCategory">Schutz aufheben</a>
+ </li>
+ <li>
+ Den Bau von Gebäuden an bestimmten Orten steuern.<br>
+ <a href="#API.BanCategoryInArea">Bau verbieten</a>,
+ <a href="#API.UnbanCategoryInArea">Bau erlauben</a>
+ </li>
+ </ul>
 </p>
 
 
-<h2><a href="#Internal">Internal</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Global:Install">BundleConstructionControl.Global:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Global.CanPlayerPlaceBuilding">BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</a></td>
-	<td class="summary">Verhindert den Bau von Entities in Gebieten und Territorien.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Local:Install">BundleConstructionControl.Local:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Local.DeleteEntityStateBuilding">BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</a></td>
-	<td class="summary">Verhindert den Abriss von Entities.</td>
-	</tr>
-</table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.AddEntity">API.AddEntity (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectEntity">API.ProtectEntity (_entry)</a></td>
 	<td class="summary">Fügt ein Entity hinzu, dass nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddEntityType">API.AddEntityType (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectEntityType">API.ProtectEntityType (_entry)</a></td>
 	<td class="summary">Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddCategory">API.AddCategory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectCategory">API.ProtectCategory (_entry)</a></td>
 	<td class="summary">Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddTerritory">API.AddTerritory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectTerritory">API.ProtectTerritory (_entry)</a></td>
 	<td class="summary">Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveEntity">API.RemoveEntity (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.UnprotectEntity">API.UnprotectEntity (_entry)</a></td>
 	<td class="summary">Entfernt ein Entity, dass nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveEntityType">API.RemoveEntityType (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.UnprotectEntityType">API.UnprotectEntityType (_entry)</a></td>
 	<td class="summary">Entfernt einen Entitytyp, der nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveCategory">API.RemoveCategory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.UnprotectCategory">API.UnprotectCategory (_entry)</a></td>
 	<td class="summary">Entfernt eine Kategorie, die nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveTerritory">API.RemoveTerritory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.UnprotectTerritory">API.UnprotectTerritory (_entry)</a></td>
 	<td class="summary">Entfernt ein Territory, auf dem nichts abgerissen werden kann.</td>
 	</tr>
 	<tr>
@@ -168,98 +164,36 @@
 	<td class="summary">Gibt eine Kategorie zum Bau im Gebiet wieder frei.</td>
 	</tr>
 </table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Global:Install">BundleConstructionControl.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Global.CanPlayerPlaceBuilding">BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</a></td>
+	<td class="summary">Verhindert den Bau von Entities in Gebieten und Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Local:Install">BundleConstructionControl.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Local.DeleteEntityStateBuilding">BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</a></td>
+	<td class="summary">Verhindert den Abriss von Entities.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
-    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "BundleConstructionControl.Global:Install"></a>
-    <strong>BundleConstructionControl.Global:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im globalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleConstructionControl.Global.CanPlayerPlaceBuilding"></a>
-    <strong>BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</strong>
-    </dt>
-    <dd>
-    Verhindert den Bau von Entities in Gebieten und Territorien.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         Spieler
-        </li>
-        <li><span class="parameter">_Type</span>
-             Gebäudetyp
-        </li>
-        <li><span class="parameter">_x</span>
-                X-Position
-        </li>
-        <li><span class="parameter">_y</span>
-                Y-Position
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleConstructionControl.Local:Install"></a>
-    <strong>BundleConstructionControl.Local:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im lokalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleConstructionControl.Local.DeleteEntityStateBuilding"></a>
-    <strong>BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</strong>
-    </dt>
-    <dd>
-    Verhindert den Abriss von Entities.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_BuildingID</span>
-         EntityID des Gebäudes
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
     <dt>
-    <a name = "API.AddEntity"></a>
-    <strong>API.AddEntity (_entry)</strong>
+    <a name = "API.ProtectEntity"></a>
+    <strong>API.ProtectEntity (_entry)</strong>
     </dt>
     <dd>
     Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
@@ -278,8 +212,8 @@
 
 </dd>
     <dt>
-    <a name = "API.AddEntityType"></a>
-    <strong>API.AddEntityType (_entry)</strong>
+    <a name = "API.ProtectEntityType"></a>
+    <strong>API.ProtectEntityType (_entry)</strong>
     </dt>
     <dd>
     Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
@@ -298,8 +232,8 @@
 
 </dd>
     <dt>
-    <a name = "API.AddCategory"></a>
-    <strong>API.AddCategory (_entry)</strong>
+    <a name = "API.ProtectCategory"></a>
+    <strong>API.ProtectCategory (_entry)</strong>
     </dt>
     <dd>
     Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
@@ -318,8 +252,8 @@
 
 </dd>
     <dt>
-    <a name = "API.AddTerritory"></a>
-    <strong>API.AddTerritory (_entry)</strong>
+    <a name = "API.ProtectTerritory"></a>
+    <strong>API.ProtectTerritory (_entry)</strong>
     </dt>
     <dd>
     Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
@@ -338,8 +272,8 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveEntity"></a>
-    <strong>API.RemoveEntity (_entry)</strong>
+    <a name = "API.UnprotectEntity"></a>
+    <strong>API.UnprotectEntity (_entry)</strong>
     </dt>
     <dd>
     Entfernt ein Entity, dass nicht abgerissen werden darf.
@@ -358,8 +292,8 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveEntityType"></a>
-    <strong>API.RemoveEntityType (_entry)</strong>
+    <a name = "API.UnprotectEntityType"></a>
+    <strong>API.UnprotectEntityType (_entry)</strong>
     </dt>
     <dd>
     Entfernt einen Entitytyp, der nicht abgerissen werden darf.
@@ -378,8 +312,8 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveCategory"></a>
-    <strong>API.RemoveCategory (_entry)</strong>
+    <a name = "API.UnprotectCategory"></a>
+    <strong>API.UnprotectCategory (_entry)</strong>
     </dt>
     <dd>
     Entfernt eine Kategorie, die nicht abgerissen werden darf.
@@ -398,8 +332,8 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveTerritory"></a>
-    <strong>API.RemoveTerritory (_entry)</strong>
+    <a name = "API.UnprotectTerritory"></a>
+    <strong>API.UnprotectTerritory (_entry)</strong>
     </dt>
     <dd>
     Entfernt ein Territory, auf dem nichts abgerissen werden kann.
@@ -608,14 +542,113 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleConstructionControl.Global:Install"></a>
+    <strong>BundleConstructionControl.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleConstructionControl.Global.CanPlayerPlaceBuilding"></a>
+    <strong>BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</strong>
+    </dt>
+    <dd>
+    Verhindert den Bau von Entities in Gebieten und Territorien.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Spieler
+        </li>
+        <li><span class="parameter">_Type</span>
+             Gebäudetyp
+        </li>
+        <li><span class="parameter">_x</span>
+                X-Position
+        </li>
+        <li><span class="parameter">_y</span>
+                Y-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleConstructionControl.Local:Install"></a>
+    <strong>BundleConstructionControl.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleConstructionControl.Local.DeleteEntityStateBuilding"></a>
+    <strong>BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</strong>
+    </dt>
+    <dd>
+    Verhindert den Abriss von Entities.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_BuildingID</span>
+         EntityID des Gebäudes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-05 11:41:50 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
 </body>
 </html>

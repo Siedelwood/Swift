@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
 <div id="container">
 
 <div id="product">
@@ -32,8 +34,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -76,11 +78,42 @@
 <div id="content">
 
 <h1>Module <code>bundles.bundlemusictools.source</code></h1>
-<p>Dieses Bundle bietet die Möglichkeit Musikstücke oder ganze Playlists als
- Stimme abzuspielen.</p>
-<p></p>
+<p><p>Dieses Bundle bietet die Möglichkeit Musikstücke abzuspielen.</p>
+<p> Die
+ Musik kann als einzelne Titel oder als Playlist wiedergegeben werden.</p>
+<p> <p><a href="#API.StartMusic">Musik abspielen</a></p>
+</p>
 
 
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AbortMusic">API.AbortMusic ()</a></td>
+	<td class="summary">Stopt den gerade laufenden Song und leert sowohl die Songdaten
+ als auch die Playlist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartMusic">API.StartMusic (_Description)</a></td>
+	<td class="summary">Startet ein Musikstück als Stimme.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartMusicSimple">API.StartMusicSimple (_File, _Volume, _Length, _FadeOut)</a></td>
+	<td class="summary">Vereinfachter einzeiliger Aufruf für StartSong.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartPlaylist">API.StartPlaylist (_Playlist)</a></td>
+	<td class="summary">Spielt eine Playlist ab.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartPlaylistTitle">API.StartPlaylistTitle (_Title)</a></td>
+	<td class="summary">Stoppt gerade gespielte Musik und startet die Playlist mit dem
+ angegebenen Titel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StopSong">API.StopSong ()</a></td>
+	<td class="summary">Stopt Musik und stellt die alte Soundkonfiguration wieder her.</td>
+	</tr>
+</table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
@@ -126,40 +159,202 @@
 	<td class="summary">Stellt die Soundeinstellungen wieder her.</td>
 	</tr>
 </table>
-<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.AbortMusic">API.AbortMusic ()</a></td>
-	<td class="summary">Stopt den gerade laufenden Song und leert sowohl die Songdaten
- als auch die Playlist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartMusic">API.StartMusic (_Description)</a></td>
-	<td class="summary">Startet ein Musikstück als Stimme.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartMusicSimple">API.StartMusicSimple (_File, _Volume, _Length, _FadeOut)</a></td>
-	<td class="summary">Vereinfachter einzeiliger Aufruf für StartSong.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartPlaylist">API.StartPlaylist (_Playlist)</a></td>
-	<td class="summary">Spielt eine Playlist ab.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartPlaylistTitle">API.StartPlaylistTitle (_Title)</a></td>
-	<td class="summary">Stoppt gerade gespielte Musik und startet die Playlist mit dem
- angegebenen Titel.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StopSong">API.StopSong ()</a></td>
-	<td class="summary">Stopt Musik und stellt die alte Soundkonfiguration wieder her.</td>
-	</tr>
-</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AbortMusic"></a>
+    <strong>API.AbortMusic ()</strong>
+    </dt>
+    <dd>
+    Stopt den gerade laufenden Song und leert sowohl die Songdaten
+ als auch die Playlist.
+<p> <p><b>Alias:</b> AbortSongOrPlaylist</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartMusic"></a>
+    <strong>API.StartMusic (_Description)</strong>
+    </dt>
+    <dd>
+    Startet ein Musikstück als Stimme.
+<p> <p><b>Alias:</b> StartSong</p>
+<p> Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
+ sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
+ gespielt werden kann! Alle als Sprache abgespielten Sounds werden die
+ gleiche Lautstärke haben, wie die Musik.
+<p> _Description hat folgendes Format:
+ <ul>
+ <li>File     - Path + Dateiname</li>
+ <li>Volume   - Lautstärke</li>
+ <li>length   - abgespielte Länge in Sekunden (nicht zwingend |Musikstück|)</li>
+ <li>Fadeout  - Ausblendzeit in Zehntels. (>= 5 oder 0 für sofort)</li>
+ <li>MuteAtmo - Hintergrundgeräusche aus</li>
+ <li>MuteUI   - GUI-Sounds aus</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Description</span>
+         [table] Definition des Musikstück
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.StartMusic({
+    File     = <span class="string">"music/s6_10_antagonist.mp3"</span>,
+    Volume   = <span class="number">70</span>,
+    Length   = <span class="number">49</span>,
+    Fadeout  = <span class="number">20</span>,
+    MuteAtmo = <span class="keyword">true</span>;
+    MuteUI   = <span class="keyword">true</span>,
+});</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.StartMusicSimple"></a>
+    <strong>API.StartMusicSimple (_File, _Volume, _Length, _FadeOut)</strong>
+    </dt>
+    <dd>
+    Vereinfachter einzeiliger Aufruf für StartSong.
+<p> <p><b>Alias:</b> StartSongSimple</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_File</span>
+         [string] Pfad zur Datei
+        </li>
+        <li><span class="parameter">_Volume</span>
+         [number] Lautstärke
+        </li>
+        <li><span class="parameter">_Length</span>
+         [number] Abspieldower (<= Dauer Musikstück)
+        </li>
+        <li><span class="parameter">_FadeOut</span>
+         [number] Ausblenden in Sekunden
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.StartMusicSimple(<span class="string">"music/s6_10_antagonist.mp3"</span>, <span class="number">70</span>, <span class="number">49</span>, <span class="number">1</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.StartPlaylist"></a>
+    <strong>API.StartPlaylist (_Playlist)</strong>
+    </dt>
+    <dd>
+    Spielt eine Playlist ab.
+<p> <p><b>Alias:</b> StartPlaylist</p>
+<p> Eine im Skript definierte Playlist, nicht
+ eine XML! Die Playlist kann einmal abgearbeitet oder auf Wiederholung
+ gestellt werden. Alle Einträge haben das Format von StartSong!
+ Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
+ sich die Playlist endlos wiederholt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Playlist</span>
+         [table] Definition der Playlist
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Playlist = {
+    {
+        File     = <span class="string">"music/s6_10_antagonist.mp3"</span>,
+        Volume   = <span class="number">70</span>,
+        Length   = <span class="number">49</span>,
+        Fadeout  = <span class="number">20</span>,
+        MuteAtmo = <span class="keyword">true</span>;
+        MuteUI   = <span class="keyword">true</span>,
+    },
+    {
+        File     = <span class="string">"music/s6_04_blaze.mp3"</span>,
+        Volume   = <span class="number">70</span>,
+        Length   = <span class="number">65</span>,
+        Fadeout  = <span class="number">20</span>,
+        MuteAtmo = <span class="keyword">false</span>;
+        MuteUI   = <span class="keyword">true</span>,
+    },
+}
+API.StartPlaylist(Playlist);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.StartPlaylistTitle"></a>
+    <strong>API.StartPlaylistTitle (_Title)</strong>
+    </dt>
+    <dd>
+    Stoppt gerade gespielte Musik und startet die Playlist mit dem
+ angegebenen Titel.  Es muss eine Playlist existieren! Nachdem der
+ Titel abgespielt ist, wird die Playlist normal weiter gespielt.
+<p> <p><b>Alias:</b> StartPlaylistTitle</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+         [number] Index des Titels
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StopSong"></a>
+    <strong>API.StopSong ()</strong>
+    </dt>
+    <dd>
+    Stopt Musik und stellt die alte Soundkonfiguration wieder her.
+<p> <p><b>Alias:</b> StopSong</p>
+
+
+
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
@@ -354,205 +549,32 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.AbortMusic"></a>
-    <strong>API.AbortMusic ()</strong>
-    </dt>
-    <dd>
-    Stopt den gerade laufenden Song und leert sowohl die Songdaten
- als auch die Playlist.
-<p> <b>Alias:</b> AbortSongOrPlaylist
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StartMusic"></a>
-    <strong>API.StartMusic (_Description)</strong>
-    </dt>
-    <dd>
-    Startet ein Musikstück als Stimme.
-<p> <b>Alias:</b> StartSong
-<p> Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
- sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
- gespielt werden kann! Alle als Sprache abgespielten Sounds werden die
- gleiche Lautstärke haben, wie die Musik.
-<p> _Description hat folgendes Format:
- <ul>
- <li>File     - Path + Dateiname</li>
- <li>Volume   - Lautstärke</li>
- <li>length   - abgespielte Länge in Sekunden (nicht zwingend |Musikstück|)</li>
- <li>Fadeout  - Ausblendzeit in Zehntels. (>= 5 oder 0 für sofort)</li>
- <li>MuteAtmo - Hintergrundgeräusche aus</li>
- <li>MuteUI   - GUI-Sounds aus</li>
- </ul>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Description</span>
-         [table] Definition des Musikstück
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.StartMusic({
-    File     = <span class="string">"music/s6_10_antagonist.mp3"</span>,
-    Volume   = <span class="number">70</span>,
-    Length   = <span class="number">49</span>,
-    Fadeout  = <span class="number">20</span>,
-    MuteAtmo = <span class="keyword">true</span>;
-    MuteUI   = <span class="keyword">true</span>,
-});</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.StartMusicSimple"></a>
-    <strong>API.StartMusicSimple (_File, _Volume, _Length, _FadeOut)</strong>
-    </dt>
-    <dd>
-    Vereinfachter einzeiliger Aufruf für StartSong.
-<p> <b>Alias:</b> StartSongSimple
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_File</span>
-         [string] Pfad zur Datei
-        </li>
-        <li><span class="parameter">_Volume</span>
-         [number] Lautstärke
-        </li>
-        <li><span class="parameter">_Length</span>
-         [number] Abspieldower (<= Dauer Musikstück)
-        </li>
-        <li><span class="parameter">_FadeOut</span>
-         [number] Ausblenden in Sekunden
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.StartMusicSimple(<span class="string">"music/s6_10_antagonist.mp3"</span>, <span class="number">70</span>, <span class="number">49</span>, <span class="number">1</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.StartPlaylist"></a>
-    <strong>API.StartPlaylist (_Playlist)</strong>
-    </dt>
-    <dd>
-    Spielt eine Playlist ab.
-<p> <b>Alias:</b> StartPlaylist
-<p> Eine im Skript definierte Playlist, nicht
- eine XML! Die Playlist kann einmal abgearbeitet oder auf Wiederholung
- gestellt werden. Alle Einträge haben das Format von StartSong!
- Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
- sich die Playlist endlos wiederholt.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Playlist</span>
-         [table] Definition der Playlist
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Playlist = {
-    {
-        File     = <span class="string">"music/s6_10_antagonist.mp3"</span>,
-        Volume   = <span class="number">70</span>,
-        Length   = <span class="number">49</span>,
-        Fadeout  = <span class="number">20</span>,
-        MuteAtmo = <span class="keyword">true</span>;
-        MuteUI   = <span class="keyword">true</span>,
-    },
-    {
-        File     = <span class="string">"music/s6_04_blaze.mp3"</span>,
-        Volume   = <span class="number">70</span>,
-        Length   = <span class="number">65</span>,
-        Fadeout  = <span class="number">20</span>,
-        MuteAtmo = <span class="keyword">false</span>;
-        MuteUI   = <span class="keyword">true</span>,
-    },
-}
-API.StartPlaylist(Playlist);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.StartPlaylistTitle"></a>
-    <strong>API.StartPlaylistTitle (_Title)</strong>
-    </dt>
-    <dd>
-    Stoppt gerade gespielte Musik und startet die Playlist mit dem
- angegebenen Titel.  Es muss eine Playlist existieren! Nachdem der
- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
-<p> <b>Alias:</b> StartPlaylistTitle
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Title</span>
-         [number] Index des Titels
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StopSong"></a>
-    <strong>API.StopSong ()</strong>
-    </dt>
-    <dd>
-    Stopt Musik und stellt die alte Soundkonfiguration wieder her.
-<p> <b>Alias:</b> StopSong
-
-
-
-
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-05 11:41:50 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
 </body>
 </html>

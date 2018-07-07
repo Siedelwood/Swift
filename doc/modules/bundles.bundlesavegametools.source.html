@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
 <div id="container">
 
 <div id="product">
@@ -32,8 +34,8 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Internal">Internal</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -81,6 +83,26 @@
 <p></p>
 
 
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AutoSaveGame">API.AutoSaveGame (_name)</a></td>
+	<td class="summary">Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
+ des Spielstandes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.LoadGameFromFolder">API.LoadGameFromFolder (_path, _name, _needButton)</a></td>
+	<td class="summary">Lδd einen Spielstand aus dem angegebenen Verzeichnis.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SaveGameToFolder">API.SaveGameToFolder (_path, _name)</a></td>
+	<td class="summary">Speichert den Spielstand in das angegebene Verzeichnis.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartMap">API.StartMap (_map, _knight, _folder, _needButton)</a></td>
+	<td class="summary">Startet eine Map aus dem angegebenen Verzeichnis.</td>
+	</tr>
+</table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
@@ -88,7 +110,7 @@
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:AutoSaveGame">BundleSaveGameTools.Local:AutoSaveGame (_Name)</a></td>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:AutoSaveGame">BundleSaveGameTools.Local:AutoSaveGame (_name)</a></td>
 	<td class="summary">Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
  des Spielstandes.</td>
 	</tr>
@@ -113,31 +135,132 @@
 	<td class="summary">Startet eine Map aus dem angegebenen Verzeichnis.</td>
 	</tr>
 </table>
-<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.AutoSaveGame">API.AutoSaveGame (_Name)</a></td>
-	<td class="summary">Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
- des Spielstandes.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.LoadGameFromFolder">API.LoadGameFromFolder (_path, _name, _needButton)</a></td>
-	<td class="summary">Lδd einen Spielstand aus dem angegebenen Verzeichnis.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SaveGameToFolder">API.SaveGameToFolder (_path, _name)</a></td>
-	<td class="summary">Speichert den Spielstand in das angegebene Verzeichnis.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartMap">API.StartMap (_map, _knight, _folder, _needButton)</a></td>
-	<td class="summary">Startet eine Map aus dem angegebenen Verzeichnis.</td>
-	</tr>
-</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AutoSaveGame"></a>
+    <strong>API.AutoSaveGame (_name)</strong>
+    </dt>
+    <dd>
+    Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
+ des Spielstandes.  Wenn nicht gespeichert werden kann, wird bis
+ zum nδchsten mφglichen Zeitpunkt gewartet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_name</span>
+         [string] Name des Spielstandes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.LoadGameFromFolder"></a>
+    <strong>API.LoadGameFromFolder (_path, _name, _needButton)</strong>
+    </dt>
+    <dd>
+    Lδd einen Spielstand aus dem angegebenen Verzeichnis.  Der Pfad
+ beginnt relativ vom Spielstandverzeichnis. Optional kann der
+ Ladebildschirm gehalten werden, bis der Spieler das Spiel per
+ Button startet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_path</span>
+         [string] Pfad zum Ziel
+        </li>
+        <li><span class="parameter">_name</span>
+         [string] Name des Spielstandes
+        </li>
+        <li><span class="parameter">_needButton</span>
+         [number] Startbutton anzeigen (0 oder 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SaveGameToFolder"></a>
+    <strong>API.SaveGameToFolder (_path, _name)</strong>
+    </dt>
+    <dd>
+    Speichert den Spielstand in das angegebene Verzeichnis.  Es kφnnen
+ keine Verzeichnise erzeugt werden. Der Pfad beginnt relativ vom
+ Spielstandverzeichnis.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_path</span>
+         [string] Pfad zum Ziel
+        </li>
+        <li><span class="parameter">_name</span>
+         [string] Name des Spielstandes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartMap"></a>
+    <strong>API.StartMap (_map, _knight, _folder, _needButton)</strong>
+    </dt>
+    <dd>
+    Startet eine Map aus dem angegebenen Verzeichnis.  Die Verzeichnisse
+ werden durch IDs unterschieden.
+ <ul>
+ <li>Kampagne: -1</li>
+ <li>Development:	1</li>
+ <li>Singleplayer: 0</li>
+ <li>Multiplayer:	2</li>
+ <li>Usermap: 3</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_map</span>
+         [string] Name der Map
+        </li>
+        <li><span class="parameter">_knight</span>
+         [number] Index des Helden
+        </li>
+        <li><span class="parameter">_folder</span>
+         [number] Mapordner
+        </li>
+        <li><span class="parameter">_needButton</span>
+         [number] Startbutton nutzen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
@@ -157,7 +280,7 @@
 </dd>
     <dt>
     <a name = "BundleSaveGameTools.Local:AutoSaveGame"></a>
-    <strong>BundleSaveGameTools.Local:AutoSaveGame (_Name)</strong>
+    <strong>BundleSaveGameTools.Local:AutoSaveGame (_name)</strong>
     </dt>
     <dd>
     Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
@@ -168,8 +291,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Name</span>
-        	Name des Spielstandes
+        <li><span class="parameter">_name</span>
+         [string] Name des Spielstandes
         </li>
     </ul>
 
@@ -190,7 +313,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        boolean: Kann speichern
+        [boolean]  Kann speichern
     </ol>
 
 
@@ -226,13 +349,13 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_path</span>
-        		  Pfad zum Ziel
+         [string] Pfad zum Ziel
         </li>
         <li><span class="parameter">_name</span>
-        		  Name des Spielstandes
+         [string] Name des Spielstandes
         </li>
         <li><span class="parameter">_needButton</span>
-         Startbutton anzeigen (0 oder 1)
+         [number] Startbutton anzeigen (0 oder 1)
         </li>
     </ul>
 
@@ -255,10 +378,10 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_path</span>
-        	Pfad zum Ziel
+         [string] Pfad zum Ziel
         </li>
         <li><span class="parameter">_name</span>
-        	Name des Spielstandes
+         [string] Name des Spielstandes
         </li>
     </ul>
 
@@ -287,137 +410,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_map</span>
-        			Name der Map
+         [string] Name der Map
         </li>
         <li><span class="parameter">_knight</span>
-        		Index des Helden
+         [number] Index des Helden
         </li>
         <li><span class="parameter">_folder</span>
-        		Mapordner
+         [number] Mapordner
         </li>
         <li><span class="parameter">_needButton</span>
-        	Startbutton nutzen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.AutoSaveGame"></a>
-    <strong>API.AutoSaveGame (_Name)</strong>
-    </dt>
-    <dd>
-    Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
- des Spielstandes.  Wenn nicht gespeichert werden kann, wird bis
- zum nδchsten mφglichen Zeitpunkt gewartet.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Name</span>
-        	Name des Spielstandes
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.LoadGameFromFolder"></a>
-    <strong>API.LoadGameFromFolder (_path, _name, _needButton)</strong>
-    </dt>
-    <dd>
-    Lδd einen Spielstand aus dem angegebenen Verzeichnis.  Der Pfad
- beginnt relativ vom Spielstandverzeichnis. Optional kann der
- Ladebildschirm gehalten werden, bis der Spieler das Spiel per
- Button startet.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_path</span>
-        		  Pfad zum Ziel
-        </li>
-        <li><span class="parameter">_name</span>
-        		  Name des Spielstandes
-        </li>
-        <li><span class="parameter">_needButton</span>
-         Startbutton anzeigen (0 oder 1)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SaveGameToFolder"></a>
-    <strong>API.SaveGameToFolder (_path, _name)</strong>
-    </dt>
-    <dd>
-    Speichert den Spielstand in das angegebene Verzeichnis.  Es kφnnen
- keine Verzeichnise erzeugt werden. Der Pfad beginnt relativ vom
- Spielstandverzeichnis.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_path</span>
-        	Pfad zum Ziel
-        </li>
-        <li><span class="parameter">_name</span>
-        	Name des Spielstandes
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StartMap"></a>
-    <strong>API.StartMap (_map, _knight, _folder, _needButton)</strong>
-    </dt>
-    <dd>
-    Startet eine Map aus dem angegebenen Verzeichnis.  Die Verzeichnisse
- werden durch IDs unterschieden.
- <ul>
- <li>Kampagne: -1</li>
- <li>Development:	1</li>
- <li>Singleplayer: 0</li>
- <li>Multiplayer:	2</li>
- <li>Usermap: 3</li>
- </ul>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_map</span>
-        			Name der Map
-        </li>
-        <li><span class="parameter">_knight</span>
-        		Index des Helden
-        </li>
-        <li><span class="parameter">_folder</span>
-        		Mapordner
-        </li>
-        <li><span class="parameter">_needButton</span>
-        	Startbutton nutzen
+         [number] Startbutton nutzen
         </li>
     </ul>
 
@@ -433,8 +435,26 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-03 12:53:39 </i>
+<i style="float:right;">Last updated 2018-07-05 11:41:50 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
 </body>
 </html>

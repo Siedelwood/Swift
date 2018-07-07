@@ -13,6 +13,16 @@
 -- Menge an Text anzeigen kann. Erreicht der Text eine entsprechende Menge,
 -- wird automatisch eine Scrollbar eingeblendet.
 --
+-- Das wichtigste Auf einen Blick:
+-- <ul>
+-- <li>
+-- <a href="#API.DialogInfoBox">Dialoge anzeigen</a>
+-- </li>
+-- <li>
+-- <a href="#API.SimpleTextWindow">Textfenster anzeigen</a>
+-- </li>
+-- </ul>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -29,17 +39,19 @@ QSB = QSB or {};
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
+-- <b>Alias</b>: UserOpenDialog
+--
 -- @param _Title  [string] Titel des Dialog
 -- @param _Text   [string] Text des Dialog
 -- @param _Action [function] Callback-Funktion
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.OpenDialog("Wichtige Information", "Diese Information ist Spielentscheidend!");
+-- API.DialogInfoBox("Wichtige Information", "Diese Information ist Spielentscheidend!");
 --
-function API.OpenDialog(_Title, _Text, _Action)
+function API.DialogInfoBox(_Title, _Text, _Action)
     if not GUI then
-        API.Dbg("API.OpenDialog: Can only be used in the local script!");
+        API.Dbg("API.DialogInfoBox: Can only be used in the local script!");
         return;
     end
 
@@ -52,6 +64,7 @@ function API.OpenDialog(_Title, _Text, _Action)
     end
     return BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action);
 end
+UserOpenDialog = API.DialogInfoBox;
 
 ---
 -- Öffnet einen Ja-Nein-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
@@ -60,6 +73,8 @@ end
 -- Um die Entscheigung des Spielers abzufragen, wird ein Callback benötigt.
 -- Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
 -- Entscheidung getroffen hat.
+--
+-- <b>Alias</b>: UserOpenRequesterDialog
 --
 -- @param _Title    [string] Titel des Dialog
 -- @param _Text     [string] Text des Dialog
@@ -71,11 +86,11 @@ end
 -- function YesNoAction(_yes)
 --     if _yes then GUI.AddNote("Ja wurde gedrückt"); end
 -- end
--- API.OpenRequesterDialog("Frage", "Möchtest du das wirklich tun?", YesNoAction, false);
+-- API.DialogRequestBox("Frage", "Möchtest du das wirklich tun?", YesNoAction, false);
 --
-function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
+function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
     if not GUI then
-        API.Dbg("API.OpenRequesterDialog: Can only be used in the local script!");
+        API.Dbg("API.DialogRequestBox: Can only be used in the local script!");
         return;
     end
 
@@ -88,6 +103,7 @@ function API.OpenRequesterDialog(_Title, _Text, _Action, _OkCancel)
     end
     return BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
 end
+UserOpenRequesterDialog = API.DialogRequestBox;
 
 ---
 -- Öffnet einen Auswahldialog. Sollte bereits ein Dialog zu sehen sein, wird
@@ -95,6 +111,8 @@ end
 --
 -- In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
 -- aus. Anschließend erhält das Callback den Index der selektierten Option.
+--
+-- <b>Alias</b>: UserOpenSelectionDialog
 --
 -- @param _Title  [string] Titel des Dialog
 -- @param _Text   [string] Text des Dialog
@@ -107,11 +125,11 @@ end
 --     GUI.AddNote(_idx.. " wurde ausgewählt!");
 -- end
 -- local List = {"Option A", "Option B", "Option C"};
--- API.OpenRequesterDialog("Auswahl", "Wähle etwas aus!", OptionsAction, List);
+-- API.DialogSelectBox("Auswahl", "Wähle etwas aus!", OptionsAction, List);
 --
-function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
+function API.DialogSelectBox(_Title, _Text, _Action, _List)
     if not GUI then
-        API.Dbg("API.OpenSelectionDialog: Can only be used in the local script!");
+        API.Dbg("API.DialogSelectBox: Can only be used in the local script!");
         return;
     end
 
@@ -125,6 +143,7 @@ function API.OpenSelectionDialog(_Title, _Text, _Action, _List)
     _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
+UserOpenSelectionDialog = API.DialogSelectBox;
 
 ---
 -- Öffnet ein einfaches Textfenster mit dem angegebenen Text.
@@ -148,9 +167,9 @@ end
 --              " et accusam et justo duo dolores et ea rebum. Stet clita"..
 --              " kasd gubergren, no sea takimata sanctus est Lorem ipsum"..
 --              " dolor sit amet.";
--- API.OpenTextWindow("Überschrift", Text);
+-- API.SimpleTextWindow("Überschrift", Text);
 --
-function API.OpenTextWindow(_Caption, _Content)
+function API.SimpleTextWindow(_Caption, _Content)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Caption) == "table" then
        _Caption = _Caption[lang];
@@ -159,7 +178,7 @@ function API.OpenTextWindow(_Caption, _Content)
        _Content = _Content[lang];
     end
     if not GUI then
-        API.Bridge("API.OpenTextWindow('" .._Caption.. "', '" .._Content.. "')");
+        API.Bridge("API.SimpleTextWindow('" .._Caption.. "', '" .._Content.. "')");
         return;
     end
     BundleDialogWindows.Local.TextWindow:New(_Caption, _Content);

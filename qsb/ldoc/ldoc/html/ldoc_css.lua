@@ -7,6 +7,28 @@ body {
     background-color: #ffffff; margin: 0px;
 }
 
+#back2top {
+    display: none;
+    position: fixed;
+    bottom: 40px;
+    right: 30px;
+    z-index: 9999;
+    background-color: #f0f0f0;
+    color: #000;
+    cursor: pointer;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 3px solid #cccccc;
+    border-radius: 12px;
+    font-size: 30px;
+}
+
+#back2top:hover {
+    background-color: #cccccc;
+    color: #fff;
+}
+
 code, tt { font-family: monospace; font-size: 1.1em; }
 span.parameter { font-family:monospace; }
 span.parameter:after { content:":"; }

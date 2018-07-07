@@ -2718,13 +2718,14 @@ Core:RegisterBehavior(b_Goal_InputDialog);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Lässt den Spieler zwischen zwei Antworten wählen.
+-- <p>Lässt den Spieler zwischen zwei Antworten wählen.</p>
 --
--- Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
+-- <p>Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
+-- </p>
 --
--- <b>Hinweis:</b> Es können nur geschlossene Fragen gestellt werden. Dialoge
+-- <p><b>Hinweis:</b> Es können nur geschlossene Fragen gestellt werden. Dialoge
 -- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
--- Abbrechen passen.
+-- Abbrechen passen.</p>
 --
 -- @param _Title  Fenstertitel
 -- @param _Text   Fenstertext
@@ -5491,7 +5492,7 @@ function b_Reward_MoveSettler:CustomFunction(_Quest)
 end
 
 function b_Reward_MoveSettler:DEBUG(_Quest)
-    if _Quest.IsGenerated and not not IsExisting(self.ScriptNameUnit) then
+    if _Quest.IsGenerated and not IsExisting(self.ScriptNameUnit) then
         dbg(_Quest.Identifier .. " " .. self.Name .. ": mover entity does not exist!");
         return true;
     elseif not IsExisting(self.ScriptNameDest) then
