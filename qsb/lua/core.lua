@@ -1121,9 +1121,11 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
 --
+-- Ist der Hotkey bereits vorhanden, wird -1 zurückgegeben.
+--
 -- @param _Key         [string] Tastenkombination
 -- @param _Description [string] Beschreibung des Hotkey
--- @return [number] Index
+-- @return [number] Index oder Fehlercode
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -1131,6 +1133,11 @@ function API.AddHotKey(_Key, _Description)
     if not GUI then
         API.Dbg("API.AddHotKey: Can not be used from the global script!");
         return;
+    end
+    for k, v in pairs(Core.Data.HotkeyDescriptions) do
+        if v and v[1] == _Key then
+            return -1;
+        end
     end
     table.insert(Core.Data.HotkeyDescriptions, {_Key, _Description});
     return #Core.Data.HotkeyDescriptions;

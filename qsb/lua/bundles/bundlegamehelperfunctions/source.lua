@@ -745,7 +745,8 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
-    self:InitExtendedZoom();
+    self:InitExtendedZoomHotkeyDescription();
+    self:InitExtendedZoomHotkey();
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
 
     QSB.TimeLine = BundleGameHelperFunctions.Shared.TimeLine;
@@ -1069,9 +1070,20 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:InitExtendedZoom()
+function BundleGameHelperFunctions.Global:InitExtendedZoomHotkey()
     API.Bridge([[
         BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
+    ]]);
+end
+
+---
+-- Initialisiert den erweiterten Zoom.
+--
+-- @within Internal
+-- @local
+--
+function BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyDescription()
+    API.Bridge([[
         BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
     ]]);
 end
@@ -1414,6 +1426,7 @@ function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
     if BundleGameHelperFunctions.Global.Data.ExtendedZoomActive then
         BundleGameHelperFunctions.Global:ActivateExtendedZoom();
     end
+    BundleGameHelperFunctions.Global:InitExtendedZoomHotkey();
 
     -- Cheats sperren --
     if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
