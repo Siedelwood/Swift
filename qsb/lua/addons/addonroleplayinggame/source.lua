@@ -21,6 +21,7 @@ QSB = QSB or {};
 AddOnRolePlayingGame = {
     Global =  {
         Data = {
+            AutoLevelBlacklist = {},
             PlayerExperience = {0, 0, 0, 0, 0, 0, 0, 0,},
             BaseExperience = 500,
             LearnpointsPerLevel = 3,
@@ -135,10 +136,6 @@ AddOnRolePlayingGame = {
             de = "{@color:244,184,0,255}Level up!",
             en = "{@color:244,184,0,255}Level up!",
         },
-        AutoLevelUp = {
-            de = "Die {@color:0,255,255,255}Statuswerte{@color:255,255,255,255} Eure Helden haben sich verbessert!",
-            en = "The {@color:0,255,255,255}properties{@color:255,255,255,255} of your heroes have improved!",
-        },
         ManualLevelUp = {
             de = "Alle Helden erhalten {@color:0,255,255,255}%d{@color:255,255,255,255} Lernpunkte!",
             en = "All heroes gained {@color:0,255,255,255}%d{@color:255,255,255,255} learnpoints!",
@@ -157,6 +154,17 @@ AddOnRolePlayingGame = {
 --
 function API.RpgConfig_UseAutoLevel(_Flag)
     AddOnRolePlayingGame.Global.Data.UseAutoLevel = _Flag == true;
+end
+
+---
+-- Fügt einen Helden der Autolevel-Blacklist hinzu. Auf diese Weise wird
+-- der Held nicht automatisch fortgebildet, selbst wenn UseAutoLevel
+-- aktiv ist.
+--
+-- @param _Flag Auto-Level Flag
+--
+function API.RpgConfig_AutoLevelBlacklist(_Hero, _Flag)
+    AddOnRolePlayingGame.Global.Data.AutoLevelBlacklist[_Hero] = _Flag == true;
 end
 
 ---
@@ -372,9 +380,7 @@ function AddOnRolePlayingGame.Global:LevelUpAction(_PlayerID)
     if API.GetControllingPlayer() == _PlayerID then
         if self.Data.UseInformPlayer then
             API.Note(AddOnRolePlayingGame.Texts.HeroLevelUp);
-            if self.Data.UseAutoLevel then
-                API.Note(AddOnRolePlayingGame.Texts.AutoLevelUp);
-            else
+            if not self.Data.UseAutoLevel then
                 local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
                 local Text = string.format(AddOnRolePlayingGame.Texts.ManualLevelUp[Language], self.Data.LearnpointsPerLevel);
                 API.Note(Text);
@@ -1781,7 +1787,8 @@ end
 function AddOnRolePlayingGame.Hero:LevelUp(_LP, _AutoLevel)
     assert(not GUI);
     assert(self ~= AddOnRolePlayingGame.Hero);
-    if _AutoLevel == true then
+    local InBlackList = AddOnRolePlayingGame.Global.Data.AutoLevelBlacklist[self.ScriptName];
+    if _AutoLevel == true and not InBlackList then
         for i=1, _LP, 1 do
             local RandomStat = math.random(1, 3);
             if RandomStat == 1 then
