@@ -31,9 +31,14 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    local Path = "E:/Repositories/symfonia/qsb/lua";
-    Script.Load(Path .. "/loader.lua");
-    SymfoniaLoader:Load(Path);
+    -- Laden der Bibliothek
+    local MapType, Campaign = Framework.GetCurrentMapTypeAndCampaignName();
+    local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
+    local MapName = Framework.GetCurrentMapName();
+    Script.Load("Maps/"..MapFolder.."/"..MapName.."/QuestSystemBehavior.lua");
+
+    -- Läd die Module
+    API.Install();
     InitKnightTitleTables();
 
     if Framework.IsNetworkGame() ~= true then
