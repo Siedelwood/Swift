@@ -478,3 +478,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleEntityScriptingValues");
+
