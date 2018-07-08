@@ -1182,3 +1182,4 @@ function BundleNonPlayerCharacter.Local:Install()
 end
 
 Core:RegisterBundle("BundleNonPlayerCharacter");
+

@@ -1965,3 +1965,4 @@ function BundleSymfoniaBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleSymfoniaBehaviors");
+

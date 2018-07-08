@@ -8428,3 +8428,4 @@ function BundleClassicBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleClassicBehaviors");
+
