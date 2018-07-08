@@ -3440,3 +3440,4 @@ function b_Trigger_Briefing:DEBUG(__quest_)
 end
 
 Core:RegisterBehavior(b_Trigger_Briefing);
+

@@ -1918,3 +1918,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleGameHelperFunctions");
+

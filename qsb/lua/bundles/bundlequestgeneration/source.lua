@@ -538,3 +538,4 @@ function BundleQuestGeneration.Local:Install()
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
+

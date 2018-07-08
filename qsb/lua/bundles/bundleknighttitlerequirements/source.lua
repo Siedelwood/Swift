@@ -1960,3 +1960,4 @@ InitKnightTitleTables = function()
     -- Einstellungen Aktivieren
     CreateTechnologyKnightTitleTable()
 end
+

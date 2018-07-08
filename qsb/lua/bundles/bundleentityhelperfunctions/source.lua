@@ -889,3 +889,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleEntityHelperFunctions");
+

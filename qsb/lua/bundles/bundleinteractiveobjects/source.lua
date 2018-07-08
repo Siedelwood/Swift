@@ -1114,3 +1114,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleInteractiveObjects");
+

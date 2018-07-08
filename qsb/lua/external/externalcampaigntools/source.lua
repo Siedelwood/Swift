@@ -258,3 +258,7 @@ function ExternalCampaignTools.Local:Map()
 	self.Data.MissionWasClickedAtLeastOnce = false;
 	CampaignMap_OnClicked(0);
 end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("ExternalCampaignTools");

@@ -698,3 +698,4 @@ function b_Trigger_EntityHealth:DEBUG(_Quest)
 end
 
 Core:RegisterBehavior(b_Trigger_EntityHealth);
+
