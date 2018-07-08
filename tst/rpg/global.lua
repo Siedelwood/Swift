@@ -59,7 +59,7 @@ end
 -- Die Erholung hängt vom Magielevel ab.
 --
 function TestUserAbility()
-    local Dummy1 = AddOnRolePlayingGame.Ability:New("Dummy1");
+    local Dummy1 = ExternalRolePlayingGame.Ability:New("Dummy1");
     Dummy1.RechargeTime = 2*60;
     Dummy1:SetCaption("Bla");
     Dummy1:SetDescription("Bla Bla Bla");
@@ -71,7 +71,7 @@ function TestUserAbility()
         API.Note("Ability used!")
     end
     
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
     Meredith:SetCaption("Meredith");
     Meredith.Ability = Dummy1;
 end
@@ -84,7 +84,7 @@ end
 -- im Kampf.
 --
 function TestLevelUp()
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
     API.RpgConfig_UseAutoLevel(false)
     API.RpgConfig_UseLevelUpByPromotion(false)
     API.RpgHelper_AddPlayerExperience(1, 100000)
@@ -101,7 +101,7 @@ end
 -- betreffen oder nur den Besitzer.
 --
 function TestEvets()
-    local Event1 = AddOnRolePlayingGame.Event:New("Dummy1");
+    local Event1 = ExternalRolePlayingGame.Event:New("Dummy1");
     Event1:SetCaption("Bla");
     Event1:SetDescription("Bla Bla Bla");
     Event1.Action = function(_Event, _Hero, _Trigger, ...)
@@ -111,7 +111,7 @@ function TestEvets()
     end
     Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
-    local Event2 = AddOnRolePlayingGame.Event:New("Dummy2");
+    local Event2 = ExternalRolePlayingGame.Event:New("Dummy2");
     Event2:SetCaption("Bla");
     Event2:SetDescription("Bla Bla Bla");
     Event2.Action = function(_Event, _Hero, _Trigger, ...)
@@ -121,7 +121,7 @@ function TestEvets()
     end
     Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
-    local Event3 = AddOnRolePlayingGame.Event:New("Dummy3");
+    local Event3 = ExternalRolePlayingGame.Event:New("Dummy3");
     Event3:SetCaption("Bla");
     Event3:SetDescription("Bla Bla Bla");
     Event3.Action = function(_Event, _Hero, _Trigger, ...)
@@ -131,7 +131,7 @@ function TestEvets()
     end
     Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
     Meredith:ActivateVirtue("Dummy1", true);
     Meredith:ActivateVice("Dummy2", true);
     Meredith:ActivateVice("Dummy3", true);
@@ -149,26 +149,26 @@ end
 -- der wieder ins Inventar zurückgelegt.
 --
 function TestInventoryListing()
-    local Dummy1 = AddOnRolePlayingGame.Item:New("Dummy1");
+    local Dummy1 = ExternalRolePlayingGame.Item:New("Dummy1");
     Dummy1:SetCaption("Dummy 1");
     Dummy1:SetDescription("This ist Dummy 1!");
     
-    local Dummy2 = AddOnRolePlayingGame.Item:New("Dummy2");
+    local Dummy2 = ExternalRolePlayingGame.Item:New("Dummy2");
     Dummy2:SetCaption("Dummy 2");
     Dummy2:SetDescription("This ist Dummy 2!");
     
-    local Dummy3 = AddOnRolePlayingGame.Item:New("Dummy3");
+    local Dummy3 = ExternalRolePlayingGame.Item:New("Dummy3");
     Dummy3:SetCaption("Dummy 3");
     Dummy3:SetDescription("This ist Dummy 3!");
     
-    local Dummy4 = AddOnRolePlayingGame.Item:New("Dummy4");
+    local Dummy4 = ExternalRolePlayingGame.Item:New("Dummy4");
     Dummy4:SetCaption("Dummy 4");
     Dummy4:SetDescription("This ist Dummy 4!");
-    Dummy4:AddCategory(AddOnRolePlayingGame.ItemCategories.Equipment);
+    Dummy4:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
     
     
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
-    local Inventory = AddOnRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
+    local Inventory = ExternalRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
     Inventory.Owner = Meredith;
     Meredith.Inventory = Inventory;
     
