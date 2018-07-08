@@ -5492,7 +5492,7 @@ function b_Reward_MoveSettler:CustomFunction(_Quest)
 end
 
 function b_Reward_MoveSettler:DEBUG(_Quest)
-    if _Quest.IsGenerated and not not IsExisting(self.ScriptNameUnit) then
+    if _Quest.IsGenerated and not IsExisting(self.ScriptNameUnit) then
         dbg(_Quest.Identifier .. " " .. self.Name .. ": mover entity does not exist!");
         return true;
     elseif not IsExisting(self.ScriptNameDest) then
