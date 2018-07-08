@@ -911,21 +911,17 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
             return;
         end
 
-        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Dismount") == CurrentWidgetID then
+        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngineCart/Dismount") == CurrentWidgetID 
+        or XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/AmmunitionCart/Dismount") == CurrentWidgetID 
+        or XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Dismount") == CurrentWidgetID 
+        then
             local SelectedEntity = GUI.GetSelectedEntity();
             if SelectedEntity ~= 0 then
-                if Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Leader) == 1
-                or Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Thief) == 1
-                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitaryCatapult
-                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitarySiegeTower
-                or Logic.GetEntityType(SelectedEntity) == Entities.U_MilitaryBatteringRam
-                or Logic.GetEntityType(SelectedEntity) == Entities.U_CatapultCart
-                or Logic.GetEntityType(SelectedEntity) == Entities.U_SiegeTowerCart
-                or Logic.GetEntityType(SelectedEntity) == Entities.U_BatteringRamCart
-                or Logic.GetEntityType(SelectedEntity) == Entities.U_SiegeEngineCart
-                or Logic.GetEntityType(SelectedEntity) == Entities.U_Trebuchet then
+                if Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Military) == 1
+                and Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Hero) == 0
+                then
                     local GuardianEntity = Logic.GetGuardianEntityID(SelectedEntity)
-                    if GuardianEntity == 0 then
+                    if GuardianEntity == nil or GuardianEntity == 0 then
                         BundleEntitySelection.Local:SetTooltip(
                             BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
                             BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang],
