@@ -215,8 +215,8 @@ AddOnCastleStore = {
                     en = "Keep goods",
                 },
                 Text = {
-                    de = "[Taste B]{cr}- Lagert Waren im Burglager ein {cr}- Waren verbleiben auch im Lager, wenn Platz vorhanden ist",
-                    en = "[Key B]{cr}- Stores goods inside the vault {cr}- Goods also remain in the warehouse when space is available",
+                    de = "[UMSCHALT + N]{cr}- Lagert Waren im Burglager ein {cr}- Waren verbleiben auch im Lager, wenn Platz vorhanden ist",
+                    en = "[SHIFT + N]{cr}- Stores goods inside the vault {cr}- Goods also remain in the warehouse when space is available",
                 },
             },
 
@@ -226,8 +226,8 @@ AddOnCastleStore = {
                     en = "Store in vault",
                 },
                 Text = {
-                    de = "[Taste N]{cr}- Lagert Waren im Burglager ein {cr}- Lagert waren wieder aus, sobald Platz frei wird",
-                    en = "[Key N]{cr}- Stores goods inside the vault {cr}- Allows to extrac goods as soon as space becomes available",
+                    de = "[UMSCHALT + B]{cr}- Lagert Waren im Burglager ein {cr}- Lagert waren wieder aus, sobald Platz frei wird",
+                    en = "[SHIFT + B]{cr}- Stores goods inside the vault {cr}- Allows to extrac goods as soon as space becomes available",
                 },
             },
 
@@ -237,8 +237,8 @@ AddOnCastleStore = {
                     en = "Clear store",
                 },
                 Text = {
-                    de = "[Taste M]{cr}- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
-                    en = "[Key M]{cr}- Removes all goods {cr}- Requires space in the storehouse",
+                    de = "[UMSCHALT + M]{cr}- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
+                    en = "[Shift + M]{cr}- Removes all goods {cr}- Requires space in the storehouse",
                 },
             },
         },
@@ -771,7 +771,7 @@ end
 --
 function AddOnCastleStore.Global.OnSaveGameLoaded()
     API.Bridge("AddOnCastleStore.Local:OverwriteGetStringTableText()")
-    API.Bridge("AddOnCastleStore.Local:ActivateHotkeys()")
+    API.Bridge("AddOnCastleStore.Local.CastleStore:ActivateHotkeys()")
 end
 
 ---
@@ -1577,9 +1577,9 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnCastleStore.Local:HotkeyStoreGoods()
+function AddOnCastleStore.Local.CastleStore:HotkeyStoreGoods()
     local PlayerID = GUI.GetPlayerID();
-    if ddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
+    if AddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
         return;
     end
     AddOnCastleStore.Local.CastleStore:OnStorehouseTabClicked(PlayerID);
@@ -1591,9 +1591,9 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnCastleStore.Local:HotkeyLockGoods()
+function AddOnCastleStore.Local.CastleStore:HotkeyLockGoods()
     local PlayerID = GUI.GetPlayerID();
-    if ddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
+    if AddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
         return;
     end
     AddOnCastleStore.Local.CastleStore:OnCityTabClicked(PlayerID);
@@ -1605,9 +1605,9 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnCastleStore.Local:HotkeyEmptyStore()
+function AddOnCastleStore.Local.CastleStore:HotkeyEmptyStore()
     local PlayerID = GUI.GetPlayerID();
-    if ddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
+    if AddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
         return;
     end
     AddOnCastleStore.Local.CastleStore:OnMultiTabClicked(PlayerID);
@@ -1619,19 +1619,18 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnCastleStore.Local:ActivateHotkeys()
+function AddOnCastleStore.Local.CastleStore:ActivateHotkeys()
     -- Waren einlagern
     Input.KeyBindDown(
-        Keys.B,
+        Keys.ModifierShift + Keys.B,
         "AddOnCastleStore.Local.CastleStore:HotkeyStoreGoods()",
         2,
         false
     );
 
     -- Waren verwahren
-    AddOnCastleStore.Local.CastleStore:OnCityTabClicked(_PlayerID)
     Input.KeyBindDown(
-        Keys.N,
+        Keys.ModifierShift + Keys.N,
         "AddOnCastleStore.Local.CastleStore:HotkeyLockGoods()",
         2,
         false
@@ -1639,7 +1638,7 @@ function AddOnCastleStore.Local:ActivateHotkeys()
     
     -- Lager räumen
     Input.KeyBindDown(
-        Keys.M,
+        Keys.ModifierShift + Keys.M,
         "AddOnCastleStore.Local.CastleStore:HotkeyEmptyStore()",
         2,
         false
@@ -1652,11 +1651,11 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnCastleStore.Local:DescribeHotkeys()
+function AddOnCastleStore.Local.CastleStore:DescribeHotkeys()
     if not self.HotkeysAddToList then
-        API.AddHotKey("B", {de = "Burglager: Waren einlagern", en = "Vault: Store goods"});
-        API.AddHotKey("N", {de = "Burglager: Waren sperren", en = "Vault: Lock goods"});
-        API.AddHotKey("M", {de = "Burglager: Lager räumen", en = "Vault: Empty store"});
+        API.AddHotKey("Umschalt + B", {de = "Burglager: Waren einlagern", en = "Vault: Store goods"});
+        API.AddHotKey("Umschalt + N", {de = "Burglager: Waren sperren", en = "Vault: Lock goods"});
+        API.AddHotKey("Umschalt + M", {de = "Burglager: Lager räumen", en = "Vault: Empty store"});
         self.HotkeysAddToList = true;
     end
 end

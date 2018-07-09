@@ -1132,6 +1132,7 @@ function API.AddHotKey(_Key, _Description)
         API.Dbg("API.AddHotKey: Can not be used from the global script!");
         return;
     end
+    g_KeyBindingsOptions.Descriptions = nil;
     table.insert(Core.Data.HotkeyDescriptions, {_Key, _Description});
     return #Core.Data.HotkeyDescriptions;
 end
