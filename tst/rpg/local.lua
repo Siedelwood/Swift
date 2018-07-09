@@ -18,6 +18,7 @@ function Mission_LocalOnMapStart()
     local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
     local MapName = Framework.GetCurrentMapName();
     Script.Load("Maps/"..MapFolder.."/"..MapName.."/QuestSystemBehavior.lua");
+    Script.Load("E:/Repositories/symfonia/qsb/lua/external/externalroleplayinggame/source.lua");
 
     -- Läd die Module
     API.Install();

@@ -36,6 +36,7 @@ function Mission_FirstMapAction()
     local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
     local MapName = Framework.GetCurrentMapName();
     Script.Load("Maps/"..MapFolder.."/"..MapName.."/QuestSystemBehavior.lua");
+    Script.Load("E:/Repositories/symfonia/qsb/lua/external/externalroleplayinggame/source.lua");
 
     -- Läd die Module
     API.Install();
@@ -49,7 +50,7 @@ function Mission_FirstMapAction()
     
     API.ActivateDebugMode(true, true, true, true);
     
-    TestUserAbility();
+    TestLevelUp()
 end
 
 ---
@@ -85,9 +86,12 @@ end
 --
 function TestLevelUp()
     local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
+    Meredith:SetCaption("Meredith");
+    Meredith.StrengthCosts = -1;
+
     API.RpgConfig_UseAutoLevel(false)
     API.RpgConfig_UseLevelUpByPromotion(false)
-    API.RpgHelper_AddPlayerExperience(1, 100000)
+    API.RpgHelper_AddPlayerExperience(1, 1000)
 end
 
 --

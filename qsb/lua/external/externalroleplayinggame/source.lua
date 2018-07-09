@@ -1055,37 +1055,34 @@ function ExternalRolePlayingGame.Local:OverrideKnightCommands()
             XGUIEng.SetWidgetPositionAndSize(ExternalRolePlayingGame.KnightCommands.Strength.Mother, 0, 20, 100, 100);
             XGUIEng.SetWidgetPositionAndSize(ExternalRolePlayingGame.KnightCommands.Magic.Mother, 80, 23, 100, 100);
             XGUIEng.SetWidgetPositionAndSize(ExternalRolePlayingGame.KnightCommands.Endurance.Mother, 160, 26, 100, 100);
-            XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Strength.Mother,0);
-            XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Magic.Mother,0);
-            XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,0);
 
             local DisabledButtonCount = 0;
 
             -- Kraft aktivieren/deaktivieren
             local Costs = ExternalRolePlayingGame.HeroList[ScriptName].StrengthCosts or 1;
             if Costs == -1 or Hero.Learnpoints < Costs then
-                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Strength.Mother,1);
+                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Strength.Mother,0);
                 DisabledButtonCount = DisabledButtonCount +1;
             else
-                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Strength.Mother,0);
+                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Strength.Mother,1);
             end
             
             -- Magie aktivieren/deaktivieren
             local Costs = ExternalRolePlayingGame.HeroList[ScriptName].MagicCosts or 1;
             if Costs == -1 or Hero.Learnpoints < Costs then
-                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Magic.Mother,1);
+                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Magic.Mother,0);
                 DisabledButtonCount = DisabledButtonCount +1;
             else
-                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Magic.Mother,0);
+                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Magic.Mother,1);
             end
             
             -- Widerstand aktivieren/deaktivieren
             local Costs = ExternalRolePlayingGame.HeroList[ScriptName].EnduranceCosts or 1;
             if Costs == -1 or Hero.Learnpoints < Costs then
-                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,1);
+                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,0);
                 DisabledButtonCount = DisabledButtonCount +1;
             else
-                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,0);
+                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,1);
             end
             
             -- Wenn alle Buttons disabled sind, dann alles ausblenden
