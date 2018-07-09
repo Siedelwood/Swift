@@ -1002,16 +1002,25 @@ function ExternalRolePlayingGame.Local:OverrideKnightCommands()
         local WidgetID = XGUIEng.GetCurrentWidgetID();
         local LP = ExternalRolePlayingGame.HeroList[ScriptName].Learnpoints;
 
-        local Costs = 999;
+        local CostsString = "---";
         if WidgetID == XGUIEng.GetWidgetID(ExternalRolePlayingGame.KnightCommands.Strength.Timer) then
-            Costs = ExternalRolePlayingGame.HeroList[ScriptName].StrengthCosts or 1;
+            local Costs = ExternalRolePlayingGame.HeroList[ScriptName].StrengthCosts or 1;
+            if Costs ~= -1 then 
+                CostsString = Costs.. "/" ..LP;
+            end
         elseif WidgetID == XGUIEng.GetWidgetID(ExternalRolePlayingGame.KnightCommands.Magic.Timer) then
-            Costs = ExternalRolePlayingGame.HeroList[ScriptName].MagicCosts or 1;
+            local Costs = ExternalRolePlayingGame.HeroList[ScriptName].MagicCosts or 1;
+            if Costs ~= -1 then 
+                CostsString = Costs.. "/" ..LP;
+            end
         elseif WidgetID == XGUIEng.GetWidgetID(ExternalRolePlayingGame.KnightCommands.Endurance.Timer) then
-            Costs = ExternalRolePlayingGame.HeroList[ScriptName].EndurenceCosts or 1;
+            local Costs = ExternalRolePlayingGame.HeroList[ScriptName].EnduranceCosts or 1;
+            if Costs ~= -1 then 
+                CostsString = Costs.. "/" ..LP;
+            end
         end
 
-        XGUIEng.SetText(WidgetID, "{center}" ..Costs.. "/" ..LP);
+        XGUIEng.SetText(WidgetID, "{center}" ..CostsString);
     end
 
     Mission_SupportUpdateButton = function()
@@ -1050,22 +1059,40 @@ function ExternalRolePlayingGame.Local:OverrideKnightCommands()
             XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Magic.Mother,0);
             XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,0);
 
-            if Hero.Learnpoints < (ExternalRolePlayingGame.HeroList[ScriptName].StrengthCosts or 1) then
+            local DisabledButtonCount = 0;
+
+            -- Kraft aktivieren/deaktivieren
+            local Costs = ExternalRolePlayingGame.HeroList[ScriptName].StrengthCosts or 1;
+            if Costs == -1 or Hero.Learnpoints < Costs then
+                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Strength.Mother,1);
+                DisabledButtonCount = DisabledButtonCount +1;
+            else
+                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Strength.Mother,0);
+            end
+            
+            -- Magie aktivieren/deaktivieren
+            local Costs = ExternalRolePlayingGame.HeroList[ScriptName].MagicCosts or 1;
+            if Costs == -1 or Hero.Learnpoints < Costs then
+                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Magic.Mother,1);
+                DisabledButtonCount = DisabledButtonCount +1;
+            else
+                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Magic.Mother,0);
+            end
+            
+            -- Widerstand aktivieren/deaktivieren
+            local Costs = ExternalRolePlayingGame.HeroList[ScriptName].EnduranceCosts or 1;
+            if Costs == -1 or Hero.Learnpoints < Costs then
+                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,1);
+                DisabledButtonCount = DisabledButtonCount +1;
+            else
+                XGUIEng.DisableButton(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,0);
+            end
+            
+            -- Wenn alle Buttons disabled sind, dann alles ausblenden
+            if DisabledButtonCount == 3 then 
                 XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Strength.Mother,0);
-            else
-                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Strength.Mother,1);
-            end
-
-            if Hero.Learnpoints < (ExternalRolePlayingGame.HeroList[ScriptName].MagicCosts or 1) then
                 XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Magic.Mother,0);
-            else
-                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Magic.Mother,1);
-            end
-
-            if Hero.Learnpoints < (ExternalRolePlayingGame.HeroList[ScriptName].EndurenceCosts or 1) then
                 XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,0);
-            else
-                XGUIEng.ShowWidget(ExternalRolePlayingGame.KnightCommands.Endurance.Mother,1);
             end
         else
             local WidgetID = "/InGame/Root/Normal/AlignTopLeft/KnightCommands";
@@ -1273,6 +1300,7 @@ function ExternalRolePlayingGame.Local:DescribeHotkeys()
     if ExternalRolePlayingGame.Local.Data.HotkeyDescribed == true then
         return;
     end
+    ExternalRolePlayingGame.Local.Data.HotkeyDescribed = true;
 
     -- Inventar anzeigen
     API.AddHotKey({de = "I", en = "I"}, {de = "Inventar öffnen", en = "Open inventory"});
@@ -1517,7 +1545,18 @@ ExternalRolePlayingGame.HeroList = {};
 ExternalRolePlayingGame.Hero = {};
 
 ---
--- Erzeugt eine neue Instanz eines Helden.
+-- <p>Erzeugt eine neue Instanz eines Helden.</p>
+--
+-- <p><b>Hinweis:</b> Die Kosten der Fortbildung können über Felder gesetzt 
+-- werden:
+-- <ul>
+-- <li>Kraft: StrengthCosts</li>
+-- <li>Magie: MagicCosts</li>
+-- <li>Diderstand: EnduranceCosts</li>
+-- </ul>
+-- Wird eines der Felder -1 gesetzt, ist die Fortbildung verboten. Das
+-- funktioniert jedoch nur für manuelles Fortbilden!</p>
+--
 -- @within ExternalRolePlayingGame.Hero
 --
 function ExternalRolePlayingGame.Hero:New(_ScriptName)
