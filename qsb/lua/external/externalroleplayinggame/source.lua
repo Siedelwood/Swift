@@ -1242,15 +1242,18 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
-        -- Icon
+        -- Get icon image
         local Icon = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Icon;
         if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
             local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
             local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
+            local ItemIcon = ExternalRolePlayingGame.ItemList[LeftHand].Icon;
             if Amount > 0 and not HeroInstance.LeftHandDisabled then
-                Icon = {14, 10};
+                Icon = ItemIcon or {14, 10};
             end
         end
+
+        -- Set icon
         if type(Icon) == "table" then
             if Icon[3] and type(Icon[3]) == "string" then
                 API.SetIcon(WidgetID, Icon, nil, Icon[3]);
@@ -1329,6 +1332,7 @@ function ExternalRolePlayingGame.Local:DeactivateAbilityBlabering()
 end
 
 ---
+-- Versieht die Tasten mit ihren zugehörigen Hotkey-Funktionen.
 --
 -- @within Internal
 -- @local
@@ -1343,6 +1347,7 @@ function ExternalRolePlayingGame.Local:CreateHotkeys()
 end
 
 ---
+-- Fügt die Beschreibung der Hotkeys der Hotkey-Liste hinzu.
 --
 -- @within Internal
 -- @local
@@ -1354,11 +1359,11 @@ function ExternalRolePlayingGame.Local:DescribeHotkeys()
     ExternalRolePlayingGame.Local.Data.HotkeyDescribed = true;
 
     -- Inventar anzeigen
-    API.AddHotKey({de = "I", en = "I"}, {de = "Inventar öffnen", en = "Open inventory"});
+    API.AddHotKey("I", {de = "RPG: Inventar öffnen", en = "RPG: Open inventory"});
     -- Effecte anzeigen
-    API.AddHotKey({de = "C", en = "C"}, {de = "Charakter anzeigen", en = "Display character"});
+    API.AddHotKey("C", {de = "RPG: Charakter anzeigen", en = "RPG: Display character"});
     -- Effecte anzeigen
-    API.AddHotKey({de = "K", en = "K"}, {de = "Effekte anzeigen", en = "Display effects"});
+    API.AddHotKey("K", {de = "RPG: Effekte anzeigen", en = "RPG: Display effects"});
 end
 
 -- -------------------------------------------------------------------------- --
@@ -2439,6 +2444,7 @@ function ExternalRolePlayingGame.Item:New(_Identifier)
     local item = API.InstanceTable(self);
     item.Identifier   = _Identifier;
     item.Categories   = {};
+    item.Icon         = nil;
     item.Description  = nil;
     item.Caption      = nil;
     item.OnRemoved    = nil;
@@ -2545,6 +2551,31 @@ function ExternalRolePlayingGame.Item:SetDescription(_Text)
     API.Bridge([[
         ExternalRolePlayingGame.ItemList["]] ..self.Identifier.. [["].Description  = "]] ..self.Description.. [["
     ]]);
+    return self;
+end
+
+---
+-- Setzt den im 2D-Interface angezeigten Icon des Item.
+-- @param _Icon Icon
+-- @return self
+-- @within ExternalRolePlayingGame.Item
+--
+function ExternalRolePlayingGame.Item:SetIcon(_Icon)
+    assert(not GUI);
+    assert(self ~= ExternalRolePlayingGame.Item);
+    self.Icon = _Icon;
+
+    local LocalIcon = _Icon;
+    if type(_Icon) == "table" then 
+        LocalIcon = API.ConvertTableToString(_Icon);
+    end
+
+    local CommandString = "ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Icon  = nil";
+    if LocalIcon then 
+        LocalIcon = (LocalIcon:find("{") and LocalIcon) or "'" ..LocalIcon.. "'";
+        CommandString = "ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Icon  = " ..LocalIcon;
+    end
+    API.Bridge(CommandString);
     return self;
 end
 
