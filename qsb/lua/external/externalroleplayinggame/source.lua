@@ -86,6 +86,62 @@ ExternalRolePlayingGame = {
                      " while fighting against enemies.",
             },
         },
+
+        ChangeEquipment = {
+            Caption = {
+                de = "Ausrüstung ändern",
+                en = "Change equipment",
+            },
+            Description = {
+                de = "Wähle einen Ausrüstungsteil aus, den Du ausgetauschen möchtest.",
+                en = "Choose the equipment part you want to exchange with another.",
+            },
+            Options = {
+                de = {"Waffe", "Rüstung", "Schmuck", "Gürtel"},
+                en = {"Weapon", "Armor", "Jewellery", "Belt"},
+            }
+        },
+        ChangeArmor = {
+            Caption = {
+                de = "Rüstung ändern",
+                en = "Change armor",
+            },
+            Description = {
+                de = "Wähle die Rüstung aus, die der Held tragen soll.",
+                en = "Choose the armor your hero shall wear from now on.",
+            },
+        },
+        ChangeWeapon = {
+            Caption = {
+                de = "Waffe ändern",
+                en = "Change weapon",
+            },
+            Description = {
+                de = "Wähle die Waffe aus, die der Held benutzen soll.",
+                en = "Choose the weapon your hero shall use from now on.",
+            },
+        },
+        ChangeJewellery = {
+            Caption = {
+                de = "Schmuck ändern",
+                en = "Change Jewellery",
+            },
+            Description = {
+                de = "Wähle den Schmuck aus, den der Held tragen soll.",
+                en = "Choose the jewellery your hero shall wear from now on.",
+            },
+        },
+        ChangeBelt = {
+            Caption = {
+                de = "Gürtel ändern",
+                en = "Change belt",
+            },
+            Description = {
+                de = "Wähle den Verbrauchsgegenstand, den der Held am Gürtel befästigt.",
+                en = "Choose the utensil your hero shall attach to the belt.",
+            },
+        },
+
         UpgradeStrength = {
             de = "Kraft verbessern",
             en = "Improve Strength",
@@ -715,21 +771,191 @@ function ExternalRolePlayingGame.Local:Install()
 end
 
 ---
--- Trigger: Eine Predigt ist beendet.
--- @param _PlayerID    Player ID
--- @param _NumSettlers Number of settlers
+-- Erzeugt den allgemeinen Ausrüstungsdialog.
+-- @param _Identifier  Name des Helden
 -- @within Internal
 -- @local
 --
-function ExternalRolePlayingGame.Local.OnSermonFinished(_PlayerID, _NumSettlers)
-    API.Bridge("ExternalRolePlayingGame.Global.OnSermonFinished(" .._PlayerID.. ", " .._NumSettlers.. ")")
+function ExternalRolePlayingGame.Local:ChangeEquipment(_Identifier)
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+
+    self.Data.CurrentItemSelectionHero = _Identifier;
+
+    API.DialogSelectBox (
+        ExternalRolePlayingGame.Texts.ChangeEquipment.Caption,
+        ExternalRolePlayingGame.Texts.ChangeEquipment.Description,
+        ExternalRolePlayingGame.Local.ChangeEquipmentAction,
+        ExternalRolePlayingGame.Texts.ChangeEquipment.Options[Language]
+    );
 end
 
+---
+-- Erzeugt den Ausrüstungsdialog für den speziellen Ausrüstungsteil.
+-- @param _Idx Ausgewählte Option
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local.ChangeEquipmentAction(_Idx)
+    -- Waffe ändern
+    if _Idx == 1 then 
+        API.DialogSelectBox (
+            ExternalRolePlayingGame.Texts.ChangeArmor.Caption,
+            ExternalRolePlayingGame.Texts.ChangeArmor.Description,
+            ExternalRolePlayingGame.Local.ChangeArmorAction,
+            ExternalRolePlayingGame.Local:CreateItemSelection (
+                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+                ItemCategories.Armor
+            )
+        );
+    -- Rüstung ändern
+    elseif _Idx == 2 then
+        API.DialogSelectBox (
+            ExternalRolePlayingGame.Texts.ChangeWeapon.Caption,
+            ExternalRolePlayingGame.Texts.ChangeWeapon.Description,
+            ExternalRolePlayingGame.Local.ChangeWeaponAction,
+            ExternalRolePlayingGame.Local:CreateItemSelection (
+                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+                ItemCategories.Weapon
+            )
+        );
+    -- Schmuck ändern
+    elseif _Idx == 3 then 
+        API.DialogSelectBox (
+            ExternalRolePlayingGame.Texts.ChangeJewellery.Caption,
+            ExternalRolePlayingGame.Texts.ChangeJewellery.Description,
+            ExternalRolePlayingGame.Local.ChangeJewellery,
+            ExternalRolePlayingGame.Local:CreateItemSelection (
+                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+                ItemCategories.Jewellery
+            )
+        );
+    -- Gürtel ändern
+    elseif _Idx == 4 then 
+        API.DialogSelectBox (
+            ExternalRolePlayingGame.Texts.ChangeBelt.Caption,
+            ExternalRolePlayingGame.Texts.ChangeBelt.Description,
+            ExternalRolePlayingGame.Local.ChangeBeltAction,
+            ExternalRolePlayingGame.Local:CreateItemSelection (
+                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+                ItemCategories.Utensil
+            )
+        );
+    end
+end
 
 ---
--- Zeigt die Inhalte des Inventars eines Helden an.
+-- Ändert die ausgerüstete Rüstung.
+-- @param _Idx Ausgewählte Option
+-- @within Internal
+-- @local
 --
--- @param _Identifier  Name des Inventars
+function ExternalRolePlayingGame.Local.ChangeArmorAction(_Idx)
+    local Hero = ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero;
+    local Item = ExternalRolePlayingGame.Local.Data.CurrentItemSelection[_Idx];
+    if not Item then
+        return;
+    end
+    API.Bridge('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipArmor("' ..Item.. '")');
+end
+
+---
+-- Ändert die ausgerüstete Waffe.
+-- @param _Idx Ausgewählte Option
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local.ChangeWeaponAction(_Idx)
+    local Hero = ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero;
+    local Item = ExternalRolePlayingGame.Local.Data.CurrentItemSelection[_Idx];
+    if not Item then
+        return;
+    end
+    API.Bridge('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipWeapon("' ..Item.. '")');
+end
+
+---
+-- Ändert den ausgerüsteten Schmuck.
+-- @param _Idx Ausgewählte Option
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local.ChangeJewelleryAction(_Idx)
+    local Hero = ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero;
+    local Item = ExternalRolePlayingGame.Local.Data.CurrentItemSelection[_Idx];
+    if not Item then
+        return;
+    end
+    API.Bridge('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipJewellery("' ..Item.. '")');
+end
+
+---
+-- Ändert den ausgerüsteten Gebrauchsgegenstand.
+-- @param _Idx Ausgewählte Option
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local.ChangeBeltAction(_Idx)
+    local Hero = ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero;
+    local Item = ExternalRolePlayingGame.Local.Data.CurrentItemSelection[_Idx];
+    if not Item then
+        return;
+    end
+    API.Bridge('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipBelt("' ..Item.. '")');
+end
+
+---
+-- Erzeugt die Liste für eine Auswahl von Gegenständen.
+-- 
+-- @param _Identifier Name des Helden
+-- @param _Category   Kategorie
+-- @return table: Item Selection
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local:CreateItemSelection(_Identifier, _Category)
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local List = {};
+
+    self.Data.CurrentItemSelection = {};
+
+    local Inventory = ExternalRolePlayingGame.HeroList[_Identifier].Inventory;
+    if Inventory then 
+        for k, v in pairs(ExternalRolePlayingGame.InventoryList[Inventory]) do 
+            if v and v > 0 then 
+                if self:IsItemInCategory(k, _Category) then 
+                    local Caption = ExternalRolePlayingGame.ItemList[k].Caption;
+                    table.insert(self.Data.CurrentItemSelection, k);
+                    table.insert(List, Caption);
+                end
+            end
+        end
+    end
+
+    local Nothing = {de = "(abbrechen)", en = "(abort)"};
+    table.insert(List, Nothing[Language]);
+    return List;
+end
+
+---
+-- Prüft, ob der Gegenstand zur Kategorie gehört.
+-- 
+-- @param _Identifier Name des Item
+-- @param _Category   Kategorie
+-- @return boolean: Gegenstand ist in Kategorie
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local:IsItemInCategory(_Identifier, _Category)
+    if not ExternalRolePlayingGame.ItemList[_Identifier] then 
+        return false;
+    end
+    return API.TraverseTable(_Category, ExternalRolePlayingGame.ItemList[_Identifier].Categories) == true;
+end
+
+---
+-- Zeigt die Eigenschaften Helden an.
+--
+-- @param _Identifier  Name des Helden
 -- @within Internal
 -- @local
 --
@@ -1168,17 +1394,17 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         end
 
         -- Nutze linke Hand
-        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
-            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
-            if Amount > 0 and not HeroInstance.LeftHandDisabled then
+        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            local Belt = ExternalRolePlayingGame.HeroList[KnightName].Belt;
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[Belt] or 0;
+            if Amount > 0 and not HeroInstance.BeltDisabled then
                 API.Bridge([[
-                    local ItemInstance = ExternalRolePlayingGame.Ability:GetInstance("]] ..LeftHand.. [[")
+                    local ItemInstance = ExternalRolePlayingGame.Ability:GetInstance("]] ..Belt.. [[")
                     local HeroInstance = ExternalRolePlayingGame.Hero:GetInstance("]] ..KnightName.. [[")
-                    if HeroInstance and HeroInstance.Inventory and ItemInstance and ItemInstance.OnItemUsed then
-                        if HeroInstance.Inventory:CountItem("]] ..LeftHand.. [[") > 0 then
-                            ItemInstance:OnItemUsed("]] ..KnightName.. [[")
-                            HeroInstance.Inventory:Remove("]] ..LeftHand.. [[", 1)
+                    if HeroInstance and HeroInstance.Inventory and ItemInstance and ItemInstance.OnConsumed then
+                        if HeroInstance.Inventory:CountItem("]] ..Belt.. [[") > 0 then
+                            ItemInstance:OnConsumed("]] ..KnightName.. [[")
+                            HeroInstance.Inventory:Remove("]] ..Belt.. [[", 1)
                         end
                     end
                 ]]);
@@ -1218,12 +1444,12 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         local Caption     = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Caption;
         local Description = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Description;
         -- Linke Hand
-        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
-            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
-            if Amount > 0 and not HeroInstance.LeftHandDisabled then
-                local Caption     = ExternalRolePlayingGame.ItemList[LeftHand].Caption;
-                local Description = ExternalRolePlayingGame.ItemList[LeftHand].Description;
+        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            local Belt = ExternalRolePlayingGame.HeroList[KnightName].Belt;
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[Belt] or 0;
+            if Amount > 0 and not HeroInstance.BeltDisabled then
+                local Caption     = ExternalRolePlayingGame.ItemList[Belt].Caption;
+                local Description = ExternalRolePlayingGame.ItemList[Belt].Description;
             end
         end
         UserSetTextNormal(Caption, Description);
@@ -1244,11 +1470,11 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
 
         -- Get icon image
         local Icon = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Icon;
-        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
-            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
-            local ItemIcon = ExternalRolePlayingGame.ItemList[LeftHand].Icon;
-            if Amount > 0 and not HeroInstance.LeftHandDisabled then
+        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            local Belt = ExternalRolePlayingGame.HeroList[KnightName].Belt;
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[Belt] or 0;
+            local ItemIcon = ExternalRolePlayingGame.ItemList[Belt].Icon;
+            if Amount > 0 and not HeroInstance.BeltDisabled then
                 Icon = ItemIcon or {14, 10};
             end
         end
@@ -1266,10 +1492,10 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
 
         -- Enable/Disable
         local Inventory = ExternalRolePlayingGame.HeroList[KnightName].Inventory;
-        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and Inventory and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
-            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
-            if Amount > 0 and not HeroInstance.LeftHandDisabled then
+        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and Inventory and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            local Belt = ExternalRolePlayingGame.HeroList[KnightName].Belt;
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[Belt] or 0;
+            if Amount > 0 and not HeroInstance.BeltDisabled then
                 XGUIEng.DisableButton(WidgetID, 1);
                 return;
             end
@@ -1304,7 +1530,7 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         TimeAlreadyCharged = (TimeAlreadyCharged > TotalRechargeTime and TotalRechargeTime) or TimeAlreadyCharged;
 
         -- Left hand don't have cooldown
-        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
             TimeAlreadyCharged = TotalRechargeTime;
         end
 
@@ -1344,6 +1570,8 @@ function ExternalRolePlayingGame.Local:CreateHotkeys()
     Input.KeyBindDown(Keys.K, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('ExternalRolePlayingGame.Global:ToggleEffects(' ..Sel.. ')');", 2, false);
     -- Charackter anzeigen
     Input.KeyBindDown(Keys.C, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); ExternalRolePlayingGame.Local:DisplayCharacter(Sel);", 2, false);
+    -- Ausrüstung ändern
+    Input.KeyBindDown(Keys.E, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); ExternalRolePlayingGame.Local:ChangeEquipment(Sel);", 2, false);
 end
 
 ---
@@ -1360,10 +1588,24 @@ function ExternalRolePlayingGame.Local:DescribeHotkeys()
 
     -- Inventar anzeigen
     API.AddHotKey("I", {de = "RPG: Inventar öffnen", en = "RPG: Open inventory"});
+    -- Gegenstand anlegen
+    API.AddHotKey("E", {de = "RPG: Ausrüstung ändern", en = "RPG: Change equipment"});
     -- Effecte anzeigen
     API.AddHotKey("C", {de = "RPG: Charakter anzeigen", en = "RPG: Display character"});
     -- Effecte anzeigen
     API.AddHotKey("K", {de = "RPG: Effekte anzeigen", en = "RPG: Display effects"});
+end
+
+---
+-- Trigger: Eine Predigt ist beendet.
+--
+-- @param _PlayerID    Player ID
+-- @param _NumSettlers Number of settlers
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local.OnSermonFinished(_PlayerID, _NumSettlers)
+    API.Bridge("ExternalRolePlayingGame.Global.OnSermonFinished(" .._PlayerID.. ", " .._NumSettlers.. ")");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -1640,7 +1882,7 @@ function ExternalRolePlayingGame.Hero:New(_ScriptName)
     hero.Armor        = nil;
     hero.Jewellery    = nil;
     hero.Weapon       = nil;
-    hero.LeftHand     = nil;
+    hero.Belt     = nil;
 
     -- Events
     hero.Vices        = {};
@@ -1875,27 +2117,27 @@ end
 -- @return boolean: Schmuck angelegt
 -- @within ExternalRolePlayingGame.Hero
 --
-function ExternalRolePlayingGame.Hero:EquipLeftHand(_ItemType)
+function ExternalRolePlayingGame.Hero:EquipBelt(_ItemType)
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Hero);
 
     local Equipped = false;
     if self.Inventory ~= nil then
-        if self.LeftHand then
-            self.Inventory:Unequip(self.LeftHand);
+        if self.Belt then
+            self.Inventory:Unequip(self.Belt, true);
         end
         local Item = ExternalRolePlayingGame.ItemList[_ItemType];
         if Item and Item:IsInCategory(ExternalRolePlayingGame.ItemCategories.Utensil) then
-            self.LeftHand = _ItemType;
-            if self.LeftHand then
-                Equipped = self.Inventory:Equip(self.LeftHand);
+            self.Belt = _ItemType;
+            if self.Belt then
+                Equipped = self.Inventory:Equip(self.Belt, true);
             end
         end
 
         -- Set in local
-        local CommandString = "ExternalRolePlayingGame.HeroList['" ..self.ScriptName.. "'].LeftHand = nil";
+        local CommandString = "ExternalRolePlayingGame.HeroList['" ..self.ScriptName.. "'].Belt = nil";
         if Item ~= nil then 
-            CommandString = "ExternalRolePlayingGame.HeroList['" ..self.ScriptName.. "'].LeftHand = '" .._ItemType.. "'";
+            CommandString = "ExternalRolePlayingGame.HeroList['" ..self.ScriptName.. "'].Belt = '" .._ItemType.. "'";
         end
         API.Bridge(CommandString);
     end
@@ -2284,19 +2526,26 @@ end
 ---
 -- Legt einen Gegenstand als Ausrüstung an.
 -- @param _ItemType Typ des Item
+-- @param _DontSubstract Nicht aus Inventar nehmen
 -- @return boolean: Erfolgreich angelegt
 -- @within ExternalRolePlayingGame.Inventory
 --
-function ExternalRolePlayingGame.Inventory:Equip(_ItemType)
+function ExternalRolePlayingGame.Inventory:Equip(_ItemType, _DontSubstract)
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Inventory);
     local Item = ExternalRolePlayingGame.ItemList[_ItemType];
     if Item and self.Items[_ItemType] > 0 and not self.Equipped[_ItemType] then
         if Item:IsInCategory(ExternalRolePlayingGame.ItemCategories.Equipment) then
-            self:Remove(_ItemType, 1);
             API.Bridge([[
                 ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = true
             ]]);
+            if not _DontSubstract then
+                API.Bridge([[
+                    local Amount = ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["]
+                    ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["] = Amount -1
+                ]]);
+                self.Items[_ItemType] = self.Items[_ItemType] +1;
+            end
 
             self.Equipped[_ItemType] = true;
             if Item.OnEquipped then
@@ -2311,10 +2560,11 @@ end
 ---
 -- Legt einen Gegenstand ab, der als Ausrüstung angelegt ist.
 -- @param _ItemType Typ des Item
+-- @param _DontAdd Nicht ins Inventar legen
 -- @return boolean: Erfolgreich abgelegt
 -- @within ExternalRolePlayingGame.Inventory
 --
-function ExternalRolePlayingGame.Inventory:Unequip(_ItemType)
+function ExternalRolePlayingGame.Inventory:Unequip(_ItemType, _DontAdd)
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Inventory);
     local Item = ExternalRolePlayingGame.ItemList[_ItemType];
@@ -2323,8 +2573,14 @@ function ExternalRolePlayingGame.Inventory:Unequip(_ItemType)
         API.Bridge([[
             ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = nil
         ]]);
+        if not _DontAdd then
+            API.Bridge([[
+                local Amount = ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["]
+                ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["] = Amount +1
+            ]]);
+            self.Items[_ItemType] = self.Items[_ItemType] +1;
+        end
 
-        self.Items[_ItemType] = self.Items[_ItemType] +1;
         self.Equipped[_ItemType] = nil;
         if Item.OnUnequipped then
             Item:OnUnequipped(self.Owner);
@@ -2451,7 +2707,7 @@ function ExternalRolePlayingGame.Item:New(_Identifier)
     item.OnInserted   = nil;
     item.OnEquipped   = nil;
     item.OnUnequipped = nil;
-    item.OnItemUsed   = nil;
+    item.OnConsumed   = nil;
 
     ExternalRolePlayingGame.ItemList[_Identifier] = item;
     API.Bridge([[
