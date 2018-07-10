@@ -49,7 +49,7 @@ function Mission_FirstMapAction()
     
     -----
     
-    QSB.CastleStore:New(1)
+    --QSB.CastleStore:New(1)
     
     CreateObject {
         Name = "well",
