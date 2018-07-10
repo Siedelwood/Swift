@@ -41,7 +41,6 @@
 -- Hier werden wichtige Basisfunktionen bereitgestellt. Diese Funktionen sind
 -- immer Bestandteil der QSB, egal welche Bundles gewält werden.
 --
--- @classmode
 -- @set sort=true
 --
 
@@ -1134,11 +1133,7 @@ function API.AddHotKey(_Key, _Description)
         API.Dbg("API.AddHotKey: Can not be used from the global script!");
         return;
     end
-    for k, v in pairs(Core.Data.HotkeyDescriptions) do
-        if v and v[1] == _Key then
-            return -1;
-        end
-    end
+    g_KeyBindingsOptions.Descriptions = nil;
     table.insert(Core.Data.HotkeyDescriptions, {_Key, _Description});
     return #Core.Data.HotkeyDescriptions;
 end
