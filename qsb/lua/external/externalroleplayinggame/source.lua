@@ -1160,15 +1160,40 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         local KnightType = Logic.GetEntityType(KnightID);
         local KnightName = Logic.GetEntityName(KnightID);
 
+        -- Kein Held, dann Fallback
         local HeroInstance = ExternalRolePlayingGame.HeroList[KnightName];
-        if HeroInstance == nil or HeroInstance.Ability == nil then
+        if HeroInstance == nil then
+            GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame(_Ability);
+            return;
+        end
+
+        -- Nutze linke Hand
+        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
+            if Amount > 0 and not HeroInstance.LeftHandDisabled then
+                API.Bridge([[
+                    local ItemInstance = ExternalRolePlayingGame.Ability:GetInstance("]] ..LeftHand.. [[")
+                    local HeroInstance = ExternalRolePlayingGame.Hero:GetInstance("]] ..KnightName.. [[")
+                    if HeroInstance and HeroInstance.Inventory and ItemInstance and ItemInstance.OnItemUsed then
+                        if HeroInstance.Inventory:CountItem("]] ..LeftHand.. [[") > 0 then
+                            ItemInstance:OnItemUsed("]] ..KnightName.. [[")
+                            HeroInstance.Inventory:Remove("]] ..LeftHand.. [[", 1)
+                        end
+                    end
+                ]]);
+                return;
+            end
+        end
+
+        -- Originalfähigkeit
+        if HeroInstance.Ability == nil then
             GUI_Knight.StartAbilityClicked_Orig_AddOnRolePlayingGame(_Ability);
             return;
         end
 
         -- Doppelklick vermeiden
         ExternalRolePlayingGame.HeroList[KnightName].ActionPoints = 0;
-
         -- Fähigkeit ausführen
         API.Bridge([[
             local AbilityInstance = ExternalRolePlayingGame.Ability:GetInstance("]] ..HeroInstance.Ability.. [[")
@@ -1192,6 +1217,15 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
 
         local Caption     = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Caption;
         local Description = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Description;
+        -- Linke Hand
+        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
+            if Amount > 0 and not HeroInstance.LeftHandDisabled then
+                local Caption     = ExternalRolePlayingGame.ItemList[LeftHand].Caption;
+                local Description = ExternalRolePlayingGame.ItemList[LeftHand].Description;
+            end
+        end
         UserSetTextNormal(Caption, Description);
     end
 
@@ -1208,11 +1242,15 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
-        local Icon = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Icon;
-        local RechargeTime = HeroInstance.RechargeTime;
-        local ActionPoints = HeroInstance.ActionPoints;
-
         -- Icon
+        local Icon = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Icon;
+        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
+            if Amount > 0 and not HeroInstance.LeftHandDisabled then
+                Icon = {14, 10};
+            end
+        end
         if type(Icon) == "table" then
             if Icon[3] and type(Icon[3]) == "string" then
                 API.SetIcon(WidgetID, Icon, nil, Icon[3]);
@@ -1224,6 +1262,17 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         end
 
         -- Enable/Disable
+        local Inventory = ExternalRolePlayingGame.HeroList[KnightName].Inventory;
+        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and Inventory and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            local LeftHand = ExternalRolePlayingGame.HeroList[KnightName].LeftHand;
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[LeftHand] or 0;
+            if Amount > 0 and not HeroInstance.LeftHandDisabled then
+                XGUIEng.DisableButton(WidgetID, 1);
+                return;
+            end
+        end
+        local RechargeTime = HeroInstance.RechargeTime;
+        local ActionPoints = HeroInstance.ActionPoints;
         if ActionPoints < RechargeTime or HeroInstance.AbilityDisabled then
             XGUIEng.DisableButton(WidgetID, 1);
         else
@@ -1250,6 +1299,11 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
 
         -- Fix for over 100% charge
         TimeAlreadyCharged = (TimeAlreadyCharged > TotalRechargeTime and TotalRechargeTime) or TimeAlreadyCharged;
+
+        -- Left hand don't have cooldown
+        if ExternalRolePlayingGame.HeroList[KnightName].LeftHand ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
+            TimeAlreadyCharged = TotalRechargeTime;
+        end
 
         if TimeAlreadyCharged == TotalRechargeTime then
             XGUIEng.SetMaterialColor(WidgetID, 0, 255, 255, 255, 0);
@@ -1581,6 +1635,7 @@ function ExternalRolePlayingGame.Hero:New(_ScriptName)
     hero.Armor        = nil;
     hero.Jewellery    = nil;
     hero.Weapon       = nil;
+    hero.LeftHand     = nil;
 
     -- Events
     hero.Vices        = {};
@@ -1809,6 +1864,40 @@ function ExternalRolePlayingGame.Hero:EquipJewellery(_ItemType)
 end
 
 ---
+-- Setzt das Utensil, welches linker Hand benutzt wird.
+--
+-- @param _ItemType Ausrüstungsgegenstand
+-- @return boolean: Schmuck angelegt
+-- @within ExternalRolePlayingGame.Hero
+--
+function ExternalRolePlayingGame.Hero:EquipLeftHand(_ItemType)
+    assert(not GUI);
+    assert(self ~= ExternalRolePlayingGame.Hero);
+
+    local Equipped = false;
+    if self.Inventory ~= nil then
+        if self.LeftHand then
+            self.Inventory:Unequip(self.LeftHand);
+        end
+        local Item = ExternalRolePlayingGame.ItemList[_ItemType];
+        if Item and Item:IsInCategory(ExternalRolePlayingGame.ItemCategories.Utensil) then
+            self.LeftHand = _ItemType;
+            if self.LeftHand then
+                Equipped = self.Inventory:Equip(self.LeftHand);
+            end
+        end
+
+        -- Set in local
+        local CommandString = "ExternalRolePlayingGame.HeroList['" ..self.ScriptName.. "'].LeftHand = nil";
+        if Item ~= nil then 
+            CommandString = "ExternalRolePlayingGame.HeroList['" ..self.ScriptName.. "'].LeftHand = '" .._ItemType.. "'";
+        end
+        API.Bridge(CommandString);
+    end
+    return Equipped;
+end
+
+---
 -- Erhöht das Level des Helden. Es kann entweder automatisch gelevelt werdern.
 -- In diesem Fall werden die Statuswerte automatisch erhöht. Andernfalls werden
 -- Lernpunkte gutgeschrieben.
@@ -1937,6 +2026,13 @@ function ExternalRolePlayingGame.Hero.UpdateStatus(_ScriptName)
             local Health = (Hero.Health / Hero.MaxHealth) * 100;
             SetHealth(_ScriptName, Health);
             MakeInvulnerable(_ScriptName);
+
+            -- Inventarname
+            local CommandString = "ExternalRolePlayingGame.HeroList['" .._ScriptName.. "'].Inventory = nil";
+            if Hero.Inventory then
+                CommandString = "ExternalRolePlayingGame.HeroList['" .._ScriptName.. "'].Inventory = '" ..Hero.Inventory.Identifier.. "'";
+            end
+            API.Bridge(CommandString);
 
             -- Aktualisiere Aktionspunkte
             if Hero.Ability then
@@ -2323,6 +2419,7 @@ ExternalRolePlayingGame.ItemCategories = {
     Weapon    = 5, -- Waffe
     Armor     = 6, -- Rüstung
     Jewellery = 7, -- Schmuck
+    Utensil   = 8, -- Gebrauchsgegenstand
 };
 
 ExternalRolePlayingGame.ItemList = {};
@@ -2348,6 +2445,7 @@ function ExternalRolePlayingGame.Item:New(_Identifier)
     item.OnInserted   = nil;
     item.OnEquipped   = nil;
     item.OnUnequipped = nil;
+    item.OnItemUsed   = nil;
 
     ExternalRolePlayingGame.ItemList[_Identifier] = item;
     API.Bridge([[
