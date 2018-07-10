@@ -50,7 +50,105 @@ function Mission_FirstMapAction()
     
     API.ActivateDebugMode(true, true, true, true);
     
-    TestLevelUp()
+    TestEquipment()
+end
+
+---
+-- 
+--
+function TestEquipment()
+    -- Testwaffen --
+    
+    local Weapon1 = ExternalRolePlayingGame.Item:New("Weapon1");
+    Weapon1:SetCaption("Weapon 1");
+    Weapon1:SetDescription("This is weapon 1!");
+    Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    local Weapon2 = ExternalRolePlayingGame.Item:New("Weapon2");
+    Weapon2:SetCaption("Weapon 2");
+    Weapon2:SetDescription("This is weapon 2!");
+    Weapon2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Weapon2:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    -- Testrüstungen --
+
+    local Armor1 = ExternalRolePlayingGame.Item:New("Armor1");
+    Armor1:SetCaption("Armor 1");
+    Armor1:SetDescription("This is armor 1!");
+    Armor1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Armor1:AddCategory(ExternalRolePlayingGame.ItemCategories.Armor);
+    
+    local Armor2 = ExternalRolePlayingGame.Item:New("Armor2");
+    Armor2:SetCaption("Armor 2");
+    Armor2:SetDescription("This is armor 2!");
+    Armor2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Armor2:AddCategory(ExternalRolePlayingGame.ItemCategories.Armor);
+
+    -- Testschmuck --
+
+    local Jewellery1 = ExternalRolePlayingGame.Item:New("Jewellery1");
+    Jewellery1:SetCaption("Jewellery 1");
+    Jewellery1:SetDescription("This is jewellery 1!");
+    Jewellery1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Jewellery1:AddCategory(ExternalRolePlayingGame.ItemCategories.Jewellery);
+    
+    local Jewellery2 = ExternalRolePlayingGame.Item:New("Jewellery2");
+    Jewellery2:SetCaption("Jewellery 2");
+    Jewellery2:SetDescription("This is jewellery 2!");
+    Jewellery2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Jewellery2:AddCategory(ExternalRolePlayingGame.ItemCategories.Jewellery);
+
+    -- Testgebrauchsgegenstände --
+
+    local Belt1 = ExternalRolePlayingGame.Item:New("Belt1");
+    Belt1:SetCaption("Belt 1");
+    Belt1:SetDescription("This is belt 1!");
+    Belt1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Belt1:AddCategory(ExternalRolePlayingGame.ItemCategories.Belt);
+    
+    local Belt2 = ExternalRolePlayingGame.Item:New("Belt2");
+    Belt2:SetCaption("Belt 2");
+    Belt2:SetDescription("This is belt 2!");
+    Belt2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Belt2:AddCategory(ExternalRolePlayingGame.ItemCategories.Belt);
+    
+    -- Hero --
+
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
+    local Inventory = ExternalRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
+    Meredith.Inventory = Inventory;
+
+    Inventory:Insert("Weapon1", 4);
+    Inventory:Insert("Weapon2", 2);
+    Inventory:Insert("Armor1", 1);
+    Inventory:Insert("Armor2", 3);
+    Inventory:Insert("Jewellery1", 2);
+    Inventory:Insert("Jewellery2", 7);
+    Inventory:Insert("Belt1", 4);
+    Inventory:Insert("Belt2", 1);
+
+    -- Equip --
+
+    Meredith:EquipWeapon("Weapon2");
+    Meredith:EquipArmor("Armor2");
+    Meredith:EquipJewellery("Jewellery1");
+    Meredith:EquipBelt("Belt2");
+
+    -- Ability --
+
+    local Dummy1 = ExternalRolePlayingGame.Ability:New("Dummy1");
+    Dummy1.RechargeTime = 2*60;
+    Dummy1:SetCaption("Bla");
+    Dummy1:SetDescription("Bla Bla Bla");
+    Dummy1:SetIcon({1,1});
+    Dummy1.Condition = function()
+        return false;
+    end
+    Dummy1.Action = function()
+        API.Note("Ability used!")
+    end
+    Meredith.Ability = Dummy1;
 end
 
 ---
@@ -173,7 +271,6 @@ function TestInventoryListing()
     
     local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
     local Inventory = ExternalRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
-    Inventory.Owner = Meredith;
     Meredith.Inventory = Inventory;
     
     Inventory:Insert("Dummy1", 10);
