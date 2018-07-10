@@ -1236,6 +1236,7 @@ function AddOnCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
     GUI.SendScriptCommand([[
         local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
         for k, v in pairs(Store.Data.Goods) do
+            Store:SetGoodLocked(k, false);
             Store:SetGoodAccepted(k, false);
         end
     ]]);
@@ -1261,6 +1262,7 @@ function AddOnCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
             
             if Accepted and not Locked then
                 Store:SetGoodLocked(]] .._GoodType.. [[, true);
+                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
             elseif Accepted and Locked then
                 Store:SetGoodLocked(]] .._GoodType.. [[, false);
                 Store:SetGoodAccepted(]] .._GoodType.. [[, false);
@@ -1371,9 +1373,9 @@ function AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _Curre
 
         -- Ware ist gesperrt
         if self:IsAccepted(_PlayerID, k) and self:IsLocked(_PlayerID, k) then
-            XGUIEng.SetMaterialColor(ButtonWidget, 0, 210, 210, 90, 255);
-            XGUIEng.SetMaterialColor(ButtonWidget, 1, 210, 210, 90, 255);
-            XGUIEng.SetMaterialColor(ButtonWidget, 7, 210, 210, 90, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 0, 230, 180, 120, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 1, 230, 180, 120, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 7, 230, 180, 120, 255);
         -- Ware wird nicht angenommen
         elseif not self:IsAccepted(_PlayerID, k) and not self:IsLocked(_PlayerID, k) then
             XGUIEng.SetMaterialColor(ButtonWidget, 0, 190, 90, 90, 255);
@@ -1989,4 +1991,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("AddOnCastleStore");
- 
+
