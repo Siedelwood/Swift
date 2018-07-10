@@ -141,13 +141,13 @@ Core:RegisterBehavior(b_Goal_WinQuest);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.
+-- <p>Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</p>
 --
--- Dabei ist es egal von welchem Spieler. Diebe können Gold nur aus
--- Stadtgebäude stehlen.
+-- <p>Dabei ist es egal von welchem Spieler. Diebe können Gold nur aus
+-- Stadtgebäude stehlen.</p>
 --
--- <b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
--- Gebäuden, damit der Quest stets erfüllbar bleibt.
+-- <p><b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
+-- Gebäuden, damit der Quest stets erfüllbar bleibt.</p>
 --
 -- @param _Amount       Menge an Gold
 -- @param _ShowProgress Fortschritt ausgeben
@@ -262,13 +262,13 @@ Core:RegisterBehavior(b_Goal_StealGold)
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.
+-- <p>Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</p>
 --
--- Eine Kirche wird immer Sabotiert. Ein Lagerhaus verhält sich ähnlich zu
--- einer Burg.
+-- <p>Eine Kirche wird immer Sabotiert. Ein Lagerhaus verhält sich ähnlich zu
+-- einer Burg.</p>
 --
--- <b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
--- ein Dieb entsandt werden kann.
+-- <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
+-- ein Dieb entsandt werden kann.</p>
 --
 -- @param _ScriptName Skriptname des Gebäudes
 --
@@ -396,17 +396,17 @@ Core:RegisterBehavior(b_Goal_StealBuilding)
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.
+-- <p>Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</p>
 --
--- Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt. Es
+-- <p>Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt. Es
 -- muss sich um ein Gebäude handeln, das bestohlen werden kann (Burg, Lager,
--- Kirche, Stadtgebäude mit Einnahmen)!
+-- Kirche, Stadtgebäude mit Einnahmen)!</p>
 --
--- Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
--- es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.
+-- <p>Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
+-- es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.</p>
 --
--- <b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
--- ein Dieb entsandt werden kann.
+-- <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
+-- ein Dieb entsandt werden kann.</p>
 --
 -- @param _ScriptName  Skriptname des Gebäudes
 -- @param _DeleteThief Dieb nach Abschluss löschen
@@ -1095,7 +1095,8 @@ Core:RegisterBehavior(b_Reward_ChangePlayer);
 -- Der Siedler wird sich zum Ziel ausrichten und in der angegeben Distanz
 -- und dem angegebenen Winkel Position beziehen.
 --
--- <b>Hinweis:</b> Funktioniert ähnlich wie MoveEntityToPositionToAnotherOne.
+-- <p><b>Hinweis:</b> Funktioniert ähnlich wie MoveEntityToPositionToAnotherOne.
+-- </p>
 --
 -- @param _ScriptName  Skriptname des Entity
 -- @param _Destination Skriptname des Ziels
@@ -1964,3 +1965,4 @@ function BundleSymfoniaBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleSymfoniaBehaviors");
+

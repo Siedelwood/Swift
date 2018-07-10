@@ -7,6 +7,25 @@
 ---
 -- Dieses Bundle enthält häufig gebrauchte Funktionen für Entities.
 --
+-- Das wichtigste Auf einen Blick:
+-- <ul>
+-- <li>
+-- <a href="#API.CommandAttack">Befehle für Entities</a>
+-- </li>
+-- <li>
+-- <a href="#API.EntityGetName">Eigenschaften von Entities</a>
+-- </li>
+-- <li>
+-- <a href="#API.GetEntitiesByPrefix">Entities ermitteln</a>
+-- </li>
+-- <li>
+-- <a href="#API.MoveAndLookAt">Entities bewegen</a>
+-- </li>
+-- <li>
+-- <a href="#API.PlaceAndLookAt">Entities platzieren</a>
+-- </li>
+-- </ul>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -290,17 +309,17 @@ SetPositionEx = API.PlaceAndLookAt;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local Name = API.GetEntityName(SomeEntityID);
+-- local Name = API.EntityGetName(SomeEntityID);
 --
-function API.GetEntityName(_entity)
+function API.EntityGetName(_entity)
     if not IsExisting(_entity) then
         local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
-        API.Warn("API.GetEntityName: Entity " ..Subject.. " does not exist!");
+        API.Warn("API.EntityGetName: Entity " ..Subject.. " does not exist!");
         return nil;
     end
     return Logic.GetEntityName(GetID(_entity));
 end
-GetEntityName = API.GetEntityName;
+GetEntityName = API.EntityGetName;
 
 ---
 -- Setzt den Skriptnamen des Entity.
@@ -313,20 +332,20 @@ GetEntityName = API.GetEntityName;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.SetEntityName(SomeEntityID, "myEntity");
+-- API.EntitySetName(SomeEntityID, "myEntity");
 --
-function API.SetEntityName(_entity, _name)
+function API.EntitySetName(_entity, _name)
     if GUI then
-        API.Bridge("API.SetEntityName(" ..GetID(_EntityID).. ", '" .._name.. "')")
+        API.Bridge("API.EntitySetName(" ..GetID(_EntityID).. ", '" .._name.. "')")
         return;
     end
     if IsExisting(_name) then
-        API.Dbg("API.SetEntityName: Entity '" .._name.. "' already exists!");
+        API.Dbg("API.EntitySetName: Entity '" .._name.. "' already exists!");
         return;
     end
     return Logic.SetEntityName(GetID(_entity), _name);
 end
-SetEntityName = API.SetEntityName;
+SetEntityName = API.EntitySetName;
 
 ---
 -- Setzt die Orientierung des Entity.
@@ -338,21 +357,21 @@ SetEntityName = API.SetEntityName;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.SetOrientation("marcus", 52);
+-- API.EntitySetOrientation("marcus", 52);
 --
-function API.SetOrientation(_entity, _ori)
+function API.EntitySetOrientation(_entity, _ori)
     if GUI then
-        API.Bridge("API.SetOrientation(" ..GetID(_entity).. ", " .._ori.. ")")
+        API.Bridge("API.EntitySetOrientation(" ..GetID(_entity).. ", " .._ori.. ")")
         return;
     end
     if not IsExisting(_entity) then
         local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
-        API.Dbg("API.SetOrientation: Entity " ..Subject.. " does not exist!");
+        API.Dbg("API.EntitySetOrientation: Entity " ..Subject.. " does not exist!");
         return;
     end
     return Logic.SetOrientation(GetID(_entity), _ori);
 end
-SetOrientation = API.SetOrientation;
+SetOrientation = API.EntitySetOrientation;
 
 ---
 -- Gibt die Orientierung des Entity zurück.
@@ -364,17 +383,17 @@ SetOrientation = API.SetOrientation;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local Orientation = API.GetOrientation("marcus");
+-- local Orientation = API.EntityGetOrientation("marcus");
 --
-function API.GetOrientation(_entity)
+function API.EntityGetOrientation(_entity)
     if not IsExisting(_entity) then
         local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
-        API.Warn("API.GetOrientation: Entity " ..Subject.. " does not exist!");
+        API.Warn("API.EntityGetOrientation: Entity " ..Subject.. " does not exist!");
         return 0;
     end
     return Logic.GetEntityOrientation(GetID(_entity));
 end
-GetOrientation = API.GetOrientation;
+GetOrientation = API.EntityGetOrientation;
 
 ---
 -- Das Entity greift ein anderes Entity an, sofern möglich.
@@ -386,26 +405,26 @@ GetOrientation = API.GetOrientation;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.EntityAttack("hakim", "marcus");
+-- API.CommandAttack("hakim", "marcus");
 --
-function API.EntityAttack(_Entity, _Target)
+function API.CommandAttack(_Entity, _Target)
     if GUI then
-        API.Bridge("API.EntityAttack(" ..GetID(_Entity).. ", " ..GetID(_Target).. ")")
+        API.Bridge("API.CommandAttack(" ..GetID(_Entity).. ", " ..GetID(_Target).. ")")
         return;
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.EntityAttack: Entity " ..Subject.. " does not exist!");
+        API.Dbg("API.CommandAttack: Entity " ..Subject.. " does not exist!");
         return;
     end
     if not IsExisting(_Target) then
         local Subject = (type(_Target) == "string" and "'" .._Target.. "'") or _Target;
-        API.Dbg("API.EntityAttack: Target " ..Subject.. " does not exist!");
+        API.Dbg("API.CommandAttack: Target " ..Subject.. " does not exist!");
         return;
     end
     return BundleEntityHelperFunctions.Global:Attack(_Entity, _Target);
 end
-Attack = API.EntityAttack;
+Attack = API.CommandAttack;
 
 ---
 -- Ein Entity oder ein Battalion wird zu einer Position laufen und
@@ -418,26 +437,26 @@ Attack = API.EntityAttack;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.EntityAttackMove("hakim", "area");
+-- API.CommandAttackMove("hakim", "area");
 --
-function API.EntityAttackMove(_Entity, _Position)
+function API.CommandAttackMove(_Entity, _Position)
     if GUI then
-        API.Dbg("API.EntityAttackMove: Cannot be used from local script!");
+        API.Dbg("API.CommandAttackMove: Cannot be used from local script!");
         return;
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.EntityAttackMove: Entity " ..Subject.. " does not exist!");
+        API.Dbg("API.CommandAttackMove: Entity " ..Subject.. " does not exist!");
         return;
     end
     local Position = API.LocateEntity(_Position)
     if not API.ValidatePosition(Position) then
-        API.Dbg("API.EntityAttackMove: Position is invalid!");
+        API.Dbg("API.CommandAttackMove: Position is invalid!");
         return;
     end
     return BundleEntityHelperFunctions.Global:AttackMove(_Entity, Position);
 end
-AttackMove = API.EntityAttackMove;
+AttackMove = API.CommandAttackMove;
 
 ---
 -- Bewegt das Entity zur Zielposition.
@@ -449,26 +468,26 @@ AttackMove = API.EntityAttackMove;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.EntityMove("hakim", "pos");
+-- API.CommandMove("hakim", "pos");
 --
-function API.EntityMove(_Entity, _Position)
+function API.CommandMove(_Entity, _Position)
     if GUI then
-        API.Dbg("API.EntityMove: Cannot be used from local script!");
+        API.Dbg("API.CommandMove: Cannot be used from local script!");
         return;
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.EntityMove: Entity " ..Subject.. " does not exist!");
+        API.Dbg("API.CommandMove: Entity " ..Subject.. " does not exist!");
         return;
     end
     local Position = API.LocateEntity(_Position)
     if not API.ValidatePosition(Position) then
-        API.Dbg("API.EntityMove: Position is invalid!");
+        API.Dbg("API.CommandMove: Position is invalid!");
         return;
     end
     return BundleEntityHelperFunctions.Global:Move(_Entity, Position);
 end
-Move = API.EntityMove;
+Move = API.CommandMove;
 
 ---
 -- Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.
@@ -481,14 +500,14 @@ Move = API.EntityMove;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local Knight = API.GetNearestKnight(GetID("IO1"), 1);
+-- local Knight = API.GetKnightsNearby(GetID("IO1"), 1);
 --
-function API.GetNearestKnight(_eID, _playerID)
+function API.GetKnightsNearby(_eID, _playerID)
     local Knights = {};
     Logic.GetKnights(_playerID, Knights);
-    return API.GetNearestEntity(_eID, Knights);
+    return API.GetEntitiesNearby(_eID, Knights);
 end
-GetClosestKnight = API.GetNearestKnight;
+GetClosestKnight = API.GetKnightsNearby;
 
 ---
 -- Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
@@ -503,25 +522,25 @@ GetClosestKnight = API.GetNearestKnight;
 --
 -- @usage
 -- local EntityList = API.GetEntitiesOfCategoriesInTerritories({1, 2, 3}, EntityCategories.Hero, {5, 12, 23, 24});
--- local Knight = API.GetNearestEntity(GetID("IO1"), EntityList);
+-- local Knight = API.GetEntitiesNearby(GetID("IO1"), EntityList);
 --
-function API.GetNearestEntity(_eID, _entities)
+function API.GetEntitiesNearby(_eID, _entities)
     if not IsExisting(_eID) then
         return;
     end
     if #_entities == 0 then
-        API.Dbg("API.GetNearestEntity: The target list is empty!");
+        API.Dbg("API.GetEntitiesNearby: The target list is empty!");
         return;
     end
     for i= 1, #_entities, 1 do
         if not IsExisting(_entities[i]) then
-            API.Dbg("API.GetNearestEntity: At least one target entity is dead!");
+            API.Dbg("API.GetEntitiesNearby: At least one target entity is dead!");
             return;
         end
     end
     return BundleEntityHelperFunctions.Shared:GetNearestEntity(_eID,_entities);
 end
-GetClosestEntity = API.GetNearestEntity;
+GetClosestEntity = API.GetEntitiesNearby;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -870,3 +889,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleEntityHelperFunctions");
+

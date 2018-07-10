@@ -41,7 +41,6 @@
 -- Hier werden wichtige Basisfunktionen bereitgestellt. Diese Funktionen sind
 -- immer Bestandteil der QSB, egal welche Bundles gewält werden.
 --
--- @classmode
 -- @set sort=true
 --
 
@@ -50,7 +49,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1100";
+QSB.Version = "Symfonia Build 1200";
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -1132,6 +1131,7 @@ function API.AddHotKey(_Key, _Description)
         API.Dbg("API.AddHotKey: Can not be used from the global script!");
         return;
     end
+    g_KeyBindingsOptions.Descriptions = nil;
     table.insert(Core.Data.HotkeyDescriptions, {_Key, _Description});
     return #Core.Data.HotkeyDescriptions;
 end

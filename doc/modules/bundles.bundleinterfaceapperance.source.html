@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
 <div id="container">
 
 <div id="product">
@@ -81,81 +83,82 @@
 <p> Es gibt Funktionen zum Ausblenden einiger Buttons und Menüs und
  die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
  zu setzen.
+<p> <p><a href="#API.InterfaceHideBuildMenu">Interface-Steuerung</a></p>
 </p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.GetPlayerName">API.GetPlayerName (_PlayerID)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceGetPlayerName">API.InterfaceGetPlayerName (_PlayerID)</a></td>
 	<td class="summary">Gibt den Namen des Spielers zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.GetTerritoryName">API.GetTerritoryName (_TerritoryID)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceGetTerritoryName">API.InterfaceGetTerritoryName (_TerritoryID)</a></td>
 	<td class="summary">Gibt den Namen des Territoriums zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideBuildMenu">API.HideBuildMenu (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideBuildMenu">API.InterfaceHideBuildMenu (_Flag)</a></td>
 	<td class="summary">Versteckt das Baumenü oder blendet es ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideBuyTerritory">API.HideBuyTerritory (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideBuyTerritory">API.InterfaceHideBuyTerritory (_Flag)</a></td>
 	<td class="summary">Versteckt den Button zum Territorienkauf oder blendet ihn ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideDiplomacyMenu">API.HideDiplomacyMenu (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideDiplomacyMenu">API.InterfaceHideDiplomacyMenu (_Flag)</a></td>
 	<td class="summary">Versteckt den Button des Diplomatiemenü oder blendet ihn ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideKnightAbility">API.HideKnightAbility (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideKnightAbility">API.InterfaceHideKnightAbility (_Flag)</a></td>
 	<td class="summary">Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideKnightButton">API.HideKnightButton (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideKnightButton">API.InterfaceHideKnightButton (_Flag)</a></td>
 	<td class="summary">Versteckt den Button zur Heldenselektion oder blendet ihn ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideMinimap">API.HideMinimap (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideMinimap">API.InterfaceHideMinimap (_Flag)</a></td>
 	<td class="summary">Graut die Minimap aus oder macht sie wieder verwendbar.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideProductionMenu">API.HideProductionMenu (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideProductionMenu">API.InterfaceHideProductionMenu (_Flag)</a></td>
 	<td class="summary">Versteckt den Button des Produktionsmenü oder blendet ihn ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideSelectionButton">API.HideSelectionButton (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideSelectionButton">API.InterfaceHideSelectionButton (_Flag)</a></td>
 	<td class="summary">Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideToggleMinimap">API.HideToggleMinimap (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideToggleMinimap">API.InterfaceHideToggleMinimap (_Flag)</a></td>
 	<td class="summary">Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.HideWeatherMenu">API.HideWeatherMenu (_Flag)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceHideWeatherMenu">API.InterfaceHideWeatherMenu (_Flag)</a></td>
 	<td class="summary">Versteckt den Button des Wettermenüs oder blendet ihn ein.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetIcon">API.SetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceSetIcon">API.InterfaceSetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
 	<td class="summary">Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetPlayerColor">API.SetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceSetPlayerColor">API.InterfaceSetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</a></td>
 	<td class="summary">Setzt zu Spielbeginn eine andere Spielerfarbe.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetPlayerName">API.SetPlayerName (_PlayerID, _Name)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceSetPlayerName">API.InterfaceSetPlayerName (_PlayerID, _Name)</a></td>
 	<td class="summary">Gibt dem Spieler einen neuen Namen.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetTexture">API.SetTexture (_widget, _file)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceSetTexture">API.InterfaceSetTexture (_widget, _file)</a></td>
 	<td class="summary">Setzt eine Grafik als Bild für einen Icon oder einen Button.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetTooltipCosts">API.SetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceSetTooltipCosts">API.InterfaceSetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</a></td>
 	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetTooltipNormal">API.SetTooltipNormal (_title, _text, _disabledText)</a></td>
+	<td class="name" nowrap><a href="#API.InterfaceSetTooltipNormal">API.InterfaceSetTooltipNormal (_title, _text, _disabledText)</a></td>
 	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung.</td>
 	</tr>
 </table>
@@ -207,8 +210,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.GetPlayerName"></a>
-    <strong>API.GetPlayerName (_PlayerID)</strong>
+    <a name = "API.InterfaceGetPlayerName"></a>
+    <strong>API.InterfaceGetPlayerName (_PlayerID)</strong>
     </dt>
     <dd>
     Gibt den Namen des Spielers zurück.
@@ -234,8 +237,8 @@
 
 </dd>
     <dt>
-    <a name = "API.GetTerritoryName"></a>
-    <strong>API.GetTerritoryName (_TerritoryID)</strong>
+    <a name = "API.InterfaceGetTerritoryName"></a>
+    <strong>API.InterfaceGetTerritoryName (_TerritoryID)</strong>
     </dt>
     <dd>
     Gibt den Namen des Territoriums zurück.
@@ -261,13 +264,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideBuildMenu"></a>
-    <strong>API.HideBuildMenu (_Flag)</strong>
+    <a name = "API.InterfaceHideBuildMenu"></a>
+    <strong>API.InterfaceHideBuildMenu (_Flag)</strong>
     </dt>
     <dd>
     Versteckt das Baumenü oder blendet es ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -284,13 +287,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideBuyTerritory"></a>
-    <strong>API.HideBuyTerritory (_Flag)</strong>
+    <a name = "API.InterfaceHideBuyTerritory"></a>
+    <strong>API.InterfaceHideBuyTerritory (_Flag)</strong>
     </dt>
     <dd>
     Versteckt den Button zum Territorienkauf oder blendet ihn ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -307,13 +310,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideDiplomacyMenu"></a>
-    <strong>API.HideDiplomacyMenu (_Flag)</strong>
+    <a name = "API.InterfaceHideDiplomacyMenu"></a>
+    <strong>API.InterfaceHideDiplomacyMenu (_Flag)</strong>
     </dt>
     <dd>
     Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -330,13 +333,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideKnightAbility"></a>
-    <strong>API.HideKnightAbility (_Flag)</strong>
+    <a name = "API.InterfaceHideKnightAbility"></a>
+    <strong>API.InterfaceHideKnightAbility (_Flag)</strong>
     </dt>
     <dd>
     Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -353,13 +356,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideKnightButton"></a>
-    <strong>API.HideKnightButton (_Flag)</strong>
+    <a name = "API.InterfaceHideKnightButton"></a>
+    <strong>API.InterfaceHideKnightButton (_Flag)</strong>
     </dt>
     <dd>
     Versteckt den Button zur Heldenselektion oder blendet ihn ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -376,13 +379,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideMinimap"></a>
-    <strong>API.HideMinimap (_Flag)</strong>
+    <a name = "API.InterfaceHideMinimap"></a>
+    <strong>API.InterfaceHideMinimap (_Flag)</strong>
     </dt>
     <dd>
     Graut die Minimap aus oder macht sie wieder verwendbar.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -399,13 +402,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideProductionMenu"></a>
-    <strong>API.HideProductionMenu (_Flag)</strong>
+    <a name = "API.InterfaceHideProductionMenu"></a>
+    <strong>API.InterfaceHideProductionMenu (_Flag)</strong>
     </dt>
     <dd>
     Versteckt den Button des Produktionsmenü oder blendet ihn ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -422,13 +425,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideSelectionButton"></a>
-    <strong>API.HideSelectionButton (_Flag)</strong>
+    <a name = "API.InterfaceHideSelectionButton"></a>
+    <strong>API.InterfaceHideSelectionButton (_Flag)</strong>
     </dt>
     <dd>
     Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -445,13 +448,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideToggleMinimap"></a>
-    <strong>API.HideToggleMinimap (_Flag)</strong>
+    <a name = "API.InterfaceHideToggleMinimap"></a>
+    <strong>API.InterfaceHideToggleMinimap (_Flag)</strong>
     </dt>
     <dd>
     Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -468,13 +471,13 @@
 
 </dd>
     <dt>
-    <a name = "API.HideWeatherMenu"></a>
-    <strong>API.HideWeatherMenu (_Flag)</strong>
+    <a name = "API.InterfaceHideWeatherMenu"></a>
+    <strong>API.InterfaceHideWeatherMenu (_Flag)</strong>
     </dt>
     <dd>
     Versteckt den Button des Wettermenüs oder blendet ihn ein.
-<p> <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
 
 
 
@@ -491,8 +494,8 @@
 
 </dd>
     <dt>
-    <a name = "API.SetIcon"></a>
-    <strong>API.SetIcon (_WidgetID, _Coordinates, _Size, _Name)</strong>
+    <a name = "API.InterfaceSetIcon"></a>
+    <strong>API.InterfaceSetIcon (_WidgetID, _Coordinates, _Size, _Name)</strong>
     </dt>
     <dd>
     Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
@@ -541,8 +544,8 @@
 
 </dd>
     <dt>
-    <a name = "API.SetPlayerColor"></a>
-    <strong>API.SetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</strong>
+    <a name = "API.InterfaceSetPlayerColor"></a>
+    <strong>API.InterfaceSetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</strong>
     </dt>
     <dd>
     Setzt zu Spielbeginn eine andere Spielerfarbe.
@@ -575,8 +578,8 @@
 
 </dd>
     <dt>
-    <a name = "API.SetPlayerName"></a>
-    <strong>API.SetPlayerName (_PlayerID, _Name)</strong>
+    <a name = "API.InterfaceSetPlayerName"></a>
+    <strong>API.InterfaceSetPlayerName (_PlayerID, _Name)</strong>
     </dt>
     <dd>
     Gibt dem Spieler einen neuen Namen.
@@ -605,17 +608,17 @@
 
 </dd>
     <dt>
-    <a name = "API.SetTexture"></a>
-    <strong>API.SetTexture (_widget, _file)</strong>
+    <a name = "API.InterfaceSetTexture"></a>
+    <strong>API.InterfaceSetTexture (_widget, _file)</strong>
     </dt>
     <dd>
     Setzt eine Grafik als Bild für einen Icon oder einen Button.
 <p> Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem
  beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
  muss jedoch immer der korrekte Pfad angegeben werden.
-<p> <b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
+<p> <p><b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
  sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
- unterschiedlich ist.
+ unterschiedlich ist.</p>
 
 
 
@@ -635,8 +638,8 @@
 
 </dd>
     <dt>
-    <a name = "API.SetTooltipCosts"></a>
-    <strong>API.SetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</strong>
+    <a name = "API.InterfaceSetTooltipCosts"></a>
+    <strong>API.InterfaceSetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</strong>
     </dt>
     <dd>
     Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.
@@ -667,14 +670,14 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/bundles.bundleinterfaceapperance.source.html#API.SetTooltipNormal">API.SetTooltipNormal</a>
+         <a href="../modules/bundles.bundleinterfaceapperance.source.html#API.InterfaceSetTooltipNormal">API.InterfaceSetTooltipNormal</a>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "API.SetTooltipNormal"></a>
-    <strong>API.SetTooltipNormal (_title, _text, _disabledText)</strong>
+    <a name = "API.InterfaceSetTooltipNormal"></a>
+    <strong>API.InterfaceSetTooltipNormal (_title, _text, _disabledText)</strong>
     </dt>
     <dd>
     Ändert den aktuellen Tooltip mit der Beschreibung.
@@ -907,8 +910,26 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-04 13:23:22 </i>
+<i style="float:right;">Last updated 2018-07-05 11:41:50 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
 </body>
 </html>

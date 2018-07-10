@@ -12,11 +12,7 @@
 -- die Eingabe von Befehlen zu steuern, einzelne einfache Lua-Kommandos im
 -- Spiel auszuführen und sogar komplette Skripte zu laden.
 --
--- Der Debug kann auf zwei verschiedene Arten Aktiviert werden:
--- <ol>
--- <li>Im Skript über API.ActivateDebugMode bz. ActivateDebugMode</li>
--- <li>Im Questassistenten über Reward_DEBUG</li>
--- </ol>
+-- <p><a href="API.ActivateDebugMode">Debug starten</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -70,13 +66,11 @@ ActivateDebugMode = API.ActivateDebugMode;
 ---
 -- Aktiviert den Debug.
 --
--- <b>Hinweis:</b> Die Option "Quest vor Start prüfen" funktioniert nur, wenn
+-- <p><b>Hinweis:</b> Die Option "Quest vor Start prüfen" funktioniert nur, wenn
 -- der Debug im Skript gestartet wird, bevor CreateQuests() ausgeführt wird.
 -- Zu dem Zeitpunkt, wenn ein Quest, der im Assistenten erstellt wurde,
 -- ausgelöst wird, wurde CreateQuests bereits ausgeführt! Es ist daher nicht
--- mehr möglich die Quests vorab zu prüfen.
---
--- @see API.ActivateDebugMode
+-- mehr möglich die Quests vorab zu prüfen.</p>
 --
 -- @param _CheckAtStart [boolean] Prüfe Quests zur Erzeugunszeit
 -- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
@@ -809,3 +803,4 @@ function AddOnQuestDebug.Local:ActivateDevelopingMode()
 end
 
 Core:RegisterBundle("AddOnQuestDebug");
+

@@ -7,8 +7,9 @@
 -- <a href="http://luabinaries.sourceforge.net">Lua-Release</a>
 --
 -- Um Lua zu installieren Lege die Quellen von Lua unter Windows nach C:/Lua
--- und passe die Systemvariable PATH so an, dass Lua über die Power Shell oder
--- die Eingabeaufforderung ausgeführt werden kann.
+-- und passe die Systemvariable PATH an. Anschließend benötigst du eine
+-- Konsole mit Linux-Befehlen. Dazu kannst du dir z.B. Git-Bash installieren.
+-- Alle Skripte sollten nun problemlos funktionieren.
 --
 -- <p>Unter Linux und Mac müssen einige Abhängigkeiten von LDoc nachinstalliert
 -- werden um die Dokumentation generieren zu können. Die Installationen müssen
@@ -19,7 +20,7 @@
 -- <li>luarocks install penlight</li>
 -- </ul>
 --
--- Um die QSB zusammenfügen zu lassen, nutze die make.bat im Hauptverzeichnis
+-- Um die QSB zusammenfügen zu lassen, nutze die make im Hauptverzeichnis
 -- des Projektes oder rufe dieses Skript in der Shell auf.
 --
 -- @script SymfoniaWriter
@@ -31,4 +32,4 @@ if fh then
     fh:close();
     os.remove("var/qsb.lua");
 end
-SymfoniaLoader:CreateQSB();
+SymfoniaLoader:CreateQSB(arg);

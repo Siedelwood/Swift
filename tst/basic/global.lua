@@ -49,12 +49,12 @@ function Mission_FirstMapAction()
     
     Logic.SetKnightTitle(1, 3);
     
-    API.AddQuest {
-        Name = "Test01",
-        Goal_InstantSuccess(),
-        Reward_AI_SetEntityControlled("christian", false),
-        Trigger_Time(10),
-    }
+    -- API.AddQuest {
+    --     Name = "Test01",
+    --     Goal_InstantSuccess(),
+    --     Reward_AI_SetEntityControlled("christian", false),
+    --     Trigger_Time(10),
+    -- }
     
     -- API.AddQuest {
     --     Name = "Test02",

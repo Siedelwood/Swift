@@ -8,9 +8,31 @@
 -- Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere
 -- Funktionen. Es ist bspw. möglich ungenutzte Schalter frei zu programmieren.
 --
--- Bekannte Funktionen, wie die Aufzucht von Tieren, das Anhalten der Produktion
--- in einzelnen Gebäuden und der Abriss einzelner Gebäudestufen sind natürlich
--- im Standard dabei.
+-- Bekannte Funktionen sind natürlich auch wieder mit dabei.
+--
+-- Das wichtigste auf einen Blick:
+-- <ul>
+--
+-- <li>Viehzucht: Hernzüchten von Kühen und Schafen in Gattern
+-- <br>Kühe züchten:<br><a href="#API.UseBreedCattle">Zucht aktivieren</a>,
+-- <a href="#API.SetCattleNeeded">Mindestanzahl Tiere festlegen</a>,
+-- <a href="#API.SetCattleGrainCost">Getreidekosten festlegen</a>
+-- <br>Schafe züchten:<br><a href="#API.UseBreedSheeps">Zucht aktivieren</a>,
+-- <a href="#API.SetSheepNeeded">Mindestanzahl Tiere festlegen</a>,
+-- <a href="#API.SetSheepGrainCost">Getreidekosten festlegen</a>
+-- </li>
+--
+-- <li>Single Stop: Anhalten der Produktion von einzelnen Gebäuden
+-- <br><a href="#API.ActivateSingleStop">aktivieren</a>,
+-- <a href="#API.ActivateSingleStop">deaktivieren</a>
+-- </li>
+--
+-- <li>Downgrade: Rückbau von Stadt- und Rohstoffgebäuden
+-- <br><a href="#API.ActivateDowngrade">aktivieren</a>,
+-- <a href="#API.DeactivateDowngrade">deaktivieren</a>
+-- </li>
+--
+-- </ul>
 --
 -- @within Modulbeschreibung
 -- @set sort=false
@@ -70,27 +92,44 @@ end
 DeactivateSingleStop = API.DeactivateSingleStop;
 
 ---
--- Verwende Downgrade bei Stadt- und Rohstoffgebäuden. Die Rückbaufunktion
+-- Aktiviere Rückbau bei Stadt- und Rohstoffgebäuden. Die Rückbaufunktion
 -- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
 -- jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
 --
 -- <p><b>Alias:</b> UseDowngrade</p>
 --
--- @param _flag [boolean] Downgrade aktiv/inaktiv
 -- @within Anwenderfunktionen
 --
 -- @usage
--- -- Rückbau ist deaktiviert
--- API.UseDowngrade(false);
+-- API.ActivateDowngrade();
 --
-function API.UseDowngrade(_flag)
+function API.ActivateDowngrade()
     if not GUI then
-        API.Bridge("API.UseDowngrade(" ..tostring(_flag).. ")");
+        API.Bridge("API.ActivateDowngrade()");
         return;
     end
-    BundleBuildingButtons.Local.Data.Downgrade = _flag == true;
+    BundleBuildingButtons.Local.Data.Downgrade = true;
 end
-UseDowngrade = API.UseDowngrade;
+ActivateDowngrade = API.ActivateDowngrade;
+
+---
+-- Deaktiviert den Rückbau von Gebäuden.
+--
+-- <p><b>Alias:</b> DeactivateDowngrade</p>
+--
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.DeactivateDowngrade();
+--
+function API.DeactivateDowngrade()
+    if not GUI then
+        API.Bridge("API.DeactivateDowngrade()");
+        return;
+    end
+    BundleBuildingButtons.Local.Data.Downgrade = false;
+end
+DeactivateDowngrade = API.DeactivateDowngrade;
 
 ---
 -- Erlaube oder verbiete dem Spieler Schafe zu züchten.
@@ -1141,3 +1180,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleBuildingButtons");
+

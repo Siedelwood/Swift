@@ -16,6 +16,20 @@
 -- ein Gegenstand wird vom Helden aufgehoben, ein Marktstand, der etwas
 -- verkauft, ....
 --
+-- Das wichtigste Auf einen Blick:
+-- <ul>
+-- <li>
+-- <a href="#API.CreateObject">Objekt erzeugen</a>
+-- </li>
+-- <li>
+-- <a href="#API.InteractiveObjectActivate">Ein- und ausschalten von
+-- interaktiven Objekten</a>
+-- </li>
+-- <li>
+-- <a href="#API.AddCustomIOName">Anzeigenamen im Questfenster definieren</a>
+-- </li>
+-- </ul>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -1100,3 +1114,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleInteractiveObjects");
+

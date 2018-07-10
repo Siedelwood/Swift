@@ -172,7 +172,7 @@ end
 -- @within SymfoniaLoader
 -- @local
 --
-function SymfoniaLoader:ConcatSources()
+function SymfoniaLoader:ConcatSources(_External)
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
 
@@ -207,6 +207,13 @@ function SymfoniaLoader:ConcatSources()
                 table.insert(QsbContent, FileContent);
             end
         end
+    end
+
+    for i= 1, #_External, 1 do
+        local FileContent = "";
+            ActiveBundles = ActiveBundles.. "'" .._External[i]:lower().. "/source.lua',\n";
+            FileContent = self:LoadSource(_External[i]:lower().. "/source.lua");
+        table.insert(QsbContent, FileContent);
     end
 
     ActiveBundles = ActiveBundles.. "}";
@@ -244,7 +251,7 @@ end
 -- @local
 --
 function SymfoniaLoader:CreateQSB()
-    local QsbContent = self:ConcatSources();
+    local QsbContent = self:ConcatSources(arg);
     -- Delete old file
     local fh = io.open("var/qsb.lua", "r");
     if fh ~= nil then

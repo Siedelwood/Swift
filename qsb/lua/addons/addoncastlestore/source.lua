@@ -22,6 +22,22 @@
 -- Objektes bezahlen, werden die Güter im Burglager automatisch mit einbezogen,
 -- wenn sie nicht gesperrt wurden.
 --
+-- Das wichtigste Auf einen Blick:
+-- <ul>
+-- <li>
+-- <a href="#API.CastleStoreCreate">Burglager in der Burg anlegen</a>
+-- </li>
+-- <li>
+-- <a href="#API.CastleStoreCountGood">Warenmenge in der Burg abfragen</a>
+-- </li>
+-- <li>
+-- <a href="#API.CastleStoreAddGood">Waren dem Burglager hinzufügen</a>
+-- </li>
+-- <li>
+-- <a href="#API.CastleStoreRemoveGood">Waren aus der Burg entfernen</a>
+-- </li>
+-- </ul>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -199,19 +215,19 @@ AddOnCastleStore = {
                     en = "Keep goods",
                 },
                 Text = {
-                    de = "- Lagert Waren im Burglager ein {cr}- Waren verbleiben auch im Lager, wenn Platz vorhanden ist",
-                    en = "- Stores goods inside the store {cr}- Goods also remain in the warehouse when space is available",
+                    de = "[UMSCHALT + N]{cr}- Lagert Waren im Burglager ein {cr}- Waren verbleiben auch im Lager, wenn Platz vorhanden ist",
+                    en = "[SHIFT + N]{cr}- Stores goods inside the vault {cr}- Goods also remain in the warehouse when space is available",
                 },
             },
 
             StorehouseTab = {
                 Title = {
                     de = "Güter zwischenlagern",
-                    en = "Store goods temporarily",
+                    en = "Store in vault",
                 },
                 Text = {
-                    de = "- Lagert Waren im Burglager ein {cr}- Lagert waren wieder aus, sobald Platz frei wird",
-                    en = "- Stores goods inside the store {cr}- Allows to extrac goods as soon as space becomes available",
+                    de = "[UMSCHALT + B]{cr}- Lagert Waren im Burglager ein {cr}- Lagert waren wieder aus, sobald Platz frei wird",
+                    en = "[SHIFT + B]{cr}- Stores goods inside the vault {cr}- Allows to extrac goods as soon as space becomes available",
                 },
             },
 
@@ -221,8 +237,8 @@ AddOnCastleStore = {
                     en = "Clear store",
                 },
                 Text = {
-                    de = "- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
-                    en = "- Removes all goods {cr}- Requires space in the storehouse",
+                    de = "[UMSCHALT + M]{cr}- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
+                    en = "[Shift + M]{cr}- Removes all goods {cr}- Requires space in the storehouse",
                 },
             },
         },
@@ -755,6 +771,7 @@ end
 --
 function AddOnCastleStore.Global.OnSaveGameLoaded()
     API.Bridge("AddOnCastleStore.Local:OverwriteGetStringTableText()")
+    API.Bridge("AddOnCastleStore.Local.CastleStore:ActivateHotkeys()")
 end
 
 ---
@@ -911,6 +928,9 @@ function AddOnCastleStore.Local.CastleStore:CreateStore(_PlayerID)
         }
     }
     self.Data[_PlayerID] = Store;
+    
+    self:ActivateHotkeys();
+    self:DescribeHotkeys();
 end
 
 ---
@@ -1216,6 +1236,7 @@ function AddOnCastleStore.Local.CastleStore:OnMultiTabClicked(_PlayerID)
     GUI.SendScriptCommand([[
         local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
         for k, v in pairs(Store.Data.Goods) do
+            Store:SetGoodLocked(k, false);
             Store:SetGoodAccepted(k, false);
         end
     ]]);
@@ -1236,8 +1257,21 @@ function AddOnCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
         local CurrentWirgetID = XGUIEng.GetCurrentWidgetID();
         GUI.SendScriptCommand([[
             local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-            local Accepted = not Store:IsGoodAccepted(]] .._GoodType.. [[)
-            Store:SetGoodAccepted(]] .._GoodType.. [[, Accepted);
+            local Accepted = Store:IsGoodAccepted(]] .._GoodType.. [[)
+            local Locked   = Store:IsGoodLocked(]] .._GoodType.. [[)
+            
+            if Accepted and not Locked then
+                Store:SetGoodLocked(]] .._GoodType.. [[, true);
+                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
+            elseif Accepted and Locked then
+                Store:SetGoodLocked(]] .._GoodType.. [[, false);
+                Store:SetGoodAccepted(]] .._GoodType.. [[, false);
+            elseif not Accepted and not Locked then
+                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
+            else
+                Store:SetGoodLocked(]] .._GoodType.. [[, false);
+                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
+            end
         ]]);
     end
 end
@@ -1337,16 +1371,21 @@ function AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _Curre
         XGUIEng.SetText(AmountWidget, "{center}" .. WarningColor .. v[1]);
         XGUIEng.DisableButton(ButtonWidget, 0)
 
-        if self:IsAccepted(_PlayerID, k) then
-            XGUIEng.SetMaterialColor(ButtonWidget, 0, 255, 255, 255, 255);
-            XGUIEng.SetMaterialColor(ButtonWidget, 1, 255, 255, 255, 255);
-            XGUIEng.SetMaterialColor(ButtonWidget, 7, 255, 255, 255, 255);
-            --XGUIEng.SetMaterialColor(BGWidget, 0, 255, 255, 255, 255);
-        else
+        -- Ware ist gesperrt
+        if self:IsAccepted(_PlayerID, k) and self:IsLocked(_PlayerID, k) then
+            XGUIEng.SetMaterialColor(ButtonWidget, 0, 230, 180, 120, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 1, 230, 180, 120, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 7, 230, 180, 120, 255);
+        -- Ware wird nicht angenommen
+        elseif not self:IsAccepted(_PlayerID, k) and not self:IsLocked(_PlayerID, k) then
             XGUIEng.SetMaterialColor(ButtonWidget, 0, 190, 90, 90, 255);
             XGUIEng.SetMaterialColor(ButtonWidget, 1, 190, 90, 90, 255);
             XGUIEng.SetMaterialColor(ButtonWidget, 7, 190, 90, 90, 255);
-            --XGUIEng.SetMaterialColor(BGWidget, 0, 90, 90, 90, 255);
+        -- Ware wird eingelagert
+        else
+            XGUIEng.SetMaterialColor(ButtonWidget, 0, 255, 255, 255, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 1, 255, 255, 255, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 7, 255, 255, 255, 255);
         end
     end
 end
@@ -1548,6 +1587,95 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
                 end
             end
         end
+    end
+end
+
+---
+-- Hotkey-Callback für den Modus "Waren einlagern".
+--
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Local.CastleStore:HotkeyStoreGoods()
+    local PlayerID = GUI.GetPlayerID();
+    if AddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
+        return;
+    end
+    AddOnCastleStore.Local.CastleStore:OnStorehouseTabClicked(PlayerID);
+end
+
+---
+-- Hotkey-Callback für den Modus "Waren sperren".
+--
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Local.CastleStore:HotkeyLockGoods()
+    local PlayerID = GUI.GetPlayerID();
+    if AddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
+        return;
+    end
+    AddOnCastleStore.Local.CastleStore:OnCityTabClicked(PlayerID);
+end
+
+---
+-- Hotkey-Callback für den Modus "Lager räumen".
+--
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Local.CastleStore:HotkeyEmptyStore()
+    local PlayerID = GUI.GetPlayerID();
+    if AddOnCastleStore.Local.CastleStore:HasCastleStore(PlayerID) == false then 
+        return;
+    end
+    AddOnCastleStore.Local.CastleStore:OnMultiTabClicked(PlayerID);
+end
+
+---
+-- Versieht die Hotkeys des Burglagers mit ihren Funktionen.
+--
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Local.CastleStore:ActivateHotkeys()
+    -- Waren einlagern
+    Input.KeyBindDown(
+        Keys.ModifierShift + Keys.B,
+        "AddOnCastleStore.Local.CastleStore:HotkeyStoreGoods()",
+        2,
+        false
+    );
+
+    -- Waren verwahren
+    Input.KeyBindDown(
+        Keys.ModifierShift + Keys.N,
+        "AddOnCastleStore.Local.CastleStore:HotkeyLockGoods()",
+        2,
+        false
+    );
+    
+    -- Lager räumen
+    Input.KeyBindDown(
+        Keys.ModifierShift + Keys.M,
+        "AddOnCastleStore.Local.CastleStore:HotkeyEmptyStore()",
+        2,
+        false
+    );
+end
+
+---
+-- Fügt die Beschreibung der Hotkeys der Hotkey-Tabelle hinzu.
+--
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Local.CastleStore:DescribeHotkeys()
+    if not self.HotkeysAddToList then
+        API.AddHotKey("Umschalt + B", {de = "Burglager: Waren einlagern", en = "Vault: Store goods"});
+        API.AddHotKey("Umschalt + N", {de = "Burglager: Waren sperren", en = "Vault: Lock goods"});
+        API.AddHotKey("Umschalt + M", {de = "Burglager: Lager räumen", en = "Vault: Empty store"});
+        self.HotkeysAddToList = true;
     end
 end
 
@@ -1863,3 +1991,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("AddOnCastleStore");
+

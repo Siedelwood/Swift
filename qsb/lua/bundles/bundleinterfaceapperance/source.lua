@@ -10,6 +10,8 @@
 -- die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
 -- zu setzen.
 --
+-- <p><a href="#API.InterfaceHideBuildMenu">Interface-Steuerung</a></p>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -27,15 +29,15 @@ QSB.PlayerNames = {};
 ---
 -- Graut die Minimap aus oder macht sie wieder verwendbar.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideMinimap(_Flag)
+function API.InterfaceHideMinimap(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideMinimap(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideMinimap(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -52,15 +54,15 @@ end
 ---
 -- Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideToggleMinimap(_Flag)
+function API.InterfaceHideToggleMinimap(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideToggleMinimap(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideToggleMinimap(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -73,15 +75,15 @@ end
 ---
 -- Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideDiplomacyMenu(_Flag)
+function API.InterfaceHideDiplomacyMenu(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideDiplomacyMenu(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideDiplomacyMenu(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -94,15 +96,15 @@ end
 ---
 -- Versteckt den Button des Produktionsmenü oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideProductionMenu(_Flag)
+function API.InterfaceHideProductionMenu(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideProductionMenu(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideProductionMenu(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -115,15 +117,15 @@ end
 ---
 -- Versteckt den Button des Wettermenüs oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideWeatherMenu(_Flag)
+function API.InterfaceHideWeatherMenu(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideWeatherMenu(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideWeatherMenu(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -136,15 +138,15 @@ end
 ---
 -- Versteckt den Button zum Territorienkauf oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideBuyTerritory(_Flag)
+function API.InterfaceHideBuyTerritory(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideBuyTerritory(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideBuyTerritory(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -157,15 +159,15 @@ end
 ---
 -- Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideKnightAbility(_Flag)
+function API.InterfaceHideKnightAbility(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideKnightAbility(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideKnightAbility(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -182,15 +184,15 @@ end
 ---
 -- Versteckt den Button zur Heldenselektion oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideKnightButton(_Flag)
+function API.InterfaceHideKnightButton(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideKnightButton(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideKnightButton(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -215,18 +217,18 @@ end
 ---
 -- Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideSelectionButton(_Flag)
+function API.InterfaceHideSelectionButton(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideSelectionButton(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideSelectionButton(" ..tostring(_Flag).. ")");
         return;
     end
-    API.HideKnightButton(_Flag);
+    API.InterfaceHideKnightButton(_Flag);
     GUI.ClearSelection();
 
     BundleInterfaceApperance.Local:HideInterfaceButton(
@@ -238,15 +240,15 @@ end
 ---
 -- Versteckt das Baumenü oder blendet es ein.
 --
--- <b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
--- aktiv und muss explizit zurückgenommen werden!
+-- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+-- aktiv und muss explizit zurückgenommen werden!</p>
 --
 -- @param _Flag [boolean] Widget versteckt
 -- @within Anwenderfunktionen
 --
-function API.HideBuildMenu(_Flag)
+function API.InterfaceHideBuildMenu(_Flag)
     if not GUI then
-        Logic.ExecuteInLuaLocalState("API.HideBuildMenu(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.InterfaceHideBuildMenu(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -263,21 +265,21 @@ end
 -- beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
 -- muss jedoch immer der korrekte Pfad angegeben werden.
 --
--- <b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
+-- <p><b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
 -- sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
--- unterschiedlich ist.
+-- unterschiedlich ist.</p>
 --
 -- @param _widget [string|number] Widgetpfad oder ID
 -- @param _file [string] Pfad zur Datei
 -- @within Anwenderfunktionen
 --
-function API.SetTexture(_widget, _file)
+function API.InterfaceSetTexture(_widget, _file)
     if not GUI then
         return;
     end
     BundleInterfaceApperance.Local:SetTexture(_widget, _file)
 end
-UserSetTexture = API.SetTexture;
+UserSetTexture = API.InterfaceSetTexture;
 
 ---
 -- Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
@@ -311,13 +313,13 @@ UserSetTexture = API.SetTexture;
 -- @param _Name [string] Name der Icon Matrix
 -- @within Anwenderfunktionen
 --
-function API.SetIcon(_WidgetID, _Coordinates, _Size, _Name)
+function API.InterfaceSetIcon(_WidgetID, _Coordinates, _Size, _Name)
     if not GUI then
         return;
     end
     BundleInterfaceApperance.Local:SetIcon(_WidgetID, _Coordinates, _Size, _Name)
 end
-UserSetIcon = API.SetIcon;
+UserSetIcon = API.InterfaceSetIcon;
 
 ---
 -- Ändert den aktuellen Tooltip mit der Beschreibung.
@@ -338,20 +340,20 @@ UserSetIcon = API.SetIcon;
 -- @param _disabledText [string] Textzusatz wenn inaktiv
 -- @within Anwenderfunktionen
 --
-function API.SetTooltipNormal(_title, _text, _disabledText)
+function API.InterfaceSetTooltipNormal(_title, _text, _disabledText)
     if not GUI then
         return;
     end
     BundleInterfaceApperance.Local:TextNormal(_title, _text, _disabledText);
 end
-UserSetTextNormal = API.SetTooltipNormal;
+UserSetTextNormal = API.InterfaceSetTooltipNormal;
 
 ---
 -- Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.
 --
 -- <p><b>Alias:</b> UserSetTextBuy</p>
 --
--- @see API.SetTooltipNormal
+-- @see API.InterfaceSetTooltipNormal
 --
 -- @param _title [string] Titel des Tooltip
 -- @param _text [string] Text des Tooltip
@@ -360,13 +362,13 @@ UserSetTextNormal = API.SetTooltipNormal;
 -- @param _inSettlement [boolean] Kosten in Siedlung suchen
 -- @within Anwenderfunktionen
 --
-function API.SetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
+function API.InterfaceSetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
     if not GUI then
         return;
     end
     BundleInterfaceApperance.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement);
 end
-UserSetTextBuy = API.SetTooltipCosts;
+UserSetTextBuy = API.InterfaceSetTooltipCosts;
 
 ---
 -- Gibt den Namen des Territoriums zurück.
@@ -377,7 +379,7 @@ UserSetTextBuy = API.SetTooltipCosts;
 -- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
-function API.GetTerritoryName(_TerritoryID)
+function API.InterfaceGetTerritoryName(_TerritoryID)
     local Name = Logic.GetTerritoryName(_TerritoryID);
     local MapType = Framework.GetCurrentMapTypeAndCampaignName();
     if MapType == 1 or MapType == 3 then
@@ -393,7 +395,7 @@ function API.GetTerritoryName(_TerritoryID)
     end
     return TerritoryName;
 end
-GetTerritoryName = API.GetTerritoryName;
+GetTerritoryName = API.InterfaceGetTerritoryName;
 
 ---
 -- Gibt den Namen des Spielers zurück.
@@ -404,7 +406,7 @@ GetTerritoryName = API.GetTerritoryName;
 -- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
-function API.GetPlayerName(_PlayerID)
+function API.InterfaceGetPlayerName(_PlayerID)
     local PlayerName = Logic.GetPlayerName(_PlayerID);
     local name = QSB.PlayerNames[_PlayerID];
     if name ~= nil and name ~= "" then
@@ -426,7 +428,7 @@ function API.GetPlayerName(_PlayerID)
     end
 end
 GetPlayerName_OrigName = GetPlayerName;
-GetPlayerName = API.GetPlayerName;
+GetPlayerName = API.InterfaceGetPlayerName;
 
 ---
 -- Gibt dem Spieler einen neuen Namen.
@@ -438,7 +440,7 @@ GetPlayerName = API.GetPlayerName;
 -- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
-function API.SetPlayerName(_playerID,_name)
+function API.InterfaceSetPlayerName(_playerID,_name)
     assert(type(_playerID) == "number");
     assert(type(_name) == "string");
     if not GUI then
@@ -449,7 +451,7 @@ function API.SetPlayerName(_playerID,_name)
     end
     QSB.PlayerNames[_playerID] = _name;
 end
-SetPlayerName = API.SetPlayerName;
+SetPlayerName = API.InterfaceSetPlayerName;
 
 ---
 -- Setzt zu Spielbeginn eine andere Spielerfarbe.
@@ -461,7 +463,7 @@ SetPlayerName = API.SetPlayerName;
 -- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
-function API.SetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
+function API.InterfaceSetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     if GUI then
         return;
     end
@@ -756,3 +758,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleInterfaceApperance");
+

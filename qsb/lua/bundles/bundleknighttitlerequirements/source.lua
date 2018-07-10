@@ -8,7 +8,12 @@
 -- Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell
 -- an die eigenen Vorstellungen anzupassen.
 --
--- Mögliche Aufstiegsbedingungen:
+-- Die Aufstiegsbedingungen werden in der Funktion InitKnightTitleTables
+-- angegeben und bearbeitet.
+--
+-- <p><a href="#InitKnightTitleTables">Aufstiegsbedingungen steuern</a></p>
+--
+-- <p>Mögliche Aufstiegsbedingungen:
 -- <ul>
 -- <li><b>Entitytyp besitzen</b><br/>
 -- Der Spieler muss eine bestimmte Anzahl von Entities eines Typs besitzen.
@@ -124,7 +129,7 @@
 -- }
 -- </code></pre>
 -- </li>
--- </ul>
+-- </ul></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -1718,7 +1723,7 @@ InitKnightTitleTables = function()
     KnightTitles.Marquees   = 4
     KnightTitles.Duke       = 5
     KnightTitles.Archduke   = 6
-    
+
     -- ---------------------------------------------------------------------- --
     -- Rechte und Pflichten                                                   --
     -- ---------------------------------------------------------------------- --
@@ -1955,3 +1960,4 @@ InitKnightTitleTables = function()
     -- Einstellungen Aktivieren
     CreateTechnologyKnightTitleTable()
 end
+

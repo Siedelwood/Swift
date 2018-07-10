@@ -6,7 +6,21 @@
 
 ---
 -- Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
--- Gebäude nicht gebaut bzw. nicht abgerissen werden darf.
+-- Gebäude nicht gebaut oder nicht abgerissen werden darf.
+--
+-- Das wichtigste Auf einen Blick:
+-- <ul>
+-- <li>
+-- Den Abriss für bestimmte Entities steuern.<br>
+-- <a href="#API.ProtectCategory">Entities beschützen</a>,
+-- <a href="#API.UnprotectCategory">Schutz aufheben</a>
+-- </li>
+-- <li>
+-- Den Bau von Gebäuden an bestimmten Orten steuern.<br>
+-- <a href="#API.BanCategoryInArea">Bau verbieten</a>,
+-- <a href="#API.UnbanCategoryInArea">Bau erlauben</a>
+-- </li>
+-- </ul>
 --
 -- @within Modulbeschreibung
 -- @set sort=false
@@ -26,10 +40,10 @@ QSB = QSB or {};
 -- @param _entry [string] Nicht abreißbares Entity
 -- @within Anwenderfunktionen
 --
-function API.AddEntity(_entity)
+function API.ProtectEntity(_entity)
     if not GUI then
         API.Bridge([[
-            API.AddEntity("]].._entity..[[")
+            API.ProtectEntity("]].._entity..[[")
         ]]);
     else
         if not Inside(_enitry, BundleConstructionControl.Local.Data.Entities) then
@@ -44,10 +58,10 @@ end
 -- @param _entry [number] Nicht abreißbarer Typ
 -- @within Anwenderfunktionen
 --
-function API.AddEntityType(_entity)
+function API.ProtectEntityType(_entity)
     if not GUI then
         API.Bridge([[
-            API.AddEntityType(]].._entity..[[)
+            API.ProtectEntityType(]].._entity..[[)
         ]]);
     else
         if not Inside(_enitry, BundleConstructionControl.Local.Data.EntityTypes) then
@@ -62,10 +76,10 @@ end
 -- @param _entry [number] Nicht abreißbare Kategorie
 -- @within Anwenderfunktionen
 --
-function API.AddCategory(_entity)
+function API.ProtectCategory(_entity)
     if not GUI then
         API.Bridge([[
-            API.AddCategory(]].._entity..[[)
+            API.ProtectCategory(]].._entity..[[)
         ]]);
     else
         if not Inside(_enitry, BundleConstructionControl.Local.Data.EntityCategories) then
@@ -80,10 +94,10 @@ end
 -- @param _entry [number] Geschütztes Territorium
 -- @within Anwenderfunktionen
 --
-function API.AddTerritory(_entity)
+function API.ProtectTerritory(_entity)
     if not GUI then
         API.Bridge([[
-            API.AddTerritory(]].._entity..[[)
+            API.ProtectTerritory(]].._entity..[[)
         ]]);
     else
         if not Inside(_enitry, BundleConstructionControl.Local.Data.OnTerritory) then
@@ -98,10 +112,10 @@ end
 -- @param _entry [string] Nicht abreißbares Entity
 -- @within Anwenderfunktionen
 --
-function API.RemoveEntity(_entry)
+function API.UnprotectEntity(_entry)
     if not GUI then
         API.Bridge([[
-            API.RemoveEntity("]].._entry..[[")
+            API.UnprotectEntity("]].._entry..[[")
         ]]);
     else
         for i=1,#BundleConstructionControl.Local.Data.Entities do
@@ -119,10 +133,10 @@ end
 -- @param _entry [number] Nicht abreißbarer Typ
 -- @within Anwenderfunktionen
 --
-function API.RemoveEntityType(_entry)
+function API.UnprotectEntityType(_entry)
     if not GUI then
         API.Bridge([[
-            API.RemoveEntityType(]].._entry..[[)
+            API.UnprotectEntityType(]].._entry..[[)
         ]]);
     else
         for i=1,#BundleConstructionControl.Local.Data.EntityTypes do
@@ -140,10 +154,10 @@ end
 -- @param _entry [number] Nicht abreißbare Kategorie
 -- @within Anwenderfunktionen
 --
-function API.RemoveCategory(_entry)
+function API.UnprotectCategory(_entry)
     if not GUI then
         API.Bridge([[
-            API.RemoveCategory(]].._entry..[[)
+            API.UnprotectCategory(]].._entry..[[)
         ]]);
     else
         for i=1,#BundleConstructionControl.Local.Data.EntityCategories do
@@ -161,10 +175,10 @@ end
 -- @param _entry [number] Geschütztes Territorium
 -- @within Anwenderfunktionen
 --
-function API.RemoveTerritory(_entry)
+function API.UnprotectTerritory(_entry)
     if not GUI then
         API.Bridge([[
-            API.RemoveTerritory(]].._entry..[[)
+            API.UnprotectTerritory(]].._entry..[[)
         ]]);
     else
         for i=1,#BundleConstructionControl.Local.Data.OnTerritory do
@@ -538,3 +552,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleConstructionControl");
+

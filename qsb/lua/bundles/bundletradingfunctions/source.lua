@@ -13,6 +13,8 @@
 -- einem Schiff anfährt. Dabei kann der Fahrtweg frei mit Wegpunkten bestimmt
 -- werden. Es können auch mehrere Spieler zu Händlern gemacht werden.
 --
+-- <p><a href="#API.TravelingSalesmanActivate">Schiffshändler aktivieren</a></p>
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -193,6 +195,8 @@ end
 -- definiert werden.
 -- Es kann mehr als einen fliegenden Händler auf der Map geben.
 --
+-- <b>Alias</b>: ActivateTravelingSalesman
+--
 -- @param _PlayerID [number] Spieler-ID des Händlers
 -- @param _Offers	  Liste an Angeboten
 -- @param _Waypoints  Wegpunktliste Anfahrt
@@ -243,35 +247,39 @@ end
 -- -- (März bis Mai und August bis Oktober)
 --
 -- -- Jetzt kann ein fliegender Händler erzeugt werden
--- API.ActivateTravelingSalesman(2, Offers, Waypoints, nil, Appearance);
+-- API.TravelingSalesmanActivate(2, Offers, Waypoints, nil, Appearance);
 -- -- Hier ist der Rückweg automatisch die Umkehr des Hinwegs (_Reversed = nil).
 --
 -- -- _Reversed und _Apperance können in den meisten Fällen immer weggelassen
 -- -- bzw. nil sein!
--- API.ActivateTravelingSalesman(2, Offers, Waypoints);
+-- API.TravelingSalesmanActivate(2, Offers, Waypoints);
 --
-function API.ActivateTravelingSalesman(_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance)
+function API.TravelingSalesmanActivate(_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance)
     if GUI then
-        API.Log("Can not execute API.ActivateTravelingSalesman in local script!");
+        API.Log("Can not execute API.TravelingSalesmanActivate in local script!");
         return;
     end
     return BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed);
 end
+ActivateTravelingSalesman = API.TravelingSalesmanActivate;
 
 ---
 -- Zerstört den fliegenden Händler. Der Spieler wird dabei natürlich
 -- nicht zerstört.
 --
+-- <b>Alias</b>: DeactivateTravelingSalesman
+--
 -- @param _PlayerID [number] Spieler-ID des Händlers
 -- @within Anwenderfunktionen
 --
-function API.DisbandTravelingSalesman(_PlayerID)
+function API.TravelingSalesmanDeactivate(_PlayerID)
     if GUI then
-        API.Bridge("API.DisbandTravelingSalesman(" .._PlayerID.. ")");
+        API.Bridge("API.TravelingSalesmanDeactivate(" .._PlayerID.. ")");
         return;
     end
     return BundleTradingFunctions.Global:TravelingSalesman_Disband(_PlayerID);
 end
+DeactivateTravelingSalesman = API.TravelingSalesmanDeactivate;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -884,3 +892,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleTradingFunctions");
+
