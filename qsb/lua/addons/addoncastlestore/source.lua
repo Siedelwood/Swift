@@ -1256,8 +1256,20 @@ function AddOnCastleStore.Local.CastleStore:GoodClicked(_PlayerID, _GoodType)
         local CurrentWirgetID = XGUIEng.GetCurrentWidgetID();
         GUI.SendScriptCommand([[
             local Store = QSB.CastleStore:GetInstance(]] .._PlayerID.. [[);
-            local Accepted = not Store:IsGoodAccepted(]] .._GoodType.. [[)
-            Store:SetGoodAccepted(]] .._GoodType.. [[, Accepted);
+            local Accepted = Store:IsGoodAccepted(]] .._GoodType.. [[)
+            local Locked   = Store:IsGoodLocked(]] .._GoodType.. [[)
+            
+            if Accepted and not Locked then
+                Store:SetGoodLocked(]] .._GoodType.. [[, true);
+            elseif Accepted and Locked then
+                Store:SetGoodLocked(]] .._GoodType.. [[, false);
+                Store:SetGoodAccepted(]] .._GoodType.. [[, false);
+            elseif not Accepted and not Locked then
+                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
+            else
+                Store:SetGoodLocked(]] .._GoodType.. [[, false);
+                Store:SetGoodAccepted(]] .._GoodType.. [[, true);
+            end
         ]]);
     end
 end
@@ -1357,16 +1369,21 @@ function AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay(_PlayerID, _Curre
         XGUIEng.SetText(AmountWidget, "{center}" .. WarningColor .. v[1]);
         XGUIEng.DisableButton(ButtonWidget, 0)
 
-        if self:IsAccepted(_PlayerID, k) then
-            XGUIEng.SetMaterialColor(ButtonWidget, 0, 255, 255, 255, 255);
-            XGUIEng.SetMaterialColor(ButtonWidget, 1, 255, 255, 255, 255);
-            XGUIEng.SetMaterialColor(ButtonWidget, 7, 255, 255, 255, 255);
-            --XGUIEng.SetMaterialColor(BGWidget, 0, 255, 255, 255, 255);
-        else
+        -- Ware ist gesperrt
+        if self:IsAccepted(_PlayerID, k) and self:IsLocked(_PlayerID, k) then
+            XGUIEng.SetMaterialColor(ButtonWidget, 0, 210, 210, 90, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 1, 210, 210, 90, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 7, 210, 210, 90, 255);
+        -- Ware wird nicht angenommen
+        elseif not self:IsAccepted(_PlayerID, k) and not self:IsLocked(_PlayerID, k) then
             XGUIEng.SetMaterialColor(ButtonWidget, 0, 190, 90, 90, 255);
             XGUIEng.SetMaterialColor(ButtonWidget, 1, 190, 90, 90, 255);
             XGUIEng.SetMaterialColor(ButtonWidget, 7, 190, 90, 90, 255);
-            --XGUIEng.SetMaterialColor(BGWidget, 0, 90, 90, 90, 255);
+        -- Ware wird eingelagert
+        else
+            XGUIEng.SetMaterialColor(ButtonWidget, 0, 255, 255, 255, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 1, 255, 255, 255, 255);
+            XGUIEng.SetMaterialColor(ButtonWidget, 7, 255, 255, 255, 255);
         end
     end
 end
