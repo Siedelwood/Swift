@@ -1637,7 +1637,7 @@ function ExternalRolePlayingGame.Local:DescribeHotkeys()
     -- Effecte anzeigen
     API.AddHotKey("C", {de = "RPG: Charakter anzeigen", en = "RPG: Display character"});
     -- Effecte anzeigen
-    API.AddHotKey("K", {de = "RPG: Effekte anzeigen", en = "RPG: Display effects"});
+    API.AddHotKey("K", {de = "RPG: Tugenden und Laster", en = "RPG: Vice and Virtue"});
     -- Fähigkeit umschalten
     API.AddHotKey("E", {de = "RPG: Fähigkeiten umschalten", en = "RPG: Toggle abilities"});
 
