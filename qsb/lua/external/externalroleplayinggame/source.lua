@@ -28,7 +28,9 @@ ExternalRolePlayingGame = {
         },
     },
     Local = {
-        Data = {},
+        Data = {
+            ToggleBeltItemAbility = false;
+        },
     },
 
     KnightCommands = {
@@ -97,8 +99,8 @@ ExternalRolePlayingGame = {
                 en = "Choose the equipment part you want to exchange with another.",
             },
             Options = {
-                de = {"Rüstung", "Waffe", "Schmuck", "(abbrechen)"}, --,"Gürtel"},
-                en = {"Armor", "Weapon", "Jewellery", "(abort)"}, --, "Belt"},
+                de = {"Rüstung", "Waffe", "Schmuck", "Gürtel", "(abbrechen)"},
+                en = {"Armor", "Weapon", "Jewellery", "Belt", "(abort)"},
             }
         },
         ChangeArmor = {
@@ -771,7 +773,22 @@ function ExternalRolePlayingGame.Local:Install()
 end
 
 ---
+-- Schaltet für alle Helden um, ob der Gegenstand am Gürtel eingesetzt wird.
+--
+-- Hat ein Held keinen Gegenstand am Gürtel, wird trotzdem die eigentliche
+-- Fähigkeit verwendet.
+--
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local:ToggleBeltAbility()
+    local BeltAbility = ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility;
+    ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility = not BeltAbility;
+end
+
+---
 -- Erzeugt den allgemeinen Ausrüstungsdialog.
+--
 -- @param _Identifier  Name des Helden
 -- @within Internal
 -- @local
@@ -791,6 +808,7 @@ end
 
 ---
 -- Erzeugt den Ausrüstungsdialog für den speziellen Ausrüstungsteil.
+--
 -- @param _Idx Ausgewählte Option
 -- @within Internal
 -- @local
@@ -829,25 +847,26 @@ function ExternalRolePlayingGame.Local.ChangeEquipmentAction(_Idx)
                 ExternalRolePlayingGame.ItemCategories.Jewellery
             )
         );
-    end
+    -- end
 
     -- Gürtel ändern
     -- TODO: Herausfinden, warum ModifierShift nicht funktioniert
-    -- elseif _Idx == 4 then 
-    --     API.DialogSelectBox (
-    --         ExternalRolePlayingGame.Texts.ChangeBelt.Caption,
-    --         ExternalRolePlayingGame.Texts.ChangeBelt.Description,
-    --         ExternalRolePlayingGame.Local.ChangeBeltAction,
-    --         ExternalRolePlayingGame.Local:CreateItemSelection (
-    --             ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
-    --             ExternalRolePlayingGame.ItemCategories.Utensil
-    --         )
-    --     );
-    -- end
+    elseif _Idx == 4 then 
+        API.DialogSelectBox (
+            ExternalRolePlayingGame.Texts.ChangeBelt.Caption,
+            ExternalRolePlayingGame.Texts.ChangeBelt.Description,
+            ExternalRolePlayingGame.Local.ChangeBeltAction,
+            ExternalRolePlayingGame.Local:CreateItemSelection (
+                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+                ExternalRolePlayingGame.ItemCategories.Utensil
+            )
+        );
+    end
 end
 
 ---
 -- Ändert die ausgerüstete Rüstung.
+--
 -- @param _Idx Ausgewählte Option
 -- @within Internal
 -- @local
@@ -863,6 +882,7 @@ end
 
 ---
 -- Ändert die ausgerüstete Waffe.
+--
 -- @param _Idx Ausgewählte Option
 -- @within Internal
 -- @local
@@ -878,6 +898,7 @@ end
 
 ---
 -- Ändert den ausgerüsteten Schmuck.
+--
 -- @param _Idx Ausgewählte Option
 -- @within Internal
 -- @local
@@ -893,6 +914,7 @@ end
 
 ---
 -- Ändert den ausgerüsteten Gebrauchsgegenstand.
+--
 -- @param _Idx Ausgewählte Option
 -- @within Internal
 -- @local
@@ -1396,18 +1418,17 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
-        -- Nutze linke Hand
-        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            local Belt = ExternalRolePlayingGame.HeroList[KnightName].Belt;
-            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[Belt] or 0;
+        -- Nutze Gürtel
+        if HeroInstance.Belt ~= nil and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
+            local Amount = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
             if Amount > 0 and not HeroInstance.BeltDisabled then
                 API.Bridge([[
-                    local ItemInstance = ExternalRolePlayingGame.Ability:GetInstance("]] ..Belt.. [[")
+                    local ItemInstance = ExternalRolePlayingGame.Ability:GetInstance("]] ..HeroInstance.Belt.. [[")
                     local HeroInstance = ExternalRolePlayingGame.Hero:GetInstance("]] ..KnightName.. [[")
                     if HeroInstance and HeroInstance.Inventory and ItemInstance and ItemInstance.OnConsumed then
-                        if HeroInstance.Inventory:CountItem("]] ..Belt.. [[") > 0 then
+                        if HeroInstance.Inventory:CountItem("]] ..HeroInstance.Belt.. [[") > 0 then
                             ItemInstance:OnConsumed("]] ..KnightName.. [[")
-                            HeroInstance.Inventory:Remove("]] ..Belt.. [[", 1)
+                            HeroInstance.Inventory:Remove("]] ..HeroInstance.Belt.. [[", 1)
                         end
                     end
                 ]]);
@@ -1439,22 +1460,29 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         local KnightName = Logic.GetEntityName(KnightID);
 
         local HeroInstance = ExternalRolePlayingGame.HeroList[KnightName];
-        if HeroInstance == nil or HeroInstance.Ability == nil then
+        if HeroInstance == nil then
             GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame();
             return;
         end
 
-        local Caption     = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Caption;
-        local Description = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Description;
-        -- Linke Hand
-        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            local Belt = ExternalRolePlayingGame.HeroList[KnightName].Belt;
-            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[Belt] or 0;
+        -- Gürtel
+        if HeroInstance.Belt ~= nil and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
+            local Amount = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
             if Amount > 0 and not HeroInstance.BeltDisabled then
-                local Caption     = ExternalRolePlayingGame.ItemList[Belt].Caption;
-                local Description = ExternalRolePlayingGame.ItemList[Belt].Description;
+                local Caption     = ExternalRolePlayingGame.ItemList[HeroInstance.Belt].Caption;
+                local Description = ExternalRolePlayingGame.ItemList[HeroInstance.Belt].Description;
+                UserSetTextNormal(Caption, Description);
             end
         end
+
+        if HeroInstance.Ability == nil then
+            GUI_Knight.StartAbilityMouseOver_Orig_AddOnRolePlayingGame();
+            return;
+        end
+
+        -- Fähigkeit
+        local Caption     = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Caption;
+        local Description = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Description;
         UserSetTextNormal(Caption, Description);
     end
 
@@ -1471,12 +1499,11 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
-        -- Get icon image
+        -- Icon ermitteln
         local Icon;
-        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            local Belt = ExternalRolePlayingGame.HeroList[KnightName].Belt;
-            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[Belt] or 0;
-            local ItemIcon = ExternalRolePlayingGame.ItemList[Belt].Icon;
+        if HeroInstance.Belt ~= nil and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
+            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
+            local ItemIcon = ExternalRolePlayingGame.ItemList[HeroInstance.Belt].Icon;
             if Amount > 0 and not HeroInstance.BeltDisabled then
                 Icon = ItemIcon or {14, 10};
             end
@@ -1488,7 +1515,7 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             Icon = ExternalRolePlayingGame.AbilityList[HeroInstance.Ability].Icon;
         end
 
-        -- Set icon
+        -- Icon setzen
         if type(Icon) == "table" then
             if Icon[3] and type(Icon[3]) == "string" then
                 API.SetIcon(WidgetID, Icon, nil, Icon[3]);
@@ -1501,11 +1528,10 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
 
         -- Enable/Disable
         local Inventory = ExternalRolePlayingGame.HeroList[KnightName].Inventory;
-        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and Inventory and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            local Belt = ExternalRolePlayingGame.HeroList[KnightName].Belt;
-            local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[Belt] or 0;
+        if HeroInstance.Belt ~= nil and Inventory and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
+            local Amount = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
             if Amount > 0 and not HeroInstance.BeltDisabled then
-                XGUIEng.DisableButton(WidgetID, 1);
+                XGUIEng.DisableButton(WidgetID, 0);
                 return;
             end
         end
@@ -1526,7 +1552,19 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         local KnightName = Logic.GetEntityName(KnightID);
 
         local HeroInstance = ExternalRolePlayingGame.HeroList[KnightName];
-        if HeroInstance == nil or HeroInstance.Ability == nil then
+        if HeroInstance == nil then
+            GUI_Knight.AbilityProgressUpdate_Orig_AddOnRolePlayingGame(_Ability);
+            return;
+        end
+
+        -- Gürtel hat keinen Cooldown
+        if HeroInstance.Belt ~= nil and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
+            XGUIEng.SetMaterialColor(WidgetID, 0, 255, 255, 255, 0);
+            return;
+        end
+
+        -- Keine Fähigkeit -> Original verwenden
+        if HeroInstance.Ability == nil then
             GUI_Knight.AbilityProgressUpdate_Orig_AddOnRolePlayingGame(_Ability);
             return;
         end
@@ -1535,13 +1573,8 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         local ActionPoints = HeroInstance.ActionPoints;
         local TimeAlreadyCharged = ActionPoints or TotalRechargeTime;
 
-        -- Fix for over 100% charge
+        -- Fix für über 100% charge
         TimeAlreadyCharged = (TimeAlreadyCharged > TotalRechargeTime and TotalRechargeTime) or TimeAlreadyCharged;
-
-        -- Left hand don't have cooldown
-        if ExternalRolePlayingGame.HeroList[KnightName].Belt ~= nil and XGUIEng.IsModifierPressed(Keys.ModifierShift) then
-            TimeAlreadyCharged = TotalRechargeTime;
-        end
 
         if TimeAlreadyCharged == TotalRechargeTime then
             XGUIEng.SetMaterialColor(WidgetID, 0, 255, 255, 255, 0);
@@ -1581,6 +1614,8 @@ function ExternalRolePlayingGame.Local:CreateHotkeys()
     Input.KeyBindDown(Keys.C, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); ExternalRolePlayingGame.Local:DisplayCharacter(Sel);", 2, false);
     -- Ausrüstung ändern
     Input.KeyBindDown(Keys.E, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); ExternalRolePlayingGame.Local:ChangeEquipment(Sel);", 2, false);
+    -- Fähigkeit umschalten
+    Input.KeyBindDown(Keys.U, "ExternalRolePlayingGame.Local:ToggleBeltAbility();", 2, false);
 end
 
 ---
@@ -1603,6 +1638,8 @@ function ExternalRolePlayingGame.Local:DescribeHotkeys()
     API.AddHotKey("C", {de = "RPG: Charakter anzeigen", en = "RPG: Display character"});
     -- Effecte anzeigen
     API.AddHotKey("K", {de = "RPG: Effekte anzeigen", en = "RPG: Display effects"});
+    -- Fähigkeit umschalten
+    API.AddHotKey("U", {de = "RPG: Fähigkeiten umschalten", en = "RPG: Toggle abilities"});
 end
 
 ---
@@ -1620,8 +1657,6 @@ end
 -- -------------------------------------------------------------------------- --
 -- Models                                                                     --
 -- -------------------------------------------------------------------------- --
-
--- Diese Models werden
 
 -- Unit ------------------------------------------------------------------------
 
