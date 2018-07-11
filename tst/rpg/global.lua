@@ -50,11 +50,64 @@ function Mission_FirstMapAction()
     
     API.ActivateDebugMode(true, true, true, true);
     
-    TestEquipment()
+    TestArmory()
 end
 
 ---
--- 
+-- Der Held kann in der Waffenkammer die angelegte Waffe austauschen.
+--
+function TestArmory()
+    CreateObject {
+        Name = "armory",
+        Callback = function()
+            ExternalRolePlayingGame.Global:OpenArmoryDialog("meredith", "armory");
+        end
+    }
+
+    -- Testwaffen --
+    
+    local Weapon1 = ExternalRolePlayingGame.Item:New("Weapon1");
+    Weapon1:SetCaption("Weapon 1");
+    Weapon1:SetDescription("This is weapon 1!");
+    Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    local Weapon2 = ExternalRolePlayingGame.Item:New("Weapon2");
+    Weapon2:SetCaption("Weapon 2");
+    Weapon2:SetDescription("This is weapon 2!");
+    Weapon2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Weapon2:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    -- Hero --
+
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
+    local Inventory = ExternalRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
+    Meredith.Inventory = Inventory;
+
+    Inventory:Insert("Weapon1", 4);
+    Inventory:Insert("Weapon2", 2);
+    Meredith:EquipWeapon("Weapon2");
+
+    -- Ability --
+
+    local Dummy1 = ExternalRolePlayingGame.Ability:New("Dummy1");
+    Dummy1.RechargeTime = 2*60;
+    Dummy1:SetCaption("Bla");
+    Dummy1:SetDescription("Bla Bla Bla");
+    Dummy1:SetIcon({1,1});
+    Dummy1.Condition = function()
+        return false;
+    end
+    Dummy1.Action = function()
+        API.Note("Ability used!")
+    end
+    Meredith.Ability = Dummy1;
+end
+
+---
+-- Der Held bekommt mehrere verschiedene Gegenstände ins Inventar gelegt.
+-- Einige davon werden angelegt und ihre Menge im Inventar reduziert. Über
+-- E kann zwischen Fähigkeit und Gürtelgegenstand gewechselt werden.
 --
 function TestEquipment()
     -- Testwaffen --

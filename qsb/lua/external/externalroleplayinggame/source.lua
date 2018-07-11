@@ -3042,7 +3042,7 @@ function ExternalRolePlayingGame.Item:AddCategory(_Category)
     end
 
     -- Update in local script
-    local TableString = API.ConvertTableToString(self.Materials);
+    local TableString = API.ConvertTableToString(self.Categories);
     API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Categories = " ..TableString);
     return self;
 end
