@@ -144,6 +144,31 @@ ExternalRolePlayingGame = {
             },
         },
 
+        CraftingDialog = {
+            Caption = {
+                de = "Gegenstand herstellen",
+                en = "Craft item or equipment",
+            },
+            Description = {
+                de = "Wähle das Rezept aus, mit dem der Held einen Gegenstand herstellen wird.",
+                en = "Choose the recipe the hero will use to craft an new item or equipment.",
+            },
+        },
+        CraftingWindow = {
+            Caption = {
+                de = "Gegenstand herstellen",
+                en = "Craft item or equipment",
+            },
+            Description = {
+                de = "Benötigte Materialien: {cr}{cr}%s{cr}Produzierte Gegenstände: {cr}{cr}%s",
+                en = "Required materials: {cr}{cr}%s{cr}Produced items or equipment: {cr}{cr}%s",
+            },
+            Button = {
+                de = "bestätigen",
+                en = "accept",
+            }
+        },
+
         UpgradeStrength = {
             de = "Kraft verbessern",
             en = "Improve Strength",
@@ -182,6 +207,10 @@ ExternalRolePlayingGame = {
         ErrorAbility = {
             de = "Die Fähigkeit kann nicht benutzt werden!",
             en = "The ability can not be used!",
+        },
+        ErrorCrafting = {
+            de = "Euch fehlen die benötigten Materialien!",
+            en = "You are missing some of the materials!",
         },
         EarnedExperience = {
             de = "+{@color:0,255,255,255}%d{@color:255,255,255,255} Erfahrung",
@@ -454,6 +483,19 @@ end
 --
 function ExternalRolePlayingGame.Global:OpenCraftingDialog(_HeroName, _SiteName)
     API.Bridge("ExternalRolePlayingGame.Local:OpenCraftingDialog('" .._HeroName.. "', '" .._SiteName.. "')");
+end
+
+---
+-- Führt den eigentlichen Bauvorgang des Rezeptes aus.
+--
+-- @param _HeroName Skriptname des Helden
+-- @param _SiteName Identifier des Arbeitsplatzes
+-- @param _Receip Identifier des Rezeptes
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Global:CraftItem(_ScriptName, _SiteName, _Receip)
+
 end
 
 ---
@@ -810,6 +852,8 @@ function ExternalRolePlayingGame.Local:ToggleBeltAbility()
     ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility = not BeltAbility;
 end
 
+-- Gegenstände herstellen ------------------------------------------------------
+
 ---
 -- Offnet den Arbeitsplatz-Dialog der Werkbank für den angegebenen Helden.
 --
@@ -819,7 +863,69 @@ end
 -- @local
 --
 function ExternalRolePlayingGame.Local:OpenCraftingDialog(_HeroName, _SiteName)
+    self.Data.CurrentItemSelectionHero = _HeroName;
+    self.Data.CurrentCraftingStation = _SiteName;
     
+    API.DialogSelectBox (
+        ExternalRolePlayingGame.Texts.ChangeArmor.Caption,
+        ExternalRolePlayingGame.Texts.ChangeArmor.Description,
+        self.OpenCraftingWindow,
+        self:CreateItemSelection (
+            ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+            ExternalRolePlayingGame.ItemCategories.Receip
+        )
+    );
+end
+
+---
+-- Öffnet das Bestätigungsfenster zum erzeugen von Gegenständen.
+--
+-- @param _Idx Ausgewählte Option
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local.OpenCraftingWindow(_Idx)
+    local Station = ExternalRolePlayingGame.Local.Data.CurrentCraftingStation;
+    local Hero = ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero;
+    local Item = ExternalRolePlayingGame.Local.Data.CurrentItemSelection[_Idx];
+
+    -- Paranoia
+    if not Hero or not Item or not Hero.Inventory then 
+        return;
+    end
+
+    -- Materialien-String
+    local Materials = "";
+    for k, v in pairs(ExternalRolePlayingGame.ItemList[Item].Materials) do
+        local Amount = ExternalRolePlayingGame.InventoryList[Hero.Inventory].Items[v[1]] or 0;
+        Materials = Materials .. string.format(
+            "%s/%s %s{cr}", Amount, v[2], ExternalRolePlayingGame.ItemList[v[1]].Caption
+        );
+    end
+
+    -- Produkte-String
+    local Products  = ExternalRolePlayingGame.ItemList[Item].Products;
+    for k, v in pairs(ExternalRolePlayingGame.ItemList[Item].Products) do
+        Products = Products .. string.format(
+            "%sx %s{cr}", v[2], ExternalRolePlayingGame.ItemList[v[1]].Caption
+        );
+    end
+
+    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+
+    local function CraftCallback(_Data)
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        API.Bridge("ExternalRolePlayingGame.Global:CraftItem('" .._Data.ScriptName.. "', '" ..Station.. "', '" ..Data.Receip.. "')");
+    end
+    local Text = ExternalRolePlayingGame.Texts.CraftingWindow;
+    local Window = TextWindow:New();
+
+    Window.Receip = Item;
+    Window.ScriptName = Hero;
+    Window:SetCaption(Text.Caption);
+    Window:SetContent(string.format(Text.Description, Materials, Products));
+    Window:SetButton(Text.Button, CraftCallback);
+    Window:Show();
 end
 
 -- Inventar austauschen --------------------------------------------------------
@@ -852,7 +958,7 @@ function ExternalRolePlayingGame.Local:ChangeEquipment(_Identifier)
     API.DialogSelectBox (
         ExternalRolePlayingGame.Texts.ChangeEquipment.Caption,
         ExternalRolePlayingGame.Texts.ChangeEquipment.Description,
-        ExternalRolePlayingGame.Local.ChangeEquipmentAction,
+        self.ChangeEquipmentAction,
         ExternalRolePlayingGame.Texts.ChangeEquipment.Options[Language]
     );
 end
@@ -865,14 +971,16 @@ end
 -- @local
 --
 function ExternalRolePlayingGame.Local.ChangeEquipmentAction(_Idx)
+    self = ExternalRolePlayingGame.Local;
+    
     -- Waffe ändern
     if _Idx == 1 then 
         API.DialogSelectBox (
             ExternalRolePlayingGame.Texts.ChangeArmor.Caption,
             ExternalRolePlayingGame.Texts.ChangeArmor.Description,
-            ExternalRolePlayingGame.Local.ChangeArmorAction,
-            ExternalRolePlayingGame.Local:CreateItemSelection (
-                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+            self.ChangeArmorAction,
+            self:CreateItemSelection (
+                self.Data.CurrentItemSelectionHero, 
                 ExternalRolePlayingGame.ItemCategories.Armor
             )
         );
@@ -881,9 +989,9 @@ function ExternalRolePlayingGame.Local.ChangeEquipmentAction(_Idx)
         API.DialogSelectBox (
             ExternalRolePlayingGame.Texts.ChangeWeapon.Caption,
             ExternalRolePlayingGame.Texts.ChangeWeapon.Description,
-            ExternalRolePlayingGame.Local.ChangeWeaponAction,
-            ExternalRolePlayingGame.Local:CreateItemSelection (
-                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+            self.ChangeWeaponAction,
+            self:CreateItemSelection (
+                self.Data.CurrentItemSelectionHero, 
                 ExternalRolePlayingGame.ItemCategories.Weapon
             )
         );
@@ -892,9 +1000,9 @@ function ExternalRolePlayingGame.Local.ChangeEquipmentAction(_Idx)
         API.DialogSelectBox (
             ExternalRolePlayingGame.Texts.ChangeJewellery.Caption,
             ExternalRolePlayingGame.Texts.ChangeJewellery.Description,
-            ExternalRolePlayingGame.Local.ChangeJewellery,
-            ExternalRolePlayingGame.Local:CreateItemSelection (
-                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+            self.ChangeJewellery,
+            self:CreateItemSelection (
+                self.Data.CurrentItemSelectionHero, 
                 ExternalRolePlayingGame.ItemCategories.Jewellery
             )
         );
@@ -906,9 +1014,9 @@ function ExternalRolePlayingGame.Local.ChangeEquipmentAction(_Idx)
         API.DialogSelectBox (
             ExternalRolePlayingGame.Texts.ChangeBelt.Caption,
             ExternalRolePlayingGame.Texts.ChangeBelt.Description,
-            ExternalRolePlayingGame.Local.ChangeBeltAction,
-            ExternalRolePlayingGame.Local:CreateItemSelection (
-                ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
+            self.ChangeBeltAction,
+            self:CreateItemSelection (
+                self.Data.CurrentItemSelectionHero, 
                 ExternalRolePlayingGame.ItemCategories.Utensil
             )
         );
@@ -1768,6 +1876,9 @@ function ExternalRolePlayingGame.Unit:Dispose()
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Unit);
     ExternalRolePlayingGame.UnitList[self.Identifier] = nil;
+
+    -- Speicher freigeben
+    collectgarbage();
 end
 
 ---
@@ -2029,6 +2140,10 @@ function ExternalRolePlayingGame.Hero:Dispose()
     self.Unit:Dispose();
     API.Bridge("ExternalRolePlayingGame.HeroList['" ..self.Identifier.. "'] = nil");
     ExternalRolePlayingGame.HeroList[self.Identifier] = nil;
+
+    -- Speicher freigeben
+    API.Bridge("collectgarbage();");
+    collectgarbage();
 end
 
 ---
@@ -2463,6 +2578,10 @@ function ExternalRolePlayingGame.Ability:Dispose()
     assert(self ~= ExternalRolePlayingGame.Ability);
     API.Bridge("ExternalRolePlayingGame.AbilityList['" ..self.Identifier.. "'] = nil");
     ExternalRolePlayingGame.AbilityList[self.Identifier] = nil;
+
+    -- Speicher freigeben
+    API.Bridge("collectgarbage();");
+    collectgarbage();
 end
 
 ---
@@ -2604,6 +2723,10 @@ function ExternalRolePlayingGame.Inventory:Dispose()
     assert(self ~= ExternalRolePlayingGame.Inventory);
     API.Bridge("ExternalRolePlayingGame.InventoryList['" ..self.Identifier.. "'] = nil");
     ExternalRolePlayingGame.InventoryList[self.Identifier] = nil;
+
+    -- Speicher freigeben
+    API.Bridge("collectgarbage();");
+    collectgarbage();
 end
 
 ---
@@ -2775,6 +2898,7 @@ ExternalRolePlayingGame.ItemCategories = {
     Armor     = 6, -- Rüstung
     Jewellery = 7, -- Schmuck
     Utensil   = 8, -- Gebrauchsgegenstand
+    Receip    = 9, -- Rezept
 };
 
 ExternalRolePlayingGame.ItemList = {};
@@ -2794,6 +2918,8 @@ function ExternalRolePlayingGame.Item:New(_Identifier)
     local item = API.InstanceTable(self);
     item.Identifier   = _Identifier;
     item.Categories   = {};
+    item.Materials    = {};
+    item.Products     = {};
     item.Icon         = nil;
     item.Description  = nil;
     item.Caption      = nil;
@@ -2807,6 +2933,8 @@ function ExternalRolePlayingGame.Item:New(_Identifier)
     API.Bridge([[
         ExternalRolePlayingGame.ItemList["]] .._Identifier.. [["] = {}
         ExternalRolePlayingGame.ItemList["]] .._Identifier.. [["].Categories = {}
+        ExternalRolePlayingGame.ItemList["]] .._Identifier.. [["].Materials = {}
+        ExternalRolePlayingGame.ItemList["]] .._Identifier.. [["].Products = {}
     ]]);
     return item;
 end
@@ -2833,6 +2961,64 @@ function ExternalRolePlayingGame.Item:Dispose()
     assert(self ~= ExternalRolePlayingGame.Item);
     API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'] = nil");
     ExternalRolePlayingGame.ItemList[self.Identifier] = nil;
+
+    -- Speicher freigeben
+    API.Bridge("collectgarbage();");
+    collectgarbage();
+end
+
+---
+-- 
+-- @param _Material Identifier des Materials
+-- @param _Amount   Menge an Materialien des Typs
+-- @return self
+-- @within ExternalRolePlayingGame.Item
+--
+function ExternalRolePlayingGame.Item:AddMaterial(_Material, _Amount)
+    assert(not GUI);
+    assert(self ~= ExternalRolePlayingGame.Item);
+
+    -- Rein Rezept?
+    if self:IsInCategory(ExternalRolePlayingGame.ItemCategories.Receip) == false then
+        return;
+    end
+    -- Material unbekannt
+    if ExternalRolePlayingGame.Item:GetInstance(_Material) == nil then
+        return;
+    end
+
+    -- Material hinzufügen
+    table.insert(self.Materials, {_Material, _Amount});
+    local TableString = API.ConvertTableToString(self.Materials);
+    API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Materials = " ..TableString);
+    return self;
+end
+
+---
+-- 
+-- @param _Product Identifier des Produktes
+-- @param _Amount  Menge an Produkten des Typs
+-- @return self
+-- @within ExternalRolePlayingGame.Item
+--
+function ExternalRolePlayingGame.Item:AddProduct(_Product, _Amount)
+    assert(not GUI);
+    assert(self ~= ExternalRolePlayingGame.Item);
+
+    -- Rein Rezept?
+    if self:IsInCategory(ExternalRolePlayingGame.ItemCategories.Receip) == false then
+        return;
+    end
+    -- Produkt unbekannt
+    if ExternalRolePlayingGame.Item:GetInstance(_Product) == nil then
+        return;
+    end
+
+    -- Material hinzufügen
+    table.insert(self.Products, {_Product, _Amount});
+    local TableString = API.ConvertTableToString(self.Products);
+    API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Products = " ..TableString);
+    return self;
 end
 
 ---
@@ -2849,12 +3035,8 @@ function ExternalRolePlayingGame.Item:AddCategory(_Category)
     end
 
     -- Update in local script
-    local CategoriesString = "";
-    for i= 1, #self.Categories, 1 do
-        CategoriesString = CategoriesString .. self.Categories[i] .. ", ";
-    end
-    local CommandString = "ExternalRolePlayingGame.ItemList['%s'].Categories = {%s}";
-    API.Bridge(string.format(CommandString, self.Identifier, CategoriesString));
+    local TableString = API.ConvertTableToString(self.Materials);
+    API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Categories = " ..TableString);
     return self;
 end
 
@@ -2985,6 +3167,10 @@ function ExternalRolePlayingGame.Event:Dispose()
     assert(self ~= ExternalRolePlayingGame.Event);
     ExternalRolePlayingGame.EventList[self.Identifier] = nil;
     API.Bridge("ExternalRolePlayingGame.EventList['" ..self.Identifier.. "'] = nil");
+
+    -- Speicher freigeben
+    API.Bridge("collectgarbage();");
+    collectgarbage();
 end
 
 ---
