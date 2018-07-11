@@ -495,7 +495,33 @@ end
 -- @local
 --
 function ExternalRolePlayingGame.Global:CraftItem(_ScriptName, _SiteName, _Receip)
+    -- Held ermitteln
+    local HeroInstance = ExternalRolePlayingGame.Hero:GetInstance(_ScriptName);
+    if not HeroInstance or not HeroInstance.Inventory then 
+        return;
+    end
 
+    -- Rezept ermitteln
+    local ItemInstance = ExternalRolePlayingGame.Item:GetInstance(_Receip);
+    if not ItemInstance or not ItemInstance:IsInCategory(ExternalRolePlayingGame.ItemCategories.Receip) then 
+        return;
+    end
+
+    -- Kosten prüfen
+    for k, v in pairs(ItemInstance.Materials) do
+        if HeroInstance.Inventory:CountItem(v[1]) < v[2] then 
+            API.Message(ExternalRolePlayingGame.Texts.ErrorCrafting);
+            return;
+        end
+    end
+
+    -- Items produzieren
+    for k, v in pairs(ItemInstance.Materials) do
+        HeroInstance.Inventory:Remove(v[1], v[2]);
+    end
+    for k, v in pairs(ItemInstance.Products) do
+        HeroInstance.Inventory:Insert(v[1], v[2]);
+    end
 end
 
 ---
