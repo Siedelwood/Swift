@@ -105,13 +105,14 @@ function TestEquipment()
     Belt1:SetCaption("Belt 1");
     Belt1:SetDescription("This is belt 1!");
     Belt1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
-    Belt1:AddCategory(ExternalRolePlayingGame.ItemCategories.Belt);
+    Belt1:AddCategory(ExternalRolePlayingGame.ItemCategories.Utensil);
     
     local Belt2 = ExternalRolePlayingGame.Item:New("Belt2");
     Belt2:SetCaption("Belt 2");
     Belt2:SetDescription("This is belt 2!");
     Belt2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
-    Belt2:AddCategory(ExternalRolePlayingGame.ItemCategories.Belt);
+    Belt2:AddCategory(ExternalRolePlayingGame.ItemCategories.Utensil);
+    Belt2.OnConsumed = function() API.Note("foo") end
     
     -- Hero --
 

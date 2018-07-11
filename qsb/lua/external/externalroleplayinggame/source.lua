@@ -1581,12 +1581,14 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
+        local Inventory = ExternalRolePlayingGame.HeroList[KnightName].Inventory;
+
         -- Nutze Gürtel
         if HeroInstance.Belt ~= nil and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
             local Amount = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
             if Amount > 0 and not HeroInstance.BeltDisabled then
                 API.Bridge([[
-                    local ItemInstance = ExternalRolePlayingGame.Ability:GetInstance("]] ..HeroInstance.Belt.. [[")
+                    local ItemInstance = ExternalRolePlayingGame.Item:GetInstance("]] ..HeroInstance.Belt.. [[")
                     local HeroInstance = ExternalRolePlayingGame.Hero:GetInstance("]] ..KnightName.. [[")
                     if HeroInstance and HeroInstance.Inventory and ItemInstance and ItemInstance.OnConsumed then
                         if HeroInstance.Inventory:CountItem("]] ..HeroInstance.Belt.. [[") > 0 then
@@ -1628,13 +1630,15 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
+        local Inventory = ExternalRolePlayingGame.HeroList[KnightName].Inventory;
+
         -- Gürtel
         if HeroInstance.Belt ~= nil and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
-            local Amount = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
-            if Amount > 0 and not HeroInstance.BeltDisabled then
+            if not HeroInstance.BeltDisabled then
                 local Caption     = ExternalRolePlayingGame.ItemList[HeroInstance.Belt].Caption;
                 local Description = ExternalRolePlayingGame.ItemList[HeroInstance.Belt].Description;
                 UserSetTextNormal(Caption, Description);
+                return;
             end
         end
 
@@ -1662,12 +1666,14 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
             return;
         end
 
+        local Inventory = ExternalRolePlayingGame.HeroList[KnightName].Inventory;
+
         -- Icon ermitteln
-        local Icon;
+        local Icon = {16, 16};
         if HeroInstance.Belt ~= nil and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
             local Amount   = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
             local ItemIcon = ExternalRolePlayingGame.ItemList[HeroInstance.Belt].Icon;
-            if Amount > 0 and not HeroInstance.BeltDisabled then
+            if not HeroInstance.BeltDisabled then
                 Icon = ItemIcon or {14, 10};
             end
         else
@@ -1690,13 +1696,14 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         end
 
         -- Enable/Disable
-        local Inventory = ExternalRolePlayingGame.HeroList[KnightName].Inventory;
         if HeroInstance.Belt ~= nil and Inventory and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
             local Amount = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
             if Amount > 0 and not HeroInstance.BeltDisabled then
                 XGUIEng.DisableButton(WidgetID, 0);
-                return;
+            else
+                XGUIEng.DisableButton(WidgetID, 1);
             end
+            return;
         end
         local RechargeTime = HeroInstance.RechargeTime;
         local ActionPoints = HeroInstance.ActionPoints;
