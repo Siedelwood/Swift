@@ -445,6 +445,30 @@ function ExternalRolePlayingGame.Global:LevelUpAction(_PlayerID)
 end
 
 ---
+-- Offnet den Arbeitsplatz-Dialog der Werkbank für den angegebenen Helden.
+--
+-- @param _HeroName Skriptname des Helden
+-- @param _SiteName Identifier des Arbeitsplatzes
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Global:OpenCraftingDialog(_HeroName, _SiteName)
+    API.Bridge("ExternalRolePlayingGame.Local:OpenCraftingDialog('" .._HeroName.. "', '" .._SiteName.. "')");
+end
+
+---
+-- Offnet den Austausch-Dialog der Waffenkammer für den angegebenen Helden.
+--
+-- @param _HeroName Skriptname des Helden
+-- @param _SiteName Identifier der Waffenkammer
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Global:OpenArmoryDialog(_HeroName, _SiteName)
+    API.Bridge("ExternalRolePlayingGame.Local:OpenArmoryDialog('" .._HeroName.. "', '" .._SiteName.. "')");
+end
+
+---
 -- Wechselt zwischen Rücksack und angelegten Gegenständen des Helden.
 --
 -- @within Internal
@@ -787,6 +811,33 @@ function ExternalRolePlayingGame.Local:ToggleBeltAbility()
 end
 
 ---
+-- Offnet den Arbeitsplatz-Dialog der Werkbank für den angegebenen Helden.
+--
+-- @param _HeroName Skriptname des Helden
+-- @param _SiteName Identifier des Arbeitsplatzes
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local:OpenCraftingDialog(_HeroName, _SiteName)
+    
+end
+
+-- Inventar austauschen --------------------------------------------------------
+
+---
+-- Offnet den Austausch-Dialog der Waffenkammer für den angegebenen Helden.
+--
+-- @param _HeroName Skriptname des Helden
+-- @param _SiteName Identifier der Waffenkammer
+-- @within Internal
+-- @local
+--
+function ExternalRolePlayingGame.Local:OpenArmoryDialog(_HeroName, _SiteName)
+    -- TODO Behandlung der Waffenkammer
+    self:ChangeEquipment(_HeroName);
+end
+
+---
 -- Erzeugt den allgemeinen Ausrüstungsdialog.
 --
 -- @param _Identifier  Name des Helden
@@ -977,6 +1028,8 @@ function ExternalRolePlayingGame.Local:IsItemInCategory(_Identifier, _Category)
     return API.TraverseTable(_Category, ExternalRolePlayingGame.ItemList[_Identifier].Categories) == true;
 end
 
+-- Eigenschaften anzeigen ------------------------------------------------------
+
 ---
 -- Zeigt die Eigenschaften Helden an.
 --
@@ -1138,7 +1191,7 @@ function ExternalRolePlayingGame.Local:DisplayInventory(_Identifier, _FilterEqui
 end
 
 ---
---
+-- Schaltet die Inventaransichten um.
 -- @within Internal
 -- @local
 --
@@ -1148,7 +1201,7 @@ function ExternalRolePlayingGame.Local:ToggleInventory(_Identifier, _FilterEquip
 end
 
 ---
---
+-- Schaltet die Effektansichten um.
 -- @within Internal
 -- @local
 --
@@ -1156,6 +1209,8 @@ function ExternalRolePlayingGame.Local:ToggleEffects(_Identifier, _FilterVices)
     _FilterEquipped = _FilterEquipped or false;
     ExternalRolePlayingGame.Local:DisplayEffects(_Identifier, _FilterVices);
 end
+
+-- Funktionen überschreiben ----------------------------------------------------
 
 ---
 -- Überschreibt den Namen und die Beschreibung des Helden im Selektions-
