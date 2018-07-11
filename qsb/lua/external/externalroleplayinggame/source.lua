@@ -1612,10 +1612,12 @@ function ExternalRolePlayingGame.Local:CreateHotkeys()
     Input.KeyBindDown(Keys.K, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('ExternalRolePlayingGame.Global:ToggleEffects(' ..Sel.. ')');", 2, false);
     -- Charackter anzeigen
     Input.KeyBindDown(Keys.C, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); ExternalRolePlayingGame.Local:DisplayCharacter(Sel);", 2, false);
-    -- Ausrüstung ändern
-    Input.KeyBindDown(Keys.E, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); ExternalRolePlayingGame.Local:ChangeEquipment(Sel);", 2, false);
     -- Fähigkeit umschalten
-    Input.KeyBindDown(Keys.U, "ExternalRolePlayingGame.Local:ToggleBeltAbility();", 2, false);
+    Input.KeyBindDown(Keys.E, "ExternalRolePlayingGame.Local:ToggleBeltAbility();", 2, false);
+
+    -- Ausrüstung ändern
+    -- TODO Wird nur in Rüstungskammern möglich sein!
+    -- Input.KeyBindDown(Keys.E, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); ExternalRolePlayingGame.Local:ChangeEquipment(Sel);", 2, false);
 end
 
 ---
@@ -1632,14 +1634,16 @@ function ExternalRolePlayingGame.Local:DescribeHotkeys()
 
     -- Inventar anzeigen
     API.AddHotKey("I", {de = "RPG: Inventar öffnen", en = "RPG: Open inventory"});
-    -- Gegenstand anlegen
-    API.AddHotKey("E", {de = "RPG: Ausrüstung ändern", en = "RPG: Change equipment"});
     -- Effecte anzeigen
     API.AddHotKey("C", {de = "RPG: Charakter anzeigen", en = "RPG: Display character"});
     -- Effecte anzeigen
     API.AddHotKey("K", {de = "RPG: Effekte anzeigen", en = "RPG: Display effects"});
     -- Fähigkeit umschalten
-    API.AddHotKey("U", {de = "RPG: Fähigkeiten umschalten", en = "RPG: Toggle abilities"});
+    API.AddHotKey("E", {de = "RPG: Fähigkeiten umschalten", en = "RPG: Toggle abilities"});
+
+    -- Gegenstand anlegen
+    -- TODO Wird nur in Rüstungskammern möglich sein!
+    -- API.AddHotKey("E", {de = "RPG: Ausrüstung ändern", en = "RPG: Change equipment"});
 end
 
 ---
