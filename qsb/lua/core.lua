@@ -1120,9 +1120,11 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
 --
+-- Ist der Hotkey bereits vorhanden, wird -1 zurückgegeben.
+--
 -- @param _Key         [string] Tastenkombination
 -- @param _Description [string] Beschreibung des Hotkey
--- @return [number] Index
+-- @return [number] Index oder Fehlercode
 -- @within Anwenderfunktionen
 -- @local
 --
