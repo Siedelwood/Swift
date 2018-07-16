@@ -46,11 +46,11 @@ CampaignData["c00"] = {
 -- im Profil herangezogen wird. Der Name wird zur Sektion in der INI. Die
 -- Karte wird im Hintergrund angezeigt. Ein Austausch der Karte wie in der
 -- Kampagne, ist nicht vorgesehen.</p>
--- @param _name    [string] Interner Name der Kampagne
--- @param _mapfile [string] Pfad zur Kampagnenkarte
+-- @param _name      [string] Interner Name der Kampagne
+-- @param _mapfile   [string] Pfad zur Kampagnenkarte
 -- @within ExternalCampaignTools.Local
 --
-function ExternalCampaignTools.Local:New(_name,_mapfile)
+function ExternalCampaignTools.Local:New(_name, _mapfile)
 	local campaign = {}
 	for k,v in pairs(self) do
 		if type(v) == "table" then
@@ -95,10 +95,25 @@ end
 -- @within ExternalCampaignTools.Local
 --
 function ExternalCampaignTools.Local:IsWon(_map)
-	assert(type(map) == "number");
+	assert(type(_map) == "number");
 	local profile   = self.Data.Maps[_map][1];
 	local wonstring = self.Data.Maps[_map][5];
 	return Profile.GetString(self.Data.Name,profile.."_Won") == wonstring;
+end
+
+---
+-- Gibt den Index der höchsten gewonnenen Map zurück.
+-- @return [number] Index der höchsten Map
+-- @within ExternalCampaignTools.Local
+--
+function ExternalCampaignTools.Local:GetHighlightedMap()
+    local IndexHighestMap = 1;
+    for i= 1, #self.Data.Maps-1 do
+        if self:IsWon(i) then
+            IndexHighestMap = i;
+        end
+    end
+    return IndexHighestMap;
 end
 
 ---
@@ -107,7 +122,7 @@ end
 -- @within ExternalCampaignTools.Local
 --
 function ExternalCampaignTools.Local:SetWon(_map)
-    assert(type(map) == "number");
+    assert(type(_map) == "number");
 	local profile   = self.Data.Maps[_map][1];
 	local wonstring = self.Data.Maps[_map][5];
 	Profile.SetString(self.Data.Name,profile.."_Won", wonstring);
@@ -130,10 +145,11 @@ end
 -- <p>Dabei werden die spielinternen Funktionen der Kampagne des Hauptspiels
 -- überschrieben, sodass stattdessen die Inhalte der User Campagne angezeigt
 -- werden.</p>
+-- @param _hideBackButton [boolean] Zurück-Button ist ausgeblendet
 -- @within ExternalCampaignTools.Local
 -- @local
 --
-function ExternalCampaignTools.Local:Map()
+function ExternalCampaignTools.Local:Map(_hideBackButton)
 	-- Map auf der Karte wurde angeklickt
     CampaignMap_OnClicked_Orig_CampaignTools = CampaignMap_OnClicked
 	CampaignMap_OnClicked = function(map)
@@ -141,8 +157,11 @@ function ExternalCampaignTools.Local:Map()
 		for i=1,16 do
 			XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i.."/BGCurr",0);
 		end
-		XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..(map+1).."/BGCurr",1);
-		self.Data.MissionWasClickedAtLeastOnce = true;
+        
+        XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..(map+1).."/BGCurr",1);
+		XGUIEng.HighLightButton(self.Data.Dialog.."/Maps_c00/v"..(map+1).."/v", 1);
+        
+        self.Data.MissionWasClickedAtLeastOnce = true;
 	end
 
     -- Kampagnenkarte wird zum Haptmenü hin verlassen
@@ -152,20 +171,24 @@ function ExternalCampaignTools.Local:Map()
 
     -- Aktualisiert die Kampagnenkarte
 	function CampaignMap_Update()
+		XGUIEng.ShowWidget("/LoadScreen/LoadScreen/ButtonStart",0);
 		XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00",1);
         XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c01",0);
-		for i=1,16 do
+		
+        for i=1,16 do
 			XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i.."/BG",1);
-			XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i.."map",1);
-			if i > 1 then
+			XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i.."/map",1);
+			
+            if i > 1 then
 				if self.Data.Maps[i] ~= nil and self:IsWon(i-1) then
 					XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i,1);
 				else
-					XGUIEng.ShowWidget(self.Dialog.."/Maps_c00/"..i,0);
+					XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i,0);
 				end
 			else
-				XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i,1);
+				XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i, 1);
 			end
+            
 			if self.Data.Maps[i] ~= nil then
 				XGUIEng.SetWidgetLocalPosition(self.Data.Dialog.."/Maps_c00/"..i,self.Data.Maps[i][3],self.Data.Maps[i][4]);
 			end
@@ -178,6 +201,8 @@ function ExternalCampaignTools.Local:Map()
 			self.Data.Current = map +1;
 			InitializeFader();
 			FadeOut(1,CampaignMap_FadeInCallback);
+            
+        -- Sollte niemals passieren
 		else
 			local lang = Network.GetDesiredLanguage();
 			if lang ~= "de" then lang = "en" end;
@@ -188,7 +213,7 @@ function ExternalCampaignTools.Local:Map()
 			XGUIEng.ShowAllSubWidgets("/InGame/Dialog",1);
 			XGUIEng.ShowWidget("/InGame/Dialog/Yes",0);
 			XGUIEng.ShowWidget("/InGame/Dialog/No",0);
-			XGUIEng.SetText("/InGame/Dialog/Message","{center}"..Umessage);
+			XGUIEng.SetText("/InGame/Dialog/Message","{center}"..message);
 			XGUIEng.SetText("/InGame/Dialog/BG/TitleBig/Info/Name","{center}"..title);
 			XGUIEng.SetText("/InGame/Dialog/BG/TitleBig/Info/NameWhite","{center}"..title);
 			XGUIEng.PushPage("/InGame/Dialog",false);
@@ -244,19 +269,26 @@ function ExternalCampaignTools.Local:Map()
 	end
 
 	for i=1,16 do
-		XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i,0)
+		XGUIEng.ShowWidget(self.Data.Dialog.."/Maps_c00/"..i,0);
 	end
 	for i=1,16 do
-		XGUIEng.HighLightButton(self.Data.Dialog.."/Maps_c00/v"..i.."/v", 0 )
+		XGUIEng.HighLightButton(self.Data.Dialog.."/Maps_c00/v"..i.."/v", 0 );
 	end
 
 	XGUIEng.ShowWidget("/InGame/Root/3dWorldView",0);
 	Game.GameTimeSetFactor(GUI.GetPlayerID(),0);
 	Framework.SetCampaignName("c00");
 	OpenCampaignMap();
+    if _hideBackButton == true then
+        local x, y = XGUIEng.GetWidgetLocalPosition("/InGame/Singleplayer/ContainerBottom/CancelCampaign");
+        XGUIEng.SetWidgetLocalPosition("/InGame/Singleplayer/ContainerBottom/StartMission", x, y);
+        DisplayLoadBottomButtons("/InGame/Singleplayer/ContainerBottom/StartMission");
+    end
 
 	self.Data.MissionWasClickedAtLeastOnce = false;
-	CampaignMap_OnClicked(0);
+    
+    local LastMap = self:GetHighlightedMap();
+	CampaignMap_OnClicked(LastMap);
 end
 
 -- -------------------------------------------------------------------------- --
