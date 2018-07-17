@@ -55,7 +55,7 @@ function API.DisableReleaseThieves(_Flag)
         API.Bridge("API.DisableReleaseThieves(" ..tostring(_Flag).. ")");
         return;
     end
-    BundleEntitySelection.Local.Data.ThiefRelease = _Flag == true;
+    BundleEntitySelection.Local.Data.ThiefRelease = not _Flag;
 end
 
 ---
@@ -71,7 +71,7 @@ function API.DisableReleaseSiegeEngines(_Flag)
         API.Bridge("API.DisableReleaseSiegeEngines(" ..tostring(_Flag).. ")");
         return;
     end
-    BundleEntitySelection.Local.Data.SiegeEngineRelease = _Flag == true;
+    BundleEntitySelection.Local.Data.SiegeEngineRelease = not _Flag;
 end
 
 ---
@@ -87,7 +87,7 @@ function API.DisableReleaseSoldiers(_Flag)
         API.Bridge("API.DisableReleaseSoldiers(" ..tostring(_Flag).. ")");
         return;
     end
-    BundleEntitySelection.Local.Data.MilitaryRelease = _Flag == true;
+    BundleEntitySelection.Local.Data.MilitaryRelease = not _Flag;
 end
 
 ---
@@ -174,7 +174,7 @@ BundleEntitySelection = {
     Local = {
         Data = {
             RefillTrebuchet = true,
-            ThiefRelease = true,
+            ThiefRelease = false,
             SiegeEngineRelease = true,
             MilitaryRelease = true,
 
@@ -835,7 +835,7 @@ end
 function BundleEntitySelection.Local:OverwriteThiefDeliver()
     GUI_Thief.ThiefDeliverClicked_Orig_BundleEntitySelection = GUI_Thief.ThiefDeliverClicked;
     GUI_Thief.ThiefDeliverClicked = function()
-        if not self.Data.ThiefRelease then
+        if not BundleEntitySelection.Local.Data.ThiefRelease then
             GUI_Thief.ThiefDeliverClicked_Orig_BundleEntitySelection();
             return;
         end
@@ -852,7 +852,6 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
     GUI_Thief.ThiefDeliverMouseOver_Orig_BundleEntitySelection = GUI_Thief.ThiefDeliverMouseOver;
     GUI_Thief.ThiefDeliverMouseOver = function()
         if not BundleEntitySelection.Local.Data.ThiefRelease then
-            local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
             GUI_Thief.ThiefDeliverMouseOver_Orig_BundleEntitySelection();
             return;
         end
@@ -860,8 +859,7 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         BundleEntitySelection.Local:SetTooltip(
             BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang],
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[lang]
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang]
         );
     end
 
@@ -869,16 +867,17 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
     GUI_Thief.ThiefDeliverUpdate = function()
         if not BundleEntitySelection.Local.Data.ThiefRelease then
             GUI_Thief.ThiefDeliverUpdate_Orig_BundleEntitySelection();
-        else
-            local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-            local ThiefID = GUI.GetSelectedEntity();
-            if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
-                XGUIEng.DisableButton(CurrentWidgetID, 1);
-            else
-                XGUIEng.DisableButton(CurrentWidgetID, 0);
-            end
-            SetIcon(CurrentWidgetID, {14, 12});
+            return;
         end
+
+        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
+        local ThiefID = GUI.GetSelectedEntity();
+        if ThiefID == nil or Logic.GetEntityType(ThiefID) ~= Entities.U_Thief then
+            XGUIEng.DisableButton(CurrentWidgetID, 1);
+        else
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+        end
+        SetIcon(CurrentWidgetID, {14, 12});
     end
 end
 

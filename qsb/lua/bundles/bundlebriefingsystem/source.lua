@@ -1820,7 +1820,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         Mouse.CursorShow();
         GUI.EnableBattleSignals(true);
         GUI.SetFeedbackSoundOutputState(1);
-        GUI.activate3dOnScreenDisplayState();
+        GUI.ActivateSelectionState();
         GUI.PermitContextSensitiveCommandsInSelectionState();
         for _, v in ipairs(BriefingSystem.selectedEntities) do
             if not Logic.IsEntityDestroyed(v) then
