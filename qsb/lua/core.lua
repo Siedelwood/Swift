@@ -49,7 +49,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1200";
+QSB.Version = "Symfonia Build 1205";
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -1120,9 +1120,11 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
 --
+-- Ist der Hotkey bereits vorhanden, wird -1 zurückgegeben.
+--
 -- @param _Key         [string] Tastenkombination
 -- @param _Description [string] Beschreibung des Hotkey
--- @return [number] Index
+-- @return [number] Index oder Fehlercode
 -- @within Anwenderfunktionen
 -- @local
 --

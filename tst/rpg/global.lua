@@ -31,9 +31,15 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    local Path = "E:/Repositories/symfonia/qsb/lua";
-    Script.Load(Path .. "/loader.lua");
-    SymfoniaLoader:Load(Path);
+    -- Laden der Bibliothek
+    local MapType, Campaign = Framework.GetCurrentMapTypeAndCampaignName();
+    local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
+    local MapName = Framework.GetCurrentMapName();
+    Script.Load("Maps/"..MapFolder.."/"..MapName.."/QuestSystemBehavior.lua");
+    Script.Load("E:/Repositories/symfonia/qsb/lua/external/externalroleplayinggame/source.lua");
+
+    -- Läd die Module
+    API.Install();
     InitKnightTitleTables();
 
     if Framework.IsNetworkGame() ~= true then
@@ -44,7 +50,159 @@ function Mission_FirstMapAction()
     
     API.ActivateDebugMode(true, true, true, true);
     
-    TestUserAbility();
+    TestArmory()
+end
+
+---
+-- Der Held kann in der Waffenkammer die angelegte Waffe austauschen.
+--
+function TestArmory()
+    CreateObject {
+        Name = "armory",
+        Callback = function()
+            ExternalRolePlayingGame.Global:OpenArmoryDialog("meredith", "armory");
+        end
+    }
+
+    -- Testwaffen --
+    
+    local Weapon1 = ExternalRolePlayingGame.Item:New("Weapon1");
+    Weapon1:SetCaption("Weapon 1");
+    Weapon1:SetDescription("This is weapon 1!");
+    Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    local Weapon2 = ExternalRolePlayingGame.Item:New("Weapon2");
+    Weapon2:SetCaption("Weapon 2");
+    Weapon2:SetDescription("This is weapon 2!");
+    Weapon2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Weapon2:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    -- Hero --
+
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
+    local Inventory = ExternalRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
+    Meredith.Inventory = Inventory;
+
+    Inventory:Insert("Weapon1", 4);
+    Inventory:Insert("Weapon2", 2);
+    Meredith:EquipWeapon("Weapon2");
+
+    -- Ability --
+
+    local Dummy1 = ExternalRolePlayingGame.Ability:New("Dummy1");
+    Dummy1.RechargeTime = 2*60;
+    Dummy1:SetCaption("Bla");
+    Dummy1:SetDescription("Bla Bla Bla");
+    Dummy1:SetIcon({1,1});
+    Dummy1.Condition = function()
+        return false;
+    end
+    Dummy1.Action = function()
+        API.Note("Ability used!")
+    end
+    Meredith.Ability = Dummy1;
+end
+
+---
+-- Der Held bekommt mehrere verschiedene Gegenstände ins Inventar gelegt.
+-- Einige davon werden angelegt und ihre Menge im Inventar reduziert. Über
+-- E kann zwischen Fähigkeit und Gürtelgegenstand gewechselt werden.
+--
+function TestEquipment()
+    -- Testwaffen --
+    
+    local Weapon1 = ExternalRolePlayingGame.Item:New("Weapon1");
+    Weapon1:SetCaption("Weapon 1");
+    Weapon1:SetDescription("This is weapon 1!");
+    Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    local Weapon2 = ExternalRolePlayingGame.Item:New("Weapon2");
+    Weapon2:SetCaption("Weapon 2");
+    Weapon2:SetDescription("This is weapon 2!");
+    Weapon2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Weapon2:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    -- Testrüstungen --
+
+    local Armor1 = ExternalRolePlayingGame.Item:New("Armor1");
+    Armor1:SetCaption("Armor 1");
+    Armor1:SetDescription("This is armor 1!");
+    Armor1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Armor1:AddCategory(ExternalRolePlayingGame.ItemCategories.Armor);
+    
+    local Armor2 = ExternalRolePlayingGame.Item:New("Armor2");
+    Armor2:SetCaption("Armor 2");
+    Armor2:SetDescription("This is armor 2!");
+    Armor2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Armor2:AddCategory(ExternalRolePlayingGame.ItemCategories.Armor);
+
+    -- Testschmuck --
+
+    local Jewellery1 = ExternalRolePlayingGame.Item:New("Jewellery1");
+    Jewellery1:SetCaption("Jewellery 1");
+    Jewellery1:SetDescription("This is jewellery 1!");
+    Jewellery1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Jewellery1:AddCategory(ExternalRolePlayingGame.ItemCategories.Jewellery);
+    
+    local Jewellery2 = ExternalRolePlayingGame.Item:New("Jewellery2");
+    Jewellery2:SetCaption("Jewellery 2");
+    Jewellery2:SetDescription("This is jewellery 2!");
+    Jewellery2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Jewellery2:AddCategory(ExternalRolePlayingGame.ItemCategories.Jewellery);
+
+    -- Testgebrauchsgegenstände --
+
+    local Belt1 = ExternalRolePlayingGame.Item:New("Belt1");
+    Belt1:SetCaption("Belt 1");
+    Belt1:SetDescription("This is belt 1!");
+    Belt1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Belt1:AddCategory(ExternalRolePlayingGame.ItemCategories.Utensil);
+    
+    local Belt2 = ExternalRolePlayingGame.Item:New("Belt2");
+    Belt2:SetCaption("Belt 2");
+    Belt2:SetDescription("This is belt 2!");
+    Belt2:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
+    Belt2:AddCategory(ExternalRolePlayingGame.ItemCategories.Utensil);
+    Belt2.OnConsumed = function() API.Note("foo") end
+    
+    -- Hero --
+
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
+    local Inventory = ExternalRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
+    Meredith.Inventory = Inventory;
+
+    Inventory:Insert("Weapon1", 4);
+    Inventory:Insert("Weapon2", 2);
+    Inventory:Insert("Armor1", 1);
+    Inventory:Insert("Armor2", 3);
+    Inventory:Insert("Jewellery1", 2);
+    Inventory:Insert("Jewellery2", 7);
+    Inventory:Insert("Belt1", 4);
+    Inventory:Insert("Belt2", 1);
+
+    -- Equip --
+
+    Meredith:EquipWeapon("Weapon2");
+    Meredith:EquipArmor("Armor2");
+    Meredith:EquipJewellery("Jewellery1");
+    Meredith:EquipBelt("Belt2");
+
+    -- Ability --
+
+    local Dummy1 = ExternalRolePlayingGame.Ability:New("Dummy1");
+    Dummy1.RechargeTime = 2*60;
+    Dummy1:SetCaption("Bla");
+    Dummy1:SetDescription("Bla Bla Bla");
+    Dummy1:SetIcon({1,1});
+    Dummy1.Condition = function()
+        return false;
+    end
+    Dummy1.Action = function()
+        API.Note("Ability used!")
+    end
+    Meredith.Ability = Dummy1;
 end
 
 ---
@@ -54,7 +212,7 @@ end
 -- Die Erholung hängt vom Magielevel ab.
 --
 function TestUserAbility()
-    local Dummy1 = AddOnRolePlayingGame.Ability:New("Dummy1");
+    local Dummy1 = ExternalRolePlayingGame.Ability:New("Dummy1");
     Dummy1.RechargeTime = 2*60;
     Dummy1:SetCaption("Bla");
     Dummy1:SetDescription("Bla Bla Bla");
@@ -66,7 +224,7 @@ function TestUserAbility()
         API.Note("Ability used!")
     end
     
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
     Meredith:SetCaption("Meredith");
     Meredith.Ability = Dummy1;
 end
@@ -79,10 +237,13 @@ end
 -- im Kampf.
 --
 function TestLevelUp()
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
+    Meredith:SetCaption("Meredith");
+    Meredith.StrengthCosts = -1;
+
     API.RpgConfig_UseAutoLevel(false)
     API.RpgConfig_UseLevelUpByPromotion(false)
-    API.RpgHelper_AddPlayerExperience(1, 100000)
+    API.RpgHelper_AddPlayerExperience(1, 1000)
 end
 
 --
@@ -96,7 +257,7 @@ end
 -- betreffen oder nur den Besitzer.
 --
 function TestEvets()
-    local Event1 = AddOnRolePlayingGame.Event:New("Dummy1");
+    local Event1 = ExternalRolePlayingGame.Event:New("Dummy1");
     Event1:SetCaption("Bla");
     Event1:SetDescription("Bla Bla Bla");
     Event1.Action = function(_Event, _Hero, _Trigger, ...)
@@ -106,7 +267,7 @@ function TestEvets()
     end
     Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
-    local Event2 = AddOnRolePlayingGame.Event:New("Dummy2");
+    local Event2 = ExternalRolePlayingGame.Event:New("Dummy2");
     Event2:SetCaption("Bla");
     Event2:SetDescription("Bla Bla Bla");
     Event2.Action = function(_Event, _Hero, _Trigger, ...)
@@ -116,7 +277,7 @@ function TestEvets()
     end
     Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
-    local Event3 = AddOnRolePlayingGame.Event:New("Dummy3");
+    local Event3 = ExternalRolePlayingGame.Event:New("Dummy3");
     Event3:SetCaption("Bla");
     Event3:SetDescription("Bla Bla Bla");
     Event3.Action = function(_Event, _Hero, _Trigger, ...)
@@ -126,7 +287,7 @@ function TestEvets()
     end
     Event1:AddTrigger("Trigger_BuildingUpgradeFinished");
     
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
     Meredith:ActivateVirtue("Dummy1", true);
     Meredith:ActivateVice("Dummy2", true);
     Meredith:ActivateVice("Dummy3", true);
@@ -144,27 +305,26 @@ end
 -- der wieder ins Inventar zurückgelegt.
 --
 function TestInventoryListing()
-    local Dummy1 = AddOnRolePlayingGame.Item:New("Dummy1");
+    local Dummy1 = ExternalRolePlayingGame.Item:New("Dummy1");
     Dummy1:SetCaption("Dummy 1");
     Dummy1:SetDescription("This ist Dummy 1!");
     
-    local Dummy2 = AddOnRolePlayingGame.Item:New("Dummy2");
+    local Dummy2 = ExternalRolePlayingGame.Item:New("Dummy2");
     Dummy2:SetCaption("Dummy 2");
     Dummy2:SetDescription("This ist Dummy 2!");
     
-    local Dummy3 = AddOnRolePlayingGame.Item:New("Dummy3");
+    local Dummy3 = ExternalRolePlayingGame.Item:New("Dummy3");
     Dummy3:SetCaption("Dummy 3");
     Dummy3:SetDescription("This ist Dummy 3!");
     
-    local Dummy4 = AddOnRolePlayingGame.Item:New("Dummy4");
+    local Dummy4 = ExternalRolePlayingGame.Item:New("Dummy4");
     Dummy4:SetCaption("Dummy 4");
     Dummy4:SetDescription("This ist Dummy 4!");
-    Dummy4:AddCategory(AddOnRolePlayingGame.ItemCategories.Equipment);
+    Dummy4:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
     
     
-    local Meredith = AddOnRolePlayingGame.Hero:New("meredith");
-    local Inventory = AddOnRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
-    Inventory.Owner = Meredith;
+    local Meredith = ExternalRolePlayingGame.Hero:New("meredith");
+    local Inventory = ExternalRolePlayingGame.Inventory:New("Inventory_Meredith", Meredith);
     Meredith.Inventory = Inventory;
     
     Inventory:Insert("Dummy1", 10);
