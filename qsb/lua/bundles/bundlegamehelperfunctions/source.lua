@@ -1309,7 +1309,7 @@ function BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Of
             end
         end
     end
-    Logic.UpdateBlocking( x11, y11, x12, y12);
+    Logic.UpdateBlocking( Xmin, Ymin, Xmax, Ymax);
 end
 
 ---
