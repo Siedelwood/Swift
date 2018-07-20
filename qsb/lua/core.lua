@@ -1565,31 +1565,11 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
     table.insert(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, _Index, _AppendFunction);
 end
 
-function Core:OverrideFunction(_FunctionName, _NewFunction)
-    local s, e = _FunctionName:find("%.");
-    if s then
-        local FirstLayer  = _FunctionName:sub(1, s-1);
-        local SecondLayer = _FunctionName:sub(e+1, _FunctionName:len());
-        local s, e = SecondLayer:find("%.");
-        if s then
-            local tmp = SecondLayer;
-            local SecondLayer = tmp:sub(1, s-1);
-            local ThirdLayer = tmp:sub(e+1, tmp:len());
-            _G[FirstLayer][SecondLayer][ThirdLayer] = _NewFunction;
-        else
-            _G[FirstLayer][SecondLayer] = _NewFunction;
-        end
-    else
-        _G[_FunctionName] = _NewFunction;
-        return;
-    end
-end
-
 ---
 -- Überschreibt eine Funktion mit einer anderen.
 --
--- Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
--- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
+-- Funktionen in einer Tabelle werden überschrieben, indem jede Ebene des
+-- Tables mit einem Punkt angetrennt wird.
 --
 -- @local
 -- @within Internal
@@ -1602,13 +1582,19 @@ function Core:ReplaceFunction(_FunctionName, _Function)
     assert(type(_FunctionName) == "string");
     local ref = _G;
     
-    local s, e = _FunctionName:find(".");
+    local s, e = _FunctionName:find("%.");
     while (s ~= nil) do 
-        ref = ref[ _FunctionName:sub(1, e-1) ];
+        local SubName = _FunctionName:sub(1, e-1);
+        SubName = (tonumber(SubName) ~= nil and tonumber(SubName)) or SubName;
+        API.Note(type(SubName));
+
+        ref = ref[SubName];
         _FunctionName = _FunctionName:sub(e+1);
-        s, e = _FunctionName:find(".");
+        s, e = _FunctionName:find("%.");
     end
-    ref[_FunctionName] = _Function;
+
+    local SubName = (tonumber(_FunctionName) ~= nil and tonumber(_FunctionName)) or _FunctionName;
+    ref[SubName] = _Function;
 end
 
 ---
