@@ -1565,20 +1565,7 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
     table.insert(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, _Index, _AppendFunction);
 end
 
----
--- Überschreibt eine Funktion mit einer anderen.
---
--- Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
--- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
---
--- @local
--- @within Internal
--- @usage A = {foo = function() API.Note("bar") end}
--- B = function() API.Note("muh") end
--- Core:ReplaceFunction("A.foo", B)
--- -- A.foo() == B() => "muh"
---
-function Core:ReplaceFunction(_FunctionName, _NewFunction)
+function Core:OverrideFunction(_FunctionName, _NewFunction)
     local s, e = _FunctionName:find("%.");
     if s then
         local FirstLayer  = _FunctionName:sub(1, s-1);
@@ -1596,6 +1583,32 @@ function Core:ReplaceFunction(_FunctionName, _NewFunction)
         _G[_FunctionName] = _NewFunction;
         return;
     end
+end
+
+---
+-- Überschreibt eine Funktion mit einer anderen.
+--
+-- Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
+-- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
+--
+-- @local
+-- @within Internal
+-- @usage A = {foo = function() API.Note("bar") end}
+-- B = function() API.Note("muh") end
+-- Core:ReplaceFunction("A.foo", B)
+-- -- A.foo() == B() => "muh"
+--
+function Core:ReplaceFunction(_FunctionName, _Function)
+    assert(type(_FunctionName) == "string");
+    local ref = _G;
+    
+    local s, e = _FunctionName:find(".");
+    while (s ~= nil) do 
+        ref = ref[ _FunctionName:sub(1, e-1) ];
+        _FunctionName = _FunctionName:sub(e+1);
+        s, e = _FunctionName:find(".");
+    end
+    ref[_FunctionName] = _Function;
 end
 
 ---
