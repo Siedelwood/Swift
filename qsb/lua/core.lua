@@ -1586,7 +1586,6 @@ function Core:ReplaceFunction(_FunctionName, _Function)
     while (s ~= nil) do 
         local SubName = _FunctionName:sub(1, e-1);
         SubName = (tonumber(SubName) ~= nil and tonumber(SubName)) or SubName;
-        API.Note(type(SubName));
 
         ref = ref[SubName];
         _FunctionName = _FunctionName:sub(e+1);
