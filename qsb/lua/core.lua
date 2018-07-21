@@ -49,7 +49,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1205";
+QSB.Version = "Symfonia Build 1206";
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -1568,8 +1568,8 @@ end
 ---
 -- Überschreibt eine Funktion mit einer anderen.
 --
--- Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
--- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
+-- Funktionen in einer Tabelle werden überschrieben, indem jede Ebene des
+-- Tables mit einem Punkt angetrennt wird.
 --
 -- @local
 -- @within Internal
@@ -1578,24 +1578,22 @@ end
 -- Core:ReplaceFunction("A.foo", B)
 -- -- A.foo() == B() => "muh"
 --
-function Core:ReplaceFunction(_FunctionName, _NewFunction)
+function Core:ReplaceFunction(_FunctionName, _Function)
+    assert(type(_FunctionName) == "string");
+    local ref = _G;
+    
     local s, e = _FunctionName:find("%.");
-    if s then
-        local FirstLayer  = _FunctionName:sub(1, s-1);
-        local SecondLayer = _FunctionName:sub(e+1, _FunctionName:len());
-        local s, e = SecondLayer:find("%.");
-        if s then
-            local tmp = SecondLayer;
-            local SecondLayer = tmp:sub(1, s-1);
-            local ThirdLayer = tmp:sub(e+1, tmp:len());
-            _G[FirstLayer][SecondLayer][ThirdLayer] = _NewFunction;
-        else
-            _G[FirstLayer][SecondLayer] = _NewFunction;
-        end
-    else
-        _G[_FunctionName] = _NewFunction;
-        return;
+    while (s ~= nil) do 
+        local SubName = _FunctionName:sub(1, e-1);
+        SubName = (tonumber(SubName) ~= nil and tonumber(SubName)) or SubName;
+
+        ref = ref[SubName];
+        _FunctionName = _FunctionName:sub(e+1);
+        s, e = _FunctionName:find("%.");
     end
+
+    local SubName = (tonumber(_FunctionName) ~= nil and tonumber(_FunctionName)) or _FunctionName;
+    ref[SubName] = _Function;
 end
 
 ---

@@ -1545,7 +1545,7 @@ end
 -- @local
 --
 function ExternalRolePlayingGame.Local:OverrideStringKeys()
-    GetStringTableText_Orig_Orig_AddOnRolePlayingGame = XGUIEng.GetStringTableText;
+    GetStringTableText_Orig_AddOnRolePlayingGame = XGUIEng.GetStringTableText;
     XGUIEng.GetStringTableText = function(_key)
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local SelectedID = GUI.GetSelectedEntity();
@@ -1581,7 +1581,7 @@ function ExternalRolePlayingGame.Local:OverrideStringKeys()
             end
         end
 
-        return GetStringTableText_Orig_Orig_AddOnRolePlayingGame(_key);
+        return GetStringTableText_Orig_AddOnRolePlayingGame(_key);
     end
 end
 
