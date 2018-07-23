@@ -1202,6 +1202,7 @@ function Core:InitalizeBundles()
             end
         end
         self.Data.InitalizedBundles[v] = true;
+        collectgarbage();
     end
 end
 
