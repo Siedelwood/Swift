@@ -1651,3 +1651,4 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
+
