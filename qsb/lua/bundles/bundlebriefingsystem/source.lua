@@ -1260,11 +1260,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
         Logic.ExecuteInLuaLocalState("BriefingSystem.Briefing()");
         if page.action then
-            if page.actionArg and #page.actionArg > 0 then
-                page:action(unpack(page.actionArg));
-            else
-                page:action();
-            end
+            page:action();
         end
     end
 
