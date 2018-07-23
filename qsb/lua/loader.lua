@@ -81,15 +81,6 @@ SymfoniaLoader = {
             "AddOnQuestDebug",                      true,
             "BundleQuestGeneration",
             },
-
-            {
-            "AddOnRolePlayingGame",                 false,
-            "BundleEntityHealth",
-            "BundleEntityHelperFunctions",
-            "BundleGameHelperFunctions",
-            "BundleInterfaceApperance",
-            "BundleDialogWindows",
-            },
         },
     }
 }
