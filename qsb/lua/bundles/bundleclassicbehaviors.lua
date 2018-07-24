@@ -3285,7 +3285,7 @@ function b_Reprisal_ObjectActivate:AddParameter(_Index, _Parameter)
         if _Parameter == "Always" or 1 then
             parameter = 1
         end
-        self.UsingState = parameter
+        self.UsingState = parameter * 1
     end
 end
 
@@ -4330,22 +4330,22 @@ function b_Reward_ObjectInit:AddParameter(_Index, _Parameter)
     elseif (_Index == 3) then
         self.RewardType = _Parameter
     elseif (_Index == 4) then
-        self.RewardAmount = tonumber(_Parameter)
+        self.RewardAmount = _Parameter * 1
     elseif (_Index == 5) then
         self.FirstCostType = _Parameter
     elseif (_Index == 6) then
-        self.FirstCostAmount = tonumber(_Parameter)
+        self.FirstCostAmount = _Parameter * 1
     elseif (_Index == 7) then
         self.SecondCostType = _Parameter
     elseif (_Index == 8) then
-        self.SecondCostAmount = tonumber(_Parameter)
+        self.SecondCostAmount = _Parameter * 1
     elseif (_Index == 9) then
         local parameter = nil
-        if _Parameter == "Always" or 1 then
+        if _Parameter == "Always" or _Parameter == 1 then
             parameter = 1
-        elseif _Parameter == "Never" or 2 then
+        elseif _Parameter == "Never" or _Parameter == 2 then
             parameter = 2
-        elseif _Parameter == "Knight only" or 0 then
+        elseif _Parameter == "Knight only" or _Parameter == 0 then
             parameter = 0
         end
         self.UsingState = parameter
@@ -4474,109 +4474,6 @@ function b_Reward_ObjectInit:DEBUG(_Quest)
 end
 
 Core:RegisterBehavior(b_Reward_ObjectInit);
-
--- -------------------------------------------------------------------------- --
-
----
--- Setzt die benutzten Wagen eines interaktiven Objektes.
---
--- In der Regel ist das Setzen der Wagen unnötig, da die voreingestellten
--- Wagen ausreichen. Will man aber z.B. eine Kutsche fahren lassen, dann
--- muss der Wagentyp geändert werden.
---
--- @param _ScriptName           Skriptname des Objektes
--- @param _CostResourceType     Wagen für Rohstoffkosten
--- @param _CostGoldType         Wagen für Goldkosten
--- @param _RewResourceType      Wagen für Rohstofflieferung
--- @param _RewGoldType          Wagen für Goldlieferung
---
--- @within Reward
---
-function Reward_ObjectSetCarts(...)
-    return b_Reward_ObjectSetCarts:new(...);
-end
-
-b_Reward_ObjectSetCarts = {
-    Name = "Reward_ObjectSetCarts",
-    Description = {
-        en = "Reward: Set the cart types of an interactive object.",
-        de = "Lohn: Setzt die Wagentypen eines interaktiven Objektes.",
-    },
-    Parameter = {
-        { ParameterType.ScriptName, en = "Interactive object",         de = "Interaktives Objekt" },
-        { ParameterType.Default,     en = "Cost resource type",         de = "Rohstoffwagen Kosten" },
-        { ParameterType.Default,     en = "Cost gold type",             de = "Goldwagen Kosten" },
-        { ParameterType.Default,     en = "Reward resource type",     de = "Rohstoffwagen Schatz" },
-        { ParameterType.Default,     en = "Reward gold type",         de = "Goldwagen Schatz" },
-    },
-}
-
-function b_Reward_ObjectSetCarts:GetRewardTable()
-    return { Reward.Custom,{self, self.CustomFunction} }
-end
-
-function b_Reward_ObjectSetCarts:AddParameter(_Index, _Parameter)
-    if _Index == 0 then
-        self.ScriptName = _Parameter
-    elseif _Index == 1 then
-        if not _Parameter or _Parameter == "default" then
-            _Parameter = "U_ResourceMerchant";
-        end
-        self.CostResourceCart = _Parameter
-    elseif _Index == 2 then
-        if not _Parameter or _Parameter == "default" then
-            _Parameter = "U_GoldCart";
-        end
-        self.CostGoldCart = _Parameter
-    elseif _Index == 3 then
-        if not _Parameter or _Parameter == "default" then
-            _Parameter = "U_ResourceMerchant";
-        end
-        self.RewardResourceCart = _Parameter
-    elseif _Index == 4 then
-        if not _Parameter or _Parameter == "default" then
-            _Parameter = "U_GoldCart";
-        end
-        self.RewardGoldCart = _Parameter
-    end
-end
-
-function b_Reward_ObjectSetCarts:CustomFunction(_Quest)
-    local eID = GetID(self.ScriptName);
-    Logic.InteractiveObjectSetRewardResourceCartType(eID, Entities[self.RewardResourceCart]);
-    Logic.InteractiveObjectSetRewardGoldCartType(eID, Entities[self.RewardGoldCart]);
-    Logic.InteractiveObjectSetCostGoldCartType(eID, Entities[self.CostResourceCart]);
-    Logic.InteractiveObjectSetCostResourceCartType(eID, Entities[self.CostGoldCart]);
-end
-
-function b_Reward_ObjectSetCarts:GetCustomData( _Index )
-    if _Index == 2 or _Index == 4 then
-        return {"U_GoldCart", "U_GoldCart_Mission", "U_Noblemen_Cart", "U_RegaliaCart"}
-    elseif _Index == 1 or _Index == 3 then
-        local Data = {"U_ResourceMerchant", "U_Medicus", "U_Marketer"}
-        if g_GameExtraNo > 0 then
-            table.insert(Data, "U_NPC_Resource_Monk_AS");
-        end
-        return Data;
-    end
-end
-
-function b_Reward_ObjectSetCarts:DEBUG(_Quest)
-    if (not Entities[self.CostResourceCart]) or (not Entities[self.CostGoldCart])
-    or (not Entities[self.RewardResourceCart]) or (not Entities[self.RewardGoldCart]) then
-        dbg("".._Quest.Identifier.." "..self.Name..": invalid cart type!");
-        return true;
-    end
-
-    local eID = GetID(self.ScriptName);
-    if QSB.InitalizedObjekts[eID] and QSB.InitalizedObjekts[eID] == _Quest.Identifier then
-        dbg("".._Quest.Identifier.." "..self.Name..": you can not change carts in the same quest the object is initalized!");
-        return true;
-    end
-    return false;
-end
-
-Core:RegisterBehavior(b_Reward_ObjectSetCarts);
 
 -- -------------------------------------------------------------------------- --
 
