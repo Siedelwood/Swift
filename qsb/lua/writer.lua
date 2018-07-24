@@ -23,8 +23,6 @@
 -- Um die QSB zusammenfügen zu lassen, nutze die make im Hauptverzeichnis
 -- des Projektes oder rufe dieses Skript in der Shell auf.
 --
--- @script SymfoniaWriter
---
 
 dofile("qsb/lua/loader.lua");
 local fh = io.open("var/qsb.lua", "r");

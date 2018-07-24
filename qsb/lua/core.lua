@@ -49,7 +49,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1205";
+QSB.Version = "Symfonia Build 1206";
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -87,10 +87,9 @@ end
 ---
 -- Kopiert eine komplette Table und gibt die Kopie zurück. Tables können
 -- nicht durch Zuweisungen kopiert werden. Verwende diese Funktion. Wenn ein
--- Ziel angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
+-- Ziel angegeben wird, ist die zurückgegebene Table eine Vereinigung der 2
 -- angegebenen Tables.
--- Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
--- Funktion kann benutzt werden, um Klassen zu instanzieren.
+-- Die Funktion arbeitet rekursiv.
 --
 -- <p><b>Alias:</b> CopyTableRecursive</p>
 --
@@ -102,22 +101,7 @@ end
 -- Copy = API.InstanceTable(Table)
 --
 function API.InstanceTable(_Source, _Dest)
-    _Dest = _Dest or {};
-    assert(type(_Source) == "table")
-    assert(type(_Dest) == "table")
-
-    for k, v in pairs(_Source) do
-        if type(v) == "table" then
-            local SubTable = API.InstanceTable(v);
-            _Dest[k] = _Dest[k] or {};
-            for kk, vv in pairs(SubTable) do
-                _Dest[k][kk] = vv;
-            end
-        else
-            _Dest[k] = v;
-        end
-    end
-    return _Dest;
+    return copy(_Source, _Dest);
 end
 CopyTableRecursive = API.InstanceTable;
 
@@ -1158,6 +1142,124 @@ function API.RemoveHotKey(_Index)
 end
 
 -- -------------------------------------------------------------------------- --
+-- Object Oriented Programming                                                --
+-- -------------------------------------------------------------------------- --
+
+-- Ermöglicht das objektorientierte programmieren in Siedler-Lua. Klassen
+-- müssen sich immer direkt in _G befinden, damit __className automatisch
+-- gesetzt werden kann. Andernfalls muss der Name der Klasse per Hand
+-- gesetzt werden.
+
+---
+-- Kopiert die Quelltabelle rekursiv in die Zieltabelle. Ist ein Wert im
+-- Ziel vorhanden, wird er nicht überschrieben.
+--
+-- @param _Source [table] Quelltabelle
+-- @param _Dest [table] Zieltabelle
+-- @return [table] Kindklasse
+-- @within OOP
+--
+function copy(_Source, _Dest)
+    _Dest = _Dest or {};
+    assert(type(_Source) == "table")
+    assert(type(_Dest) == "table")
+
+    for k, v in pairs(_Source) do
+        if type(v) == "table" then
+            _Dest[k] = _Dest[k] or {};
+            for kk, vv in pairs(copy(v)) do
+                _Dest[k][kk] = _Dest[k][kk] or vv;
+            end
+        else
+            _Dest[k] = _Dest[k] or v;
+        end
+    end
+    return _Dest;
+end
+
+---
+-- Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.
+--
+-- @param _Table [table] Referenz auf Table
+-- @return [table] Klasse
+-- @within OOP
+--
+function class(_Table)
+    -- __className hinzufügen
+    for k, v in pairs(_G) do 
+        if v == _Table then
+            _Table.__className = k;
+        end
+    end
+    
+    -- __construct hinzufügen
+    _Table.__construct = _Table.__construct or function(self) end
+
+    -- __clone hinzufügen
+    _Table.__clone = _Table.__clone or function(self)
+        return copy(self);
+    end
+
+    -- __toString hinzufügen
+    _Table.__toString = _Table.__toString or function(self)
+        local s = "";
+        for k, v in pairs(self) do
+            s = s .. tostring(k) .. ":" .. tostring(v) .. ";";
+        end
+        return "{" ..s.. "}";
+    end
+
+    -- __equals hinzufügen
+    _Table.__equals = _Table.__equals or function(self, _Other)
+        -- Anderes Objekt muss table sein.
+        if type(_Other) ~= "table" then 
+            return false;
+        end
+        -- Gehe Inhalt durch
+        for k, v in pairs(self) do
+            if v ~= _Other[k] then
+                return false;
+            end
+        end
+        return true;
+    end
+
+    return _Table;
+end
+
+---
+-- Erzeugt eine Ableitung einer Klasse
+--
+-- @param _Parent [table] Referenz auf Klasse
+-- @return [table] Kindklasse
+-- @within OOP
+--
+function inherit(_Class, _Parent)
+    local c = copy(_Parent, _Class);
+    c.parent = _Parent;
+    return class(c);
+end
+
+---
+-- Erzeugt eine Instanz der Klasse.
+--
+-- @param _Class [table] Referenz auf Klasse
+-- @param ... [mixed] Argumente des Konstruktors
+-- @return [table] Instanz der Klasse
+-- @within OOP
+--
+function new(_Class, ...)
+    local instance = copy(_Class);
+    -- Parent instanzieren
+    if instance.parent then
+        instance.parent = new(instance.parent, ...);
+    end
+    -- Instanz erzeugen
+    instance:__construct(...);
+    return instance;
+end
+
+-- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
@@ -1202,6 +1304,7 @@ function Core:InitalizeBundles()
             end
         end
         self.Data.InitalizedBundles[v] = true;
+        collectgarbage();
     end
 end
 
@@ -1568,8 +1671,8 @@ end
 ---
 -- Überschreibt eine Funktion mit einer anderen.
 --
--- Wenn es sich um eine Funktion innerhalb einer Table handelt, dann darf sie
--- sich nicht tiefer als zwei Ebenen under dem Toplevel befinden.
+-- Funktionen in einer Tabelle werden überschrieben, indem jede Ebene des
+-- Tables mit einem Punkt angetrennt wird.
 --
 -- @local
 -- @within Internal
@@ -1578,24 +1681,22 @@ end
 -- Core:ReplaceFunction("A.foo", B)
 -- -- A.foo() == B() => "muh"
 --
-function Core:ReplaceFunction(_FunctionName, _NewFunction)
+function Core:ReplaceFunction(_FunctionName, _Function)
+    assert(type(_FunctionName) == "string");
+    local ref = _G;
+    
     local s, e = _FunctionName:find("%.");
-    if s then
-        local FirstLayer  = _FunctionName:sub(1, s-1);
-        local SecondLayer = _FunctionName:sub(e+1, _FunctionName:len());
-        local s, e = SecondLayer:find("%.");
-        if s then
-            local tmp = SecondLayer;
-            local SecondLayer = tmp:sub(1, s-1);
-            local ThirdLayer = tmp:sub(e+1, tmp:len());
-            _G[FirstLayer][SecondLayer][ThirdLayer] = _NewFunction;
-        else
-            _G[FirstLayer][SecondLayer] = _NewFunction;
-        end
-    else
-        _G[_FunctionName] = _NewFunction;
-        return;
+    while (s ~= nil) do 
+        local SubName = _FunctionName:sub(1, e-1);
+        SubName = (tonumber(SubName) ~= nil and tonumber(SubName)) or SubName;
+
+        ref = ref[SubName];
+        _FunctionName = _FunctionName:sub(e+1);
+        s, e = _FunctionName:find("%.");
     end
+
+    local SubName = (tonumber(_FunctionName) ~= nil and tonumber(_FunctionName)) or _FunctionName;
+    ref[SubName] = _Function;
 end
 
 ---
@@ -1653,3 +1754,4 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
+

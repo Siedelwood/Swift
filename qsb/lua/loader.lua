@@ -30,7 +30,6 @@
 -- Trotz allem muss nach Abschluss der Entwicklung eine normale QSB in die
 -- Map eingefügt werden. Du kannst sie dann entsprechend zusammen bauen.
 --
--- @script SymfoniaLoader
 -- @set sort=true
 --
 
@@ -81,15 +80,6 @@ SymfoniaLoader = {
             "AddOnQuestDebug",                      true,
             "BundleQuestGeneration",
             },
-
-            {
-            "AddOnRolePlayingGame",                 false,
-            "BundleEntityHealth",
-            "BundleEntityHelperFunctions",
-            "BundleGameHelperFunctions",
-            "BundleInterfaceApperance",
-            "BundleDialogWindows",
-            },
         },
     }
 }
@@ -116,8 +106,8 @@ function SymfoniaLoader:Load(_Path)
     for i= 1, #self.Data.LoadOrder, 1 do
         if self.Data.LoadOrder[i][2] then
             local Name = self.Data.LoadOrder[i][1]:lower();
-            Script.Load(_Path.. "/bundles/" ..Name.. "/source.lua");
-            API.Log("Load bundle '" .. _Path.. "/bundles/" ..Name.. "/source.lua'");
+            Script.Load(_Path.. "/bundles/" ..Name.. ".lua");
+            API.Log("Load bundle '" .. _Path.. "/bundles/" ..Name.. ".lua'");
         end
     end
 
@@ -134,8 +124,8 @@ function SymfoniaLoader:Load(_Path)
             -- Lade Addon
             local Name = self.Data.AddOnLoadOrder[i][1]:lower();
             if LoadAddon then
-                Script.Load(_Path.. "/addons/" ..Name.. "/source.lua");
-                API.Log("Load addon '" .. _Path.. "/addons/" ..Name.. "/source.lua'");
+                Script.Load(_Path.. "/addons/" ..Name.. ".lua");
+                API.Log("Load addon '" .. _Path.. "/addons/" ..Name.. ".lua'");
             else
                 -- Only show once
                 if not GUI then
@@ -186,8 +176,8 @@ function SymfoniaLoader:ConcatSources(_External)
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";
         if v[2] then
-            ActiveBundles = ActiveBundles.. "'./lua/bundles/" ..v[1]:lower().. "/source.lua',\n";
-            FileContent = self:LoadSource(BasePath.. "bundles/" ..v[1]:lower().. "/source.lua");
+            ActiveBundles = ActiveBundles.. "'./lua/bundles/" ..v[1]:lower().. ".lua',\n";
+            FileContent = self:LoadSource(BasePath.. "bundles/" ..v[1]:lower().. ".lua");
         end
         table.insert(QsbContent, FileContent);
     end
@@ -202,8 +192,8 @@ function SymfoniaLoader:ConcatSources(_External)
                 end
             end
             if LoadAddOn == true then
-                ActiveBundles = ActiveBundles.. "'./lua/addons/" ..v[1]:lower().. "/source.lua',\n";
-                FileContent = self:LoadSource(BasePath.. "addons/" ..v[1]:lower().. "/source.lua");
+                ActiveBundles = ActiveBundles.. "'./lua/addons/" ..v[1]:lower().. ".lua',\n";
+                FileContent = self:LoadSource(BasePath.. "addons/" ..v[1]:lower().. ".lua");
                 table.insert(QsbContent, FileContent);
             end
         end
@@ -211,8 +201,8 @@ function SymfoniaLoader:ConcatSources(_External)
 
     for i= 1, #_External, 1 do
         local FileContent = "";
-            ActiveBundles = ActiveBundles.. "'" .._External[i]:lower().. "/source.lua',\n";
-            FileContent = self:LoadSource(_External[i]:lower().. "/source.lua");
+            ActiveBundles = ActiveBundles.. "'" .._External[i]:lower().. ".lua',\n";
+            FileContent = self:LoadSource(_External[i]:lower().. ".lua");
         table.insert(QsbContent, FileContent);
     end
 
