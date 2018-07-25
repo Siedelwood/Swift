@@ -1147,7 +1147,7 @@ end
 -- -------------------------------------------------------------------------- --
 
 -- Ermöglicht das objektorientierte programmieren in Siedler-Lua. Klassen
--- müssen sich immer direkt in _G befinden, damit __className automatisch
+-- müssen sich immer direkt in _G befinden, damit className automatisch
 -- gesetzt werden kann. Andernfalls muss der Name der Klasse per Hand
 -- gesetzt werden.
 
@@ -1186,23 +1186,23 @@ end
 -- @within OOP
 --
 function class(_Table)
-    -- __className hinzufügen
+    -- className hinzufügen
     for k, v in pairs(_G) do 
         if v == _Table then
-            _Table.__className = k;
+            _Table.className = k;
         end
     end
     
-    -- __construct hinzufügen
-    _Table.__construct = _Table.__construct or function(self) end
+    -- construct hinzufügen
+    _Table.construct = _Table.construct or function(self) end
 
-    -- __clone hinzufügen
-    _Table.__clone = _Table.__clone or function(self)
+    -- clone hinzufügen
+    _Table.clone = _Table.clone or function(self)
         return copy(self);
     end
 
-    -- __toString hinzufügen
-    _Table.__toString = _Table.__toString or function(self)
+    -- toString hinzufügen
+    _Table.toString = _Table.toString or function(self)
         local s = "";
         for k, v in pairs(self) do
             s = s .. tostring(k) .. ":" .. tostring(v) .. ";";
@@ -1210,8 +1210,8 @@ function class(_Table)
         return "{" ..s.. "}";
     end
 
-    -- __equals hinzufügen
-    _Table.__equals = _Table.__equals or function(self, _Other)
+    -- equals hinzufügen
+    _Table.equals = _Table.equals or function(self, _Other)
         -- Anderes Objekt muss table sein.
         if type(_Other) ~= "table" then 
             return false;
@@ -1256,7 +1256,7 @@ function new(_Class, ...)
         instance.parent = new(instance.parent, ...);
     end
     -- Instanz erzeugen
-    instance:__construct(...);
+    instance:construct(...);
     return instance;
 end
 
