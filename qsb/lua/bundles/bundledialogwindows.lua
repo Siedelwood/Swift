@@ -181,7 +181,7 @@ function API.SimpleTextWindow(_Caption, _Content)
         API.Bridge("API.SimpleTextWindow('" .._Caption.. "', '" .._Content.. "')");
         return;
     end
-    BundleDialogWindows.Local.TextWindow:New(_Caption, _Content);
+    BundleDialogWindows.Local.TextWindow:New(_Caption, _Content):Show();
 end
 
 -- -------------------------------------------------------------------------- --
