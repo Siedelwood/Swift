@@ -30,6 +30,14 @@
 -- Trotz allem muss nach Abschluss der Entwicklung eine normale QSB in die
 -- Map eingefügt werden. Du kannst sie dann entsprechend zusammen bauen.
 --
+-- Als letztes gibt es noch die Möglichkeit eigene Bundles zu schreiben und
+-- in einer exklusiven persönlichen QSB zu nutzen. Dazu wird die make.sh im
+-- bin-Verzeichnis genutzt.
+-- <pre>cd bin
+--./make.sh Path/to/Bundle Path/to/another/Bundle</pre>
+-- Dabei wird die Dateiendung *.lua nicht mit angegeben! Das Shell-Script
+-- wird nur in einer Bash funktionieren.
+--
 -- @set sort=true
 --
 
