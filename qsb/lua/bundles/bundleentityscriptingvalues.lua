@@ -9,191 +9,18 @@
 -- verändert werden, die sonst unzugänglich wären. Dazu zählen beispielsweise
 -- die Größe des Entity und das Bewegungsziel.</p>
 --
--- <p><a href="#SV.GetEntityPlayer">Scripting Values</a></p>
+-- <p><a href="#ScriptingValue">Scripting Values</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
 --
 BundleEntityScriptingValues = {};
 
-API = API or {};
-QSB = QSB or {};
-SV = SV or {};
-
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
----
--- </p>Gibt den Größenfaktor des Entity zurück.</p>
---
--- <p>Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
--- </p>
---
--- <p><b>Alias</b>: GetScale</p>
---
--- @param _Entity [string|number] Entity
--- @return [number] Größenfaktor
--- @within Anwenderfunktionen
---
--- @usage
--- local Scale = SV.GetEntityScale("alandra")
---
-function SV.GetEntityScale(_Entity)
-    if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.GetEntityScale: Target " ..Subject.. " is invalid!");
-        return -1;
-    end
-    return BundleEntityScriptingValues.Shared:GetEntitySize(_Entity);
-end
-GetScale = SV.GetEntityScale;
 
----
--- Gibt den Besitzer des Entity zurück.
---
--- <p><b>Alias</b>: GetPlayer</p>
---
--- @param _Entity [string|number] Entity
--- @return [number] Besitzer
--- @within Anwenderfunktionen
---
-function SV.GetEntityPlayer(_Entity)
-    if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.GetEntityPlayer: Target " ..Subject.. " is invalid!");
-        return -1;
-    end
-    return BundleEntityScriptingValues.Shared:GetPlayerID(_entity);
-end
-GetPlayer = SV.GetEntityPlayer;
-
----
--- Gibt die Position zurück, zu der sich das Entity bewegt.
---
--- Über diese Koordinaten könnte man prüfen, ob ein Entity sich in einen
--- Bereich bewegt, in dem es nichts zu suchen hat.
---
--- <p><b>Alias</b>: GetMovingTarget</p>
---
--- @param _Entity [string|number] Entity
--- @return [table] Positionstabelle
--- @within Anwenderfunktionen
---
--- @usage
--- local Destination = SV.GetMovementTarget("hakim");
--- if GetDistance(Destination, "LockedArea") < 2000 then
---     local x,y,z = Logic.EntityGetPos(GetID("hakim"));
---     Logic.DEBUG_SetSettlerPosition(GetID("hakim"), x, y):
--- end
---
-function SV.GetMovementTarget(_Entity)
-    if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.GetMovementTarget: Target " ..Subject.. " is invalid!");
-        return nil;
-    end
-    return BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity);
-end
-GetMovingTarget = SV.GetMovementTarget;
-
----
--- Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
---
--- Auf diese Weise kann geprüft werden, ob ein NPC auf dem Entity aktiv ist.
---
--- <p><b>Alias</b>: IsNpc</p>
---
--- @param _Entity [string|number] Entity
--- @return [boolean] Ist NPC
--- @within Anwenderfunktionen
---
--- @usage
--- local Active = SV.IsActiveNpc("alandra");
--- if Active then
---     API.Note("NPC is active");
--- end
---
-function SV.IsActiveNpc(_Entity)
-    if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.IsActiveNpc: Target " ..Subject.. " is invalid!");
-        return false;
-    end
-    return BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity);
-end
-IsNpc = SV.IsActiveNpc;
-
----
--- Gibt zurück, ob das Entity sichtbar ist.
---
--- <p><b>Alias</b>: IsVisible</p>
---
--- @param _Entity [string|number] Entity
--- @return [boolean] Ist sichtbar
--- @within Anwenderfunktionen
---
-function SV.IsEntityVisible(_Entity)
-    if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.IsEntityVisible: Target " ..Subject.. " is invalid!");
-        return false;
-    end
-    return BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity);
-end
-IsVisible = SV.IsEntityVisible;
-
----
--- Setzt den Größenfaktor des Entity.
---
--- Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
--- die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
---
--- <p><b>Alias</b>: SetScale</p>
---
--- @param _Entity [string|number] Entity
--- @param _Scale  [number] Größenfaktor
--- @within Anwenderfunktionen
---
-function SV.SetEntityScale(_Entity, _Scale)
-    if GUI or not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.SetEntityScale: Target " ..Subject.. " is invalid!");
-        return;
-    end
-    if type(_Scale) ~= "number" then
-        API.Dbg("SV.SetEntityScale: Scale must be a number!");
-        return;
-    end
-    return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
-end
-SetScale = SV.SetEntityScale;
-
----
--- Ändert den Besitzer des Entity.
---
--- Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
--- möglich ein Raubtier einem Spieler zuzuweisen.
---
--- <p><b>Alias</b>: ChangePlayer</p>
---
--- @param _Entity   [string|number] Entity
--- @param _PlayerID [number] Besitzer
--- @within Anwenderfunktionen
---
-function SV.SetEntityPlayer(_Entity, _PlayerID)
-    if GUI or not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.SetEntityPlayer: Target " ..Subject.. " is invalid!");
-        return;
-    end
-    if type(_PlayerID) ~= "number" or _PlayerID <= 0 or _PlayerID > 8 then
-        API.Dbg("SV.SetEntityPlayer: Player-ID must between 0 and 8!");
-        return;
-    end
-    return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
-end
-ChangePlayer = SV.SetEntityPlayer;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -201,169 +28,204 @@ ChangePlayer = SV.SetEntityPlayer;
 
 BundleEntityScriptingValues = {
     Global = {
-        Data = {}
+        Data = {},
     },
     Local = {
-        Data = {}
-    },
-    Shared = {
-        Data = {}
+        Data = {},
     },
 }
 
--- Global Script ---------------------------------------------------------------
+-- Global ------------------------------------------------------------------- --
 
----
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
--- @local
---
 function BundleEntityScriptingValues.Global:Install()
-
 end
 
----
--- Ändert die Größe des Entity.
--- @param _Entity [string|number] Entity
--- @param _Scale  [number] Größenfaktor
--- @within Internal
--- @local
---
-function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
-    local EntityID = GetID(_entity);
-    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_size));
-    if Logic.IsSettler(EntityID) == 1 then
-        Logic.SetSpeedFactor(EntityID, _size);
-    end
-end
+-- Local -------------------------------------------------------------------- --
 
----
--- Ändert den Besitzer des Entity.
---
--- @param _Entity   [string|number] Entity
--- @param _PlayerID [number] Besitzer
--- @within Internal
--- @local
---
-function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
-    local EntityID = GetID(_entity);
-    Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
-end
-
--- Local Script ----------------------------------------------------------------
-
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
 function BundleEntityScriptingValues.Local:Install()
-
 end
 
--- Shared ----------------------------------------------------------------------
+-- Shared Library ----------------------------------------------------------- --
+
+---
+-- Diese Klasse dient als Wrapper um ein Entity, mit dem besondere Eigenschaften
+-- gelesen oder bearbeitet werden können, die sonst nicht erreichbar wären.
+--
+-- Initalisierung eines Entity:
+-- <pre>local Hakim = new(ScriptingValue, "hakim");</pre>
+--
+-- @within Klassen
+--
+ScriptingValue = {};
+function ScriptingValue:construct(_Entity)
+    self.Converter = new(ScriptingValueConverter);
+    self.ScriptName = _Entity;
+end
+class(ScriptingValue);
 
 ---
 -- Gibt die relative Größe des Entity zurück.
 --
--- @param _Entity [string|number] Entity
+-- Wird eine Größe angegeben, wird stattdessen diese Größe gesetzt.
+--
+-- @param _Size [number] Neue Größe
 -- @return [number] Größenfaktor
--- @within BundleEntityScriptingValues
+-- @within ScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetEntitySize(_entity)
-    local EntityID = GetID(_entity);
-    local size = Logic.GetEntityScriptingValue(EntityID, -45);
-    return self.Int2Float(size);
+function ScriptingValue:EntitySize(_Size)
+    if _Size then 
+        self:RawSetFloat(-45, _Size);
+    end
+    return self:RawGetFloat(-45);
 end
 
 ---
 -- Gibt den Besitzer des Entity zurück.
--- @internal
 --
--- @param _Entity [string|number] Entity
+-- Wird eine PlayerID angegeben, wird stattdessen diese gesetzt.
+--
+-- @param _PlayerID [number] Neuer Besitzer
 -- @return [number] Besitzer
--- @within BundleEntityScriptingValues
+-- @within ScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetPlayerID(_entity)
-    local EntityID = GetID(_entity);
-    return Logic.GetEntityScriptingValue(EntityID, -71);
+function ScriptingValue:Player(_PlayerID)
+    if _PlayerID then 
+        self:RawSetInt(-71, _PlayerID);
+    end
+    return self:RawGetInt(-71);
 end
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
 --
--- @param _Entity [string|number] Entity
+-- Wird ein Visibility Flag angegeben, wird stattdessen dieses gesetzt.
+--
+-- @param _Visible [boolean] Sichtbar Flag
 -- @return [boolean] Ist sichtbar
--- @within BundleEntityScriptingValues
+-- @within ScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:IsEntityVisible(_entity)
-    local EntityID = GetID(_entity);
-    return Logic.GetEntityScriptingValue(EntityID, -50) == 801280;
+function ScriptingValue:Visible(_Visible)
+    if _Visible ~= nil then 
+        self:RawSetInt(-50, (_Visible and 801280) or 0);
+    end
+    return self:RawGetInt(-50) == 801280;
 end
 
 ---
 -- Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
 --
--- @param _Entity [string|number] Entity
+-- Wird ein NPC Flag angegeben, wird stattdessen dieses gesetzt.
+--
+-- @param _Active [boolean] NPC State
 -- @return [boolean] Ist NPC
--- @within BundleEntityScriptingValues
+-- @within ScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_entity)
-    local EntityID = GetID(_entity);
-    if Logic.IsSettler(EntityID) == 0 then
+function ScriptingValue:Npc(_Active)
+    if Logic.IsSettler(GetID(self.ScriptName)) == 0 then
         return false;
     end
-    return Logic.GetEntityScriptingValue(EntityID, 6) == 1;
+    if _Active ~= nil then 
+        self:RawSetInt(6, (_Active and 1) or 0);
+    end
+    return self:RawGetInt(6) == 1;
 end
 
 ---
 -- Gibt das Bewegungsziel des Entity zurück.
 --
--- @param _Entity [string|number] Entity
 -- @return [table] Positionstabelle
--- @within BundleEntityScriptingValues
+-- @within ScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_entity)
+function ScriptingValue:MoveDestination()
     local pos = {};
-    pos.X = self:GetValueAsFloat(_entity, 19) or 0;
-    pos.Y = self:GetValueAsFloat(_entity, 20) or 0;
+    pos.X = self:RawGetFloat(19) or 0;
+    pos.Y = self:RawGetFloat(20) or 0;
     return pos;
 end
 
 ---
--- Gibt die Scripting Value des Entity als Ganzzahl zurück.
+-- Prüft ob die Instanz der ScriptingValue noch funktionsfähig ist.
 --
--- @param _entity [string|number] Zu untersuchendes Entity
--- @param _index  [number] Index im RAM
--- @return [number] Ganzzahl
--- @within BundleEntityScriptingValues
--- @local
+-- @return [boolean] Scripting Value valide
+-- @within ScriptingValue
 --
-function BundleEntityScriptingValues.Shared:GetValueAsInteger(_entity, _index)
-    local value = Logic.GetEntityScriptingValue(GetID(_entity),_index);
-    return value;
+function ScriptingValue:valid()
+    return IsExisting(self.ScriptName) == true;
 end
 
 ---
--- Gibt die Scripting Value des Entity als Dezimalzahl zurück.
+-- Gibt einen Wert als Ganzzahl zurück.
 --
--- @param _entity [string|number] Zu untersuchendes Entity
--- @param _index  [number] Index im RAM
--- @return [number] Dezimalzahl
--- @within BundleEntityScriptingValues
--- @local
+-- @parem _Idx [number] Index der Scripting Value
+-- @return [number] Wert als Ganzzahl
+-- @within ScriptingValue
 --
-function BundleEntityScriptingValues.Shared:GetValueAsFloat(_entity, _index)
-    local value = Logic.GetEntityScriptingValue(GetID(_entity),_index);
-    return BundleEntityScriptingValues.Shared:Int2Float(value);
+function ScriptingValue:RawGetInt(_Idx)
+    if not self:valid() then 
+        return nil;
+    end
+    return Logic.GetEntityScriptingValue(GetID(self.ScriptName), _Idx);
 end
+
+---
+-- Setzt eine Ganzzahl als Wert einer Scripting Value im Arbeitsspeicher
+--
+-- @parem _Idx [number] Index der Scripting Value
+-- @parem _Value [number] Neuer Wert
+-- @within ScriptingValue
+--
+function ScriptingValue:RawSetInt(_Idx, _Value)
+    assert(not GUI);
+    if not self:valid() then 
+        return nil;
+    end
+    Logic.SetEntityScriptingValue(GetID(self.ScriptName), _Idx, _Value);
+    return self;
+end
+
+---
+-- Gibt einen Wert als Dezimalzahl zurück.
+--
+-- @parem _Idx [number] Index der Scripting Value
+-- @return [number] Wert als Dezimalzahl
+-- @within ScriptingValue
+--
+function ScriptingValue:RawGetFloat(_Idx)
+    if not self:valid() then 
+        return nil;
+    end
+    return self.Converter:Int2Float(Logic.GetEntityScriptingValue(GetID(self.ScriptName), _Idx));
+end
+
+---
+-- Setzt eine Dezimalzahl als Wert einer Scripting Value im Arbeitsspeicher
+--
+-- @parem _Idx [number] Index der Scripting Value
+-- @parem _Value [number] Neuer Wert
+-- @within ScriptingValue
+--
+function ScriptingValue:RawSetFloat(_Idx, _Value)
+    if not self:valid() then 
+        return nil;
+    end
+    Logic.SetEntityScriptingValue(GetID(self.ScriptName), _Idx, self.Converter:Float2Int(_Value));
+    return self;
+end
+
+---
+-- Diese Klasse konvertiert zwischen den Arbeitsspeicherformat von Zahlen und
+-- dem Lua-Format von Zahlen. Diese Klasse wird benötigt, um Scriptting Values
+-- im Arbeitsspeicher zu verändern.
+--
+-- @within Klassen
+--
+ScriptingValueConverter = {};
+class(ScriptingValueConverter);
 
 ---
 -- Bestimmt das Modul b der Zahl a.
@@ -371,37 +233,43 @@ end
 -- @param a	[number] Zahl
 -- @param b	[number] Modul
 -- @return [number] qmod der Zahl
--- @within BundleEntityScriptingValues
--- @local
+-- @within ScriptingValueConverter
 --
-function BundleEntityScriptingValues.Shared:qmod(a, b)
-    return a - math.floor(a/b)*b
+-- @usage
+-- local qmod = Converter:qmod(100, 2);
+--
+function ScriptingValueConverter:qmod(a, b)
+    return a - math.floor(a/b)*b;
 end
 
 ---
--- Konvertiert eine Ganzzahl in eine Dezimalzahl.
+-- <p>Konvertiert eine Ganzzahl in eine Dezimalzahl.</p>
+-- <p>Diese Funktion wird benötigt, um eine aus dem Arbeitsspeicher gelesene
+-- Zahl in eine Lua-Number umzuwandeln.</p>
 --
 -- @param num [number] Integer
 -- @return [number] Integer als Float
--- @within BundleEntityScriptingValues
--- @local
+-- @within ScriptingValueConverter
 --
-function BundleEntityScriptingValues.Shared:Int2Float(num)
-    if(num == 0) then return 0 end
-    local sign = 1
-    if(num < 0) then num = 2147483648 + num; sign = -1 end
-    local frac = self:qmod(num, 8388608)
-    local headPart = (num-frac)/8388608
-    local expNoSign = self:qmod(headPart, 256)
-    local exp = expNoSign-127
-    local fraction = 1
-    local fp = 0.5
-    local check = 4194304
+-- @usage
+-- local float = Converter:Int2Float(SV);
+--
+function ScriptingValueConverter:Int2Float(num)
+    if(num == 0) then return 0; end
+    local sign = 1;
+    if(num < 0) then num = 2147483648 + num; sign = -1; end
+    local frac = self:qmod(num, 8388608);
+    local headPart = (num-frac)/8388608;
+    local expNoSign = self:qmod(headPart, 256);
+    local exp = expNoSign-127;
+    local fraction = 1;
+    local fp = 0.5;
+    local check = 4194304;
     for i = 23, 0, -1 do
-        if(frac - check) > 0 then fraction = fraction + fp; frac = frac - check end
-        check = check / 2; fp = fp / 2
+        if(frac - check) > 0 then fraction = fraction + fp; frac = frac - check; end
+        check = check / 2; fp = fp / 2;
     end
-    return fraction * math.pow(2, exp) * sign
+    return fraction * math.pow(2, exp) * sign;
 end
 
 ---
@@ -409,16 +277,15 @@ end
 --
 -- @param num [number] Bits
 -- @return [table] Table mit Bits
--- @within BundleEntityScriptingValues
--- @local
+-- @within ScriptingValueConverter
 --
-function BundleEntityScriptingValues.Shared:bitsInt(num)
-    local t={}
+function ScriptingValueConverter:bitsInt(num)
+    local t={};
     while num>0 do
-        rest=self:qmod(num, 2) table.insert(t,1,rest) num=(num-rest)/2
+        rest=self:qmod(num, 2); table.insert(t,1,rest); num=(num-rest)/2;
     end
-    table.remove(t, 1)
-    return t
+    table.remove(t, 1);
+    return t;
 end
 
 ---
@@ -427,50 +294,53 @@ end
 -- @param num [integer] Integer
 -- @param t	  [table] Table
 -- @return [table] Table mit Bits
--- @within BundleEntityScriptingValues
--- @local
+-- @within ScriptingValueConverter
 --
-function BundleEntityScriptingValues.Shared:bitsFrac(num, t)
+function ScriptingValueConverter:bitsFrac(num, t)
     for i = 1, 48 do
-        num = num * 2
-        if(num >= 1) then table.insert(t, 1); num = num - 1 else table.insert(t, 0) end
-        if(num == 0) then return t end
+        num = num * 2;
+        if(num >= 1) then table.insert(t, 1); num = num - 1; else table.insert(t, 0); end
+        if(num == 0) then return t; end
     end
-    return t
+    return t;
 end
 
 ---
--- Konvertiert eine Dezimalzahl in eine Ganzzahl.
+-- <p>Konvertiert eine Dezimalzahl in eine Ganzzahl.</p>
+-- <p>Diese Funktion wird benötigt, um eine Lua-Number in einen Wert
+-- umzuwandeln, der in den Arbeitsspeicher geschrieben werden kann.</p>
 --
 -- @param fval [number] Float
 -- @return [number] Float als Integer
--- @within BundleEntityScriptingValues
--- @local
+-- @within ScriptingValueConverter
 --
-function BundleEntityScriptingValues.Shared:Float2Int(fval)
-    if(fval == 0) then return 0 end
-    local signed = false
-    if(fval < 0) then signed = true; fval = fval * -1 end
+-- @usage
+-- local int = Converter:Float2Int(SV);
+--
+function ScriptingValueConverter:Float2Int(fval)
+    if(fval == 0) then return 0; end
+    local signed = false;
+    if(fval < 0) then signed = true; fval = fval * -1; end
     local outval = 0;
-    local bits
-    local exp = 0
+    local bits;
+    local exp = 0;
     if fval >= 1 then
         local intPart = math.floor(fval); local fracPart = fval - intPart;
-        bits = self:bitsInt(intPart); exp = table.getn(bits); self:bitsFrac(fracPart, bits)
+        bits = self:bitsInt(intPart); exp = table.getn(bits); self:bitsFrac(fracPart, bits);
     else
-        bits = {}; self:bitsFrac(fval, bits)
-        while(bits[1] == 0) do exp = exp - 1; table.remove(bits, 1) end
-        exp = exp - 1
-        table.remove(bits, 1)
+        bits = {}; self:bitsFrac(fval, bits);
+        while(bits[1] == 0) do exp = exp - 1; table.remove(bits, 1); end
+        exp = exp - 1;
+        table.remove(bits, 1);
     end
-    local bitVal = 4194304; local start = 1
+    local bitVal = 4194304; local start = 1;
     for bpos = start, 23 do
-        local bit = bits[bpos]
+        local bit = bits[bpos];
         if(not bit) then break; end
-        if(bit == 1) then outval = outval + bitVal end
-        bitVal = bitVal / 2
+        if(bit == 1) then outval = outval + bitVal; end
+        bitVal = bitVal / 2;
     end
-    outval = outval + (exp+127)*8388608
+    outval = outval + (exp+127)*8388608;
     if(signed) then outval = outval - 2147483648 end
     return outval;
 end
