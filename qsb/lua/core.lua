@@ -586,23 +586,6 @@ function API.Message(_Message)
 end
 
 ---
--- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
---
--- <p><b>Alias:</b> dbg</p>
---
--- @param _Message [string] Anzeigetext
--- @within Anwenderfunktionen
--- @local
---
-function API.Dbg(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.FATAL then
-        API.StaticNote("FATAL: " .._Message)
-    end
-    API.Log("FATAL: " .._Message);
-end
-dbg = API.Dbg;
-
----
 -- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
 -- übergeben wird.
 --
@@ -620,7 +603,24 @@ function API.EnsureMessage(_Message)
 end
 
 ---
--- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
+-- Schreibt einen FATAL auf den Bildschirm und ins Log.
+--
+-- <p><b>Alias:</b> dbg</p>
+--
+-- @param _Message [string] Anzeigetext
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.Dbg(_Message)
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.FATAL then
+        API.StaticNote("FATAL: " .._Message)
+    end
+    API.Log("FATAL: " .._Message);
+end
+dbg = API.Dbg;
+
+---
+-- Schreibt eine WARNING auf den Bildschirm und ins Log.
 --
 -- <p><p><b>Alias:</b> warn</p></p>
 --
@@ -637,7 +637,7 @@ end
 warn = API.Warn;
 
 ---
--- Schreibt eine Information auf den Bildschirm und ins Log.
+-- Schreibt eine INFO auf den Bildschirm und ins Log.
 --
 -- <p><b>Alias:</b> info</p>
 --
@@ -653,6 +653,23 @@ function API.Info(_Message)
 end
 info = API.Info;
 
+---
+-- Schreibt einen TRACE auf den Bildschirm und ins Log.
+--
+-- <p><b>Alias:</b> info</p>
+--
+-- @param _Message [string] Anzeigetext
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.Trace(_Message)
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.TRACE then
+        API.Note("TRACE: " .._Message)
+    end
+    API.Log("TRACE: " .._Message);
+end
+trace = API.Trace;
+
 -- Log Levels
 QSB.Log = {
     Level = {
@@ -660,7 +677,7 @@ QSB.Log = {
         FATAL    = 4000,
         WARNING  = 3000,
         INFO     = 2000,
-        TRACE    = 1000, -- FIXME not implemented
+        TRACE    = 1000,
         ALL      = 0,
     },
 }
