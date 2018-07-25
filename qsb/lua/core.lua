@@ -18,10 +18,11 @@
 -- Wie die einzelnen Bundles ist auch das Framework in einen Public und einen
 -- Private Space aufgeteilt. Der Public Space enthält Funktionen innerhalb
 -- der Bibliothek "API". Alle Bundles ergänzen ihre Public-Funktionen dort.
--- Außer den Aliases auf API-Funktionen und den Behavior-Funktionen sind keine
--- anderen öffentlichen Funktionen für den Anwendern sichtbar zu machen!
+-- Außer den Aliases auf API-Funktionen, den Behavior-Funktionen und evtl.
+-- Klassen von Objekten sind keine anderen Funktionen für den Anwendern 
+-- sichtbar zu machen!
 -- Sinn des Public Space ist es, Funktionsaufrufe, die zum Teil nur in einer
--- Skriptumgebung bekannt sind zu verallgemeinern. Wird die Funktion nun aus
+-- Skriptumgebung bekannt sind, zu verallgemeinern. Wird die Funktion nun aus
 -- der falschen Umgebung aufgerufen, wird der Aufruf an die richtige Umgebung
 -- weitergereicht oder, falls dies nicht möglich ist, abgebrochen. Dies soll
 -- Fehler vermeiden.
@@ -39,7 +40,7 @@
 
 ---
 -- Hier werden wichtige Basisfunktionen bereitgestellt. Diese Funktionen sind
--- immer Bestandteil der QSB, egal welche Bundles gewält werden.
+-- auch in der Minimalkonfiguration der QSB vorhanden.
 --
 -- @set sort=true
 --
@@ -49,7 +50,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1206";
+QSB.Version = "Symfonia Build 1300";
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -594,10 +595,10 @@ end
 -- @local
 --
 function API.Dbg(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.DEBUG then
-        API.StaticNote("DEBUG: " .._Message)
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.FATAL then
+        API.StaticNote("FATAL: " .._Message)
     end
-    API.Log("DEBUG: " .._Message);
+    API.Log("FATAL: " .._Message);
 end
 dbg = API.Dbg;
 
@@ -656,21 +657,21 @@ info = API.Info;
 QSB.Log = {
     Level = {
         OFF      = 90000,
-        DEBUG    = 4000,
+        FATAL    = 4000,
         WARNING  = 3000,
         INFO     = 2000,
-        TRACE    = 1000,
+        TRACE    = 1000, -- FIXME not implemented
         ALL      = 0,
     },
 }
 
 -- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.DEBUG;
+QSB.Log.CurrentLevel = QSB.Log.Level.FATAL;
 
 ---
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.
 --
--- Als Voreinstellung werden alle Meldungen immer angezeigt!
+-- Als Voreinstellung werden nur FATAL-Meldungen angezeigt!
 --
 -- Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
 -- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
@@ -693,7 +694,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.DEBUG;
 -- </td>
 -- <tr>
 -- <td>
--- QSB.Log.Level.DEBUG
+-- QSB.Log.Level.FATAL
 -- </td>
 -- <td>
 -- Es werden nur Fehler angezeigt.
