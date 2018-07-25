@@ -57,7 +57,7 @@ end
 -- @within Klassen
 --
 ScriptingValue = {};
-function ScriptingValue:__construct(_Entity)
+function ScriptingValue:construct(_Entity)
     self.Converter = new(ScriptingValueConverter);
     self.ScriptName = _Entity;
 end
