@@ -18,10 +18,11 @@
 -- Wie die einzelnen Bundles ist auch das Framework in einen Public und einen
 -- Private Space aufgeteilt. Der Public Space enthält Funktionen innerhalb
 -- der Bibliothek "API". Alle Bundles ergänzen ihre Public-Funktionen dort.
--- Außer den Aliases auf API-Funktionen und den Behavior-Funktionen sind keine
--- anderen öffentlichen Funktionen für den Anwendern sichtbar zu machen!
+-- Außer den Aliases auf API-Funktionen, den Behavior-Funktionen und evtl.
+-- Klassen von Objekten sind keine anderen Funktionen für den Anwendern 
+-- sichtbar zu machen!
 -- Sinn des Public Space ist es, Funktionsaufrufe, die zum Teil nur in einer
--- Skriptumgebung bekannt sind zu verallgemeinern. Wird die Funktion nun aus
+-- Skriptumgebung bekannt sind, zu verallgemeinern. Wird die Funktion nun aus
 -- der falschen Umgebung aufgerufen, wird der Aufruf an die richtige Umgebung
 -- weitergereicht oder, falls dies nicht möglich ist, abgebrochen. Dies soll
 -- Fehler vermeiden.
@@ -39,7 +40,7 @@
 
 ---
 -- Hier werden wichtige Basisfunktionen bereitgestellt. Diese Funktionen sind
--- immer Bestandteil der QSB, egal welche Bundles gewält werden.
+-- auch in der Minimalkonfiguration der QSB vorhanden.
 --
 -- @set sort=true
 --
@@ -49,7 +50,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1206";
+QSB.Version = "Symfonia Build 1300";
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -87,10 +88,9 @@ end
 ---
 -- Kopiert eine komplette Table und gibt die Kopie zurück. Tables können
 -- nicht durch Zuweisungen kopiert werden. Verwende diese Funktion. Wenn ein
--- Ziel angegeben wird, ist die zurückgegebene Table eine vereinigung der 2
+-- Ziel angegeben wird, ist die zurückgegebene Table eine Vereinigung der 2
 -- angegebenen Tables.
--- Die Funktion arbeitet rekursiv und ist für beide Arten von Index. Die
--- Funktion kann benutzt werden, um Klassen zu instanzieren.
+-- Die Funktion arbeitet rekursiv.
 --
 -- <p><b>Alias:</b> CopyTableRecursive</p>
 --
@@ -108,13 +108,12 @@ function API.InstanceTable(_Source, _Dest)
 
     for k, v in pairs(_Source) do
         if type(v) == "table" then
-            local SubTable = API.InstanceTable(v);
             _Dest[k] = _Dest[k] or {};
-            for kk, vv in pairs(SubTable) do
-                _Dest[k][kk] = vv;
+            for kk, vv in pairs(API.InstanceTable(v)) do
+                _Dest[k][kk] = _Dest[k][kk] or vv;
             end
         else
-            _Dest[k] = v;
+            _Dest[k] = _Dest[k] or v;
         end
     end
     return _Dest;
@@ -601,23 +600,6 @@ function API.Message(_Message)
 end
 
 ---
--- Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
---
--- <p><b>Alias:</b> dbg</p>
---
--- @param _Message [string] Anzeigetext
--- @within Anwenderfunktionen
--- @local
---
-function API.Dbg(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.DEBUG then
-        API.StaticNote("DEBUG: " .._Message)
-    end
-    API.Log("DEBUG: " .._Message);
-end
-dbg = API.Dbg;
-
----
 -- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
 -- übergeben wird.
 --
@@ -635,7 +617,24 @@ function API.EnsureMessage(_Message)
 end
 
 ---
--- Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
+-- Schreibt einen FATAL auf den Bildschirm und ins Log.
+--
+-- <p><b>Alias:</b> dbg</p>
+--
+-- @param _Message [string] Anzeigetext
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.Dbg(_Message)
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.FATAL then
+        API.StaticNote("FATAL: " .._Message)
+    end
+    API.Log("FATAL: " .._Message);
+end
+dbg = API.Dbg;
+
+---
+-- Schreibt eine WARNING auf den Bildschirm und ins Log.
 --
 -- <p><p><b>Alias:</b> warn</p></p>
 --
@@ -652,7 +651,7 @@ end
 warn = API.Warn;
 
 ---
--- Schreibt eine Information auf den Bildschirm und ins Log.
+-- Schreibt eine INFO auf den Bildschirm und ins Log.
 --
 -- <p><b>Alias:</b> info</p>
 --
@@ -668,11 +667,28 @@ function API.Info(_Message)
 end
 info = API.Info;
 
+---
+-- Schreibt einen TRACE auf den Bildschirm und ins Log.
+--
+-- <p><b>Alias:</b> info</p>
+--
+-- @param _Message [string] Anzeigetext
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.Trace(_Message)
+    if QSB.Log.CurrentLevel <= QSB.Log.Level.TRACE then
+        API.Note("TRACE: " .._Message)
+    end
+    API.Log("TRACE: " .._Message);
+end
+trace = API.Trace;
+
 -- Log Levels
 QSB.Log = {
     Level = {
         OFF      = 90000,
-        DEBUG    = 4000,
+        FATAL    = 4000,
         WARNING  = 3000,
         INFO     = 2000,
         TRACE    = 1000,
@@ -681,12 +697,12 @@ QSB.Log = {
 }
 
 -- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.DEBUG;
+QSB.Log.CurrentLevel = QSB.Log.Level.FATAL;
 
 ---
 -- Setzt das Log-Level für die aktuelle Skriptumgebung.
 --
--- Als Voreinstellung werden alle Meldungen immer angezeigt!
+-- Als Voreinstellung werden nur FATAL-Meldungen angezeigt!
 --
 -- Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
 -- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
@@ -709,7 +725,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.DEBUG;
 -- </td>
 -- <tr>
 -- <td>
--- QSB.Log.Level.DEBUG
+-- QSB.Log.Level.FATAL
 -- </td>
 -- <td>
 -- Es werden nur Fehler angezeigt.
@@ -1202,6 +1218,7 @@ function Core:InitalizeBundles()
             end
         end
         self.Data.InitalizedBundles[v] = true;
+        collectgarbage();
     end
 end
 
@@ -1651,3 +1668,4 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
+
