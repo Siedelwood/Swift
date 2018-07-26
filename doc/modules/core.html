@@ -37,7 +37,6 @@
 <li><a href="#Fields">Fields</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
-<li><a href="#OOP">OOP</a></li>
 </ul>
 
 
@@ -66,7 +65,6 @@
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
   <li><a href="../modules/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
-  <li><a href="../modules/bundles.svc.html">bundles.svc</a></li>
   <li><strong>core</strong></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
@@ -125,7 +123,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.Dbg">API.Dbg (_Message)</a></td>
-	<td class="summary">Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.</td>
+	<td class="summary">Schreibt einen FATAL auf den Bildschirm und ins Log.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.DeactivateIO">API.DeactivateIO (_ScriptName)</a></td>
@@ -168,7 +166,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.Info">API.Info (_Message)</a></td>
-	<td class="summary">Schreibt eine Information auf den Bildschirm und ins Log.</td>
+	<td class="summary">Schreibt eine INFO auf den Bildschirm und ins Log.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.Install">API.Install ()</a></td>
@@ -251,6 +249,10 @@
 	<td class="summary">Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.Trace">API.Trace (_Message)</a></td>
+	<td class="summary">Schreibt einen TRACE auf den Bildschirm und ins Log.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.TraverseTable">API.TraverseTable (_Data, _Table)</a></td>
 	<td class="summary">Sucht in einer Table nach einem Wert.</td>
 	</tr>
@@ -260,7 +262,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.Warn">API.Warn (_Message)</a></td>
-	<td class="summary">Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.</td>
+	<td class="summary">Schreibt eine WARNING auf den Bildschirm und ins Log.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.WinAllQuests">API.WinAllQuests (...)</a></td>
@@ -333,25 +335,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#Core:ToBoolean">Core:ToBoolean (_Input)</a></td>
 	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
-	</tr>
-</table>
-<h2><a href="#OOP">OOP</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#class">class (_Table)</a></td>
-	<td class="summary">Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#copy">copy (_Source, _Dest)</a></td>
-	<td class="summary">Kopiert die Quelltabelle rekursiv in die Zieltabelle.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#inherit">inherit (_Parent)</a></td>
-	<td class="summary">Erzeugt eine Ableitung einer Klasse</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#new">new (_Class, ...)</a></td>
-	<td class="summary">Erzeugt eine Instanz der Klasse.</td>
 	</tr>
 </table>
 
@@ -570,7 +553,7 @@ API.AddSaveGameAction(SaveGame)</pre>
     <strong>API.Dbg (_Message)</strong>
     </dt>
     <dd>
-    Schreibt eine Fehlermeldung auf den Bildschirm und ins Log.
+    Schreibt einen FATAL auf den Bildschirm und ins Log.
 <p> <p><b>Alias:</b> dbg</p>
 
 
@@ -847,7 +830,7 @@ API.DumpTable(Table)</pre>
     <strong>API.Info (_Message)</strong>
     </dt>
     <dd>
-    Schreibt eine Information auf den Bildschirm und ins Log.
+    Schreibt eine INFO auf den Bildschirm und ins Log.
 <p> <p><b>Alias:</b> info</p>
 
 
@@ -1456,6 +1439,28 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.Trace"></a>
+    <strong>API.Trace (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt einen TRACE auf den Bildschirm und ins Log.
+<p> <p><b>Alias:</b> info</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.TraverseTable"></a>
     <strong>API.TraverseTable (_Data, _Table)</strong>
     </dt>
@@ -1523,7 +1528,7 @@ Copy = API.InstanceTable(Table)</pre>
     <strong>API.Warn (_Message)</strong>
     </dt>
     <dd>
-    Schreibt eine Warnungsmeldung auf den Bildschirm und ins Log.
+    Schreibt eine WARNING auf den Bildschirm und ins Log.
 <p> <p><p><b>Alias:</b> warn</p></p>
 
 
@@ -1948,125 +1953,13 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="OOP"></a>OOP</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "class"></a>
-    <strong>class (_Table)</strong>
-    </dt>
-    <dd>
-    Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Table</span>
-         [table] Referenz auf Table
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [table] Klasse
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "copy"></a>
-    <strong>copy (_Source, _Dest)</strong>
-    </dt>
-    <dd>
-    Kopiert die Quelltabelle rekursiv in die Zieltabelle.  Ist ein Wert im
- Ziel vorhanden, wird er nicht überschrieben.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Source</span>
-         [table] Quelltabelle
-        </li>
-        <li><span class="parameter">_Dest</span>
-         [table] Zieltabelle
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [table] Kindklasse
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "inherit"></a>
-    <strong>inherit (_Parent)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Ableitung einer Klasse
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Parent</span>
-         [table] Referenz auf Klasse
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [table] Kindklasse
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "new"></a>
-    <strong>new (_Class, ...)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Instanz der Klasse.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Class</span>
-         [table] Referenz auf Klasse
-        </li>
-        <li><span class="parameter">...</span>
-         [mixed] Argumente des Konstruktors
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [table] Instanz der Klasse
-    </ol>
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-07-25 09:37:58 </i>
+<i style="float:right;">Last updated 2018-07-26 11:29:10 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
