@@ -226,30 +226,6 @@ function API.AddFlights(_Cutscene)
 end
 AddFlights = API.AddFlights;
 
----
--- Schreibt während eines Briefings eine zusätzliche Textnachricht auf den
--- Bildschirm. Die Nachricht wird, in Abhängigkeit zur Textlänge, nach ein
--- paar Sekunden verschrinden.
---
--- <p><b>Alias:</b> BriefingMessage</p>
---
--- @param _Text	    [string] Anzuzeigender Text
--- @param _Duration	[number] Anzeigedauer in Sekunden
--- @within Anwenderfunktionen
---
-function API.AddBriefingNote(_Text, _Duration)
-    if type(_Text) ~= "string" and type(_Text) ~= "number" then
-        API.Dbg("API.AddBriefingNote: Text must be a string or a number!");
-        return;
-    end
-    if not GUI then
-        API.Bridge([[API.AddBriefingNote("]] .._Text.. [[", ]]..tostring(_Duration)..[[)]]);
-        return;
-    end
-    return BriefingSystem.PushInformationText(_Text, (_Duration * 100));
-end
-BriefingMessage = API.AddBriefingNote;
-
 -- -------------------------------------------------------------------------- --
 -- Dummy-Space                                                                --
 -- -------------------------------------------------------------------------- --
@@ -1650,7 +1626,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         listOfMarkers = {},
         markerUniqueID = 2 ^ 10,
         Flight = {systemEnabled = true},
-        InformationTextQueue = {},
     };
 
     ---
@@ -1709,7 +1684,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     --
     function BriefingSystem.PrepareBriefing()
         BriefingSystem.barType = nil;
-        BriefingSystem.InformationTextQueue = {};
         BriefingSystem.currBriefing = BriefingSystem.GlobalSystem[BriefingSystem.GlobalSystem.currBriefingIndex];
         Trigger.EnableTrigger(BriefingSystem.Flight.Job);
 
@@ -1742,17 +1716,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
-
-        -- page.information Text
-        local screen = {GUI.GetScreenSize()};
-        local yAlign = 350 * (screen[2]/1080);
-        XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo", 1);
-        XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
-        XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
-        XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
-        XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", "Horst Hackebeil");
-        XGUIEng.SetTextColor("/InGame/ThroneRoom/KnightInfo/Text", 255, 255, 255, 255);
-        XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/KnightInfo/Text", 100, yAlign);
 
         local page = BriefingSystem.currBriefing[1];
         BriefingSystem.SetBriefingPageOrSplashscreen(page);
@@ -1844,8 +1807,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
         XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
         Trigger.DisableTrigger(BriefingSystem.Flight.Job);
-
-        BriefingSystem.ConvertInformationToNote();
     end
 
     ---
@@ -2218,89 +2179,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget(Widget, 1);
 
         BriefingSystem.MCSelectionIsShown = true;
-    end
-
-    --
-    -- Zeigt alle Nachrichten in der Warteschlange an und schreibt
-    -- sie in das KnightInfo Widget.
-    --
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.ShowBriefingInfoText()
-        XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", "");
-        local text = "";
-        for i=1, #BriefingSystem.InformationTextQueue do
-            text = text .. BriefingSystem.InformationTextQueue[i][1] .. "{cr}";
-        end
-        XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", text);
-    end
-
-    ---
-    -- Konvertiert die Notizen zu einer Debug Note und zeigt sie im
-    -- Debug Window an. Dies passiert dann, wenn ein Briefing endet
-    -- aber die Anzeigezeit einer oder mehrerer Nachrichten noch nicht
-    -- abgelaufen ist.
-    --
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.ConvertInformationToNote()
-        for i=1, #BriefingSystem.InformationTextQueue do
-            GUI.AddNote(BriefingSystem.InformationTextQueue[i][1]);
-        end
-    end
-
-    ---
-    -- Fügt einen text in die Warteschlange ein.
-    --
-    -- @param _Text	    Nachricht
-    -- @param _Duration Anzeigedauer
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.PushInformationText(_Text, _Duration)
-        local length = _Duration or (string.len(_Text) * 5);
-        table.insert(BriefingSystem.InformationTextQueue, {_Text, length});
-    end
-
-    ---
-    -- Entfernt einen Text aus der Warteschlange.
-    --
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.UnqueueInformationText(_Index)
-        if #BriefingSystem.InformationTextQueue >= _Index then
-            table.remove(BriefingSystem.InformationTextQueue, _Index);
-        end
-    end
-
-    ---
-    -- Kontrolliert die Anzeige der Notizen während eines Briefings.
-    -- Die Nachrichten werden solange angezeigt, wie ihre Anzeigezeit
-    -- noch nicht abgelaufen ist.
-    --
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.ControlInformationText()
-        local LinesToDelete = {};
-
-        -- Abgelaufene Texte markieren
-        for k, v in pairs(BriefingSystem.InformationTextQueue) do
-            BriefingSystem.InformationTextQueue[k][2] = v[2] -1;
-            if v[2] <= 0 then
-                table.insert(LinesToDelete, k);
-            end
-        end
-
-        -- Abgelaufene Texte entfernen
-        for k, v in pairs(LinesToDelete) do
-            BriefingSystem.UnqueueInformationText(v);
-        end
-
-        BriefingSystem.ShowBriefingInfoText();
     end
 
     ---
@@ -2767,8 +2645,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             -- Notizen im Briefing
             -- Blendet zusätzlichen Text während eines Briefings ein. Siehe
             -- dazu Kommentar bei der Funktion.
-
-            BriefingSystem.ControlInformationText();
 
             -- Multiple Choice ist bestätigt, wenn das Auswahlfeld
             -- verschwindet. In diesem Fall hat der Spieler geklickt.
