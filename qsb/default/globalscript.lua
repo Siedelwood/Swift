@@ -44,6 +44,8 @@ end
 -- Starte von hier aus deine Funktionen.
 --
 function Mission_FirstMapAction()
+    -- ## QSB laden ## --
+    
     -- Laden der Bibliothek
     local MapType, Campaign = Framework.GetCurrentMapTypeAndCampaignName();
     local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
@@ -54,6 +56,8 @@ function Mission_FirstMapAction()
     API.Install();
     InitKnightTitleTables();
 
+    -- ## Single Player Grundfunktionen ## --
+
     if Framework.IsNetworkGame() ~= true then
         Startup_Player();
         Startup_StartGoods();
@@ -62,10 +66,26 @@ function Mission_FirstMapAction()
     Mission_InitTechnologies();
     Mission_InitPlayerColors();
 
-    -- Mapeditor-Quests erstellen.
+    -- ## Debug Mode ## --
+
+    -- Lässt den Debug die Quests direkt wärhend der Erzeugung prüfen.
+    local UseCheckAtStart = true;
+    -- Lässt den Debug die Quests prüfen, wenn sie ausgeführt werden.
+    local UseCheckRuntime = true;
+    -- Aktiviert die Statusverfolgung der Quests.
+    local UseQuestTrace = false;
+    -- Aktiviert Cheats und Eingabeaufforderung
+    local UseChearMode = true;
+
+    API.ActivateDebugMode(UseCheckAtStart, UseCheckRuntime, UseQuestTrace, UseChearMode);
+
+    -- ## Mapeditor-Quests erzeugen ## --
+
     CreateQuests();
     
-    
+    -- ## Dein Skript ## --
+
+
 end
 
 -- # Main Map Script ######################################################## --
