@@ -18,6 +18,8 @@ end
 -- Wird zum Spielstart einmalig aufgerufen.
 --
 function Mission_LocalOnMapStart()
+    -- ## QSB laden ## --
+    
     -- Laden der Bibliothek
     local MapType, Campaign = Framework.GetCurrentMapTypeAndCampaignName();
     local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
@@ -28,6 +30,9 @@ function Mission_LocalOnMapStart()
     API.Install();
     InitKnightTitleTables();
     
+    -- ## Dein Skript ## --
+
+
 end
 
 -- # Main Map Script ######################################################## --
