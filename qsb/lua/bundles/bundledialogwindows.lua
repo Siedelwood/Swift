@@ -477,8 +477,10 @@ end
 -- @local
 --
 function BundleDialogWindows.Local:RestoreSaveGame()
-    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 1);
-    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 1);
+    if BundleGameHelperFunctions and not BundleGameHelperFunctions.Local.Data.ForbidSave then
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", 1);
+        XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame", 1);
+    end
     if KeyBindings_SaveGame_Orig_QSB_Windows then
         KeyBindings_SaveGame = KeyBindings_SaveGame_Orig_QSB_Windows;
         KeyBindings_SaveGame_Orig_QSB_Windows = nil;
