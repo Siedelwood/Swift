@@ -155,9 +155,9 @@ QuestMessage = API.CreateQuestMessage;
 --
 -- @usage
 -- API.CreateQuestDialog{
---     {"Hallo, wie geht es dir?", 1, 4},
+--     {"Hallo, wie geht es dir?", 4, 1},
 --     {"Mir geht es gut, wie immer!", 1, 1},
---     {"Das ist doch schön.", 1, 4},
+--     {"Das ist doch schön.", 4, 1},
 -- };
 --
 function API.CreateQuestDialog(_Messages)
@@ -538,4 +538,3 @@ function BundleQuestGeneration.Local:Install()
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
-

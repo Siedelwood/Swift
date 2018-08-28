@@ -19,7 +19,7 @@
 -- Private Space aufgeteilt. Der Public Space enthält Funktionen innerhalb
 -- der Bibliothek "API". Alle Bundles ergänzen ihre Public-Funktionen dort.
 -- Außer den Aliases auf API-Funktionen, den Behavior-Funktionen und evtl.
--- Klassen von Objekten sind keine anderen Funktionen für den Anwendern 
+-- Klassen von Objekten sind keine anderen Funktionen für den Anwendern
 -- sichtbar zu machen!
 -- Sinn des Public Space ist es, Funktionsaufrufe, die zum Teil nur in einer
 -- Skriptumgebung bekannt sind, zu verallgemeinern. Wird die Funktion nun aus
@@ -1223,58 +1223,76 @@ function Core:InitalizeBundles()
 end
 
 ---
--- FIXME
+-- Überschreibt CreateQuest für die Anbindung an Symfonia.
 -- @within Internal
 -- @local
 --
 function Core:SetupGobal_HackCreateQuest()
     CreateQuest = function(_QuestName, _QuestGiver, _QuestReceiver, _QuestHidden, _QuestTime, _QuestDescription, _QuestStartMsg, _QuestSuccessMsg, _QuestFailureMsg)
-        local Triggers = {}
-        local Goals = {}
-        local Reward = {}
-        local Reprisal = {}
-        local NumberOfBehavior = Logic.Quest_GetQuestNumberOfBehaviors(_QuestName)
-        for i=0,NumberOfBehavior-1 do
-            local BehaviorName = Logic.Quest_GetQuestBehaviorName(_QuestName, i)
-            local BehaviorTemplate = GetBehaviorTemplateByName(BehaviorName)
-            assert( BehaviorTemplate, "No template for name: " .. BehaviorName .. " - using an invalid QuestSystemBehavior.lua?!" )
-            local NewBehavior = {}
-            Table_Copy(NewBehavior, BehaviorTemplate)
-            local Parameter = Logic.Quest_GetQuestBehaviorParameter(_QuestName, i)
+        local Triggers = {};
+        local Goals = {};
+        local Reward = {};
+        local Reprisal = {};
+        local NumberOfBehavior = Logic.Quest_GetQuestNumberOfBehaviors(_QuestName);
+
+        for i=0, NumberOfBehavior-1, 1 do
+            -- Behavior ermitteln
+            local BehaviorName = Logic.Quest_GetQuestBehaviorName(_QuestName, i);
+            local BehaviorTemplate = GetBehaviorTemplateByName(BehaviorName);
+            assert( BehaviorTemplate, "No template for name: " .. BehaviorName .. " - using an invalid QuestSystemBehavior.lua?!");
+            local NewBehavior = {};
+            Table_Copy(NewBehavior, BehaviorTemplate);
+            local Parameter = Logic.Quest_GetQuestBehaviorParameter(_QuestName, i);
             for j=1,#Parameter do
-                NewBehavior:AddParameter(j-1, Parameter[j])
+                NewBehavior:AddParameter(j-1, Parameter[j]);
             end
+
+            -- Füge als Goal hinzu
             if (NewBehavior.GetGoalTable ~= nil) then
-                Goals[#Goals + 1] = NewBehavior:GetGoalTable()
-                Goals[#Goals].Context = NewBehavior
-                Goals[#Goals].FuncOverrideIcon = NewBehavior.GetIcon
-                Goals[#Goals].FuncOverrideMsgKey = NewBehavior.GetMsgKey
+                Goals[#Goals + 1] = NewBehavior:GetGoalTable();
+                Goals[#Goals].Context = NewBehavior;
+                Goals[#Goals].FuncOverrideIcon = NewBehavior.GetIcon;
+                Goals[#Goals].FuncOverrideMsgKey = NewBehavior.GetMsgKey;
             end
+            -- Füge als Trigger hinzu
             if (NewBehavior.GetTriggerTable ~= nil) then
-                Triggers[#Triggers + 1] = NewBehavior:GetTriggerTable()
+                Triggers[#Triggers + 1] = NewBehavior:GetTriggerTable();
             end
+            -- Füge als Reprisal hinzu
             if (NewBehavior.GetReprisalTable ~= nil) then
-                Reprisal[#Reprisal + 1] = NewBehavior:GetReprisalTable()
+                Reprisal[#Reprisal + 1] = NewBehavior:GetReprisalTable();
             end
+            -- Füge als Reward hinzu
             if (NewBehavior.GetRewardTable ~= nil) then
-                Reward[#Reward + 1] = NewBehavior:GetRewardTable()
+                Reward[#Reward + 1] = NewBehavior:GetRewardTable();
             end
         end
+
+        -- Prüfe Mindestkonfiguration des Quest
         if (#Triggers == 0) or (#Goals == 0) then
-            return
+            return;
         end
+
+        -- Erzeuge den Quest
         if Core:CheckQuestName(_QuestName) then
-            local QuestID = QuestTemplate:New(_QuestName, _QuestGiver, _QuestReceiver,
-                                                    Goals,
-                                                    Triggers,
-                                                    assert( tonumber(_QuestTime) ),
-                                                    Reward,
-                                                    Reprisal,
-                                                    nil, nil,
-                                                    (not _QuestHidden or ( _QuestStartMsg and _QuestStartMsg ~= "") ),
-                                                    (not _QuestHidden or ( _QuestSuccessMsg and _QuestSuccessMsg ~= "") or ( _QuestFailureMsg and _QuestFailureMsg ~= "") ),
-                                                    _QuestDescription, _QuestStartMsg, _QuestSuccessMsg, _QuestFailureMsg)
-            g_QuestNameToID[_QuestName] = QuestID
+            local QuestID = QuestTemplate:New(
+                _QuestName,
+                _QuestGiver or 1,
+                _QuestReceiver or 1,
+                Goals,
+                Triggers,
+                tonumber(_QuestTime) or 0,
+                Reward,
+                Reprisal,
+                nil, nil,
+                (not _QuestHidden or ( _QuestStartMsg and _QuestStartMsg ~= "") ),
+                (not _QuestHidden or ( _QuestSuccessMsg and _QuestSuccessMsg ~= "") or ( _QuestFailureMsg and _QuestFailureMsg ~= "") ),
+                _QuestDescription,
+                _QuestStartMsg,
+                _QuestSuccessMsg,
+                _QuestFailureMsg
+            );
+            g_QuestNameToID[_QuestName] = QuestID;
         else
             dbg("Quest '"..tostring(questName).."': invalid questname! Contains forbidden characters!");
         end
@@ -1282,7 +1300,8 @@ function Core:SetupGobal_HackCreateQuest()
 end
 
 ---
--- FIXME
+-- Implementiert die vordefinierten Texte für Custom Behavior und den Aufruf
+-- der :Interrupt Methode.
 -- @within Internal
 -- @local
 --
@@ -1498,7 +1517,7 @@ function Core:ChangeCustomQuestCaptionText(_Text, _Quest)
             if Quests[i].Identifier == identifier then
                 local text = Quests[i].QuestDescription
                 XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/Text", "]].._Text..[[")
-                break;
+                break
             end
         end
     ]]);
@@ -1508,7 +1527,7 @@ end
 -- Erweitert eine Funktion um eine andere Funktion.
 --
 -- Jede hinzugefügte Funktion wird vor der Originalfunktion ausgeführt. Es
--- ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
+-- ist möglich, eine neue Funktion an einem bestimmten Index einzufügen. Diese
 -- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
 -- im Spiel sollte eine API-Funktion erstellt werden.
 --
@@ -1598,9 +1617,9 @@ end
 function Core:ReplaceFunction(_FunctionName, _Function)
     assert(type(_FunctionName) == "string");
     local ref = _G;
-    
+
     local s, e = _FunctionName:find("%.");
-    while (s ~= nil) do 
+    while (s ~= nil) do
         local SubName = _FunctionName:sub(1, e-1);
         SubName = (tonumber(SubName) ~= nil and tonumber(SubName)) or SubName;
 
@@ -1668,4 +1687,3 @@ function Core:ToBoolean(_Input)
     end
     return false;
 end
-
