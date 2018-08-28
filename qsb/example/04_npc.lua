@@ -15,7 +15,7 @@ Siedler oder andere "lebende" Figuren sein.
 NonPlayerCharacter:New("HorstHackebeil")
                   :SetCallback(BriefingButcher1)
                   :Activate();
-                  
+
 -- Um später auf den NPC zuzugreifen kann man entweder das Objekt in einer
 -- Variable speichern oder die Instanz über den Skriptnamen ermitteln:
 local NPC = NonPlayerCharacter:GetInstance("HorstHackkebeil");
@@ -26,12 +26,12 @@ if NonPlayerCharacter:GetInstance("HorstHackkebeil"):HasTalkedTo() then
 end
 
 -- BriefingButcher1 MUSS eine Funktion im Globalen Skript sein. Diese Funktion
--- kann absolut alles beinhalten. Von einer einfachen Nachricht bis zu einem 
+-- kann absolut alles beinhalten. Von einer einfachen Nachricht bis zu einem
 -- Großangriff von Feinden. Natürlich kann man auch ein Briefing damit starten.
 
 -- Es ist zu beachten, dass das NPC-System seperat vom Questsystem läuft.
 -- :HasTalkedTo() gibt true zurück sobald der NPC angesprochen wurde und somit
 -- bereits in dem Moment in dem das Callback ausgelöst wird.
 
--- Möchte man NPC's mit dem Questsystem verdrahten sollte man die Behavior
+-- Möchte man NPC's mit dem Questsystem verdrahten, sollte man die Behavior
 -- verwenden, auch wenn sie nicht die volle Funktionalität beinhalten.

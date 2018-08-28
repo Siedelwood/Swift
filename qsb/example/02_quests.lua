@@ -14,18 +14,14 @@ Rahmen jedoch sprengen würden.
 Um einen Quest im Skript zu erzeugen wird das entsprechende Bundle benötigt:
 "BundleQuestGeneration" in der loader.lua. "Questerzeugung" im Assistenten.
 
-Quests werden in zwei Schritten erzeugt:
-1. Definition aller Quests, die zusammen gestartet werden sollen.
-2. Erzeugen aller definierten Quests.
+Quests werden mit folgender Funktion erzeugt:
 ]]
-
-API.AddQuest { ... };
-API.StartQuests();
+API.CreateQuest { ... };
 
 -- Jeder Quests hat voreingestellte Werte, die nicht gesetzt werden müssen.
 -- Ein Beispiel für einen minimalen Quest:
 
-API.AddQuest {Name = "Bockwurst"};
+API.CreateQuest {Name = "Bockwurst"};
 
 -- Der Quest erhält automatisch ein Goal Goal_InstantSucces und einen Trigger
 -- Trigger_AlwaysActive. Der Quest ist zudem komplett unsichtbar.
@@ -33,10 +29,10 @@ API.AddQuest {Name = "Bockwurst"};
 -- Natürlich ist so ein Quest zu nichts nütze. Ein sinnvoller Quest könnte
 -- z.B. so aussehen:
 
-API.AddQuest {
+API.CreateQuest {
     Name        = "Bockwurst2",
     Success     = "Ich habe hunger!",
-    
+
     Trigger_MapScriptFunction("Trg_IsHeroHungry")
 }
 
@@ -55,10 +51,10 @@ schreiben. Viel mehr würde man eine Schleife schreiben.
 ]]
 
 for i= 1, 5, 1 do
-    API.AddQuest {
+    API.CreateQuest {
         -- Hier wird die Laufvariable als Teil des Namens übernommen
         Name        = "PlunderRuin" ..i,
-        
+
         -- Hier wird die Laufvariable genutzt um die Ruine zu identifizieren.
         -- Bedenke, es muss Ruinen mit den entsprechenden Namen geben!
         -- ("ruin1", "ruin2", "ruin3", "ruin4", "ruin5")
@@ -71,12 +67,12 @@ end
 
 --[[ Teil 3: Sprachlokalisierung
 
-Wie alles in Symfonia sind auch die Questtexte für Deutsch und Englisch
+Wie alles in Symfonia, sind auch die Questtexte für Deutsch und Englisch
 -- lokalisierbar. Dadurch kannst Du eine Map entweder komplett zweisprachig
 -- machen oder zumindest alle Aufgabentexte übersetzen.
 ]]
 
-API.AddQuest {
+API.CreateQuest {
     Name        = "FindTheSecret",
     Suggestion  = "Hier wurde etwas verborgen!",
     Success     = "Super, ich habe es gefunden!",
