@@ -2817,6 +2817,9 @@ Core:RegisterBehavior(b_Goal_Decide);
 -- Der Spieler kann durch regelmäßiges Begleichen eines Tributes bessere
 -- Diplomatie zu einen Spieler erreichen.
 --
+-- Die Zeit zum Bezahlen des Tributes muss immer einen Monat kürzer sein
+-- als die Tributperiode.
+--
 -- @param _GoldAmount Menge an Gold
 -- @param _Periode    Zahlungsperiode in Monaten
 -- @param _Time       Zeitbegrenzung
@@ -2871,69 +2874,79 @@ function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
-    if not self.Time then
-        if self.PeriodLength - 150 < self.TributTime then
-            Logic.DEBUG_AddNote("b_Goal_TributeDiplomacy: TributTime too long")
-        end
-    end
+    -- Tribut Quest erzeugen, wenn noch nicht erzeugt.
     if not self.QuestStarted then
-        self.QuestStarted = QuestTemplate:New(_Quest.Identifier.."TributeBanditQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
-                                    {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
-                                    {{ Triggers.Time, 0 }},
-                                    self.TributTime,
-                                    nil, nil, nil, nil, true, true,
-                                    nil,
-                                    self.StartMsg,
-                                    self.SuccessMsg,
-                                    self.FailureMsg
-                                    )
-        self.Time = Logic.GetTime()
+        Quest = QuestTemplate:New(
+            _Quest.Identifier.."_TributeBanditQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
+            {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
+            {{ Triggers.Time, 0 }},
+            self.TributTime, nil, nil, nil, nil, true, true, nil,
+            self.StartMsg,
+            self.SuccessMsg,
+            self.FailureMsg
+        );
+        self.QuestStarted = Quest;
+        self.Time = Logic.GetTime();
     end
-    local TributeQuest = Quests[self.QuestStarted]
+
+    -- Status des Tributes prüfen.
+    local TributeQuest = Quests[self.QuestStarted];
     if self.QuestStarted and TributeQuest.State == QuestState.Over and not self.RestartQuest then
         if TributeQuest.Result ~= QuestResult.Success then
-            SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.Enemy)
+            SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.Enemy);
             if not self.RestartAtFailure then
-                return false
+                return false;
             end
         else
-            SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.TradeContact)
+            SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.TradeContact);
         end
 
-        self.RestartQuest = true
+        self.RestartQuest = true;
     end
-    local storeHouse = Logic.GetStoreHouse(_Quest.SendingPlayer)
+
+    -- Status des fordernden Spielers prüfen.
+    local storeHouse = Logic.GetStoreHouse(_Quest.SendingPlayer);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
         if self.QuestStarted and Quests[self.QuestStarted].State == QuestState.Active then
-            Quests[self.QuestStarted]:Interrupt()
+            Quests[self.QuestStarted]:Interrupt();
         end
-        return true
+        return true;
     end
+
+    -- Quest neu starten, falls nötig.
     if self.QuestStarted and self.RestartQuest and ( (Logic.GetTime() - self.Time) >= self.PeriodLength ) then
-        TributeQuest.Objectives[1].Completed = nil
-        TributeQuest.Objectives[1].Data[3] = nil
-        TributeQuest.Objectives[1].Data[4] = nil
-        TributeQuest.Objectives[1].Data[5] = nil
-        TributeQuest.Result = nil
-        TributeQuest.State = QuestState.NotTriggered
-        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..TributeQuest.Index..")")
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { TributeQuest.QueueID })
-        self.Time = Logic.GetTime()
-        self.RestartQuest = nil
+        TributeQuest.Objectives[1].Completed = nil;
+        TributeQuest.Objectives[1].Data[3] = nil;
+        TributeQuest.Objectives[1].Data[4] = nil;
+        TributeQuest.Objectives[1].Data[5] = nil;
+        TributeQuest.Result = nil;
+        TributeQuest.State = QuestState.NotTriggered;
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..TributeQuest.Index..")");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { TributeQuest.QueueID });
+        self.Time = Logic.GetTime();
+        self.RestartQuest = nil;
     end
 end
 
 function b_Goal_TributeDiplomacy:DEBUG(_Quest)
     if self.Amount < 0 then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": Amount is negative")
-        return true
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Amount is negative!");
+        return true;
+    end
+    if self.PeriodLength - 150 < self.TributTime then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": TributTime too long!");
+        return true;
+    end
+    if self.PeriodLength < 2 * 150 or self.PeriodLength > 12 * 150 then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Select a 2 o 12 months periode!");
+        return true;
     end
 end
 
 function b_Goal_TributeDiplomacy:Reset()
-    self.Time = nil
-    self.QuestStarted = nil
-    self.RestartQuest = nil
+    self.Time = nil;
+    self.QuestStarted = nil;
+    self.RestartQuest = nil;
 end
 
 function b_Goal_TributeDiplomacy:Interrupt(_Quest)
@@ -2946,13 +2959,13 @@ end
 
 function b_Goal_TributeDiplomacy:GetCustomData(_index)
     if (_index == 1) then
-        return { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}
+        return {"2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     elseif (_index == 6) then
-        return { "true", "false" }
+        return {"true", "false"};
     end
 end
 
-Core:RegisterBehavior(b_Goal_TributeDiplomacy)
+Core:RegisterBehavior(b_Goal_TributeDiplomacy);
 
 -- -------------------------------------------------------------------------- --
 
@@ -2961,6 +2974,9 @@ Core:RegisterBehavior(b_Goal_TributeDiplomacy)
 --
 -- Zerstört der Spieler den Außenposten, schlägt der Quest fehl und das
 -- Territorium wird an den Vermieter übergeben.
+--
+-- Die Zeit zum Bezahlen des Tributes muss immer einen Monat kürzer sein
+-- als die Tributperiode.
 --
 -- @param _Territory  Name des Territorium
 -- @param _PlayerID   PlayerID des Zahlungsanforderer
@@ -3032,7 +3048,8 @@ function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_TributeClaim:CustomFunction(_Quest)
-    local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID)
+    -- Außenposten heilen, falls nötig.
+    local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if IsExisting(Outpost) and GetHealth(Outpost) < 25 then
         while (Logic.GetEntityHealth(Outpost) > Logic.GetEntityMaxHealth(Outpost) * 0.6) do
             Logic.HurtEntity(Outpost, 1);
@@ -3045,144 +3062,152 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
             self:RestartTributeQuest()
             self.OtherOwner = nil
         end
-        if not self.Time and self.PeriodLength -20 < self.TributTime then
-                Logic.DEBUG_AddNote("b_Goal_TributeClaim: TributTime too long")
-        end
-        if not self.Quest then
-            local QuestID = QuestTemplate:New(_Quest.Identifier.."TributeClaimQuest" , self.PlayerID, _Quest.ReceivingPlayer,
-                                        {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
-                                        {{ Triggers.Time, 0 }},
-                                        self.TributTime,
-                                        nil, nil, nil, nil, true, true,
-                                        nil,
-                                        self.StartMsg,
-                                        self.SuccessMsg,
-                                        self.FailureMsg
-                                        )
-            self.Quest = Quests[QuestID]
-            self.Time = Logic.GetTime()
-        else
-            if self.Quest.State == QuestState.Over then
-                if self.Quest.Result == QuestResult.Failure then
-                    if IsExisting(Outpost) then
-                        Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
-                    end
-                    Logic.SetTerritoryPlayerID(self.TerritoryID, self.PlayerID)
-                    self.Time = Logic.GetTime()
-                    self.Quest.State = false
 
-                    if self.DontPayCancels then
-                        _Quest:Interrupt();
-                    end
-                else
-                    if self.Quest.Result == QuestResult.Success then
-                        if Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
-                            if IsExisting(Outpost) then
-                                Logic.ChangeEntityPlayerID(Outpost, _Quest.ReceivingPlayer);
-                            end
-                            Logic.SetTerritoryPlayerID(self.TerritoryID, _Quest.ReceivingPlayer)
+
+        if not self.Quest then
+            local QuestID = QuestTemplate:New(
+                _Quest.Identifier.."_TributeClaimQuest", self.PlayerID, _Quest.ReceivingPlayer,
+                {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
+                {{ Triggers.Time, 0 }},
+                self.TributTime, nil, nil, nil, nil, true, true, nil,
+                self.StartMsg,
+                self.SuccessMsg,
+                self.FailureMsg
+            );
+            self.Quest = Quests[QuestID];
+            self.Time = Logic.GetTime();
+        end
+
+        -- Quest abgeschlossen
+        if self.Quest.State == QuestState.Over then
+            if self.Quest.Result == QuestResult.Failure then
+                if IsExisting(Outpost) then
+                    Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
+                end
+                Logic.SetTerritoryPlayerID(self.TerritoryID, self.PlayerID);
+                self.Time = Logic.GetTime();
+                self.Quest.State = false;
+
+                if self.DontPayCancels then
+                    _Quest:Interrupt();
+                end
+            else
+                if self.Quest.Result == QuestResult.Success then
+                    if Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
+                        if IsExisting(Outpost) then
+                            Logic.ChangeEntityPlayerID(Outpost, _Quest.ReceivingPlayer);
                         end
-                    end
-                    if Logic.GetTime() >= self.Time + self.PeriodLength then
-                        if self.HowOften and self.HowOften ~= 0 then
-                            self.TributeCounter = self.TributeCounter or 0
-                            self.TributeCounter = self.TributeCounter + 1
-                            if self.TributeCounter >= self.HowOften then
-                                return false
-                            end
-                        end
-                        self:RestartTributeQuest()
+                        Logic.SetTerritoryPlayerID(self.TerritoryID, _Quest.ReceivingPlayer);
                     end
                 end
-
-            elseif self.Quest.State == false then
                 if Logic.GetTime() >= self.Time + self.PeriodLength then
-                    self:RestartTributeQuest()
+                    if self.HowOften and self.HowOften ~= 0 then
+                        self.TributeCounter = (self.TributeCounter or 0) +1;
+                        if self.TributeCounter >= self.HowOften then
+                            return false;
+                        end
+                    end
+                    self:RestartTributeQuest();
                 end
             end
+
+        elseif self.Quest.State == false then
+            if Logic.GetTime() >= self.Time + self.PeriodLength then
+                self:RestartTributeQuest();
+            end
         end
+
+    -- Keiner besitzt das Territorium -> Abbruch
     elseif Logic.GetTerritoryPlayerID(self.TerritoryID) == 0 and self.Quest then
         if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt()
+            self.Quest:Interrupt();
         end
+
+    -- Anderer Besitzer -> Abbruch
     elseif Logic.GetTerritoryPlayerID(self.TerritoryID) ~= self.PlayerID then
         if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt()
+            self.Quest:Interrupt();
         end
         if self.OtherOwnerCancels then
-            _Quest:Interrupt()
+            _Quest:Interrupt();
         end
-        self.OtherOwner = true
+        self.OtherOwner = true;
     end
-    local storeHouse = Logic.GetStoreHouse(self.PlayerID)
+
+    --Fordernder Spieler existiert nicht -> Abbruch
+    local storeHouse = Logic.GetStoreHouse(self.PlayerID);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
         if self.Quest and self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt()
+            self.Quest:Interrupt();
         end
-        return true
+        return true;
     end
 end
 
 function b_Goal_TributeClaim:DEBUG(_Quest)
-
     if self.TerritoryID == 0 then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Unknown Territory")
-        return true
-    elseif not self.Quest and Logic.GetStoreHouse(self.PlayerID) == 0 then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(")
-        return true
-    elseif self.Amount < 0 then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Amount is negative")
-        return true
-    elseif self.PeriodLength < 1 or self.PeriodLength > 600 then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Period Length is wrong")
-        return true
-    elseif self.HowOften < 0 then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": HowOften is negative")
-        return true
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Unknown Territory");
+        return true;
     end
-
+    if not self.Quest and Logic.GetStoreHouse(self.PlayerID) == 0 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(");
+        return true;
+    end
+    if self.Amount < 0 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Amount is negative");
+        return true;
+    end
+    if self.PeriodLength -150 < self.TributTime or self.PeriodLength < 1 or self.PeriodLength > 600 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Period Length is wrong");
+        return true;
+    end
+    if self.HowOften < 0 then
+        dbg(_Quest.Identifier .. ": " .. self.Name .. ": HowOften is negative");
+        return true;
+    end
+    if self.PeriodLength < 2 * 150 or self.PeriodLength > 12 * 150 then
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": Select a 2 o 12 months periode!");
+        return true;
+    end
 end
 
 function b_Goal_TributeClaim:Reset()
-    self.Quest = nil
-    self.Time = nil
-    self.OtherOwner = nil
+    self.Quest = nil;
+    self.Time = nil;
+    self.OtherOwner = nil;
 end
 
 function b_Goal_TributeClaim:Interrupt(_Quest)
     if type(self.Quest) == "table" then
         if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt()
+            self.Quest:Interrupt();
         end
     end
 end
 
 function b_Goal_TributeClaim:RestartTributeQuest()
-
-    self.Time = Logic.GetTime()
-    self.Quest.Objectives[1].Completed = nil
-    self.Quest.Objectives[1].Data[3] = nil
-    self.Quest.Objectives[1].Data[4] = nil
-    self.Quest.Objectives[1].Data[5] = nil
-    self.Quest.Result = nil
-    self.Quest.State = QuestState.NotTriggered
-    Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.Quest.Index..")")
-    Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.Quest.QueueID })
-
+    self.Time = Logic.GetTime();
+    self.Quest.Objectives[1].Completed = nil;
+    self.Quest.Objectives[1].Data[3] = nil;
+    self.Quest.Objectives[1].Data[4] = nil;
+    self.Quest.Objectives[1].Data[5] = nil;
+    self.Quest.Result = nil;
+    self.Quest.State = QuestState.NotTriggered;
+    Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.Quest.Index..")");
+    Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.Quest.QueueID });
 end
 
 function b_Goal_TributeClaim:GetCustomData(_index)
 
     if (_index == 3) then
-        return { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}
+        return {"2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     elseif (_index == 9) or (_index == 10) then
-        return { "false", "true" }
+        return {"false", "true"};
     end
 
 end
 
-Core:RegisterBehavior(b_Goal_TributeClaim)
+Core:RegisterBehavior(b_Goal_TributeClaim);
 
 -- -------------------------------------------------------------------------- --
 -- Reprisal                                                                   --
@@ -8325,4 +8350,3 @@ function BundleClassicBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleClassicBehaviors");
-
