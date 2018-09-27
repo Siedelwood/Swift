@@ -440,10 +440,10 @@ end
 function BundleQuestGeneration.Global:ValidateQuests()
     for k, v in pairs(self.Data.GenerationList) do
         if #v.Goals == 0 then
-            table.insert(self.Data.GenerationList[k].Goals, Goal_InstantSuccess());
+            table.insert(self.Data.GenerationList[k].Goals, Goal_InstantSuccess():GetGoalTable());
         end
         if #v.Triggers == 0 then
-            table.insert(self.Data.GenerationList[k].Triggers, Trigger_Time(0));
+            table.insert(self.Data.GenerationList[k].Triggers, Trigger_Time(0):GetTriggerTable());
         end
 
         if #v.Goals == 0 and #v.Triggers == 0 then
