@@ -988,28 +988,29 @@ function AddOnQuestDebug.Global:OverwriteCreateQuests()
             -- Behavior ermitteln
             local Behaviors = {};
             local Amount = Logic.Quest_GetQuestNumberOfBehaviors(QuestName);
-            for j=0, Amount-1, 1 do
-                local Name = Logic.Quest_GetQuestBehaviorName(QuestName, j);
-                local Template = GetBehaviorTemplateByName(Name);
-                assert(Template ~= nil);
+            if Amount > 0 then
+                for j=0, Amount-1, 1 do
+                    local Name = Logic.Quest_GetQuestBehaviorName(QuestName, j);
+                    local Template = GetBehaviorTemplateByName(Name);
+                    assert(Template ~= nil);
 
-                local Parameters = Logic.Quest_GetQuestBehaviorParameter(QuestName, j);
-                API.DumpTable(Parameters);
-                table.insert(Behaviors, Template:new(unpack(Parameters)));
+                    local Parameters = Logic.Quest_GetQuestBehaviorParameter(QuestName, j);
+                    table.insert(Behaviors, Template:new(unpack(Parameters)));
+                end
+
+                API.AddQuest {
+                    Name        = QuestName,
+                    Sender      = QuestData[1],
+                    Receiver    = QuestData[2],
+                    Time        = QuestData[4],
+                    Description = QuestData[5],
+                    Suggestion  = QuestData[6],
+                    Failure     = QuestData[7],
+                    Success     = QuestData[8],
+
+                    unpack(Behaviors),
+                };
             end
-
-            API.AddQuest {
-                Name        = QuestName,
-                Sender      = QuestData[1],
-                Receiver    = QuestData[2],
-                Time        = QuestData[4],
-                Description = QuestData[5],
-                Suggestion  = QuestData[6],
-                Failure     = QuestData[7],
-                Success     = QuestData[8],
-
-                unpack(Behaviors),
-            }
         end
 
         API.StartQuests();
