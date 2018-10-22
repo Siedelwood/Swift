@@ -2873,7 +2873,7 @@ function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_TributeDiplomacy:GetTributeQuest()
+function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
     if not self.QuestStarted then
         Quest = QuestTemplate:New (
             _Quest.Identifier.."_TributeDiplomacyQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
@@ -2889,7 +2889,7 @@ function b_Goal_TributeDiplomacy:GetTributeQuest()
     end
 end
 
-function b_Goal_TributeDiplomacy:CheckTributeQuest()
+function b_Goal_TributeDiplomacy:CheckTributeQuest(_Quest)
     local TributeQuest = Quests[self.QuestStarted];
     if self.QuestStarted and TributeQuest.State == QuestState.Over and not self.RestartQuest then
         if TributeQuest.Result ~= QuestResult.Success then
@@ -2904,7 +2904,7 @@ function b_Goal_TributeDiplomacy:CheckTributeQuest()
     end
 end
 
-function b_Goal_TributeDiplomacy:CheckTributePlayer()
+function b_Goal_TributeDiplomacy:CheckTributePlayer(_Quest)
     local storeHouse = Logic.GetStoreHouse(_Quest.SendingPlayer);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
         if self.QuestStarted and Quests[self.QuestStarted].State == QuestState.Active then
@@ -2914,7 +2914,7 @@ function b_Goal_TributeDiplomacy:CheckTributePlayer()
     end
 end
 
-function b_Goal_TributeDiplomacy:TributQuestRestarter()
+function b_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
     local TributeQuest = Quests[self.QuestStarted];
     if self.QuestStarted and self.RestartQuest and ((Logic.GetTime() - self.Time) >= self.PeriodLength) then
         TributeQuest.Objectives[1].Completed = nil;
@@ -2932,17 +2932,17 @@ end
 
 function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
     -- Tribut Quest erzeugen
-    self:GetTributeQuest();
+    self:GetTributeQuest(_Quest);
     -- Status des Tributes prüfen.
-    if self:CheckTributeQuest() ~= true then
+    if self:CheckTributeQuest(_Quest) == false then
         return false;
     end
     -- Status des fordernden Spielers prüfen.
-    if self:CheckTributePlayer() == true then
+    if self:CheckTributePlayer(_Quest) == true then
         return true;
     end
     -- Quest neu starten, falls nötig.
-    self:TributQuestRestarter();
+    self:TributQuestRestarter(_Quest);
 end
 
 function b_Goal_TributeDiplomacy:DEBUG(_Quest)
@@ -3058,16 +3058,16 @@ function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
     end
 end
 
-function b_Goal_TributeClaim:CureOutpost()
+function b_Goal_TributeClaim:CureOutpost(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
-    if IsExisting(Outpost) and GetHealth(Outpost) < 25 then
+    if IsExisting(Outpost) and GetHealth(Outpost) < 25 and Logic.IsBuildingBeingKnockedDown(Outpost) == false then
         while (Logic.GetEntityHealth(Outpost) < Logic.GetEntityMaxHealth(Outpost) * 0.6) do
             Logic.HealEntity(Outpost, 1);
         end
     end
 end
 
-function b_Goal_TributeClaim:RestartTributeQuest()
+function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
     self.Time = Logic.GetTime();
     self.Quest.Objectives[1].Completed = nil;
     self.Quest.Objectives[1].Data[3] = nil;
@@ -3079,7 +3079,7 @@ function b_Goal_TributeClaim:RestartTributeQuest()
     Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.Quest.QueueID });
 end
 
-function b_Goal_TributeClaim:CreateTributeQuest()
+function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
     if not self.Quest then
         local QuestID = QuestTemplate:New(
             _Quest.Identifier.."_TributeClaimQuest", self.PlayerID, _Quest.ReceivingPlayer,
@@ -3095,7 +3095,7 @@ function b_Goal_TributeClaim:CreateTributeQuest()
     end
 end
 
-function b_Goal_TributeClaim:OnTributeFailed()
+function b_Goal_TributeClaim:OnTributeFailed(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if IsExisting(Outpost) then
         Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
@@ -3109,7 +3109,7 @@ function b_Goal_TributeClaim:OnTributeFailed()
     end
 end
 
-function b_Goal_TributeClaim:OnTributePaid()
+function b_Goal_TributeClaim:OnTributePaid(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
     if self.Quest.Result == QuestResult.Success then
         if Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
@@ -3132,7 +3132,7 @@ end
 
 function b_Goal_TributeClaim:CustomFunction(_Quest)
     -- Außenposten heilen, falls nötig.
-    self:CureOutpost();
+    self:CureOutpost(_Quest);
 
     if Logic.GetTerritoryPlayerID(self.TerritoryID) == _Quest.ReceivingPlayer
     or Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
@@ -3140,19 +3140,19 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
             self:RestartTributeQuest();
             self.OtherOwner = nil;
         end
-        self:CreateTributeQuest();
+        self:CreateTributeQuest(_Quest);
 
         -- Quest abgeschlossen
         if self.Quest.State == QuestState.Over then
             if self.Quest.Result == QuestResult.Failure then
-                self:OnTributeFailed();
+                self:OnTributeFailed(_Quest);
             else
-                self:OnTributePaid();
+                self:OnTributePaid(_Quest);
             end
 
         elseif self.Quest.State == false then
             if Logic.GetTime() >= self.Time + self.PeriodLength then
-                self:RestartTributeQuest();
+                self:RestartTributeQuest(_Quest);
             end
         end
 
