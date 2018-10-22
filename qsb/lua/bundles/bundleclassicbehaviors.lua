@@ -54,7 +54,7 @@ b_Goal_ActivateObject = {
     },
 }
 
-function b_Goal_ActivateObject:GetGoalTable(_Quest)
+function b_Goal_ActivateObject:GetGoalTable()
     return {Objective.Object, { self.ScriptName } }
 end
 
@@ -106,7 +106,7 @@ b_Goal_Deliver = {
 }
 
 
-function b_Goal_Deliver:GetGoalTable(_Quest)
+function b_Goal_Deliver:GetGoalTable()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture }
 end
@@ -200,7 +200,7 @@ b_Goal_Diplomacy = {
     },
 }
 
-function b_Goal_Diplomacy:GetGoalTable(_Quest)
+function b_Goal_Diplomacy:GetGoalTable()
     return { Objective.Diplomacy, self.PlayerID, DiplomacyStates[self.DiplState] }
 end
 
@@ -580,7 +580,7 @@ b_Goal_DestroyType = {
     },
 }
 
-function b_Goal_DestroyType:GetGoalTable(_Quest)
+function b_Goal_DestroyType:GetGoalTable()
     return {Objective.DestroyEntities, 2, Entities[self.EntityName], self.Amount, self.PlayerID }
 end
 
@@ -769,7 +769,7 @@ b_Goal_EntityDistance = {
     },
 }
 
-function b_Goal_EntityDistance:GetGoalTable(_Quest)
+function b_Goal_EntityDistance:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
@@ -896,7 +896,7 @@ b_Goal_UnitsOnTerritory = {
     },
 }
 
-function b_Goal_UnitsOnTerritory:GetGoalTable(_Quest)
+function b_Goal_UnitsOnTerritory:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
@@ -1015,7 +1015,7 @@ b_Goal_ActivateBuff = {
     },
 }
 
-function b_Goal_ActivateBuff:GetGoalTable(_Quest)
+function b_Goal_ActivateBuff:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
@@ -1162,7 +1162,7 @@ b_Goal_BuildRoad = {
     },
 }
 
-function b_Goal_BuildRoad:GetGoalTable(_Quest)
+function b_Goal_BuildRoad:GetGoalTable()
     return { Objective.BuildRoad, { GetID( self.Entity1 ),
                                      GetID( self.Entity2 ),
                                      false,
@@ -1231,7 +1231,7 @@ b_Goal_BuildWall = {
     },
 }
 
-function b_Goal_BuildWall:GetGoalTable(_Quest)
+function b_Goal_BuildWall:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
@@ -1321,7 +1321,7 @@ b_Goal_Claim = {
     },
 }
 
-function b_Goal_Claim:GetGoalTable(_Quest)
+function b_Goal_Claim:GetGoalTable()
     return { Objective.Claim, 1, self.TerritoryID }
 end
 
@@ -1366,7 +1366,7 @@ b_Goal_ClaimXTerritories = {
     },
 }
 
-function b_Goal_ClaimXTerritories:GetGoalTable(_Quest)
+function b_Goal_ClaimXTerritories:GetGoalTable()
     return { Objective.Claim, 2, self.TerritoriesToClaim }
 end
 
@@ -1410,7 +1410,7 @@ b_Goal_Create = {
     },
 }
 
-function b_Goal_Create:GetGoalTable(_Quest)
+function b_Goal_Create:GetGoalTable()
     return { Objective.Create, assert( Entities[self.EntityName] ), self.Amount, self.TerritoryID  }
 end
 
@@ -1459,7 +1459,7 @@ b_Goal_Produce = {
     },
 }
 
-function b_Goal_Produce:GetGoalTable(_Quest)
+function b_Goal_Produce:GetGoalTable()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Produce, GoodType, self.GoodAmount }
 end
@@ -1506,7 +1506,7 @@ b_Goal_GoodAmount = {
     },
 }
 
-function b_Goal_GoodAmount:GetGoalTable(_Quest)
+function b_Goal_GoodAmount:GetGoalTable()
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName)
     return { Objective.Produce, GoodType, self.GoodAmount, self.bRelSmallerThan }
 end
@@ -1576,7 +1576,7 @@ b_Goal_SatisfyNeed = {
     },
 }
 
-function b_Goal_SatisfyNeed:GetGoalTable(_Quest)
+function b_Goal_SatisfyNeed:GetGoalTable()
     return { Objective.SatisfyNeed, self.PlayerID, assert( Needs[self.Need] ) }
 
 end
@@ -1724,7 +1724,7 @@ b_Goal_SoldierCount = {
     },
 }
 
-function b_Goal_SoldierCount:GetGoalTable(_Quest)
+function b_Goal_SoldierCount:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
@@ -1969,7 +1969,7 @@ b_Goal_Capture = {
     },
 }
 
-function b_Goal_Capture:GetGoalTable(_Quest)
+function b_Goal_Capture:GetGoalTable()
     return { Objective.Capture, 1, { self.ScriptName } }
 end
 
@@ -2032,7 +2032,7 @@ b_Goal_CaptureType = {
     },
 }
 
-function b_Goal_CaptureType:GetGoalTable(_Quest)
+function b_Goal_CaptureType:GetGoalTable()
     return { Objective.Capture, 2, Entities[self.EntityName], self.Amount, self.PlayerID }
 end
 
@@ -2240,7 +2240,7 @@ b_Goal_ResourceAmount = {
     },
 }
 
-function b_Goal_ResourceAmount:GetGoalTable(_Quest)
+function b_Goal_ResourceAmount:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction} }
 end
 
@@ -2313,7 +2313,7 @@ b_Goal_InstantFailure = {
     },
 }
 
-function b_Goal_InstantFailure:GetGoalTable(_Quest)
+function b_Goal_InstantFailure:GetGoalTable()
     return {Objective.DummyFail};
 end
 
@@ -2339,7 +2339,7 @@ b_Goal_InstantSuccess = {
     },
 }
 
-function b_Goal_InstantSuccess:GetGoalTable(_Quest)
+function b_Goal_InstantSuccess:GetGoalTable()
     return {Objective.Dummy};
 end
 
@@ -2402,7 +2402,7 @@ b_Goal_MapScriptFunction = {
     },
 }
 
-function b_Goal_MapScriptFunction:GetGoalTable(_Quest)
+function b_Goal_MapScriptFunction:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
@@ -2569,7 +2569,7 @@ b_Goal_InputDialog  = {
     }
 }
 
-function b_Goal_InputDialog:GetGoalTable(_Quest)
+function b_Goal_InputDialog:GetGoalTable()
     return { Objective.Custom2, {self, self.CustomFunction}}
 end
 
@@ -3580,7 +3580,7 @@ b_Reprisal_Defeat = {
     },
 }
 
-function b_Reprisal_Defeat:GetReprisalTable(_Quest)
+function b_Reprisal_Defeat:GetReprisalTable()
     return {Reprisal.Defeat};
 end
 
@@ -3732,7 +3732,7 @@ b_Reprisal_QuestRestart = {
     },
 }
 
-function b_Reprisal_QuestRestart:GetReprisalTable(_Quest)
+function b_Reprisal_QuestRestart:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
@@ -4054,7 +4054,7 @@ b_Reprisal_MapScriptFunction = {
     },
 }
 
-function b_Reprisal_MapScriptFunction:GetReprisalTable(_Quest)
+function b_Reprisal_MapScriptFunction:GetReprisalTable()
     return {Reprisal.Custom, {self, self.CustomFunction}};
 end
 
@@ -4200,7 +4200,7 @@ b_Reprisal_Technology = {
     },
 }
 
-function b_Reprisal_Technology:GetReprisalTable(_Quest)
+function b_Reprisal_Technology:GetReprisalTable()
     return { Reprisal.Custom, {self, self.CustomFunction} }
 end
 
@@ -5086,7 +5086,7 @@ function b_Reward_CreateEffect:AddParameter(_Index, _Parameter)
 
 end
 
-function b_Reward_CreateEffect:GetRewardTable(_Quest)
+function b_Reward_CreateEffect:GetRewardTable()
     return { Reward.Custom, { self, self.CustomFunction } };
 end
 
@@ -5465,7 +5465,7 @@ b_Reward_Victory = {
     },
 }
 
-function b_Reward_Victory:GetRewardTable(_Quest)
+function b_Reward_Victory:GetRewardTable()
     return {Reward.Victory};
 end
 
@@ -5491,7 +5491,7 @@ b_Reward_Defeat = {
     },
 }
 
-function b_Reward_Defeat:GetRewardTable(_Quest)
+function b_Reward_Defeat:GetRewardTable()
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
@@ -7063,7 +7063,7 @@ b_Trigger_PlayerDiscovered = {
     },
 }
 
-function b_Trigger_PlayerDiscovered:GetTriggerTable(_Quest)
+function b_Trigger_PlayerDiscovered:GetTriggerTable()
     return {Triggers.PlayerDiscovered, self.PlayerID}
 end
 
@@ -7102,7 +7102,7 @@ b_Trigger_OnDiplomacy = {
     },
 }
 
-function b_Trigger_OnDiplomacy:GetTriggerTable(_Quest)
+function b_Trigger_OnDiplomacy:GetTriggerTable()
     return {Triggers.Diplomacy, self.PlayerID, assert( DiplomacyStates[self.DiplState] ) }
 end
 
@@ -7317,7 +7317,7 @@ b_Trigger_OnQuestActive = {
     },
 }
 
-function b_Trigger_OnQuestActive:GetTriggerTable(_Quest)
+function b_Trigger_OnQuestActive:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
@@ -7401,7 +7401,7 @@ b_Trigger_OnQuestFailure = {
     },
 }
 
-function b_Trigger_OnQuestFailure:GetTriggerTable(_Quest)
+function b_Trigger_OnQuestFailure:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
@@ -7479,7 +7479,7 @@ b_Trigger_OnQuestNotTriggered = {
     },
 }
 
-function b_Trigger_OnQuestNotTriggered:GetTriggerTable(_Quest)
+function b_Trigger_OnQuestNotTriggered:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
@@ -7535,7 +7535,7 @@ b_Trigger_OnQuestInterrupted = {
     },
 }
 
-function b_Trigger_OnQuestInterrupted:GetTriggerTable(_Quest)
+function b_Trigger_OnQuestInterrupted:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
@@ -7614,7 +7614,7 @@ b_Trigger_OnQuestOver = {
     },
 }
 
-function b_Trigger_OnQuestOver:GetTriggerTable(_Quest)
+function b_Trigger_OnQuestOver:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
@@ -7690,7 +7690,7 @@ b_Trigger_OnQuestSuccess = {
     },
 }
 
-function b_Trigger_OnQuestSuccess:GetTriggerTable(_Quest)
+function b_Trigger_OnQuestSuccess:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
@@ -7848,7 +7848,7 @@ b_Trigger_AlwaysActive = {
     },
 }
 
-function b_Trigger_AlwaysActive:GetTriggerTable(_Quest)
+function b_Trigger_AlwaysActive:GetTriggerTable()
     return {Triggers.Time, 0 }
 end
 
@@ -7975,7 +7975,7 @@ b_Trigger_Time = {
     },
 }
 
-function b_Trigger_Time:GetTriggerTable(_Quest)
+function b_Trigger_Time:GetTriggerTable()
     return {Triggers.Time, self.Time }
 end
 
@@ -8076,7 +8076,7 @@ b_Trigger_OnAtLeastOneQuestFailure = {
     },
 }
 
-function b_Trigger_OnAtLeastOneQuestFailure:GetTriggerTable(_Quest)
+function b_Trigger_OnAtLeastOneQuestFailure:GetTriggerTable()
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
@@ -8142,7 +8142,7 @@ b_Trigger_OnAtLeastOneQuestSuccess = {
     },
 }
 
-function b_Trigger_OnAtLeastOneQuestSuccess:GetTriggerTable(_Quest)
+function b_Trigger_OnAtLeastOneQuestSuccess:GetTriggerTable()
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
