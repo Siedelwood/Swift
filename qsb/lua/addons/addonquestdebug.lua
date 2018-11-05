@@ -42,12 +42,376 @@ AddOnQuestDebug = {
 -- ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
 -- sogar Funktionen während des Spiels zu überschreiben.
 --
+-- Die Konsole kann über <b>SHIFT + ^</b> geöffnet werden.
+--
 -- <p><b>Alias:</b> ActivateDebugMode</p>
+--
+-- <h3>Cheats</h3>
+-- <table border="1">
+-- <tr>
+-- <td><b>Cheat</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + ^</td>
+-- <td>Konsole öffnen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + C</td>
+-- <td>Zeitanzeige an/aus</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F</td>
+-- <td>Nebel des Krieges abschalten</td>
+-- </tr>
+-- <tr>
+-- <td>STRG + G</td>
+-- <td>GUI ausschalten</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + F10</td>
+-- <td>Selektiertes Gebäude anzünden</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + F11</td>
+-- <td>Selektierte Einheit verwunden</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + F12</td>
+-- <td>Alle Rechte freigeben / wieder sperren</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + 1</td>
+-- <td>FPS-Anzeige</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + (Num) 4</td>
+-- <td>Bogenschützen unter der Maus spawnen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + (Num) 5</td>
+-- <td>Schwertkämpfer unter der Maus spawnen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + (Num) 6</td>
+-- <td>Katapultkarren unter der Maus spawnen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + (Num) 7</td>
+-- <td>Ramme unter der Maus spawnen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + (Num) 8</td>
+-- <td>Belagerungsturm unter der Maus spawnen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + (Num) 9</td>
+-- <td>Katapult unter der Maus spawnen</td>
+-- </tr>
+-- <tr>
+-- <td>(Num) +</td>
+-- <td>Spiel beschleunigen</td>
+-- </tr>
+-- <tr>
+-- <td>(Num) -</td>
+-- <td>Spiel verlangsamen</td>
+-- </tr>
+-- <tr>
+-- <td>(Num) *</td>
+-- <td>Geschwindigkeit zurücksetzen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F1</td>
+-- <td>+ 50 Gold</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F2</td>
+-- <td>+ 10 Holz</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F3</td>
+-- <td>+ 10 Stein</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F4</td>
+-- <td>+ 10 Getreide</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F5</td>
+-- <td>+ 10 Milch</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F6</td>
+-- <td>+ 10 Kräuter</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F7</td>
+-- <td>+ 10 Wolle</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F8</td>
+-- <td>+ 10 auf alle Waren</td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + F1</td>
+-- <td>+ 10 Honig</td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + F2</td>
+-- <td>+ 10 Eisen</td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + F3</td>
+-- <td>+ 10 Fisch</td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + F4</td>
+-- <td>+ 10 Wild</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F1</td>
+-- <td>+ 10 Brot</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F2</td>
+-- <td>+ 10 Seife</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F3</td>
+-- <td>+ 10 Met</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F4</td>
+-- <td>+ 10 Medizin</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F5</td>
+-- <td>+ 10 Käse</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F6</td>
+-- <td>+ 10 Wurst</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F9</td>
+-- <td>Nahrung für selektiertes Gebäude erhöhen</td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + F9</td>
+-- <td>Nahrung für selektiertes Gebäude verringern</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F10</td>
+-- <td>Kleidung für selektiertes Gebäude erhöhen</td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + F10</td>
+-- <td>Kleidung für selektiertes Gebäude verringern</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F11</td>
+-- <td>Hygiene für selektiertes Gebäude erhöhen</td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + F11</td>
+-- <td>Hygiene für selektiertes Gebäude verringern</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + F12</td>
+-- <td>Unterhaltung für selektiertes Gebäude erhöhen</td>
+-- </tr>
+-- <tr>
+-- <td>SHIFT + F12</td>
+-- <td>Unterhaltung für selektiertes Gebäude verringern</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + CTRL + F10</td>
+-- <td>Einnahmen des selektierten Gebäudes erhöhen</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + (Num) 1</td>
+-- <td>Burg selektiert → Gold verringern, Werkstatt selektiert → Ware verringern</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + (Num) 2</td>
+-- <td>Burg selektiert → Gold erhöhen, Werkstatt selektiert → Ware erhöhen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + ALT + 1</td>
+-- <td>Kontrolle über Spieler 1</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + ALT + 2</td>
+-- <td>Kontrolle über Spieler 2</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + ALT + 3</td>
+-- <td>Kontrolle über Spieler 3</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + ALT + 4</td>
+-- <td>Kontrolle über Spieler 4</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + ALT + 5</td>
+-- <td>Kontrolle über Spieler 5</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + ALT + 6</td>
+-- <td>Kontrolle über Spieler 6</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + ALT + 7</td>
+-- <td>Kontrolle über Spieler 7</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + ALT + 8</td>
+-- <td>Kontrolle über Spieler 8</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + (Num) 0</td>
+-- <td>Kamera durchschalten</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + (Num) 1</td>
+-- <td>Kamerasprünge im RTS-Mode</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + V</td>
+-- <td>Territorien anzeigen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + B</td>
+-- <td>Blocking anzeigen</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + N</td>
+-- <td>Gitter verstecken</td>
+-- </tr>
+-- <tr>
+-- <td>CTRL + SHIFT + F9</td>
+-- <td>DEBUG-Ausgabe einschalten</td>
+-- </tr>
+-- <tr>
+-- <td>ALT + F9</td>
+-- <td>Zufälligen Arbeiter verheiraten</td>
+-- </tr>
+-- </table>
+--
+-- <h3>Konsolenbefehle</h3>
+-- <table border=1>
+-- <tr>
+-- <th><b>Befehl</b></th>
+-- <th><b>Parameter</b></th>
+-- <th><b>Beschreibung</b></th>
+-- </tr>
+-- <tr>
+-- <td>clear</td>
+-- <td></td>
+-- <td>Entfernt alle Textnachrichten im Debug-Window.</td>
+-- </tr>
+-- <tr>
+-- <td>diplomacy</td>
+-- <td>PlayerID1, PlayerID2, Diplomacy</td>
+-- <td>Ändert die Doplomatischen Beziehungen zwischen zwei Parteien</td>
+-- </tr>
+-- <tr>
+-- <td>restartmap</td>
+-- <td></td>
+-- <td>Startet die Map sofort neu.</td>
+-- </tr>
+-- <tr>
+-- <td>shareview</td>
+-- <td>PlayerID1, PlayerID2, ActiveFlag</td>
+-- <td>Teilt die Sicht zweier Parteien oder hebt es wieder auf.</td>
+-- </tr>
+-- <tr>
+-- <td>setposition</td>
+-- <td>Entity, Target</td>
+-- <td>Versetzt ein Entity zu einer neuen Position.</td>
+-- </tr>
+-- <tr>
+-- <td>version</td>
+-- <td></td>
+-- <td>Zeigt die Version der QSB an.</td>
+-- </tr>
+-- <tr>
+-- <td>stop</td>
+-- <td>QuestName</td>
+-- <td>Unterbricht den angegebenen Quest.</td>
+-- </tr>
+-- <tr>
+-- <td>start</td>
+-- <td>QuestName</td>
+-- <td>Startet den angegebenen Quest.</td>
+-- </tr>
+-- <tr>
+-- <td>win</td>
+-- <td>QuestName</td>
+-- <td>Schließt den angegebenen Quest erfolgreich ab.</td>
+-- </tr>
+-- <tr>
+-- <td>fail</td>
+-- <td>QuestName</td>
+-- <td>Lässt den angegebenen Quest fehlschlagen</td>
+-- </tr>
+-- <tr>
+-- <td>restart</td>
+-- <td>QuestName</td>
+-- <td>Startet den angegebenen Quest neu.</td>
+-- </tr>
+-- <tr>
+-- <td>printequal</td>
+-- <td>Pattern</td>
+-- <td>Gibt die Namen aller Quests aus, die das Pattern enthalten.</td>
+-- </tr>
+-- <tr>
+-- <td>printactive</td>
+-- <td></td>
+-- <td>Gibt die namen aller aktiven Quests aus.</td>
+-- </tr>
+-- <tr>
+-- <td>printdetail</td>
+-- <td>QuestName</td>
+-- <td>Zeigt genauere Informationen zum angegebenen Quest an.</td>
+-- </tr>
+-- <tr>
+-- <td>gload</td>
+-- <td>Path</td>
+-- <td>Läd ein Skript zur Laufzeit ins globale Skript.</td>
+-- </tr>
+-- <tr>
+-- <td>lload</td>
+-- <td>Path</td>
+-- <td>Läd ein Skript zur Laufzeit ins lokale Skript.</td>
+-- </tr>
+-- <tr>
+-- <td>gexec</td>
+-- <td>Command</td>
+-- <td>Führt die Eingabe als Lua-Befahl im globalen Skript aus.</td>
+-- </tr>
+-- <tr>
+-- <td>lexec</td>
+-- <td>Command</td>
+-- <td>Führt die Eingabe als Lua-Befahl im lokalen Skript aus.</td>
+-- </tr>
+-- <tr>
+-- <td>collectgarbage</td>
+-- <td></td>
+-- <td>Löst die Garbage Collection von Lua aus.</td>
+-- </tr>
+-- <tr>
+-- <td>dumpmemory</td>
+-- <td></td>
+-- <td>Zeigt die Größe des Speichers an, der von Lua belegt wird.</td>
+-- </tr>
+-- </table>
 --
 -- @param _CheckAtStart [boolean] Prüfe Quests zur Erzeugunszeit
 -- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
 -- @param _TraceQuests [boolean] Aktiviert Questverfolgung
 -- @param _DevelopingMode [boolean] Aktiviert Cheats und Konsole
+-- @see Reward_DEBUG
 -- @within Anwenderfunktionen
 --
 function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
@@ -76,6 +440,7 @@ ActivateDebugMode = API.ActivateDebugMode;
 -- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
 -- @param _TraceQuests [boolean] Aktiviert Questverfolgung
 -- @param _DevelopingMode [boolean] Aktiviert Cheats und Konsole
+-- @see API.ActivateDebugMode
 --
 -- @within Reward
 --
@@ -623,28 +988,29 @@ function AddOnQuestDebug.Global:OverwriteCreateQuests()
             -- Behavior ermitteln
             local Behaviors = {};
             local Amount = Logic.Quest_GetQuestNumberOfBehaviors(QuestName);
-            for j=0, Amount-1, 1 do
-                local Name = Logic.Quest_GetQuestBehaviorName(QuestName, j);
-                local Template = GetBehaviorTemplateByName(Name);
-                assert(Template ~= nil);
+            if Amount > 0 then
+                for j=0, Amount-1, 1 do
+                    local Name = Logic.Quest_GetQuestBehaviorName(QuestName, j);
+                    local Template = GetBehaviorTemplateByName(Name);
+                    assert(Template ~= nil);
 
-                local Parameters = Logic.Quest_GetQuestBehaviorParameter(QuestName, j);
-                API.DumpTable(Parameters);
-                table.insert(Behaviors, Template:new(unpack(Parameters)));
+                    local Parameters = Logic.Quest_GetQuestBehaviorParameter(QuestName, j);
+                    table.insert(Behaviors, Template:new(unpack(Parameters)));
+                end
+
+                API.AddQuest {
+                    Name        = QuestName,
+                    Sender      = QuestData[1],
+                    Receiver    = QuestData[2],
+                    Time        = QuestData[4],
+                    Description = QuestData[5],
+                    Suggestion  = QuestData[6],
+                    Failure     = QuestData[7],
+                    Success     = QuestData[8],
+
+                    unpack(Behaviors),
+                };
             end
-
-            API.AddQuest {
-                Name        = QuestName,
-                Sender      = QuestData[1],
-                Receiver    = QuestData[2],
-                Time        = QuestData[4],
-                Description = QuestData[5],
-                Suggestion  = QuestData[6],
-                Failure     = QuestData[7],
-                Success     = QuestData[8],
-
-                unpack(Behaviors),
-            }
         end
 
         API.StartQuests();
@@ -803,4 +1169,3 @@ function AddOnQuestDebug.Local:ActivateDevelopingMode()
 end
 
 Core:RegisterBundle("AddOnQuestDebug");
-

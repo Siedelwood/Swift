@@ -87,11 +87,11 @@ CreateIOIronMine("mine2", Goods.G_Wood, 20, Goods.G_Gold, 300, true);
 -- Angaben mehr, zusätzliche Dinge tun kann.
 
 CreateIOMine(
-    "mine2", 
-    Entities.R_IronMine, 
-    {Goods.G_Wood, 20, Goods.G_Gold}, 
-    false, 
-    OnMineConstructed, 
+    "mine2",
+    Entities.R_IronMine,
+    {Goods.G_Wood, 20, Goods.G_Gold},
+    false,
+    OnMineConstructed,
     OnMineDepleted
 );
 
@@ -101,3 +101,20 @@ CreateIOMine(
 -- Objektes.
 -- OnMineDepleted ist eine optionale Funktion die aufgerufen wird, wenn die
 -- Mine erschöpft ist. Sie erhält alle Daten des interaktiven Objektes.
+
+--[[ Teil 4: Baustellen
+
+Will man den Spieler ein Gebäude genau da bauen lassen, wo man es will, sind
+dafür einige Dinge notwendig. Dies kann erheblich vereinfacht werden, wenn
+die interaktiven Baustellen genutzt werden.
+Eine solche Baustelle ermöglicht es dem Spieler sogar, auf anderen Territorien
+ein Gebäude in Auftrag zu geben.
+]]
+
+-- Erzeugt eine Baustelle ohne besondere Einstellungen
+API.CreateIOBuildingSite("haus", 1, Entities.B_Bakery);
+-- Baustelle mit Kosten und Aktivierungsdistanz
+API.CreateIOBuildingSite("haus", 1, Entities.B_Bakery, {Goods.G_Wood, 4}, 1000);
+
+-- Erzeugt eine Baustelle für ein Trebuchet
+API.CreateTrebuchetConstructionSite("trebuchet1", 500, 25);
