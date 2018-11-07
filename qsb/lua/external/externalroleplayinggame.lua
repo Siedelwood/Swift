@@ -61,7 +61,7 @@ ExternalRolePlayingGame = {
                 de = "Kaft bestimmt, wie viel Schaden ein Held im Kampf gegen"..
                      " andere Einheiten und Helden verursacht.",
                 en = "Strength indicates how much damage a hero can inflict"..
-                     " to enemie units and heroes.",
+                     " to hostile units and heroes.",
             },
         },
         Magic = {
@@ -82,7 +82,7 @@ ExternalRolePlayingGame = {
                 en = "Endurance",
             },
             Description = {
-                de = "Widerstandskraft bestimmt, wie gut ein Held erlittenen"..
+                de = "Widerstandskraft bestimmt, wie gut ein Held"..
                      " durch Feinde erlittenen Schaden aushalten kann.",
                 en = "Endurance indicates how much damage a hero can endure"..
                      " while fighting against enemies.",
@@ -893,8 +893,8 @@ function ExternalRolePlayingGame.Local:OpenCraftingDialog(_HeroName, _SiteName)
     self.Data.CurrentCraftingStation = _SiteName;
     
     API.DialogSelectBox (
-        ExternalRolePlayingGame.Texts.ChangeArmor.Caption,
-        ExternalRolePlayingGame.Texts.ChangeArmor.Description,
+        ExternalRolePlayingGame.Texts.CraftingDialog.Caption,
+        ExternalRolePlayingGame.Texts.CraftingDialog.Description,
         self.OpenCraftingWindow,
         self:CreateItemSelection (
             ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
@@ -1214,7 +1214,7 @@ function ExternalRolePlayingGame.Local:DisplayCharacter(_Identifier)
 end
 
 ---
--- Zeigt die Inhalte des Inventars eines Helden an.
+-- Zeigt erworbene Tugenden oder Laster des Helden an.
 --
 -- @param _Identifier     Name des Inventars
 -- @param _FilterEquipped Equipment anzeigen
