@@ -941,7 +941,7 @@ function ExternalRolePlayingGame.Local.OpenCraftingWindow(_Idx)
 
     local function CraftCallback(_Data)
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
-        API.Bridge("ExternalRolePlayingGame.Global:CraftItem('" .._Data.ScriptName.. "', '" ..Station.. "', '" ..Data.Receip.. "')");
+        API.Bridge("ExternalRolePlayingGame.Global:CraftItem('" .._Data.ScriptName.. "', '" ..Station.. "', '" .._Data.Receip.. "')");
     end
     local Text = ExternalRolePlayingGame.Texts.CraftingWindow;
     local Window = TextWindow:New();
@@ -1127,15 +1127,16 @@ function ExternalRolePlayingGame.Local:CreateItemSelection(_Identifier, _Categor
     local List = {};
 
     self.Data.CurrentItemSelection = {};
-
-    local Inventory = ExternalRolePlayingGame.HeroList[_Identifier].Inventory;
-    if Inventory then 
-        for k, v in pairs(ExternalRolePlayingGame.InventoryList[Inventory].Items) do 
-            if v and v > 0 then 
-                if self:IsItemInCategory(k, _Category) then 
-                    local Caption = ExternalRolePlayingGame.ItemList[k].Caption;
-                    table.insert(self.Data.CurrentItemSelection, k);
-                    table.insert(List, Caption);
+    if ExternalRolePlayingGame.HeroList[_Identifier] then
+        local Inventory = ExternalRolePlayingGame.HeroList[_Identifier].Inventory;
+        if Inventory then 
+            for k, v in pairs(ExternalRolePlayingGame.InventoryList[Inventory].Items) do 
+                if v and v > 0 then 
+                    if self:IsItemInCategory(k, _Category) then 
+                        local Caption = ExternalRolePlayingGame.ItemList[k].Caption;
+                        table.insert(self.Data.CurrentItemSelection, k);
+                        table.insert(List, Caption);
+                    end
                 end
             end
         end

@@ -69,6 +69,13 @@ function TestArmory()
     Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
     Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
 
+    Weapon1.OnEquipped = function(self, _Hero)
+        API.Note("equipped: " ..self.Caption)
+    end
+    Weapon1.OnUnequipped = function(self, _Hero)
+        API.Note("unequipped: " ..self.Caption)
+    end
+
     local Weapon2 = ExternalRolePlayingGame.Item:New("Weapon2");
     Weapon2:SetCaption("Weapon 2");
     Weapon2:SetDescription("This is weapon 2!");
@@ -104,7 +111,7 @@ function TestArmoryObject()
     CreateObject {
         Name = "armory",
         Callback = function(_Object)
-            local KnightID = API.GetKnightsNearby(_Object, 1);
+            local KnightID = API.GetKnightsNearby(_Object.Name, 1);
             local KnightName = Logic.GetEntityName(KnightID);
             ExternalRolePlayingGame.Global:OpenArmoryDialog(KnightName, "armory");
             TestArmoryObject();
