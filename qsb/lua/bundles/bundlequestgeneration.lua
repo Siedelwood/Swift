@@ -155,9 +155,9 @@ QuestMessage = API.CreateQuestMessage;
 --
 -- @usage
 -- API.CreateQuestDialog{
---     {"Hallo, wie geht es dir?", 1, 4},
+--     {"Hallo, wie geht es dir?", 4, 1},
 --     {"Mir geht es gut, wie immer!", 1, 1},
---     {"Das ist doch schön.", 1, 4},
+--     {"Das ist doch schön.", 4, 1},
 -- };
 --
 function API.CreateQuestDialog(_Messages)
@@ -440,10 +440,10 @@ end
 function BundleQuestGeneration.Global:ValidateQuests()
     for k, v in pairs(self.Data.GenerationList) do
         if #v.Goals == 0 then
-            table.insert(self.Data.GenerationList[k].Goals, Goal_InstantSuccess());
+            table.insert(self.Data.GenerationList[k].Goals, Goal_InstantSuccess():GetGoalTable());
         end
         if #v.Triggers == 0 then
-            table.insert(self.Data.GenerationList[k].Triggers, Trigger_Time(0));
+            table.insert(self.Data.GenerationList[k].Triggers, Trigger_Time(0):GetTriggerTable());
         end
 
         if #v.Goals == 0 and #v.Triggers == 0 then
@@ -538,4 +538,3 @@ function BundleQuestGeneration.Local:Install()
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
-

@@ -55,7 +55,7 @@ b_Goal_MoveToPosition = {
     },
 }
 
-function b_Goal_MoveToPosition:GetGoalTable(_Quest)
+function b_Goal_MoveToPosition:GetGoalTable()
     return {Objective.Distance, self.Entity, self.Target, self.Distance, self.Marker}
 end
 
@@ -105,7 +105,7 @@ b_Goal_WinQuest = {
     },
 }
 
-function b_Goal_WinQuest:GetGoalTable(_Quest)
+function b_Goal_WinQuest:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
@@ -171,7 +171,7 @@ b_Goal_StealGold = {
     },
 }
 
-function b_Goal_StealGold:GetGoalTable(_Quest)
+function b_Goal_StealGold:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
@@ -289,7 +289,7 @@ b_Goal_StealBuilding = {
     },
 }
 
-function b_Goal_StealBuilding:GetGoalTable(_Quest)
+function b_Goal_StealBuilding:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
@@ -430,7 +430,7 @@ b_Goal_SpyBuilding = {
     },
 }
 
-function b_Goal_SpyBuilding:GetGoalTable(_Quest)
+function b_Goal_SpyBuilding:GetGoalTable()
     return {Objective.Custom2, {self, self.CustomFunction}};
 end
 
@@ -626,7 +626,7 @@ b_Reprisal_SetPosition = {
     },
 }
 
-function b_Reprisal_SetPosition:GetReprisalTable(_Quest)
+function b_Reprisal_SetPosition:GetReprisalTable()
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
@@ -716,7 +716,7 @@ b_Reprisal_ChangePlayer = {
     },
 }
 
-function b_Reprisal_ChangePlayer:GetReprisalTable(_Quest)
+function b_Reprisal_ChangePlayer:GetReprisalTable()
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
@@ -782,7 +782,7 @@ b_Reprisal_SetVisible = {
     },
 }
 
-function b_Reprisal_SetVisible:GetReprisalTable(_Quest)
+function b_Reprisal_SetVisible:GetReprisalTable()
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
@@ -875,7 +875,7 @@ b_Reprisal_SetVulnerability = {
     },
 }
 
-function b_Reprisal_SetVulnerability:GetReprisalTable(_Quest)
+function b_Reprisal_SetVulnerability:GetReprisalTable()
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
@@ -979,7 +979,7 @@ b_Reprisal_SetModel = {
     },
 }
 
-function b_Reprisal_SetModel:GetReprisalTable(_Quest)
+function b_Reprisal_SetModel:GetReprisalTable()
     return { Reprisal.Custom, { self, self.CustomFunction } }
 end
 
@@ -1123,7 +1123,7 @@ b_Reward_MoveToPosition = {
     },
 }
 
-function b_Reward_MoveToPosition:GetRewardTable(_Quest)
+function b_Reward_MoveToPosition:GetRewardTable()
     return { Reward.Custom, {self, self.CustomFunction} }
 end
 
@@ -1308,7 +1308,7 @@ b_Reward_AI_SetEntityControlled = {
     },
 }
 
-function b_Reward_AI_SetEntityControlled:GetRewardTable(_Quest)
+function b_Reward_AI_SetEntityControlled:GetRewardTable()
     return { Reward.Custom, { self, self.CustomFunction } }
 end
 
@@ -1660,7 +1660,7 @@ b_Trigger_OnExactOneQuestIsWon = {
     },
 }
 
-function b_Trigger_OnExactOneQuestIsWon:GetTriggerTable(_Quest)
+function b_Trigger_OnExactOneQuestIsWon:GetTriggerTable()
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
@@ -1729,7 +1729,7 @@ b_Trigger_OnExactOneQuestIsLost = {
     },
 }
 
-function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable(_Quest)
+function b_Trigger_OnExactOneQuestIsLost:GetTriggerTable()
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
@@ -1965,4 +1965,3 @@ function BundleSymfoniaBehaviors.Local:Install()
 end
 
 Core:RegisterBundle("BundleSymfoniaBehaviors");
-
