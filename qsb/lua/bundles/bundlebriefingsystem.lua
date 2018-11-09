@@ -1694,6 +1694,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if BriefingSystem.GlobalSystem.activate3dOnScreenDisplay ~= true then
             XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
         end
+
+        -- Normal briefing widgets
         XGUIEng.ShowWidget("/InGame/Root/Normal", 0);
         XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", BriefingSystem.GlobalSystem.disableSkipping and 0 or 1);
@@ -1717,7 +1719,17 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 
+        -- Portrait wirget
+        XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
+        XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
+        XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 1);
+        XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);
+        XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/KnightBG", 1);
+        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 4000, 400, 600);
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
+
         local page = BriefingSystem.currBriefing[1];
+        BriefingSystem.SetBriefingPagePortrait(page)
         BriefingSystem.SetBriefingPageOrSplashscreen(page);
         BriefingSystem.SetBriefingPageTextPosition(page);
 
@@ -1799,6 +1811,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.PopPage();
         XGUIEng.PopPage();
         XGUIEng.PopPage();
+        XGUIEng.PopPage();
         XGUIEng.ShowWidget("/InGame/ThroneRoom", 0);
         XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
         XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 0);
@@ -1832,6 +1845,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             barStyle = BriefingSystem.currBriefing.barStyle;
         end
 
+        BriefingSystem.SetBriefingPagePortrait(page)
         BriefingSystem.SetBriefingPageOrSplashscreen(page, barStyle);
         BriefingSystem.SetBriefingPageTextPosition(page);
 
@@ -3017,6 +3031,23 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         end
 
         XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
+    end
+
+    ---
+    -- Blendet das Character Sprite ein, wenn angegeben.
+    --
+    -- @param _page  Aktuelle Briefing-Seite
+    -- @within BriefingSystem
+    -- @local
+    --
+    function BriefingSystem.SetBriefingPagePortrait(_page)
+        if _page.portrait then
+            XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 255);
+            XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, _page.portrait);
+            XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0, 0, 1, 1);
+        else
+            XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0);
+        end
     end
 
     ---
