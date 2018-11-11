@@ -115,12 +115,12 @@ ExternalRolePlayingGame = {
         },
         ChangeWeapon = {
             Caption = {
-                de = "Waffe ändern",
-                en = "Change weapon",
+                de = "Zweitwaffe ändern",
+                en = "Change sidearm",
             },
             Description = {
-                de = "Wähle die Waffe aus, die der Held benutzen soll.",
-                en = "Choose the weapon your hero shall use from now on.",
+                de = "Wähle die Zweitwaffe aus, die der Held benutzen soll.",
+                en = "Choose the sidearm your hero shall use from now on.",
             },
         },
         ChangeJewellery = {
