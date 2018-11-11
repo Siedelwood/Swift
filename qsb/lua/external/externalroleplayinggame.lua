@@ -61,7 +61,7 @@ ExternalRolePlayingGame = {
                 de = "Kaft bestimmt, wie viel Schaden ein Held im Kampf gegen"..
                      " andere Einheiten und Helden verursacht.",
                 en = "Strength indicates how much damage a hero can inflict"..
-                     " to hostile units and heroes.",
+                     " to enemie units and heroes.",
             },
         },
         Magic = {
@@ -82,7 +82,7 @@ ExternalRolePlayingGame = {
                 en = "Endurance",
             },
             Description = {
-                de = "Widerstandskraft bestimmt, wie gut ein Held"..
+                de = "Widerstandskraft bestimmt, wie gut ein Held erlittenen"..
                      " durch Feinde erlittenen Schaden aushalten kann.",
                 en = "Endurance indicates how much damage a hero can endure"..
                      " while fighting against enemies.",
@@ -115,12 +115,12 @@ ExternalRolePlayingGame = {
         },
         ChangeWeapon = {
             Caption = {
-                de = "Waffe ändern",
-                en = "Change weapon",
+                de = "Zweitwaffe ändern",
+                en = "Change sidearm",
             },
             Description = {
-                de = "Wähle die Waffe aus, die der Held benutzen soll.",
-                en = "Choose the weapon your hero shall use from now on.",
+                de = "Wähle die Zweitwaffe aus, die der Held benutzen soll.",
+                en = "Choose the sidearm your hero shall use from now on.",
             },
         },
         ChangeJewellery = {
@@ -893,8 +893,8 @@ function ExternalRolePlayingGame.Local:OpenCraftingDialog(_HeroName, _SiteName)
     self.Data.CurrentCraftingStation = _SiteName;
     
     API.DialogSelectBox (
-        ExternalRolePlayingGame.Texts.CraftingDialog.Caption,
-        ExternalRolePlayingGame.Texts.CraftingDialog.Description,
+        ExternalRolePlayingGame.Texts.ChangeArmor.Caption,
+        ExternalRolePlayingGame.Texts.ChangeArmor.Description,
         self.OpenCraftingWindow,
         self:CreateItemSelection (
             ExternalRolePlayingGame.Local.Data.CurrentItemSelectionHero, 
@@ -941,7 +941,7 @@ function ExternalRolePlayingGame.Local.OpenCraftingWindow(_Idx)
 
     local function CraftCallback(_Data)
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
-        API.Bridge("ExternalRolePlayingGame.Global:CraftItem('" .._Data.ScriptName.. "', '" ..Station.. "', '" .._Data.Receip.. "')");
+        API.Bridge("ExternalRolePlayingGame.Global:CraftItem('" .._Data.ScriptName.. "', '" ..Station.. "', '" ..Data.Receip.. "')");
     end
     local Text = ExternalRolePlayingGame.Texts.CraftingWindow;
     local Window = TextWindow:New();
@@ -1127,16 +1127,15 @@ function ExternalRolePlayingGame.Local:CreateItemSelection(_Identifier, _Categor
     local List = {};
 
     self.Data.CurrentItemSelection = {};
-    if ExternalRolePlayingGame.HeroList[_Identifier] then
-        local Inventory = ExternalRolePlayingGame.HeroList[_Identifier].Inventory;
-        if Inventory then 
-            for k, v in pairs(ExternalRolePlayingGame.InventoryList[Inventory].Items) do 
-                if v and v > 0 then 
-                    if self:IsItemInCategory(k, _Category) then 
-                        local Caption = ExternalRolePlayingGame.ItemList[k].Caption;
-                        table.insert(self.Data.CurrentItemSelection, k);
-                        table.insert(List, Caption);
-                    end
+
+    local Inventory = ExternalRolePlayingGame.HeroList[_Identifier].Inventory;
+    if Inventory then 
+        for k, v in pairs(ExternalRolePlayingGame.InventoryList[Inventory].Items) do 
+            if v and v > 0 then 
+                if self:IsItemInCategory(k, _Category) then 
+                    local Caption = ExternalRolePlayingGame.ItemList[k].Caption;
+                    table.insert(self.Data.CurrentItemSelection, k);
+                    table.insert(List, Caption);
                 end
             end
         end
@@ -1215,7 +1214,7 @@ function ExternalRolePlayingGame.Local:DisplayCharacter(_Identifier)
 end
 
 ---
--- Zeigt erworbene Tugenden oder Laster des Helden an.
+-- Zeigt die Inhalte des Inventars eines Helden an.
 --
 -- @param _Identifier     Name des Inventars
 -- @param _FilterEquipped Equipment anzeigen
