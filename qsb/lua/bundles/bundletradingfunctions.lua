@@ -281,6 +281,31 @@ function API.TravelingSalesmanDeactivate(_PlayerID)
 end
 DeactivateTravelingSalesman = API.TravelingSalesmanDeactivate;
 
+---
+-- Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
+-- Hafen überschrieben werden.
+--
+-- Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
+-- im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
+-- ein Schiff angelegt hat, sonst "Bekannt".
+--
+-- <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
+--
+-- <b>Alias</b>: TravelingSalesmanDiplomacyOverride
+--
+-- @param _PlayerID [number] Spieler-ID des Händlers
+-- @param _Flag [boolean] Diplomatie überschreiben
+-- @within Anwenderfunktionen
+--
+function API.TravelingSalesmanDiplomacyOverride(_PlayerID, _Flag)
+    if GUI then
+        API.Bridge("API.TravelingSalesmanDiplomacyOverride(" .._PlayerID.. ", " ..tostring(_Flag).. ")");
+        return;
+    end
+    return BundleTradingFunctions.Global:TravelingSalesman_AlterDiplomacyFlag(_PlayerID, _Flag);
+end
+TravelingSalesmanDiplomacyOverride = API.TravelingSalesmanDiplomacyOverride;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -734,6 +759,7 @@ function BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offe
         QSB.TravelingSalesman.Harbors[_PlayerID].Status = 0;
         QSB.TravelingSalesman.Harbors[_PlayerID].Offer = _Offers;
         QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = 0;
+        QSB.TravelingSalesman.Harbors[_PlayerID].AlterDiplomacy = true;
     end
     math.randomseed(Logic.GetTimeMs());
 
@@ -755,6 +781,27 @@ function BundleTradingFunctions.Global:TravelingSalesman_Disband(_PlayerID)
     QSB.TravelingSalesman.Harbors[_PlayerID] = nil;
     Logic.RemoveAllOffers(Logic.GetStoreHouse(_PlayerID));
     DestroyEntity("TravelingSalesmanShip_Player" .._PlayerID);
+end
+
+---
+-- Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
+-- Hafen überschrieben werden.
+--
+-- Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
+-- im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
+-- ein Schiff angelegt hat, sonst "Bekannt".
+--
+-- <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
+--
+-- @param _PlayerID [number] Spieler-ID des Händlers
+-- @param _Flag [boolean] Diplomatie überschreiben
+-- @within Internal
+-- @local
+--
+function BundleTradingFunctions.Global:TravelingSalesman_AlterDiplomacyFlag(_PlayerID, _Flag)
+    assert(type(_PlayerID) == "number");
+    assert(QSB.TravelingSalesman.Harbors[_PlayerID]);
+    QSB.TravelingSalesman.Harbors[_PlayerID].AlterDiplomacy = _Flag == true;
 end
 
 ---
@@ -803,7 +850,9 @@ function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(_PlayerID)
         end
     end
 
-    SetDiplomacyState(self:TravelingSalesman_GetHumanPlayer(), _PlayerID, DiplomacyStates.TradeContact);
+    if QSB.TravelingSalesman.Harbors[_PlayerID].AlterDiplomacy then
+        SetDiplomacyState(self:TravelingSalesman_GetHumanPlayer(), _PlayerID, DiplomacyStates.TradeContact);
+    end
     ActivateMerchantPermanentlyForPlayer(Logic.GetStoreHouse(_PlayerID), self:TravelingSalesman_GetHumanPlayer());
 
     local doIt = (IsBriefingActive and not IsBriefingActive()) or true
@@ -863,7 +912,9 @@ function BundleTradingFunctions.Global.TravelingSalesman_Control()
                     end
                 end
                 if stop then
-                    SetDiplomacyState(BundleTradingFunctions.Global:TravelingSalesman_GetHumanPlayer(),k,DiplomacyStates.EstablishedContact);
+                    if QSB.TravelingSalesman.Harbors[k].AlterDiplomacy then
+                        SetDiplomacyState(BundleTradingFunctions.Global:TravelingSalesman_GetHumanPlayer(),k,DiplomacyStates.EstablishedContact);
+                    end
                     Path:new(GetID("TravelingSalesmanShip_Player"..k),v.Reversed, nil, nil, nil, nil, true, nil, nil, 300);
                     Logic.RemoveAllOffers(Logic.GetStoreHouse(k));
                     v.Status = 3;
