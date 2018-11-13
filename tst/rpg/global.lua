@@ -54,15 +54,12 @@ function Mission_FirstMapAction()
 end
 
 ---
+-- Test Case: Waffenkammer
+--
 -- Der Held kann in der Waffenkammer die angelegte Waffe austauschen.
 --
 function TestArmory()
-    CreateObject {
-        Name = "armory",
-        Callback = function()
-            ExternalRolePlayingGame.Global:OpenArmoryDialog("meredith", "armory");
-        end
-    }
+    TestArmoryObject();
 
     -- Testwaffen --
     
@@ -71,6 +68,13 @@ function TestArmory()
     Weapon1:SetDescription("This is weapon 1!");
     Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Equipment);
     Weapon1:AddCategory(ExternalRolePlayingGame.ItemCategories.Weapon);
+
+    Weapon1.OnEquipped = function(self, _Hero)
+        API.Note("equipped: " ..self.Caption)
+    end
+    Weapon1.OnUnequipped = function(self, _Hero)
+        API.Note("unequipped: " ..self.Caption)
+    end
 
     local Weapon2 = ExternalRolePlayingGame.Item:New("Weapon2");
     Weapon2:SetCaption("Weapon 2");
@@ -103,8 +107,21 @@ function TestArmory()
     end
     Meredith.Ability = Dummy1;
 end
+function TestArmoryObject()
+    CreateObject {
+        Name = "armory",
+        Callback = function(_Object)
+            local KnightID = API.GetKnightsNearby(_Object.Name, 1);
+            local KnightName = Logic.GetEntityName(KnightID);
+            ExternalRolePlayingGame.Global:OpenArmoryDialog(KnightName, "armory");
+            TestArmoryObject();
+        end
+    }
+end
 
 ---
+-- Test Case: Inventar und Ausrüstung
+--
 -- Der Held bekommt mehrere verschiedene Gegenstände ins Inventar gelegt.
 -- Einige davon werden angelegt und ihre Menge im Inventar reduziert. Über
 -- E kann zwischen Fähigkeit und Gürtelgegenstand gewechselt werden.
