@@ -631,11 +631,15 @@ end
 --
 -- Für die Zerlegung der Kommandizeile wird der Tokenizer benutzt.
 --
+-- Für die Nutzung im LuaDebugger des Spiels, müssen Kommandos mit
+-- eval() aufgerufen werden.
+--
 -- @within Internal
 -- @local
 -- @see AddOnQuestDebug.Global:Tokenize
 --
 function AddOnQuestDebug.Global:Parser(_Input)
+    local Results = {};
     local Commands = self:Tokenize(_Input);
     for k, v in pairs(Commands) do
         local Action = string.lower(v[1]);
@@ -648,10 +652,18 @@ function AddOnQuestDebug.Global:Parser(_Input)
                         v[j] = Number;
                     end
                 end
-                SelectedCommand[2](v, SelectedCommand[3]);
+
+                local CommandResult = SelectedCommand[2](v, SelectedCommand[3]);
+                if CommandResult then
+                    table.insert(Results, CommandResult);
+                end
             end
         end
     end
+    return Results;
+end
+function eval(_Input)
+    return AddOnQuestDebug.Global:Parser(_Input);
 end
 
 ---
@@ -769,7 +781,7 @@ end
 function AddOnQuestDebug.Global:CountLuaLoad()
     Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:CountLuaLoad()");
     local LuaLoad = collectgarbage("count");
-    API.StaticNote("Global Lua Size: " ..LuaLoad)
+    API.StaticNote("Global Lua Size: " ..LuaLoad);
 end
 
 ---
@@ -787,8 +799,7 @@ function AddOnQuestDebug.Global:PrintQuests(_Arguments, _Flags)
     end
 
     if _Flags == 3 then
-        self:PrintDetail(_Arguments);
-        return;
+        return self:PrintDetail(_Arguments);
     end
 
     if _Flags == 1 then
@@ -819,6 +830,9 @@ function AddOnQuestDebug.Global:PrintQuests(_Arguments, _Flags)
         GUI.ClearNotes()
         GUI.AddStaticNote("]]..questText..[[")
     ]]);
+
+    questText = string.gsub(questText, "{cr}", "\n");
+    return questText;
 end
 
 ---
@@ -859,6 +873,9 @@ function AddOnQuestDebug.Global:PrintDetail(_Arguments)
         GUI.ClearNotes()
         GUI.AddStaticNote("]]..questText..[[")
     ]]);
+
+    questText = string.gsub(questText, "{cr}", "\n");
+    return questText;
 end
 
 ---
@@ -966,6 +983,7 @@ end
 --
 function AddOnQuestDebug.Global:ShowVersion()
     API.Bridge("GUI.AddStaticNote(QSB.Version)");
+    return QSB.Version;
 end
 
 ---
