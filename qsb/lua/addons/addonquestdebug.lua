@@ -407,19 +407,19 @@ AddOnQuestDebug = {
 -- </tr>
 -- </table>
 --
--- @param _CheckAtStart [boolean] Prüfe Quests zur Erzeugunszeit
 -- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
 -- @param _TraceQuests [boolean] Aktiviert Questverfolgung
--- @param _DevelopingMode [boolean] Aktiviert Cheats und Konsole
+-- @param _DevelopingCheats [boolean] Aktiviert Cheats und Konsole
+-- @param _DevelopingShell [boolean] Aktiviert Cheats und Konsole
 -- @see Reward_DEBUG
 -- @within Anwenderfunktionen
 --
-function API.ActivateDebugMode(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
+function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
     if GUI then
-        API.Bridge("API.DisbandTravelingSalesman(" ..tostring(_CheckAtStart).. ", " ..tostring(_CheckAtRun).. ", " ..tostring(_TraceQuests).. ", " ..tostring(_DevelopingMode).. ")");
+        API.Bridge("API.ActivateDebugMode(" ..tostring(_CheckAtRun).. ", " ..tostring(_TraceQuests).. ", " ..tostring(_DevelopingCheats).. ", " ..tostring(_DevelopingShell).. ")");
         return;
     end
-    AddOnQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode);
+    AddOnQuestDebug.Global:ActivateDebug(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell);
 end
 ActivateDebugMode = API.ActivateDebugMode;
 
@@ -430,16 +430,10 @@ ActivateDebugMode = API.ActivateDebugMode;
 ---
 -- Aktiviert den Debug.
 --
--- <p><b>Hinweis:</b> Die Option "Quest vor Start prüfen" funktioniert nur, wenn
--- der Debug im Skript gestartet wird, bevor CreateQuests() ausgeführt wird.
--- Zu dem Zeitpunkt, wenn ein Quest, der im Assistenten erstellt wurde,
--- ausgelöst wird, wurde CreateQuests bereits ausgeführt! Es ist daher nicht
--- mehr möglich die Quests vorab zu prüfen.</p>
---
--- @param _CheckAtStart [boolean] Prüfe Quests zur Erzeugunszeit
 -- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
 -- @param _TraceQuests [boolean] Aktiviert Questverfolgung
--- @param _DevelopingMode [boolean] Aktiviert Cheats und Konsole
+-- @param _DevelopingCheats [boolean] Aktiviert Cheats
+-- @param _DevelopingShell [boolean] Aktiviert Konsole
 -- @see API.ActivateDebugMode
 --
 -- @within Reward
@@ -455,10 +449,10 @@ b_Reward_DEBUG = {
         de = "Lohn: Startet den Debug-Modus. Für mehr Informationen siehe Dokumentation.",
     },
     Parameter = {
-        { ParameterType.Custom,     en = "Check quests beforehand", de = "Quest vor Start prüfen" },
         { ParameterType.Custom,     en = "Check quest while runtime", de = "Quests zur Laufzeit prüfen" },
         { ParameterType.Custom,     en = "Use quest trace", de = "Questverfolgung" },
-        { ParameterType.Custom,     en = "Activate developing mode", de = "Testmodus aktivieren" },
+        { ParameterType.Custom,     en = "Activate developing cheats", de = "Testmodus aktivieren" },
+        { ParameterType.Custom,     en = "Activate developing shell", de = "Testmodus aktivieren" },
     },
 }
 
@@ -467,19 +461,19 @@ function b_Reward_DEBUG:GetRewardTable(__quest_)
 end
 
 function b_Reward_DEBUG:AddParameter(_Index, _Parameter)
-    if (_Index == 0) then
-        self.CheckAtStart = AcceptAlternativeBoolean(_Parameter)
-    elseif (_Index == 1) then
+    if (_Index == 1) then
         self.CheckWhileRuntime = AcceptAlternativeBoolean(_Parameter)
     elseif (_Index == 2) then
         self.UseQuestTrace = AcceptAlternativeBoolean(_Parameter)
     elseif (_Index == 3) then
-        self.DelepoingMode = AcceptAlternativeBoolean(_Parameter)
+        self.DelepoingCheats = AcceptAlternativeBoolean(_Parameter)
+    elseif (_Index == 3) then
+        self.DelepoingShell = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
 function b_Reward_DEBUG:CustomFunction(__quest_)
-    API.ActivateDebugMode(self.CheckAtStart, self.CheckWhileRuntime, self.UseQuestTrace, self.DelepoingMode);
+    API.ActivateDebugMode(self.CheckWhileRuntime, self.UseQuestTrace, self.DelepoingCheats, self.DelepoingShell);
 end
 
 function b_Reward_DEBUG:GetCustomData(_Index)
@@ -551,10 +545,6 @@ function AddOnQuestDebug.Global:Install()
         end
     end
 
-    if BundleQuestGeneration then
-        BundleQuestGeneration.Global.DebugQuest = AddOnQuestDebug.Global.DebugQuest;
-    end
-
     self:OverwriteCreateQuests();
 
     API.AddSaveGameAction(self.OnSaveGameLoad);
@@ -567,33 +557,27 @@ end
 -- ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
 -- sogar Funktionen während des Spiels zu überschreiben.
 --
--- @param _CheckAtStart [boolean] Prüfe Quests zur Erzeugunszeit
 -- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
 -- @param _TraceQuests [boolean] Aktiviert Questverfolgung
--- @param _DevelopingMode [boolean] Aktiviert Cheats und Konsole
+-- @param _Cheats [boolean] Aktiviert Cheats
+-- @param _Shell [boolean] Aktiviert Konsole
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:ActivateDebug(_CheckAtStart, _CheckAtRun, _TraceQuests, _DevelopingMode)
+function AddOnQuestDebug.Global:ActivateDebug(_CheckAtRun, _TraceQuests, _Cheats, _Shell)
     if self.Data.DebugModeIsActive then
         return;
     end
     self.Data.DebugModeIsActive = true;
 
-    self.Data.CheckAtStart    = _CheckAtStart == true;
-    QSB.DEBUG_CheckAtStart    = _CheckAtStart == true;
-
-    self.Data.CheckAtRun      = _CheckAtRun == true;
-    QSB.DEBUG_CheckAtRun      = _CheckAtRun == true;
-
-    self.Data.TraceQuests     = _TraceQuests == true;
-    QSB.DEBUG_TraceQuests     = _TraceQuests == true;
-
-    self.Data.DevelopingMode  = _DevelopingMode == true;
-    QSB.DEBUG_DevelopingMode  = _DevelopingMode == true;
+    self.Data.CheckAtRun       = _CheckAtRun == true;
+    self.Data.TraceQuests      = _TraceQuests == true;
+    self.Data.DevelopingCheats = _Cheats == true;
+    self.Data.DevelopingShell  = _Shell == true;
 
     self:ActivateQuestTrace();
-    self:ActivateDevelopingMode();
+    self:ActivateDevelopingCheats();
+    self:ActivateDevelopingShell();
 end
 
 ---
@@ -611,8 +595,20 @@ function AddOnQuestDebug.Global:ActivateQuestTrace()
 end
 
 ---
--- <p>Aktiviert die Questverfolgung. Jede Statusänderung wird am Bildschirm
--- angezeigt.</p>
+-- <p>Aktiviert die Cheats.</p>
+-- <p>Es werden die Development-Cheats benutzt und um einige neue erweitert.</p>
+--
+-- @within Internal
+-- @local
+--
+function AddOnQuestDebug.Global:ActivateDevelopingCheats()
+    if self.Data.DevelopingCheats then
+        Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:ActivateDevelopingCheats()");
+    end
+end
+
+---
+-- <p>Aktiviert die Shell.</p>
 -- <p>Der Debug stellt einige zusätzliche Tastenkombinationen bereit:</p>
 -- <p>Die Konsole des Debug wird mit SHIFT + ^ geöffnet.</p>
 -- <p>Die Konsole bietet folgende Kommandos:</p>
@@ -620,9 +616,9 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:ActivateDevelopingMode()
-    if self.Data.DevelopingMode then
-        Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:ActivateDevelopingMode()");
+function AddOnQuestDebug.Global:ActivateDevelopingShell()
+    if self.Data.DevelopingShell then
+        Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:ActivateDevelopingShell()");
     end
 end
 
@@ -1066,11 +1062,6 @@ end
 function AddOnQuestDebug.Global:OverwriteCreateQuests()
     self.Data.CreateQuestsOriginal = CreateQuests;
     CreateQuests = function()
-        if not AddOnQuestDebug.Global.Data.CheckAtStart then
-            AddOnQuestDebug.Global.Data.CreateQuestsOriginal();
-            return;
-        end
-
         local QuestNames = Logic.Quest_GetQuestNames()
         for i=1, #QuestNames, 1 do
             local QuestName = QuestNames[i]
@@ -1103,8 +1094,6 @@ function AddOnQuestDebug.Global:OverwriteCreateQuests()
                 };
             end
         end
-
-        API.StartQuests();
     end
 end
 
@@ -1117,61 +1106,9 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.OnSaveGameLoad(_Arguments, _Original)
-    AddOnQuestDebug.Global:ActivateDevelopingMode();
+    AddOnQuestDebug.Global:ActivateDevelopingCheats();
+    AddOnQuestDebug.Global:ActivateDevelopingShell();
     AddOnQuestDebug.Global:ActivateQuestTrace();
-end
-
----
--- Prüft die Quests in der Initalisierungsliste der Quests auf Korrektheit.
---
--- Es können nur Behavior der Typen Goal.Custom, Reprisal.Custom2,
--- Reward.Custom2 und Triggers.Custom überprüft werden. Die anderen Typen
--- können nicht debugt werden!
---
--- @param _QuestData Daten des Quest
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Global.DebugQuest(self, _QuestData)
-    if AddOnQuestDebug.Global.Data.CheckAtStart then
-        if _QuestData.Goals then
-            for i=1, #_QuestData.Goals, 1 do
-                if type(_QuestData.Goals[i][2]) == "table" and type(_QuestData.Goals[i][2][1]) == "table" then
-                    if _QuestData.Goals[i][2][1].DEBUG and _QuestData.Goals[i][2][1]:DEBUG(_QuestData) then
-                        return false;
-                    end
-                end
-            end
-        end
-        if _QuestData.Reprisals then
-            for i=1, #_QuestData.Reprisals, 1 do
-                if type(_QuestData.Reprisals[i][2]) == "table" and type(_QuestData.Reprisals[i][2][1]) == "table" then
-                    if _QuestData.Reprisals[i][2][1].DEBUG and _QuestData.Reprisals[i][2][1]:DEBUG(_QuestData) then
-                        return false;
-                    end
-                end
-            end
-        end
-        if _QuestData.Rewards then
-            for i=1, #_QuestData.Rewards, 1 do
-                if type(_QuestData.Rewards[i][2]) == "table" and type(_QuestData.Rewards[i][2][1]) == "table" then
-                    if _QuestData.Rewards[i][2][1].DEBUG and _QuestData.Rewards[i][2][1]:DEBUG(_QuestData) then
-                        return false;
-                    end
-                end
-            end
-        end
-        if _QuestData.Triggers then
-            for i=1, #_QuestData.Triggers, 1 do
-                if type(_QuestData.Triggers[i][2]) == "table" and type(_QuestData.Triggers[i][2][1]) == "table" then
-                    if _QuestData.Triggers[i][2][1].DEBUG and _QuestData.Triggers[i][2][1]:DEBUG(_QuestData) then
-                        return false;
-                    end
-                end
-            end
-        end
-    end
-    return true;
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -1212,19 +1149,27 @@ function AddOnQuestDebug.Local:CountLuaLoad()
 end
 
 ---
--- Aktiviert die Questverfolgung. Jede Statusänderung wird am Bildschirm
--- angezeigt.
+-- Aktiviert die Development Cheats des Spiels.
 --
--- @see AddOnQuestDebug.Global:ActivateDevelopingMode
+-- @see AddOnQuestDebug.Global:ActivateDevelopingCheats
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Local:ActivateDevelopingMode()
+function AddOnQuestDebug.Local:ActivateDevelopingCheats()
     KeyBindings_EnableDebugMode(1);
     KeyBindings_EnableDebugMode(2);
     KeyBindings_EnableDebugMode(3);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/GameClock",1);
+end
 
+---
+-- Aktiviert die Kommandokonsole.
+--
+-- @see AddOnQuestDebug.Global:ActivateDevelopingShell
+-- @within Internal
+-- @local
+--
+function AddOnQuestDebug.Local:ActivateDevelopingShell()
     GUI_Chat.Abort = function() end
 
     GUI_Chat.Confirm = function()
