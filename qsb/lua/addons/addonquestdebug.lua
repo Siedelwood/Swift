@@ -627,49 +627,122 @@ function AddOnQuestDebug.Global:ActivateDevelopingMode()
 end
 
 ---
--- Ließt eingegebene Kommandos aus und führt entsprechende Funktionen aus.
+-- Ließt eingegebene Kommandos und führt entsprechende Funktionen aus.
+--
+-- Für die Zerlegung der Kommandizeile wird der Tokenizer benutzt.
 --
 -- @within Internal
 -- @local
+-- @see AddOnQuestDebug.Global:Tokenize
 --
 function AddOnQuestDebug.Global:Parser(_Input)
-    local tokens = self:Tokenize(_Input);
-    for k, v in pairs(self.Data.DebugCommands) do
-        if v[1] == tokens[1] then
-            for i=1, #tokens do
-                local numb = tonumber(tokens[i])
-                if numb then
-                    tokens[i] = numb;
+    local Commands = self:Tokenize(_Input);
+    for k, v in pairs(Commands) do
+        local Action = string.lower(v[1]);
+        for i= 1, #AddOnQuestDebug.Global.Data.DebugCommands, 1 do
+            if v[1] == AddOnQuestDebug.Global.Data.DebugCommands[i][1] then
+                local SelectedCommand = AddOnQuestDebug.Global.Data.DebugCommands[i];
+                for j=2, #v, 1 do
+                    local Number = tonumber(v[j]);
+                    if Number then
+                        v[j] = Number;
+                    end
                 end
+                SelectedCommand[2](v, SelectedCommand[3]);
             end
-            v[2](AddOnQuestDebug.Global, tokens, v[3]);
-            return;
         end
     end
 end
 
 ---
--- Zerlegt die Eingabe in einzelne Tokens und gibt diese zurück.
+-- Zerlegt den Eingabestring in einzelne Kommandos und gibt diese als Table
+-- zurück. Unterschiedliche Kommandos werden mit && abgetrennt und entsprechend
+-- als mehrere Einträge im Table angelegt. Mit dem Wiederholungszeichen &
+-- wird das Komanndo für alle angegebenen Eingaben wiederholt.
+--
+-- Beispiel:
+-- <code>
+-- Eingabe:
+-- "win QuestA & QuestB && fail QuestC && stop QuestD & Quest E"
+--
+-- Ausgabe:
+-- {
+-- {"win", "QuestA"}
+-- {"win", "QuestB"}
+-- {"fail", "QuestC"}
+-- {"stop", "QuestD"}
+-- {"stop", "QuestE"}
+-- }
+-- <code>
 --
 -- @return Table mit Tokens
 -- @within Internal
 -- @local
 --
 function AddOnQuestDebug.Global:Tokenize(_Input)
-    local tokens = {};
-    local rest = _Input;
-    while (rest and rest:len() > 0)
-    do
-        local s, e = string.find(rest, " ");
-        if e then
-            tokens[#tokens+1] = rest:sub(1, e-1);
-            rest = rest:sub(e+1, rest:len());
-        else
-            tokens[#tokens+1] = rest;
-            rest = nil;
+    local Commands = {};
+    local DAmberCommands = {_Input};
+    local AmberCommands = {_Input};
+
+    -- parse & delimiter
+    local s, e = string.find(_Input, "%s+&&%s+");
+    if s then
+        DAmberCommands = {};
+        while (s) do
+            local tmp = string.sub(_Input, 1, s-1);
+            table.insert(DAmberCommands, tmp);
+            _Input = string.sub(_Input, e+1);
+            s, e = string.find(_Input, "%s+&&%s+");
+        end
+        if string.len(_Input) > 0 then 
+            table.insert(DAmberCommands, _Input);
         end
     end
-    return tokens;
+
+    -- parse & delimiter
+    if #DAmberCommands > 0 then
+        AmberCommands = {};
+    end
+    for i= 1, #DAmberCommands, 1 do
+        local s, e = string.find(DAmberCommands[i], "%s+&%s+");
+        if s then
+            local LastCommand = "";
+            while (s) do
+                local tmp = string.sub(DAmberCommands[i], 1, s-1);
+                table.insert(AmberCommands, LastCommand .. tmp);
+                if string.find(tmp, " ") then
+                    LastCommand = string.sub(tmp, 1, string.find(tmp, " ")-1) .. " ";
+                end
+                DAmberCommands[i] = string.sub(DAmberCommands[i], e+1);
+                s, e = string.find(DAmberCommands[i], "%s+&%s+");
+            end
+            if string.len(DAmberCommands[i]) > 0 then 
+                table.insert(AmberCommands, LastCommand .. DAmberCommands[i]);
+            end
+        else
+            table.insert(AmberCommands, DAmberCommands[i]);
+        end
+    end
+
+    -- parse spaces
+    for i= 1, #AmberCommands, 1 do
+        local CommandLine = {};
+        local s, e = string.find(AmberCommands[i], "%s+");
+        if s then
+            while (s) do
+                local tmp = string.sub(AmberCommands[i], 1, s-1);
+                table.insert(CommandLine, tmp);
+                AmberCommands[i] = string.sub(AmberCommands[i], e+1);
+                s, e = string.find(AmberCommands[i], "%s+");
+            end
+            table.insert(CommandLine, AmberCommands[i]);
+        else
+            table.insert(CommandLine, AmberCommands[i]);
+        end
+        table.insert(Commands, CommandLine);
+    end
+
+    return Commands;
 end
 
 ---
