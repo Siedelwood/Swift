@@ -108,9 +108,9 @@ end
 ---
 -- Gibt den Typ des Händlers mit der ID im Gebäude zurück.
 --
--- @param _BuildingID Building ID
--- @param _TraderID   Trader ID
--- @return number
+-- @param _BuildingID [number] Building ID
+-- @param _TraderID [number] Trader ID
+-- @return [number]
 -- @within Anwenderfunktionen
 --
 function API.GetTraderType(_BuildingID, _TraderID)
@@ -124,9 +124,9 @@ end
 ---
 -- Gibt den Händler des Typs in dem Gebäude zurück.
 --
--- @param _BuildingID Entity ID des Handelsgebäudes
--- @param _TraderType Typ des Händlers
--- @return number
+-- @param _BuildingID [number] Entity ID des Handelsgebäudes
+-- @param _TraderType [number] Typ des Händlers
+-- @return [number]
 -- @within Anwenderfunktionen
 --
 function API.GetTrader(_BuildingID, _TraderType)
@@ -142,8 +142,8 @@ end
 -- des Spielers.
 --
 -- @param _PlayerID [number] Entity ID des Handelsgebäudes
--- @param _TraderType      Typ des Händlers
--- @param _OfferIndex      Index des Angebots
+-- @param _TraderType [number] Typ des Händlers
+-- @param _OfferIndex [number] Index des Angebots
 -- @within Anwenderfunktionen
 --
 function API.RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
@@ -155,11 +155,13 @@ function API.RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
 end
 
 ---
+-- FIXME: Führt zum Spielabsturz.
+-- 
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
 -- @param _PlayerID [number] Player ID
--- @param _GoodorEntityType    Warentyp oder Entitytyp
+-- @param _GoodorEntityType [number] Warentyp oder Entitytyp
 -- @within Anwenderfunktionen
 --
 function API.RemoveOffer(_PlayerID, _GoodOrEntityType)
@@ -171,21 +173,22 @@ function API.RemoveOffer(_PlayerID, _GoodOrEntityType)
 end
 
 ---
+-- FIXME: Setzt die Angebotsmenge immer auf 0.
+-- 
 -- Ändert die maximale Menge des Angebots im Händelrgebäude.
 -- TODO Muss noch getestet werden!
 --
--- @param _Merchant	Händlergebäude
--- @param _TraderID	ID des Händlers im Gebäude
--- @param _OfferID		ID des Angebots
--- @param _NewAmount	Neue Menge an Angeboten
+-- @param _PlayerID	[number] Händlergebäude
+-- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
+-- @param _NewAmount [number] Neue Menge an Angeboten
 -- @within Anwenderfunktionen
 --
-function API.ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
+function API.ModifyTraderOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
     if GUI then
-        API.Bridge("API.ModifyTraderOffer(" .._Merchant.. ", " .._TraderID.. ", " .._OfferID.. ", " .._NewAmount.. ")");
+        API.Bridge("API.ModifyTraderOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ", " .._NewAmount.. ")");
         return;
     end
-    return BundleTradingFunctions.Global:ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount);
+    return BundleTradingFunctions.Global:ModifyTraderOffer(_PlayerID, _GoodOrEntityType, _NewAmount);
 end
 
 ---
@@ -198,10 +201,10 @@ end
 -- <b>Alias</b>: ActivateTravelingSalesman
 --
 -- @param _PlayerID [number] Spieler-ID des Händlers
--- @param _Offers	  Liste an Angeboten
--- @param _Waypoints  Wegpunktliste Anfahrt
--- @param _Reversed	  Wegpunktliste Abfahrt
--- @param _Appearance Ankunft und Abfahrt
+-- @param _Offers [table] Liste an Angeboten
+-- @param _Waypoints [table] Wegpunktliste Anfahrt
+-- @param _Reversed [table] Wegpunktliste Abfahrt
+-- @param _Appearance [table] Ankunft und Abfahrt
 -- @within Anwenderfunktionen
 --
 -- @usage -- Angebote deklarieren
@@ -317,7 +320,7 @@ BundleTradingFunctions = {
     Local = {
         Data = {}
     },
-}
+};
 
 -- Global Script ---------------------------------------------------------------
 
@@ -343,108 +346,119 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     ---
     -- Erzeugt ein Handelsangebot für Waren und gibt die ID zurück.
     --
-    -- @param _Merchant					Handelsgebäude
-    -- @param _NumberOfOffers			Anzahl an Angeboten
+    -- @param _Merchant [number] Handelsgebäude
+    -- @param _NumberOfOffers [number] Anzahl an Angeboten
     -- @param _GoodType [number] Warentyp
-    -- @param _RefreshRate              Erneuerungsrate
-    -- @param _optionalPlayersPlayerID	Optionale Spieler-ID
-    -- @return Offer ID
+    -- @param _RefreshRate [number] Erneuerungsrate
+    -- @param _optionalPlayersPlayerID [number] Optionale Spieler-ID
+    -- @return [number] Offer ID
     -- @within Originalfunktionen
     --
     AddOffer = function(_Merchant, _NumberOfOffers, _GoodType, _RefreshRate, _optionalPlayersPlayerID)
-        local MerchantID = GetID(_Merchant)
-        if type(_GoodType) == "string"
-        then
-            _GoodType = Goods[_GoodType]
+        local MerchantID = GetID(_Merchant);
+        if type(_GoodType) == "string" then
+            _GoodType = Goods[_GoodType];
         else
-            _GoodType = _GoodType
+            _GoodType = _GoodType;
         end
-        local PlayerID = Logic.EntityGetPlayer(MerchantID)
-        AddGoodToTradeBlackList(PlayerID, _GoodType)
-        local MarketerType = Entities.U_Marketer
-        if _GoodType == Goods.G_Medicine
-        then
-            MarketerType = Entities.U_Medicus
+
+        local PlayerID = Logic.EntityGetPlayer(MerchantID);
+        local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodType);
+        if OfferID ~= -1 then
+            API.Dbg("Good offer for good type " .._GoodType.. " already exists for player " .._PlayerID.. "!");
+            return;
         end
-        if _RefreshRate == nil
-        then
-            _RefreshRate = MerchantSystem.RefreshRates[_GoodType]
-            if _RefreshRate == nil
-            then
-                _RefreshRate = 0
+
+        
+        AddGoodToTradeBlackList(PlayerID, _GoodType);
+        local MarketerType = Entities.U_Marketer;
+        if _GoodType == Goods.G_Medicine then
+            MarketerType = Entities.U_Medicus;
+        end
+        if _RefreshRate == nil then
+            _RefreshRate = MerchantSystem.RefreshRates[_GoodType];
+            if _RefreshRate == nil then
+                _RefreshRate = 0;
             end
         end
-        if _optionalPlayersPlayerID == nil
-        then
-            _optionalPlayersPlayerID = 1
+        if _optionalPlayersPlayerID == nil then
+            _optionalPlayersPlayerID = 1;
         end
         local offerAmount = 9;
-        return Logic.AddGoodTraderOffer(MerchantID,_NumberOfOffers,Goods.G_Gold,0,_GoodType,offerAmount,_optionalPlayersPlayerID,_RefreshRate,MarketerType,Entities.U_ResourceMerchant)
+        return Logic.AddGoodTraderOffer(MerchantID,_NumberOfOffers,Goods.G_Gold,0,_GoodType,offerAmount,_optionalPlayersPlayerID,_RefreshRate,MarketerType,Entities.U_ResourceMerchant);
     end
 
     ---
     -- Erzeugt ein Handelsangebot für Söldner und gibt die ID zurück.
     --
-    -- @param _Merchant					Handelsgebäude
-    -- @param _Amount					Anzahl an Angeboten
-    -- @param _Type						Soldatentyp
-    -- @param _RefreshRate				Erneuerungsrate
-    -- @param _optionalPlayersPlayerID	Optionale Spieler-ID
-    -- @return Offer ID
+    -- @param _Merchant [number] Handelsgebäude
+    -- @param _Amount [number] Anzahl an Angeboten
+    -- @param _Type [number] Soldatentyp
+    -- @param _RefreshRate [number] Erneuerungsrate
+    -- @param _optionalPlayersPlayerID [number] Optionale Spieler-ID
+    -- @return [number] Offer ID
     -- @within Originalfunktionen
     --
-    AddMercenaryOffer = function( _Mercenary, _Amount, _Type, _RefreshRate, _optionalPlayersPlayerID)
-        local MercenaryID = GetID(_Mercenary)
-        if _Type == nil
-        then
-            _Type = Entities.U_MilitaryBandit_Melee_ME
+    AddMercenaryOffer = function(_Mercenary, _Amount, _Type, _RefreshRate, _optionalPlayersPlayerID)
+        local MercenaryID = GetID(_Mercenary);
+        if _Type == nil then
+            _Type = Entities.U_MilitaryBandit_Melee_ME;
         end
-        if _RefreshRate == nil
-        then
-            _RefreshRate = MerchantSystem.RefreshRates[_Type]
-            if _RefreshRate == nil
-            then
-                _RefreshRate = 0
+        if _RefreshRate == nil then
+            _RefreshRate = MerchantSystem.RefreshRates[_Type];
+            if _RefreshRate == nil then
+                _RefreshRate = 0;
             end
         end
+
+        local PlayerID = Logic.EntityGetPlayer(MerchantID);
+        local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _Type);
+        if OfferID ~= -1 then
+            API.Dbg("Mercenary offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
+            return;
+        end
+
         local amount = 3;
         local typeName = Logic.GetEntityTypeName(_Type);
-        if string.find(typeName,"MilitaryBow") or string.find(typeName,"MilitarySword")
-        then
+        if string.find(typeName,"MilitaryBow") or string.find(typeName,"MilitarySword") then
             amount = 6;
-        elseif string.find(typeName,"Cart")
-        then
+        elseif string.find(typeName,"Cart") then
             amount = 0;
         end
-        if _optionalPlayersPlayerID == nil
-        then
-            _optionalPlayersPlayerID = 1
+        if _optionalPlayersPlayerID == nil then
+            _optionalPlayersPlayerID = 1;
         end
-        return Logic.AddMercenaryTraderOffer(MercenaryID, _Amount, Goods.G_Gold, 3, _Type ,amount,_optionalPlayersPlayerID,_RefreshRate)
+        return Logic.AddMercenaryTraderOffer(MercenaryID, _Amount, Goods.G_Gold, 3, _Type ,amount,_optionalPlayersPlayerID,_RefreshRate);
     end
 
     ---
     -- Erzeugt ein Handelsangebot für Entertainer und gibt die
     -- ID zurück.
     --
-    -- @param _Merchant					Handelsgebäude
-    -- @param _EntertainerType			Typ des Entertainer
-    -- @param _optionalPlayersPlayerID	Optionale Spieler-ID
-    -- @return Offer ID
+    -- @param _Merchant [number] Handelsgebäude
+    -- @param _EntertainerType [number] Typ des Entertainer
+    -- @param _optionalPlayersPlayerID [number] Optionale Spieler-ID
+    -- @return [number] Offer ID
     -- @within Originalfunktionen
     --
     AddEntertainerOffer = function(_Merchant, _EntertainerType, _optionalPlayersPlayerID)
-        local MerchantID = GetID(_Merchant)
-        local NumberOfOffers = 1
-        if _EntertainerType == nil
-        then
-            _EntertainerType = Entities.U_Entertainer_NA_FireEater
+        local MerchantID = GetID(_Merchant);
+        local NumberOfOffers = 1;
+
+        local PlayerID = Logic.EntityGetPlayer(MerchantID);
+        local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _Type);
+        if OfferID ~= -1 then
+            API.Dbg("Entertainer offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
+            return;
         end
-        if _optionalPlayersPlayerID == nil
-        then
-            _optionalPlayersPlayerID = 1
+
+        if _EntertainerType == nil then
+            _EntertainerType = Entities.U_Entertainer_NA_FireEater;
         end
-        return Logic.AddEntertainerTraderOffer(MerchantID,NumberOfOffers,Goods.G_Gold,0,_EntertainerType, _optionalPlayersPlayerID,0)
+        if _optionalPlayersPlayerID == nil then
+            _optionalPlayersPlayerID = 1;
+        end
+        return Logic.AddEntertainerTraderOffer(MerchantID,NumberOfOffers,Goods.G_Gold,0,_EntertainerType, _optionalPlayersPlayerID,0);
     end
 end
 
@@ -487,7 +501,7 @@ end
 -- alle Angebote der Händlertypen.
 --
 -- @param _PlayerID [number] Player ID
--- @return Angebotsinformationen
+-- @return [table] Angebotsinformationen
 -- @within Internal
 -- @local
 --
@@ -533,7 +547,7 @@ function BundleTradingFunctions.Global:GetOfferInformation(_PlayerID)
             AmountOfOffers = AmountOfOffers +1;
 
             local GoodType, OfferGoodAmount, OfferAmount, AmountPrices;
-            local TraderType = Module_TradingTools.Global.GetTraderType(i);
+            local TraderType = self:GetTraderType(BuildingID, i);
             if TraderType == QSB.TraderTypes.GoodTrader then
                 GoodType, OfferGoodAmount, OfferAmount, AmountPrices = Logic.GetGoodTraderOffer(BuildingID, Offers[j], _PlayerID);
             elseif TraderType == QSB.TraderTypes.MercenaryTrader then
@@ -563,13 +577,16 @@ end
 -- der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
 --
 -- @param _PlayerID [number] ID des Spielers
--- @return number
+-- @return [number]
 -- @within Internal
 -- @local
 --
 function BundleTradingFunctions.Global:GetOfferCount(_PlayerID)
     local Offers = self:GetOfferInformation(_PlayerID);
-    return Offers.OfferCount;
+    if Info then
+        return Offers.OfferCount;
+    end
+    return 0;
 end
 
 ---
@@ -578,26 +595,31 @@ end
 --
 -- @param _PlayerID [number] Player ID
 -- @param _GoodType [number] Warentyp oder Entitytyp
--- @return numer, number, number
+-- @return [number] Offer ID
+-- @return [number] Trader ID
+-- @return [number] Storehouse ID
 -- @within Internal
 -- @local
 --
 function BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodorEntityType)
     local Info = self:GetOfferInformation(_PlayerID);
-    for i=1, #Info, 1 do
-        for j=1, #Info, 1 do
-          if Info[i][j].GoodType == _GoodorEntityType then
-              return Info[i][j].OfferID, Info[i][j].TraderID, Info.Storehouse;
-          end
+    if Info then
+        for i=1, #Info, 1 do
+            for j=1, #Info[i], 1 do
+            if Info[i][j].GoodType == _GoodorEntityType then
+                return Info[i][j].OfferID, Info[i][j].TraderID, Info.Storehouse;
+            end
+            end
         end
     end
+    return -1, -1, -1;
 end
 
 ---
 -- Gibt den Typ des Händlers mit der ID im Gebäude zurück.
 --
--- @param _BuildingID Building ID
--- @param _TraderID   Trader ID
+-- @param _BuildingID [number] Building ID
+-- @param _TraderID [number] Trader ID
 -- @return number
 -- @within Internal
 -- @local
@@ -620,8 +642,8 @@ end
 ---
 -- Gibt den Händler des Typs in dem Gebäude zurück.
 --
--- @param _BuildingID Entity ID des Handelsgebäudes
--- @param _TraderType Typ des Händlers
+-- @param _BuildingID [number] Entity ID des Handelsgebäudes
+-- @param _TraderType [number] Typ des Händlers
 -- @return number
 -- @within Internal
 -- @local
@@ -645,8 +667,8 @@ end
 -- des Spielers.
 --
 -- @param _PlayerID [number] Player ID des Handelsgebäudes
--- @param _TraderType      Typ des Händlers
--- @param _OfferIndex      Index des Angebots
+-- @param _TraderType [number] Typ des Händlers
+-- @param _OfferIndex [number] Index des Angebots
 -- @within Internal
 -- @local
 --
@@ -661,16 +683,18 @@ function BundleTradingFunctions.Global:RemoveOfferByIndex(_PlayerID, _TraderType
     local TraderID = self:GetTrader(_PlayerID, _TraderType);
     if TraderID ~= nil
     then
-        Logic.RemoveOffer(BuildingID, TraderID, _OfferIndex);
+        Logic.RemoveOffer(BuildingID, TraderID, _OfferIndex, 1);
     end
 end
 
 ---
+-- FIXME: Führt zum Spielabsturz.
+-- 
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
 -- @param _PlayerID [number] Player ID
--- @param _GoodorEntityType    Warentyp oder Entitytyp
+-- @param _GoodorEntityType [number] Warentyp oder Entitytyp
 -- @within Internal
 -- @local
 --
@@ -678,27 +702,27 @@ function BundleTradingFunctions.Global:RemoveOffer(_PlayerID, _GoodOrEntityType)
     local OfferID, TraderID, Storehouse = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
     if OfferID and TraderID and Storehouse
     then
-        Logic.RemoveOffer(Storehouse, TraderID, OfferID);
+        Logic.RemoveOffer(Storehouse, TraderID, OfferID, 1);
     end
 end
 
 ---
--- Ändert die maximale Menge des Angebots im Händelrgebäude.
--- TODO Test this Shit!
+-- FIXME: Setzt die Angebotsmenge immer auf 0.
 --
--- @param _Merchant	Händlergebäude
--- @param _TraderID	ID des Händlers im Gebäude
--- @param _OfferID		ID des Angebots
--- @param _NewAmount	Neue Menge an Angeboten
+-- Ändert die maximale Menge des Angebots im Händelrgebäude.
+--
+-- @param _PlayerID	[number] Händlergebäude
+-- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
+-- @param _NewAmount [number] Neue Menge an Angeboten
 -- @within Internal
 -- @local
 --
-function BundleTradingFunctions.Global:ModifyTraderOffer(_Merchant, _TraderID, _OfferID, _NewAmount)
-    local BuildingID = GetID(_Merchant)
+function BundleTradingFunctions.Global:ModifyTraderOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
+    local TraderID, OfferID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodorEntityType);
     if not IsExisting(BuildingID) then
         return;
     end
-    Logic.ModifyTraderOffer(BuildingID, _TraderID, _OfferID, _NewAmount);
+    Logic.ModifyTraderOffer(BuildingID, TraderID, OfferID, _NewAmount);
 end
 
 ---
