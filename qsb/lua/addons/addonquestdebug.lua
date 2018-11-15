@@ -763,7 +763,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:CollectGarbage()
+function AddOnQuestDebug.Global.CollectGarbage()
     collectgarbage();
     Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:CollectGarbage()");
 end
@@ -774,7 +774,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:CountLuaLoad()
+function AddOnQuestDebug.Global.CountLuaLoad()
     Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:CountLuaLoad()");
     local LuaLoad = collectgarbage("count");
     API.StaticNote("Global Lua Size: " ..LuaLoad);
@@ -786,16 +786,16 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:PrintQuests(_Arguments, _Flags)
-    local questText         = ""
-    local counter            = 0;
+function AddOnQuestDebug.Global.PrintQuests(_Arguments, _Flags)
+    local questText = ""
+    local counter   = 0;
 
     local accept = function(_quest, _state)
         return _quest.State == _state;
     end
 
     if _Flags == 3 then
-        return self:PrintDetail(_Arguments);
+        return AddOnQuestDebug.PrintDetail(_Arguments);
     end
 
     if _Flags == 1 then
@@ -834,7 +834,7 @@ end
 ---
 --
 --
-function AddOnQuestDebug.Global:PrintDetail(_Arguments)
+function AddOnQuestDebug.Global.PrintDetail(_Arguments)
     local questText = "";
     local questID = GetQuestID(string.gsub(_Arguments[2], " ", ""));
 
@@ -880,14 +880,14 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:LoadScript(_Arguments, _Flags)
+function AddOnQuestDebug.Global.LoadScript(_Arguments, _Flags)
     if _Arguments[2] then
         if _Flags == true then
             Logic.ExecuteInLuaLocalState([[Script.Load("]].._Arguments[2]..[[")]]);
         elseif _Flags == false then
             Script.Load(_Arguments[2]);
         end
-        if not self.Data.SurpassMessages then
+        if not AddOnQuestDebug.Global.Data.SurpassMessages then
             Logic.DEBUG_AddNote("load script ".._Arguments[2]);
         end
     end
@@ -899,7 +899,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:ExecuteCommand(_Arguments, _Flags)
+function AddOnQuestDebug.Global.ExecuteCommand(_Arguments, _Flags)
     if _Arguments[2] then
         local args = "";
         for i=2,#_Arguments do
@@ -907,7 +907,6 @@ function AddOnQuestDebug.Global:ExecuteCommand(_Arguments, _Flags)
         end
 
         if _Flags == true then
-            _Arguments[2] = string.gsub(args,"'","\'");
             Logic.ExecuteInLuaLocalState([[]]..args..[[]]);
         elseif _Flags == false then
             Logic.ExecuteInLuaLocalState([[GUI.SendScriptCommand("]]..args..[[")]]);
@@ -921,7 +920,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:Clear()
+function AddOnQuestDebug.Global.Clear()
     Logic.ExecuteInLuaLocalState("GUI.ClearNotes()");
 end
 
@@ -931,7 +930,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:Diplomacy(_Arguments)
+function AddOnQuestDebug.Global.Diplomacy(_Arguments)
     SetDiplomacyState(_Arguments[2], _Arguments[3], _Arguments[4]);
 end
 
@@ -941,7 +940,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:RestartMap()
+function AddOnQuestDebug.Global.RestartMap()
     Logic.ExecuteInLuaLocalState("Framework.RestartMap()");
 end
 
@@ -951,7 +950,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:ShareView(_Arguments)
+function AddOnQuestDebug.Global.ShareView(_Arguments)
     Logic.SetShareExplorationWithPlayerFlag(_Arguments[2], _Arguments[3], _Arguments[4]);
 end
 
@@ -961,7 +960,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:SetPosition(_Arguments)
+function AddOnQuestDebug.Global.SetPosition(_Arguments)
     local entity = GetID(_Arguments[2]);
     local target = GetID(_Arguments[3]);
     local x,y,z  = Logic.EntityGetPos(target);
@@ -977,7 +976,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:ShowVersion()
+function AddOnQuestDebug.Global.ShowVersion()
     API.Bridge("GUI.AddStaticNote(QSB.Version)");
     return QSB.Version;
 end
@@ -988,7 +987,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:QuestSuccess(_QuestName, _ExactName)
+function AddOnQuestDebug.Global.QuestSuccess(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -1002,7 +1001,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:QuestFailure(_QuestName, _ExactName)
+function AddOnQuestDebug.Global.QuestFailure(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -1016,7 +1015,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:QuestInterrupt(_QuestName, _ExactName)
+function AddOnQuestDebug.Global.QuestInterrupt(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -1030,7 +1029,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:QuestTrigger(_QuestName, _ExactName)
+function AddOnQuestDebug.Global.QuestTrigger(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -1044,7 +1043,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:QuestReset(_QuestName, _ExactName)
+function AddOnQuestDebug.Global.QuestReset(_QuestName, _ExactName)
     local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
@@ -1059,8 +1058,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global:OverwriteCreateQuests()
-    self.Data.CreateQuestsOriginal = CreateQuests;
+function AddOnQuestDebug.Global.OverwriteCreateQuests()
+    AddOnQuestDebug.Global.Data.CreateQuestsOriginal = CreateQuests;
     CreateQuests = function()
         local QuestNames = Logic.Quest_GetQuestNames()
         for i=1, #QuestNames, 1 do
@@ -1196,12 +1195,7 @@ function AddOnQuestDebug.Local:ActivateDevelopingShell()
         end
     end
 
-    Input.KeyBindDown(
-        Keys.ModifierShift + Keys.OemPipe,
-        "StartSimpleJob('QSB_DEBUG_InputBoxJob')",
-        2,
-        true
-    );
+    Input.KeyBindDown(Keys.ModifierShift + Keys.OemPipe, "StartSimpleJob('QSB_DEBUG_InputBoxJob')", 2);
 end
 
 Core:RegisterBundle("AddOnQuestDebug");

@@ -40,7 +40,7 @@ function Mission_FirstMapAction()
         Startup_Diplomacy()
     end
     
-    API.ActivateDebugMode(true, true, true, true)
+    API.ActivateDebugMode(true, false, false, true)
     
     AddGood(Goods.G_Gold,   500, 1)
     AddGood(Goods.G_Wood,    30, 1)
@@ -72,4 +72,8 @@ function Mission_FirstMapAction()
     }
     API.TravelingSalesmanActivate(2, offers, {"WP1", "WP2", "WP3", "WP4"});
     API.TravelingSalesmanDiplomacyOverride(2, false);
+end
+
+function foo()
+    API.Note("bockwurst")
 end
