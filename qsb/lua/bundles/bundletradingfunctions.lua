@@ -155,6 +155,8 @@ function API.RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
 end
 
 ---
+-- FIXME: Führt zum Spielabsturz.
+-- 
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
@@ -171,6 +173,8 @@ function API.RemoveOffer(_PlayerID, _GoodOrEntityType)
 end
 
 ---
+-- FIXME: Setzt die Angebotsmenge immer auf 0.
+-- 
 -- Ändert die maximale Menge des Angebots im Händelrgebäude.
 -- TODO Muss noch getestet werden!
 --
@@ -360,7 +364,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
 
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
         local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodType);
-        if OfferID then
+        if OfferID ~= -1 then
             API.Dbg("Good offer for good type " .._GoodType.. " already exists for player " .._PlayerID.. "!");
             return;
         end
@@ -409,7 +413,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
 
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
         local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _Type);
-        if OfferID then
+        if OfferID ~= -1 then
             API.Dbg("Mercenary offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
             return;
         end
@@ -443,7 +447,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
 
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
         local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _Type);
-        if OfferID then
+        if OfferID ~= -1 then
             API.Dbg("Entertainer offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
             return;
         end
@@ -543,7 +547,7 @@ function BundleTradingFunctions.Global:GetOfferInformation(_PlayerID)
             AmountOfOffers = AmountOfOffers +1;
 
             local GoodType, OfferGoodAmount, OfferAmount, AmountPrices;
-            local TraderType = Module_TradingTools.Global.GetTraderType(i);
+            local TraderType = self:GetTraderType(BuildingID, i);
             if TraderType == QSB.TraderTypes.GoodTrader then
                 GoodType, OfferGoodAmount, OfferAmount, AmountPrices = Logic.GetGoodTraderOffer(BuildingID, Offers[j], _PlayerID);
             elseif TraderType == QSB.TraderTypes.MercenaryTrader then
@@ -579,7 +583,10 @@ end
 --
 function BundleTradingFunctions.Global:GetOfferCount(_PlayerID)
     local Offers = self:GetOfferInformation(_PlayerID);
-    return Offers.OfferCount;
+    if Info then
+        return Offers.OfferCount;
+    end
+    return 0;
 end
 
 ---
@@ -596,13 +603,16 @@ end
 --
 function BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodorEntityType)
     local Info = self:GetOfferInformation(_PlayerID);
-    for i=1, #Info, 1 do
-        for j=1, #Info, 1 do
-          if Info[i][j].GoodType == _GoodorEntityType then
-              return Info[i][j].OfferID, Info[i][j].TraderID, Info.Storehouse;
-          end
+    if Info then
+        for i=1, #Info, 1 do
+            for j=1, #Info[i], 1 do
+            if Info[i][j].GoodType == _GoodorEntityType then
+                return Info[i][j].OfferID, Info[i][j].TraderID, Info.Storehouse;
+            end
+            end
         end
     end
+    return -1, -1, -1;
 end
 
 ---
@@ -673,11 +683,13 @@ function BundleTradingFunctions.Global:RemoveOfferByIndex(_PlayerID, _TraderType
     local TraderID = self:GetTrader(_PlayerID, _TraderType);
     if TraderID ~= nil
     then
-        Logic.RemoveOffer(BuildingID, TraderID, _OfferIndex);
+        Logic.RemoveOffer(BuildingID, TraderID, _OfferIndex, 1);
     end
 end
 
 ---
+-- FIXME: Führt zum Spielabsturz.
+-- 
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
@@ -690,13 +702,14 @@ function BundleTradingFunctions.Global:RemoveOffer(_PlayerID, _GoodOrEntityType)
     local OfferID, TraderID, Storehouse = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
     if OfferID and TraderID and Storehouse
     then
-        Logic.RemoveOffer(Storehouse, TraderID, OfferID);
+        Logic.RemoveOffer(Storehouse, TraderID, OfferID, 1);
     end
 end
 
 ---
+-- FIXME: Setzt die Angebotsmenge immer auf 0.
+--
 -- Ändert die maximale Menge des Angebots im Händelrgebäude.
--- TODO Test this Shit!
 --
 -- @param _PlayerID	[number] Händlergebäude
 -- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
