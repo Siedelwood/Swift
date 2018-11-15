@@ -31,7 +31,7 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/travelingsalesman/qsb.lua")
+    Script.Load("E:/Repositories/symfonia/var/qsb.lua")
     API.Install()
 
     if Framework.IsNetworkGame() ~= true then
@@ -70,5 +70,6 @@ function Mission_FirstMapAction()
             {"U_MilitaryBow",3,},
         },
     }
-    API.ActivateTravelingSalesman(2, offers, nil, {"WP1", "WP2", "WP3", "WP4"}, nil);
+    API.TravelingSalesmanActivate(2, offers, {"WP1", "WP2", "WP3", "WP4"});
+    API.TravelingSalesmanDiplomacyOverride(2, false);
 end
