@@ -669,7 +669,8 @@ end
 -- wird das Komanndo für alle angegebenen Eingaben wiederholt.
 --
 -- Beispiel:
--- <code>
+--
+-- <pre>
 -- Eingabe:
 -- "win QuestA & QuestB && fail QuestC && stop QuestD & Quest E"
 --
@@ -680,8 +681,7 @@ end
 -- {"fail", "QuestC"}
 -- {"stop", "QuestD"}
 -- {"stop", "QuestE"}
--- }
--- <code>
+-- }</pre>
 --
 -- @return Table mit Tokens
 -- @within Internal

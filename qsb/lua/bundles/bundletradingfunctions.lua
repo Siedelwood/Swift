@@ -155,9 +155,9 @@ function API.RemoveOfferByIndex(_PlayerID, _TraderType, _OfferIndex)
 end
 
 ---
--- FIXME: Führt zum Spielabsturz.
+-- <p>FIXME: Führt zum Spielabsturz.</p>
 -- 
--- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
+-- <p>Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden</p>
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
 -- @param _PlayerID [number] Player ID
@@ -173,10 +173,9 @@ function API.RemoveOffer(_PlayerID, _GoodOrEntityType)
 end
 
 ---
--- FIXME: Setzt die Angebotsmenge immer auf 0.
+-- <p>FIXME: Setzt die Angebotsmenge immer auf 0.</p>
 -- 
--- Ändert die maximale Menge des Angebots im Händelrgebäude.
--- TODO Muss noch getestet werden!
+-- <p>Ändert die maximale Menge des Angebots im Händelrgebäude.</p>
 --
 -- @param _PlayerID	[number] Händlergebäude
 -- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
@@ -688,10 +687,10 @@ function BundleTradingFunctions.Global:RemoveOfferByIndex(_PlayerID, _TraderType
 end
 
 ---
--- FIXME: Führt zum Spielabsturz.
+-- <p>FIXME: Führt zum Spielabsturz.</p>
 -- 
--- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
--- ist. Es wird immer nur das erste Angebot des Typs entfernt.
+-- <p>Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
+-- ist. Es wird immer nur das erste Angebot des Typs entfernt.</p>
 --
 -- @param _PlayerID [number] Player ID
 -- @param _GoodorEntityType [number] Warentyp oder Entitytyp
@@ -707,9 +706,9 @@ function BundleTradingFunctions.Global:RemoveOffer(_PlayerID, _GoodOrEntityType)
 end
 
 ---
--- FIXME: Setzt die Angebotsmenge immer auf 0.
+-- <p>FIXME: Setzt die Angebotsmenge immer auf 0.</p>
 --
--- Ändert die maximale Menge des Angebots im Händelrgebäude.
+-- <p>Ändert die maximale Menge des Angebots im Händelrgebäude.</p>
 --
 -- @param _PlayerID	[number] Händlergebäude
 -- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
