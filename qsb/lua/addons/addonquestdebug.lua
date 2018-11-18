@@ -1079,7 +1079,7 @@ function AddOnQuestDebug.Global.OverwriteCreateQuests()
                     table.insert(Behaviors, Template:new(unpack(Parameters)));
                 end
 
-                API.AddQuest {
+                API.CreateQuest {
                     Name        = QuestName,
                     Sender      = QuestData[1],
                     Receiver    = QuestData[2],
