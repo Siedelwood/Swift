@@ -111,8 +111,7 @@ StartQuests = API.StartQuests;
 -- @param _Ancestor   [string] Vorgänger-Quest
 -- @param _AncestorWt [number] Wartezeit
 -- @param _Callback   [function] Callback
--- @return [number] QuestID
--- @return [table] Quest
+-- @return [string] QuestName
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -150,7 +149,8 @@ QuestMessage = API.CreateQuestMessage;
 -- </ul>
 --
 -- @param _Messages [table] Liste der anzuzeigenden Nachrichten
--- @return [table] List of generated Quests
+-- @return [string] Name des letzten Quest
+-- @return [table] Namensliste der Quests
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -166,17 +166,23 @@ function API.CreateQuestDialog(_Messages)
         return;
     end
 
-    local QuestID, Quest
+    table.insert(_Messages, {nil, 1, 1});
+
+    local QuestName;
     local GeneratedQuests = {};
     for i= 1, #_Messages, 1 do
         if i > 1 then
-            _Messages[i][4] = _Messages[i][4] or Quest.Identifier;
+            _Messages[i][4] = _Messages[i][4] or QuestName;
             _Messages[i][5] = _Messages[i][5] or 12;
+            -- Dauer unsichtbare Seite == Dauer letzter Textseite
+            if i == #_Messages and #_Messages[i-1] then
+                _Messages[i][5] = _Messages[i-1][5];
+            end
         end
-        QuestID, Quest = API.CreateQuestMessage(unpack(_Messages[i]));
-        table.insert(GeneratedQuests, {QuestID, Quest});
+        QuestName = API.CreateQuestMessage(unpack(_Messages[i]));
+        table.insert(GeneratedQuests, QuestName);
     end
-    return GeneratedQuests;
+    return GeneratedQuests[#GeneratedQuests], GeneratedQuests;
 end
 QuestDialog = API.CreateQuestDialog;
 
@@ -247,8 +253,7 @@ end
 -- @param _Ancestor   [string] Vorgänger-Quest
 -- @param _AncestorWt [number] Wartezeit
 -- @param _Callback   [function] Callback
--- @return [number] QuestID
--- @return [table] Quest
+-- @return [string] QuestName
 --
 -- @within Internal
 -- @local
@@ -258,35 +263,39 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
 
     -- Trigger-Nachbau
     local OnQuestOver = {
-        Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
-            if not _Data.QuestName then
-                return true;
+        Triggers.Custom2, {
+            {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
+                function(_Data)
+                if not _Data.QuestName then
+                    return true;
+                end
+                local QuestID = GetQuestID(_Data.QuestName);
+                if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
+                    _Data.WaitTimeTimer = _Data.WaitTimeTimer or API.RealTimeGetSecondsPassedSinceGameStart();
+                    if API.RealTimeGetSecondsPassedSinceGameStart() >= _Data.WaitTimeTimer + _Data.WaitTime then
+                        return true;
+                    end
+                end
+                return false;
             end
-            local QuestID = GetQuestID(_Data.QuestName);
-            if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
-                return true;
-            end
-            return false;
-        end}
-    }
+        }
+    };
 
     -- Lokalisierung
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
-    assert(type(_Text) == "string");
 
-    return QuestTemplate:New(
+    local _, CreatedQuest = QuestTemplate:New(
         "QSB_QuestMessage_" ..self.Data.QuestMessageID,
         (_Sender or 1),
         (_Receiver or 1),
-        {{ Objective.NoChange,}},
+        {{ Objective.Dummy,}},
         { OnQuestOver },
-        (_AncestorWt or 1),
-        nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil,
-        _Text, nil
+        0, nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil, _Text, nil
     );
+    return CreatedQuest.Identifier;
 end
 
 ---
