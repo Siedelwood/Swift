@@ -52,6 +52,8 @@ QSB = QSB or {};
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
 QSB.Version = "Symfonia Build 1311";
 
+QSB.RealTime_SecondsSinceGameStart = 0;
+
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
 g_QuestBehaviorTypes = {};
@@ -1142,7 +1144,6 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 -- @param _Description [string] Beschreibung des Hotkey
 -- @return [number] Index oder Fehlercode
 -- @within Anwenderfunktionen
--- @local
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
@@ -1159,7 +1160,6 @@ end
 --
 -- @param _Index [number] Index in Table
 -- @within Anwenderfunktionen
--- @local
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
@@ -1171,6 +1171,42 @@ function API.RemoveHotKey(_Index)
         return;
     end
     Core.Data.HotkeyDescriptions[_Index] = nil;
+end
+
+-- Echtzeit --------------------------------------------------------------------
+
+---
+-- Gibt die real vergangene Zeit seit dem Spielstart in Sekunden zurück.
+-- @return [number] Vergangene reale Zeit
+-- @within Anwenderfunktionen
+--
+function API.RealTimeGetSecondsPassedSinceGameStart()
+    return QSB.RealTime_SecondsSinceGameStart;
+end
+
+---
+-- Wartet die angebene Zeit in realen Sekunden und führt anschließend das
+-- Callback aus.
+--
+-- Hinweis: Einmal gestartet, kann wait nicht beendet werden.
+--
+-- @param _Waittime Wartezeit in realen Sekunden
+-- @param _Action [function] Callback-Funktion
+-- @param ... [mixed..] Liste der Argumente
+-- @return [number] Vergangene reale Zeit
+-- @within Anwenderfunktionen
+--
+function API.RealTimeWait(_Waittime, _Action, ...)
+    StartSimpleJobEx( function(_StartTime, _Delay, _Callback, _Arguments)
+        if (QSB.RealTime_SecondsSinceGameStart >= _StartTime + _Delay) then
+            if #_Arguments > 0 then
+                _Callback(unpack(_Arguments));
+            else
+                _Callback();
+            end
+            return true;
+        end
+    end, QSB.RealTime_SecondsSinceGameStart, _Waittime, _Action, {...});
 end
 
 -- -------------------------------------------------------------------------- --
@@ -1202,6 +1238,8 @@ function Core:InitalizeBundles()
         self:SetupGlobal_HackQuestSystem();
     else
         self:SetupLocal_HackRegisterHotkey();
+
+        StartSimpleJobEx(CoreJob_Local_CalculateRealTimeSinceGameStart);
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
@@ -1686,4 +1724,27 @@ function Core:ToBoolean(_Input)
         return false;
     end
     return false;
+end
+
+-- Jobs ------------------------------------------------------------------------
+
+-- Dieser Job ermittelt automatisch, ob eine Sekunde reale Zeit vergangen ist
+-- und zählt eine Variable hoch, die die gesamt verstrichene reale Zeit hält.
+
+function CoreJob_Local_CalculateRealTimeSinceGameStart()
+    if not GUI then
+        return true;
+    end
+
+    if not QSB.RealTime_LastTimeStamp then
+        QSB.RealTime_LastTimeStamp = XGUIEng.GetSystemTime();
+    end
+    local CurrentTimeStamp = XGUIEng.GetSystemTime();
+    -- Eine Sekunde ist vergangen
+    if QSB.RealTime_LastTimeStamp+1 <= CurrentTimeString then
+        QSB.RealTime_LastTimeStamp = CurrentTimeString;
+        -- Aktualisiere Spielzeit
+        QSB.RealTime_SecondsSinceGameStart = QSB.RealTime_SecondsSinceGameStart +1;
+        API.Bridge("QSB.RealTime_SecondsSinceGameStart = " ..RealTime_SecondsSinceGameStart);
+    end
 end
