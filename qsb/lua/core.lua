@@ -1735,7 +1735,11 @@ end
 
 function CoreJob_CalculateRealTimeSinceGameStart()
     if not QSB.RealTime_LastTimeStamp then
-        QSB.RealTime_LastTimeStamp = XGUIEng.GetSystemTime();
+        if GUI then
+            QSB.RealTime_LastTimeStamp = XGUIEng.GetSystemTime();
+        else
+            QSB.RealTime_LastTimeStamp = Framework.TimeGetTime();
+        end
     end
 
     local CurrentTimeStamp;
@@ -1746,8 +1750,8 @@ function CoreJob_CalculateRealTimeSinceGameStart()
     end
 
     -- Eine Sekunde ist vergangen
-    if QSB.RealTime_LastTimeStamp+1 <= CurrentTimeString then
-        QSB.RealTime_LastTimeStamp = CurrentTimeString;
+    if QSB.RealTime_LastTimeStamp+1 <= CurrentTimeStamp then
+        QSB.RealTime_LastTimeStamp = CurrentTimeStamp;
         QSB.RealTime_SecondsSinceGameStart = QSB.RealTime_SecondsSinceGameStart +1;
     end
 end
