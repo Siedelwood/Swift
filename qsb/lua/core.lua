@@ -1236,10 +1236,12 @@ function Core:InitalizeBundles()
     if not GUI then
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
+
+        StartSimpleJobEx(CoreJob_CalculateRealTimeSinceGameStart);
     else
         self:SetupLocal_HackRegisterHotkey();
 
-        StartSimpleJobEx(CoreJob_Local_CalculateRealTimeSinceGameStart);
+        StartSimpleJobEx(CoreJob_CalculateRealTimeSinceGameStart);
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
@@ -1731,20 +1733,21 @@ end
 -- Dieser Job ermittelt automatisch, ob eine Sekunde reale Zeit vergangen ist
 -- und zählt eine Variable hoch, die die gesamt verstrichene reale Zeit hält.
 
-function CoreJob_Local_CalculateRealTimeSinceGameStart()
-    if not GUI then
-        return true;
-    end
-
+function CoreJob_CalculateRealTimeSinceGameStart()
     if not QSB.RealTime_LastTimeStamp then
         QSB.RealTime_LastTimeStamp = XGUIEng.GetSystemTime();
     end
-    local CurrentTimeStamp = XGUIEng.GetSystemTime();
+
+    local CurrentTimeStamp;
+    if GUI then
+        CurrentTimeStamp = XGUIEng.GetSystemTime();
+    else
+        CurrentTimeStamp = Framework.TimeGetTime();
+    end
+
     -- Eine Sekunde ist vergangen
     if QSB.RealTime_LastTimeStamp+1 <= CurrentTimeString then
         QSB.RealTime_LastTimeStamp = CurrentTimeString;
-        -- Aktualisiere Spielzeit
         QSB.RealTime_SecondsSinceGameStart = QSB.RealTime_SecondsSinceGameStart +1;
-        API.Bridge("QSB.RealTime_SecondsSinceGameStart = " ..RealTime_SecondsSinceGameStart);
     end
 end
