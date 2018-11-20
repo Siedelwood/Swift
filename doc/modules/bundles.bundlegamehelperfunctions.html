@@ -61,6 +61,7 @@
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
@@ -117,10 +118,6 @@
 	<td class="summary">Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AllowFestival">API.AllowFestival (_PlayerID)</a></td>
-	<td class="summary">Erlaubt ein normales Fest und gibt die Technologie frei.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.ChangeTerrainHeightInSquare">API.ChangeTerrainHeightInSquare (_Center, _Offset, _Hight, _Relative)</a></td>
 	<td class="summary">Ändert die Landhöhe in einem Quadrat.</td>
 	</tr>
@@ -153,29 +150,8 @@
 	<td class="summary">Deaktiviert die Tastenkombination zum Einschalten der Cheats.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ForbidFestival">API.ForbidFestival (_PlayerID)</a></td>
-	<td class="summary">Verbietet ein normales Fest und sperrt die Technologie.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.ForbidSaveGame">API.ForbidSaveGame (_Flag)</a></td>
 	<td class="summary">Sperrt das Speichern von Spielständen oder gibt es wieder frei.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GetControllingPlayer">API.GetControllingPlayer ()</a></td>
-	<td class="summary">Gibt die ID des kontrollierenden Spielers zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetControllingPlayer">API.SetControllingPlayer (_OldID, _NewID, _NewName, _RetainKnight)</a></td>
-	<td class="summary">Wechselt die Spieler ID des menschlichen Spielers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetEarningsOfPlayerCity">API.SetEarningsOfPlayerCity (_PlayerID, _Earnings)</a></td>
-	<td class="summary">Setzt die Einnahmen für alle Stadtgebäude eines Spielers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetNeedSatisfaction">API.SetNeedSatisfaction (_Need, _State, _PlayerID)</a></td>
-	<td class="summary">Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
- des angegebenen Spielers.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SpeedLimitActivate">API.SpeedLimitActivate (_Flag)</a></td>
@@ -184,14 +160,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.SpeedLimitSet">API.SpeedLimitSet (_Limit)</a></td>
 	<td class="summary">Setzt die Obergrenze für die Spielgeschwindigkeit fest.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartCityUpgradeFestival">API.StartCityUpgradeFestival (_PlayerID)</a></td>
-	<td class="summary">Startet ein Beförderungsfest für den Spieler.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartNormalFestival">API.StartNormalFestival (_PlayerID)</a></td>
-	<td class="summary">Startet ein Fest für den Spieler.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.ThridPersonActivate">API.ThridPersonActivate (_Hero, _MaxZoom)</a></td>
@@ -224,20 +192,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.TimeLineYield">API.TimeLineYield (_ID)</a></td>
 	<td class="summary">Hält einen Zeitstrahl an.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UndiscoverTerritories">API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</a></td>
-	<td class="summary">Entfernt alle Territorien einer Partei aus der Liste der entdeckten
- Territorien.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UndiscoverTerritory">API.UndiscoverTerritory (_PlayerID, _TerritoryID)</a></td>
-	<td class="summary">Entfernt ein Territorium für den angegebenen Spieler aus der Liste
- der entdeckten Territorien.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnlockTitleForPlayer">API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</a></td>
-	<td class="summary">Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
@@ -275,10 +229,6 @@
 	<td class="summary">Deaktiviert den erweiterten Zoom.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:GetControllingPlayer">BundleGameHelperFunctions.Global:GetControllingPlayer ()</a></td>
-	<td class="summary">Gibt die ID des kontrollierenden Spielers zurück.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain">BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain (_Center, _Offset)</a></td>
 	<td class="summary">Gibt ein Quadrat für Land- und Wassermanipulation zurück.</td>
 	</tr>
@@ -291,11 +241,6 @@
 	<td class="summary">Initialisiert den erweiterten Zoom.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:InitFestival">BundleGameHelperFunctions.Global:InitFestival ()</a></td>
-	<td class="summary">Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
- werden kann.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:Install">BundleGameHelperFunctions.Global:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
@@ -306,23 +251,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:RessurectCheats">BundleGameHelperFunctions.Global:RessurectCheats ()</a></td>
 	<td class="summary">Aktiviert die Tastenkombination zum Einschalten der Cheats.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:RestrictFestivalForPlayer">BundleGameHelperFunctions.Global:RestrictFestivalForPlayer (_PlayerID, _Index, _Flag)</a></td>
-	<td class="summary">Erlaubt oder verbietet ein Fest für den angegebenen Spieler.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:SetControllingPlayer">BundleGameHelperFunctions.Global:SetControllingPlayer (_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)</a></td>
-	<td class="summary">Wechselt die Spieler ID des menschlichen Spielers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity">BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity (_PlayerID, _Earnings)</a></td>
-	<td class="summary">Setzt die Einnahmen für alle Stadtgebäude eines Spielers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel">BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel (_Need, _State, _PlayerID)</a></td>
-	<td class="summary">Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
- des angegebenen Spielers.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:StopFollowKnightSave">BundleGameHelperFunctions.Global:StopFollowKnightSave (_JobID)</a></td>
@@ -350,20 +278,6 @@
 	<td class="summary">Schaltet zwischen dem normalen und dem erweiterten Zoom um.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:UndiscoverTerritories">BundleGameHelperFunctions.Global:UndiscoverTerritories (_PlayerID, _TargetPlayerID)</a></td>
-	<td class="summary">Entfernt alle Territorien einer Partei aus der Liste der entdeckten
- Territorien.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:UndiscoverTerritory">BundleGameHelperFunctions.Global:UndiscoverTerritory (_PlayerID, _TerritoryID)</a></td>
-	<td class="summary">Entfernt ein Territorium für den angegebenen Spieler aus der Liste
- der entdeckten Territorien.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:UnlockTitleForPlayer">BundleGameHelperFunctions.Global:UnlockTitleForPlayer (_PlayerID, _KnightTitle)</a></td>
-	<td class="summary">Entsperrt einen gesperrten Titel für den Spieler.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:ActivateExtendedZoom">BundleGameHelperFunctions.Local:ActivateExtendedZoom ()</a></td>
 	<td class="summary">Erweitert die Zoomrestriktion auf das Maximum.</td>
 	</tr>
@@ -382,10 +296,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:DisplaySaveButtons">BundleGameHelperFunctions.Local:DisplaySaveButtons (_Flag)</a></td>
 	<td class="summary">Zeigt oder versteckt die Speicherbuttons im Spielmenü.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:InitForbidFestival">BundleGameHelperFunctions.Local:InitForbidFestival ()</a></td>
-	<td class="summary"></td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:InitForbidSaveGame">BundleGameHelperFunctions.Local:InitForbidSaveGame ()</a></td>
@@ -511,28 +421,6 @@
     <ul>
         <li><span class="parameter">_Flag</span>
          [boolean] Erweiterter Zoom gestattet
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.AllowFestival"></a>
-    <strong>API.AllowFestival (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Erlaubt ein normales Fest und gibt die Technologie frei.
-<p> <p><b>Alias:</b> AllowFestival</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Spieler
         </li>
     </ul>
 
@@ -787,28 +675,6 @@
 
 </dd>
     <dt>
-    <a name = "API.ForbidFestival"></a>
-    <strong>API.ForbidFestival (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Verbietet ein normales Fest und sperrt die Technologie.
-<p> <p><b>Alias:</b> ForbidFestival</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Spieler
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "API.ForbidSaveGame"></a>
     <strong>API.ForbidSaveGame (_Flag)</strong>
     </dt>
@@ -822,117 +688,6 @@
     <ul>
         <li><span class="parameter">_Flag</span>
          [boolean] Speichern gesperrt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GetControllingPlayer"></a>
-    <strong>API.GetControllingPlayer ()</strong>
-    </dt>
-    <dd>
-    Gibt die ID des kontrollierenden Spielers zurück.  Der erste als menschlich
- definierte Spieler wird als kontrollierender Spieler angenommen.
-<p> <p><b>Alias:</b> PlayerGetPlayerID</p>
-
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] PlayerID
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SetControllingPlayer"></a>
-    <strong>API.SetControllingPlayer (_OldID, _NewID, _NewName, _RetainKnight)</strong>
-    </dt>
-    <dd>
-    Wechselt die Spieler ID des menschlichen Spielers.  Die neue ID muss
- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
- Mode verwendet werden.
-<p> <p><b>Alias:</b> PlayerSetPlayerID</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_OldID</span>
-         [number] Alte ID des menschlichen Spielers
-        </li>
-        <li><span class="parameter">_NewID</span>
-         [number] Neue ID des menschlichen Spielers
-        </li>
-        <li><span class="parameter">_NewName</span>
-         [string] Name in der Statistik
-        </li>
-        <li><span class="parameter">_RetainKnight</span>
-         [boolean] Ritter mitnehmen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SetEarningsOfPlayerCity"></a>
-    <strong>API.SetEarningsOfPlayerCity (_PlayerID, _Earnings)</strong>
-    </dt>
-    <dd>
-    Setzt die Einnahmen für alle Stadtgebäude eines Spielers.  Stadtgebäude
- können nur Einnahmen zwischen 0 und 100 Talern haben.
-<p> <p><b>Alias:</b> SetPlayerEarnings</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Partei oder nil für alle
-        </li>
-        <li><span class="parameter">_Earnings</span>
-         [number] Einnahmen [0 | 100]
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.SetNeedSatisfaction"></a>
-    <strong>API.SetNeedSatisfaction (_Need, _State, _PlayerID)</strong>
-    </dt>
-    <dd>
-    Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
- des angegebenen Spielers.  Der Befriedigungsstatus ist eine Zahl
- zwischen 0.0 und 1.0.
-<p> <p><b>Alias:</b> SetNeedSatisfactionLevel</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Need</span>
-         [number] Bedürfnis
-        </li>
-        <li><span class="parameter">_State</span>
-         [number] Erfüllung des Bedürfnisses
-        </li>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Partei oder -1 für alle
         </li>
     </ul>
 
@@ -978,52 +733,6 @@
     <ul>
         <li><span class="parameter">_Limit</span>
          [number] Obergrenze
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StartCityUpgradeFestival"></a>
-    <strong>API.StartCityUpgradeFestival (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Startet ein Beförderungsfest für den Spieler.  Ist dieser Typ
- von Fest für den Spieler verboten, wird er automatisch erlaubt.
-<p> <p><b>Alias:</b> StartCityUpgradeFestival</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Spieler
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StartNormalFestival"></a>
-    <strong>API.StartNormalFestival (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Startet ein Fest für den Spieler.  Ist dieser Typ von Fest für
- den Spieler verboten, wird er automatisch erlaubt.
-<p> <p><b>Alias:</b> StartNormalFestival</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Spieler
         </li>
     </ul>
 
@@ -1210,83 +919,6 @@
     <ul>
         <li><span class="parameter">_ID</span>
          [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UndiscoverTerritories"></a>
-    <strong>API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</strong>
-    </dt>
-    <dd>
-    Entfernt alle Territorien einer Partei aus der Liste der entdeckten
- Territorien.  Als Nebeneffekt gild die Partei als unentdeckt.
-<p> <p><b>Alias:</b> UndiscoverTerritories</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Spieler-ID
-        </li>
-        <li><span class="parameter">_TargetPlayerID</span>
-         [number] Zielpartei
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UndiscoverTerritory"></a>
-    <strong>API.UndiscoverTerritory (_PlayerID, _TerritoryID)</strong>
-    </dt>
-    <dd>
-    Entfernt ein Territorium für den angegebenen Spieler aus der Liste
- der entdeckten Territorien.
-<p> <p><b>Alias:</b> UndiscoverTerritory</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Spieler-ID
-        </li>
-        <li><span class="parameter">_TerritoryID</span>
-         [number] Territorium-ID
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UnlockTitleForPlayer"></a>
-    <strong>API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</strong>
-    </dt>
-    <dd>
-    Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.
-<p> <p><b>Alias:</b> UnlockTitleForPlayer</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Zielpartei
-        </li>
-        <li><span class="parameter">_KnightTitle</span>
-         [number] Titel zum Entsperren
         </li>
     </ul>
 
@@ -1494,27 +1126,6 @@
 
 </dd>
     <dt>
-    <a name = "BundleGameHelperFunctions.Global:GetControllingPlayer"></a>
-    <strong>BundleGameHelperFunctions.Global:GetControllingPlayer ()</strong>
-    </dt>
-    <dd>
-    Gibt die ID des kontrollierenden Spielers zurück.  Der erste als menschlich
- definierte Spieler wird als kontrollierender Spieler angenommen.
-
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] PlayerID
-    </ol>
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain"></a>
     <strong>BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain (_Center, _Offset)</strong>
     </dt>
@@ -1581,21 +1192,6 @@
 
 </dd>
     <dt>
-    <a name = "BundleGameHelperFunctions.Global:InitFestival"></a>
-    <strong>BundleGameHelperFunctions.Global:InitFestival ()</strong>
-    </dt>
-    <dd>
-    Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
- werden kann.
-
-
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleGameHelperFunctions.Global:Install"></a>
     <strong>BundleGameHelperFunctions.Global:Install ()</strong>
     </dt>
@@ -1631,119 +1227,6 @@
     Aktiviert die Tastenkombination zum Einschalten der Cheats.
 
 
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Global:RestrictFestivalForPlayer"></a>
-    <strong>BundleGameHelperFunctions.Global:RestrictFestivalForPlayer (_PlayerID, _Index, _Flag)</strong>
-    </dt>
-    <dd>
-    Erlaubt oder verbietet ein Fest für den angegebenen Spieler.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] ID des Spielers
-        </li>
-        <li><span class="parameter">_Index</span>
-            Index des Fest
-        </li>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Erlauben/verbieten
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Global:SetControllingPlayer"></a>
-    <strong>BundleGameHelperFunctions.Global:SetControllingPlayer (_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)</strong>
-    </dt>
-    <dd>
-    Wechselt die Spieler ID des menschlichen Spielers.  Die neue ID muss
- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
- Mode verwendet werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_oldPlayerID</span>
-         [number]Alte ID des menschlichen Spielers
-        </li>
-        <li><span class="parameter">_newPlayerID</span>
-         [number]Neue ID des menschlichen Spielers
-        </li>
-        <li><span class="parameter">_newNameForStatistics</span>
-         [string]Name in der Statistik
-        </li>
-        <li><span class="parameter">_retainPrimaryKnight</span>
-         [boolean]Ritter mitnehmen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity"></a>
-    <strong>BundleGameHelperFunctions.Global:SetEarningsOfPlayerCity (_PlayerID, _Earnings)</strong>
-    </dt>
-    <dd>
-    Setzt die Einnahmen für alle Stadtgebäude eines Spielers.  Stadtgebäude
- können nur Einnahmen zwischen 0 und 100 Talern haben.
-<p> <b>Alias:</b> SetPlayerEarnings
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Partei oder nil für alle
-        </li>
-        <li><span class="parameter">_Earnings</span>
-         [number] Einnahmen [0 | 100]
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel"></a>
-    <strong>BundleGameHelperFunctions.Global:SetNeedSatisfactionLevel (_Need, _State, _PlayerID)</strong>
-    </dt>
-    <dd>
-    Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
- des angegebenen Spielers.  Der Befriedigungsstatus ist eine Zahl
- zwischen 0.0 und 1.0.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Need</span>
-         [number] Bedürfnis
-        </li>
-        <li><span class="parameter">_State</span>
-         [number] Erfüllung des Bedürfnisses
-        </li>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Partei oder -1 für alle
-        </li>
-    </ul>
 
 
 
@@ -1859,78 +1342,6 @@
 
 </dd>
     <dt>
-    <a name = "BundleGameHelperFunctions.Global:UndiscoverTerritories"></a>
-    <strong>BundleGameHelperFunctions.Global:UndiscoverTerritories (_PlayerID, _TargetPlayerID)</strong>
-    </dt>
-    <dd>
-    Entfernt alle Territorien einer Partei aus der Liste der entdeckten
- Territorien.  Als Nebeneffekt gild die Partei als unentdeckt-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Spieler-ID
-        </li>
-        <li><span class="parameter">_TargetPlayerID</span>
-         [number] Zielpartei
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Global:UndiscoverTerritory"></a>
-    <strong>BundleGameHelperFunctions.Global:UndiscoverTerritory (_PlayerID, _TerritoryID)</strong>
-    </dt>
-    <dd>
-    Entfernt ein Territorium für den angegebenen Spieler aus der Liste
- der entdeckten Territorien.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Spieler-ID
-        </li>
-        <li><span class="parameter">_TerritoryID</span>
-         [number] Territorium-ID
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Global:UnlockTitleForPlayer"></a>
-    <strong>BundleGameHelperFunctions.Global:UnlockTitleForPlayer (_PlayerID, _KnightTitle)</strong>
-    </dt>
-    <dd>
-    Entsperrt einen gesperrten Titel für den Spieler.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Zielpartei
-        </li>
-        <li><span class="parameter">_KnightTitle</span>
-         [number] Titel zum Entsperren
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleGameHelperFunctions.Local:ActivateExtendedZoom"></a>
     <strong>BundleGameHelperFunctions.Local:ActivateExtendedZoom ()</strong>
     </dt>
@@ -2008,20 +1419,6 @@
          [boolean] Speicherbuttons sichtbar
         </li>
     </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Local:InitForbidFestival"></a>
-    <strong>BundleGameHelperFunctions.Local:InitForbidFestival ()</strong>
-    </dt>
-    <dd>
-
-
-
 
 
 
@@ -2423,7 +1820,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-11-16 13:27:12 </i>
+<i style="float:right;">Last updated 2018-11-20 23:02:47 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
