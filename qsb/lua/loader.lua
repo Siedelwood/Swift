@@ -65,6 +65,7 @@ SymfoniaLoader = {
             {"BundleInteractiveObjects",            true},
             {"BundleSaveGameTools",                 true},
             {"BundleSymfoniaBehaviors",             true},
+            {"BundlePlayerHelperFunctions",         true},
         },
 
         AddOnLoadOrder = {
