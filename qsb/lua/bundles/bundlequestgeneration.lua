@@ -108,21 +108,21 @@ StartQuests = API.StartQuests;
 -- @param _Text       [string] Anzeigetext der Nachricht
 -- @param _Sender     [number] Sender der Nachricht
 -- @param _Receiver   [number] Receiver der Nachricht
--- @param _Ancestor   [string] Vorgänger-Quest
 -- @param _AncestorWt [number] Wartezeit
 -- @param _Callback   [function] Callback
+-- @param _Ancestor   [string] Vorgänger-Quest
 -- @return [string] QuestName
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- API.CreateQuestMessage("Das ist ein Text", 4, 1);
 --
-function API.CreateQuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+function API.CreateQuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)
     if GUI then
         API.Log("API.CreateQuestMessage: Could not execute in local script!");
         return;
     end
-    return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback);
+    return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
 end
 QuestMessage = API.CreateQuestMessage;
 
@@ -155,6 +155,8 @@ QuestMessage = API.CreateQuestMessage;
 --
 -- @usage
 -- API.CreateQuestDialog{
+--     PreviousQuestName = "SomeQuestName",
+--     PreviousQuestDelay = 12,
 --     {"Hallo, wie geht es dir?", 4, 1},
 --     {"Mir geht es gut, wie immer!", 1, 1},
 --     {"Das ist doch schön.", 4, 1},
@@ -171,13 +173,15 @@ function API.CreateQuestDialog(_Messages)
     local QuestName;
     local GeneratedQuests = {};
     for i= 1, #_Messages, 1 do
+        _Messages[i][4] = _Messages[i][4] or 12;
         if i > 1 then
-            _Messages[i][4] = _Messages[i][4] or QuestName;
-            _Messages[i][5] = _Messages[i][5] or 12;
-            -- Dauer unsichtbare Seite == Dauer letzter Textseite
-            if i == #_Messages and #_Messages[i-1] then
-                _Messages[i][5] = _Messages[i-1][5];
-            end
+            _Messages[i][6] = _Messages[i][6] or QuestName;
+        else
+            _Messages[i][6] = _Messages.PreviousQuestName;
+            _Messages[i][4] = _Messages.PreviousQuestDelay or 0;
+        end
+        if i == #_Messages and #_Messages[i-1] then
+            _Messages[i][4] = _Messages[i-1][4];
         end
         QuestName = API.CreateQuestMessage(unpack(_Messages[i]));
         table.insert(GeneratedQuests, QuestName);
@@ -250,15 +254,15 @@ end
 -- @param _Text       [string] Anzeigetext der Nachricht
 -- @param _Sender     [number] Sender der Nachricht
 -- @param _Receiver   [number] Receiver der Nachricht
--- @param _Ancestor   [string] Vorgänger-Quest
 -- @param _AncestorWt [number] Wartezeit
 -- @param _Callback   [function] Callback
+-- @param _Ancestor   [string] Vorgänger-Quest
 -- @return [string] QuestName
 --
 -- @within Internal
 -- @local
 --
-function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)
     self.Data.QuestMessageID = self.Data.QuestMessageID +1;
 
     -- Trigger-Nachbau
@@ -266,11 +270,12 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
         Triggers.Custom2, {
             {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
                 function(_Data)
+                local QuestID = GetQuestID(_Data.QuestName);
                 if not _Data.QuestName then
+                    API.Note("Quest " .._Data.Identifier.. " finished!");
                     return true;
                 end
-                local QuestID = GetQuestID(_Data.QuestName);
-                if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
+                if (Quests[QuestID] and Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
                     _Data.WaitTimeTimer = _Data.WaitTimeTimer or API.RealTimeGetSecondsPassedSinceGameStart();
                     if API.RealTimeGetSecondsPassedSinceGameStart() >= _Data.WaitTimeTimer + _Data.WaitTime then
                         return true;
@@ -291,7 +296,7 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
         "QSB_QuestMessage_" ..self.Data.QuestMessageID,
         (_Sender or 1),
         (_Receiver or 1),
-        {{ Objective.Dummy,}},
+        { {Objective.Dummy} },
         { OnQuestOver },
         0, nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil, _Text, nil
     );
