@@ -91,18 +91,18 @@ end
 -- den Spieler zurück. Es wird immer das erste Angebot zurückgegeben.
 --
 -- @param _PlayerID [number] Player ID
--- @param _GoodType [number] Warentyp oder Entitytyp
+-- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
 -- @return [number] ID des Angebots
 -- @return [number] ID des Händlers im Gebäude
 -- @return [number] Entity ID des Lagerhaus
 -- @within Anwenderfunktionen
 --
-function API.GetOfferAndTrader(_PlayerID, _GoodorEntityType)
+function API.GetOfferAndTrader(_PlayerID, _GoodOrEntityType)
     if GUI then
         API.Log("Can not execute API.GetOfferAndTrader in local script!");
         return;
     end
-    return BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodorEntityType);
+    return BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
 end
 
 ---
@@ -161,7 +161,7 @@ end
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
 -- @param _PlayerID [number] Player ID
--- @param _GoodorEntityType [number] Warentyp oder Entitytyp
+-- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
 -- @within Anwenderfunktionen
 --
 function API.RemoveOffer(_PlayerID, _GoodOrEntityType)
@@ -390,7 +390,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     ---
     -- Erzeugt ein Handelsangebot für Söldner und gibt die ID zurück.
     --
-    -- @param _Merchant [number] Handelsgebäude
+    -- @param _Mercenary [number] Handelsgebäude
     -- @param _Amount [number] Anzahl an Angeboten
     -- @param _Type [number] Soldatentyp
     -- @param _RefreshRate [number] Erneuerungsrate
@@ -593,19 +593,19 @@ end
 -- den Spieler zurück. Es wird immer das erste Angebot zurückgegeben.
 --
 -- @param _PlayerID [number] Player ID
--- @param _GoodType [number] Warentyp oder Entitytyp
+-- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
 -- @return [number] Offer ID
 -- @return [number] Trader ID
 -- @return [number] Storehouse ID
 -- @within Internal
 -- @local
 --
-function BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodorEntityType)
+function BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType)
     local Info = self:GetOfferInformation(_PlayerID);
     if Info then
         for i=1, #Info, 1 do
             for j=1, #Info[i], 1 do
-            if Info[i][j].GoodType == _GoodorEntityType then
+            if Info[i][j].GoodType == _GoodOrEntityType then
                 return Info[i][j].OfferID, Info[i][j].TraderID, Info.Storehouse;
             end
             end
@@ -693,7 +693,7 @@ end
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.</p>
 --
 -- @param _PlayerID [number] Player ID
--- @param _GoodorEntityType [number] Warentyp oder Entitytyp
+-- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
 -- @within Internal
 -- @local
 --
