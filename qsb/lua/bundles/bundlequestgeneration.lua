@@ -155,8 +155,9 @@ QuestMessage = API.CreateQuestMessage;
 --
 -- @usage
 -- API.CreateQuestDialog{
---     PreviousQuestName = "SomeQuestName",
---     PreviousQuestDelay = 12,
+--     Ancestor = "SomeQuestName",
+--     Delay = 12,
+--
 --     {"Hallo, wie geht es dir?", 4, 1},
 --     {"Mir geht es gut, wie immer!", 1, 1},
 --     {"Das ist doch schön.", 4, 1},
@@ -168,7 +169,7 @@ function API.CreateQuestDialog(_Messages)
         return;
     end
 
-    table.insert(_Messages, {nil, 1, 1});
+    table.insert(_Messages, {"KEY(NO_MESSAGE)", 1, 1});
 
     local QuestName;
     local GeneratedQuests = {};
@@ -177,13 +178,13 @@ function API.CreateQuestDialog(_Messages)
         if i > 1 then
             _Messages[i][6] = _Messages[i][6] or QuestName;
         else
-            _Messages[i][6] = _Messages.PreviousQuestName;
-            _Messages[i][4] = _Messages.PreviousQuestDelay or 0;
+            _Messages[i][6] = _Messages[i][6] or _Messages.Ancestor;
+            _Messages[i][4] = _Messages.Delay or 0;
         end
         if i == #_Messages and #_Messages[i-1] then
             _Messages[i][4] = _Messages[i-1][4];
         end
-        QuestName = API.CreateQuestMessage(unpack(_Messages[i]));
+        QuestName = BundleQuestGeneration.Global:QuestMessage(unpack(_Messages[i]));
         table.insert(GeneratedQuests, QuestName);
     end
     return GeneratedQuests[#GeneratedQuests], GeneratedQuests;
@@ -291,6 +292,7 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
         _Text = _Text[Language];
     end
 
+    -- Quest erzeugen
     local _, CreatedQuest = QuestTemplate:New(
         "QSB_QuestMessage_" ..self.Data.QuestMessageID,
         (_Sender or 1),

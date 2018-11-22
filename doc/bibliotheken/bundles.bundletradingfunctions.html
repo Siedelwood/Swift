@@ -1,0 +1,694 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Symfonia</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Originalfunktionen">Originalfunktionen</a></li>
+</ul>
+
+
+<h2>Bibliotheken</h2>
+<ul class="nowrap">
+  <li><a href="../bibliotheken/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../bibliotheken/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../bibliotheken/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../bibliotheken/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../bibliotheken/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../bibliotheken/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../bibliotheken/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../bibliotheken/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../bibliotheken/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../bibliotheken/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../bibliotheken/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../bibliotheken/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../bibliotheken/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><strong>bundles.bundletradingfunctions</strong></li>
+  <li><a href="../bibliotheken/core.html">core</a></li>
+  <li><a href="../bibliotheken/loader.html">loader</a></li>
+  <li><a href="../bibliotheken/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundletradingfunctions</code></h1>
+<p>Dieses Bundle bietet einige (experientelle) Funktionen zum untersuchen und
+ zur Manipulation von Handelsangeboten.</p>
+<p> Die bekannten Funktionen, wie z.B.
+ AddOffer, werden erweitert, sodass sie Angebote für einen Spieler mit einer
+ anderen ID als 1 erstellen können.
+ Zudem wird ein fliegender Händler angeboten, der periodisch den Hafen mit
+ einem Schiff anfährt. Dabei kann der Fahrtweg frei mit Wegpunkten bestimmt
+ werden. Es können auch mehrere Spieler zu Händlern gemacht werden.
+<p> <p><a href="#API.TravelingSalesmanActivate">Schiffshändler aktivieren</a></p>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.GetOfferAndTrader">API.GetOfferAndTrader (_PlayerID, _GoodOrEntityType)</a></td>
+	<td class="summary">Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
+ den Spieler zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetOfferCount">API.GetOfferCount (_PlayerID)</a></td>
+	<td class="summary">Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetOfferInformation">API.GetOfferInformation (_PlayerID)</a></td>
+	<td class="summary">Gibt die Handelsinformationen des Spielers aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetTrader">API.GetTrader (_BuildingID, _TraderType)</a></td>
+	<td class="summary">Gibt den Händler des Typs in dem Gebäude zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetTraderType">API.GetTraderType (_BuildingID, _TraderID)</a></td>
+	<td class="summary">Gibt den Typ des Händlers mit der ID im Gebäude zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ModifyTraderOffer">API.ModifyTraderOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</a></td>
+	<td class="summary"><p>FIXME: Setzt die Angebotsmenge immer auf 0.</p>
+
+ <p>Ändert die maximale Menge des Angebots im Händelrgebäude.</p></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.RemoveOffer">API.RemoveOffer (_PlayerID, _GoodOrEntityType)</a></td>
+	<td class="summary"><p>FIXME: Führt zum Spielabsturz.</p>
+
+ <p>Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden</p>
+ ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.RemoveOfferByIndex">API.RemoveOfferByIndex (_PlayerID, _TraderType, _OfferIndex)</a></td>
+	<td class="summary">Entfernt das Angebot mit dem Index für den Händler im Handelsgebäude
+ des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance)</a></td>
+	<td class="summary">Erstellt einen fliegenden Händler mit zufälligen Angeboten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanDeactivate">API.TravelingSalesmanDeactivate (_PlayerID)</a></td>
+	<td class="summary">Zerstört den fliegenden Händler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanDiplomacyOverride">API.TravelingSalesmanDiplomacyOverride (_PlayerID, _Flag)</a></td>
+	<td class="summary">Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
+ Hafen überschrieben werden.</td>
+	</tr>
+</table>
+<h2><a href="#Originalfunktionen">Originalfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AddEntertainerOffer">AddEntertainerOffer (_Merchant, _EntertainerType, _optionalPlayersPlayerID)</a></td>
+	<td class="summary">Erzeugt ein Handelsangebot für Entertainer und gibt die
+ ID zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddMercenaryOffer">AddMercenaryOffer (_Mercenary, _Amount, _Type, _RefreshRate, _optionalPlayersPlayerID)</a></td>
+	<td class="summary">Erzeugt ein Handelsangebot für Söldner und gibt die ID zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOffer">AddOffer (_Merchant, _NumberOfOffers, _GoodType, _RefreshRate, _optionalPlayersPlayerID)</a></td>
+	<td class="summary">Erzeugt ein Handelsangebot für Waren und gibt die ID zurück.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.GetOfferAndTrader"></a>
+    <strong>API.GetOfferAndTrader (_PlayerID, _GoodOrEntityType)</strong>
+    </dt>
+    <dd>
+    Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
+ den Spieler zurück.  Es wird immer das erste Angebot zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Player ID
+        </li>
+        <li><span class="parameter">_GoodOrEntityType</span>
+         [number] Warentyp oder Entitytyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        [number] ID des Angebots</li>
+        <li>
+        [number] ID des Händlers im Gebäude</li>
+        <li>
+        [number] Entity ID des Lagerhaus</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetOfferCount"></a>
+    <strong>API.GetOfferCount (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück.  Wenn
+ der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Anzahl angebote
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetOfferInformation"></a>
+    <strong>API.GetOfferInformation (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die Handelsinformationen des Spielers aus.  In dem Objekt stehen
+ ID des Spielers, ID des Lagerhaus, Menge an Angeboten insgesamt und
+ alle Angebote der Händlertypen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Player ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Angebotsinformationen
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Info = BundleTradingFunctions.Global:GetOfferInformation(<span class="number">2</span>);
+
+<span class="comment">-- Info enthält:
+</span><span class="comment">-- Info = {
+</span><span class="comment">--      Player = 2,
+</span><span class="comment">--      Storehouse = 26796.
+</span><span class="comment">--      OfferCount = 2,
+</span><span class="comment">--      {
+</span><span class="comment">--          {TraderID = 0, OfferID = 0, GoodType = Goods.G_Gems,
+</span><span class="comment">--           OfferGoodAmount = 9, OfferAmount = 2},
+</span><span class="comment">--          {TraderID = 0, OfferID = 1, GoodType = Goods.G_Milk,
+</span><span class="comment">--           OfferGoodAmount = 9, OfferAmount = 4},
+</span><span class="comment">--      },
+</span><span class="comment">-- }</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetTrader"></a>
+    <strong>API.GetTrader (_BuildingID, _TraderType)</strong>
+    </dt>
+    <dd>
+    Gibt den Händler des Typs in dem Gebäude zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_BuildingID</span>
+         [number] Entity ID des Handelsgebäudes
+        </li>
+        <li><span class="parameter">_TraderType</span>
+         [number] Typ des Händlers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number]
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetTraderType"></a>
+    <strong>API.GetTraderType (_BuildingID, _TraderID)</strong>
+    </dt>
+    <dd>
+    Gibt den Typ des Händlers mit der ID im Gebäude zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_BuildingID</span>
+         [number] Building ID
+        </li>
+        <li><span class="parameter">_TraderID</span>
+         [number] Trader ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number]
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ModifyTraderOffer"></a>
+    <strong>API.ModifyTraderOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</strong>
+    </dt>
+    <dd>
+    <p>FIXME: Setzt die Angebotsmenge immer auf 0.</p>
+
+ <p>Ändert die maximale Menge des Angebots im Händelrgebäude.</p>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+        	[number] Händlergebäude
+        </li>
+        <li><span class="parameter">_GoodOrEntityType</span>
+        	[number] ID des Händlers im Gebäude
+        </li>
+        <li><span class="parameter">_NewAmount</span>
+         [number] Neue Menge an Angeboten
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.RemoveOffer"></a>
+    <strong>API.RemoveOffer (_PlayerID, _GoodOrEntityType)</strong>
+    </dt>
+    <dd>
+    <p>FIXME: Führt zum Spielabsturz.</p>
+
+ <p>Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden</p>
+ ist.  Es wird immer nur das erste Angebot des Typs entfernt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Player ID
+        </li>
+        <li><span class="parameter">_GoodOrEntityType</span>
+         [number] Warentyp oder Entitytyp
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.RemoveOfferByIndex"></a>
+    <strong>API.RemoveOfferByIndex (_PlayerID, _TraderType, _OfferIndex)</strong>
+    </dt>
+    <dd>
+    Entfernt das Angebot mit dem Index für den Händler im Handelsgebäude
+ des Spielers.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Entity ID des Handelsgebäudes
+        </li>
+        <li><span class="parameter">_TraderType</span>
+         [number] Typ des Händlers
+        </li>
+        <li><span class="parameter">_OfferIndex</span>
+         [number] Index des Angebots
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanActivate"></a>
+    <strong>API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance)</strong>
+    </dt>
+    <dd>
+    Erstellt einen fliegenden Händler mit zufälligen Angeboten.
+<p> Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
+ definiert werden.
+ Es kann mehr als einen fliegenden Händler auf der Map geben.
+<p> <b>Alias</b>: ActivateTravelingSalesman
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+        <li><span class="parameter">_Offers</span>
+         [table] Liste an Angeboten
+        </li>
+        <li><span class="parameter">_Waypoints</span>
+         [table] Wegpunktliste Anfahrt
+        </li>
+        <li><span class="parameter">_Reversed</span>
+         [table] Wegpunktliste Abfahrt
+        </li>
+        <li><span class="parameter">_Appearance</span>
+         [table] Ankunft und Abfahrt
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Angebote deklarieren
+</span><span class="keyword">local</span> Offers = {
+    {
+        {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
+    },
+    {
+        {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+        {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
+        {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
+    },
+    {
+        {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
+        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+    },
+    {
+        {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
+        {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
+        {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,},
+    },
+};
+<span class="comment">-- Es sind maximal 4 Angebote pro Block erlaubt. Es können Waren, Soldaten
+</span><span class="comment">-- oder Entertainer angeboten werden. Es wird immer automatisch 1 Block
+</span><span class="comment">-- selektiert und die ANgebote gesetzt.
+</span>
+<span class="comment">-- Wegpunkte deklarieren
+</span><span class="keyword">local</span> Waypoints = {<span class="string">"WP1"</span>, <span class="string">"WP2"</span>, <span class="string">"WP3"</span>, <span class="string">"WP4"</span>};
+<span class="comment">-- Es gibt nun zwei Möglichkeiten:
+</span><span class="comment">-- 1. Durch weglassen des Reversed Path werden die Wegpunkte durch das
+</span><span class="comment">-- Schiff bei der Abfahrt automatisch rückwärts abgefahren.
+</span><span class="comment">-- 2. Es wird ein anderer Pfad für die Abfahrt deklariert.
+</span>
+<span class="comment">-- Anfahrt und Abfanrtsmonate deklarieren
+</span><span class="keyword">local</span> Appearance = {{<span class="number">4</span>, <span class="number">6</span>}, {<span class="number">8</span>, <span class="number">10</span>}};
+<span class="comment">-- Auch hier gibt es 2 Möglichkeiten:
+</span><span class="comment">-- 1. Neue Anfahrts- und Abfahrtszeiten setzen.
+</span><span class="comment">-- 2. _Apperance weglassen / nil setzen und den Standard verwenden
+</span><span class="comment">-- (März bis Mai und August bis Oktober)
+</span>
+<span class="comment">-- Jetzt kann ein fliegender Händler erzeugt werden
+</span>API.TravelingSalesmanActivate(<span class="number">2</span>, Offers, Waypoints, <span class="keyword">nil</span>, Appearance);
+<span class="comment">-- Hier ist der Rückweg automatisch die Umkehr des Hinwegs (_Reversed = nil).
+</span>
+<span class="comment">-- _Reversed und _Apperance können in den meisten Fällen immer weggelassen
+</span><span class="comment">-- bzw. nil sein!
+</span>API.TravelingSalesmanActivate(<span class="number">2</span>, Offers, Waypoints);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanDeactivate"></a>
+    <strong>API.TravelingSalesmanDeactivate (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Zerstört den fliegenden Händler.  Der Spieler wird dabei natürlich
+ nicht zerstört.
+<p> <b>Alias</b>: DeactivateTravelingSalesman
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanDiplomacyOverride"></a>
+    <strong>API.TravelingSalesmanDiplomacyOverride (_PlayerID, _Flag)</strong>
+    </dt>
+    <dd>
+    Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
+ Hafen überschrieben werden.
+<p> Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
+ im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
+ ein Schiff angelegt hat, sonst "Bekannt".
+<p> <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
+<p> <b>Alias</b>: TravelingSalesmanDiplomacyOverride
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Diplomatie überschreiben
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Originalfunktionen"></a>Originalfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AddEntertainerOffer"></a>
+    <strong>AddEntertainerOffer (_Merchant, _EntertainerType, _optionalPlayersPlayerID)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein Handelsangebot für Entertainer und gibt die
+ ID zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Merchant</span>
+         [number] Handelsgebäude
+        </li>
+        <li><span class="parameter">_EntertainerType</span>
+         [number] Typ des Entertainer
+        </li>
+        <li><span class="parameter">_optionalPlayersPlayerID</span>
+         [number] Optionale Spieler-ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Offer ID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddMercenaryOffer"></a>
+    <strong>AddMercenaryOffer (_Mercenary, _Amount, _Type, _RefreshRate, _optionalPlayersPlayerID)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein Handelsangebot für Söldner und gibt die ID zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Mercenary</span>
+         [number] Handelsgebäude
+        </li>
+        <li><span class="parameter">_Amount</span>
+         [number] Anzahl an Angeboten
+        </li>
+        <li><span class="parameter">_Type</span>
+         [number] Soldatentyp
+        </li>
+        <li><span class="parameter">_RefreshRate</span>
+         [number] Erneuerungsrate
+        </li>
+        <li><span class="parameter">_optionalPlayersPlayerID</span>
+         [number] Optionale Spieler-ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Offer ID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOffer"></a>
+    <strong>AddOffer (_Merchant, _NumberOfOffers, _GoodType, _RefreshRate, _optionalPlayersPlayerID)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein Handelsangebot für Waren und gibt die ID zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Merchant</span>
+         [number] Handelsgebäude
+        </li>
+        <li><span class="parameter">_NumberOfOffers</span>
+         [number] Anzahl an Angeboten
+        </li>
+        <li><span class="parameter">_GoodType</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_RefreshRate</span>
+         [number] Erneuerungsrate
+        </li>
+        <li><span class="parameter">_optionalPlayersPlayerID</span>
+         [number] Optionale Spieler-ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Offer ID
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-11-22 18:20:09 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>
