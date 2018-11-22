@@ -67,8 +67,6 @@
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
   <li><a href="../modules/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
   <li><a href="../modules/core.html">core</a></li>
-  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
-  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
 </ul>
@@ -118,7 +116,7 @@
 	<td class="summary">Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ChangeTerrainHeightInSquare">API.ChangeTerrainHeightInSquare (_Center, _Offset, _Hight, _Relative)</a></td>
+	<td class="name" nowrap><a href="#API.ChangeTerrainHeightInSquare">API.ChangeTerrainHeightInSquare (_Center, _Offset, _Height, _Relative)</a></td>
 	<td class="summary">Ändert die Landhöhe in einem Quadrat.</td>
 	</tr>
 	<tr>
@@ -126,7 +124,7 @@
 	<td class="summary"><p>Ändert die Bodentextur innerhalb des Quadrates.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ChangeWaterHeightInSquare">API.ChangeWaterHeightInSquare (_Center, _Offset, _Hight, _Relative)</a></td>
+	<td class="name" nowrap><a href="#API.ChangeWaterHeightInSquare">API.ChangeWaterHeightInSquare (_Center, _Offset, _Height, _Relative)</a></td>
 	<td class="summary">Ändert die Wasserhöhe in einem Quadrat.</td>
 	</tr>
 	<tr>
@@ -186,7 +184,7 @@
 	<td class="summary">Stößt einen angehaltenen Zeitstrahl wieder an.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.TimeLineStart">API.TimeLineStart (_description)</a></td>
+	<td class="name" nowrap><a href="#API.TimeLineStart">API.TimeLineStart (_Description)</a></td>
 	<td class="summary">Startet einen Zeitstrahl.</td>
 	</tr>
 	<tr>
@@ -213,7 +211,7 @@
 	<td class="summary">Lässt einen Siedler einem Helden folgen.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare">BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare (_Center, _Offset, _Hight, _Relative)</a></td>
+	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare">BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare (_Center, _Offset, _Height, _Relative)</a></td>
 	<td class="summary">Ändert die Landhöhe in einem Quadrat.</td>
 	</tr>
 	<tr>
@@ -221,7 +219,7 @@
 	<td class="summary">Ändert die Bodentextur innerhalb des Quadrates.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare">BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare (_Center, _Offset, _Hight, _Relative)</a></td>
+	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare">BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare (_Center, _Offset, _Height, _Relative)</a></td>
 	<td class="summary">Ändert die Wasserhöhe in einem Quadrat.</td>
 	</tr>
 	<tr>
@@ -431,7 +429,7 @@
 </dd>
     <dt>
     <a name = "API.ChangeTerrainHeightInSquare"></a>
-    <strong>API.ChangeTerrainHeightInSquare (_Center, _Offset, _Hight, _Relative)</strong>
+    <strong>API.ChangeTerrainHeightInSquare (_Center, _Offset, _Height, _Relative)</strong>
     </dt>
     <dd>
     Ändert die Landhöhe in einem Quadrat.  Offset bestimmt die Abstände
@@ -451,7 +449,7 @@
         <li><span class="parameter">_Offset</span>
          [number] Entfernung der Ecken zum Zentrum
         </li>
-        <li><span class="parameter">_Hight</span>
+        <li><span class="parameter">_Height</span>
          [number] Neue Höhe
         </li>
         <li><span class="parameter">_Relative</span>
@@ -505,7 +503,7 @@
 </dd>
     <dt>
     <a name = "API.ChangeWaterHeightInSquare"></a>
-    <strong>API.ChangeWaterHeightInSquare (_Center, _Offset, _Hight, _Relative)</strong>
+    <strong>API.ChangeWaterHeightInSquare (_Center, _Offset, _Height, _Relative)</strong>
     </dt>
     <dd>
     Ändert die Wasserhöhe in einem Quadrat.  Offset bestimmt die Abstände
@@ -524,7 +522,7 @@
         <li><span class="parameter">_Offset</span>
          [number] Entfernung der Ecken zum Zentrum
         </li>
-        <li><span class="parameter">_Hight</span>
+        <li><span class="parameter">_Height</span>
          [number] Neue Höhe
         </li>
         <li><span class="parameter">_Relative</span>
@@ -879,7 +877,7 @@
 </dd>
     <dt>
     <a name = "API.TimeLineStart"></a>
-    <strong>API.TimeLineStart (_description)</strong>
+    <strong>API.TimeLineStart (_Description)</strong>
     </dt>
     <dd>
     Startet einen Zeitstrahl.  Ein Zeitstrahl hat bestimmte Stationen,
@@ -890,7 +888,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_description</span>
+        <li><span class="parameter">_Description</span>
          [table] Beschreibung
         </li>
     </ul>
@@ -1026,7 +1024,7 @@
 </dd>
     <dt>
     <a name = "BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare"></a>
-    <strong>BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare (_Center, _Offset, _Hight, _Relative)</strong>
+    <strong>BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare (_Center, _Offset, _Height, _Relative)</strong>
     </dt>
     <dd>
     Ändert die Landhöhe in einem Quadrat.  Offset bestimmt die Abstände
@@ -1041,7 +1039,7 @@
         <li><span class="parameter">_Offset</span>
          [number] Entfernung der Ecken zum Zentrum
         </li>
-        <li><span class="parameter">_Hight</span>
+        <li><span class="parameter">_Height</span>
          [number] Neue Höhe
         </li>
         <li><span class="parameter">_Relative</span>
@@ -1083,7 +1081,7 @@
 </dd>
     <dt>
     <a name = "BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare"></a>
-    <strong>BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare (_Center, _Offset, _Hight, _Relative)</strong>
+    <strong>BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare (_Center, _Offset, _Height, _Relative)</strong>
     </dt>
     <dd>
     Ändert die Wasserhöhe in einem Quadrat.  Offset bestimmt die Abstände
@@ -1098,7 +1096,7 @@
         <li><span class="parameter">_Offset</span>
          [number] Entfernung der Ecken zum Zentrum
         </li>
-        <li><span class="parameter">_Hight</span>
+        <li><span class="parameter">_Height</span>
          [number] Neue Höhe
         </li>
         <li><span class="parameter">_Relative</span>
@@ -1820,7 +1818,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-11-20 23:02:47 </i>
+<i style="float:right;">Last updated 2018-11-22 11:10:57 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
