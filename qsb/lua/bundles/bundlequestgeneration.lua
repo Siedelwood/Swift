@@ -272,7 +272,6 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
                 function(_Data)
                 local QuestID = GetQuestID(_Data.QuestName);
                 if not _Data.QuestName then
-                    API.Note("Quest " .._Data.Identifier.. " finished!");
                     return true;
                 end
                 if (Quests[QuestID] and Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then

@@ -1,7 +1,7 @@
 #/bin/bash
 
 echo "==== Building QSB ===="
-./make-user.sh
+./make.sh
 
 echo "==== Creating Release ===="
 

@@ -67,13 +67,12 @@
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
   <li><a href="../modules/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
   <li><a href="../modules/core.html">core</a></li>
-  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
-  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
 </ul>
@@ -201,7 +200,7 @@
 	<td class="summary">Setzt den Zustand von Quest Timern während Biefings und Fake-Cutscenes.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:IsBriefingFinished">BundleBriefingSystem.Global:IsBriefingFinished (_Flag)</a></td>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:IsBriefingFinished">BundleBriefingSystem.Global:IsBriefingFinished (_briefingID)</a></td>
 	<td class="summary">Prüft, ob ein Briefing abgespielt wurde (beendet ist).</td>
 	</tr>
 	<tr>
@@ -252,11 +251,11 @@
 <h2><a href="#Briefing">Briefing</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#AP">AP (_page)</a></td>
+	<td class="name" nowrap><a href="#AP">AP (_Page)</a></td>
 	<td class="summary">Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AF">AF (_page)</a></td>
+	<td class="name" nowrap><a href="#AF">AF (_Flight)</a></td>
 	<td class="summary">Erstellt einen Flight einer Fake-Cutscene.</td>
 	</tr>
 	<tr>
@@ -419,7 +418,7 @@
 	<td class="summary">Eine Antwort wurde ausgewählt (lokales Skript).</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BriefingSystem.CreateMarker">BriefingSystem.CreateMarker (_t, _marterType, _markerList, _r, _g, _b, _alpha)</a></td>
+	<td class="name" nowrap><a href="#BriefingSystem.CreateMarker">BriefingSystem.CreateMarker (_t, _markerType, _markerList, _r, _g, _b, _alpha)</a></td>
 	<td class="summary">Erzeugt eine Markierung auf der Minikarte.</td>
 	</tr>
 	<tr>
@@ -461,11 +460,11 @@
 	<td class="summary">Berechnet die Kameraposition wärhend eines Cutscene Flights.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BriefingSystem.CutsceneSaveFlight">BriefingSystem.CutsceneSaveFlight (_FOV, _UV0, _UV1)</a></td>
+	<td class="name" nowrap><a href="#BriefingSystem.CutsceneSaveFlight">BriefingSystem.CutsceneSaveFlight (_cameraPosition, _cameraLookAt, _FOV, _UV0, _UV1)</a></td>
 	<td class="summary">Speichert die Startposition der nächsten Kameraanimation.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BriefingSystem.CutsceneFlyTo">BriefingSystem.CutsceneFlyTo (_FOV, _Time, _UV0, _UV1)</a></td>
+	<td class="name" nowrap><a href="#BriefingSystem.CutsceneFlyTo">BriefingSystem.CutsceneFlyTo (_cameraPosition, _cameraLookAt, _FOV, _Time, _UV0, _UV1)</a></td>
 	<td class="summary">Initalisiert den Flug der Kamera zu einer Position auf der Welt.</td>
 	</tr>
 	<tr>
@@ -873,7 +872,7 @@
 </dd>
     <dt>
     <a name = "BundleBriefingSystem.Global:IsBriefingFinished"></a>
-    <strong>BundleBriefingSystem.Global:IsBriefingFinished (_Flag)</strong>
+    <strong>BundleBriefingSystem.Global:IsBriefingFinished (_briefingID)</strong>
     </dt>
     <dd>
     Prüft, ob ein Briefing abgespielt wurde (beendet ist).
@@ -881,8 +880,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Flag</span>
-         Quest Timer pausiert
+        <li><span class="parameter">_briefingID</span>
+         Briefing-ID
         </li>
     </ul>
 
@@ -1116,7 +1115,7 @@
     <dl class="function">
     <dt>
     <a name = "AP"></a>
-    <strong>AP (_page)</strong>
+    <strong>AP (_Page)</strong>
     </dt>
     <dd>
     Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.
@@ -1145,7 +1144,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_page</span>
+        <li><span class="parameter">_Page</span>
         	[table] Spezifikation der Seite
         </li>
     </ul>
@@ -1162,7 +1161,7 @@
 </dd>
     <dt>
     <a name = "AF"></a>
-    <strong>AF (_page)</strong>
+    <strong>AF (_Flight)</strong>
     </dt>
     <dd>
     Erstellt einen Flight einer Fake-Cutscene.
@@ -1223,7 +1222,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_page</span>
+        <li><span class="parameter">_Flight</span>
         	[table] Spezifikation des Flight
         </li>
     </ul>
@@ -2078,7 +2077,7 @@
 </dd>
     <dt>
     <a name = "BriefingSystem.CreateMarker"></a>
-    <strong>BriefingSystem.CreateMarker (_t, _marterType, _markerList, _r, _g, _b, _alpha)</strong>
+    <strong>BriefingSystem.CreateMarker (_t, _markerType, _markerList, _r, _g, _b, _alpha)</strong>
     </dt>
     <dd>
     Erzeugt eine Markierung auf der Minikarte.
@@ -2089,7 +2088,7 @@
         <li><span class="parameter">_t</span>
                   Aktuelle Seite
         </li>
-        <li><span class="parameter">_marterType</span>
+        <li><span class="parameter">_markerType</span>
          Typ der Markierung
         </li>
         <li><span class="parameter">_markerList</span>
@@ -2318,24 +2317,24 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Start</span>
-          Startposition des Flight
+          [table] Startposition des Flight
         </li>
         <li><span class="parameter">_End</span>
-            Endposition des Flight
+            [table] Endposition des Flight
         </li>
         <li><span class="parameter">_Factor</span>
-         Interpolation Factor
+         [number] Interpolation Factor
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        number: X-Position</li>
+        [number] X-Position</li>
         <li>
-        number: Y-Position</li>
+        [number] Y-Position</li>
         <li>
-        number: Z-Position</li>
+        [number] Z-Position</li>
     </ol>
 
 
@@ -2344,7 +2343,7 @@
 </dd>
     <dt>
     <a name = "BriefingSystem.CutsceneSaveFlight"></a>
-    <strong>BriefingSystem.CutsceneSaveFlight (_FOV, _UV0, _UV1)</strong>
+    <strong>BriefingSystem.CutsceneSaveFlight (_cameraPosition, _cameraLookAt, _FOV, _UV0, _UV1)</strong>
     </dt>
     <dd>
     Speichert die Startposition der nächsten Kameraanimation.
@@ -2352,14 +2351,20 @@
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">_cameraPosition</span>
+         [table] Position der Kamera
+        </li>
+        <li><span class="parameter">_cameraLookAt</span>
+         [table] Blickziel der Kamera
+        </li>
         <li><span class="parameter">_FOV</span>
-              Field of View
+         [number] Field of View
         </li>
         <li><span class="parameter">_UV0</span>
-              UV0 des Splashscreen
+         [number] UV0 des Splashscreen
         </li>
         <li><span class="parameter">_UV1</span>
-              UV1 des Splashscreen
+         [number] UV1 des Splashscreen
         </li>
     </ul>
 
@@ -2370,7 +2375,7 @@
 </dd>
     <dt>
     <a name = "BriefingSystem.CutsceneFlyTo"></a>
-    <strong>BriefingSystem.CutsceneFlyTo (_FOV, _Time, _UV0, _UV1)</strong>
+    <strong>BriefingSystem.CutsceneFlyTo (_cameraPosition, _cameraLookAt, _FOV, _Time, _UV0, _UV1)</strong>
     </dt>
     <dd>
     Initalisiert den Flug der Kamera zu einer Position auf der Welt.
@@ -2378,17 +2383,23 @@
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">_cameraPosition</span>
+         [table] Position der Kamera
+        </li>
+        <li><span class="parameter">_cameraLookAt</span>
+         [table] Blickziel der Kamera
+        </li>
         <li><span class="parameter">_FOV</span>
-              Field of View
+         [number] Field of View
         </li>
         <li><span class="parameter">_Time</span>
-             Animationszeit
+         [number] Dauer
         </li>
         <li><span class="parameter">_UV0</span>
-              UV0 des Splashscreen
+         [number] UV0 des Splashscreen
         </li>
         <li><span class="parameter">_UV1</span>
-              UV1 des Splashscreen
+         [number] UV1 des Splashscreen
         </li>
     </ul>
 
@@ -2813,7 +2824,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-11-16 13:27:12 </i>
+<i style="float:right;">Last updated 2018-11-22 11:10:57 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

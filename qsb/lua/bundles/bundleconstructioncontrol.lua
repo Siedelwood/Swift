@@ -37,7 +37,7 @@ QSB = QSB or {};
 ---
 -- Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 --
--- @param _entry [string] Nicht abreißbares Entity
+-- @param _entity [string] Nicht abreißbares Entity
 -- @within Anwenderfunktionen
 --
 function API.ProtectEntity(_entity)
@@ -55,7 +55,7 @@ end
 ---
 -- Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 --
--- @param _entry [number] Nicht abreißbarer Typ
+-- @param _entity [number] Nicht abreißbarer Typ
 -- @within Anwenderfunktionen
 --
 function API.ProtectEntityType(_entity)
@@ -73,7 +73,7 @@ end
 ---
 -- Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
 --
--- @param _entry [number] Nicht abreißbare Kategorie
+-- @param _entity [number] Nicht abreißbare Kategorie
 -- @within Anwenderfunktionen
 --
 function API.ProtectCategory(_entity)
@@ -91,7 +91,7 @@ end
 ---
 -- Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
 --
--- @param _entry [number] Geschütztes Territorium
+-- @param _entity [number] Geschütztes Territorium
 -- @within Anwenderfunktionen
 --
 function API.ProtectTerritory(_entity)
@@ -309,7 +309,7 @@ end
 ---
 -- Gibt eine Kategorie zum Bau im Territorium wieder frei.
 --
--- @param _ecat      [number] Entitykategorie
+-- @param _eCat      [number] Entitykategorie
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
 --

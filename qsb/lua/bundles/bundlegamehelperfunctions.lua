@@ -339,7 +339,7 @@ TerrainType = API.ChangeTerrainTypeInSquare;
 --
 -- @param _Center [string|number] Zentralpunkt
 -- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _Hight [number] Neue Höhe
+-- @param _Height [number] Neue Höhe
 -- @param _Relative [boolean] Relative Höhe benutzen
 -- @within Anwenderfunktionen
 --
@@ -375,7 +375,7 @@ WaterHeight = API.ChangeWaterHeightInSquare;
 --
 -- @param _Center [string|number] Zentralpunkt
 -- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _Hight [number] Neue Höhe
+-- @param _Height [number] Neue Höhe
 -- @param _Relative [boolean] Relative Höhe benutzen
 -- @within Anwenderfunktionen
 --
@@ -405,7 +405,7 @@ TerrainHeight = API.ChangeTerrainHeightInSquare;
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
 --
--- @param _description [table] Beschreibung
+-- @param _Description [table] Beschreibung
 -- @return [number] ID des Zeitstrahls
 -- @within Anwenderfunktionen
 --
@@ -728,7 +728,6 @@ end
 
 ---
 -- Kontrolliert die Verfolgung eines Helden durch einen Siedler.
--- @internal
 --
 -- @param _EntityID [number]Entity das folgt
 -- @param _KnightID [number]Held
@@ -802,7 +801,7 @@ end
 -- der Eckpunkte zum Zentralpunkt.
 -- @param _Center [string|number] Zentralpunkt
 -- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _Hight [number] Neue Höhe
+-- @param _Height [number] Neue Höhe
 -- @param _Relative [boolean] Relative Höhe benutzen
 -- @within Internal
 -- @local
@@ -832,7 +831,7 @@ end
 -- der Eckpunkte zum Zentralpunkt.
 -- @param _Center [string|number] Zentralpunkt
 -- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _Hight [number] Neue Höhe
+-- @param _Height [number] Neue Höhe
 -- @param _Relative [boolean] Relative Höhe benutzen
 -- @within Internal
 -- @local

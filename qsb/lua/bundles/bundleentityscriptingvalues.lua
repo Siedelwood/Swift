@@ -281,7 +281,6 @@ end
 
 ---
 -- Gibt den Besitzer des Entity zurück.
--- @internal
 --
 -- @param _Entity [string|number] Entity
 -- @return [number] Besitzer

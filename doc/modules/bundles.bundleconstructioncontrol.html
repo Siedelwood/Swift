@@ -60,13 +60,12 @@
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
   <li><a href="../modules/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
   <li><a href="../modules/core.html">core</a></li>
-  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
-  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
 </ul>
@@ -98,19 +97,19 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectEntity">API.ProtectEntity (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectEntity">API.ProtectEntity (_entity)</a></td>
 	<td class="summary">Fügt ein Entity hinzu, dass nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectEntityType">API.ProtectEntityType (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectEntityType">API.ProtectEntityType (_entity)</a></td>
 	<td class="summary">Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectCategory">API.ProtectCategory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectCategory">API.ProtectCategory (_entity)</a></td>
 	<td class="summary">Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectTerritory">API.ProtectTerritory (_entry)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectTerritory">API.ProtectTerritory (_entity)</a></td>
 	<td class="summary">Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.</td>
 	</tr>
 	<tr>
@@ -150,7 +149,7 @@
 	<td class="summary">Gibt einen Typ zum Bau im Territorium wieder frei.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UnBanCategoryAtTerritory">API.UnBanCategoryAtTerritory (_ecat, _territory)</a></td>
+	<td class="name" nowrap><a href="#API.UnBanCategoryAtTerritory">API.UnBanCategoryAtTerritory (_eCat, _territory)</a></td>
 	<td class="summary">Gibt eine Kategorie zum Bau im Territorium wieder frei.</td>
 	</tr>
 	<tr>
@@ -191,7 +190,7 @@
     <dl class="function">
     <dt>
     <a name = "API.ProtectEntity"></a>
-    <strong>API.ProtectEntity (_entry)</strong>
+    <strong>API.ProtectEntity (_entity)</strong>
     </dt>
     <dd>
     Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
@@ -199,7 +198,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_entry</span>
+        <li><span class="parameter">_entity</span>
          [string] Nicht abreißbares Entity
         </li>
     </ul>
@@ -211,7 +210,7 @@
 </dd>
     <dt>
     <a name = "API.ProtectEntityType"></a>
-    <strong>API.ProtectEntityType (_entry)</strong>
+    <strong>API.ProtectEntityType (_entity)</strong>
     </dt>
     <dd>
     Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
@@ -219,7 +218,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_entry</span>
+        <li><span class="parameter">_entity</span>
          [number] Nicht abreißbarer Typ
         </li>
     </ul>
@@ -231,7 +230,7 @@
 </dd>
     <dt>
     <a name = "API.ProtectCategory"></a>
-    <strong>API.ProtectCategory (_entry)</strong>
+    <strong>API.ProtectCategory (_entity)</strong>
     </dt>
     <dd>
     Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
@@ -239,7 +238,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_entry</span>
+        <li><span class="parameter">_entity</span>
          [number] Nicht abreißbare Kategorie
         </li>
     </ul>
@@ -251,7 +250,7 @@
 </dd>
     <dt>
     <a name = "API.ProtectTerritory"></a>
-    <strong>API.ProtectTerritory (_entry)</strong>
+    <strong>API.ProtectTerritory (_entity)</strong>
     </dt>
     <dd>
     Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
@@ -259,7 +258,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_entry</span>
+        <li><span class="parameter">_entity</span>
          [number] Geschütztes Territorium
         </li>
     </ul>
@@ -472,7 +471,7 @@
 </dd>
     <dt>
     <a name = "API.UnBanCategoryAtTerritory"></a>
-    <strong>API.UnBanCategoryAtTerritory (_ecat, _territory)</strong>
+    <strong>API.UnBanCategoryAtTerritory (_eCat, _territory)</strong>
     </dt>
     <dd>
     Gibt eine Kategorie zum Bau im Territorium wieder frei.
@@ -480,7 +479,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_ecat</span>
+        <li><span class="parameter">_eCat</span>
               [number] Entitykategorie
         </li>
         <li><span class="parameter">_territory</span>
@@ -627,7 +626,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-11-16 13:27:12 </i>
+<i style="float:right;">Last updated 2018-11-22 11:10:57 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

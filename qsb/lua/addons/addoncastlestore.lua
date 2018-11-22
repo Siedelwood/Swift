@@ -318,7 +318,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore</p>
 --
 -- @param _Good          Warentyp
--- @param _PlayeriD      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @return number: Warenmenge mit Menge in Burglager
 -- @within QSB.CastleStore
 -- @local
@@ -974,7 +974,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore</p>
 --
 -- @param _Good          Warentyp
--- @param _PlayeriD      ID des Spielers
+-- @param _PlayerID      ID des Spielers
 -- @return number: Menge an Waren
 -- @within QSB.CastleStore
 -- @local
@@ -996,7 +996,6 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:GetTotalAmount</p>
 --
 -- @param _PlayerID      ID des Spielers
--- @param _Good          Warentyp
 -- @return number
 -- @within QSB.CastleStore
 -- @local
@@ -1063,7 +1062,7 @@ end
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
--- @param _Good         Akzeptanz-Flag
+-- @param _Flag         Akzeptanz-Flag
 -- @return self
 -- @within QSB.CastleStore
 -- @local
@@ -1107,7 +1106,7 @@ end
 --
 -- @param _PlayerID      ID des Spielers
 -- @param _Good          Warentyp
--- @param _Good         Akzeptanz-Flag
+-- @param _Flag         Akzeptanz-Flag
 -- @return self
 -- @within QSB.CastleStore
 -- @local
@@ -1248,6 +1247,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:GoodClicked</p>
 --
 -- @param _PlayerID      ID des Spielers
+-- @param _GoodType Warentyp
 -- @within QSB.CastleStore
 -- @local
 --
@@ -1349,6 +1349,7 @@ end
 -- <p><b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay</p>
 --
 -- @param _PlayerID      ID des Spielers
+-- @param _CurrentWidget Höhe des Widget
 -- @within QSB.CastleStore
 -- @local
 --

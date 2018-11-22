@@ -4,7 +4,7 @@ rm -rf var &>/dev/null
 mkdir var &>/dev/null
 
 echo "Building QSB ..."
-lua qsb/lua/writer.lua &>/dev/null
+lua qsb/lua/writer.lua 1 &>/dev/null
 echo "Done!"
 
 cd qsb/luaminifyer
@@ -16,9 +16,9 @@ echo "Done!"
 cd ../../qsb
 
 echo "Generating Documentation ..."
-lua ldoc/ldoc.lua ../var/qsb.lua &>/dev/null
+lua ldoc/ldoc.lua -c userconfig.ld ../var/qsb.lua #&>/dev/null
 mv doc ../var/doc
-rm ../qsb/config.ld
+rm userconfig.ld
 
 cd ..
 echo "Done!"
