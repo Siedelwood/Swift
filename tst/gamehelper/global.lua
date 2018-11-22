@@ -31,7 +31,7 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/gamehelper/qsb.lua")
+    Script.Load("E:/Repositories/symfonia/var/qsb.lua")
     API.Install()
 
     if Framework.IsNetworkGame() ~= true then
@@ -49,4 +49,12 @@ function Mission_FirstMapAction()
     -----
     
     
+end
+
+function Test()
+    API.Note(API.CreateQuestDialog{
+        {"Hallo, wie geht es dir?", 4, 1},
+        {"Mir geht es gut, wie immer!", 1, 1, 8},
+        {"Das ist doch schön.", 4, 1, 8},
+    });
 end
