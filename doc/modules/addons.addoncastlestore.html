@@ -67,8 +67,6 @@
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
   <li><a href="../modules/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
   <li><a href="../modules/core.html">core</a></li>
-  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
-  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
 </ul>
@@ -219,7 +217,7 @@
 	<td class="summary">Gibt die Menge an Waren des Typs im Burglager zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore">AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayeriD)</a></td>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore">AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayerID)</a></td>
 	<td class="summary">Gibt die Menge an Waren des Spielers zurück, eingeschlossen
  der Waren im Burglager.</td>
 	</tr>
@@ -294,7 +292,7 @@
 	<td class="summary">Gibt die Menge an Waren des Typs zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore">AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayeriD)</a></td>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore">AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayerID)</a></td>
 	<td class="summary">Gibt die Menge an Waren des Spielers zurück, eingeschlossen
  der Waren im Burglager.</td>
 	</tr>
@@ -307,11 +305,11 @@
 	<td class="summary">Gibt die Referenz des Burglagers des Spielers zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetTotalAmount">AddOnCastleStore.Local.CastleStore:GetTotalAmount (_PlayerID, _Good)</a></td>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetTotalAmount">AddOnCastleStore.Local.CastleStore:GetTotalAmount (_PlayerID)</a></td>
 	<td class="summary">Gibt die Gesamtmenge aller Waren im Burglager zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GoodClicked">AddOnCastleStore.Local.CastleStore:GoodClicked (_PlayerID)</a></td>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GoodClicked">AddOnCastleStore.Local.CastleStore:GoodClicked (_PlayerID, _GoodType)</a></td>
 	<td class="summary">Ein GoodType-Button wurde geklickt.</td>
 	</tr>
 	<tr>
@@ -347,7 +345,7 @@
 	<td class="summary">Aktualisiert das Burgmenü, sobald sich die Selektion ändert.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:SetAccepted">AddOnCastleStore.Local.CastleStore:SetAccepted (_PlayerID, _Good, _Good)</a></td>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:SetAccepted">AddOnCastleStore.Local.CastleStore:SetAccepted (_PlayerID, _Good, _Flag)</a></td>
 	<td class="summary">Setzt eine Ware als akzeptiert.</td>
 	</tr>
 	<tr>
@@ -355,7 +353,7 @@
 	<td class="summary">Ändert die Menge an Waren des Typs.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:SetLocked">AddOnCastleStore.Local.CastleStore:SetLocked (_PlayerID, _Good, _Good)</a></td>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:SetLocked">AddOnCastleStore.Local.CastleStore:SetLocked (_PlayerID, _Good, _Flag)</a></td>
 	<td class="summary">Setzt eine Ware als gesperrt.</td>
 	</tr>
 	<tr>
@@ -375,7 +373,7 @@
 	<td class="summary">Aktualisiert die Burglager-Tabs.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay">AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay (_PlayerID)</a></td>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay">AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay (_PlayerID, _CurrentWidget)</a></td>
 	<td class="summary">Aktualisiert die Mengenanzeige der Waren im Burglager.</td>
 	</tr>
 	<tr>
@@ -881,7 +879,7 @@
 </dd>
     <dt>
     <a name = "AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore"></a>
-    <strong>AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayeriD)</strong>
+    <strong>AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayerID)</strong>
     </dt>
     <dd>
     Gibt die Menge an Waren des Spielers zurück, eingeschlossen
@@ -896,7 +894,7 @@
         <li><span class="parameter">_Good</span>
                   Warentyp
         </li>
-        <li><span class="parameter">_PlayeriD</span>
+        <li><span class="parameter">_PlayerID</span>
               ID des Spielers
         </li>
     </ul>
@@ -1399,7 +1397,7 @@
 </dd>
     <dt>
     <a name = "AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore"></a>
-    <strong>AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayeriD)</strong>
+    <strong>AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayerID)</strong>
     </dt>
     <dd>
     Gibt die Menge an Waren des Spielers zurück, eingeschlossen
@@ -1414,7 +1412,7 @@
         <li><span class="parameter">_Good</span>
                   Warentyp
         </li>
-        <li><span class="parameter">_PlayeriD</span>
+        <li><span class="parameter">_PlayerID</span>
               ID des Spielers
         </li>
     </ul>
@@ -1480,7 +1478,7 @@
 </dd>
     <dt>
     <a name = "AddOnCastleStore.Local.CastleStore:GetTotalAmount"></a>
-    <strong>AddOnCastleStore.Local.CastleStore:GetTotalAmount (_PlayerID, _Good)</strong>
+    <strong>AddOnCastleStore.Local.CastleStore:GetTotalAmount (_PlayerID)</strong>
     </dt>
     <dd>
     Gibt die Gesamtmenge aller Waren im Burglager zurück.
@@ -1492,9 +1490,6 @@
     <ul>
         <li><span class="parameter">_PlayerID</span>
               ID des Spielers
-        </li>
-        <li><span class="parameter">_Good</span>
-                  Warentyp
         </li>
     </ul>
 
@@ -1510,7 +1505,7 @@
 </dd>
     <dt>
     <a name = "AddOnCastleStore.Local.CastleStore:GoodClicked"></a>
-    <strong>AddOnCastleStore.Local.CastleStore:GoodClicked (_PlayerID)</strong>
+    <strong>AddOnCastleStore.Local.CastleStore:GoodClicked (_PlayerID, _GoodType)</strong>
     </dt>
     <dd>
     Ein GoodType-Button wurde geklickt.
@@ -1522,6 +1517,9 @@
     <ul>
         <li><span class="parameter">_PlayerID</span>
               ID des Spielers
+        </li>
+        <li><span class="parameter">_GoodType</span>
+         Warentyp
         </li>
     </ul>
 
@@ -1723,7 +1721,7 @@
 </dd>
     <dt>
     <a name = "AddOnCastleStore.Local.CastleStore:SetAccepted"></a>
-    <strong>AddOnCastleStore.Local.CastleStore:SetAccepted (_PlayerID, _Good, _Good)</strong>
+    <strong>AddOnCastleStore.Local.CastleStore:SetAccepted (_PlayerID, _Good, _Flag)</strong>
     </dt>
     <dd>
     Setzt eine Ware als akzeptiert.
@@ -1737,9 +1735,9 @@
               ID des Spielers
         </li>
         <li><span class="parameter">_Good</span>
-                 Akzeptanz-Flag
+                  Warentyp
         </li>
-        <li><span class="parameter">_Good</span>
+        <li><span class="parameter">_Flag</span>
                  Akzeptanz-Flag
         </li>
     </ul>
@@ -1789,7 +1787,7 @@
 </dd>
     <dt>
     <a name = "AddOnCastleStore.Local.CastleStore:SetLocked"></a>
-    <strong>AddOnCastleStore.Local.CastleStore:SetLocked (_PlayerID, _Good, _Good)</strong>
+    <strong>AddOnCastleStore.Local.CastleStore:SetLocked (_PlayerID, _Good, _Flag)</strong>
     </dt>
     <dd>
     Setzt eine Ware als gesperrt.
@@ -1803,9 +1801,9 @@
               ID des Spielers
         </li>
         <li><span class="parameter">_Good</span>
-                 Akzeptanz-Flag
+                  Warentyp
         </li>
-        <li><span class="parameter">_Good</span>
+        <li><span class="parameter">_Flag</span>
                  Akzeptanz-Flag
         </li>
     </ul>
@@ -1892,7 +1890,7 @@
 </dd>
     <dt>
     <a name = "AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay"></a>
-    <strong>AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay (_PlayerID)</strong>
+    <strong>AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay (_PlayerID, _CurrentWidget)</strong>
     </dt>
     <dd>
     Aktualisiert die Mengenanzeige der Waren im Burglager.
@@ -1904,6 +1902,9 @@
     <ul>
         <li><span class="parameter">_PlayerID</span>
               ID des Spielers
+        </li>
+        <li><span class="parameter">_CurrentWidget</span>
+         Höhe des Widget
         </li>
     </ul>
 
@@ -1941,7 +1942,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-11-20 23:02:47 </i>
+<i style="float:right;">Last updated 2018-11-22 11:10:57 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

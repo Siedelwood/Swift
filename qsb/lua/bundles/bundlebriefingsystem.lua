@@ -256,7 +256,7 @@ AddFlights = API.AddFlights;
 -- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
 -- über die Grafik zu scrollen oder zu zoomen.
 --
--- @param _page	[table] Spezifikation der Seite
+-- @param _Page	[table] Spezifikation der Seite
 -- @return [table] Refernez auf die angelegte Seite
 -- @within Briefing
 --
@@ -324,7 +324,7 @@ end
 -- </tr>
 -- </table>
 --
--- @param _page	[table] Spezifikation des Flight
+-- @param _Flight	[table] Spezifikation des Flight
 -- @within Briefing
 --
 -- @usage
@@ -464,7 +464,7 @@ end
 ---
 -- Prüft, ob ein Briefing abgespielt wurde (beendet ist).
 --
--- @param _Flag Quest Timer pausiert
+-- @param _briefingID Briefing-ID
 -- @return boolean: Briefing ist beendet
 -- @within Internal
 -- @local
@@ -2261,7 +2261,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- Erzeugt eine Markierung auf der Minikarte.
     --
     -- @param _t          Aktuelle Seite
-    -- @param _marterType Typ der Markierung
+    -- @param _markerType Typ der Markierung
     -- @param _markerList Liste der Markierungen
     -- @param _r          Magenta-Wert
     -- @param _g          Yellow-Wert
@@ -2696,12 +2696,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Berechnet die Kameraposition wärhend eines Cutscene Flights.
     --
-    -- @param _Start  Startposition des Flight
-    -- @param _End    Endposition des Flight
-    -- @param _Factor Interpolation Factor
-    -- @return number: X-Position
-    -- @return number: Y-Position
-    -- @return number: Z-Position
+    -- @param _Start  [table] Startposition des Flight
+    -- @param _End    [table] Endposition des Flight
+    -- @param _Factor [number] Interpolation Factor
+    -- @return [number] X-Position
+    -- @return [number] Y-Position
+    -- @return [number] Z-Position
     -- @within BriefingSystem
     -- @local
     --
@@ -2715,9 +2715,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Speichert die Startposition der nächsten Kameraanimation.
     --
-    -- @param _FOV      Field of View
-    -- @param _UV0      UV0 des Splashscreen
-    -- @param _UV1      UV1 des Splashscreen
+    -- @param _cameraPosition [table] Position der Kamera
+    -- @param _cameraLookAt [table] Blickziel der Kamera
+    -- @param _FOV [number] Field of View
+    -- @param _UV0 [number] UV0 des Splashscreen
+    -- @param _UV1 [number] UV1 des Splashscreen
     -- @within BriefingSystem
     -- @local
     --
@@ -2735,10 +2737,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Initalisiert den Flug der Kamera zu einer Position auf der Welt.
     --
-    -- @param _FOV      Field of View
-    -- @param _Time     Animationszeit
-    -- @param _UV0      UV0 des Splashscreen
-    -- @param _UV1      UV1 des Splashscreen
+    -- @param _cameraPosition [table] Position der Kamera
+    -- @param _cameraLookAt [table] Blickziel der Kamera
+    -- @param _FOV [number] Field of View
+    -- @param _Time [number] Dauer
+    -- @param _UV0 [number] UV0 des Splashscreen
+    -- @param _UV1 [number] UV1 des Splashscreen
     -- @within BriefingSystem
     -- @local
     --

@@ -435,8 +435,8 @@ GetPlayerName = API.InterfaceGetPlayerName;
 --
 -- <p><b>Alias:</b> SetPlayerName</p>
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Name [string] Name des Spielers
+-- @param _playerID [number] ID des Spielers
+-- @param _name [string] Name des Spielers
 -- @return [string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
@@ -555,7 +555,7 @@ end
 ---
 -- Versteht ein Widget oder blendet es ein.
 --
--- @param _widget [string|number] Widgetpfad oder ID
+-- @param _Widget [string|number] Widgetpfad oder ID
 -- @param _Hide [boolean] Hidden Flag
 -- @within Internal
 -- @local

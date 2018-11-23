@@ -60,7 +60,7 @@ QSB = QSB or {};
 --
 -- <p><b>Alias:</b> CreateNPC</p>
 --
--- @param _Entity [string|number] Nichtspieler-Charakter
+-- @param _Data [table] Nichtspieler-Charakter
 -- @return [table] NPC-Objekt
 -- @within Anwenderfunktionen
 --

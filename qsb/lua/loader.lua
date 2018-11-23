@@ -171,21 +171,24 @@ end
 -- @within SymfoniaLoader
 -- @local
 --
-function SymfoniaLoader:ConcatSources(_External)
+function SymfoniaLoader:ConcatSources(_Summary, _External)
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
 
-    local fh = io.open("qsb/config.ld", "wt");
+    local fh = io.open("qsb/userconfig.ld", "wt");
     assert(fh, "Output file can not be created!");
-    fh:write("project = 'Symfonia'\n");
-    fh:write("kind_names = {script = 'Skripte', module = 'Bibliotheken'}\n");
+    fh:write("project='Symfonia'\n");
+    if not _Summary then
+        fh:write("no_summary=true\n");
+    end
+    fh:write("kind_names={script='Skripte', module='Bibliotheken'}\n");
 
-    local ActiveBundles = "file = {\n'./lua/core.lua',\n";
+    local ActiveBundles = "file={\n'core.lua',\n";
 
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";
         if v[2] then
-            ActiveBundles = ActiveBundles.. "'./lua/bundles/" ..v[1]:lower().. ".lua',\n";
+            ActiveBundles = ActiveBundles.. "'bundles/" ..v[1]:lower().. ".lua',\n";
             FileContent = self:LoadSource(BasePath.. "bundles/" ..v[1]:lower().. ".lua");
         end
         table.insert(QsbContent, FileContent);
@@ -201,7 +204,7 @@ function SymfoniaLoader:ConcatSources(_External)
                 end
             end
             if LoadAddOn == true then
-                ActiveBundles = ActiveBundles.. "'./lua/addons/" ..v[1]:lower().. ".lua',\n";
+                ActiveBundles = ActiveBundles.. "'addons/" ..v[1]:lower().. ".lua',\n";
                 FileContent = self:LoadSource(BasePath.. "addons/" ..v[1]:lower().. ".lua");
                 table.insert(QsbContent, FileContent);
             end
@@ -250,7 +253,11 @@ end
 -- @local
 --
 function SymfoniaLoader:CreateQSB()
-    local QsbContent = self:ConcatSources(arg);
+    local Summary = arg[1] == "1";
+    table.remove(arg, 1);
+    local ExternModules = arg;
+
+    local QsbContent = self:ConcatSources(Summary, ExternModules);
     -- Delete old file
     local fh = io.open("var/qsb.lua", "r");
     if fh ~= nil then

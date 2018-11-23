@@ -851,6 +851,7 @@ ReplaceEntity = API.ReplaceEntity;
 --
 -- @param _entity           [string|number] Entity
 -- @param _entityToLookAt   [string|number] Ziel
+-- @param _offsetEntity   [number] Winkel Offset
 -- @within Anwenderfunktionen
 -- @usage API.LookAt("Hakim", "Alandra")
 --
@@ -1082,6 +1083,7 @@ GiveEntityName = API.EnsureScriptName;
 -- wird der Befehl an das globale Skript geschickt.
 --
 -- @param _Command [string] Lua-Befehl als String
+-- @param _Flag [boolean] FIXME Optional für GUI.SendScriptCommand benötigt
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -1476,7 +1478,7 @@ end
 -- Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und
 -- existiert nur zur Übersichtlichkeit.
 --
--- @param _Bundle Name des Moduls
+-- @param _AddOn Name des Moduls
 -- @within Internal
 -- @local
 --
