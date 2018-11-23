@@ -52,9 +52,10 @@ function Mission_FirstMapAction()
 end
 
 function Test()
-    API.Note(API.CreateQuestDialog{
-        {"Hallo, wie geht es dir?", 4, 1},
-        {"Mir geht es gut, wie immer!", 1, 1, 8},
-        {"Das ist doch schön.", 4, 1, 8},
-    });
+    API.NpcCompose {
+        Name     = "maximilian",
+        Callback = function(_Npc, _Hero)
+            API.Note("Bockwurst")
+        end,
+    }
 end

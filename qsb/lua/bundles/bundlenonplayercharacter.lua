@@ -82,7 +82,7 @@ function API.NpcCompose(_Data)
     local NPC = NonPlayerCharacter:New(_Data.Name);
     NPC:SetDialogPartner(_Data.Hero);
     NPC:SetWrongPartnerCallback(WronHeroCallback);
-    NPC:SetWrongPartnerCallback(_Data.Callback);
+    NPC:SetCallback(_Data.Callback);
     return NPC:Activate();
 end
 CreateNPC = API.NpcCompose;
@@ -227,23 +227,6 @@ BundleNonPlayerCharacter = {
 -- Einen normalen NPC erzeugen:
 -- local NPC = NonPlayerCharacter:New("npc")
 --     :SetDialogPartner("hero")                -- Optional
---     :SetCallback(Briefing1)                  -- Optional
---     :Activate();
---
--- -- Einen NPC erzeugen, der deim Spieler folgt:
--- local NPC = NonPlayerCharacter:New("npc")
---     :SetDialogPartner("hero")                -- Optional
---     :SetFollowTarget("hero")
---     :SetFollowDestination("destination")     -- Optional
---     :SetFollowAction(NotArrivedFunction)     -- Optional
---     :SetCallback(Briefing1)                  -- Optional
---     :Activate();
---
--- -- Führenden NPC erzeugen:
--- local NPC = NonPlayerCharacter:New("npc")
---     :SetDialogPartner("hero")                -- Optional
---     :SetPrecedeParams("destination", "hero")
---     :SetPrecedeAction(NotArrivedFunction)    -- Optional
 --     :SetCallback(Briefing1)                  -- Optional
 --     :Activate();
 --
@@ -483,95 +466,6 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallb
 end
 
 ---
--- Setzt das Ziel, zu dem der NPC vom Helden geführt werden
--- muss. Wenn ein Ziel erreicht wird, kann der NPC erst dann
--- angesprochen werden, wenn das Ziel erreicht ist.
---
--- <p><b>Alias:</b> NonPlayerCharacter:SetFollowDestination</p>
---
--- @param _ScriptName [string] Skriptname des Ziel
--- @return [table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowDestination(_ScriptName)
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.FollowDestination = _ScriptName;
-    return self;
-end
-
----
--- Setzt den Helden, dem der NPC folgt. Ist Kein Ziel gesetzt,
--- folgt der NPC dem Helden unbegrenzt.
---
--- <p><b>Alias:</b> NonPlayerCharacter:SetFollowTarget</p>
---
--- @param _ScriptName [string] Skriptname des Helden
--- @return [table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowTarget(_ScriptName)
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.FollowTarget = _ScriptName;
-    return self;
-end
-
----
--- Setzt die Funktion, die während ein NPC einem Helden folgt und
--- das Ziel noch nicht erreicht ist, anstelle des Callback beim
--- Ansprechen ausgeführt wird.
---
--- <p><b>Alias:</b> NonPlayerCharacter:SetFollowAction</p>
---
--- @param _Function [function] Action
--- @return [table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetFollowAction(_Function)
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.FollowAction = _Function;
-    return self;
-end
----
--- Setzt das Ziel zu dem der NPC läuft und den Helden, der dem
--- NPC folgen muss.
---
--- <p><b>Alias:</b> NonPlayerCharacter:SetPrecedeParams</p>
---
--- @param _ScriptName [string] Skriptname des Ziel
--- @param _Target [string] Striptname des Helden
--- @return [table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetPrecedeParams(_ScriptName, _Target)
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.PrecedeDestination = _ScriptName;
-    self.Data.PrecedeTarget = _Target;
-    return self;
-end
-
----
--- Setzt die Funktion, die während ein NPC einen Helden führt und
--- das Ziel noch nicht erreicht ist, anstelle des Callback beim
--- Ansprechen ausgeführt wird.
---
--- <p><b>Alias:</b> NonPlayerCharacter:SetPrecedeAction</p>
---
--- @param _Function [function] Action
--- @return [table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetPrecedeAction(_Function)
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.PrecedeAction = _Function;
-    return self;
-end
-
----
 -- Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.
 --
 -- <p><b>Alias:</b> NonPlayerCharacter:SetCallback</p>
@@ -731,7 +625,6 @@ function BundleNonPlayerCharacter.Global:Install()
     --
     StartSimpleJobEx( function()
         for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
-            v:Control();
             v:ControlMarker();
         end
     end);
@@ -762,33 +655,6 @@ function BundleNonPlayerCharacter.Global:Install()
         BundleNonPlayerCharacter.Global.LastNpcEntityID = NPC:GetID();
 
         if NPC then
-            if NPC.Data.FollowTarget ~= nil then
-                if NPC.Data.FollowDestination then
-                    if Logic.GetDistanceBetweenEntities(_EntityID, GetID(NPC.Data.FollowDestination)) > 2000 then
-                        if NPC.Data.FollowAction then
-                            NPC.Data.FollowAction(self);
-                        end
-                        return;
-                    end
-                else
-                    if NPC.Data.FollowAction then
-                        NPC.Data.FollowAction(self);
-                    end
-                    return;
-                end
-            end
-
-            if NPC.Data.PrecedeTarget ~= nil then
-                local TargetID = GetID(NPC.Data.PrecedeDestination);
-                if Logic.GetDistanceBetweenEntities(_EntityID, TargetID) > 2000 then
-                    if NPC.Data.PrecedeAction then
-                        NPC.Data.PrecedeAction(NPC);
-                    end
-                    return;
-                end
-                Logic.SetTaskList(_EntityID, TaskLists.TL_NPC_IDLE);
-            end
-
             NPC:RotateActors();
             NPC.Data.TalkedTo = ClosestKnightID;
             if NPC:HasTalkedTo() then
@@ -913,66 +779,6 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
     end
     LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, NpcOffset);
     LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.Data.NpcName, 15);
-end
-
----
--- Steuert das Verhalten des NPC.
--- Soll ein NPC einem Helden folgen, wird er stehen bleiben, wenn
--- er dem Helden zu nahe, oder zu weit von ihm entfernt ist.
--- Soll ein NPC einen Helden führen, ...
---
--- @param _ScriptName [string] Skriptname des NPC
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Control()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if not IsExisting(self.Data.NpcName) then
-        return;
-    end
-
-    if not self:IsActive() then
-        return;
-    end
-
-    if self.Data.FollowTarget ~= nil then
-        local NpcID  = self:GetID();
-        local HeroID = GetID(self.Data.FollowTarget);
-        local DistanceToHero = Logic.GetDistanceBetweenEntities(NpcID, HeroID);
-
-        local MinDistance = 400;
-        if Logic.IsEntityInCategory(NpcID, EntityCategories.Hero) == 1 then
-            MinDistance = 800;
-        end
-        if DistanceToHero < MinDistance or DistanceToHero > 3500 then
-            Logic.SetTaskList(NpcID, TaskLists.TL_NPC_IDLE);
-            return;
-        end
-        if DistanceToHero >= MinDistance then
-            local x, y, z = Logic.EntityGetPos(HeroID);
-            Logic.MoveSettler(NpcID, x, y);
-            return;
-        end
-    end
-
-    if self.Data.PrecedeTarget ~= nil then
-        local NpcID    = self:GetID();
-        local HeroID   = GetID(self.Data.PrecedeTarget);
-        local TargetID = GetID(self.Data.PrecedeDestination);
-
-        local DistanceToHero   = Logic.GetDistanceBetweenEntities(NpcID, HeroID);
-        local DistanceToTarget = Logic.GetDistanceBetweenEntities(NpcID, TargetID);
-
-        if DistanceToTarget > 2000 then
-            if DistanceToHero < 1500 and not Logic.IsEntityMoving(NpcID) then
-                local x, y, z = Logic.EntityGetPos(TargetID);
-                Logic.MoveSettler(NpcID, x, y);
-            elseif DistanceToHero > 3000 and Logic.IsEntityMoving(NpcID) then
-                local x, y, z = Logic.EntityGetPos(NpcID);
-                Logic.MoveSettler(NpcID, x, y);
-            end
-        end
-    end
 end
 
 ---
