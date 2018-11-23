@@ -284,7 +284,6 @@ end
 --
 -- @param _Data [table] Daten des Quest.
 -- @return [string] Name des erzeugten Quests
--- @return [number] Gesamtanzahl Quests
 -- @within Internal
 -- @local
 --
@@ -300,7 +299,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
 
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
-    -- Questdaten
+    -- Questdaten erzeugen
     local QuestData = {
         _Data.Name,
         (_Data.Sender ~= nil and _Data.Sender) or 1,
@@ -312,7 +311,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         {},
         _Data.Callback,
         _Data.Loop,
-        Data.Visible == true or _Data.Suggestion ~= nil,
+        _Data.Visible == true or _Data.Suggestion ~= nil,
         _Data.EndMessage == true or (_Data.Failure ~= nil or _Data.Success ~= nil),
         (type(_Data.Description) == "table" and _Data.Description[lang]) or _Data.Description,
         (type(_Data.Suggestion) == "table" and _Data.Suggestion[lang]) or _Data.Suggestion,
@@ -320,6 +319,12 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         (type(_Data.Failure) == "table" and _Data.Failure[lang]) or _Data.Failure
     };
 
+    -- Daten validieren
+    if not self:QuestValidateQuestData(QuestData) then
+        API.Dbg("Error while creating quest. Table has been copied to log.");
+        API.DumpTable(QuestData, "Quest");
+        return;
+    end
     
     -- Behaviour
     for k,v in pairs(_Data) do
@@ -348,8 +353,33 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
     Quest.Arguments = (_Data.Arguments ~= nil and API.InstanceTable(_Data.Arguments)) or {};
-    Quests[QuestID].IsGenerated = true;
-    return _Data.Name, Quests[0];
+    return _Data.Name;
+end
+
+---
+-- Erzeugt einen Quest.
+--
+-- @param _Data [table] Daten des Quest.
+-- @return [string] Name des erzeugten Quests
+-- @return [number] Gesamtanzahl Quests
+-- @within Internal
+-- @local
+--
+function BundleQuestGeneration.Global:QuestValidateQuestData(_Data)
+    return (
+        (type(_Data[1]) == "string") and
+        (type(_Data[2]) == "number" and _Data[2] >= 1 and _Data[2] <= 8) and
+        (type(_Data[3]) == "number" and _Data[3] >= 1 and _Data[3] <= 8) and
+        (type(_Data[6]) == "number" and _Data[6] >= 0) and
+        ((_Data[9] ~= nil and type(_Data[9]) == "function") or (_Data[9] == nil)) and
+        ((_Data[10] ~= nil and type(_Data[10]) == "function") or (_Data[10] == nil)) and
+        (type(_Data[11]) == "boolean") and
+        (type(_Data[12]) == "boolean") and
+        ((_Data[13] ~= nil and type(_Data[13]) == "string") or (_Data[13] == nil)) and
+        ((_Data[14] ~= nil and type(_Data[14]) == "string") or (_Data[14] == nil)) and
+        ((_Data[15] ~= nil and type(_Data[15]) == "string") or (_Data[15] == nil)) and
+        ((_Data[16] ~= nil and type(_Data[16]) == "string") or (_Data[16] == nil))
+    );
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
