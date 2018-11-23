@@ -52,6 +52,10 @@ function Mission_FirstMapAction()
 end
 
 function Test()
-    -- Logic.ChangeSettlerPlayerID(GetID("maximilian"), 2);
-    API.InterfaceSetPlayerPortrait(2, "H_Knight_Chivalry");
+    API.NpcCompose {
+        Name     = "maximilian",
+        Callback = function(_Npc, _Hero)
+            API.Note("Bockwurst")
+        end,
+    }
 end
