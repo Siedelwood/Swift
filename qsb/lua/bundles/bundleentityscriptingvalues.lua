@@ -230,11 +230,11 @@ end
 -- @within Internal
 -- @local
 --
-function BundleEntityScriptingValues.Global:SetEntitySize(_entity, _size)
-    local EntityID = GetID(_entity);
+function BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale)
+    local EntityID = GetID(_Entity);
     Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_size));
     if Logic.IsSettler(EntityID) == 1 then
-        Logic.SetSpeedFactor(EntityID, _size);
+        Logic.SetSpeedFactor(EntityID, _Scale);
     end
 end
 
@@ -246,8 +246,8 @@ end
 -- @within Internal
 -- @local
 --
-function BundleEntityScriptingValues.Global:SetPlayerID(_entity, _PlayerID)
-    local EntityID = GetID(_entity);
+function BundleEntityScriptingValues.Global:SetPlayerID(_Entity, _PlayerID)
+    local EntityID = GetID(_Entity);
     Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
 end
 
@@ -273,8 +273,8 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetEntitySize(_entity)
-    local EntityID = GetID(_entity);
+function BundleEntityScriptingValues.Shared:GetEntitySize(_Entity)
+    local EntityID = GetID(_Entity);
     local size = Logic.GetEntityScriptingValue(EntityID, -45);
     return self.Int2Float(size);
 end
@@ -287,8 +287,8 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetPlayerID(_entity)
-    local EntityID = GetID(_entity);
+function BundleEntityScriptingValues.Shared:GetPlayerID(_Entity)
+    local EntityID = GetID(_Entity);
     return Logic.GetEntityScriptingValue(EntityID, -71);
 end
 
@@ -300,8 +300,8 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues.Shared:IsEntityVisible(_entity)
-    local EntityID = GetID(_entity);
+function BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity)
+    local EntityID = GetID(_Entity);
     return Logic.GetEntityScriptingValue(EntityID, -50) == 801280;
 end
 
@@ -313,8 +313,8 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_entity)
-    local EntityID = GetID(_entity);
+function BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity)
+    local EntityID = GetID(_Entity);
     if Logic.IsSettler(EntityID) == 0 then
         return false;
     end
@@ -329,38 +329,38 @@ end
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_entity)
+function BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity)
     local pos = {};
-    pos.X = self:GetValueAsFloat(_entity, 19) or 0;
-    pos.Y = self:GetValueAsFloat(_entity, 20) or 0;
+    pos.X = self:GetValueAsFloat(_Entity, 19) or 0;
+    pos.Y = self:GetValueAsFloat(_Entity, 20) or 0;
     return pos;
 end
 
 ---
 -- Gibt die Scripting Value des Entity als Ganzzahl zurück.
 --
--- @param _entity [string|number] Zu untersuchendes Entity
+-- @param _Entity [string|number] Zu untersuchendes Entity
 -- @param _index  [number] Index im RAM
 -- @return [number] Ganzzahl
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetValueAsInteger(_entity, _index)
-    local value = Logic.GetEntityScriptingValue(GetID(_entity),_index);
+function BundleEntityScriptingValues.Shared:GetValueAsInteger(_Entity, _index)
+    local value = Logic.GetEntityScriptingValue(GetID(_Entity),_index);
     return value;
 end
 
 ---
 -- Gibt die Scripting Value des Entity als Dezimalzahl zurück.
 --
--- @param _entity [string|number] Zu untersuchendes Entity
+-- @param _Entity [string|number] Zu untersuchendes Entity
 -- @param _index  [number] Index im RAM
 -- @return [number] Dezimalzahl
 -- @within BundleEntityScriptingValues
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetValueAsFloat(_entity, _index)
-    local value = Logic.GetEntityScriptingValue(GetID(_entity),_index);
+function BundleEntityScriptingValues.Shared:GetValueAsFloat(_Entity, _index)
+    local value = Logic.GetEntityScriptingValue(GetID(_Entity),_index);
     return BundleEntityScriptingValues.Shared:Int2Float(value);
 end
 
