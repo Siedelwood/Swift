@@ -9,7 +9,7 @@
 -- verändert werden, die sonst unzugänglich wären. Dazu zählen beispielsweise
 -- die Größe des Entity und das Bewegungsziel.</p>
 --
--- <p><a href="#SV.GetEntityPlayer">Scripting Values</a></p>
+-- <p><a href="#API.GetEntityPlayer">Scripting Values</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -18,7 +18,6 @@ BundleEntityScriptingValues = {};
 
 API = API or {};
 QSB = QSB or {};
-SV = SV or {};
 
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
@@ -37,17 +36,17 @@ SV = SV or {};
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local Scale = SV.GetEntityScale("alandra")
+-- local Scale = API.GetEntityScale("alandra")
 --
-function SV.GetEntityScale(_Entity)
+function API.GetEntityScale(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.GetEntityScale: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.GetEntityScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return BundleEntityScriptingValues.Shared:GetEntitySize(_Entity);
 end
-GetScale = SV.GetEntityScale;
+GetScale = API.GetEntityScale;
 
 ---
 -- Gibt den Besitzer des Entity zurück.
@@ -58,15 +57,15 @@ GetScale = SV.GetEntityScale;
 -- @return [number] Besitzer
 -- @within Anwenderfunktionen
 --
-function SV.GetEntityPlayer(_Entity)
+function API.GetEntityPlayer(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.GetEntityPlayer: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return BundleEntityScriptingValues.Shared:GetPlayerID(_entity);
 end
-GetPlayer = SV.GetEntityPlayer;
+GetPlayer = API.GetEntityPlayer;
 
 ---
 -- Gibt die Position zurück, zu der sich das Entity bewegt.
@@ -81,21 +80,22 @@ GetPlayer = SV.GetEntityPlayer;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local Destination = SV.GetMovementTarget("hakim");
+-- -- Hakim bleibt stehen, wenn er in ein Sperrgebiet bewegt wird.
+-- local Destination = API.GetMovementTarget("hakim");
 -- if GetDistance(Destination, "LockedArea") < 2000 then
 --     local x,y,z = Logic.EntityGetPos(GetID("hakim"));
 --     Logic.DEBUG_SetSettlerPosition(GetID("hakim"), x, y):
 -- end
 --
-function SV.GetMovementTarget(_Entity)
+function API.GetMovementTarget(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.GetMovementTarget: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.GetMovementTarget: Target " ..Subject.. " is invalid!");
         return nil;
     end
     return BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity);
 end
-GetMovingTarget = SV.GetMovementTarget;
+GetMovingTarget = API.GetMovementTarget;
 
 ---
 -- Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
@@ -109,20 +109,20 @@ GetMovingTarget = SV.GetMovementTarget;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local Active = SV.IsActiveNpc("alandra");
+-- local Active = API.IsActiveNpc("alandra");
 -- if Active then
 --     API.Note("NPC is active");
 -- end
 --
-function SV.IsActiveNpc(_Entity)
+function API.IsActiveNpc(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.IsActiveNpc: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.IsActiveNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity);
 end
-IsNpc = SV.IsActiveNpc;
+IsNpc = API.IsActiveNpc;
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
@@ -133,15 +133,15 @@ IsNpc = SV.IsActiveNpc;
 -- @return [boolean] Ist sichtbar
 -- @within Anwenderfunktionen
 --
-function SV.IsEntityVisible(_Entity)
+function API.IsEntityVisible(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.IsEntityVisible: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity);
 end
-IsVisible = SV.IsEntityVisible;
+IsVisible = API.IsEntityVisible;
 
 ---
 -- Setzt den Größenfaktor des Entity.
@@ -155,25 +155,25 @@ IsVisible = SV.IsEntityVisible;
 -- @param _Scale  [number] Größenfaktor
 -- @within Anwenderfunktionen
 --
-function SV.SetEntityScale(_Entity, _Scale)
+function API.SetEntityScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.SetEntityScale: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.SetEntityScale: Target " ..Subject.. " is invalid!");
         return;
     end
     if type(_Scale) ~= "number" then
-        API.Dbg("SV.SetEntityScale: Scale must be a number!");
+        API.Dbg("API.SetEntityScale: Scale must be a number!");
         return;
     end
     return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
 end
-SetScale = SV.SetEntityScale;
+SetScale = API.SetEntityScale;
 
 ---
--- Ändert den Besitzer des Entity.
+-- Erzwingt einen neuen Besitzer für das Entity.
 --
 -- Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
--- möglich ein Raubtier einem Spieler zuzuweisen.
+-- möglich ein Raubtier einem richtigen Spieler zuzuweisen.
 --
 -- <p><b>Alias</b>: ChangePlayer</p>
 --
@@ -181,19 +181,19 @@ SetScale = SV.SetEntityScale;
 -- @param _PlayerID [number] Besitzer
 -- @within Anwenderfunktionen
 --
-function SV.SetEntityPlayer(_Entity, _PlayerID)
+function API.SetEntityPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("SV.SetEntityPlayer: Target " ..Subject.. " is invalid!");
+        API.Dbg("API.SetEntityPlayer: Target " ..Subject.. " is invalid!");
         return;
     end
     if type(_PlayerID) ~= "number" or _PlayerID <= 0 or _PlayerID > 8 then
-        API.Dbg("SV.SetEntityPlayer: Player-ID must between 0 and 8!");
+        API.Dbg("API.SetEntityPlayer: Player-ID must between 0 and 8!");
         return;
     end
     return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
 end
-ChangePlayer = SV.SetEntityPlayer;
+ChangePlayer = API.SetEntityPlayer;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
