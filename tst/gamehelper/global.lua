@@ -52,9 +52,6 @@ function Mission_FirstMapAction()
 end
 
 function Test()
-    API.Note(API.CreateQuestDialog{
-        {"Hallo, wie geht es dir?", 4, 1},
-        {"Mir geht es gut, wie immer!", 1, 1, 8},
-        {"Das ist doch schön.", 4, 1, 8},
-    });
+    -- Logic.ChangeSettlerPlayerID(GetID("maximilian"), 2);
+    API.InterfaceSetPlayerPortrait(2, "H_Knight_Chivalry");
 end
