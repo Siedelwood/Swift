@@ -129,7 +129,7 @@ function b_Goal_WinQuest:CustomFunction(_Quest)
 end
 
 function b_Goal_WinQuest:DEBUG(_Quest)
-    if _Quest.IsGenerated and Quests[GetQuestID(self.Quest)] == nil then
+    if Quests[GetQuestID(self.Quest)] == nil then
         dbg(_Quest.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
         return true;
     end
@@ -837,12 +837,8 @@ end
 
 function b_Reprisal_SetVisible:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        if _Quest.IsGenerated then
-            dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
-            return true;
-        else
-            warn(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
-        end
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        return true;
     end
     return false;
 end
@@ -937,12 +933,8 @@ end
 
 function b_Reprisal_SetVulnerability:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        if _Quest.IsGenerated then
-            dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
-            return true;
-        else
-            warn(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
-        end
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        return true;
     end
     return false;
 end
@@ -1015,12 +1007,8 @@ end
 
 function b_Reprisal_SetModel:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        if _Quest.IsGenerated then
-            dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
-            return true;
-        else
-            warn(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
-        end
+        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        return true;
     end
     return false;
 end
@@ -1348,7 +1336,7 @@ function b_Reward_AI_SetEntityControlled:GetCustomData(_Index)
 end
 
 function b_Reward_AI_SetEntityControlled:DEBUG(_Quest)
-    if _Quest.IsGenerated and not IsExisting(self.Entity) then
+    if not IsExisting(self.Entity) then
         dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
@@ -1462,7 +1450,7 @@ function b_Reward_RefillAmmunition:CustomFunction()
 end
 
 function b_Reward_RefillAmmunition:DEBUG(_Quest)
-    if _Quest.IsGenerated and not IsExisting(self.Scriptname) then
+    if not IsExisting(self.Scriptname) then
         dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
         return true
     end
@@ -1625,7 +1613,7 @@ function b_Trigger_AmmunitionDepleted:CustomFunction()
 end
 
 function b_Trigger_AmmunitionDepleted:DEBUG(_Quest)
-    if _Quest.IsGenerated and not IsExisting(self.Scriptname) then
+    if not IsExisting(self.Scriptname) then
         dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
         return true
     end
