@@ -629,13 +629,8 @@ end
 -- @local
 --
 function BundleInterfaceApperance.Local:SetPlayerPortraitBySettler(_PlayerID, _Portrait)
-    local EntityID = GetID(_Portrait);
-    if EntityID == 0 then
-        return;
-    end
-
     local PortraitMap = {
-        ["U_KnightChivraly"]           = "H_Knight_Chivalry",
+        ["U_KnightChivalry"]           = "H_Knight_Chivalry",
         ["U_KnightHealing"]            = "H_Knight_Healing",
         ["U_KnightPlunder"]            = "H_Knight_Plunder",
         ["U_KnightRedPrince"]          = "H_Knight_RedPrince",
@@ -643,7 +638,7 @@ function BundleInterfaceApperance.Local:SetPlayerPortraitBySettler(_PlayerID, _P
         ["U_KnightSong"]               = "H_Knight_Song",
         ["U_KnightTrading"]            = "H_Knight_Trading",
         ["U_KnightWisdom"]             = "H_Knight_Wisdom",
-        ["U_NPC_Amma"]                 = "H_NPC_Amma",
+        ["U_NPC_Amma_NE"]              = "H_NPC_Amma",
         ["U_NPC_Castellan_ME"]         = "H_NPC_Castellan_ME",
         ["U_NPC_Castellan_NA"]         = "H_NPC_Castellan_NA",
         ["U_NPC_Castellan_NE"]         = "H_NPC_Castellan_NE",
@@ -673,9 +668,16 @@ function BundleInterfaceApperance.Local:SetPlayerPortraitBySettler(_PlayerID, _P
         PortraitMap["U_NPC_Monk_Khana"]          = "H_NPC_Monk_Khana";
     end
 
-    local EntityType = Logic.GetEntityType(EntityID);
-    local EntityTypeName = Logic.GetEntityTypeName(EntityType);
-    local HeadModelName = PortraitMap[EntityTypeName] or "H_NPC_Generic_Trader";
+    local HeadModelName = "H_NPC_Generic_Trader";
+    local EntityID = GetID(_Portrait);
+    if EntityID ~= 0 then
+        local EntityType = Logic.GetEntityType(EntityID);
+        local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+        HeadModelName = PortraitMap[EntityTypeName] or "H_NPC_Generic_Trader";
+        if not HeadModelName then
+            HeadModelName = "H_NPC_Generic_Trader";
+        end
+    end
     g_PlayerPortrait[_PlayerID] = HeadModelName;
 end
 
