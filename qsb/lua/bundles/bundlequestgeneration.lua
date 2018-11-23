@@ -73,7 +73,7 @@ function API.CreateQuest(_Data)
         API.Log("API.CreateQuest: Could not execute in local script!");
         return;
     end
-    return BundleQuestGeneration.Global:NewQuest(_Data);
+    return BundleQuestGeneration.Global:QuestCreateNewQuest(_Data);
 end
 AddQuest = API.CreateQuest;
 
@@ -202,30 +202,6 @@ BundleQuestGeneration = {
             QuestMessageID = 0,
         }
     },
-    Local = {
-        Data = {}
-    },
-}
-
-BundleQuestGeneration.Global.Data.QuestTemplate = {
-    MSGKeyOverwrite = nil;
-    IconOverwrite   = nil;
-    Loop            = nil;
-    Callback        = nil;
-    SuggestionText  = nil;
-    SuccessText     = nil;
-    FailureText     = nil;
-    Description     = nil;
-    Identifier      = nil;
-    OpenMessage     = true,
-    CloseMessage    = true,
-    Sender          = 1;
-    Receiver        = 1;
-    Time            = 0;
-    Goals           = {};
-    Reprisals       = {};
-    Rewards         = {};
-    Triggers        = {};
 };
 
 -- Global Script ---------------------------------------------------------------
@@ -237,7 +213,6 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
-
 end
 
 ---
@@ -305,7 +280,7 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
 end
 
 ---
--- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
+-- Erzeugt einen Quest.
 --
 -- @param _Data [table] Daten des Quest.
 -- @return [string] Name des erzeugten Quests
@@ -313,243 +288,68 @@ end
 -- @within Internal
 -- @local
 --
-function BundleQuestGeneration.Global:NewQuest(_Data)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     if not _Data.Name then
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
     end
-
     if not Core:CheckQuestName(_Data.Name) then
         dbg("Quest '"..tostring(_Data.Name).."': invalid questname! Contains forbidden characters!");
         return;
     end
 
-    local QuestData = API.InstanceTable(self.Data.QuestTemplate);
-    QuestData.Identifier      = _Data.Name;
-    QuestData.MSGKeyOverwrite = nil;
-    QuestData.IconOverwrite   = nil;
-    QuestData.Loop            = _Data.Loop;
-    QuestData.Callback        = _Data.Callback;
-    QuestData.SuggestionText  = (type(_Data.Suggestion) == "table" and _Data.Suggestion[lang]) or _Data.Suggestion;
-    QuestData.SuccessText     = (type(_Data.Success) == "table" and _Data.Success[lang]) or _Data.Success;
-    QuestData.FailureText     = (type(_Data.Failure) == "table" and _Data.Failure[lang]) or _Data.Failure;
-    QuestData.Description     = (type(_Data.Description) == "table" and _Data.Description[lang]) or _Data.Description;
-    QuestData.OpenMessage     = _Data.Visible == true or _Data.Suggestion ~= nil;
-    QuestData.CloseMessage    = _Data.EndMessage == true or (_Data.Failure ~= nil or _Data.Success ~= nil);
-    QuestData.Sender          = (_Data.Sender ~= nil and _Data.Sender) or 1;
-    QuestData.Receiver        = (_Data.Receiver ~= nil and _Data.Receiver) or 1;
-    QuestData.Time            = (_Data.Time ~= nil and _Data.Time) or 0;
-
-    if _Data.Arguments then
-        QuestData.Arguments = API.InstanceTable(_Data.Arguments);
-    end
-
-    table.insert(self.Data.GenerationList, QuestData);
-    local ID = #self.Data.GenerationList;
-    self:AttachBehavior(ID, _Data);
-    self:StartQuests();
-    return _Data.Name, Quests[0];
-end
-
----
--- Fügt dem Quest mit der ID in der GenerationList seine Behavior hinzu.
---
--- <b>Achtung: </b>Diese Funktion wird vom Code aufgerufen!
---
--- @param _ID   [number] Id des Quests
--- @param _Data [table] Quest Data
--- @within Internal
--- @local
---
-function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    for k,v in pairs(_Data) do
-        if k ~= "Parameter" and type(v) == "table" and v.en and v.de then
-            _Data[k] = v[lang];
-        end
-    end
 
+    -- Questdaten
+    local QuestData = {
+        _Data.Name,
+        (_Data.Sender ~= nil and _Data.Sender) or 1,
+        (_Data.Receiver ~= nil and _Data.Receiver) or 1,
+        {},
+        {},
+        (_Data.Time ~= nil and _Data.Time) or 0,
+        {},
+        {},
+        _Data.Callback,
+        _Data.Loop,
+        Data.Visible == true or _Data.Suggestion ~= nil,
+        _Data.EndMessage == true or (_Data.Failure ~= nil or _Data.Success ~= nil),
+        (type(_Data.Description) == "table" and _Data.Description[lang]) or _Data.Description,
+        (type(_Data.Suggestion) == "table" and _Data.Suggestion[lang]) or _Data.Suggestion,
+        (type(_Data.Success) == "table" and _Data.Success[lang]) or _Data.Success,
+        (type(_Data.Failure) == "table" and _Data.Failure[lang]) or _Data.Failure
+    };
+
+    
+    -- Behaviour
     for k,v in pairs(_Data) do
         if tonumber(k) ~= nil then
-            if type(v) ~= "table" then
-                dbg(self.Data.GenerationList[_ID].Identifier..": Some behavior entries aren't behavior!");
-            else
+            if type(v) == "table" then
                 if v.GetGoalTable then
-                    table.insert(self.Data.GenerationList[_ID].Goals, v:GetGoalTable());
+                    table.insert(QuestData[4], v:GetGoalTable());
 
-                    local Idx = #self.Data.GenerationList[_ID].Goals;
-                    self.Data.GenerationList[_ID].Goals[Idx].Context            = v;
-                    self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideIcon   = self.Data.GenerationList[_ID].Goals[Idx].Context.GetIcon;
-                    self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideMsgKey = self.Data.GenerationList[_ID].Goals[Idx].Context.GetMsgKey;
+                    local Idx = #QuestData[4];
+                    QuestData[4][Idx].Context            = v;
+                    QuestData[4][Idx].FuncOverrideIcon   = QuestData[4][Idx].Context.GetIcon;
+                    QuestData[4][Idx].FuncOverrideMsgKey = QuestData[4][Idx].Context.GetMsgKey;
                 elseif v.GetReprisalTable then
-                    table.insert(self.Data.GenerationList[_ID].Reprisals, v:GetReprisalTable());
+                    table.insert(QuestData[8], v:GetReprisalTable());
                 elseif v.GetRewardTable then
-                    table.insert(self.Data.GenerationList[_ID].Rewards, v:GetRewardTable());
-                elseif v.GetTriggerTable then
-                    table.insert(self.Data.GenerationList[_ID].Triggers, v:GetTriggerTable());
+                    table.insert(QuestData[7], v:GetRewardTable());
                 else
-                    dbg(self.Data.GenerationList[_ID].Identifier..": Could not obtain behavior table!");
+                    table.insert(QuestData[5], v:GetTriggerTable());
                 end
             end
         end
     end
-end
 
----
--- DO NOT USE THIS FUNCTION!--
--- @within Deprecated
--- @local
---
-function BundleQuestGeneration.Global:StartQuests()
-    if not self:ValidateQuests() then
-        return;
-    end
-
-    while (#self.Data.GenerationList > 0)
-    do
-        local QuestData = table.remove(self.Data.GenerationList, 1);
-        if self:DebugQuest(QuestData) then
-            local QuestID, Quest = QuestTemplate:New(
-                QuestData.Identifier,
-                QuestData.Sender,
-                QuestData.Receiver,
-                QuestData.Goals,
-                QuestData.Triggers,
-                assert(tonumber(QuestData.Time)),
-                QuestData.Rewards,
-                QuestData.Reprisals,
-                QuestData.Callback,
-                QuestData.Loop,
-                QuestData.OpenMessage,
-                QuestData.CloseMessage,
-                QuestData.Description,
-                QuestData.SuggestionText,
-                QuestData.SuccessText,
-                QuestData.FailureText
-            );
-
-            if QuestData.MSGKeyOverwrite then
-                Quest.MsgTableOverride = self.MSGKeyOverwrite;
-            end
-            if QuestData.IconOverwrite then
-                Quest.IconOverride = self.IconOverwrite;
-            end
-            if QuestData.Arguments then
-                Quest.Arguments = API.InstanceTable(QuestData.Arguments);
-            end
-
-            -- Quest wurde erzeugt
-            Quests[QuestID].IsGenerated = true;
-        end
-    end
-end
-
----
--- Validiert alle Quests in der GenerationList. Verschiedene Standardfehler
--- werden geprüft.
---
--- @within Internal
--- @local
---
-function BundleQuestGeneration.Global:ValidateQuests()
-    for k, v in pairs(self.Data.GenerationList) do
-        if #v.Goals == 0 then
-            table.insert(self.Data.GenerationList[k].Goals, Goal_InstantSuccess():GetGoalTable());
-        end
-        if #v.Triggers == 0 then
-            table.insert(self.Data.GenerationList[k].Triggers, Trigger_Time(0):GetTriggerTable());
-        end
-
-        if #v.Goals == 0 and #v.Triggers == 0 then
-            local text = string.format("Quest '" ..v.Identifier.. "' is missing a goal or a trigger!");
-            return false;
-        end
-
-        local debugText = ""
-        -- check if quest table is invalid
-        if not v then
-            debugText = debugText .. "quest table is invalid!"
-        else
-            -- check loop callback
-            if v.Loop ~= nil and type(v.Loop) ~= "function" then
-                debugText = debugText .. self.Identifier..": Loop must be a function!"
-            end
-            -- check callback
-            if v.Callback ~= nil and type(v.Callback) ~= "function" then
-                debugText = debugText .. self.Identifier..": Callback must be a function!"
-            end
-            -- check sender
-            if (v.Sender == nil or (v.Sender < 1 or v.Sender > 8))then
-                debugText = debugText .. v.Identifier..": Sender is nil or greater than 8 or lower than 1!"
-            end
-            -- check receiver
-            if (v.Receiver == nil or (v.Receiver < 0 or v.Receiver > 8))then
-                debugText = debugText .. self.Identifier..": Receiver is nil or greater than 8 or lower than 0!"
-            end
-            -- check time
-            if (v.Time == nil or type(v.Time) ~= "number" or v.Time < 0)then
-                debugText = debugText .. v.Identifier..": Time is nil or not a number or lower than 0!"
-            end
-            -- check visible
-            if type(v.OpenMessage) ~= "boolean" then
-                debugText = debugText .. v.Identifier..": Visible need to be a boolean!"
-            end
-            -- check end message
-            if type(v.CloseMessage) ~= "boolean" then
-                debugText = debugText .. v.Identifier..": EndMessage need to be a boolean!"
-            end
-            -- check description
-            if (v.Description ~= nil and type(v.Description) ~= "string") then
-                debugText = debugText .. v.Identifier..": Description is not a string!"
-            end
-            -- check proposal
-            if (v.SuggestionText ~= nil and type(v.SuggestionText) ~= "string") then
-                debugText = debugText .. v.Identifier..": Suggestion is not a string!"
-            end
-            -- check success
-            if (v.SuccessText ~= nil and type(v.SuccessText) ~= "string") then
-                debugText = debugText .. v.Identifier..": Success is not a string!"
-            end
-            -- check failure
-            if (v.FailureText ~= nil and type(v.FailureText) ~= "string") then
-                debugText = debugText .. v.Identifier..": Failure is not a string!"
-            end
-        end
-
-        if debugText ~= "" then
-            dbg(debugText);
-            return false;
-        end
-    end
-    return true;
-end
-
-
----
--- Dummy-Funktion zur Validierung der Behavior eines Quests
---
--- Diese Funktion muss durch ein Debug Bundle überschrieben werden um Quests
--- in der Initalisiererliste zu testen.
---
--- @param _List [table] Liste der Quests
--- @within Internal
--- @local
---
-function BundleQuestGeneration.Global:DebugQuest(_List)
-    return true;
-end
-
--- Local Script ----------------------------------------------------------------
-
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
-function BundleQuestGeneration.Local:Install()
-
+    -- Quest erzeugen
+    local QuestID, Quest = QuestTemplate:New(unpack(QuestData, 1, 16));
+    Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
+    Quest.IconOverride = _Data.IconOverwrite;
+    Quest.Arguments = (_Data.Arguments ~= nil and API.InstanceTable(_Data.Arguments)) or {};
+    Quests[QuestID].IsGenerated = true;
+    return _Data.Name, Quests[0];
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
