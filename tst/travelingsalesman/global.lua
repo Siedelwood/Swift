@@ -50,9 +50,13 @@ function Mission_FirstMapAction()
 
     SetDiplomacyState(1, 2, 2);
     AddOffer(Logic.GetStoreHouse(2), 2, Goods.G_Gems);
-    AddOffer(Logic.GetStoreHouse(2), 3, Goods.G_Bread);
+    AddOffer(Logic.GetStoreHouse(2), 2, Goods.G_Gems);
+    -- AddOffer(Logic.GetStoreHouse(2), 3, Goods.G_Bread);
     AddMercenaryOffer(Logic.GetStoreHouse(2), 4, Entities.U_MilitarySword);
-    AddEntertainerOffer(Logic.GetStoreHouse(2), Entities.U_Entertainer_NA_FireEater);
+    AddMercenaryOffer(Logic.GetStoreHouse(2), 4, Entities.U_MilitarySword);
+    -- AddMercenaryOffer(Logic.GetStoreHouse(2), 4, Entities.U_MilitaryBow);
+    -- AddEntertainerOffer(Logic.GetStoreHouse(2), Entities.U_Entertainer_NA_FireEater);
+    -- AddEntertainerOffer(Logic.GetStoreHouse(2), Entities.U_Entertainer_NE_StrongestMan_Barrel);
     
     -- local offers = {
     --     {
