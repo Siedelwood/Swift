@@ -24,7 +24,7 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- </p>Gibt den Größenfaktor des Entity zurück.</p>
+-- Gibt den Größenfaktor des Entity zurück.
 --
 -- <p>Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
 -- </p>

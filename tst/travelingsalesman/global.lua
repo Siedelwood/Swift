@@ -40,38 +40,45 @@ function Mission_FirstMapAction()
         Startup_Diplomacy()
     end
     
-    API.ActivateDebugMode(true, false, false, true)
+    API.ActivateDebugMode(true, false, true, true)
     
     AddGood(Goods.G_Gold,   500, 1)
     AddGood(Goods.G_Wood,    30, 1)
     AddGood(Goods.G_Grain,   25, 1)
     
     -----
+
+    SetDiplomacyState(1, 2, 2);
+    AddOffer(Logic.GetStoreHouse(2), 2, Goods.G_Gems);
+    AddOffer(Logic.GetStoreHouse(2), 3, Goods.G_Bread);
+    AddMercenaryOffer(Logic.GetStoreHouse(2), 4, Entities.U_MilitarySword);
+    AddEntertainerOffer(Logic.GetStoreHouse(2), Entities.U_Entertainer_NA_FireEater);
     
-    local offers = {
-        {
-            {"G_Gems",5,},
-            {"G_Iron",5,},
-            {"G_Beer",2,},
-        },
-        {
-            {"G_Stone",5,},
-            {"G_Sheep",1,},
-            {"G_Cheese",2,},
-        },
-        {
-            {"G_Grain",5,},
-            {"G_Broom",2,},
-            {"G_Sheep",1,},
-        },
-        {
-            {"U_CatapultCart",1,},
-            {"U_MilitarySword",3,},
-            {"U_MilitaryBow",3,},
-        },
-    }
-    API.TravelingSalesmanActivate(2, offers, {"WP1", "WP2", "WP3", "WP4"});
-    API.TravelingSalesmanDiplomacyOverride(2, false);
+    -- local offers = {
+    --     {
+    --         {"U_CatapultCart",5,},
+    --         {"G_Gems",5,},
+    --         {"G_Iron",5,},
+    --         {"G_Beer",2,},
+    --     },
+    --     {
+    --         {"G_Stone",5,},
+    --         {"G_Sheep",1,},
+    --         {"G_Cheese",2,},
+    --     },
+    --     {
+    --         {"G_Grain",5,},
+    --         {"G_Broom",2,},
+    --         {"G_Sheep",1,},
+    --     },
+    --     {
+    --         {"U_CatapultCart",1,},
+    --         {"U_MilitarySword",3,},
+    --         {"U_MilitaryBow",3,},
+    --     },
+    -- }
+    -- API.TravelingSalesmanActivate(2, offers, {"WP1", "WP2", "WP3", "WP4"});
+    -- API.TravelingSalesmanDiplomacyOverride(2, false);
 end
 
 function foo()
