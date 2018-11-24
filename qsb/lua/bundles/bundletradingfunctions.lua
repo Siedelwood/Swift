@@ -8,7 +8,9 @@
 -- Dieses Bundle bietet einige (experientelle) Funktionen zum untersuchen und
 -- zur Manipulation von Handelsangeboten. Die bekannten Funktionen, wie z.B.
 -- AddOffer, werden erweitert, sodass sie Angebote für einen Spieler mit einer
--- anderen ID als 1 erstellen können.
+-- anderen ID als 1 erstellen können. Außerdem kann ein Händler nicht mehr
+-- mehrere Angebote des gleichen Typs anbieten.
+--
 -- Zudem wird ein fliegender Händler angeboten, der periodisch den Hafen mit
 -- einem Schiff anfährt. Dabei kann der Fahrtweg frei mit Wegpunkten bestimmt
 -- werden. Es können auch mehrere Spieler zu Händlern gemacht werden.
@@ -86,38 +88,21 @@ function API.GetOfferCount(_PlayerID)
 end
 
 ---
--- Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
--- den Spieler zurück. Es wird immer das erste Angebot zurückgegeben.
+-- Gibt zurück, ob das Angebot vom angegebenen Spieler im Lagerhaus zum
+-- Verkauf angeboten wird.
 --
 -- @param _PlayerID [number] Player ID
 -- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
--- @return [number] ID des Angebots
--- @return [number] ID des Händlers im Gebäude
--- @return [number] Entity ID des Lagerhaus
+-- @return [boolean] Ware wird angeboten
 -- @within Anwenderfunktionen
 --
-function API.GetOfferAndTrader(_PlayerID, _GoodOrEntityType)
+function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
     if GUI then
-        API.Log("Can not execute API.GetOfferAndTrader in local script!");
+        API.Log("Can not execute API.IsGoodOrUnitOffered in local script!");
         return;
     end
-    return BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
-end
-
----
--- Gibt den Typ des Händlers mit der ID im Gebäude zurück.
---
--- @param _BuildingID [number] Building ID
--- @param _TraderID [number] Trader ID
--- @return [number]
--- @within Anwenderfunktionen
---
-function API.GetTraderType(_BuildingID, _TraderID)
-    if GUI then
-        API.Log("Can not execute API.GetTraderType in local script!");
-        return;
-    end
-    return BundleTradingFunctions.Global:GetTraderType(_BuildingID, _TraderID);
+    local OfferID, TraderID = BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
+    return OfferID ~= 1 and TraderID ~= 1;
 end
 
 ---
@@ -143,6 +128,9 @@ end
 -- 
 -- Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
 -- Beschränkungen.
+--
+-- <b>Hinweis</p>: Wird eine höherer Wert gesetzt, als das ursprüngliche
+-- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
 --
 -- @param _PlayerID	[number] Händlergebäude
 -- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
@@ -312,6 +300,9 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     ---
     -- Erzeugt ein Handelsangebot für Waren und gibt die ID zurück.
     --
+    -- <b>Hinweis</p>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- angeboten werden.
+    --
     -- @param _Merchant [number] Handelsgebäude
     -- @param _NumberOfOffers [number] Anzahl an Angeboten
     -- @param _GoodType [number] Warentyp
@@ -329,9 +320,9 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
         end
 
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
-        local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(_PlayerID, _GoodType);
-        if OfferID ~= -1 then
-            API.Dbg("Good offer for good type " .._GoodType.. " already exists for player " .._PlayerID.. "!");
+        local OfferID, TraderID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _GoodType);
+        if OfferID ~= -1 and TraderID ~= -1 then
+            API.Warn("Good offer for good type " .._GoodType.. " already exists for player " ..PlayerID.. "!");
             return;
         end
 
@@ -357,6 +348,9 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     ---
     -- Erzeugt ein Handelsangebot für Söldner und gibt die ID zurück.
     --
+    -- <b>Hinweis</p>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- angeboten werden.
+    --
     -- @param _Mercenary [number] Handelsgebäude
     -- @param _Amount [number] Anzahl an Angeboten
     -- @param _Type [number] Soldatentyp
@@ -377,10 +371,10 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
             end
         end
 
-        local PlayerID = Logic.EntityGetPlayer(MerchantID);
-        local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _Type);
-        if OfferID ~= -1 then
-            API.Dbg("Mercenary offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
+        local PlayerID = Logic.EntityGetPlayer(MercenaryID);
+        local OfferID, TraderID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _Type);
+        if OfferID ~= -1 and TraderID ~= -1 then
+            API.Warn("Mercenary offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
             return;
         end
 
@@ -401,6 +395,9 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     -- Erzeugt ein Handelsangebot für Entertainer und gibt die
     -- ID zurück.
     --
+    -- <b>Hinweis</p>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- angeboten werden.
+    --
     -- @param _Merchant [number] Handelsgebäude
     -- @param _EntertainerType [number] Typ des Entertainer
     -- @param _optionalPlayersPlayerID [number] Optionale Spieler-ID
@@ -412,9 +409,9 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
         local NumberOfOffers = 1;
 
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
-        local OfferID, TraderID, StorehouseID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _Type);
-        if OfferID ~= -1 then
-            API.Dbg("Entertainer offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
+        local OfferID, TraderID = BundleTradingFunctions.Global:GetOfferAndTrader(PlayerID, _EntertainerType);
+        if OfferID ~= -1 and TraderID ~= -1 then
+            API.Warn("Entertainer offer for type " .._EntertainerType.. " already exists for player " ..PlayerID.. "!");
             return;
         end
 
@@ -498,24 +495,26 @@ function BundleTradingFunctions.Global:GetStorehouseInformation(_PlayerID)
     local NumberOfMerchants = Logic.GetNumberOfMerchants(Logic.GetStoreHouse(2));
     local AmountOfOffers = 0;
 
-    for Index = 0, NumberOfMerchants, 1 do
-        local Offers = {Logic.GetMerchantOfferIDs(BuildingID, Index, _PlayerID)};
-        for i= 1, #Offers, 1 do
-            local type, goodAmount, offerAmount, prices = 0, 0, 0, 0;
-            if Logic.IsGoodTrader(BuildingID, Index) then
-                type, goodAmount, offerAmount, prices = Logic.GetGoodTraderOffer(BuildingID, Offers[i], _PlayerID);
-                if type == Goods.G_Sheep or type == Goods.G_Cow then
-                    goodAmount = 5;
+    if BuildingID ~= 0 then
+        for Index = 0, NumberOfMerchants, 1 do
+            local Offers = {Logic.GetMerchantOfferIDs(BuildingID, Index, _PlayerID)};
+            for i= 1, #Offers, 1 do
+                local type, goodAmount, offerAmount, prices = 0, 0, 0, 0;
+                if Logic.IsGoodTrader(BuildingID, Index) then
+                    type, goodAmount, offerAmount, prices = Logic.GetGoodTraderOffer(BuildingID, Offers[i], _PlayerID);
+                    if type == Goods.G_Sheep or type == Goods.G_Cow then
+                        goodAmount = 5;
+                    end
+                elseif Logic.IsMercenaryTrader(BuildingID, Index) then
+                    type, goodAmount, offerAmount, prices = Logic.GetMercenaryOffer(BuildingID, Offers[i], _PlayerID);
+                elseif Logic.IsEntertainerTrader(BuildingID, Index) then
+                    type, goodAmount, offerAmount, prices = Logic.GetEntertainerTraderOffer(BuildingID, Offers[i], _PlayerID);
                 end
-            elseif Logic.IsMercenaryTrader(BuildingID, Index) then
-                type, goodAmount, offerAmount, prices = Logic.GetMercenaryOffer(BuildingID, Offers[i], _PlayerID);
-            elseif Logic.IsEntertainerTrader(BuildingID, Index) then
-                type, goodAmount, offerAmount, prices = Logic.GetEntertainerTraderOffer(BuildingID, Offers[i], _PlayerID);
-            end
 
-            AmountOfOffers = AmountOfOffers +1;
-            local OfferData = {Index, Offers[i], type, goodAmount, offerAmount};
-            table.insert(StorehouseData[1], OfferData);
+                AmountOfOffers = AmountOfOffers +1;
+                local OfferData = {Index, Offers[i], type, goodAmount, offerAmount};
+                table.insert(StorehouseData[1], OfferData);
+            end
         end
     end
 
@@ -588,8 +587,6 @@ end
 ---
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden ist. 
 -- Es wird immer nur das erste Angebot des Typs entfernt.
---
--- FIXME: Funktioniert nicht zuverlässig.
 -- 
 -- @param _PlayerID [number] Player ID
 -- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
@@ -597,11 +594,13 @@ end
 -- @local
 --
 function BundleTradingFunctions.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
-    local OfferID, TraderID, Storehouse = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
+    local OfferID, TraderID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
     if not IsExisting(BuildingID) then
         return;
     end
-    Logic.RemoveOffer(Storehouse, TraderID, OfferID);
+    -- Wird benötigt, weil bei RemoveOffer die Trader-IDs vertauscht sind.
+    local MappedTraderID = (TraderID == 1 and 2) or (TraderID == 2 and 1) or 0;
+    Logic.RemoveOffer(BuildingID, MappedTraderID, OfferID);
 end
 
 ---
@@ -609,6 +608,9 @@ end
 -- 
 -- Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
 -- Beschränkungen.
+--
+-- <b>Hinweis</p>: Wird eine höherer Wert gesetzt, als das ursprüngliche
+-- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
 --
 -- @param _PlayerID	[number] Händlergebäude
 -- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
