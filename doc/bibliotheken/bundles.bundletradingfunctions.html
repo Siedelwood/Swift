@@ -103,30 +103,17 @@
 	<td class="summary">Gibt die Handelsinformationen des Spielers aus.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.GetTrader">API.GetTrader (_BuildingID, _TraderType)</a></td>
-	<td class="summary">Gibt den Händler des Typs in dem Gebäude zurück.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.GetTraderType">API.GetTraderType (_BuildingID, _TraderID)</a></td>
 	<td class="summary">Gibt den Typ des Händlers mit der ID im Gebäude zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ModifyTraderOffer">API.ModifyTraderOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</a></td>
-	<td class="summary"><p>FIXME: Setzt die Angebotsmenge immer auf 0.</p>
-
- <p>Ändert die maximale Menge des Angebots im Händelrgebäude.</p></td>
+	<td class="name" nowrap><a href="#API.ModifyTradeOffer">API.ModifyTradeOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</a></td>
+	<td class="summary">Ändert die aktuelle Menge des Angebots im Händelrgebäude.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RemoveOffer">API.RemoveOffer (_PlayerID, _GoodOrEntityType)</a></td>
-	<td class="summary"><p>FIXME: Führt zum Spielabsturz.</p>
-
- <p>Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden</p>
+	<td class="name" nowrap><a href="#API.RemoveTradeOffer">API.RemoveTradeOffer (_PlayerID, _GoodOrEntityType)</a></td>
+	<td class="summary">Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
  ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.RemoveOfferByIndex">API.RemoveOfferByIndex (_PlayerID, _TraderType, _OfferIndex)</a></td>
-	<td class="summary">Entfernt das Angebot mit dem Index für den Händler im Handelsgebäude
- des Spielers.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance)</a></td>
@@ -255,7 +242,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="keyword">local</span> Info = BundleTradingFunctions.Global:GetOfferInformation(<span class="number">2</span>);
+        <pre class="example"><span class="keyword">local</span> Info = API.GetOfferInformation(<span class="number">2</span>);
 
 <span class="comment">-- Info enthält:
 </span><span class="comment">-- Info = {
@@ -263,41 +250,12 @@
 </span><span class="comment">--      Storehouse = 26796.
 </span><span class="comment">--      OfferCount = 2,
 </span><span class="comment">--      {
-</span><span class="comment">--          {TraderID = 0, OfferID = 0, GoodType = Goods.G_Gems,
-</span><span class="comment">--           OfferGoodAmount = 9, OfferAmount = 2},
-</span><span class="comment">--          {TraderID = 0, OfferID = 1, GoodType = Goods.G_Milk,
-</span><span class="comment">--           OfferGoodAmount = 9, OfferAmount = 4},
+</span><span class="comment">--          Händler-ID, Angebots-ID, Angebotstyp, Wagenladung, Angebotsmenge
+</span><span class="comment">--          {0, 0, Goods.G_Gems, 9, 2},
+</span><span class="comment">--          {0, 1, Goods.G_Milk, 9, 4},
 </span><span class="comment">--      },
 </span><span class="comment">-- }</span></pre>
     </ul>
-
-</dd>
-    <dt>
-    <a name = "API.GetTrader"></a>
-    <strong>API.GetTrader (_BuildingID, _TraderType)</strong>
-    </dt>
-    <dd>
-    Gibt den Händler des Typs in dem Gebäude zurück.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_BuildingID</span>
-         [number] Entity ID des Handelsgebäudes
-        </li>
-        <li><span class="parameter">_TraderType</span>
-         [number] Typ des Händlers
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number]
-    </ol>
-
-
-
 
 </dd>
     <dt>
@@ -329,13 +287,15 @@
 
 </dd>
     <dt>
-    <a name = "API.ModifyTraderOffer"></a>
-    <strong>API.ModifyTraderOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</strong>
+    <a name = "API.ModifyTradeOffer"></a>
+    <strong>API.ModifyTradeOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</strong>
     </dt>
     <dd>
-    <p>FIXME: Setzt die Angebotsmenge immer auf 0.</p>
+    Ändert die aktuelle Menge des Angebots im Händelrgebäude.
 
- <p>Ändert die maximale Menge des Angebots im Händelrgebäude.</p>
+ Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
+ Beschränkungen.
+
 
 
     <h3>Parameters:</h3>
@@ -357,14 +317,13 @@
 
 </dd>
     <dt>
-    <a name = "API.RemoveOffer"></a>
-    <strong>API.RemoveOffer (_PlayerID, _GoodOrEntityType)</strong>
+    <a name = "API.RemoveTradeOffer"></a>
+    <strong>API.RemoveTradeOffer (_PlayerID, _GoodOrEntityType)</strong>
     </dt>
     <dd>
-    <p>FIXME: Führt zum Spielabsturz.</p>
-
- <p>Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden</p>
+    Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
  ist.  Es wird immer nur das erste Angebot des Typs entfernt.
+<p> <p>FIXME: Funktioniert nicht zuverlässig.</p>
 
 
 
@@ -375,33 +334,6 @@
         </li>
         <li><span class="parameter">_GoodOrEntityType</span>
          [number] Warentyp oder Entitytyp
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.RemoveOfferByIndex"></a>
-    <strong>API.RemoveOfferByIndex (_PlayerID, _TraderType, _OfferIndex)</strong>
-    </dt>
-    <dd>
-    Entfernt das Angebot mit dem Index für den Händler im Handelsgebäude
- des Spielers.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] Entity ID des Handelsgebäudes
-        </li>
-        <li><span class="parameter">_TraderType</span>
-         [number] Typ des Händlers
-        </li>
-        <li><span class="parameter">_OfferIndex</span>
-         [number] Index des Angebots
         </li>
     </ul>
 
@@ -669,7 +601,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-11-23 20:10:16 </i>
+<i style="float:right;">Last updated 2018-11-24 01:55:20 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
