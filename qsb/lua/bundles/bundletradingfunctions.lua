@@ -129,7 +129,7 @@ end
 -- Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
 -- Beschränkungen.
 --
--- <b>Hinweis</p>: Wird eine höherer Wert gesetzt, als das ursprüngliche
+-- <b>Hinweis</b>: Wird eine höherer Wert gesetzt, als das ursprüngliche
 -- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
 --
 -- @param _PlayerID	[number] Händlergebäude
@@ -300,7 +300,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     ---
     -- Erzeugt ein Handelsangebot für Waren und gibt die ID zurück.
     --
-    -- <b>Hinweis</p>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
     -- angeboten werden.
     --
     -- @param _Merchant [number] Handelsgebäude
@@ -348,7 +348,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     ---
     -- Erzeugt ein Handelsangebot für Söldner und gibt die ID zurück.
     --
-    -- <b>Hinweis</p>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
     -- angeboten werden.
     --
     -- @param _Mercenary [number] Handelsgebäude
@@ -395,7 +395,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     -- Erzeugt ein Handelsangebot für Entertainer und gibt die
     -- ID zurück.
     --
-    -- <b>Hinweis</p>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
     -- angeboten werden.
     --
     -- @param _Merchant [number] Handelsgebäude
@@ -609,7 +609,7 @@ end
 -- Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
 -- Beschränkungen.
 --
--- <b>Hinweis</p>: Wird eine höherer Wert gesetzt, als das ursprüngliche
+-- <b>Hinweis</b>: Wird eine höherer Wert gesetzt, als das ursprüngliche
 -- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
 --
 -- @param _PlayerID	[number] Händlergebäude
