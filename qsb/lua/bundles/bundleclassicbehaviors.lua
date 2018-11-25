@@ -26,7 +26,40 @@ QSB.DestroyedSoldiers = QSB.DestroyedSoldiers or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
--- Hier siehst du... nichts! ;)
+---
+-- Gibt das im Quest gespeicherte Resultat von Goal_InputDialog als Text zurück.
+--
+-- <b>Hinweis</b>: Es wird nur die letzte Eingabe zurückgegeben.
+--
+-- @param _QuestName [string] Name des Quest
+-- @return [string] Eingabe des Spielers
+-- @within Anwenderfunktionen
+--
+function API.GetInputStringFromQuest(_QuestName)
+    if GUI then
+        API.Dbg("API.GetInputStringFromQuest: Quests can not be checked from local script!");
+        return;
+    end
+    local Quest = Quests[GetQuestID(_QuestName)];
+    if not Quest then
+        API.Dbg("API.GetInputStringFromQuest: Quest '" ..tostring(_QuestName).. "' not found!");
+        return;
+    end
+    return BundleClassicBehaviors.Global:GetInputFromQuest(_QuestName);
+end
+
+---
+-- Gibt das im Quest gespeicherte Resultat von Goal_InputDialog Als Zahl zurück.
+--
+-- <b>Hinweis</b>: Es wird nur die letzte Eingabe zurückgegeben.
+--
+-- @param _QuestName [string] Name des Quest
+-- @return [number] Eingabe des Spielers
+-- @within Anwenderfunktionen
+--
+function API.GetInputNumberFromQuest(_QuestName)
+    return tonumber(API.GetInputStringFromQuest(_QuestName));
+end
 
 -- -------------------------------------------------------------------------- --
 -- Goals                                                                      --
@@ -2529,187 +2562,6 @@ Core:RegisterBehavior(b_Goal_CustomVariables)
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Spieler muss im Chatdialog ein Passwort eingeben.
---
--- Es können auch mehrere Passwörter verwendet werden. Dazu muss die Liste
--- der Passwörter abgetrennt mit ; angegeben werden.
---
--- <b>Achtung:</b> Ein Passwort darf immer nur aus einem Wort bestehen!
---
--- @param _VarName   Name der Lösungsvariablen
--- @param _Message   Nachricht bei Falscheingabe
--- @param _Passwords Liste der Passwörter
--- @param _Trials    Anzahl versuche (-1 für unendlich)
---
--- @within Goal
---
-function Goal_InputDialog(...)
-    return b_Goal_InputDialog:new(...);
-end
-
-b_Goal_InputDialog  = {
-    Name = "Goal_InputDialog",
-    Description = {
-        en = "Goal: Player must type in something. The passwords have to be seperated by ; and whitespaces will be ignored.",
-        de = "Ziel: Oeffnet einen Dialog, der Spieler muss Lösungswörter eingeben. Diese sind durch ; abzutrennen. Leerzeichen werden ignoriert.",
-    },
-    Parameter = {
-        {ParameterType.Default, en = "ReturnVariable", de = "Name der Variable" },
-        {ParameterType.Default, en = "Message", de = "Nachricht" },
-        {ParameterType.Default, en = "Passwords", de = "Lösungswörter" },
-        {ParameterType.Number,  en = "Trials Till Correct Password (0 = Forever)", de = "Versuche (0 = unbegrenzt)" },
-    }
-}
-
-function b_Goal_InputDialog:GetGoalTable()
-    return { Objective.Custom2, {self, self.CustomFunction}}
-end
-
-function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
-    if (_Index == 0) then
-        self.Variable = _Parameter
-    elseif (_Index == 1) then
-        self.Message = _Parameter
-    elseif (_Index == 2) then
-        local str = _Parameter;
-        self.Password = {};
-
-        str = str;
-        str = string.lower(str);
-        str = string.gsub(str, " ", "");
-        while (string.len(str) > 0)
-        do
-            local s,e = string.find(str, ";");
-            if e then
-                table.insert(self.Password, string.sub(str, 1, e-1));
-                str = string.sub(str, e+1, string.len(str));
-            else
-                table.insert(self.Password, str);
-                str = "";
-            end
-        end
-    elseif (_Index == 3) then
-        self.TryTillCorrect = (_Parameter == nil and -1) or (_Parameter * 1)
-    end
-end
-
-function b_Goal_InputDialog:CustomFunction(_Quest)
-    local function Box( __returnVariable_ )
-        if not self.shown then
-            self:InitReturnVariable(__returnVariable_)
-            self:ShowBox()
-            self.shown = true
-        end
-    end
-
-    if not IsBriefingActive or (IsBriefingActive and IsBriefingActive() == false) then
-        if (not self.TryTillCorrect) or (self.TryTillCorrect) == -1 then
-            Box( self.Variable, self.Message )
-        elseif not self.shown then
-            self.TryCounter = self.TryCounter or self.TryTillCorrect
-            Box( self.Variable, "" )
-            self.TryCounter = self.TryCounter - 1
-        end
-
-        if _G[self.Variable] then
-            Logic.ExecuteInLuaLocalState([[
-                GUI_Chat.Confirm = GUI_Chat.Confirm_Orig_Goal_InputDialog
-                GUI_Chat.Confirm_Orig_Goal_InputDialog = nil
-                GUI_Chat.Abort = GUI_Chat.Abort_Orig_Goal_InputDialog
-                GUI_Chat.Abort_Orig_Goal_InputDialog = nil
-            ]]);
-
-            if self.Password then
-
-                self.shown = nil
-                _G[self.Variable] = _G[self.Variable];
-                _G[self.Variable] = string.lower(_G[self.Variable]);
-                _G[self.Variable] = string.gsub(_G[self.Variable], " ", "");
-                if Inside(_G[self.Variable], self.Password) then
-                    return true
-                elseif self.TryTillCorrect and ( self.TryTillCorrect == -1 or self.TryCounter > 0 ) then
-                    Logic.DEBUG_AddNote(self.Message);
-                    _G[self.Variable] = nil
-                    return
-                else
-                    Logic.DEBUG_AddNote(self.Message);
-                    _G[self.Variable] = nil
-                    return false
-                end
-            end
-            return true
-        end
-    end
-end
-
-function b_Goal_InputDialog:ShowBox()
-    Logic.ExecuteInLuaLocalState([[
-        Input.ChatMode()
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",1)
-        XGUIEng.SetText("/InGame/Root/Normal/ChatInput/ChatInput", "")
-        XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput")
-    ]])
-end
-
-function b_Goal_InputDialog:InitReturnVariable(__string_)
-    Logic.ExecuteInLuaLocalState([[
-        GUI_Chat.Abort_Orig_Goal_InputDialog = GUI_Chat.Abort
-        GUI_Chat.Confirm_Orig_Goal_InputDialog = GUI_Chat.Confirm
-
-        GUI_Chat.Confirm = function()
-            local _variable = "]]..__string_..[["
-            Input.GameMode()
-
-            XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",0)
-            local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput")
-            g_Chat.JustClosed = 1
-            GUI.SendScriptCommand("_G[ \"".._variable.."\" ] = \""..ChatMessage.."\"")
-        end
-
-        GUI_Chat.Abort = function() end
-    ]])
-end
-
-function b_Goal_InputDialog:DEBUG(_Quest)
-    if tonumber(self.TryTillCorrect) == nil or self.TryTillCorrect == 0 then
-        local text = string.format("%s %s: TryTillCorrect is nil or 0!",_Quest.Identifier,self.Name);
-        dbg(text);
-        return true;
-    elseif type(self.Message) ~= "string" then
-        local text = string.format("%s %s: Message is not valid!",_Quest.Identifier,self.Name);
-        dbg(text);
-        return true;
-    elseif type(self.Variable) ~= "string" then
-        local text = string.format("%s %s: Variable is not valid!",_Quest.Identifier,self.Name);
-        dbg(text);
-        return true;
-    end
-
-    for k,v in pairs(self.Password) do
-        if type(v) ~= "string" then
-            local text = string.format("%s %s: at least 1 password is not valid!",_Quest.Identifier,self.Name);
-            dbg(text);
-            return true;
-        end
-    end
-    return false;
-end
-
-function b_Goal_InputDialog:GetIcon()
-    return {12,2}
-end
-
-function b_Goal_InputDialog:Reset()
-    _G[self.Variable] = nil;
-    self.TryCounter = nil;
-    self.shown = nil;
-end
-
-Core:RegisterBehavior(b_Goal_InputDialog);
-
--- -------------------------------------------------------------------------- --
-
----
 -- <p>Lässt den Spieler zwischen zwei Antworten wählen.</p>
 --
 -- <p>Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
@@ -4025,54 +3877,6 @@ Core:RegisterBehavior(b_Reprisal_QuestForceInterrupt);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Führt eine Funktion im Skript als Reprisal aus.
---
--- @param _FunctionName Name der Funktion
---
--- @within Reprisal
---
-function Reprisal_MapScriptFunction(...)
-    return b_Reprisal_MapScriptFunction:new(...);
-end
-
-b_Reprisal_MapScriptFunction = {
-    Name = "Reprisal_MapScriptFunction",
-    Description = {
-        en = "Reprisal: Calls a function within the global map script if the quest has failed.",
-        de = "Vergeltung: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.",
-    },
-    Parameter = {
-        { ParameterType.Default, en = "Function name", de = "Funktionsname" },
-    },
-}
-
-function b_Reprisal_MapScriptFunction:GetReprisalTable()
-    return {Reprisal.Custom, {self, self.CustomFunction}};
-end
-
-function b_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
-    if (_Index == 0) then
-        self.FuncName = _Parameter
-    end
-end
-
-function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
-    return _G[self.FuncName](self, _Quest);
-end
-
-function b_Reprisal_MapScriptFunction:DEBUG(_Quest)
-    if not self.FuncName or not _G[self.FuncName] then
-        dbg("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
-        return true;
-    end
-    return false;
-end
-
-Core:RegisterBehavior(b_Reprisal_MapScriptFunction);
-
--- -------------------------------------------------------------------------- --
-
----
 -- Ändert den Wert einer benutzerdefinierten Variable.
 --
 -- Benutzerdefinierte Variablen können ausschließlich Zahlen sein.
@@ -4163,6 +3967,54 @@ function b_Reprisal_CustomVariables:DEBUG(_Quest)
 end
 
 Core:RegisterBehavior(b_Reprisal_CustomVariables)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Führt eine Funktion im Skript als Reprisal aus.
+--
+-- @param _FunctionName Name der Funktion
+--
+-- @within Reprisal
+--
+function Reprisal_MapScriptFunction(...)
+    return b_Reprisal_MapScriptFunction:new(...);
+end
+
+b_Reprisal_MapScriptFunction = {
+    Name = "Reprisal_MapScriptFunction",
+    Description = {
+        en = "Reprisal: Calls a function within the global map script if the quest has failed.",
+        de = "Vergeltung: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Function name", de = "Funktionsname" },
+    },
+}
+
+function b_Reprisal_MapScriptFunction:GetReprisalTable()
+    return {Reprisal.Custom, {self, self.CustomFunction}};
+end
+
+function b_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.FuncName = _Parameter
+    end
+end
+
+function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
+    return _G[self.FuncName](self, _Quest);
+end
+
+function b_Reprisal_MapScriptFunction:DEBUG(_Quest)
+    if not self.FuncName or not _G[self.FuncName] then
+        dbg("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reprisal_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 
@@ -6707,31 +6559,6 @@ Core:RegisterBehavior(b_Reward_QuestForceInterrupt);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Führt eine Funktion im Skript als Reward aus.
---
--- @param _FunctionName Name der Funktion
---
--- @within Reward
---
-function Reward_MapScriptFunction(...)
-    return b_Reward_MapScriptFunction:new(...);
-end
-
-b_Reward_MapScriptFunction = API.InstanceTable(b_Reprisal_MapScriptFunction);
-b_Reward_MapScriptFunction.Name = "Reward_MapScriptFunction";
-b_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
-b_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
-b_Reward_MapScriptFunction.GetReprisalTable = nil;
-
-b_Reward_MapScriptFunction.GetRewardTable = function(self, _Quest)
-    return {Reward.Custom, {self, self.CustomFunction}};
-end
-
-Core:RegisterBehavior(b_Reward_MapScriptFunction);
-
--- -------------------------------------------------------------------------- --
-
----
 -- Ändert den Wert einer benutzerdefinierten Variable.
 --
 -- Benutzerdefinierte Variablen können ausschließlich Zahlen sein.
@@ -6767,6 +6594,31 @@ b_Reward_CustomVariables.GetRewardTable = function(self, _Quest)
 end
 
 Core:RegisterBehavior(b_Reward_CustomVariables)
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Führt eine Funktion im Skript als Reward aus.
+--
+-- @param _FunctionName Name der Funktion
+--
+-- @within Reward
+--
+function Reward_MapScriptFunction(...)
+    return b_Reward_MapScriptFunction:new(...);
+end
+
+b_Reward_MapScriptFunction = API.InstanceTable(b_Reprisal_MapScriptFunction);
+b_Reward_MapScriptFunction.Name = "Reward_MapScriptFunction";
+b_Reward_MapScriptFunction.Description.en = "Reward: Calls a function within the global map script if the quest has failed.";
+b_Reward_MapScriptFunction.Description.de = "Lohn: Ruft eine Funktion im globalen Kartenskript auf, wenn die Quest fehlschlägt.";
+b_Reward_MapScriptFunction.GetReprisalTable = nil;
+
+b_Reward_MapScriptFunction.GetRewardTable = function(self, _Quest)
+    return {Reward.Custom, {self, self.CustomFunction}};
+end
+
+Core:RegisterBehavior(b_Reward_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
 
@@ -7022,10 +6874,6 @@ function b_Reward_UpgradeBuilding:DEBUG(_Quest)
 end
 
 Core:RegisterBehavior(b_Reward_UpgradeBuilding)
-
--- -------------------------------------------------------------------------- --
-
-
 
 -- -------------------------------------------------------------------------- --
 -- Trigger                                                                    --
@@ -8330,6 +8178,153 @@ end
 Core:RegisterBehavior(b_Trigger_MapScriptFunction);
 
 -- -------------------------------------------------------------------------- --
+-- Veränderte Behavior (Build 1410)                                           --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler muss im Chatdialog eine Eingabe tätigen.
+--
+-- Die Eingabe wird im Quest gespeichert und kann zur späteren Verarbeitung
+-- angefragt werden.
+--
+-- Das Behaviour kann auch eingesetzt werden, um ein Passwort zu prüfen.
+-- In diesem Fall wird die Eingabe mit dem Passwort verglichen. Die Anzal der
+-- versuche bestimmt, wie oft falsch eingegeben werden darf.
+--
+-- @param _Passwords Liste der Passwörter
+-- @param _Trials    Anzahl versuche (0 für unendlich)
+--
+-- @within Goal
+--
+function Goal_InputDialog(...)
+    return b_Goal_InputDialog:new(...);
+end
+
+b_Goal_InputDialog  = {
+    Name = "Goal_InputDialog",
+    Description = {
+        en = "Goal: Player must type in something. The passwords have to be seperated by ; and whitespaces will be ignored.",
+        de = "Ziel: Oeffnet einen Dialog, der Spieler muss Lösungswörter eingeben. Diese sind durch ; abzutrennen. Leerzeichen werden ignoriert.",
+    },
+    Parameter = {
+        {ParameterType.Default, en = "Password to enter", de = "Einzugebendes Passwort" },
+        {ParameterType.Number, en = "Trials till failure (0 endless)", de = "Versuche bis Fehlschlag (0 endlos)" },
+    }
+}
+
+function b_Goal_InputDialog:GetGoalTable()
+    return { Objective.Custom2, {self, self.CustomFunction}}
+end
+
+function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Password = self:LowerCase(_Parameter or "");
+    elseif (_Index == 1) then
+        self.Trials = (_Parameter or 0) * 1;
+    end
+end
+
+function b_Goal_InputDialog:CustomFunction(_Quest)
+    local Box = function(_QuestName)
+        if not self.Shown then
+            self:InitReturnVariable(_QuestName);
+            self:ShowBox();
+            self.Shown = true;
+        end
+    end
+
+    if not IsBriefingActive or (IsBriefingActive and IsBriefingActive() == false) then
+        if (not self.Trials) or (self.Trials) == 0 then
+            Box(_Quest.Identifier);
+        elseif not self.Shown then
+            self.TrialCounter = self.TrialCounter or self.Trials;
+            Box(_Quest.Identifier);
+            self.TrialCounter = self.TrialCounter - 1;
+        end
+
+        if _Quest.InputDialogResult then
+            Logic.ExecuteInLuaLocalState([[
+                GUI_Chat.Confirm = GUI_Chat.Confirm_Orig_Goal_InputDialog
+                GUI_Chat.Confirm_Orig_Goal_InputDialog = nil
+                GUI_Chat.Abort = GUI_Chat.Abort_Orig_Goal_InputDialog
+                GUI_Chat.Abort_Orig_Goal_InputDialog = nil
+            ]]);
+
+            if self.Password ~= nil and self.Password ~= "" then
+                self.Shown = nil;
+                if self:LowerCase(_Quest.InputDialogResult) == self.Password then
+                    return true;
+                elseif (self.Trials > 0 and self.TrialCounter > 0) then
+                    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+                    if lang == "de" then
+                        Logic.DEBUG_AddNote("Versuche bis zum Fehlschlag: " .. self.TrialCounter);
+                    else
+                        Logic.DEBUG_AddNote("Tials remaining until failure: " .. self.TrialCounter);
+                    end
+                    _Quest.InputDialogResult = nil;
+                    return;
+                else
+                    return false;
+                end
+            end
+            return true;
+        end
+    end
+end
+
+function b_Goal_InputDialog:LowerCase(_Text)
+    _Text = _Text:lower(_Text);
+    -- Umlaute manuell austauschen
+    -- FIXME: Ausländische Umlaute auch anpassen.
+    _Text = _Text:gsub("Ä", "ä");
+    _Text = _Text:gsub("Ö", "ö");
+    _Text = _Text:gsub("Ü", "ü");
+    return _Text;
+end
+
+function b_Goal_InputDialog:ShowBox()
+    Logic.ExecuteInLuaLocalState([[
+        Input.ChatMode()
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",1)
+        XGUIEng.SetText("/InGame/Root/Normal/ChatInput/ChatInput", "")
+        XGUIEng.SetFocus("/InGame/Root/Normal/ChatInput/ChatInput")
+    ]])
+end
+
+function b_Goal_InputDialog:InitReturnVariable(_QuestName)
+    Logic.ExecuteInLuaLocalState([[
+        GUI_Chat.Abort_Orig_Goal_InputDialog = GUI_Chat.Abort
+        GUI_Chat.Confirm_Orig_Goal_InputDialog = GUI_Chat.Confirm
+
+        GUI_Chat.Confirm = function()
+            Input.GameMode()
+            XGUIEng.ShowWidget("/InGame/Root/Normal/ChatInput",0)
+            local ChatMessage = XGUIEng.GetText("/InGame/Root/Normal/ChatInput/ChatInput")
+            g_Chat.JustClosed = 1
+            GUI.SendScriptCommand("Quests[GetQuestID(']].. _QuestName ..[[')].InputDialogResult = '"..ChatMessage.."'")
+        end
+        GUI_Chat.Abort = function()
+        end
+    ]])
+end
+
+function b_Goal_InputDialog:DEBUG(_Quest)
+    return false;
+end
+
+function b_Goal_InputDialog:GetIcon()
+    return {12,2};
+end
+
+function b_Goal_InputDialog:Reset(_Quest)
+    _Quest.InputDialogResult = nil;
+    self.TrialCounter = nil;
+    self.Shown = nil;
+end
+
+Core:RegisterBehavior(b_Goal_InputDialog);
+
+-- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
@@ -8346,18 +8341,24 @@ BundleClassicBehaviors = {
 -- @local
 --
 function BundleClassicBehaviors.Global:Install()
-
 end
 
--- Local Script ----------------------------------------------------------------
-
 ---
--- Initialisiert das Bundle im lokalen Skript.
+-- Gibt das im Quest gespeicherte Resultat von Goal_InputDialog zurück.
+--
+-- <b>Hinweis</b>: Es wird nur die letzte Eingabe zurückgegeben.
+--
+-- @param _QuestName [string] Name des Quest
+-- @return [string] Eingabe des Spielers
 -- @within Internal
 -- @local
 --
-function BundleClassicBehaviors.Local:Install()
-
+function BundleClassicBehaviors.Global:GetInputFromQuest(_QuestName)
+    local Quest = Quests[GetQuestID(_QuestName)];
+    if not Quest then
+        return;
+    end
+    return Quest.InputDialogResult;
 end
 
 Core:RegisterBundle("BundleClassicBehaviors");

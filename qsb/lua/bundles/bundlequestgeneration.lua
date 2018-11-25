@@ -321,7 +321,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
 
     -- Daten validieren
     if not self:QuestValidateQuestData(QuestData) then
-        API.Dbg("Error while creating quest. Table has been copied to log.");
+        API.Dbg("AddQuest: Error while creating quest. Table has been copied to log.");
         API.DumpTable(QuestData, "Quest");
         return;
     end
@@ -357,17 +357,16 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
 end
 
 ---
--- Erzeugt einen Quest.
+-- Validiert die Felder eines Quests.
 --
 -- @param _Data [table] Daten des Quest.
--- @return [string] Name des erzeugten Quests
--- @return [number] Gesamtanzahl Quests
+-- @return [boolean] Quest OK
 -- @within Internal
 -- @local
 --
 function BundleQuestGeneration.Global:QuestValidateQuestData(_Data)
     return (
-        (type(_Data[1]) == "string") and
+        (type(_Data[1]) == "string" and self:QuestValidateQuestName(_Data[1])) and
         (type(_Data[2]) == "number" and _Data[2] >= 1 and _Data[2] <= 8) and
         (type(_Data[3]) == "number" and _Data[3] >= 1 and _Data[3] <= 8) and
         (type(_Data[6]) == "number" and _Data[6] >= 0) and
@@ -380,6 +379,18 @@ function BundleQuestGeneration.Global:QuestValidateQuestData(_Data)
         ((_Data[15] ~= nil and type(_Data[15]) == "string") or (_Data[15] == nil)) and
         ((_Data[16] ~= nil and type(_Data[16]) == "string") or (_Data[16] == nil))
     );
+end
+
+---
+-- Validiert den Namen eines Quests.
+--
+-- @param _Name [string] Name des Quest.
+-- @return [boolean] Name OK
+-- @within Internal
+-- @local
+--
+function BundleQuestGeneration.Global:QuestValidateQuestName(_Name)
+    return string.find(_Name, "^[A-Za-z0-9_]+$") ~= nil;
 end
 
 Core:RegisterBundle("BundleQuestGeneration");

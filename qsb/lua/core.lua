@@ -50,7 +50,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1311";
+QSB.Version = "Symfonia Build 1410";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -1096,10 +1096,12 @@ function API.Bridge(_Command, _Flag)
 end
 
 ---
--- Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.
+-- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
--- <p>Wahrheitsert true: true, "true", "yes", "on", "+"</p>
--- <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
+-- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
+-- Alles andere als false.
+--
+-- Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
 --
 -- <p><b>Alias:</b> AcceptAlternativeBoolean</p>
 --
@@ -1538,7 +1540,7 @@ end
 -- @local
 --
 function Core:CheckQuestName(_Name)
-    return not string.find(_Name, "[ \"§$%&/\(\)\[\[\?ß\*+#,;:\.^\<\>\|]");
+    return string.find(_Name, "^[A-Za-z0-9_]+$") ~= nil;
 end
 
 ---
@@ -1714,18 +1716,22 @@ end
 ---
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
+-- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
+-- Alles andere als false.
+--
+-- Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
+--
 -- @param _Input Boolean-Darstellung
 -- @return boolean: Konvertierte Boolean
 -- @within Internal
 -- @local
 --
 function Core:ToBoolean(_Input)
-    local Suspicious = tostring(_Input);
-    if Suspicious == true or Suspicious == "true" or Suspicious == "Yes" or Suspicious == "On" or Suspicious == "+" then
-        return true;
+    if type(_Input) == "boolean" then
+        return _Input;
     end
-    if Suspicious == false or Suspicious == "false" or Suspicious == "No" or Suspicious == "Off" or Suspicious == "-" then
-        return false;
+    if string.find(string.lower(tostring(_Input)), "^[tjy\\+].*$") then
+        return true;
     end
     return false;
 end
