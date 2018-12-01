@@ -1800,6 +1800,43 @@ Core:RegisterBehavior(b_Goal_SoldierCount);
 ---
 -- Der Auftragnehmer muss wenigstens einen bestimmten Titel erreichen.
 --
+-- Folgende Titel können verwendet werden:
+-- <table>
+-- <tr>
+-- <td><b>Titel</b></td>
+-- <td><b>Übersetzung</b></td>
+-- </tr>
+-- <tr>
+-- <td>Knight</td>
+-- <td>Ritter</td>
+-- </tr>
+-- <tr>
+-- <td>Mayor</td>
+-- <td>Landvogt</td>
+-- </tr>
+-- <tr>
+-- <td>Baron</td>
+-- <td>Baron</td>
+-- </tr>
+-- <tr>
+-- <td>Earl</td>
+-- <td>Graf</td>
+-- </tr>
+-- <tr>
+-- <td>Marquees</td>
+-- <td>Marktgraf</td>
+-- </tr>
+-- <tr>
+-- <td>Duke</td>
+-- <td>Herzog</td>
+-- </tr>
+-- </tr>
+-- <tr>
+-- <td>Archduke</td>
+-- <td>Erzherzog</td>
+-- </tr>
+-- <table>
+--
 -- @param _Title Titel, der erreicht werden muss
 --
 -- @within Goal
@@ -2085,7 +2122,7 @@ Core:RegisterBehavior(b_Goal_CaptureType);
 ---
 -- Der Auftragnehmer muss das angegebene Entity beschützen.
 --
--- Wird der Wagen zerstört oder in das Lagerhaus / die Burg eines Feindes
+-- Wird ein Wagen zerstört oder in das Lagerhaus / die Burg eines Feindes
 -- gebracht, schlägt das Ziel fehl.
 --
 -- @param _ScriptName
@@ -2164,8 +2201,6 @@ Core:RegisterBehavior(b_Goal_Protect);
 ---
 -- Der AUftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.
 --
--- <b>Achtung:</b> Ausschließlich im Reich des Ostens verfügbar!
---
 -- @param _ScriptName Skriptname der Mine
 --
 -- @within Goal
@@ -2200,7 +2235,9 @@ function b_Goal_Refill:AddParameter(_Index, _Parameter)
     end
 end
 
-Core:RegisterBehavior(b_Goal_Refill);
+if g_GameExtraNo > 0 then
+    Core:RegisterBehavior(b_Goal_Refill);
+end
 
 -- -------------------------------------------------------------------------- --
 
@@ -2254,7 +2291,7 @@ function b_Goal_ResourceAmount:CustomFunction(_Quest)
     local ID = GetID(self.ScriptName)
     if ID and ID ~= 0 and Logic.GetResourceDoodadGoodType(ID) ~= 0 then
         local HaveAmount = Logic.GetResourceDoodadGoodAmount(ID)
-        if ( self.bRelSmallerThan and HaveAmount < self.Amount ) or ( not self.bRelSmallerThan and HaveAmount > self.Amount ) then
+        if ( self.bRelSmallerThan and HaveAmount < self.Amount ) or ( not self.bRelSmallerThan and HaveAmount >= self.Amount ) then
             return true
         end
     end
@@ -2264,7 +2301,7 @@ end
 function b_Goal_ResourceAmount:GetCustomData( _Index )
     local Data = {}
     if _Index == 1 then
-        table.insert( Data, ">" )
+        table.insert( Data, ">=" )
         table.insert( Data, "<" )
     else
         assert( false )
@@ -3002,7 +3039,7 @@ end
 b_Goal_TributeClaim = {
     Name = "Goal_TributeClaim",
     Description = {
-        en = "Goal: AI requests periodical tribute for a specified Territory",
+        en = "Goal: AI requests periodical tribute for a specified territory. The quest sender is the demanding player.",
         de = "Ziel: Die KI fordert einen regelmässigen Tribut fuer ein Territorium. Der Questgeber ist der fordernde Spieler.",
                 },
     Parameter = {
@@ -3366,7 +3403,7 @@ end
 b_Reprisal_DiplomacyDecrease = {
     Name = "Reprisal_DiplomacyDecrease",
     Description = {
-        en = "Reprisal: Diplomacy decreases slightly to another player",
+        en = "Reprisal: Diplomacy decreases slightly to another player.",
         de = "Vergeltung: Der Diplomatiestatus zum Auftraggeber wird um eine Stufe verringert.",
     },
 }
@@ -5137,7 +5174,7 @@ Core:RegisterBehavior(b_Reward_CreateEffect);
 --
 -- @param _ScriptName  Skriptname des Entity
 -- @param _PlayerID    PlayerID des Effekt
--- @param _TypeName    Einzigartiger Effektname
+-- @param _TypeName    Typname des Entity
 -- @param _Orientation Ausrichtung in °
 -- @param _HideFromAI  Vor KI verstecken
 --
@@ -6460,29 +6497,29 @@ function b_Reward_SendCart:CustomFunction(_Quest)
 end
 
 function b_Reward_SendCart:GetCustomData( _Index )
-    local Data = {}
+    local Data = {};
     if _Index == 2 then
-        Data = { "U_ResourceMerchant", "U_Medicus", "U_Marketer", "U_ThiefCart", "U_GoldCart", "U_Noblemen_Cart", "U_RegaliaCart" }
+        Data = { "U_ResourceMerchant", "U_Medicus", "U_Marketer", "U_ThiefCart", "U_GoldCart", "U_Noblemen_Cart", "U_RegaliaCart" };
     elseif _Index == 3 then
         for k, v in pairs( Goods ) do
             if string.find( k, "^G_" ) then
-                table.insert( Data, k )
+                table.insert( Data, k );
             end
         end
-        table.sort( Data )
+        table.sort( Data );
     elseif _Index == 5 then
-        table.insert( Data, "-" )
+        table.insert( Data, "-" );
         for i = 1, 8 do
-            table.insert( Data, i )
+            table.insert( Data, i );
         end
     elseif _Index == 6 then
-        table.insert( Data, "false" )
-        table.insert( Data, "true" )
+        table.insert( Data, "false" );
+        table.insert( Data, "true" );
     elseif _Index == 7 then
-        table.insert( Data, "false" )
-        table.insert( Data, "true" )
+        table.insert( Data, "false" );
+        table.insert( Data, "true" );
     end
-    return Data
+    return Data;
 end
 
 function b_Reward_SendCart:DEBUG(_Quest)
