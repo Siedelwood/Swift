@@ -178,7 +178,7 @@ ForbidSaveGame = API.ForbidSaveGame;
 ---
 -- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
 --
--- <p><b>Alias:</b> ActivateExtendedZoom</p>
+-- <p><b>Alias:</b> AllowExtendedZoom</p>
 --
 -- @param _Flag [boolean] Erweiterter Zoom gestattet
 -- @within Anwenderfunktionen

@@ -453,7 +453,7 @@ function API.StopAllQuests(...)
         API.StopQuest(arg[i].Identifier);
     end
 end
-StopQuestwByName = API.StopAllQuests;
+StopQuestsByName = API.StopAllQuests;
 
 ---
 -- Unterbricht den Quest.
