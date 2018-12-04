@@ -8226,10 +8226,16 @@ Core:RegisterBehavior(b_Trigger_MapScriptFunction);
 --
 -- Das Behaviour kann auch eingesetzt werden, um ein Passwort zu prüfen.
 -- In diesem Fall wird die Eingabe mit dem Passwort verglichen. Die Anzal der
--- versuche bestimmt, wie oft falsch eingegeben werden darf.
+-- Versuche bestimmt, wie oft falsch eingegeben werden darf.
+--
+-- Wenn die Anzahl der Versuche begrenzt ist, wird eine Srandardnachricht mit
+-- den übrigen Versuchen angezeigt. Optional kann eine Nachricht angegeben
+-- werden, die stattdessen nach <u>jeder</u> Falscheingabe, <u>außer</u> der
+-- letzten, angezeigt wird.
 --
 -- @param _Passwords Liste der Passwörter
 -- @param _Trials    Anzahl versuche (0 für unendlich)
+-- @param _Message   Alternative Fehlernachricht
 --
 -- @within Goal
 --
@@ -8243,9 +8249,14 @@ b_Goal_InputDialog  = {
         en = "Goal: Player must type in something. The passwords have to be seperated by ; and whitespaces will be ignored.",
         de = "Ziel: Oeffnet einen Dialog, der Spieler muss Lösungswörter eingeben. Diese sind durch ; abzutrennen. Leerzeichen werden ignoriert.",
     },
+    DefaultMessage = {
+        de = "Versuche bis zum Fehlschlag: ",
+        en = "Trials remaining until failure: "
+    },
     Parameter = {
         {ParameterType.Default, en = "Password to enter", de = "Einzugebendes Passwort" },
         {ParameterType.Number, en = "Trials till failure (0 endless)", de = "Versuche bis Fehlschlag (0 endlos)" },
+        {ParameterType.Default, en = "Wrong password message", de = "Text bei Falscheingabe" },
     }
 }
 
@@ -8258,6 +8269,12 @@ function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
         self.Password = self:LowerCase(_Parameter or "");
     elseif (_Index == 1) then
         self.Trials = (_Parameter or 0) * 1;
+    elseif (_Index == 2) then
+        self.Message = _Parameter;
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if type(self.Message) == "table" then
+            self.Message = self.Message[lang];
+        end
     end
 end
 
@@ -8289,16 +8306,11 @@ function b_Goal_InputDialog:CustomFunction(_Quest)
 
             if self.Password ~= nil and self.Password ~= "" then
                 self.Shown = nil;
+
                 if self:LowerCase(_Quest.InputDialogResult) == self.Password then
                     return true;
-                elseif (self.Trials > 0 and self.TrialCounter > 0) then
-                    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-                    if lang == "de" then
-                        Logic.DEBUG_AddNote("Versuche bis zum Fehlschlag: " .. self.TrialCounter);
-                    else
-                        Logic.DEBUG_AddNote("Tials remaining until failure: " .. self.TrialCounter);
-                    end
-                    _Quest.InputDialogResult = nil;
+                elseif (self.Trials == 0) or (self.Trials > 0 and self.TrialCounter > 0) then
+                    self:OnWrongInput(_Quest);
                     return;
                 else
                     return false;
@@ -8307,6 +8319,18 @@ function b_Goal_InputDialog:CustomFunction(_Quest)
             return true;
         end
     end
+end
+
+function b_Goal_InputDialog:OnWrongInput(_Quest)
+    if self.Trials > 0 and not self.Message then
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        Logic.DEBUG_AddNote(self.DefaultMessage .. self.TrialCounter);
+        return;
+    end
+    if self.Message then
+        Logic.DEBUG_AddNote(self.Message);
+    end
+    _Quest.InputDialogResult = nil;
 end
 
 function b_Goal_InputDialog:LowerCase(_Text)
