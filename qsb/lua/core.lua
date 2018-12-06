@@ -267,7 +267,7 @@ IsValidQuest = API.IsValidateQuest;
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
-        API.FailQuest(arg[i].Identifier);
+        API.FailQuest(arg[i]);
     end
 end
 FailQuestsByName = API.FailAllQuests;
@@ -306,7 +306,7 @@ FailQuestByName = API.FailQuest;
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
-        API.RestartQuest(arg[i].Identifier);
+        API.RestartQuest(arg[i]);
     end
 end
 RestartQuestsByName = API.RestartAllQuests;
@@ -410,7 +410,7 @@ RestartQuestByName = API.RestartQuest;
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
-        API.StartQuest(arg[i].Identifier);
+        API.StartQuest(arg[i]);
     end
 end
 StartQuestsByName = API.StartAllQuests;
@@ -450,7 +450,7 @@ StartQuestByName = API.StartQuest;
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
-        API.StopQuest(arg[i].Identifier);
+        API.StopQuest(arg[i]);
     end
 end
 StopQuestsByName = API.StopAllQuests;
@@ -492,7 +492,7 @@ StopQuestByName = API.StopQuest;
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
-        API.WinQuest(arg[i].Identifier);
+        API.WinQuest(arg[i]);
     end
 end
 WinQuestsByName = API.WinAllQuests;

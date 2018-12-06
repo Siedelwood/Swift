@@ -737,7 +737,7 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
-    -- Entity oder Held sind hinüber bzw. haben ihre ID veründert
+    -- Entity oder Held sind hinüber bzw. haben ihre ID verändert
     if not IsExisting(_KnightID) or not IsExisting(_EntityID) then
         return true;
     end
@@ -1361,4 +1361,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleGameHelperFunctions");
-

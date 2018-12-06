@@ -276,7 +276,7 @@ end
 function BundleEntityScriptingValues.Shared:GetEntitySize(_Entity)
     local EntityID = GetID(_Entity);
     local size = Logic.GetEntityScriptingValue(EntityID, -45);
-    return self.Int2Float(size);
+    return self:Int2Float(size);
 end
 
 ---
@@ -361,7 +361,7 @@ end
 --
 function BundleEntityScriptingValues.Shared:GetValueAsFloat(_Entity, _index)
     local value = Logic.GetEntityScriptingValue(GetID(_Entity),_index);
-    return BundleEntityScriptingValues.Shared:Int2Float(value);
+    return self:Int2Float(value);
 end
 
 ---
@@ -404,7 +404,7 @@ function BundleEntityScriptingValues.Shared:Int2Float(num)
 end
 
 ---
--- Gibt den Integer als Bits zurück
+-- Gibt den Integer als Bits zurück.
 --
 -- @param num [number] Bits
 -- @return [table] Table mit Bits
@@ -477,4 +477,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleEntityScriptingValues");
-

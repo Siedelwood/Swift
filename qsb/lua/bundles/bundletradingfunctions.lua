@@ -109,8 +109,6 @@ end
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
--- <p>FIXME: Funktioniert nicht zuverlässig.</p>
---
 -- @param _PlayerID [number] Player ID
 -- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
 -- @within Anwenderfunktionen
@@ -125,7 +123,7 @@ end
 
 ---
 -- Ändert die aktuelle Menge des Angebots im Händelrgebäude.
--- 
+--
 -- Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
 -- Beschränkungen.
 --
@@ -159,6 +157,7 @@ end
 -- @param _Waypoints [table] Wegpunktliste Anfahrt
 -- @param _Reversed [table] Wegpunktliste Abfahrt
 -- @param _Appearance [table] Ankunft und Abfahrt
+-- @param _RotationMode [boolean] Angebote werden der Reihe nach durchgegangen
 -- @within Anwenderfunktionen
 --
 -- @usage -- Angebote deklarieren
@@ -211,12 +210,12 @@ end
 -- -- bzw. nil sein!
 -- API.TravelingSalesmanActivate(2, Offers, Waypoints);
 --
-function API.TravelingSalesmanActivate(_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance)
+function API.TravelingSalesmanActivate(_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)
     if GUI then
         API.Log("Can not execute API.TravelingSalesmanActivate in local script!");
         return;
     end
-    return BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed);
+    return BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed, _RotationMode);
 end
 ActivateTravelingSalesman = API.TravelingSalesmanActivate;
 
@@ -246,6 +245,10 @@ DeactivateTravelingSalesman = API.TravelingSalesmanDeactivate;
 -- im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
 -- ein Schiff angelegt hat, sonst "Bekannt".
 --
+-- Bei diplomatischen Beziehungen geringer als "Bekannt", kann es zu Fehlern
+-- kommen. Dann werden Handelsangebote angezeigt, konnen aber nicht durch
+-- den Spieler erworben werden.
+--
 -- <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
 --
 -- <b>Alias</b>: TravelingSalesmanDiplomacyOverride
@@ -269,7 +272,11 @@ TravelingSalesmanDiplomacyOverride = API.TravelingSalesmanDiplomacyOverride;
 
 BundleTradingFunctions = {
     Global = {
-        Data = {},
+        Data = {
+            PlayerOffersAmount = {
+                [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {}, [6] = {}, [7] = {}, [8] = {},
+            };
+        },
     },
     Local = {
         Data = {}
@@ -300,7 +307,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     ---
     -- Erzeugt ein Handelsangebot für Waren und gibt die ID zurück.
     --
-    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
     -- angeboten werden.
     --
     -- @param _Merchant [number] Handelsgebäude
@@ -326,7 +333,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
             return;
         end
 
-        
+
         AddGoodToTradeBlackList(PlayerID, _GoodType);
         local MarketerType = Entities.U_Marketer;
         if _GoodType == Goods.G_Medicine then
@@ -342,13 +349,15 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
             _optionalPlayersPlayerID = 1;
         end
         local offerAmount = 9;
+
+        BundleTradingFunctions.Global.Data.PlayerOffersAmount[PlayerID][_GoodType] = _NumberOfOffers;
         return Logic.AddGoodTraderOffer(MerchantID,_NumberOfOffers,Goods.G_Gold,0,_GoodType,offerAmount,_optionalPlayersPlayerID,_RefreshRate,MarketerType,Entities.U_ResourceMerchant);
     end
 
     ---
     -- Erzeugt ein Handelsangebot für Söldner und gibt die ID zurück.
     --
-    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
     -- angeboten werden.
     --
     -- @param _Mercenary [number] Handelsgebäude
@@ -388,6 +397,8 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
         if _optionalPlayersPlayerID == nil then
             _optionalPlayersPlayerID = 1;
         end
+
+        BundleTradingFunctions.Global.Data.PlayerOffersAmount[PlayerID][_Type] = _Amount;
         return Logic.AddMercenaryTraderOffer(MercenaryID, _Amount, Goods.G_Gold, 3, _Type ,amount,_optionalPlayersPlayerID,_RefreshRate);
     end
 
@@ -395,7 +406,7 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
     -- Erzeugt ein Handelsangebot für Entertainer und gibt die
     -- ID zurück.
     --
-    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus 
+    -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
     -- angeboten werden.
     --
     -- @param _Merchant [number] Handelsgebäude
@@ -421,6 +432,8 @@ function BundleTradingFunctions.Global:OverwriteOfferFunctions()
         if _optionalPlayersPlayerID == nil then
             _optionalPlayersPlayerID = 1;
         end
+
+        BundleTradingFunctions.Global.Data.PlayerOffersAmount[PlayerID][_EntertainerType] = 1;
         return Logic.AddEntertainerTraderOffer(MerchantID,NumberOfOffers,Goods.G_Gold,0,_EntertainerType, _optionalPlayersPlayerID,0);
     end
 end
@@ -437,7 +450,6 @@ function BundleTradingFunctions.Global:OverwriteBasePricesAndRefreshRates()
     MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] = MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] or 600;
     MerchantSystem.BasePrices[Entities.U_AmmunitionCart] = MerchantSystem.BasePrices[Entities.U_AmmunitionCart] or 180;
     MerchantSystem.BasePrices[Entities.U_MilitarySword_RedPrince] = MerchantSystem.BasePrices[Entities.U_MilitarySword_RedPrince] or 150;
-    MerchantSystem.BasePrices[Entities.U_MilitarySword_Khana] = MerchantSystem.BasePrices[Entities.U_MilitarySword_Khana] or 150;
     MerchantSystem.BasePrices[Entities.U_MilitarySword] = MerchantSystem.BasePrices[Entities.U_MilitarySword] or 150;
     MerchantSystem.BasePrices[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.BasePrices[Entities.U_MilitaryBow_RedPrince] or 220;
     MerchantSystem.BasePrices[Entities.U_MilitaryBow] = MerchantSystem.BasePrices[Entities.U_MilitaryBow] or 220;
@@ -447,7 +459,6 @@ function BundleTradingFunctions.Global:OverwriteBasePricesAndRefreshRates()
     MerchantSystem.RefreshRates[Entities.U_SiegeTowerCart] = MerchantSystem.RefreshRates[Entities.U_SiegeTowerCart] or 220;
     MerchantSystem.RefreshRates[Entities.U_AmmunitionCart] = MerchantSystem.RefreshRates[Entities.U_AmmunitionCart] or 150;
     MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.RefreshRates[Entities.U_MilitarySword_RedPrince] or 150;
-    MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] = MerchantSystem.RefreshRates[Entities.U_MilitarySword_Khana] or 150;
     MerchantSystem.RefreshRates[Entities.U_MilitarySword] = MerchantSystem.RefreshRates[Entities.U_MilitarySword] or 150;
     MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] or 150;
     MerchantSystem.RefreshRates[Entities.U_MilitaryBow] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow] or 150;
@@ -455,6 +466,8 @@ function BundleTradingFunctions.Global:OverwriteBasePricesAndRefreshRates()
     if g_GameExtraNo >= 1 then
         MerchantSystem.BasePrices[Entities.U_MilitaryBow_Khana] = MerchantSystem.BasePrices[Entities.U_MilitaryBow_Khana] or 220;
         MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] or 150;
+        MerchantSystem.BasePrices[Entities.U_MilitarySword_Khana] = MerchantSystem.BasePrices[Entities.U_MilitarySword_Khana] or 150;
+        MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] = MerchantSystem.RefreshRates[Entities.U_MilitarySword_Khana] or 150;
     end
 end
 
@@ -585,9 +598,9 @@ function BundleTradingFunctions.Global:GetTraderType(_BuildingID, _TraderID)
 end
 
 ---
--- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden ist. 
+-- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden ist.
 -- Es wird immer nur das erste Angebot des Typs entfernt.
--- 
+--
 -- @param _PlayerID [number] Player ID
 -- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
 -- @within Internal
@@ -605,9 +618,9 @@ end
 
 ---
 -- Ändert die aktuelle Menge des Angebots im Händelrgebäude.
--- 
--- Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
--- Beschränkungen.
+--
+-- Der eingetragene Wert darf die maximale Menge an Angeboten des Typs im
+-- Lagerhaus nicht überschreiten.
 --
 -- <b>Hinweis</b>: Wird eine höherer Wert gesetzt, als das ursprüngliche
 -- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
@@ -622,6 +635,11 @@ function BundleTradingFunctions.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntity
     local OfferID, TraderID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
     if not IsExisting(BuildingID) then
         return;
+    end
+
+    -- Werte größer als das Maximum werden nicht erneuert!
+    if self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType] and self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType] < _NewAmount then
+        _NewAmount = self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType];
     end
     Logic.ModifyTraderOffer(BuildingID, OfferID, _NewAmount, TraderID);
 end
@@ -652,14 +670,15 @@ end
 -- Es kann mehrere fliegende Händler auf der Map geben.
 --
 -- @param _PlayerID [number] Spieler-ID des Händlers
--- @param _Offers	  Liste an Angeboten
--- @param _Appearance Wartezeit
--- @param _Waypoints  Wegpunktliste Anfahrt
--- @param _Reversed   Wegpunktliste Abfahrt
+-- @param _Offers [table] Liste an Angeboten
+-- @param _Appearance [table] Wartezeit
+-- @param _Waypoints [table] Wegpunktliste Anfahrt
+-- @param _Reversed [table] Wegpunktliste Abfahrt
+-- @param _RotationMode [boolean] Wegpunktliste Abfahrt
 -- @within Internal
 -- @local
 --
-function BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed)
+function BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed, _RotationMode)
     assert(type(_PlayerID) == "number");
     assert(type(_Offers) == "table");
     _Appearance = _Appearance or {{3,5},{8,10}};
@@ -685,6 +704,7 @@ function BundleTradingFunctions.Global:TravelingSalesman_Create(_PlayerID, _Offe
         QSB.TravelingSalesman.Harbors[_PlayerID].Offer = _Offers;
         QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = 0;
         QSB.TravelingSalesman.Harbors[_PlayerID].AlterDiplomacy = true;
+        QSB.TravelingSalesman.Harbors[_PlayerID].RotationMode = _RotationMode == true;
     end
     math.randomseed(Logic.GetTimeMs());
 
@@ -716,6 +736,10 @@ end
 -- im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
 -- ein Schiff angelegt hat, sonst "Bekannt".
 --
+-- Bei diplomatischen Beziehungen geringer als "Bekannt", kann es zu Fehlern
+-- kommen. Dann werden Handelsangebote angezeigt, konnen aber nicht durch
+-- den Spieler erworben werden.
+--
 -- <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
 --
 -- @param _PlayerID [number] Spieler-ID des Händlers
@@ -730,7 +754,77 @@ function BundleTradingFunctions.Global:TravelingSalesman_AlterDiplomacyFlag(_Pla
 end
 
 ---
--- Setzt die Angebote des Fliegenden Händlers.
+-- Gibt das nächste Angebot des Hafens des Spielers zurück.
+--
+-- @param _PlayerID [number] ID des Spielers
+-- @within Internal
+-- @local
+--
+function BundleTradingFunctions.Global:TravelingSalesman_NextOffer(_PlayerID)
+    local NextOffer;
+    -- Angebote werden der Reihe nach durchlaufen und wiederholen sich.
+    if QSB.TravelingSalesman.Harbors[_PlayerID].RotationMode then
+        local OfferIndex = QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer +1;
+        if OfferIndex > #QSB.TravelingSalesman.Harbors[_PlayerID].Offer then
+            OfferIndex = 1;
+        end
+        NextOffer = QSB.TravelingSalesman.Harbors[_PlayerID].Offer[OfferIndex];
+    -- Angebote werden zufällig ausgelost, ohne direkte Doppelung.
+    else
+        local RandomIndex = 1;
+        if #QSB.TravelingSalesman.Harbors[_PlayerID].Offer > 1 then
+            repeat
+                RandomIndex = math.random(1,#QSB.TravelingSalesman.Harbors[_PlayerID].Offer);
+            until (RandomIndex ~= QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer);
+        end
+        QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = RandomIndex;
+        NextOffer = QSB.TravelingSalesman.Harbors[_PlayerID].Offer[RandomIndex];
+    end
+    return NextOffer;
+end
+
+---
+-- Informiert den Spieler über die Ankunft eines Schiffes am Hafen.
+--
+-- @param _PlayerID [number] ID des Spielers
+-- @within Internal
+-- @local
+--
+function BundleTradingFunctions.Global:TravelingSalesman_DisplayMessage(_PlayerID)
+    if ((IsBriefingActive and not IsBriefingActive()) or true) then
+        -- Prüfe, ob schon existiert und starte ggf. neu
+        -- (Konsistenz von Questnamen erhalten!)
+        local InfoQuest = Quests[GetQuestID("TravelingSalesman_Info_P" .._PlayerID)];
+        if InfoQuest then
+            API.RestartQuest("TravelingSalesman_Info_P" .._PlayerID, true);
+            InfoQuest:SetMsgKeyOverride();
+            InfoQuest:SetIconOverride();
+            InfoQuest:Trigger();
+            return;
+        end
+
+        -- Erzeuge neuen Quest
+        -- (Quest existiert nicht und kann gefahrlos erzeugt werden.)
+        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local Text = { de = "Ein Schiff hat angelegt. Es bringt Güter von weit her.",
+                       en = "A ship is at the pier. It deliver goods from far away."};
+        QuestTemplate:New(
+            "TravelingSalesman_Info_P" .._PlayerID,
+            _PlayerID,
+            self:TravelingSalesman_GetHumanPlayer(),
+            {{ Objective.Dummy,}},
+            {{ Triggers.Time, 0 }},
+            0,
+            nil, nil, nil, nil, false, true,
+            nil, nil,
+            Text[lang],
+            nil
+        );
+    end
+end
+
+---
+-- Setzt die Angebote für den aktuellen Besuch des Fliegenden Händlers.
 --
 -- @param _PlayerID [number] Spieler-ID des Händlers
 -- @within Internal
@@ -741,14 +835,7 @@ function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(_PlayerID)
     MerchantSystem.TradeBlackList[_PlayerID][0] = #MerchantSystem.TradeBlackList[3];
 
     local traderId = Logic.GetStoreHouse(_PlayerID);
-    local rand = 1;
-    if #QSB.TravelingSalesman.Harbors[_PlayerID].Offer > 1 then
-        repeat
-            rand = math.random(1,#QSB.TravelingSalesman.Harbors[_PlayerID].Offer);
-        until (rand ~= QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer);
-    end
-    QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = rand;
-    local offer = QSB.TravelingSalesman.Harbors[_PlayerID].Offer[rand];
+    local offer = self:TravelingSalesman_NextOffer(_PlayerID);
     Logic.RemoveAllOffers(traderId);
 
     if #offer > 0 then
@@ -763,13 +850,13 @@ function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(_PlayerID)
 
             if isGoodType then
                 local amount = offer[i][2];
-                AddOffer(traderId,amount,Goods[offerType],9999);
+                AddOffer(traderId,amount,Goods[offerType], 9999);
             else
                 if Logic.IsEntityTypeInCategory(Entities[offerType],EntityCategories.Military)== 0 then
                     AddEntertainerOffer(traderId,Entities[offerType]);
                 else
                     local amount = offer[i][2];
-                    AddMercenaryOffer(traderId,amount,Entities[offerType],9999);
+                    AddMercenaryOffer(traderId,amount,Entities[offerType], 9999);
                 end
             end
         end
@@ -779,26 +866,7 @@ function BundleTradingFunctions.Global:TravelingSalesman_AddOffer(_PlayerID)
         SetDiplomacyState(self:TravelingSalesman_GetHumanPlayer(), _PlayerID, DiplomacyStates.TradeContact);
     end
     ActivateMerchantPermanentlyForPlayer(Logic.GetStoreHouse(_PlayerID), self:TravelingSalesman_GetHumanPlayer());
-
-    local doIt = (IsBriefingActive and not IsBriefingActive()) or true
-    if doIt then
-        local Text = { de = "Ein Schiff hat angelegt. Es bringt Güter von weit her.",
-                       en = "A ship is at the pier. It deliver goods from far away."};
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-
-        QuestTemplate:New(
-            "TravelingSalesman_Info_P" .._PlayerID,
-            _PlayerID,
-            self:TravelingSalesman_GetHumanPlayer(),
-            {{ Objective.Dummy,}},
-            {{ Triggers.Time, 0 }},
-            0,
-            nil, nil, nil, nil, false, true,
-            nil, nil,
-            Text[lang],
-            nil
-        );
-    end
+    self:TravelingSalesman_DisplayMessage(_PlayerID);
 end
 
 ---
@@ -868,4 +936,3 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleTradingFunctions");
-
