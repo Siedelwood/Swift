@@ -23,6 +23,8 @@ BundleQuestGeneration = {};
 API = API or {};
 QSB = QSB or {};
 
+QSB.GeneratedQuestDialogs = {};
+
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -78,20 +80,6 @@ end
 AddQuest = API.CreateQuest;
 
 ---
--- DO NOT USE THIS FUNCTION!
--- @within Deprecated
--- @local
---
-function API.StartQuests()
-    if GUI then
-        API.Brudge("API.StartQuests()");
-        return;
-    end
-    return BundleQuestGeneration.Global:StartQuests();
-end
-StartQuests = API.StartQuests;
-
----
 -- Erzeugt eine Nachricht im Questfenster.
 --
 -- Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
@@ -130,7 +118,7 @@ QuestMessage = API.CreateQuestMessage;
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
 -- einander angezeigt werden.
 --
--- Der Vorgänger-Quest und die Wartezeit müssen nur beim ersten Eintrag
+-- Der Vorgänger-Quest und die Wartezeit müssen als Felder gesondert
 -- angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
 -- sie nicht angegeben sein. Es können Einträge von rechts nach links
 -- weggelassen werden.
@@ -155,6 +143,7 @@ QuestMessage = API.CreateQuestMessage;
 --
 -- @usage
 -- API.CreateQuestDialog{
+--     Name = "DialogName",
 --     Ancestor = "SomeQuestName",
 --     Delay = 12,
 --
@@ -182,14 +171,83 @@ function API.CreateQuestDialog(_Messages)
             _Messages[i][4] = _Messages.Delay or 0;
         end
         if i == #_Messages and #_Messages[i-1] then
+            _Messages[i][7] = _Messages.Name;
             _Messages[i][4] = _Messages[i-1][4];
         end
         QuestName = BundleQuestGeneration.Global:QuestMessage(unpack(_Messages[i]));
         table.insert(GeneratedQuests, QuestName);
     end
+
+    -- Benannte Dialoge für spätere Zugriffe speichern.
+    if _Messages.Name then
+        QSB.GeneratedQuestDialogs[_Messages.Name] = GeneratedQuests;
+    end
     return GeneratedQuests[#GeneratedQuests], GeneratedQuests;
 end
 QuestDialog = API.CreateQuestDialog;
+
+---
+-- Unterbricht einen laufenden oder noch nicht gestarteten Quest-Dialog.
+--
+-- Die Funktion kann entweder anhand eines Dialognamen den Dialog zurücksetzen
+-- oder direkt die Table der erzeugten Quests annehmen.
+--
+-- <b>Alias</b>: QuestDialogInterrupt
+--
+-- @param _Dialog [string|table] Dialog der neu gestartet wird
+-- @within Anwenderfunktionen
+--
+function API.InterruptQuestDialog(_Dialog)
+    if GUI then
+        API.Log("API.InterruptQuestDialog: Could not execute in local script!");
+        return;
+    end
+
+    local QuestDialog = _Dialog;
+    if type(QuestDialog) == "string" then
+        QuestDialog = QSB.GeneratedQuestDialogs[_Messages.Name];
+    end
+    if QuestDialog == nil then
+        API.Log("API.InterruptQuestDialog: Dialog is invalid!");
+        return;
+    end
+    for i= 1, #QuestDialog-1, 1 do
+        API.StopQuest(QuestDialog[i].Identifier, true);
+    end
+    API.WinQuest(QuestDialog[#QuestDialog].Identifier, true);
+end
+QuestDialogInterrupt = API.InterruptQuestDialog;
+
+---
+-- Setzt einen Quest-Dialog zurück sodass er erneut gestartet werden kann.
+--
+-- Die Funktion kann entweder anhand eines Dialognamen den Dialog zurücksetzen
+-- oder direkt die Table der erzeugten Quests annehmen.
+--
+-- <b>Alias</b>: QuestDialogRestart
+--
+-- @param _Dialog [string|table] Dialog der neu gestartet wird
+-- @within Anwenderfunktionen
+--
+function API.RestartQuestDialog(_Dialog)
+    if GUI then
+        API.Log("API.ResetQuestDialog: Could not execute in local script!");
+        return;
+    end
+
+    local QuestDialog = _Dialog;
+    if type(QuestDialog) == "string" then
+        QuestDialog = QSB.GeneratedQuestDialogs[_Messages.Name];
+    end
+    if QuestDialog == nil then
+        API.Log("API.ResetQuestDialog: Dialog is invalid!");
+        return;
+    end
+    for i= 1, #QuestDialog, 1 do
+        API.RestartQuest(QuestDialog[i].Identifier, true);
+    end
+end
+QuestDialogRestart = API.RestartQuestDialog;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -198,7 +256,6 @@ QuestDialog = API.CreateQuestDialog;
 BundleQuestGeneration = {
     Global = {
         Data = {
-            GenerationList = {},
             QuestMessageID = 0,
         }
     },
@@ -233,12 +290,13 @@ end
 -- @param _AncestorWt [number] Wartezeit
 -- @param _Callback   [function] Callback
 -- @param _Ancestor   [string] Vorgänger-Quest
+-- @param _QuestName  [string] Name des Auftrags
 -- @return [string] QuestName
 --
 -- @within Internal
 -- @local
 --
-function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)
+function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)
     self.Data.QuestMessageID = self.Data.QuestMessageID +1;
 
     -- Trigger-Nachbau
@@ -269,7 +327,7 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
 
     -- Quest erzeugen
     local _, CreatedQuest = QuestTemplate:New(
-        "QSB_QuestMessage_" ..self.Data.QuestMessageID,
+        (_QuestName ~= nil and _QuestName) or "QSB_QuestMessage_" ..self.Data.QuestMessageID,
         (_Sender or 1),
         (_Receiver or 1),
         { {Objective.Dummy} },
@@ -325,7 +383,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         API.DumpTable(QuestData, "Quest");
         return;
     end
-    
+
     -- Behaviour
     for k,v in pairs(_Data) do
         if tonumber(k) ~= nil then
