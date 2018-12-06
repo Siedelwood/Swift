@@ -72,7 +72,7 @@ QSB.GeneratedQuestDialogs = {};
 --
 function API.CreateQuest(_Data)
     if GUI then
-        API.Log("API.CreateQuest: Could not execute in local script!");
+        API.Dbg("API.CreateQuest: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:QuestCreateNewQuest(_Data);
@@ -107,7 +107,7 @@ AddQuest = API.CreateQuest;
 --
 function API.CreateQuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)
     if GUI then
-        API.Log("API.CreateQuestMessage: Could not execute in local script!");
+        API.Dbg("API.CreateQuestMessage: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
@@ -154,7 +154,7 @@ QuestMessage = API.CreateQuestMessage;
 --
 function API.CreateQuestDialog(_Messages)
     if GUI then
-        API.Log("API.CreateQuestDialog: Could not execute in local script!");
+        API.Dbg("API.CreateQuestDialog: Could not execute in local script!");
         return;
     end
 
@@ -199,22 +199,22 @@ QuestDialog = API.CreateQuestDialog;
 --
 function API.InterruptQuestDialog(_Dialog)
     if GUI then
-        API.Log("API.InterruptQuestDialog: Could not execute in local script!");
+        API.Dbg("API.InterruptQuestDialog: Could not execute in local script!");
         return;
     end
 
     local QuestDialog = _Dialog;
     if type(QuestDialog) == "string" then
-        QuestDialog = QSB.GeneratedQuestDialogs[_Messages.Name];
+        QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
     end
     if QuestDialog == nil then
-        API.Log("API.InterruptQuestDialog: Dialog is invalid!");
+        API.Dbg("API.InterruptQuestDialog: Dialog is invalid!");
         return;
     end
     for i= 1, #QuestDialog-1, 1 do
-        API.StopQuest(QuestDialog[i].Identifier, true);
+        API.StopQuest(QuestDialog[i], true);
     end
-    API.WinQuest(QuestDialog[#QuestDialog].Identifier, true);
+    API.WinQuest(QuestDialog[#QuestDialog], true);
 end
 QuestDialogInterrupt = API.InterruptQuestDialog;
 
@@ -231,21 +231,23 @@ QuestDialogInterrupt = API.InterruptQuestDialog;
 --
 function API.RestartQuestDialog(_Dialog)
     if GUI then
-        API.Log("API.ResetQuestDialog: Could not execute in local script!");
+        API.Dbg("API.ResetQuestDialog: Could not execute in local script!");
         return;
     end
 
     local QuestDialog = _Dialog;
     if type(QuestDialog) == "string" then
-        QuestDialog = QSB.GeneratedQuestDialogs[_Messages.Name];
+        QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
     end
     if QuestDialog == nil then
-        API.Log("API.ResetQuestDialog: Dialog is invalid!");
+        API.Dbg("API.ResetQuestDialog: Dialog is invalid!");
         return;
     end
     for i= 1, #QuestDialog, 1 do
-        API.RestartQuest(QuestDialog[i].Identifier, true);
+        Quests[GetQuestID(QuestDialog[i])].Triggers[1][2][1].WaitTimeTimer = nil;
+        API.RestartQuest(QuestDialog[i], true);
     end
+    Quests[GetQuestID(QuestDialog[1])]:Trigger();
 end
 QuestDialogRestart = API.RestartQuestDialog;
 
