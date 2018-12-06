@@ -48,46 +48,28 @@ function Mission_FirstMapAction()
     
     -----
     
-    -- local offers = {
-    --     {
-    --         {"U_CatapultCart",5,},
-    --         {"G_Gems",5,},
-    --         {"G_Iron",5,},
-    --         {"G_Beer",2,},
-    --     },
-    --     {
-    --         {"G_Stone",5,},
-    --         {"G_Sheep",1,},
-    --         {"G_Cheese",2,},
-    --     },
-    --     {
-    --         {"G_Grain",5,},
-    --         {"G_Broom",2,},
-    --         {"G_Sheep",1,},
-    --     },
-    --     {
-    --         {"U_CatapultCart",1,},
-    --         {"U_MilitarySword",3,},
-    --         {"U_MilitaryBow",3,},
-    --     },
-    -- }
-    -- API.TravelingSalesmanActivate(2, offers, {"WP1", "WP2", "WP3", "WP4"});
-    -- API.TravelingSalesmanDiplomacyOverride(2, false);
-end
-
-function Test()
-    AddQuest {
-        Name        = "TestQ%uestA",
-        Suggestion  = "Enter some text.",
-        Success     = "Nice!",
-        Failure     = "Shit!",
-
-        Goal_InputDialog("bockwurst", 3),
-        Reward_MapScriptFunction("TestText"),
-        Trigger_Time(0)
+    local offers = {
+        {
+            {"U_CatapultCart",5,},
+            {"G_Gems",5,},
+            {"G_Iron",5,},
+            {"G_Beer",2,},
+        },
+        {
+            {"G_Stone",5,},
+            {"G_Sheep",1,},
+            {"G_Cheese",2,},
+        },
+        {
+            {"G_Grain",5,},
+            {"G_Broom",2,},
+            {"G_Sheep",1,},
+        },
+        {
+            {"U_CatapultCart",1,},
+            {"U_MilitarySword",3,},
+            {"U_MilitaryBow",3,},
+        },
     }
-end
-
-function TestText()
-    API.Note("Player entered: " ..tostring(API.GetInputStringFromQuest("TestQuestA")));
+    API.TravelingSalesmanActivate(2, offers, {"WP1", "WP2", "WP3", "WP4"}, nil, nil, true);
 end

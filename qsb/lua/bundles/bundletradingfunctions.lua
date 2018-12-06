@@ -266,6 +266,28 @@ function API.TravelingSalesmanDiplomacyOverride(_PlayerID, _Flag)
 end
 TravelingSalesmanDiplomacyOverride = API.TravelingSalesmanDiplomacyOverride;
 
+---
+-- Legt fest, ob die Angebote der Reihe nach durchgegangen werden (beginnt von
+-- vorn, wenn am Ende angelangt) oder zufällig ausgesucht werden.
+--
+-- <b>Alias</b>: TravelingSalesmanRotationMode
+--
+-- @param _PlayerID [number] Spieler-ID des Händlers
+-- @param _Flag [boolean] Angebotsrotation einschalten
+-- @within Anwenderfunktionen
+--
+function API.TravelingSalesmanRotationMode(_PlayerID, _Flag)
+    if GUI then
+        API.Bridge("API.TravelingSalesmanRotationMode(" .._PlayerID.. ", " ..tostring(_Flag).. ")");
+        return;
+    end
+    if not QSB.TravelingSalesman.Harbors[_PlayerID] then
+        return;
+    end
+    QSB.TravelingSalesman.Harbors[_PlayerID].RotationMode = _Flag == true;
+end
+TravelingSalesmanRotationMode = API.TravelingSalesmanRotationMode;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -764,8 +786,10 @@ function BundleTradingFunctions.Global:TravelingSalesman_NextOffer(_PlayerID)
     local NextOffer;
     -- Angebote werden der Reihe nach durchlaufen und wiederholen sich.
     if QSB.TravelingSalesman.Harbors[_PlayerID].RotationMode then
-        local OfferIndex = QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer +1;
+        QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer +1
+        local OfferIndex = QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer;
         if OfferIndex > #QSB.TravelingSalesman.Harbors[_PlayerID].Offer then
+            QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = 1;
             OfferIndex = 1;
         end
         NextOffer = QSB.TravelingSalesman.Harbors[_PlayerID].Offer[OfferIndex];
