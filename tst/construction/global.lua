@@ -43,13 +43,94 @@ function Mission_FirstMapAction()
     
     API.ActivateDebugMode(true, false, true, true)
     
-    AddGood(Goods.G_Gold,   500, 1)
-    AddGood(Goods.G_Wood,    30, 1)
-    AddGood(Goods.G_Grain,   25, 1)
-    
-    -----
-    
-    
+    AddGood(Goods.G_Gold, 99999, 1)
+    AddGood(Goods.G_Wood,    60, 1)
+end
+
+function TestDestructionBan()
+    API.TimeLineStart {
+        {
+            Time   = 5,
+            Action = function()
+                API.Note("Die kleine Bäckerei kann nicht abgerissen werden!");
+                TestCaseProtectEntity();
+            end
+        },
+        {
+            Time   = 35,
+            Action = function()
+                API.Note("Keine Bäckerei kann nicht abgerissen werden!");
+                TestCaseProtectEntityCleanup();
+                TestCaseProtectType();
+            end
+        },
+        {
+            Time   = 65,
+            Action = function()
+                API.Note("Kein Stadtgebäude kann abgerissen werden!");
+                TestCaseProtectTypeCleanup();
+                TestCaseProtectCategory();
+            end
+        },
+        {
+            Time   = 95,
+            Action = function()
+                API.Note("Auf dem Territorium kann nichts abgerissen werden!");
+                TestCaseProtectCategoryCleanup();
+                TestCaseProtectTerritory();
+            end
+        },
+        {
+            Time   = 125,
+            Action = function()
+                API.Note("Test beendet!");
+                TestCaseProtectTerritoryCleanup();
+            end
+        }
+    }
+end
+
+function TestConstructionBan()
+    API.TimeLineStart {
+        {
+            Time   = 5,
+            Action = function()
+                API.Note("Es können keine Bäckereien in der Stadt gebaut werden!");
+                TestCaseBanTypeTerritory();
+            end
+        },
+        {
+            Time   = 35,
+            Action = function()
+                API.Note("Es können keine Stadtgebäude in der Stadt gebaut werden!");
+                TestCaseBanTypeTerritoryCleanup();
+                TestCaseBanCategoryTerritory();
+            end
+        },
+        {
+            Time   = 65,
+            Action = function()
+                API.Note("Es können keine Bäckereien neben der Burg gebaut werden!");
+                TestCaseBanCategoryTerritoryCleanup();
+                TestCaseBanTypeArea();
+            end
+        },
+        {
+            Time   = 95,
+            Action = function()
+                API.Note("Es können keine Stadtgebäude neben der Burg gebaut werden!");
+                TestCaseBanTypeAreaCleanup();
+                TestCaseBanCategoryArea();
+            end
+        },
+        {
+            Time   = 125,
+            Action = function()
+                API.Note("Test beendet!");
+                TestCaseBanCategoryAreaCleanup();
+            end
+        }
+    }
 end
 
 -- -------------------------------------------------------------------------- --
@@ -63,7 +144,7 @@ function TestCaseBanTypeTerritory()
 end
 
 function TestCaseBanTypeTerritoryCleanup()
-    API.UnBanTypeAtTerritory(Entities.B_Bakery, 1)
+    API.UnbanTypeAtTerritory(Entities.B_Bakery, 1)
 end
 
 --
@@ -75,7 +156,7 @@ function TestCaseBanCategoryTerritory()
 end
 
 function TestCaseBanCategoryTerritoryCleanup()
-    API.BanCategoryAtTerritory(EntityCategories.CityBuilding, 1)
+    API.UnbanCategoryAtTerritory(EntityCategories.CityBuilding, 1)
 end
 
 --
@@ -83,11 +164,11 @@ end
 --
 
 function TestCaseBanTypeArea()
-    API.BanTypeInArea(Entities.B_Bakery, "pos", 2000)
+    API.BanTypeInArea(Entities.B_Bakery, "pos", 5000)
 end
 
 function TestCaseBanTypeAreaCleanup()
-    API.UnBanTypeInArea(Entities.B_Bakery, "pos")
+    API.UnbanTypeInArea(Entities.B_Bakery, "pos")
 end
 
 --
@@ -95,11 +176,11 @@ end
 --
 
 function TestCaseBanCategoryArea()
-    API.BanCategoryInArea(EntityCategories.CityBuilding, "pos", 2000)
+    API.BanCategoryInArea(EntityCategories.CityBuilding, "pos", 5000)
 end
 
 function TestCaseBanCategoryAreaCleanup()
-    API.UnBanCategoryInArea(EntityCategories.CityBuilding, "pos")
+    API.UnbanCategoryInArea(EntityCategories.CityBuilding, "pos")
 end
 
 -- -------------------------------------------------------------------------- --
@@ -145,9 +226,9 @@ end
 --
 
 function TestCaseProtectTerritory()
-    API.ProtectCategory(1)
+    API.ProtectTerritory(1)
 end
 
 function TestCaseProtectTerritoryCleanup()
-    API.UnprotectCategory(1)
+    API.UnprotectTerritory(1)
 end

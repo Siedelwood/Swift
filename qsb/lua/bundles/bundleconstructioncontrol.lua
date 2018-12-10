@@ -100,7 +100,7 @@ function API.ProtectTerritory(_entity)
             API.ProtectTerritory(]].._entity..[[)
         ]]);
     else
-        if not Inside(_enitry, BundleConstructionControl.Local.Data.OnTerritory) then
+        if not Inside(_entity, BundleConstructionControl.Local.Data.OnTerritory) then
             table.insert(BundleConstructionControl.Local.Data.OnTerritory, _entity);
         end
     end
@@ -298,8 +298,8 @@ function API.UnbanTypeAtTerritory(_type, _territory)
     if not BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] then
         return;
     end
-    for i=1, BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], 1 do
-        if BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type][i] == _type then
+    for i= #BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], 1, -1 do
+        if BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type][i] == _territory then
             table.remove(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], i);
             break;
         end
@@ -326,8 +326,8 @@ function API.UnbanCategoryAtTerritory(_eCat, _territory)
     if not BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] then
         return;
     end
-    for i=1, BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], 1 do
-        if BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat][i] == _type then
+    for i= #BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], 1, -1 do
+        if BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat][i] == _territory then
             table.remove(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], i);
             break;
         end
@@ -351,7 +351,7 @@ function API.UnbanTypeInArea (_type, _center)
     if not BundleConstructionControl.Global.Data.AreaBlockEntities[_center] then
         return;
     end
-    for i=1, BundleConstructionControl.Global.Data.AreaBlockEntities[_center], 1 do
+    for i= #BundleConstructionControl.Global.Data.AreaBlockEntities[_center], 1, -1 do
         if BundleConstructionControl.Global.Data.AreaBlockEntities[_center][i][1] == _type then
             table.remove(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], i);
             break;
@@ -376,7 +376,7 @@ function API.UnbanCategoryInArea(_eCat, _center)
     if not BundleConstructionControl.Global.Data.AreaBlockCategories[_center] then
         return;
     end
-    for i=1, BundleConstructionControl.Global.Data.AreaBlockCategories[_center], 1 do
+    for i= #BundleConstructionControl.Global.Data.AreaBlockCategories[_center], 1, -1 do
         if BundleConstructionControl.Global.Data.AreaBlockCategories[_center][i][1] == _eCat then
             table.remove(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], i);
             break;
@@ -452,7 +452,6 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Typ
     for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockEntities) do
         if v then
             for key,val in pairs(v) do
-                GUI_Note(tostring(Logic.GetTerritoryAtPosition(_x, _y) == val));
                 if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
                     if _Type == k then
                         return false;
