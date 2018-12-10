@@ -35,8 +35,10 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
 <li><a href="#Goal">Goal</a></li>
+<li><a href="#NonPlayerCharacter">NonPlayerCharacter</a></li>
 </ul>
 
 
@@ -115,6 +117,17 @@
 	<td class="summary">Prüft, ob der NPC bereits angesprochen wurde.</td>
 	</tr>
 </table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global:Install">BundleNonPlayerCharacter.Global:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Local:Install">BundleNonPlayerCharacter.Local:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
+	</tr>
+</table>
 <h2><a href="#Trigger">Trigger</a></h2>
 <table class="function_list">
 	<tr>
@@ -127,6 +140,97 @@
 	<tr>
 	<td class="name" nowrap><a href="#Goal_NPC">Goal_NPC (_NpcName, _HeroName)</a></td>
 	<td class="summary">Der Held muss einen Nichtspielercharakter ansprechen.</td>
+	</tr>
+</table>
+<h2><a href="#NonPlayerCharacter">NonPlayerCharacter</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:New">BundleNonPlayerCharacter.Global.NonPlayerCharacter:New (_ScriptName)</a></td>
+	<td class="summary">Erzeugt ein neues Objekt von NonPlayerCharacter und bindet es an den
+ angegebenen Siedler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance">BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance (_ScriptName)</a></td>
+	<td class="summary">Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId">BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId ()</a></td>
+	<td class="summary">Gibt die Entity ID des letzten angesprochenen NPC zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId">BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId ()</a></td>
+	<td class="summary">Gibt die Entity ID des letzten Helden zurück, der einen NPC
+ angesprochen hat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID">BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID ()</a></td>
+	<td class="summary">Gibt die Entity ID des NPC zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose ()</a></td>
+	<td class="summary">Löscht einen NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate ()</a></td>
+	<td class="summary">Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate ()</a></td>
+	<td class="summary">Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive">BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive ()</a></td>
+	<td class="summary"><p>Gibt true zurück, wenn der NPC aktiv ist.</p></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset">BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset ()</a></td>
+	<td class="summary">Setzt den NPC zurück, sodass er erneut aktiviert werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo">BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo ()</a></td>
+	<td class="summary">Gibt true zurück, wenn der NPC angesprochen wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner (_HeroName)</a></td>
+	<td class="summary">Setzt den Ansprechpartner für diesen NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback (_Callback)</a></td>
+	<td class="summary">Setzt das Callback für den Fall, dass ein falscher Held den
+ NPC anspricht.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback">BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback (_Callback)</a></td>
+	<td class="summary">Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors">BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors ()</a></td>
+	<td class="summary">Rotiert alle nahen Helden zum NPC und den NPC zu dem Helden,
+ der ihn angesprochen hat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:CreateMarker">BundleNonPlayerCharacter.Global.NonPlayerCharacter:CreateMarker ()</a></td>
+	<td class="summary">Erzeugt das Entity des NPC-Markers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:DestroyMarker">BundleNonPlayerCharacter.Global.NonPlayerCharacter:DestroyMarker ()</a></td>
+	<td class="summary">Entfernt das Entity des NPC-Markers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:ShowMarker">BundleNonPlayerCharacter.Global.NonPlayerCharacter:ShowMarker ()</a></td>
+	<td class="summary">Zeigt den NPC-Marker des NPC an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:HideMarker">BundleNonPlayerCharacter.Global.NonPlayerCharacter:HideMarker ()</a></td>
+	<td class="summary">Versteckt den NPC-Marker des NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsMarkerVisible">BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsMarkerVisible ()</a></td>
+	<td class="summary">Gibt true zurück, wenn der Marker des NPC sichtbar ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleNonPlayerCharacter.Global.NonPlayerCharacter:ControlMarker">BundleNonPlayerCharacter.Global.NonPlayerCharacter:ControlMarker ()</a></td>
+	<td class="summary">Kontrolliert die Sichtbarkeit und die Position des NPC-Markers.</td>
 	</tr>
 </table>
 
@@ -336,6 +440,38 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global:Install"></a>
+    <strong>BundleNonPlayerCharacter.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Local:Install"></a>
+    <strong>BundleNonPlayerCharacter.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Trigger"></a>Trigger</h2>
 
     <dl class="function">
@@ -396,13 +532,477 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="NonPlayerCharacter"></a>NonPlayerCharacter</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:New"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:New (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein neues Objekt von NonPlayerCharacter und bindet es an den
+ angegebenen Siedler.  Dadurch wird der Siedler zu einem NPC, ist allerdings
+ noch nicht aktiv.
+<p> <p><b>Alias:</b> NonPlayerCharacter:New</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         [string] Skriptname des NPC
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Instanz von NonPlayerCharacter
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Einen normalen NPC erzeugen:
+<span class="keyword">local</span> NPC = NonPlayerCharacter:New(<span class="string">"npc"</span>)
+    :SetDialogPartner(<span class="string">"hero"</span>)                <span class="comment">-- Optional
+</span>    :SetCallback(Briefing1)                  <span class="comment">-- Optional
+</span>    :Activate();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.
+<p> Wurde noch kein NPC für diesen Skriptnamen erzeugt, wird nil zurückgegeben.
+<p> <p><b>Alias:</b> NonPlayerCharacter:GetInstance</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         [string] Skriptname des NPC
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Interaktives Objekt
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC ermitteln
+</span><span class="keyword">local</span> NPC = NonPlayerCharacter:GetInstance(<span class="string">"horst"</span>);
+<span class="comment">-- Etwas mit dem NPC tun
+</span>NPC:SetDialogPartner(<span class="string">"hilda"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des letzten angesprochenen NPC zurück.
+<p> <p><b>Alias:</b> NonPlayerCharacter:GetNpcId</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des letzten NPC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des letzten Helden zurück, der einen NPC
+ angesprochen hat.
+<p> <p><b>Alias:</b> NonPlayerCharacter:GetHeroId</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des letzten Heden
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des NPC zurück.  Ist der NPC ein Leader, wird
+ der erste Soldat zurückgegeben, wenn es einen gibt.
+<p> <p><b>Alias:</b> NonPlayerCharacter:GetID</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des NPC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose ()</strong>
+    </dt>
+    <dd>
+    Löscht einen NPC.
+<p> <p><b>Alias:</b> NonPlayerCharacter:Dispose</p>
+
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC löschen
+</span>NPC:Dispose();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate ()</strong>
+    </dt>
+    <dd>
+    Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.
+<p> <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Instanz von NonPlayerCharacter
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC aktivieren:
+</span>NPC:Activate();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.
+<p> <p><b>Alias:</b> NonPlayerCharacter:Deactivate</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Instanz von NonPlayerCharacter
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC deaktivieren:
+</span>NPC:Deactivate();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive ()</strong>
+    </dt>
+    <dd>
+    <p>Gibt true zurück, wenn der NPC aktiv ist.</p>  <p><b>Alias:</b> NonPlayerCharacter:IsActive</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] NPC ist aktiv
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset ()</strong>
+    </dt>
+    <dd>
+    Setzt den NPC zurück, sodass er erneut aktiviert werden kann.
+<p> <p><b>Alias:</b> NonPlayerCharacter:Reset</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Instanz von NonPlayerCharacter
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo ()</strong>
+    </dt>
+    <dd>
+    Gibt true zurück, wenn der NPC angesprochen wurde.  Ist ein
+ spezieller Ansprechpartner definiert, wird nur dann true
+ zurückgegeben, wenn dieser Held mit dem NPC spricht.
+<p> <p><b>Alias:</b> NonPlayerCharacter:HasTalkedTo</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] NPC wurde angesprochen
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner (_HeroName)</strong>
+    </dt>
+    <dd>
+    Setzt den Ansprechpartner für diesen NPC.
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetDialogPartner</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_HeroName</span>
+         [string] Skriptname des Helden
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Instanz von NonPlayerCharacter
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback (_Callback)</strong>
+    </dt>
+    <dd>
+    Setzt das Callback für den Fall, dass ein falscher Held den
+ NPC anspricht.
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Callback</span>
+         [function] Callback
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Instanz von NonPlayerCharacter
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback (_Callback)</strong>
+    </dt>
+    <dd>
+    Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.
+<p> <p><b>Alias:</b> NonPlayerCharacter:SetCallback</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Callback</span>
+         [function] Callback
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Instanz von NonPlayerCharacter
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors ()</strong>
+    </dt>
+    <dd>
+    Rotiert alle nahen Helden zum NPC und den NPC zu dem Helden,
+ der ihn angesprochen hat.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:CreateMarker"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:CreateMarker ()</strong>
+    </dt>
+    <dd>
+    Erzeugt das Entity des NPC-Markers.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:DestroyMarker"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:DestroyMarker ()</strong>
+    </dt>
+    <dd>
+    Entfernt das Entity des NPC-Markers.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:ShowMarker"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:ShowMarker ()</strong>
+    </dt>
+    <dd>
+    Zeigt den NPC-Marker des NPC an.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:HideMarker"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:HideMarker ()</strong>
+    </dt>
+    <dd>
+    Versteckt den NPC-Marker des NPC.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsMarkerVisible"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsMarkerVisible ()</strong>
+    </dt>
+    <dd>
+    Gibt true zurück, wenn der Marker des NPC sichtbar ist.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolen] Sichtbarkeit
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleNonPlayerCharacter.Global.NonPlayerCharacter:ControlMarker"></a>
+    <strong>BundleNonPlayerCharacter.Global.NonPlayerCharacter:ControlMarker ()</strong>
+    </dt>
+    <dd>
+    Kontrolliert die Sichtbarkeit und die Position des NPC-Markers.
+
+
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-10 11:31:39 </i>
+<i style="float:right;">Last updated 2018-12-10 11:41:37 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

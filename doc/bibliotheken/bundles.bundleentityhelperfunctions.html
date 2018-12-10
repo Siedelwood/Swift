@@ -35,6 +35,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -168,6 +169,63 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.PlaceToPosition">API.PlaceToPosition (_Entity, _Position, _Distance, _Angle)</a></td>
 	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:Attack">BundleEntityHelperFunctions.Global:Attack (_Entity, _Target)</a></td>
+	<td class="summary">Das Entity greift ein anderes Entity an, sofern möglich.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:AttackMove">BundleEntityHelperFunctions.Global:AttackMove (_Entity, _Position)</a></td>
+	<td class="summary">Ein Entity oder ein Battalion wird zu einer Position laufen und
+ alle gültigen Ziele auf dem Weg angreifen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:Install">BundleEntityHelperFunctions.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:Move">BundleEntityHelperFunctions.Global:Move (_Entity, _Position)</a></td>
+	<td class="summary">Bewegt das Entity zur Zielposition.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:MoveAndLookAt">BundleEntityHelperFunctions.Global:MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt und schaut
+ das Ziel anschließend an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:MoveToPosition">BundleEntityHelperFunctions.Global:MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Global:OverwriteGeologistRefill">BundleEntityHelperFunctions.Global:OverwriteGeologistRefill ()</a></td>
+	<td class="summary">Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
+ auch während des Spiels setzen zu können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Local:Install">BundleEntityHelperFunctions.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix">BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix (_Prefix)</a></td>
+	<td class="summary">Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories">BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</a></td>
+	<td class="summary">Ermittelt alle Entities in den Kategorien auf den Territorien für die
+ Liste von Parteien und gibt sie als Liste zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetNearestEntity">BundleEntityHelperFunctions.Shared:GetNearestEntity (_eID, _entities)</a></td>
+	<td class="summary">Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+ am nächsten ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetRelativePos">BundleEntityHelperFunctions.Shared:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</a></td>
+	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.</td>
 	</tr>
 </table>
 
@@ -719,13 +777,314 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:Attack"></a>
+    <strong>BundleEntityHelperFunctions.Global:Attack (_Entity, _Target)</strong>
+    </dt>
+    <dd>
+    Das Entity greift ein anderes Entity an, sofern möglich.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          [string|number] Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+         [string|number] Angegriffenes Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:AttackMove"></a>
+    <strong>BundleEntityHelperFunctions.Global:AttackMove (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Ein Entity oder ein Battalion wird zu einer Position laufen und
+ alle gültigen Ziele auf dem Weg angreifen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           [string|number] Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+         [string] Skriptname, EntityID oder Positionstable
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:Install"></a>
+    <strong>BundleEntityHelperFunctions.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:Move"></a>
+    <strong>BundleEntityHelperFunctions.Global:Move (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Bewegt das Entity zur Zielposition.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           [string|number] Bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+         [table] Positionstable
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:MoveAndLookAt"></a>
+    <strong>BundleEntityHelperFunctions.Global:MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt und schaut
+ das Ziel anschließend an.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               [string|number] Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             [string|number] Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             [number] Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_moveAsEntity</span>
+         [boolean] Blocking ignorieren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:MoveToPosition"></a>
+    <strong>BundleEntityHelperFunctions.Global:MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               [string|number] Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             [string|number] Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             [number] Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_Angle</span>
+                [number] Winkel
+        </li>
+        <li><span class="parameter">_moveAsEntity</span>
+         [boolean] Blocking ignorieren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Global:OverwriteGeologistRefill"></a>
+    <strong>BundleEntityHelperFunctions.Global:OverwriteGeologistRefill ()</strong>
+    </dt>
+    <dd>
+    Überschreibt das Auffüll-Callback, wenn es vorhanden ist, um Auffüllmengen
+ auch während des Spiels setzen zu können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Local:Install"></a>
+    <strong>BundleEntityHelperFunctions.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix"></a>
+    <strong>BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix (_Prefix)</strong>
+    </dt>
+    <dd>
+    Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Prefix</span>
+         [string] Präfix des Skriptnamen
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Liste mit Entities
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories"></a>
+    <strong>BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</strong>
+    </dt>
+    <dd>
+    Ermittelt alle Entities in den Kategorien auf den Territorien für die
+ Liste von Parteien und gibt sie als Liste zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_player</span>
+               [number|table] PlayerID [0-8] oder Table mit PlayerIDs
+        </li>
+        <li><span class="parameter">_category</span>
+             [number|table] Kategorien oder Table mit Kategorien
+        </li>
+        <li><span class="parameter">_territory</span>
+            [number|table] Zielterritorium oder Table mit Territorien
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Liste mit Resultaten
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Shared:GetNearestEntity"></a>
+    <strong>BundleEntityHelperFunctions.Shared:GetNearestEntity (_eID, _entities)</strong>
+    </dt>
+    <dd>
+    Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+ am nächsten ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eID</span>
+              [number] Basis-Entity
+        </li>
+        <li><span class="parameter">_entities</span>
+         [table] Liste von Entities
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Nächstes Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHelperFunctions.Shared:GetRelativePos"></a>
+    <strong>BundleEntityHelperFunctions.Shared:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</strong>
+    </dt>
+    <dd>
+    Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.  Die Basis kann ein Entity oder eine Positionstabelle sein.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_target</span>
+                  [string|number|table] Basisposition
+        </li>
+        <li><span class="parameter">_distance</span>
+                [number] Entfernung
+        </li>
+        <li><span class="parameter">_angle</span>
+                   [number] Winkel
+        </li>
+        <li><span class="parameter">_buildingRealPos</span>
+         [boolean] Gebäudemitte statt Gebäudeeingang
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Position
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-10 11:31:39 </i>
+<i style="float:right;">Last updated 2018-12-10 11:41:37 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

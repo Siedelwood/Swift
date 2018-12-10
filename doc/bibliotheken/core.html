@@ -34,7 +34,9 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Fields">Fields</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -80,6 +82,13 @@
 </p>
 
 
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#g_GameExtraNo">g_GameExtraNo</a></td>
+	<td class="summary">AddOn Versionsnummer</td>
+	</tr>
+</table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
@@ -95,6 +104,10 @@
 	<td class="summary">Registriert eine Funktion, die nach dem laden ausgeführt wird.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.Bridge">API.Bridge (_Command, _Flag)</a></td>
+	<td class="summary">Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.ClearNotes">API.ClearNotes ()</a></td>
 	<td class="summary">Löscht alle Nachrichten im Debug Window.</td>
 	</tr>
@@ -103,13 +116,35 @@
 	<td class="summary">Lässt zwei Entities sich gegenseitig anschauen.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.ConvertTableToString">API.ConvertTableToString (_Table)</a></td>
+	<td class="summary">Konvertiert alle Strings, Booleans und Numbers einer Tabelle in
+ einen String.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Dbg">API.Dbg (_Message)</a></td>
+	<td class="summary">Schreibt einen FATAL auf den Bildschirm und ins Log.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.DeactivateIO">API.DeactivateIO (_ScriptName)</a></td>
 	<td class="summary">Deaktiviert ein Interaktives Objekt, sodass es nicht mehr vom Spieler
  aktiviert werden kann.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.DumpTable">API.DumpTable (_Table, _Name)</a></td>
+	<td class="summary">Schreibt ein genaues Abbild der Table ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.EnsureMessage">API.EnsureMessage (_Message)</a></td>
+	<td class="summary">Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
+ übergeben wird.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.EnsureScriptName">API.EnsureScriptName (_EntityID)</a></td>
 	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.FailAllQuests">API.FailAllQuests (...)</a></td>
+	<td class="summary">Lässt eine Liste von Quests fehlschlagen.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.FailQuest">API.FailQuest (_QuestName, _Quiet)</a></td>
@@ -129,6 +164,10 @@
 	<td class="summary">Gibt die ID des Quests mit dem angegebenen Namen zurück.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.Info">API.Info (_Message)</a></td>
+	<td class="summary">Schreibt eine INFO auf den Bildschirm und ins Log.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.Install">API.Install ()</a></td>
 	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
 	</tr>
@@ -145,12 +184,20 @@
 	<td class="summary">Lokalisiert ein Entity auf der Map.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.Log">API.Log (_Message)</a></td>
+	<td class="summary">Schreibt eine einzelne Zeile Text ins Log.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.LookAt">API.LookAt (_entity, _entityToLookAt, _offsetEntity)</a></td>
 	<td class="summary">Rotiert ein Entity, sodass es zum Ziel schaut.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.Message">API.Message (_Message)</a></td>
 	<td class="summary">Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Note">API.Note (_Message)</a></td>
+	<td class="summary">Schreibt eine Nachricht in das Debug Window.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.RealTimeGetSecondsPassedSinceGameStart">API.RealTimeGetSecondsPassedSinceGameStart ()</a></td>
@@ -170,12 +217,24 @@
 	<td class="summary">Ersetzt ein Entity mit einem neuen eines anderen Typs.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.RestartAllQuests">API.RestartAllQuests (...)</a></td>
+	<td class="summary">Startet eine Liste von Quests neu.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.RestartQuest">API.RestartQuest (_QuestName, _Quiet)</a></td>
 	<td class="summary">Startet den Quest neu.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SendCart">API.SendCart (_position, _player, _good, _amount, _cartOverlay, _ignoreReservation)</a></td>
 	<td class="summary">Sendet einen Handelskarren zu dem Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetLogLevel">API.SetLogLevel (_Level)</a></td>
+	<td class="summary">Setzt das Log-Level für die aktuelle Skriptumgebung.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartAllQuests">API.StartAllQuests (...)</a></td>
+	<td class="summary">Startet eine Liste von Quests.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.StartQuest">API.StartQuest (_QuestName, _Quiet)</a></td>
@@ -186,8 +245,20 @@
 	<td class="summary">Schreibt eine Nachricht in das Debug Window.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.StopAllQuests">API.StopAllQuests (...)</a></td>
+	<td class="summary">Unterbricht eine Liste von Quests.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.StopQuest">API.StopQuest (_QuestName, _Quiet)</a></td>
 	<td class="summary">Unterbricht den Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ToBoolean">API.ToBoolean (_Value)</a></td>
+	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.Trace">API.Trace (_Message)</a></td>
+	<td class="summary">Schreibt einen TRACE auf den Bildschirm und ins Log.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TraverseTable">API.TraverseTable (_Data, _Table)</a></td>
@@ -198,8 +269,81 @@
 	<td class="summary">Prüft, ob eine Positionstabelle eine gültige Position enthält.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.Warn">API.Warn (_Message)</a></td>
+	<td class="summary">Schreibt eine WARNING auf den Bildschirm und ins Log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.WinAllQuests">API.WinAllQuests (...)</a></td>
+	<td class="summary">Gewinnt eine Liste von Quests.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.WinQuest">API.WinQuest (_QuestName, _Quiet)</a></td>
 	<td class="summary">Gewinnt den Quest.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Core:AppendFunction">Core:AppendFunction (_FunctionName, _AppendFunction, _Index)</a></td>
+	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ChangeCustomQuestCaptionText">Core:ChangeCustomQuestCaptionText (_Text, _Quest)</a></td>
+	<td class="summary">Ändert den Text des Beschreibungsfensters eines Quests.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:CheckQuestName">Core:CheckQuestName (_Name)</a></td>
+	<td class="summary">Prüft, ob der Questname formal korrekt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:GetFunctionInString">Core:GetFunctionInString (_FunctionName, _Reference)</a></td>
+	<td class="summary">Sucht eine Funktion mit dem angegebenen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:InitalizeBundles">Core:InitalizeBundles ()</a></td>
+	<td class="summary">Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterAddOn">Core:RegisterAddOn (_AddOn)</a></td>
+	<td class="summary">Registiert ein AddOn als Bundle, sodass es initialisiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBehavior">Core:RegisterBehavior (_Behavior)</a></td>
+	<td class="summary">Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
+	<td class="summary">Prüft, ob das Bundle bereits initalisiert ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:RegisterBundle">Core:RegisterBundle (_Bundle)</a></td>
+	<td class="summary">Registiert ein Bundle, sodass es initialisiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ReplaceFunction">Core:ReplaceFunction (_FunctionName, _Function)</a></td>
+	<td class="summary">Überschreibt eine Funktion mit einer anderen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupGlobal_HackQuestSystem">Core:SetupGlobal_HackQuestSystem ()</a></td>
+	<td class="summary">Implementiert die vordefinierten Texte für Custom Behavior und den Aufruf
+ der :Interrupt Methode.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupGobal_HackCreateQuest">Core:SetupGobal_HackCreateQuest ()</a></td>
+	<td class="summary">Überschreibt CreateQuest für die Anbindung an Symfonia.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:SetupLocal_HackRegisterHotkey">Core:SetupLocal_HackRegisterHotkey ()</a></td>
+	<td class="summary">Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
+ angezeigt werden können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:StackFunction">Core:StackFunction (_FunctionName, _StackFunction, _Index)</a></td>
+	<td class="summary">Erweitert eine Funktion um eine andere Funktion.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ToBoolean">Core:ToBoolean (_Input)</a></td>
+	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
 	</tr>
 </table>
 
@@ -207,6 +351,24 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "g_GameExtraNo"></a>
+    <strong>g_GameExtraNo</strong>
+    </dt>
+    <dd>
+    AddOn Versionsnummer
+
+
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
@@ -303,6 +465,33 @@ API.AddSaveGameAction(SaveGame)</pre>
 
 </dd>
     <dt>
+    <a name = "API.Bridge"></a>
+    <strong>API.Bridge (_Command, _Flag)</strong>
+    </dt>
+    <dd>
+    Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.
+<p> Wird diese Funktion als dem globalen Skript aufgerufen, sendet sie den
+ Befehl an das lokale Skript. Wird diese Funktion im lokalen Skript genutzt,
+ wird der Befehl an das globale Skript geschickt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Command</span>
+         [string] Lua-Befehl als String
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] FIXME Optional für GUI.SendScriptCommand benötigt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.ClearNotes"></a>
     <strong>API.ClearNotes ()</strong>
     </dt>
@@ -344,6 +533,56 @@ API.AddSaveGameAction(SaveGame)</pre>
 
 </dd>
     <dt>
+    <a name = "API.ConvertTableToString"></a>
+    <strong>API.ConvertTableToString (_Table)</strong>
+    </dt>
+    <dd>
+    Konvertiert alle Strings, Booleans und Numbers einer Tabelle in
+ einen String.  Die Funktion ist rekursiv, d.h. es werden auch alle
+ Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
+ String ist, wird als Adresse geschrieben.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Table</span>
+         [table] Table zum konvertieren
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] Converted table
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Dbg"></a>
+    <strong>API.Dbg (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt einen FATAL auf den Bildschirm und ins Log.
+<p> <p><b>Alias:</b> dbg</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.DeactivateIO"></a>
     <strong>API.DeactivateIO (_ScriptName)</strong>
     </dt>
@@ -371,6 +610,62 @@ API.AddSaveGameAction(SaveGame)</pre>
 
 </dd>
     <dt>
+    <a name = "API.DumpTable"></a>
+    <strong>API.DumpTable (_Table, _Name)</strong>
+    </dt>
+    <dd>
+    Schreibt ein genaues Abbild der Table ins Log.  Funktionen, Threads und
+ Metatables werden als Adresse geschrieben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Table</span>
+         [table] Tabelle, die gedumpt wird
+        </li>
+        <li><span class="parameter">_Name</span>
+          [name] Optionaler Name im Log
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Table = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, {a = <span class="keyword">true</span>}}
+API.DumpTable(Table)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.EnsureMessage"></a>
+    <strong>API.EnsureMessage (_Message)</strong>
+    </dt>
+    <dd>
+    Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
+ übergeben wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string: Message
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.EnsureScriptName"></a>
     <strong>API.EnsureScriptName (_EntityID)</strong>
     </dt>
@@ -392,6 +687,29 @@ API.AddSaveGameAction(SaveGame)</pre>
 
         [string] Skriptname
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.FailAllQuests"></a>
+    <strong>API.FailAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Lässt eine Liste von Quests fehlschlagen.
+<p> Der Status wird auf Over und das Resultat auf Failure gesetzt.
+<p> <p><b>Alias:</b> FailQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
 
 
 
@@ -520,6 +838,28 @@ API.AddSaveGameAction(SaveGame)</pre>
 
 </dd>
     <dt>
+    <a name = "API.Info"></a>
+    <strong>API.Info (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine INFO auf den Bildschirm und ins Log.
+<p> <p><b>Alias:</b> info</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.Install"></a>
     <strong>API.Install ()</strong>
     </dt>
@@ -637,6 +977,29 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.Log"></a>
+    <strong>API.Log (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine einzelne Zeile Text ins Log.  Vor dem Text steh, ob aus dem
+ globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
+ Spiels die Nachricht gesendet wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Nachricht für's Log
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.LookAt"></a>
     <strong>API.LookAt (_entity, _entityToLookAt, _offsetEntity)</strong>
     </dt>
@@ -674,6 +1037,29 @@ Copy = API.InstanceTable(Table)</pre>
     </dt>
     <dd>
     Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.Note"></a>
+    <strong>API.Note (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine Nachricht in das Debug Window.  Der Text erscheint links am
+ Bildschirm und ist nicht statisch.
+<p> <p><b>Alias:</b> GUI_Note</p>
+
 
 
     <h3>Parameters:</h3>
@@ -800,6 +1186,28 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.RestartAllQuests"></a>
+    <strong>API.RestartAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Startet eine Liste von Quests neu.
+<p> <p><b>Alias:</b> StartQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.RestartQuest"></a>
     <strong>API.RestartQuest (_QuestName, _Quiet)</strong>
     </dt>
@@ -881,6 +1289,93 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.SetLogLevel"></a>
+    <strong>API.SetLogLevel (_Level)</strong>
+    </dt>
+    <dd>
+    Setzt das Log-Level für die aktuelle Skriptumgebung.
+<p> Als Voreinstellung werden nur FATAL-Meldungen angezeigt!
+<p> Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
+ werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
+ angezeigt werden.
+<p> <table border="1">
+ <tr>
+ <th>
+ Level
+ </th>
+ <th>
+ Beschreibung
+ </th>
+ </tr>
+ <td>
+ QSB.Log.Level.OFF
+ </td>
+ <td>
+ Alle Meldungen werden unterdrückt.
+ </td>
+ <tr>
+ <td>
+ QSB.Log.Level.FATAL
+ </td>
+ <td>
+ Es werden nur Fehler angezeigt.
+ </td>
+ </tr>
+ <tr>
+ <td>
+ QSB.Log.Level.WARNING
+ </td>
+ <td>
+ Es werden nur Warnungen und Fehler angezeigt.
+ </td>
+ </tr>
+ <tr>
+ <td>
+ QSB.Log.Level.INFO
+ </td>
+ <td>
+ Es werden Meldungen aller Stufen angezeigt.
+ </td>
+ </tr>
+ </table>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Level</span>
+         [number] Level
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartAllQuests"></a>
+    <strong>API.StartAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Startet eine Liste von Quests.
+<p> <p><b>Alias:</b> StartQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.StartQuest"></a>
     <strong>API.StartQuest (_QuestName, _Quiet)</strong>
     </dt>
@@ -929,6 +1424,28 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.StopAllQuests"></a>
+    <strong>API.StopAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Unterbricht eine Liste von Quests.
+<p> <p><b>Alias:</b> StopQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.StopQuest"></a>
     <strong>API.StopQuest (_QuestName, _Quiet)</strong>
     </dt>
@@ -947,6 +1464,63 @@ Copy = API.InstanceTable(Table)</pre>
         </li>
         <li><span class="parameter">_Quiet</span>
               [boolean] Keine Meldung anzeigen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ToBoolean"></a>
+    <strong>API.ToBoolean (_Value)</strong>
+    </dt>
+    <dd>
+    Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
+<p> Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
+ Alles andere als false.
+<p> Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
+<p> <p><b>Alias:</b> AcceptAlternativeBoolean</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Value</span>
+         [mixed] Wahrheitswert
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Wahrheitswert
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Bool = API.ToBoolean(<span class="string">"+"</span>)  <span class="comment">--&gt; Bool = true
+</span><span class="keyword">local</span> Bool = API.ToBoolean(<span class="string">"no"</span>) <span class="comment">--&gt; Bool = false</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.Trace"></a>
+    <strong>API.Trace (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt einen TRACE auf den Bildschirm und ins Log.
+<p> <p><b>Alias:</b> info</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
         </li>
     </ul>
 
@@ -1019,6 +1593,51 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.Warn"></a>
+    <strong>API.Warn (_Message)</strong>
+    </dt>
+    <dd>
+    Schreibt eine WARNING auf den Bildschirm und ins Log.
+<p> <p><p><b>Alias:</b> warn</p></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         [string] Anzeigetext
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.WinAllQuests"></a>
+    <strong>API.WinAllQuests (...)</strong>
+    </dt>
+    <dd>
+    Gewinnt eine Liste von Quests.
+<p> Der Status wird auf Over und das Resultat auf Success gesetzt.
+<p> <p><b>Alias:</b> WinQuestsByName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+          [string..] Liste mit Quests
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.WinQuest"></a>
     <strong>API.WinQuest (_QuestName, _Quiet)</strong>
     </dt>
@@ -1045,13 +1664,376 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Core:AppendFunction"></a>
+    <strong>Core:AppendFunction (_FunctionName, _AppendFunction, _Index)</strong>
+    </dt>
+    <dd>
+    Erweitert eine Funktion um eine andere Funktion.
+<p> Jede hinzugefügte Funktion wird nach der Originalfunktion ausgeführt. Es
+ ist möglich eine neue Funktion an einem bestimmten Index einzufügen. Diese
+ Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
+ im Spiel sollte eine API-Funktion erstellt werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+
+        </li>
+        <li><span class="parameter">_AppendFunction</span>
+
+        </li>
+        <li><span class="parameter">_Index</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ChangeCustomQuestCaptionText"></a>
+    <strong>Core:ChangeCustomQuestCaptionText (_Text, _Quest)</strong>
+    </dt>
+    <dd>
+    Ändert den Text des Beschreibungsfensters eines Quests.  Die Beschreibung
+ wird erst dann aktualisiert, wenn der Quest ausgeblendet wird.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+           Neuer Text
+        </li>
+        <li><span class="parameter">_Quest</span>
+          Identifier des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:CheckQuestName"></a>
+    <strong>Core:CheckQuestName (_Name)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Questname formal korrekt ist.  Questnamen dürfen i.d.R. nur
+ die Zeichen A-Z, a-7, 0-9, - und _ enthalten.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+             Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Questname ist fehlerfrei
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:GetFunctionInString"></a>
+    <strong>Core:GetFunctionInString (_FunctionName, _Reference)</strong>
+    </dt>
+    <dd>
+    Sucht eine Funktion mit dem angegebenen Namen.
+<p> Ist die Funktionen innerhalb einer Table, so sind alle Ebenen bis zum
+ Funktionsnamen mit anzugeben, abgetrennt durch einen Punkt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+         Name der Funktion
+        </li>
+        <li><span class="parameter">_Reference</span>
+            Aktuelle Referenz (für Rekursion)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        function: Gefundene Funktion
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:InitalizeBundles"></a>
+    <strong>Core:InitalizeBundles ()</strong>
+    </dt>
+    <dd>
+    Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
+ Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:RegisterAddOn"></a>
+    <strong>Core:RegisterAddOn (_AddOn)</strong>
+    </dt>
+    <dd>
+    Registiert ein AddOn als Bundle, sodass es initialisiert wird.
+<p> Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und
+ existiert nur zur Übersichtlichkeit.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_AddOn</span>
+         Name des Moduls
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:RegisterBehavior"></a>
+    <strong>Core:RegisterBehavior (_Behavior)</strong>
+    </dt>
+    <dd>
+    Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.
+ Erzeugt zudem den Konstruktor.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            Behavior-Objekt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:RegisterBundle"></a>
+    <strong>Core:RegisterBundle (_Bundle)</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Bundle bereits initalisiert ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Bundle</span>
+         Name des Moduls
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Bundle initalisiert
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:RegisterBundle"></a>
+    <strong>Core:RegisterBundle (_Bundle)</strong>
+    </dt>
+    <dd>
+    Registiert ein Bundle, sodass es initialisiert wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Bundle</span>
+         Name des Moduls
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ReplaceFunction"></a>
+    <strong>Core:ReplaceFunction (_FunctionName, _Function)</strong>
+    </dt>
+    <dd>
+    Überschreibt eine Funktion mit einer anderen.
+<p> Funktionen in einer Tabelle werden überschrieben, indem jede Ebene des
+ Tables mit einem Punkt angetrennt wird.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+
+        </li>
+        <li><span class="parameter">_Function</span>
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">A = {foo = <span class="keyword">function</span>() API.Note(<span class="string">"bar"</span>) <span class="keyword">end</span>}
+B = <span class="keyword">function</span>() API.Note(<span class="string">"muh"</span>) <span class="keyword">end</span>
+Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
+<span class="comment">-- A.foo() == B() =&gt; "muh"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Core:SetupGlobal_HackQuestSystem"></a>
+    <strong>Core:SetupGlobal_HackQuestSystem ()</strong>
+    </dt>
+    <dd>
+    Implementiert die vordefinierten Texte für Custom Behavior und den Aufruf
+ der :Interrupt Methode.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:SetupGobal_HackCreateQuest"></a>
+    <strong>Core:SetupGobal_HackCreateQuest ()</strong>
+    </dt>
+    <dd>
+    Überschreibt CreateQuest für die Anbindung an Symfonia.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:SetupLocal_HackRegisterHotkey"></a>
+    <strong>Core:SetupLocal_HackRegisterHotkey ()</strong>
+    </dt>
+    <dd>
+    Überschreibt das Hotkey-Register, sodass eigene Hotkeys mit im Menü
+ angezeigt werden können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:StackFunction"></a>
+    <strong>Core:StackFunction (_FunctionName, _StackFunction, _Index)</strong>
+    </dt>
+    <dd>
+    Erweitert eine Funktion um eine andere Funktion.
+<p> Jede hinzugefügte Funktion wird vor der Originalfunktion ausgeführt. Es
+ ist möglich, eine neue Funktion an einem bestimmten Index einzufügen. Diese
+ Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
+ im Spiel sollte eine API-Funktion erstellt werden.
+<p> Wichtig: Die gestapelten Funktionen, die vor der Originalfunktion
+ ausgeführt werden, müssen etwas zurückgeben, um die Funktion an
+ gegebener Stelle zu verlassen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+
+        </li>
+        <li><span class="parameter">_StackFunction</span>
+
+        </li>
+        <li><span class="parameter">_Index</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ToBoolean"></a>
+    <strong>Core:ToBoolean (_Input)</strong>
+    </dt>
+    <dd>
+    Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
+<p> Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
+ Alles andere als false.
+<p> Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Input</span>
+         Boolean-Darstellung
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Konvertierte Boolean
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-10 11:31:39 </i>
+<i style="float:right;">Last updated 2018-12-10 11:41:37 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

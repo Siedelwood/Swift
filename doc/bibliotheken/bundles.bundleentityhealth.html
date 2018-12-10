@@ -35,6 +35,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#Reward">Reward</a></li>
 <li><a href="#Reprisal">Reprisal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
@@ -127,6 +128,56 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.AddOnEntityCreatedAction">API.AddOnEntityCreatedAction (_Function)</a></td>
 	<td class="summary">Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt wird.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global:Install">BundleEntityHealth.Global:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global:SetEntityHealth">BundleEntityHealth.Global:SetEntityHealth (_Entity, _Percentage)</a></td>
+	<td class="summary">Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global:HurtEntityEx">BundleEntityHealth.Global:HurtEntityEx (_EntityID, _AmountOfDamage, _AttackerID)</a></td>
+	<td class="summary">Verwundet ein Entity um den angegebenen Wert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global.AddOnEntityHurtAction">BundleEntityHealth.Global.AddOnEntityHurtAction (_Function)</a></td>
+	<td class="summary">Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity ein anderes
+ verwundet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global.AddOnEntityDestroyedAction">BundleEntityHealth.Global.AddOnEntityDestroyedAction (_Function)</a></td>
+	<td class="summary">Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity zerstört
+ wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global.AddOnEntityCreatedAction">BundleEntityHealth.Global.AddOnEntityCreatedAction (_Function)</a></td>
+	<td class="summary">Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt
+ wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global.EntityHurtEntityController">BundleEntityHealth.Global.EntityHurtEntityController ()</a></td>
+	<td class="summary">Führt alle registrierten Events aus, wenn ein Entity ein anderes angreift.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global.EntityDestroyedController">BundleEntityHealth.Global.EntityDestroyedController ()</a></td>
+	<td class="summary">Führt alle registrierten Events aus, wenn ein Entity zerstört wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Global.EntityCreatedController">BundleEntityHealth.Global.EntityCreatedController (_EntityID)</a></td>
+	<td class="summary">Führt alle registrierten Events aus, wenn ein Entity erzeugt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Local:Install">BundleEntityHealth.Local:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityHealth.Shared:GetHealth">BundleEntityHealth.Shared:GetHealth (_Entity)</a></td>
+	<td class="summary">Gibt die Gesundheit des Entity in prozent zurück.</td>
 	</tr>
 </table>
 <h2><a href="#Reward">Reward</a></h2>
@@ -369,6 +420,230 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleEntityHealth.Global:Install"></a>
+    <strong>BundleEntityHealth.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Global:SetEntityHealth"></a>
+    <strong>BundleEntityHealth.Global:SetEntityHealth (_Entity, _Percentage)</strong>
+    </dt>
+    <dd>
+    Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+             [string|number] Entity to change
+        </li>
+        <li><span class="parameter">_Percentage</span>
+         [number] Health amount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Global:HurtEntityEx"></a>
+    <strong>BundleEntityHealth.Global:HurtEntityEx (_EntityID, _AmountOfDamage, _AttackerID)</strong>
+    </dt>
+    <dd>
+    Verwundet ein Entity um den angegebenen Wert.  Wird die ID des
+ Angreifers übergeben, werden die entsprechenden Callbacks für
+ Kampfhandlungen ausgelöst.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+               [number] ID des Opfers
+        </li>
+        <li><span class="parameter">_AmountOfDamage</span>
+         [number] Menge an Schaden
+        </li>
+        <li><span class="parameter">_AttackerID</span>
+             [number] (optional) ID des Angreifers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Global.AddOnEntityHurtAction"></a>
+    <strong>BundleEntityHealth.Global.AddOnEntityHurtAction (_Function)</strong>
+    </dt>
+    <dd>
+    Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity ein anderes
+ verwundet.  Dabei wird EntityID des Angreifers und des Verteidigers an die
+ Funktion übergeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         [function] Funktion, die ausgeführt wird
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Global.AddOnEntityDestroyedAction"></a>
+    <strong>BundleEntityHealth.Global.AddOnEntityDestroyedAction (_Function)</strong>
+    </dt>
+    <dd>
+    Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity zerstört
+ wird.  Die EntityID des zerstörten Entity wird übergeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         [function] Funktion, die ausgeführt wird
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Global.AddOnEntityCreatedAction"></a>
+    <strong>BundleEntityHealth.Global.AddOnEntityCreatedAction (_Function)</strong>
+    </dt>
+    <dd>
+    Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt
+ wird.  Die EntityID des zerstörten Entity wird übergeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         [function] Funktion, die ausgeführt wird
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Global.EntityHurtEntityController"></a>
+    <strong>BundleEntityHealth.Global.EntityHurtEntityController ()</strong>
+    </dt>
+    <dd>
+    Führt alle registrierten Events aus, wenn ein Entity ein anderes angreift.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Global.EntityDestroyedController"></a>
+    <strong>BundleEntityHealth.Global.EntityDestroyedController ()</strong>
+    </dt>
+    <dd>
+    Führt alle registrierten Events aus, wenn ein Entity zerstört wird.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Global.EntityCreatedController"></a>
+    <strong>BundleEntityHealth.Global.EntityCreatedController (_EntityID)</strong>
+    </dt>
+    <dd>
+    Führt alle registrierten Events aus, wenn ein Entity erzeugt wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         [number] ID des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Local:Install"></a>
+    <strong>BundleEntityHealth.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityHealth.Shared:GetHealth"></a>
+    <strong>BundleEntityHealth.Shared:GetHealth (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Gesundheit des Entity in prozent zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity to change
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Health in percent
+    </ol>
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Reward"></a>Reward</h2>
 
     <dl class="function">
@@ -456,7 +731,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-10 11:31:39 </i>
+<i style="float:right;">Last updated 2018-12-10 11:41:37 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
