@@ -285,10 +285,10 @@ end
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
 --
-function API.UnBanTypeAtTerritory(_type, _territory)
+function API.UnbanTypeAtTerritory(_type, _territory)
     if GUI then
         local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
-        GUI.SendScriptCommand("API.UnBanTypeAtTerritory(" .._type.. ", " ..Territory.. ")");
+        GUI.SendScriptCommand("API.UnbanTypeAtTerritory(" .._type.. ", " ..Territory.. ")");
         return;
     end
     if type(_territory) == "string" then
@@ -313,10 +313,10 @@ end
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
 --
-function API.UnBanCategoryAtTerritory(_eCat, _territory)
+function API.UnbanCategoryAtTerritory(_eCat, _territory)
     if GUI then
         local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
-        GUI.SendScriptCommand("API.UnBanTypeAtTerritory(" .._eCat.. ", " ..Territory.. ")");
+        GUI.SendScriptCommand("API.UnbanTypeAtTerritory(" .._eCat.. ", " ..Territory.. ")");
         return;
     end
     if type(_territory) == "string" then
@@ -341,10 +341,10 @@ end
 -- @param _center [string] Gebiet
 -- @within Anwenderfunktionen
 --
-function API.UnBanTypeInArea (_type, _center)
+function API.UnbanTypeInArea (_type, _center)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.UnBanTypeInArea(" .._eCat.. ", " ..Center.. ")");
+        GUI.SendScriptCommand("API.UnbanTypeInArea(" .._eCat.. ", " ..Center.. ")");
         return;
     end
 
@@ -366,10 +366,10 @@ end
 -- @param _center [string] Gebiet
 -- @within Anwenderfunktionen
 --
-function API.UnBanCategoryInArea(_eCat, _center)
+function API.UnbanCategoryInArea(_eCat, _center)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.UnBanCategoryInArea(" .._type.. ", " ..Center.. ")");
+        GUI.SendScriptCommand("API.UnbanCategoryInArea(" .._type.. ", " ..Center.. ")");
         return;
     end
 
