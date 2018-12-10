@@ -114,10 +114,6 @@
 	<td class="summary">Fügt dem Burglager des Spielers eine Menga an Waren hinzu.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.CastleStoreCountGood">API.CastleStoreCountGood (_PlayerID, _Good)</a></td>
-	<td class="summary">Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.CastleStoreCreate">API.CastleStoreCreate (_PlayerID)</a></td>
 	<td class="summary">Erstellt ein Burglager für den angegebenen Spieler.</td>
 	</tr>
@@ -126,8 +122,28 @@
 	<td class="summary">Zerstört das Burglager des angegebenen Spielers.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreGetGoodAmount">API.CastleStoreGetGoodAmount (_PlayerID, _Good)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreGetSize">API.CastleStoreGetSize (_PlayerID)</a></td>
+	<td class="summary">Gibt die maximale Kapazität des Burglagers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreGetTotalAmount">API.CastleStoreGetTotalAmount (_PlayerID)</a></td>
+	<td class="summary">Gibt die Gesamtmenge aller Waren im Burglager zurück.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.CastleStoreRemoveGood">API.CastleStoreRemoveGood (_PlayerID, _Good, _Amount)</a></td>
 	<td class="summary">Entfernt eine Menge von Waren aus dem Burglager des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreSetBaseCapacity">API.CastleStoreSetBaseCapacity (_PlayerID, _Capacity)</a></td>
+	<td class="summary">Setzt die Basiskapazität des Burglagers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreSetOutsourceBoundary">API.CastleStoreSetOutsourceBoundary (_PlayerID, _Good, _Limit)</a></td>
+	<td class="summary">Setzt die Obergrenze ab der ins Burglager ausgelagert wird.</td>
 	</tr>
 </table>
 
@@ -165,38 +181,6 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example">API.CastleStoreAddGood(<span class="number">1</span>, Goods.G_Wood, <span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.CastleStoreCountGood"></a>
-    <strong>API.CastleStoreCountGood (_PlayerID, _Good)</strong>
-    </dt>
-    <dd>
-    Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] ID des Spielers
-        </li>
-        <li><span class="parameter">_Good</span>
-         [number] Typ der Ware
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] Menge an Waren
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Amount = API.CastleStoreCountGood(<span class="number">1</span>, Goods.G_Milk);</pre>
     </ul>
 
 </dd>
@@ -256,6 +240,96 @@
 
 </dd>
     <dt>
+    <a name = "API.CastleStoreGetGoodAmount"></a>
+    <strong>API.CastleStoreGetGoodAmount (_PlayerID, _Good)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Typ der Ware
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Menge an Waren
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Amount = API.CastleStoreCountGood(<span class="number">1</span>, Goods.G_Milk);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CastleStoreGetSize"></a>
+    <strong>API.CastleStoreGetSize (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die maximale Kapazität des Burglagers zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Große des Lagers
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Size = API.CastleStoreGetSize(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CastleStoreGetTotalAmount"></a>
+    <strong>API.CastleStoreGetTotalAmount (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die Gesamtmenge aller Waren im Burglager zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Menge an Waren
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Amount = API.CastleStoreTotalAmount(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "API.CastleStoreRemoveGood"></a>
     <strong>API.CastleStoreRemoveGood (_PlayerID, _Good, _Amount)</strong>
     </dt>
@@ -285,6 +359,67 @@
     </ul>
 
 </dd>
+    <dt>
+    <a name = "API.CastleStoreSetBaseCapacity"></a>
+    <strong>API.CastleStoreSetBaseCapacity (_PlayerID, _Capacity)</strong>
+    </dt>
+    <dd>
+    Setzt die Basiskapazität des Burglagers.
+<p> Die Basiskapazität ist das Limit der ersten Stufe der Burg. Mit jedem
+ Ausbau wird dieser Wert verdoppelt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Capacity</span>
+         [number] Basisgröße des Lagers
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- -&gt; [150, 300, 600, 1200]
+</span>API.CastleStoreSetBaseCapacity(<span class="number">1</span>, <span class="number">150</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CastleStoreSetOutsourceBoundary"></a>
+    <strong>API.CastleStoreSetOutsourceBoundary (_PlayerID, _Good, _Limit)</strong>
+    </dt>
+    <dd>
+    Setzt die Obergrenze ab der ins Burglager ausgelagert wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_Limit</span>
+         [number] Obergrenze
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CastleStoreSetOutsourceBoundary(<span class="number">1</span>, Goods.G_Milk, <span class="number">50</span>);</pre>
+    </ul>
+
+</dd>
 </dl>
 
 
@@ -292,7 +427,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-06 20:13:00 </i>
+<i style="float:right;">Last updated 2018-12-10 11:31:39 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
