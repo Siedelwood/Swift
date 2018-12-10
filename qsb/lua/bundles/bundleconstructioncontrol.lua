@@ -100,7 +100,7 @@ function API.ProtectTerritory(_entity)
             API.ProtectTerritory(]].._entity..[[)
         ]]);
     else
-        if not Inside(_enitry, BundleConstructionControl.Local.Data.OnTerritory) then
+        if not Inside(_entity, BundleConstructionControl.Local.Data.OnTerritory) then
             table.insert(BundleConstructionControl.Local.Data.OnTerritory, _entity);
         end
     end
@@ -285,10 +285,10 @@ end
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
 --
-function API.UnBanTypeAtTerritory(_type, _territory)
+function API.UnbanTypeAtTerritory(_type, _territory)
     if GUI then
         local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
-        GUI.SendScriptCommand("API.UnBanTypeAtTerritory(" .._type.. ", " ..Territory.. ")");
+        GUI.SendScriptCommand("API.UnbanTypeAtTerritory(" .._type.. ", " ..Territory.. ")");
         return;
     end
     if type(_territory) == "string" then
@@ -298,8 +298,8 @@ function API.UnBanTypeAtTerritory(_type, _territory)
     if not BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] then
         return;
     end
-    for i=1, BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], 1 do
-        if BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type][i] == _type then
+    for i= #BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], 1, -1 do
+        if BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type][i] == _territory then
             table.remove(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], i);
             break;
         end
@@ -313,10 +313,10 @@ end
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
 --
-function API.UnBanCategoryAtTerritory(_eCat, _territory)
+function API.UnbanCategoryAtTerritory(_eCat, _territory)
     if GUI then
         local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
-        GUI.SendScriptCommand("API.UnBanTypeAtTerritory(" .._eCat.. ", " ..Territory.. ")");
+        GUI.SendScriptCommand("API.UnbanTypeAtTerritory(" .._eCat.. ", " ..Territory.. ")");
         return;
     end
     if type(_territory) == "string" then
@@ -326,8 +326,8 @@ function API.UnBanCategoryAtTerritory(_eCat, _territory)
     if not BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] then
         return;
     end
-    for i=1, BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], 1 do
-        if BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat][i] == _type then
+    for i= #BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], 1, -1 do
+        if BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat][i] == _territory then
             table.remove(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], i);
             break;
         end
@@ -341,17 +341,17 @@ end
 -- @param _center [string] Gebiet
 -- @within Anwenderfunktionen
 --
-function API.UnBanTypeInArea (_type, _center)
+function API.UnbanTypeInArea (_type, _center)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.UnBanTypeInArea(" .._eCat.. ", " ..Center.. ")");
+        GUI.SendScriptCommand("API.UnbanTypeInArea(" .._eCat.. ", " ..Center.. ")");
         return;
     end
 
     if not BundleConstructionControl.Global.Data.AreaBlockEntities[_center] then
         return;
     end
-    for i=1, BundleConstructionControl.Global.Data.AreaBlockEntities[_center], 1 do
+    for i= #BundleConstructionControl.Global.Data.AreaBlockEntities[_center], 1, -1 do
         if BundleConstructionControl.Global.Data.AreaBlockEntities[_center][i][1] == _type then
             table.remove(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], i);
             break;
@@ -366,17 +366,17 @@ end
 -- @param _center [string] Gebiet
 -- @within Anwenderfunktionen
 --
-function API.UnBanCategoryInArea(_eCat, _center)
+function API.UnbanCategoryInArea(_eCat, _center)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.UnBanCategoryInArea(" .._type.. ", " ..Center.. ")");
+        GUI.SendScriptCommand("API.UnbanCategoryInArea(" .._type.. ", " ..Center.. ")");
         return;
     end
 
     if not BundleConstructionControl.Global.Data.AreaBlockCategories[_center] then
         return;
     end
-    for i=1, BundleConstructionControl.Global.Data.AreaBlockCategories[_center], 1 do
+    for i= #BundleConstructionControl.Global.Data.AreaBlockCategories[_center], 1, -1 do
         if BundleConstructionControl.Global.Data.AreaBlockCategories[_center][i][1] == _eCat then
             table.remove(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], i);
             break;
@@ -452,7 +452,6 @@ function BundleConstructionControl.Global.CanPlayerPlaceBuilding(_PlayerID, _Typ
     for k,v in pairs(BundleConstructionControl.Global.Data.TerritoryBlockEntities) do
         if v then
             for key,val in pairs(v) do
-                GUI_Note(tostring(Logic.GetTerritoryAtPosition(_x, _y) == val));
                 if val and Logic.GetTerritoryAtPosition(_x, _y) == val then
                     if _Type == k then
                         return false;

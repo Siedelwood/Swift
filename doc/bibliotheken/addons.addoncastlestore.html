@@ -35,6 +35,8 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#QSB_CastleStore">QSB.CastleStore</a></li>
 </ul>
 
 
@@ -114,10 +116,6 @@
 	<td class="summary">Fügt dem Burglager des Spielers eine Menga an Waren hinzu.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.CastleStoreCountGood">API.CastleStoreCountGood (_PlayerID, _Good)</a></td>
-	<td class="summary">Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.CastleStoreCreate">API.CastleStoreCreate (_PlayerID)</a></td>
 	<td class="summary">Erstellt ein Burglager für den angegebenen Spieler.</td>
 	</tr>
@@ -126,8 +124,277 @@
 	<td class="summary">Zerstört das Burglager des angegebenen Spielers.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreGetGoodAmount">API.CastleStoreGetGoodAmount (_PlayerID, _Good)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreGetSize">API.CastleStoreGetSize (_PlayerID)</a></td>
+	<td class="summary">Gibt die maximale Kapazität des Burglagers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreGetTotalAmount">API.CastleStoreGetTotalAmount (_PlayerID)</a></td>
+	<td class="summary">Gibt die Gesamtmenge aller Waren im Burglager zurück.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.CastleStoreRemoveGood">API.CastleStoreRemoveGood (_PlayerID, _Good, _Amount)</a></td>
 	<td class="summary">Entfernt eine Menge von Waren aus dem Burglager des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreSetBaseCapacity">API.CastleStoreSetBaseCapacity (_PlayerID, _Capacity)</a></td>
+	<td class="summary">Setzt die Basiskapazität des Burglagers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CastleStoreSetOutsourceBoundary">API.CastleStoreSetOutsourceBoundary (_PlayerID, _Good, _Limit)</a></td>
+	<td class="summary">Setzt die Obergrenze ab der ins Burglager ausgelagert wird.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.OnSaveGameLoaded">AddOnCastleStore.Global.OnSaveGameLoaded ()</a></td>
+	<td class="summary">Wirt ausgeführt, nachdem ein Spielstand geladen wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global:Install">AddOnCastleStore.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global:OverwriteGameFunctions">AddOnCastleStore.Global:OverwriteGameFunctions ()</a></td>
+	<td class="summary">Überschreibt die globalen Spielfunktionen, die mit dem Burglager in
+ Konfilckt stehen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:ActivateHotkeys">AddOnCastleStore.Local.CastleStore:ActivateHotkeys ()</a></td>
+	<td class="summary">Versieht die Hotkeys des Burglagers mit ihren Funktionen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:DescribeHotkeys">AddOnCastleStore.Local.CastleStore:DescribeHotkeys ()</a></td>
+	<td class="summary">Fügt die Beschreibung der Hotkeys der Hotkey-Tabelle hinzu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:HotkeyEmptyStore">AddOnCastleStore.Local.CastleStore:HotkeyEmptyStore ()</a></td>
+	<td class="summary">Hotkey-Callback für den Modus "Lager räumen".</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:HotkeyLockGoods">AddOnCastleStore.Local.CastleStore:HotkeyLockGoods ()</a></td>
+	<td class="summary">Hotkey-Callback für den Modus "Waren sperren".</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:HotkeyStoreGoods">AddOnCastleStore.Local.CastleStore:HotkeyStoreGoods ()</a></td>
+	<td class="summary">Hotkey-Callback für den Modus "Waren einlagern".</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local:Install">AddOnCastleStore.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local:OverwriteGameFunctions">AddOnCastleStore.Local:OverwriteGameFunctions ()</a></td>
+	<td class="summary">Überschreibt die lokalen Spielfunktionen, die benötigt werden, damit das
+ Burglager funktioniert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local:OverwriteGetStringTableText">AddOnCastleStore.Local:OverwriteGetStringTableText ()</a></td>
+	<td class="summary">Überschreibt die Textausgabe mit den eigenen Texten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local:OverwriteInteractiveObject">AddOnCastleStore.Local:OverwriteInteractiveObject ()</a></td>
+	<td class="summary">Überschreibt den Bezahlvorgang der Kosten eines interaktiven Objektes.</td>
+	</tr>
+</table>
+<h2><a href="#QSB_CastleStore">QSB.CastleStore</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore.UpdateStores">AddOnCastleStore.Global.CastleStore.UpdateStores ()</a></td>
+	<td class="summary">Aktualisiert die Waren im Lager und im Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:ActivateOutsourceMode">AddOnCastleStore.Global.CastleStore:ActivateOutsourceMode ()</a></td>
+	<td class="summary">Setzt den Modus "Auslagerung", als ob der Tab geklickt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:ActivateStockMode">AddOnCastleStore.Global.CastleStore:ActivateStockMode ()</a></td>
+	<td class="summary">Setzt den Modus "Verwahrung", als ob der Tab geklickt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:ActivateTemporaryMode">AddOnCastleStore.Global.CastleStore:ActivateTemporaryMode ()</a></td>
+	<td class="summary">Setzt den Modus "Zwischenlagerung", als ob der Tab geklickt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:Add">AddOnCastleStore.Global.CastleStore:Add (_Good, _Amount)</a></td>
+	<td class="summary">Fügt eine Menge an Waren dem Burglager hinzu, solange noch
+ Platz vorhanden ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:Dispose">AddOnCastleStore.Global.CastleStore:Dispose ()</a></td>
+	<td class="summary">Zerstört das Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:GetAmount">AddOnCastleStore.Global.CastleStore:GetAmount (_Good)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Typs im Burglager zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore">AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayerIDvID)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+ der Waren im Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:GetInstance">AddOnCastleStore.Global.CastleStore:GetInstance (_PlayerID)</a></td>
+	<td class="summary">Gibt die Burglagerinstanz für den Spieler zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:GetLimit">AddOnCastleStore.Global.CastleStore:GetLimit ()</a></td>
+	<td class="summary">Gibt das aktuelle Lagerlimit zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:GetTotalAmount">AddOnCastleStore.Global.CastleStore:GetTotalAmount ()</a></td>
+	<td class="summary">Gibt die Gesamtmenge aller Waren im Burglager zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:IsGoodAccepted">AddOnCastleStore.Global.CastleStore:IsGoodAccepted (_Good)</a></td>
+	<td class="summary">Gibt zurück, ob die Ware akzeptiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:IsGoodLocked">AddOnCastleStore.Global.CastleStore:IsGoodLocked (_Good)</a></td>
+	<td class="summary">Gibt zurück, ob die Ware gesperrt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:New">AddOnCastleStore.Global.CastleStore:New (_PlayerID)</a></td>
+	<td class="summary">Erzeugt ein neues Burglager-Objekt und gibt es zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:Outsource">AddOnCastleStore.Global.CastleStore:Outsource (_Good, _Amount)</a></td>
+	<td class="summary">Lagert eine Menge von Waren aus dem Burglager aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:Remove">AddOnCastleStore.Global.CastleStore:Remove (_Good, _Amount)</a></td>
+	<td class="summary">Entfernt eine Menge an Waren aus dem Burglager ohne sie ins
+ Lagerhaus zu legen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:SetGoodAccepted">AddOnCastleStore.Global.CastleStore:SetGoodAccepted (_Good, _Flag)</a></td>
+	<td class="summary">Setzt, ob die Ware akzeptiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:SetGoodLocked">AddOnCastleStore.Global.CastleStore:SetGoodLocked (_Good, _Flag)</a></td>
+	<td class="summary">Setzt ob die Ware gesperrt ist, also nicht ausgelagert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:SetStorageLimit">AddOnCastleStore.Global.CastleStore:SetStorageLimit (_Limit)</a></td>
+	<td class="summary">Setzt den Basiswert für die maximale Kapazität des Burglagers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType">AddOnCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType (_Good, _Limit)</a></td>
+	<td class="summary">Setzt die Obergrenze für eine Ware, ab der ins Burglager
+ ausgelagert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Global.CastleStore:Store">AddOnCastleStore.Global.CastleStore:Store (_Good, _Amount)</a></td>
+	<td class="summary">Lagert eine Menge von Waren im Burglager ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:CreateStore">AddOnCastleStore.Local.CastleStore:CreateStore (_PlayerID)</a></td>
+	<td class="summary">Erzeugt eine neue lokale Referenz zum Burglager des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:DeleteStore">AddOnCastleStore.Local.CastleStore:DeleteStore (_PlayerID)</a></td>
+	<td class="summary">Entfernt eine lokale Referenz auf ein Burglager des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:DestroyGoodsClicked">AddOnCastleStore.Local.CastleStore:DestroyGoodsClicked (_PlayerID)</a></td>
+	<td class="summary">Der Spieler wechselt zwischen den Ansichten in der Burg.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetAmount">AddOnCastleStore.Local.CastleStore:GetAmount (_PlayerID, _Good)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Typs zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore">AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayerID)</a></td>
+	<td class="summary">Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+ der Waren im Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetLimit">AddOnCastleStore.Local.CastleStore:GetLimit (_PlayerID)</a></td>
+	<td class="summary">Gibt das aktuelle Lagerlimit des Burglagers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetStore">AddOnCastleStore.Local.CastleStore:GetStore (_PlayerID)</a></td>
+	<td class="summary">Gibt die Referenz des Burglagers des Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GetTotalAmount">AddOnCastleStore.Local.CastleStore:GetTotalAmount (_PlayerID)</a></td>
+	<td class="summary">Gibt die Gesamtmenge aller Waren im Burglager zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:GoodClicked">AddOnCastleStore.Local.CastleStore:GoodClicked (_PlayerID, _GoodType)</a></td>
+	<td class="summary">Ein GoodType-Button wurde geklickt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:HasCastleStore">AddOnCastleStore.Local.CastleStore:HasCastleStore (_PlayerID)</a></td>
+	<td class="summary">Gibt zurück, ob der Spieler ein Burglager hat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:IsAccepted">AddOnCastleStore.Local.CastleStore:IsAccepted (_PlayerID, _Good)</a></td>
+	<td class="summary">Gibt zurück, ob die Ware des Typs akzeptiert wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:IsLocked">AddOnCastleStore.Local.CastleStore:IsLocked (_PlayerID, _Good)</a></td>
+	<td class="summary">Gibt zurück, ob die Ware des Typs gesperrt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:OnCityTabClicked">AddOnCastleStore.Local.CastleStore:OnCityTabClicked (_PlayerID)</a></td>
+	<td class="summary">"Waren verwahren" wurde gedrückt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:OnMultiTabClicked">AddOnCastleStore.Local.CastleStore:OnMultiTabClicked (_PlayerID)</a></td>
+	<td class="summary">"Lager räumen" wurde gedrückt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:OnStorehouseTabClicked">AddOnCastleStore.Local.CastleStore:OnStorehouseTabClicked (_PlayerID)</a></td>
+	<td class="summary">"Waren einlagern" wurde geklickt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:RestoreStorehouseMenu">AddOnCastleStore.Local.CastleStore:RestoreStorehouseMenu ()</a></td>
+	<td class="summary">Stellt das normale Lagerhausmenü wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:SelectionChanged">AddOnCastleStore.Local.CastleStore:SelectionChanged (_PlayerID)</a></td>
+	<td class="summary">Aktualisiert das Burgmenü, sobald sich die Selektion ändert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:SetAccepted">AddOnCastleStore.Local.CastleStore:SetAccepted (_PlayerIDvID, _Good, _Flag)</a></td>
+	<td class="summary">Setzt eine Ware als akzeptiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:SetAmount">AddOnCastleStore.Local.CastleStore:SetAmount (_PlayerID, _Good, _Amount)</a></td>
+	<td class="summary">Ändert die Menge an Waren des Typs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:SetLocked">AddOnCastleStore.Local.CastleStore:SetLocked (_PlayerID, _Good, _Flag)</a></td>
+	<td class="summary">Setzt eine Ware als gesperrt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:ShowCastleMenu">AddOnCastleStore.Local.CastleStore:ShowCastleMenu ()</a></td>
+	<td class="summary">Das normale Burgmenü wird angezeigt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:ShowCastleStoreMenu">AddOnCastleStore.Local.CastleStore:ShowCastleStoreMenu ()</a></td>
+	<td class="summary">Das Burglager wird angezeigt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:ToggleStore">AddOnCastleStore.Local.CastleStore:ToggleStore ()</a></td>
+	<td class="summary">Wechselt zwischen der Finanzansicht und dem Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:UpdateBehaviorTabs">AddOnCastleStore.Local.CastleStore:UpdateBehaviorTabs (_PlayerID)</a></td>
+	<td class="summary">Aktualisiert die Burglager-Tabs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay">AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay (_PlayerID)</a></td>
+	<td class="summary">Aktualisiert die Mengenanzeige der Waren im Burglager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnCastleStore.Local.CastleStore:UpdateStorageLimit">AddOnCastleStore.Local.CastleStore:UpdateStorageLimit (_PlayerID)</a></td>
+	<td class="summary">Aktualisiert die Lagerauslastungsanzeige des Burglagers.</td>
 	</tr>
 </table>
 
@@ -165,38 +432,6 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example">API.CastleStoreAddGood(<span class="number">1</span>, Goods.G_Wood, <span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.CastleStoreCountGood"></a>
-    <strong>API.CastleStoreCountGood (_PlayerID, _Good)</strong>
-    </dt>
-    <dd>
-    Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         [number] ID des Spielers
-        </li>
-        <li><span class="parameter">_Good</span>
-         [number] Typ der Ware
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] Menge an Waren
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Amount = API.CastleStoreCountGood(<span class="number">1</span>, Goods.G_Milk);</pre>
     </ul>
 
 </dd>
@@ -256,6 +491,96 @@
 
 </dd>
     <dt>
+    <a name = "API.CastleStoreGetGoodAmount"></a>
+    <strong>API.CastleStoreGetGoodAmount (_PlayerID, _Good)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Typ der Ware
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Menge an Waren
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Amount = API.CastleStoreCountGood(<span class="number">1</span>, Goods.G_Milk);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CastleStoreGetSize"></a>
+    <strong>API.CastleStoreGetSize (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die maximale Kapazität des Burglagers zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Große des Lagers
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Size = API.CastleStoreGetSize(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CastleStoreGetTotalAmount"></a>
+    <strong>API.CastleStoreGetTotalAmount (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die Gesamtmenge aller Waren im Burglager zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Menge an Waren
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Amount = API.CastleStoreTotalAmount(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "API.CastleStoreRemoveGood"></a>
     <strong>API.CastleStoreRemoveGood (_PlayerID, _Good, _Amount)</strong>
     </dt>
@@ -285,6 +610,1463 @@
     </ul>
 
 </dd>
+    <dt>
+    <a name = "API.CastleStoreSetBaseCapacity"></a>
+    <strong>API.CastleStoreSetBaseCapacity (_PlayerID, _Capacity)</strong>
+    </dt>
+    <dd>
+    Setzt die Basiskapazität des Burglagers.
+<p> Die Basiskapazität ist das Limit der ersten Stufe der Burg. Mit jedem
+ Ausbau wird dieser Wert verdoppelt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Capacity</span>
+         [number] Basisgröße des Lagers
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- -&gt; [150, 300, 600, 1200]
+</span>API.CastleStoreSetBaseCapacity(<span class="number">1</span>, <span class="number">150</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CastleStoreSetOutsourceBoundary"></a>
+    <strong>API.CastleStoreSetOutsourceBoundary (_PlayerID, _Good, _Limit)</strong>
+    </dt>
+    <dd>
+    Setzt die Obergrenze ab der ins Burglager ausgelagert wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_Limit</span>
+         [number] Obergrenze
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CastleStoreSetOutsourceBoundary(<span class="number">1</span>, Goods.G_Milk, <span class="number">50</span>);</pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AddOnCastleStore.Global.OnSaveGameLoaded"></a>
+    <strong>AddOnCastleStore.Global.OnSaveGameLoaded ()</strong>
+    </dt>
+    <dd>
+    Wirt ausgeführt, nachdem ein Spielstand geladen wurde.  Diese Funktion Stellt
+ alle nicht persistenten Änderungen wieder her.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global:Install"></a>
+    <strong>AddOnCastleStore.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global:OverwriteGameFunctions"></a>
+    <strong>AddOnCastleStore.Global:OverwriteGameFunctions ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die globalen Spielfunktionen, die mit dem Burglager in
+ Konfilckt stehen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:ActivateHotkeys"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:ActivateHotkeys ()</strong>
+    </dt>
+    <dd>
+    Versieht die Hotkeys des Burglagers mit ihren Funktionen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:DescribeHotkeys"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:DescribeHotkeys ()</strong>
+    </dt>
+    <dd>
+    Fügt die Beschreibung der Hotkeys der Hotkey-Tabelle hinzu.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:HotkeyEmptyStore"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:HotkeyEmptyStore ()</strong>
+    </dt>
+    <dd>
+    Hotkey-Callback für den Modus "Lager räumen".
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:HotkeyLockGoods"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:HotkeyLockGoods ()</strong>
+    </dt>
+    <dd>
+    Hotkey-Callback für den Modus "Waren sperren".
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:HotkeyStoreGoods"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:HotkeyStoreGoods ()</strong>
+    </dt>
+    <dd>
+    Hotkey-Callback für den Modus "Waren einlagern".
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local:Install"></a>
+    <strong>AddOnCastleStore.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local:OverwriteGameFunctions"></a>
+    <strong>AddOnCastleStore.Local:OverwriteGameFunctions ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die lokalen Spielfunktionen, die benötigt werden, damit das
+ Burglager funktioniert.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local:OverwriteGetStringTableText"></a>
+    <strong>AddOnCastleStore.Local:OverwriteGetStringTableText ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Textausgabe mit den eigenen Texten.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local:OverwriteInteractiveObject"></a>
+    <strong>AddOnCastleStore.Local:OverwriteInteractiveObject ()</strong>
+    </dt>
+    <dd>
+    Überschreibt den Bezahlvorgang der Kosten eines interaktiven Objektes.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="QSB_CastleStore"></a>QSB.CastleStore</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore.UpdateStores"></a>
+    <strong>AddOnCastleStore.Global.CastleStore.UpdateStores ()</strong>
+    </dt>
+    <dd>
+    Aktualisiert die Waren im Lager und im Burglager.
+<p> <p><b>Alias</b>: QSB.CastleStore.UpdateStores</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:ActivateOutsourceMode"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:ActivateOutsourceMode ()</strong>
+    </dt>
+    <dd>
+    Setzt den Modus "Auslagerung", als ob der Tab geklickt wird.
+<p> <p><b>Alias</b>: QSB.CastleStore:ActivateOutsourceMode</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:ActivateStockMode"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:ActivateStockMode ()</strong>
+    </dt>
+    <dd>
+    Setzt den Modus "Verwahrung", als ob der Tab geklickt wird.
+<p> <p><b>Alias</b>: QSB.CastleStore:ActivateStockMode</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:ActivateTemporaryMode"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:ActivateTemporaryMode ()</strong>
+    </dt>
+    <dd>
+    Setzt den Modus "Zwischenlagerung", als ob der Tab geklickt wird.
+<p> <p><b>Alias</b>: QSB.CastleStore:ActivateTemporaryMode</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:Add"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:Add (_Good, _Amount)</strong>
+    </dt>
+    <dd>
+    Fügt eine Menge an Waren dem Burglager hinzu, solange noch
+ Platz vorhanden ist.
+<p> <p><b>Alias</b>: QSB.CastleStore:Add</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Watentyp
+        </li>
+        <li><span class="parameter">_Amount</span>
+         [number] Menge
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:Dispose"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:Dispose ()</strong>
+    </dt>
+    <dd>
+    Zerstört das Burglager.
+<p> Die Burg wird dabei natürlich nicht zerstört.
+<p> <p><b>Alias</b>: QSB.CastleStore:Dispose</p>
+
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Löschen des Burglagers von Spieler 1 ohne Referenz
+</span>QSB.CastleStore:GetInstance(<span class="number">1</span>):Dispose();
+<span class="comment">-- Loschen mit Referenzvariable (z.B. Store)
+</span>Store:Dispose();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:GetAmount"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:GetAmount (_Good)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Typs im Burglager zurück.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetAmount</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Menge an Waren im Burglager
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayerIDvID)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+ der Waren im Burglager.  Hat der Spieler kein Burglager, wird
+ nur die Menge im Lagerhaus zurückgegeben.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_PlayerIDvID</span>
+         des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Warenmenge mit Menge in Burglager
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Menge an Holz in beiden Lagern
+</span><span class="keyword">local</span> WoodAmount = QSB.CastleStore:GetGoodAmountWithCastleStore(Goods.G_Wood, <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:GetInstance"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:GetInstance (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die Burglagerinstanz für den Spieler zurück.
+<p> Wurde kein Burglager für den Spieler erstellt, wird nil zurückgegeben.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetInstance</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] PlayerID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] QSB.CastleStore Instanz
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Ermittelt das Burglager von Spieler 1
+</span><span class="keyword">local</span> Store = QSB.CastleStore:GetInstance(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:GetLimit"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:GetLimit ()</strong>
+    </dt>
+    <dd>
+    Gibt das aktuelle Lagerlimit zurück.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetLimit</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Lagerlimt in der Burg
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:GetTotalAmount"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:GetTotalAmount ()</strong>
+    </dt>
+    <dd>
+    Gibt die Gesamtmenge aller Waren im Burglager zurück.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetTotalAmount</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Gesamtmenge aller Waren
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:IsGoodAccepted"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:IsGoodAccepted (_Good)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob die Ware akzeptiert wird.
+<p> <p><b>Alias</b>: QSB.CastleStore:IsGoodAccepted</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ware wird akzeptiert
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:IsGoodLocked"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:IsGoodLocked (_Good)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob die Ware gesperrt ist.
+<p> <p><b>Alias</b>: QSB.CastleStore:IsGoodLocked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ware ist gesperrt
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:New"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:New (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein neues Burglager-Objekt und gibt es zurück.
+<p> <p><b>Alias</b>: QSB.CastleStore:New</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] PlayerID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] QSB.CastleStore Instanz
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Erstellt ein Burglager für Spieler 1
+</span><span class="keyword">local</span> Store = QSB.CastleStore:new(<span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:Outsource"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:Outsource (_Good, _Amount)</strong>
+    </dt>
+    <dd>
+    Lagert eine Menge von Waren aus dem Burglager aus.
+ <p>Die Ware wird ausgelagert wenn noch Platz im Lagerhaus vorhanden ist.</p>
+<p> <p><b>Alias</b>: QSB.CastleStore:Outsource</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Watentyp
+        </li>
+        <li><span class="parameter">_Amount</span>
+         [number] Menge
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:Remove"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:Remove (_Good, _Amount)</strong>
+    </dt>
+    <dd>
+    Entfernt eine Menge an Waren aus dem Burglager ohne sie ins
+ Lagerhaus zu legen.
+<p> <p><b>Alias</b>: QSB.CastleStore:Remove</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Watentyp
+        </li>
+        <li><span class="parameter">_Amount</span>
+         [number] Menge
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:SetGoodAccepted"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:SetGoodAccepted (_Good, _Flag)</strong>
+    </dt>
+    <dd>
+    Setzt, ob die Ware akzeptiert wird.
+<p> <p><b>Alias</b>: QSB.CastleStore:SetGoodAccepted</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Watentyp
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Akzeptanz-Flag
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:SetGoodLocked"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:SetGoodLocked (_Good, _Flag)</strong>
+    </dt>
+    <dd>
+    Setzt ob die Ware gesperrt ist, also nicht ausgelagert wird.
+<p> <p><b>Alias</b>: QSB.CastleStore:SetGoodLocked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Watentyp
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Akzeptanz-Flag
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:SetStorageLimit"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:SetStorageLimit (_Limit)</strong>
+    </dt>
+    <dd>
+    Setzt den Basiswert für die maximale Kapazität des Burglagers.
+<p> Der Basiswert dient zur Berechnung der Kapazität für die Ausbaustufen und
+ muss durch 2 teilbar sein.
+<p> Ist also der Basiswert 150, ergibt sich daraus:
+ <code>
+ 150, 300, 600, 1200
+ </code>
+<p> <p><b>Alias</b>: QSB.CastleStore:SetStorageLimit</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Limit</span>
+         [number] Maximale Kapazität
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Basiswert auf 100 setzen.
+</span><span class="comment">-- -&gt; [100, 200, 400, 800]
+</span>QSB.CastleStore:GetInstance(<span class="number">1</span>):SetStorageLimit(<span class="number">100</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType (_Good, _Limit)</strong>
+    </dt>
+    <dd>
+    Setzt die Obergrenze für eine Ware, ab der ins Burglager
+ ausgelagert wird.
+<p> <p><b>Alias</b>: QSB.CastleStore:SetUperLimitInStorehouseForGoodType</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_Limit</span>
+         [number] Obergrenze
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Global.CastleStore:Store"></a>
+    <strong>AddOnCastleStore.Global.CastleStore:Store (_Good, _Amount)</strong>
+    </dt>
+    <dd>
+    Lagert eine Menge von Waren im Burglager ein.
+ <p>Die Ware wird eingelagert wenn die Ware angenommen wird und noch
+ Platz im Burglager vorhanden ist.</p>
+<p> <p><b>Alias</b>: QSB.CastleStore:Store</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Watentyp
+        </li>
+        <li><span class="parameter">_Amount</span>
+         [number] Menge
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:CreateStore"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:CreateStore (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine neue lokale Referenz zum Burglager des Spielers.
+<p> <p><b>Alias</b>: QSB.CastleStore:CreateStore</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:DeleteStore"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:DeleteStore (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Entfernt eine lokale Referenz auf ein Burglager des Spielers.
+<p> <p><b>Alias</b>: QSB.CastleStore:DeleteStore</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:DestroyGoodsClicked"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:DestroyGoodsClicked (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Der Spieler wechselt zwischen den Ansichten in der Burg.
+<p> <p><b>Alias</b>: QSB.CastleStore:DestroyGoodsClicked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:GetAmount"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:GetAmount (_PlayerID, _Good)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Typs zurück.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetAmount</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Menge an Waren
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:GetGoodAmountWithCastleStore (_Good, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Waren des Spielers zurück, eingeschlossen
+ der Waren im Burglager.  Hat der Spieler kein Burglager, wird
+ nur die Menge im Lagerhaus zurückgegeben.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetGoodAmountWithCastleStore</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Menge an Waren
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:GetLimit"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:GetLimit (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt das aktuelle Lagerlimit des Burglagers zurück.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetLimit</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:GetStore"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:GetStore (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die Referenz des Burglagers des Spielers zurück.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetStore</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Instanz des Burglagers
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:GetTotalAmount"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:GetTotalAmount (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt die Gesamtmenge aller Waren im Burglager zurück.
+<p> <p><b>Alias</b>: QSB.CastleStore:GetTotalAmount</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Absolute Menge im Burglager
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:GoodClicked"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:GoodClicked (_PlayerID, _GoodType)</strong>
+    </dt>
+    <dd>
+    Ein GoodType-Button wurde geklickt.
+<p> <p><b>Alias</b>: QSB.CastleStore:GoodClicked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_GoodType</span>
+         [number] Warentyp
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:HasCastleStore"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:HasCastleStore (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob der Spieler ein Burglager hat.
+<p> <p><b>Alias</b>: QSB.CastleStore:HasCastleStore</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Spieler hat ein Burglager
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:IsAccepted"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:IsAccepted (_PlayerID, _Good)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob die Ware des Typs akzeptiert wird.
+<p> <p><b>Alias</b>: QSB.CastleStore:IsAccepted</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ware wird angenommen
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:IsLocked"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:IsLocked (_PlayerID, _Good)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob die Ware des Typs gesperrt ist.
+<p> <p><b>Alias</b>: QSB.CastleStore:IsLocked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ware ist gesperrt
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:OnCityTabClicked"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:OnCityTabClicked (_PlayerID)</strong>
+    </dt>
+    <dd>
+    "Waren verwahren" wurde gedrückt.
+<p> <p><b>Alias</b>: QSB.CastleStore:OnCityTabClicked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:OnMultiTabClicked"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:OnMultiTabClicked (_PlayerID)</strong>
+    </dt>
+    <dd>
+    "Lager räumen" wurde gedrückt.
+<p> <p><b>Alias</b>: QSB.CastleStore:OnMultiTabClicked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:OnStorehouseTabClicked"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:OnStorehouseTabClicked (_PlayerID)</strong>
+    </dt>
+    <dd>
+    "Waren einlagern" wurde geklickt.
+<p> <p><b>Alias</b>: QSB.CastleStore:OnStorehouseTabClicked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:RestoreStorehouseMenu"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:RestoreStorehouseMenu ()</strong>
+    </dt>
+    <dd>
+    Stellt das normale Lagerhausmenü wieder her.
+<p> <p><b>Alias</b>: QSB.CastleStore:RestoreStorehouseMenu</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:SelectionChanged"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:SelectionChanged (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Aktualisiert das Burgmenü, sobald sich die Selektion ändert.
+<p> <p><b>Alias</b>: QSB.CastleStore:SelectionChanged</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:SetAccepted"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:SetAccepted (_PlayerIDvID, _Good, _Flag)</strong>
+    </dt>
+    <dd>
+    Setzt eine Ware als akzeptiert.
+<p> <p><b>Alias</b>: QSB.CastleStore:SetAccepted</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerIDvID</span>
+         des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Akzeptanz-Flag
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:SetAmount"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:SetAmount (_PlayerID, _Good, _Amount)</strong>
+    </dt>
+    <dd>
+    Ändert die Menge an Waren des Typs.
+<p> <p><b>Alias</b>: QSB.CastleStore:SetAmount</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_Amount</span>
+         [number] Warenmenge
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:SetLocked"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:SetLocked (_PlayerID, _Good, _Flag)</strong>
+    </dt>
+    <dd>
+    Setzt eine Ware als gesperrt.
+<p> <p><b>Alias</b>: QSB.CastleStore:SetLocked</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Good</span>
+         [number] Warentyp
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Akzeptanz-Flag
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:ShowCastleMenu"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:ShowCastleMenu ()</strong>
+    </dt>
+    <dd>
+    Das normale Burgmenü wird angezeigt.
+<p> <p><b>Alias</b>: QSB.CastleStore:ShowCastleMenu</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:ShowCastleStoreMenu"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:ShowCastleStoreMenu ()</strong>
+    </dt>
+    <dd>
+    Das Burglager wird angezeigt.
+<p> <p><b>Alias</b>: QSB.CastleStore:ShowCastleStoreMenu</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:ToggleStore"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:ToggleStore ()</strong>
+    </dt>
+    <dd>
+    Wechselt zwischen der Finanzansicht und dem Burglager.
+<p> <p><b>Alias</b>: QSB.CastleStore:ToggleStore</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:UpdateBehaviorTabs"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:UpdateBehaviorTabs (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Aktualisiert die Burglager-Tabs.
+<p> <p><b>Alias</b>: QSB.CastleStore:UpdateBehaviorTabs</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:UpdateGoodsDisplay (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Aktualisiert die Mengenanzeige der Waren im Burglager.
+<p> <p><b>Alias</b>: QSB.CastleStore:UpdateGoodsDisplay</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnCastleStore.Local.CastleStore:UpdateStorageLimit"></a>
+    <strong>AddOnCastleStore.Local.CastleStore:UpdateStorageLimit (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Aktualisiert die Lagerauslastungsanzeige des Burglagers.
+<p> <p><b>Alias</b>: QSB.CastleStore:UpdateStorageLimit</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
 
 
@@ -292,7 +2074,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-06 20:13:00 </i>
+<i style="float:right;">Last updated 2018-12-10 11:41:37 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
