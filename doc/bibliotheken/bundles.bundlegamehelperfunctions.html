@@ -36,7 +36,6 @@
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
-<li><a href="#QSB_TimeLine">QSB.TimeLine</a></li>
 </ul>
 
 
@@ -66,6 +65,7 @@
   <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../bibliotheken/core.html">core</a></li>
@@ -94,10 +94,6 @@
  <li>
  <a href="#API.SpeedLimitActivate">Spielgeschwindigkeit steuern</a><br>
  Maximale Spielgeschwindigkeit festlegen
- </li>
- <li>
- <a href="#API.TimeLineStart">Zeitstrahl erstellen</a><br>Eine Abfolge von
- Aktionen definieren, die zu gewissen Zeitpunkten ausgelöst werden.
  </li>
  <li>
  <a href="#API.ThridPersonActivate">Schulterblick aktivieren</a><br>Die
@@ -172,26 +168,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.ThridPersonIsRuning">API.ThridPersonIsRuning ()</a></td>
 	<td class="summary">Prüft, ob die Heldenkamera aktiv ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.TimeLineIsRunning">API.TimeLineIsRunning (_ID)</a></td>
-	<td class="summary">Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.TimeLineRestart">API.TimeLineRestart (_ID)</a></td>
-	<td class="summary">Startet einen Zeitstrahl erneut.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.TimeLineResume">API.TimeLineResume (_ID)</a></td>
-	<td class="summary">Stößt einen angehaltenen Zeitstrahl wieder an.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.TimeLineStart">API.TimeLineStart (_Description)</a></td>
-	<td class="summary">Startet einen Zeitstrahl.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.TimeLineYield">API.TimeLineYield (_ID)</a></td>
-	<td class="summary">Hält einen Zeitstrahl an.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
@@ -354,33 +330,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:ToggleExtendedZoom">BundleGameHelperFunctions.Local:ToggleExtendedZoom ()</a></td>
 	<td class="summary">Wechselt zwischen erweitertem und normalen Zoom.</td>
-	</tr>
-</table>
-<h2><a href="#QSB_TimeLine">QSB.TimeLine</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler">BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler ()</a></td>
-	<td class="summary">Steuert alle Zeitstrahlen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Shared.TimeLine:IsRunning">BundleGameHelperFunctions.Shared.TimeLine:IsRunning (_ID)</a></td>
-	<td class="summary">Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Shared.TimeLine:Restart">BundleGameHelperFunctions.Shared.TimeLine:Restart (_ID)</a></td>
-	<td class="summary">Startet einen Zeitstrahl erneut.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Shared.TimeLine:Resume">BundleGameHelperFunctions.Shared.TimeLine:Resume (_ID)</a></td>
-	<td class="summary">Stößt einen angehaltenen Zeitstrahl wieder an.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Shared.TimeLine:Start">BundleGameHelperFunctions.Shared.TimeLine:Start (_description)</a></td>
-	<td class="summary">Startet einen Zeitstrahl.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Shared.TimeLine:Yield">BundleGameHelperFunctions.Shared.TimeLine:Yield (_ID)</a></td>
-	<td class="summary">Hält einen Zeitstrahl an.</td>
 	</tr>
 </table>
 
@@ -800,128 +749,6 @@
 
         [boolean] Kamera aktiv
     </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.TimeLineIsRunning"></a>
-    <strong>API.TimeLineIsRunning (_ID)</strong>
-    </dt>
-    <dd>
-    Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
-<p> <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [boolean] Zeitstrahl ist aktiv
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.TimeLineRestart"></a>
-    <strong>API.TimeLineRestart (_ID)</strong>
-    </dt>
-    <dd>
-    Startet einen Zeitstrahl erneut.  Ist der Zeitstrahl noch nicht
- beendet, beginnt er dennoch von vorn.
-<p> <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.TimeLineResume"></a>
-    <strong>API.TimeLineResume (_ID)</strong>
-    </dt>
-    <dd>
-    Stößt einen angehaltenen Zeitstrahl wieder an.
-<p> <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.TimeLineStart"></a>
-    <strong>API.TimeLineStart (_Description)</strong>
-    </dt>
-    <dd>
-    Startet einen Zeitstrahl.  Ein Zeitstrahl hat bestimmte Stationen,
- an denen eine Aktion ausgeführt wird.
-<p> <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Description</span>
-         [table] Beschreibung
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] ID des Zeitstrahls
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.TimeLineYield"></a>
-    <strong>API.TimeLineYield (_ID)</strong>
-    </dt>
-    <dd>
-    Hält einen Zeitstrahl an.
-<p> <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
 
 
 
@@ -1674,153 +1501,13 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="QSB_TimeLine"></a>QSB.TimeLine</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler"></a>
-    <strong>BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler ()</strong>
-    </dt>
-    <dd>
-    Steuert alle Zeitstrahlen.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Shared.TimeLine:IsRunning"></a>
-    <strong>BundleGameHelperFunctions.Shared.TimeLine:IsRunning (_ID)</strong>
-    </dt>
-    <dd>
-    Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
-<p> <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [boolean] Zeistrahl ist aktiv
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Shared.TimeLine:Restart"></a>
-    <strong>BundleGameHelperFunctions.Shared.TimeLine:Restart (_ID)</strong>
-    </dt>
-    <dd>
-    Startet einen Zeitstrahl erneut.  Ist der Zeitstrahl noch nicht
- beendet, beginnt er dennoch von vorn.
-<p> <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Shared.TimeLine:Resume"></a>
-    <strong>BundleGameHelperFunctions.Shared.TimeLine:Resume (_ID)</strong>
-    </dt>
-    <dd>
-    Stößt einen angehaltenen Zeitstrahl wieder an.
-<p> <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Shared.TimeLine:Start"></a>
-    <strong>BundleGameHelperFunctions.Shared.TimeLine:Start (_description)</strong>
-    </dt>
-    <dd>
-    Startet einen Zeitstrahl.  Ein Zeitstrahl hat bestimmte Stationen,
- an denen eine Aktion ausgeführt wird.
-<p> <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_description</span>
-         [table] Beschreibung
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] ID des Zeitstrahl
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleGameHelperFunctions.Shared.TimeLine:Yield"></a>
-    <strong>BundleGameHelperFunctions.Shared.TimeLine:Yield (_ID)</strong>
-    </dt>
-    <dd>
-    Hält einen Zeitstrahl an.
-<p> <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-11 11:25:36 </i>
+<i style="float:right;">Last updated 2018-12-11 12:59:36 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

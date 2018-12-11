@@ -64,6 +64,7 @@ SymfoniaLoader = {
             {"BundleEntityHelperFunctions",         true},
             {"BundleKnightTitleRequirements",       true},
             {"BundleSymfoniaBehaviors",             true},
+            {"BundleTimeLine",                      true},
             {"BundleTravelingSalesman",             true},
 
             -- Fortgeschrittene Bibliothek
