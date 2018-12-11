@@ -19,7 +19,7 @@
 -- </ul>
 --
 -- @within Modulbeschreibung
--- @set sort=false
+-- @set sort=true
 --
 BundleDestructionControl = {};
 
@@ -33,17 +33,19 @@ QSB = QSB or {};
 ---
 -- Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 --
--- @param _entity [string] Nicht abreißbares Entity
+-- @param _entry [string] Nicht abreißbares Entity
 -- @within Anwenderfunktionen
 --
-function API.ProtectEntity(_entity)
+-- @usage API.ProtectEntity("bakery");
+--
+function API.ProtectEntity(_entry)
     if not GUI then
         API.Bridge([[
-            API.ProtectEntity("]].._entity..[[")
+            API.ProtectEntity("]].._entry..[[")
         ]]);
     else
         if not Inside(_enitry, BundleDestructionControl.Local.Data.Entities) then
-            table.insert(BundleDestructionControl.Local.Data.Entities, _entity);
+            table.insert(BundleDestructionControl.Local.Data.Entities, _entry);
         end
     end
 end
@@ -51,17 +53,19 @@ end
 ---
 -- Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 --
--- @param _entity [number] Nicht abreißbarer Typ
+-- @param _entry [number] Nicht abreißbarer Typ
 -- @within Anwenderfunktionen
 --
-function API.ProtectEntityType(_entity)
+-- @usage API.ProtectEntityType(Entities.B_Bakery);
+--
+function API.ProtectEntityType(_entry)
     if not GUI then
         API.Bridge([[
-            API.ProtectEntityType(]].._entity..[[)
+            API.ProtectEntityType(]].._entry..[[)
         ]]);
     else
         if not Inside(_enitry, BundleDestructionControl.Local.Data.EntityTypes) then
-            table.insert(BundleDestructionControl.Local.Data.EntityTypes, _entity);
+            table.insert(BundleDestructionControl.Local.Data.EntityTypes, _entry);
         end
     end
 end
@@ -69,17 +73,19 @@ end
 ---
 -- Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
 --
--- @param _entity [number] Nicht abreißbare Kategorie
+-- @param _entry [number] Nicht abreißbare Kategorie
 -- @within Anwenderfunktionen
 --
-function API.ProtectCategory(_entity)
+-- @usage API.ProtectCategory(EntityCategories.CityBuilding);
+--
+function API.ProtectCategory(_entry)
     if not GUI then
         API.Bridge([[
-            API.ProtectCategory(]].._entity..[[)
+            API.ProtectCategory(]].._entry..[[)
         ]]);
     else
         if not Inside(_enitry, BundleDestructionControl.Local.Data.EntityCategories) then
-            table.insert(BundleDestructionControl.Local.Data.EntityCategories, _entity);
+            table.insert(BundleDestructionControl.Local.Data.EntityCategories, _entry);
         end
     end
 end
@@ -87,17 +93,19 @@ end
 ---
 -- Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
 --
--- @param _entity [number] Geschütztes Territorium
+-- @param _entry [number] Geschütztes Territorium
 -- @within Anwenderfunktionen
 --
-function API.ProtectTerritory(_entity)
+-- @usage API.ProtectTerritory(1);
+--
+function API.ProtectTerritory(_entry)
     if not GUI then
         API.Bridge([[
-            API.ProtectTerritory(]].._entity..[[)
+            API.ProtectTerritory(]].._entry..[[)
         ]]);
     else
-        if not Inside(_entity, BundleDestructionControl.Local.Data.OnTerritory) then
-            table.insert(BundleDestructionControl.Local.Data.OnTerritory, _entity);
+        if not Inside(_entry, BundleDestructionControl.Local.Data.OnTerritory) then
+            table.insert(BundleDestructionControl.Local.Data.OnTerritory, _entry);
         end
     end
 end
@@ -107,6 +115,8 @@ end
 --
 -- @param _entry [string] Nicht abreißbares Entity
 -- @within Anwenderfunktionen
+--
+-- @usage API.UnprotectEntity("bakery");
 --
 function API.UnprotectEntity(_entry)
     if not GUI then
@@ -129,6 +139,8 @@ end
 -- @param _entry [number] Nicht abreißbarer Typ
 -- @within Anwenderfunktionen
 --
+-- @usage API.UnprotectEntityType(Entities.B_Bakery);
+--
 function API.UnprotectEntityType(_entry)
     if not GUI then
         API.Bridge([[
@@ -150,6 +162,8 @@ end
 -- @param _entry [number] Nicht abreißbare Kategorie
 -- @within Anwenderfunktionen
 --
+-- @usage API.UnprotectCategory(EntityCategories.CityBuilding);
+--
 function API.UnprotectCategory(_entry)
     if not GUI then
         API.Bridge([[
@@ -170,6 +184,8 @@ end
 --
 -- @param _entry [number] Geschütztes Territorium
 -- @within Anwenderfunktionen
+--
+-- @usage API.UnprotectTerritory(1);
 --
 function API.UnprotectTerritory(_entry)
     if not GUI then

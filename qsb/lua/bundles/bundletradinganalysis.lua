@@ -60,7 +60,7 @@ QSB.TraderTypes = {
 -- --          {0, 0, Goods.G_Gems, 9, 2},
 -- --          {0, 1, Goods.G_Milk, 9, 4},
 -- --      },
--- -- }
+-- -- };
 --
 function API.GetOfferInformation(_PlayerID)
     if GUI then
@@ -77,6 +77,9 @@ end
 -- @param _PlayerID [number] ID des Spielers
 -- @return [number] Anzahl angebote
 -- @within Anwenderfunktionen
+--
+-- @usage -- Angebote von Spieler 5 zählen
+-- local Count = API.GetOfferCount(5);
 --
 function API.GetOfferCount(_PlayerID)
     if GUI then
@@ -95,6 +98,11 @@ end
 -- @return [boolean] Ware wird angeboten
 -- @within Anwenderfunktionen
 --
+-- @usage -- Wird die Ware angeboten?
+-- if API.IsGoodOrUnitOffered(4, Goods.G_Bread) then
+--     API.Note("Brot wird von Spieler 4 angeboten.");
+-- end
+--
 function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
     if GUI then
         API.Log("Can not execute API.IsGoodOrUnitOffered in local script!");
@@ -111,6 +119,9 @@ end
 -- @param _PlayerID [number] Player ID
 -- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
 -- @within Anwenderfunktionen
+--
+-- @usage -- Keinen Käse mehr verkaufen
+-- API.RemoveTradeOffer(7, Goods.G_Cheese);
 --
 function API.RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
     if GUI then
@@ -133,6 +144,12 @@ end
 -- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
 -- @param _NewAmount [number] Neue Menge an Angeboten
 -- @within Anwenderfunktionen
+--
+-- @usage -- Angebote voll auffüllen
+-- API.ModifyTradeOffer(7, Goods.G_Cheese, -1);
+-- API.ModifyTradeOffer(7, Goods.U_MilitarySword);
+-- -- 2 Angebote auffüllen
+-- API.ModifyTradeOffer(7, Goods.G_Dye, 2);
 --
 function API.ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
     if GUI then
@@ -508,6 +525,10 @@ function BundleTradingAnalysis.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityT
         return;
     end
 
+    -- Menge == -1 oder Menge == nil bedeutet Maximum
+    if _NewAmount == nil or _NewAmount == -1 then
+        _NewAmount = self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType];
+    end
     -- Werte größer als das Maximum werden nicht erneuert!
     if self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType] and self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType] < _NewAmount then
         _NewAmount = self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType];

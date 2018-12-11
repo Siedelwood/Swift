@@ -95,20 +95,24 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectEntity">API.ProtectEntity (_entity)</a></td>
-	<td class="summary">Fügt ein Entity hinzu, dass nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ProtectEntityType">API.ProtectEntityType (_entity)</a></td>
-	<td class="summary">Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ProtectCategory">API.ProtectCategory (_entity)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectCategory">API.ProtectCategory (_entry)</a></td>
 	<td class="summary">Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectTerritory">API.ProtectTerritory (_entity)</a></td>
+	<td class="name" nowrap><a href="#API.ProtectEntity">API.ProtectEntity (_entry)</a></td>
+	<td class="summary">Fügt ein Entity hinzu, dass nicht abgerissen werden darf.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ProtectEntityType">API.ProtectEntityType (_entry)</a></td>
+	<td class="summary">Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ProtectTerritory">API.ProtectTerritory (_entry)</a></td>
 	<td class="summary">Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnprotectCategory">API.UnprotectCategory (_entry)</a></td>
+	<td class="summary">Entfernt eine Kategorie, die nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.UnprotectEntity">API.UnprotectEntity (_entry)</a></td>
@@ -119,10 +123,6 @@
 	<td class="summary">Entfernt einen Entitytyp, der nicht abgerissen werden darf.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectCategory">API.UnprotectCategory (_entry)</a></td>
-	<td class="summary">Entfernt eine Kategorie, die nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.UnprotectTerritory">API.UnprotectTerritory (_entry)</a></td>
 	<td class="summary">Entfernt ein Territory, auf dem nichts abgerissen werden kann.</td>
 	</tr>
@@ -130,12 +130,12 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleDestructionControl.Local:Install">BundleDestructionControl.Local:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleDestructionControl.Local.DeleteEntityStateBuilding">BundleDestructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</a></td>
 	<td class="summary">Verhindert den Abriss von Entities.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleDestructionControl.Local:Install">BundleDestructionControl.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 </table>
 
@@ -147,48 +147,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.ProtectEntity"></a>
-    <strong>API.ProtectEntity (_entity)</strong>
-    </dt>
-    <dd>
-    Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         [string] Nicht abreißbares Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ProtectEntityType"></a>
-    <strong>API.ProtectEntityType (_entity)</strong>
-    </dt>
-    <dd>
-    Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         [number] Nicht abreißbarer Typ
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "API.ProtectCategory"></a>
-    <strong>API.ProtectCategory (_entity)</strong>
+    <strong>API.ProtectCategory (_entry)</strong>
     </dt>
     <dd>
     Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
@@ -196,7 +156,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_entity</span>
+        <li><span class="parameter">_entry</span>
          [number] Nicht abreißbare Kategorie
         </li>
     </ul>
@@ -204,34 +164,18 @@
 
 
 
-
-</dd>
-    <dt>
-    <a name = "API.ProtectTerritory"></a>
-    <strong>API.ProtectTerritory (_entity)</strong>
-    </dt>
-    <dd>
-    Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
-
-
-    <h3>Parameters:</h3>
+    <h3>Usage:</h3>
     <ul>
-        <li><span class="parameter">_entity</span>
-         [number] Geschütztes Territorium
-        </li>
+        <pre class="example">API.ProtectCategory(EntityCategories.CityBuilding);</pre>
     </ul>
 
-
-
-
-
 </dd>
     <dt>
-    <a name = "API.UnprotectEntity"></a>
-    <strong>API.UnprotectEntity (_entry)</strong>
+    <a name = "API.ProtectEntity"></a>
+    <strong>API.ProtectEntity (_entry)</strong>
     </dt>
     <dd>
-    Entfernt ein Entity, dass nicht abgerissen werden darf.
+    Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 
 
     <h3>Parameters:</h3>
@@ -244,14 +188,18 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ProtectEntity(<span class="string">"bakery"</span>);</pre>
+    </ul>
 
 </dd>
     <dt>
-    <a name = "API.UnprotectEntityType"></a>
-    <strong>API.UnprotectEntityType (_entry)</strong>
+    <a name = "API.ProtectEntityType"></a>
+    <strong>API.ProtectEntityType (_entry)</strong>
     </dt>
     <dd>
-    Entfernt einen Entitytyp, der nicht abgerissen werden darf.
+    Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 
 
     <h3>Parameters:</h3>
@@ -264,6 +212,34 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ProtectEntityType(Entities.B_Bakery);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.ProtectTerritory"></a>
+    <strong>API.ProtectTerritory (_entry)</strong>
+    </dt>
+    <dd>
+    Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entry</span>
+         [number] Geschütztes Territorium
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ProtectTerritory(<span class="number">1</span>);</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -284,6 +260,58 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnprotectCategory(EntityCategories.CityBuilding);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnprotectEntity"></a>
+    <strong>API.UnprotectEntity (_entry)</strong>
+    </dt>
+    <dd>
+    Entfernt ein Entity, dass nicht abgerissen werden darf.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entry</span>
+         [string] Nicht abreißbares Entity
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnprotectEntity(<span class="string">"bakery"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnprotectEntityType"></a>
+    <strong>API.UnprotectEntityType (_entry)</strong>
+    </dt>
+    <dd>
+    Entfernt einen Entitytyp, der nicht abgerissen werden darf.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entry</span>
+         [number] Nicht abreißbarer Typ
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnprotectEntityType(Entities.B_Bakery);</pre>
+    </ul>
 
 </dd>
     <dt>
@@ -304,26 +332,16 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnprotectTerritory(<span class="number">1</span>);</pre>
+    </ul>
 
 </dd>
 </dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
-    <dt>
-    <a name = "BundleDestructionControl.Local:Install"></a>
-    <strong>BundleDestructionControl.Local:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im lokalen Skript.
-
-
-
-
-
-
-
-</dd>
     <dt>
     <a name = "BundleDestructionControl.Local.DeleteEntityStateBuilding"></a>
     <strong>BundleDestructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</strong>
@@ -344,6 +362,20 @@
 
 
 </dd>
+    <dt>
+    <a name = "BundleDestructionControl.Local:Install"></a>
+    <strong>BundleDestructionControl.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
 </dl>
 
 
@@ -351,7 +383,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-11 09:32:22 </i>
+<i style="float:right;">Last updated 2018-12-11 11:25:36 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

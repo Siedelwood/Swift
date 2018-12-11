@@ -112,6 +112,9 @@ ActivateTravelingSalesman = API.TravelingSalesmanActivate;
 -- @param _PlayerID [number] Spieler-ID des Händlers
 -- @within Anwenderfunktionen
 --
+-- @usage -- Fahrenden Händler von Spieler 2 löschen
+-- API.TravelingSalesmanDeactivate(2)
+--
 function API.TravelingSalesmanDeactivate(_PlayerID)
     if GUI then
         API.Bridge("API.TravelingSalesmanDeactivate(" .._PlayerID.. ")");
@@ -141,6 +144,9 @@ DeactivateTravelingSalesman = API.TravelingSalesmanDeactivate;
 -- @param _Flag [boolean] Diplomatie überschreiben
 -- @within Anwenderfunktionen
 --
+-- @usage -- Spieler 2 überschreibt nicht mehr die Diplomatie
+-- API.TravelingSalesmanDiplomacyOverride(2, false)
+--
 function API.TravelingSalesmanDiplomacyOverride(_PlayerID, _Flag)
     if GUI then
         API.Bridge("API.TravelingSalesmanDiplomacyOverride(" .._PlayerID.. ", " ..tostring(_Flag).. ")");
@@ -159,6 +165,9 @@ TravelingSalesmanDiplomacyOverride = API.TravelingSalesmanDiplomacyOverride;
 -- @param _PlayerID [number] Spieler-ID des Händlers
 -- @param _Flag [boolean] Angebotsrotation einschalten
 -- @within Anwenderfunktionen
+--
+-- @usage -- Spieler 2 geht Angebote der Reihe nach durch.
+-- API.TravelingSalesmanRotationMode(2, true)
 --
 function API.TravelingSalesmanRotationMode(_PlayerID, _Flag)
     if GUI then

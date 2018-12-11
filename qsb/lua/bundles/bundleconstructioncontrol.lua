@@ -19,7 +19,7 @@
 -- </ul>
 --
 -- @within Modulbeschreibung
--- @set sort=false
+-- @set sort=true
 --
 BundleConstructionControl = {};
 
@@ -36,6 +36,8 @@ QSB = QSB or {};
 -- @param _type      [number] Entitytyp
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
+--
+-- @usage API.BanTypeAtTerritory(Entities.B_Bakery, 1);
 --
 function API.BanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -59,6 +61,8 @@ end
 -- @param _eCat      [number] Entitykategorie
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
+--
+-- @usage API.BanCategoryAtTerritory(EntityCategories.AttackableBuilding, 2);
 --
 function API.BanCategoryAtTerritory(_eCat, _territory)
     if GUI then
@@ -84,6 +88,8 @@ end
 -- @param _area   [number] Gebietsgröße
 -- @within Anwenderfunktionen
 --
+-- @usage API.BanTypeInArea(Entities.B_Bakery, "groundZero", 4000);
+--
 function API.BanTypeInArea(_type, _center, _area)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
@@ -105,6 +111,8 @@ end
 -- @param _area   [number] Gebietsgröße
 -- @within Anwenderfunktionen
 --
+-- @usage API.BanTypeInArea(EntityCategories.CityBuilding, "groundZero", 4000);
+--
 function API.BanCategoryInArea(_eCat, _center, _area)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
@@ -124,6 +132,8 @@ end
 -- @param _type      [number] Entitytyp
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
+--
+-- @usage API.UnbanTypeAtTerritory(Entities.B_Bakery, 1);
 --
 function API.UnbanTypeAtTerritory(_type, _territory)
     if GUI then
@@ -153,6 +163,8 @@ end
 -- @param _territory [number] Territorium
 -- @within Anwenderfunktionen
 --
+-- @usage API.UnbanCategoryAtTerritory(EntityCategories.AttackableBuilding, 1);
+--
 function API.UnbanCategoryAtTerritory(_eCat, _territory)
     if GUI then
         local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
@@ -181,7 +193,9 @@ end
 -- @param _center [string] Gebiet
 -- @within Anwenderfunktionen
 --
-function API.UnbanTypeInArea (_type, _center)
+-- @usage API.UnbanTypeInArea(Entities.B_Bakery, "groundZero");
+--
+function API.UnbanTypeInArea(_type, _center)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
         GUI.SendScriptCommand("API.UnbanTypeInArea(" .._eCat.. ", " ..Center.. ")");
@@ -205,6 +219,8 @@ end
 -- @param _eCat   [number] Entitykategorie
 -- @param _center [string] Gebiet
 -- @within Anwenderfunktionen
+--
+-- @usage API.UnbanCategoryInArea(EntityCategories.CityBuilding, "groundZero");
 --
 function API.UnbanCategoryInArea(_eCat, _center)
     if GUI then
