@@ -24,19 +24,16 @@ echo "Done!"
 cd qsb/luaminifyer
 
 echo "Minify QSB ..."
-./LuaMinify.sh ../../var/qsb.lua &>/dev/null
+./LuaMinify.sh ../../var/qsb.lua #&>/dev/null
 echo "Done!"
 
 cd ../../qsb
 
-#echo "Generating Documentation ..."
-#echo "Note: documenting only selected modules does not work yet! You get all!"
-#rm -r ../doc
-#lua ldoc/ldoc.lua -d ../doc -c userconfig.ld ../var/qsb.lua &>/dev/null
-#cp -r ../doc ../var/doc
-#lua ldoc/ldoc.lua lua -a -c userconfig.ld -d ../doc &>/dev/null
-#cp -r ../doc ../var/doc
-#rm userconfig.ld
+echo "Generating Documentation ..."
+echo "Note: documenting only selected modules does not work yet! You get all!"
+rm -r ../doc #&>/dev/null
+lua ldoc/ldoc.lua -d ../doc -c userconfig.ld lua #&>/dev/null
+rm userconfig.ld
 
 cd ..
 echo "Done!"

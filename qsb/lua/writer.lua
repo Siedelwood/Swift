@@ -94,6 +94,23 @@
 -- Version angezeigt bekommen.</p>
 --
 
+--
+-- Erzeugt die HTML-Dateien für die Dokumentation.
+--
+function CreateBundleHtmlDocumentation()
+    os.execute("cd bin && createdoc.sh / core");
+    for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
+        if SymfoniaLoader.Data.LoadOrder[i][2] then
+            os.execute("cd bin && createdoc.sh /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
+        end
+    end
+    for i= 1, #SymfoniaLoader.Data.AddOnLoadOrder, 1 do
+        if SymfoniaLoader.Data.AddOnLoadOrder[i][2] then
+            os.execute("cd bin && createdoc.sh /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
+        end
+    end
+end
+
 dofile("qsb/lua/loader.lua");
 local fh = io.open("var/qsb.lua", "r");
 if fh then
@@ -103,6 +120,7 @@ end
 
 local Externals = {};
 
+-- Argumente auslesen
 for i= 1, #arg, 1 do
     if string.find(arg[i], "^-.*$") then
         -- Alternative Load Order laden
@@ -111,9 +129,18 @@ for i= 1, #arg, 1 do
             SymfoniaLoader.Data.LoadOrder = LoadOrder[1];
             SymfoniaLoader.Data.AddOnLoadOrder = LoadOrder[2];
         end
+        if string.find(arg[i], "^-d.*$") then
+            UpdateUserDocumentation = true;
+        end
     else
+        -- Externe Module laden
         table.insert(Externals, arg[i]);
     end
+end
+
+-- Bundle-Doku aktualisieren
+if UpdateUserDocumentation then
+    CreateBundleHtmlDocumentation();
 end
 
 SymfoniaLoader:CreateQSB(Externals);

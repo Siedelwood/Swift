@@ -3,8 +3,8 @@ cd ../qsb
 
 echo "Generating developer documentation ..."
 
-mkdir -p doc/$1
-lua ldoc/ldoc.lua lua/$1/$2.lua lua/doc -o bundles/$2
+mkdir -p doc
+lua ldoc/ldoc.lua lua$1$2.lua lua/doc -o $2.lua
 
 cd ..
 echo "Done!"
