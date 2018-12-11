@@ -100,4 +100,20 @@ if fh then
     fh:close();
     os.remove("var/qsb.lua");
 end
-SymfoniaLoader:CreateQSB(arg);
+
+local Externals = {};
+
+for i= 1, #arg, 1 do
+    if string.find(arg[i], "^-.*$") then
+        -- Alternative Load Order laden
+        if string.find(arg[i], "^-l.*$") then
+            dofile(string.sub(arg[i], 3));
+            SymfoniaLoader.Data.LoadOrder = LoadOrder[1];
+            SymfoniaLoader.Data.AddOnLoadOrder = LoadOrder[2];
+        end
+    else
+        table.insert(Externals, arg[i]);
+    end
+end
+
+SymfoniaLoader:CreateQSB(Externals);

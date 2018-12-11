@@ -184,16 +184,13 @@ end
 -- @within SymfoniaLoader
 -- @local
 --
-function SymfoniaLoader:ConcatSources(_Summary, _External)
+function SymfoniaLoader:ConcatSources(_External)
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
 
     local fh = io.open("qsb/userconfig.ld", "wt");
     assert(fh, "Output file can not be created!");
     fh:write("project='Symfonia'\n");
-    if not _Summary then
-        fh:write("no_summary=true\n");
-    end
     fh:write("kind_names={script='Skripte', module='Bibliotheken'}\n");
 
     local ActiveBundles = "file={\n'core.lua',\n";
@@ -262,15 +259,12 @@ end
 
 ---
 -- Fügt die Quelldateien von Symfonia zu einer QSB zusammen.
+-- @param _Externals [table] Liste der externen Bundles
 -- @within SymfoniaLoader
 -- @local
 --
-function SymfoniaLoader:CreateQSB()
-    local Summary = arg[1] == "1";
-    table.remove(arg, 1);
-    local ExternModules = arg;
-
-    local QsbContent = self:ConcatSources(Summary, ExternModules);
+function SymfoniaLoader:CreateQSB(_Externals)
+    local QsbContent = self:ConcatSources(_Externals);
     -- Delete old file
     local fh = io.open("var/qsb.lua", "r");
     if fh ~= nil then

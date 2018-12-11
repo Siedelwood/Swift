@@ -4,7 +4,7 @@ rm -rf var &>/dev/null
 mkdir var &>/dev/null
 
 echo "Building QSB ..."
-lua qsb/lua/writer.lua 1 &>/dev/null
+lua qsb/lua/writer.lua $@ &>/dev/null
 echo "Done!"
 
 cd qsb/luaminifyer
