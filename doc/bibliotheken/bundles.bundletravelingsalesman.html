@@ -1,0 +1,566 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Symfonia</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+</ul>
+
+
+<h2>Bibliotheken</h2>
+<ul class="nowrap">
+  <li><a href="../bibliotheken/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../bibliotheken/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../bibliotheken/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../bibliotheken/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../bibliotheken/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../bibliotheken/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../bibliotheken/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../bibliotheken/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../bibliotheken/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../bibliotheken/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../bibliotheken/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../bibliotheken/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../bibliotheken/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><strong>bundles.bundletravelingsalesman</strong></li>
+  <li><a href="../bibliotheken/core.html">core</a></li>
+  <li><a href="../bibliotheken/loader.html">loader</a></li>
+  <li><a href="../bibliotheken/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundletravelingsalesman</code></h1>
+<p>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den
+ Hafen mit einem Schiff anfährt.</p>
+<p> Dabei kann der Fahrtweg frei mit Wegpunkten
+ bestimmt werden. Es können auch mehrere Spieler zu Händlern gemacht werden.
+<p> <p><a href="#API.TravelingSalesmanActivate">Schiffshändler aktivieren</a></p>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)</a></td>
+	<td class="summary">Erstellt einen fahrender Händler mit zufälligen Angeboten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanDeactivate">API.TravelingSalesmanDeactivate (_PlayerID)</a></td>
+	<td class="summary">Zerstört den fahrender Händler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanDiplomacyOverride">API.TravelingSalesmanDiplomacyOverride (_PlayerID, _Flag)</a></td>
+	<td class="summary">Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
+ Hafen überschrieben werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanRotationMode">API.TravelingSalesmanRotationMode (_PlayerID, _Flag)</a></td>
+	<td class="summary">Legt fest, ob die Angebote der Reihe nach durchgegangen werden (beginnt von
+ vorn, wenn am Ende angelangt) oder zufällig ausgesucht werden.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global.TravelingSalesman_Control">BundleTravelingSalesman.Global.TravelingSalesman_Control ()</a></td>
+	<td class="summary">Steuert alle fahrender Händler auf der Map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:Install">BundleTravelingSalesman.Global:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesman_AddOffer">BundleTravelingSalesman.Global:TravelingSalesman_AddOffer (_PlayerID)</a></td>
+	<td class="summary">Setzt die Angebote für den aktuellen Besuch des fahrenden Händlers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesman_AlterDiplomacyFlag">BundleTravelingSalesman.Global:TravelingSalesman_AlterDiplomacyFlag (_PlayerID, _Flag)</a></td>
+	<td class="summary">Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
+ Hafen überschrieben werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesman_Create">BundleTravelingSalesman.Global:TravelingSalesman_Create (_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed, _RotationMode)</a></td>
+	<td class="summary">Erstellt einen fahrender Händler mit zufälligen Angeboten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesman_Disband">BundleTravelingSalesman.Global:TravelingSalesman_Disband (_PlayerID)</a></td>
+	<td class="summary">Zerstört den fahrender Händler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesman_DisplayMessage">BundleTravelingSalesman.Global:TravelingSalesman_DisplayMessage (_PlayerID)</a></td>
+	<td class="summary">Informiert den Spieler über die Ankunft eines Schiffes am Hafen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesman_GetHumanPlayer">BundleTravelingSalesman.Global:TravelingSalesman_GetHumanPlayer ()</a></td>
+	<td class="summary">Gibt den ersten menschlichen Spieler zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesman_NextOffer">BundleTravelingSalesman.Global:TravelingSalesman_NextOffer (_PlayerID)</a></td>
+	<td class="summary">Gibt das nächste Angebot des Hafens des Spielers zurück.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.TravelingSalesmanActivate"></a>
+    <strong>API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)</strong>
+    </dt>
+    <dd>
+    Erstellt einen fahrender Händler mit zufälligen Angeboten.
+<p> Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
+ definiert werden.
+ Es kann mehr als einen fahrender Händler auf der Map geben.
+<p> <b>Alias</b>: ActivateTravelingSalesman
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+        <li><span class="parameter">_Offers</span>
+         [table] Liste an Angeboten
+        </li>
+        <li><span class="parameter">_Waypoints</span>
+         [table] Wegpunktliste Anfahrt
+        </li>
+        <li><span class="parameter">_Reversed</span>
+         [table] Wegpunktliste Abfahrt
+        </li>
+        <li><span class="parameter">_Appearance</span>
+         [table] Ankunft und Abfahrt
+        </li>
+        <li><span class="parameter">_RotationMode</span>
+         [boolean] Angebote werden der Reihe nach durchgegangen
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Angebote deklarieren
+</span><span class="keyword">local</span> Offers = {
+    {
+        {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
+    },
+    {
+        {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+        {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
+        {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
+    },
+    {
+        {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
+        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+    },
+    {
+        {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
+        {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
+        {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,},
+    },
+};
+<span class="comment">-- Es sind maximal 4 Angebote pro Block erlaubt. Es können Waren, Soldaten
+</span><span class="comment">-- oder Entertainer angeboten werden. Es wird immer automatisch 1 Block
+</span><span class="comment">-- selektiert und die ANgebote gesetzt.
+</span>
+<span class="comment">-- Wegpunkte deklarieren
+</span><span class="keyword">local</span> Waypoints = {<span class="string">"WP1"</span>, <span class="string">"WP2"</span>, <span class="string">"WP3"</span>, <span class="string">"WP4"</span>};
+<span class="comment">-- Es gibt nun zwei Möglichkeiten:
+</span><span class="comment">-- 1. Durch weglassen des Reversed Path werden die Wegpunkte durch das
+</span><span class="comment">-- Schiff bei der Abfahrt automatisch rückwärts abgefahren.
+</span><span class="comment">-- 2. Es wird ein anderer Pfad für die Abfahrt deklariert.
+</span>
+<span class="comment">-- Anfahrt und Abfanrtsmonate deklarieren
+</span><span class="keyword">local</span> Appearance = {{<span class="number">4</span>, <span class="number">6</span>}, {<span class="number">8</span>, <span class="number">10</span>}};
+<span class="comment">-- Auch hier gibt es 2 Möglichkeiten:
+</span><span class="comment">-- 1. Neue Anfahrts- und Abfahrtszeiten setzen.
+</span><span class="comment">-- 2. _Apperance weglassen / nil setzen und den Standard verwenden
+</span><span class="comment">-- (März bis Mai und August bis Oktober)
+</span>
+<span class="comment">-- Jetzt kann ein fahrender Händler erzeugt werden
+</span>API.TravelingSalesmanActivate(<span class="number">2</span>, Offers, Waypoints, <span class="keyword">nil</span>, Appearance);
+<span class="comment">-- Hier ist der Rückweg automatisch die Umkehr des Hinwegs (_Reversed = nil).
+</span>
+<span class="comment">-- _Reversed und _Apperance können in den meisten Fällen immer weggelassen
+</span><span class="comment">-- bzw. nil sein!
+</span>API.TravelingSalesmanActivate(<span class="number">2</span>, Offers, Waypoints);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanDeactivate"></a>
+    <strong>API.TravelingSalesmanDeactivate (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Zerstört den fahrender Händler.  Der Spieler wird dabei natürlich
+ nicht zerstört.
+<p> <b>Alias</b>: DeactivateTravelingSalesman
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanDiplomacyOverride"></a>
+    <strong>API.TravelingSalesmanDiplomacyOverride (_PlayerID, _Flag)</strong>
+    </dt>
+    <dd>
+    Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
+ Hafen überschrieben werden.
+<p> Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
+ im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
+ ein Schiff angelegt hat, sonst "Bekannt".
+<p> Bei diplomatischen Beziehungen geringer als "Bekannt", kann es zu Fehlern
+ kommen. Dann werden Handelsangebote angezeigt, konnen aber nicht durch
+ den Spieler erworben werden.
+<p> <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
+<p> <b>Alias</b>: TravelingSalesmanDiplomacyOverride
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Diplomatie überschreiben
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanRotationMode"></a>
+    <strong>API.TravelingSalesmanRotationMode (_PlayerID, _Flag)</strong>
+    </dt>
+    <dd>
+    Legt fest, ob die Angebote der Reihe nach durchgegangen werden (beginnt von
+ vorn, wenn am Ende angelangt) oder zufällig ausgesucht werden.
+<p> <b>Alias</b>: TravelingSalesmanRotationMode
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Angebotsrotation einschalten
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleTravelingSalesman.Global.TravelingSalesman_Control"></a>
+    <strong>BundleTravelingSalesman.Global.TravelingSalesman_Control ()</strong>
+    </dt>
+    <dd>
+    Steuert alle fahrender Händler auf der Map.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:Install"></a>
+    <strong>BundleTravelingSalesman.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesman_AddOffer"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesman_AddOffer (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Setzt die Angebote für den aktuellen Besuch des fahrenden Händlers.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesman_AlterDiplomacyFlag"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesman_AlterDiplomacyFlag (_PlayerID, _Flag)</strong>
+    </dt>
+    <dd>
+    Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
+ Hafen überschrieben werden.
+<p> Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
+ im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
+ ein Schiff angelegt hat, sonst "Bekannt".
+<p> Bei diplomatischen Beziehungen geringer als "Bekannt", kann es zu Fehlern
+ kommen. Dann werden Handelsangebote angezeigt, konnen aber nicht durch
+ den Spieler erworben werden.
+<p> <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Diplomatie überschreiben
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesman_Create"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesman_Create (_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed, _RotationMode)</strong>
+    </dt>
+    <dd>
+    Erstellt einen fahrender Händler mit zufälligen Angeboten.  Soll
+ immer das selbe angeboten werden, muss nur ein Angebotsblock
+ definiert werden.
+ Es kann mehrere fahrende Händler auf der Map geben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+        <li><span class="parameter">_Offers</span>
+         [table] Liste an Angeboten
+        </li>
+        <li><span class="parameter">_Appearance</span>
+         [table] Wartezeit
+        </li>
+        <li><span class="parameter">_Waypoints</span>
+         [table] Wegpunktliste Anfahrt
+        </li>
+        <li><span class="parameter">_Reversed</span>
+         [table] Wegpunktliste Abfahrt
+        </li>
+        <li><span class="parameter">_RotationMode</span>
+         [boolean] Wegpunktliste Abfahrt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesman_Disband"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesman_Disband (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Zerstört den fahrender Händler.  Der Spieler wird dabei natürlich
+ nicht zerstört.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID des Händlers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesman_DisplayMessage"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesman_DisplayMessage (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Informiert den Spieler über die Ankunft eines Schiffes am Hafen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesman_GetHumanPlayer"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesman_GetHumanPlayer ()</strong>
+    </dt>
+    <dd>
+    Gibt den ersten menschlichen Spieler zurück.  Ist das globale
+ Gegenstück zu GUI.GetPlayerID().
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesman_NextOffer"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesman_NextOffer (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt das nächste Angebot des Hafens des Spielers zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-12-11 09:32:22 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

@@ -352,20 +352,6 @@ function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmo
     return true;
 end
 
--- Local Script ----------------------------------------------------------------
-
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
-function BundleEntityHelperFunctions.Local:Install()
-
-end
-
-
-
 -- Shared ----------------------------------------------------------------------
 
 ---
