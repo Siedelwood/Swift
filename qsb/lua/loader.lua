@@ -50,6 +50,7 @@ SymfoniaLoader = {
             {"BundleBuildingButtons",               true},
             {"BundleClassicBehaviors",              true},
             {"BundleConstructionControl",           true},
+            {"BundleDestructionControl",            true},
             {"BundleDialogWindows",                 true},
             {"BundleEntityHealth",                  true},
             {"BundleEntityHelperFunctions",         true},
