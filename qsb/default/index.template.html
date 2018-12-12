@@ -8,18 +8,21 @@
         <script src="js/search.js"></script>
     </head>
     <body>
-        
-        <div id="resultContainer"></div>
-
         <div id="modules">
-            <h3>Bundles</h3>
+            <h1>Symfonia</h1>
+            <p>Bla Bla Bla</p>
             <form id="searchForm">
-                <input type="text" id="search" />
-                <input type="submit" name="Search!" value="Suchen" />
+                <input type="text" id="pattern" />
+                <input type="button" name="search" id="search" value="Suchen" />
+                <input type="button" name="reset" id="reset" value="Zurücksetzen" />
+                <input type="submit" style="display: none" />
             </form>
 
-            <div id="modulesContainer">
-                ###PLACEHOLDER_LUA_BUNDLES###
+            <div id="searchResultsContainer">
+                <h3>Suchergebnisse</h3>
+                <div id="modulesContainer">
+                    ###PLACEHOLDER_LUA_BUNDLES###
+                </div>
             </div>
         </div>
     </bod>

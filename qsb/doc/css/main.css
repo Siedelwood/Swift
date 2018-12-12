@@ -1,7 +1,11 @@
 #modulesContainer {
     display: flex;
     flex-direction: column;
-    padding: 5px;
+    padding: 0px;
+}
+
+#searchResultsContainer {
+    display: none;
 }
 
 body {
@@ -31,7 +35,6 @@ body {
     margin: 0px 0px 0px auto;
     text-decoration: none;
     font-weight: bold;
-    font-size: 16pt;
 }
 
 .docInvisibleContent {
