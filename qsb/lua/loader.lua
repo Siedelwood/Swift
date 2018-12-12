@@ -32,13 +32,65 @@
 -- Trotz allem muss nach Abschluss der Entwicklung eine normale QSB in die
 -- Map eingefügt werden. Du kannst sie dann entsprechend zusammen bauen.
 --
+-- <h3>Neues Release erzeugen</h3>
+-- Die Erzeugung eines Releases geschieht vollautomatisch!
+--
+-- <h4>Benutzerdokumentation aktualisieren</h4>
+-- Bevor eine neue Version ausgeliefert wird, muss die Benutzerdokumentation
+-- auf den neusten Stand gebracht werden. dies geschieht wieder mit make.sh
+-- und dem Parameter -d.
+-- <pre>cd bin
+-- ./make.sh -d</pre>
+-- Das wird jedoch vom entsprechenden Skript bereits ausgeführt.
+--
+-- <h4>Release-Archiv generieren</h4>
+-- Das Release-Archiv wird von ./publish.sh erzeugt.
+-- <pre>cd bin
+-- ./publish.sh</pre>
+-- Das Skript erstellt ein Archiv mit dem Namen Release im Root-Ordner des
+-- Projektes. Das Archiv enthält die Benutzerdokumentation, die Anleitungen,
+-- das globale und lokale Skript sowie die QSB in komprimierter und in
+-- unkomprimierter form.
+--
+-- <h3>Personalisierte QSB</h3>
+-- Die QSB kann nach belieben an Deine Wünsche angepasst werden.
+-- Die QSB wird mit dem Skript make.sh gebaut.
+--
+-- <h4>Benutzerdefinierte Load Order</h4>
+-- Eine eigene Load Order wird erstellt, indem ein Lua-Skript angelegt wird,
+-- in dem es eine globale Variable LoadOrder gibt. Diese Variable beinhaltet
+-- 2 Tables. Der erste ist die Load Order der Bundles, die zweite die der
+-- AddOns. Die Load Order wird mit -l übergeben.
+-- 
+-- Beispiel für eine Load Order mit der nur Grundmodule geladen werden:
+-- <pre>
+-- LoadOrder = {
+--     {
+--         {"BundleBriefingSystem",                true},
+--         {"BundleClassicBehaviors",              true},
+--         {"BundleQuestGeneration",               true},
+--         {"BundleConstructionControl",           true},
+--     },
+--     {
+--         {
+--         "AddOnQuestDebug",                      true,
+--         "BundleQuestGeneration",
+--         },
+--     },
+-- }
+-- </pre>
+--
+-- Aufruf des Skriptes:
+-- <pre>cd bin
+-- ./make.sh -l"path/to/loadorder.lua"</pre>
+--
+-- <h4>Eigene Bundles</h4>
 -- Als letztes gibt es noch die Möglichkeit, eigene Bundles zu schreiben und
--- in einer exklusiven persönlichen QSB zu nutzen. Dazu wird die make.sh im
--- bin-Verzeichnis genutzt.
+-- in einer exklusiven persönlichen QSB zu nutzen. Dazu wird wieder die make.sh
+-- im bin-Verzeichnis genutzt.
 -- <pre>cd bin
 --./make.sh Path/to/Bundle Path/to/another/Bundle</pre>
--- Dabei wird die Dateiendung *.lua nicht mit angegeben! Das Shell-Script
--- wird nur in einer Bash funktionieren.
+-- Dabei wird die Dateiendung *.lua nicht mit angegeben!
 --
 -- @set sort=true
 --
