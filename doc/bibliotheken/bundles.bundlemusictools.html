@@ -35,6 +35,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -111,6 +112,51 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.StopSong">API.StopSong ()</a></td>
 	<td class="summary">Stopt Musik und stellt die alte Soundkonfiguration wieder her.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global.StartSongControl">BundleMusicTools.Global.StartSongControl ()</a></td>
+	<td class="summary">Kontrolliert den Song / die Playlist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:AbortMusic">BundleMusicTools.Global:AbortMusic ()</a></td>
+	<td class="summary">Stopt den gerade laufenden Song und leert sowohl die Songdaten
+ als auch die Playlist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:Install">BundleMusicTools.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:StartPlaylist">BundleMusicTools.Global:StartPlaylist (_Playlist)</a></td>
+	<td class="summary">Spielt eine Playlist ab.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:StartPlaylistTitle">BundleMusicTools.Global:StartPlaylistTitle (_Title)</a></td>
+	<td class="summary">Stoppt gerade gespielte Musik und startet die Playlist mit dem
+ angegebenen Titel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:StartSong">BundleMusicTools.Global:StartSong (_Description)</a></td>
+	<td class="summary">Startet ein Musikstück als Stimme.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Global:StopSong">BundleMusicTools.Global:StopSong ()</a></td>
+	<td class="summary">Stopt Musik und stellt die alte Soundkonfiguration wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Local:BackupSound">BundleMusicTools.Local:BackupSound (_Volume, _Song, _MuteAtmo, _MuteUI)</a></td>
+	<td class="summary">Speichert die Soundeinstellungen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Local:Install">BundleMusicTools.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleMusicTools.Local:ResetSound">BundleMusicTools.Local:ResetSound (_File, _QueueLength)</a></td>
+	<td class="summary">Stellt die Soundeinstellungen wieder her.</td>
 	</tr>
 </table>
 
@@ -309,13 +355,207 @@ API.StartPlaylist(Playlist);</pre>
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleMusicTools.Global.StartSongControl"></a>
+    <strong>BundleMusicTools.Global.StartSongControl ()</strong>
+    </dt>
+    <dd>
+    Kontrolliert den Song / die Playlist.  Wenn ein Song durch ist, wird
+ der nächste Song in der Warteschlange gestartet, sofern vorhanden.
+ Ist die Warteschlange leer, endet der Job. Existiert eine Playlist,
+ für die Repeat = true ist, dann wird die Playlist neu gestartet.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:AbortMusic"></a>
+    <strong>BundleMusicTools.Global:AbortMusic ()</strong>
+    </dt>
+    <dd>
+    Stopt den gerade laufenden Song und leert sowohl die Songdaten
+ als auch die Playlist.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:Install"></a>
+    <strong>BundleMusicTools.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:StartPlaylist"></a>
+    <strong>BundleMusicTools.Global:StartPlaylist (_Playlist)</strong>
+    </dt>
+    <dd>
+    Spielt eine Playlist ab.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Playlist</span>
+         [table] Playlist
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:StartPlaylistTitle"></a>
+    <strong>BundleMusicTools.Global:StartPlaylistTitle (_Title)</strong>
+    </dt>
+    <dd>
+    Stoppt gerade gespielte Musik und startet die Playlist mit dem
+ angegebenen Titel.  Es muss eine Playlist existieren! Nachdem der
+ Titel abgespielt ist, wird die Playlist normal weiter gespielt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+         [number] Index des Titels
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:StartSong"></a>
+    <strong>BundleMusicTools.Global:StartSong (_Description)</strong>
+    </dt>
+    <dd>
+    Startet ein Musikstück als Stimme.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Description</span>
+         [table] Beschreibung des Musikstücks
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Global:StopSong"></a>
+    <strong>BundleMusicTools.Global:StopSong ()</strong>
+    </dt>
+    <dd>
+    Stopt Musik und stellt die alte Soundkonfiguration wieder her.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Local:BackupSound"></a>
+    <strong>BundleMusicTools.Local:BackupSound (_Volume, _Song, _MuteAtmo, _MuteUI)</strong>
+    </dt>
+    <dd>
+    Speichert die Soundeinstellungen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Volume</span>
+         [number] Lautstärke
+        </li>
+        <li><span class="parameter">_Song</span>
+         [string] Pfad zum Titel
+        </li>
+        <li><span class="parameter">_MuteAtmo</span>
+         [boolean] Atmosphäre stumm schalten
+        </li>
+        <li><span class="parameter">_MuteUI</span>
+         [boolean] UI stumm schalten
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Local:Install"></a>
+    <strong>BundleMusicTools.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleMusicTools.Local:ResetSound"></a>
+    <strong>BundleMusicTools.Local:ResetSound (_File, _QueueLength)</strong>
+    </dt>
+    <dd>
+    Stellt die Soundeinstellungen wieder her.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_File</span>
+         [string] Pfad zur Datei
+        </li>
+        <li><span class="parameter">_QueueLength</span>
+         [number] Länge der Warteschlange
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-12 12:55:02 </i>
+<i style="float:right;">Last updated 2018-12-12 14:26:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

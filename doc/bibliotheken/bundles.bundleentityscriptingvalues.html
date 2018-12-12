@@ -35,6 +35,8 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#BundleEntityScriptingValues">BundleEntityScriptingValues</a></li>
 </ul>
 
 
@@ -114,6 +116,76 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.SetEntityScale">API.SetEntityScale (_Entity, _Scale)</a></td>
 	<td class="summary">Setzt den Größenfaktor des Entity.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:Install">BundleEntityScriptingValues.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:SetEntitySize">BundleEntityScriptingValues.Global:SetEntitySize (_Entity, _Scale)</a></td>
+	<td class="summary">Ändert die Größe des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Global:SetPlayerID">BundleEntityScriptingValues.Global:SetPlayerID (_Entity, _PlayerID)</a></td>
+	<td class="summary">Ändert den Besitzer des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Local:Install">BundleEntityScriptingValues.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+</table>
+<h2><a href="#BundleEntityScriptingValues">BundleEntityScriptingValues</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:Float2Int">BundleEntityScriptingValues.Shared:Float2Int (fval)</a></td>
+	<td class="summary">Konvertiert eine Dezimalzahl in eine Ganzzahl.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:GetEntitySize">BundleEntityScriptingValues.Shared:GetEntitySize (_Entity)</a></td>
+	<td class="summary">Gibt die relative Größe des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:GetMovingTargetPosition">BundleEntityScriptingValues.Shared:GetMovingTargetPosition (_Entity)</a></td>
+	<td class="summary">Gibt das Bewegungsziel des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:GetPlayerID">BundleEntityScriptingValues.Shared:GetPlayerID (_Entity)</a></td>
+	<td class="summary">Gibt den Besitzer des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:GetValueAsFloat">BundleEntityScriptingValues.Shared:GetValueAsFloat (_Entity, _index)</a></td>
+	<td class="summary">Gibt die Scripting Value des Entity als Dezimalzahl zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:GetValueAsInteger">BundleEntityScriptingValues.Shared:GetValueAsInteger (_Entity, _index)</a></td>
+	<td class="summary">Gibt die Scripting Value des Entity als Ganzzahl zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:Int2Float">BundleEntityScriptingValues.Shared:Int2Float (num)</a></td>
+	<td class="summary">Konvertiert eine Ganzzahl in eine Dezimalzahl.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:IsEntityVisible">BundleEntityScriptingValues.Shared:IsEntityVisible (_Entity)</a></td>
+	<td class="summary">Gibt zurück, ob das Entity sichtbar ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:IsOnScreenInformationActive">BundleEntityScriptingValues.Shared:IsOnScreenInformationActive (_Entity)</a></td>
+	<td class="summary">Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:bitsFrac">BundleEntityScriptingValues.Shared:bitsFrac (num, t)</a></td>
+	<td class="summary">Stellt eine Zahl als eine Folge von Bits in einer Table dar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:bitsInt">BundleEntityScriptingValues.Shared:bitsInt (num)</a></td>
+	<td class="summary">Gibt den Integer als Bits zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityScriptingValues.Shared:qmod">BundleEntityScriptingValues.Shared:qmod (a, b)</a></td>
+	<td class="summary">Bestimmt das Modul b der Zahl a.</td>
 	</tr>
 </table>
 
@@ -339,13 +411,407 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleEntityScriptingValues.Global:Install"></a>
+    <strong>BundleEntityScriptingValues.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Global:SetEntitySize"></a>
+    <strong>BundleEntityScriptingValues.Global:SetEntitySize (_Entity, _Scale)</strong>
+    </dt>
+    <dd>
+    Ändert die Größe des Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+        <li><span class="parameter">_Scale</span>
+          [number] Größenfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Global:SetPlayerID"></a>
+    <strong>BundleEntityScriptingValues.Global:SetPlayerID (_Entity, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Ändert den Besitzer des Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           [string|number] Entity
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Besitzer
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Local:Install"></a>
+    <strong>BundleEntityScriptingValues.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="BundleEntityScriptingValues"></a>BundleEntityScriptingValues</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:Float2Int"></a>
+    <strong>BundleEntityScriptingValues.Shared:Float2Int (fval)</strong>
+    </dt>
+    <dd>
+    Konvertiert eine Dezimalzahl in eine Ganzzahl.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fval</span>
+         [number] Float
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Float als Integer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:GetEntitySize"></a>
+    <strong>BundleEntityScriptingValues.Shared:GetEntitySize (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die relative Größe des Entity zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Größenfaktor
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:GetMovingTargetPosition"></a>
+    <strong>BundleEntityScriptingValues.Shared:GetMovingTargetPosition (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt das Bewegungsziel des Entity zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Positionstabelle
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:GetPlayerID"></a>
+    <strong>BundleEntityScriptingValues.Shared:GetPlayerID (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Besitzer des Entity zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Besitzer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:GetValueAsFloat"></a>
+    <strong>BundleEntityScriptingValues.Shared:GetValueAsFloat (_Entity, _index)</strong>
+    </dt>
+    <dd>
+    Gibt die Scripting Value des Entity als Dezimalzahl zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Zu untersuchendes Entity
+        </li>
+        <li><span class="parameter">_index</span>
+          [number] Index im RAM
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Dezimalzahl
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:GetValueAsInteger"></a>
+    <strong>BundleEntityScriptingValues.Shared:GetValueAsInteger (_Entity, _index)</strong>
+    </dt>
+    <dd>
+    Gibt die Scripting Value des Entity als Ganzzahl zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Zu untersuchendes Entity
+        </li>
+        <li><span class="parameter">_index</span>
+          [number] Index im RAM
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Ganzzahl
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:Int2Float"></a>
+    <strong>BundleEntityScriptingValues.Shared:Int2Float (num)</strong>
+    </dt>
+    <dd>
+    Konvertiert eine Ganzzahl in eine Dezimalzahl.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+         [number] Integer
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Integer als Float
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:IsEntityVisible"></a>
+    <strong>BundleEntityScriptingValues.Shared:IsEntityVisible (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das Entity sichtbar ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ist sichtbar
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:IsOnScreenInformationActive"></a>
+    <strong>BundleEntityScriptingValues.Shared:IsOnScreenInformationActive (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ist NPC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:bitsFrac"></a>
+    <strong>BundleEntityScriptingValues.Shared:bitsFrac (num, t)</strong>
+    </dt>
+    <dd>
+    Stellt eine Zahl als eine Folge von Bits in einer Table dar.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+         [integer] Integer
+        </li>
+        <li><span class="parameter">t</span>
+        	  [table] Table
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Table mit Bits
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:bitsInt"></a>
+    <strong>BundleEntityScriptingValues.Shared:bitsInt (num)</strong>
+    </dt>
+    <dd>
+    Gibt den Integer als Bits zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+         [number] Bits
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Table mit Bits
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityScriptingValues.Shared:qmod"></a>
+    <strong>BundleEntityScriptingValues.Shared:qmod (a, b)</strong>
+    </dt>
+    <dd>
+    Bestimmt das Modul b der Zahl a.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+        	[number] Zahl
+        </li>
+        <li><span class="parameter">b</span>
+        	[number] Modul
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] qmod der Zahl
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-12 12:55:02 </i>
+<i style="float:right;">Last updated 2018-12-12 14:26:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

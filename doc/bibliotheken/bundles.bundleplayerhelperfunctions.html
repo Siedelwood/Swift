@@ -35,6 +35,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -130,6 +131,70 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.UnlockTitleForPlayer">API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</a></td>
 	<td class="summary">Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global.OnSaveGameLoaded">BundlePlayerHelperFunctions.Global.OnSaveGameLoaded ()</a></td>
+	<td class="summary">Stellt nicht-persistente Änderungen nach dem laden wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:GetControllingPlayer">BundlePlayerHelperFunctions.Global:GetControllingPlayer ()</a></td>
+	<td class="summary">Gibt die ID des kontrollierenden Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:InitFestival">BundlePlayerHelperFunctions.Global:InitFestival ()</a></td>
+	<td class="summary">Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
+ werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:Install">BundlePlayerHelperFunctions.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:RestrictFestivalForPlayer">BundlePlayerHelperFunctions.Global:RestrictFestivalForPlayer (_PlayerID, _Index, _Flag)</a></td>
+	<td class="summary">Erlaubt oder verbietet ein Fest für den angegebenen Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:SetControllingPlayer">BundlePlayerHelperFunctions.Global:SetControllingPlayer (_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)</a></td>
+	<td class="summary">Wechselt die Spieler ID des menschlichen Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:SetEarningsOfPlayerCity">BundlePlayerHelperFunctions.Global:SetEarningsOfPlayerCity (_PlayerID, _Earnings)</a></td>
+	<td class="summary">Setzt die Einnahmen für alle Stadtgebäude eines Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:SetNeedSatisfactionLevel">BundlePlayerHelperFunctions.Global:SetNeedSatisfactionLevel (_Need, _State, _PlayerID)</a></td>
+	<td class="summary">Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
+ des angegebenen Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:UndiscoverTerritories">BundlePlayerHelperFunctions.Global:UndiscoverTerritories (_PlayerID, _TargetPlayerID)</a></td>
+	<td class="summary">Entfernt alle Territorien einer Partei aus der Liste der entdeckten
+ Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:UndiscoverTerritory">BundlePlayerHelperFunctions.Global:UndiscoverTerritory (_PlayerID, _TerritoryID)</a></td>
+	<td class="summary">Entfernt ein Territorium für den angegebenen Spieler aus der Liste
+ der entdeckten Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer">BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer (_PlayerID, _KnightTitle)</a></td>
+	<td class="summary">Entsperrt einen gesperrten Titel für den Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Local:InitForbidFestival">BundlePlayerHelperFunctions.Local:InitForbidFestival ()</a></td>
+	<td class="summary">Überschreibt den Button zum Start eines Festes, sodass er nicht angezeigt
+ wird, wenn Feste verboten sind.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Local:OverrideQuestLogPlayerIcon">BundlePlayerHelperFunctions.Local:OverrideQuestLogPlayerIcon ()</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon">BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon ()</a></td>
+	<td class="summary"></td>
 	</tr>
 </table>
 
@@ -419,13 +484,309 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global.OnSaveGameLoaded"></a>
+    <strong>BundlePlayerHelperFunctions.Global.OnSaveGameLoaded ()</strong>
+    </dt>
+    <dd>
+    Stellt nicht-persistente Änderungen nach dem laden wieder her.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:GetControllingPlayer"></a>
+    <strong>BundlePlayerHelperFunctions.Global:GetControllingPlayer ()</strong>
+    </dt>
+    <dd>
+    Gibt die ID des kontrollierenden Spielers zurück.  Der erste als menschlich
+ definierte Spieler wird als kontrollierender Spieler angenommen.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] PlayerID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:InitFestival"></a>
+    <strong>BundlePlayerHelperFunctions.Global:InitFestival ()</strong>
+    </dt>
+    <dd>
+    Überschreibt Logic.StartFestival, sodass das Feierverhalten der KI gesteuert
+ werden kann.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:Install"></a>
+    <strong>BundlePlayerHelperFunctions.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:RestrictFestivalForPlayer"></a>
+    <strong>BundlePlayerHelperFunctions.Global:RestrictFestivalForPlayer (_PlayerID, _Index, _Flag)</strong>
+    </dt>
+    <dd>
+    Erlaubt oder verbietet ein Fest für den angegebenen Spieler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Index</span>
+            Index des Fest
+        </li>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Erlauben/verbieten
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:SetControllingPlayer"></a>
+    <strong>BundlePlayerHelperFunctions.Global:SetControllingPlayer (_oldPlayerID, _newPlayerID, _newNameForStatistics, _retainPrimaryKnight)</strong>
+    </dt>
+    <dd>
+    Wechselt die Spieler ID des menschlichen Spielers.  Die neue ID muss
+ einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
+ Mode verwendet werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_oldPlayerID</span>
+         [number]Alte ID des menschlichen Spielers
+        </li>
+        <li><span class="parameter">_newPlayerID</span>
+         [number]Neue ID des menschlichen Spielers
+        </li>
+        <li><span class="parameter">_newNameForStatistics</span>
+         [string]Name in der Statistik
+        </li>
+        <li><span class="parameter">_retainPrimaryKnight</span>
+         [boolean]Ritter mitnehmen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:SetEarningsOfPlayerCity"></a>
+    <strong>BundlePlayerHelperFunctions.Global:SetEarningsOfPlayerCity (_PlayerID, _Earnings)</strong>
+    </dt>
+    <dd>
+    Setzt die Einnahmen für alle Stadtgebäude eines Spielers.  Stadtgebäude
+ können nur Einnahmen zwischen 0 und 100 Talern haben.
+<p> <b>Alias:</b> SetPlayerEarnings
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Partei oder nil für alle
+        </li>
+        <li><span class="parameter">_Earnings</span>
+         [number] Einnahmen [0 | 100]
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:SetNeedSatisfactionLevel"></a>
+    <strong>BundlePlayerHelperFunctions.Global:SetNeedSatisfactionLevel (_Need, _State, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
+ des angegebenen Spielers.  Der Befriedigungsstatus ist eine Zahl
+ zwischen 0.0 und 1.0.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Need</span>
+         [number] Bedürfnis
+        </li>
+        <li><span class="parameter">_State</span>
+         [number] Erfüllung des Bedürfnisses
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Partei oder -1 für alle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:UndiscoverTerritories"></a>
+    <strong>BundlePlayerHelperFunctions.Global:UndiscoverTerritories (_PlayerID, _TargetPlayerID)</strong>
+    </dt>
+    <dd>
+    Entfernt alle Territorien einer Partei aus der Liste der entdeckten
+ Territorien.  Als Nebeneffekt gild die Partei als unentdeckt-
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID
+        </li>
+        <li><span class="parameter">_TargetPlayerID</span>
+         [number] Zielpartei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:UndiscoverTerritory"></a>
+    <strong>BundlePlayerHelperFunctions.Global:UndiscoverTerritory (_PlayerID, _TerritoryID)</strong>
+    </dt>
+    <dd>
+    Entfernt ein Territorium für den angegebenen Spieler aus der Liste
+ der entdeckten Territorien.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID
+        </li>
+        <li><span class="parameter">_TerritoryID</span>
+         [number] Territorium-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer"></a>
+    <strong>BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer (_PlayerID, _KnightTitle)</strong>
+    </dt>
+    <dd>
+    Entsperrt einen gesperrten Titel für den Spieler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Zielpartei
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         [number] Titel zum Entsperren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Local:InitForbidFestival"></a>
+    <strong>BundlePlayerHelperFunctions.Local:InitForbidFestival ()</strong>
+    </dt>
+    <dd>
+    Überschreibt den Button zum Start eines Festes, sodass er nicht angezeigt
+ wird, wenn Feste verboten sind.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Local:OverrideQuestLogPlayerIcon"></a>
+    <strong>BundlePlayerHelperFunctions.Local:OverrideQuestLogPlayerIcon ()</strong>
+    </dt>
+    <dd>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon"></a>
+    <strong>BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon ()</strong>
+    </dt>
+    <dd>
+
+
+
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-12 12:55:02 </i>
+<i style="float:right;">Last updated 2018-12-12 14:26:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

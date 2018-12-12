@@ -35,6 +35,8 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#QSB_TimeLine">QSB.TimeLine</a></li>
 </ul>
 
 
@@ -112,6 +114,44 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TimeLineYield">API.TimeLineYield (_ID)</a></td>
+	<td class="summary">Hält einen Zeitstrahl an.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Global:Install">BundleTimeLine.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Local:Install">BundleTimeLine.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+</table>
+<h2><a href="#QSB_TimeLine">QSB.TimeLine</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine.TimeLineControler">BundleTimeLine.Shared.TimeLine.TimeLineControler ()</a></td>
+	<td class="summary">Steuert alle Zeitstrahlen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:IsRunning">BundleTimeLine.Shared.TimeLine:IsRunning (_ID)</a></td>
+	<td class="summary">Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Restart">BundleTimeLine.Shared.TimeLine:Restart (_ID)</a></td>
+	<td class="summary">Startet einen Zeitstrahl erneut.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Resume">BundleTimeLine.Shared.TimeLine:Resume (_ID)</a></td>
+	<td class="summary">Stößt einen angehaltenen Zeitstrahl wieder an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Start">BundleTimeLine.Shared.TimeLine:Start (_description)</a></td>
+	<td class="summary">Startet einen Zeitstrahl.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Yield">BundleTimeLine.Shared.TimeLine:Yield (_ID)</a></td>
 	<td class="summary">Hält einen Zeitstrahl an.</td>
 	</tr>
 </table>
@@ -274,13 +314,188 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleTimeLine.Global:Install"></a>
+    <strong>BundleTimeLine.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Local:Install"></a>
+    <strong>BundleTimeLine.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="QSB_TimeLine"></a>QSB.TimeLine</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine.TimeLineControler"></a>
+    <strong>BundleTimeLine.Shared.TimeLine.TimeLineControler ()</strong>
+    </dt>
+    <dd>
+    Steuert alle Zeitstrahlen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:IsRunning"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:IsRunning (_ID)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+<p> <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Zeistrahl ist aktiv
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:Restart"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:Restart (_ID)</strong>
+    </dt>
+    <dd>
+    Startet einen Zeitstrahl erneut.  Ist der Zeitstrahl noch nicht
+ beendet, beginnt er dennoch von vorn.
+<p> <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:Resume"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:Resume (_ID)</strong>
+    </dt>
+    <dd>
+    Stößt einen angehaltenen Zeitstrahl wieder an.
+<p> Die Zeit, die seit der Pausierung vergangen ist, wird zur Startzeit
+ addiert um Trigger Fehler zu vermeiden.
+<p> <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:Start"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:Start (_description)</strong>
+    </dt>
+    <dd>
+    Startet einen Zeitstrahl.  Ein Zeitstrahl hat bestimmte Stationen,
+ an denen eine Aktion ausgeführt wird.
+<p> <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_description</span>
+         [table] Beschreibung
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des Zeitstrahl
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:Yield"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:Yield (_ID)</strong>
+    </dt>
+    <dd>
+    Hält einen Zeitstrahl an.
+<p> Der Zeitstempel wird gespeichert.
+<p> <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-12 12:55:02 </i>
+<i style="float:right;">Last updated 2018-12-12 14:26:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -34,9 +34,13 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Local_Functions">Local Functions</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#Reward">Reward</a></li>
 <li><a href="#Briefing">Briefing</a></li>
+<li><a href="#BriefingSystem">BriefingSystem</a></li>
+<li><a href="#Originalfunktionen">Originalfunktionen</a></li>
 <li><a href="#Reprisal">Reprisal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
 </ul>
@@ -141,6 +145,13 @@
 </p>
 
 
+<h2><a href="#Local_Functions">Local Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#OnSkipButtonPressed">OnSkipButtonPressed ()</a></td>
+	<td class="summary">Callback: Überspringen wurde geklickt.</td>
+	</tr>
+</table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
@@ -181,6 +192,57 @@
 	<td class="summary">Startet ein normales Briefing oder eine Fake-Cutscene.</td>
 	</tr>
 </table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:Install">BundleBriefingSystem.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:PauseQuestsDuringBriefings">BundleBriefingSystem.Global:PauseQuestsDuringBriefings (_Flag)</a></td>
+	<td class="summary">Setzt den Zustand von Quest Timern während Biefings und Fake-Cutscenes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:IsBriefingFinished">BundleBriefingSystem.Global:IsBriefingFinished (_briefingID)</a></td>
+	<td class="summary">Prüft, ob ein Briefing abgespielt wurde (beendet ist).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:MCGetSelectedAnswer">BundleBriefingSystem.Global:MCGetSelectedAnswer (_page)</a></td>
+	<td class="summary">Gibt die gewähtle Antwort für die MC Page zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:GetCurrentBriefingPage">BundleBriefingSystem.Global:GetCurrentBriefingPage (_pageNumber)</a></td>
+	<td class="summary">Gibt die Seite im aktuellen Briefing zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:GetCurrentBriefing">BundleBriefingSystem.Global:GetCurrentBriefing ()</a></td>
+	<td class="summary">Gibt das aktuelle Briefing zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:AddFlights">BundleBriefingSystem.Global:AddFlights (_Cutscene)</a></td>
+	<td class="summary">Initalisiert die Flight-Funktionen für die übergebene Cutscene.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:AddPages">BundleBriefingSystem.Global:AddPages (_briefing)</a></td>
+	<td class="summary">Initalisiert die Page-Funktionen für das übergebene Briefing</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:InitalizeBriefingSystem">BundleBriefingSystem.Global:InitalizeBriefingSystem ()</a></td>
+	<td class="summary">Initalisiert das Briefing System im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:Install">BundleBriefingSystem.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:InitalizeBriefingSystem">BundleBriefingSystem.Local:InitalizeBriefingSystem ()</a></td>
+	<td class="summary">Initalisiert das Briefing System im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem:OverwriteGetPosition">BundleBriefingSystem:OverwriteGetPosition ()</a></td>
+	<td class="summary">Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.</td>
+	</tr>
+</table>
 <h2><a href="#Reward">Reward</a></h2>
 <table class="function_list">
 	<tr>
@@ -212,6 +274,259 @@
 	<td class="summary">Erstellt eine Multiple Choise Seite in vereinfachter Syntax.</td>
 	</tr>
 </table>
+<h2><a href="#BriefingSystem">BriefingSystem</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.EndBriefing">BriefingSystem.EndBriefing ()</a></td>
+	<td class="summary">Beendet ein laufendes Briefing oder eine laufende Fake-Cutscene.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem_WaitForBriefingEnd">BriefingSystem_WaitForBriefingEnd ()</a></td>
+	<td class="summary">Wartet, bis ein Briefing beendet ist und führt dann das nächste
+ Briefing in der Warteschlange aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.ExecuteBriefing">BriefingSystem.ExecuteBriefing (_briefing)</a></td>
+	<td class="summary">Führt das aktuelle Briefing aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.UpdateMCAnswers">BriefingSystem.UpdateMCAnswers (_briefing)</a></td>
+	<td class="summary">Aktualisiert die verfügbaren Optionen wärhend eines Multiple Choice
+ Dialogs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.IsBriefingActive">BriefingSystem.IsBriefingActive ()</a></td>
+	<td class="summary">Prüft, ob ein Briefing aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem_Condition_Briefing">BriefingSystem_Condition_Briefing ()</a></td>
+	<td class="summary">Condition des Briefing-Job: Prüft, ob die Action ausgeführt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem_Action_Briefing">BriefingSystem_Action_Briefing ()</a></td>
+	<td class="summary">Action des Briefing-Job: Führt das eigentliche Briefing aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SkipBriefing">BriefingSystem.SkipBriefing (_player)</a></td>
+	<td class="summary">Überspringt ein Briefing.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SkipBriefingPage">BriefingSystem.SkipBriefingPage (_player)</a></td>
+	<td class="summary">Überspringt eine Briefing-Seite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.CreateExploreEntity">BriefingSystem.CreateExploreEntity (_page, _exploration, _entityType, _player, _position)</a></td>
+	<td class="summary">Deckt einen bestimmten Bereich auf der Spielwelt auf.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.CreatePointer">BriefingSystem.CreatePointer (_page, _pointer)</a></td>
+	<td class="summary">Erstellt einen Questmarker auf der Spielwelt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.DestroyPageMarker">BriefingSystem.DestroyPageMarker (_page, _index)</a></td>
+	<td class="summary">Zerstört den Marker der aktuellen Briefing-Seite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.RedeployPageMarkers">BriefingSystem.RedeployPageMarkers (_page, _position)</a></td>
+	<td class="summary">Aktualisiert alle Marker der Briefing-Seite oder erstellt sie neu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.RedeployPageMarker">BriefingSystem.RedeployPageMarker (_page, _index, _position)</a></td>
+	<td class="summary">Aktualisiert einen Marker der Briefing-Seite oder erstellt ihn neu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.RefreshPageMarkers">BriefingSystem.RefreshPageMarkers (_page)</a></td>
+	<td class="summary">Erneuert alle Marker der Briefing-Seite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.RefreshPageMarker">BriefingSystem.RefreshPageMarker (_page, _index)</a></td>
+	<td class="summary">Erneuert einen Marker der Briefing-Seite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.ResolveBriefingPage">BriefingSystem.ResolveBriefingPage (_page)</a></td>
+	<td class="summary">Entfernt alle Effekte, die mit der Briefing-Seite verbunden sind.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.OnConfirmed">BriefingSystem.OnConfirmed (_aswID, _currentPage, _currentAnswer)</a></td>
+	<td class="summary">Wenn eine Antwort ausgewählt wurde, wird der entsprechende
+ Sprung durchgeführt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.LeftClickOnEntity">BriefingSystem.LeftClickOnEntity (_EntityID)</a></td>
+	<td class="summary">Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings auf ein Entity klickt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.LeftClickOnPosition">BriefingSystem.LeftClickOnPosition (_X, _Y)</a></td>
+	<td class="summary">Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings in die Spielwelt klickt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.LeftClickOnScreen">BriefingSystem.LeftClickOnScreen (_X, _Y)</a></td>
+	<td class="summary">Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings auf die Anzeige klickt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.InitializeBriefingSystem">BriefingSystem.InitializeBriefingSystem ()</a></td>
+	<td class="summary">Initalisiert den Kern des Briefing System.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.StartLoadScreenSupervising">BriefingSystem.StartLoadScreenSupervising ()</a></td>
+	<td class="summary">Startet den Job, der darauf wartet, dass der Loadscreen verlassen wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem_LoadScreenSupervising">BriefingSystem_LoadScreenSupervising ()</a></td>
+	<td class="summary">Setzt das LoadScreenHidden-Flag um dem globalen Skript mitzuteilen,
+ das der Loadscreen verlassen ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.PrepareBriefing">BriefingSystem.PrepareBriefing ()</a></td>
+	<td class="summary">Bereitet das Interface auf das Briefing / die Cutsene vor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.EndBriefing">BriefingSystem.EndBriefing ()</a></td>
+	<td class="summary">Baut die Änderungen im Interface nach dem Ende des Briefings ab.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.Briefing">BriefingSystem.Briefing (_prepareBriefingStart)</a></td>
+	<td class="summary">Führt das Briefing aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SkipBriefingPage">BriefingSystem.SkipBriefingPage ()</a></td>
+	<td class="summary">Überspringt eine Briefing-Seite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.ShowBriefingBar">BriefingSystem.ShowBriefingBar (_type)</a></td>
+	<td class="summary">Zeigt die Rahmen an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.ShowBriefingText">BriefingSystem.ShowBriefingText (_text, _doNotCalc, _smallBar)</a></td>
+	<td class="summary">Zeigt den Text einer Briefingseite an und berechnet ggf.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.ShowBriefingTitle">BriefingSystem.ShowBriefingTitle (_title)</a></td>
+	<td class="summary">Zeigt den Titel aka Sprecher der Seite an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SchowBriefingOptionDialog">BriefingSystem.SchowBriefingOptionDialog (_page)</a></td>
+	<td class="summary">Zeigt den Multiple Choice Dialog mit den Verzweigungen an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.Briefing_MultipleChoice">BriefingSystem.Briefing_MultipleChoice ()</a></td>
+	<td class="summary">Setzt den Text, den Titel und die Antworten einer Multiple Choice
+ Seite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.OnConfirmed">BriefingSystem.OnConfirmed ()</a></td>
+	<td class="summary">Eine Antwort wurde ausgewählt (lokales Skript).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.CreateMarker">BriefingSystem.CreateMarker (_t, _markerType, _markerList, _r, _g, _b, _alpha)</a></td>
+	<td class="summary">Erzeugt eine Markierung auf der Minikarte.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.DestroyMarkerList">BriefingSystem.DestroyMarkerList (_index)</a></td>
+	<td class="summary">Zerstört eine Liste von Markern auf der Minimap.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.DestroyMarkerOfList">BriefingSystem.DestroyMarkerOfList (_index, _marker)</a></td>
+	<td class="summary">Zerstört einen Marker innerhalb einer Liste.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.RedeployMarkerList">BriefingSystem.RedeployMarkerList (_index, _x, _y)</a></td>
+	<td class="summary">Aktualisiert die Position aller marker in der Liste oder erstellt sie
+ neu, falls er nicht existiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.RedeployMarkerOfList">BriefingSystem.RedeployMarkerOfList (_index, _marker, _x, _y)</a></td>
+	<td class="summary">Aktualisiert einen Marker aus einer Liste von Markern.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.RefreshMarkerList">BriefingSystem.RefreshMarkerList (_index)</a></td>
+	<td class="summary">Aktualisiert die Position aller marker in der Liste oder erstellt sie
+ neu, falls er nicht existiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.RefreshMarkerOfList">BriefingSystem.RefreshMarkerOfList (_index, _marker)</a></td>
+	<td class="summary">Aktualisiert einen Marker aus einer Liste von Markern.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.EnableBriefingSkipButton">BriefingSystem.EnableBriefingSkipButton (_player, _flag)</a></td>
+	<td class="summary">Macht den Skip-Button sichtbar oder versteckt ihn.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem_CheckFader">BriefingSystem_CheckFader (_fadeIn, _timerValue)</a></td>
+	<td class="summary">Steuert die schwarze Maske, die für Übergänge genutzt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.CutsceneGetPosition">BriefingSystem.CutsceneGetPosition (_Start, _End, _Factor)</a></td>
+	<td class="summary">Berechnet die Kameraposition wärhend eines Cutscene Flights.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.CutsceneSaveFlight">BriefingSystem.CutsceneSaveFlight (_cameraPosition, _cameraLookAt, _FOV, _UV0, _UV1)</a></td>
+	<td class="summary">Speichert die Startposition der nächsten Kameraanimation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.CutsceneFlyTo">BriefingSystem.CutsceneFlyTo (_cameraPosition, _cameraLookAt, _FOV, _Time, _UV0, _UV1)</a></td>
+	<td class="summary">Initalisiert den Flug der Kamera zu einer Position auf der Welt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.CutsceneStopFlight">BriefingSystem.CutsceneStopFlight ()</a></td>
+	<td class="summary">Unterbricht eine Kamerabewegung der laufenden Cutscene.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.InterpolationFactor">BriefingSystem.InterpolationFactor (_start, _curr, _total, _dataContainer)</a></td>
+	<td class="summary">Errechnet den Interpolation Factor für den aktuellen Flight.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.GetCameraPosition">BriefingSystem.GetCameraPosition (_start, _end, _factor)</a></td>
+	<td class="summary">Berechnet die aktuelle Position der Kamera für den aktuellen Flight.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SaveFlight">BriefingSystem.SaveFlight (_position, _rotation, _angle, _distance, _FOV, _UV0, _UV1)</a></td>
+	<td class="summary">Speichert die Startposition der nächsten Kameraanimation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.FlyTo">BriefingSystem.FlyTo (_position, _rotation, _angle, _distance, _FOV, _time, _UV0, _UV1)</a></td>
+	<td class="summary">Initalisiert den Flug der Kamera zu einem Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.StopFlight">BriefingSystem.StopFlight ()</a></td>
+	<td class="summary">Stoppt die aktuelle Kameraanimation des Briefings.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.FollowFlight">BriefingSystem.FollowFlight (_follow, _rotation, _angle, _distance, _FOV, _time, _Z, _UV0, _UV1)</a></td>
+	<td class="summary">Initalisiert die Verfolgung eines Entities durch die Kamera.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SetBriefingPageTextPosition">BriefingSystem.SetBriefingPageTextPosition (_page)</a></td>
+	<td class="summary">Setzt die Position des Textes und des Titels einer Briefing-Seite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SetBriefingSplashscreenUV">BriefingSystem.SetBriefingSplashscreenUV (_StartUV0, _EndUV0, _StartUV1, _EndUV1, _Factor)</a></td>
+	<td class="summary">Steuert die Scrollanimation des Splashscreen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SetBriefingPagePortrait">BriefingSystem.SetBriefingPagePortrait (_page)</a></td>
+	<td class="summary">Blendet das Character Sprite ein, wenn angegeben.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BriefingSystem.SetBriefingPageOrSplashscreen">BriefingSystem.SetBriefingPageOrSplashscreen (_page, _style)</a></td>
+	<td class="summary">Schaltet zwischen Bars und Splashscreen um.</td>
+	</tr>
+</table>
+<h2><a href="#Originalfunktionen">Originalfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ThroneRoomCameraControl">ThroneRoomCameraControl ()</a></td>
+	<td class="summary">Steuert die Kamera während eines Briefings.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ThroneRoomLeftClick">ThroneRoomLeftClick ()</a></td>
+	<td class="summary">Wird immer dann aufgerufen, wenn der Spieler innerhalb des Throneroom
+ Mode links klickt.</td>
+	</tr>
+</table>
 <h2><a href="#Reprisal">Reprisal</a></h2>
 <table class="function_list">
 	<tr>
@@ -233,6 +548,24 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "OnSkipButtonPressed"></a>
+    <strong>OnSkipButtonPressed ()</strong>
+    </dt>
+    <dd>
+    Callback: Überspringen wurde geklickt.
+
+
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
@@ -495,6 +828,257 @@
 
         number: Briefing-ID
     </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleBriefingSystem.Global:Install"></a>
+    <strong>BundleBriefingSystem.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:PauseQuestsDuringBriefings"></a>
+    <strong>BundleBriefingSystem.Global:PauseQuestsDuringBriefings (_Flag)</strong>
+    </dt>
+    <dd>
+    Setzt den Zustand von Quest Timern während Biefings und Fake-Cutscenes.
+<p> Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         Quest Timer pausiert
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:IsBriefingFinished"></a>
+    <strong>BundleBriefingSystem.Global:IsBriefingFinished (_briefingID)</strong>
+    </dt>
+    <dd>
+    Prüft, ob ein Briefing abgespielt wurde (beendet ist).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_briefingID</span>
+         Briefing-ID
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Briefing ist beendet
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:MCGetSelectedAnswer"></a>
+    <strong>BundleBriefingSystem.Global:MCGetSelectedAnswer (_page)</strong>
+    </dt>
+    <dd>
+    Gibt die gewähtle Antwort für die MC Page zurück.
+<p> Wird eine Seite mehrmals durchlaufen, wird die jeweils letzte Antwort
+ zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+         Seite
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Gewählte Antwort
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:GetCurrentBriefingPage"></a>
+    <strong>BundleBriefingSystem.Global:GetCurrentBriefingPage (_pageNumber)</strong>
+    </dt>
+    <dd>
+    Gibt die Seite im aktuellen Briefing zurück.
+<p> Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_pageNumber</span>
+         Index der Page
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Page
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:GetCurrentBriefing"></a>
+    <strong>BundleBriefingSystem.Global:GetCurrentBriefing ()</strong>
+    </dt>
+    <dd>
+    Gibt das aktuelle Briefing zurück.
+<p> Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table: Briefing
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:AddFlights"></a>
+    <strong>BundleBriefingSystem.Global:AddFlights (_Cutscene)</strong>
+    </dt>
+    <dd>
+    Initalisiert die Flight-Funktionen für die übergebene Cutscene.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Cutscene</span>
+         Cutscene
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        function: AF
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:AddPages"></a>
+    <strong>BundleBriefingSystem.Global:AddPages (_briefing)</strong>
+    </dt>
+    <dd>
+    Initalisiert die Page-Funktionen für das übergebene Briefing
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_briefing</span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        function: AP</li>
+        <li>
+        function: ASP</li>
+        <li>
+        function: ASMC</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:InitalizeBriefingSystem"></a>
+    <strong>BundleBriefingSystem.Global:InitalizeBriefingSystem ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Briefing System im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Local:Install"></a>
+    <strong>BundleBriefingSystem.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Local:InitalizeBriefingSystem"></a>
+    <strong>BundleBriefingSystem.Local:InitalizeBriefingSystem ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Briefing System im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem:OverwriteGetPosition"></a>
+    <strong>BundleBriefingSystem:OverwriteGetPosition ()</strong>
+    </dt>
+    <dd>
+    Überschreibt GetPosition um auch eine Z-Koordinate zurückzugeben.
+
+
+
 
 
 
@@ -804,6 +1388,1383 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="BriefingSystem"></a>BriefingSystem</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BriefingSystem.EndBriefing"></a>
+    <strong>BriefingSystem.EndBriefing ()</strong>
+    </dt>
+    <dd>
+    Beendet ein laufendes Briefing oder eine laufende Fake-Cutscene.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem_WaitForBriefingEnd"></a>
+    <strong>BriefingSystem_WaitForBriefingEnd ()</strong>
+    </dt>
+    <dd>
+    Wartet, bis ein Briefing beendet ist und führt dann das nächste
+ Briefing in der Warteschlange aus.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.ExecuteBriefing"></a>
+    <strong>BriefingSystem.ExecuteBriefing (_briefing)</strong>
+    </dt>
+    <dd>
+    Führt das aktuelle Briefing aus.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_briefing</span>
+         Aktuelles Briefing
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.UpdateMCAnswers"></a>
+    <strong>BriefingSystem.UpdateMCAnswers (_briefing)</strong>
+    </dt>
+    <dd>
+    Aktualisiert die verfügbaren Optionen wärhend eines Multiple Choice
+ Dialogs.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_briefing</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.IsBriefingActive"></a>
+    <strong>BriefingSystem.IsBriefingActive ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob ein Briefing aktiv ist.
+<p> <p><b>Alias:</b> IsBriefingActive</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Briefing aktiv
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem_Condition_Briefing"></a>
+    <strong>BriefingSystem_Condition_Briefing ()</strong>
+    </dt>
+    <dd>
+    Condition des Briefing-Job: Prüft, ob die Action ausgeführt wird.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem_Action_Briefing"></a>
+    <strong>BriefingSystem_Action_Briefing ()</strong>
+    </dt>
+    <dd>
+    Action des Briefing-Job: Führt das eigentliche Briefing aus.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SkipBriefing"></a>
+    <strong>BriefingSystem.SkipBriefing (_player)</strong>
+    </dt>
+    <dd>
+    Überspringt ein Briefing.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_player</span>
+         ID des aktiven Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SkipBriefingPage"></a>
+    <strong>BriefingSystem.SkipBriefingPage (_player)</strong>
+    </dt>
+    <dd>
+    Überspringt eine Briefing-Seite.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_player</span>
+         ID des aktiven Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.CreateExploreEntity"></a>
+    <strong>BriefingSystem.CreateExploreEntity (_page, _exploration, _entityType, _player, _position)</strong>
+    </dt>
+    <dd>
+    Deckt einen bestimmten Bereich auf der Spielwelt auf.
+ FIXME: Diese Funktion deckt komplette Territorien auf!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+                Aktuelle Seite
+        </li>
+        <li><span class="parameter">_exploration</span>
+         Aufdeckungsradius
+        </li>
+        <li><span class="parameter">_entityType</span>
+          Typ des Exploration Entity
+        </li>
+        <li><span class="parameter">_player</span>
+              PlayerID, für die aufgedeckt wird
+        </li>
+        <li><span class="parameter">_position</span>
+            Mittelpunkt der Aufdeckung
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.CreatePointer"></a>
+    <strong>BriefingSystem.CreatePointer (_page, _pointer)</strong>
+    </dt>
+    <dd>
+    Erstellt einen Questmarker auf der Spielwelt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+            Aktuelle Seite
+        </li>
+        <li><span class="parameter">_pointer</span>
+         Aufdeckungsradius
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.DestroyPageMarker"></a>
+    <strong>BriefingSystem.DestroyPageMarker (_page, _index)</strong>
+    </dt>
+    <dd>
+    Zerstört den Marker der aktuellen Briefing-Seite.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+          Aktuelle Seite
+        </li>
+        <li><span class="parameter">_index</span>
+         Index des Markers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.RedeployPageMarkers"></a>
+    <strong>BriefingSystem.RedeployPageMarkers (_page, _position)</strong>
+    </dt>
+    <dd>
+    Aktualisiert alle Marker der Briefing-Seite oder erstellt sie neu.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+             Aktuelle Seite
+        </li>
+        <li><span class="parameter">_position</span>
+         Position des markers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.RedeployPageMarker"></a>
+    <strong>BriefingSystem.RedeployPageMarker (_page, _index, _position)</strong>
+    </dt>
+    <dd>
+    Aktualisiert einen Marker der Briefing-Seite oder erstellt ihn neu.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+             Aktuelle Seite
+        </li>
+        <li><span class="parameter">_index</span>
+         Index des Markers
+        </li>
+        <li><span class="parameter">_position</span>
+         Position des markers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.RefreshPageMarkers"></a>
+    <strong>BriefingSystem.RefreshPageMarkers (_page)</strong>
+    </dt>
+    <dd>
+    Erneuert alle Marker der Briefing-Seite.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+             Aktuelle Seite
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.RefreshPageMarker"></a>
+    <strong>BriefingSystem.RefreshPageMarker (_page, _index)</strong>
+    </dt>
+    <dd>
+    Erneuert einen Marker der Briefing-Seite.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+             Aktuelle Seite
+        </li>
+        <li><span class="parameter">_index</span>
+         Index des Markers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.ResolveBriefingPage"></a>
+    <strong>BriefingSystem.ResolveBriefingPage (_page)</strong>
+    </dt>
+    <dd>
+    Entfernt alle Effekte, die mit der Briefing-Seite verbunden sind.
+<p> Effekte können sein: Aufdeckungsbereiche, Marker, Pointer.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+             Aktuelle Seite
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.OnConfirmed"></a>
+    <strong>BriefingSystem.OnConfirmed (_aswID, _currentPage, _currentAnswer)</strong>
+    </dt>
+    <dd>
+    Wenn eine Antwort ausgewählt wurde, wird der entsprechende
+ Sprung durchgeführt.  Wenn remove = true ist, wird die Option
+ für den Rest des Briefings deaktiviert (für Rücksprünge).
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_aswID</span>
+        			Index der Antwort
+        </li>
+        <li><span class="parameter">_currentPage</span>
+        		Aktuelle Seite
+        </li>
+        <li><span class="parameter">_currentAnswer</span>
+        	Gegebene Antwort
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.LeftClickOnEntity"></a>
+    <strong>BriefingSystem.LeftClickOnEntity (_EntityID)</strong>
+    </dt>
+    <dd>
+    Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings auf ein Entity klickt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+        	Selected Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.LeftClickOnPosition"></a>
+    <strong>BriefingSystem.LeftClickOnPosition (_X, _Y)</strong>
+    </dt>
+    <dd>
+    Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings in die Spielwelt klickt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_X</span>
+         X-Position
+        </li>
+        <li><span class="parameter">_Y</span>
+         Y-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.LeftClickOnScreen"></a>
+    <strong>BriefingSystem.LeftClickOnScreen (_X, _Y)</strong>
+    </dt>
+    <dd>
+    Diese Funktion wird aufgerufen, wenn der Spieler während eines
+ Briefings auf die Anzeige klickt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_X</span>
+         X-Position
+        </li>
+        <li><span class="parameter">_Y</span>
+         Y-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.InitializeBriefingSystem"></a>
+    <strong>BriefingSystem.InitializeBriefingSystem ()</strong>
+    </dt>
+    <dd>
+    Initalisiert den Kern des Briefing System.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.StartLoadScreenSupervising"></a>
+    <strong>BriefingSystem.StartLoadScreenSupervising ()</strong>
+    </dt>
+    <dd>
+    Startet den Job, der darauf wartet, dass der Loadscreen verlassen wird.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem_LoadScreenSupervising"></a>
+    <strong>BriefingSystem_LoadScreenSupervising ()</strong>
+    </dt>
+    <dd>
+    Setzt das LoadScreenHidden-Flag um dem globalen Skript mitzuteilen,
+ das der Loadscreen verlassen ist.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.PrepareBriefing"></a>
+    <strong>BriefingSystem.PrepareBriefing ()</strong>
+    </dt>
+    <dd>
+    Bereitet das Interface auf das Briefing / die Cutsene vor.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.EndBriefing"></a>
+    <strong>BriefingSystem.EndBriefing ()</strong>
+    </dt>
+    <dd>
+    Baut die Änderungen im Interface nach dem Ende des Briefings ab.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.Briefing"></a>
+    <strong>BriefingSystem.Briefing (_prepareBriefingStart)</strong>
+    </dt>
+    <dd>
+    Führt das Briefing aus.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_prepareBriefingStart</span>
+         Briefing muss vorbereitet werden
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SkipBriefingPage"></a>
+    <strong>BriefingSystem.SkipBriefingPage ()</strong>
+    </dt>
+    <dd>
+    Überspringt eine Briefing-Seite.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.ShowBriefingBar"></a>
+    <strong>BriefingSystem.ShowBriefingBar (_type)</strong>
+    </dt>
+    <dd>
+    Zeigt die Rahmen an.  Dabei gibt es schmale Rahmen, breite Rahmen
+ und jeweils noch transparente Versionen. Es kann auch gar kein
+ Rahmen angezeigt werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_type</span>
+        	Typ der Bar
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.ShowBriefingText"></a>
+    <strong>BriefingSystem.ShowBriefingText (_text, _doNotCalc, _smallBar)</strong>
+    </dt>
+    <dd>
+    Zeigt den Text einer Briefingseite an und berechnet ggf.  die Dauer
+ der Anzeige.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_text</span>
+              Anzuzeigender Text
+        </li>
+        <li><span class="parameter">_doNotCalc</span>
+         Anzeigedauer nicht berechnen
+        </li>
+        <li><span class="parameter">_smallBar</span>
+          Die schmalen bars werden benutzt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.ShowBriefingTitle"></a>
+    <strong>BriefingSystem.ShowBriefingTitle (_title)</strong>
+    </dt>
+    <dd>
+    Zeigt den Titel aka Sprecher der Seite an.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+         Anzuzeigender Titel
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SchowBriefingOptionDialog"></a>
+    <strong>BriefingSystem.SchowBriefingOptionDialog (_page)</strong>
+    </dt>
+    <dd>
+    Zeigt den Multiple Choice Dialog mit den Verzweigungen an.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+         Briefing-Seite
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.Briefing_MultipleChoice"></a>
+    <strong>BriefingSystem.Briefing_MultipleChoice ()</strong>
+    </dt>
+    <dd>
+    Setzt den Text, den Titel und die Antworten einer Multiple Choice
+ Seite.  Setzt außerdem die Dauer der Seite auf 11 1/2 Tage (in
+ der echten Welt). Leider ist es ohne größeren Änderungen nicht
+ möglich die Anzeigezeit einer Seite auf unendlich zu setzen.
+ Es ist aber allgemein unwahrscheinlich, dass der Spieler 11,5
+ Tage vor dem Briefing sitzt, ohne etwas zu tun.
+ Das Fehlverhalten in diesem Fall ist unerforscht. Es würde dann
+ wahrscheinlich die 1 Antwort selektiert.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.OnConfirmed"></a>
+    <strong>BriefingSystem.OnConfirmed ()</strong>
+    </dt>
+    <dd>
+    Eine Antwort wurde ausgewählt (lokales Skript).  Die Auswahl wird
+ gepopt und ein Event an das globale Skript gesendet. Das Event
+ erhält die Page ID, den Index der selektierten Antwort in der
+ Listbox und die reale ID der Antwort in der Table.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.CreateMarker"></a>
+    <strong>BriefingSystem.CreateMarker (_t, _markerType, _markerList, _r, _g, _b, _alpha)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Markierung auf der Minikarte.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_t</span>
+                  Aktuelle Seite
+        </li>
+        <li><span class="parameter">_markerType</span>
+         Typ der Markierung
+        </li>
+        <li><span class="parameter">_markerList</span>
+         Liste der Markierungen
+        </li>
+        <li><span class="parameter">_r</span>
+                  Magenta-Wert
+        </li>
+        <li><span class="parameter">_g</span>
+                  Yellow-Wert
+        </li>
+        <li><span class="parameter">_b</span>
+                  Cyan-Wert
+        </li>
+        <li><span class="parameter">_alpha</span>
+              Alpha-Wert
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.DestroyMarkerList"></a>
+    <strong>BriefingSystem.DestroyMarkerList (_index)</strong>
+    </dt>
+    <dd>
+    Zerstört eine Liste von Markern auf der Minimap.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_index</span>
+         Index der Liste
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.DestroyMarkerOfList"></a>
+    <strong>BriefingSystem.DestroyMarkerOfList (_index, _marker)</strong>
+    </dt>
+    <dd>
+    Zerstört einen Marker innerhalb einer Liste.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_index</span>
+          Index der Liste
+        </li>
+        <li><span class="parameter">_marker</span>
+         ID des Marker
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.RedeployMarkerList"></a>
+    <strong>BriefingSystem.RedeployMarkerList (_index, _x, _y)</strong>
+    </dt>
+    <dd>
+    Aktualisiert die Position aller marker in der Liste oder erstellt sie
+ neu, falls er nicht existiert.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_index</span>
+         Index der Marker-List
+        </li>
+        <li><span class="parameter">_x</span>
+             X-Position
+        </li>
+        <li><span class="parameter">_y</span>
+             Y-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.RedeployMarkerOfList"></a>
+    <strong>BriefingSystem.RedeployMarkerOfList (_index, _marker, _x, _y)</strong>
+    </dt>
+    <dd>
+    Aktualisiert einen Marker aus einer Liste von Markern.  Existiert der
+ Marker nicht, wird er erstellt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_index</span>
+          Index der Marker-List
+        </li>
+        <li><span class="parameter">_marker</span>
+         ID des Markers
+        </li>
+        <li><span class="parameter">_x</span>
+              X-Position
+        </li>
+        <li><span class="parameter">_y</span>
+              Y-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.RefreshMarkerList"></a>
+    <strong>BriefingSystem.RefreshMarkerList (_index)</strong>
+    </dt>
+    <dd>
+    Aktualisiert die Position aller marker in der Liste oder erstellt sie
+ neu, falls er nicht existiert.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_index</span>
+          Index der Marker-List
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.RefreshMarkerOfList"></a>
+    <strong>BriefingSystem.RefreshMarkerOfList (_index, _marker)</strong>
+    </dt>
+    <dd>
+    Aktualisiert einen Marker aus einer Liste von Markern.  Existiert der
+ Marker nicht, wird er erstellt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_index</span>
+          Index der Marker-List
+        </li>
+        <li><span class="parameter">_marker</span>
+         ID des Markers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.EnableBriefingSkipButton"></a>
+    <strong>BriefingSystem.EnableBriefingSkipButton (_player, _flag)</strong>
+    </dt>
+    <dd>
+    Macht den Skip-Button sichtbar oder versteckt ihn.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_player</span>
+         Spieler
+        </li>
+        <li><span class="parameter">_flag</span>
+           Sichtbarkeit
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem_CheckFader"></a>
+    <strong>BriefingSystem_CheckFader (_fadeIn, _timerValue)</strong>
+    </dt>
+    <dd>
+    Steuert die schwarze Maske, die für Übergänge genutzt wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_fadeIn</span>
+             Einblenden verwenden
+        </li>
+        <li><span class="parameter">_timerValue</span>
+         Dauer des Blendvorgangs
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.CutsceneGetPosition"></a>
+    <strong>BriefingSystem.CutsceneGetPosition (_Start, _End, _Factor)</strong>
+    </dt>
+    <dd>
+    Berechnet die Kameraposition wärhend eines Cutscene Flights.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Start</span>
+          [table] Startposition des Flight
+        </li>
+        <li><span class="parameter">_End</span>
+            [table] Endposition des Flight
+        </li>
+        <li><span class="parameter">_Factor</span>
+         [number] Interpolation Factor
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        [number] X-Position</li>
+        <li>
+        [number] Y-Position</li>
+        <li>
+        [number] Z-Position</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.CutsceneSaveFlight"></a>
+    <strong>BriefingSystem.CutsceneSaveFlight (_cameraPosition, _cameraLookAt, _FOV, _UV0, _UV1)</strong>
+    </dt>
+    <dd>
+    Speichert die Startposition der nächsten Kameraanimation.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_cameraPosition</span>
+         [table] Position der Kamera
+        </li>
+        <li><span class="parameter">_cameraLookAt</span>
+         [table] Blickziel der Kamera
+        </li>
+        <li><span class="parameter">_FOV</span>
+         [number] Field of View
+        </li>
+        <li><span class="parameter">_UV0</span>
+         [number] UV0 des Splashscreen
+        </li>
+        <li><span class="parameter">_UV1</span>
+         [number] UV1 des Splashscreen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.CutsceneFlyTo"></a>
+    <strong>BriefingSystem.CutsceneFlyTo (_cameraPosition, _cameraLookAt, _FOV, _Time, _UV0, _UV1)</strong>
+    </dt>
+    <dd>
+    Initalisiert den Flug der Kamera zu einer Position auf der Welt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_cameraPosition</span>
+         [table] Position der Kamera
+        </li>
+        <li><span class="parameter">_cameraLookAt</span>
+         [table] Blickziel der Kamera
+        </li>
+        <li><span class="parameter">_FOV</span>
+         [number] Field of View
+        </li>
+        <li><span class="parameter">_Time</span>
+         [number] Dauer
+        </li>
+        <li><span class="parameter">_UV0</span>
+         [number] UV0 des Splashscreen
+        </li>
+        <li><span class="parameter">_UV1</span>
+         [number] UV1 des Splashscreen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.CutsceneStopFlight"></a>
+    <strong>BriefingSystem.CutsceneStopFlight ()</strong>
+    </dt>
+    <dd>
+    Unterbricht eine Kamerabewegung der laufenden Cutscene.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.InterpolationFactor"></a>
+    <strong>BriefingSystem.InterpolationFactor (_start, _curr, _total, _dataContainer)</strong>
+    </dt>
+    <dd>
+    Errechnet den Interpolation Factor für den aktuellen Flight.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_start</span>
+                 Startzeit
+        </li>
+        <li><span class="parameter">_curr</span>
+                  Aktuelle Zeit
+        </li>
+        <li><span class="parameter">_total</span>
+                 Absolute Zeit
+        </li>
+        <li><span class="parameter">_dataContainer</span>
+         Game Tame Backup
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number: Interpolation Factor
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.GetCameraPosition"></a>
+    <strong>BriefingSystem.GetCameraPosition (_start, _end, _factor)</strong>
+    </dt>
+    <dd>
+    Berechnet die aktuelle Position der Kamera für den aktuellen Flight.
+<p> Der Interpolation Factor wird für eine Vektormultiplikation des
+ Richtungsvektors zwischen S(x,y,z) und E(x,y,z) verwendet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_start</span>
+          Startposition des Flight
+        </li>
+        <li><span class="parameter">_end</span>
+            Endposition des Flight
+        </li>
+        <li><span class="parameter">_factor</span>
+         Interpolation Factor
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        number: X-Position</li>
+        <li>
+        number: Y-Position</li>
+        <li>
+        number: Z-Position</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SaveFlight"></a>
+    <strong>BriefingSystem.SaveFlight (_position, _rotation, _angle, _distance, _FOV, _UV0, _UV1)</strong>
+    </dt>
+    <dd>
+    Speichert die Startposition der nächsten Kameraanimation.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_position</span>
+         Blickziel der Kamera
+        </li>
+        <li><span class="parameter">_rotation</span>
+         Rotation der Kamera
+        </li>
+        <li><span class="parameter">_angle</span>
+            Winkel der Kamera
+        </li>
+        <li><span class="parameter">_distance</span>
+         Entfernung der Kamera
+        </li>
+        <li><span class="parameter">_FOV</span>
+              Field of View
+        </li>
+        <li><span class="parameter">_UV0</span>
+              UV0 des Splashscreen
+        </li>
+        <li><span class="parameter">_UV1</span>
+              UV1 des Splashscreen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.FlyTo"></a>
+    <strong>BriefingSystem.FlyTo (_position, _rotation, _angle, _distance, _FOV, _time, _UV0, _UV1)</strong>
+    </dt>
+    <dd>
+    Initalisiert den Flug der Kamera zu einem Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_position</span>
+         Blickziel der Kamera
+        </li>
+        <li><span class="parameter">_rotation</span>
+         Rotation der Kamera
+        </li>
+        <li><span class="parameter">_angle</span>
+            Winkel der Kamera
+        </li>
+        <li><span class="parameter">_distance</span>
+         Entfernung der Kamera
+        </li>
+        <li><span class="parameter">_FOV</span>
+              Field of View
+        </li>
+        <li><span class="parameter">_time</span>
+             Animationszeit
+        </li>
+        <li><span class="parameter">_UV0</span>
+              UV0 des Splashscreen
+        </li>
+        <li><span class="parameter">_UV1</span>
+              UV1 des Splashscreen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.StopFlight"></a>
+    <strong>BriefingSystem.StopFlight ()</strong>
+    </dt>
+    <dd>
+    Stoppt die aktuelle Kameraanimation des Briefings.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.FollowFlight"></a>
+    <strong>BriefingSystem.FollowFlight (_follow, _rotation, _angle, _distance, _FOV, _time, _Z, _UV0, _UV1)</strong>
+    </dt>
+    <dd>
+    Initalisiert die Verfolgung eines Entities durch die Kamera.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_follow</span>
+           Blickziel der Kamera
+        </li>
+        <li><span class="parameter">_rotation</span>
+         Rotation der Kamera
+        </li>
+        <li><span class="parameter">_angle</span>
+            Winkel der Kamera
+        </li>
+        <li><span class="parameter">_distance</span>
+         Entfernung der Kamera
+        </li>
+        <li><span class="parameter">_FOV</span>
+              Field of View
+        </li>
+        <li><span class="parameter">_time</span>
+             Animationszeit
+        </li>
+        <li><span class="parameter">_Z</span>
+                Z-Offset des Blickziels
+        </li>
+        <li><span class="parameter">_UV0</span>
+              UV0 des Splashscreen
+        </li>
+        <li><span class="parameter">_UV1</span>
+              UV1 des Splashscreen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SetBriefingPageTextPosition"></a>
+    <strong>BriefingSystem.SetBriefingPageTextPosition (_page)</strong>
+    </dt>
+    <dd>
+    Setzt die Position des Textes und des Titels einer Briefing-Seite.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+         Briefing-Seite
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SetBriefingSplashscreenUV"></a>
+    <strong>BriefingSystem.SetBriefingSplashscreenUV (_StartUV0, _EndUV0, _StartUV1, _EndUV1, _Factor)</strong>
+    </dt>
+    <dd>
+    Steuert die Scrollanimation des Splashscreen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_StartUV0</span>
+         Startposition UV0
+        </li>
+        <li><span class="parameter">_EndUV0</span>
+           Endposition UV0
+        </li>
+        <li><span class="parameter">_StartUV1</span>
+         Startposition UV1
+        </li>
+        <li><span class="parameter">_EndUV1</span>
+           Endposition UV1
+        </li>
+        <li><span class="parameter">_Factor</span>
+           Interpolation Factor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SetBriefingPagePortrait"></a>
+    <strong>BriefingSystem.SetBriefingPagePortrait (_page)</strong>
+    </dt>
+    <dd>
+    Blendet das Character Sprite ein, wenn angegeben.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+          Aktuelle Briefing-Seite
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BriefingSystem.SetBriefingPageOrSplashscreen"></a>
+    <strong>BriefingSystem.SetBriefingPageOrSplashscreen (_page, _style)</strong>
+    </dt>
+    <dd>
+    Schaltet zwischen Bars und Splashscreen um.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+          Aktuelle Briefing-Seite
+        </li>
+        <li><span class="parameter">_style</span>
+         Bar-Style
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Originalfunktionen"></a>Originalfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "ThroneRoomCameraControl"></a>
+    <strong>ThroneRoomCameraControl ()</strong>
+    </dt>
+    <dd>
+    Steuert die Kamera während eines Briefings.  Es wird entweder das alte
+ System von OldMacDonald oder das neue von totalwarANGEL genutzt.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ThroneRoomLeftClick"></a>
+    <strong>ThroneRoomLeftClick ()</strong>
+    </dt>
+    <dd>
+    Wird immer dann aufgerufen, wenn der Spieler innerhalb des Throneroom
+ Mode links klickt.
+
+
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Reprisal"></a>Reprisal</h2>
 
     <dl class="function">
@@ -866,7 +2827,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-12 12:55:02 </i>
+<i style="float:right;">Last updated 2018-12-12 14:26:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -50,7 +50,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1420";
+QSB.Version = "Symfonia Build 1500";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 

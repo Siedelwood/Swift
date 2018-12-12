@@ -35,6 +35,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -110,6 +111,29 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.RestartQuestDialog">API.RestartQuestDialog (_Dialog)</a></td>
 	<td class="summary">Setzt einen Quest-Dialog zurück sodass er erneut gestartet werden kann.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:Install">BundleQuestGeneration.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestMessage">BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)</a></td>
+	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestCreateNewQuest">BundleQuestGeneration.Global:QuestCreateNewQuest (_Data)</a></td>
+	<td class="summary">Erzeugt einen Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestValidateQuestData">BundleQuestGeneration.Global:QuestValidateQuestData (_Data)</a></td>
+	<td class="summary">Validiert die Felder eines Quests.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestValidateQuestName">BundleQuestGeneration.Global:QuestValidateQuestName (_Name)</a></td>
+	<td class="summary">Validiert den Namen eines Quests.</td>
 	</tr>
 </table>
 
@@ -336,13 +360,157 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleQuestGeneration.Global:Install"></a>
+    <strong>BundleQuestGeneration.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:QuestMessage"></a>
+    <strong>BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Nachricht im Questfenster.
+<p> Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
+ Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+ Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+ Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+ des Quests ausgeführt wird.
+<p> Alle Paramater sind optional und können von rechts nach links weggelassen
+ oder mit nil aufgefüllt werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+               [string] Anzeigetext der Nachricht
+        </li>
+        <li><span class="parameter">_Sender</span>
+             [number] Sender der Nachricht
+        </li>
+        <li><span class="parameter">_Receiver</span>
+           [number] Receiver der Nachricht
+        </li>
+        <li><span class="parameter">_AncestorWt</span>
+         [number] Wartezeit
+        </li>
+        <li><span class="parameter">_Callback</span>
+           [function] Callback
+        </li>
+        <li><span class="parameter">_Ancestor</span>
+           [string] Vorgänger-Quest
+        </li>
+        <li><span class="parameter">_QuestName</span>
+          [string] Name des Auftrags
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] QuestName
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:QuestCreateNewQuest"></a>
+    <strong>BundleQuestGeneration.Global:QuestCreateNewQuest (_Data)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+         [table] Daten des Quest.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] Name des erzeugten Quests
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:QuestValidateQuestData"></a>
+    <strong>BundleQuestGeneration.Global:QuestValidateQuestData (_Data)</strong>
+    </dt>
+    <dd>
+    Validiert die Felder eines Quests.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+         [table] Daten des Quest.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Quest OK
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleQuestGeneration.Global:QuestValidateQuestName"></a>
+    <strong>BundleQuestGeneration.Global:QuestValidateQuestName (_Name)</strong>
+    </dt>
+    <dd>
+    Validiert den Namen eines Quests.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+         [string] Name des Quest.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Name OK
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-12 12:55:02 </i>
+<i style="float:right;">Last updated 2018-12-12 14:26:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

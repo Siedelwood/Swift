@@ -35,6 +35,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 </ul>
 
 
@@ -127,6 +128,40 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.PlaceToPosition">API.PlaceToPosition (_Entity, _Position, _Distance, _Angle)</a></td>
 	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityCommandFunctions.Global:Attack">BundleEntityCommandFunctions.Global:Attack (_Entity, _Target)</a></td>
+	<td class="summary">Das Entity greift ein anderes Entity an, sofern möglich.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityCommandFunctions.Global:AttackMove">BundleEntityCommandFunctions.Global:AttackMove (_Entity, _Position)</a></td>
+	<td class="summary">Ein Entity oder ein Battalion wird zu einer Position laufen und
+ alle gültigen Ziele auf dem Weg angreifen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityCommandFunctions.Global:Install">BundleEntityCommandFunctions.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityCommandFunctions.Global:Move">BundleEntityCommandFunctions.Global:Move (_Entity, _Position)</a></td>
+	<td class="summary">Bewegt das Entity zur Zielposition.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityCommandFunctions.Global:MoveAndLookAt">BundleEntityCommandFunctions.Global:MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt und schaut
+ das Ziel anschließend an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityCommandFunctions.Global:MoveToPosition">BundleEntityCommandFunctions.Global:MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</a></td>
+	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityCommandFunctions.Shared:GetRelativePos">BundleEntityCommandFunctions.Shared:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</a></td>
+	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.</td>
 	</tr>
 </table>
 
@@ -370,13 +405,199 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleEntityCommandFunctions.Global:Attack"></a>
+    <strong>BundleEntityCommandFunctions.Global:Attack (_Entity, _Target)</strong>
+    </dt>
+    <dd>
+    Das Entity greift ein anderes Entity an, sofern möglich.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+          [string|number] Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+         [string|number] Angegriffenes Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityCommandFunctions.Global:AttackMove"></a>
+    <strong>BundleEntityCommandFunctions.Global:AttackMove (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Ein Entity oder ein Battalion wird zu einer Position laufen und
+ alle gültigen Ziele auf dem Weg angreifen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           [string|number] Angreifendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+         [string] Skriptname, EntityID oder Positionstable
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityCommandFunctions.Global:Install"></a>
+    <strong>BundleEntityCommandFunctions.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityCommandFunctions.Global:Move"></a>
+    <strong>BundleEntityCommandFunctions.Global:Move (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Bewegt das Entity zur Zielposition.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           [string|number] Bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+         [table] Positionstable
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityCommandFunctions.Global:MoveAndLookAt"></a>
+    <strong>BundleEntityCommandFunctions.Global:MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt und schaut
+ das Ziel anschließend an.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               [string|number] Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             [string|number] Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             [number] Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_moveAsEntity</span>
+         [boolean] Blocking ignorieren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityCommandFunctions.Global:MoveToPosition"></a>
+    <strong>BundleEntityCommandFunctions.Global:MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</strong>
+    </dt>
+    <dd>
+    Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               [string|number] Zu bewegendes Entity
+        </li>
+        <li><span class="parameter">_Position</span>
+             [string|number] Ziel
+        </li>
+        <li><span class="parameter">_Distance</span>
+             [number] Entfernung zum Ziel
+        </li>
+        <li><span class="parameter">_Angle</span>
+                [number] Winkel
+        </li>
+        <li><span class="parameter">_moveAsEntity</span>
+         [boolean] Blocking ignorieren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleEntityCommandFunctions.Shared:GetRelativePos"></a>
+    <strong>BundleEntityCommandFunctions.Shared:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</strong>
+    </dt>
+    <dd>
+    Errechnet eine Position relativ im angegebenen Winkel und Position zur
+ Basisposition.  Die Basis kann ein Entity oder eine Positionstabelle sein.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_target</span>
+                  [string|number|table] Basisposition
+        </li>
+        <li><span class="parameter">_distance</span>
+                [number] Entfernung
+        </li>
+        <li><span class="parameter">_angle</span>
+                   [number] Winkel
+        </li>
+        <li><span class="parameter">_buildingRealPos</span>
+         [boolean] Gebäudemitte statt Gebäudeeingang
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Position
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-12 12:55:02 </i>
+<i style="float:right;">Last updated 2018-12-12 14:26:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
