@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>bundleentityscriptingvalues</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundleentityscriptingvalues</code></h1>
+<p><p>Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
+ verändert werden, die sonst unzugänglich wären.</p>
+<p> Dazu zählen beispielsweise
+ die Größe des Entity und das Bewegungsziel.</p>
+<p> <p><a href="#API.GetEntityPlayer">Scripting Values</a></p>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityPlayer">API.GetEntityPlayer (_Entity)</a></td>
+	<td class="summary">Gibt den Besitzer des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityScale">API.GetEntityScale (_Entity)</a></td>
+	<td class="summary">Gibt den Größenfaktor des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetMovementTarget">API.GetMovementTarget (_Entity)</a></td>
+	<td class="summary">Gibt die Position zurück, zu der sich das Entity bewegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsActiveNpc">API.IsActiveNpc (_Entity)</a></td>
+	<td class="summary">Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsEntityVisible">API.IsEntityVisible (_Entity)</a></td>
+	<td class="summary">Gibt zurück, ob das Entity sichtbar ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEntityPlayer">API.SetEntityPlayer (_Entity, _PlayerID)</a></td>
+	<td class="summary">Erzwingt einen neuen Besitzer für das Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEntityScale">API.SetEntityScale (_Entity, _Scale)</a></td>
+	<td class="summary">Setzt den Größenfaktor des Entity.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.GetEntityPlayer"></a>
+    <strong>API.GetEntityPlayer (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Besitzer des Entity zurück.
+<p> <p><b>Alias</b>: GetPlayer</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Besitzer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityScale"></a>
+    <strong>API.GetEntityScale (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Größenfaktor des Entity zurück.
+<p> <p>Der Faktor gibt die relative Größe des Entity zu seiner normalen Größe an.
+ </p>
+<p> <p><b>Alias</b>: GetScale</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Größenfaktor
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Scale = API.GetEntityScale(<span class="string">"alandra"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetMovementTarget"></a>
+    <strong>API.GetMovementTarget (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Position zurück, zu der sich das Entity bewegt.
+<p> Über diese Koordinaten könnte man prüfen, ob ein Entity sich in einen
+ Bereich bewegt, in dem es nichts zu suchen hat.
+<p> <p><b>Alias</b>: GetMovingTarget</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [table] Positionstabelle
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Hakim bleibt stehen, wenn er in ein Sperrgebiet bewegt wird.
+</span><span class="keyword">local</span> Destination = API.GetMovementTarget(<span class="string">"hakim"</span>);
+<span class="keyword">if</span> GetDistance(Destination, <span class="string">"LockedArea"</span>) &lt; <span class="number">2000</span> <span class="keyword">then</span>
+    <span class="keyword">local</span> x,y,z = Logic.EntityGetPos(GetID(<span class="string">"hakim"</span>));
+    Logic.DEBUG_SetSettlerPosition(GetID(<span class="string">"hakim"</span>), x, y):
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.IsActiveNpc"></a>
+    <strong>API.IsActiveNpc (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das NPC-Flag bei dem Siedler gesetzt ist.
+<p> Auf diese Weise kann geprüft werden, ob ein NPC auf dem Entity aktiv ist.
+<p> <p><b>Alias</b>: IsNpc</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ist NPC
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Active = API.IsActiveNpc(<span class="string">"alandra"</span>);
+<span class="keyword">if</span> Active <span class="keyword">then</span>
+    API.Note(<span class="string">"NPC is active"</span>);
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityVisible"></a>
+    <strong>API.IsEntityVisible (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das Entity sichtbar ist.
+<p> <p><b>Alias</b>: IsVisible</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Ist sichtbar
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityPlayer"></a>
+    <strong>API.SetEntityPlayer (_Entity, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Erzwingt einen neuen Besitzer für das Entity.
+<p> Mit dieser Funktion werden die Sicherungen des Spiels umgangen! Es ist
+ möglich ein Raubtier einem richtigen Spieler zuzuweisen.
+<p> <p><b>Alias</b>: ChangePlayer</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           [string|number] Entity
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Besitzer
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityScale"></a>
+    <strong>API.SetEntityScale (_Entity, _Scale)</strong>
+    </dt>
+    <dd>
+    Setzt den Größenfaktor des Entity.
+<p> Bei einem Siedler wird ebenfalls versucht die Bewegungsgeschwindigkeit an
+ die Größe anzupassen, was aber nicht bei allen Siedlern möglich ist.
+<p> <p><b>Alias</b>: SetScale</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+        <li><span class="parameter">_Scale</span>
+          [number] Größenfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-12-12 18:33:31 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

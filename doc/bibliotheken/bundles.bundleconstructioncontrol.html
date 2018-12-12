@@ -49,7 +49,9 @@
   <li><a href="../bibliotheken/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><a href="../bibliotheken/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
   <li><strong>bundles.bundleconstructioncontrol</strong></li>
+  <li><a href="../bibliotheken/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="../bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
@@ -62,10 +64,14 @@
   <li><a href="../bibliotheken/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
-  <li><a href="../bibliotheken/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="../bibliotheken/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../bibliotheken/core.html">core</a></li>
+  <li><a href="../bibliotheken/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../bibliotheken/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../bibliotheken/external.externalsavegametools.html">external.externalsavegametools</a></li>
   <li><a href="../bibliotheken/loader.html">loader</a></li>
   <li><a href="../bibliotheken/writer.html">writer</a></li>
 </ul>
@@ -75,16 +81,12 @@
 <div id="content">
 
 <h1>Module <code>bundles.bundleconstructioncontrol</code></h1>
-<p>Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
- Gebäude nicht gebaut oder nicht abgerissen werden darf.</p>
-<p>
+<p>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien
+ unterbunden werden.</p>
+<p> Verbote können für bestimmte Bereiche (kreisförmige
+ Gebiete um ein Zentrum) oder ganze Territorien vereinbart werden.
 <p> Das wichtigste Auf einen Blick:
  <ul>
- <li>
- Den Abriss für bestimmte Entities steuern.<br>
- <a href="#API.ProtectCategory">Entities beschützen</a>,
- <a href="#API.UnprotectCategory">Schutz aufheben</a>
- </li>
  <li>
  Den Bau von Gebäuden an bestimmten Orten steuern.<br>
  <a href="#API.BanCategoryInArea">Bau verbieten</a>,
@@ -97,87 +99,47 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectEntity">API.ProtectEntity (_entity)</a></td>
-	<td class="summary">Fügt ein Entity hinzu, dass nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ProtectEntityType">API.ProtectEntityType (_entity)</a></td>
-	<td class="summary">Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ProtectCategory">API.ProtectCategory (_entity)</a></td>
-	<td class="summary">Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ProtectTerritory">API.ProtectTerritory (_entity)</a></td>
-	<td class="summary">Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectEntity">API.UnprotectEntity (_entry)</a></td>
-	<td class="summary">Entfernt ein Entity, dass nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectEntityType">API.UnprotectEntityType (_entry)</a></td>
-	<td class="summary">Entfernt einen Entitytyp, der nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectCategory">API.UnprotectCategory (_entry)</a></td>
-	<td class="summary">Entfernt eine Kategorie, die nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectTerritory">API.UnprotectTerritory (_entry)</a></td>
-	<td class="summary">Entfernt ein Territory, auf dem nichts abgerissen werden kann.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.BanTypeAtTerritory">API.BanTypeAtTerritory (_type, _territory)</a></td>
-	<td class="summary">Untersagt den Bau des Typs im Territorium.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.BanCategoryAtTerritory">API.BanCategoryAtTerritory (_eCat, _territory)</a></td>
 	<td class="summary">Untersagt den Bau der Kategorie im Territorium.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.BanTypeInArea">API.BanTypeInArea (_type, _center, _area)</a></td>
-	<td class="summary">Untersagt den Bau des Typs im Gebiet.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.BanCategoryInArea">API.BanCategoryInArea (_eCat, _center, _area)</a></td>
 	<td class="summary">Untersagt den Bau der Kategorie im Gebiet.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UnBanTypeAtTerritory">API.UnBanTypeAtTerritory (_type, _territory)</a></td>
-	<td class="summary">Gibt einen Typ zum Bau im Territorium wieder frei.</td>
+	<td class="name" nowrap><a href="#API.BanTypeAtTerritory">API.BanTypeAtTerritory (_type, _territory)</a></td>
+	<td class="summary">Untersagt den Bau des Typs im Territorium.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UnBanCategoryAtTerritory">API.UnBanCategoryAtTerritory (_eCat, _territory)</a></td>
+	<td class="name" nowrap><a href="#API.BanTypeInArea">API.BanTypeInArea (_type, _center, _area)</a></td>
+	<td class="summary">Untersagt den Bau des Typs im Gebiet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnbanCategoryAtTerritory">API.UnbanCategoryAtTerritory (_eCat, _territory)</a></td>
 	<td class="summary">Gibt eine Kategorie zum Bau im Territorium wieder frei.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UnBanTypeInArea">API.UnBanTypeInArea (_type, _center)</a></td>
-	<td class="summary">Gibt einen Typ zum Bau im Gebiet wieder frei.</td>
+	<td class="name" nowrap><a href="#API.UnbanCategoryInArea">API.UnbanCategoryInArea (_eCat, _center)</a></td>
+	<td class="summary">Gibt eine Kategorie zum Bau im Gebiet wieder frei.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UnBanCategoryInArea">API.UnBanCategoryInArea (_eCat, _center)</a></td>
-	<td class="summary">Gibt eine Kategorie zum Bau im Gebiet wieder frei.</td>
+	<td class="name" nowrap><a href="#API.UnbanTypeAtTerritory">API.UnbanTypeAtTerritory (_type, _territory)</a></td>
+	<td class="summary">Gibt einen Typ zum Bau im Territorium wieder frei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnbanTypeInArea">API.UnbanTypeInArea (_type, _center)</a></td>
+	<td class="summary">Gibt einen Typ zum Bau im Gebiet wieder frei.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Global:Install">BundleConstructionControl.Global:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleConstructionControl.Global.CanPlayerPlaceBuilding">BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</a></td>
 	<td class="summary">Verhindert den Bau von Entities in Gebieten und Territorien.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Local:Install">BundleConstructionControl.Local:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleConstructionControl.Local.DeleteEntityStateBuilding">BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</a></td>
-	<td class="summary">Verhindert den Abriss von Entities.</td>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Global:Install">BundleConstructionControl.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
 </table>
 
@@ -188,189 +150,6 @@
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
-    <dt>
-    <a name = "API.ProtectEntity"></a>
-    <strong>API.ProtectEntity (_entity)</strong>
-    </dt>
-    <dd>
-    Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         [string] Nicht abreißbares Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ProtectEntityType"></a>
-    <strong>API.ProtectEntityType (_entity)</strong>
-    </dt>
-    <dd>
-    Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         [number] Nicht abreißbarer Typ
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ProtectCategory"></a>
-    <strong>API.ProtectCategory (_entity)</strong>
-    </dt>
-    <dd>
-    Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         [number] Nicht abreißbare Kategorie
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ProtectTerritory"></a>
-    <strong>API.ProtectTerritory (_entity)</strong>
-    </dt>
-    <dd>
-    Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-         [number] Geschütztes Territorium
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UnprotectEntity"></a>
-    <strong>API.UnprotectEntity (_entry)</strong>
-    </dt>
-    <dd>
-    Entfernt ein Entity, dass nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-         [string] Nicht abreißbares Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UnprotectEntityType"></a>
-    <strong>API.UnprotectEntityType (_entry)</strong>
-    </dt>
-    <dd>
-    Entfernt einen Entitytyp, der nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-         [number] Nicht abreißbarer Typ
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UnprotectCategory"></a>
-    <strong>API.UnprotectCategory (_entry)</strong>
-    </dt>
-    <dd>
-    Entfernt eine Kategorie, die nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-         [number] Nicht abreißbare Kategorie
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UnprotectTerritory"></a>
-    <strong>API.UnprotectTerritory (_entry)</strong>
-    </dt>
-    <dd>
-    Entfernt ein Territory, auf dem nichts abgerissen werden kann.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-         [number] Geschütztes Territorium
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.BanTypeAtTerritory"></a>
-    <strong>API.BanTypeAtTerritory (_type, _territory)</strong>
-    </dt>
-    <dd>
-    Untersagt den Bau des Typs im Territorium.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_type</span>
-              [number] Entitytyp
-        </li>
-        <li><span class="parameter">_territory</span>
-         [number] Territorium
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
     <dt>
     <a name = "API.BanCategoryAtTerritory"></a>
     <strong>API.BanCategoryAtTerritory (_eCat, _territory)</strong>
@@ -392,32 +171,10 @@
 
 
 
-
-</dd>
-    <dt>
-    <a name = "API.BanTypeInArea"></a>
-    <strong>API.BanTypeInArea (_type, _center, _area)</strong>
-    </dt>
-    <dd>
-    Untersagt den Bau des Typs im Gebiet.
-
-
-    <h3>Parameters:</h3>
+    <h3>Usage:</h3>
     <ul>
-        <li><span class="parameter">_type</span>
-           [number] Entitytyp
-        </li>
-        <li><span class="parameter">_center</span>
-         [string] Gebietszentrum
-        </li>
-        <li><span class="parameter">_area</span>
-           [number] Gebietsgröße
-        </li>
+        <pre class="example">API.BanCategoryAtTerritory(EntityCategories.AttackableBuilding, <span class="number">2</span>);</pre>
     </ul>
-
-
-
-
 
 </dd>
     <dt>
@@ -444,14 +201,18 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.BanTypeInArea(EntityCategories.CityBuilding, <span class="string">"groundZero"</span>, <span class="number">4000</span>);</pre>
+    </ul>
 
 </dd>
     <dt>
-    <a name = "API.UnBanTypeAtTerritory"></a>
-    <strong>API.UnBanTypeAtTerritory (_type, _territory)</strong>
+    <a name = "API.BanTypeAtTerritory"></a>
+    <strong>API.BanTypeAtTerritory (_type, _territory)</strong>
     </dt>
     <dd>
-    Gibt einen Typ zum Bau im Territorium wieder frei.
+    Untersagt den Bau des Typs im Territorium.
 
 
     <h3>Parameters:</h3>
@@ -467,11 +228,45 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.BanTypeAtTerritory(Entities.B_Bakery, <span class="number">1</span>);</pre>
+    </ul>
 
 </dd>
     <dt>
-    <a name = "API.UnBanCategoryAtTerritory"></a>
-    <strong>API.UnBanCategoryAtTerritory (_eCat, _territory)</strong>
+    <a name = "API.BanTypeInArea"></a>
+    <strong>API.BanTypeInArea (_type, _center, _area)</strong>
+    </dt>
+    <dd>
+    Untersagt den Bau des Typs im Gebiet.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_type</span>
+           [number] Entitytyp
+        </li>
+        <li><span class="parameter">_center</span>
+         [string] Gebietszentrum
+        </li>
+        <li><span class="parameter">_area</span>
+           [number] Gebietsgröße
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.BanTypeInArea(Entities.B_Bakery, <span class="string">"groundZero"</span>, <span class="number">4000</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnbanCategoryAtTerritory"></a>
+    <strong>API.UnbanCategoryAtTerritory (_eCat, _territory)</strong>
     </dt>
     <dd>
     Gibt eine Kategorie zum Bau im Territorium wieder frei.
@@ -490,34 +285,15 @@
 
 
 
-
-</dd>
-    <dt>
-    <a name = "API.UnBanTypeInArea"></a>
-    <strong>API.UnBanTypeInArea (_type, _center)</strong>
-    </dt>
-    <dd>
-    Gibt einen Typ zum Bau im Gebiet wieder frei.
-
-
-    <h3>Parameters:</h3>
+    <h3>Usage:</h3>
     <ul>
-        <li><span class="parameter">_type</span>
-           [number] Entitytyp
-        </li>
-        <li><span class="parameter">_center</span>
-         [string] Gebiet
-        </li>
+        <pre class="example">API.UnbanCategoryAtTerritory(EntityCategories.AttackableBuilding, <span class="number">1</span>);</pre>
     </ul>
 
-
-
-
-
 </dd>
     <dt>
-    <a name = "API.UnBanCategoryInArea"></a>
-    <strong>API.UnBanCategoryInArea (_eCat, _center)</strong>
+    <a name = "API.UnbanCategoryInArea"></a>
+    <strong>API.UnbanCategoryInArea (_eCat, _center)</strong>
     </dt>
     <dd>
     Gibt eine Kategorie zum Bau im Gebiet wieder frei.
@@ -536,26 +312,70 @@
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnbanCategoryInArea(EntityCategories.CityBuilding, <span class="string">"groundZero"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnbanTypeAtTerritory"></a>
+    <strong>API.UnbanTypeAtTerritory (_type, _territory)</strong>
+    </dt>
+    <dd>
+    Gibt einen Typ zum Bau im Territorium wieder frei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_type</span>
+              [number] Entitytyp
+        </li>
+        <li><span class="parameter">_territory</span>
+         [number] Territorium
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnbanTypeAtTerritory(Entities.B_Bakery, <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnbanTypeInArea"></a>
+    <strong>API.UnbanTypeInArea (_type, _center)</strong>
+    </dt>
+    <dd>
+    Gibt einen Typ zum Bau im Gebiet wieder frei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_type</span>
+           [number] Entitytyp
+        </li>
+        <li><span class="parameter">_center</span>
+         [string] Gebiet
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnbanTypeInArea(Entities.B_Bakery, <span class="string">"groundZero"</span>);</pre>
+    </ul>
 
 </dd>
 </dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
-    <dt>
-    <a name = "BundleConstructionControl.Global:Install"></a>
-    <strong>BundleConstructionControl.Global:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im globalen Skript.
-
-
-
-
-
-
-
-</dd>
     <dt>
     <a name = "BundleConstructionControl.Global.CanPlayerPlaceBuilding"></a>
     <strong>BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</strong>
@@ -586,33 +406,13 @@
 
 </dd>
     <dt>
-    <a name = "BundleConstructionControl.Local:Install"></a>
-    <strong>BundleConstructionControl.Local:Install ()</strong>
+    <a name = "BundleConstructionControl.Global:Install"></a>
+    <strong>BundleConstructionControl.Global:Install ()</strong>
     </dt>
     <dd>
-    Initalisiert das Bundle im lokalen Skript.
+    Initalisiert das Bundle im globalen Skript.
 
 
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleConstructionControl.Local.DeleteEntityStateBuilding"></a>
-    <strong>BundleConstructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</strong>
-    </dt>
-    <dd>
-    Verhindert den Abriss von Entities.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_BuildingID</span>
-         EntityID des Gebäudes
-        </li>
-    </ul>
 
 
 
@@ -626,7 +426,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-10 11:41:37 </i>
+<i style="float:right;">Last updated 2018-12-12 18:33:50 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -1,0 +1,524 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Symfonia</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#QSB_TimeLine">QSB.TimeLine</a></li>
+</ul>
+
+
+<h2>Bibliotheken</h2>
+<ul class="nowrap">
+  <li><a href="../bibliotheken/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../bibliotheken/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../bibliotheken/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../bibliotheken/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../bibliotheken/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../bibliotheken/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../bibliotheken/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../bibliotheken/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../bibliotheken/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../bibliotheken/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../bibliotheken/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../bibliotheken/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../bibliotheken/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><strong>bundles.bundletimeline</strong></li>
+  <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../bibliotheken/core.html">core</a></li>
+  <li><a href="../bibliotheken/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../bibliotheken/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../bibliotheken/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../bibliotheken/loader.html">loader</a></li>
+  <li><a href="../bibliotheken/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundletimeline</code></h1>
+<p>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu
+ gliedern.</p>
+<p>
+<p> Die Bezeichnung "Time Line" (Zeitstrahl) wird z.B. in der Filmindustrie
+ verwendet und beschreibt einen Ablauf von aufeinander folgenden Ereignissen.
+ Diese Ereignisse sind zeitlich gegliedert.
+<p> Du kannst mit der Implementation eines solchen Zeitstrahls Lua-Funktionen
+ im Abstand einer oder mehrerer Sekunden ausführen lassen. Ein solcher
+ Zeitstrahl verfügt über eine ID, mit der er angesprochen werden kann. So
+ kann er abgebrochen, pausiert, fortgesetzt und neu gestartet werden.
+<p> <a href="#API.TimeLineStart">Zeitstrahl erstellen</a><br>Eine Abfolge von
+ Aktionen definieren, die zu gewissen Zeitpunkten ausgelöst werden.
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineIsRunning">API.TimeLineIsRunning (_ID)</a></td>
+	<td class="summary">Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineRestart">API.TimeLineRestart (_ID)</a></td>
+	<td class="summary">Startet einen Zeitstrahl erneut.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineResume">API.TimeLineResume (_ID)</a></td>
+	<td class="summary">Stößt einen angehaltenen Zeitstrahl wieder an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineStart">API.TimeLineStart (_Description)</a></td>
+	<td class="summary">Startet einen Zeitstrahl.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineYield">API.TimeLineYield (_ID)</a></td>
+	<td class="summary">Hält einen Zeitstrahl an.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Global:Install">BundleTimeLine.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Local:Install">BundleTimeLine.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+</table>
+<h2><a href="#QSB_TimeLine">QSB.TimeLine</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine.TimeLineControler">BundleTimeLine.Shared.TimeLine.TimeLineControler ()</a></td>
+	<td class="summary">Steuert alle Zeitstrahlen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:IsRunning">BundleTimeLine.Shared.TimeLine:IsRunning (_ID)</a></td>
+	<td class="summary">Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Restart">BundleTimeLine.Shared.TimeLine:Restart (_ID)</a></td>
+	<td class="summary">Startet einen Zeitstrahl erneut.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Resume">BundleTimeLine.Shared.TimeLine:Resume (_ID)</a></td>
+	<td class="summary">Stößt einen angehaltenen Zeitstrahl wieder an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Start">BundleTimeLine.Shared.TimeLine:Start (_description)</a></td>
+	<td class="summary">Startet einen Zeitstrahl.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Yield">BundleTimeLine.Shared.TimeLine:Yield (_ID)</a></td>
+	<td class="summary">Hält einen Zeitstrahl an.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.TimeLineIsRunning"></a>
+    <strong>API.TimeLineIsRunning (_ID)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+<p> <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Zeitstrahl ist aktiv
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> IsRunning = API.TimeLineIsRunning(MyTimeLine);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TimeLineRestart"></a>
+    <strong>API.TimeLineRestart (_ID)</strong>
+    </dt>
+    <dd>
+    Startet einen Zeitstrahl erneut.  Ist der Zeitstrahl noch nicht
+ beendet, beginnt er dennoch von vorn.
+<p> <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TimeLineRestart(MyTimeLine);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TimeLineResume"></a>
+    <strong>API.TimeLineResume (_ID)</strong>
+    </dt>
+    <dd>
+    Stößt einen angehaltenen Zeitstrahl wieder an.
+<p> <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TimeLineResume(MyTimeLine);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TimeLineStart"></a>
+    <strong>API.TimeLineStart (_Description)</strong>
+    </dt>
+    <dd>
+    Startet einen Zeitstrahl.  Ein Zeitstrahl hat Stationen,
+ an denen eine Aktion ausgeführt wird. Jede Station muss mindestens eine
+ Sekunde nach der vorherigen liegen.
+<p> Jede Aktion eines Zeitstrahls erhält die Table des aktuellen Ereignisses
+ als Argument. So können Parameter an die Funktion übergeben werden.
+<p> <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Description</span>
+         [table] Beschreibung
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des Zeitstrahls
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">MyTimeLine = API.TimeLineStart {
+    {Time = <span class="number">1</span>, Action = MyFirstAction},
+    <span class="comment">-- MySecondAction erhält "BOCKWURST" als Parameter
+</span>    {Time = <span class="number">3</span>, Action = MySecondAction, <span class="string">"BOCKWURST"</span>},
+    <span class="comment">-- Inline-Funktion
+</span>    {Time = <span class="number">9</span>, Action = <span class="keyword">function</span>() <span class="keyword">end</span>},
+}</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TimeLineYield"></a>
+    <strong>API.TimeLineYield (_ID)</strong>
+    </dt>
+    <dd>
+    Hält einen Zeitstrahl an.
+<p> <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TimeLineYield(MyTimeLine);</pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleTimeLine.Global:Install"></a>
+    <strong>BundleTimeLine.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Local:Install"></a>
+    <strong>BundleTimeLine.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="QSB_TimeLine"></a>QSB.TimeLine</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine.TimeLineControler"></a>
+    <strong>BundleTimeLine.Shared.TimeLine.TimeLineControler ()</strong>
+    </dt>
+    <dd>
+    Steuert alle Zeitstrahlen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:IsRunning"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:IsRunning (_ID)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+<p> <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Zeistrahl ist aktiv
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:Restart"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:Restart (_ID)</strong>
+    </dt>
+    <dd>
+    Startet einen Zeitstrahl erneut.  Ist der Zeitstrahl noch nicht
+ beendet, beginnt er dennoch von vorn.
+<p> <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:Resume"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:Resume (_ID)</strong>
+    </dt>
+    <dd>
+    Stößt einen angehaltenen Zeitstrahl wieder an.
+<p> Die Zeit, die seit der Pausierung vergangen ist, wird zur Startzeit
+ addiert um Trigger Fehler zu vermeiden.
+<p> <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:Start"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:Start (_description)</strong>
+    </dt>
+    <dd>
+    Startet einen Zeitstrahl.  Ein Zeitstrahl hat bestimmte Stationen,
+ an denen eine Aktion ausgeführt wird.
+<p> <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_description</span>
+         [table] Beschreibung
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des Zeitstrahl
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTimeLine.Shared.TimeLine:Yield"></a>
+    <strong>BundleTimeLine.Shared.TimeLine:Yield (_ID)</strong>
+    </dt>
+    <dd>
+    Hält einen Zeitstrahl an.
+<p> Der Zeitstempel wird gespeichert.
+<p> <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [table] ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-12-12 18:33:50 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

@@ -104,21 +104,7 @@ end
 -- Copy = API.InstanceTable(Table)
 --
 function API.InstanceTable(_Source, _Dest)
-    _Dest = _Dest or {};
-    assert(type(_Source) == "table")
-    assert(type(_Dest) == "table")
-
-    for k, v in pairs(_Source) do
-        if type(v) == "table" then
-            _Dest[k] = _Dest[k] or {};
-            for kk, vv in pairs(API.InstanceTable(v)) do
-                _Dest[k][kk] = _Dest[k][kk] or vv;
-            end
-        else
-            _Dest[k] = _Dest[k] or v;
-        end
-    end
-    return _Dest;
+    return copy(_Source, _Dest);
 end
 CopyTableRecursive = API.InstanceTable;
 
@@ -1211,6 +1197,124 @@ function API.RealTimeWait(_Waittime, _Action, ...)
             return true;
         end
     end, QSB.RealTime_SecondsSinceGameStart, _Waittime, _Action, {...});
+end
+
+-- -------------------------------------------------------------------------- --
+-- Object Oriented Programming                                                --
+-- -------------------------------------------------------------------------- --
+
+-- Ermöglicht das objektorientierte programmieren in Siedler-Lua. Klassen
+-- müssen sich immer direkt in _G befinden, damit className automatisch
+-- gesetzt werden kann. Andernfalls muss der Name der Klasse per Hand
+-- gesetzt werden.
+
+---
+-- Kopiert die Quelltabelle rekursiv in die Zieltabelle. Ist ein Wert im
+-- Ziel vorhanden, wird er nicht überschrieben.
+--
+-- @param _Source [table] Quelltabelle
+-- @param _Dest [table] Zieltabelle
+-- @return [table] Kindklasse
+-- @within OOP
+--
+function copy(_Source, _Dest)
+    _Dest = _Dest or {};
+    assert(type(_Source) == "table")
+    assert(type(_Dest) == "table")
+
+    for k, v in pairs(_Source) do
+        if type(v) == "table" then
+            _Dest[k] = _Dest[k] or {};
+            for kk, vv in pairs(copy(v)) do
+                _Dest[k][kk] = _Dest[k][kk] or vv;
+            end
+        else
+            _Dest[k] = _Dest[k] or v;
+        end
+    end
+    return _Dest;
+end
+
+---
+-- Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.
+--
+-- @param _Table [table] Referenz auf Table
+-- @return [table] Klasse
+-- @within OOP
+--
+function class(_Table)
+    -- className hinzufügen
+    for k, v in pairs(_G) do 
+        if v == _Table then
+            _Table.className = k;
+        end
+    end
+    
+    -- construct hinzufügen
+    _Table.construct = _Table.construct or function(self) end
+
+    -- clone hinzufügen
+    _Table.clone = _Table.clone or function(self)
+        return copy(self);
+    end
+
+    -- toString hinzufügen
+    _Table.toString = _Table.toString or function(self)
+        local s = "";
+        for k, v in pairs(self) do
+            s = s .. tostring(k) .. ":" .. tostring(v) .. ";";
+        end
+        return "{" ..s.. "}";
+    end
+
+    -- equals hinzufügen
+    _Table.equals = _Table.equals or function(self, _Other)
+        -- Anderes Objekt muss table sein.
+        if type(_Other) ~= "table" then 
+            return false;
+        end
+        -- Gehe Inhalt durch
+        for k, v in pairs(self) do
+            if v ~= _Other[k] then
+                return false;
+            end
+        end
+        return true;
+    end
+
+    return _Table;
+end
+
+---
+-- Erzeugt eine Ableitung einer Klasse
+--
+-- @param _Parent [table] Referenz auf Klasse
+-- @return [table] Kindklasse
+-- @within OOP
+--
+function inherit(_Class, _Parent)
+    local c = copy(_Parent, _Class);
+    c.parent = _Parent;
+    return class(c);
+end
+
+---
+-- Erzeugt eine Instanz der Klasse.
+--
+-- @param _Class [table] Referenz auf Klasse
+-- @param ... [mixed] Argumente des Konstruktors
+-- @return [table] Instanz der Klasse
+-- @within OOP
+--
+function new(_Class, ...)
+    local instance = copy(_Class);
+    -- Parent instanzieren
+    if instance.parent then
+        instance.parent = new(instance.parent, ...);
+    end
+    -- Instanz erzeugen
+    instance:construct(...);
+    return instance;
 end
 
 -- -------------------------------------------------------------------------- --

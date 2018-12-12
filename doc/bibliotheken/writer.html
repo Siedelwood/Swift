@@ -32,6 +32,10 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Internal">Internal</a></li>
+</ul>
 
 
 <h2>Bibliotheken</h2>
@@ -44,7 +48,9 @@
   <li><a href="../bibliotheken/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><a href="../bibliotheken/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
   <li><a href="../bibliotheken/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../bibliotheken/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="../bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
@@ -57,10 +63,14 @@
   <li><a href="../bibliotheken/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
-  <li><a href="../bibliotheken/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="../bibliotheken/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../bibliotheken/core.html">core</a></li>
+  <li><a href="../bibliotheken/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../bibliotheken/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../bibliotheken/external.externalsavegametools.html">external.externalsavegametools</a></li>
   <li><a href="../bibliotheken/loader.html">loader</a></li>
   <li><strong>writer</strong></li>
 </ul>
@@ -162,18 +172,151 @@
 </p>
 
 
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SymfoniaWriter:CreateBundleHtmlDocumentation">SymfoniaWriter:CreateBundleHtmlDocumentation ()</a></td>
+	<td class="summary">Erzeugt die HTML-Dateien für die Dokumentation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SymfoniaWriter:CreateDocumentationIndex">SymfoniaWriter:CreateDocumentationIndex ()</a></td>
+	<td class="summary">Baut den Index der Dokumentation zusammen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SymfoniaWriter:CreateDocumentationIndexLink">SymfoniaWriter:CreateDocumentationIndexLink (_Name, _Folder)</a></td>
+	<td class="summary">Erzeugt einen Link auf der Index-Seite der Doku und gibt ihn als String
+ zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SymfoniaWriter:CreateSearchTagsFromSourceFile">SymfoniaWriter:CreateSearchTagsFromSourceFile (_File)</a></td>
+	<td class="summary">Läd eine Quelldatei und gibt einen String mit Schlagwörtern zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SymfoniaWriter:LoadDocumentationIndexTemplate">SymfoniaWriter:LoadDocumentationIndexTemplate ()</a></td>
+	<td class="summary">Läd das Template der index.html und gibt es als String zurück.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "SymfoniaWriter:CreateBundleHtmlDocumentation"></a>
+    <strong>SymfoniaWriter:CreateBundleHtmlDocumentation ()</strong>
+    </dt>
+    <dd>
+    Erzeugt die HTML-Dateien für die Dokumentation.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SymfoniaWriter:CreateDocumentationIndex"></a>
+    <strong>SymfoniaWriter:CreateDocumentationIndex ()</strong>
+    </dt>
+    <dd>
+    Baut den Index der Dokumentation zusammen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SymfoniaWriter:CreateDocumentationIndexLink"></a>
+    <strong>SymfoniaWriter:CreateDocumentationIndexLink (_Name, _Folder)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen Link auf der Index-Seite der Doku und gibt ihn als String
+ zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+         [string] Name des Bundle
+        </li>
+        <li><span class="parameter">_Folder</span>
+         [string] Relativer Pfad
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] HTML des Links
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SymfoniaWriter:CreateSearchTagsFromSourceFile"></a>
+    <strong>SymfoniaWriter:CreateSearchTagsFromSourceFile (_File)</strong>
+    </dt>
+    <dd>
+    Läd eine Quelldatei und gibt einen String mit Schlagwörtern zurück.
+ Schlagworter sind Behavior- oder Funktionsnamen.
+<p> <b>Hinweis</b>: Schlagwörter werden immer mit der gesamten Zeile kopiert,
+ in der sie stehen (ist einfacher zu programmieren und ich bin faul).
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_File</span>
+         [string] Dateiname
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] Schlagworter
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SymfoniaWriter:LoadDocumentationIndexTemplate"></a>
+    <strong>SymfoniaWriter:LoadDocumentationIndexTemplate ()</strong>
+    </dt>
+    <dd>
+    Läd das Template der index.html und gibt es als String zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] Dateiinhalt
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-10 11:41:37 </i>
+<i style="float:right;">Last updated 2018-12-12 18:33:50 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

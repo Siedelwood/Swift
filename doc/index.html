@@ -41,7 +41,9 @@
   <li><a href="bibliotheken/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><a href="bibliotheken/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
   <li><a href="bibliotheken/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="bibliotheken/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
@@ -54,10 +56,14 @@
   <li><a href="bibliotheken/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
-  <li><a href="bibliotheken/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="bibliotheken/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
+  <li><a href="bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="bibliotheken/core.html">core</a></li>
+  <li><a href="bibliotheken/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="bibliotheken/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="bibliotheken/external.externalsavegametools.html">external.externalsavegametools</a></li>
   <li><a href="bibliotheken/loader.html">loader</a></li>
   <li><a href="bibliotheken/writer.html">writer</a></li>
 </ul>
@@ -104,12 +110,22 @@
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="bibliotheken/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></td>
-		<td class="summary">Ermöglicht es Gebiete oder Territorien auf der Map zu definieren, auf der ein
- Gebäude nicht gebaut oder nicht abgerissen werden darf.</td>
+		<td class="summary">Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien
+ unterbunden werden.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="bibliotheken/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></td>
+		<td class="summary">Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor
+ dem Abriss zu schützen.</td>
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></td>
 		<td class="summary">Mit diesem Bundle können Dialogfenster ernstellt werden.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></td>
+		<td class="summary">Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie
+ zu bewegen.</td>
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></td>
@@ -118,7 +134,8 @@
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></td>
-		<td class="summary">Dieses Bundle enthält häufig gebrauchte Funktionen für Entities.</td>
+		<td class="summary">Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu
+ ermitteln oder zu verändern.</td>
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></td>
@@ -168,22 +185,42 @@
 		<td class="summary">Mit diesem Bundle können Aufträge per Skript erstellt werden.</td>
 	</tr>
 	<tr>
-		<td class="name"  nowrap><a href="bibliotheken/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></td>
-		<td class="summary">Dieses Bundle bietet Funktionen an, mit denen Spielstände außerhalb des
- üblichen Ordners gespeichert und geladen werden können.</td>
-	</tr>
-	<tr>
 		<td class="name"  nowrap><a href="bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></td>
 		<td class="summary">Dieses Bundle enthält einige weitere nützliche Standard-Behavior.</td>
 	</tr>
 	<tr>
-		<td class="name"  nowrap><a href="bibliotheken/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></td>
-		<td class="summary">Dieses Bundle bietet einige (experientelle) Funktionen zum untersuchen und
+		<td class="name"  nowrap><a href="bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></td>
+		<td class="summary">Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu
+ gliedern.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></td>
+		<td class="summary">Dieses Bundle bietet einige Funktionen zum untersuchen und
  zur Manipulation von Handelsangeboten.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></td>
+		<td class="summary">Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den
+ Hafen mit einem Schiff anfährt.</td>
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="bibliotheken/core.html">core</a></td>
 		<td class="summary">Hier werden wichtige Basisfunktionen bereitgestellt.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="bibliotheken/external.externalcampaigntools.html">external.externalcampaigntools</a></td>
+		<td class="summary">Campaign Tool
+ Autor: totalwarANGEL
+ Version 3.4</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="bibliotheken/external.externalroleplayinggame.html">external.externalroleplayinggame</a></td>
+		<td class="summary">Bietet dem Mapper ein vereinfachtes Interface für RPG-Maps.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="bibliotheken/external.externalsavegametools.html">external.externalsavegametools</a></td>
+		<td class="summary">Dieses Bundle bietet Funktionen an, mit denen Spielstände außerhalb des
+ üblichen Ordners gespeichert und geladen werden können.</td>
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="bibliotheken/loader.html">loader</a></td>
@@ -200,7 +237,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-10 11:41:37 </i>
+<i style="float:right;">Last updated 2018-12-12 18:33:50 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
