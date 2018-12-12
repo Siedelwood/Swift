@@ -1,7 +1,7 @@
 #/bin/bash
 
 echo "==== Building QSB ===="
-./make-user.sh
+./make.sh -d
 
 echo "==== Creating Release ===="
 
@@ -19,7 +19,7 @@ cp qsb/default/localscript.lua Release/localmapscript.lua &>/dev/null
 echo "Done!"
 
 echo "Copy documentation..."
-cp -r var/doc Release/doc &>/dev/null
+cp -r qsb/doc Release/doc &>/dev/null
 mkdir Release/guide &>/dev/null
 cp hlp/*.pdf Release/guide &>/dev/null
 cp hlp/readme.txt Release/start.txt &>/dev/null

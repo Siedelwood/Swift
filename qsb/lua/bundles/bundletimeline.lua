@@ -49,7 +49,8 @@ QSB = QSB or {};
 --     {Time = 1, Action = MyFirstAction},
 --     -- MySecondAction erhält "BOCKWURST" als Parameter
 --     {Time = 3, Action = MySecondAction, "BOCKWURST"},
---     {Time = 9, Action = MyThridAction},
+--     -- Inline-Funktion
+--     {Time = 9, Action = function() end},
 -- }
 --
 function API.TimeLineStart(_Description)
