@@ -23,6 +23,8 @@ BundleQuestGeneration = {};
 API = API or {};
 QSB = QSB or {};
 
+QSB.GeneratedQuestDialogs = {};
+
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -70,26 +72,12 @@ QSB = QSB or {};
 --
 function API.CreateQuest(_Data)
     if GUI then
-        API.Log("API.CreateQuest: Could not execute in local script!");
+        API.Dbg("API.CreateQuest: Could not execute in local script!");
         return;
     end
-    return BundleQuestGeneration.Global:NewQuest(_Data);
+    return BundleQuestGeneration.Global:QuestCreateNewQuest(_Data);
 end
 AddQuest = API.CreateQuest;
-
----
--- DO NOT USE THIS FUNCTION!
--- @within Deprecated
--- @local
---
-function API.StartQuests()
-    if GUI then
-        API.Brudge("API.StartQuests()");
-        return;
-    end
-    return BundleQuestGeneration.Global:StartQuests();
-end
-StartQuests = API.StartQuests;
 
 ---
 -- Erzeugt eine Nachricht im Questfenster.
@@ -108,22 +96,21 @@ StartQuests = API.StartQuests;
 -- @param _Text       [string] Anzeigetext der Nachricht
 -- @param _Sender     [number] Sender der Nachricht
 -- @param _Receiver   [number] Receiver der Nachricht
--- @param _Ancestor   [string] Vorgänger-Quest
 -- @param _AncestorWt [number] Wartezeit
 -- @param _Callback   [function] Callback
--- @return [number] QuestID
--- @return [table] Quest
+-- @param _Ancestor   [string] Vorgänger-Quest
+-- @return [string] QuestName
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- API.CreateQuestMessage("Das ist ein Text", 4, 1);
 --
-function API.CreateQuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+function API.CreateQuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)
     if GUI then
-        API.Log("API.CreateQuestMessage: Could not execute in local script!");
+        API.Dbg("API.CreateQuestMessage: Could not execute in local script!");
         return;
     end
-    return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback);
+    return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
 end
 QuestMessage = API.CreateQuestMessage;
 
@@ -131,7 +118,7 @@ QuestMessage = API.CreateQuestMessage;
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
 -- einander angezeigt werden.
 --
--- Der Vorgänger-Quest und die Wartezeit müssen nur beim ersten Eintrag
+-- Der Vorgänger-Quest und die Wartezeit müssen als Felder gesondert
 -- angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
 -- sie nicht angegeben sein. Es können Einträge von rechts nach links
 -- weggelassen werden.
@@ -150,11 +137,16 @@ QuestMessage = API.CreateQuestMessage;
 -- </ul>
 --
 -- @param _Messages [table] Liste der anzuzeigenden Nachrichten
--- @return [table] List of generated Quests
+-- @return [string] Name des letzten Quest
+-- @return [table] Namensliste der Quests
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- API.CreateQuestDialog{
+--     Name = "DialogName",
+--     Ancestor = "SomeQuestName",
+--     Delay = 12,
+--
 --     {"Hallo, wie geht es dir?", 4, 1},
 --     {"Mir geht es gut, wie immer!", 1, 1},
 --     {"Das ist doch schön.", 4, 1},
@@ -162,23 +154,102 @@ QuestMessage = API.CreateQuestMessage;
 --
 function API.CreateQuestDialog(_Messages)
     if GUI then
-        API.Log("API.CreateQuestDialog: Could not execute in local script!");
+        API.Dbg("API.CreateQuestDialog: Could not execute in local script!");
         return;
     end
 
-    local QuestID, Quest
+    table.insert(_Messages, {"KEY(NO_MESSAGE)", 1, 1});
+
+    local QuestName;
     local GeneratedQuests = {};
     for i= 1, #_Messages, 1 do
+        _Messages[i][4] = _Messages[i][4] or 12;
         if i > 1 then
-            _Messages[i][4] = _Messages[i][4] or Quest.Identifier;
-            _Messages[i][5] = _Messages[i][5] or 12;
+            _Messages[i][6] = _Messages[i][6] or QuestName;
+        else
+            _Messages[i][6] = _Messages[i][6] or _Messages.Ancestor;
+            _Messages[i][4] = _Messages.Delay or 0;
         end
-        QuestID, Quest = API.CreateQuestMessage(unpack(_Messages[i]));
-        table.insert(GeneratedQuests, {QuestID, Quest});
+        if i == #_Messages and #_Messages[i-1] then
+            _Messages[i][7] = _Messages.Name;
+            _Messages[i][4] = _Messages[i-1][4];
+        end
+        QuestName = BundleQuestGeneration.Global:QuestMessage(unpack(_Messages[i]));
+        table.insert(GeneratedQuests, QuestName);
     end
-    return GeneratedQuests;
+
+    -- Benannte Dialoge für spätere Zugriffe speichern.
+    if _Messages.Name then
+        QSB.GeneratedQuestDialogs[_Messages.Name] = GeneratedQuests;
+    end
+    return GeneratedQuests[#GeneratedQuests], GeneratedQuests;
 end
 QuestDialog = API.CreateQuestDialog;
+
+---
+-- Unterbricht einen laufenden oder noch nicht gestarteten Quest-Dialog.
+--
+-- Die Funktion kann entweder anhand eines Dialognamen den Dialog zurücksetzen
+-- oder direkt die Table der erzeugten Quests annehmen.
+--
+-- <b>Alias</b>: QuestDialogInterrupt
+--
+-- @param _Dialog [string|table] Dialog der neu gestartet wird
+-- @within Anwenderfunktionen
+--
+function API.InterruptQuestDialog(_Dialog)
+    if GUI then
+        API.Dbg("API.InterruptQuestDialog: Could not execute in local script!");
+        return;
+    end
+
+    local QuestDialog = _Dialog;
+    if type(QuestDialog) == "string" then
+        QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
+    end
+    if QuestDialog == nil then
+        API.Dbg("API.InterruptQuestDialog: Dialog is invalid!");
+        return;
+    end
+    for i= 1, #QuestDialog-1, 1 do
+        API.StopQuest(QuestDialog[i], true);
+    end
+    API.WinQuest(QuestDialog[#QuestDialog], true);
+end
+QuestDialogInterrupt = API.InterruptQuestDialog;
+
+---
+-- Setzt einen Quest-Dialog zurück sodass er erneut gestartet werden kann.
+--
+-- Die Funktion kann entweder anhand eines Dialognamen den Dialog zurücksetzen
+-- oder direkt die Table der erzeugten Quests annehmen.
+--
+-- <b>Alias</b>: QuestDialogRestart
+--
+-- @param _Dialog [string|table] Dialog der neu gestartet wird
+-- @within Anwenderfunktionen
+--
+function API.RestartQuestDialog(_Dialog)
+    if GUI then
+        API.Dbg("API.ResetQuestDialog: Could not execute in local script!");
+        return;
+    end
+
+    local QuestDialog = _Dialog;
+    if type(QuestDialog) == "string" then
+        QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
+    end
+    if QuestDialog == nil then
+        API.Dbg("API.ResetQuestDialog: Dialog is invalid!");
+        return;
+    end
+    for i= 1, #QuestDialog, 1 do
+        Quests[GetQuestID(QuestDialog[i])].Triggers[1][2][1].WaitTimeTimer = nil;
+        API.RestartQuest(QuestDialog[i], true);
+    end
+    Quests[GetQuestID(QuestDialog[1])]:Trigger();
+end
+QuestDialogRestart = API.RestartQuestDialog;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -187,34 +258,9 @@ QuestDialog = API.CreateQuestDialog;
 BundleQuestGeneration = {
     Global = {
         Data = {
-            GenerationList = {},
             QuestMessageID = 0,
         }
     },
-    Local = {
-        Data = {}
-    },
-}
-
-BundleQuestGeneration.Global.Data.QuestTemplate = {
-    MSGKeyOverwrite = nil;
-    IconOverwrite   = nil;
-    Loop            = nil;
-    Callback        = nil;
-    SuggestionText  = nil;
-    SuccessText     = nil;
-    FailureText     = nil;
-    Description     = nil;
-    Identifier      = nil;
-    OpenMessage     = true,
-    CloseMessage    = true,
-    Sender          = 1;
-    Receiver        = 1;
-    Time            = 0;
-    Goals           = {};
-    Reprisals       = {};
-    Rewards         = {};
-    Triggers        = {};
 };
 
 -- Global Script ---------------------------------------------------------------
@@ -226,7 +272,6 @@ BundleQuestGeneration.Global.Data.QuestTemplate = {
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
-
 end
 
 ---
@@ -244,297 +289,168 @@ end
 -- @param _Text       [string] Anzeigetext der Nachricht
 -- @param _Sender     [number] Sender der Nachricht
 -- @param _Receiver   [number] Receiver der Nachricht
--- @param _Ancestor   [string] Vorgänger-Quest
 -- @param _AncestorWt [number] Wartezeit
 -- @param _Callback   [function] Callback
--- @return [number] QuestID
--- @return [table] Quest
+-- @param _Ancestor   [string] Vorgänger-Quest
+-- @param _QuestName  [string] Name des Auftrags
+-- @return [string] QuestName
 --
 -- @within Internal
 -- @local
 --
-function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _Ancestor, _AncestorWt, _Callback)
+function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)
     self.Data.QuestMessageID = self.Data.QuestMessageID +1;
 
     -- Trigger-Nachbau
     local OnQuestOver = {
-        Triggers.Custom2,{{QuestName = _Ancestor}, function(_Data)
-            if not _Data.QuestName then
-                return true;
+        Triggers.Custom2, {
+            {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
+                function(_Data)
+                local QuestID = GetQuestID(_Data.QuestName);
+                if not _Data.QuestName then
+                    return true;
+                end
+                if (Quests[QuestID] and Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
+                    _Data.WaitTimeTimer = _Data.WaitTimeTimer or API.RealTimeGetSecondsPassedSinceGameStart();
+                    if API.RealTimeGetSecondsPassedSinceGameStart() >= _Data.WaitTimeTimer + _Data.WaitTime then
+                        return true;
+                    end
+                end
+                return false;
             end
-            local QuestID = GetQuestID(_Data.QuestName);
-            if (Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
-                return true;
-            end
-            return false;
-        end}
-    }
+        }
+    };
 
     -- Lokalisierung
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
-    assert(type(_Text) == "string");
 
-    return QuestTemplate:New(
-        "QSB_QuestMessage_" ..self.Data.QuestMessageID,
+    -- Quest erzeugen
+    local _, CreatedQuest = QuestTemplate:New(
+        (_QuestName ~= nil and _QuestName) or "QSB_QuestMessage_" ..self.Data.QuestMessageID,
         (_Sender or 1),
         (_Receiver or 1),
-        {{ Objective.NoChange,}},
+        { {Objective.Dummy} },
         { OnQuestOver },
-        (_AncestorWt or 1),
-        nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil,
-        _Text, nil
+        0, nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil, _Text, nil
     );
+    return CreatedQuest.Identifier;
 end
 
 ---
--- Erzeugt einen Quest und trägt ihn in die GenerationList ein.
+-- Erzeugt einen Quest.
 --
 -- @param _Data [table] Daten des Quest.
 -- @return [string] Name des erzeugten Quests
--- @return [number] Gesamtanzahl Quests
 -- @within Internal
 -- @local
 --
-function BundleQuestGeneration.Global:NewQuest(_Data)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     if not _Data.Name then
         QSB.AutomaticQuestNameCounter = (QSB.AutomaticQuestNameCounter or 0) +1;
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
     end
-
     if not Core:CheckQuestName(_Data.Name) then
         dbg("Quest '"..tostring(_Data.Name).."': invalid questname! Contains forbidden characters!");
         return;
     end
 
-    local QuestData = API.InstanceTable(self.Data.QuestTemplate);
-    QuestData.Identifier      = _Data.Name;
-    QuestData.MSGKeyOverwrite = nil;
-    QuestData.IconOverwrite   = nil;
-    QuestData.Loop            = _Data.Loop;
-    QuestData.Callback        = _Data.Callback;
-    QuestData.SuggestionText  = (type(_Data.Suggestion) == "table" and _Data.Suggestion[lang]) or _Data.Suggestion;
-    QuestData.SuccessText     = (type(_Data.Success) == "table" and _Data.Success[lang]) or _Data.Success;
-    QuestData.FailureText     = (type(_Data.Failure) == "table" and _Data.Failure[lang]) or _Data.Failure;
-    QuestData.Description     = (type(_Data.Description) == "table" and _Data.Description[lang]) or _Data.Description;
-    QuestData.OpenMessage     = _Data.Visible == true or _Data.Suggestion ~= nil;
-    QuestData.CloseMessage    = _Data.EndMessage == true or (_Data.Failure ~= nil or _Data.Success ~= nil);
-    QuestData.Sender          = (_Data.Sender ~= nil and _Data.Sender) or 1;
-    QuestData.Receiver        = (_Data.Receiver ~= nil and _Data.Receiver) or 1;
-    QuestData.Time            = (_Data.Time ~= nil and _Data.Time) or 0;
-
-    if _Data.Arguments then
-        QuestData.Arguments = API.InstanceTable(_Data.Arguments);
-    end
-
-    table.insert(self.Data.GenerationList, QuestData);
-    local ID = #self.Data.GenerationList;
-    self:AttachBehavior(ID, _Data);
-    self:StartQuests();
-    return _Data.Name, Quests[0];
-end
-
----
--- Fügt dem Quest mit der ID in der GenerationList seine Behavior hinzu.
---
--- <b>Achtung: </b>Diese Funktion wird vom Code aufgerufen!
---
--- @param _ID   [number] Id des Quests
--- @param _Data [table] Quest Data
--- @within Internal
--- @local
---
-function BundleQuestGeneration.Global:AttachBehavior(_ID, _Data)
     local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    for k,v in pairs(_Data) do
-        if k ~= "Parameter" and type(v) == "table" and v.en and v.de then
-            _Data[k] = v[lang];
-        end
+
+    -- Questdaten erzeugen
+    local QuestData = {
+        _Data.Name,
+        (_Data.Sender ~= nil and _Data.Sender) or 1,
+        (_Data.Receiver ~= nil and _Data.Receiver) or 1,
+        {},
+        {},
+        (_Data.Time ~= nil and _Data.Time) or 0,
+        {},
+        {},
+        _Data.Callback,
+        _Data.Loop,
+        _Data.Visible == true or _Data.Suggestion ~= nil,
+        _Data.EndMessage == true or (_Data.Failure ~= nil or _Data.Success ~= nil),
+        (type(_Data.Description) == "table" and _Data.Description[lang]) or _Data.Description,
+        (type(_Data.Suggestion) == "table" and _Data.Suggestion[lang]) or _Data.Suggestion,
+        (type(_Data.Success) == "table" and _Data.Success[lang]) or _Data.Success,
+        (type(_Data.Failure) == "table" and _Data.Failure[lang]) or _Data.Failure
+    };
+
+    -- Daten validieren
+    if not self:QuestValidateQuestData(QuestData) then
+        API.Dbg("AddQuest: Error while creating quest. Table has been copied to log.");
+        API.DumpTable(QuestData, "Quest");
+        return;
     end
 
+    -- Behaviour
     for k,v in pairs(_Data) do
         if tonumber(k) ~= nil then
-            if type(v) ~= "table" then
-                dbg(self.Data.GenerationList[_ID].Identifier..": Some behavior entries aren't behavior!");
-            else
+            if type(v) == "table" then
                 if v.GetGoalTable then
-                    table.insert(self.Data.GenerationList[_ID].Goals, v:GetGoalTable());
+                    table.insert(QuestData[4], v:GetGoalTable());
 
-                    local Idx = #self.Data.GenerationList[_ID].Goals;
-                    self.Data.GenerationList[_ID].Goals[Idx].Context            = v;
-                    self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideIcon   = self.Data.GenerationList[_ID].Goals[Idx].Context.GetIcon;
-                    self.Data.GenerationList[_ID].Goals[Idx].FuncOverrideMsgKey = self.Data.GenerationList[_ID].Goals[Idx].Context.GetMsgKey;
+                    local Idx = #QuestData[4];
+                    QuestData[4][Idx].Context            = v;
+                    QuestData[4][Idx].FuncOverrideIcon   = QuestData[4][Idx].Context.GetIcon;
+                    QuestData[4][Idx].FuncOverrideMsgKey = QuestData[4][Idx].Context.GetMsgKey;
                 elseif v.GetReprisalTable then
-                    table.insert(self.Data.GenerationList[_ID].Reprisals, v:GetReprisalTable());
+                    table.insert(QuestData[8], v:GetReprisalTable());
                 elseif v.GetRewardTable then
-                    table.insert(self.Data.GenerationList[_ID].Rewards, v:GetRewardTable());
-                elseif v.GetTriggerTable then
-                    table.insert(self.Data.GenerationList[_ID].Triggers, v:GetTriggerTable());
+                    table.insert(QuestData[7], v:GetRewardTable());
                 else
-                    dbg(self.Data.GenerationList[_ID].Identifier..": Could not obtain behavior table!");
+                    table.insert(QuestData[5], v:GetTriggerTable());
                 end
             end
         end
     end
+
+    -- Quest erzeugen
+    local QuestID, Quest = QuestTemplate:New(unpack(QuestData, 1, 16));
+    Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
+    Quest.IconOverride = _Data.IconOverwrite;
+    Quest.Arguments = (_Data.Arguments ~= nil and API.InstanceTable(_Data.Arguments)) or {};
+    return _Data.Name;
 end
 
 ---
--- DO NOT USE THIS FUNCTION!--
--- @within Deprecated
--- @local
+-- Validiert die Felder eines Quests.
 --
-function BundleQuestGeneration.Global:StartQuests()
-    if not self:ValidateQuests() then
-        return;
-    end
-
-    while (#self.Data.GenerationList > 0)
-    do
-        local QuestData = table.remove(self.Data.GenerationList, 1);
-        if self:DebugQuest(QuestData) then
-            local QuestID, Quest = QuestTemplate:New(
-                QuestData.Identifier,
-                QuestData.Sender,
-                QuestData.Receiver,
-                QuestData.Goals,
-                QuestData.Triggers,
-                assert(tonumber(QuestData.Time)),
-                QuestData.Rewards,
-                QuestData.Reprisals,
-                QuestData.Callback,
-                QuestData.Loop,
-                QuestData.OpenMessage,
-                QuestData.CloseMessage,
-                QuestData.Description,
-                QuestData.SuggestionText,
-                QuestData.SuccessText,
-                QuestData.FailureText
-            );
-
-            if QuestData.MSGKeyOverwrite then
-                Quest.MsgTableOverride = self.MSGKeyOverwrite;
-            end
-            if QuestData.IconOverwrite then
-                Quest.IconOverride = self.IconOverwrite;
-            end
-            if QuestData.Arguments then
-                Quest.Arguments = API.InstanceTable(QuestData.Arguments);
-            end
-
-            -- Quest wurde erzeugt
-            Quests[QuestID].IsGenerated = true;
-        end
-    end
-end
-
----
--- Validiert alle Quests in der GenerationList. Verschiedene Standardfehler
--- werden geprüft.
---
+-- @param _Data [table] Daten des Quest.
+-- @return [boolean] Quest OK
 -- @within Internal
 -- @local
 --
-function BundleQuestGeneration.Global:ValidateQuests()
-    for k, v in pairs(self.Data.GenerationList) do
-        if #v.Goals == 0 then
-            table.insert(self.Data.GenerationList[k].Goals, Goal_InstantSuccess():GetGoalTable());
-        end
-        if #v.Triggers == 0 then
-            table.insert(self.Data.GenerationList[k].Triggers, Trigger_Time(0):GetTriggerTable());
-        end
-
-        if #v.Goals == 0 and #v.Triggers == 0 then
-            local text = string.format("Quest '" ..v.Identifier.. "' is missing a goal or a trigger!");
-            return false;
-        end
-
-        local debugText = ""
-        -- check if quest table is invalid
-        if not v then
-            debugText = debugText .. "quest table is invalid!"
-        else
-            -- check loop callback
-            if v.Loop ~= nil and type(v.Loop) ~= "function" then
-                debugText = debugText .. self.Identifier..": Loop must be a function!"
-            end
-            -- check callback
-            if v.Callback ~= nil and type(v.Callback) ~= "function" then
-                debugText = debugText .. self.Identifier..": Callback must be a function!"
-            end
-            -- check sender
-            if (v.Sender == nil or (v.Sender < 1 or v.Sender > 8))then
-                debugText = debugText .. v.Identifier..": Sender is nil or greater than 8 or lower than 1!"
-            end
-            -- check receiver
-            if (v.Receiver == nil or (v.Receiver < 0 or v.Receiver > 8))then
-                debugText = debugText .. self.Identifier..": Receiver is nil or greater than 8 or lower than 0!"
-            end
-            -- check time
-            if (v.Time == nil or type(v.Time) ~= "number" or v.Time < 0)then
-                debugText = debugText .. v.Identifier..": Time is nil or not a number or lower than 0!"
-            end
-            -- check visible
-            if type(v.OpenMessage) ~= "boolean" then
-                debugText = debugText .. v.Identifier..": Visible need to be a boolean!"
-            end
-            -- check end message
-            if type(v.CloseMessage) ~= "boolean" then
-                debugText = debugText .. v.Identifier..": EndMessage need to be a boolean!"
-            end
-            -- check description
-            if (v.Description ~= nil and type(v.Description) ~= "string") then
-                debugText = debugText .. v.Identifier..": Description is not a string!"
-            end
-            -- check proposal
-            if (v.SuggestionText ~= nil and type(v.SuggestionText) ~= "string") then
-                debugText = debugText .. v.Identifier..": Suggestion is not a string!"
-            end
-            -- check success
-            if (v.SuccessText ~= nil and type(v.SuccessText) ~= "string") then
-                debugText = debugText .. v.Identifier..": Success is not a string!"
-            end
-            -- check failure
-            if (v.FailureText ~= nil and type(v.FailureText) ~= "string") then
-                debugText = debugText .. v.Identifier..": Failure is not a string!"
-            end
-        end
-
-        if debugText ~= "" then
-            dbg(debugText);
-            return false;
-        end
-    end
-    return true;
+function BundleQuestGeneration.Global:QuestValidateQuestData(_Data)
+    return (
+        (type(_Data[1]) == "string" and self:QuestValidateQuestName(_Data[1])) and
+        (type(_Data[2]) == "number" and _Data[2] >= 1 and _Data[2] <= 8) and
+        (type(_Data[3]) == "number" and _Data[3] >= 1 and _Data[3] <= 8) and
+        (type(_Data[6]) == "number" and _Data[6] >= 0) and
+        ((_Data[9] ~= nil and type(_Data[9]) == "function") or (_Data[9] == nil)) and
+        ((_Data[10] ~= nil and type(_Data[10]) == "function") or (_Data[10] == nil)) and
+        (type(_Data[11]) == "boolean") and
+        (type(_Data[12]) == "boolean") and
+        ((_Data[13] ~= nil and type(_Data[13]) == "string") or (_Data[13] == nil)) and
+        ((_Data[14] ~= nil and type(_Data[14]) == "string") or (_Data[14] == nil)) and
+        ((_Data[15] ~= nil and type(_Data[15]) == "string") or (_Data[15] == nil)) and
+        ((_Data[16] ~= nil and type(_Data[16]) == "string") or (_Data[16] == nil))
+    );
 end
 
-
 ---
--- Dummy-Funktion zur Validierung der Behavior eines Quests
+-- Validiert den Namen eines Quests.
 --
--- Diese Funktion muss durch ein Debug Bundle überschrieben werden um Quests
--- in der Initalisiererliste zu testen.
---
--- @param _List [table] Liste der Quests
+-- @param _Name [string] Name des Quest.
+-- @return [boolean] Name OK
 -- @within Internal
 -- @local
 --
-function BundleQuestGeneration.Global:DebugQuest(_List)
-    return true;
-end
-
--- Local Script ----------------------------------------------------------------
-
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
-function BundleQuestGeneration.Local:Install()
-
+function BundleQuestGeneration.Global:QuestValidateQuestName(_Name)
+    return string.find(_Name, "^[A-Za-z0-9_]+$") ~= nil;
 end
 
 Core:RegisterBundle("BundleQuestGeneration");

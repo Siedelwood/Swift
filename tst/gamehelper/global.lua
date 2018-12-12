@@ -31,7 +31,7 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/test/gamehelper/qsb.lua")
+    Script.Load("E:/Repositories/symfonia/var/qsb.lua")
     API.Install()
 
     if Framework.IsNetworkGame() ~= true then
@@ -49,4 +49,13 @@ function Mission_FirstMapAction()
     -----
     
     
+end
+
+function Test()
+    API.NpcCompose {
+        Name     = "maximilian",
+        Callback = function(_Npc, _Hero)
+            API.Note("Bockwurst")
+        end,
+    }
 end

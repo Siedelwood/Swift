@@ -168,7 +168,6 @@ BundleKnightTitleRequirements = {
 --
 function BundleKnightTitleRequirements.Global:Install()
     self:OverwriteConsumedGoods();
-    -- InitKnightTitleTables();
 end
 
 ---
@@ -218,7 +217,6 @@ function BundleKnightTitleRequirements.Local:Install()
     self:InitTexturePositions();
     self:OverwriteUpdateRequirements();
     self:OverwritePromotionCelebration();
-    -- InitKnightTitleTables();
 end
 
 ---
@@ -1960,4 +1958,3 @@ InitKnightTitleTables = function()
     -- Einstellungen Aktivieren
     CreateTechnologyKnightTitleTable()
 end
-

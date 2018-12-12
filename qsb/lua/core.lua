@@ -50,7 +50,9 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1311";
+QSB.Version = "Symfonia Build 1500";
+
+QSB.RealTime_SecondsSinceGameStart = 0;
 
 ParameterType = ParameterType or {};
 g_QuestBehaviorVersion = 1;
@@ -251,7 +253,7 @@ IsValidQuest = API.IsValidateQuest;
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
-        API.FailQuest(arg[i].Identifier);
+        API.FailQuest(arg[i]);
     end
 end
 FailQuestsByName = API.FailAllQuests;
@@ -290,7 +292,7 @@ FailQuestByName = API.FailQuest;
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
-        API.RestartQuest(arg[i].Identifier);
+        API.RestartQuest(arg[i]);
     end
 end
 RestartQuestsByName = API.RestartAllQuests;
@@ -394,7 +396,7 @@ RestartQuestByName = API.RestartQuest;
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
-        API.StartQuest(arg[i].Identifier);
+        API.StartQuest(arg[i]);
     end
 end
 StartQuestsByName = API.StartAllQuests;
@@ -434,10 +436,10 @@ StartQuestByName = API.StartQuest;
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
-        API.StopQuest(arg[i].Identifier);
+        API.StopQuest(arg[i]);
     end
 end
-StopQuestwByName = API.StopAllQuests;
+StopQuestsByName = API.StopAllQuests;
 
 ---
 -- Unterbricht den Quest.
@@ -476,7 +478,7 @@ StopQuestByName = API.StopQuest;
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
-        API.WinQuest(arg[i].Identifier);
+        API.WinQuest(arg[i]);
     end
 end
 WinQuestsByName = API.WinAllQuests;
@@ -835,6 +837,7 @@ ReplaceEntity = API.ReplaceEntity;
 --
 -- @param _entity           [string|number] Entity
 -- @param _entityToLookAt   [string|number] Ziel
+-- @param _offsetEntity   [number] Winkel Offset
 -- @within Anwenderfunktionen
 -- @usage API.LookAt("Hakim", "Alandra")
 --
@@ -1066,6 +1069,7 @@ GiveEntityName = API.EnsureScriptName;
 -- wird der Befehl an das globale Skript geschickt.
 --
 -- @param _Command [string] Lua-Befehl als String
+-- @param _Flag [boolean] FIXME Optional für GUI.SendScriptCommand benötigt
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -1078,10 +1082,12 @@ function API.Bridge(_Command, _Flag)
 end
 
 ---
--- Konvertiert alternative Wahrheitswertangaben in der QSB in eine Boolean.
+-- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
--- <p>Wahrheitsert true: true, "true", "yes", "on", "+"</p>
--- <p>Wahrheitswert false: false, "false", "no", "off", "-"</p>
+-- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
+-- Alles andere als false.
+--
+-- Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
 --
 -- <p><b>Alias:</b> AcceptAlternativeBoolean</p>
 --
@@ -1128,7 +1134,6 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 -- @param _Description [string] Beschreibung des Hotkey
 -- @return [number] Index oder Fehlercode
 -- @within Anwenderfunktionen
--- @local
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
@@ -1145,7 +1150,6 @@ end
 --
 -- @param _Index [number] Index in Table
 -- @within Anwenderfunktionen
--- @local
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
@@ -1157,6 +1161,42 @@ function API.RemoveHotKey(_Index)
         return;
     end
     Core.Data.HotkeyDescriptions[_Index] = nil;
+end
+
+-- Echtzeit --------------------------------------------------------------------
+
+---
+-- Gibt die real vergangene Zeit seit dem Spielstart in Sekunden zurück.
+-- @return [number] Vergangene reale Zeit
+-- @within Anwenderfunktionen
+--
+function API.RealTimeGetSecondsPassedSinceGameStart()
+    return QSB.RealTime_SecondsSinceGameStart;
+end
+
+---
+-- Wartet die angebene Zeit in realen Sekunden und führt anschließend das
+-- Callback aus.
+--
+-- Hinweis: Einmal gestartet, kann wait nicht beendet werden.
+--
+-- @param _Waittime Wartezeit in realen Sekunden
+-- @param _Action [function] Callback-Funktion
+-- @param ... [mixed..] Liste der Argumente
+-- @return [number] Vergangene reale Zeit
+-- @within Anwenderfunktionen
+--
+function API.RealTimeWait(_Waittime, _Action, ...)
+    StartSimpleJobEx( function(_StartTime, _Delay, _Callback, _Arguments)
+        if (QSB.RealTime_SecondsSinceGameStart >= _StartTime + _Delay) then
+            if #_Arguments > 0 then
+                _Callback(unpack(_Arguments));
+            else
+                _Callback();
+            end
+            return true;
+        end
+    end, QSB.RealTime_SecondsSinceGameStart, _Waittime, _Action, {...});
 end
 
 -- -------------------------------------------------------------------------- --
@@ -1304,8 +1344,12 @@ function Core:InitalizeBundles()
     if not GUI then
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
+
+        StartSimpleJobEx(CoreJob_CalculateRealTimeSinceGameStart);
     else
         self:SetupLocal_HackRegisterHotkey();
+
+        StartSimpleJobEx(CoreJob_CalculateRealTimeSinceGameStart);
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
@@ -1540,7 +1584,7 @@ end
 -- Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und
 -- existiert nur zur Übersichtlichkeit.
 --
--- @param _Bundle Name des Moduls
+-- @param _AddOn Name des Moduls
 -- @within Internal
 -- @local
 --
@@ -1600,7 +1644,7 @@ end
 -- @local
 --
 function Core:CheckQuestName(_Name)
-    return not string.find(_Name, "[ \"§$%&/\(\)\[\[\?ß\*+#,;:\.^\<\>\|]");
+    return string.find(_Name, "^[A-Za-z0-9_]+$") ~= nil;
 end
 
 ---
@@ -1776,18 +1820,50 @@ end
 ---
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
+-- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
+-- Alles andere als false.
+--
+-- Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
+--
 -- @param _Input Boolean-Darstellung
 -- @return boolean: Konvertierte Boolean
 -- @within Internal
 -- @local
 --
 function Core:ToBoolean(_Input)
-    local Suspicious = tostring(_Input);
-    if Suspicious == true or Suspicious == "true" or Suspicious == "Yes" or Suspicious == "On" or Suspicious == "+" then
+    if type(_Input) == "boolean" then
+        return _Input;
+    end
+    if string.find(string.lower(tostring(_Input)), "^[tjy\\+].*$") then
         return true;
     end
-    if Suspicious == false or Suspicious == "false" or Suspicious == "No" or Suspicious == "Off" or Suspicious == "-" then
-        return false;
-    end
     return false;
+end
+
+-- Jobs ------------------------------------------------------------------------
+
+-- Dieser Job ermittelt automatisch, ob eine Sekunde reale Zeit vergangen ist
+-- und zählt eine Variable hoch, die die gesamt verstrichene reale Zeit hält.
+
+function CoreJob_CalculateRealTimeSinceGameStart()
+    if not QSB.RealTime_LastTimeStamp then
+        if GUI then
+            QSB.RealTime_LastTimeStamp = XGUIEng.GetSystemTime();
+        else
+            QSB.RealTime_LastTimeStamp = Framework.TimeGetTime();
+        end
+    end
+
+    local CurrentTimeStamp;
+    if GUI then
+        CurrentTimeStamp = XGUIEng.GetSystemTime();
+    else
+        CurrentTimeStamp = Framework.TimeGetTime();
+    end
+
+    -- Eine Sekunde ist vergangen
+    if QSB.RealTime_LastTimeStamp+1 <= CurrentTimeStamp then
+        QSB.RealTime_LastTimeStamp = CurrentTimeStamp;
+        QSB.RealTime_SecondsSinceGameStart = QSB.RealTime_SecondsSinceGameStart +1;
+    end
 end

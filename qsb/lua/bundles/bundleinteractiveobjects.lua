@@ -45,33 +45,6 @@ QSB.IOList = {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erzeugt ein interaktives Objekt nach alter Schreibweise.
---
--- Diese Funktion ist ein Mapping für die veraltete Schreibweise. Du kannst
--- dich hiermit ermutigt fühlen, API.CreateObject zu verwenden!
---
--- <p><b>Alias:</b> SetupInteractiveObject</p>
---
--- @param _Name [string] Skriptname des Objekts
--- @param _Description [table] Beschreibung
--- @within Anwenderfunktionen
--- @see API.CreateObject
---
-function API.SetupInteractiveObject(_Name, _Description)
-    if GUI then
-        API.Dbg("API.SetupInteractiveObject: Can not be used from local enviorment!");
-        return;
-    end
-    if not IsExisting(_Name) then
-        API.Dbg("API.SetupInteractiveObject: Entity \"" .._Name.. "\" is invalid!");
-        return;
-    end
-    _Description.Name = _Name;
-    return BundleInteractiveObjects.Global:CreateObject(_Description);
-end
-SetupInteractiveObject = API.SetupInteractiveObject;
-
----
 -- Erzeugt ein interaktives Objekt.
 --
 -- Die Parameter des interaktiven Objektes werden durch seine Beschreibung
@@ -281,17 +254,17 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 ---
 -- Erzeugt eine Beschriftung für Custom Objects.
 --
--- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
+-- Im Questfenster werden die Namen von Custom Objects als ungesetzt angezeigt.
 -- Mit dieser Funktion kann ein Name angelegt werden.
 --
 -- <p><b>Alias:</b> AddCustomIOName</p>
 --
 -- @param _Key [string] Typname des Entity
--- @param _Text [string] Text der Beschriftung
+-- @param _Text [string|table] Text der Beschriftung
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.AddCustomIOName("D_X_ChestClosed", "Schatztruhe");
+-- API.AddCustomIOName("D_X_ChestClosed", {de = "Schatztruhe", en = "Treasure");
 -- API.AddCustomIOName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
 function API.AddCustomIOName(_Key, _Text)

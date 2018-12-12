@@ -939,8 +939,9 @@ end
 ---
 -- Schreibt einen anderen Text in einen normalen Tooltip.
 --
--- @param _TitleText Titel des Tooltip
--- @param _DescText  Text des Tooltip
+-- @param _TitleText [string] Titel des Tooltip
+-- @param _DescText [string] Text des Tooltip
+-- @param _DisabledText [string] Disabled Text des Tooltip
 -- @within Internal
 -- @local
 --

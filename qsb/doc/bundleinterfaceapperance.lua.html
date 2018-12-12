@@ -1,0 +1,717 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>bundleinterfaceapperance</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundleinterfaceapperance</code></h1>
+<p>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche
+ des Spiels.</p>
+<p> Es gibt Funktionen zum Ausblenden einiger Buttons und Menüs und
+ die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
+ zu setzen.
+<p> <p><a href="#API.InterfaceHideBuildMenu">Interface-Steuerung</a></p>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceGetPlayerName">API.InterfaceGetPlayerName (_PlayerID)</a></td>
+	<td class="summary">Gibt den Namen des Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceGetTerritoryName">API.InterfaceGetTerritoryName (_TerritoryID)</a></td>
+	<td class="summary">Gibt den Namen des Territoriums zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideBuildMenu">API.InterfaceHideBuildMenu (_Flag)</a></td>
+	<td class="summary">Versteckt das Baumenü oder blendet es ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideBuyTerritory">API.InterfaceHideBuyTerritory (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zum Territorienkauf oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideDiplomacyMenu">API.InterfaceHideDiplomacyMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Diplomatiemenü oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideKnightAbility">API.InterfaceHideKnightAbility (_Flag)</a></td>
+	<td class="summary">Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideKnightButton">API.InterfaceHideKnightButton (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zur Heldenselektion oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideMinimap">API.InterfaceHideMinimap (_Flag)</a></td>
+	<td class="summary">Graut die Minimap aus oder macht sie wieder verwendbar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideProductionMenu">API.InterfaceHideProductionMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Produktionsmenü oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideSelectionButton">API.InterfaceHideSelectionButton (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideToggleMinimap">API.InterfaceHideToggleMinimap (_Flag)</a></td>
+	<td class="summary">Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideWeatherMenu">API.InterfaceHideWeatherMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Wettermenüs oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetIcon">API.InterfaceSetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
+	<td class="summary">Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetPlayerColor">API.InterfaceSetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</a></td>
+	<td class="summary">Setzt zu Spielbeginn eine andere Spielerfarbe.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetPlayerName">API.InterfaceSetPlayerName (_playerID, _name)</a></td>
+	<td class="summary">Gibt dem Spieler einen neuen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetPlayerPortrait">API.InterfaceSetPlayerPortrait (_PlayerID, _Portrait)</a></td>
+	<td class="summary">Setzt das Portrait des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetTexture">API.InterfaceSetTexture (_widget, _file)</a></td>
+	<td class="summary">Setzt eine Grafik als Bild für einen Icon oder einen Button.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetTooltipCosts">API.InterfaceSetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</a></td>
+	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetTooltipNormal">API.InterfaceSetTooltipNormal (_title, _text, _disabledText)</a></td>
+	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.InterfaceGetPlayerName"></a>
+    <strong>API.InterfaceGetPlayerName (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt den Namen des Spielers zurück.
+<p> <p><b>Alias:</b> GetPlayerName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string]  Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceGetTerritoryName"></a>
+    <strong>API.InterfaceGetTerritoryName (_TerritoryID)</strong>
+    </dt>
+    <dd>
+    Gibt den Namen des Territoriums zurück.
+<p> <p><b>Alias:</b> GetTerritoryName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_TerritoryID</span>
+         [number] ID des Territoriums
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string]  Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideBuildMenu"></a>
+    <strong>API.InterfaceHideBuildMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt das Baumenü oder blendet es ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideBuyTerritory"></a>
+    <strong>API.InterfaceHideBuyTerritory (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zum Territorienkauf oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideDiplomacyMenu"></a>
+    <strong>API.InterfaceHideDiplomacyMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideKnightAbility"></a>
+    <strong>API.InterfaceHideKnightAbility (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideKnightButton"></a>
+    <strong>API.InterfaceHideKnightButton (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zur Heldenselektion oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideMinimap"></a>
+    <strong>API.InterfaceHideMinimap (_Flag)</strong>
+    </dt>
+    <dd>
+    Graut die Minimap aus oder macht sie wieder verwendbar.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideProductionMenu"></a>
+    <strong>API.InterfaceHideProductionMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Produktionsmenü oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideSelectionButton"></a>
+    <strong>API.InterfaceHideSelectionButton (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideToggleMinimap"></a>
+    <strong>API.InterfaceHideToggleMinimap (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideWeatherMenu"></a>
+    <strong>API.InterfaceHideWeatherMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Wettermenüs oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetIcon"></a>
+    <strong>API.InterfaceSetIcon (_WidgetID, _Coordinates, _Size, _Name)</strong>
+    </dt>
+    <dd>
+    Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
+<p> Dabei müssen die Quellen nach gui_768, gui_920 und gui_1080 in der
+ entsprechenden Größe gepackt werden. Die Ordner liegen in graphics/textures.
+ Jede Map muss einen eigenen eindeutigen Namen für jede Grafik verwenden.
+<p> <u>Größen:</u>
+ Die Gesamtgröße ergibt sich aus der Anzahl der Buttons und der Pixelbreite
+ für die jeweilige Grö0e. z.B. 64 Buttons -> Größe * 8 x Größe * 8
+ <ul>
+ <li>768: 41x41</li>
+ <li>960: 52x52</li>
+ <li>1200: 64x64</li>
+ </ul>
+<p> <u>Namenskonvention:</u>
+ Die Namenskonvention wird durch das Spiel vorgegeben. Je nach Größe sind
+ die Namen der Matrizen erweitert mit .png, big.png und verybig.png. Du
+ gibst also niemals die Dateiendung mit an!
+ <ul>
+ <li>Für normale Icons: _Name .. .png</li>
+ <li>Für große Icons: _Name .. big.png</li>
+ <li>Für riesige Icons: _Name .. verybig.png</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_WidgetID</span>
+         [string|number] Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_Coordinates</span>
+         [table] Koordinaten
+        </li>
+        <li><span class="parameter">_Size</span>
+         [number] Größe des Icon
+        </li>
+        <li><span class="parameter">_Name</span>
+         [string] Name der Icon Matrix
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetPlayerColor"></a>
+    <strong>API.InterfaceSetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</strong>
+    </dt>
+    <dd>
+    Setzt zu Spielbeginn eine andere Spielerfarbe.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Color</span>
+         [number] Spielerfarbe
+        </li>
+        <li><span class="parameter">_Logo</span>
+         [number] Logo (optional)
+        </li>
+        <li><span class="parameter">_Pattern</span>
+         [number] Pattern (optional)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string]  Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetPlayerName"></a>
+    <strong>API.InterfaceSetPlayerName (_playerID, _name)</strong>
+    </dt>
+    <dd>
+    Gibt dem Spieler einen neuen Namen.
+<p> <p><b>Alias:</b> SetPlayerName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_playerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_name</span>
+         [string] Name des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string]  Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetPlayerPortrait"></a>
+    <strong>API.InterfaceSetPlayerPortrait (_PlayerID, _Portrait)</strong>
+    </dt>
+    <dd>
+    Setzt das Portrait des Spielers.
+<p> Dabei gibt es 3 verschiedene Varianten:
+ <ul>
+ <li>Wenn _Portrait nicht gesetzt wird, wird das Portrait des Primary
+ Knight genommen.</li>
+ <li>Wenn _Portrait ein existierendes Entity ist, wird anhand des Typs
+ das Portrait bestimmt.</li>
+ <li>Wenn _Portrait der Modellname eines Portrait ist, wird der Wert
+ als Portrait gesetzt.</li>
+ </ul>
+<p> Wenn kein Portrait bestimmt werden kann, wird H_NPC_Generic_Trader verwendet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] ID des Spielers
+        </li>
+        <li><span class="parameter">_Portrait</span>
+         [string] Name des Models
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Primary Knight
+</span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>);
+<span class="comment">-- Durch Entity
+</span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>, <span class="string">"amma"</span>);
+<span class="comment">-- Durch Modelname
+</span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>, <span class="string">"H_NPC_Monk_AS"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetTexture"></a>
+    <strong>API.InterfaceSetTexture (_widget, _file)</strong>
+    </dt>
+    <dd>
+    Setzt eine Grafik als Bild für einen Icon oder einen Button.
+<p> Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem
+ beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
+ muss jedoch immer der korrekte Pfad angegeben werden.
+<p> <p><b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
+ sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
+ unterschiedlich ist.</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_widget</span>
+         [string|number] Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_file</span>
+         [string] Pfad zur Datei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetTooltipCosts"></a>
+    <strong>API.InterfaceSetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</strong>
+    </dt>
+    <dd>
+    Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.
+<p> <p><b>Alias:</b> UserSetTextBuy</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+         [string] Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+         [string] Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+         [string] Textzusatz wenn inaktiv
+        </li>
+        <li><span class="parameter">_costs</span>
+         [table] Kostentabelle
+        </li>
+        <li><span class="parameter">_inSettlement</span>
+         [boolean] Kosten in Siedlung suchen
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="bundleinterfaceapperance.lua.html#API.InterfaceSetTooltipNormal">API.InterfaceSetTooltipNormal</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetTooltipNormal"></a>
+    <strong>API.InterfaceSetTooltipNormal (_title, _text, _disabledText)</strong>
+    </dt>
+    <dd>
+    Ändert den aktuellen Tooltip mit der Beschreibung.
+<p> <p><b>Alias:</b> UserSetTextNormal</p>
+<p> Die Funtion ermittelt das aktuelle GUI Widget und ändert den Text des
+ Tooltip. Dazu muss die Funktion innerhalb der Mouseover-Funktion eines
+ Buttons oder Widgets mit Tooltip aufgerufen werden.
+<p> Die Funktion kann auch mit deutsch/english lokalisierten Tabellen als
+ Text gefüttert werden. In diesem Fall wird der deutsche Text genommen,
+ wenn es sich um eine deutsche Spielversion handelt. Andernfalls wird
+ immer der englische Text verwendet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+         [string] Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+         [string] Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+         [string] Textzusatz wenn inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-12-12 14:53:26 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

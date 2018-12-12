@@ -100,9 +100,6 @@ DeactivateSingleStop = API.DeactivateSingleStop;
 --
 -- @within Anwenderfunktionen
 --
--- @usage
--- API.ActivateDowngrade();
---
 function API.ActivateDowngrade()
     if not GUI then
         API.Bridge("API.ActivateDowngrade()");
@@ -118,9 +115,6 @@ ActivateDowngrade = API.ActivateDowngrade;
 -- <p><b>Alias:</b> DeactivateDowngrade</p>
 --
 -- @within Anwenderfunktionen
---
--- @usage
--- API.DeactivateDowngrade();
 --
 function API.DeactivateDowngrade()
     if not GUI then
