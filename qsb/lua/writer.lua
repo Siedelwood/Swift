@@ -94,10 +94,17 @@
 -- Version angezeigt bekommen.</p>
 --
 
---
+QSB = QSB or {};
+
+SymfoniaWriter = {}
+
+---
 -- Erzeugt die HTML-Dateien für die Dokumentation.
 --
-function CreateBundleHtmlDocumentation()
+-- @within Internal
+-- @local
+--
+function SymfoniaWriter:CreateBundleHtmlDocumentation()
     os.execute("cd bin && ./createdoc.sh / core");
     for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
         if SymfoniaLoader.Data.LoadOrder[i][2] then
@@ -111,21 +118,24 @@ function CreateBundleHtmlDocumentation()
     end
 end
 
---
+---
 -- Baut den Index der Dokumentation zusammen.
 --
-function CreateDocumentationIndex()
-    local FileText = LoadDocumentationIndexTemplate();
+-- @within Internal
+-- @local
+--
+function SymfoniaWriter:CreateDocumentationIndex()
+    local FileText = self:LoadDocumentationIndexTemplate();
 
-    local BundleList = CreateDocumentationIndexLink("Core", "qsb/lua/");
+    local BundleList = self:CreateDocumentationIndexLink("Core", "qsb/lua/");
     for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
         if SymfoniaLoader.Data.LoadOrder[i][2] then
-            BundleList = BundleList .. CreateDocumentationIndexLink(SymfoniaLoader.Data.LoadOrder[i][1], "qsb/lua/bundles/");
+            BundleList = BundleList .. self:CreateDocumentationIndexLink(SymfoniaLoader.Data.LoadOrder[i][1], "qsb/lua/bundles/");
         end
     end
     for i= 1, #SymfoniaLoader.Data.AddOnLoadOrder, 1 do
         if SymfoniaLoader.Data.AddOnLoadOrder[i][2] then
-            BundleList = BundleList .. CreateDocumentationIndexLink(SymfoniaLoader.Data.AddOnLoadOrder[i][1], "qsb/lua/addons/");
+            BundleList = BundleList .. self:CreateDocumentationIndexLink(SymfoniaLoader.Data.AddOnLoadOrder[i][1], "qsb/lua/addons/");
         end
     end
     FileText = FileText:gsub("###PLACEHOLDER_LUA_BUNDLES###", BundleList);
@@ -137,11 +147,17 @@ function CreateDocumentationIndex()
     fh:close();
 end
 
---
+---
 -- Erzeugt einen Link auf der Index-Seite der Doku und gibt ihn als String
 -- zurück.
 --
-function CreateDocumentationIndexLink(_Name, _Folder)
+-- @param _Name [string] Name des Bundle
+-- @param _Folder [string] Relativer Pfad
+-- @return [string] HTML des Links
+-- @within Internal
+-- @local
+--
+function SymfoniaWriter:CreateDocumentationIndexLink(_Name, _Folder)
     local fh = io.open("qsb/default/index.panel.template.html", "rt");
     assert(fh, "File not found: qsb/default/index.panel.template.html");
     fh:seek("set", 0);
@@ -149,14 +165,18 @@ function CreateDocumentationIndexLink(_Name, _Folder)
     local HTML = fh:read("*all");
     HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_NAME###", _Name);
     HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_LINK###", _Name:lower().. ".lua.html");
-    HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_CONTENTS###", CreateSearchTagsFromSourceFile(_Folder .. _Name:lower() .. ".lua"));
+    HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_CONTENTS###", self:CreateSearchTagsFromSourceFile(_Folder .. _Name:lower() .. ".lua"));
     return HTML
 end
 
---
+---
 -- Läd das Template der index.html und gibt es als String zurück.
 --
-function LoadDocumentationIndexTemplate()
+-- @return [string] Dateiinhalt
+-- @within Internal
+-- @local
+--
+function SymfoniaWriter:LoadDocumentationIndexTemplate()
     local fh = io.open("qsb/default/index.template.html", "rb");
     assert(fh, "File not found: qsb/default/index.template.html");
     fh:seek("set", 0);
@@ -165,11 +185,19 @@ function LoadDocumentationIndexTemplate()
     return Contents;
 end
 
---
+---
 -- Läd eine Quelldatei und gibt einen String mit Schlagwörtern zurück.
--- Schlagworter sind Behavior- oder Funktionsnamen.s
+-- Schlagworter sind Behavior- oder Funktionsnamen.
 --
-function CreateSearchTagsFromSourceFile(_File)
+-- <b>Hinweis</b>: Schlagwörter werden immer mit der gesamten Zeile kopiert,
+-- in der sie stehen (ist einfacher zu programmieren und ich bin faul).
+--
+-- @param _File [string] Dateiname
+-- @return [string] Schlagworter
+-- @within Internal
+-- @local
+--
+function SymfoniaWriter:CreateSearchTagsFromSourceFile(_File)
     local fh = io.open(_File, "rt");
     assert(fh, "File not found: " .._File);
     fh:seek("set", 0);
@@ -249,8 +277,8 @@ end
 
 -- Bundle-Doku aktualisieren
 if UpdateUserDocumentation then
-    CreateBundleHtmlDocumentation();
-    CreateDocumentationIndex();
+    SymfoniaWriter:CreateBundleHtmlDocumentation();
+    SymfoniaWriter:CreateDocumentationIndex();
 end
 
 SymfoniaLoader:CreateQSB(Externals);
