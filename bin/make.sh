@@ -18,21 +18,21 @@ else
     echo "Vanilla mode!"
 fi
 
-lua qsb/lua/writer.lua $@ &>/dev/null
+lua qsb/lua/writer.lua $@ #&>/dev/null
 echo "Done!"
 
 cd qsb/luaminifyer
 
 echo "Minify QSB ..."
-./LuaMinify.sh ../../var/qsb.lua &>/dev/null
+./LuaMinify.sh ../../var/qsb.lua #&>/dev/null
 echo "Done!"
 
 cd ../../qsb
 
 echo "Generating Documentation ..."
 echo "Note: documenting only selected modules does not work yet! You get all!"
-rm -r ../doc &>/dev/null
-lua ldoc/ldoc.lua -d ../doc -c userconfig.ld lua &>/dev/null
+rm -r ../doc #&>/dev/null
+lua ldoc/ldoc.lua -d ../doc -c userconfig.ld lua #&>/dev/null
 rm userconfig.ld
 
 cd ..

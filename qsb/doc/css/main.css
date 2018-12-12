@@ -1,0 +1,39 @@
+#modulesContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+body {
+    width: 800px;
+    margin: auto;
+}
+
+.docContainer {
+    padding: 0px;
+    margin: 5px;
+}
+
+.docLinkContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.doclink {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    margin-bottom: 5px;
+    border: 1px solid black;
+}
+
+.docLinkExpander {
+    margin: 0px 0px 0px auto;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16pt;
+}
+
+.docInvisibleContent {
+    display: none;
+}

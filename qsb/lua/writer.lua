@@ -98,18 +98,127 @@
 -- Erzeugt die HTML-Dateien für die Dokumentation.
 --
 function CreateBundleHtmlDocumentation()
-    os.execute("cd bin && createdoc.sh / core");
+    os.execute("cd bin && ./createdoc.sh / core");
     for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
         if SymfoniaLoader.Data.LoadOrder[i][2] then
-            os.execute("cd bin && createdoc.sh /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
+            os.execute("cd bin && ./createdoc.sh /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
         end
     end
     for i= 1, #SymfoniaLoader.Data.AddOnLoadOrder, 1 do
         if SymfoniaLoader.Data.AddOnLoadOrder[i][2] then
-            os.execute("cd bin && createdoc.sh /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
+            os.execute("cd bin && ./createdoc.sh /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
         end
     end
 end
+
+--
+-- Baut den Index der Dokumentation zusammen.
+--
+function CreateDocumentationIndex()
+    local FileText = LoadDocumentationIndexTemplate();
+
+    local BundleList = CreateDocumentationIndexLink("Core", "qsb/lua/");
+    for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
+        if SymfoniaLoader.Data.LoadOrder[i][2] then
+            BundleList = BundleList .. CreateDocumentationIndexLink(SymfoniaLoader.Data.LoadOrder[i][1], "qsb/lua/bundles/");
+        end
+    end
+    for i= 1, #SymfoniaLoader.Data.AddOnLoadOrder, 1 do
+        if SymfoniaLoader.Data.AddOnLoadOrder[i][2] then
+            BundleList = BundleList .. CreateDocumentationIndexLink(SymfoniaLoader.Data.AddOnLoadOrder[i][1], "qsb/lua/addons/");
+        end
+    end
+    FileText = FileText:gsub("###PLACEHOLDER_LUA_BUNDLES###", BundleList);
+
+    os.remove("qsb/doc/index.html");
+    local fh = io.open("qsb/doc/index.html", "wt");
+    assert(fh, "File not created: qsb/doc/index.html");
+    fh:write(FileText);
+    fh:close();
+end
+
+--
+-- Erzeugt einen Link auf der Index-Seite der Doku und gibt ihn als String
+-- zurück.
+--
+function CreateDocumentationIndexLink(_Name, _Folder)
+    local fh = io.open("qsb/default/index.panel.template.html", "rt");
+    assert(fh, "File not found: qsb/default/index.panel.template.html");
+    fh:seek("set", 0);
+
+    local HTML = fh:read("*all");
+    HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_NAME###", _Name);
+    HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_LINK###", _Name:lower().. ".lua.html");
+    HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_CONTENTS###", CreateSearchTagsFromSourceFile(_Folder .. _Name:lower() .. ".lua"));
+    return HTML
+end
+
+--
+-- Läd das Template der index.html und gibt es als String zurück.
+--
+function LoadDocumentationIndexTemplate()
+    local fh = io.open("qsb/default/index.template.html", "rb");
+    assert(fh, "File not found: qsb/default/index.template.html");
+    fh:seek("set", 0);
+    local Contents = fh:read("*all");
+    fh:close();
+    return Contents;
+end
+
+--
+-- Läd eine Quelldatei und gibt einen String mit Schlagwörtern zurück.
+-- Schlagworter sind Behavior- oder Funktionsnamen.s
+--
+function CreateSearchTagsFromSourceFile(_File)
+    local fh = io.open(_File, "rt");
+    assert(fh, "File not found: " .._File);
+    fh:seek("set", 0);
+
+    local TagString = "";
+    local LUA = fh:read();
+    while (LUA ~= nil) do
+        -- Kommentare
+        local s, e = LUA:find("^-- .*$");
+        if s then
+            TagString = TagString .. "<p>" .. LUA:sub(s, e) .. "</p>";
+        end
+        -- API calls
+        local s, e = LUA:find("^function API.*$");
+        if s then
+            TagString = TagString .. "<p>" .. LUA:sub(s, e) .. "</p>";
+        end
+        -- Alias
+        local s, e = LUA:find("<b>Alias<\\/b>: ");
+        if e then
+            TagString = TagString .. "<p>" .. LUA:sub(e+1) .. "</p>";
+        end
+        -- Rewards
+        local s, e = LUA:find("^b_Reward.*=.*$");
+        if s then
+            TagString = TagString .. "<p>" .. LUA:sub(s+2, e-4) .. "</p>";
+        end
+        -- Reprisals
+        local s, e = LUA:find("^b_Reprisal.*=.*$");
+        if s then
+            TagString = TagString .. "<p>" .. LUA:sub(s+2, e-4) .. "</p>";
+        end
+        -- Trigger
+        local s, e = LUA:find("^b_Trigger.*=.*$");
+        if s then
+            TagString = TagString .. "<p>" .. LUA:sub(s+2, e-4) .. "</p>";
+        end
+        -- Goals
+        local s, e = LUA:find("^b_Goal.*=.*$");
+        if s then
+            TagString = TagString .. "<p>" .. LUA:sub(s+2, e-4) .. "</p>";
+        end
+        -- Nächste Zeile
+        LUA = fh:read();
+    end
+    return TagString;
+end
+
+-- -------------------------------------------------------------------------- --
 
 dofile("qsb/lua/loader.lua");
 local fh = io.open("var/qsb.lua", "r");
@@ -141,6 +250,7 @@ end
 -- Bundle-Doku aktualisieren
 if UpdateUserDocumentation then
     CreateBundleHtmlDocumentation();
+    CreateDocumentationIndex();
 end
 
 SymfoniaLoader:CreateQSB(Externals);
