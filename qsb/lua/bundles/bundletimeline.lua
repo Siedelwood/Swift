@@ -54,7 +54,7 @@ QSB = QSB or {};
 -- }
 --
 function API.TimeLineStart(_Description)
-    return BundleGameHelperFunctions.Shared.TimeLine:Start(_Description);
+    return BundleTimeLine.Shared.TimeLine:Start(_Description);
 end
 
 ---

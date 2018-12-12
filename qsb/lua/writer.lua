@@ -105,15 +105,15 @@ SymfoniaWriter = {}
 -- @local
 --
 function SymfoniaWriter:CreateBundleHtmlDocumentation()
-    os.execute("cd bin && ./createdoc.sh / core");
+    os.execute("cd bin && bash.exe ./createdoc.sh / core");
     for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
         if SymfoniaLoader.Data.LoadOrder[i][2] then
-            os.execute("cd bin && ./createdoc.sh /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
+            os.execute("cd bin && bash.exe ./createdoc.sh /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
         end
     end
     for i= 1, #SymfoniaLoader.Data.AddOnLoadOrder, 1 do
         if SymfoniaLoader.Data.AddOnLoadOrder[i][2] then
-            os.execute("cd bin && ./createdoc.sh /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
+            os.execute("cd bin && bash.exe ./createdoc.sh /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
         end
     end
 end

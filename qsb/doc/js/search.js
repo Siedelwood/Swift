@@ -9,6 +9,11 @@ $( document ).ready(function() {
         resetSearch();
     });
 
+    $("#searchForm").submit(function(event) {
+        commenceSearch();
+        return false;
+    });
+
     console.log( "Documentation loaded!" );
 });
 
