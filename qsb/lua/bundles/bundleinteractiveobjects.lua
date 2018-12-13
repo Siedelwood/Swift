@@ -1100,12 +1100,12 @@ Core:RegisterBundle("BundleInteractiveObjects");
 --
 -- @within Goal
 --
-function Goal_ActivateSeveralObject(...)
-    return b_Goal_ActivateSeveralObject:new(...);
+function Goal_ActivateSeveralObjects(...)
+    return b_Goal_ActivateSeveralObjects:new(...);
 end
 
-b_Goal_ActivateSeveralObject = {
-    Name = "Goal_ActivateSeveralObject",
+b_Goal_ActivateSeveralObjects = {
+    Name = "Goal_ActivateSeveralObjects",
     Description = {
         en = "Goal: Activate an interactive object",
         de = "Ziel: Aktiviere ein interaktives Objekt",
@@ -1119,23 +1119,22 @@ b_Goal_ActivateSeveralObject = {
     ScriptNames = {};
 }
 
-function b_Goal_ActivateSeveralObject:GetGoalTable()
+function b_Goal_ActivateSeveralObjects:GetGoalTable()
     return {Objective.Object, { unpack(self.ScriptNames) } }
 end
 
-function b_Goal_ActivateSeveralObject:AddParameter(_Index, _Parameter)
-    assert(
-        _Index == 1 and _Parameter ~= nil and _Parameter ~= "",
-        "Goal_ActivateSeveralObject: At least one IO needed!"
-    );
+function b_Goal_ActivateSeveralObjects:AddParameter(_Index, _Parameter)
+    if _Index == 0 then
+        assert(_Parameter ~= nil and _Parameter ~= "", "Goal_ActivateSeveralObjects: At least one IO needed!");
+    end
     if _Parameter ~= nil and _Parameter ~= "" then
         table.insert(self.ScriptNames, _Parameter);
     end
 end
 
-function b_Goal_ActivateSeveralObject:GetMsgKey()
+function b_Goal_ActivateSeveralObjects:GetMsgKey()
     return "Quest_Object_Activate"
 end
 
-Core:RegisterBehavior(b_Goal_ActivateSeveralObject);
+Core:RegisterBehavior(b_Goal_ActivateSeveralObjects);
 

@@ -16,6 +16,7 @@ function Mission_LocalOnMapStart()
     local Path = "E:/Repositories/symfonia/qsb/lua";
     Script.Load(Path .. "/loader.lua");
     SymfoniaLoader:Load(Path);
+    InitKnightTitleTables();
 end
 
 

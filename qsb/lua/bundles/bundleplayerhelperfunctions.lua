@@ -632,6 +632,8 @@ function BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon()
         local PlayerIcon;
         local LogoWidget = _PlayerIconContainer .. "/Logo";
         local PatternWidget = _PlayerIconContainer .. "/Pattern";
+        local PlayerCategory = GetPlayerCategoryType(_PlayerID);
+        local PlayerIcon = g_TexturePositions.PlayerCategories[PlayerCategory];
         if Mission_Callback_OverridePlayerIconForQuest then
             PlayerIcon = Mission_Callback_OverridePlayerIconForQuest(_PlayerID) or PlayerIcon;
         end

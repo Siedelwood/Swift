@@ -8493,7 +8493,7 @@ function b_Reward_SetBuildingUpgradeLevel:DEBUG(_Quest)
 	if not building or Logic.IsBuilding(building) == 0  then
 		dbg(_Quest.Identifier .. " " .. self.Name .. ": Building " .. self.Building .. " is missing or no building.")
 		return true
-	elseif not self.UpgradeLevel or self.UpgradeLevel < 0 or self.UpgradeLevel > maxUpgradeLevel then
+	elseif not self.UpgradeLevel or self.UpgradeLevel < 0 then
 		dbg(_Quest.Identifier .. " " .. self.Name .. ": Upgrade level is wrong")
 		return true
 	end

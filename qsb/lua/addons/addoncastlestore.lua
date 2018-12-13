@@ -1180,7 +1180,7 @@ end
 function AddOnCastleStore.Local.CastleStore:IsLocked(_PlayerID, _Good)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
     if not self:HasCastleStore(_PlayerID) then
-        return false;
+        return true;
     end
     if not self.Data[_PlayerID].Goods[_Good] then
         return false;
@@ -2030,36 +2030,10 @@ function AddOnCastleStore.Local:OverwriteGameFunctions()
                 end
                 SetIcon(IconWidget, g_TexturePositions.Goods[CostsGoodType], 44);
                 local PlayerID = GUI.GetPlayerID();
-                local PlayersGoodAmount;
-                if _GoodsInSettlementBoolean == true then
-                    PlayersGoodAmount = GetPlayerGoodsInSettlement(CostsGoodType, PlayerID, true);
-                    if Logic.GetGoodCategoryForGoodType(CostsGoodType) == GoodCategories.GC_Resource then
-                        if not QSB.CastleStore:IsLocked(PlayerID, CostsGoodType) then
-                            PlayersGoodAmount = PlayersGoodAmount + QSB.CastleStore:GetAmount(PlayerID, CostsGoodType);
-                        end
-                    end
-                else
-                    local IsInOutStock;
-                    local BuildingID;
-                    if CostsGoodType == Goods.G_Gold then
-                        BuildingID = Logic.GetHeadquarters(PlayerID);
-                        IsInOutStock = Logic.GetIndexOnOutStockByGoodType(BuildingID, CostsGoodType);
-                    else
-                        BuildingID = Logic.GetStoreHouse(PlayerID);
-                        IsInOutStock = Logic.GetIndexOnOutStockByGoodType(BuildingID, CostsGoodType);
-                    end
-                    if IsInOutStock ~= -1 then
-                        PlayersGoodAmount = Logic.GetAmountOnOutStockByGoodType(BuildingID, CostsGoodType);
-                    else
-                        BuildingID = GUI.GetSelectedEntity();
-                        if BuildingID ~= nil then
-                            if Logic.GetIndexOnOutStockByGoodType(BuildingID, CostsGoodType) == nil then
-                                BuildingID = Logic.GetRefillerID(GUI.GetSelectedEntity());
-                            end
-                            PlayersGoodAmount = Logic.GetAmountOnOutStockByGoodType(BuildingID, CostsGoodType);
-                        else
-                            PlayersGoodAmount = 0;
-                        end
+                local PlayersGoodAmount = GetPlayerGoodsInSettlement(CostsGoodType, PlayerID, _GoodsInSettlementBoolean);
+                if Logic.GetGoodCategoryForGoodType(CostsGoodType) == GoodCategories.GC_Resource and CostsGoodType ~= Goods.G_Gold then
+                    if not QSB.CastleStore:IsLocked(PlayerID, CostsGoodType) then
+                        PlayersGoodAmount = PlayersGoodAmount + QSB.CastleStore:GetAmount(PlayerID, CostsGoodType);
                     end
                 end
                 local Color = "";
