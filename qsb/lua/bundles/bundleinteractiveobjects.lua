@@ -1088,3 +1088,51 @@ end
 
 Core:RegisterBundle("BundleInteractiveObjects");
 
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler muss bis zu 4 interaktive Objekte benutzen.
+--
+-- @param _ScriptName1 Erstes Objekt
+-- @param _ScriptName2 (optional) Zweites Objekt
+-- @param _ScriptName3 (optional) Drittes Objekt
+-- @param _ScriptName4 (optional) Viertes Objekt
+--
+-- @within Goal
+--
+function Goal_ActivateSeveralObject(...)
+    return b_Goal_ActivateSeveralObject:new(...);
+end
+
+b_Goal_ActivateSeveralObject = {
+    Name = "Goal_ActivateSeveralObject",
+    Description = {
+        en = "Goal: Activate an interactive object",
+        de = "Ziel: Aktiviere ein interaktives Objekt",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Object name 1", de = "Skriptname 1" },
+        { ParameterType.ScriptName, en = "Object name 2", de = "Skriptname 2" },
+        { ParameterType.ScriptName, en = "Object name 3", de = "Skriptname 3" },
+        { ParameterType.ScriptName, en = "Object name 4", de = "Skriptname 4" },
+    },
+    ScriptNames = {};
+}
+
+function b_Goal_ActivateSeveralObject:GetGoalTable()
+    return {Objective.Object, { unpack(self.ScriptNames) } }
+end
+
+function b_Goal_ActivateSeveralObject:AddParameter(_Index, _Parameter)
+    assert(_Index == 1 and _Parameter ~= nil, "Goal_ActivateSeveralObject: At least one IO needed!");
+    if _Parameter ~= nil then
+        table.insert(self.ScriptNames, _Parameter);
+    end
+end
+
+function b_Goal_ActivateSeveralObject:GetMsgKey()
+    return "Quest_Object_Activate"
+end
+
+Core:RegisterBehavior(b_Goal_ActivateSeveralObject);
+
