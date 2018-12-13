@@ -1124,8 +1124,11 @@ function b_Goal_ActivateSeveralObject:GetGoalTable()
 end
 
 function b_Goal_ActivateSeveralObject:AddParameter(_Index, _Parameter)
-    assert(_Index == 1 and _Parameter ~= nil, "Goal_ActivateSeveralObject: At least one IO needed!");
-    if _Parameter ~= nil then
+    assert(
+        _Index == 1 and _Parameter ~= nil and _Parameter ~= "",
+        "Goal_ActivateSeveralObject: At least one IO needed!"
+    );
+    if _Parameter ~= nil and _Parameter ~= "" then
         table.insert(self.ScriptNames, _Parameter);
     end
 end
