@@ -575,6 +575,8 @@ end
 ---
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
+-- <p><b>Alias:</b> GUI_NoteDown</p>
+--
 -- @param _Message [string] Anzeigetext
 -- @within Anwenderfunktionen
 --
@@ -586,6 +588,7 @@ function API.Message(_Message)
     end
     Message(_Message);
 end
+GUI_NoteDown = API.Message;
 
 ---
 -- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table

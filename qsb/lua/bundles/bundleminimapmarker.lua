@@ -15,6 +15,20 @@
 -- <li>Pulse: Eine pulsierende Markierung, die dauerhaft verbleibt.</li>
 -- </ul>
 --
+-- Die Farbe eines Markers kann auf 2 verschiedene Weisen bestimmt werden.
+-- <ol>
+-- <li>Durch die Spielerfarbe des "Besitzers" der Markierung.
+-- <pre> API.CreateMinimapSignal(1, GetPosition("pos"));</pre>
+-- </li>
+-- <li>Durch Übergabe einer vordefinierten Farbe oder einer Farbtabelle
+-- <pre>
+-- API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
+-- API.CreateMinimapSignal({180, 180, 180}, GetPosition("pos"));</pre>
+-- </li>
+-- </ol>
+--
+-- Durchsichtige Marker sind nicht vorgesehen!
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -22,6 +36,22 @@ BundleMinimapMarker = {};
 
 API = API or {};
 QSB = QSB or {};
+
+---
+-- Vordefinierte Farben für Minimap Marker.
+-- @field Blue Königsblau
+-- @field Red Blutrot
+-- @field Yellow Sonnengelb
+-- @field Green Blattgrün
+--
+-- @usage API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
+--
+MarkerColor = {
+    Blue    = { 17,   7, 216},
+    Red     = {216,   7,   7},
+    Yellow  = { 25, 185,   8},
+    Green   = { 16, 194, 220},
+}
 
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
@@ -34,7 +64,7 @@ QSB = QSB or {};
 --
 -- <b>Alias</b>: CreateMinimapSignal
 --
--- @param _PlayerID [number] ID des Besitzers
+-- @param _PlayerID [number|table] PlayerID oder Farbtabelle
 -- @param _Position [string|number|table] Position des Markers
 -- @return [number] ID des Markers
 -- @within Anwenderfunktionen
@@ -67,7 +97,7 @@ CreateMinimapSignal = API.CreateMinimapSignal;
 --
 -- <b>Alias</b>: CreateMinimapMarker
 --
--- @param _PlayerID [number] ID des Besitzers
+-- @param _PlayerID [number|table] PlayerID oder Farbtabelle
 -- @param _Position [string|number|table] Position des Markers
 -- @return [number] ID des Markers
 -- @within Anwenderfunktionen
@@ -100,7 +130,7 @@ CreateMinimapMarker = API.CreateMinimapMarker;
 --
 -- <b>Alias</b>: CreateMinimapPulse
 --
--- @param _PlayerID [number] ID des Besitzers
+-- @param _PlayerID [number|table] PlayerID oder Farbtabelle
 -- @param _Position [string|number|table] Position des Markers
 -- @return [number] ID des Markers
 -- @within Anwenderfunktionen
@@ -221,9 +251,15 @@ function BundleMinimapMarker.Global:ShowMinimapMarker(_ID)
         return;
     end
     local Marker = self.Data.CreatedMinimapMarkers[_ID];
+
+    local ColorOrPlayerID = Marker[1];
+    if type(ColorOrPlayerID) == "table" then
+        ColorOrPlayerID = API.ConvertTableToString(ColorOrPlayerID);
+    end
+
     API.Bridge([[
         BundleMinimapMarker.Local:ShowMinimapMarker(
-            ]] .._ID.. [[,]] ..Marker[1].. [[,]] ..Marker[2].. [[,]] ..Marker[3].. [[, ]] ..Marker[4].. [[
+            ]] .._ID.. [[,]] ..ColorOrPlayerID.. [[,]] ..Marker[2].. [[,]] ..Marker[3].. [[, ]] ..Marker[4].. [[
         )
     ]]);
 end
@@ -256,7 +292,7 @@ end
 ---
 -- Initialisiert das Bundle im globalen Skript.
 --
--- @param _ID [number] ID des Markers
+-- @param _ID [number|table] Besitzer oder Farbtabelle
 -- @param _PlayerID [number] ID des Besitzers
 -- @param _X [number] X-Koordinate des Markers
 -- @param _Y [number] Y-Koordinate des Makers
@@ -265,7 +301,14 @@ end
 -- @local
 --
 function BundleMinimapMarker.Local:ShowMinimapMarker(_ID, _PlayerID, _X, _Y, _Type)
-    local R, G, B = GUI.GetPlayerColor(_PlayerID);
+    local R, G, B;
+    if type(_PlayerID) == "number" then
+        R, G, B = GUI.GetPlayerColor(_PlayerID);
+    else
+        R = _PlayerID[1];
+        G = _PlayerID[2];
+        B = _PlayerID[3];
+    end
     GUI.CreateMinimapSignalRGBA(_ID, _X, _Y, R, G, B, 255, _Type);
 end
 
