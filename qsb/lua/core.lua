@@ -50,7 +50,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1410";
+QSB.Version = "Symfonia Build 1420";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -104,21 +104,7 @@ end
 -- Copy = API.InstanceTable(Table)
 --
 function API.InstanceTable(_Source, _Dest)
-    _Dest = _Dest or {};
-    assert(type(_Source) == "table")
-    assert(type(_Dest) == "table")
-
-    for k, v in pairs(_Source) do
-        if type(v) == "table" then
-            _Dest[k] = _Dest[k] or {};
-            for kk, vv in pairs(API.InstanceTable(v)) do
-                _Dest[k][kk] = _Dest[k][kk] or vv;
-            end
-        else
-            _Dest[k] = _Dest[k] or v;
-        end
-    end
-    return _Dest;
+    return copy(_Source, _Dest);
 end
 CopyTableRecursive = API.InstanceTable;
 
@@ -267,7 +253,7 @@ IsValidQuest = API.IsValidateQuest;
 --
 function API.FailAllQuests(...)
     for i=1, #arg, 1 do
-        API.FailQuest(arg[i].Identifier);
+        API.FailQuest(arg[i]);
     end
 end
 FailQuestsByName = API.FailAllQuests;
@@ -306,7 +292,7 @@ FailQuestByName = API.FailQuest;
 --
 function API.RestartAllQuests(...)
     for i=1, #arg, 1 do
-        API.RestartQuest(arg[i].Identifier);
+        API.RestartQuest(arg[i]);
     end
 end
 RestartQuestsByName = API.RestartAllQuests;
@@ -410,7 +396,7 @@ RestartQuestByName = API.RestartQuest;
 --
 function API.StartAllQuests(...)
     for i=1, #arg, 1 do
-        API.StartQuest(arg[i].Identifier);
+        API.StartQuest(arg[i]);
     end
 end
 StartQuestsByName = API.StartAllQuests;
@@ -450,7 +436,7 @@ StartQuestByName = API.StartQuest;
 --
 function API.StopAllQuests(...)
     for i=1, #arg, 1 do
-        API.StopQuest(arg[i].Identifier);
+        API.StopQuest(arg[i]);
     end
 end
 StopQuestsByName = API.StopAllQuests;
@@ -492,7 +478,7 @@ StopQuestByName = API.StopQuest;
 --
 function API.WinAllQuests(...)
     for i=1, #arg, 1 do
-        API.WinQuest(arg[i].Identifier);
+        API.WinQuest(arg[i]);
     end
 end
 WinQuestsByName = API.WinAllQuests;
@@ -589,6 +575,8 @@ end
 ---
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
+-- <p><b>Alias:</b> GUI_NoteDown</p>
+--
 -- @param _Message [string] Anzeigetext
 -- @within Anwenderfunktionen
 --
@@ -600,6 +588,7 @@ function API.Message(_Message)
     end
     Message(_Message);
 end
+GUI_NoteDown = API.Message;
 
 ---
 -- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
@@ -1211,6 +1200,124 @@ function API.RealTimeWait(_Waittime, _Action, ...)
             return true;
         end
     end, QSB.RealTime_SecondsSinceGameStart, _Waittime, _Action, {...});
+end
+
+-- -------------------------------------------------------------------------- --
+-- Object Oriented Programming                                                --
+-- -------------------------------------------------------------------------- --
+
+-- Ermöglicht das objektorientierte programmieren in Siedler-Lua. Klassen
+-- müssen sich immer direkt in _G befinden, damit className automatisch
+-- gesetzt werden kann. Andernfalls muss der Name der Klasse per Hand
+-- gesetzt werden.
+
+---
+-- Kopiert die Quelltabelle rekursiv in die Zieltabelle. Ist ein Wert im
+-- Ziel vorhanden, wird er nicht überschrieben.
+--
+-- @param _Source [table] Quelltabelle
+-- @param _Dest [table] Zieltabelle
+-- @return [table] Kindklasse
+-- @within OOP
+--
+function copy(_Source, _Dest)
+    _Dest = _Dest or {};
+    assert(type(_Source) == "table")
+    assert(type(_Dest) == "table")
+
+    for k, v in pairs(_Source) do
+        if type(v) == "table" then
+            _Dest[k] = _Dest[k] or {};
+            for kk, vv in pairs(copy(v)) do
+                _Dest[k][kk] = _Dest[k][kk] or vv;
+            end
+        else
+            _Dest[k] = _Dest[k] or v;
+        end
+    end
+    return _Dest;
+end
+
+---
+-- Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.
+--
+-- @param _Table [table] Referenz auf Table
+-- @return [table] Klasse
+-- @within OOP
+--
+function class(_Table)
+    -- className hinzufügen
+    for k, v in pairs(_G) do 
+        if v == _Table then
+            _Table.className = k;
+        end
+    end
+    
+    -- construct hinzufügen
+    _Table.construct = _Table.construct or function(self) end
+
+    -- clone hinzufügen
+    _Table.clone = _Table.clone or function(self)
+        return copy(self);
+    end
+
+    -- toString hinzufügen
+    _Table.toString = _Table.toString or function(self)
+        local s = "";
+        for k, v in pairs(self) do
+            s = s .. tostring(k) .. ":" .. tostring(v) .. ";";
+        end
+        return "{" ..s.. "}";
+    end
+
+    -- equals hinzufügen
+    _Table.equals = _Table.equals or function(self, _Other)
+        -- Anderes Objekt muss table sein.
+        if type(_Other) ~= "table" then 
+            return false;
+        end
+        -- Gehe Inhalt durch
+        for k, v in pairs(self) do
+            if v ~= _Other[k] then
+                return false;
+            end
+        end
+        return true;
+    end
+
+    return _Table;
+end
+
+---
+-- Erzeugt eine Ableitung einer Klasse
+--
+-- @param _Parent [table] Referenz auf Klasse
+-- @return [table] Kindklasse
+-- @within OOP
+--
+function inherit(_Class, _Parent)
+    local c = copy(_Parent, _Class);
+    c.parent = _Parent;
+    return class(c);
+end
+
+---
+-- Erzeugt eine Instanz der Klasse.
+--
+-- @param _Class [table] Referenz auf Klasse
+-- @param ... [mixed] Argumente des Konstruktors
+-- @return [table] Instanz der Klasse
+-- @within OOP
+--
+function new(_Class, ...)
+    local instance = copy(_Class);
+    -- Parent instanzieren
+    if instance.parent then
+        instance.parent = new(instance.parent, ...);
+    end
+    -- Instanz erzeugen
+    instance:construct(...);
+    return instance;
 end
 
 -- -------------------------------------------------------------------------- --

@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>bundleplayerhelperfunctions</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundleplayerhelperfunctions</code></h1>
+<p>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von
+ spielerbezogenen Features.</p>
+<p></p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AllowFestival">API.AllowFestival (_PlayerID)</a></td>
+	<td class="summary">Erlaubt ein normales Fest und gibt die Technologie frei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ForbidFestival">API.ForbidFestival (_PlayerID)</a></td>
+	<td class="summary">Verbietet ein normales Fest und sperrt die Technologie.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetControllingPlayer">API.GetControllingPlayer ()</a></td>
+	<td class="summary">Gibt die ID des kontrollierenden Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetControllingPlayer">API.SetControllingPlayer (_OldID, _NewID, _NewName, _RetainKnight)</a></td>
+	<td class="summary">Wechselt die Spieler ID des menschlichen Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEarningsOfPlayerCity">API.SetEarningsOfPlayerCity (_PlayerID, _Earnings)</a></td>
+	<td class="summary">Setzt die Einnahmen für alle Stadtgebäude eines Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetNeedSatisfaction">API.SetNeedSatisfaction (_Need, _State, _PlayerID)</a></td>
+	<td class="summary">Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
+ des angegebenen Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartCityUpgradeFestival">API.StartCityUpgradeFestival (_PlayerID)</a></td>
+	<td class="summary">Startet ein Beförderungsfest für den Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartNormalFestival">API.StartNormalFestival (_PlayerID)</a></td>
+	<td class="summary">Startet ein Fest für den Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UndiscoverTerritories">API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</a></td>
+	<td class="summary">Entfernt alle Territorien einer Partei aus der Liste der entdeckten
+ Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UndiscoverTerritory">API.UndiscoverTerritory (_PlayerID, _TerritoryID)</a></td>
+	<td class="summary">Entfernt ein Territorium für den angegebenen Spieler aus der Liste
+ der entdeckten Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnlockTitleForPlayer">API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</a></td>
+	<td class="summary">Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AllowFestival"></a>
+    <strong>API.AllowFestival (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Erlaubt ein normales Fest und gibt die Technologie frei.
+<p> <p><b>Alias:</b> AllowFestival</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ForbidFestival"></a>
+    <strong>API.ForbidFestival (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Verbietet ein normales Fest und sperrt die Technologie.
+<p> <p><b>Alias:</b> ForbidFestival</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetControllingPlayer"></a>
+    <strong>API.GetControllingPlayer ()</strong>
+    </dt>
+    <dd>
+    Gibt die ID des kontrollierenden Spielers zurück.  Der erste als menschlich
+ definierte Spieler wird als kontrollierender Spieler angenommen.
+<p> <p><b>Alias:</b> PlayerGetPlayerID</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] PlayerID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetControllingPlayer"></a>
+    <strong>API.SetControllingPlayer (_OldID, _NewID, _NewName, _RetainKnight)</strong>
+    </dt>
+    <dd>
+    Wechselt die Spieler ID des menschlichen Spielers.  Die neue ID muss
+ einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
+ Mode verwendet werden.
+<p> <p><b>Alias:</b> PlayerSetPlayerID</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_OldID</span>
+         [number] Alte ID des menschlichen Spielers
+        </li>
+        <li><span class="parameter">_NewID</span>
+         [number] Neue ID des menschlichen Spielers
+        </li>
+        <li><span class="parameter">_NewName</span>
+         [string] Name in der Statistik
+        </li>
+        <li><span class="parameter">_RetainKnight</span>
+         [boolean] Ritter mitnehmen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEarningsOfPlayerCity"></a>
+    <strong>API.SetEarningsOfPlayerCity (_PlayerID, _Earnings)</strong>
+    </dt>
+    <dd>
+    Setzt die Einnahmen für alle Stadtgebäude eines Spielers.  Stadtgebäude
+ können nur Einnahmen zwischen 0 und 100 Talern haben.
+<p> <p><b>Alias:</b> SetPlayerEarnings</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Partei oder nil für alle
+        </li>
+        <li><span class="parameter">_Earnings</span>
+         [number] Einnahmen [0 | 100]
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetNeedSatisfaction"></a>
+    <strong>API.SetNeedSatisfaction (_Need, _State, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
+ des angegebenen Spielers.  Der Befriedigungsstatus ist eine Zahl
+ zwischen 0.0 und 1.0.
+<p> <p><b>Alias:</b> SetNeedSatisfactionLevel</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Need</span>
+         [number] Bedürfnis
+        </li>
+        <li><span class="parameter">_State</span>
+         [number] Erfüllung des Bedürfnisses
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Partei oder -1 für alle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartCityUpgradeFestival"></a>
+    <strong>API.StartCityUpgradeFestival (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Startet ein Beförderungsfest für den Spieler.  Ist dieser Typ
+ von Fest für den Spieler verboten, wird er automatisch erlaubt.
+<p> <p><b>Alias:</b> StartCityUpgradeFestival</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartNormalFestival"></a>
+    <strong>API.StartNormalFestival (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Startet ein Fest für den Spieler.  Ist dieser Typ von Fest für
+ den Spieler verboten, wird er automatisch erlaubt.
+<p> <p><b>Alias:</b> StartNormalFestival</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UndiscoverTerritories"></a>
+    <strong>API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</strong>
+    </dt>
+    <dd>
+    Entfernt alle Territorien einer Partei aus der Liste der entdeckten
+ Territorien.  Als Nebeneffekt gild die Partei als unentdeckt.
+<p> <p><b>Alias:</b> UndiscoverTerritories</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID
+        </li>
+        <li><span class="parameter">_TargetPlayerID</span>
+         [number] Zielpartei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UndiscoverTerritory"></a>
+    <strong>API.UndiscoverTerritory (_PlayerID, _TerritoryID)</strong>
+    </dt>
+    <dd>
+    Entfernt ein Territorium für den angegebenen Spieler aus der Liste
+ der entdeckten Territorien.
+<p> <p><b>Alias:</b> UndiscoverTerritory</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Spieler-ID
+        </li>
+        <li><span class="parameter">_TerritoryID</span>
+         [number] Territorium-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UnlockTitleForPlayer"></a>
+    <strong>API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</strong>
+    </dt>
+    <dd>
+    Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.
+<p> <p><b>Alias:</b> UnlockTitleForPlayer</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number] Zielpartei
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+         [number] Titel zum Entsperren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-12-14 18:53:53 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

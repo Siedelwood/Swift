@@ -8,6 +8,8 @@
 -- Ermöglicht es den Quellcode von Symfonia zu nutzen, ohne vorher eine QSB
 -- generieren zu lassen.
 --
+-- <b>Hinweis</b>: Nur für Entwickler!
+--
 -- Vorallem während des Entwicklungsprozesses ist es störend, wenn man sich
 -- immer wieder eine neue QSB bauen muss. Der Loader ermöglicht es, die QSB,
 -- bzw. ihre Quelldateien, während der Entwicklung direkt aus dem Projektordner
@@ -18,25 +20,77 @@
 -- werden. Die Reihenfolge in der Tabelle bestimmt zudem die Reihenfolge,
 -- nach der die Skripte geladen wird. Es wird empfohlen diese Reihenfolge
 -- beizubehalten, da es sonst möglicher Weise zu Problemen mit möglichen
--- unentdeckten Abhängigkeiten kommen könnte.
+-- unentdeckten Abhängigkeiten kommen könnte, auch wenn Bundles als eigene
+-- Welten existieren.
 --
 -- Neben den Bundles gibt es auch AddOns. AddOns sind spezielle Bundles, die
 -- von einem oder mehr Bundles bzw. anderen AddOns abhängig sind. Ist eine
 -- Abhängigkeit unbefriedigt, wird das AddOn nicht geladen! AddOns, die von
 -- anderen AddOns abhängig sind, müssen in der Load Order hinter AddOns stehen
--- die sie benötigen. Desshalb wird auch hier empfohlen, die Load Order nicht
--- zu verändern.
+-- die sie benötigen. Desshalb darf hier die Load Order nicht geändert werden!
 --
 -- Trotz allem muss nach Abschluss der Entwicklung eine normale QSB in die
 -- Map eingefügt werden. Du kannst sie dann entsprechend zusammen bauen.
 --
--- Als letztes gibt es noch die Möglichkeit eigene Bundles zu schreiben und
--- in einer exklusiven persönlichen QSB zu nutzen. Dazu wird die make.sh im
--- bin-Verzeichnis genutzt.
+-- <h3>Neues Release erzeugen</h3>
+-- Die Erzeugung eines Releases geschieht vollautomatisch!
+--
+-- <h4>Benutzerdokumentation aktualisieren</h4>
+-- Bevor eine neue Version ausgeliefert wird, muss die Benutzerdokumentation
+-- auf den neusten Stand gebracht werden. dies geschieht wieder mit make.sh
+-- und dem Parameter -d.
+-- <pre>cd bin
+-- ./make.sh -d</pre>
+-- Das wird jedoch vom entsprechenden Skript bereits ausgeführt.
+--
+-- <h4>Release-Archiv generieren</h4>
+-- Das Release-Archiv wird von ./publish.sh erzeugt.
+-- <pre>cd bin
+-- ./publish.sh</pre>
+-- Das Skript erstellt ein Archiv mit dem Namen Release im Root-Ordner des
+-- Projektes. Das Archiv enthält die Benutzerdokumentation, die Anleitungen,
+-- das globale und lokale Skript sowie die QSB in komprimierter und in
+-- unkomprimierter form.
+--
+-- <h3>Personalisierte QSB</h3>
+-- Die QSB kann nach belieben an Deine Wünsche angepasst werden.
+-- Die QSB wird mit dem Skript make.sh gebaut.
+--
+-- <h4>Benutzerdefinierte Load Order</h4>
+-- Eine eigene Load Order wird erstellt, indem ein Lua-Skript angelegt wird,
+-- in dem es eine globale Variable LoadOrder gibt. Diese Variable beinhaltet
+-- 2 Tables. Der erste ist die Load Order der Bundles, die zweite die der
+-- AddOns. Die Load Order wird mit -l übergeben.
+-- 
+-- Beispiel für eine Load Order mit der nur Grundmodule geladen werden:
+-- <pre>
+-- LoadOrder = {
+--     {
+--         {"BundleBriefingSystem",                true},
+--         {"BundleClassicBehaviors",              true},
+--         {"BundleQuestGeneration",               true},
+--         {"BundleConstructionControl",           true},
+--     },
+--     {
+--         {
+--         "AddOnQuestDebug",                      true,
+--         "BundleQuestGeneration",
+--         },
+--     },
+-- }
+-- </pre>
+--
+-- Aufruf des Skriptes:
+-- <pre>cd bin
+-- ./make.sh -l"path/to/loadorder.lua"</pre>
+--
+-- <h4>Eigene Bundles</h4>
+-- Als letztes gibt es noch die Möglichkeit, eigene Bundles zu schreiben und
+-- in einer exklusiven persönlichen QSB zu nutzen. Dazu wird wieder die make.sh
+-- im bin-Verzeichnis genutzt.
 -- <pre>cd bin
 --./make.sh Path/to/Bundle Path/to/another/Bundle</pre>
--- Dabei wird die Dateiendung *.lua nicht mit angegeben! Das Shell-Script
--- wird nur in einer Bash funktionieren.
+-- Dabei wird die Dateiendung *.lua nicht mit angegeben!
 --
 -- @set sort=true
 --
@@ -46,29 +100,50 @@ QSB = QSB or {};
 SymfoniaLoader = {
     Data = {
         LoadOrder = {
+            -- Basisbibliothek
+            -- Ausschließlich Features, die essentiell sind.
             {"BundleBriefingSystem",                true},
-            {"BundleBuildingButtons",               true},
             {"BundleClassicBehaviors",              true},
+            {"BundleQuestGeneration",               true},
+
+            -- Erweiterte Bibliothek
+            -- Zusätzliche Funktionalität und weitere Behavior.
             {"BundleConstructionControl",           true},
+            {"BundleDestructionControl",            true},
             {"BundleDialogWindows",                 true},
+            {"BundleEntityCommandFunctions",        true},
             {"BundleEntityHealth",                  true},
             {"BundleEntityHelperFunctions",         true},
+            {"BundleKnightTitleRequirements",       true},
+            {"BundleMinimapMarker",                 true},
+            {"BundleSymfoniaBehaviors",             true},
+            {"BundleTimeLine",                      true},
+            {"BundleTravelingSalesman",             true},
+
+            -- Fortgeschrittene Bibliothek
+            -- Neue Funktionen für fortgeschrittene Anwender.
+            {"BundleBuildingButtons",               true},
             {"BundleEntityScriptingValues",         true},
             {"BundleEntitySelection",               true},
             {"BundleGameHelperFunctions",           true},
+            {"BundleInteractiveObjects",            true},
             {"BundleInterfaceApperance",            true},
-            {"BundleKnightTitleRequirements",       true},
+            {"BundlePlayerHelperFunctions",         true},
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
-            {"BundleQuestGeneration",               true},
-            {"BundleTradingFunctions",              true},
-            {"BundleInteractiveObjects",            true},
-            {"BundleSaveGameTools",                 true},
-            {"BundleSymfoniaBehaviors",             true},
-            {"BundlePlayerHelperFunctions",         true},
+            {"BundleTradingAnalysis",               true},
         },
 
         AddOnLoadOrder = {
+            -- Basisbibliothek
+            -- Ausschließlich Features, die essentiell sind.
+            {
+            "AddOnQuestDebug",                      true,
+            "BundleQuestGeneration",
+            },
+
+            -- Sonstige AddOns
+            -- "Nice To have"-Features, die nicht so wichtig sind.
             {
             "AddOnCastleStore",                     true,
             "BundleInteractiveObjects",
@@ -83,11 +158,6 @@ SymfoniaLoader = {
             "AddOnInteractiveObjectTemplates",      true,
             "BundleInteractiveObjects",
             "BundleEntitySelection",
-            },
-
-            {
-            "AddOnQuestDebug",                      true,
-            "BundleQuestGeneration",
             },
         },
     }
@@ -171,16 +241,13 @@ end
 -- @within SymfoniaLoader
 -- @local
 --
-function SymfoniaLoader:ConcatSources(_Summary, _External)
+function SymfoniaLoader:ConcatSources(_External)
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
 
     local fh = io.open("qsb/userconfig.ld", "wt");
     assert(fh, "Output file can not be created!");
     fh:write("project='Symfonia'\n");
-    if not _Summary then
-        fh:write("no_summary=true\n");
-    end
     fh:write("kind_names={script='Skripte', module='Bibliotheken'}\n");
 
     local ActiveBundles = "file={\n'core.lua',\n";
@@ -249,15 +316,12 @@ end
 
 ---
 -- Fügt die Quelldateien von Symfonia zu einer QSB zusammen.
+-- @param _Externals [table] Liste der externen Bundles
 -- @within SymfoniaLoader
 -- @local
 --
-function SymfoniaLoader:CreateQSB()
-    local Summary = arg[1] == "1";
-    table.remove(arg, 1);
-    local ExternModules = arg;
-
-    local QsbContent = self:ConcatSources(Summary, ExternModules);
+function SymfoniaLoader:CreateQSB(_Externals)
+    local QsbContent = self:ConcatSources(_Externals);
     -- Delete old file
     local fh = io.open("var/qsb.lua", "r");
     if fh ~= nil then

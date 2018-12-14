@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>bundleminimapmarker</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundleminimapmarker</code></h1>
+<p>Ermöglocht das Anlegen von Markierungen auf der Minimap.</p>
+<p>
+<p> Mögliche Typen von Markierungen:
+ <ul>
+ <li>Signal: Eine flüchtige Markierung, die nach wenigen Sekunden wieder
+ verschwindet.</li>
+ <li>Marker: Eine statische Markierung, die dauerhaft verbleibt.</li>
+ <li>Pulse: Eine pulsierende Markierung, die dauerhaft verbleibt.</li>
+ </ul>
+<p> Die Farbe eines Markers kann auf 2 verschiedene Weisen bestimmt werden.
+ <ol>
+ <li>Durch die Spielerfarbe des "Besitzers" der Markierung.
+ <pre> API.CreateMinimapSignal(1, GetPosition("pos"));</pre>
+ </li>
+ <li>Durch Übergabe einer vordefinierten Farbe oder einer Farbtabelle
+ <pre>
+ API.CreateMinimapSignal(MarkerColor.Red, GetPosition("pos"));
+ API.CreateMinimapSignal({180, 180, 180}, GetPosition("pos"));</pre>
+ </li>
+ </ol>
+<p> Durchsichtige Marker sind nicht vorgesehen!
+</p>
+
+
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#MarkerColor">MarkerColor</a></td>
+	<td class="summary">Vordefinierte Farben für Minimap Marker.</td>
+	</tr>
+</table>
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateMinimapMarker">API.CreateMinimapMarker (_PlayerID, _Position)</a></td>
+	<td class="summary">Erstellt eine statische Markierung auf der Minimap.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateMinimapPulse">API.CreateMinimapPulse (_PlayerID, _Position)</a></td>
+	<td class="summary">Erstellt eine pulsierende Markierung auf der Minimap.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateMinimapSignal">API.CreateMinimapSignal (_PlayerID, _Position)</a></td>
+	<td class="summary">Erstellt eine flüchtige Markierung auf der Minimap.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DestroyMinimapSignal">API.DestroyMinimapSignal (_ID)</a></td>
+	<td class="summary">Zerstört eine Markierung auf der Minimap.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "MarkerColor"></a>
+    <strong>MarkerColor</strong>
+    </dt>
+    <dd>
+    Vordefinierte Farben für Minimap Marker.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">Blue</span>
+         Königsblau
+        </li>
+        <li><span class="parameter">Red</span>
+         Blutrot
+        </li>
+        <li><span class="parameter">Yellow</span>
+         Sonnengelb
+        </li>
+        <li><span class="parameter">Green</span>
+         Blattgrün
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateMinimapSignal(MarkerColor.Red, GetPosition(<span class="string">"pos"</span>));</pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.CreateMinimapMarker"></a>
+    <strong>API.CreateMinimapMarker (_PlayerID, _Position)</strong>
+    </dt>
+    <dd>
+    Erstellt eine statische Markierung auf der Minimap.
+<p> <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+<p> <b>Alias</b>: CreateMinimapMarker
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number|table] PlayerID oder Farbtabelle
+        </li>
+        <li><span class="parameter">_Position</span>
+         [string|number|table] Position des Markers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des Markers
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateMinimapMarker(<span class="number">1</span>, GetPosition(<span class="string">"pos"</span>));</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateMinimapPulse"></a>
+    <strong>API.CreateMinimapPulse (_PlayerID, _Position)</strong>
+    </dt>
+    <dd>
+    Erstellt eine pulsierende Markierung auf der Minimap.
+<p> <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+<p> <b>Alias</b>: CreateMinimapPulse
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number|table] PlayerID oder Farbtabelle
+        </li>
+        <li><span class="parameter">_Position</span>
+         [string|number|table] Position des Markers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des Markers
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateMinimapPulse(<span class="number">1</span>, GetPosition(<span class="string">"pos"</span>));</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateMinimapSignal"></a>
+    <strong>API.CreateMinimapSignal (_PlayerID, _Position)</strong>
+    </dt>
+    <dd>
+    Erstellt eine flüchtige Markierung auf der Minimap.
+<p> <b>Hinweis</b>: Die Farbe richtet sich nach der Spielerfarbe!
+<p> <b>Alias</b>: CreateMinimapSignal
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         [number|table] PlayerID oder Farbtabelle
+        </li>
+        <li><span class="parameter">_Position</span>
+         [string|number|table] Position des Markers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] ID des Markers
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateMinimapSignal(<span class="number">1</span>, GetPosition(<span class="string">"pos"</span>));</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DestroyMinimapSignal"></a>
+    <strong>API.DestroyMinimapSignal (_ID)</strong>
+    </dt>
+    <dd>
+    Zerstört eine Markierung auf der Minimap.
+<p> <b>Alias</b>: DestroyMinimapSignal
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+         [number] ID des Markers
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DestroyMinimapSignal(SomeMarkerID);</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-12-14 18:53:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

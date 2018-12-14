@@ -35,6 +35,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#Reward">Reward</a></li>
 <li><a href="#Reprisal">Reprisal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
@@ -52,7 +53,9 @@
   <li><a href="../bibliotheken/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><strong>bundles.bundleclassicbehaviors</strong></li>
   <li><a href="../bibliotheken/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../bibliotheken/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="../bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
@@ -61,14 +64,19 @@
   <li><a href="../bibliotheken/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../bibliotheken/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
   <li><a href="../bibliotheken/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../bibliotheken/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
   <li><a href="../bibliotheken/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../bibliotheken/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
-  <li><a href="../bibliotheken/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="../bibliotheken/bundles.bundletradingfunctions.html">bundles.bundletradingfunctions</a></li>
+  <li><a href="../bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../bibliotheken/core.html">core</a></li>
+  <li><a href="../bibliotheken/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../bibliotheken/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../bibliotheken/external.externalsavegametools.html">external.externalsavegametools</a></li>
   <li><a href="../bibliotheken/loader.html">loader</a></li>
   <li><a href="../bibliotheken/writer.html">writer</a></li>
 </ul>
@@ -94,6 +102,17 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.GetInputStringFromQuest">API.GetInputStringFromQuest (_QuestName)</a></td>
 	<td class="summary">Gibt das im Quest gespeicherte Resultat von Goal_InputDialog als Text zurück.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleClassicBehaviors.Global:GetInputFromQuest">BundleClassicBehaviors.Global:GetInputFromQuest (_QuestName)</a></td>
+	<td class="summary">Gibt das im Quest gespeicherte Resultat von Goal_InputDialog zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleClassicBehaviors.Global:Install">BundleClassicBehaviors.Global:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
 	</tr>
 </table>
 <h2><a href="#Reward">Reward</a></h2>
@@ -240,6 +259,10 @@
 	<td class="summary">Entsendet einen Karren zum angegebenen Spieler.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Reward_SetBuildingUpgradeLevel">Reward_SetBuildingUpgradeLevel (_ScriptName, _Level)</a></td>
+	<td class="summary">Setzt das Upgrade Level des angegebenen Gebäudes.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Reward_SetResourceAmount">Reward_SetResourceAmount (_ScriptName, _Amount)</a></td>
 	<td class="summary">Setzt die Menge von Rohstoffen in einer Mine.</td>
 	</tr>
@@ -380,6 +403,10 @@
 	<td class="name" nowrap><a href="#Trigger_OnDiplomacy">Trigger_OnDiplomacy (_PlayerID, _State)</a></td>
 	<td class="summary">Starte den Quest, wenn zwischen dem Empfänger und der angegebenen Partei
  der geforderte Diplomatiestatus herrscht.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnEffectDestroyed">Trigger_OnEffectDestroyed (_EffectName)</a></td>
+	<td class="summary">Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Trigger_OnMonsoon">Trigger_OnMonsoon ()</a></td>
@@ -667,6 +694,51 @@
 
         [string] Eingabe des Spielers
     </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleClassicBehaviors.Global:GetInputFromQuest"></a>
+    <strong>BundleClassicBehaviors.Global:GetInputFromQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Gibt das im Quest gespeicherte Resultat von Goal_InputDialog zurück.
+<p> <b>Hinweis</b>: Es wird nur die letzte Eingabe zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         [string] Name des Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] Eingabe des Spielers
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleClassicBehaviors.Global:Install"></a>
+    <strong>BundleClassicBehaviors.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im globalen Skript.
+
+
+
 
 
 
@@ -1669,6 +1741,29 @@
 
 </dd>
     <dt>
+    <a name = "Reward_SetBuildingUpgradeLevel"></a>
+    <strong>Reward_SetBuildingUpgradeLevel (_ScriptName, _Level)</strong>
+    </dt>
+    <dd>
+    Setzt das Upgrade Level des angegebenen Gebäudes.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Gebäudes
+        </li>
+        <li><span class="parameter">_Level</span>
+         Upgrade Level
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "Reward_SetResourceAmount"></a>
     <strong>Reward_SetResourceAmount (_ScriptName, _Amount)</strong>
     </dt>
@@ -2444,6 +2539,26 @@
         </li>
         <li><span class="parameter">_State</span>
             Diplomatie-Status
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnEffectDestroyed"></a>
+    <strong>Trigger_OnEffectDestroyed (_EffectName)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EffectName</span>
+         Name des Effekt
         </li>
     </ul>
 
@@ -3901,7 +4016,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-04 08:42:05 </i>
+<i style="float:right;">Last updated 2018-12-14 18:54:09 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

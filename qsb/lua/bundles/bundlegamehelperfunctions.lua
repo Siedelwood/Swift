@@ -23,10 +23,6 @@
 -- Maximale Spielgeschwindigkeit festlegen
 -- </li>
 -- <li>
--- <a href="#API.TimeLineStart">Zeitstrahl erstellen</a><br>Eine Abfolge von
--- Aktionen definieren, die zu gewissen Zeitpunkten ausgelöst werden.
--- </li>
--- <li>
 -- <a href="#API.ThridPersonActivate">Schulterblick aktivieren</a><br>Die
 -- Kamera folgt einem Entity in der 3rd-Person-Ansicht.
 -- </li>
@@ -399,70 +395,6 @@ function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
 end
 TerrainHeight = API.ChangeTerrainHeightInSquare;
 
----
--- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
--- an denen eine Aktion ausgeführt wird.
---
--- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
---
--- @param _Description [table] Beschreibung
--- @return [number] ID des Zeitstrahls
--- @within Anwenderfunktionen
---
-function API.TimeLineStart(_Description)
-    return BundleGameHelperFunctions.Shared.TimeLine:Start(_Description);
-end
-
----
--- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
--- beendet, beginnt er dennoch von vorn.
---
--- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
---
--- @param _ID [table] ID des Zeitstrahl
--- @within Anwenderfunktionen
---
-function API.TimeLineRestart(_ID)
-    return BundleGameHelperFunctions.Shared.TimeLine:Restart(_ID)
-end
-
----
--- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
---
--- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
---
--- @param _ID [table] ID des Zeitstrahl
--- @return [boolean] Zeitstrahl ist aktiv
--- @within Anwenderfunktionen
---
-function API.TimeLineIsRunning(_ID)
-    return BundleGameHelperFunctions.Shared.TimeLine:IsRunning(_ID);
-end
-
----
--- Hält einen Zeitstrahl an.
---
--- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
---
--- @param _ID [table] ID des Zeitstrahl
--- @within Anwenderfunktionen
---
-function API.TimeLineYield(_ID)
-    return BundleGameHelperFunctions.Shared.TimeLine:Yield(_ID);
-end
-
----
--- Stößt einen angehaltenen Zeitstrahl wieder an.
---
--- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
---
--- @param _ID [table] ID des Zeitstrahl
--- @within Anwenderfunktionen
---
-function API.TimeLineResume(_ID)
-    return BundleGameHelperFunctions.Shared.TimeLine:Resume(_ID);
-end
-
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -485,14 +417,6 @@ BundleGameHelperFunctions = {
             ThirdPersonLastZoom = nil,
         }
     },
-    Shared = {
-        TimeLine = {
-            Data = {
-                TimeLineUniqueJobID = 1,
-                TimeLineJobs = {},
-            }
-        }
-    }
 }
 
 -- Global Script ---------------------------------------------------------------
@@ -507,9 +431,6 @@ function BundleGameHelperFunctions.Global:Install()
     self:InitExtendedZoomHotkeyFunction();
     self:InitExtendedZoomHotkeyDescription();
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
-
-    QSB.TimeLine = BundleGameHelperFunctions.Shared.TimeLine;
-    TimeLine = QSB.TimeLine;
 end
 
 -- -------------------------------------------------------------------------- --
@@ -737,7 +658,7 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
-    -- Entity oder Held sind hinüber bzw. haben ihre ID veründert
+    -- Entity oder Held sind hinüber bzw. haben ihre ID verändert
     if not IsExisting(_KnightID) or not IsExisting(_EntityID) then
         return true;
     end
@@ -928,9 +849,6 @@ end
 function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSpeedUp()
     self:InitForbidSaveGame();
-
-    QSB.TimeLine = BundleGameHelperFunctions.Shared.TimeLine;
-    TimeLine = QSB.TimeLine;
 end
 
 ---
@@ -1234,131 +1152,4 @@ end
 
 -- -------------------------------------------------------------------------- --
 
----
--- Startet einen Zeitstrahl. Ein Zeitstrahl hat bestimmte Stationen,
--- an denen eine Aktion ausgeführt wird.
---
--- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
---
--- @param _description [table] Beschreibung
--- @return [number] ID des Zeitstrahl
--- @within QSB.TimeLine
--- @local
---
-function BundleGameHelperFunctions.Shared.TimeLine:Start(_description)
-    local JobID = self.Data.TimeLineUniqueJobID;
-    self.Data.TimeLineUniqueJobID = JobID +1;
-
-    _description.Running = true;
-    _description.StartTime = Logic.GetTime();
-    _description.Iterator = 1;
-
-    -- Check auf sinnvolle Zeitabstände
-    local Last = 0;
-    for i=1, #_description, 1 do
-        if _description[i].Time < Last then
-            _description[i].Time = Last+1;
-            Last = _description[i].Time;
-        end
-    end
-
-    self.Data.TimeLineJobs[JobID] = _description;
-    if not self.Data.ControlerID then
-        local Controler = StartSimpleJobEx( BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler );
-        self.Data.ControlerID = Controler;
-    end
-    return JobID;
-end
-
----
--- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
--- beendet, beginnt er dennoch von vorn.
---
--- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
---
--- @param _ID [table] ID des Zeitstrahl
--- @within QSB.TimeLine
--- @local
---
-function BundleGameHelperFunctions.Shared.TimeLine:Restart(_ID)
-    if not self.Data.TimeLineJobs[_ID] then
-        return;
-    end
-    self.Data.TimeLineJobs[_ID].Running = true;
-    self.Data.TimeLineJobs[_ID].StartTime = Logic.GetTime();
-    self.Data.TimeLineJobs[_ID].Iterator = 1;
-end
-
----
--- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
---
--- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
---
--- @param _ID [table] ID des Zeitstrahl
--- @return [boolean] Zeistrahl ist aktiv
--- @within QSB.TimeLine
--- @local
---
-function BundleGameHelperFunctions.Shared.TimeLine:IsRunning(_ID)
-    if self.Data.TimeLineJobs[_ID] then
-        return self.Data.TimeLineJobs[_ID].Running == true;
-    end
-    return false;
-end
-
----
--- Hält einen Zeitstrahl an.
---
--- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
---
--- @param _ID [table] ID des Zeitstrahl
--- @within QSB.TimeLine
--- @local
---
-function BundleGameHelperFunctions.Shared.TimeLine:Yield(_ID)
-    if not self.Data.TimeLineJobs[_ID] then
-        return;
-    end
-    self.Data.TimeLineJobs[_ID].Running = false;
-end
-
----
--- Stößt einen angehaltenen Zeitstrahl wieder an.
---
--- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
---
--- @param _ID [table] ID des Zeitstrahl
--- @within QSB.TimeLine
--- @local
---
-function BundleGameHelperFunctions.Shared.TimeLine:Resume(_ID)
-    if not self.Data.TimeLineJobs[_ID] then
-        return;
-    end
-    self.Data.TimeLineJobs[_ID].Running = true;
-end
-
----
--- Steuert alle Zeitstrahlen.
--- @within QSB.TimeLine
--- @local
---
-function BundleGameHelperFunctions.Shared.TimeLine.TimeLineControler()
-    for k,v in pairs(BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs) do
-        if v.Iterator > #v then
-            BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs[k].Running = false;
-        end
-
-        if v.Running then
-            if (v[v.Iterator].Time + v.StartTime) <= Logic.GetTime() then
-                v[v.Iterator].Action(v[v.Iterator]);
-                BundleGameHelperFunctions.Shared.TimeLine.Data.TimeLineJobs[k].Iterator = v.Iterator +1;
-            end
-        end
-    end
-end
-
--- -------------------------------------------------------------------------- --
-
 Core:RegisterBundle("BundleGameHelperFunctions");
-
