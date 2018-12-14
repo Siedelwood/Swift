@@ -135,6 +135,15 @@ SymfoniaLoader = {
         },
 
         AddOnLoadOrder = {
+            -- Basisbibliothek
+            -- Ausschließlich Features, die essentiell sind.
+            {
+            "AddOnQuestDebug",                      true,
+            "BundleQuestGeneration",
+            },
+
+            -- Sonstige AddOns
+            -- "Nice To have"-Features, die nicht so wichtig sind.
             {
             "AddOnCastleStore",                     true,
             "BundleInteractiveObjects",
@@ -149,11 +158,6 @@ SymfoniaLoader = {
             "AddOnInteractiveObjectTemplates",      true,
             "BundleInteractiveObjects",
             "BundleEntitySelection",
-            },
-
-            {
-            "AddOnQuestDebug",                      true,
-            "BundleQuestGeneration",
             },
         },
     }
