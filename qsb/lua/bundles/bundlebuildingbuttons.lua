@@ -756,27 +756,27 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
         end
 
         -- Protection - Submodul
-        if BundleConstructionControl then
+        if BundleDestructionControl then
             -- Prüfe auf Namen
-            if Inside(eName, BundleConstructionControl.Local.Data.Entities) then
+            if Inside(eName, BundleDestructionControl.Local.Data.Entities) then
                 XGUIEng.ShowWidget(CurrentWidgetID, 0);
                 return;
             end
 
             -- Prüfe auf Typen
-            if Inside(eType, BundleConstructionControl.Local.Data.EntityTypes) then
+            if Inside(eType, BundleDestructionControl.Local.Data.EntityTypes) then
                 XGUIEng.ShowWidget(CurrentWidgetID, 0);
                 return;
             end
 
             -- Prüfe auf Territorien
-            if Inside(tID, BundleConstructionControl.Local.Data.OnTerritory) then
+            if Inside(tID, BundleDestructionControl.Local.Data.OnTerritory) then
                 XGUIEng.ShowWidget(CurrentWidgetID, 0);
                 return;
             end
 
             -- Prüfe auf Category
-            for k,v in pairs(BundleConstructionControl.Local.Data.EntityCategories) do
+            for k,v in pairs(BundleDestructionControl.Local.Data.EntityCategories) do
                 if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
                     XGUIEng.ShowWidget(CurrentWidgetID, 0);
                     return;

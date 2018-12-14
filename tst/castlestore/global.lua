@@ -34,6 +34,7 @@ function Mission_FirstMapAction()
     local Path = "E:/Repositories/symfonia/qsb/lua";
     Script.Load(Path .. "/loader.lua");
     SymfoniaLoader:Load(Path);
+    InitKnightTitleTables();
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -44,19 +45,59 @@ function Mission_FirstMapAction()
     API.ActivateDebugMode(true, true, true, true)
     
     AddGood(Goods.G_Gold,   500, 1)
-    AddGood(Goods.G_Wood,    30, 1)
-    AddGood(Goods.G_Grain,   25, 1)
+    AddGood(Goods.G_Grain,   10, 1)
+    AddGood(Goods.G_Carcass, 10, 1)
+    AddGood(Goods.G_RawFish, 10, 1)
+    AddGood(Goods.G_Milk,    10, 1)
+
+    SetEntityName(Logic.GetHeadquarters(1), "HQ1");
     
     -----
     
-    QSB.CastleStore:New(1)
+    API.CastleStoreCreate(1);
     
     CreateObject {
-        Name = "well",
-        Costs = {Goods.G_Gold, 10, Goods.G_RawFish, 100},
-        Waittime = 0,
-        Callback = function(_Data)
-            API.Note("Activated")
-        end
+        Name = "IO1",
+        Costs = {Goods.G_Wood, 55, Goods.G_RawFish, 55},
+        Waittime = 5,
+    }
+
+    CreateObject {
+        Name = "IO2",
+        Costs = {Goods.G_Wool, 55, Goods.G_Milk, 55},
+        Waittime = 5,
+    }
+
+    CreateObject {
+        Name = "IO3",
+        Costs = {Goods.G_Carcass, 55, Goods.G_Herb, 55},
+        Waittime = 5,
+    }
+
+    CreateObject {
+        Name = "IO4",
+        Costs = {Goods.G_Stone, 55, Goods.G_Grain, 55},
+        Waittime = 5,
+    }
+
+    AddQuest {
+        Name = "ObjectTestQuest",
+        Visible = true,
+        EndMessage = true,
+        Sender = 8,
+
+        Goal_ActivateSeveralObjects("IO1", "IO2", "IO3", "IO4"),
+        Trigger_Time(5)
+    }
+
+    AddQuest {
+        Name = "TradeTestQuest",
+        Visible = true,
+        EndMessage = true,
+        Sender = 2,
+
+        Goal_Deliver("G_Wood", 100),
+        Reward_SetBuildingUpgradeLevel("HQ1", 4),
+        Trigger_Time(5)
     }
 end
