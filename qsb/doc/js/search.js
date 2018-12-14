@@ -63,5 +63,4 @@ function resetSearch() {
     $("#modulesContainer").children().show();
     $("#pattern").val("");
     $("#notFound").hide();
-    resetAllPreviews();
 }
