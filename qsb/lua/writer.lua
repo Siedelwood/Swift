@@ -126,25 +126,56 @@ end
 --
 function SymfoniaWriter:CreateDocumentationIndex()
     local FileText = self:LoadDocumentationIndexTemplate();
-
     local BundleList = self:CreateDocumentationIndexLink("Core", "qsb/lua/");
-    for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
-        if SymfoniaLoader.Data.LoadOrder[i][2] then
-            BundleList = BundleList .. self:CreateDocumentationIndexLink(SymfoniaLoader.Data.LoadOrder[i][1], "qsb/lua/bundles/");
-        end
-    end
-    for i= 1, #SymfoniaLoader.Data.AddOnLoadOrder, 1 do
-        if SymfoniaLoader.Data.AddOnLoadOrder[i][2] then
-            BundleList = BundleList .. self:CreateDocumentationIndexLink(SymfoniaLoader.Data.AddOnLoadOrder[i][1], "qsb/lua/addons/");
-        end
-    end
-    FileText = FileText:gsub("###PLACEHOLDER_LUA_BUNDLES###", BundleList);
 
+    local sortList = function(a, b)
+        return a[1] < b[1];
+    end
+    
+    -- Sortiere Bundles und füge hinzu
+    local BundleLoadOrder = self:CopyTable(SymfoniaLoader.Data.LoadOrder);
+    table.sort(BundleLoadOrder, sortList);
+    for i= 1, #BundleLoadOrder, 1 do
+        if BundleLoadOrder[i][2] then
+            BundleList = BundleList .. self:CreateDocumentationIndexLink(BundleLoadOrder[i][1], "qsb/lua/bundles/");
+        end
+    end
+
+    -- Sortiere AddOns und füge hinzu
+    local AddOnLoadOrder = self:CopyTable(SymfoniaLoader.Data.AddOnLoadOrder);
+    table.sort(AddOnLoadOrder, sortList);
+    for i= 1, #AddOnLoadOrder, 1 do
+        if AddOnLoadOrder[i][2] then
+            BundleList = BundleList .. self:CreateDocumentationIndexLink(AddOnLoadOrder[i][1], "qsb/lua/addons/");
+        end
+    end
+
+    FileText = FileText:gsub("###PLACEHOLDER_LUA_BUNDLES###", BundleList);
     os.remove("qsb/doc/index.html");
     local fh = io.open("qsb/doc/index.html", "wt");
     assert(fh, "File not created: qsb/doc/index.html");
     fh:write(FileText);
     fh:close();
+end
+
+---
+-- Kopiert den Inhalt einer Table in ein neue Table.
+--
+-- @param _Table [table] Table zum kopieren
+-- @return [table] Kopie
+-- @within Internal
+-- @local
+--
+function SymfoniaWriter:CopyTable(_Table)
+    local newTable = {};
+    for k, v in pairs(_Table) do
+        if type(v) == "table" then
+            newTable[k] = self:CopyTable(v);
+        else
+            newTable[k] = v;
+        end
+    end
+    return newTable;
 end
 
 ---
