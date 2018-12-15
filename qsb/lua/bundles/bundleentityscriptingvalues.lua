@@ -9,8 +9,6 @@
 -- verändert werden, die sonst unzugänglich wären. Dazu zählen beispielsweise
 -- die Größe des Entity und das Bewegungsziel.</p>
 --
--- <p><a href="#API.GetEntityPlayer">Scripting Values</a></p>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -31,7 +29,7 @@ QSB = QSB or {};
 --
 -- <p><b>Alias</b>: GetScale</p>
 --
--- @param _Entity [string|number] Entity
+-- @param _Entity [string] Entity
 -- @return [number] Größenfaktor
 -- @within Anwenderfunktionen
 --
@@ -44,7 +42,7 @@ function API.GetEntityScale(_Entity)
         API.Dbg("API.GetEntityScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
-    return BundleEntityScriptingValues.Shared:GetEntitySize(_Entity);
+    return EntityScriptingValue:GetInstance(_Entity):GetEntitySize();
 end
 GetScale = API.GetEntityScale;
 
@@ -53,7 +51,7 @@ GetScale = API.GetEntityScale;
 --
 -- <p><b>Alias</b>: GetPlayer</p>
 --
--- @param _Entity [string|number] Entity
+-- @param _Entity [string] Entity
 -- @return [number] Besitzer
 -- @within Anwenderfunktionen
 --
@@ -63,7 +61,7 @@ function API.GetEntityPlayer(_Entity)
         API.Dbg("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
-    return BundleEntityScriptingValues.Shared:GetPlayerID(_entity);
+    return EntityScriptingValue:GetInstance(_Entity):GetPlayerID();
 end
 GetPlayer = API.GetEntityPlayer;
 
@@ -93,7 +91,7 @@ function API.GetMovementTarget(_Entity)
         API.Dbg("API.GetMovementTarget: Target " ..Subject.. " is invalid!");
         return nil;
     end
-    return BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity);
+    return EntityScriptingValue:GetInstance(_Entity):GetMovingTargetPosition();
 end
 GetMovingTarget = API.GetMovementTarget;
 
@@ -104,7 +102,7 @@ GetMovingTarget = API.GetMovementTarget;
 --
 -- <p><b>Alias</b>: IsNpc</p>
 --
--- @param _Entity [string|number] Entity
+-- @param _Entity [string] Entity
 -- @return [boolean] Ist NPC
 -- @within Anwenderfunktionen
 --
@@ -120,7 +118,7 @@ function API.IsActiveNpc(_Entity)
         API.Dbg("API.IsActiveNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
-    return BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity);
+    return EntityScriptingValue:GetInstance(_Entity):IsOnScreenInformationActive();
 end
 IsNpc = API.IsActiveNpc;
 
@@ -129,7 +127,7 @@ IsNpc = API.IsActiveNpc;
 --
 -- <p><b>Alias</b>: IsVisible</p>
 --
--- @param _Entity [string|number] Entity
+-- @param _Entity [string] Entity
 -- @return [boolean] Ist sichtbar
 -- @within Anwenderfunktionen
 --
@@ -139,7 +137,7 @@ function API.IsEntityVisible(_Entity)
         API.Dbg("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
-    return BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity);
+    return EntityScriptingValue:GetInstance(_Entity):IsEntityVisible();
 end
 IsVisible = API.IsEntityVisible;
 
@@ -151,7 +149,7 @@ IsVisible = API.IsEntityVisible;
 --
 -- <p><b>Alias</b>: SetScale</p>
 --
--- @param _Entity [string|number] Entity
+-- @param _Entity [string] Entity
 -- @param _Scale  [number] Größenfaktor
 -- @within Anwenderfunktionen
 --
@@ -165,7 +163,7 @@ function API.SetEntityScale(_Entity, _Scale)
         API.Dbg("API.SetEntityScale: Scale must be a number!");
         return;
     end
-    return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
+    EntityScriptingValue:GetInstance(_Entity):SetEntitySize(_Scale);
 end
 SetScale = API.SetEntityScale;
 
@@ -177,7 +175,7 @@ SetScale = API.SetEntityScale;
 --
 -- <p><b>Alias</b>: ChangePlayer</p>
 --
--- @param _Entity   [string|number] Entity
+-- @param _Entity   [string] Entity
 -- @param _PlayerID [number] Besitzer
 -- @within Anwenderfunktionen
 --
@@ -191,7 +189,7 @@ function API.SetEntityPlayer(_Entity, _PlayerID)
         API.Dbg("API.SetEntityPlayer: Player-ID must between 0 and 8!");
         return;
     end
-    return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
+    EntityScriptingValue:GetInstance(_Entity):SetPlayerID(math.floor(_PlayerID));
 end
 ChangePlayer = API.SetEntityPlayer;
 
@@ -199,82 +197,90 @@ ChangePlayer = API.SetEntityPlayer;
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleEntityScriptingValues = {
-    Global = {
-        Data = {}
-    },
-    Local = {
-        Data = {}
-    },
-    Shared = {
-        Data = {}
-    },
-}
+-- Scripting Value Class -------------------------------------------------------
 
--- Global Script ---------------------------------------------------------------
+EntityScriptingValueObjects = {};
+
+EntityScriptingValue = {};
 
 ---
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
+-- Konstruktor
+-- @param _Entity [string] Skriptname des Entity
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Global:Install()
+function EntityScriptingValue:construct(_Entity)
+    self.EntityName = _Entity;
+    EntityScriptingValueObjects[_Entity] = self;
+end
+class(EntityScriptingValue);
 
+---
+-- Gibt die Scripting Value Instanz des Entity zurück.
+-- @param _Entity [string] Skriptname des Entity
+-- @return EntityScriptingValue
+-- @within EntityScriptingValue
+-- @local
+--
+function EntityScriptingValue:GetInstance(_Entity)
+    if not EntityScriptingValueObjects[_Entity] then
+        EntityScriptingValueObjects[_Entity] = new(EntityScriptingValue, _Entity);
+    end
+    return EntityScriptingValueObjects[_Entity];
 end
 
 ---
 -- Ändert die Größe des Entity.
--- @param _Entity [string|number] Entity
 -- @param _Scale  [number] Größenfaktor
--- @within Internal
+-- @return self
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale)
-    local EntityID = GetID(_Entity);
-    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_size));
-    if Logic.IsSettler(EntityID) == 1 then
-        Logic.SetSpeedFactor(EntityID, _Scale);
+function EntityScriptingValue:SetEntitySize(_Scale)
+    assert(not GUI, "Can not be used in local script");
+    assert(self ~= EntityScriptingValue);
+
+    local EntityID = GetID(self.EntityName);
+    if EntityID > 0 then
+        Logic.SetEntityScriptingValue(EntityID, -45, self:Float2Int(_size));
+        if Logic.IsSettler(EntityID) == 1 then
+            Logic.SetSpeedFactor(EntityID, _Scale);
+        end
     end
+    return self;
 end
 
 ---
 -- Ändert den Besitzer des Entity.
 --
--- @param _Entity   [string|number] Entity
 -- @param _PlayerID [number] Besitzer
--- @within Internal
+-- @return self
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Global:SetPlayerID(_Entity, _PlayerID)
-    local EntityID = GetID(_Entity);
-    Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+function EntityScriptingValue:SetPlayerID(_PlayerID)
+    assert(not GUI, "Can not be used in local script");
+    assert(self ~= EntityScriptingValue);
+
+    local EntityID = GetID(self.EntityName);
+    if EntityID > 0 then
+        Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+    end
+    return self;
 end
-
--- Local Script ----------------------------------------------------------------
-
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
-function BundleEntityScriptingValues.Local:Install()
-
-end
-
--- Shared ----------------------------------------------------------------------
 
 ---
 -- Gibt die relative Größe des Entity zurück.
 --
--- @param _Entity [string|number] Entity
 -- @return [number] Größenfaktor
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetEntitySize(_Entity)
-    local EntityID = GetID(_Entity);
+function EntityScriptingValue:GetEntitySize()
+    local EntityID = GetID(self.EntityName);
+    if EntityID == 0 then
+        return 0;
+    end
     local size = Logic.GetEntityScriptingValue(EntityID, -45);
     return self:Int2Float(size);
 end
@@ -282,39 +288,45 @@ end
 ---
 -- Gibt den Besitzer des Entity zurück.
 --
--- @param _Entity [string|number] Entity
 -- @return [number] Besitzer
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetPlayerID(_Entity)
-    local EntityID = GetID(_Entity);
+function EntityScriptingValue:GetPlayerID()
+    local EntityID = GetID(self.EntityName);
+    if EntityID == 0 then
+        return 0;
+    end
     return Logic.GetEntityScriptingValue(EntityID, -71);
 end
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
 --
--- @param _Entity [string|number] Entity
 -- @return [boolean] Ist sichtbar
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity)
-    local EntityID = GetID(_Entity);
+function EntityScriptingValue:IsEntityVisible()
+    local EntityID = GetID(self.EntityName);
+    if EntityID == 0 then
+        return false;
+    end
     return Logic.GetEntityScriptingValue(EntityID, -50) == 801280;
 end
 
 ---
 -- Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
 --
--- @param _Entity [string|number] Entity
 -- @return [boolean] Ist NPC
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity)
-    local EntityID = GetID(_Entity);
+function EntityScriptingValue:IsOnScreenInformationActive()
+    local EntityID = GetID(self.EntityName);
+    if EntityID == 0 then
+        return false;
+    end
     if Logic.IsSettler(EntityID) == 0 then
         return false;
     end
@@ -324,44 +336,48 @@ end
 ---
 -- Gibt das Bewegungsziel des Entity zurück.
 --
--- @param _Entity [string|number] Entity
 -- @return [table] Positionstabelle
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity)
+function EntityScriptingValue:GetMovingTargetPosition(_Entity)
     local pos = {};
-    pos.X = self:GetValueAsFloat(_Entity, 19) or 0;
-    pos.Y = self:GetValueAsFloat(_Entity, 20) or 0;
+    pos.X = self:GetValueAsFloat(19) or 0;
+    pos.Y = self:GetValueAsFloat(20) or 0;
     return pos;
 end
+
+-- -------------------------------------------------------------------------- --
 
 ---
 -- Gibt die Scripting Value des Entity als Ganzzahl zurück.
 --
--- @param _Entity [string|number] Zu untersuchendes Entity
 -- @param _index  [number] Index im RAM
 -- @return [number] Ganzzahl
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetValueAsInteger(_Entity, _index)
-    local value = Logic.GetEntityScriptingValue(GetID(_Entity),_index);
-    return value;
+function EntityScriptingValue:GetValueAsInteger(_index)
+    local EntityID = GetID(self.EntityName);
+    if EntityID == 0 then
+        return 0;
+    end
+    return Logic.GetEntityScriptingValue(EntityID, _index);
 end
 
 ---
 -- Gibt die Scripting Value des Entity als Dezimalzahl zurück.
 --
--- @param _Entity [string|number] Zu untersuchendes Entity
--- @param _index  [number] Index im RAM
 -- @return [number] Dezimalzahl
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetValueAsFloat(_Entity, _index)
-    local value = Logic.GetEntityScriptingValue(GetID(_Entity),_index);
-    return self:Int2Float(value);
+function EntityScriptingValue.Shared:GetValueAsFloat(_index)
+    local EntityID = GetID(self.EntityName);
+    if EntityID == 0 then
+        return 0.0;
+    end
+    return self:Int2Float(Logic.GetEntityScriptingValue(EntityID,_index));
 end
 
 ---
@@ -370,10 +386,10 @@ end
 -- @param a	[number] Zahl
 -- @param b	[number] Modul
 -- @return [number] qmod der Zahl
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:qmod(a, b)
+function EntityScriptingValue:qmod(a, b)
     return a - math.floor(a/b)*b
 end
 
@@ -382,10 +398,10 @@ end
 --
 -- @param num [number] Integer
 -- @return [number] Integer als Float
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:Int2Float(num)
+function EntityScriptingValue:Int2Float(num)
     if(num == 0) then return 0 end
     local sign = 1
     if(num < 0) then num = 2147483648 + num; sign = -1 end
@@ -408,10 +424,10 @@ end
 --
 -- @param num [number] Bits
 -- @return [table] Table mit Bits
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:bitsInt(num)
+function EntityScriptingValue:bitsInt(num)
     local t={}
     while num>0 do
         rest=self:qmod(num, 2) table.insert(t,1,rest) num=(num-rest)/2
@@ -426,10 +442,10 @@ end
 -- @param num [integer] Integer
 -- @param t	  [table] Table
 -- @return [table] Table mit Bits
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:bitsFrac(num, t)
+function EntityScriptingValue:bitsFrac(num, t)
     for i = 1, 48 do
         num = num * 2
         if(num >= 1) then table.insert(t, 1); num = num - 1 else table.insert(t, 0) end
@@ -443,10 +459,10 @@ end
 --
 -- @param fval [number] Float
 -- @return [number] Float als Integer
--- @within BundleEntityScriptingValues
+-- @within EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:Float2Int(fval)
+function EntityScriptingValue:Float2Int(fval)
     if(fval == 0) then return 0 end
     local signed = false
     if(fval < 0) then signed = true; fval = fval * -1 end
