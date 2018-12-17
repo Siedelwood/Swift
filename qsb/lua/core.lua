@@ -1239,7 +1239,15 @@ function copy(_Source, _Dest)
 end
 
 ---
--- Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.
+-- Fügt einer Table Grundfunktionalität hinzu und macht sie zur Klasse.
+--
+-- Es handelt sich nicht um Metatables! Dies ist eine Emulation, die einige
+-- Features von Metatables auf normalen Tables abbildet. Grund ist die
+-- fehlende Speicherbarkeit von Metatables.
+--
+-- <b>Hinweis</b>: Die Funktionen werden nur dann hinzugefügt, wenn es keine
+-- Funktionen gleichen Namens vor dem aufruf von class() im Table gibt.
+-- Die Funktionen können nach dem Aufruf von class() überschrieben werden.
 --
 -- @param _Table [table] Referenz auf Table
 -- @return [table] Klasse
@@ -1283,6 +1291,146 @@ function class(_Table)
             end
         end
         return true;
+    end
+
+    -- foreach hinzufügen
+    _Table.foreach = _Table.foreach or function(self, _Function)
+        for k, v in pairs(self) do
+            self[k] = _Function(self, k, v) or self[k];
+        end
+    end
+
+    -- size hinzufügen
+    _Table.size = _Table.size or function(self)
+        local TableSize = 0;
+        for k, v in pairs(self) do
+            TableSize = TableSize +1;
+        end
+        return TableSize;
+    end
+
+    -- add hinzufügen
+    _Table.add = _Table.add or function(self, _Other)
+        local Result = copy(self);
+        if type(_Other) == "table" then 
+            for k, v in pairs(self) do
+                if (v and type(v) == "string") then
+                    if tonumber(v) then
+                        Result[k] = tostring(tonumber(v) + tonumber(_Other[k]));
+                    else
+                        Result[k] = v .. _Other[k];
+                    end
+                elseif (v and type(v) == "number") then
+                    Result[k] = self[k] + tonumber(_Other[k]);
+                end
+            end
+        end
+        return Result;
+    end
+
+    -- sub hinzufügen
+    _Table.sub = _Table.sub or function(self, _Other)
+        local Result = copy(self);
+        if type(_Other) == "table" then 
+            for k, v in pairs(self) do
+                if (self[k] and type(v) == "string") then
+                    if tonumber(v) then
+                        Result[k] = tostring(tonumber(v) - tonumber(_Other[k]));
+                    else
+                        Result[k] = v:gsub(_Other[k], "");
+                    end
+                elseif (self[k] and type(v) == "number") then
+                    Result[k] = self[k] - tonumber(_Other[k]);
+                end
+            end
+        end
+        return Result;
+    end
+
+    -- mult hinzufügen
+    _Table.mult = _Table.mult or function(self, _Other)
+        local Result = copy(self);
+        if type(_Other) == "table" then 
+            for k, v in pairs(self) do
+                if (self[k] and type(v) == "string") then
+                    if tonumber(v) then
+                        Result[k] = tostring(tonumber(v) * tonumber(_Other[k]));
+                    end
+                elseif (self[k] and type(v) == "number") then
+                    Result[k] = self[k] * tonumber(_Other[k]);
+                end
+            end
+        end
+        return Result;
+    end
+
+    -- divide hinzufügen
+    _Table.divide = _Table.divide or function(self, _Other)
+        local Result = copy(self);
+        if type(_Other) == "table" then 
+            for k, v in pairs(self) do
+                if (self[k] and type(v) == "string") then
+                    if tonumber(v) then
+                        Result[k] = tostring(tonumber(v) / tonumber(_Other[k]));
+                    end
+                elseif (self[k] and type(v) == "number") then
+                    Result[k] = v / tonumber(_Other[k]);
+                end
+            end
+        end
+        return Result;
+    end
+
+    -- mod hinzufügen
+    _Table.mod = _Table.mod or function(self, _Other)
+        local Result = copy(self);
+        if type(_Other) == "table" then 
+            for k, v in pairs(self) do
+                if (self[k] and type(v) == "string") then
+                    if tonumber(v) then
+                        Result[k] = tostring(tonumber(v) % tonumber(_Other[k]));
+                    end
+                elseif (self[k] and type(v) == "number") then
+                    Result[k] = v % tonumber(_Other[k]);
+                end
+            end
+        end
+        return Result;
+    end
+
+    -- pow hinzufügen
+    _Table.pow = _Table.pow or function(self, _Other)
+        local Result = copy(self);
+        if type(_Other) == "table" then 
+            for k, v in pairs(self) do
+                if (self[k] and type(v) == "string") then
+                    if tonumber(v) then
+                        Result[k] = tostring(tonumber(v) ^ tonumber(_Other[k]));
+                    end
+                elseif (self[k] and type(v) == "number") then
+                    Result[k] = v ^ tonumber(_Other[k]);
+                end
+            end
+        end
+        return Result;
+    end
+
+    -- sum hinzufügen
+    _Table.sum = _Table.sum or function(self, ...)
+        local Result = copy(self);
+        if type(arg[1]) == "table" then 
+            for k, v in pairs(self) do
+                if type(v) == "number" or type(v) == "string" then
+                    for i= 1, #arg, 1 do 
+                        Result[k] = tonumber(Result[k]) + tonumber(arg[i][k]);
+                        if type(v) == "string" then
+                            Result[k] = tostring(Result[k]);
+                        end
+                    end
+                end
+            end
+        end
+        return Result;
     end
 
     return _Table;
