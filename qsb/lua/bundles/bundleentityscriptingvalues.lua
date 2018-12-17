@@ -201,19 +201,18 @@ ChangePlayer = API.SetEntityPlayer;
 
 EntityScriptingValueObjects = {};
 
-EntityScriptingValue = {};
-
----
--- Konstruktor
--- @param _Entity [string] Skriptname des Entity
--- @within EntityScriptingValue
--- @local
---
-function EntityScriptingValue:construct(_Entity)
-    self.EntityName = _Entity;
-    EntityScriptingValueObjects[_Entity] = self;
-end
-class(EntityScriptingValue);
+EntityScriptingValue = class {
+    ---
+    -- Konstruktor
+    -- @param _Entity [string] Skriptname des Entity
+    -- @within EntityScriptingValue
+    -- @local
+    --
+    construct = function(self, _Entity)
+        self.EntityName = _Entity;
+        EntityScriptingValueObjects[_Entity] = self;
+    end
+};
 
 ---
 -- Gibt die Scripting Value Instanz des Entity zurück.
@@ -224,7 +223,7 @@ class(EntityScriptingValue);
 --
 function EntityScriptingValue:GetInstance(_Entity)
     if not EntityScriptingValueObjects[_Entity] then
-        EntityScriptingValueObjects[_Entity] = new(EntityScriptingValue, _Entity);
+        EntityScriptingValueObjects[_Entity] = new{EntityScriptingValue, _Entity};
     end
     return EntityScriptingValueObjects[_Entity];
 end
