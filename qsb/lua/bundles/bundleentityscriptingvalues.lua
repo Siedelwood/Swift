@@ -269,6 +269,25 @@ function EntityScriptingValue:SetPlayerID(_PlayerID)
 end
 
 ---
+-- Ändert die aktuelle Gesundheit des Entity.
+--
+-- @param _Health [number] Neue aktuelle Gesundheit
+-- @return self
+-- @within EntityScriptingValue
+-- @local
+--
+function EntityScriptingValue:SetHealth(_Health)
+    assert(not GUI, "Can not be used in local script");
+    assert(self ~= EntityScriptingValue);
+
+    local EntityID = GetID(self.EntityName);
+    if EntityID > 0 then
+        Logic.SetEntityScriptingValue(EntityID, -41, _Health);
+    end
+    return self;
+end
+
+---
 -- Gibt die relative Größe des Entity zurück.
 --
 -- @return [number] Größenfaktor
@@ -276,6 +295,8 @@ end
 -- @local
 --
 function EntityScriptingValue:GetEntitySize()
+    assert(self ~= EntityScriptingValue);
+
     local EntityID = GetID(self.EntityName);
     if EntityID == 0 then
         return 0;
@@ -292,6 +313,8 @@ end
 -- @local
 --
 function EntityScriptingValue:GetPlayerID()
+    assert(self ~= EntityScriptingValue);
+
     local EntityID = GetID(self.EntityName);
     if EntityID == 0 then
         return 0;
@@ -307,6 +330,8 @@ end
 -- @local
 --
 function EntityScriptingValue:IsEntityVisible()
+    assert(self ~= EntityScriptingValue);
+
     local EntityID = GetID(self.EntityName);
     if EntityID == 0 then
         return false;
@@ -322,6 +347,8 @@ end
 -- @local
 --
 function EntityScriptingValue:IsOnScreenInformationActive()
+    assert(self ~= EntityScriptingValue);
+
     local EntityID = GetID(self.EntityName);
     if EntityID == 0 then
         return false;
@@ -340,10 +367,63 @@ end
 -- @local
 --
 function EntityScriptingValue:GetMovingTargetPosition(_Entity)
+    assert(self ~= EntityScriptingValue);
+
     local pos = {};
     pos.X = self:GetValueAsFloat(19) or 0;
     pos.Y = self:GetValueAsFloat(20) or 0;
     return pos;
+end
+
+---
+-- Gibt die aktuelle Gesundheit des Entity zurück.
+--
+-- @return[type=number] Gesundheit des Entity
+-- @within EntityScriptingValue
+-- @local
+--
+function EntityScriptingValue:GetAbsoluteHealth()
+    assert(self ~= EntityScriptingValue);
+
+    local EntityID = GetID(self.EntityName);
+    if EntityID > 0 then
+        return Logic.GetEntityScriptingValue(EntityID, -41);
+    end
+    return 0;
+end
+
+---
+-- Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen
+--
+-- @return[type=number] Menge an Soldaten
+-- @within EntityScriptingValue
+-- @local
+--
+function EntityScriptingValue:CountSoldiers()
+    assert(self ~= EntityScriptingValue);
+
+    local EntityID = GetID(self.EntityName);
+    if EntityID > 0 then
+        return Logic.GetEntityScriptingValue(EntityID, -57);
+    end
+    return 0;
+end
+
+---
+-- Gibt den Leader des Soldaten zurück.
+--
+-- @return[type=number] Menge an Soldaten
+-- @within EntityScriptingValue
+-- @local
+--
+function EntityScriptingValue:GetLeaderID()
+    assert(self ~= EntityScriptingValue);
+
+    local EntityID = GetID(self.EntityName);
+    if EntityID > 0 then
+        return Logic.GetEntityScriptingValue(EntityID, 46);
+    end
+    return 0;
 end
 
 -- -------------------------------------------------------------------------- --
@@ -371,7 +451,7 @@ end
 -- @within EntityScriptingValue
 -- @local
 --
-function EntityScriptingValue.Shared:GetValueAsFloat(_index)
+function EntityScriptingValue:GetValueAsFloat(_index)
     local EntityID = GetID(self.EntityName);
     if EntityID == 0 then
         return 0.0;
