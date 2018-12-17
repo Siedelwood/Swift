@@ -1452,19 +1452,20 @@ end
 ---
 -- Erzeugt eine Instanz der Klasse.
 --
--- @param _Class [table] Referenz auf Klasse
--- @param ... [mixed] Argumente des Konstruktors
+-- @param _Data [table] Klasse, gefolgt von Argumenten
 -- @return [table] Instanz der Klasse
 -- @within OOP
 --
-function new(_Class, ...)
-    local instance = copy(_Class);
+function new(_Data)
+    local instance = copy(_Data[1]);
+    table.remove(_Data, 1);
+
     -- Parent instanzieren
     if instance.parent then
-        instance.parent = new(instance.parent, ...);
+        instance.parent = new(instance.parent, unpack(_Data));
     end
     -- Instanz erzeugen
-    instance:construct(...);
+    instance:construct(unpack(_Data));
     return instance;
 end
 
