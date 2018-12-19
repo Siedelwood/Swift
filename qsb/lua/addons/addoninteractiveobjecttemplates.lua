@@ -93,7 +93,7 @@ QSB = QSB or {};
 --
 function API.CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
     if GUI then
-        API.Dbg("API.CreateIOMine: Can not be used from local script!");
+        API.Fatal("API.CreateIOMine: Can not be used from local script!");
         return;
     end
     AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
@@ -120,7 +120,7 @@ CreateIOMine = API.CreateIOMine;
 --
 function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     if GUI then
-        API.Dbg("API.CreateIOIronMine: Can not be used from local script!");
+        API.Fatal("API.CreateIOIronMine: Can not be used from local script!");
         return;
     end
     AddOnInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
@@ -147,7 +147,7 @@ CreateIOIronMine = API.CreateIOIronMine;
 --
 function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     if GUI then
-        API.Dbg("API.CreateIOStoneMine: Can not be used from local script!");
+        API.Fatal("API.CreateIOStoneMine: Can not be used from local script!");
         return;
     end
     AddOnInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
@@ -191,7 +191,7 @@ CreateIOStoneMine = API.CreateIOStoneMine;
 --
 function API.CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
     if GUI then
-        API.Dbg("API.CreateIOBuildingSite: Can not be used from local script!");
+        API.Fatal("API.CreateIOBuildingSite: Can not be used from local script!");
         return;
     end
     AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback);
@@ -221,7 +221,7 @@ CreateIOBuildingSite = API.CreateIOBuildingSite;
 --
 function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
     if GUI then
-        API.Dbg("API.CreateRandomChest: Can not be used from local script!");
+        API.Fatal("API.CreateRandomChest: Can not be used from local script!");
         return;
     end
     AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
@@ -238,7 +238,7 @@ CreateRandomChest = API.CreateRandomChest;
 --
 function API.CreateRandomGoldChest(_Name)
     if GUI then
-        API.Dbg("API.CreateRandomGoldChest('" .._Name.. "')");
+        API.Fatal("API.CreateRandomGoldChest('" .._Name.. "')");
         return;
     end
     AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
@@ -350,7 +350,7 @@ DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
 --
 function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
     if GUI then
-        API.Dbg("API.GetTrebuchetByTrebuchetConstructionSite: Can only be used in global script!");
+        API.Fatal("API.GetTrebuchetByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
     if not self.Data.Trebuchet.Sites[_Name] then
@@ -371,7 +371,7 @@ GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
 --
 function API.GetReturningCartByTrebuchetConstructionSite(_Name)
     if GUI then
-        API.Dbg("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
+        API.Fatal("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
     if not self.Data.Trebuchet.Sites[_Name] then
@@ -392,7 +392,7 @@ GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
 --
 function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
     if GUI then
-        API.Dbg("API.GetConstructionCartByTrebuchetConstructionSite: Can only be used in global script!");
+        API.Fatal("API.GetConstructionCartByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
     if not self.Data.Trebuchet.Sites[_Name] then
@@ -1094,7 +1094,7 @@ function AddOnInteractiveObjectTemplates.Global.CallbackIOConstructionSite(_Data
     local site = Logic.CreateConstructionSite(pos.X, pos.Y, ori, _Data.Type, _Data.PlayerID);
     Logic.SetVisible(eID, false);
     if (site == nil) then
-        API.Dbg('AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite: Failed to place construction site!');
+        API.Fatal('AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite: Failed to place construction site!');
         return;
     end
     AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[site] = _Data;

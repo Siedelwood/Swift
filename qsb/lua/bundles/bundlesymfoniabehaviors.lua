@@ -130,7 +130,7 @@ end
 
 function b_Goal_WinQuest:DEBUG(_Quest)
     if Quests[GetQuestID(self.Quest)] == nil then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
+        fatal(_Quest.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
         return true;
     end
     return false;
@@ -247,7 +247,7 @@ end
 
 function b_Goal_StealGold:DEBUG(_Quest)
     if tonumber(self.Amount) == nil and self.Amount < 0 then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
+        fatal(_Quest.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
         return true;
     end
     return false;
@@ -366,16 +366,16 @@ function b_Goal_StealBuilding:DEBUG(_Quest)
     local eTypeName = Logic.GetEntityTypeName(Logic.GetEntityType(GetID(self.Building)));
     local IsHeadquarter = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Headquarters) == 1;
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
+        fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
         return true;
     elseif string.find(eTypeName, "B_NPC_BanditsHQ") or string.find(eTypeName, "B_NPC_Cloister") or string.find(eTypeName, "B_NPC_StoreHouse") then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
+        fatal(_Quest.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
         return true;
     elseif IsHeadquarter then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
+        fatal(_Quest.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
         return true;
     end
     return false;
@@ -495,10 +495,10 @@ end
 
 function b_Goal_SpyBuilding:DEBUG(_Quest)
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
+        fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        dbg(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
         return true;
     end
     return false;
@@ -577,7 +577,7 @@ end
 
 function b_Goal_AmmunitionAmount:DEBUG(_Quest)
     if self.Amount < 0 then
-        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Amount is negative");
+        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Amount is negative");
         return true
     end
 end
@@ -677,12 +677,12 @@ end
 function b_Reprisal_SetPosition:DEBUG(_Quest)
     if self.FaceToFace then
         if tonumber(self.Distance) == nil or self.Distance < 50 then
-            dbg(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
+            fatal(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
             return true;
         end
     end
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -748,7 +748,7 @@ end
 
 function b_Reprisal_ChangePlayer:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -837,7 +837,7 @@ end
 
 function b_Reprisal_SetVisible:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -933,7 +933,7 @@ end
 
 function b_Reprisal_SetVulnerability:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1007,7 +1007,7 @@ end
 
 function b_Reprisal_SetModel:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1154,10 +1154,10 @@ end
 
 function b_Reward_MoveToPosition:DEBUG(_Quest)
     if tonumber(self.Distance) == nil or self.Distance < 50 then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
         return true;
     elseif not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -1337,7 +1337,7 @@ end
 
 function b_Reward_AI_SetEntityControlled:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1451,7 +1451,7 @@ end
 
 function b_Reward_RefillAmmunition:DEBUG(_Quest)
     if not IsExisting(self.Scriptname) then
-        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
+        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
         return true
     end
     return false;
@@ -1539,18 +1539,18 @@ function b_Trigger_OnAtLeastXOfYQuestsFailed:DEBUG(_Quest)
     local leastAmount = self.LeastAmount
     local questAmount = self.QuestAmount
     if leastAmount <= 0 or leastAmount >5 then
-        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": LeastAmount is wrong")
+        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": LeastAmount is wrong")
         return true
     elseif questAmount <= 0 or questAmount > 5 then
-        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": QuestAmount is wrong")
+        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": QuestAmount is wrong")
         return true
     elseif leastAmount > questAmount then
-        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": LeastAmount is greater than QuestAmount")
+        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": LeastAmount is greater than QuestAmount")
         return true
     end
     for i = 1, questAmount do
         if not IsValidQuest(self["QuestName"..i]) then
-            dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest ".. self["QuestName"..i] .. " not found")
+            fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest ".. self["QuestName"..i] .. " not found")
             return true
         end
     end
@@ -1614,7 +1614,7 @@ end
 
 function b_Trigger_AmmunitionDepleted:DEBUG(_Quest)
     if not IsExisting(self.Scriptname) then
-        dbg(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
+        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
         return true
     end
     return false
@@ -1677,13 +1677,13 @@ end
 
 function b_Trigger_OnExactOneQuestIsWon:DEBUG(_Quest)
     if self.Quest1 == self.Quest2 then
-        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
+        fatal(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        fatal(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        fatal(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;
@@ -1746,13 +1746,13 @@ end
 
 function b_Trigger_OnExactOneQuestIsLost:DEBUG(_Quest)
     if self.Quest1 == self.Quest2 then
-        dbg(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
+        fatal(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        fatal(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        dbg(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        fatal(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;

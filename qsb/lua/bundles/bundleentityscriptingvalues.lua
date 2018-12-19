@@ -39,7 +39,7 @@ QSB = QSB or {};
 function API.GetEntityScale(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.GetEntityScale: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.GetEntityScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return EntityScriptingValue:GetInstance(_Entity):GetEntitySize();
@@ -58,7 +58,7 @@ GetScale = API.GetEntityScale;
 function API.GetEntityPlayer(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return EntityScriptingValue:GetInstance(_Entity):GetPlayerID();
@@ -88,7 +88,7 @@ GetPlayer = API.GetEntityPlayer;
 function API.GetMovementTarget(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.GetMovementTarget: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.GetMovementTarget: Target " ..Subject.. " is invalid!");
         return nil;
     end
     return EntityScriptingValue:GetInstance(_Entity):GetMovingTargetPosition();
@@ -115,7 +115,7 @@ GetMovingTarget = API.GetMovementTarget;
 function API.IsActiveNpc(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsActiveNpc: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.IsActiveNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
     return EntityScriptingValue:GetInstance(_Entity):IsOnScreenInformationActive();
@@ -134,7 +134,7 @@ IsNpc = API.IsActiveNpc;
 function API.IsEntityVisible(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
     return EntityScriptingValue:GetInstance(_Entity):IsEntityVisible();
@@ -156,11 +156,11 @@ IsVisible = API.IsEntityVisible;
 function API.SetEntityScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.SetEntityScale: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.SetEntityScale: Target " ..Subject.. " is invalid!");
         return;
     end
     if type(_Scale) ~= "number" then
-        API.Dbg("API.SetEntityScale: Scale must be a number!");
+        API.Fatal("API.SetEntityScale: Scale must be a number!");
         return;
     end
     EntityScriptingValue:GetInstance(_Entity):SetEntitySize(_Scale);
@@ -182,11 +182,11 @@ SetScale = API.SetEntityScale;
 function API.SetEntityPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.SetEntityPlayer: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.SetEntityPlayer: Target " ..Subject.. " is invalid!");
         return;
     end
     if type(_PlayerID) ~= "number" or _PlayerID <= 0 or _PlayerID > 8 then
-        API.Dbg("API.SetEntityPlayer: Player-ID must between 0 and 8!");
+        API.Fatal("API.SetEntityPlayer: Player-ID must between 0 and 8!");
         return;
     end
     EntityScriptingValue:GetInstance(_Entity):SetPlayerID(math.floor(_PlayerID));

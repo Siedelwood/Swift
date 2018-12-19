@@ -92,7 +92,7 @@ function API.SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Dbg("API.SetResourceAmount: Entity " ..Subject.. " does not exist!");
+        API.Fatal("API.SetResourceAmount: Entity " ..Subject.. " does not exist!");
         return;
     end
     return BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount);
@@ -118,7 +118,7 @@ SetResourceAmount = API.SetResourceAmount;
 function API.GetRelativePosition(_target, _distance, _angle, _buildingRealPos)
     if not API.ValidatePosition(_target) then
         if not IsExisting(_target) then
-            API.Dbg("API.GetRelativePosition: Target is invalid!");
+            API.Fatal("API.GetRelativePosition: Target is invalid!");
             return;
         end
     end
@@ -167,7 +167,7 @@ function API.EntitySetName(_entity, _name)
         return;
     end
     if IsExisting(_name) then
-        API.Dbg("API.EntitySetName: Entity '" .._name.. "' already exists!");
+        API.Fatal("API.EntitySetName: Entity '" .._name.. "' already exists!");
         return;
     end
     return Logic.SetEntityName(GetID(_entity), _name);
@@ -193,7 +193,7 @@ function API.EntitySetOrientation(_entity, _ori)
     end
     if not IsExisting(_entity) then
         local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
-        API.Dbg("API.EntitySetOrientation: Entity " ..Subject.. " does not exist!");
+        API.Fatal("API.EntitySetOrientation: Entity " ..Subject.. " does not exist!");
         return;
     end
     return Logic.SetOrientation(GetID(_entity), _ori);
@@ -262,12 +262,12 @@ function API.GetEntitiesNearby(_eID, _entities)
         return;
     end
     if #_entities == 0 then
-        API.Dbg("API.GetEntitiesNearby: The target list is empty!");
+        API.Fatal("API.GetEntitiesNearby: The target list is empty!");
         return;
     end
     for i= 1, #_entities, 1 do
         if not IsExisting(_entities[i]) then
-            API.Dbg("API.GetEntitiesNearby: At least one target entity is dead!");
+            API.Fatal("API.GetEntitiesNearby: At least one target entity is dead!");
             return;
         end
     end
@@ -339,7 +339,7 @@ function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmo
 
     local EntityID = GetID(_Entity);
     if not IsExisting(EntityID) or Logic.GetResourceDoodadGoodType(EntityID) == 0 then
-        API.Dbg("SetResourceAmount: Resource entity is invalid!");
+        API.Fatal("SetResourceAmount: Resource entity is invalid!");
         return false;
     end
     if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then

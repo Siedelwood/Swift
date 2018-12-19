@@ -51,7 +51,7 @@ QSB = QSB or {};
 --
 function API.DialogInfoBox(_Title, _Text, _Action)
     if not GUI then
-        API.Dbg("API.DialogInfoBox: Can only be used in the local script!");
+        API.Fatal("API.DialogInfoBox: Can only be used in the local script!");
         return;
     end
 
@@ -90,7 +90,7 @@ UserOpenDialog = API.DialogInfoBox;
 --
 function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
     if not GUI then
-        API.Dbg("API.DialogRequestBox: Can only be used in the local script!");
+        API.Fatal("API.DialogRequestBox: Can only be used in the local script!");
         return;
     end
 
@@ -129,7 +129,7 @@ UserOpenRequesterDialog = API.DialogRequestBox;
 --
 function API.DialogSelectBox(_Title, _Text, _Action, _List)
     if not GUI then
-        API.Dbg("API.DialogSelectBox: Can only be used in the local script!");
+        API.Fatal("API.DialogSelectBox: Can only be used in the local script!");
         return;
     end
 

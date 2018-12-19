@@ -208,7 +208,7 @@ function SymfoniaLoader:Load(_Path)
             else
                 -- Only show once
                 if not GUI then
-                    API.Dbg("SymfoniaLoader:Load: AddOn '" ..Name.. "' has unsatisfied dependencies and was not loaded!");
+                    API.Fatal("SymfoniaLoader:Load: AddOn '" ..Name.. "' has unsatisfied dependencies and was not loaded!");
                 end
             end
         end

@@ -114,7 +114,7 @@ PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 --
 function API.IsBriefingFinished(_briefingID)
     if GUI then
-        API.Dbg("API.IsBriefingFinished: Can only be used in the global script!");
+        API.Fatal("API.IsBriefingFinished: Can only be used in the global script!");
         return;
     end
     return BundleBriefingSystem.Global:IsBriefingFinished(_briefingID);
@@ -135,7 +135,7 @@ IsBriefingFinished = API.IsBriefingFinished;
 --
 function API.GetSelectedAnswerFromMCPage(_page)
     if GUI then
-        API.Dbg("API.GetSelectedAnswerFromMCPage: Can only be used in the global script!");
+        API.Fatal("API.GetSelectedAnswerFromMCPage: Can only be used in the global script!");
         return;
     end
     return BundleBriefingSystem.Global:MCGetSelectedAnswer(_page);
@@ -155,7 +155,7 @@ MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 --
 function API.GetCurrentBriefingPage(_pageNumber)
     if GUI then
-        API.Dbg("API.GetCurrentBriefingPage: Can only be used in the global script!");
+        API.Fatal("API.GetCurrentBriefingPage: Can only be used in the global script!");
         return;
     end
     return BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber);
@@ -174,7 +174,7 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 --
 function API.GetCurrentBriefing()
     if GUI then
-        API.Dbg("API.GetCurrentBriefing: Can only be used in the global script!");
+        API.Fatal("API.GetCurrentBriefing: Can only be used in the global script!");
         return;
     end
     return BundleBriefingSystem.Global:GetCurrentBriefing();
@@ -197,7 +197,7 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 function API.AddPages(_Briefing)
     if GUI then
-        API.Dbg("API.AddPages: Can only be used in the global script!");
+        API.Fatal("API.AddPages: Can only be used in the global script!");
         return;
     end
     return BundleBriefingSystem.Global:AddPages(_Briefing);
@@ -219,7 +219,7 @@ AddPages = API.AddPages;
 --
 function API.AddFlights(_Cutscene)
     if GUI then
-        API.Dbg("API.AddFlights: Can only be used in the global script!");
+        API.Fatal("API.AddFlights: Can only be used in the global script!");
         return;
     end
     return BundleBriefingSystem.Global:AddFlights(_Cutscene);
@@ -262,7 +262,7 @@ AddFlights = API.AddFlights;
 --
 function AP(_Page)
     -- Diese Funktion ist ein Dummy für LDoc!
-    API.Dbg("AP: Please use the function provides by AddPages!");
+    API.Fatal("AP: Please use the function provides by AddPages!");
 end
 
 ---
@@ -346,7 +346,7 @@ end
 --
 function AF(_Flight)
     -- Diese Funktion ist ein Dummy für LDoc!
-    API.Dbg("AF: Please use the function provides by AddFlights!");
+    API.Fatal("AF: Please use the function provides by AddFlights!");
 end
 
 ---
@@ -372,7 +372,7 @@ end
 --
 function ASF(_Text, _Duration, _Action, _Fading, ...)
     -- Diese Funktion ist ein Dummy für LDoc!
-    API.Dbg("ASF: Please use the function provides by AddFlights!");
+    API.Fatal("ASF: Please use the function provides by AddFlights!");
 end
 
 ---
@@ -392,7 +392,7 @@ end
 --
 function ASP(_entity, _title, _text, _dialogCamera, _action)
     -- Diese Funktion ist ein Dummy für LDoc!
-    API.Dbg("ASP: Please use the function provides by AddPages!");
+    API.Fatal("ASP: Please use the function provides by AddPages!");
 end
 
 ---
@@ -416,7 +416,7 @@ end
 --
 function ASMC(_entity, _title, _text, _dialogCamera, ...)
     -- Diese Funktion ist ein Dummy für LDoc!
-    API.Dbg("ASMC: Please use the function provides by AddPages!");
+    API.Fatal("ASMC: Please use the function provides by AddPages!");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -885,22 +885,22 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         for i=1, #_briefing, 1 do
             -- Multiple Choice ist nicht erlaubt
             if _briefing[i].mc then
-                API.Dbg("API.StartCutscene: Unallowed multiple choice at page " ..i.. " found!");
+                API.Fatal("API.StartCutscene: Unallowed multiple choice at page " ..i.. " found!");
                 return;
             end
             -- Marker sind nicht erlaubt
             if _briefing[i].marker then
-                API.Dbg("API.StartCutscene: Unallowed marker at page " ..i.. " found!");
+                API.Fatal("API.StartCutscene: Unallowed marker at page " ..i.. " found!");
                 return;
             end
             -- Pointer sind nicht erlaubt
             if _briefing[i].pointer then
-                API.Dbg("API.StartCutscene: Unallowed pointer at page " ..i.. " found!");
+                API.Fatal("API.StartCutscene: Unallowed pointer at page " ..i.. " found!");
                 return;
             end
             -- Exploration ist nicht erlaubt
             if _briefing[i].explore then
-                API.Dbg("API.StartCutscene: Unallowed explore at page " ..i.. " found!");
+                API.Fatal("API.StartCutscene: Unallowed explore at page " ..i.. " found!");
                 return;
             end
         end
@@ -3189,13 +3189,13 @@ function b_Reward_Briefing:CustomFunction(__quest_)
         if IsBriefingActive() then
             GUI_Note(Text);
         end
-        dbg(Text);
+        fatal(Text);
     end
 end
 
 function b_Reward_Briefing:DEBUG(__quest_)
     if not type(_G[self.Function]) == "function" then
-        dbg(__quest_.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
+        fatal(__quest_.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
         return true;
     end
     return false;
@@ -3253,13 +3253,13 @@ function b_Reprisal_Briefing:CustomFunction(__quest_)
         if IsBriefingActive() then
             GUI_Note(Text);
         end
-        dbg(Text);
+        fatal(Text);
     end
 end
 
 function b_Reprisal_Briefing:DEBUG(__quest_)
     if not type(_G[self.Function]) == "function" then
-        dbg(__quest_.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
+        fatal(__quest_.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
         return true;
     end
     return false;
@@ -3337,10 +3337,10 @@ end
 
 function b_Trigger_Briefing:DEBUG(__quest_)
     if tonumber(self.WaitTime) == nil or self.WaitTime < 0 then
-        dbg(__quest_.Identifier.." "..self.Name..": waittime is nil or below 0!");
+        fatal(__quest_.Identifier.." "..self.Name..": waittime is nil or below 0!");
         return true;
     elseif not IsValidQuest(self.Quest) then
-        dbg(__quest_.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
+        fatal(__quest_.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
         return true;
     end
     return false;
