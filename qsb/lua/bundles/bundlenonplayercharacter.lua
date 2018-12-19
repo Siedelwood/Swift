@@ -726,7 +726,7 @@ function BundleNonPlayerCharacter.Global:Install()
         else
             if data[1] == -65565 then
                 if not IsExisting(data[3]) then
-                    API.Dbg(data[3].. " is dead! :(");
+                    API.Fatal(data[3].. " is dead! :(");
                     objective.Completed = false;
                 else
                     if not data[4].NpcInstance then

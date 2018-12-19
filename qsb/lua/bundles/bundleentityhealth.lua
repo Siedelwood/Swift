@@ -76,11 +76,11 @@ function API.ChangeEntityHealth(_Entity, _Percentage)
     end
     if not IsExisting(_Entity) then
         local Sublect = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.ChangeEntityHealth: _Entity " ..Sublect.. " does not exist!");
+        API.Fatal("API.ChangeEntityHealth: _Entity " ..Sublect.. " does not exist!");
         return;
     end
     if type(_Percentage) ~= "number" then
-        API.Dbg("API.ChangeEntityHealth: _Percentage must be a number!");
+        API.Fatal("API.ChangeEntityHealth: _Percentage must be a number!");
         return;
     end
 
@@ -114,15 +114,15 @@ function API.SetBuildingOnFire(_Entity, _Strength)
     end
     if not IsExisting(_Entity) then
         local Sublect = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.SetBuildingOnFire: Entity " ..Sublect.. " does not exist!");
+        API.Fatal("API.SetBuildingOnFire: Entity " ..Sublect.. " does not exist!");
         return;
     end
     if Logic.IsBuilding(GetID(_Entity)) == 0 then
-        API.Dbg("API.SetBuildingOnFire: Only buildings can be set on fire!");
+        API.Fatal("API.SetBuildingOnFire: Only buildings can be set on fire!");
         return;
     end
     if type(_Strength) ~= "number" then
-        API.Dbg("API.SetBuildingOnFire: _Strength must be a number!");
+        API.Fatal("API.SetBuildingOnFire: _Strength must be a number!");
         return;
     end
     _Strength = (_Strength < 0 and 0) or _Strength;
@@ -159,7 +159,7 @@ function API.HurtEntity(_Target, _AmountOfDamage, _Attacker)
         return;
     end
     if type(_AmountOfDamage) ~= "number" or _AmountOfDamage < 0 then
-        API.Dbg("API.HurtEntity: _AmountOfDamage must be a number greater or equal 0!");
+        API.Fatal("API.HurtEntity: _AmountOfDamage must be a number greater or equal 0!");
         return;
     end
     local EntityID = GetID(_Target);
@@ -184,11 +184,11 @@ HurtEntityEx = API.HurtEntity;
 --
 function API.AddOnEntityHurtAction(_Function)
     if GUI then
-        API.Dbg("API.AddOnEntityHurtAction: Can not be used in local script!");
+        API.Fatal("API.AddOnEntityHurtAction: Can not be used in local script!");
         return;
     end
     if type(_Function) ~= "function" then
-        API.Dbg("_Function must be a function!");
+        API.Fatal("_Function must be a function!");
         return;
     end
     BundleEntityHealth.Global.AddOnEntityHurtAction(_Function);
@@ -211,11 +211,11 @@ AddHurtAction = API.AddOnEntityHurtAction;
 --
 function API.AddOnEntityDestroyedAction(_Function)
     if GUI then
-        API.Dbg("API.AddOnEntityDestroyedAction: Can not be used in local script!");
+        API.Fatal("API.AddOnEntityDestroyedAction: Can not be used in local script!");
         return;
     end
     if type(_Function) ~= "function" then
-        API.Dbg("_Function must be a function!");
+        API.Fatal("_Function must be a function!");
         return;
     end
     BundleEntityHealth.Global.AddOnEntityDestroyedAction(_Function);
@@ -235,11 +235,11 @@ AddKilledAction = API.AddOnEntityDestroyedAction;
 --
 function API.AddOnEntityCreatedAction(_Function)
     if GUI then
-        API.Dbg("API.AddOnEntityCreatedAction: Can not be used in local script!");
+        API.Fatal("API.AddOnEntityCreatedAction: Can not be used in local script!");
         return;
     end
     if type(_Function) ~= "function" then
-        API.Dbg("_Function must be a function!");
+        API.Fatal("_Function must be a function!");
         return;
     end
     BundleEntityHealth.Global.AddOnEntityCreatedAction(_Function);
@@ -580,11 +580,11 @@ end
 
 function b_Reprisal_SetHealth:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
         -- return true;
     end
     if self.Percentage < 0 or self.Percentage > 100 then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
         return true;
     end
     return false;
@@ -618,11 +618,11 @@ end
 
 function b_Reward_SetHealth:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
         return true;
     end
     if self.Percentage < 0 or self.Percentage > 100 then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
         return true;
     end
     return false;
@@ -687,11 +687,11 @@ end
 
 function b_Trigger_EntityHealth:DEBUG(_Quest)
     if not IsExisting(self.ScriptName) then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
         return true;
     end
     if self.Percentage < 0 or self.Percentage > 100 then
-        dbg(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
         return true;
     end
     return false;

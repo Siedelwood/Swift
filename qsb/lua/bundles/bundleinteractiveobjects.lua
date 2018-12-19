@@ -156,7 +156,7 @@ QSB.IOList = {};
 --
 function API.CreateObject(_Description)
     if GUI then
-        API.Dbg("API.CreateObject: Can not be used from local enviorment!");
+        API.Fatal("API.CreateObject: Can not be used from local enviorment!");
         return;
     end
     return BundleInteractiveObjects.Global:CreateObject(_Description);

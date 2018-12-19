@@ -247,7 +247,7 @@ function API.SetSheepNeeded(_Amount)
         return;
     end
     if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
-        API.Dbg("API.SetSheepNeeded: Needed amount is invalid!");
+        API.Fatal("API.SetSheepNeeded: Needed amount is invalid!");
     end
     BundleBuildingButtons.Local.Data.SheepNeeded = _Amount;
 end
@@ -271,7 +271,7 @@ function API.SetCattleNeeded(_Amount)
         return;
     end
     if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
-        API.Dbg("API.SetCattleNeeded: Needed amount is invalid!");
+        API.Fatal("API.SetCattleNeeded: Needed amount is invalid!");
     end
     BundleBuildingButtons.Local.Data.CattleNeeded = _Amount;
 end
@@ -335,11 +335,11 @@ function API.AddCustomBuildingButton(_Index, _Action, _Tooltip, _Update)
         return;
     end
     if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) then
-        API.Dbg("API.AddCustomBuildingButton: Index must be 1 or 2!");
+        API.Fatal("API.AddCustomBuildingButton: Index must be 1 or 2!");
         return;
     end
     if (type(_Action) ~= "function" or type(_Tooltip) ~= "function" or type(_Update) ~= "function") then
-        API.Dbg("API.AddCustomBuildingButton: Action, tooltip and update must be functions!");
+        API.Fatal("API.AddCustomBuildingButton: Action, tooltip and update must be functions!");
         return;
     end
     return BundleBuildingButtons.Local:AddOptionalButton(
@@ -362,11 +362,11 @@ AddBuildingButton = API.AddCustomBuildingButton;
 --
 function API.RemoveCustomBuildingButton(_Index)
     if not GUI then
-        API.Dbg("API.RemoveCustomBuildingButton("..tostring(_Index)..")");
+        API.Fatal("API.RemoveCustomBuildingButton("..tostring(_Index)..")");
         return;
     end
     if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) then
-        API.Dbg("API.RemoveCustomBuildingButton: Index must be 1 or 2!");
+        API.Fatal("API.RemoveCustomBuildingButton: Index must be 1 or 2!");
         return;
     end
     return BundleBuildingButtons.Local:DeleteOptionalButton(_Index);

@@ -610,19 +610,20 @@ end
 ---
 -- Schreibt einen FATAL auf den Bildschirm und ins Log.
 --
--- <p><b>Alias:</b> dbg</p>
+-- <p><b>Alias:</b> fatal</p>
 --
 -- @param _Message [string] Anzeigetext
 -- @within Anwenderfunktionen
 -- @local
 --
-function API.Dbg(_Message)
+function API.Fatal(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.FATAL then
         API.StaticNote("FATAL: " .._Message)
     end
     API.Log("FATAL: " .._Message);
 end
-dbg = API.Dbg;
+fatal = API.Fatal;
+dbg = API.Fatal;
 
 ---
 -- Schreibt eine WARNING auf den Bildschirm und ins Log.
@@ -1121,7 +1122,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 --
 function API.AddSaveGameAction(_Function)
     if GUI then
-        API.Dbg("API.AddSaveGameAction: Can not be used from the local script!");
+        API.Fatal("API.AddSaveGameAction: Can not be used from the local script!");
         return;
     end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
@@ -1140,7 +1141,7 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
-        API.Dbg("API.AddHotKey: Can not be used from the global script!");
+        API.Fatal("API.AddHotKey: Can not be used from the global script!");
         return;
     end
     g_KeyBindingsOptions.Descriptions = nil;
@@ -1156,11 +1157,11 @@ end
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
-        API.Dbg("API.RemoveHotKey: Can not be used from the global script!");
+        API.Fatal("API.RemoveHotKey: Can not be used from the global script!");
         return;
     end
     if type(_Index) ~= "number" or _Index > #Core.Data.HotkeyDescriptions then
-        API.Dbg("API.RemoveHotKey: No candidate found or Index is nil!");
+        API.Fatal("API.RemoveHotKey: No candidate found or Index is nil!");
         return;
     end
     Core.Data.HotkeyDescriptions[_Index] = nil;
@@ -1594,7 +1595,7 @@ function Core:SetupGobal_HackCreateQuest()
             );
             g_QuestNameToID[_QuestName] = QuestID;
         else
-            dbg("Quest '"..tostring(questName).."': invalid questname! Contains forbidden characters!");
+            fatal("Quest '"..tostring(questName).."': invalid questname! Contains forbidden characters!");
         end
     end
 end
@@ -1763,7 +1764,7 @@ function Core:RegisterBehavior(_Behavior)
     end
 
     if not _G["b_" .. _Behavior.Name] then
-        dbg("AddQuestBehavior: can not find ".. _Behavior.Name .."!");
+        fatal("AddQuestBehavior: can not find ".. _Behavior.Name .."!");
     else
         if not _G["b_" .. _Behavior.Name].new then
             _G["b_" .. _Behavior.Name].new = function(self, ...)
