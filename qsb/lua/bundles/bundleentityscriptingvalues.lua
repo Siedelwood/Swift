@@ -5,9 +5,9 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- <p>Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
+-- Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
 -- verändert werden, die sonst unzugänglich wären. Dazu zählen beispielsweise
--- die Größe des Entity und das Bewegungsziel.</p>
+-- die Größe des Entity und das Bewegungsziel.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -29,8 +29,8 @@ QSB = QSB or {};
 --
 -- <p><b>Alias</b>: GetScale</p>
 --
--- @param _Entity [string] Entity
--- @return [number] Größenfaktor
+-- @param[type=string] _Entity Entity
+-- @return[type=number] Größenfaktor
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -51,8 +51,8 @@ GetScale = API.GetEntityScale;
 --
 -- <p><b>Alias</b>: GetPlayer</p>
 --
--- @param _Entity [string] Entity
--- @return [number] Besitzer
+-- @param[type=string] _Entity Entity
+-- @return[type=number] Besitzer
 -- @within Anwenderfunktionen
 --
 function API.GetEntityPlayer(_Entity)
@@ -73,8 +73,8 @@ GetPlayer = API.GetEntityPlayer;
 --
 -- <p><b>Alias</b>: GetMovingTarget</p>
 --
--- @param _Entity [string|number] Entity
--- @return [table] Positionstabelle
+-- @param[type=string] _Entity Entity
+-- @return[type=table] Positionstabelle
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -102,8 +102,8 @@ GetMovingTarget = API.GetMovementTarget;
 --
 -- <p><b>Alias</b>: IsNpc</p>
 --
--- @param _Entity [string] Entity
--- @return [boolean] Ist NPC
+-- @param[type=string] _Entity Entity
+-- @return[type=boolean] Ist NPC
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -127,8 +127,8 @@ IsNpc = API.IsActiveNpc;
 --
 -- <p><b>Alias</b>: IsVisible</p>
 --
--- @param _Entity [string] Entity
--- @return [boolean] Ist sichtbar
+-- @param[type=string] _Entity Entity
+-- @return[type=boolean] Ist sichtbar
 -- @within Anwenderfunktionen
 --
 function API.IsEntityVisible(_Entity)
@@ -149,8 +149,8 @@ IsVisible = API.IsEntityVisible;
 --
 -- <p><b>Alias</b>: SetScale</p>
 --
--- @param _Entity [string] Entity
--- @param _Scale  [number] Größenfaktor
+-- @param[type=string] _Entity Entity
+-- @param[type=number] _Scale Größenfaktor
 -- @within Anwenderfunktionen
 --
 function API.SetEntityScale(_Entity, _Scale)
@@ -175,8 +175,8 @@ SetScale = API.SetEntityScale;
 --
 -- <p><b>Alias</b>: ChangePlayer</p>
 --
--- @param _Entity   [string] Entity
--- @param _PlayerID [number] Besitzer
+-- @param[type=string] _Entity Entity
+-- @param[type=number] _PlayerID Besitzer
 -- @within Anwenderfunktionen
 --
 function API.SetEntityPlayer(_Entity, _PlayerID)
@@ -201,27 +201,36 @@ ChangePlayer = API.SetEntityPlayer;
 
 EntityScriptingValueObjects = {};
 
+---
+-- Diese Klasse definiert einen Entity-Wrapper mit dem einfach auf ESV
+-- zugegriffen werden kann.
+-- @within Klassen
+-- @local
+--
 EntityScriptingValue = class {
     ---
     -- Konstruktor
-    -- @param _Entity [string] Skriptname des Entity
+    -- @param[type=string] _Entity Skriptname des Entity
     -- @within EntityScriptingValue
     -- @local
     --
     construct = function(self, _Entity)
-        self.EntityName = _Entity;
+        self.m_EntityName = _Entity;
         EntityScriptingValueObjects[_Entity] = self;
     end
 };
 
 ---
 -- Gibt die Scripting Value Instanz des Entity zurück.
--- @param _Entity [string] Skriptname des Entity
--- @return EntityScriptingValue
+-- @param[type=string] _Entity Skriptname des Entity
+-- @return[type=table] Instanz
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:GetInstance(_Entity)
+    assert(self == EntityScriptingValue, "Can not be used from instance!");
+    assert(IsExisting(_Entity));
+
     if not EntityScriptingValueObjects[_Entity] then
         EntityScriptingValueObjects[_Entity] = new{EntityScriptingValue, _Entity};
     end
@@ -230,16 +239,16 @@ end
 
 ---
 -- Ändert die Größe des Entity.
--- @param _Scale  [number] Größenfaktor
--- @return self
+-- @param[type=number] _Scale Größenfaktor
+-- @return[type=table] self
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:SetEntitySize(_Scale)
     assert(not GUI, "Can not be used in local script");
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
         Logic.SetEntityScriptingValue(EntityID, -45, self:Float2Int(_size));
         if Logic.IsSettler(EntityID) == 1 then
@@ -252,16 +261,16 @@ end
 ---
 -- Ändert den Besitzer des Entity.
 --
--- @param _PlayerID [number] Besitzer
--- @return self
+-- @param[type=number] _PlayerID Besitzer
+-- @return[type=table] self
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:SetPlayerID(_PlayerID)
     assert(not GUI, "Can not be used in local script");
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
         Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
     end
@@ -271,16 +280,16 @@ end
 ---
 -- Ändert die aktuelle Gesundheit des Entity.
 --
--- @param _Health [number] Neue aktuelle Gesundheit
--- @return self
+-- @param[type=number] _Health Neue aktuelle Gesundheit
+-- @return[type=table] self
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:SetHealth(_Health)
     assert(not GUI, "Can not be used in local script");
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
         Logic.SetEntityScriptingValue(EntityID, -41, _Health);
     end
@@ -290,14 +299,14 @@ end
 ---
 -- Gibt die relative Größe des Entity zurück.
 --
--- @return [number] Größenfaktor
+-- @return[type=number] Größenfaktor
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:GetEntitySize()
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
         return 0;
     end
@@ -308,14 +317,14 @@ end
 ---
 -- Gibt den Besitzer des Entity zurück.
 --
--- @return [number] Besitzer
+-- @return[type=number] Besitzer
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:GetPlayerID()
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
         return 0;
     end
@@ -325,14 +334,14 @@ end
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
 --
--- @return [boolean] Ist sichtbar
+-- @return[type=boolean] Ist sichtbar
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:IsEntityVisible()
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
         return false;
     end
@@ -342,14 +351,14 @@ end
 ---
 -- Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
 --
--- @return [boolean] Ist NPC
+-- @return[type=boolean] Ist NPC
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:IsOnScreenInformationActive()
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
         return false;
     end
@@ -362,12 +371,12 @@ end
 ---
 -- Gibt das Bewegungsziel des Entity zurück.
 --
--- @return [table] Positionstabelle
+-- @return[type=table] Positionstabelle
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:GetMovingTargetPosition(_Entity)
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
     local pos = {};
     pos.X = self:GetValueAsFloat(19) or 0;
@@ -383,9 +392,9 @@ end
 -- @local
 --
 function EntityScriptingValue:GetAbsoluteHealth()
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
         return Logic.GetEntityScriptingValue(EntityID, -41);
     end
@@ -400,13 +409,32 @@ end
 -- @local
 --
 function EntityScriptingValue:CountSoldiers()
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
         return Logic.GetEntityScriptingValue(EntityID, -57);
     end
     return 0;
+end
+
+---
+-- Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
+--
+-- @return[type=table] Liste aller Soldaten
+-- @within EntityScriptingValue
+-- @local
+--
+function EntityScriptingValue:GetSoldiers()
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 and Logic.IsLeader(EntityID) == 1 then
+        local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+        table.remove(SoldierTable, 1);
+        return SoldierTable;
+    end
+    return {};
 end
 
 ---
@@ -417,54 +445,59 @@ end
 -- @local
 --
 function EntityScriptingValue:GetLeaderID()
-    assert(self ~= EntityScriptingValue);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
 
-    local EntityID = GetID(self.EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
         return Logic.GetEntityScriptingValue(EntityID, 46);
     end
     return 0;
 end
 
--- -------------------------------------------------------------------------- --
-
 ---
 -- Gibt die Scripting Value des Entity als Ganzzahl zurück.
 --
--- @param _index  [number] Index im RAM
--- @return [number] Ganzzahl
+-- @param[type=number] _index Index im RAM
+-- @return[type=number] Ganzzahl
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:GetValueAsInteger(_index)
-    local EntityID = GetID(self.EntityName);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
         return 0;
     end
-    return Logic.GetEntityScriptingValue(EntityID, _index);
+    return math.floor(Logic.GetEntityScriptingValue(EntityID, _index) + 0.5);
 end
 
 ---
 -- Gibt die Scripting Value des Entity als Dezimalzahl zurück.
 --
--- @return [number] Dezimalzahl
+-- @param[type=number] _index Index im RAM
+-- @return[type=number] Dezimalzahl
 -- @within EntityScriptingValue
 -- @local
 --
 function EntityScriptingValue:GetValueAsFloat(_index)
-    local EntityID = GetID(self.EntityName);
+    assert(self ~= EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
         return 0.0;
     end
     return self:Int2Float(Logic.GetEntityScriptingValue(EntityID,_index));
 end
 
+-- -------------------------------------------------------------------------- --
+
 ---
 -- Bestimmt das Modul b der Zahl a.
 --
--- @param a	[number] Zahl
--- @param b	[number] Modul
--- @return [number] qmod der Zahl
+-- @param[type=number] a Zahl
+-- @param[type=number] b Modul
+-- @return[type=number] qmod der Zahl
 -- @within EntityScriptingValue
 -- @local
 --
@@ -475,8 +508,8 @@ end
 ---
 -- Konvertiert eine Ganzzahl in eine Dezimalzahl.
 --
--- @param num [number] Integer
--- @return [number] Integer als Float
+-- @param[type=number] num Integer
+-- @return[type=number] Integer als Float
 -- @within EntityScriptingValue
 -- @local
 --
@@ -501,8 +534,8 @@ end
 ---
 -- Gibt den Integer als Bits zurück.
 --
--- @param num [number] Bits
--- @return [table] Table mit Bits
+-- @param[type=number] num Bits
+-- @return[type=table] Table mit Bits
 -- @within EntityScriptingValue
 -- @local
 --
@@ -518,9 +551,9 @@ end
 ---
 -- Stellt eine Zahl als eine Folge von Bits in einer Table dar.
 --
--- @param num [integer] Integer
--- @param t	  [table] Table
--- @return [table] Table mit Bits
+-- @param[type=number] num Integer
+-- @param[type=table] t Table
+-- @return[type=table] Table mit Bits
 -- @within EntityScriptingValue
 -- @local
 --
@@ -536,8 +569,8 @@ end
 ---
 -- Konvertiert eine Dezimalzahl in eine Ganzzahl.
 --
--- @param fval [number] Float
--- @return [number] Float als Integer
+-- @param[type=number] fval Float
+-- @return[type=number] Float als Integer
 -- @within EntityScriptingValue
 -- @local
 --
