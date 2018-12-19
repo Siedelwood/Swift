@@ -99,7 +99,12 @@ function API.TravelingSalesmanActivate(_PlayerID, _Offers, _Waypoints, _Reversed
         API.Log("Can not execute API.TravelingSalesmanActivate in local script!");
         return;
     end
-    return BundleTravelingSalesman.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed, _RotationMode);
+    return new{QSB.TravelingSalesman, _PlayerID}
+        :SetOffers(_Offers)
+        :SetApproachRoute(_Waypoints)
+        :SetReturnRouteRoute(_Reversed)
+        :SetApperance(_Appearance)
+        :UseOfferRotation(_Flag);
 end
 ActivateTravelingSalesman = API.TravelingSalesmanActivate;
 
@@ -120,7 +125,7 @@ function API.TravelingSalesmanDeactivate(_PlayerID)
         API.Bridge("API.TravelingSalesmanDeactivate(" .._PlayerID.. ")");
         return;
     end
-    return BundleTravelingSalesman.Global:TravelingSalesman_Disband(_PlayerID);
+    QSB.TravelingSalesman:GetInstance(_PlayerID):Dispose();
 end
 DeactivateTravelingSalesman = API.TravelingSalesmanDeactivate;
 
@@ -152,7 +157,7 @@ function API.TravelingSalesmanDiplomacyOverride(_PlayerID, _Flag)
         API.Bridge("API.TravelingSalesmanDiplomacyOverride(" .._PlayerID.. ", " ..tostring(_Flag).. ")");
         return;
     end
-    return BundleTravelingSalesman.Global:TravelingSalesman_AlterDiplomacyFlag(_PlayerID, _Flag);
+    QSB.TravelingSalesman:GetInstance(_PlayerID):UseChangeDiplomacy(_Flag);
 end
 TravelingSalesmanDiplomacyOverride = API.TravelingSalesmanDiplomacyOverride;
 
@@ -174,10 +179,7 @@ function API.TravelingSalesmanRotationMode(_PlayerID, _Flag)
         API.Bridge("API.TravelingSalesmanRotationMode(" .._PlayerID.. ", " ..tostring(_Flag).. ")");
         return;
     end
-    if not QSB.TravelingSalesman.Harbors[_PlayerID] then
-        return;
-    end
-    QSB.TravelingSalesman.Harbors[_PlayerID].RotationMode = _Flag == true;
+    QSB.TravelingSalesman:GetInstance(_PlayerID):UseOfferRotation(_Flag);
 end
 TravelingSalesmanRotationMode = API.TravelingSalesmanRotationMode;
 
@@ -199,179 +201,281 @@ BundleTravelingSalesman = {
 -- @local
 --
 function BundleTravelingSalesman.Global:Install()
-    TravelingSalesman_Control = BundleTravelingSalesman.Global.TravelingSalesman_Control;
+    StartSimpleJobEx(BundleTravelingSalesman.Global.TravelingSalesmanController);
 end
 
 ---
--- Gibt den ersten menschlichen Spieler zurück. Ist das globale
--- Gegenstück zu GUI.GetPlayerID().
---
--- @return number
+-- Ruft die Loop-Funktion aller Fahrenden Händler auf.
 -- @within Internal
 -- @local
 --
-function BundleTravelingSalesman.Global:TravelingSalesman_GetHumanPlayer()
-    local pID = 1;
-    for i=1,8 do
+function BundleTravelingSalesman.Global.TravelingSalesmanController()
+    for i= 1, 8, 1 do
+        if QSB.TravelingSalesman:GetInstance(i) then
+            QSB.TravelingSalesman:GetInstance(i):Loop();
+        end
+    end
+end
+
+-- Klassen ------------------------------------------------------------------ --
+
+QSB.TravelingSalesmanInstances = {};
+
+---
+-- Diese Klasse definiert den Fahrenden Händler.
+-- @within Klassen
+-- @local
+--
+QSB.TravelingSalesman = class {
+    ---
+    -- Konstruktor
+    -- @param[type=number] _PlayerID Player-ID des Händlers
+    -- @within QSB.TravelingSalesman
+    -- @local
+    --
+    construct = function(self, _PlayerID)
+        self.m_PlayerID = _PlayerID;
+        self.m_Offers = {};
+        self.m_Appearance = {{3, 5}, {7, 9}};
+        self.m_Waypoints = {};
+        self.m_Reversed = {};
+        self.m_ChangeDiplomacy = true;
+        self.m_OfferRotation = false;
+        self.m_LastOffer = 0;
+        self.m_Status = 0;
+
+        QSB.TravelingSalesmanInstances[_PlayerID] = self;
+    end
+}
+
+---
+-- Gibt die Instanz des Fahrenden Händlers für die Player-ID zurück.
+--
+-- Sollte keine Instanz für den Spieler existieren, wird eine Null-Instanz
+-- erzeugt und zurückgegeben.
+--
+-- @param[type=number] _PlayerID Player-ID des Händlers
+-- @return[type=table] Instanz
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:GetInstance(_PlayerID)
+    if QSB.TravelingSalesmanInstances[_PlayerID] then
+        return QSB.TravelingSalesmanInstances[_PlayerID];
+    end
+    local NullInstance = new{QSB.TravelingSalesman, _PlayerID};
+    NullInstance.SymfoniaDebugValue_NullInstance = true;
+    return NullInstance;
+end
+
+---
+-- Gibt die ID des ersten aktiven menschlichen Spielers zurück.
+-- @return[type=number] Player-ID
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:GetHumanPlayer()
+    for i= 1, 8, 1 do
         if Logic.PlayerGetIsHumanFlag(1) == true then
-            pID = i;
-            break;
+            return i;
         end
     end
-    return pID;
+    return 0;
 end
 
 ---
--- Erstellt einen fahrender Händler mit zufälligen Angeboten. Soll
--- immer das selbe angeboten werden, muss nur ein Angebotsblock
--- definiert werden.
--- Es kann mehrere fahrende Händler auf der Map geben.
---
--- @param _PlayerID [number] Spieler-ID des Händlers
--- @param _Offers [table] Liste an Angeboten
--- @param _Appearance [table] Wartezeit
--- @param _Waypoints [table] Wegpunktliste Anfahrt
--- @param _Reversed [table] Wegpunktliste Abfahrt
--- @param _RotationMode [boolean] Wegpunktliste Abfahrt
--- @within Internal
+-- Entfernt alle Angebotsblöcke des Fahrenden Händlers.
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
 -- @local
 --
-function BundleTravelingSalesman.Global:TravelingSalesman_Create(_PlayerID, _Offers, _Appearance, _Waypoints, _Reversed, _RotationMode)
-    assert(type(_PlayerID) == "number");
-    assert(type(_Offers) == "table");
-    _Appearance = _Appearance or {{3,5},{8,10}};
-    assert(type(_Appearance) == "table");
-    assert(type(_Waypoints) == "table");
+function QSB.TravelingSalesman:ClearOffers()
+    return self:SetOffers({});
+end
 
-    if not _Reversed then
-        _Reversed = {};
-        for i=#_Waypoints, 1, -1 do
-            _Reversed[#_Waypoints+1 - i] = _Waypoints[i];
+---
+-- Setzt eine Liste von Angebotsblöcken für den Fahrenden Händler.
+-- @param[type=table] _Offers Definierte Angebotsblöcke
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:SetOffers(_Offers)
+    self.m_Offers = _Offers;
+    return self;
+end
+
+---
+-- Fügt dem Fahrenden Händler einen Angebotsblock hinzu. Es wird zuerst der
+-- Warentyp als String und danach die Anzahl angegeben.
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:AddOffer(...)
+    local Offer = {};
+    for i= 1, #arg, 2 do
+        table.insert(Offer, {arg[i], arg[i+1]});
+    end
+    table.insert(self.m_Offers, Offer);
+    return self;
+end
+
+---
+-- Löscht die Aufenthaltszeitspanne des Fahrenden Händlers.
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:ClearApperance()
+    return self:SetApperance({});
+end
+
+---
+-- Fügt einen Zeitraum zur Aufenthalt des Fliegenden Händlers hinzu. Ein
+-- Zeitraum besteht aus Startmonat und Endmonat.
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:AddApperance(_Start, _End)
+    table.insert(self.m_Appearance, {_Start, _End});
+    return self;
+end
+
+---
+-- Setzt die Aufenthaltszeitspanne des Fliegenden Händlers
+-- @param[type=table] _Apperance Aufenthaltszeitspanne
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:SetApperance(_Apperance)
+    self.m_Appearance = _Apperance or self.m_Appearance;
+    return self;
+end
+
+---
+-- Setzt die Route für die Ankunft des Fahrenden Händlers.
+-- @param[type=table] _List Liste der Wegpunkte
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:SetApproachRoute(_List)
+    self.m_Waypoints = copy(_List);
+    self.m_SpawnPos = self.m_Waypoints[1];
+    self.m_Destination = self.m_Waypoints[#_List];
+    return self;
+end
+
+---
+-- Setzt die Wegpunkte für die Abfahrt des Fliegenden Händlers. Ist die Liste
+-- nil, werden die Wegpunkte für die Anfahrt invertiert.
+-- @param[type=table] _List Liste der Wegpunkte
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:SetReturnRouteRoute(_List)
+    local Reversed = _List;
+    if type(Reversed) ~= "table" then
+        Reversed = {};
+        for i= #self.m_Waypoints, 1, -1 do
+            table.insert(Reversed, self.m_Waypoints[i]);
         end
     end
-
-    if not QSB.TravelingSalesman.Harbors[_PlayerID] then
-        QSB.TravelingSalesman.Harbors[_PlayerID] = {};
-
-        QSB.TravelingSalesman.Harbors[_PlayerID].Waypoints = _Waypoints;
-        QSB.TravelingSalesman.Harbors[_PlayerID].Reversed = _Reversed;
-        QSB.TravelingSalesman.Harbors[_PlayerID].SpawnPos = _Waypoints[1];
-        QSB.TravelingSalesman.Harbors[_PlayerID].Destination = _Reversed[1];
-        QSB.TravelingSalesman.Harbors[_PlayerID].Appearance = _Appearance;
-        QSB.TravelingSalesman.Harbors[_PlayerID].Status = 0;
-        QSB.TravelingSalesman.Harbors[_PlayerID].Offer = _Offers;
-        QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = 0;
-        QSB.TravelingSalesman.Harbors[_PlayerID].AlterDiplomacy = true;
-        QSB.TravelingSalesman.Harbors[_PlayerID].RotationMode = _RotationMode == true;
-    end
-    math.randomseed(Logic.GetTimeMs());
-
-    if not QSB.TravelingSalesman.JobID then
-        QSB.TravelingSalesman.JobID = StartSimpleJob("TravelingSalesman_Control");
-    end
+    self.m_Reversed = copy(Reversed);
+    return self;
 end
 
 ---
--- Zerstört den fahrender Händler. Der Spieler wird dabei natürlich
--- nicht zerstört.
---
--- @param _PlayerID [number] Spieler-ID des Händlers
--- @within Internal
+-- Aktiviert oder deaktiviert die sequentielle Abarbeitung der Angebote dieses
+-- Fliegenden Händlers.
+-- @param[type=boolean] _Flag Angebote sequenziell durchlaufen
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
 -- @local
 --
-function BundleTravelingSalesman.Global:TravelingSalesman_Disband(_PlayerID)
-    assert(type(_PlayerID) == "number");
-    QSB.TravelingSalesman.Harbors[_PlayerID] = nil;
-    Logic.RemoveAllOffers(Logic.GetStoreHouse(_PlayerID));
-    DestroyEntity("TravelingSalesmanShip_Player" .._PlayerID);
+function QSB.TravelingSalesman:UseOfferRotation(_Flag)
+    self.m_OfferRotation = _Flag == true;
+    return self;
 end
 
 ---
--- Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
--- Hafen überschrieben werden.
---
--- Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
--- im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
--- ein Schiff angelegt hat, sonst "Bekannt".
---
--- Bei diplomatischen Beziehungen geringer als "Bekannt", kann es zu Fehlern
--- kommen. Dann werden Handelsangebote angezeigt, konnen aber nicht durch
--- den Spieler erworben werden.
---
--- <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
---
--- @param _PlayerID [number] Spieler-ID des Händlers
--- @param _Flag [boolean] Diplomatie überschreiben
--- @within Internal
+-- Aktiviert oder deaktiviert die automatische Anpasung der Diplomatie.
+-- @param[type=boolean] _Flag Diplomatie wird überschrieben
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
 -- @local
 --
-function BundleTravelingSalesman.Global:TravelingSalesman_AlterDiplomacyFlag(_PlayerID, _Flag)
-    assert(type(_PlayerID) == "number");
-    assert(QSB.TravelingSalesman.Harbors[_PlayerID]);
-    QSB.TravelingSalesman.Harbors[_PlayerID].AlterDiplomacy = _Flag == true;
+function QSB.TravelingSalesman:UseChangeDiplomacy(_Flag)
+    self.m_ChangeDiplomacy = _Flag == true;
+    return self;
 end
 
 ---
--- Gibt das nächste Angebot des Hafens des Spielers zurück.
---
--- @param _PlayerID [number] ID des Spielers
--- @within Internal
+-- Invalidiert die Instanz dieses Fliegenden Händlers.
+-- @within QSB.TravelingSalesman
 -- @local
 --
-function BundleTravelingSalesman.Global:TravelingSalesman_NextOffer(_PlayerID)
+function QSB.TravelingSalesman:Dispose()
+    Logic.RemoveAllOffers(Logic.GetStoreHouse(self.m_PlayerID));
+    DestroyEntity("TravelingSalesmanShip_Player" ..self.m_PlayerID);
+    QSB.TravelingSalesmanInstances[self.m_PlayerID] = nil;
+end
+
+---
+-- Gibt einen Block Angebote für diesen Fahrenden Händler zurück.
+-- @return[type=table] Angebote
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:NextOffer()
     local NextOffer;
-    -- Angebote werden der Reihe nach durchlaufen und wiederholen sich.
-    if QSB.TravelingSalesman.Harbors[_PlayerID].RotationMode then
-        QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer +1
-        local OfferIndex = QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer;
-        if OfferIndex > #QSB.TravelingSalesman.Harbors[_PlayerID].Offer then
-            QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = 1;
-            OfferIndex = 1;
+    if self.m_OfferRotation then
+        self.m_LastOffer = self.m_LastOffer +1;
+        if self.m_LastOffer > #self.m_Offers then
+            self.m_LastOffer = 1;
         end
-        NextOffer = QSB.TravelingSalesman.Harbors[_PlayerID].Offer[OfferIndex];
-    -- Angebote werden zufällig ausgelost, ohne direkte Doppelung.
+        NextOffer = self.m_Offers[self.m_LastOffer];
     else
         local RandomIndex = 1;
-        if #QSB.TravelingSalesman.Harbors[_PlayerID].Offer > 1 then
+        if #self.m_Offers > 1 then
             repeat
-                RandomIndex = math.random(1,#QSB.TravelingSalesman.Harbors[_PlayerID].Offer);
-            until (RandomIndex ~= QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer);
+                RandomIndex = math.random(1,#self.m_Offers);
+            until (RandomIndex ~= self.m_LastOffer);
         end
-        QSB.TravelingSalesman.Harbors[_PlayerID].LastOffer = RandomIndex;
-        NextOffer = QSB.TravelingSalesman.Harbors[_PlayerID].Offer[RandomIndex];
+        self.m_LastOffer = RandomIndex;
+        NextOffer = self.m_Offers[self.m_LastOffer];
     end
     return NextOffer;
 end
 
 ---
--- Informiert den Spieler über die Ankunft eines Schiffes am Hafen.
---
--- @param _PlayerID [number] ID des Spielers
--- @within Internal
+-- Zeigt die Info-Nachricht an, wenn ein Schiff im Hafen anlegt.
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
 -- @local
 --
-function BundleTravelingSalesman.Global:TravelingSalesman_DisplayMessage(_PlayerID)
+function QSB.TravelingSalesman:DisplayInfoMessage()
     if ((IsBriefingActive and not IsBriefingActive()) or true) then
-        -- Prüfe, ob schon existiert und starte ggf. neu
-        -- (Konsistenz von Questnamen erhalten!)
-        local InfoQuest = Quests[GetQuestID("TravelingSalesman_Info_P" .._PlayerID)];
+        local InfoQuest = Quests[GetQuestID("TravelingSalesman_Info_P" ..self.m_PlayerID)];
         if InfoQuest then
-            API.RestartQuest("TravelingSalesman_Info_P" .._PlayerID, true);
+            API.RestartQuest("TravelingSalesman_Info_P" ..self.m_PlayerID, true);
             InfoQuest:SetMsgKeyOverride();
             InfoQuest:SetIconOverride();
             InfoQuest:Trigger();
-            return;
+            return self;
         end
 
-        -- Erzeuge neuen Quest
-        -- (Quest existiert nicht und kann gefahrlos erzeugt werden.)
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local Text = { de = "Ein Schiff hat angelegt. Es bringt Güter von weit her.",
                        en = "A ship is at the pier. It deliver goods from far away."};
         QuestTemplate:New(
-            "TravelingSalesman_Info_P" .._PlayerID,
-            _PlayerID,
-            self:TravelingSalesman_GetHumanPlayer(),
+            "TravelingSalesman_Info_P" ..self.m_PlayerID,
+            self.m_PlayerID,
+            self:GetHumanPlayer(),
             {{ Objective.Dummy,}},
             {{ Triggers.Time, 0 }},
             0,
@@ -381,30 +485,30 @@ function BundleTravelingSalesman.Global:TravelingSalesman_DisplayMessage(_Player
             nil
         );
     end
+    return self;
 end
 
 ---
--- Setzt die Angebote für den aktuellen Besuch des fahrenden Händlers.
---
--- @param _PlayerID [number] Spieler-ID des Händlers
--- @within Internal
+-- Fügt dem Fahrenden Händler ein neues Angebot hinzu.
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
 -- @local
 --
-function BundleTravelingSalesman.Global:TravelingSalesman_AddOffer(_PlayerID)
-    MerchantSystem.TradeBlackList[_PlayerID] = {};
-    MerchantSystem.TradeBlackList[_PlayerID][0] = #MerchantSystem.TradeBlackList[3];
+function QSB.TravelingSalesman:IntroduceNewOffer()
+    MerchantSystem.TradeBlackList[self.m_PlayerID] = {};
+    MerchantSystem.TradeBlackList[self.m_PlayerID][0] = #MerchantSystem.TradeBlackList[3];
 
-    local traderId = Logic.GetStoreHouse(_PlayerID);
-    local offer = self:TravelingSalesman_NextOffer(_PlayerID);
+    local traderId = Logic.GetStoreHouse(self.m_PlayerID);
+    local offer = self:NextOffer();
     Logic.RemoveAllOffers(traderId);
 
     if #offer > 0 then
         for i=1,#offer,1 do
             local offerType = offer[i][1];
-            local isGoodType = false
+            local isGoodType = false;
             for k,v in pairs(Goods)do
                 if k == offerType then
-                    isGoodType = true
+                    isGoodType = true;
                 end
             end
 
@@ -421,65 +525,68 @@ function BundleTravelingSalesman.Global:TravelingSalesman_AddOffer(_PlayerID)
             end
         end
     end
-
-    if QSB.TravelingSalesman.Harbors[_PlayerID].AlterDiplomacy then
-        SetDiplomacyState(self:TravelingSalesman_GetHumanPlayer(), _PlayerID, DiplomacyStates.TradeContact);
+    if self.m_ChangeDiplomacy then
+        SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.TradeContact);
     end
-    ActivateMerchantPermanentlyForPlayer(Logic.GetStoreHouse(_PlayerID), self:TravelingSalesman_GetHumanPlayer());
-    self:TravelingSalesman_DisplayMessage(_PlayerID);
+    Logic.SetTraderPlayerState(Logic.GetStoreHouse(self.m_PlayerID), self:GetHumanPlayer(), 1);
+    return self;
 end
 
 ---
--- Steuert alle fahrender Händler auf der Map.
--- @within Internal
+-- Steuert den Ablauf des fliegenden Händlers.
+-- @return[type=table] self
+-- @within QSB.TravelingSalesman
 -- @local
 --
-function BundleTravelingSalesman.Global.TravelingSalesman_Control()
-    for k,v in pairs(QSB.TravelingSalesman.Harbors) do
-        if QSB.TravelingSalesman.Harbors[k] ~= nil then
-            if v.Status == 0 then
-                local month = Logic.GetCurrentMonth();
-                local start = false;
-                for i=1, #v.Appearance,1 do
-                    if month == v.Appearance[i][1] then
-                        start = true;
-                    end
+function QSB.TravelingSalesman:Loop()
+    if not self.SymfoniaDebugValue_NullInstance and Logic.PlayerGetIsHumanFlag(self.m_PlayerID) == false then
+        if self.m_Status == 0 then
+            local month = Logic.GetCurrentMonth();
+            local start = false;
+            for i=1, #self.m_Appearance,1 do
+                if month == self.m_Appearance[i][1] then
+                    start = true;
                 end
-                if start then
-                    local orientation = Logic.GetEntityOrientation(GetID(v.SpawnPos))
-                    local ID = CreateEntity(0,Entities.D_X_TradeShip,GetPosition(v.SpawnPos),"TravelingSalesmanShip_Player"..k,orientation);
-                    Path:new(ID,v.Waypoints, nil, nil, nil, nil, true, nil, nil, 300);
-                    v.Status = 1;
+            end
+            if start then
+                local orientation = Logic.GetEntityOrientation(GetID(self.m_SpawnPos))
+                local ID = CreateEntity(0, Entities.D_X_TradeShip, GetPosition(self.m_SpawnPos), "TravelingSalesmanShip_Player" ..self.m_PlayerID, orientation);
+                Path:new(ID,self.m_Waypoints, nil, nil, nil, nil, true, nil, nil, 300);
+                self.m_Status = 1;
+            end
+
+        elseif self.m_Status == 1 then
+            if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_Destination, 400) then
+                self:IntroduceNewOffer():DisplayInfoMessage();
+                self.m_Status = 2;
+            end
+            
+        elseif self.m_Status == 2 then
+            local month = Logic.GetCurrentMonth();
+            local stop = false;
+            for i=1, #self.m_Appearance,1 do
+                if month == self.m_Appearance[i][2] then
+                    stop = true;
                 end
-            elseif v.Status == 1 then
-                if IsNear("TravelingSalesmanShip_Player"..k,v.Destination,400) then
-                    BundleTravelingSalesman.Global:TravelingSalesman_AddOffer(k)
-                    v.Status = 2;
+            end
+
+            if stop then
+                if self.m_ChangeDiplomacy then
+                    SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.EstablishedContact);
                 end
-            elseif v.Status == 2 then
-                local month = Logic.GetCurrentMonth();
-                local stop = false;
-                for i=1, #v.Appearance,1 do
-                    if month == v.Appearance[i][2] then
-                        stop = true;
-                    end
-                end
-                if stop then
-                    if QSB.TravelingSalesman.Harbors[k].AlterDiplomacy then
-                        SetDiplomacyState(BundleTravelingSalesman.Global:TravelingSalesman_GetHumanPlayer(),k,DiplomacyStates.EstablishedContact);
-                    end
-                    Path:new(GetID("TravelingSalesmanShip_Player"..k),v.Reversed, nil, nil, nil, nil, true, nil, nil, 300);
-                    Logic.RemoveAllOffers(Logic.GetStoreHouse(k));
-                    v.Status = 3;
-                end
-            elseif v.Status == 3 then
-                if IsNear("TravelingSalesmanShip_Player"..k,v.SpawnPos,400) then
-                    DestroyEntity("TravelingSalesmanShip_Player"..k);
-                    v.Status = 0;
-                end
+                Path:new(GetID("TravelingSalesmanShip_Player" ..self.m_PlayerID), self.m_Reversed, nil, nil, nil, nil, true, nil, nil, 300);
+                Logic.RemoveAllOffers(Logic.GetStoreHouse(self.m_PlayerID));
+                self.m_Status = 3;
+            end
+
+        elseif self.m_Status == 3 then
+            if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_SpawnPos, 400) then
+                DestroyEntity("TravelingSalesmanShip_Player" ..self.m_PlayerID);
+                self.m_Status = 0;
             end
         end
     end
+    return self;
 end
 
 -- -------------------------------------------------------------------------- --
