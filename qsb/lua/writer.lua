@@ -105,17 +105,39 @@ SymfoniaWriter = {}
 -- @local
 --
 function SymfoniaWriter:CreateBundleHtmlDocumentation()
-    os.execute("cd bin && bash.exe ./createdoc.sh / core");
+    -- Windows <-> Linux Fix
+    local docCommand = "cd bin && bash.exe ./createdoc.sh";
+    if self:GetOSName():lower():find("cygwin") or self:GetOSName():lower():find("mingw") 
+    or self:GetOSName():lower():find("linux") then
+        docCommand = "cd bin && ./createdoc.sh";
+    end
+    
+    os.execute(docCommand.. " / core");
     for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
         if SymfoniaLoader.Data.LoadOrder[i][2] then
-            os.execute("cd bin && bash.exe ./createdoc.sh /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
+            os.execute(docCommand.. " /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
         end
     end
     for i= 1, #SymfoniaLoader.Data.AddOnLoadOrder, 1 do
         if SymfoniaLoader.Data.AddOnLoadOrder[i][2] then
-            os.execute("cd bin && bash.exe ./createdoc.sh /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
+            os.execute(docCommand.. " /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
         end
     end
+end
+
+---
+-- Gibt den Namen der Linux-Distribution zurück.
+-- @return[type=string] Name des Betriebssystems
+-- @within Internal
+-- @locals
+--
+function SymfoniaWriter:GetOSName()
+    local osname = "Unknown";
+    fh,err = io.popen("uname -o 2>/dev/null","r");
+    if fh then
+        osname = fh:read();
+    end
+    return osname
 end
 
 ---
