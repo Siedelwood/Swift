@@ -412,7 +412,6 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     local QuestID, Quest = QuestTemplate:New(unpack(QuestData, 1, 16));
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
-    Quest.Arguments = (_Data.Arguments ~= nil and API.InstanceTable(_Data.Arguments)) or {};
     return _Data.Name;
 end
 

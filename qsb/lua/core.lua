@@ -1769,12 +1769,21 @@ function Core:RegisterBehavior(_Behavior)
         if not _G["b_" .. _Behavior.Name].new then
             _G["b_" .. _Behavior.Name].new = function(self, ...)
                 local behavior = API.InstanceTable(self);
-                if self.Parameter then
-                    for i=1,table.getn(self.Parameter) do
+                behavior.i47ya_6aghw_frxil = {};
+                for i= 1, #arg, 1 do
+                    if self.Parameter and self.Parameter[i] ~= nil then
                         behavior:AddParameter(i-1, arg[i]);
+                    else
+                        table.insert(behavior.i47ya_6aghw_frxil, arg[i]);
                     end
                 end
                 return behavior;
+            end
+        end
+
+        if not _G["b_" .. _Behavior.Name].expose then
+            _G["b_" .. _Behavior.Name].expose = function(self)
+                return unpack(behavior.i47ya_6aghw_frxil);
             end
         end
 
