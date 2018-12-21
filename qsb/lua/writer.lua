@@ -107,8 +107,8 @@ SymfoniaWriter = {}
 function SymfoniaWriter:CreateBundleHtmlDocumentation()
     -- Windows <-> Linux Fix
     local docCommand = "cd bin && bash.exe ./createdoc.sh";
-    if self:GetOSName():lower():find("cygwin") or self:GetOSName():lower():find("mingw") 
-    or self:GetOSName():lower():find("linux") then
+    local osName = self:GetOsName();
+    if osName and osName:find("Linux") then
         docCommand = "cd bin && ./createdoc.sh";
     end
     
@@ -131,13 +131,19 @@ end
 -- @within Internal
 -- @locals
 --
-function SymfoniaWriter:GetOSName()
-    local osname = "Unknown";
-    fh,err = io.popen("uname -o 2>/dev/null","r");
-    if fh then
-        osname = fh:read();
+function SymfoniaWriter:GetOsName()
+    local raw_os_name;
+    local popen_status, popen_result = pcall(io.popen, "")
+    if popen_status then
+        popen_result:close()
+        raw_os_name = io.popen('uname -s','r'):read('*l')
+    else
+        local env_OS = os.getenv('OS')
+        if env_OS and env_ARCH then
+            raw_os_name = env_OS
+        end
     end
-    return osname
+    return raw_os_name;
 end
 
 ---

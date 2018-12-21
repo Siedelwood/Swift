@@ -96,7 +96,7 @@
  <li><a href="#Reward_Briefing">Reward_Briefing</a><br>
  Ein briefing wird als Lohn für einen Erfolg gestartet.
  </li>
- <li><a href="#Trigger_Briefing">Trigger_Briefing</a><br>
+ <li><a href="#Trigger_BriefingFailure">Trigger_BriefingFailure</a><br>
  Ein Quest wird gestartet, sobald ein Briefing abgeschlossen ist.
  </li>
  </ul></p>
@@ -117,7 +117,7 @@
  Fake-Cutscene aktiv ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.IsBriefingFinished">API.IsBriefingFinished (_briefingID)</a></td>
+	<td class="name" nowrap><a href="#API.IsBriefingFinished">API.IsBriefingFinished (type)</a></td>
 	<td class="summary">Prüft, ob das Briefing mit der angegebenen ID beendet ist.</td>
 	</tr>
 	<tr>
@@ -191,9 +191,14 @@
 <h2><a href="#Trigger">Trigger</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Trigger_Briefing">Trigger_Briefing (_QuestName, _Waittime)</a></td>
-	<td class="summary">Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
- angehangen ist, beendet ist.</td>
+	<td class="name" nowrap><a href="#Trigger_BriefingSuccess">Trigger_BriefingSuccess (_QuestName, _Waittime)</a></td>
+	<td class="summary">Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
+ gestartet und durchlaufen wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_BriefingFailure">Trigger_BriefingFailure (_QuestName, _Waittime)</a></td>
+	<td class="summary">Startet einen Quest, nachdem das Niederlage-Briefing eines Quests
+ gestartet und durchlaufen wurde.</td>
 	</tr>
 </table>
 
@@ -221,7 +226,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flag</span>
-         [boolean] Quest Timer pausiert
+            <span class="types"><span class="type">boolean</span></span>
+         Quest Timer pausiert
         </li>
     </ul>
 
@@ -232,7 +238,7 @@
 </dd>
     <dt>
     <a name = "API.IsBriefingFinished"></a>
-    <strong>API.IsBriefingFinished (_briefingID)</strong>
+    <strong>API.IsBriefingFinished (type)</strong>
     </dt>
     <dd>
     Prüft, ob das Briefing mit der angegebenen ID beendet ist.
@@ -242,15 +248,16 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_briefingID</span>
-         [number] ID des Briefing
+        <li><span class="parameter">type</span>
+        =number]_briefingID ID des Briefing
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Briefing ist beendet
+           <span class="types"><span class="type">boolean</span></span>
+        Briefing ist beendet
     </ol>
 
 
@@ -272,14 +279,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_page</span>
-         [table] Referenz auf die Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Referenz auf die Seite
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Gewählte Antwort
+           <span class="types"><span class="type">number</span></span>
+        Gewählte Antwort
     </ol>
 
 
@@ -300,14 +309,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_pageNumber</span>
-         [number] Index der Seite
+            <span class="types"><span class="type">number</span></span>
+         Index der Seite
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Seite des aktuellen Briefing
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Seite des aktuellen Briefing
     </ol>
 
 
@@ -329,7 +340,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        [table] Briefing mit allen Seiten
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Briefing mit allen Seiten
     </ol>
 
 
@@ -351,18 +363,22 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Briefing</span>
-         [table] Briefing
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Briefing
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [function] AP - Allround-Funktion zur Erzeugung von Seiten</li>
+           <span class="types"><span class="type">function</span></span>
+        AP - Allround-Funktion zur Erzeugung von Seiten</li>
         <li>
-        [function] ASP - Vereinfachte Funktion für Dialoge</li>
+           <span class="types"><span class="type">function</span></span>
+        ASP - Vereinfachte Funktion für Dialoge</li>
         <li>
-        [function] ASMC - Vereinfachte Funktion für Auswahl-Dialoge</li>
+           <span class="types"><span class="type">function</span></span>
+        ASMC - Vereinfachte Funktion für Auswahl-Dialoge</li>
     </ol>
 
 
@@ -384,16 +400,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Cutscene</span>
-         [table] Cutscene
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Cutscene
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [function] AF - Funktion für komfortable Notation von Flights</li>
+           <span class="types"><span class="type">function</span></span>
+        AF - Funktion für komfortable Notation von Flights</li>
         <li>
-        [function] ASF - Kurzschreibweise für AF</li>
+           <span class="types"><span class="type">function</span></span>
+        ASF - Kurzschreibweise für AF</li>
     </ol>
 
 
@@ -504,14 +523,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Page</span>
-        	[table] Spezifikation der Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Spezifikation der Seite
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Refernez auf die angelegte Seite
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Refernez auf die angelegte Seite
     </ol>
 
 
@@ -582,7 +603,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flight</span>
-        	[table] Spezifikation des Flight
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Spezifikation des Flight
         </li>
     </ul>
 
@@ -627,19 +649,24 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Text</span>
-             [string] Angezeigter Text
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Angezeigter Text
         </li>
         <li><span class="parameter">_Duration</span>
-         [number] Dauer des Flight
+            <span class="types"><span class="type">number</span></span>
+         Dauer des Flight
         </li>
         <li><span class="parameter">_Action</span>
-           [function] Aktion zu Beginn des Flight
+            <span class="types"><span class="type">function</span></span>
+         Aktion zu Beginn des Flight
         </li>
         <li><span class="parameter">_Fading</span>
-           [boolen] Einblenden und Abblenden
+            <span class="types"><span class="type">boolen</span></span>
+           Einblenden und Abblenden
         </li>
         <li><span class="parameter">...</span>
-               [number] Liste der XYZ-Koordinaten
+            <span class="types"><span class="type">number</span></span>
+               Liste der XYZ-Koordinaten
         </li>
     </ul>
 
@@ -666,26 +693,30 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-        		[string] Zielentity
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Zielentity
         </li>
         <li><span class="parameter">_title</span>
-        		[string] Titel der Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        	 Titel der Seite
         </li>
         <li><span class="parameter">_text</span>
-        		    [string] Text der Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Text der Seite
         </li>
         <li><span class="parameter">_dialogCamera</span>
-         [boolean] Nahsicht an/aus
+         Nahsicht an/aus
         </li>
         <li><span class="parameter">_action</span>
-               [function] Callback-Funktion
+              Callback-Funktion
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Referenz auf die Seite
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Referenz auf die Seite
     </ol>
 
 
@@ -710,19 +741,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-        		[string] Zielentity
+         Zielentity
         </li>
         <li><span class="parameter">_title</span>
-        		[tring] Titel der Seite
+        	 Titel der Seite
         </li>
         <li><span class="parameter">_text</span>
-        		    [string] Text der Seite
+        	Text der Seite
         </li>
         <li><span class="parameter">_dialogCamera</span>
-         [boolean] Nahsicht an/aus
+         Nahsicht an/aus
         </li>
         <li><span class="parameter">...</span>
-        			[mixed] Liste der Antworten und Sprungziele (string,
+         Liste der Antworten und Sprungziele (string,
  number, string, number, ...)
         </li>
     </ul>
@@ -730,7 +761,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        [table] Referenz auf die Seite
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Referenz auf die Seite
     </ol>
 
 
@@ -754,15 +786,16 @@
     <dd>
     Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
  in ihr ab.  Die Funktion muss eine Briefing-ID zurückgeben.
-<p> Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+<p> Das Brieifng wird an den Quest gebunden und kann mit Trigger_BriefingSuccess
+ überwacht werden. Es kann pro Quest nur ein Erfolgs-Briefing gebunden werden!
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Briefing</span>
-         [string] Funktionsname als String
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Funktionsname als String
         </li>
     </ul>
 
@@ -782,15 +815,17 @@
     <dd>
     Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
  in ihr ab.  Die Funktion muss eine Briefing-ID zurückgeben.
-<p> Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+<p> Das Brieifng wird an den Quest gebunden und kann mit Trigger_BriefingFailure
+ überwacht werden. Es kann pro Quest nur ein Niederlage-Briefing
+ gebunden werden!
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Briefing</span>
-         [string] Funktionsname als String
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Funktionsname als String
         </li>
     </ul>
 
@@ -804,21 +839,49 @@
 
     <dl class="function">
     <dt>
-    <a name = "Trigger_Briefing"></a>
-    <strong>Trigger_Briefing (_QuestName, _Waittime)</strong>
+    <a name = "Trigger_BriefingSuccess"></a>
+    <strong>Trigger_BriefingSuccess (_QuestName, _Waittime)</strong>
     </dt>
     <dd>
-    Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
- angehangen ist, beendet ist.
+    Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
+ gestartet und durchlaufen wurde.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
-         [string] Name des Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
         </li>
         <li><span class="parameter">_Waittime</span>
-          [number] Wartezeit in Sekunden
+            <span class="types"><span class="type">number</span></span>
+         Wartezeit in Sekunden
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_BriefingFailure"></a>
+    <strong>Trigger_BriefingFailure (_QuestName, _Waittime)</strong>
+    </dt>
+    <dd>
+    Startet einen Quest, nachdem das Niederlage-Briefing eines Quests
+ gestartet und durchlaufen wurde.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Waittime</span>
+            <span class="types"><span class="type">number</span></span>
+         Wartezeit in Sekunden
         </li>
     </ul>
 
@@ -834,7 +897,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-14 18:53:49 </i>
+<i style="float:right;">Last updated 2018-12-21 20:28:58 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
