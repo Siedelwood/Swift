@@ -97,7 +97,13 @@ function Mission_FirstMapAction()
         Sender = 2,
 
         Goal_Deliver("G_Wood", 100),
-        Reward_SetBuildingUpgradeLevel("HQ1", 4),
+        Reward_MapScriptFunction("SomeFunction", "Was ist lecker?", "Bockwurst"),
         Trigger_Time(5)
     }
+end
+
+function SomeFunction(_Behavior, _Quest)
+    local Question = _Behavior:expose(1);
+    local Answer   = _Behavior:expose(2);
+    API.Note(Question.. " " ..Answer);
 end

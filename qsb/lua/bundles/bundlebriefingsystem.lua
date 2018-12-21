@@ -57,7 +57,7 @@
 -- <li><a href="#Reward_Briefing">Reward_Briefing</a><br>
 -- Ein briefing wird als Lohn für einen Erfolg gestartet.
 -- </li>
--- <li><a href="#Trigger_Briefing">Trigger_Briefing</a><br>
+-- <li><a href="#Trigger_BriefingFailure">Trigger_BriefingFailure</a><br>
 -- Ein Quest wird gestartet, sobald ein Briefing abgeschlossen ist.
 -- </li>
 -- </ul></p>
@@ -91,7 +91,7 @@ QSB = QSB or {};
 --
 -- <p><b>Alias</b>: PauseQuestsDuringBriefings</p>
 --
--- @param _Flag [boolean] Quest Timer pausiert
+-- @param[type=boolean] _Flag Quest Timer pausiert
 -- @within Anwenderfunktionen
 --
 function API.PauseQuestsDuringBriefings(_Flag)
@@ -108,8 +108,8 @@ PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 --
 -- <p><b>Alias</b>: IsBriefingFinished</p>
 --
--- @param _briefingID [number] ID des Briefing
--- @return [boolean] Briefing ist beendet
+-- @param [type=number]_briefingID ID des Briefing
+-- @return[type=boolean] Briefing ist beendet
 -- @within Anwenderfunktionen
 --
 function API.IsBriefingFinished(_briefingID)
@@ -129,8 +129,8 @@ IsBriefingFinished = API.IsBriefingFinished;
 --
 -- <p><b>Alias</b>: MCGetSelectedAnswer</p>
 --
--- @param _page [table] Referenz auf die Seite
--- @return [number] Gewählte Antwort
+-- @param[type=table] _page Referenz auf die Seite
+-- @return[type=number] Gewählte Antwort
 -- @within Anwenderfunktionen
 --
 function API.GetSelectedAnswerFromMCPage(_page)
@@ -149,8 +149,8 @@ MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 --
 -- <p><b>Alias</b>: GetCurrentBriefingPage</p>
 --
--- @param _pageNumber [number] Index der Seite
--- @return [table] Seite des aktuellen Briefing
+-- @param[type=number] _pageNumber Index der Seite
+-- @return[type=table] Seite des aktuellen Briefing
 -- @within Anwenderfunktionen
 --
 function API.GetCurrentBriefingPage(_pageNumber)
@@ -169,7 +169,7 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 --
 -- <p><b>Alias</b>: GetCurrentBriefing</p>
 --
--- @return [table] Briefing mit allen Seiten
+-- @return[type=table] Briefing mit allen Seiten
 -- @within Anwenderfunktionen
 --
 function API.GetCurrentBriefing()
@@ -189,10 +189,10 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 -- <p><b>Alias</b>: AddPages</p>
 --
--- @param _Briefing [table] Briefing
--- @return [function] AP - Allround-Funktion zur Erzeugung von Seiten
--- @return [function] ASP - Vereinfachte Funktion für Dialoge
--- @return [function] ASMC - Vereinfachte Funktion für Auswahl-Dialoge
+-- @param[type=table] _Briefing Briefing
+-- @return[type=function] AP - Allround-Funktion zur Erzeugung von Seiten
+-- @return[type=function] ASP - Vereinfachte Funktion für Dialoge
+-- @return[type=function] ASMC - Vereinfachte Funktion für Auswahl-Dialoge
 -- @within Anwenderfunktionen
 --
 function API.AddPages(_Briefing)
@@ -212,9 +212,9 @@ AddPages = API.AddPages;
 --
 -- <p><b>Alias</b>: AddPages</p>
 --
--- @param _Cutscene [table] Cutscene
--- @return [function] AF - Funktion für komfortable Notation von Flights
--- @return [function] ASF - Kurzschreibweise für AF
+-- @param[type=table] _Cutscene Cutscene
+-- @return[type=function] AF - Funktion für komfortable Notation von Flights
+-- @return[type=function] ASF - Kurzschreibweise für AF
 -- @within Anwenderfunktionen
 --
 function API.AddFlights(_Cutscene)
@@ -256,8 +256,8 @@ AddFlights = API.AddFlights;
 -- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
 -- über die Grafik zu scrollen oder zu zoomen.
 --
--- @param _Page	[table] Spezifikation der Seite
--- @return [table] Refernez auf die angelegte Seite
+-- @param[type=table] _Page Spezifikation der Seite
+-- @return[type=table] Refernez auf die angelegte Seite
 -- @within Briefing
 --
 function AP(_Page)
@@ -324,7 +324,7 @@ end
 -- </tr>
 -- </table>
 --
--- @param _Flight	[table] Spezifikation des Flight
+-- @param[type=table] _Flight Spezifikation des Flight
 -- @within Briefing
 --
 -- @usage
@@ -360,11 +360,11 @@ end
 -- <p><b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
 -- wenigen Kamerastationen oder für eine generische Nutzung.</p>
 --
--- @param _Text     [string] Angezeigter Text
--- @param _Duration [number] Dauer des Flight
--- @param _Action   [function] Aktion zu Beginn des Flight
--- @param _Fading   [boolen] Einblenden und Abblenden
--- @param ...       [number] Liste der XYZ-Koordinaten
+-- @param[type=string] _Text     Angezeigter Text
+-- @param[type=number] _Duration Dauer des Flight
+-- @param[type=function] _Action Aktion zu Beginn des Flight
+-- @param[type=boolen] _Fading   Einblenden und Abblenden
+-- @param[type=number] ...       Liste der XYZ-Koordinaten
 -- @within Briefing
 --
 -- @usage
@@ -380,12 +380,12 @@ end
 -- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
 -- schaut den Siedler an.
 --
--- @param _entity		[string] Zielentity
--- @param _title		[string] Titel der Seite
--- @param _text		    [string] Text der Seite
--- @param _dialogCamera [boolean] Nahsicht an/aus
--- @param _action       [function] Callback-Funktion
--- @return [table] Referenz auf die Seite
+-- @param[type=string] _entity   Zielentity
+-- @param[type=string] _title	 Titel der Seite
+-- @param[type=string] _text     Text der Seite
+-- @param[boolean] _dialogCamera Nahsicht an/aus
+-- @param[function] _action      Callback-Funktion
+-- @return[type=table] Referenz auf die Seite
 -- @within Briefing
 --
 -- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
@@ -400,13 +400,13 @@ end
 -- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
 -- Kamera schaut den Siedler an.
 --
--- @param _entity		[string] Zielentity
--- @param _title		[tring] Titel der Seite
--- @param _text		    [string] Text der Seite
--- @param _dialogCamera [boolean] Nahsicht an/aus
--- @param ...			[mixed] Liste der Antworten und Sprungziele (string,
+-- @param[string] _entity Zielentity
+-- @param[tring] _title	 Titel der Seite
+-- @param[string] _text	Text der Seite
+-- @param[boolean] _dialogCamera Nahsicht an/aus
+-- @param ... Liste der Antworten und Sprungziele (string,
 -- number, string, number, ...)
--- @return [table] Referenz auf die Seite
+-- @return[type=table] Referenz auf die Seite
 -- @within Briefing
 --
 -- @usage
@@ -3148,10 +3148,10 @@ Core:RegisterBundle("BundleBriefingSystem");
 -- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
 -- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
 --
--- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
--- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_BriefingSuccess
+-- überwacht werden. Es kann pro Quest nur ein Erfolgs-Briefing gebunden werden!
 --
--- @param _Briefing [string] Funktionsname als String
+-- @param[type=string] _Briefing Funktionsname als String
 --
 -- @within Reward
 --
@@ -3180,12 +3180,12 @@ function b_Reward_Briefing:AddParameter(__index_, __parameter_)
     end
 end
 
-function b_Reward_Briefing:CustomFunction(__quest_)
-    local BriefingID = _G[self.Function](self, __quest_);
-    local QuestID = GetQuestID(__quest_.Identifier);
-    Quests[QuestID].EmbeddedBriefing = BriefingID;
+function b_Reward_Briefing:CustomFunction(_Quest)
+    local BriefingID = _G[self.Function](self, _Quest);
+    local QuestID = GetQuestID(_Quest.Identifier);
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = BriefingID;
     if not BriefingID and QSB.DEBUG_CheckWhileRuntime then
-        local Text = __quest_.Identifier..": "..self.Name..": '"..self.Function.."' has not returned anything!"
+        local Text = _Quest.Identifier..": "..self.Name..": '"..self.Function.."' has not returned anything!"
         if IsBriefingActive() then
             GUI_Note(Text);
         end
@@ -3193,17 +3193,17 @@ function b_Reward_Briefing:CustomFunction(__quest_)
     end
 end
 
-function b_Reward_Briefing:DEBUG(__quest_)
+function b_Reward_Briefing:DEBUG(_Quest)
     if not type(_G[self.Function]) == "function" then
-        fatal(__quest_.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
+        fatal(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
         return true;
     end
     return false;
 end
 
-function b_Reward_Briefing:Reset(__quest_)
-    local QuestID = GetQuestID(__quest_.Identifier);
-    Quests[QuestID].EmbeddedBriefing = nil;
+function b_Reward_Briefing:Reset(_Quest)
+    local QuestID = GetQuestID(_Quest.Identifier);
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
 end
 
 Core:RegisterBehavior(b_Reward_Briefing);
@@ -3212,10 +3212,11 @@ Core:RegisterBehavior(b_Reward_Briefing);
 -- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
 -- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
 --
--- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
--- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_BriefingFailure
+-- überwacht werden. Es kann pro Quest nur ein Niederlage-Briefing 
+-- gebunden werden!
 --
--- @param _Briefing [string] Funktionsname als String
+-- @param[type=string] _Briefing Funktionsname als String
 --
 -- @within Reprisal
 --
@@ -3244,12 +3245,12 @@ function b_Reprisal_Briefing:AddParameter(__index_, __parameter_)
     end
 end
 
-function b_Reprisal_Briefing:CustomFunction(__quest_)
-    local BriefingID = _G[self.Function](self, __quest_);
-    local QuestID = GetQuestID(__quest_.Identifier);
-    Quests[QuestID].EmbeddedBriefing = BriefingID;
+function b_Reprisal_Briefing:CustomFunction(_Quest)
+    local BriefingID = _G[self.Function](self, _Quest);
+    local QuestID = GetQuestID(_Quest.Identifier);
+    Quests[QuestID].w5kur_xig0q_d9k7e = BriefingID;
     if not BriefingID and QSB.DEBUG_CheckWhileRuntime then
-        local Text = __quest_.Identifier..": "..self.Name..": '"..self.Function.."' has not returned anything!"
+        local Text = _Quest.Identifier..": "..self.Name..": '"..self.Function.."' has not returned anything!"
         if IsBriefingActive() then
             GUI_Note(Text);
         end
@@ -3257,38 +3258,38 @@ function b_Reprisal_Briefing:CustomFunction(__quest_)
     end
 end
 
-function b_Reprisal_Briefing:DEBUG(__quest_)
+function b_Reprisal_Briefing:DEBUG(_Quest)
     if not type(_G[self.Function]) == "function" then
-        fatal(__quest_.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
+        fatal(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
         return true;
     end
     return false;
 end
 
-function b_Reprisal_Briefing:Reset(__quest_)
-    local QuestID = GetQuestID(__quest_.Identifier);
-    Quests[QuestID].EmbeddedBriefing = nil;
+function b_Reprisal_Briefing:Reset(_Quest)
+    local QuestID = GetQuestID(_Quest.Identifier);
+    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
 end
 
 Core:RegisterBehavior(b_Reprisal_Briefing);
 
 ---
--- Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
--- angehangen ist, beendet ist.
+-- Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
+-- gestartet und durchlaufen wurde.
 --
--- @param _QuestName [string] Name des Quest
--- @param _Waittime  [number] Wartezeit in Sekunden
+-- @param[type=string] _QuestName Name des Quest
+-- @param[type=number] _Waittime Wartezeit in Sekunden
 -- @within Trigger
 --
-function Trigger_Briefing(...)
-    return b_Trigger_Briefing:new(...);
+function Trigger_BriefingSuccess(...)
+    return b_Trigger_BriefingSuccess:new(...);
 end
 
-b_Trigger_Briefing = {
-    Name = "Trigger_Briefing",
+b_Trigger_BriefingSuccess = {
+    Name = "Trigger_BriefingSuccess",
     Description = {
-        en = "Trigger: after an embedded briefing of another quest has finished.",
-        de = "Ausloeser: wenn das eingebettete Briefing der angegebenen Quest beendet ist.",
+        en = "Trigger: after the success briefing of another quest has finished.",
+        de = "Ausloeser: wenn das Erfolgs-Briefing der angegebenen Quest beendet ist.",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name", de = "Questname" },
@@ -3296,11 +3297,11 @@ b_Trigger_Briefing = {
     },
 }
 
-function b_Trigger_Briefing:GetTriggerTable()
+function b_Trigger_BriefingSuccess:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_Briefing:AddParameter(__index_, __parameter_)
+function b_Trigger_BriefingSuccess:AddParameter(__index_, __parameter_)
     if (__index_ == 0) then
         self.Quest = __parameter_;
     elseif (__index_ == 1) then
@@ -3308,9 +3309,9 @@ function b_Trigger_Briefing:AddParameter(__index_, __parameter_)
     end
 end
 
-function b_Trigger_Briefing:CustomFunction(__quest_)
+function b_Trigger_BriefingSuccess:CustomFunction(_Quest)
     local QuestID = GetQuestID(self.Quest);
-    if IsBriefingFinished(Quests[QuestID].EmbeddedBriefing) then
+    if IsBriefingFinished(Quests[QuestID].zl97d_ukfs5_0dpm0) then
         if self.WaitTime and self.WaitTime > 0 then
             self.WaitTimeTimer = self.WaitTimeTimer or Logic.GetTime();
             if Logic.GetTime() >= self.WaitTimeTimer + self.WaitTime then
@@ -3323,28 +3324,104 @@ function b_Trigger_Briefing:CustomFunction(__quest_)
     return false;
 end
 
-function b_Trigger_Briefing:Interrupt(__quest_)
+function b_Trigger_BriefingSuccess:Interrupt(_Quest)
     local QuestID = GetQuestID(self.Quest);
-    Quests[QuestID].EmbeddedBriefing = nil;
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
     self.WaitTimeTimer = nil
 end
 
-function b_Trigger_Briefing:Reset(__quest_)
+function b_Trigger_BriefingSuccess:Reset(_Quest)
     local QuestID = GetQuestID(self.Quest);
-    Quests[QuestID].EmbeddedBriefing = nil;
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
     self.WaitTimeTimer = nil
 end
 
-function b_Trigger_Briefing:DEBUG(__quest_)
+function b_Trigger_BriefingSuccess:DEBUG(_Quest)
     if tonumber(self.WaitTime) == nil or self.WaitTime < 0 then
-        fatal(__quest_.Identifier.." "..self.Name..": waittime is nil or below 0!");
+        fatal(_Quest.Identifier.." "..self.Name..": waittime is nil or below 0!");
         return true;
     elseif not IsValidQuest(self.Quest) then
-        fatal(__quest_.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
+        fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
         return true;
     end
     return false;
 end
 
-Core:RegisterBehavior(b_Trigger_Briefing);
+Core:RegisterBehavior(b_Trigger_BriefingSuccess);
+
+---
+-- Startet einen Quest, nachdem das Niederlage-Briefing eines Quests
+-- gestartet und durchlaufen wurde.
+--
+-- @param[type=string] _QuestName Name des Quest
+-- @param[type=number] _Waittime Wartezeit in Sekunden
+-- @within Trigger
+--
+function Trigger_BriefingFailure(...)
+    return b_Trigger_BriefingFailure:new(...);
+end
+
+b_Trigger_BriefingFailure = {
+    Name = "Trigger_BriefingFailure",
+    Description = {
+        en = "Trigger: after an failure briefing of another quest has finished.",
+        de = "Ausloeser: wenn das Niederlage-Briefing der angegebenen Quest beendet ist.",
+    },
+    Parameter = {
+        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
+        { ParameterType.Number,  en = "Wait time",  de = "Wartezeit" },
+    },
+}
+
+function b_Trigger_BriefingFailure:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_BriefingFailure:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.Quest = __parameter_;
+    elseif (__index_ == 1) then
+        self.WaitTime = tonumber(__parameter_) or 0
+    end
+end
+
+function b_Trigger_BriefingFailure:CustomFunction(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    if IsBriefingFinished(Quests[QuestID].w5kur_xig0q_d9k7e) then
+        if self.WaitTime and self.WaitTime > 0 then
+            self.WaitTimeTimer = self.WaitTimeTimer or Logic.GetTime();
+            if Logic.GetTime() >= self.WaitTimeTimer + self.WaitTime then
+                return true;
+            end
+        else
+            return true;
+        end
+    end
+    return false;
+end
+
+function b_Trigger_BriefingFailure:Interrupt(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
+    self.WaitTimeTimer = nil
+end
+
+function b_Trigger_BriefingFailure:Reset(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
+    self.WaitTimeTimer = nil
+end
+
+function b_Trigger_BriefingFailure:DEBUG(_Quest)
+    if tonumber(self.WaitTime) == nil or self.WaitTime < 0 then
+        fatal(_Quest.Identifier.." "..self.Name..": waittime is nil or below 0!");
+        return true;
+    elseif not IsValidQuest(self.Quest) then
+        fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_BriefingFailure);
 
