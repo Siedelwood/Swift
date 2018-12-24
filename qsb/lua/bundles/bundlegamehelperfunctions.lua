@@ -73,7 +73,7 @@ function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Fatal("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        API.Warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
         return;
     end
     return BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);

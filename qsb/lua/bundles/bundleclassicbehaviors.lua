@@ -241,8 +241,8 @@ b_Goal_Diplomacy = {
         [DiplomacyStates.Enemy]              = {de = "Feind",          en = "Enemy"},
     },
     TextPattern = {
-        de = "DIPLOMATIESTATUS ERREICHEN {cr}{cr}Benötigter Status: %s{cr}Zur Partei: %s",
-        en = "REACH DIPLOMATIC STATE {cr}{cr}Needed State: %s{cr}To player: %s",
+        de = "DIPLOMATIESTATUS ERREICHEN {cr}{cr}Status: %s{cr}Zur Partei: %s",
+        en = "DIPLOMATIC STATE {cr}{cr}State: %s{cr}To player: %s",
     },
 }
 
@@ -260,11 +260,11 @@ end
 function b_Goal_Diplomacy:CustomFunction(_Quest)
     self:ChangeCaption(_Quest);
     if self.BeSmallerThan then
-        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) < desiredState then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) < self.DiplState then
             return true;
         end
     else
-        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) < desiredState then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) >= self.DiplState then
             return true;
         end
     end
@@ -7266,7 +7266,7 @@ function b_Trigger_OnQuestActive:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif self.WaitTime and type(self.WaitTime) ~= "number" then
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
         dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
@@ -7345,7 +7345,7 @@ function b_Trigger_OnQuestFailure:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif self.WaitTime and type(self.WaitTime) ~= "number" then
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
         dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
@@ -7479,7 +7479,7 @@ function b_Trigger_OnQuestInterrupted:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif self.WaitTime and type(self.WaitTime) ~= "number" then
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
         dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
@@ -7558,7 +7558,7 @@ function b_Trigger_OnQuestOver:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif self.WaitTime and type(self.WaitTime) ~= "number" then
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
         dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
@@ -7634,7 +7634,7 @@ function b_Trigger_OnQuestSuccess:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         dbg("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif self.WaitTime and type(self.WaitTime) ~= "number" then
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
         dbg("".._Quest.Identifier.." "..self.Name..": waittime must be a number!");
         return true;
     end
