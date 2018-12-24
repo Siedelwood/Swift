@@ -3336,7 +3336,7 @@ function b_Trigger_Briefing:Reset(__quest_)
 end
 
 function b_Trigger_Briefing:DEBUG(__quest_)
-    if tonumber(self.WaitTime) == nil or self.WaitTime < 0 then
+    if (self.WaitTime and type(self.WaitTime) ~= "number") or self.WaitTime < 0 then
         dbg(__quest_.Identifier.." "..self.Name..": waittime is nil or below 0!");
         return true;
     elseif not IsValidQuest(self.Quest) then
