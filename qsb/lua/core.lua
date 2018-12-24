@@ -622,6 +622,7 @@ function API.Fatal(_Message)
     end
     API.Log("FATAL: " .._Message);
 end
+API.Dbg = API.Fatal;
 fatal = API.Fatal;
 dbg = API.Fatal;
 
@@ -848,7 +849,10 @@ ReplaceEntity = API.ReplaceEntity;
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     local entity = GetEntityId(_entity);
     local entityTLA = GetEntityId(_entityToLookAt);
-    assert( not (Logic.IsEntityDestroyed(entity) or Logic.IsEntityDestroyed(entityTLA)), "LookAt: One Entity is wrong or dead");
+    if not IsExisting(entity) or not IsExisting(entityTLA) then
+        API.Warn("API.LookAt: One entity is invalid or dead!");
+        return;
+    end
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
     local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
