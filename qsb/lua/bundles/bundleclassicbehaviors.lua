@@ -37,12 +37,12 @@ QSB.DestroyedSoldiers = QSB.DestroyedSoldiers or {};
 --
 function API.GetInputStringFromQuest(_QuestName)
     if GUI then
-        API.Dbg("API.GetInputStringFromQuest: Quests can not be checked from local script!");
+        API.Fatal("API.GetInputStringFromQuest: Quests can not be checked from local script!");
         return;
     end
     local Quest = Quests[GetQuestID(_QuestName)];
     if not Quest then
-        API.Dbg("API.GetInputStringFromQuest: Quest '" ..tostring(_QuestName).. "' not found!");
+        API.Fatal("API.GetInputStringFromQuest: Quest '" ..tostring(_QuestName).. "' not found!");
         return;
     end
     return BundleClassicBehaviors.Global:GetInputFromQuest(_QuestName);

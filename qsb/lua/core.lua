@@ -616,13 +616,14 @@ end
 -- @within Anwenderfunktionen
 -- @local
 --
-function API.Dbg(_Message)
+function API.Fatal(_Message)
     if QSB.Log.CurrentLevel <= QSB.Log.Level.FATAL then
         API.StaticNote("FATAL: " .._Message)
     end
     API.Log("FATAL: " .._Message);
 end
-dbg = API.Dbg;
+API.Dbg = API.Fatal;
+dbg = API.Fatal;
 
 ---
 -- Schreibt eine WARNING auf den Bildschirm und ins Log.
@@ -847,7 +848,10 @@ ReplaceEntity = API.ReplaceEntity;
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     local entity = GetEntityId(_entity);
     local entityTLA = GetEntityId(_entityToLookAt);
-    assert( not (Logic.IsEntityDestroyed(entity) or Logic.IsEntityDestroyed(entityTLA)), "LookAt: One Entity is wrong or dead");
+    if not IsExisting(entity) or not IsExisting(entityTLA) then
+        API.Warn("API.LookAt: One entity is invalid or dead!");
+        return;
+    end
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
     local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
@@ -1121,7 +1125,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 --
 function API.AddSaveGameAction(_Function)
     if GUI then
-        API.Dbg("API.AddSaveGameAction: Can not be used from the local script!");
+        API.Fatal("API.AddSaveGameAction: Can not be used from the local script!");
         return;
     end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
@@ -1140,7 +1144,7 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
-        API.Dbg("API.AddHotKey: Can not be used from the global script!");
+        API.Fatal("API.AddHotKey: Can not be used from the global script!");
         return;
     end
     g_KeyBindingsOptions.Descriptions = nil;
@@ -1156,11 +1160,11 @@ end
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
-        API.Dbg("API.RemoveHotKey: Can not be used from the global script!");
+        API.Fatal("API.RemoveHotKey: Can not be used from the global script!");
         return;
     end
     if type(_Index) ~= "number" or _Index > #Core.Data.HotkeyDescriptions then
-        API.Dbg("API.RemoveHotKey: No candidate found or Index is nil!");
+        API.Fatal("API.RemoveHotKey: No candidate found or Index is nil!");
         return;
     end
     Core.Data.HotkeyDescriptions[_Index] = nil;

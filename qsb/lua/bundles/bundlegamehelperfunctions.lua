@@ -77,7 +77,7 @@ function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Dbg("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        API.Fatal("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
         return;
     end
     return BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
@@ -314,7 +314,7 @@ function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
         return;
     end
     if not IsExisting(_Center) then
-        API.Dbg("API.ChangeTerrainTypeInSquare: Central point does not exist!");
+        API.Fatal("API.ChangeTerrainTypeInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then
@@ -349,7 +349,7 @@ function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
         return;
     end
     if not IsExisting(_Center) then
-        API.Dbg("API.ChangeWaterHeightInSquare: Central point does not exist!");
+        API.Fatal("API.ChangeWaterHeightInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then
@@ -385,7 +385,7 @@ function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
         return;
     end
     if not IsExisting(_Center) then
-        API.Dbg("API.ChangeTerrainHeightInSquare: Central point does not exist!");
+        API.Fatal("API.ChangeTerrainHeightInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then

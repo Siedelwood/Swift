@@ -509,7 +509,7 @@ end
 --
 function API.InterfaceSetPlayerPortrait(_PlayerID, _Portrait)
     if not _PlayerID or type(_PlayerID) ~= "number" or (_PlayerID < 1 or _PlayerID > 8) then
-        API.Dbg("API.InterfaceSetPlayerPortrait: Invalid player ID!");
+        API.Fatal("API.InterfaceSetPlayerPortrait: Invalid player ID!");
         return;
     end
     if not GUI then
