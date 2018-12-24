@@ -51,11 +51,7 @@ QSB = QSB or {};
 -- @within Anwenderfunktionen
 --
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
-    if not GUI then
-        API.Bridge("API.SetCameraToPlayerKnight(" .._Player.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
-        return;
-    end
-    return BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor);
+    API.FocusCameraOnEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor)
 end
 SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 
@@ -849,19 +845,6 @@ end
 function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSpeedUp()
     self:InitForbidSaveGame();
-end
-
----
--- Fokusiert die Kamera auf dem Primärritter des Spielers.
---
--- @param _Player [number] Partei
--- @param _Rotation [number] Kamerawinkel
--- @param _ZoomFactor [number] Zoomfaktor
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor)
-    BundleGameHelperFunctions.Local:SetCameraToEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor);
 end
 
 ---
