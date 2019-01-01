@@ -73,11 +73,11 @@ function Mission_FirstMapAction()
     -- Aktiviert die Statusverfolgung der Quests.
     local UseQuestTrace = false;
     -- Aktiviert Cheats
-    local UseCheatMode = true;
+    local UseCheats = true;
     -- Aktiviert Eingabeaufforderung
-    local UseChetShell = true;
+    local UseShell = true;
 
-    API.ActivateDebugMode(UseCheckRuntime, UseQuestTrace, UseCheatMode, UseChetShell);
+    API.ActivateDebugMode(UseCheckAtStart, UseCheckRuntime, UseCheats, UseShell);
 
     -- ## Mapeditor-Quests erzeugen ## --
 
