@@ -3336,7 +3336,7 @@ function b_Trigger_BriefingSuccess:Reset(_Quest)
     self.WaitTimeTimer = nil
 end
 
-function b_Trigger_Briefing:DEBUG(__quest_)
+function b_Trigger_BriefingSuccess:DEBUG(__quest_)
     if (self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0)) then
         dbg(__quest_.Identifier.." "..self.Name..": waittime is nil or below 0!");
         return true;

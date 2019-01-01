@@ -68,16 +68,16 @@ function Mission_FirstMapAction()
 
     -- ## Debug Mode ## --
 
-    -- Lässt den Debug die Quests direkt wärhend der Erzeugung prüfen.
-    local UseCheckAtStart = true;
     -- Lässt den Debug die Quests prüfen, wenn sie ausgeführt werden.
     local UseCheckRuntime = true;
     -- Aktiviert die Statusverfolgung der Quests.
     local UseQuestTrace = false;
-    -- Aktiviert Cheats und Eingabeaufforderung
-    local UseChearMode = true;
+    -- Aktiviert Cheats
+    local UseCheatMode = true;
+    -- Aktiviert Eingabeaufforderung
+    local UseChetShell = true;
 
-    API.ActivateDebugMode(UseCheckAtStart, UseCheckRuntime, UseQuestTrace, UseChearMode);
+    API.ActivateDebugMode(UseCheckRuntime, UseQuestTrace, UseCheatMode, UseChetShell);
 
     -- ## Mapeditor-Quests erzeugen ## --
 
