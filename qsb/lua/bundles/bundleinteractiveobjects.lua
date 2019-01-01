@@ -482,21 +482,19 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
         end
 
         GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnID, _Type, _Amount)
-            if not Logic.IsInteractiveObject(GetID(_SpawnID)) then
-                local pos = GetPosition(_SpawnID);
-                local resCat = Logic.GetGoodCategoryForGoodType(_Type);
-                local ID;
-                if resCat == GoodCategories.GC_Resource then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, pos.X, pos.Y,0,_PlayerID);
-                elseif _Type == Goods.G_Medicine then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, pos.X, pos.Y,0,_PlayerID);
-                elseif _Type == Goods.G_Gold then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, pos.X, pos.Y,0,_PlayerID);
-                else
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, pos.X, pos.Y,0,_PlayerID);
-                end
-                Logic.HireMerchant(ID,_PlayerID,_Type,_Amount,_PlayerID);
+            local pos = GetPosition(_SpawnID);
+            local resCat = Logic.GetGoodCategoryForGoodType(_Type);
+            local ID;
+            if resCat == GoodCategories.GC_Resource then
+                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, pos.X, pos.Y,0,_PlayerID);
+            elseif _Type == Goods.G_Medicine then
+                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, pos.X, pos.Y,0,_PlayerID);
+            elseif _Type == Goods.G_Gold then
+                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, pos.X, pos.Y,0,_PlayerID);
+            else
+                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, pos.X, pos.Y,0,_PlayerID);
             end
+            Logic.HireMerchant(ID,_PlayerID,_Type,_Amount,_PlayerID);
         end
 
         function QuestTemplate:AreObjectsActivated(objectList)
