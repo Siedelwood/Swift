@@ -81,7 +81,11 @@ HeroCameraIsRuning = API.ThirdPersonIsRuning;
 -- -------------------------------------------------------------------------- --
 
 BundleThirdPersonCamera = {
-    Global = {},
+    Global = {
+        Data = {
+            ThirdPersonIsActive = false,
+        }
+    },
     Local = {
         Data = {
             ThirdPersonIsActive = false,
