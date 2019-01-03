@@ -210,7 +210,8 @@ Core:RegisterBehavior(b_Goal_Deliver);
 
 ---
 -- Es muss ein bestimmter Diplomatiestatus zu einer anderen Datei erreicht
--- werden.
+-- werden. Der Status kann eine Verbesserung oder eine Verschlechterung zum
+-- aktuellen Status sein.
 --
 -- @param _PlayerID Partei, die Entdeckt werden muss
 -- @param _State    Diplomatiestatus
@@ -224,29 +225,71 @@ end
 b_Goal_Diplomacy = {
     Name = "Goal_Diplomacy",
     Description = {
-        en = "Goal: Reach a diplomatic state",
-        de = "Ziel: Erreiche einen bestimmten Diplomatiestatus zu einem anderen Spieler.",
+        en = "Goal: A diplomatic state must b reached. Can be lower than current state or higher.",
+        de = "Ziel: Die Beziehungen zu einem Spieler müssen entweder verbessert oder verschlechtert werden.",
     },
     Parameter = {
         { ParameterType.PlayerID, en = "Party", de = "Partei" },
-        { ParameterType.DiplomacyState, en = "Relation", de = "Beziehung" },
+        { ParameterType.Custom,   en = "Diplomacy state", de = "Diplomatische Beziehung" },
+        { ParameterType.Custom,   en = "Relation", de = "Relation" },
+    },
+    DiploNameMap = {
+        [DiplomacyStates.Allied]             = {de = "Verbündeter",    en = "Allied"},
+        [DiplomacyStates.TradeContact]       = {de = "Handelspartner", en = "Trade Contact"},
+        [DiplomacyStates.EstablishedContact] = {de = "Bekannt",        en = "Established Contact"},
+        [DiplomacyStates.Undecided]          = {de = "Unbekannt",      en = "Undecided"},
+        [DiplomacyStates.Enemy]              = {de = "Feind",          en = "Enemy"},
+    },
+    TextPattern = {
+        de = "DIPLOMATIESTATUS ERREICHEN {cr}{cr}Status: %s{cr}Zur Partei: %s",
+        en = "DIPLOMATIC STATE {cr}{cr}State: %s{cr}To player: %s",
     },
 }
 
 function b_Goal_Diplomacy:GetGoalTable()
-    return { Objective.Diplomacy, self.PlayerID, DiplomacyStates[self.DiplState] }
+    return { Objective.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Goal_Diplomacy:ChangeCaption(_Quest)
+    local PlayerName = GetPlayerName(self.PlayerID) or "";
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Text = string.format(self.TextPattern[lang], self.DiploNameMap[self.DiplState][lang], PlayerName);
+    Core:ChangeCustomQuestCaptionText(Text, _Quest);
+end
+
+function b_Goal_Diplomacy:CustomFunction(_Quest)
+    self:ChangeCaption(_Quest);
+    if self.BeSmallerThan then
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) < self.DiplState then
+            return true;
+        end
+    else
+        if GetDiplomacyState(_Quest.ReceivingPlayer, self.PlayerID) >= self.DiplState then
+            return true;
+        end
+    end
 end
 
 function b_Goal_Diplomacy:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter * 1
     elseif (_Index == 1) then
-        self.DiplState = _Parameter
+        self.DiplState = DiplomacyStates[_Parameter];
+    elseif (_Index == 2) then
+        self.BeSmallerThan = _Parameter == "<";
     end
 end
 
 function b_Goal_Diplomacy:GetIcon()
-    return {6,3};
+    return {6, 3};
+end
+
+function b_Goal_Diplomacy:GetCustomData(_Index)
+    if _Index == 1 then
+        return {"Allied", "TradeContact", "EstablishedContact", "Undecided", "Enemy"};
+    elseif _Index == 2 then
+        return {">=", "<"};
+    end
 end
 
 Core:RegisterBehavior(b_Goal_Diplomacy);
@@ -729,13 +772,10 @@ end
 function b_Goal_DestroySoldiers:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
-        local caption = (lang == "de" and "SOLDATEN ZERST�REN {cr}{cr}von der Partei: ") or
+        local caption = (lang == "de" and "SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: ") or
                          "DESTROY SOLDIERS {cr}{cr}from faction: "
         local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
-        local party = GetPlayerName(self.AttackedPlayer);
-        if party == "" or party == nil then
-            party = ((lang == "de" and "Spieler ") or "Player ") .. self.AttackedPlayer
-        end
+        local party = GetPlayerName(self.AttackedPlayer) or "";
         local text = "{center}" .. caption .. party .. "{cr}{cr}" .. amount .. " "..self.KillsNeeded;
         Core:ChangeCustomQuestCaptionText(text, _Quest);
     end
@@ -1066,10 +1106,10 @@ function b_Goal_ActivateBuff:CustomFunction(_Quest)
             ["Buff_Spice"]                        = {de = "Salz", en = "Salt"},
             ["Buff_Colour"]                        = {de = "Farben", en = "Color"},
             ["Buff_Entertainers"]                = {de = "Entertainer", en = "Entertainer"},
-            ["Buff_FoodDiversity"]                = {de = "Vielf�ltige Nahrung", en = "Food diversity"},
-            ["Buff_ClothesDiversity"]            = {de = "Vielf�ltige Kleidung", en = "Clothes diversity"},
-            ["Buff_HygieneDiversity"]            = {de = "Vielf�ltige Reinigung", en = "Hygiene diversity"},
-            ["Buff_EntertainmentDiversity"]        = {de = "Vielf�ltige Unterhaltung", en = "Entertainment diversity"},
+            ["Buff_FoodDiversity"]                = {de = "Vielfältige Nahrung", en = "Food diversity"},
+            ["Buff_ClothesDiversity"]            = {de = "Vielfältige Kleidung", en = "Clothes diversity"},
+            ["Buff_HygieneDiversity"]            = {de = "Vielfältige Reinigung", en = "Hygiene diversity"},
+            ["Buff_EntertainmentDiversity"]        = {de = "Vielfältige Unterhaltung", en = "Entertainment diversity"},
             ["Buff_Sermon"]                        = {de = "Predigt", en = "Sermon"},
             ["Buff_Festival"]                    = {de = "Fest", en = "Festival"},
             ["Buff_ExtraPayment"]                = {de = "Sonderzahlung", en = "Extra payment"},
@@ -1777,10 +1817,7 @@ function b_Goal_SoldierCount:CustomFunction(_Quest)
             ["true"]  = {de = "Weniger als", en = "Less than"},
             ["false"] = {de = "Mindestens", en = "At least"},
         };
-        local party = GetPlayerName(self.PlayerID);
-        if party == "" or party == nil then
-            party = ((lang == "de" and "Spieler ") or "Player ") .. self.PlayerID
-        end
+        local party = GetPlayerName(self.PlayerID) or "";
         local text = "{center}" .. caption .. party .. "{cr}{cr}" .. relationText[relation][lang] .. " "..self.NumberOfUnits;
         Core:ChangeCustomQuestCaptionText(text, _Quest);
     end
@@ -1954,10 +1991,7 @@ function b_Goal_Festivals:CustomFunction(_Quest)
         local caption = (lang == "de" and "FESTE FEIERN {cr}{cr}Partei: ") or
                             "HOLD PARTIES {cr}{cr}faction: "
         local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
-        local party = GetPlayerName(self.PlayerID);
-        if party == "" or party == nil then
-            party = ((lang == "de" and "Spieler ") or "Player ") .. self.PlayerID
-        end
+        local party = GetPlayerName(self.PlayerID) or "";
         local text = "{center}" .. caption .. party .. "{cr}{cr}" .. amount .. " "..self.NeededFestivals;
         Core:ChangeCustomQuestCaptionText(text, _Quest);
     end
@@ -7232,8 +7266,8 @@ function b_Trigger_OnQuestActive:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif type(self.WaitTime) ~= "number" then
-        fatal("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
+        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -7311,8 +7345,8 @@ function b_Trigger_OnQuestFailure:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif type(self.WaitTime) ~= "number" then
-        fatal("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
+        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -7445,8 +7479,8 @@ function b_Trigger_OnQuestInterrupted:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif type(self.WaitTime) ~= "number" then
-        fatal("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
+        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -7524,8 +7558,8 @@ function b_Trigger_OnQuestOver:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif type(self.WaitTime) ~= "number" then
-        fatal("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
+        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -7600,8 +7634,8 @@ function b_Trigger_OnQuestSuccess:DEBUG(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
-    elseif type(self.WaitTime) ~= "number" then
-        fatal("".._Quest.Identifier.." "..self.Name..": waittime must be a number!");
+    elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
+        dbg("".._Quest.Identifier.." "..self.Name..": waittime must be a number!");
         return true;
     end
     return false;

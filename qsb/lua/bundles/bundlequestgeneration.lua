@@ -16,7 +16,7 @@
 -- <p><a href="#API.CreateQuest">Quests erzeugen</a></p>
 --
 -- @within Modulbeschreibung
--- @set sort=false
+-- @set sort=true
 --
 BundleQuestGeneration = {};
 
@@ -412,7 +412,6 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     local QuestID, Quest = QuestTemplate:New(unpack(QuestData, 1, 16));
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
-    Quest.Arguments = (_Data.Arguments ~= nil and API.InstanceTable(_Data.Arguments)) or {};
     return _Data.Name;
 end
 

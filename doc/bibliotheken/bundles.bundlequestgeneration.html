@@ -56,9 +56,11 @@
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../bibliotheken/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../bibliotheken/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../bibliotheken/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../bibliotheken/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../bibliotheken/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
   <li><a href="../bibliotheken/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
@@ -66,6 +68,7 @@
   <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><strong>bundles.bundlequestgeneration</strong></li>
   <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../bibliotheken/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
   <li><a href="../bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
@@ -100,13 +103,13 @@
 	<td class="summary">Erstellt einen Quest.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.CreateQuestMessage">API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</a></td>
-	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.CreateQuestDialog">API.CreateQuestDialog (_Messages)</a></td>
 	<td class="summary">Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
  einander angezeigt werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateQuestMessage">API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</a></td>
+	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterruptQuestDialog">API.InterruptQuestDialog (_Dialog)</a></td>
@@ -124,12 +127,12 @@
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestMessage">BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)</a></td>
-	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestCreateNewQuest">BundleQuestGeneration.Global:QuestCreateNewQuest (_Data)</a></td>
 	<td class="summary">Erzeugt einen Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestMessage">BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)</a></td>
+	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestValidateQuestData">BundleQuestGeneration.Global:QuestValidateQuestData (_Data)</a></td>
@@ -208,59 +211,6 @@
 
 </dd>
     <dt>
-    <a name = "API.CreateQuestMessage"></a>
-    <strong>API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Nachricht im Questfenster.
-<p> Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
- des Quests ausgeführt wird.
-<p> Alle Paramater sind optional und können von rechts nach links weggelassen
- oder mit nil aufgefüllt werden.
-<p> <b>Alias</b>: QuestMessage
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Text</span>
-               [string] Anzeigetext der Nachricht
-        </li>
-        <li><span class="parameter">_Sender</span>
-             [number] Sender der Nachricht
-        </li>
-        <li><span class="parameter">_Receiver</span>
-           [number] Receiver der Nachricht
-        </li>
-        <li><span class="parameter">_AncestorWt</span>
-         [number] Wartezeit
-        </li>
-        <li><span class="parameter">_Callback</span>
-           [function] Callback
-        </li>
-        <li><span class="parameter">_Ancestor</span>
-           [string] Vorgänger-Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [string] QuestName
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.CreateQuestMessage(<span class="string">"Das ist ein Text"</span>, <span class="number">4</span>, <span class="number">1</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "API.CreateQuestDialog"></a>
     <strong>API.CreateQuestDialog (_Messages)</strong>
     </dt>
@@ -312,6 +262,59 @@
     {<span class="string">"Mir geht es gut, wie immer!"</span>, <span class="number">1</span>, <span class="number">1</span>},
     {<span class="string">"Das ist doch schön."</span>, <span class="number">4</span>, <span class="number">1</span>},
 };</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateQuestMessage"></a>
+    <strong>API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Nachricht im Questfenster.
+<p> Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
+ Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+ Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+ Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+ des Quests ausgeführt wird.
+<p> Alle Paramater sind optional und können von rechts nach links weggelassen
+ oder mit nil aufgefüllt werden.
+<p> <b>Alias</b>: QuestMessage
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+               [string] Anzeigetext der Nachricht
+        </li>
+        <li><span class="parameter">_Sender</span>
+             [number] Sender der Nachricht
+        </li>
+        <li><span class="parameter">_Receiver</span>
+           [number] Receiver der Nachricht
+        </li>
+        <li><span class="parameter">_AncestorWt</span>
+         [number] Wartezeit
+        </li>
+        <li><span class="parameter">_Callback</span>
+           [function] Callback
+        </li>
+        <li><span class="parameter">_Ancestor</span>
+           [string] Vorgänger-Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] QuestName
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateQuestMessage(<span class="string">"Das ist ein Text"</span>, <span class="number">4</span>, <span class="number">1</span>);</pre>
     </ul>
 
 </dd>
@@ -382,6 +385,31 @@
 
 </dd>
     <dt>
+    <a name = "BundleQuestGeneration.Global:QuestCreateNewQuest"></a>
+    <strong>BundleQuestGeneration.Global:QuestCreateNewQuest (_Data)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+         [table] Daten des Quest.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [string] Name des erzeugten Quests
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "BundleQuestGeneration.Global:QuestMessage"></a>
     <strong>BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)</strong>
     </dt>
@@ -426,31 +454,6 @@
     <ol>
 
         [string] QuestName
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Global:QuestCreateNewQuest"></a>
-    <strong>BundleQuestGeneration.Global:QuestCreateNewQuest (_Data)</strong>
-    </dt>
-    <dd>
-    Erzeugt einen Quest.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Data</span>
-         [table] Daten des Quest.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        [string] Name des erzeugten Quests
     </ol>
 
 
@@ -514,7 +517,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-14 18:54:09 </i>
+<i style="float:right;">Last updated 2019-01-03 19:39:28 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

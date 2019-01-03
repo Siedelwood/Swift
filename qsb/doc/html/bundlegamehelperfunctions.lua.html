@@ -1,0 +1,485 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>bundlegamehelperfunctions</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundlegamehelperfunctions</code></h1>
+<p>Dieses Bundle gibt dem Mapper Werkzeuge in die Hand, um einige Features zu
+ gewähren oder zu entziehen.</p>
+<p>
+<p> Das wichtigste Auf einen Blick:
+ <ul>
+ <li>
+ <a href="#API.AllowCheats">Features aktivieren</a><br>Cheats, Erweiterter
+ Zoom, Feste feiern für KIs
+ </li>
+ <li>
+ <a href="#API.ForbidCheats">Features deaktivieren</a><br>Cheats, Erweiterter
+ Zoom, Feste feiern für KIs
+ </li>
+ <li>
+ <a href="#API.SpeedLimitActivate">Spielgeschwindigkeit steuern</a><br>
+ Maximale Spielgeschwindigkeit festlegen
+ </li>
+ </ul>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AllowCheats">API.AllowCheats ()</a></td>
+	<td class="summary">Aktiviert die Tastenkombination zum Einschalten der Cheats.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ChangeTerrainHeightInSquare">API.ChangeTerrainHeightInSquare (_Center, _Offset, _Height, _Relative)</a></td>
+	<td class="summary">Ändert die Landhöhe in einem Quadrat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ChangeTerrainTypeInSquare">API.ChangeTerrainTypeInSquare (_Center, _Offset, _TerrainType)</a></td>
+	<td class="summary"><p>Ändert die Bodentextur innerhalb des Quadrates.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ChangeWaterHeightInSquare">API.ChangeWaterHeightInSquare (_Center, _Offset, _Height, _Relative)</a></td>
+	<td class="summary">Ändert die Wasserhöhe in einem Quadrat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.FocusCameraOnEntity">API.FocusCameraOnEntity (_Entity, _Rotation, _ZoomFactor)</a></td>
+	<td class="summary">Fokusiert die Kamera auf dem Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.FocusCameraOnKnight">API.FocusCameraOnKnight (_Player, _Rotation, _ZoomFactor)</a></td>
+	<td class="summary">Fokusiert die Kamera auf dem Primärritter des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.FollowKnightSaveStart">API.FollowKnightSaveStart (_Entity, _Knight, _Distance, _Angle)</a></td>
+	<td class="summary">Lässt einen Siedler einem Helden folgen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.FollowKnightSaveStop">API.FollowKnightSaveStop (_JobID)</a></td>
+	<td class="summary">Beendet einen Verfolgungsjob.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ForbidCheats">API.ForbidCheats ()</a></td>
+	<td class="summary">Deaktiviert die Tastenkombination zum Einschalten der Cheats.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ForbidSaveGame">API.ForbidSaveGame (_Flag)</a></td>
+	<td class="summary">Sperrt das Speichern von Spielständen oder gibt es wieder frei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SpeedLimitActivate">API.SpeedLimitActivate (_Flag)</a></td>
+	<td class="summary">Aktiviert die Speedbremse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SpeedLimitSet">API.SpeedLimitSet (_Limit)</a></td>
+	<td class="summary">Setzt die Obergrenze für die Spielgeschwindigkeit fest.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AllowCheats"></a>
+    <strong>API.AllowCheats ()</strong>
+    </dt>
+    <dd>
+    Aktiviert die Tastenkombination zum Einschalten der Cheats.
+<p> <p><b>Alias:</b> RessurectCheats</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ChangeTerrainHeightInSquare"></a>
+    <strong>API.ChangeTerrainHeightInSquare (_Center, _Offset, _Height, _Relative)</strong>
+    </dt>
+    <dd>
+    Ändert die Landhöhe in einem Quadrat.  Offset bestimmt die Abstände
+ der Eckpunkte zum Zentralpunkt.
+<p> Wird die relative Höhe verwendet, wird die Landhöhe nicht absolut
+ gesetzt sondern von der aktuellen Landhöhe ausgegangen. Das Land muss nicht
+ eben sein. Auf diese Weise können Strukturen unverändert angehoben werden.
+<p> <p><b>Alias:</b> TerrainHeight</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Center</span>
+         [string|number] Zentralpunkt
+        </li>
+        <li><span class="parameter">_Offset</span>
+         [number] Entfernung der Ecken zum Zentrum
+        </li>
+        <li><span class="parameter">_Height</span>
+         [number] Neue Höhe
+        </li>
+        <li><span class="parameter">_Relative</span>
+         [boolean] Relative Höhe benutzen
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ChangeTerrainHeightInSquare(<span class="string">"area"</span>, <span class="number">500</span>, <span class="number">5555</span>, <span class="keyword">true</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.ChangeTerrainTypeInSquare"></a>
+    <strong>API.ChangeTerrainTypeInSquare (_Center, _Offset, _TerrainType)</strong>
+    </dt>
+    <dd>
+    <p>Ändert die Bodentextur innerhalb des Quadrates.  Offset bestimmt die
+ Abstände der Eckpunkte zum Zentralpunkt.</p>
+<p> <p><b>Hinweis:</b> Für weitere Informationen zu Terraintexturen siehe
+ https://siedelwood-neu.de/23879-2/</p>
+<p> <p><b>Alias:</b> TerrainType</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Center</span>
+         [string|number] Zentralpunkt
+        </li>
+        <li><span class="parameter">_Offset</span>
+         [number] Entfernung der Ecken zum Zentrum
+        </li>
+        <li><span class="parameter">_TerrainType</span>
+         [number] Textur ID
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ChangeTerrainTypeInSquare(<span class="string">"area"</span>, <span class="number">500</span>, <span class="number">48</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.ChangeWaterHeightInSquare"></a>
+    <strong>API.ChangeWaterHeightInSquare (_Center, _Offset, _Height, _Relative)</strong>
+    </dt>
+    <dd>
+    Ändert die Wasserhöhe in einem Quadrat.  Offset bestimmt die Abstände
+ der Eckpunkte zum Zentrum.
+<p> Wird die relative Höhe verwendet, wird die Wasserhöhe nicht absolut
+ gesetzt sondern von der aktuellen Wasserhöhe ausgegangen.
+<p> <p><b>Alias:</b> WaterHeight</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Center</span>
+         [string|number] Zentralpunkt
+        </li>
+        <li><span class="parameter">_Offset</span>
+         [number] Entfernung der Ecken zum Zentrum
+        </li>
+        <li><span class="parameter">_Height</span>
+         [number] Neue Höhe
+        </li>
+        <li><span class="parameter">_Relative</span>
+         [boolean] Relative Höhe benutzen
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.ChangeWaterHeightInSquare(<span class="string">"area"</span>, <span class="number">500</span>, <span class="number">5555</span>, <span class="keyword">true</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.FocusCameraOnEntity"></a>
+    <strong>API.FocusCameraOnEntity (_Entity, _Rotation, _ZoomFactor)</strong>
+    </dt>
+    <dd>
+    Fokusiert die Kamera auf dem Entity.
+<p> <p><b>Alias:</b> SetCameraToEntity</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity
+        </li>
+        <li><span class="parameter">_Rotation</span>
+         [number] Kamerawinkel
+        </li>
+        <li><span class="parameter">_ZoomFactor</span>
+         [number] Zoomfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.FocusCameraOnKnight"></a>
+    <strong>API.FocusCameraOnKnight (_Player, _Rotation, _ZoomFactor)</strong>
+    </dt>
+    <dd>
+    Fokusiert die Kamera auf dem Primärritter des Spielers.
+<p> <p><b>Alias:</b> SetCameraToPlayerKnight</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Player</span>
+         [number] Partei
+        </li>
+        <li><span class="parameter">_Rotation</span>
+         [number] Kamerawinkel
+        </li>
+        <li><span class="parameter">_ZoomFactor</span>
+         [number] Zoomfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.FollowKnightSaveStart"></a>
+    <strong>API.FollowKnightSaveStart (_Entity, _Knight, _Distance, _Angle)</strong>
+    </dt>
+    <dd>
+    Lässt einen Siedler einem Helden folgen.  Gibt die ID des Jobs
+ zurück, der die Verfolgung steuert.
+<p> <p><b>Hinweis:</b> Wenn eines der Entities zerstört wird, oder ins
+ Koma fällt, wird der Job beendet!</p>
+<p> <p><b>Alias:</b> AddFollowKnightSave</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Entity das folgt
+        </li>
+        <li><span class="parameter">_Knight</span>
+         [string|number] Held
+        </li>
+        <li><span class="parameter">_Distance</span>
+         [number] Entfernung, die uberschritten sein muss
+        </li>
+        <li><span class="parameter">_Angle</span>
+         [number] Ausrichtung
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Job-ID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.FollowKnightSaveStop"></a>
+    <strong>API.FollowKnightSaveStop (_JobID)</strong>
+    </dt>
+    <dd>
+    Beendet einen Verfolgungsjob.
+<p> <p><b>Alias:</b> StopFollowKnightSave</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_JobID</span>
+         [number] Job-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ForbidCheats"></a>
+    <strong>API.ForbidCheats ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+<p> <p><b>Alias:</b> KillCheats</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ForbidSaveGame"></a>
+    <strong>API.ForbidSaveGame (_Flag)</strong>
+    </dt>
+    <dd>
+    Sperrt das Speichern von Spielständen oder gibt es wieder frei.
+<p> <p><b>Alias:</b> ForbidSaveGame</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Speichern gesperrt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SpeedLimitActivate"></a>
+    <strong>API.SpeedLimitActivate (_Flag)</strong>
+    </dt>
+    <dd>
+    Aktiviert die Speedbremse.  Die vorher eingestellte Maximalgeschwindigkeit
+ kann nicht mehr überschritten werden.
+<p> <p><b>Alias:</b> ActivateSpeedLimit</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+         [boolean] Speedbremse ist aktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SpeedLimitSet"></a>
+    <strong>API.SpeedLimitSet (_Limit)</strong>
+    </dt>
+    <dd>
+    Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+<p> <p><b>Alias:</b> SetSpeedLimit</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Limit</span>
+         [number] Obergrenze
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-01-03 19:39:08 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

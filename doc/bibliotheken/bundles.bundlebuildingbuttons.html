@@ -57,9 +57,11 @@
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../bibliotheken/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../bibliotheken/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../bibliotheken/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../bibliotheken/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../bibliotheken/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
   <li><a href="../bibliotheken/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
@@ -67,6 +69,7 @@
   <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../bibliotheken/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
   <li><a href="../bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
@@ -112,35 +115,39 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#API.ActivateDowngrade">API.ActivateDowngrade ()</a></td>
+	<td class="summary">Aktiviere Rückbau bei Stadt- und Rohstoffgebäuden.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.ActivateSingleStop">API.ActivateSingleStop ()</a></td>
 	<td class="summary">Aktiviert die Single Stop Buttons.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.DeactivateSingleStop">API.DeactivateSingleStop ()</a></td>
-	<td class="summary">Deaktiviert die Single Stop Buttons.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ActivateDowngrade">API.ActivateDowngrade ()</a></td>
-	<td class="summary">Aktiviere Rückbau bei Stadt- und Rohstoffgebäuden.</td>
+	<td class="name" nowrap><a href="#API.AddCustomBuildingButton">API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</a></td>
+	<td class="summary">Fügt einen optionalen Gebäudeschalter hinzu.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.DeactivateDowngrade">API.DeactivateDowngrade ()</a></td>
 	<td class="summary">Deaktiviert den Rückbau von Gebäuden.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_flag)</a></td>
-	<td class="summary">Erlaube oder verbiete dem Spieler Schafe zu züchten.</td>
+	<td class="name" nowrap><a href="#API.DeactivateSingleStop">API.DeactivateSingleStop ()</a></td>
+	<td class="summary">Deaktiviert die Single Stop Buttons.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_flag)</a></td>
-	<td class="summary">Erlaube oder verbiete dem Spieler Kühe zu züchten.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetSheepGrainCost">API.SetSheepGrainCost (_Amount)</a></td>
-	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
+	<td class="name" nowrap><a href="#API.RemoveCustomBuildingButton">API.RemoveCustomBuildingButton (_Index)</a></td>
+	<td class="summary">Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SetCattleGrainCost">API.SetCattleGrainCost (_Amount)</a></td>
+	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetCattleNeeded">API.SetCattleNeeded (_Amount)</a></td>
+	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetSheepGrainCost">API.SetSheepGrainCost (_Amount)</a></td>
 	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
 	</tr>
 	<tr>
@@ -148,16 +155,12 @@
 	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetCattleNeeded">API.SetCattleNeeded (_Amount)</a></td>
-	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
+	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_flag)</a></td>
+	<td class="summary">Erlaube oder verbiete dem Spieler Kühe zu züchten.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddCustomBuildingButton">API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</a></td>
-	<td class="summary">Fügt einen optionalen Gebäudeschalter hinzu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.RemoveCustomBuildingButton">API.RemoveCustomBuildingButton (_Index)</a></td>
-	<td class="summary">Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.</td>
+	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_flag)</a></td>
+	<td class="summary">Erlaube oder verbiete dem Spieler Schafe zu züchten.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
@@ -165,52 +168,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleBuildingButtons.Global:Install">BundleBuildingButtons.Global:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:Install">BundleBuildingButtons.Local:Install ()</a></td>
-	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:BuyAnimal">BundleBuildingButtons.Local:BuyAnimal (_eID)</a></td>
-	<td class="summary">Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:DowngradeBuilding">BundleBuildingButtons.Local:DowngradeBuilding ()</a></td>
-	<td class="summary">Das aktuell selektierte Gebäude wird um eine Stufe zurückgebaut.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:AddOptionalButton">BundleBuildingButtons.Local:AddOptionalButton (_idx, _actionFunction, _tooltipFunction, _updateFunction)</a></td>
-	<td class="summary">Fügt einen Button dem Hausmenü hinzu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:DeleteOptionalButton">BundleBuildingButtons.Local:DeleteOptionalButton (_idx)</a></td>
-	<td class="summary">Entfernt den Zusatz-Button auf dem Index.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteAutoToggle">BundleBuildingButtons.Local:OverwriteAutoToggle ()</a></td>
-	<td class="summary">Überschreibt die GUI-Funktionen des inaktiven Schalters für automatisches
- Umschalten von Torsperren.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteGateOpenClose">BundleBuildingButtons.Local:OverwriteGateOpenClose ()</a></td>
-	<td class="summary">Überschreibt den inaktiven Button zum öffnen/schließen von Toren.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteToggleTrap">BundleBuildingButtons.Local:OverwriteToggleTrap ()</a></td>
-	<td class="summary">Überschreibt den inaktiven Button zum umschalten der Torhausfallen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteBuySiegeEngine">BundleBuildingButtons.Local:OverwriteBuySiegeEngine ()</a></td>
-	<td class="summary">Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteHouseMenuButtons">BundleBuildingButtons.Local:OverwriteHouseMenuButtons ()</a></td>
-	<td class="summary">Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
- funktioniert.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:TextCosts">BundleBuildingButtons.Local:TextCosts (_Title, _Text, _DisabledText, _Costs, _InSettlement)</a></td>
-	<td class="summary">Setzt den Kostentooltip des aktuellen Widgets.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action">BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action (WidgetID, EntityID)</a></td>
@@ -227,6 +184,52 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleBuildingButtons.Local.OnSelectionChanged">BundleBuildingButtons.Local.OnSelectionChanged (_Source)</a></td>
 	<td class="summary">Diese Funktion wird aufgerufen, sobald sich die Selektion ändert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:AddOptionalButton">BundleBuildingButtons.Local:AddOptionalButton (_idx, _actionFunction, _tooltipFunction, _updateFunction)</a></td>
+	<td class="summary">Fügt einen Button dem Hausmenü hinzu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:BuyAnimal">BundleBuildingButtons.Local:BuyAnimal (_eID)</a></td>
+	<td class="summary">Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:DeleteOptionalButton">BundleBuildingButtons.Local:DeleteOptionalButton (_idx)</a></td>
+	<td class="summary">Entfernt den Zusatz-Button auf dem Index.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:DowngradeBuilding">BundleBuildingButtons.Local:DowngradeBuilding ()</a></td>
+	<td class="summary">Das aktuell selektierte Gebäude wird um eine Stufe zurückgebaut.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:Install">BundleBuildingButtons.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteAutoToggle">BundleBuildingButtons.Local:OverwriteAutoToggle ()</a></td>
+	<td class="summary">Überschreibt die GUI-Funktionen des inaktiven Schalters für automatisches
+ Umschalten von Torsperren.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteBuySiegeEngine">BundleBuildingButtons.Local:OverwriteBuySiegeEngine ()</a></td>
+	<td class="summary">Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteGateOpenClose">BundleBuildingButtons.Local:OverwriteGateOpenClose ()</a></td>
+	<td class="summary">Überschreibt den inaktiven Button zum öffnen/schließen von Toren.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteHouseMenuButtons">BundleBuildingButtons.Local:OverwriteHouseMenuButtons ()</a></td>
+	<td class="summary">Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
+ funktioniert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:OverwriteToggleTrap">BundleBuildingButtons.Local:OverwriteToggleTrap ()</a></td>
+	<td class="summary">Überschreibt den inaktiven Button zum umschalten der Torhausfallen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBuildingButtons.Local:TextCosts">BundleBuildingButtons.Local:TextCosts (_Title, _Text, _DisabledText, _Costs, _InSettlement)</a></td>
+	<td class="summary">Setzt den Kostentooltip des aktuellen Widgets.</td>
 	</tr>
 </table>
 <h2><a href="#BundleBuildingButtons">BundleBuildingButtons</a></h2>
@@ -248,6 +251,24 @@
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "API.ActivateDowngrade"></a>
+    <strong>API.ActivateDowngrade ()</strong>
+    </dt>
+    <dd>
+    Aktiviere Rückbau bei Stadt- und Rohstoffgebäuden.  Die Rückbaufunktion
+ erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
+ jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
+<p> <p><b>Alias:</b> UseDowngrade</p>
+
+
+
+
+
+
+
+
+</dd>
     <dt>
     <a name = "API.ActivateSingleStop"></a>
     <strong>API.ActivateSingleStop ()</strong>
@@ -271,218 +292,6 @@
          <a href="../bibliotheken/bundles.bundlebuildingbuttons.html#API.AddCustomBuildingButton">API.AddCustomBuildingButton</a>
     </ul>
 
-
-</dd>
-    <dt>
-    <a name = "API.DeactivateSingleStop"></a>
-    <strong>API.DeactivateSingleStop ()</strong>
-    </dt>
-    <dd>
-    Deaktiviert die Single Stop Buttons.
-<p> <p><b>Alias:</b> DeactivateSingleStop</p>
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ActivateDowngrade"></a>
-    <strong>API.ActivateDowngrade ()</strong>
-    </dt>
-    <dd>
-    Aktiviere Rückbau bei Stadt- und Rohstoffgebäuden.  Die Rückbaufunktion
- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
- jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
-<p> <p><b>Alias:</b> UseDowngrade</p>
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.DeactivateDowngrade"></a>
-    <strong>API.DeactivateDowngrade ()</strong>
-    </dt>
-    <dd>
-    Deaktiviert den Rückbau von Gebäuden.
-<p> <p><b>Alias:</b> DeactivateDowngrade</p>
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UseBreedSheeps"></a>
-    <strong>API.UseBreedSheeps (_flag)</strong>
-    </dt>
-    <dd>
-    Erlaube oder verbiete dem Spieler Schafe zu züchten.
-<p> <p><b>Alias:</b> UseBreedSheeps</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_flag</span>
-         [boolean] Schafzucht aktiv/inaktiv
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Schafsaufzucht ist erlaubt
-</span>API.UseBreedSheeps(<span class="keyword">true</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UseBreedCattle"></a>
-    <strong>API.UseBreedCattle (_flag)</strong>
-    </dt>
-    <dd>
-    Erlaube oder verbiete dem Spieler Kühe zu züchten.
-<p> <p><b>Alias:</b> UseBreedCattle</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_flag</span>
-         [boolean] Kuhzucht aktiv/inaktiv
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es können keine Kühe gezüchtet werden
-</span>API.UseBreedCattle(<span class="keyword">false</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetSheepGrainCost"></a>
-    <strong>API.SetSheepGrainCost (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
-<p> <p><b>Alias:</b> SetSheepGrainCost</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-         [number] Getreidekosten
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
-</span>API.SetSheepGrainCost(<span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetCattleGrainCost"></a>
-    <strong>API.SetCattleGrainCost (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
-<p> <p><b>Alias:</b> SetCattleGrainCost</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-         [number] Getreidekosten
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
-</span>API.SetCattleGrainCost(<span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetSheepNeeded"></a>
-    <strong>API.SetSheepNeeded (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
-<p> <p><b>Alias:</b> SetSheepNeeded</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-         [number] Benötigte Menge
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es wird ein volles Gatter zur Zucht benötigt:
-</span>API.SetSheepNeeded(<span class="number">5</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetCattleNeeded"></a>
-    <strong>API.SetCattleNeeded (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
-<p> <p><b>Alias:</b> SetCattleNeeded</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-         [number] Benötigte Menge
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es werden keine Kühe zur Zucht benötigt:
-</span>API.SetCattleNeeded(<span class="number">0</span>);</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -555,6 +364,38 @@
 
 </dd>
     <dt>
+    <a name = "API.DeactivateDowngrade"></a>
+    <strong>API.DeactivateDowngrade ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert den Rückbau von Gebäuden.
+<p> <p><b>Alias:</b> DeactivateDowngrade</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.DeactivateSingleStop"></a>
+    <strong>API.DeactivateSingleStop ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Single Stop Buttons.
+<p> <p><b>Alias:</b> DeactivateSingleStop</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.RemoveCustomBuildingButton"></a>
     <strong>API.RemoveCustomBuildingButton (_Index)</strong>
     </dt>
@@ -581,6 +422,168 @@
     </ul>
 
 </dd>
+    <dt>
+    <a name = "API.SetCattleGrainCost"></a>
+    <strong>API.SetCattleGrainCost (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+<p> <p><b>Alias:</b> SetCattleGrainCost</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         [number] Getreidekosten
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
+</span>API.SetCattleGrainCost(<span class="number">50</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetCattleNeeded"></a>
+    <strong>API.SetCattleNeeded (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
+<p> <p><b>Alias:</b> SetCattleNeeded</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         [number] Benötigte Menge
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Es werden keine Kühe zur Zucht benötigt:
+</span>API.SetCattleNeeded(<span class="number">0</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetSheepGrainCost"></a>
+    <strong>API.SetSheepGrainCost (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+<p> <p><b>Alias:</b> SetSheepGrainCost</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         [number] Getreidekosten
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
+</span>API.SetSheepGrainCost(<span class="number">50</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SetSheepNeeded"></a>
+    <strong>API.SetSheepNeeded (_Amount)</strong>
+    </dt>
+    <dd>
+    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
+<p> <p><b>Alias:</b> SetSheepNeeded</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+         [number] Benötigte Menge
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Es wird ein volles Gatter zur Zucht benötigt:
+</span>API.SetSheepNeeded(<span class="number">5</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UseBreedCattle"></a>
+    <strong>API.UseBreedCattle (_flag)</strong>
+    </dt>
+    <dd>
+    Erlaube oder verbiete dem Spieler Kühe zu züchten.
+<p> <p><b>Alias:</b> UseBreedCattle</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         [boolean] Kuhzucht aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Es können keine Kühe gezüchtet werden
+</span>API.UseBreedCattle(<span class="keyword">false</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UseBreedSheeps"></a>
+    <strong>API.UseBreedSheeps (_flag)</strong>
+    </dt>
+    <dd>
+    Erlaube oder verbiete dem Spieler Schafe zu züchten.
+<p> <p><b>Alias:</b> UseBreedSheeps</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_flag</span>
+         [boolean] Schafzucht aktiv/inaktiv
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Schafsaufzucht ist erlaubt
+</span>API.UseBreedSheeps(<span class="keyword">true</span>);</pre>
+    </ul>
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
@@ -593,224 +596,6 @@
     Initalisiert das Bundle im globalen Skript.
 
 
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:Install"></a>
-    <strong>BundleBuildingButtons.Local:Install ()</strong>
-    </dt>
-    <dd>
-    Initalisiert das Bundle im lokalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:BuyAnimal"></a>
-    <strong>BundleBuildingButtons.Local:BuyAnimal (_eID)</strong>
-    </dt>
-    <dd>
-    Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_eID</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:DowngradeBuilding"></a>
-    <strong>BundleBuildingButtons.Local:DowngradeBuilding ()</strong>
-    </dt>
-    <dd>
-    Das aktuell selektierte Gebäude wird um eine Stufe zurückgebaut.
-<p> Ein Gebäude der Stufe 1 wird zerstört. Aktuell ist dies aber inaktiv.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:AddOptionalButton"></a>
-    <strong>BundleBuildingButtons.Local:AddOptionalButton (_idx, _actionFunction, _tooltipFunction, _updateFunction)</strong>
-    </dt>
-    <dd>
-    Fügt einen Button dem Hausmenü hinzu.  Es können nur 2 Buttons
- hinzugefügt werden. Buttons brauchen immer eine Action-, eine
- Tooltip- und eine Update-Funktion.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_idx</span>
-                      Indexposition des Button (1 oder 2)
-        </li>
-        <li><span class="parameter">_actionFunction</span>
-           Action-Funktion (String in Global)
-        </li>
-        <li><span class="parameter">_tooltipFunction</span>
-          Tooltip-Funktion (String in Global)
-        </li>
-        <li><span class="parameter">_updateFunction</span>
-           Update-Funktion (String in Global)
-        </li>
-    </ul>
-
-
-
-    <h3>See also:</h3>
-    <ul>
-         <a href="../bibliotheken/bundles.bundlebuildingbuttons.html#API.AddCustomBuildingButton">API.AddCustomBuildingButton</a>
-    </ul>
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:DeleteOptionalButton"></a>
-    <strong>BundleBuildingButtons.Local:DeleteOptionalButton (_idx)</strong>
-    </dt>
-    <dd>
-    Entfernt den Zusatz-Button auf dem Index.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_idx</span>
-         Indexposition des Button (1 oder 2)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:OverwriteAutoToggle"></a>
-    <strong>BundleBuildingButtons.Local:OverwriteAutoToggle ()</strong>
-    </dt>
-    <dd>
-    Überschreibt die GUI-Funktionen des inaktiven Schalters für automatisches
- Umschalten von Torsperren.
-<p> Diese Funktion implementiert den optionalen Schalter #1.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:OverwriteGateOpenClose"></a>
-    <strong>BundleBuildingButtons.Local:OverwriteGateOpenClose ()</strong>
-    </dt>
-    <dd>
-    Überschreibt den inaktiven Button zum öffnen/schließen von Toren.
-<p> Diese Funktion implementiert den optionalen Schalter #2.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:OverwriteToggleTrap"></a>
-    <strong>BundleBuildingButtons.Local:OverwriteToggleTrap ()</strong>
-    </dt>
-    <dd>
-    Überschreibt den inaktiven Button zum umschalten der Torhausfallen.
-<p> Diese Funktion implementiert den Rückbau.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:OverwriteBuySiegeEngine"></a>
-    <strong>BundleBuildingButtons.Local:OverwriteBuySiegeEngine ()</strong>
-    </dt>
-    <dd>
-    Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung.  Dabei
- wird die Nutztierzucht implementiert.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:OverwriteHouseMenuButtons"></a>
-    <strong>BundleBuildingButtons.Local:OverwriteHouseMenuButtons ()</strong>
-    </dt>
-    <dd>
-    Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
- funktioniert.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleBuildingButtons.Local:TextCosts"></a>
-    <strong>BundleBuildingButtons.Local:TextCosts (_Title, _Text, _DisabledText, _Costs, _InSettlement)</strong>
-    </dt>
-    <dd>
-    Setzt den Kostentooltip des aktuellen Widgets.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Title</span>
-                Titel des Tooltip
-        </li>
-        <li><span class="parameter">_Text</span>
-                 Text des Tooltip
-        </li>
-        <li><span class="parameter">_DisabledText</span>
-         Textzusatz wenn inaktiv
-        </li>
-        <li><span class="parameter">_Costs</span>
-                Kostentabelle
-        </li>
-        <li><span class="parameter">_InSettlement</span>
-         Kosten in Siedlung suchen
-        </li>
-    </ul>
 
 
 
@@ -908,6 +693,224 @@
 
 
 </dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:AddOptionalButton"></a>
+    <strong>BundleBuildingButtons.Local:AddOptionalButton (_idx, _actionFunction, _tooltipFunction, _updateFunction)</strong>
+    </dt>
+    <dd>
+    Fügt einen Button dem Hausmenü hinzu.  Es können nur 2 Buttons
+ hinzugefügt werden. Buttons brauchen immer eine Action-, eine
+ Tooltip- und eine Update-Funktion.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_idx</span>
+                      Indexposition des Button (1 oder 2)
+        </li>
+        <li><span class="parameter">_actionFunction</span>
+           Action-Funktion (String in Global)
+        </li>
+        <li><span class="parameter">_tooltipFunction</span>
+          Tooltip-Funktion (String in Global)
+        </li>
+        <li><span class="parameter">_updateFunction</span>
+           Update-Funktion (String in Global)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../bibliotheken/bundles.bundlebuildingbuttons.html#API.AddCustomBuildingButton">API.AddCustomBuildingButton</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:BuyAnimal"></a>
+    <strong>BundleBuildingButtons.Local:BuyAnimal (_eID)</strong>
+    </dt>
+    <dd>
+    Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eID</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:DeleteOptionalButton"></a>
+    <strong>BundleBuildingButtons.Local:DeleteOptionalButton (_idx)</strong>
+    </dt>
+    <dd>
+    Entfernt den Zusatz-Button auf dem Index.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_idx</span>
+         Indexposition des Button (1 oder 2)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:DowngradeBuilding"></a>
+    <strong>BundleBuildingButtons.Local:DowngradeBuilding ()</strong>
+    </dt>
+    <dd>
+    Das aktuell selektierte Gebäude wird um eine Stufe zurückgebaut.
+<p> Ein Gebäude der Stufe 1 wird zerstört. Aktuell ist dies aber inaktiv.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:Install"></a>
+    <strong>BundleBuildingButtons.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:OverwriteAutoToggle"></a>
+    <strong>BundleBuildingButtons.Local:OverwriteAutoToggle ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die GUI-Funktionen des inaktiven Schalters für automatisches
+ Umschalten von Torsperren.
+<p> Diese Funktion implementiert den optionalen Schalter #1.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:OverwriteBuySiegeEngine"></a>
+    <strong>BundleBuildingButtons.Local:OverwriteBuySiegeEngine ()</strong>
+    </dt>
+    <dd>
+    Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung.  Dabei
+ wird die Nutztierzucht implementiert.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:OverwriteGateOpenClose"></a>
+    <strong>BundleBuildingButtons.Local:OverwriteGateOpenClose ()</strong>
+    </dt>
+    <dd>
+    Überschreibt den inaktiven Button zum öffnen/schließen von Toren.
+<p> Diese Funktion implementiert den optionalen Schalter #2.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:OverwriteHouseMenuButtons"></a>
+    <strong>BundleBuildingButtons.Local:OverwriteHouseMenuButtons ()</strong>
+    </dt>
+    <dd>
+    Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
+ funktioniert.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:OverwriteToggleTrap"></a>
+    <strong>BundleBuildingButtons.Local:OverwriteToggleTrap ()</strong>
+    </dt>
+    <dd>
+    Überschreibt den inaktiven Button zum umschalten der Torhausfallen.
+<p> Diese Funktion implementiert den Rückbau.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBuildingButtons.Local:TextCosts"></a>
+    <strong>BundleBuildingButtons.Local:TextCosts (_Title, _Text, _DisabledText, _Costs, _InSettlement)</strong>
+    </dt>
+    <dd>
+    Setzt den Kostentooltip des aktuellen Widgets.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_Text</span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_DisabledText</span>
+         Textzusatz wenn inaktiv
+        </li>
+        <li><span class="parameter">_Costs</span>
+                Kostentabelle
+        </li>
+        <li><span class="parameter">_InSettlement</span>
+         Kosten in Siedlung suchen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="BundleBuildingButtons"></a>BundleBuildingButtons</h2>
 
@@ -968,7 +971,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-12-14 18:54:09 </i>
+<i style="float:right;">Last updated 2019-01-03 19:39:28 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -105,17 +105,45 @@ SymfoniaWriter = {}
 -- @local
 --
 function SymfoniaWriter:CreateBundleHtmlDocumentation()
-    os.execute("cd bin && bash.exe ./createdoc.sh / core");
+    -- Windows <-> Linux Fix
+    local docCommand = "cd bin && bash.exe ./createdoc.sh";
+    local osName = self:GetOsName();
+    if osName and osName:find("Linux") then
+        docCommand = "cd bin && ./createdoc.sh";
+    end
+    
+    os.execute(docCommand.. " / core");
     for i= 1, #SymfoniaLoader.Data.LoadOrder, 1 do
         if SymfoniaLoader.Data.LoadOrder[i][2] then
-            os.execute("cd bin && bash.exe ./createdoc.sh /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
+            os.execute(docCommand.. " /bundles/ " ..SymfoniaLoader.Data.LoadOrder[i][1]:lower());
         end
     end
     for i= 1, #SymfoniaLoader.Data.AddOnLoadOrder, 1 do
         if SymfoniaLoader.Data.AddOnLoadOrder[i][2] then
-            os.execute("cd bin && bash.exe ./createdoc.sh /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
+            os.execute(docCommand.. " /addons/ " ..SymfoniaLoader.Data.AddOnLoadOrder[i][1]:lower());
         end
     end
+end
+
+---
+-- Gibt den Namen der Linux-Distribution zurück.
+-- @return[type=string] Name des Betriebssystems
+-- @within Internal
+-- @locals
+--
+function SymfoniaWriter:GetOsName()
+    local raw_os_name;
+    local popen_status, popen_result = pcall(io.popen, "")
+    if popen_status then
+        popen_result:close()
+        raw_os_name = io.popen('uname -s','r'):read('*l')
+    else
+        local env_OS = os.getenv('OS')
+        if env_OS and env_ARCH then
+            raw_os_name = env_OS
+        end
+    end
+    return raw_os_name;
 end
 
 ---
@@ -195,7 +223,7 @@ function SymfoniaWriter:CreateDocumentationIndexLink(_Name, _Folder)
 
     local HTML = fh:read("*all");
     HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_NAME###", _Name);
-    HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_LINK###", _Name:lower().. ".lua.html");
+    HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_LINK###", "html/" .._Name:lower().. ".lua.html");
     HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_CONTENTS###", self:CreateSearchTagsFromSourceFile(_Folder .. _Name:lower() .. ".lua"));
     return HTML
 end

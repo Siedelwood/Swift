@@ -1,0 +1,407 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Goal">Goal</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>bundleinteractiveobjects</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundleinteractiveobjects</code></h1>
+<p>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert
+ werden kann.</p>
+<p> Diese Interaktion geschieht über einen Button. Ziel dieses
+ Bundels ist es, die funktionalität von interaktiven Objekten zu erweitern.
+ Es ist möglich, beliebige Objekte zu interaktiven Objekten zu machen.
+<p> Die Einsatzmöglichkeiten sind vielfältig. Wenn ein Gegenstand oder ein
+ Objekt mit einer Funktion versehen ist, kann dies in verschiedenem Kontext
+ an die Geschichte angepasst werden: z.B. Helbel öffnen eine Geheimtür,
+ ein Gegenstand wird vom Helden aufgehoben, ein Marktstand, der etwas
+ verkauft, ....
+<p> Das wichtigste Auf einen Blick:
+ <ul>
+ <li>
+ <a href="#API.CreateObject">Objekt erzeugen</a>
+ </li>
+ <li>
+ <a href="#API.InteractiveObjectActivate">Ein- und ausschalten von
+ interaktiven Objekten</a>
+ </li>
+ <li>
+ <a href="#API.AddCustomIOName">Anzeigenamen im Questfenster definieren</a>
+ </li>
+ </ul>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.AddCustomIOName">API.AddCustomIOName (_Key, _Text)</a></td>
+	<td class="summary">Erzeugt eine Beschriftung für Custom Objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateObject">API.CreateObject (_Description)</a></td>
+	<td class="summary">Erzeugt ein interaktives Objekt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InteractiveObjectActivate">API.InteractiveObjectActivate (_EntityName, _State)</a></td>
+	<td class="summary">Aktiviert ein Interaktives Objekt, sodass es vom Spieler
+ aktiviert werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InteractiveObjectDeactivate">API.InteractiveObjectDeactivate (_EntityName)</a></td>
+	<td class="summary">Deaktiviert ein interaktives Objekt, sodass es nicht mehr vom Spieler
+ benutzt werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.RemoveInteractiveObject">API.RemoveInteractiveObject (_EntityName)</a></td>
+	<td class="summary">Löscht ein interaktives Objekt.</td>
+	</tr>
+</table>
+<h2><a href="#Goal">Goal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Goal_ActivateSeveralObjects">Goal_ActivateSeveralObjects (_ScriptName1, _ScriptName2, _ScriptName3, _ScriptName4)</a></td>
+	<td class="summary">Der Spieler muss bis zu 4 interaktive Objekte benutzen.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.AddCustomIOName"></a>
+    <strong>API.AddCustomIOName (_Key, _Text)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Beschriftung für Custom Objects.
+<p> Im Questfenster werden die Namen von Custom Objects als ungesetzt angezeigt.
+ Mit dieser Funktion kann ein Name angelegt werden.
+<p> <p><b>Alias:</b> AddCustomIOName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Key</span>
+         [string] Typname des Entity
+        </li>
+        <li><span class="parameter">_Text</span>
+         [string|table] Text der Beschriftung
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.AddCustomIOName(<span class="string">"D_X_ChestClosed"</span>, {de = <span class="string">"Schatztruhe"</span>, en = <span class="string">"Treasure"</span>);
+API.AddCustomIOName(<span class="string">"D_X_ChestOpenEmpty"</span>, <span class="string">"Leere Schatztruhe"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateObject"></a>
+    <strong>API.CreateObject (_Description)</strong>
+    </dt>
+    <dd>
+    Erzeugt ein interaktives Objekt.
+<p> Die Parameter des interaktiven Objektes werden durch seine Beschreibung
+ festgelegt. Die Beschreibung ist eine Table, die bestimmte Werte für das
+ Objekt beinhaltet. Dabei müssen nicht immer alle Werte angegeben werden.
+<p> Mögliche Angaben:
+ <table border="1">
+ <tr>
+ <td><b>Feldname</b></td>
+ <td><b>Beschreibung</b></td>
+ <td><b>Optional</b></td>
+ </tr>
+ <tr>
+ <td>Name</td>
+ <td>Der Skriptname des Entity, das zum interaktiven Objekt wird.</td>
+ <td>nein</td>
+ </tr>
+ <tr>
+ <td>Title</td>
+ <td>Der angezeigter Name im Beschreibungsfeld.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Text</td>
+ <td>Der Beschreibungstext, der im Tooltip angezeigt wird.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Texture</td>
+ <td>Bestimmt die Icongrafik, die angezeigt wird. Dabei kann es sich um
+ eine Ingame-Grafik oder eine eigene Grafik halten.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Distance</td>
+ <td>Die minimale Entfernung zum Objekt, die ein Held benötigt um das
+ objekt zu aktivieren.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Waittime</td>
+ <td>Die Zeit, die ein Held benötigt, um das Objekt zu aktivieren. Die
+ Wartezeit ist nur für I_X_ Entities verfügbar.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Costs</td>
+ <td>Eine Table mit dem Typ und der Menge der Kosten.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Reward</td>
+ <td>Der Warentyp und die Menge der gefundenen Waren im Objekt.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Callback</td>
+ <td>Eine Funktion, die ausgeführt wird, sobald das Objekt aktiviert wird.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Condition</td>
+ <td>Eine Funktion, die vor der Aktivierung eine Beringung prüft.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>ConditionUnfulfilled</td>
+ <td>Eine Nachricht, die angezeigt wird, falls die Bedingung nicht
+ erfüllt ist.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>Opener</td>
+ <td>Ein spezieller Held, der als einziger das Objekt aktivieren kann.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>WrongKnight</td>
+ <td>Nachricht, die angezeigt wird, wenn der falsche Held das Objekt
+ aktivieren will.</td>
+ <td>ja</td>
+ </tr>
+ <tr>
+ <td>State</td>
+ <td>Bestimmt, wie sich der Button des interaktiven Objektes verhält.</td>
+ <td>ja</td>
+ </tr>
+ </table>
+<p> Zusätzlich können beliebige weitere Felder an das Objekt angehangen
+ werden. Sie sind ausnahmslos im Callback und in der Condition des Objektes
+ abrufbar.
+<p> <p><b>Alias:</b> CreateObject</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Description</span>
+         [table] Beschreibung
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Ein einfaches Objekt erstellen:
+</span>CreateObject {
+    Name     = <span class="string">"hut"</span>,
+    Distance = <span class="number">1500</span>,
+    Callback = <span class="keyword">function</span>(_Data)
+        API.Note(<span class="string">"Do something..."</span>);
+    <span class="keyword">end</span>,
+}</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.InteractiveObjectActivate"></a>
+    <strong>API.InteractiveObjectActivate (_EntityName, _State)</strong>
+    </dt>
+    <dd>
+    Aktiviert ein Interaktives Objekt, sodass es vom Spieler
+ aktiviert werden kann.
+<p> Der State bestimmt, ob es immer aktiviert werden kann, oder ob der Spieler
+ einen Helden benutzen muss. Wird der Parameter weggelassen, muss immer ein
+ Held das Objekt aktivieren.
+<p> <p><b>Alias</b>: InteractiveObjectActivate</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityName</span>
+         [string] Skriptname des Objektes
+        </li>
+        <li><span class="parameter">_State</span>
+         [number] State des Objektes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InteractiveObjectDeactivate"></a>
+    <strong>API.InteractiveObjectDeactivate (_EntityName)</strong>
+    </dt>
+    <dd>
+    Deaktiviert ein interaktives Objekt, sodass es nicht mehr vom Spieler
+ benutzt werden kann.
+<p> <p><b>Alias</b>: InteractiveObjectDeactivate</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityName</span>
+         [string] Scriptname des Objektes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.RemoveInteractiveObject"></a>
+    <strong>API.RemoveInteractiveObject (_EntityName)</strong>
+    </dt>
+    <dd>
+    Löscht ein interaktives Objekt.
+<p> Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
+ Konfiguration des Objektes entfernt.
+<p> <p><b>Alias:</b> RemoveInteractiveObject</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityName</span>
+         [string] Skriptname des IO
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Goal"></a>Goal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Goal_ActivateSeveralObjects"></a>
+    <strong>Goal_ActivateSeveralObjects (_ScriptName1, _ScriptName2, _ScriptName3, _ScriptName4)</strong>
+    </dt>
+    <dd>
+    Der Spieler muss bis zu 4 interaktive Objekte benutzen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName1</span>
+         Erstes Objekt
+        </li>
+        <li><span class="parameter">_ScriptName2</span>
+         (optional) Zweites Objekt
+        </li>
+        <li><span class="parameter">_ScriptName3</span>
+         (optional) Drittes Objekt
+        </li>
+        <li><span class="parameter">_ScriptName4</span>
+         (optional) Viertes Objekt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-01-03 19:39:09 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

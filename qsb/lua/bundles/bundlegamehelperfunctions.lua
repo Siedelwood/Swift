@@ -22,10 +22,6 @@
 -- <a href="#API.SpeedLimitActivate">Spielgeschwindigkeit steuern</a><br>
 -- Maximale Spielgeschwindigkeit festlegen
 -- </li>
--- <li>
--- <a href="#API.ThridPersonActivate">Schulterblick aktivieren</a><br>Die
--- Kamera folgt einem Entity in der 3rd-Person-Ansicht.
--- </li>
 -- </ul>
 --
 -- @within Modulbeschreibung
@@ -51,11 +47,7 @@ QSB = QSB or {};
 -- @within Anwenderfunktionen
 --
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
-    if not GUI then
-        API.Bridge("API.SetCameraToPlayerKnight(" .._Player.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
-        return;
-    end
-    return BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor);
+    API.FocusCameraOnEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor)
 end
 SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 
@@ -77,7 +69,7 @@ function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Fatal("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        API.Warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
         return;
     end
     return BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
@@ -170,80 +162,6 @@ function API.ForbidSaveGame(_Flag)
     ]]);
 end
 ForbidSaveGame = API.ForbidSaveGame;
-
----
--- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
---
--- <p><b>Alias:</b> AllowExtendedZoom</p>
---
--- @param _Flag [boolean] Erweiterter Zoom gestattet
--- @within Anwenderfunktionen
---
-function API.AllowExtendedZoom(_Flag)
-    if GUI then
-        API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
-        return;
-    end
-    BundleGameHelperFunctions.Global.Data.ExtendedZoomAllowed = _Flag == true;
-    if _Flag == false then
-        BundleGameHelperFunctions.Global:DeactivateExtendedZoom();
-    end
-end
-AllowExtendedZoom = API.AllowExtendedZoom;
-
----
--- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
--- Held kann 0 sein, dann wird entweder der letzte Held verwendet
--- oder über den GUI-Spieler ermittelt.
---
--- <p><b>Alias:</b> HeroCameraActivate</p>
---
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
--- @within Anwenderfunktionen
---
-function API.ThridPersonActivate(_Hero, _MaxZoom)
-    if GUI then
-        local Target = (type(_Hero) == "string" and "'".._Hero.."'") or _Hero;
-        API.Bridge("API.ThridPersonActivate(".. Target ..", ".. _MaxZoom ..")");
-        return;
-    end
-    return BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom);
-end
-HeroCameraActivate = API.ThridPersonActivate;
-
----
--- Deaktiviert die Heldenkamera.
---
--- <p><b>Alias:</b> HeroCameraDeactivate</p>
---
--- @within Anwenderfunktionen
---
-function API.ThridPersonDeactivate()
-    if GUI then
-        API.Bridge("API.ThridPersonDeactivate()");
-        return;
-    end
-    return BundleGameHelperFunctions.Global:ThridPersonDeactivate();
-end
-HeroCameraDeactivate = API.ThridPersonDeactivate;
-
----
--- Prüft, ob die Heldenkamera aktiv ist.
---
--- <p><b>Alias:</b> HeroCameraIsRuning</p>
---
--- @return [boolean] Kamera aktiv
--- @within Anwenderfunktionen
---
-function API.ThridPersonIsRuning()
-    if not GUI then
-        return BundleGameHelperFunctions.Global:ThridPersonIsRuning();
-    else
-        return BundleGameHelperFunctions.Local:ThridPersonIsRuning();
-    end
-end
-HeroCameraIsRuning = API.ThridPersonIsRuning;
 
 ---
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
@@ -405,16 +323,12 @@ BundleGameHelperFunctions = {
             HumanPlayerChangedOnce = false,
             HumanKnightType = 0,
             HumanPlayerID = 1,
-            ExtendedZoomAllowed = true,
             FollowKnightSave = {},
         }
     },
     Local = {
         Data = {
             SpeedLimit = 32,
-            ThirdPersonIsActive = false,
-            ThirdPersonLastHero = nil,
-            ThirdPersonLastZoom = nil,
         }
     },
 }
@@ -428,73 +342,7 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
-    self:InitExtendedZoomHotkeyFunction();
-    self:InitExtendedZoomHotkeyDescription();
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
-    if self.Data.ExtendedZoomAllowed then
-        if self.Data.ExtendedZoomActive then
-            self:DeactivateExtendedZoom();
-        else
-            self:ActivateExtendedZoom();
-        end
-    end
-end
-
----
--- Aktiviert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
-    self.Data.ExtendedZoomActive = true;
-    API.Bridge("BundleGameHelperFunctions.Local:ActivateExtendedZoom()");
-end
-
----
--- Deaktiviert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
-    self.Data.ExtendedZoomActive = false;
-    API.Bridge("BundleGameHelperFunctions.Local:DeactivateExtendedZoom()");
-end
-
----
--- Initialisiert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyFunction()
-    API.Bridge([[
-        BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
-    ]]);
-end
-
----
--- Initialisiert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyDescription()
-    API.Bridge([[
-        BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
-    ]]);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -519,86 +367,6 @@ end
 function BundleGameHelperFunctions.Global:RessurectCheats()
     self.Data.CheatsForbidden = false;
     API.Bridge("BundleGameHelperFunctions.Local:RessurectCheats()");
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
--- Held kann 0 sein, dann wird entweder der letzte Held verwendet
--- oder über den GUI-Spieler ermittelt.
---
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
-    if BriefingSystem then
-        BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing();
-    end
-
-    local Hero = GetID(_Hero);
-    BundleGameHelperFunctions.Global.Data.ThridPersonIsActive = true;
-    Logic.ExecuteInLuaLocalState([[
-        BundleGameHelperFunctions.Local:ThridPersonActivate(]]..tostring(Hero)..[[, ]].. tostring(_MaxZoom) ..[[);
-    ]]);
-end
-
----
--- Deaktiviert die Heldenkamera.
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ThridPersonDeactivate()
-    BundleGameHelperFunctions.Global.Data.ThridPersonIsActive = false;
-    Logic.ExecuteInLuaLocalState([[
-        BundleGameHelperFunctions.Local:ThridPersonDeactivate();
-    ]]);
-end
-
----
--- Prüft, ob die Heldenkamera aktiv ist.
---
--- @return [boolean] Kamera aktiv
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ThridPersonIsRuning()
-    return self.Data.ThridPersonIsActive;
-end
-
----
--- Überschreibt StartBriefing und EndBriefing des Briefing System,
--- wenn es vorhanden ist.
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
-    if BriefingSystem then
-        if not BriefingSystem.StartBriefing_Orig_HeroCamera then
-            BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
-            BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
-                if BundleGameHelperFunctions.Global:ThridPersonIsRuning() then
-                    BundleGameHelperFunctions.Global:ThridPersonDeactivate();
-                    BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode = true;
-                end
-                BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
-            end
-            StartBriefing = BriefingSystem.StartBriefing;
-        end
-
-        if not BriefingSystem.EndBriefing_Orig_HeroCamera then
-            BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
-            BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
-                BriefingSystem.EndBriefing_Orig_HeroCamera();
-                if BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode then
-                    BundleGameHelperFunctions.Global:ThridPersonActivate(0);
-                    BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode = false;
-                end
-            end
-        end
-    end
 end
 
 -- -------------------------------------------------------------------------- --
@@ -826,12 +594,6 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
-    -- Geänderter Zoom --
-    if BundleGameHelperFunctions.Global.Data.ExtendedZoomActive then
-        BundleGameHelperFunctions.Global:ActivateExtendedZoom();
-    end
-    BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyFunction();
-
     -- Cheats sperren --
     if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
         BundleGameHelperFunctions.Global:KillCheats();
@@ -849,19 +611,6 @@ end
 function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSpeedUp()
     self:InitForbidSaveGame();
-end
-
----
--- Fokusiert die Kamera auf dem Primärritter des Spielers.
---
--- @param _Player [number] Partei
--- @param _Rotation [number] Kamerawinkel
--- @param _ZoomFactor [number] Zoomfaktor
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor)
-    BundleGameHelperFunctions.Local:SetCameraToEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor);
 end
 
 ---
@@ -965,70 +714,6 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
--- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
-    API.AddHotKey(
-        {de = "Strg + Umschalt + K",       en = "Ctrl + Shift + K"},
-        {de = "Alternativen Zoom ein/aus", en = "Alternative zoom on/off"}
-    )
-end
-
----
--- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
-    Input.KeyBindDown(
-        Keys.ModifierControl + Keys.ModifierShift + Keys.K,
-        "BundleGameHelperFunctions.Local:ToggleExtendedZoom()",
-        2,
-        false
-    );
-end
-
----
--- Wechselt zwischen erweitertem und normalen Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
-    API.Bridge("BundleGameHelperFunctions.Global:ToggleExtendedZoom()");
-end
-
----
--- Erweitert die Zoomrestriktion auf das Maximum.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
-    Camera.RTS_SetZoomFactorMax(0.8701);
-    Camera.RTS_SetZoomFactor(0.8700);
-    Camera.RTS_SetZoomFactorMin(0.0999);
-end
-
----
--- Stellt die normale Zoomrestriktion wieder her.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:DeactivateExtendedZoom()
-    Camera.RTS_SetZoomFactor(0.5000);
-    Camera.RTS_SetZoomFactorMax(0.5001);
-    Camera.RTS_SetZoomFactorMin(0.0999);
-end
-
--- -------------------------------------------------------------------------- --
-
----
 -- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
 --
 -- @within Internal
@@ -1054,100 +739,6 @@ end
 function BundleGameHelperFunctions.Local:DisplaySaveButtons(_Flag)
     XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame",  (_Flag and 0) or 1);
     XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", (_Flag and 0) or 1);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
--- Held kann 0 sein, dann wird entweder der letzte Held verwendet
--- oder über den GUI-Spieler ermittelt.
---
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ThridPersonActivate(_Hero, _MaxZoom)
-    _Hero = (_Hero ~= 0 and _Hero) or self.Data.ThridPersonLastHero or Logic.GetKnightID(GUI.GetPlayerID());
-    _MaxZoom = _MaxZoom or self.Data.ThridPersonLastZoom or 0.5;
-    if not _Hero then
-        return;
-    end
-
-    if not GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera then
-        self:ThridPersonOverwriteGetBorderScrollFactor();
-    end
-
-    self.Data.ThridPersonLastHero = _Hero;
-    self.Data.ThridPersonLastZoom = _MaxZoom;
-    self.Data.ThridPersonIsActive = true;
-
-    local Orientation = Logic.GetEntityOrientation(_Hero);
-    Camera.RTS_FollowEntity(_Hero);
-    Camera.RTS_SetRotationAngle(Orientation-90);
-    Camera.RTS_SetZoomFactor(_MaxZoom);
-    Camera.RTS_SetZoomFactorMax(_MaxZoom + 0.0001);
-end
-
----
--- Deaktiviert die Heldenkamera.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ThridPersonDeactivate()
-    self.Data.ThridPersonIsActive = false;
-    Camera.RTS_SetZoomFactorMax(0.5);
-    Camera.RTS_SetZoomFactor(0.5);
-    Camera.RTS_FollowEntity(0);
-end
-
----
--- Prüft, ob die Heldenkamera aktiv ist.
---
--- @return [boolean] Kamera aktiv
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ThridPersonIsRuning()
-    return self.Data.ThridPersonIsActive;
-end
-
----
--- Überschreibt GameCallback_GetBorderScrollFactor und wandelt den
--- Bildlauf am Bildschirmrand in Bildrotation um. Dabei wird die
--- Kamera um links oder rechts gedreht, abhänig von der Position
--- der Mouse.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFactor()
-    GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera = GameCallback_Camera_GetBorderscrollFactor
-    GameCallback_Camera_GetBorderscrollFactor = function()
-        if not BundleGameHelperFunctions.Local.Data.ThridPersonIsActive then
-            return GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera();
-        end
-
-        local CameraRotation = Camera.RTS_GetRotationAngle();
-        local xS, yS = GUI.GetScreenSize();
-        local xM, yM = GUI.GetMousePosition();
-        local xR = xM / xS;
-
-        if xR <= 0.02 then
-            CameraRotation = CameraRotation + 0.3;
-        elseif xR >= 0.98 then
-            CameraRotation = CameraRotation - 0.3;
-        else
-            return 0;
-        end
-        if CameraRotation >= 360 then
-            CameraRotation = 0;
-        end
-        Camera.RTS_SetRotationAngle(CameraRotation);
-        return 0;
-    end
 end
 
 -- -------------------------------------------------------------------------- --

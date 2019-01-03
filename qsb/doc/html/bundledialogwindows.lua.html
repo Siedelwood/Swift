@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>bundledialogwindows</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundledialogwindows</code></h1>
+<p>Mit diesem Bundle können Dialogfenster ernstellt werden.</p>
+<p> Über Dialogfenster
+ kann der Spieler informiert werden. Er kann aber auch aufgefordert werden
+ eine Antwort auf eine Frage zu geben.
+<p> Zudem bietet das Bundle ein Textfenster an, welches eine nicht limitierte
+ Menge an Text anzeigen kann. Erreicht der Text eine entsprechende Menge,
+ wird automatisch eine Scrollbar eingeblendet.
+<p> Das wichtigste Auf einen Blick:
+ <ul>
+ <li>
+ <a href="#API.DialogInfoBox">Dialoge anzeigen</a>
+ </li>
+ <li>
+ <a href="#API.SimpleTextWindow">Textfenster anzeigen</a>
+ </li>
+ </ul>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.DialogInfoBox">API.DialogInfoBox (_Title, _Text, _Action)</a></td>
+	<td class="summary">Öffnet einen Info-Dialog.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DialogRequestBox">API.DialogRequestBox (_Title, _Text, _Action, _OkCancel)</a></td>
+	<td class="summary">Öffnet einen Ja-Nein-Dialog.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DialogSelectBox">API.DialogSelectBox (_Title, _Text, _Action, _List)</a></td>
+	<td class="summary">Öffnet einen Auswahldialog.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SimpleTextWindow">API.SimpleTextWindow (_Caption, _Content)</a></td>
+	<td class="summary">Öffnet ein einfaches Textfenster mit dem angegebenen Text.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.DialogInfoBox"></a>
+    <strong>API.DialogInfoBox (_Title, _Text, _Action)</strong>
+    </dt>
+    <dd>
+    Öffnet einen Info-Dialog.  Sollte bereits ein Dialog zu sehen sein, wird
+ der Dialog der Dialogwarteschlange hinzugefügt.
+<p> <b>Alias</b>: UserOpenDialog
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+          [string] Titel des Dialog
+        </li>
+        <li><span class="parameter">_Text</span>
+           [string] Text des Dialog
+        </li>
+        <li><span class="parameter">_Action</span>
+         [function] Callback-Funktion
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DialogInfoBox(<span class="string">"Wichtige Information"</span>, <span class="string">"Diese Information ist Spielentscheidend!"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DialogRequestBox"></a>
+    <strong>API.DialogRequestBox (_Title, _Text, _Action, _OkCancel)</strong>
+    </dt>
+    <dd>
+    Öffnet einen Ja-Nein-Dialog.  Sollte bereits ein Dialog zu sehen sein, wird
+ der Dialog der Dialogwarteschlange hinzugefügt.
+<p> Um die Entscheigung des Spielers abzufragen, wird ein Callback benötigt.
+ Das Callback bekommt eine Boolean übergeben, sobald der Spieler die
+ Entscheidung getroffen hat.
+<p> <b>Alias</b>: UserOpenRequesterDialog
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+            [string] Titel des Dialog
+        </li>
+        <li><span class="parameter">_Text</span>
+             [string] Text des Dialog
+        </li>
+        <li><span class="parameter">_Action</span>
+           [function] Callback-Funktion
+        </li>
+        <li><span class="parameter">_OkCancel</span>
+         [boolean] Okay/Abbrechen statt Ja/Nein
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">function</span> YesNoAction(_yes)
+    <span class="keyword">if</span> _yes <span class="keyword">then</span> GUI.AddNote(<span class="string">"Ja wurde gedrückt"</span>); <span class="keyword">end</span>
+<span class="keyword">end</span>
+API.DialogRequestBox(<span class="string">"Frage"</span>, <span class="string">"Möchtest du das wirklich tun?"</span>, YesNoAction, <span class="keyword">false</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DialogSelectBox"></a>
+    <strong>API.DialogSelectBox (_Title, _Text, _Action, _List)</strong>
+    </dt>
+    <dd>
+    Öffnet einen Auswahldialog.  Sollte bereits ein Dialog zu sehen sein, wird
+ der Dialog der Dialogwarteschlange hinzugefügt.
+<p> In diesem Dialog wählt der Spieler eine Option aus einer Liste von Optionen
+ aus. Anschließend erhält das Callback den Index der selektierten Option.
+<p> <b>Alias</b>: UserOpenSelectionDialog
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Title</span>
+          [string] Titel des Dialog
+        </li>
+        <li><span class="parameter">_Text</span>
+           [string] Text des Dialog
+        </li>
+        <li><span class="parameter">_Action</span>
+         [function] Callback-Funktion
+        </li>
+        <li><span class="parameter">_List</span>
+           [table] Liste der Optionen
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">function</span> OptionsAction(_idx)
+    GUI.AddNote(_idx.. <span class="string">" wurde ausgewählt!"</span>);
+<span class="keyword">end</span>
+<span class="keyword">local</span> List = {<span class="string">"Option A"</span>, <span class="string">"Option B"</span>, <span class="string">"Option C"</span>};
+API.DialogSelectBox(<span class="string">"Auswahl"</span>, <span class="string">"Wähle etwas aus!"</span>, OptionsAction, List);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SimpleTextWindow"></a>
+    <strong>API.SimpleTextWindow (_Caption, _Content)</strong>
+    </dt>
+    <dd>
+    Öffnet ein einfaches Textfenster mit dem angegebenen Text.
+<p> Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
+ Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Caption</span>
+         [string] Titel des Fensters
+        </li>
+        <li><span class="parameter">_Content</span>
+         [string] Inhalt des Fensters
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> Text = <span class="string">"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "</span>..
+             <span class="string">"sed diam nonumy eirmod tempor invidunt ut labore et dolore"</span>..
+             <span class="string">"magna aliquyam erat, sed diam voluptua. At vero eos et"</span>..
+             <span class="string">" accusam et justo duo dolores et ea rebum. Stet clita kasd"</span>..
+             <span class="string">" gubergren, no sea takimata sanctus est Lorem ipsum dolor"</span>..
+             <span class="string">" sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"</span>..
+             <span class="string">" elitr, sed diam nonumy eirmod tempor invidunt ut labore et"</span>..
+             <span class="string">" dolore magna aliquyam erat, sed diam voluptua. At vero eos"</span>..
+             <span class="string">" et accusam et justo duo dolores et ea rebum. Stet clita"</span>..
+             <span class="string">" kasd gubergren, no sea takimata sanctus est Lorem ipsum"</span>..
+             <span class="string">" dolor sit amet."</span>;
+API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-01-03 19:39:06 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

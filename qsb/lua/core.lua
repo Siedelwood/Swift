@@ -50,7 +50,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "Symfonia Build 1420";
+QSB.Version = "RE 2.0.0 1/1/2020";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -622,6 +622,7 @@ function API.Fatal(_Message)
     end
     API.Log("FATAL: " .._Message);
 end
+API.Dbg = API.Fatal;
 fatal = API.Fatal;
 dbg = API.Fatal;
 
@@ -848,7 +849,10 @@ ReplaceEntity = API.ReplaceEntity;
 function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     local entity = GetEntityId(_entity);
     local entityTLA = GetEntityId(_entityToLookAt);
-    assert( not (Logic.IsEntityDestroyed(entity) or Logic.IsEntityDestroyed(entityTLA)), "LookAt: One Entity is wrong or dead");
+    if not IsExisting(entity) or not IsExisting(entityTLA) then
+        API.Warn("API.LookAt: One entity is invalid or dead!");
+        return;
+    end
     local eX, eY = Logic.GetEntityPosition(entity);
     local eTLAX, eTLAY = Logic.GetEntityPosition(entityTLA);
     local orientation = math.deg( math.atan2( (eTLAY - eY) , (eTLAX - eX) ) );
@@ -1769,12 +1773,25 @@ function Core:RegisterBehavior(_Behavior)
         if not _G["b_" .. _Behavior.Name].new then
             _G["b_" .. _Behavior.Name].new = function(self, ...)
                 local behavior = API.InstanceTable(self);
-                if self.Parameter then
-                    for i=1,table.getn(self.Parameter) do
+                behavior.i47ya_6aghw_frxil = {};
+                for i= 1, #arg, 1 do
+                    if self.Parameter and self.Parameter[i] ~= nil then
                         behavior:AddParameter(i-1, arg[i]);
+                    else
+                        table.insert(behavior.i47ya_6aghw_frxil, arg[i]);
                     end
                 end
                 return behavior;
+            end
+        end
+
+        if not _G["b_" .. _Behavior.Name].expose then
+            _G["b_" .. _Behavior.Name].expose = function(self, _Index)
+                if _Index then
+                    return self.i47ya_6aghw_frxil[_Index];
+                else
+                    return unpack(self.i47ya_6aghw_frxil);
+                end
             end
         end
 
