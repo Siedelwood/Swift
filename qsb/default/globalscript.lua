@@ -76,7 +76,7 @@ function Mission_FirstMapAction()
     -- Aktiviert Eingabeaufforderung
     local UseShell = true;
 
-    API.ActivateDebugMode(UseCheckAtStart, UseCheckRuntime, UseCheats, UseShell);
+    API.ActivateDebugMode(UseCheckRuntime, UseQuestTrace, UseCheats, UseShell);
 
     -- ## Mapeditor-Quests erzeugen ## --
 
