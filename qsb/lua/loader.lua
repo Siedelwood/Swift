@@ -131,6 +131,7 @@ SymfoniaLoader = {
             {"BundlePlayerHelperFunctions",         true},
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
+            {"BundleThirdPersonCamera",             true},
             {"BundleTradingAnalysis",               true},
         },
 
