@@ -5,7 +5,11 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- 
+-- Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die
+-- Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen
+-- Zoom zu nutzen.
+--
+-- <p><a href="#API.AllowExtendedZoom">Zoom entriegeln oder sperren</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true

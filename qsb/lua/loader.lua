@@ -114,6 +114,7 @@ SymfoniaLoader = {
             {"BundleEntityCommandFunctions",        true},
             {"BundleEntityHealth",                  true},
             {"BundleEntityHelperFunctions",         true},
+            {"BundleExtendedZoom",                  true},
             {"BundleKnightTitleRequirements",       true},
             {"BundleMinimapMarker",                 true},
             {"BundleSymfoniaBehaviors",             true},
