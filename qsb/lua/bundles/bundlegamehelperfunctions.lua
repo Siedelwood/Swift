@@ -168,26 +168,6 @@ end
 ForbidSaveGame = API.ForbidSaveGame;
 
 ---
--- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
---
--- <p><b>Alias:</b> AllowExtendedZoom</p>
---
--- @param _Flag [boolean] Erweiterter Zoom gestattet
--- @within Anwenderfunktionen
---
-function API.AllowExtendedZoom(_Flag)
-    if GUI then
-        API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
-        return;
-    end
-    BundleGameHelperFunctions.Global.Data.ExtendedZoomAllowed = _Flag == true;
-    if _Flag == false then
-        BundleGameHelperFunctions.Global:DeactivateExtendedZoom();
-    end
-end
-AllowExtendedZoom = API.AllowExtendedZoom;
-
----
 -- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
 -- Held kann 0 sein, dann wird entweder der letzte Held verwendet
 -- oder über den GUI-Spieler ermittelt.
@@ -401,7 +381,6 @@ BundleGameHelperFunctions = {
             HumanPlayerChangedOnce = false,
             HumanKnightType = 0,
             HumanPlayerID = 1,
-            ExtendedZoomAllowed = true,
             FollowKnightSave = {},
         }
     },
@@ -424,73 +403,7 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Global:Install()
-    self:InitExtendedZoomHotkeyFunction();
-    self:InitExtendedZoomHotkeyDescription();
     API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ToggleExtendedZoom()
-    if self.Data.ExtendedZoomAllowed then
-        if self.Data.ExtendedZoomActive then
-            self:DeactivateExtendedZoom();
-        else
-            self:ActivateExtendedZoom();
-        end
-    end
-end
-
----
--- Aktiviert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ActivateExtendedZoom()
-    self.Data.ExtendedZoomActive = true;
-    API.Bridge("BundleGameHelperFunctions.Local:ActivateExtendedZoom()");
-end
-
----
--- Deaktiviert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:DeactivateExtendedZoom()
-    self.Data.ExtendedZoomActive = false;
-    API.Bridge("BundleGameHelperFunctions.Local:DeactivateExtendedZoom()");
-end
-
----
--- Initialisiert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyFunction()
-    API.Bridge([[
-        BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
-    ]]);
-end
-
----
--- Initialisiert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyDescription()
-    API.Bridge([[
-        BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
-    ]]);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -822,12 +735,6 @@ end
 -- @local
 --
 function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
-    -- Geänderter Zoom --
-    if BundleGameHelperFunctions.Global.Data.ExtendedZoomActive then
-        BundleGameHelperFunctions.Global:ActivateExtendedZoom();
-    end
-    BundleGameHelperFunctions.Global:InitExtendedZoomHotkeyFunction();
-
     -- Cheats sperren --
     if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
         BundleGameHelperFunctions.Global:KillCheats();
@@ -943,70 +850,6 @@ function BundleGameHelperFunctions.Local:RessurectCheats()
         2,
         false
     );
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:RegisterExtendedZoomHotkey()
-    API.AddHotKey(
-        {de = "Strg + Umschalt + K",       en = "Ctrl + Shift + K"},
-        {de = "Alternativen Zoom ein/aus", en = "Alternative zoom on/off"}
-    )
-end
-
----
--- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ActivateExtendedZoomHotkey()
-    Input.KeyBindDown(
-        Keys.ModifierControl + Keys.ModifierShift + Keys.K,
-        "BundleGameHelperFunctions.Local:ToggleExtendedZoom()",
-        2,
-        false
-    );
-end
-
----
--- Wechselt zwischen erweitertem und normalen Zoom.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ToggleExtendedZoom()
-    API.Bridge("BundleGameHelperFunctions.Global:ToggleExtendedZoom()");
-end
-
----
--- Erweitert die Zoomrestriktion auf das Maximum.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ActivateExtendedZoom()
-    Camera.RTS_SetZoomFactorMax(0.8701);
-    Camera.RTS_SetZoomFactor(0.8700);
-    Camera.RTS_SetZoomFactorMin(0.0999);
-end
-
----
--- Stellt die normale Zoomrestriktion wieder her.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:DeactivateExtendedZoom()
-    Camera.RTS_SetZoomFactor(0.5000);
-    Camera.RTS_SetZoomFactorMax(0.5001);
-    Camera.RTS_SetZoomFactorMin(0.0999);
 end
 
 -- -------------------------------------------------------------------------- --
