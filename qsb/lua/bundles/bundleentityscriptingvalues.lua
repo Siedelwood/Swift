@@ -63,7 +63,7 @@ function API.GetEntityPlayer(_Entity)
         API.Fatal("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
-    return BundleEntityScriptingValues.Shared:GetPlayerID(_entity);
+    return BundleEntityScriptingValues.Shared:GetPlayerID(_Entity);
 end
 GetPlayer = API.GetEntityPlayer;
 
@@ -232,7 +232,7 @@ end
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale)
     local EntityID = GetID(_Entity);
-    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_size));
+    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_Scale));
     if Logic.IsSettler(EntityID) == 1 then
         Logic.SetSpeedFactor(EntityID, _Scale);
     end
