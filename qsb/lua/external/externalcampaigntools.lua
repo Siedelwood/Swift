@@ -14,7 +14,7 @@
 --
 -- <p>Die Campaign Tools arbeiten hauptsächlich im lokalen Skript!</p>
 --
--- @set sort=false
+-- @set sort=true
 --
 ExternalCampaignTools = {
 	Global = {

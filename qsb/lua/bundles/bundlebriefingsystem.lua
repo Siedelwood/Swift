@@ -70,7 +70,7 @@
 -- der Grafik gesprungen oder geflogen werden.</p>
 --
 -- @within Modulbeschreibung
--- @set sort=false
+-- @set sort=true
 --
 BundleBriefingSystem = {};
 

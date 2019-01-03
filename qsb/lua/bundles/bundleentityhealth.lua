@@ -25,7 +25,7 @@
 -- </ul>
 --
 -- @within Modulbeschreibung
--- @set sort=false
+-- @set sort=true
 --
 BundleEntityHealth = {};
 

@@ -112,64 +112,64 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.PauseQuestsDuringBriefings">API.PauseQuestsDuringBriefings (_Flag)</a></td>
-	<td class="summary">Setzt den Zustand von Quest Timern währenddessen ein Biefings oder eine
- Fake-Cutscene aktiv ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.IsBriefingFinished">API.IsBriefingFinished (type)</a></td>
-	<td class="summary">Prüft, ob das Briefing mit der angegebenen ID beendet ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GetSelectedAnswerFromMCPage">API.GetSelectedAnswerFromMCPage (_page)</a></td>
-	<td class="summary">Gibt die gewähtle Antwort für die Multiple Choice Page zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GetCurrentBriefingPage">API.GetCurrentBriefingPage (_pageNumber)</a></td>
-	<td class="summary">Gibt die Definition der Seite im aktuellen Briefing zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.GetCurrentBriefing">API.GetCurrentBriefing ()</a></td>
-	<td class="summary">Gibt das aktuelle Briefing zurück.</td>
+	<td class="name" nowrap><a href="#API.AddFlights">API.AddFlights (_Cutscene)</a></td>
+	<td class="summary">Initalisiert die Flight-Funktionen für die übergebene Fake-Cutscene.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.AddPages">API.AddPages (_Briefing)</a></td>
 	<td class="summary">Initalisiert die Page-Funktionen für das übergebene Briefing.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddFlights">API.AddFlights (_Cutscene)</a></td>
-	<td class="summary">Initalisiert die Flight-Funktionen für die übergebene Fake-Cutscene.</td>
+	<td class="name" nowrap><a href="#API.GetCurrentBriefing">API.GetCurrentBriefing ()</a></td>
+	<td class="summary">Gibt das aktuelle Briefing zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StartCutscene">API.StartCutscene (_briefing)</a></td>
-	<td class="summary">Startet ein Briefing im Cutscene Mode.</td>
+	<td class="name" nowrap><a href="#API.GetCurrentBriefingPage">API.GetCurrentBriefingPage (_pageNumber)</a></td>
+	<td class="summary">Gibt die Definition der Seite im aktuellen Briefing zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetSelectedAnswerFromMCPage">API.GetSelectedAnswerFromMCPage (_page)</a></td>
+	<td class="summary">Gibt die gewähtle Antwort für die Multiple Choice Page zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsBriefingFinished">API.IsBriefingFinished (type)</a></td>
+	<td class="summary">Prüft, ob das Briefing mit der angegebenen ID beendet ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.PauseQuestsDuringBriefings">API.PauseQuestsDuringBriefings (_Flag)</a></td>
+	<td class="summary">Setzt den Zustand von Quest Timern währenddessen ein Biefings oder eine
+ Fake-Cutscene aktiv ist.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.StartBriefing">API.StartBriefing (_briefing, _cutsceneMode)</a></td>
 	<td class="summary">Startet ein normales Briefing oder eine Fake-Cutscene.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartCutscene">API.StartCutscene (_briefing)</a></td>
+	<td class="summary">Startet ein Briefing im Cutscene Mode.</td>
+	</tr>
 </table>
 <h2><a href="#Briefing">Briefing</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#AP">AP (_Page)</a></td>
-	<td class="summary">Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#AF">AF (_Flight)</a></td>
 	<td class="summary">Erstellt einen Flight einer Fake-Cutscene.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AP">AP (_Page)</a></td>
+	<td class="summary">Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#ASF">ASF (_Text, _Duration, _Action, _Fading, ...)</a></td>
 	<td class="summary">Ermäglicht einen Flight als Einzeiler zu notieren.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ASP">ASP (_entity, _title, _text, _dialogCamera, _action)</a></td>
-	<td class="summary">Erstellt eine Seite in vereinfachter Syntax.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#ASMC">ASMC (_entity, _title, _text, _dialogCamera, ...)</a></td>
 	<td class="summary">Erstellt eine Multiple Choise Seite in vereinfachter Syntax.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ASP">ASP (_entity, _title, _text, _dialogCamera, _action)</a></td>
+	<td class="summary">Erstellt eine Seite in vereinfachter Syntax.</td>
 	</tr>
 </table>
 <h2><a href="#Reward">Reward</a></h2>
@@ -191,13 +191,13 @@
 <h2><a href="#Trigger">Trigger</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Trigger_BriefingSuccess">Trigger_BriefingSuccess (_QuestName, _Waittime)</a></td>
-	<td class="summary">Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
+	<td class="name" nowrap><a href="#Trigger_BriefingFailure">Trigger_BriefingFailure (_QuestName, _Waittime)</a></td>
+	<td class="summary">Startet einen Quest, nachdem das Niederlage-Briefing eines Quests
  gestartet und durchlaufen wurde.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Trigger_BriefingFailure">Trigger_BriefingFailure (_QuestName, _Waittime)</a></td>
-	<td class="summary">Startet einen Quest, nachdem das Niederlage-Briefing eines Quests
+	<td class="name" nowrap><a href="#Trigger_BriefingSuccess">Trigger_BriefingSuccess (_QuestName, _Waittime)</a></td>
+	<td class="summary">Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
  gestartet und durchlaufen wurde.</td>
 	</tr>
 </table>
@@ -210,138 +210,33 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.PauseQuestsDuringBriefings"></a>
-    <strong>API.PauseQuestsDuringBriefings (_Flag)</strong>
+    <a name = "API.AddFlights"></a>
+    <strong>API.AddFlights (_Cutscene)</strong>
     </dt>
     <dd>
-    Setzt den Zustand von Quest Timern währenddessen ein Biefings oder eine
- Fake-Cutscene aktiv ist.
-<p> Während eines Briefings vergeht generell keine Zeit. Folglich ist der
- Niederlage Timer generell inaktiv. Werden Quests während Briefings nicht
- pausiert, zählen Niederlage Timer unterdessen weiter!
-<p> <p><b>Alias</b>: PauseQuestsDuringBriefings</p>
+    Initalisiert die Flight-Funktionen für die übergebene Fake-Cutscene.
+<p> Die zurückgegebenen Funktionen sind für Kameraflüge gedacht. Vermeide die
+ Anzeige von langen Texten.
+<p> <p><b>Alias</b>: AddPages</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Quest Timer pausiert
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.IsBriefingFinished"></a>
-    <strong>API.IsBriefingFinished (type)</strong>
-    </dt>
-    <dd>
-    Prüft, ob das Briefing mit der angegebenen ID beendet ist.
-<p> <p><b>Alias</b>: IsBriefingFinished</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">type</span>
-        =number]_briefingID ID des Briefing
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Briefing ist beendet
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GetSelectedAnswerFromMCPage"></a>
-    <strong>API.GetSelectedAnswerFromMCPage (_page)</strong>
-    </dt>
-    <dd>
-    Gibt die gewähtle Antwort für die Multiple Choice Page zurück.
-<p> Wird eine Seite mehrmals durchlaufen, wird die jeweils letzte Antwort
- zurückgegeben.
-<p> <p><b>Alias</b>: MCGetSelectedAnswer</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_page</span>
+        <li><span class="parameter">_Cutscene</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Referenz auf die Seite
+         Cutscene
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Gewählte Antwort
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GetCurrentBriefingPage"></a>
-    <strong>API.GetCurrentBriefingPage (_pageNumber)</strong>
-    </dt>
-    <dd>
-    Gibt die Definition der Seite im aktuellen Briefing zurück.
-<p> Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
-<p> <p><b>Alias</b>: GetCurrentBriefingPage</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_pageNumber</span>
-            <span class="types"><span class="type">number</span></span>
-         Index der Seite
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Seite des aktuellen Briefing
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.GetCurrentBriefing"></a>
-    <strong>API.GetCurrentBriefing ()</strong>
-    </dt>
-    <dd>
-    Gibt das aktuelle Briefing zurück.
-<p> Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
-<p> <p><b>Alias</b>: GetCurrentBriefing</p>
-
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Briefing mit allen Seiten
+        <li>
+           <span class="types"><span class="type">function</span></span>
+        AF - Funktion für komfortable Notation von Flights</li>
+        <li>
+           <span class="types"><span class="type">function</span></span>
+        ASF - Kurzschreibweise für AF</li>
     </ol>
 
 
@@ -386,33 +281,22 @@
 
 </dd>
     <dt>
-    <a name = "API.AddFlights"></a>
-    <strong>API.AddFlights (_Cutscene)</strong>
+    <a name = "API.GetCurrentBriefing"></a>
+    <strong>API.GetCurrentBriefing ()</strong>
     </dt>
     <dd>
-    Initalisiert die Flight-Funktionen für die übergebene Fake-Cutscene.
-<p> Die zurückgegebenen Funktionen sind für Kameraflüge gedacht. Vermeide die
- Anzeige von langen Texten.
-<p> <p><b>Alias</b>: AddPages</p>
+    Gibt das aktuelle Briefing zurück.
+<p> Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
+<p> <p><b>Alias</b>: GetCurrentBriefing</p>
 
 
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Cutscene</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Cutscene
-        </li>
-    </ul>
 
     <h3>Returns:</h3>
     <ol>
-        <li>
-           <span class="types"><span class="type">function</span></span>
-        AF - Funktion für komfortable Notation von Flights</li>
-        <li>
-           <span class="types"><span class="type">function</span></span>
-        ASF - Kurzschreibweise für AF</li>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Briefing mit allen Seiten
     </ol>
 
 
@@ -420,33 +304,116 @@
 
 </dd>
     <dt>
-    <a name = "API.StartCutscene"></a>
-    <strong>API.StartCutscene (_briefing)</strong>
+    <a name = "API.GetCurrentBriefingPage"></a>
+    <strong>API.GetCurrentBriefingPage (_pageNumber)</strong>
     </dt>
     <dd>
-    Startet ein Briefing im Cutscene Mode.  Alle nicht erlauten Operationen,
- wie seitenweises Überspringen oder Multiple Choice, sind deaktiviert
- bzw. verhindern den Start der Cutscene.
-<p> <p><b>Hinweis:</b> Bei diesen Cutscenes handelt es sich nicht um echte
- Cutscenes sondern um eine Simulation. Die Kamerabewegung wird
- dementsprechend nicht so flüssig sein und es kann ruckeln!</p>
-<p> <p><b>Alias</b>: BriefingSystem.StartCutscene <br/></p>
- <p><b>Alias</b>: StartCutscene</p>
+    Gibt die Definition der Seite im aktuellen Briefing zurück.
+<p> Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
+<p> <p><b>Alias</b>: GetCurrentBriefingPage</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_briefing</span>
-         [table] Briefing
+        <li><span class="parameter">_pageNumber</span>
+            <span class="types"><span class="type">number</span></span>
+         Index der Seite
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Briefing-ID
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Seite des aktuellen Briefing
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetSelectedAnswerFromMCPage"></a>
+    <strong>API.GetSelectedAnswerFromMCPage (_page)</strong>
+    </dt>
+    <dd>
+    Gibt die gewähtle Antwort für die Multiple Choice Page zurück.
+<p> Wird eine Seite mehrmals durchlaufen, wird die jeweils letzte Antwort
+ zurückgegeben.
+<p> <p><b>Alias</b>: MCGetSelectedAnswer</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_page</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Referenz auf die Seite
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Gewählte Antwort
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsBriefingFinished"></a>
+    <strong>API.IsBriefingFinished (type)</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Briefing mit der angegebenen ID beendet ist.
+<p> <p><b>Alias</b>: IsBriefingFinished</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">type</span>
+        =number]_briefingID ID des Briefing
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Briefing ist beendet
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.PauseQuestsDuringBriefings"></a>
+    <strong>API.PauseQuestsDuringBriefings (_Flag)</strong>
+    </dt>
+    <dd>
+    Setzt den Zustand von Quest Timern währenddessen ein Biefings oder eine
+ Fake-Cutscene aktiv ist.
+<p> Während eines Briefings vergeht generell keine Zeit. Folglich ist der
+ Niederlage Timer generell inaktiv. Werden Quests während Briefings nicht
+ pausiert, zählen Niederlage Timer unterdessen weiter!
+<p> <p><b>Alias</b>: PauseQuestsDuringBriefings</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Quest Timer pausiert
+        </li>
+    </ul>
+
 
 
 
@@ -487,58 +454,43 @@
 
 
 </dd>
-</dl>
-    <h2 class="section-header "><a name="Briefing"></a>Briefing</h2>
-
-    <dl class="function">
     <dt>
-    <a name = "AP"></a>
-    <strong>AP (_Page)</strong>
+    <a name = "API.StartCutscene"></a>
+    <strong>API.StartCutscene (_briefing)</strong>
     </dt>
     <dd>
-    Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.
-<p> <b>Normale Seite</b><br>
- Die üblichen Parameter können angegeben werden. Beispiele sind zoom, text,
- oder action. Zusätzlich hinzugekommen sind lookAt und zOffset. Mittels
- lookAt kann die Kamera zum Angesicht eines Siedlers ausgerichtet werden.
- zOffset ermöglicht die Nutzung der Z-Achse.
-<p> <b>Multiple Choice, Sprünge und Leerseiten</b><br>
- Eine Multiple-Choice-Seite enthält die Unterseite mc. In mc wird der Text,
- der Titel und die möglichen Antwortmöglichkeiten notiiert. Alle Antworten
- stehen innerhalb von answers. Jede mögliche Antwort ist eine Table mit dem
- Text der Auswahl, dem Sprungziel und einigen Optionen.<br>
- Mittels eines Sprungs kann zu einer anderen Seite eines Briefings gegangen
- werden. Dazu muss der Index der Zielseite angegeben werden. Die erste Seite
- eines Briefings darf kein Sprung sein!.<br>
- Eine Leerseite kann benutzt werden um hinter einem von einer Auswahl
- aufgeschlagenen Pfad im Briefing selbiges zu beenden. Sonst würde das
- Briefing einfach mit der nächsten Seite weiter machen. Sprungbefehle
- können alternativ verwendet werden.
-<p> <b>Splashscreens</b><br>
- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
- über die Grafik zu scrollen oder zu zoomen.
+    Startet ein Briefing im Cutscene Mode.  Alle nicht erlauten Operationen,
+ wie seitenweises Überspringen oder Multiple Choice, sind deaktiviert
+ bzw. verhindern den Start der Cutscene.
+<p> <p><b>Hinweis:</b> Bei diesen Cutscenes handelt es sich nicht um echte
+ Cutscenes sondern um eine Simulation. Die Kamerabewegung wird
+ dementsprechend nicht so flüssig sein und es kann ruckeln!</p>
+<p> <p><b>Alias</b>: BriefingSystem.StartCutscene <br/></p>
+ <p><b>Alias</b>: StartCutscene</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Page</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Spezifikation der Seite
+        <li><span class="parameter">_briefing</span>
+         [table] Briefing
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Refernez auf die angelegte Seite
+        [number] Briefing-ID
     </ol>
 
 
 
 
 </dd>
+</dl>
+    <h2 class="section-header "><a name="Briefing"></a>Briefing</h2>
+
+    <dl class="function">
     <dt>
     <a name = "AF"></a>
     <strong>AF (_Flight)</strong>
@@ -632,6 +584,54 @@
 
 </dd>
     <dt>
+    <a name = "AP"></a>
+    <strong>AP (_Page)</strong>
+    </dt>
+    <dd>
+    Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.
+<p> <b>Normale Seite</b><br>
+ Die üblichen Parameter können angegeben werden. Beispiele sind zoom, text,
+ oder action. Zusätzlich hinzugekommen sind lookAt und zOffset. Mittels
+ lookAt kann die Kamera zum Angesicht eines Siedlers ausgerichtet werden.
+ zOffset ermöglicht die Nutzung der Z-Achse.
+<p> <b>Multiple Choice, Sprünge und Leerseiten</b><br>
+ Eine Multiple-Choice-Seite enthält die Unterseite mc. In mc wird der Text,
+ der Titel und die möglichen Antwortmöglichkeiten notiiert. Alle Antworten
+ stehen innerhalb von answers. Jede mögliche Antwort ist eine Table mit dem
+ Text der Auswahl, dem Sprungziel und einigen Optionen.<br>
+ Mittels eines Sprungs kann zu einer anderen Seite eines Briefings gegangen
+ werden. Dazu muss der Index der Zielseite angegeben werden. Die erste Seite
+ eines Briefings darf kein Sprung sein!.<br>
+ Eine Leerseite kann benutzt werden um hinter einem von einer Auswahl
+ aufgeschlagenen Pfad im Briefing selbiges zu beenden. Sonst würde das
+ Briefing einfach mit der nächsten Seite weiter machen. Sprungbefehle
+ können alternativ verwendet werden.
+<p> <b>Splashscreens</b><br>
+ Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
+ über die Grafik zu scrollen oder zu zoomen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Page</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Spezifikation der Seite
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Refernez auf die angelegte Seite
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "ASF"></a>
     <strong>ASF (_Text, _Duration, _Action, _Fading, ...)</strong>
     </dt>
@@ -680,54 +680,6 @@
 
 </dd>
     <dt>
-    <a name = "ASP"></a>
-    <strong>ASP (_entity, _title, _text, _dialogCamera, _action)</strong>
-    </dt>
-    <dd>
-    Erstellt eine Seite in vereinfachter Syntax.  Es wird davon
- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
- schaut den Siedler an.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entity</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-           Zielentity
-        </li>
-        <li><span class="parameter">_title</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        	 Titel der Seite
-        </li>
-        <li><span class="parameter">_text</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-             Text der Seite
-        </li>
-        <li><span class="parameter">_dialogCamera</span>
-         Nahsicht an/aus
-        </li>
-        <li><span class="parameter">_action</span>
-              Callback-Funktion
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Referenz auf die Seite
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">ASP(<span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "ASMC"></a>
     <strong>ASMC (_entity, _title, _text, _dialogCamera, ...)</strong>
     </dt>
@@ -772,6 +724,54 @@
         <pre class="example">ASMC(<span class="string">"hans"</span>, <span class="string">""</span>, <span class="string">"In welche Richtung soll Hänschen-Klein gehen?"</span>, <span class="keyword">false</span>,
      <span class="string">"Nach links gehen."</span>, <span class="number">2</span>,
      <span class="string">"Lieber nach rechts."</span>, <span class="number">4</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "ASP"></a>
+    <strong>ASP (_entity, _title, _text, _dialogCamera, _action)</strong>
+    </dt>
+    <dd>
+    Erstellt eine Seite in vereinfachter Syntax.  Es wird davon
+ Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
+ schaut den Siedler an.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Zielentity
+        </li>
+        <li><span class="parameter">_title</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        	 Titel der Seite
+        </li>
+        <li><span class="parameter">_text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Text der Seite
+        </li>
+        <li><span class="parameter">_dialogCamera</span>
+         Nahsicht an/aus
+        </li>
+        <li><span class="parameter">_action</span>
+              Callback-Funktion
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Referenz auf die Seite
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ASP(<span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>);</pre>
     </ul>
 
 </dd>
@@ -839,11 +839,11 @@
 
     <dl class="function">
     <dt>
-    <a name = "Trigger_BriefingSuccess"></a>
-    <strong>Trigger_BriefingSuccess (_QuestName, _Waittime)</strong>
+    <a name = "Trigger_BriefingFailure"></a>
+    <strong>Trigger_BriefingFailure (_QuestName, _Waittime)</strong>
     </dt>
     <dd>
-    Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
+    Startet einen Quest, nachdem das Niederlage-Briefing eines Quests
  gestartet und durchlaufen wurde.
 
 
@@ -865,11 +865,11 @@
 
 </dd>
     <dt>
-    <a name = "Trigger_BriefingFailure"></a>
-    <strong>Trigger_BriefingFailure (_QuestName, _Waittime)</strong>
+    <a name = "Trigger_BriefingSuccess"></a>
+    <strong>Trigger_BriefingSuccess (_QuestName, _Waittime)</strong>
     </dt>
     <dd>
-    Startet einen Quest, nachdem das Niederlage-Briefing eines Quests
+    Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
  gestartet und durchlaufen wurde.
 
 
@@ -897,7 +897,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-02 14:23:40 </i>
+<i style="float:right;">Last updated 2019-01-03 19:39:04 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

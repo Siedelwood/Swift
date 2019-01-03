@@ -5,11 +5,11 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- <p>Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
+-- Mit diesem Bundle können Eigenschaften von Entities abgefragt oder
 -- verändert werden, die sonst unzugänglich wären. Dazu zählen beispielsweise
--- die Größe des Entity und das Bewegungsziel.</p>
+-- die Größe des Entity und das Bewegungsziel.
 --
--- <p><a href="#API.GetEntityPlayer">Scripting Values</a></p>
+-- <a href="#API.GetEntityPlayer">Scripting Values</a>
 --
 -- @within Modulbeschreibung
 -- @set sort=true

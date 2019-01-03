@@ -56,9 +56,11 @@
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../bibliotheken/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><strong>bundles.bundleinterfaceapperance</strong></li>
+  <li><a href="../bibliotheken/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../bibliotheken/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../bibliotheken/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
   <li><a href="../bibliotheken/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
@@ -66,6 +68,7 @@
   <li><a href="../bibliotheken/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../bibliotheken/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../bibliotheken/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
   <li><a href="../bibliotheken/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../bibliotheken/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../bibliotheken/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
@@ -84,10 +87,8 @@
 <h1>Module <code>bundles.bundleinterfaceapperance</code></h1>
 <p>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche
  des Spiels.</p>
-<p> Es gibt Funktionen zum Ausblenden einiger Buttons und Menüs und
- die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
- zu setzen.
-<p> <p><a href="#API.InterfaceHideBuildMenu">Interface-Steuerung</a></p>
+<p> Der Mapper hat die Möglichkeit, eigene Texte und Grafiken im
+ Interface anzuzeigen.
 </p>
 
 
@@ -100,46 +101,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.InterfaceGetTerritoryName">API.InterfaceGetTerritoryName (_TerritoryID)</a></td>
 	<td class="summary">Gibt den Namen des Territoriums zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideBuildMenu">API.InterfaceHideBuildMenu (_Flag)</a></td>
-	<td class="summary">Versteckt das Baumenü oder blendet es ein.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideBuyTerritory">API.InterfaceHideBuyTerritory (_Flag)</a></td>
-	<td class="summary">Versteckt den Button zum Territorienkauf oder blendet ihn ein.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideDiplomacyMenu">API.InterfaceHideDiplomacyMenu (_Flag)</a></td>
-	<td class="summary">Versteckt den Button des Diplomatiemenü oder blendet ihn ein.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideKnightAbility">API.InterfaceHideKnightAbility (_Flag)</a></td>
-	<td class="summary">Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideKnightButton">API.InterfaceHideKnightButton (_Flag)</a></td>
-	<td class="summary">Versteckt den Button zur Heldenselektion oder blendet ihn ein.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideMinimap">API.InterfaceHideMinimap (_Flag)</a></td>
-	<td class="summary">Graut die Minimap aus oder macht sie wieder verwendbar.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideProductionMenu">API.InterfaceHideProductionMenu (_Flag)</a></td>
-	<td class="summary">Versteckt den Button des Produktionsmenü oder blendet ihn ein.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideSelectionButton">API.InterfaceHideSelectionButton (_Flag)</a></td>
-	<td class="summary">Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideToggleMinimap">API.InterfaceHideToggleMinimap (_Flag)</a></td>
-	<td class="summary">Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.InterfaceHideWeatherMenu">API.InterfaceHideWeatherMenu (_Flag)</a></td>
-	<td class="summary">Versteckt den Button des Wettermenüs oder blendet ihn ein.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterfaceSetIcon">API.InterfaceSetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
@@ -173,24 +134,8 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleInterfaceApperance.Global.RestoreAfterLoad">BundleInterfaceApperance.Global.RestoreAfterLoad ()</a></td>
-	<td class="summary">Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleInterfaceApperance.Global:Install">BundleInterfaceApperance.Global:Install ()</a></td>
-	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:HideInterfaceButton">BundleInterfaceApperance.Local:HideInterfaceButton (_Widget, _Hide)</a></td>
-	<td class="summary">Versteht ein Widget oder blendet es ein.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:Install">BundleInterfaceApperance.Local:Install ()</a></td>
 	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:RestoreAfterLoad">BundleInterfaceApperance.Local:RestoreAfterLoad ()</a></td>
-	<td class="summary">Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:SetIcon">BundleInterfaceApperance.Local:SetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
@@ -278,236 +223,6 @@
 
         [string]  Name des Territorium
     </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideBuildMenu"></a>
-    <strong>API.InterfaceHideBuildMenu (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt das Baumenü oder blendet es ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideBuyTerritory"></a>
-    <strong>API.InterfaceHideBuyTerritory (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt den Button zum Territorienkauf oder blendet ihn ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideDiplomacyMenu"></a>
-    <strong>API.InterfaceHideDiplomacyMenu (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideKnightAbility"></a>
-    <strong>API.InterfaceHideKnightAbility (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideKnightButton"></a>
-    <strong>API.InterfaceHideKnightButton (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt den Button zur Heldenselektion oder blendet ihn ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideMinimap"></a>
-    <strong>API.InterfaceHideMinimap (_Flag)</strong>
-    </dt>
-    <dd>
-    Graut die Minimap aus oder macht sie wieder verwendbar.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideProductionMenu"></a>
-    <strong>API.InterfaceHideProductionMenu (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt den Button des Produktionsmenü oder blendet ihn ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideSelectionButton"></a>
-    <strong>API.InterfaceHideSelectionButton (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideToggleMinimap"></a>
-    <strong>API.InterfaceHideToggleMinimap (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.InterfaceHideWeatherMenu"></a>
-    <strong>API.InterfaceHideWeatherMenu (_Flag)</strong>
-    </dt>
-    <dd>
-    Versteckt den Button des Wettermenüs oder blendet ihn ein.
-<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
- aktiv und muss explizit zurückgenommen werden!</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-         [boolean] Widget versteckt
-        </li>
-    </ul>
-
 
 
 
@@ -778,76 +493,11 @@
 
     <dl class="function">
     <dt>
-    <a name = "BundleInterfaceApperance.Global.RestoreAfterLoad"></a>
-    <strong>BundleInterfaceApperance.Global.RestoreAfterLoad ()</strong>
-    </dt>
-    <dd>
-    Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleInterfaceApperance.Global:Install"></a>
-    <strong>BundleInterfaceApperance.Global:Install ()</strong>
-    </dt>
-    <dd>
-    Initialisiert das Bundle im globalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleInterfaceApperance.Local:HideInterfaceButton"></a>
-    <strong>BundleInterfaceApperance.Local:HideInterfaceButton (_Widget, _Hide)</strong>
-    </dt>
-    <dd>
-    Versteht ein Widget oder blendet es ein.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Widget</span>
-         [string|number] Widgetpfad oder ID
-        </li>
-        <li><span class="parameter">_Hide</span>
-         [boolean] Hidden Flag
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleInterfaceApperance.Local:Install"></a>
     <strong>BundleInterfaceApperance.Local:Install ()</strong>
     </dt>
     <dd>
     Initialisiert das Bundle im lokalen Skript.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleInterfaceApperance.Local:RestoreAfterLoad"></a>
-    <strong>BundleInterfaceApperance.Local:RestoreAfterLoad ()</strong>
-    </dt>
-    <dd>
-    Stellt alle versteckten Buttons nach dem Laden eines Spielstandes wieder her.
 
 
 
@@ -1039,7 +689,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-02 14:23:52 </i>
+<i style="float:right;">Last updated 2019-01-03 19:39:28 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

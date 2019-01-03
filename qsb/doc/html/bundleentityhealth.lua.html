@@ -72,32 +72,32 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.GetEntityHealth">API.GetEntityHealth (_Entity)</a></td>
-	<td class="summary">Gibt die Gesundheit des Entity in prozent zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ChangeEntityHealth">API.ChangeEntityHealth (_Entity, _Percentage)</a></td>
-	<td class="summary">Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetBuildingOnFire">API.SetBuildingOnFire (_Entity, _Strength)</a></td>
-	<td class="summary">Steckt ein Gebäude in Brand.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.HurtEntity">API.HurtEntity (_Target, _AmountOfDamage, _Attacker)</a></td>
-	<td class="summary">Verwundet ein Entity oder ein Battalion um den angegebenen Wert.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.AddOnEntityHurtAction">API.AddOnEntityHurtAction (_Function)</a></td>
-	<td class="summary">Erstellt einen neuen Auslöser für Kampfgeschehen.</td>
+	<td class="name" nowrap><a href="#API.AddOnEntityCreatedAction">API.AddOnEntityCreatedAction (_Function)</a></td>
+	<td class="summary">Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt wird.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.AddOnEntityDestroyedAction">API.AddOnEntityDestroyedAction (_Function)</a></td>
 	<td class="summary">Erstellt einen neuen Auslöser für zerstörte Entities.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.AddOnEntityCreatedAction">API.AddOnEntityCreatedAction (_Function)</a></td>
-	<td class="summary">Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt wird.</td>
+	<td class="name" nowrap><a href="#API.AddOnEntityHurtAction">API.AddOnEntityHurtAction (_Function)</a></td>
+	<td class="summary">Erstellt einen neuen Auslöser für Kampfgeschehen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ChangeEntityHealth">API.ChangeEntityHealth (_Entity, _Percentage)</a></td>
+	<td class="summary">Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityHealth">API.GetEntityHealth (_Entity)</a></td>
+	<td class="summary">Gibt die Gesundheit des Entity in prozent zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HurtEntity">API.HurtEntity (_Target, _AmountOfDamage, _Attacker)</a></td>
+	<td class="summary">Verwundet ein Entity oder ein Battalion um den angegebenen Wert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetBuildingOnFire">API.SetBuildingOnFire (_Entity, _Strength)</a></td>
+	<td class="summary">Steckt ein Gebäude in Brand.</td>
 	</tr>
 </table>
 <h2><a href="#Reprisal">Reprisal</a></h2>
@@ -130,35 +130,84 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.GetEntityHealth"></a>
-    <strong>API.GetEntityHealth (_Entity)</strong>
+    <a name = "API.AddOnEntityCreatedAction"></a>
+    <strong>API.AddOnEntityCreatedAction (_Function)</strong>
     </dt>
     <dd>
-    Gibt die Gesundheit des Entity in prozent zurück.
-<p> Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen,
- Gebäude und Raubtiere haben Gesundheit.
-<p> <p><b>Alias</b>: GetHealth</p>
+    Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt wird.
+<p> <p><b>Alias</b>: AddSpawnedAction</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Angefragtes Entity
+        <li><span class="parameter">_Function</span>
+         [function] Funktion, die ausgeführt wird.
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] Gesundheit in Prozent
-    </ol>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="keyword">local</span> Health = GetHealth(<span class="string">"hakim"</span>);</pre>
+        <pre class="example">API.AddOnEntityCreatedAction(SomeFunctionReference);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.AddOnEntityDestroyedAction"></a>
+    <strong>API.AddOnEntityDestroyedAction (_Function)</strong>
+    </dt>
+    <dd>
+    Erstellt einen neuen Auslöser für zerstörte Entities.
+<p> Jede Funktion wird immer dann ausgeführt, wenn ein Entity durch ein anderes
+ Entity oder durch das Skript zerstört wird.
+<p> <p><b>Alias</b>: AddKilledAction</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         [function] Funktion, die ausgeführt wird.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.AddOnEntityCreatedAction(SomeFunctionReference);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.AddOnEntityHurtAction"></a>
+    <strong>API.AddOnEntityHurtAction (_Function)</strong>
+    </dt>
+    <dd>
+    Erstellt einen neuen Auslöser für Kampfgeschehen.
+<p> Jede Funktion wird immer dann ausgeführt, wenn ein Entity durch ein anderes
+ verwundet wird.
+<p> <p><b>Alias</b>: AddHurtAction</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         [function] Funktion, die ausgeführt wird.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.AddOnEntityHurtAction(SomeFunctionReference);</pre>
     </ul>
 
 </dd>
@@ -194,32 +243,35 @@
 
 </dd>
     <dt>
-    <a name = "API.SetBuildingOnFire"></a>
-    <strong>API.SetBuildingOnFire (_Entity, _Strength)</strong>
+    <a name = "API.GetEntityHealth"></a>
+    <strong>API.GetEntityHealth (_Entity)</strong>
     </dt>
     <dd>
-    Steckt ein Gebäude in Brand.
-<p> Achtung: Nur Gebäude können in Brand gesteckt werden.
-<p> <p><b>Alias</b>: SetOnFire</p>
+    Gibt die Gesundheit des Entity in prozent zurück.
+<p> Achtung: Nur Siedler (inklusive Millitär und Helden), Belagerungswaffen,
+ Gebäude und Raubtiere haben Gesundheit.
+<p> <p><b>Alias</b>: GetHealth</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-           [string|number] Skriptname oder EntityID
-        </li>
-        <li><span class="parameter">_Strength</span>
-         [number] Stärke des Brandes
+         [string|number] Angefragtes Entity
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+        [number] Gesundheit in Prozent
+    </ol>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">SetOnFire(<span class="string">"headquarters1"</span>, <span class="number">100</span>);</pre>
+        <pre class="example"><span class="keyword">local</span> Health = GetHealth(<span class="string">"hakim"</span>);</pre>
     </ul>
 
 </dd>
@@ -258,21 +310,23 @@
 
 </dd>
     <dt>
-    <a name = "API.AddOnEntityHurtAction"></a>
-    <strong>API.AddOnEntityHurtAction (_Function)</strong>
+    <a name = "API.SetBuildingOnFire"></a>
+    <strong>API.SetBuildingOnFire (_Entity, _Strength)</strong>
     </dt>
     <dd>
-    Erstellt einen neuen Auslöser für Kampfgeschehen.
-<p> Jede Funktion wird immer dann ausgeführt, wenn ein Entity durch ein anderes
- verwundet wird.
-<p> <p><b>Alias</b>: AddHurtAction</p>
+    Steckt ein Gebäude in Brand.
+<p> Achtung: Nur Gebäude können in Brand gesteckt werden.
+<p> <p><b>Alias</b>: SetOnFire</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Function</span>
-         [function] Funktion, die ausgeführt wird.
+        <li><span class="parameter">_Entity</span>
+           [string|number] Skriptname oder EntityID
+        </li>
+        <li><span class="parameter">_Strength</span>
+         [number] Stärke des Brandes
         </li>
     </ul>
 
@@ -281,61 +335,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.AddOnEntityHurtAction(SomeFunctionReference);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.AddOnEntityDestroyedAction"></a>
-    <strong>API.AddOnEntityDestroyedAction (_Function)</strong>
-    </dt>
-    <dd>
-    Erstellt einen neuen Auslöser für zerstörte Entities.
-<p> Jede Funktion wird immer dann ausgeführt, wenn ein Entity durch ein anderes
- Entity oder durch das Skript zerstört wird.
-<p> <p><b>Alias</b>: AddKilledAction</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Function</span>
-         [function] Funktion, die ausgeführt wird.
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.AddOnEntityCreatedAction(SomeFunctionReference);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.AddOnEntityCreatedAction"></a>
-    <strong>API.AddOnEntityCreatedAction (_Function)</strong>
-    </dt>
-    <dd>
-    Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt wird.
-<p> <p><b>Alias</b>: AddSpawnedAction</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Function</span>
-         [function] Funktion, die ausgeführt wird.
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.AddOnEntityCreatedAction(SomeFunctionReference);</pre>
+        <pre class="example">SetOnFire(<span class="string">"headquarters1"</span>, <span class="number">100</span>);</pre>
     </ul>
 
 </dd>
@@ -427,7 +427,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-02 14:23:40 </i>
+<i style="float:right;">Last updated 2019-01-03 19:39:06 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

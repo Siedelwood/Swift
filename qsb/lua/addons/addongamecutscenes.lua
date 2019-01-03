@@ -5,11 +5,11 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- <p>Dieses Bundle verwaltet den Aufruf der mit dem SCA-Tool erstellten
+-- Dieses Bundle verwaltet den Aufruf der mit dem SCA-Tool erstellten
 -- Cutscenes. Ausserdem ermöglicht es das direkte Erfassen der
--- Kamerapositionen aus der Map heraus.</p>
+-- Kamerapositionen aus der Map heraus.
 --
--- <p><a href="#CS.StartCutscene">Cutscene starten</a></p>
+-- <a href="#CS.StartCutscene">Cutscene starten</a>
 --
 -- @within Modulbeschreibung
 -- @set sort=true

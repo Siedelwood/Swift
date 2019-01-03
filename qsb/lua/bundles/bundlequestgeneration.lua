@@ -16,7 +16,7 @@
 -- <p><a href="#API.CreateQuest">Quests erzeugen</a></p>
 --
 -- @within Modulbeschreibung
--- @set sort=false
+-- @set sort=true
 --
 BundleQuestGeneration = {};
 

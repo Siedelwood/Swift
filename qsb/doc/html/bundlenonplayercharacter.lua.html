@@ -47,43 +47,42 @@
 <div id="content">
 
 <h1>Module <code>bundlenonplayercharacter</code></h1>
-<p><p>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere
+<p>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere
  bereitgestellt.</p>
 <p> Die Helden eines Spielers können mit diesen NPCs sprechen.
  Dazu muss der Held selektiert sein. Dann kann der Spieler ihm mit einem
  Rechtsklick befehlen, den NPC anzusprechen. Dabei wird der Mauszeiger zu
- einer Hand.</p>
-<p> <p>Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
- </p>
-<p> <p><a href="#API.NpcCompose">NPCs erzeugen und verwalten</a></p>
+ einer Hand.
+<p> Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
+<p> <a href="#API.NpcCompose">NPCs erzeugen und verwalten</a>
 </p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.NpcCompose">API.NpcCompose (_Data)</a></td>
-	<td class="summary">Erstellt einen neuen NPC für den angegebenen Siedler.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.NpcDispose">API.NpcDispose (_Entity)</a></td>
-	<td class="summary">Entfernt den NPC komplett vom Entity.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.NpcActivate">API.NpcActivate (_Entity)</a></td>
 	<td class="summary">Aktiviert einen inaktiven NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.NpcCompose">API.NpcCompose (_Data)</a></td>
+	<td class="summary">Erstellt einen neuen NPC für den angegebenen Siedler.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.NpcDeactivate">API.NpcDeactivate (_Entity)</a></td>
 	<td class="summary">Deaktiviert einen NPC, sodass dieser nicht angesprochen werden kann.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.NpcReset">API.NpcReset (_Entity)</a></td>
-	<td class="summary">Setzt einen NPC zurück, sodass er nicht mehr als angesprochen gilt.</td>
+	<td class="name" nowrap><a href="#API.NpcDispose">API.NpcDispose (_Entity)</a></td>
+	<td class="summary">Entfernt den NPC komplett vom Entity.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.NpcHasSpoken">API.NpcHasSpoken (_Entity)</a></td>
 	<td class="summary">Prüft, ob der NPC bereits angesprochen wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.NpcReset">API.NpcReset (_Entity)</a></td>
+	<td class="summary">Setzt einen NPC zurück, sodass er nicht mehr als angesprochen gilt.</td>
 	</tr>
 </table>
 <h2><a href="#Goal">Goal</a></h2>
@@ -108,6 +107,33 @@
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "API.NpcActivate"></a>
+    <strong>API.NpcActivate (_Entity)</strong>
+    </dt>
+    <dd>
+    Aktiviert einen inaktiven NPC.  Wenn ein NPC bereits gesprochen hat, muss
+ er zuvor zurückgesetzt werden.
+<p> <p><b>Alias:</b> EnableNPC</P>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Nichtspieler-Charakter
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.NpcActivate(<span class="string">"horst"</span>)</pre>
+    </ul>
+
+</dd>
     <dt>
     <a name = "API.NpcCompose"></a>
     <strong>API.NpcCompose (_Data)</strong>
@@ -170,59 +196,6 @@
 
 </dd>
     <dt>
-    <a name = "API.NpcDispose"></a>
-    <strong>API.NpcDispose (_Entity)</strong>
-    </dt>
-    <dd>
-    Entfernt den NPC komplett vom Entity.  Das Entity bleibt dabei erhalten.
-<p> <p><b>Alias:</b> DestroyNPC</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Nichtspieler-Charakter
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.NpcDispose(<span class="string">"horst"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.NpcActivate"></a>
-    <strong>API.NpcActivate (_Entity)</strong>
-    </dt>
-    <dd>
-    Aktiviert einen inaktiven NPC.  Wenn ein NPC bereits gesprochen hat, muss
- er zuvor zurückgesetzt werden.
-<p> <p><b>Alias:</b> EnableNPC</P>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         [string|number] Nichtspieler-Charakter
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.NpcActivate(<span class="string">"horst"</span>)</pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "API.NpcDeactivate"></a>
     <strong>API.NpcDeactivate (_Entity)</strong>
     </dt>
@@ -249,12 +222,12 @@
 
 </dd>
     <dt>
-    <a name = "API.NpcReset"></a>
-    <strong>API.NpcReset (_Entity)</strong>
+    <a name = "API.NpcDispose"></a>
+    <strong>API.NpcDispose (_Entity)</strong>
     </dt>
     <dd>
-    Setzt einen NPC zurück, sodass er nicht mehr als angesprochen gilt.
-<p> <p><b>Alias:</b> ResetNPC<p>
+    Entfernt den NPC komplett vom Entity.  Das Entity bleibt dabei erhalten.
+<p> <p><b>Alias:</b> DestroyNPC</p>
 
 
 
@@ -270,7 +243,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.NpcReset(<span class="string">"horst"</span>)</pre>
+        <pre class="example">API.NpcDispose(<span class="string">"horst"</span>)</pre>
     </ul>
 
 </dd>
@@ -303,6 +276,32 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example">API.NpcHasSpoken(<span class="string">"horst"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.NpcReset"></a>
+    <strong>API.NpcReset (_Entity)</strong>
+    </dt>
+    <dd>
+    Setzt einen NPC zurück, sodass er nicht mehr als angesprochen gilt.
+<p> <p><b>Alias:</b> ResetNPC<p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         [string|number] Nichtspieler-Charakter
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.NpcReset(<span class="string">"horst"</span>)</pre>
     </ul>
 
 </dd>
@@ -373,7 +372,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-02 14:23:41 </i>
+<i style="float:right;">Last updated 2019-01-03 19:39:09 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
