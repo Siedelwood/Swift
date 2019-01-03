@@ -115,6 +115,7 @@ SymfoniaLoader = {
             {"BundleEntityHealth",                  true},
             {"BundleEntityHelperFunctions",         true},
             {"BundleExtendedZoom",                  true},
+            {"BundleInterfaceFeatureVisibility",    true},
             {"BundleKnightTitleRequirements",       true},
             {"BundleMinimapMarker",                 true},
             {"BundleSymfoniaBehaviors",             true},
@@ -132,6 +133,7 @@ SymfoniaLoader = {
             {"BundlePlayerHelperFunctions",         true},
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
+            {"BundleThirdPersonCamera",             true},
             {"BundleTradingAnalysis",               true},
         },
 
