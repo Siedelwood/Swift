@@ -250,7 +250,7 @@ function QSB.EntityScriptingValue:SetEntitySize(_Scale)
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
-        Logic.SetEntityScriptingValue(EntityID, -45, self:Float2Int(_size));
+        Logic.SetEntityScriptingValue(EntityID, -45, self:Float2Int(_Scale));
         if Logic.IsSettler(EntityID) == 1 then
             Logic.SetSpeedFactor(EntityID, _Scale);
         end
