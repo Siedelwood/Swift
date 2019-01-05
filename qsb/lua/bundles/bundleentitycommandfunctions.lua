@@ -71,6 +71,9 @@ SetPosition = API.SetPosition;
 ---
 -- Das Entity wird relativ zu einem Winkel zum Ziel bewegt.
 --
+-- <b>Hinweis</b>: Beim Alias MoveEntityToPositionToAnotherOne sind die
+-- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
+--
 -- <p><b>Alias:</b> MoveEntityToPositionToAnotherOne</p>
 --
 -- @param _Entity       [string|number] Zu bewegendes Entity
@@ -100,11 +103,16 @@ function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity
     end
     return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
 end
-MoveEntityToPositionToAnotherOne = API.MoveToPosition;
+MoveEntityToPositionToAnotherOne = function(_Entity, _Distance, _Position, _Angle, _moveAsEntity)
+    API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
+end
 
 ---
 -- Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
 -- anschließend an.
+--
+-- <b>Hinweis</b>: Beim Alias MoveEntityFaceToFaceToAnotherOne sind die
+-- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 --
 -- <p><b>Alias:</b> MoveEx</br></p>
 -- <p><b>Alias:</b> MoveEntityFaceToFaceToAnotherOne</p>
@@ -135,11 +143,16 @@ function API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
     end
     return BundleEntityCommandFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
 end
-MoveEntityFaceToFaceToAnotherOne = API.MoveAndLookAt;
+MoveEntityFaceToFaceToAnotherOne = function(_Entity, _Distance, _Position, _moveAsEntity)
+    API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
+end
 MoveEx = API.MoveAndLookAt;
 
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.
+--
+-- <b>Hinweis</b>: Beim Alias PlaceEntityToPositionToAnotherOne sind die
+-- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 --
 -- <p><b>Alias:</b> PlaceEntityToPositionToAnotherOne</p>
 --
@@ -167,14 +180,19 @@ function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
         API.Fatal("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
-    local Position = BundleEntityCommandFunctions.Shared:GetRelativePosition(_Position, _Distance, _Angle, true);
+    local Position = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance, _Angle, true);
     API.SetPosition(_Entity, Position);
 end
-PlaceEntityToPositionToAnotherOne = API.PlaceToPosition;
+PlaceEntityToPositionToAnotherOne = function(_Entity, _Distance, _Position, _Angle)
+    API.PlaceToPosition(_Entity, _Position, _Distance, _Angle);
+end
 
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
 -- das Ziel an.
+--
+-- <b>Hinweis</b>: Beim Alias PlaceEntityFaceToFaceToAnotherOne sind die
+-- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 --
 -- <p><b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne</p>
 -- <p><b>Alias:</b> SetPositionEx<br></p>
@@ -195,7 +213,9 @@ function API.PlaceAndLookAt(_Entity, _Position, _Distance)
     API.PlaceToPosition(_Entity, _Position, _Distance, 0);
     LookAt(_Entity, _Position);
 end
-PlaceEntityFaceToFaceToAnotherOne = API.PlaceAndLookAt;
+PlaceEntityFaceToFaceToAnotherOne = function(_Entity, _Distance, _Position)
+    API.PlaceAndLookAt(_Entity, _Position, _Distance);
+end
 SetPositionEx = API.PlaceAndLookAt;
 
 ---

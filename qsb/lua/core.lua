@@ -50,7 +50,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "RE 1.2.9 1/2/2019";
+QSB.Version = "RE 1.2.10 1/2/2019";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
