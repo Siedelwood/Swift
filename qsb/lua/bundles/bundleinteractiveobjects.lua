@@ -776,10 +776,11 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
     GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectClicked
     GUI_Interaction.InteractiveObjectClicked = function()
         local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
-        local lang = Network.GetDesiredLanguage();
         local eID = g_Interaction.ActiveObjectsOnScreen[i];
         local pID = GUI.GetPlayerID();
         local EntityType = Logic.GetEntityType(eID);
+        local lang = Network.GetDesiredLanguage();
+        if lang ~= "de" then lang = "en" end
 
         -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
@@ -845,8 +846,12 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
                     -- check condition
                     if not IO[k].ConditionFullfilled then
-                        if IO[k].ConditionUnfulfilled and IO[k].ConditionUnfulfilled ~= "" then
-                            Message(IO[k].ConditionUnfulfilled);
+                        if IO[k].ConditionUnfulfilled then
+                            local MessageText = IO[k].ConditionUnfulfilled;
+                            if type(MessageText) == "table" then
+                                MessageText = MessageText[lang];
+                            end
+                            Message(MessageText);
                         end
                         return;
                     end
