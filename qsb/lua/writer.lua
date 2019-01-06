@@ -133,8 +133,8 @@ end
 --
 function SymfoniaWriter:GetOSName()
     local osname = "Unknown";
-    fh,err = io.popen("uname -o 2>/dev/null","r");
-    if fh then
+    fh, err = io.popen("uname -o 2>/dev/null","r");
+    if fh and err == 0 then
         osname = fh:read();
     end
     return osname
