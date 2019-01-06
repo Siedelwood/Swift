@@ -2789,8 +2789,8 @@ function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
-    if not self.QuestStarted then
-        Quest = QuestTemplate:New (
+    if not self.InternTributeQuest then
+        local QuestID, Quest = QuestTemplate:New (
             _Quest.Identifier.."_TributeDiplomacyQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
@@ -2799,15 +2799,14 @@ function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
             self.SuccessMsg,
             self.FailureMsg
         );
-        self.QuestStarted = Quest;
+        self.InternTributeQuest = Quest;
         self.Time = Logic.GetTime();
     end
 end
 
 function b_Goal_TributeDiplomacy:CheckTributeQuest(_Quest)
-    local TributeQuest = Quests[self.QuestStarted];
-    if self.QuestStarted and TributeQuest.State == QuestState.Over and not self.RestartQuest then
-        if TributeQuest.Result ~= QuestResult.Success then
+    if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Over and not self.RestartQuest then
+        if self.InternTributeQuest.Result ~= QuestResult.Success then
             SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.Enemy);
             if not self.RestartAtFailure then
                 return false;
@@ -2822,24 +2821,23 @@ end
 function b_Goal_TributeDiplomacy:CheckTributePlayer(_Quest)
     local storeHouse = Logic.GetStoreHouse(_Quest.SendingPlayer);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
-        if self.QuestStarted and Quests[self.QuestStarted].State == QuestState.Active then
-            Quests[self.QuestStarted]:Interrupt();
+        if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
         return true;
     end
 end
 
 function b_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
-    local TributeQuest = Quests[self.QuestStarted];
-    if self.QuestStarted and self.RestartQuest and ((Logic.GetTime() - self.Time) >= self.PeriodLength) then
-        TributeQuest.Objectives[1].Completed = nil;
-        TributeQuest.Objectives[1].Data[3] = nil;
-        TributeQuest.Objectives[1].Data[4] = nil;
-        TributeQuest.Objectives[1].Data[5] = nil;
-        TributeQuest.Result = nil;
-        TributeQuest.State = QuestState.NotTriggered;
-        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..TributeQuest.Index..")");
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { TributeQuest.QueueID });
+    if self.InternTributeQuest and self.RestartQuest and ((Logic.GetTime() - self.Time) >= self.PeriodLength) then
+        self.InternTributeQuest.Objectives[1].Completed = nil;
+        self.InternTributeQuest.Objectives[1].Data[3] = nil;
+        self.InternTributeQuest.Objectives[1].Data[4] = nil;
+        self.InternTributeQuest.Objectives[1].Data[5] = nil;
+        self.InternTributeQuest.Result = nil;
+        self.InternTributeQuest.State = QuestState.NotTriggered;
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.InternTributeQuest.Index..")");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.InternTributeQuest.QueueID });
         self.Time = Logic.GetTime();
         self.RestartQuest = nil;
     end
@@ -2873,14 +2871,14 @@ end
 
 function b_Goal_TributeDiplomacy:Reset()
     self.Time = nil;
-    self.QuestStarted = nil;
+    self.InternTributeQuest = nil;
     self.RestartQuest = nil;
 end
 
 function b_Goal_TributeDiplomacy:Interrupt(_Quest)
-    if self.QuestStarted and Quests[self.QuestStarted] ~= nil then
-        if Quests[self.QuestStarted].State == QuestState.Active then
-            Quests[self.QuestStarted]:Interrupt()
+    if self.InternTributeQuest ~= nil then
+        if self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt()
         end
     end
 end
@@ -2984,19 +2982,21 @@ end
 
 function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
     self.Time = Logic.GetTime();
-    self.Quest.Objectives[1].Completed = nil;
-    self.Quest.Objectives[1].Data[3] = nil;
-    self.Quest.Objectives[1].Data[4] = nil;
-    self.Quest.Objectives[1].Data[5] = nil;
-    self.Quest.Result = nil;
-    self.Quest.State = QuestState.NotTriggered;
-    Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.Quest.Index..")");
-    Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.Quest.QueueID });
+    if self.InternTributeQuest then
+        self.InternTributeQuest.Objectives[1].Completed = nil;
+        self.InternTributeQuest.Objectives[1].Data[3] = nil;
+        self.InternTributeQuest.Objectives[1].Data[4] = nil;
+        self.InternTributeQuest.Objectives[1].Data[5] = nil;
+        self.InternTributeQuest.Result = nil;
+        self.InternTributeQuest.State = QuestState.NotTriggered;
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.InternTributeQuest.Index..")");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.InternTributeQuest.QueueID });
+    end
 end
 
 function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
-    if not self.Quest then
-        local QuestID = QuestTemplate:New(
+    if not self.InternTributeQuest then
+        local QuestID, Quest = QuestTemplate:New(
             _Quest.Identifier.."_TributeClaimQuest", self.PlayerID, _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
@@ -3005,7 +3005,7 @@ function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
             self.SuccessMsg,
             self.FailureMsg
         );
-        self.Quest = Quests[QuestID];
+        self.InternTributeQuest = Quest;
         self.Time = Logic.GetTime();
     end
 end
@@ -3016,8 +3016,8 @@ function b_Goal_TributeClaim:OnTributeFailed(_Quest)
         Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
     end
     Logic.SetTerritoryPlayerID(self.TerritoryID, self.PlayerID);
+    self.InternTributeQuest.State = false;
     self.Time = Logic.GetTime();
-    self.Quest.State = false;
 
     if self.DontPayCancels then
         _Quest:Interrupt();
@@ -3026,7 +3026,7 @@ end
 
 function b_Goal_TributeClaim:OnTributePaid(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
-    if self.Quest.Result == QuestResult.Success then
+    if self.InternTributeQuest.Result == QuestResult.Success then
         if Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
             if IsExisting(Outpost) then
                 Logic.ChangeEntityPlayerID(Outpost, _Quest.ReceivingPlayer);
@@ -3058,29 +3058,29 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
         self:CreateTributeQuest(_Quest);
 
         -- Quest abgeschlossen
-        if self.Quest.State == QuestState.Over then
-            if self.Quest.Result == QuestResult.Failure then
+        if self.InternTributeQuest.State == QuestState.Over then
+            if self.InternTributeQuest.Result == QuestResult.Failure then
                 self:OnTributeFailed(_Quest);
             else
                 self:OnTributePaid(_Quest);
             end
 
-        elseif self.Quest.State == false then
+        elseif self.InternTributeQuest.State == false then
             if Logic.GetTime() >= self.Time + self.PeriodLength then
                 self:RestartTributeQuest(_Quest);
             end
         end
 
     -- Keiner besitzt das Territorium -> Abbruch
-    elseif Logic.GetTerritoryPlayerID(self.TerritoryID) == 0 and self.Quest then
-        if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt();
+    elseif Logic.GetTerritoryPlayerID(self.TerritoryID) == 0 and self.InternTributeQuest then
+        if self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
 
     -- Anderer Besitzer -> Abbruch
     elseif Logic.GetTerritoryPlayerID(self.TerritoryID) ~= self.PlayerID then
-        if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt();
+        if self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
         if self.OtherOwnerCancels then
             _Quest:Interrupt();
@@ -3091,8 +3091,8 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
     --Fordernder Spieler existiert nicht -> Abbruch
     local storeHouse = Logic.GetStoreHouse(self.PlayerID);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
-        if self.Quest and self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt();
+        if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
         return true;
     end
@@ -3103,7 +3103,7 @@ function b_Goal_TributeClaim:DEBUG(_Quest)
         dbg(_Quest.Identifier .. ": " .. self.Name .. ": Unknown Territory");
         return true;
     end
-    if not self.Quest and Logic.GetStoreHouse(self.PlayerID) == 0 then
+    if not self.InternTributeQuest and Logic.GetStoreHouse(self.PlayerID) == 0 then
         dbg(_Quest.Identifier .. ": " .. self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(");
         return true;
     end
@@ -3122,15 +3122,15 @@ function b_Goal_TributeClaim:DEBUG(_Quest)
 end
 
 function b_Goal_TributeClaim:Reset()
-    self.Quest = nil;
+    self.InternTributeQuest = nil;
     self.Time = nil;
     self.OtherOwner = nil;
 end
 
 function b_Goal_TributeClaim:Interrupt(_Quest)
-    if type(self.Quest) == "table" then
-        if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt();
+    if type(self.InternTributeQuest) == "table" then
+        if self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
     end
 end
