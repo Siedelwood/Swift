@@ -722,7 +722,8 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
         -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
-            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+            local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "I_X_TradePostConstructionSite"}) then
                 GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
                 return;
             end
@@ -780,11 +781,12 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         local pID = GUI.GetPlayerID();
         local EntityType = Logic.GetEntityType(eID);
         local lang = Network.GetDesiredLanguage();
-        if lang ~= "de" then lang = "en" end
+        lang = (lang == "de" and lang) or "en";
 
         -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
-            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+            local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "I_X_TradePostConstructionSite"}) then
                 GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
                 return;
             end
