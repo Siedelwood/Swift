@@ -156,7 +156,7 @@ QSB.IOList = {};
 --
 function API.CreateObject(_Description)
     if GUI then
-        API.Dbg("API.CreateObject: Can not be used from local enviorment!");
+        API.Fatal("API.CreateObject: Can not be used from local enviorment!");
         return;
     end
     return BundleInteractiveObjects.Global:CreateObject(_Description);
@@ -482,21 +482,19 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
         end
 
         GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnID, _Type, _Amount)
-            if not Logic.IsInteractiveObject(GetID(_SpawnID)) then
-                local pos = GetPosition(_SpawnID);
-                local resCat = Logic.GetGoodCategoryForGoodType(_Type);
-                local ID;
-                if resCat == GoodCategories.GC_Resource then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, pos.X, pos.Y,0,_PlayerID);
-                elseif _Type == Goods.G_Medicine then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, pos.X, pos.Y,0,_PlayerID);
-                elseif _Type == Goods.G_Gold then
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, pos.X, pos.Y,0,_PlayerID);
-                else
-                    ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, pos.X, pos.Y,0,_PlayerID);
-                end
-                Logic.HireMerchant(ID,_PlayerID,_Type,_Amount,_PlayerID);
+            local pos = GetPosition(_SpawnID);
+            local resCat = Logic.GetGoodCategoryForGoodType(_Type);
+            local ID;
+            if resCat == GoodCategories.GC_Resource then
+                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, pos.X, pos.Y,0,_PlayerID);
+            elseif _Type == Goods.G_Medicine then
+                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, pos.X, pos.Y,0,_PlayerID);
+            elseif _Type == Goods.G_Gold then
+                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, pos.X, pos.Y,0,_PlayerID);
+            else
+                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, pos.X, pos.Y,0,_PlayerID);
             end
+            Logic.HireMerchant(ID,_PlayerID,_Type,_Amount,_PlayerID);
         end
 
         function QuestTemplate:AreObjectsActivated(objectList)
@@ -724,7 +722,8 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
         -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
-            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+            local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "I_X_TradePostConstructionSite"}) then
                 GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
                 return;
             end
@@ -778,14 +777,16 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
     GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectClicked
     GUI_Interaction.InteractiveObjectClicked = function()
         local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
-        local lang = Network.GetDesiredLanguage();
         local eID = g_Interaction.ActiveObjectsOnScreen[i];
         local pID = GUI.GetPlayerID();
         local EntityType = Logic.GetEntityType(eID);
+        local lang = Network.GetDesiredLanguage();
+        lang = (lang == "de" and lang) or "en";
 
         -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
-            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+            local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "I_X_TradePostConstructionSite"}) then
                 GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
                 return;
             end
@@ -847,8 +848,12 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
                     -- check condition
                     if not IO[k].ConditionFullfilled then
-                        if IO[k].ConditionUnfulfilled and IO[k].ConditionUnfulfilled ~= "" then
-                            Message(IO[k].ConditionUnfulfilled);
+                        if IO[k].ConditionUnfulfilled then
+                            local MessageText = IO[k].ConditionUnfulfilled;
+                            if type(MessageText) == "table" then
+                                MessageText = MessageText[lang];
+                            end
+                            Message(MessageText);
                         end
                         return;
                     end

@@ -850,6 +850,10 @@ Core:RegisterBehavior(b_Reprisal_SetVisible);
 ---
 -- Macht das Entity verwundbar oder unverwundbar.
 --
+-- Bei einem Battalion wirkt sich das Behavior auf alle Soldaten und den
+-- (unsichtbaren) Leader aus. Wird das Behavior auf ein Spawner Entity 
+-- angewendet, werden die gespawnten Entities genommen.
+--
 -- @param _ScriptName Skriptname des Entity
 -- @param _Vulnerable Verwundbarkeit an/aus
 --
@@ -890,38 +894,23 @@ function b_Reprisal_SetVulnerability:CustomFunction(_Quest)
     local eID = GetID(self.Entity);
     local eType = Logic.GetEntityType(eID);
     local tName = Logic.GetEntityTypeName(eType);
+    local EntitiesToCheck = {eID};
+    if string.find(tName, "S_") or string.find(tName, "B_NPC_Bandits")
+    or string.find(tName, "B_NPC_Barracks") then
+        EntitiesToCheck = {Logic.GetSpawnedEntities(eID)};
+    end
+    local MethodToUse = "MakeInvulnerable";
     if self.Vulnerability then
-        if string.find(tName, "S_") or string.find(tName, "B_NPC_Bandits")
-        or string.find(tName, "B_NPC_Barracks") then
-            local spawned = {Logic.GetSpawnedEntities(eID)};
-            for i=1, #spawned do
-                if Logic.IsLeader(spawned[i]) == 1 then
-                    local Soldiers = {Logic.GetSoldiersAttachedToLeader(spawned[i])};
-                    for j=2, #Soldiers do
-                        MakeVulnerable(Soldiers[j]);
-                    end
-                end
-                MakeVulnerable(spawned[i]);
+        MethodToUse = "MakeVulnerable";
+    end
+    for i= 1, #EntitiesToCheck, 1 do
+        if Logic.IsLeader(EntitiesToCheck[i]) == 1 then
+            local Soldiers = {Logic.GetSoldiersAttachedToLeader(EntitiesToCheck[i])};
+            for j=2, #Soldiers, 1 do
+                _G[MethodToUse](Soldiers[j]);
             end
-        else
-            MakeVulnerable(self.Entity);
         end
-    else
-        if string.find(tName, "S_") or string.find(tName, "B_NPC_Bandits")
-        or string.find(tName, "B_NPC_Barracks") then
-            local spawned = {Logic.GetSpawnedEntities(eID)};
-            for i=1, #spawned do
-                if Logic.IsLeader(spawned[i]) == 1 then
-                    local Soldiers = {Logic.GetSoldiersAttachedToLeader(spawned[i])};
-                    for j=2, #Soldiers do
-                        MakeInvulnerable(Soldiers[j]);
-                    end
-                end
-                MakeInvulnerable(spawned[i]);
-            end
-        else
-            MakeInvulnerable(self.Entity);
-        end
+        _G[MethodToUse](EntitiesToCheck[i]);
     end
 end
 
@@ -1349,6 +1338,10 @@ Core:RegisterBehavior(b_Reward_AI_SetEntityControlled);
 
 ---
 -- Macht das Entity verwundbar oder unverwundbar.
+--
+-- Bei einem Battalion wirkt sich das Behavior auf alle Soldaten und den
+-- (unsichtbaren) Leader aus. Wird das Behavior auf ein Spawner Entity 
+-- angewendet, werden die gespawnten Entities genommen.
 --
 -- @param _ScriptName Skriptname des Entity
 -- @param _Vulnerable Verwundbarkeit an/aus

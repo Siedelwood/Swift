@@ -72,7 +72,7 @@ QSB.GeneratedQuestDialogs = {};
 --
 function API.CreateQuest(_Data)
     if GUI then
-        API.Dbg("API.CreateQuest: Could not execute in local script!");
+        API.Fatal("API.CreateQuest: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:QuestCreateNewQuest(_Data);
@@ -107,7 +107,7 @@ AddQuest = API.CreateQuest;
 --
 function API.CreateQuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)
     if GUI then
-        API.Dbg("API.CreateQuestMessage: Could not execute in local script!");
+        API.Fatal("API.CreateQuestMessage: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
@@ -154,7 +154,7 @@ QuestMessage = API.CreateQuestMessage;
 --
 function API.CreateQuestDialog(_Messages)
     if GUI then
-        API.Dbg("API.CreateQuestDialog: Could not execute in local script!");
+        API.Fatal("API.CreateQuestDialog: Could not execute in local script!");
         return;
     end
 
@@ -199,7 +199,7 @@ QuestDialog = API.CreateQuestDialog;
 --
 function API.InterruptQuestDialog(_Dialog)
     if GUI then
-        API.Dbg("API.InterruptQuestDialog: Could not execute in local script!");
+        API.Fatal("API.InterruptQuestDialog: Could not execute in local script!");
         return;
     end
 
@@ -208,7 +208,7 @@ function API.InterruptQuestDialog(_Dialog)
         QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
     end
     if QuestDialog == nil then
-        API.Dbg("API.InterruptQuestDialog: Dialog is invalid!");
+        API.Fatal("API.InterruptQuestDialog: Dialog is invalid!");
         return;
     end
     for i= 1, #QuestDialog-1, 1 do
@@ -231,7 +231,7 @@ QuestDialogInterrupt = API.InterruptQuestDialog;
 --
 function API.RestartQuestDialog(_Dialog)
     if GUI then
-        API.Dbg("API.ResetQuestDialog: Could not execute in local script!");
+        API.Fatal("API.ResetQuestDialog: Could not execute in local script!");
         return;
     end
 
@@ -240,7 +240,7 @@ function API.RestartQuestDialog(_Dialog)
         QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
     end
     if QuestDialog == nil then
-        API.Dbg("API.ResetQuestDialog: Dialog is invalid!");
+        API.Fatal("API.ResetQuestDialog: Dialog is invalid!");
         return;
     end
     for i= 1, #QuestDialog, 1 do
@@ -381,7 +381,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
 
     -- Daten validieren
     if not self:QuestValidateQuestData(QuestData) then
-        API.Dbg("AddQuest: Error while creating quest. Table has been copied to log.");
+        API.Fatal("AddQuest: Error while creating quest. Table has been copied to log.");
         API.DumpTable(QuestData, "Quest");
         return;
     end

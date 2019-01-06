@@ -41,7 +41,7 @@ QSB = QSB or {};
 function API.GetEntityScale(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.GetEntityScale: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.GetEntityScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
     return BundleEntityScriptingValues.Shared:GetEntitySize(_Entity);
@@ -60,10 +60,10 @@ GetScale = API.GetEntityScale;
 function API.GetEntityPlayer(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
-    return BundleEntityScriptingValues.Shared:GetPlayerID(_entity);
+    return BundleEntityScriptingValues.Shared:GetPlayerID(_Entity);
 end
 GetPlayer = API.GetEntityPlayer;
 
@@ -90,7 +90,7 @@ GetPlayer = API.GetEntityPlayer;
 function API.GetMovementTarget(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.GetMovementTarget: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.GetMovementTarget: Target " ..Subject.. " is invalid!");
         return nil;
     end
     return BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity);
@@ -117,7 +117,7 @@ GetMovingTarget = API.GetMovementTarget;
 function API.IsActiveNpc(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsActiveNpc: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.IsActiveNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity);
@@ -136,7 +136,7 @@ IsNpc = API.IsActiveNpc;
 function API.IsEntityVisible(_Entity)
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
     return BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity);
@@ -158,11 +158,11 @@ IsVisible = API.IsEntityVisible;
 function API.SetEntityScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.SetEntityScale: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.SetEntityScale: Target " ..Subject.. " is invalid!");
         return;
     end
     if type(_Scale) ~= "number" then
-        API.Dbg("API.SetEntityScale: Scale must be a number!");
+        API.Fatal("API.SetEntityScale: Scale must be a number!");
         return;
     end
     return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
@@ -184,11 +184,11 @@ SetScale = API.SetEntityScale;
 function API.SetEntityPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        API.Dbg("API.SetEntityPlayer: Target " ..Subject.. " is invalid!");
+        API.Fatal("API.SetEntityPlayer: Target " ..Subject.. " is invalid!");
         return;
     end
     if type(_PlayerID) ~= "number" or _PlayerID <= 0 or _PlayerID > 8 then
-        API.Dbg("API.SetEntityPlayer: Player-ID must between 0 and 8!");
+        API.Fatal("API.SetEntityPlayer: Player-ID must between 0 and 8!");
         return;
     end
     return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
@@ -200,28 +200,12 @@ ChangePlayer = API.SetEntityPlayer;
 -- -------------------------------------------------------------------------- --
 
 BundleEntityScriptingValues = {
-    Global = {
-        Data = {}
-    },
-    Local = {
-        Data = {}
-    },
-    Shared = {
-        Data = {}
-    },
+    Global = {},
+    Local = {},
+    Shared = {},
 }
 
 -- Global Script ---------------------------------------------------------------
-
----
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
--- @local
---
-function BundleEntityScriptingValues.Global:Install()
-
-end
 
 ---
 -- Ändert die Größe des Entity.
@@ -232,7 +216,7 @@ end
 --
 function BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale)
     local EntityID = GetID(_Entity);
-    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_size));
+    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_Scale));
     if Logic.IsSettler(EntityID) == 1 then
         Logic.SetSpeedFactor(EntityID, _Scale);
     end
@@ -249,18 +233,6 @@ end
 function BundleEntityScriptingValues.Global:SetPlayerID(_Entity, _PlayerID)
     local EntityID = GetID(_Entity);
     Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
-end
-
--- Local Script ----------------------------------------------------------------
-
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
-function BundleEntityScriptingValues.Local:Install()
-
 end
 
 -- Shared ----------------------------------------------------------------------

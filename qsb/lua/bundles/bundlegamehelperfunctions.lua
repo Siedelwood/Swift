@@ -51,11 +51,7 @@ QSB = QSB or {};
 -- @within Anwenderfunktionen
 --
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
-    if not GUI then
-        API.Bridge("API.SetCameraToPlayerKnight(" .._Player.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
-        return;
-    end
-    return BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor);
+    API.FocusCameraOnEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor)
 end
 SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 
@@ -77,7 +73,7 @@ function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Dbg("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        API.Warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
         return;
     end
     return BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
@@ -314,7 +310,7 @@ function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
         return;
     end
     if not IsExisting(_Center) then
-        API.Dbg("API.ChangeTerrainTypeInSquare: Central point does not exist!");
+        API.Fatal("API.ChangeTerrainTypeInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then
@@ -349,7 +345,7 @@ function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
         return;
     end
     if not IsExisting(_Center) then
-        API.Dbg("API.ChangeWaterHeightInSquare: Central point does not exist!");
+        API.Fatal("API.ChangeWaterHeightInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then
@@ -385,7 +381,7 @@ function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
         return;
     end
     if not IsExisting(_Center) then
-        API.Dbg("API.ChangeTerrainHeightInSquare: Central point does not exist!");
+        API.Fatal("API.ChangeTerrainHeightInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then
@@ -849,19 +845,6 @@ end
 function BundleGameHelperFunctions.Local:Install()
     self:InitForbidSpeedUp()
     self:InitForbidSaveGame();
-end
-
----
--- Fokusiert die Kamera auf dem Primärritter des Spielers.
---
--- @param _Player [number] Partei
--- @param _Rotation [number] Kamerawinkel
--- @param _ZoomFactor [number] Zoomfaktor
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:SetCameraToPlayerKnight(_Player, _Rotation, _ZoomFactor)
-    BundleGameHelperFunctions.Local:SetCameraToEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor);
 end
 
 ---

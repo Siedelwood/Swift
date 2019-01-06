@@ -1,39 +1,28 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- # Local Script -                                                         # --
--- # ©                                                                      # --
+-- # Local Script - <MAPNAME>                                               # --
+-- # © <AUTHOR>                                                             # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
--- # Setup ################################################################## --
+-- Trage hier den Pfad ein, under dem deine Lua-Dateien liegen. Kommentiere
+-- die Originalzeile am besten nur aus. Vergiss nicht, später den alten Pfad
+-- wiederherzustellen, wenn die Map live geht.
+g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
 
----
--- Diese Funktion wird aufgerufen, wenn die Mission
--- gewonnen ist.
---
+-- Wird aufgerufen, sobald das Spiel gewonnen ist.
 function Mission_LocalVictory()
 end
 
----
--- Wird zum Spielstart einmalig aufgerufen.
---
+-- Wird aufgerufen, wenn das Spiel gestartet wird.
 function Mission_LocalOnMapStart()
-    -- ## QSB laden ## --
+    -- Läd die QSB
+    Script.Load(g_ContentPath.. "questsystembehavior.lua");
+    -- Läd eigene Aufstiegsbedingungen
+    -- Script.Load(g_ContentPath.. "knighttitlerequirments.lua");
     
-    -- Laden der Bibliothek
-    local MapType, Campaign = Framework.GetCurrentMapTypeAndCampaignName();
-    local MapFolder = (MapType == 1 and "Development") or "ExternalMap";
-    local MapName = Framework.GetCurrentMapName();
-    Script.Load("Maps/"..MapFolder.."/"..MapName.."/QuestSystemBehavior.lua");
-
-    -- Läd die Module
+    -- QSB wird gestartet. Nicht verändern!
     API.Install();
     InitKnightTitleTables();
-    
-    -- ## Dein Skript ## --
-
-
 end
-
--- # Main Map Script ######################################################## --
 
