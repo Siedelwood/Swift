@@ -4044,7 +4044,17 @@ Core:RegisterBehavior(b_Reprisal_CustomVariables)
 ---
 -- Führt eine Funktion im Skript als Reprisal aus.
 --
--- @param _FunctionName Name der Funktion
+-- Wird ein Funktionsname als String übergeben, wird die Funktion mit den
+-- Daten des Behavors und des zugehörigen Quest aufgerufen (Standard).
+--
+-- Wird eine Funktionsreferenz angegeben, wird die Funktion zusammen mit allen
+-- optionalen Parametern aufgerufen, als sei es ein gewöhnlicher Aufruf im
+-- Skript.
+-- <pre>Reprisal_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
+-- -- entspricht: ReplaceEntity("block", Entities.XD_ScriptEntity);</pre>
+-- <b>Achtung:</b> Nicht über den Assistenten verfügbar!
+--
+-- @param _Function Name der Funktion oder Funktionsreferenz
 --
 -- @within Reprisal
 --
@@ -4068,18 +4078,26 @@ function b_Reprisal_MapScriptFunction:GetReprisalTable()
 end
 
 function b_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
-    if (_Index == 0) then
-        self.FuncName = _Parameter
+    if _Index == 0 then
+        self.Function = _Parameter;
     end
 end
 
 function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
-    return _G[self.FuncName](self, _Quest);
+    if type(self.Function) == "function" then
+        self.Function(unpack(self.i47ya_6aghw_frxil));
+        return;
+    end
+    _G[self.Function](self, _Quest);
 end
 
 function b_Reprisal_MapScriptFunction:DEBUG(_Quest)
-    if not self.FuncName or not _G[self.FuncName] then
-        fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
+    if not self.Function then
+        fatal("".._Quest.Identifier.." "..self.Name..": function reference is invalid!");
+        return true;
+    end
+    if type(self.Function) == "string" and not _G[self.Function] then
+        fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.Function.. "' does not exist!");
         return true;
     end
     return false;
@@ -6671,7 +6689,17 @@ Core:RegisterBehavior(b_Reward_CustomVariables)
 ---
 -- Führt eine Funktion im Skript als Reward aus.
 --
--- @param _FunctionName Name der Funktion
+-- Wird ein Funktionsname als String übergeben, wird die Funktion mit den
+-- Daten des Behavors und des zugehörigen Quest aufgerufen (Standard).
+--
+-- Wird eine Funktionsreferenz angegeben, wird die Funktion zusammen mit allen
+-- optionalen Parametern aufgerufen, als sei es ein gewöhnlicher Aufruf im
+-- Skript.
+-- <pre>Reward_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
+-- -- entspricht: ReplaceEntity("block", Entities.XD_ScriptEntity);</pre>
+-- <b>Achtung:</b> Nicht über den Assistenten verfügbar!
+--
+-- @param _FunctionName Name der Funktion oder Funktionsreferenz
 --
 -- @within Reward
 --
