@@ -119,12 +119,19 @@ function Mission_QuestOnGameStart()
             Goal_InstantSuccess(),
             Trigger_Time(0),
         };
-        if g_MapUseIntro then
-            table.insert(Behaviors, Reward_Briefing(g_MapIntroName));
-        end
         if g_MapUseCredits then
             table.insert(Behaviors, Reward_MapScriptFunction("Mission_Reward_DisplayUI"));
             table.insert(Behaviors, Trigger_MapScriptFunction("Mission_Trigger_WaitingForCreditsFinished"));
+        end
+        API.CreateQuest { Name = "MissionStartQuest_A",  unpack(Behaviors)};
+        
+        
+        local Behaviors = {
+            Goal_InstantSuccess(),
+            Trigger_OnQuestSuccess("MissionStartQuest_A", 0),
+        };
+        if g_MapUseIntro then
+            table.insert(Behaviors, Reward_Briefing(g_MapIntroName));
         end
         API.CreateQuest { Name = "MissionStartQuest",  unpack(Behaviors)};
     end
