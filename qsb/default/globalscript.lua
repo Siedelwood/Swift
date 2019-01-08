@@ -104,7 +104,10 @@ function Mission_FirstMapAction()
     Mission_SecondMapAction();
 end
 
-g_CreditsBoxesFinished = (g_MapUseCredits == false and true) or false;
+g_CreditsBoxesFinished = false;
+if g_MapUseCredits == false then
+    g_CreditsBoxesFinished = true;
+end
 function Mission_Trigger_WaitingForCreditsFinished()
     return g_CreditsBoxesFinished == true;
 end
@@ -115,23 +118,20 @@ end
 
 function Mission_QuestOnGameStart()
     if BundleQuestGeneration then
-        local Behaviors = {
+        API.CreateQuest {
+            Name = "MissionStartQuest_A",
             Goal_InstantSuccess(),
-            Trigger_Time(0),
+            Trigger_Time(0)
         };
-        if g_MapUseCredits then
-            table.insert(Behaviors, Reward_MapScriptFunction("Mission_Reward_DisplayUI"));
-            table.insert(Behaviors, Trigger_MapScriptFunction("Mission_Trigger_WaitingForCreditsFinished"));
-        end
-        API.CreateQuest { Name = "MissionStartQuest_A",  unpack(Behaviors)};
-        
         
         local Behaviors = {
             Goal_InstantSuccess(),
             Trigger_OnQuestSuccess("MissionStartQuest_A", 0),
         };
         if g_MapUseIntro then
+            table.insert(Behaviors, Reward_MapScriptFunction("Mission_Reward_DisplayUI"));
             table.insert(Behaviors, Reward_Briefing(g_MapIntroName));
+            table.insert(Behaviors, Trigger_MapScriptFunction("Mission_Trigger_WaitingForCreditsFinished"));
         end
         API.CreateQuest { Name = "MissionStartQuest",  unpack(Behaviors)};
     end
