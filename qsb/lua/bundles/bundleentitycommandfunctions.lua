@@ -69,12 +69,14 @@ end
 SetPosition = API.SetPosition;
 
 ---
--- Das Entity wird relativ zu einem Winkel zum Ziel bewegt.
+-- Das Entity wird relativ zu einem Winkel zum Ziel bewegt. Nachdem das Entity
+-- angekommen ist, wird es zum Ziel ausgerichtet.
 --
 -- <b>Hinweis</b>: Beim Alias MoveEntityToPositionToAnotherOne sind die
 -- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 --
 -- <p><b>Alias:</b> MoveEntityToPositionToAnotherOne</p>
+-- <p><b>Alias:</b> MoveEx</br></p>
 --
 -- @param _Entity       [string|number] Zu bewegendes Entity
 -- @param _Position     [string|number] Ziel
@@ -106,15 +108,14 @@ end
 MoveEntityToPositionToAnotherOne = function(_Entity, _Distance, _Position, _Angle, _moveAsEntity)
     API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
 end
+MoveEx = API.MoveToPosition;
 
 ---
--- Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
--- anschließend an.
+-- Das Entity wird zum Ziel bewegt und schaut es anschließend an.
 --
 -- <b>Hinweis</b>: Beim Alias MoveEntityFaceToFaceToAnotherOne sind die
 -- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 --
--- <p><b>Alias:</b> MoveEx</br></p>
 -- <p><b>Alias:</b> MoveEntityFaceToFaceToAnotherOne</p>
 --
 -- @param _Entity       [string|number] Zu bewegendes Entity
@@ -146,7 +147,6 @@ end
 MoveEntityFaceToFaceToAnotherOne = function(_Entity, _Distance, _Position, _moveAsEntity)
     API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
 end
-MoveEx = API.MoveAndLookAt;
 
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.
@@ -156,8 +156,8 @@ MoveEx = API.MoveAndLookAt;
 --
 -- <p><b>Alias:</b> PlaceEntityToPositionToAnotherOne</p>
 --
--- @param _Entity          [string|number|table] Entity das bewegt wird
--- @param _Position        [string|number|table] Position zu der bewegt wird
+-- @param _Entity          [string|number] Entity das bewegt wird
+-- @param _Position        [string|number] Position zu der bewegt wird
 -- @param _Distance        [number] Entfernung
 -- @param _Angle           [number] Winkel
 -- @within Anwenderfunktionen
@@ -188,8 +188,7 @@ PlaceEntityToPositionToAnotherOne = function(_Entity, _Distance, _Position, _Ang
 end
 
 ---
--- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
--- das Ziel an.
+-- Das Entity wird zum Zielpunkt gesetzt und schaut das Ziel an.
 --
 -- <b>Hinweis</b>: Beim Alias PlaceEntityFaceToFaceToAnotherOne sind die
 -- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
@@ -197,8 +196,8 @@ end
 -- <p><b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne</p>
 -- <p><b>Alias:</b> SetPositionEx<br></p>
 --
--- @param _Entity          [string|number|table] Entity das bewegt wird
--- @param _Position        [string|number|table] Position zu der bewegt wird
+-- @param _Entity          [string|number] Entity das bewegt wird
+-- @param _Position        [string|number] Position zu der bewegt wird
 -- @param _Distance        [number] Entfernung
 -- @within Anwenderfunktionen
 --
