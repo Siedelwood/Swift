@@ -36,7 +36,7 @@ g_MapUseCredits = false;
 -- Wenn Du die Quests im Skript erzeugst, müssen die initialen Quests immer
 -- mit Trigger_OnQuestSuccess auf "MissionStartQuest" getriggert werden!
 -- Wenn du eine Intro Cutscene verwendest, ändert sich der Trigger zu
--- Trigger_Briefing!
+-- Trigger_BriefingSuccess!
 
 -- Initialisiere hier deine Quests.
 function Mission_SetupFinished()
