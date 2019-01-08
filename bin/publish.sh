@@ -9,6 +9,7 @@ echo "Creating release folder..."
 cd ..
 rm -rf Release &>/dev/null
 mkdir Release
+mkdir Release/demo
 echo "Done!"
 
 echo "Copy qsb files..."
@@ -16,6 +17,8 @@ cp var/qsb.lua Release/questsystembehavior.lua &>/dev/null
 cp var/qsb_min.lua Release/questsystembehavior_min.lua &>/dev/null
 cp qsb/default/globalscript.lua Release/mapscript.lua &>/dev/null
 cp qsb/default/localscript.lua Release/localmapscript.lua &>/dev/null
+cp qsb/default/globalscript2.lua Release/demo/mapscript.lua &>/dev/null
+cp qsb/default/localscript2.lua Release/demo/localmapscript.lua &>/dev/null
 echo "Done!"
 
 echo "Copy documentation..."
