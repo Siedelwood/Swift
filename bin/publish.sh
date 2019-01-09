@@ -13,12 +13,16 @@ mkdir Release/demo
 echo "Done!"
 
 echo "Copy qsb files..."
+# Normale Mapskripte
 cp var/qsb.lua Release/questsystembehavior.lua &>/dev/null
 cp var/qsb_min.lua Release/questsystembehavior_min.lua &>/dev/null
 cp qsb/default/globalscript.lua Release/mapscript.lua &>/dev/null
 cp qsb/default/localscript.lua Release/localmapscript.lua &>/dev/null
+# Vereinfachte Mapskripte
 cp qsb/default/globalscript2.lua Release/demo/mapscript.lua &>/dev/null
 cp qsb/default/localscript2.lua Release/demo/localmapscript.lua &>/dev/null
+cp qsb/default/internglobalscript.lua Release/demo/internmapscript.lua &>/dev/null
+cp qsb/default/internlocalscript.lua Release/demo/internlocalmapscript.lua &>/dev/null
 echo "Done!"
 
 echo "Copy documentation..."
