@@ -5,137 +5,29 @@
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
--- Trage hier den Pfad ein, under dem deine Lua-Dateien liegen. Kommentiere
--- die Originalzeile am besten nur aus. Vergiss nicht, später den alten Pfad
--- wiederherzustellen, wenn die Map live geht.
+-- Pfad an das Verzeichnis anpassen, in dem die Skripte liegen.
 g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
+Script.Load(g_ContentPath.. "internmapscript.lua");
 
--- Lässt den Debug die Quests prüfen, wenn sie ausgeführt werden.
-g_DbgCheckQuests = true;
--- Aktiviert die Statusverfolgung der Quests.
-g_DbgQuestTrace = false;
--- Aktiviert Cheats
-g_DbgCheatCodes = true;
--- Aktiviert Eingabeaufforderung
-g_DbgCmdInput = true;
+-- Triggere deine Quests auf "MissionStartQuest".
+-- Rufe GlobalMissionScript_SetIntro auf um eine Intro zu setzen.
+-- Rufe GlobalMissionScript_SetCredits auf um die Credits einzustellen.
+-- "MissionStartQuest" wird auf Intro und/oder Credits warten.
 
--- Stelle hier den Startmonat ein
--- (1 bis 12 für Januar bis Dezember)
-g_MapStartingMonth = 3;
-
--- Auf true setzen, wenn eine Cutscene den Quests vorangestellt werden soll.
--- (Name der Funktion bei g_MapIntroName in "" eintragen)
-g_MapUseIntro = false;
-g_MapIntroName = "IntroCutsceneFunctionName";
-
--- Auf true setzen, wenn Credits angezeigt werden sollen.
--- Muss ebenfalls im lokalen Skript true sein!
-g_MapUseCredits = false;
-
--- WICHTIGER Hinweis:
--- Wenn Du die Quests im Skript erzeugst, müssen die initialen Quests immer
--- mit Trigger_OnQuestSuccess auf "MissionStartQuest" getriggert werden!
--- Wenn du eine Intro Cutscene verwendest, ändert sich der Trigger zu
--- Trigger_Briefing!
-
--- Initialisiere hier deine Quests.
-function Mission_SetupFinished()
-    -- Initaler Quest wird gestartet
-    Mission_QuestOnGameStart();
-
-    -- Hier kannst Du Deine Quests starten. Du kannst hier auch weitere
-    -- Lua-Dateien laden, die deine Quests enthalten. Benutze dafür immer
-    -- g_ContentPath!
-    -- Beispiel:
-    -- Script.Load(g_ContentPath.. "myscriptfile.lua");
+-- In dieser Funktion können Spieler initialisiert werden.
+function InitPlayers()
 end
 
--- Trage hier Funktionen ein, die ausgeführt werden sollen, nachdem die Quests
--- initialisiert wurden und das Spiel gestartet ist.
-function Mission_SecondMapAction()
-    
+-- Diese Funktion setzt den Startmonat.
+function SetStartingMonth()
+    Logic.SetMonthOffset(3);
 end
 
--- -------------------------------------------------------------------------- --
--- Quests                                                                     --
--- -------------------------------------------------------------------------- --
-
--- Platz für Quests
-
--- -------------------------------------------------------------------------- --
--- Briefings                                                                  --
--- -------------------------------------------------------------------------- --
-
--- Platz für Briefings
-
--- -------------------------------------------------------------------------- --
--- Cutscenes                                                                  --
--- -------------------------------------------------------------------------- --
-
--- Platz für Cutscenes
-
--- -------------------------------------------------------------------------- --
-
--- Ab hier NICHTS mehr ändern!
-
-function Mission_InitPlayers()
+-- In dieser Funktion kannst Du zusätzliche Skripte laden.
+function InitMissionScript()
 end
 
-function Mission_SetStartingMonth()
-    Logic.SetMonthOffset(g_MapStartingMonth);
-end
-
-function Mission_FirstMapAction()
-    Script.Load(g_ContentPath.. "questsystembehavior.lua");
-    Script.Load(g_ContentPath.. "knighttitlerequirments.lua");
-    API.Install();
-    InitKnightTitleTables();
-
-    if Framework.IsNetworkGame() ~= true then
-        Startup_Player();
-        Startup_StartGoods();
-        Startup_Diplomacy();
-    end
-    if g_DbgCheckQuests or g_DbgQuestTrace or g_DbgCheatCodes or g_DbgCmdInput then
-        API.ActivateDebugMode(g_DbgCheckQuests, g_DbgQuestTrace, g_DbgCheatCodes, g_DbgCmdInput);
-    end
-    CreateQuests();
-    Mission_SetupFinished();
-    Mission_SecondMapAction();
-end
-
-g_CreditsBoxesFinished = false;
-if g_MapUseCredits == false then
-    g_CreditsBoxesFinished = true;
-end
-function Mission_Trigger_WaitingForCreditsFinished()
-    return g_CreditsBoxesFinished == true;
-end
-
-function Mission_Reward_DisplayUI()
-    API.Bridge("Mission_LocalDisplayUI(1)");
-end
-
-function Mission_QuestOnGameStart()
-    if BundleQuestGeneration then
-        API.CreateQuest {
-            Name = "MissionStartQuest_A",
-            Goal_InstantSuccess(),
-            Trigger_Time(0)
-        };
-        
-        local Behaviors = {
-            Goal_InstantSuccess(),
-            Trigger_OnQuestSuccess("MissionStartQuest_A", 0),
-        };
-        if g_MapUseCredits then
-            table.insert(Behaviors, Reward_MapScriptFunction("Mission_Reward_DisplayUI"));
-            table.insert(Behaviors, Trigger_MapScriptFunction("Mission_Trigger_WaitingForCreditsFinished"));
-        end
-        if g_MapUseIntro then
-            table.insert(Behaviors, Reward_MapScriptFunction("Mission_Reward_DisplayUI"));
-            table.insert(Behaviors, Reward_Briefing(g_MapIntroName));
-        end
-        API.CreateQuest { Name = "MissionStartQuest",  unpack(Behaviors)};
-    end
+-- Diese Funktion wird aufgerufen, sobald die Map bereit ist.
+function FirstMapAction()
+    API.ActivateDebugMode(true, false, true, true);
 end
