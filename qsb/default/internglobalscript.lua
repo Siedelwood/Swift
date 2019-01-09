@@ -100,7 +100,7 @@ function Mission_QuestOnGameStart()
             Trigger_OnQuestSuccess("MissionStartQuest_A", 0),
         };
         if GlobalMissionScript.UseIntro then
-            table.insert(Behaviors, Trigger_Briefing("MissionStartQuest_A"));
+            table.insert(Behaviors, Trigger_BriefingSuccess("MissionStartQuest_A"));
         end
         API.CreateQuest { Name = "MissionStartQuest",  unpack(Behaviors)};
     end
