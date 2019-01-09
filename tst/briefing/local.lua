@@ -1,21 +1,23 @@
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Mission_LocalVictory
-----------------------------------
--- Diese Funktion wird aufgerufen, wenn die Mission
--- gewonnen ist.
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function Mission_LocalVictory()
+-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- # Local Script - <MAPNAME>                                               # --
+-- # © <AUTHOR>                                                             # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+-- Pfad an das Verzeichnis anpassen, in dem die Skripte liegen.
+-- g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
+g_ContentPath = "E:/Repositories/symfonia/tst/briefing/";
+Script.Load(g_ContentPath.. "internlocalmapscript.lua");
+
+-- Diese Funktion wird aufgerufen, sobald die Mission beendet ist.
+function OnMissionVictory()
 end
 
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Mission_LocalOnMapStart
-----------------------------------
--- Wird zum Spielstart einmalig aufgerufen.
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function Mission_LocalOnMapStart()
-    local Path = "E:/Repositories/symfonia/qsb/lua";
-    Script.Load(Path .. "/loader.lua");
-    SymfoniaLoader:Load(Path);
+-- In dieser Funktion kannst Du zusätzliche Skripte laden.
+function InitMissionScript()
 end
 
-
+-- Diese Funktion wird aufgerufen, sobald die Map bereit ist.
+function FirstMapAction()
+end

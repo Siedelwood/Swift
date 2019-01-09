@@ -41,24 +41,28 @@ function Mission_LocalShowCredits()
             local CreditsFinished = function()
                 API.Bridge("GlobalMissionScript.CreditsFinished = true");
                 Camera.RTS_FollowEntity(0);
-                Mission_CreditsFinished();
+                if OnCreditsFinished then
+                    OnCreditsFinished();
+                end
             end
 
             local Text = {
-                de = "Siedelwood präsentiert: {cr}{cr}{@color:19,65,36}" 
-                     ..GlobalMissionScript.CreditsMapName,
-                en = "Siedelwood presents: {cr}{cr}{@color:19,65,36}" 
-                     ..GlobalMissionScript.CreditsMapName,
+                de = "Siedelwood präsentiert: {cr}{cr}{@color:94,38,33,255}" 
+                     ..GlobalMissionScript.CreditsMapName.. "{cr}{cr}" ..
+                     "{@color:56,73,37,255} Mehr auf www.siedelwood-neu.de!",
+                en = "Siedelwood presents: {cr}{cr}{@color:94,38,33,255}" 
+                     ..GlobalMissionScript.CreditsMapName.. "{cr}{cr}" ..
+                     "{@color:56,73,37,255} more at www.siedelwood-neu.de!",
             }
             API.DialogInfoBox("Credits", Text);
 
             local Text = {
                 de = "Autor: " ..GlobalMissionScript.CreditsMapAuthor.. 
-                    "{cr}Tester: " ..GlobalMissionScript.CreditsMapTester.. ""..
-                    "{cr}{cr}{@color:19,65,36}Ihnen gilt unser Dank!",
+                    "{cr}Tester: " ..GlobalMissionScript.CreditsMapTester..
+                    "{cr}{cr}{@color:56,73,37,255}Ihnen gilt unser Dank!",
                 en = "Author: " ..GlobalMissionScript.CreditsMapAuthor..
-                    "{cr}Testers: " ..GlobalMissionScript.CreditsMapTester.. ""..
-                    "{cr}{cr}{@color:19,65,36}They earned our thanks!",
+                    "{cr}Testers: " ..GlobalMissionScript.CreditsMapTester..
+                    "{cr}{cr}{@color:56,73,37,255}They earned our thanks!",
             }
             API.DialogInfoBox("Credits", Text, CreditsFinished);
 
