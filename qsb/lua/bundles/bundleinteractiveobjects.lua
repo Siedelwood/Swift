@@ -306,6 +306,48 @@ BundleInteractiveObjects = {
 --
 function BundleInteractiveObjects.Global:Install()
     IO = {};
+    self:OverrideVanillaBehavior();
+end
+
+---
+-- Überschreibt Reward_ObjectInit, damit IO korrekt funktionieren.
+--
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Global:OverrideVanillaBehavior()
+    if b_Reward_ObjectInit then
+        b_Reward_ObjectInit.CustomFunction = function(_Behavior, _Quest)
+            local eID = GetID(_Behavior.ScriptName);
+            if eID == 0 then
+                return;
+            end
+            QSB.InitalizedObjekts[eID] = _Quest.Identifier;
+            
+            local RewardTable = nil;
+            if _Behavior.RewardType and _Behavior.RewardType ~= "-" then
+                RewardTable = {Goods[_Behavior.RewardType], _Behavior.RewardAmount};
+            end
+
+            local CostsTable = nil;
+            if _Behavior.FirstCostType and _Behavior.FirstCostType ~= "-" then
+                CostsTable = {Goods[_Behavior.FirstCostType], _Behavior.FirstCostAmount};
+                if _Behavior.SecondCostType and _Behavior.SecondCostType ~= "-" then
+                    table.insert(CostsTable, Goods[_Behavior.SecondCostType]);
+                    table.insert(CostsTable, _Behavior.SecondCostAmount);
+                end
+            end
+
+            API.CreateObject{
+                Name        = _Behavior.ScriptName,
+                State       = _Behavior.UsingState or 0,
+                Distance    = _Behavior.Distance,
+                Waittime    = _Behavior.Waittime,
+                Reward      = RewardTable,
+                Costs       = CostsTable,
+            };
+        end
+    end
 end
 
 ---

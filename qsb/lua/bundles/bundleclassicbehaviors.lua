@@ -4327,13 +4327,13 @@ function b_Reward_ObjectInit:CustomFunction(_Quest)
     Logic.InteractiveObjectSetInteractionDistance(eID, self.Distance);
     Logic.InteractiveObjectSetTimeToOpen(eID, self.Waittime);
 
-    if self.RewardType and self.RewardType ~= "disabled" then
+    if self.RewardType and self.RewardType ~= "-" then
         Logic.InteractiveObjectAddRewards(eID, Goods[self.RewardType], self.RewardAmount);
     end
-    if self.FirstCostType and self.FirstCostType ~= "disabled" then
+    if self.FirstCostType and self.FirstCostType ~= "-" then
         Logic.InteractiveObjectAddCosts(eID, Goods[self.FirstCostType], self.FirstCostAmount);
     end
-    if self.SecondCostType and self.SecondCostType ~= "disabled" then
+    if self.SecondCostType and self.SecondCostType ~= "-" then
         Logic.InteractiveObjectAddCosts(eID, Goods[self.SecondCostType], self.SecondCostAmount);
     end
 

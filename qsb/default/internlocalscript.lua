@@ -17,7 +17,7 @@ end
 
 function Mission_LocalOnMapStart()
     Script.Load(g_ContentPath.. "questsystembehavior.lua");
-    Script.Load(g_ContentPath.. "knighttitlerequirments.lua");
+    Script.Load(g_ContentPath.. "knighttitlerequirements.lua");
 
     API.Install();
     InitKnightTitleTables();
