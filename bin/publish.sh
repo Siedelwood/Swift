@@ -8,20 +8,19 @@ echo "==== Creating Release ===="
 echo "Creating release folder..."
 cd ..
 rm -rf Release &>/dev/null
-mkdir Release
-mkdir Release/prof
-mkdir Release/assi
+mkdir -p Release/src/prof
+mkdir -p Release/src/assi
 echo "Done!"
 
 echo "Copy qsb files..."
-cp var/qsb.lua Release/questsystembehavior.lua &>/dev/null
-cp var/qsb_min.lua Release/questsystembehavior_min.lua &>/dev/null
-cp qsb/default/globalscript.lua Release/assi/mapscript.lua &>/dev/null
-cp qsb/default/localscript.lua Release/assi/localmapscript.lua &>/dev/null
-cp qsb/default/globalscript2.lua Release/prof/mapscript.lua &>/dev/null
-cp qsb/default/localscript2.lua Release/prof/localmapscript.lua &>/dev/null
-cp qsb/default/internglobalscript.lua Release/prof/internmapscript.lua &>/dev/null
-cp qsb/default/internlocalscript.lua Release/prof/internlocalmapscript.lua &>/dev/null
+cp var/qsb.lua Release/src/questsystembehavior.lua &>/dev/null
+cp var/qsb_min.lua Release/src/questsystembehavior_min.lua &>/dev/null
+cp qsb/default/globalscript.lua Release/src/assi/mapscript.lua &>/dev/null
+cp qsb/default/localscript.lua Release/src/assi/localmapscript.lua &>/dev/null
+cp qsb/default/globalscript2.lua Release/src/prof/mapscript.lua &>/dev/null
+cp qsb/default/localscript2.lua Release/src/prof/localmapscript.lua &>/dev/null
+cp qsb/default/internglobalscript.lua Release/src/prof/internmapscript.lua &>/dev/null
+cp qsb/default/internlocalscript.lua Release/src/prof/internlocalmapscript.lua &>/dev/null
 echo "Done!"
 
 echo "Copy documentation..."

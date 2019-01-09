@@ -13,7 +13,6 @@ end
 function Mission_LocalOnMapStart()
     -- Läd die QSB
     Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName() .. "/questsystembehavior.lua");
-    Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName() .. "/knighttitlerequirments.lua");
     
     API.Install();
     InitKnightTitleTables();
