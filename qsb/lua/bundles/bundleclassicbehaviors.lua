@@ -2789,8 +2789,8 @@ function b_Goal_TributeDiplomacy:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
-    if not self.QuestStarted then
-        Quest = QuestTemplate:New (
+    if not self.InternTributeQuest then
+        local QuestID, Quest = QuestTemplate:New (
             _Quest.Identifier.."_TributeDiplomacyQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
@@ -2799,48 +2799,45 @@ function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
             self.SuccessMsg,
             self.FailureMsg
         );
-        self.QuestStarted = Quest;
-        self.Time = Logic.GetTime();
+        self.InternTributeQuest = Quest;
     end
 end
 
 function b_Goal_TributeDiplomacy:CheckTributeQuest(_Quest)
-    local TributeQuest = Quests[self.QuestStarted];
-    if self.QuestStarted and TributeQuest.State == QuestState.Over and not self.RestartQuest then
-        if TributeQuest.Result ~= QuestResult.Success then
+    if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Over and not self.RestartQuest then
+        if self.InternTributeQuest.Result ~= QuestResult.Success then
             SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.Enemy);
             if not self.RestartAtFailure then
                 return false;
             end
         else
-            SetDiplomacyState( _Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.TradeContact);
+            SetDiplomacyState(_Quest.ReceivingPlayer, _Quest.SendingPlayer, DiplomacyStates.TradeContact);
         end
         self.RestartQuest = true;
+        self.Time = Logic.GetTime();
     end
 end
 
 function b_Goal_TributeDiplomacy:CheckTributePlayer(_Quest)
     local storeHouse = Logic.GetStoreHouse(_Quest.SendingPlayer);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
-        if self.QuestStarted and Quests[self.QuestStarted].State == QuestState.Active then
-            Quests[self.QuestStarted]:Interrupt();
+        if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
         return true;
     end
 end
 
 function b_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
-    local TributeQuest = Quests[self.QuestStarted];
-    if self.QuestStarted and self.RestartQuest and ((Logic.GetTime() - self.Time) >= self.PeriodLength) then
-        TributeQuest.Objectives[1].Completed = nil;
-        TributeQuest.Objectives[1].Data[3] = nil;
-        TributeQuest.Objectives[1].Data[4] = nil;
-        TributeQuest.Objectives[1].Data[5] = nil;
-        TributeQuest.Result = nil;
-        TributeQuest.State = QuestState.NotTriggered;
-        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..TributeQuest.Index..")");
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { TributeQuest.QueueID });
-        self.Time = Logic.GetTime();
+    if self.InternTributeQuest and self.Time and self.RestartQuest and ((Logic.GetTime() - self.Time) >= self.PeriodLength) then
+        self.InternTributeQuest.Objectives[1].Completed = nil;
+        self.InternTributeQuest.Objectives[1].Data[3] = nil;
+        self.InternTributeQuest.Objectives[1].Data[4] = nil;
+        self.InternTributeQuest.Objectives[1].Data[5] = nil;
+        self.InternTributeQuest.Result = nil;
+        self.InternTributeQuest.State = QuestState.NotTriggered;
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.InternTributeQuest.Index..")");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.InternTributeQuest.QueueID });
         self.RestartQuest = nil;
     end
 end
@@ -2873,14 +2870,14 @@ end
 
 function b_Goal_TributeDiplomacy:Reset()
     self.Time = nil;
-    self.QuestStarted = nil;
+    self.InternTributeQuest = nil;
     self.RestartQuest = nil;
 end
 
 function b_Goal_TributeDiplomacy:Interrupt(_Quest)
-    if self.QuestStarted and Quests[self.QuestStarted] ~= nil then
-        if Quests[self.QuestStarted].State == QuestState.Active then
-            Quests[self.QuestStarted]:Interrupt()
+    if self.InternTributeQuest ~= nil then
+        if self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt()
         end
     end
 end
@@ -2949,7 +2946,10 @@ end
 
 function b_Goal_TributeClaim:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
-        self.TerritoryID = GetTerritoryIDByName(_Parameter);
+        if type(_Parameter) == "string" then
+            _Parameter = GetTerritoryIDByName(_Parameter);
+        end
+        self.TerritoryID = _Parameter;
     elseif (_Index == 1) then
         self.PlayerID = _Parameter * 1;
     elseif (_Index == 2) then
@@ -2983,30 +2983,33 @@ function b_Goal_TributeClaim:CureOutpost(_Quest)
 end
 
 function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
-    self.Time = Logic.GetTime();
-    self.Quest.Objectives[1].Completed = nil;
-    self.Quest.Objectives[1].Data[3] = nil;
-    self.Quest.Objectives[1].Data[4] = nil;
-    self.Quest.Objectives[1].Data[5] = nil;
-    self.Quest.Result = nil;
-    self.Quest.State = QuestState.NotTriggered;
-    Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.Quest.Index..")");
-    Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.Quest.QueueID });
+    if self.InternTributeQuest then
+        self.InternTributeQuest.Objectives[1].Completed = nil;
+        self.InternTributeQuest.Objectives[1].Data[3] = nil;
+        self.InternTributeQuest.Objectives[1].Data[4] = nil;
+        self.InternTributeQuest.Objectives[1].Data[5] = nil;
+        self.InternTributeQuest.Result = nil;
+        self.InternTributeQuest.State = QuestState.NotTriggered;
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.InternTributeQuest.Index..")");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.InternTributeQuest.QueueID });
+    end
 end
 
 function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
-    if not self.Quest then
-        local QuestID = QuestTemplate:New(
+    if not self.InternTributeQuest then
+        local OnFinished = function()
+            self.Time = Logic.GetTime();
+        end
+        local QuestID, Quest = QuestTemplate:New(
             _Quest.Identifier.."_TributeClaimQuest", self.PlayerID, _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
-            self.TributTime, nil, nil, nil, nil, true, true, nil,
+            self.TributTime, nil, nil, OnFinished, nil, true, true, nil,
             self.StartMsg,
             self.SuccessMsg,
             self.FailureMsg
         );
-        self.Quest = Quests[QuestID];
-        self.Time = Logic.GetTime();
+        self.InternTributeQuest = Quest;
     end
 end
 
@@ -3016,8 +3019,8 @@ function b_Goal_TributeClaim:OnTributeFailed(_Quest)
         Logic.ChangeEntityPlayerID(Outpost, self.PlayerID);
     end
     Logic.SetTerritoryPlayerID(self.TerritoryID, self.PlayerID);
-    self.Time = Logic.GetTime();
-    self.Quest.State = false;
+    self.InternTributeQuest.State = false;
+    self.Time = nil;
 
     if self.DontPayCancels then
         _Quest:Interrupt();
@@ -3026,7 +3029,7 @@ end
 
 function b_Goal_TributeClaim:OnTributePaid(_Quest)
     local Outpost = Logic.GetTerritoryAcquiringBuildingID(self.TerritoryID);
-    if self.Quest.Result == QuestResult.Success then
+    if self.InternTributeQuest.Result == QuestResult.Success then
         if Logic.GetTerritoryPlayerID(self.TerritoryID) == self.PlayerID then
             if IsExisting(Outpost) then
                 Logic.ChangeEntityPlayerID(Outpost, _Quest.ReceivingPlayer);
@@ -3034,7 +3037,7 @@ function b_Goal_TributeClaim:OnTributePaid(_Quest)
             Logic.SetTerritoryPlayerID(self.TerritoryID, _Quest.ReceivingPlayer);
         end
     end
-    if Logic.GetTime() >= self.Time + self.PeriodLength then
+    if self.Time and Logic.GetTime() >= self.Time + self.PeriodLength then
         if self.HowOften and self.HowOften ~= 0 then
             self.TributeCounter = (self.TributeCounter or 0) +1;
             if self.TributeCounter >= self.HowOften then
@@ -3042,11 +3045,12 @@ function b_Goal_TributeClaim:OnTributePaid(_Quest)
             end
         end
         self:RestartTributeQuest();
+        self.Time = nil;
     end
 end
 
 function b_Goal_TributeClaim:CustomFunction(_Quest)
-    -- Außenposten heilen, falls nötig.
+    self:CreateTributeQuest(_Quest);
     self:CureOutpost(_Quest);
 
     if Logic.GetTerritoryPlayerID(self.TerritoryID) == _Quest.ReceivingPlayer
@@ -3055,32 +3059,31 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
             self:RestartTributeQuest();
             self.OtherOwner = nil;
         end
-        self:CreateTributeQuest(_Quest);
 
         -- Quest abgeschlossen
-        if self.Quest.State == QuestState.Over then
-            if self.Quest.Result == QuestResult.Failure then
+        if self.InternTributeQuest.State == QuestState.Over then
+            if self.InternTributeQuest.Result == QuestResult.Failure then
                 self:OnTributeFailed(_Quest);
             else
                 self:OnTributePaid(_Quest);
             end
 
-        elseif self.Quest.State == false then
-            if Logic.GetTime() >= self.Time + self.PeriodLength then
+        elseif self.InternTributeQuest.State == false then
+            if self.Time and Logic.GetTime() >= self.Time + self.PeriodLength then
                 self:RestartTributeQuest(_Quest);
             end
         end
 
     -- Keiner besitzt das Territorium -> Abbruch
-    elseif Logic.GetTerritoryPlayerID(self.TerritoryID) == 0 and self.Quest then
-        if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt();
+    elseif Logic.GetTerritoryPlayerID(self.TerritoryID) == 0 and self.InternTributeQuest then
+        if self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
 
     -- Anderer Besitzer -> Abbruch
     elseif Logic.GetTerritoryPlayerID(self.TerritoryID) ~= self.PlayerID then
-        if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt();
+        if self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
         if self.OtherOwnerCancels then
             _Quest:Interrupt();
@@ -3091,8 +3094,8 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
     --Fordernder Spieler existiert nicht -> Abbruch
     local storeHouse = Logic.GetStoreHouse(self.PlayerID);
     if (storeHouse == 0 or Logic.IsEntityDestroyed(storeHouse)) then
-        if self.Quest and self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt();
+        if self.InternTributeQuest and self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
         return true;
     end
@@ -3122,15 +3125,15 @@ function b_Goal_TributeClaim:DEBUG(_Quest)
 end
 
 function b_Goal_TributeClaim:Reset()
-    self.Quest = nil;
+    self.InternTributeQuest = nil;
     self.Time = nil;
     self.OtherOwner = nil;
 end
 
 function b_Goal_TributeClaim:Interrupt(_Quest)
-    if type(self.Quest) == "table" then
-        if self.Quest.State == QuestState.Active then
-            self.Quest:Interrupt();
+    if type(self.InternTributeQuest) == "table" then
+        if self.InternTributeQuest.State == QuestState.Active then
+            self.InternTributeQuest:Interrupt();
         end
     end
 end
@@ -4044,7 +4047,17 @@ Core:RegisterBehavior(b_Reprisal_CustomVariables)
 ---
 -- Führt eine Funktion im Skript als Reprisal aus.
 --
--- @param _FunctionName Name der Funktion
+-- Wird ein Funktionsname als String übergeben, wird die Funktion mit den
+-- Daten des Behavors und des zugehörigen Quest aufgerufen (Standard).
+--
+-- Wird eine Funktionsreferenz angegeben, wird die Funktion zusammen mit allen
+-- optionalen Parametern aufgerufen, als sei es ein gewöhnlicher Aufruf im
+-- Skript.
+-- <pre>Reprisal_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
+-- -- entspricht: ReplaceEntity("block", Entities.XD_ScriptEntity);</pre>
+-- <b>Achtung:</b> Nicht über den Assistenten verfügbar!
+--
+-- @param _Function Name der Funktion oder Funktionsreferenz
 --
 -- @within Reprisal
 --
@@ -4068,18 +4081,26 @@ function b_Reprisal_MapScriptFunction:GetReprisalTable()
 end
 
 function b_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
-    if (_Index == 0) then
-        self.FuncName = _Parameter
+    if _Index == 0 then
+        self.Function = _Parameter;
     end
 end
 
 function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
-    return _G[self.FuncName](self, _Quest);
+    if type(self.Function) == "function" then
+        self.Function(unpack(self.i47ya_6aghw_frxil));
+        return;
+    end
+    _G[self.Function](self, _Quest);
 end
 
 function b_Reprisal_MapScriptFunction:DEBUG(_Quest)
-    if not self.FuncName or not _G[self.FuncName] then
-        fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
+    if not self.Function then
+        fatal("".._Quest.Identifier.." "..self.Name..": function reference is invalid!");
+        return true;
+    end
+    if type(self.Function) == "string" and not _G[self.Function] then
+        fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.Function.. "' does not exist!");
         return true;
     end
     return false;
@@ -4324,13 +4345,13 @@ function b_Reward_ObjectInit:CustomFunction(_Quest)
     Logic.InteractiveObjectSetInteractionDistance(eID, self.Distance);
     Logic.InteractiveObjectSetTimeToOpen(eID, self.Waittime);
 
-    if self.RewardType and self.RewardType ~= "disabled" then
+    if self.RewardType and self.RewardType ~= "-" then
         Logic.InteractiveObjectAddRewards(eID, Goods[self.RewardType], self.RewardAmount);
     end
-    if self.FirstCostType and self.FirstCostType ~= "disabled" then
+    if self.FirstCostType and self.FirstCostType ~= "-" then
         Logic.InteractiveObjectAddCosts(eID, Goods[self.FirstCostType], self.FirstCostAmount);
     end
-    if self.SecondCostType and self.SecondCostType ~= "disabled" then
+    if self.SecondCostType and self.SecondCostType ~= "-" then
         Logic.InteractiveObjectAddCosts(eID, Goods[self.SecondCostType], self.SecondCostAmount);
     end
 
@@ -6671,7 +6692,17 @@ Core:RegisterBehavior(b_Reward_CustomVariables)
 ---
 -- Führt eine Funktion im Skript als Reward aus.
 --
--- @param _FunctionName Name der Funktion
+-- Wird ein Funktionsname als String übergeben, wird die Funktion mit den
+-- Daten des Behavors und des zugehörigen Quest aufgerufen (Standard).
+--
+-- Wird eine Funktionsreferenz angegeben, wird die Funktion zusammen mit allen
+-- optionalen Parametern aufgerufen, als sei es ein gewöhnlicher Aufruf im
+-- Skript.
+-- <pre>Reward_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
+-- -- entspricht: ReplaceEntity("block", Entities.XD_ScriptEntity);</pre>
+-- <b>Achtung:</b> Nicht über den Assistenten verfügbar!
+--
+-- @param _FunctionName Name der Funktion oder Funktionsreferenz
 --
 -- @within Reward
 --

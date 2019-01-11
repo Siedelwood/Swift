@@ -1785,16 +1785,6 @@ function Core:RegisterBehavior(_Behavior)
             end
         end
 
-        if not _G["b_" .. _Behavior.Name].expose then
-            _G["b_" .. _Behavior.Name].expose = function(self, _Index)
-                if _Index then
-                    return self.i47ya_6aghw_frxil[_Index];
-                else
-                    return unpack(self.i47ya_6aghw_frxil);
-                end
-            end
-        end
-
         for i= 1, #g_QuestBehaviorTypes, 1 do
             if g_QuestBehaviorTypes[i].Name == _Behavior.Name then
                 return;

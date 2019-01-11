@@ -38,7 +38,7 @@ QSB = QSB or {};
 --
 function API.GetEntityScale(_Entity)
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        local Subject = tostring((type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity);
         API.Fatal("API.GetEntityScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
@@ -57,7 +57,7 @@ GetScale = API.GetEntityScale;
 --
 function API.GetEntityPlayer(_Entity)
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        local Subject = tostring((type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity);
         API.Fatal("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
@@ -87,7 +87,7 @@ GetPlayer = API.GetEntityPlayer;
 --
 function API.GetMovementTarget(_Entity)
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        local Subject = tostring((type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity);
         API.Fatal("API.GetMovementTarget: Target " ..Subject.. " is invalid!");
         return nil;
     end
@@ -114,7 +114,7 @@ GetMovingTarget = API.GetMovementTarget;
 --
 function API.IsActiveNpc(_Entity)
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        local Subject = tostring((type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity);
         API.Fatal("API.IsActiveNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
@@ -133,7 +133,7 @@ IsNpc = API.IsActiveNpc;
 --
 function API.IsEntityVisible(_Entity)
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        local Subject = tostring((type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity);
         API.Fatal("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
@@ -155,7 +155,7 @@ IsVisible = API.IsEntityVisible;
 --
 function API.SetEntityScale(_Entity, _Scale)
     if GUI or not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        local Subject = tostring((type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity);
         API.Fatal("API.SetEntityScale: Target " ..Subject.. " is invalid!");
         return;
     end
@@ -181,7 +181,7 @@ SetScale = API.SetEntityScale;
 --
 function API.SetEntityPlayer(_Entity, _PlayerID)
     if GUI or not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
+        local Subject = tostring((type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity);
         API.Fatal("API.SetEntityPlayer: Target " ..Subject.. " is invalid!");
         return;
     end

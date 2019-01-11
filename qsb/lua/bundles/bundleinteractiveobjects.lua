@@ -306,6 +306,48 @@ BundleInteractiveObjects = {
 --
 function BundleInteractiveObjects.Global:Install()
     IO = {};
+    self:OverrideVanillaBehavior();
+end
+
+---
+-- Überschreibt Reward_ObjectInit, damit IO korrekt funktionieren.
+--
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Global:OverrideVanillaBehavior()
+    if b_Reward_ObjectInit then
+        b_Reward_ObjectInit.CustomFunction = function(_Behavior, _Quest)
+            local eID = GetID(_Behavior.ScriptName);
+            if eID == 0 then
+                return;
+            end
+            QSB.InitalizedObjekts[eID] = _Quest.Identifier;
+            
+            local RewardTable = nil;
+            if _Behavior.RewardType and _Behavior.RewardType ~= "-" then
+                RewardTable = {Goods[_Behavior.RewardType], _Behavior.RewardAmount};
+            end
+
+            local CostsTable = nil;
+            if _Behavior.FirstCostType and _Behavior.FirstCostType ~= "-" then
+                CostsTable = {Goods[_Behavior.FirstCostType], _Behavior.FirstCostAmount};
+                if _Behavior.SecondCostType and _Behavior.SecondCostType ~= "-" then
+                    table.insert(CostsTable, Goods[_Behavior.SecondCostType]);
+                    table.insert(CostsTable, _Behavior.SecondCostAmount);
+                end
+            end
+
+            API.CreateObject{
+                Name        = _Behavior.ScriptName,
+                State       = _Behavior.UsingState or 0,
+                Distance    = _Behavior.Distance,
+                Waittime    = _Behavior.Waittime,
+                Reward      = RewardTable,
+                Costs       = CostsTable,
+            };
+        end
+    end
 end
 
 ---
@@ -481,8 +523,8 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
             end
         end
 
-        GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnID, _Type, _Amount)
-            local pos = GetPosition(_SpawnID);
+        GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnPos, _Type, _Amount)
+            local pos = GetPosition(_SpawnPos);
             local resCat = Logic.GetGoodCategoryForGoodType(_Type);
             local ID;
             if resCat == GoodCategories.GC_Resource then
@@ -722,7 +764,8 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
         -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
-            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+            local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "I_X_TradePostConstructionSite"}) then
                 GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
                 return;
             end
@@ -776,14 +819,16 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
     GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectClicked
     GUI_Interaction.InteractiveObjectClicked = function()
         local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
-        local lang = Network.GetDesiredLanguage();
         local eID = g_Interaction.ActiveObjectsOnScreen[i];
         local pID = GUI.GetPlayerID();
         local EntityType = Logic.GetEntityType(eID);
+        local lang = Network.GetDesiredLanguage();
+        lang = (lang == "de" and lang) or "en";
 
         -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
-            if EntityType == Entities.R_StoneMine or EntityType == Entities.R_IronMine or EntityType == Entities.B_Cistern then
+            local EntityTypeName = Logic.GetEntityTypeName(EntityType);
+            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "I_X_TradePostConstructionSite"}) then
                 GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
                 return;
             end
@@ -845,8 +890,12 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
                     -- check condition
                     if not IO[k].ConditionFullfilled then
-                        if IO[k].ConditionUnfulfilled and IO[k].ConditionUnfulfilled ~= "" then
-                            Message(IO[k].ConditionUnfulfilled);
+                        if IO[k].ConditionUnfulfilled then
+                            local MessageText = IO[k].ConditionUnfulfilled;
+                            if type(MessageText) == "table" then
+                                MessageText = MessageText[lang];
+                            end
+                            Message(MessageText);
                         end
                         return;
                     end
