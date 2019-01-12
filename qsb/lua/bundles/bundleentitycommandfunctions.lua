@@ -103,7 +103,7 @@ function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity
         API.Fatal("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+    return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
 end
 MoveEntityToPositionToAnotherOne = function(_Entity, _Distance, _Position, _Angle, _moveAsEntity)
     API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
@@ -142,7 +142,7 @@ function API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
         API.Fatal("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
+    return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, 0, _moveAsEntity);
 end
 MoveEntityFaceToFaceToAnotherOne = function(_Entity, _Distance, _Position, _moveAsEntity)
     API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
@@ -244,7 +244,9 @@ function API.CommandAttack(_Entity, _Target)
         API.Fatal("API.CommandAttack: Target " ..Subject.. " does not exist!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:Attack(_Entity, _Target);
+    local EntityID = GetID(_Entity);
+    local TargetID = GetID(_Target);
+    Logic.GroupAttack(EntityID, TargetID);
 end
 Attack = API.CommandAttack;
 
@@ -276,7 +278,9 @@ function API.CommandAttackMove(_Entity, _Position)
         API.Fatal("API.CommandAttackMove: Position is invalid!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:AttackMove(_Entity, Position);
+    local EntityID = GetID(_Entity);
+    local Position = GetPosition(_Position);
+    Logic.GroupAttackMove(EntityID, Position.X, Position.Y);
 end
 AttackMove = API.CommandAttackMove;
 
@@ -307,7 +311,9 @@ function API.CommandMove(_Entity, _Position)
         API.Fatal("API.CommandMove: Position is invalid!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:Move(_Entity, Position);
+    local EntityID = GetID(_Entity);
+    local Position = GetPosition(_Position);
+    Logic.MoveSettler(EntityID, Position.X, Position.Y);
 end
 Move = API.CommandMove;
 
@@ -373,15 +379,9 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     if not IsExisting(_Entity)then
         return
     end
-    if not _Distance then
-        _Distance = 0;
-    end
     local eID = GetID(_Entity);
     local tID = GetID(_Position);
-    local pos = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance);
-    if type(_Angle) == "number" then
-        pos = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance, _Angle);
-    end
+    local pos = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance or 0, _Angle or 0);
 
     if _moveAsEntity then
         Logic.MoveEntity(eID, pos.X, pos.Y);
@@ -390,82 +390,15 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     end
 
     StartSimpleJobEx( function(_EntityID, _TargetID)
+        if not IsExisting(_EntityID) or not IsExisting(_EntityID) then
+            return true;
+        end
         if not Logic.IsEntityMoving(_EntityID) then
             LookAt(_EntityID, _TargetID);
             return true;
         end
     end, eID, tID);
 end
-
----
--- Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt und schaut
--- das Ziel anschließend an.
---
--- @param _Entity       [string|number] Zu bewegendes Entity
--- @param _Position     [string|number] Ziel
--- @param _Distance     [number] Entfernung zum Ziel
--- @param _moveAsEntity [boolean] Blocking ignorieren
--- @within Internal
--- @local
---
-function BundleEntityCommandFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
-    if not IsExisting(_Entity)then
-        return
-    end
-    if not _Distance then
-        _Distance = 0;
-    end
-
-    self:MoveToPosition(_Entity, _Position, _Distance, 0, _moveAsEntity);
-    StartSimpleJobEx( function(_EntityID, _TargetID)
-        if not Logic.IsEntityMoving(_EntityID) then
-            LookAt(_EntityID, _TargetID);
-            return true;
-        end
-    end, GetID(_Entity), GetID(_Position));
-end
-
----
--- Das Entity greift ein anderes Entity an, sofern möglich.
---
--- @param_Entity  [string|number] Angreifendes Entity
--- @param _Target [string|number] Angegriffenes Entity
--- @within Internal
--- @local
---
-function BundleEntityCommandFunctions.Global:Attack(_Entity, _Target)
-    local EntityID = GetID(_Entity);
-    local TargetID = GetID(_Target);
-    Logic.GroupAttack(EntityID, TargetID);
-end
-
----
--- Ein Entity oder ein Battalion wird zu einer Position laufen und
--- alle gültigen Ziele auf dem Weg angreifen.
---
--- @param _Entity   [string|number] Angreifendes Entity
--- @param _Position [string] Skriptname, EntityID oder Positionstable
--- @within Internal
--- @local
---
-function BundleEntityCommandFunctions.Global:AttackMove(_Entity, _Position)
-    local EntityID = GetID(_Entity);
-    Logic.GroupAttackMove(EntityID, _Position.X, _Position.Y);
-end
-
----
--- Bewegt das Entity zur Zielposition.
---
--- @param _Entity   [string|number] Bewegendes Entity
--- @param _Position [table] Positionstable
--- @within Internal
--- @local
---
-function BundleEntityCommandFunctions.Global:Move(_Entity, _Position)
-    local EntityID = GetID(_Entity);
-    Logic.MoveSettler(EntityID, _Position.X, _Position.Y);
-end
-
 
 -- Shared ----------------------------------------------------------------------
 
