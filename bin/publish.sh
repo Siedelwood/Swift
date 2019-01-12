@@ -8,8 +8,8 @@ echo "==== Creating Release ===="
 echo "Creating release folder..."
 cd ..
 rm -rf Release &>/dev/null
-mkdir -p Release/src/prof
-mkdir -p Release/src/assi
+mkdir -p Release/src/advanced
+mkdir -p Release/src/beginner
 echo "Done!"
 
 echo "Copy qsb files..."
@@ -29,6 +29,10 @@ mkdir Release/guide &>/dev/null
 cp hlp/*.pdf Release/guide &>/dev/null
 cp hlp/readme.txt Release/start.txt &>/dev/null
 echo "Done!"
+
+echo "Copy examples..."
+cp -r qsb/example Release/example &>/dev/null
+echo "Done"
 
 echo "Creating archive..."
 zip -r Release/doc Release/guide Release/* &>/dev/null
