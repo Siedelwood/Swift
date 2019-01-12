@@ -15,12 +15,12 @@ echo "Done!"
 echo "Copy qsb files..."
 cp var/qsb.lua Release/src/questsystembehavior.lua &>/dev/null
 cp var/qsb_min.lua Release/src/questsystembehavior_min.lua &>/dev/null
-cp qsb/default/globalscript.lua Release/src/assi/mapscript.lua &>/dev/null
-cp qsb/default/localscript.lua Release/src/assi/localmapscript.lua &>/dev/null
-cp qsb/default/globalscript2.lua Release/src/prof/mapscript.lua &>/dev/null
-cp qsb/default/localscript2.lua Release/src/prof/localmapscript.lua &>/dev/null
-cp qsb/default/internglobalscript.lua Release/src/prof/internmapscript.lua &>/dev/null
-cp qsb/default/internlocalscript.lua Release/src/prof/internlocalmapscript.lua &>/dev/null
+cp qsb/default/globalscript.lua Release/src/beginner/mapscript.lua &>/dev/null
+cp qsb/default/localscript.lua Release/src/beginner/localmapscript.lua &>/dev/null
+cp qsb/default/globalscript2.lua Release/src/advanced/mapscript.lua &>/dev/null
+cp qsb/default/localscript2.lua Release/src/advanced/localmapscript.lua &>/dev/null
+cp qsb/default/internglobalscript.lua Release/src/advanced/internmapscript.lua &>/dev/null
+cp qsb/default/internlocalscript.lua Release/src/advanced/internlocalmapscript.lua &>/dev/null
 echo "Done!"
 
 echo "Copy documentation..."
