@@ -229,7 +229,6 @@ QSB.EntityScriptingValue = class {
 --
 function QSB.EntityScriptingValue:GetInstance(_Entity)
     assert(self == QSB.EntityScriptingValue, "Can not be used from instance!");
-    assert(IsExisting(_Entity));
 
     if not QSB.EntityScriptingValueObjects[_Entity] then
         QSB.EntityScriptingValueObjects[_Entity] = new{QSB.EntityScriptingValue, _Entity};
@@ -272,7 +271,11 @@ function QSB.EntityScriptingValue:SetPlayerID(_PlayerID)
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
-        Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+        if Logic.IsLeader(EntityID) == 1 then
+            Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
+        else
+            Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+        end
     end
     return self;
 end
@@ -308,10 +311,9 @@ function QSB.EntityScriptingValue:GetEntitySize()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
-        return 0;
+        return 0.0;
     end
-    local size = Logic.GetEntityScriptingValue(EntityID, -45);
-    return self:Int2Float(size);
+    return self:GetValueAsFloat(-45);
 end
 
 ---
@@ -326,9 +328,9 @@ function QSB.EntityScriptingValue:GetPlayerID()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
-        return 0;
+        return -1;
     end
-    return Logic.GetEntityScriptingValue(EntityID, -71);
+    return self:GetValueAsInteger(-71);
 end
 
 ---
@@ -345,7 +347,7 @@ function QSB.EntityScriptingValue:IsEntityVisible()
     if EntityID == 0 then
         return false;
     end
-    return Logic.GetEntityScriptingValue(EntityID, -50) == 801280;
+    return self:GetValueAsInteger(-50) == 801280;
 end
 
 ---
@@ -359,13 +361,10 @@ function QSB.EntityScriptingValue:IsOnScreenInformationActive()
     assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 then
+    if EntityID == 0 or Logic.IsSettler(EntityID) == 0 then
         return false;
     end
-    if Logic.IsSettler(EntityID) == 0 then
-        return false;
-    end
-    return Logic.GetEntityScriptingValue(EntityID, 6) == 1;
+    return self:GetValueAsInteger(6) > 0;
 end
 
 ---
@@ -378,10 +377,11 @@ end
 function QSB.EntityScriptingValue:GetMovingTargetPosition(_Entity)
     assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
 
-    local pos = {};
-    pos.X = self:GetValueAsFloat(19) or 0;
-    pos.Y = self:GetValueAsFloat(20) or 0;
-    return pos;
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 then
+        return {X= self:GetValueAsFloat(19), Y= self:GetValueAsFloat(20)};
+    end
+    return {X= 0, Y= 0};
 end
 
 ---
@@ -391,12 +391,12 @@ end
 -- @within QSB.EntityScriptingValue
 -- @local
 --
-function QSB.EntityScriptingValue:GetAbsoluteHealth()
+function QSB.EntityScriptingValue:GetCurrentHealth()
     assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
-        return Logic.GetEntityScriptingValue(EntityID, -41);
+        return self:GetValueAsInteger(-41);
     end
     return 0;
 end
@@ -412,8 +412,8 @@ function QSB.EntityScriptingValue:CountSoldiers()
     assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
-    if EntityID > 0 then
-        return Logic.GetEntityScriptingValue(EntityID, -57);
+    if EntityID > 0 and Logic.IsLeader(EntityID) == 1 then
+        return self:GetValueAsInteger(-57);
     end
     return 0;
 end
@@ -448,8 +448,8 @@ function QSB.EntityScriptingValue:GetLeaderID()
     assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
-    if EntityID > 0 then
-        return Logic.GetEntityScriptingValue(EntityID, 46);
+    if EntityID > 0 and Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 1 then
+        return self:GetValueAsInteger(46);
     end
     return 0;
 end
