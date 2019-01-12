@@ -206,9 +206,22 @@ BundleNonPlayerCharacter = {
         NonPlayerCharacterObjects = {},
         LastNpcEntityID = 0,
         LastHeroEntityID = 0,
+        DefaultNpcType = 1,
     },
     Local = {}
 };
+
+---
+-- Setzt den Standardtypen des NPC. Der Typ gibt an, ob Glitter verwendet wird
+-- oder auf die NPC-Marker zurückgegriffen wird.
+--
+-- @param _Type [number] Typ des NPC (1 oder 2)
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global:SetDefaultNPCType(_Type)
+    self.DefaultNpcType = _Type;
+end
 
 ---
 -- Erzeugt ein neues Objekt von NonPlayerCharacter und bindet es an den
@@ -235,9 +248,9 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
 
     local npc = CopyTableRecursive(self);
     npc.Data.NpcName = _ScriptName;
+    npc.Data.NpcType = BundleNonPlayerCharacter.Global.DefaultNpcType
     BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[_ScriptName] = npc;
     npc:CreateMarker();
-    npc:HideMarker();
     return npc;
 end
 
@@ -344,7 +357,8 @@ end
 --
 -- <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
 --
--- @return [table] Instanz von NonPlayerCharacter
+-- @param[type=number] _Flag NPC-Flag [1|4]
+-- @return[type=table] Instanz von NonPlayerCharacter
 -- @within NonPlayerCharacter
 -- @local
 -- @usage -- NPC aktivieren:
@@ -353,7 +367,7 @@ end
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
     if IsExisting(self.Data.NpcName) then
-        Logic.SetOnScreenInformation(self:GetID(), 1);
+        Logic.SetOnScreenInformation(self:GetID(), self.Data.NpcType);
         self:ShowMarker();
     end
     return self;
@@ -390,7 +404,7 @@ end
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    return Logic.GetEntityScriptingValue(self:GetID(), 6) == 1;
+    return Logic.GetEntityScriptingValue(self:GetID(), 6) > 0;
 end
 
 ---
@@ -429,6 +443,25 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo()
         return self.Data.TalkedTo == GetID(self.Data.HeroName);
     end
     return self.Data.TalkedTo ~= nil;
+end
+
+---
+-- Gibt die Entity ID des letzten angesprochenen NPC zurück.
+--
+-- <p><b>Alias:</b> NonPlayerCharacter:GetNpcId</p>
+--
+-- @param _Type [number] Typ des Npc
+-- @return [number] ID des letzten NPC
+-- @within NonPlayerCharacter
+-- @local
+--
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetType(_Type)
+    assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
+    self.Data.NpcType = _Type;
+    if _Type > 1 then
+        self:HideMarker();
+    end
+    return self;
 end
 
 ---
@@ -819,7 +852,7 @@ end
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:ShowMarker()
     assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if IsExisting(self.Data.MarkerID) then
+    if self.Data.NpcType == 1 and IsExisting(self.Data.MarkerID) then
         local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), -45);
         Logic.SetEntityScriptingValue(self.Data.MarkerID, -45, EntityScale);
         Logic.SetModel(self.Data.MarkerID, Models.Effects_E_Wealth);
@@ -864,24 +897,27 @@ end
 -- @local
 --
 function BundleNonPlayerCharacter.Global.NonPlayerCharacter:ControlMarker()
-    if self:IsActive() and not self:HasTalkedTo() then
-        -- Blinken
-        if self:IsMarkerVisible() then
-            self:HideMarker();
-        else
-            self:ShowMarker();
-        end
+    -- Nur, wenn Standard-NPC
+    if self.Data.NpcType == 1 then
+        if self:IsActive() and not self:HasTalkedTo() then
+            -- Blinken
+            if self:IsMarkerVisible() then
+                self:HideMarker();
+            else
+                self:ShowMarker();
+            end
 
-        -- Repositionierung
-        local x1,y1,z1 = Logic.EntityGetPos(self.Data.MarkerID);
-        local x2,y2,z2 = Logic.EntityGetPos(self:GetID());
-        if math.abs(x1-x2) > 20 or math.abs(y1-y2) > 20 then
-            Logic.DEBUG_SetPosition(self.Data.MarkerID, x2, y2);
+            -- Repositionierung
+            local x1,y1,z1 = Logic.EntityGetPos(self.Data.MarkerID);
+            local x2,y2,z2 = Logic.EntityGetPos(self:GetID());
+            if math.abs(x1-x2) > 20 or math.abs(y1-y2) > 20 then
+                Logic.DEBUG_SetPosition(self.Data.MarkerID, x2, y2);
+            end
         end
-    end
-    -- Während Briefings immer verstecken
-    if IsBriefingActive and IsBriefingActive() then
-        self:HideMarker();
+        -- Während Briefings immer verstecken
+        if IsBriefingActive and IsBriefingActive() then
+            self:HideMarker();
+        end
     end
 end
 
