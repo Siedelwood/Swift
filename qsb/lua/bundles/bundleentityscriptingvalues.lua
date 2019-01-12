@@ -232,7 +232,11 @@ end
 --
 function BundleEntityScriptingValues.Global:SetPlayerID(_Entity, _PlayerID)
     local EntityID = GetID(_Entity);
-    Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+    if Logic.IsLeader(EntityID) == 1 then
+        Logic.ChangeSettlerPlayerID(EntityID, _PLayerID);
+    else
+        Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+    end
 end
 
 -- Shared ----------------------------------------------------------------------
