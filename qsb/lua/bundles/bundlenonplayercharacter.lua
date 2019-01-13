@@ -212,18 +212,6 @@ BundleNonPlayerCharacter = {
 };
 
 ---
--- Setzt den Standardtypen des NPC. Der Typ gibt an, ob Glitter verwendet wird
--- oder auf die NPC-Marker zurückgegriffen wird.
---
--- @param _Type [number] Typ des NPC (1 oder 2)
--- @within Internal
--- @local
---
-function BundleNonPlayerCharacter.Global:SetDefaultNPCType(_Type)
-    self.DefaultNpcType = _Type;
-end
-
----
 -- Erzeugt ein neues Objekt von NonPlayerCharacter und bindet es an den
 -- angegebenen Siedler. Dadurch wird der Siedler zu einem NPC, ist allerdings
 -- noch nicht aktiv.
@@ -780,6 +768,18 @@ function BundleNonPlayerCharacter.Global:Install()
             end
         end
     end
+end
+
+---
+-- Setzt den Standardtypen des NPC. Der Typ gibt an, ob Glitter verwendet wird
+-- oder auf die NPC-Marker zurückgegriffen wird.
+--
+-- @param _Type [number] Typ des NPC (1 oder 2)
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global:SetDefaultNPCType(_Type)
+    self.DefaultNpcType = _Type;
 end
 
 ---

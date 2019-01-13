@@ -322,7 +322,7 @@ function BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity)
     if Logic.IsSettler(EntityID) == 0 then
         return false;
     end
-    return Logic.GetEntityScriptingValue(EntityID, 6) == 1;
+    return Logic.GetEntityScriptingValue(EntityID, 6) > 0;
 end
 
 ---
