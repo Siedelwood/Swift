@@ -427,8 +427,8 @@ b_Reward_DEBUG = {
     Parameter = {
         { ParameterType.Custom,     en = "Check quest while runtime", de = "Quests zur Laufzeit prüfen" },
         { ParameterType.Custom,     en = "Use quest trace", de = "Questverfolgung" },
-        { ParameterType.Custom,     en = "Activate developing cheats", de = "Testmodus aktivieren" },
-        { ParameterType.Custom,     en = "Activate developing shell", de = "Testmodus aktivieren" },
+        { ParameterType.Custom,     en = "Activate developing cheats", de = "Cheats aktivieren" },
+        { ParameterType.Custom,     en = "Activate developing shell", de = "Eingabe aktivieren" },
     },
 }
 
