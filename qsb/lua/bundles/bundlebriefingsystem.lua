@@ -114,8 +114,8 @@ PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 --
 function API.IsBriefingFinished(_briefingID)
     if GUI then
-        API.Fatal("API.IsBriefingFinished: Can only be used in the global script!");
-        return;
+        API.Warn("API.IsBriefingFinished: Can only be used in the global script!");
+        return false;
     end
     return BundleBriefingSystem.Global:IsBriefingFinished(_briefingID);
 end
@@ -135,8 +135,8 @@ IsBriefingFinished = API.IsBriefingFinished;
 --
 function API.GetSelectedAnswerFromMCPage(_page)
     if GUI then
-        API.Fatal("API.GetSelectedAnswerFromMCPage: Can only be used in the global script!");
-        return;
+        API.Warn("API.GetSelectedAnswerFromMCPage: Can only be used in the global script!");
+        return 0;
     end
     return BundleBriefingSystem.Global:MCGetSelectedAnswer(_page);
 end
@@ -155,8 +155,8 @@ MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 --
 function API.GetCurrentBriefingPage(_pageNumber)
     if GUI then
-        API.Fatal("API.GetCurrentBriefingPage: Can only be used in the global script!");
-        return;
+        API.Warn("API.GetCurrentBriefingPage: Can only be used in the global script!");
+        return 0;
     end
     return BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber);
 end
@@ -432,7 +432,9 @@ BundleBriefingSystem = {
         }
     },
     Local = {
-        Data = {}
+        Data = {
+            BriefingMessages = {},
+        }
     },
 }
 
@@ -446,6 +448,22 @@ BundleBriefingSystem = {
 --
 function BundleBriefingSystem.Global:Install()
     self:InitalizeBriefingSystem();
+end
+
+---
+-- Fügt den Briefing Messages einen neuen Eintrag hinzu. Jede Nachricht ist
+-- 120 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
+-- Briefing beendet ist, werden sie zu normalen Notes.
+--
+-- Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
+-- Eintrag auf 0 reduziert.
+--
+-- @param[type=string] _Text Text der Nachricht
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:PushBriefingNote(_Text)
+    API.Bridge("BundleBriefingSystem.Local:PushBriefingNote('" .._Text.. "')");
 end
 
 ---
@@ -556,6 +574,7 @@ function BundleBriefingSystem.Global:AddFlights(_Cutscene)
                 fadeOut      = (i == #_Flight and _Flight.FadeOut and (-_Flight.FadeOut)) or nil,
                 duration     = (i == 1 and 0) or Duration,
                 flyTime      = (i > 1 and Duration) or nil,
+                FOV          = _Flight[i].FOV,
                 splashscreen = _Flight.Splashscreen
             };
             table.insert(_Cutscene, Flight);
@@ -816,7 +835,8 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
             return true
         end
 
-        BundleBriefingSystem:OverwriteGetPosition();
+        BundleBriefingSystem:OverrideGetPosition();
+        BundleBriefingSystem:OverrideApiNote();
     end
 
 -- Briefing System Beginn --------------------------------------------------- --
@@ -1647,7 +1667,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.GameCallback_Escape();
             end
         end
-        BriefingSystem.Flight.Job = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, nil, "ThroneRoomCameraControl", 0);
+        -- Sieht so aus, als würde Siedler das selbst aufrufen.
+        -- BriefingSystem.Flight.Job = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, nil, "ThroneRoomCameraControl", 0);
     end
 
     ---
@@ -1685,7 +1706,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     function BriefingSystem.PrepareBriefing()
         BriefingSystem.barType = nil;
         BriefingSystem.currBriefing = BriefingSystem.GlobalSystem[BriefingSystem.GlobalSystem.currBriefingIndex];
-        Trigger.EnableTrigger(BriefingSystem.Flight.Job);
+        -- Sieht so aus, als würde Siedler das selbst aufrufen.
+        -- Trigger.EnableTrigger(BriefingSystem.Flight.Job);
 
         local isLoadScreenVisible = XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 1;
         if isLoadScreenVisible then
@@ -1719,9 +1741,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 
-        -- Portrait wirget
+        -- Portrait  und Message wirget
         XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
         XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
+        XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
+        XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", " ");
+        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Text", 200, 300, 1000, 10);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 1);
         XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/KnightBG", 1);
@@ -1819,7 +1844,10 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
         XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
         XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
-        Trigger.DisableTrigger(BriefingSystem.Flight.Job);
+        -- Sieht so aus, als würde Siedler das selbst aufrufen.
+        -- Trigger.DisableTrigger(BriefingSystem.Flight.Job);
+
+        BundleBriefingSystem.Local:ConvertBriefingNotes();
     end
 
     ---
@@ -1970,13 +1998,19 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         if page.cutscene then
             -- Flight speichern
             if BriefingSystem.GlobalSystem.page == 1 then
-                BriefingSystem.CutsceneSaveFlight(page.cutscene.Position, page.cutscene.LookAt, FOV);
+                BriefingSystem.CutsceneSaveFlight(
+                    page.cutscene.Position, 
+                    page.cutscene.LookAt, 
+                    FOV
+                );
             end
             -- Kamera bewegen
-            BriefingSystem.CutsceneFlyTo(page.cutscene.Position,
-                                         page.cutscene.LookAt,
-                                         FOV,
-                                         page.flyTime or 0);
+            BriefingSystem.CutsceneFlyTo(
+                page.cutscene.Position,
+                page.cutscene.LookAt,
+                FOV,
+                page.flyTime or 0
+            );
 
         elseif page.position then
             local position = page.position;
@@ -2656,9 +2690,10 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
 
             -- -------------------------------------------------------------- --
 
-            -- Notizen im Briefing
+                    -- Notizen im Briefing
             -- Blendet zusätzlichen Text während eines Briefings ein. Siehe
             -- dazu Kommentar bei der Funktion.
+            BundleBriefingSystem.Local:UpdateBriefingNotes();
 
             -- Multiple Choice ist bestätigt, wenn das Auswahlfeld
             -- verschwindet. In diesem Fall hat der Spieler geklickt.
@@ -3046,6 +3081,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     --
     function BriefingSystem.SetBriefingPagePortrait(_page)
         if _page.portrait then
+            local Portrait = _page.portrait;
             XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 255);
             XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, _page.portrait);
             XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0, 0, 1, 1);
@@ -3113,7 +3149,63 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget(BG, 1);
     end
 
-    BundleBriefingSystem:OverwriteGetPosition();
+    BundleBriefingSystem:OverrideGetPosition();
+    BundleBriefingSystem:OverrideApiNote();
+end
+
+---
+-- Fügt den Briefing Messages einen neuen Eintrag hinzu. Jede Nachricht ist
+-- 12 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
+-- Briefing beendet ist, werden sie zu normalen Notes.
+--
+-- Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
+-- Eintrag auf 0 reduziert.
+--
+-- @param[type=string] _Text Text der Nachricht
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:PushBriefingNote(_Text)
+    local Size = #self.Data.BriefingMessages;
+    if Size >= 8 then
+        local Index = Size -7;
+        self.Data.BriefingMessages[Index][2] = 0;
+    end
+    self.Data.BriefingMessages[Size+1] = {_Text, 12000};
+end
+
+---
+-- Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+-- die Table. Diese Funktion wird automatisch vom Briefing System aufgerufen.
+--
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:ConvertBriefingNotes()
+    for k, v in pairs(self.Data.BriefingMessages) do
+        if v and v[2] > 0 then
+            API.Note(v[1]);
+        end
+    end
+    self.Data.BriefingMessages = {};
+end
+
+---
+-- Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+-- die Table. Diese Funktion wird automatisch vom Briefing System aufgerufen.
+--
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:UpdateBriefingNotes()
+    local Text = "{@color:255,255,255,255}";
+    for k, v in pairs(self.Data.BriefingMessages) do
+        if v and v[2] > 0 then
+            self.Data.BriefingMessages[k][2] = v[2] -1;
+            Text = Text .. v[1] .. "{cr}";
+        end
+    end
+    XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", Text);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -3123,18 +3215,41 @@ end
 -- @within Internal
 -- @local
 --
-function BundleBriefingSystem:OverwriteGetPosition()
+function BundleBriefingSystem:OverrideGetPosition()
     GetPosition = function(_input, _offsetZ)
         _offsetZ = _offsetZ or 0;
         if type(_input) == "table" then
             return _input;
         else
-            if not IsExisting(_input) then
+            if GetID(_input) == 0 then
                 return {X=0, Y=0, Z=0+_offsetZ};
+            end
+            local x,y,z = Logic.EntityGetPos(GetID(_input));
+            return {X=x, Y=y, Z=z+_offsetZ};
+        end
+    end
+end
+
+---
+-- Überschreibt API.Note, damit Nachrichten auch während Briefings angezeigt
+-- werden können.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem:OverrideApiNote()
+    API.Note = function(_Text)
+        local Text = API.EnsureMessage(_Text);
+        if not GUI then
+            if IsBriefingActive() then
+                BundleBriefingSystem.Global:PushBriefingNote(Text);
             else
-                local eID = GetID(_input);
-                local x,y,z = Logic.EntityGetPos(eID);
-                return {X=x, Y=y, Z=z+_offsetZ};
+                Logic.DEBUG_AddNote(Text);
+            end
+        else
+            if IsBriefingActive() then
+                BundleBriefingSystem.Local:PushBriefingNote(Text);
+            else
+                GUI.AddNote(Text);
             end
         end
     end
@@ -3273,12 +3388,90 @@ end
 
 Core:RegisterBehavior(b_Reprisal_Briefing);
 
+--
+-- Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
+-- gestartet und durchlaufen wurde.
+--
+-- @param[type=string] _QuestName Name des Quest
+-- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
+-- @within Trigger
+--
+function Trigger_Briefing(...)
+    return b_Trigger_Briefing:new(...);
+end
+
+b_Trigger_Briefing = {
+    Name = "Trigger_Briefing",
+    Description = {
+        en = "Trigger: After either the success briefing or the failure briefing of another quest has finished.",
+        de = "Ausloeser: Wenn das Erfolgs-Briefing oder das Niederlage-Briefing der angegebenen Quest beendet ist.",
+    },
+    Parameter = {
+        { ParameterType.QuestName, en = "Quest name", de = "Questname" },
+        { ParameterType.Number,  en = "Wait time",  de = "Wartezeit" },
+    },
+}
+
+function b_Trigger_Briefing:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_Briefing:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.Quest = __parameter_;
+    elseif (__index_ == 1) then
+        self.WaitTime = tonumber(__parameter_) or 0
+    end
+end
+
+function b_Trigger_Briefing:CustomFunction(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    if IsBriefingFinished(Quests[QuestID].zl97d_ukfs5_0dpm0) or IsBriefingFinished(Quests[QuestID].w5kur_xig0q_d9k7e) then
+        if self.WaitTime and self.WaitTime > 0 then
+            self.WaitTimeTimer = self.WaitTimeTimer or Logic.GetTime();
+            if Logic.GetTime() >= self.WaitTimeTimer + self.WaitTime then
+                return true;
+            end
+        else
+            return true;
+        end
+    end
+    return false;
+end
+
+function b_Trigger_Briefing:Interrupt(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
+    self.WaitTimeTimer = nil
+end
+
+function b_Trigger_Briefing:Reset(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
+    self.WaitTimeTimer = nil
+end
+
+function b_Trigger_Briefing:DEBUG(__quest_)
+    if self.WaitTime and self.WaitTime < 0 then
+        dbg(__quest_.Identifier.." "..self.Name..": waittime is below 0!");
+        return true;
+    elseif not IsValidQuest(self.Quest) then
+        fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_Briefing);
+
 ---
 -- Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
 -- gestartet und durchlaufen wurde.
 --
 -- @param[type=string] _QuestName Name des Quest
--- @param[type=number] _Waittime Wartezeit in Sekunden
+-- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --
 function Trigger_BriefingSuccess(...)
@@ -3288,8 +3481,8 @@ end
 b_Trigger_BriefingSuccess = {
     Name = "Trigger_BriefingSuccess",
     Description = {
-        en = "Trigger: after the success briefing of another quest has finished.",
-        de = "Ausloeser: wenn das Erfolgs-Briefing der angegebenen Quest beendet ist.",
+        en = "Trigger: After the success briefing of another quest has finished.",
+        de = "Ausloeser: Wenn das Erfolgs-Briefing der angegebenen Quest beendet ist.",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name", de = "Questname" },
@@ -3337,8 +3530,8 @@ function b_Trigger_BriefingSuccess:Reset(_Quest)
 end
 
 function b_Trigger_BriefingSuccess:DEBUG(__quest_)
-    if (self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0)) then
-        dbg(__quest_.Identifier.." "..self.Name..": waittime is nil or below 0!");
+    if self.WaitTime and self.WaitTime < 0 then
+        dbg(__quest_.Identifier.." "..self.Name..": waittime is below 0!");
         return true;
     elseif not IsValidQuest(self.Quest) then
         fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
@@ -3354,7 +3547,7 @@ Core:RegisterBehavior(b_Trigger_BriefingSuccess);
 -- gestartet und durchlaufen wurde.
 --
 -- @param[type=string] _QuestName Name des Quest
--- @param[type=number] _Waittime Wartezeit in Sekunden
+-- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --
 function Trigger_BriefingFailure(...)
@@ -3364,8 +3557,8 @@ end
 b_Trigger_BriefingFailure = {
     Name = "Trigger_BriefingFailure",
     Description = {
-        en = "Trigger: after an failure briefing of another quest has finished.",
-        de = "Ausloeser: wenn das Niederlage-Briefing der angegebenen Quest beendet ist.",
+        en = "Trigger: After an failure briefing of another quest has finished.",
+        de = "Ausloeser: Wenn das Niederlage-Briefing der angegebenen Quest beendet ist.",
     },
     Parameter = {
         { ParameterType.QuestName, en = "Quest name", de = "Questname" },
@@ -3413,8 +3606,8 @@ function b_Trigger_BriefingFailure:Reset(_Quest)
 end
 
 function b_Trigger_BriefingFailure:DEBUG(_Quest)
-    if tonumber(self.WaitTime) == nil or self.WaitTime < 0 then
-        fatal(_Quest.Identifier.." "..self.Name..": waittime is nil or below 0!");
+    if self.WaitTime ~= nil and self.WaitTime < 0 then
+        fatal(_Quest.Identifier.." "..self.Name..": waittime is below 0!");
         return true;
     elseif not IsValidQuest(self.Quest) then
         fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
