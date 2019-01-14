@@ -881,6 +881,8 @@ end
 -- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
 -- Skriptnamen oder Positionstables angegeben werden.
 --
+-- Wenn die Distanz nicht bestimmt werden kann, wird -1 zurückgegeben.
+--
 -- <p><b>Alias:</b> GetDistance</p>
 --
 -- @param _pos1 [string|number|table] Erste Vergleichsposition
@@ -897,7 +899,7 @@ function API.GetDistance( _pos1, _pos2 )
         _pos2 = GetPosition(_pos2);
     end
     if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
-        return {X= 1, Y= 1};
+        return -1;
     end
     local xDistance = (_pos1.X - _pos2.X);
     local yDistance = (_pos1.Y - _pos2.Y);

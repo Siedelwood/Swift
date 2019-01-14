@@ -82,8 +82,7 @@ AddQuest = API.CreateQuest;
 ---
 -- Erzeugt eine Nachricht im Questfenster.
 --
--- Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
--- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+-- Der Quest wird immer nach Ablauf der Wartezeit nach
 -- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
 -- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
 -- des Quests ausgeführt wird.
@@ -118,22 +117,26 @@ QuestMessage = API.CreateQuestMessage;
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
 -- einander angezeigt werden.
 --
--- Der Vorgänger-Quest und die Wartezeit müssen als Felder gesondert
--- angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
--- sie nicht angegeben sein. Es können Einträge von rechts nach links
--- weggelassen werden.
+-- Dabei sind die eingestellten Wartezeiten in Echtzeit gemessen. Somit ist es
+-- egal, wie hoch die Spielgeschwindigkeit ist. Die Dialoge warten alle
+-- automatisch 12 Sekunden, wenn nichts anderes eingestellt wird.
 --
--- Diese Funktion ist geeignet um Dialoge zu konfigurieren!
+-- Ein Dialog kann als Nachfolge auf einen Quest oder einen anderen Dialog
+-- erzeugt werden, indem Ancestor gleich dem Questnamen gesetzt wird. Die
+-- Wartezeit ist automatisch 0 Sekunden. Will man eine andere Wartezeit,
+-- so muss Delay gesetzt werden.
+--
+-- Diese Funktion ist geeignet um längere Quest-Dialoge zu konfigurieren!
 --
 -- <b>Alias</b>: QuestDialog
 --
--- Einzelne Einträge pro Quest:
+-- Einzelne Parameter pro Eintrag:
 -- <ul>
 -- <li>Anzeigetext der Nachricht</li>
 -- <li>PlayerID des Sender der Nachricht</li>
 -- <li>PlayerID des Empfängers der Nachricht</li>
--- <li>Name des vorangegangenen Quest</li>
--- <li>Wartezeit bis zum Start</li>
+-- <li>Wartezeit zur vorangegangenen Nachricht</li>
+-- <li>Action-Funktion der Nachricht</li>
 -- </ul>
 --
 -- @param _Messages [table] Liste der anzuzeigenden Nachrichten
@@ -147,9 +150,9 @@ QuestMessage = API.CreateQuestMessage;
 --     Ancestor = "SomeQuestName",
 --     Delay = 12,
 --
---     {"Hallo, wie geht es dir?", 4, 1},
---     {"Mir geht es gut, wie immer!", 1, 1},
---     {"Das ist doch schön.", 4, 1},
+--     {"Hallo, wie geht es dir?", 4, 1, 8},
+--     {"Mir geht es gut, wie immer!", 1, 1, 8, SomeCallbackFunction},
+--     {"Das ist doch schön.", 4, 1, 8},
 -- };
 --
 function API.CreateQuestDialog(_Messages)
