@@ -1860,8 +1860,9 @@ function Core:StackFunction(_FunctionName, _StackFunction, _Index)
 
         local batch = function(...)
             local ReturnValue;
-            for k, v in pairs(self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments) do
-                ReturnValue = v(unpack(arg))
+            for i= 1, #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments, 1 do
+                local Function = self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments[i];
+                ReturnValue = Function(unpack(arg));
                 if ReturnValue ~= nil then
                     return ReturnValue;
                 end
@@ -1899,8 +1900,9 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
 
         local batch = function(...)
             local ReturnValue = self.Data.Overwrite.AppendedFunctions[_FunctionName].Original(unpack(arg));
-            for k, v in pairs(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments) do
-                ReturnValue = v(unpack(arg))
+            for i= 1, #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, 1 do
+                local Function = self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments[i];
+                ReturnValue = Function(unpack(arg))
             end
             return ReturnValue;
         end
