@@ -958,13 +958,32 @@ function AddOnQuestDebug.Global.ShowVersion()
 end
 
 ---
+-- Sucht nach allen Quests, auf die den angegebenen Namen enthalten und gibt
+-- die Namen der gefundenen Quests zurück.
+--
+-- @within Internal
+-- @local
+--
+function AddOnQuestDebug.Global.FindQuestNames(_Pattern, _ExactName)
+    local FoundQuests = FindQuestsByName(_Pattern, _ExactName);
+    if #FoundQuests == 0 then
+        return {};
+    end
+    local NamesOfFoundQuests = {};
+    for i= 1, #FoundQuests, 1 do
+        table.insert(NamesOfFoundQuests, FoundQuests[i].Identifier);
+    end
+    return NamesOfFoundQuests;
+end
+
+---
 -- Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.
 --
 -- @within Internal
 -- @local
 --
 function AddOnQuestDebug.Global.QuestSuccess(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -978,7 +997,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.QuestFailure(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -992,7 +1011,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.QuestInterrupt(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -1006,7 +1025,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.QuestTrigger(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -1020,7 +1039,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.QuestReset(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
