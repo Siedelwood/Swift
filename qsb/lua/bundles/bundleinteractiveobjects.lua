@@ -1158,10 +1158,10 @@ b_Goal_ActivateSeveralObjects = {
         de = "Ziel: Aktiviere ein interaktives Objekt",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Object name 1", de = "Skriptname 1" },
-        { ParameterType.ScriptName, en = "Object name 2", de = "Skriptname 2" },
-        { ParameterType.ScriptName, en = "Object name 3", de = "Skriptname 3" },
-        { ParameterType.ScriptName, en = "Object name 4", de = "Skriptname 4" },
+        { ParameterType.Default, en = "Object name 1", de = "Skriptname 1" },
+        { ParameterType.Default, en = "Object name 2", de = "Skriptname 2" },
+        { ParameterType.Default, en = "Object name 3", de = "Skriptname 3" },
+        { ParameterType.Default, en = "Object name 4", de = "Skriptname 4" },
     },
     ScriptNames = {};
 }
