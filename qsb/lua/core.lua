@@ -50,7 +50,11 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
+<<<<<<< HEAD
 QSB.Version = "RE 2.0.0 1/1/2020";
+=======
+QSB.Version = "RE 1.1.13 22/1/2019";
+>>>>>>> dev_v1
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -969,9 +973,9 @@ GetPosition = API.LocateEntity;
 -- API.ActivateIO("Hut1")
 --
 function API.ActivateIO(_ScriptName, _State)
-    State = State or 0;
+    _State = _State or 0;
     if GUI then
-        GUI.SendScriptCommand('API.ActivateIO("' .._ScriptName.. '", ' ..State..')');
+        GUI.SendScriptCommand('API.ActivateIO("' .._ScriptName.. '", ' .._State..')');
         return;
     end
     if not IsExisting(_ScriptName) then
@@ -979,7 +983,7 @@ function API.ActivateIO(_ScriptName, _State)
     end
     Logic.InteractiveObjectSetAvailability(GetID(_ScriptName), true);
     for i = 1, 8 do
-        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, State);
+        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, _State);
     end
 end
 InteractiveObjectActivate = API.ActivateIO;
@@ -1262,12 +1266,12 @@ end
 --
 function class(_Table)
     -- className hinzufügen
-    for k, v in pairs(_G) do 
+    for k, v in pairs(_G) do
         if v == _Table then
             _Table.className = k;
         end
     end
-    
+
     -- construct hinzufügen
     _Table.construct = _Table.construct or function(self) end
 
@@ -1288,7 +1292,7 @@ function class(_Table)
     -- equals hinzufügen
     _Table.equals = _Table.equals or function(self, _Other)
         -- Anderes Objekt muss table sein.
-        if type(_Other) ~= "table" then 
+        if type(_Other) ~= "table" then
             return false;
         end
         -- Gehe Inhalt durch
