@@ -50,11 +50,7 @@ QSB = QSB or {};
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
-<<<<<<< HEAD
 QSB.Version = "RE 2.0.0 1/1/2020";
-=======
-QSB.Version = "RE 1.1.13 22/1/2019";
->>>>>>> dev_v1
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -1877,7 +1873,7 @@ function Core:StackFunction(_FunctionName, _StackFunction, _Index)
         self:ReplaceFunction(_FunctionName, batch);
     end
 
-    _Index = _Index or #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments;
+    _Index = _Index or #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments+1;
     table.insert(self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments, _Index, _StackFunction);
 end
 
@@ -1913,7 +1909,7 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
         self:ReplaceFunction(_FunctionName, batch);
     end
 
-    _Index = _Index or #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments;
+    _Index = _Index or #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments+1;
     table.insert(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, _Index, _AppendFunction);
 end
 
@@ -1955,34 +1951,26 @@ end
 -- Funktionsnamen mit anzugeben, abgetrennt durch einen Punkt.
 --
 -- @param _FunctionName Name der Funktion
--- @param _Reference    Aktuelle Referenz (für Rekursion)
 -- @return function: Gefundene Funktion
 -- @within Internal
 -- @local
 --
-function Core:GetFunctionInString(_FunctionName, _Reference)
-    -- Wenn wir uns in der ersten Rekursionsebene beinden, suche in _G
-    if not _Reference then
-        local s, e = _FunctionName:find("%.");
-        if s then
-            local FirstLayer = _FunctionName:sub(1, s-1);
-            local Rest = _FunctionName:sub(e+1, _FunctionName:len());
-            return self:GetFunctionInString(Rest, _G[FirstLayer]);
-        else
-            return _G[_FunctionName];
-        end
+function Core:GetFunctionInString(_FunctionName)
+    assert(type(_FunctionName) == "string");
+    local ref = _G;
+
+    local s, e = _FunctionName:find("%.");
+    while (s ~= nil) do
+        local SubName = _FunctionName:sub(1, e-1);
+        SubName = (tonumber(SubName) ~= nil and tonumber(SubName)) or SubName;
+
+        ref = ref[SubName];
+        _FunctionName = _FunctionName:sub(e+1);
+        s, e = _FunctionName:find("%.");
     end
-    -- Andernfalls suche in der Referenz
-    if type(_Reference) == "table" then
-        local s, e = _FunctionName:find("%.");
-        if s then
-            local FirstLayer = _FunctionName:sub(1, s-1);
-            local Rest = _FunctionName:sub(e+1, _FunctionName:len());
-            return self:GetFunctionInString(Rest, _Reference[FirstLayer]);
-        else
-            return _Reference[_FunctionName];
-        end
-    end
+
+    local SubName = (tonumber(_FunctionName) ~= nil and tonumber(_FunctionName)) or _FunctionName;
+    return ref[SubName];
 end
 
 ---
