@@ -50,14 +50,10 @@
 
 API = API or {};
 QSB = QSB or {};
-<<<<<<< HEAD
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
 QSB.Version = "RE 2.0.0 1/1/2020 (Early Prototype)";
-=======
-QSB.Version = "RE 1.1.13 22/1/2019";
->>>>>>> Anpassung Beschreibungen in core.lua
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
