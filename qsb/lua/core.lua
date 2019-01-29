@@ -5,6 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 --
+-- (Alte Beschreibung, die niemand wollte)
+--
 -- Die Hauptaufgabe des Framework ist es, Funktionen zur Installation und der
 -- Verwaltung der einzelnen Bundles bereitzustellen. Bundles sind in sich
 -- geschlossene Module, die wenig bis gar keine Abhänigkeiten haben. Damit
@@ -40,17 +42,22 @@
 
 ---
 -- Hier werden wichtige Basisfunktionen bereitgestellt. Diese Funktionen sind
--- auch in der Minimalkonfiguration der QSB vorhanden.
+-- auch in der Minimalkonfiguration der QSB vorhanden und essentiell für alle
+-- anderen Bundles.
 --
 -- @set sort=true
 --
 
 API = API or {};
 QSB = QSB or {};
+<<<<<<< HEAD
 -- Das ist die Version der QSB.
 -- Bei jedem Release wird die Tausenderstelle hochgezählt.
 -- Bei Bugfixes werden die anderen Stellen hochgezählt.
 QSB.Version = "RE 2.0.0 1/1/2020 (Early Prototype)";
+=======
+QSB.Version = "RE 1.1.13 22/1/2019";
+>>>>>>> Anpassung Beschreibungen in core.lua
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -79,6 +86,7 @@ end
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
 -- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
 -- werden, bevor die QSB verwendet werden kann.
+--
 -- @within Anwenderfunktionen
 --
 function API.Install()
@@ -109,12 +117,15 @@ end
 CopyTableRecursive = API.InstanceTable;
 
 ---
--- Sucht in einer Table nach einem Wert. Das erste Aufkommen des Suchwerts
--- wird als Erfolg gewertet.
+-- Sucht in einer eindimensionalen Table nach einem Wert. Das erste Auftreten
+-- des Suchwerts wird als Erfolg gewertet.
+--
+-- Es können praktisch alle Lua-Werte gesucht werden, obwohl dies nur für
+-- Strings und Numbers wirklich sinnvoll ist.
 --
 -- <p><b>Alias:</b> Inside</p>
 --
--- @param _Data Datum, das gesucht wird
+-- @param             _Data Datum, das gesucht wird
 -- @param[type=table] _Table Tabelle, die durchquert wird
 -- @return[type=booelan] Wert gefunden
 -- @within Anwenderfunktionen
@@ -227,8 +238,8 @@ end
 GetQuestID = API.GetQuestID;
 
 ---
--- Prüft, ob die ID zu einem Quest gehört bzw. der Quest existiert. Es kann
--- auch ein Questname angegeben werden.
+-- Prüft, ob zu der angegebenen ID ein Quest existiert. Wird ein Questname
+-- angegeben wird dessen Quest-ID ermittelt und geprüft.
 --
 -- <p><b>Alias:</b> IsValidQuest</p>
 --
@@ -533,6 +544,8 @@ GUI_Note = API.Note;
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
+-- <p><b>Alias:</b> GUI_StaticNote</p>
+--
 -- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 --
@@ -544,6 +557,7 @@ function API.StaticNote(_Message)
     end
     GUI.AddStaticNote(_Message);
 end
+GUI_StaticNote = API.StaticNote;
 
 ---
 -- Löscht alle Nachrichten im Debug Window.
@@ -559,7 +573,7 @@ function API.ClearNotes()
 end
 
 ---
--- Schreibt eine einzelne Zeile Text ins Log. Vor dem Text steh, ob aus dem
+-- Schreibt eine einzelne Zeile Text ins Log. Vor dem Text steht, ob aus dem
 -- globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
 -- Spiels die Nachricht gesendet wurde.
 --
@@ -809,6 +823,9 @@ SendCart = API.SendCart;
 -- Ersetzt ein Entity mit einem neuen eines anderen Typs. Skriptname,
 -- Rotation, Position und Besitzer werden übernommen.
 --
+-- <b>Hinweis</b>: Die Entity-ID ändert sich und beim Ersetzen von
+-- Spezialgebäuden kann eine Niederlage erfolgen.
+--
 -- <p><b>Alias:</b> ReplaceEntity</p>
 --
 -- @param _Entity      Entity (Skriptname oder ID)
@@ -911,6 +928,10 @@ GetDistance = API.GetDistance;
 ---
 -- Prüft, ob eine Positionstabelle eine gültige Position enthält.
 --
+-- Eine Position ist Ungültig, wenn sie sich nicht auf der Welt befindet.
+-- Das ist der Fall bei negativen Werten oder Werten, welche die Größe
+-- der Welt übersteigen.
+--
 -- <p><b>Alias:</b> IsValidPosition</p>
 --
 -- @param[type=table] _pos Positionstable {X= x, Y= y}
@@ -921,6 +942,9 @@ function API.ValidatePosition(_pos)
     if type(_pos) == "table" then
         if (_pos.X ~= nil and type(_pos.X) == "number") and (_pos.Y ~= nil and type(_pos.Y) == "number") then
             local world = {Logic.WorldGetSize()}
+            if _pos.Z and _pos.Z < 0 then
+                return false;
+            end
             if _pos.X <= world[1] and _pos.X >= 0 and _pos.Y <= world[2] and _pos.Y >= 0 then
                 return true;
             end
