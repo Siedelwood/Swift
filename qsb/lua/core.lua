@@ -50,9 +50,6 @@
 
 API = API or {};
 QSB = QSB or {};
--- Das ist die Version der QSB.
--- Bei jedem Release wird die Tausenderstelle hochgezählt.
--- Bei Bugfixes werden die anderen Stellen hochgezählt.
 QSB.Version = "RE 2.0.0 1/1/2020 (Early Prototype)";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
@@ -1276,7 +1273,6 @@ end
 -- <b>Hinweis</b>: Die Funktionen werden nur dann hinzugefügt, wenn es keine
 -- Funktionen gleichen Namens vor dem aufruf von class() im Table gibt.
 -- Die Funktionen können nach dem Aufruf von class() überschrieben werden.
---
 -- @param[type=table] _Table Referenz auf Table
 -- @return[type=table] Klasse
 -- @within OOP

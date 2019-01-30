@@ -189,8 +189,8 @@ end
 ---
 -- Kopiert den Inhalt einer Table in ein neue Table.
 --
--- @param _Table [table] Table zum kopieren
--- @return [table] Kopie
+-- @param[type=table] _Table Table zum kopieren
+-- @return[type=table] Kopie
 -- @within Internal
 -- @local
 --
@@ -210,9 +210,9 @@ end
 -- Erzeugt einen Link auf der Index-Seite der Doku und gibt ihn als String
 -- zurück.
 --
--- @param _Name [string] Name des Bundle
--- @param _Folder [string] Relativer Pfad
--- @return [string] HTML des Links
+-- @param[type=string] _Name Name des Bundle
+-- @param[type=string] _Folder Relativer Pfad
+-- @return[type=string] HTML des Links
 -- @within Internal
 -- @local
 --
@@ -231,7 +231,7 @@ end
 ---
 -- Läd das Template der index.html und gibt es als String zurück.
 --
--- @return [string] Dateiinhalt
+-- @return[type=string] Dateiinhalt
 -- @within Internal
 -- @local
 --
@@ -251,8 +251,8 @@ end
 -- <b>Hinweis</b>: Schlagwörter werden immer mit der gesamten Zeile kopiert,
 -- in der sie stehen (ist einfacher zu programmieren und ich bin faul).
 --
--- @param _File [string] Dateiname
--- @return [string] Schlagworter
+-- @param[type=string] _File Dateiname
+-- @return[type=string] Schlagworter
 -- @within Internal
 -- @local
 --
