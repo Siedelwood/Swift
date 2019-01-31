@@ -41,8 +41,8 @@ QSB = QSB or {};
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
 --
--- @param _Description [table] Beschreibung
--- @return [number] ID des Zeitstrahls
+-- @param[type=table] _Description Beschreibung
+-- @return[type=number] ID des Zeitstrahls
 -- @within Anwenderfunktionen
 --
 -- @usage MyTimeLine = API.TimeLineStart {
@@ -63,7 +63,7 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
 --
--- @param _ID [table] ID des Zeitstrahl
+-- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
 --
 -- @usage API.TimeLineRestart(MyTimeLine);
@@ -77,8 +77,8 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
 --
--- @param _ID [table] ID des Zeitstrahl
--- @return [boolean] Zeitstrahl ist aktiv
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @return[type=boolean] Zeitstrahl ist aktiv
 -- @within Anwenderfunktionen
 --
 -- @usage local IsRunning = API.TimeLineIsRunning(MyTimeLine);
@@ -92,7 +92,7 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
 --
--- @param _ID [table] ID des Zeitstrahl
+-- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
 --
 -- @usage API.TimeLineYield(MyTimeLine);
@@ -106,7 +106,7 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
 --
--- @param _ID [table] ID des Zeitstrahl
+-- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
 --
 -- @usage API.TimeLineResume(MyTimeLine);
@@ -170,8 +170,8 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
 --
--- @param _description [table] Beschreibung
--- @return [number] ID des Zeitstrahl
+-- @param[type=table] _description Beschreibung
+-- @param[type=number] _ID ID des Zeitstrahl
 -- @within QSB.TimeLine
 -- @local
 --
@@ -206,7 +206,7 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
 --
--- @param _ID [table] ID des Zeitstrahl
+-- @param[type=number] _ID ID des Zeitstrahl
 -- @within QSB.TimeLine
 -- @local
 --
@@ -224,8 +224,8 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
 --
--- @param _ID [table] ID des Zeitstrahl
--- @return [boolean] Zeistrahl ist aktiv
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @return[type=boolean] Zeistrahl ist aktiv
 -- @within QSB.TimeLine
 -- @local
 --
@@ -243,7 +243,7 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
 --
--- @param _ID [table] ID des Zeitstrahl
+-- @param[type=number] _ID ID des Zeitstrahl
 -- @within QSB.TimeLine
 -- @local
 --
@@ -263,7 +263,7 @@ end
 --
 -- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
 --
--- @param _ID [table] ID des Zeitstrahl
+-- @param[type=number] _ID ID des Zeitstrahl
 -- @within QSB.TimeLine
 -- @local
 --
