@@ -31,8 +31,8 @@ QSB = QSB or {};
 --
 -- <p><b>Alias</b>: GetScale</p>
 --
--- @param _Entity [string|number] Entity
--- @return [number] Größenfaktor
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=number] Größenfaktor
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -53,8 +53,8 @@ GetScale = API.GetEntityScale;
 --
 -- <p><b>Alias</b>: GetPlayer</p>
 --
--- @param _Entity [string|number] Entity
--- @return [number] Besitzer
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=number] Besitzer
 -- @within Anwenderfunktionen
 --
 function API.GetEntityPlayer(_Entity)
@@ -75,8 +75,8 @@ GetPlayer = API.GetEntityPlayer;
 --
 -- <p><b>Alias</b>: GetMovingTarget</p>
 --
--- @param _Entity [string|number] Entity
--- @return [table] Positionstabelle
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=table] Positionstabelle
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -104,8 +104,8 @@ GetMovingTarget = API.GetMovementTarget;
 --
 -- <p><b>Alias</b>: IsNpc</p>
 --
--- @param _Entity [string|number] Entity
--- @return [boolean] Ist NPC
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=boolean] Ist NPC
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -129,8 +129,8 @@ IsNpc = API.IsActiveNpc;
 --
 -- <p><b>Alias</b>: IsVisible</p>
 --
--- @param _Entity [string|number] Entity
--- @return [boolean] Ist sichtbar
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=boolean] Ist sichtbar
 -- @within Anwenderfunktionen
 --
 function API.IsEntityVisible(_Entity)
@@ -151,8 +151,8 @@ IsVisible = API.IsEntityVisible;
 --
 -- <p><b>Alias</b>: SetScale</p>
 --
--- @param _Entity [string|number] Entity
--- @param _Scale  [number] Größenfaktor
+-- @param              _Entity Entity (skriptname oder ID)
+-- @param[type=number] _Scale  Größenfaktor
 -- @within Anwenderfunktionen
 --
 function API.SetEntityScale(_Entity, _Scale)
@@ -177,8 +177,8 @@ SetScale = API.SetEntityScale;
 --
 -- <p><b>Alias</b>: ChangePlayer</p>
 --
--- @param _Entity   [string|number] Entity
--- @param _PlayerID [number] Besitzer
+-- @param              _Entity   Entity (skriptname oder ID)
+-- @param[type=number] _PlayerID Besitzer
 -- @within Anwenderfunktionen
 --
 function API.SetEntityPlayer(_Entity, _PlayerID)
@@ -225,8 +225,8 @@ end
 
 ---
 -- Ändert die Größe des Entity.
--- @param _Entity [string|number] Entity
--- @param _Scale  [number] Größenfaktor
+-- @param              _Entity Entity (skriptname oder ID)
+-- @param[type=number] _Scale  Größenfaktor
 -- @within Internal
 -- @local
 --
@@ -241,8 +241,8 @@ end
 ---
 -- Ändert den Besitzer des Entity.
 --
--- @param _Entity   [string|number] Entity
--- @param _PlayerID [number] Besitzer
+-- @param              _Entity   Entity (skriptname oder ID)
+-- @param[type=number] _PlayerID Besitzer
 -- @within Internal
 -- @local
 --
@@ -272,8 +272,8 @@ end
 ---
 -- Gibt die relative Größe des Entity zurück.
 --
--- @param _Entity [string|number] Entity
--- @return [number] Größenfaktor
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=number] Größenfaktor
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -286,8 +286,8 @@ end
 ---
 -- Gibt den Besitzer des Entity zurück.
 --
--- @param _Entity [string|number] Entity
--- @return [number] Besitzer
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=number] Besitzer
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -299,8 +299,8 @@ end
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
 --
--- @param _Entity [string|number] Entity
--- @return [boolean] Ist sichtbar
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=boolean] Ist sichtbar
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -312,8 +312,8 @@ end
 ---
 -- Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
 --
--- @param _Entity [string|number] Entity
--- @return [boolean] Ist NPC
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=boolean] Ist NPC
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -328,8 +328,8 @@ end
 ---
 -- Gibt das Bewegungsziel des Entity zurück.
 --
--- @param _Entity [string|number] Entity
--- @return [table] Positionstabelle
+-- @param _Entity Entity (skriptname oder ID)
+-- @return[type=table] Positionstabelle
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -343,9 +343,9 @@ end
 ---
 -- Gibt die Scripting Value des Entity als Ganzzahl zurück.
 --
--- @param _Entity [string|number] Zu untersuchendes Entity
--- @param _index  [number] Index im RAM
--- @return [number] Ganzzahl
+-- @param              _Entity Zu untersuchendes Entity (skriptname oder ID)
+-- @param[type=number] _index  Index im RAM
+-- @return[type=number] Ganzzahl
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -357,9 +357,9 @@ end
 ---
 -- Gibt die Scripting Value des Entity als Dezimalzahl zurück.
 --
--- @param _Entity [string|number] Zu untersuchendes Entity
--- @param _index  [number] Index im RAM
--- @return [number] Dezimalzahl
+-- @param              _Entity Zu untersuchendes Entity (skriptname oder ID)
+-- @param[type=number] _index  Index im RAM
+-- @return[type=number] Dezimalzahl
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -371,9 +371,9 @@ end
 ---
 -- Bestimmt das Modul b der Zahl a.
 --
--- @param a	[number] Zahl
--- @param b	[number] Modul
--- @return [number] qmod der Zahl
+-- @param[type=number] a Zahl
+-- @param[type=number] b Modul
+-- @return[type=number] qmod der Zahl
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -384,8 +384,8 @@ end
 ---
 -- Konvertiert eine Ganzzahl in eine Dezimalzahl.
 --
--- @param num [number] Integer
--- @return [number] Integer als Float
+-- @param[type=number] num Integer
+-- @return[type=number] Integer als Float
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -410,8 +410,8 @@ end
 ---
 -- Gibt den Integer als Bits zurück.
 --
--- @param num [number] Bits
--- @return [table] Table mit Bits
+-- @param[type=number] num Bits
+-- @return[type=table] Table mit Bits
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -427,9 +427,9 @@ end
 ---
 -- Stellt eine Zahl als eine Folge von Bits in einer Table dar.
 --
--- @param num [integer] Integer
--- @param t	  [table] Table
--- @return [table] Table mit Bits
+-- @param[type=number] num Integer
+-- @param[type=table]  t   Table
+-- @return[type=table] Table mit Bits
 -- @within BundleEntityScriptingValues
 -- @local
 --
@@ -445,8 +445,8 @@ end
 ---
 -- Konvertiert eine Dezimalzahl in eine Ganzzahl.
 --
--- @param fval [number] Float
--- @return [number] Float als Integer
+-- @param[type=number] fval Float
+-- @return[type=number] Float als Integer
 -- @within BundleEntityScriptingValues
 -- @local
 --

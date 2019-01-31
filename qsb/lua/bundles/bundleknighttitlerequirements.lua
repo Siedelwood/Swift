@@ -173,8 +173,8 @@ end
 ---
 -- Zählt den Konsumzähler rauf, sobald eine Ware konsumiert wird.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Good [number] Warentyp
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _Good Warentyp
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -222,8 +222,8 @@ end
 ---
 -- Zählt den Konsumzähler rauf, sobald eine Ware konsumiert wird.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Good [number] Warentyp
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _Good Warentyp
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -759,8 +759,8 @@ end
 -- <li>Pfad zu einelnem Icon (200x200 Pixel)</li>
 -- </ul>
 --
--- @param _Widget [string] Icon Widget
--- @param _Icon [string|table] Icon Textur
+-- @param[type=string] _Widget Icon Widget
+-- @param              _Icon Icon Textur (Dateiname oder Matrix)
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -801,8 +801,8 @@ end
 ---
 -- Setzt einen für den Tooltip des aktuellen Widget einen neuen Text.
 --
--- @param _Title [string] Titel des Tooltip
--- @param _Text [string] Text des Tooltip
+-- @param[type=string] _Title Titel des Tooltip
+-- @param[type=string] _Text  Text des Tooltip
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -829,8 +829,8 @@ end
 ---
 -- Ermittelt die veränderten Texte für den Tooltip hinter dem angegebenen Key.
 --
--- @param _key [string] Index in Description
--- @param _i   [number] Buttonindex
+-- @param[type=string] _key Index in Description
+-- @param[type=number] _i   Buttonindex
 -- @within BundleKnightTitleRequirements
 -- @local
 --
@@ -1244,9 +1244,9 @@ Core:RegisterBundle("BundleKnightTitleRequirements");
 ---
 -- Prüft, ob genug Entities in einer bestimmten Kategorie existieren.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _i [number] Button Index
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _i Button Index
 -- @within Originalfunktionen
 -- @local
 --
@@ -1293,9 +1293,9 @@ end
 ---
 -- Prüft, ob genug Entities eines bestimmten Typs existieren.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _i [number] Button Index
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _i Button Index
 -- @within Originalfunktionen
 -- @local
 --
@@ -1338,9 +1338,9 @@ end
 ---
 -- Prüft, ob es genug Einheiten eines Warentyps gibt.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _i [number] Button Index
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _i Button Index
 -- @within Originalfunktionen
 -- @local
 --
@@ -1372,9 +1372,9 @@ end
 ---
 -- Prüft, ob die Siedler genug Einheiten einer Ware konsumiert haben.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _i [number] Button Index
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _i Button Index
 -- @within Originalfunktionen
 -- @local
 --
@@ -1408,9 +1408,9 @@ end
 ---
 -- Prüft, ob genug Waren der Kategorie hergestellt wurde.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _i [number] Button Index
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _i Button Index
 -- @within Originalfunktionen
 -- @local
 --
@@ -1443,9 +1443,9 @@ end
 ---
 -- Prüft, ob ein bestimmter Buff für den Spieler aktiv ist.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _i [number] Button Index
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _i Button Index
 -- @within Originalfunktionen
 -- @local
 --
@@ -1474,9 +1474,9 @@ end
 ---
 -- Prüft, ob die Custom Function true vermeldet.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _i [number] Button Index
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _i Button Index
 -- @within Originalfunktionen
 -- @local
 --
@@ -1501,9 +1501,9 @@ end
 ---
 -- Prüft, ob genug Dekoration eines Typs angebracht wurde.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _i [number] Button Index
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _i Button Index
 -- @within Originalfunktionen
 -- @local
 --
@@ -1546,9 +1546,9 @@ end
 ---
 -- Prüft, ob die Spezialgebäude weit genug ausgebaut sind.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
--- @param _EntityCategory Entity Category
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
+-- @param[type=number] _EntityCategory Entity Category
 -- @within Originalfunktionen
 -- @local
 --
@@ -1586,8 +1586,8 @@ end
 ---
 -- Prüft, ob der Ruf der Stadt hoch genug ist.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
 -- @within Originalfunktionen
 -- @local
 --
@@ -1609,8 +1609,8 @@ end
 ---
 -- Prüft, ob genug Gebäude vollständig dekoriert sind.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
 -- @within Originalfunktionen
 -- @local
 --
@@ -1653,8 +1653,8 @@ end
 ---
 -- Prüft, ob der Spieler befördert werden kann.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _KnightTitle [number] Nächster Titel
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _KnightTitle Nächster Titel
 -- @within Originalfunktionen
 -- @local
 --

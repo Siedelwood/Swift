@@ -6,7 +6,7 @@
 
 ---
 -- Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie
--- zu bewegen.
+-- von A nach B zu bewegen.
 --
 -- Das wichtigste Auf einen Blick:
 -- <ul>
@@ -33,12 +33,13 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
+---
 -- Setzt ein Entity oder ein Battalion an eine neue Position.
 --
 -- <p><b>Alias:</b> SetPosition</p>
 --
--- @param _Entity   [string|number] Entity zum versetzen
--- @param _Position [string|number|table] Neue Position
+-- @param _Entity   Entity zum versetzen (Skriptname oder ID)
+-- @param _Position Neue Position (Skriptname, ID oder Position)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -78,11 +79,11 @@ SetPosition = API.SetPosition;
 -- <p><b>Alias:</b> MoveEntityToPositionToAnotherOne</p>
 -- <p><b>Alias:</b> MoveEx</br></p>
 --
--- @param _Entity       [string|number] Zu bewegendes Entity
--- @param _Position     [string|number] Ziel
--- @param _Distance     [number] Entfernung zum Ziel
--- @param _Angle        [number] Winkel
--- @param _moveAsEntity [boolean] Blocking ignorieren
+-- @param               _Entity       Entity zum versetzen (Skriptname oder ID)
+-- @param               _Position     Neue Position (Skriptname oder ID)
+-- @param[type=number]  _Distance     Entfernung zum Ziel
+-- @param[type=number]  _Angle        Winkel
+-- @param[type=boolean] _moveAsEntity Blocking ignorieren
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -118,10 +119,10 @@ MoveEx = API.MoveToPosition;
 --
 -- <p><b>Alias:</b> MoveEntityFaceToFaceToAnotherOne</p>
 --
--- @param _Entity       [string|number] Zu bewegendes Entity
--- @param _Position     [string|number] Ziel
--- @param _Distance     [number] Entfernung zum Ziel
--- @param _moveAsEntity [boolean] Blocking ignorieren
+-- @param               _Entity       Entity zum versetzen (Skriptname oder ID)
+-- @param               _Position     Neue Ziel (Skriptname oder ID)
+-- @param[type=number]  _Distance     Entfernung zum Ziel
+-- @param[type=boolean] _moveAsEntity Blocking ignorieren
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -156,10 +157,10 @@ end
 --
 -- <p><b>Alias:</b> PlaceEntityToPositionToAnotherOne</p>
 --
--- @param _Entity          [string|number] Entity das bewegt wird
--- @param _Position        [string|number] Position zu der bewegt wird
--- @param _Distance        [number] Entfernung
--- @param _Angle           [number] Winkel
+-- @param               _Entity   Entity zum versetzen (Skriptname oder ID)
+-- @param               _Position Neue Ziel (Skriptname oder ID)
+-- @param[type=number]  _Distance Entfernung zum Ziel
+-- @param[type=number]  _Angle    Winkel
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -196,9 +197,9 @@ end
 -- <p><b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne</p>
 -- <p><b>Alias:</b> SetPositionEx<br></p>
 --
--- @param _Entity          [string|number] Entity das bewegt wird
--- @param _Position        [string|number] Position zu der bewegt wird
--- @param _Distance        [number] Entfernung
+-- @param              _Entity   Entity zum versetzen (Skriptname oder ID)
+-- @param              _Position Neue Ziel (Skriptname oder ID)
+-- @param[type=number] _Distance Entfernung
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -222,8 +223,8 @@ SetPositionEx = API.PlaceAndLookAt;
 --
 -- <p><b>Alias:</b> Attack</p>
 --
--- @param_Entity  [string|number] Angreifendes Entity
--- @param _Target [string|number] Angegriffenes Entity
+-- @param _Entity Entity zum versetzen (Skriptname oder ID)
+-- @param _Target Neue Ziel (Skriptname oder ID)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -256,8 +257,8 @@ Attack = API.CommandAttack;
 --
 -- <p><b>Alias:</b> AttackMove</p>
 --
--- @param _Entity   [string|number] Angreifendes Entity
--- @param _Position [string] Skriptname, EntityID oder Positionstable
+-- @param              _Entity   Angreifendes Entity (Skriptname oder ID)
+-- @param[type=string] _Position Zielposition
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -289,8 +290,8 @@ AttackMove = API.CommandAttackMove;
 --
 -- <p><b>Alias:</b> Move</p>
 --
--- @param _Entity   [string|number] Bewegendes Entity
--- @param _Position [table] Positionstable
+-- @param             _Entity   Angreifendes Entity (Skriptname oder ID)
+-- @param[type=table] _Position  Positionstable
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -343,8 +344,8 @@ end
 
 -- Setzt ein Entity oder ein Battalion an eine neue Position.
 --
--- @param _Entity   [string|number] Entity zum versetzen
--- @param _Position [string|number|table] Neue Position
+-- @param _Entity   Entity zum versetzen (Skriptname oder ID)
+-- @param _Position Neue Position (Skriptname, ID oder Position)
 -- @within Internal
 -- @local
 --
@@ -367,11 +368,11 @@ end
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt.
 --
--- @param _Entity       [string|number] Zu bewegendes Entity
--- @param _Position     [string|number] Ziel
--- @param _Distance     [number] Entfernung zum Ziel
--- @param _Angle        [number] Winkel
--- @param _moveAsEntity [boolean] Blocking ignorieren
+-- @param               _Entity       Entity zum versetzen (Skriptname oder ID)
+-- @param               _Position     Neue Position (Skriptname oder ID)
+-- @param[type=number]  _Distance     Entfernung zum Ziel
+-- @param[type=number]  _Angle        Winkel
+-- @param[type=boolean] _moveAsEntity Blocking ignorieren
 -- @within Internal
 -- @local
 --
@@ -406,11 +407,11 @@ end
 -- Errechnet eine Position relativ im angegebenen Winkel und Position zur
 -- Basisposition. Die Basis kann ein Entity oder eine Positionstabelle sein.
 --
--- @param _target          [string|number|table] Basisposition
--- @param _distance        [number] Entfernung
--- @param _angle           [number] Winkel
--- @param _buildingRealPos [boolean] Gebäudemitte statt Gebäudeeingang
--- @return [table] Position
+-- @param               _target          Basisposition (Skriptname, ID oder Position)
+-- @param[type=number]  _distance        Entfernung
+-- @param[type=number]  _angle           Winkel
+-- @param[type=boolean] _buildingRealPos Gebäudemitte statt Gebäudeeingang
+-- @return[type=table] Position
 -- @within Internal
 -- @local
 --

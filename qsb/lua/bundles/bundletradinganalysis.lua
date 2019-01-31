@@ -44,8 +44,8 @@ QSB.TraderTypes = {
 -- ID des Spielers, ID des Lagerhaus, Menge an Angeboten insgesamt und
 -- alle Angebote der Händlertypen.
 --
--- @param _PlayerID [number] Player ID
--- @return [table] Angebotsinformationen
+-- @param[type=number] _PlayerID Player ID
+-- @return[type=table] Angebotsinformationen
 -- @within Anwenderfunktionen
 --
 -- @usage local Info = API.GetOfferInformation(2);
@@ -74,8 +74,8 @@ end
 -- Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück. Wenn
 -- der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
 --
--- @param _PlayerID [number] ID des Spielers
--- @return [number] Anzahl angebote
+-- @param[type=number] _PlayerID Player ID
+-- @return[type=number] Anzahl angebote
 -- @within Anwenderfunktionen
 --
 -- @usage -- Angebote von Spieler 5 zählen
@@ -93,9 +93,9 @@ end
 -- Gibt zurück, ob das Angebot vom angegebenen Spieler im Lagerhaus zum
 -- Verkauf angeboten wird.
 --
--- @param _PlayerID [number] Player ID
--- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
--- @return [boolean] Ware wird angeboten
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
+-- @return[type=boolean] Ware wird angeboten
 -- @within Anwenderfunktionen
 --
 -- @usage -- Wird die Ware angeboten?
@@ -116,8 +116,8 @@ end
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
 -- ist. Es wird immer nur das erste Angebot des Typs entfernt.
 --
--- @param _PlayerID [number] Player ID
--- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
 -- @within Anwenderfunktionen
 --
 -- @usage -- Keinen Käse mehr verkaufen
@@ -140,9 +140,9 @@ end
 -- <b>Hinweis</b>: Wird eine höherer Wert gesetzt, als das ursprüngliche
 -- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
 --
--- @param _PlayerID	[number] Händlergebäude
--- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
--- @param _NewAmount [number] Neue Menge an Angeboten
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType ID des Händlers im Gebäude
+-- @param[type=number] _NewAmount Neue Menge an Angeboten
 -- @within Anwenderfunktionen
 --
 -- @usage -- Angebote voll auffüllen
@@ -198,12 +198,12 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
     -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
     -- angeboten werden.
     --
-    -- @param _Merchant [number] Handelsgebäude
-    -- @param _NumberOfOffers [number] Anzahl an Angeboten
-    -- @param _GoodType [number] Warentyp
-    -- @param _RefreshRate [number] Erneuerungsrate
-    -- @param _optionalPlayersPlayerID [number] Optionale Spieler-ID
-    -- @return [number] Offer ID
+    -- @param[type=number] _Merchant  Handelsgebäude
+    -- @param[type=number] _NumberOfOffers Anzahl an Angeboten
+    -- @param[type=number] _GoodType Warentyp
+    -- @param[type=number] _RefreshRate Erneuerungsrate
+    -- @param[type=number] _optionalPlayersPlayerID Optionale Spieler-ID
+    -- @return[type=number] Offer ID
     -- @within Originalfunktionen
     --
     AddOffer = function(_Merchant, _NumberOfOffers, _GoodType, _RefreshRate, _optionalPlayersPlayerID)
@@ -248,12 +248,12 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
     -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
     -- angeboten werden.
     --
-    -- @param _Mercenary [number] Handelsgebäude
-    -- @param _Amount [number] Anzahl an Angeboten
-    -- @param _Type [number] Soldatentyp
-    -- @param _RefreshRate [number] Erneuerungsrate
-    -- @param _optionalPlayersPlayerID [number] Optionale Spieler-ID
-    -- @return [number] Offer ID
+    -- @param[type=number] _Mercenary Handelsgebäude
+    -- @param[type=number] _Amount Anzahl an Angeboten
+    -- @param[type=number] _Type Soldatentyp
+    -- @param[type=number] _RefreshRate Erneuerungsrate
+    -- @param[type=number] _optionalPlayersPlayerID Optionale Spieler-ID
+    -- @return[type=number] Offer ID
     -- @within Originalfunktionen
     --
     AddMercenaryOffer = function(_Mercenary, _Amount, _Type, _RefreshRate, _optionalPlayersPlayerID)
@@ -297,10 +297,10 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
     -- <b>Hinweis</b>: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
     -- angeboten werden.
     --
-    -- @param _Merchant [number] Handelsgebäude
-    -- @param _EntertainerType [number] Typ des Entertainer
-    -- @param _optionalPlayersPlayerID [number] Optionale Spieler-ID
-    -- @return [number] Offer ID
+    -- @param[type=number] _Merchant Handelsgebäude
+    -- @param[type=number] _EntertainerType Typ des Entertainer
+    -- @param[type=number] _optionalPlayersPlayerID Optionale Spieler-ID
+    -- @return[type=number] Offer ID
     -- @within Originalfunktionen
     --
     AddEntertainerOffer = function(_Merchant, _EntertainerType, _optionalPlayersPlayerID)
@@ -364,8 +364,8 @@ end
 -- ID des Spielers, ID des Lagerhaus, Menge an Angeboten insgesamt und
 -- alle Angebote der Händlertypen.
 --
--- @param _PlayerID [number] Player ID
--- @return [table] Angebotsinformationen
+-- @param[type=number] _PlayerID Player ID
+-- @return[type=table] Angebotsinformationen
 -- @within Internal
 -- @local
 --
@@ -427,8 +427,8 @@ end
 -- Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück. Wenn
 -- der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
 --
--- @param _PlayerID [number] ID des Spielers
--- @return [number]
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=number] Menge an Angeboten
 -- @within Internal
 -- @local
 --
@@ -444,11 +444,11 @@ end
 -- Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
 -- den Spieler zurück. Es wird immer das erste Angebot zurückgegeben.
 --
--- @param _PlayerID [number] Player ID
--- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
--- @return [number] Offer ID
--- @return [number] Trader ID
--- @return [number] Storehouse ID
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
+-- @return[type=number] Offer ID
+-- @return[type=number] Trader ID
+-- @return[type=number] Storehouse ID
 -- @within Internal
 -- @local
 --
@@ -467,9 +467,9 @@ end
 ---
 -- Gibt den Typ des Händlers mit der ID im Gebäude zurück.
 --
--- @param _BuildingID [number] Building ID
--- @param _TraderID [number] Trader ID
--- @return number
+-- @param[type=number] _BuildingID Building ID
+-- @param[type=number] _TraderID Trader ID
+-- @return[type=number] Händlertyp
 -- @within Internal
 -- @local
 --
@@ -489,8 +489,8 @@ end
 -- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden ist.
 -- Es wird immer nur das erste Angebot des Typs entfernt.
 --
--- @param _PlayerID [number] Player ID
--- @param _GoodOrEntityType [number] Warentyp oder Entitytyp
+-- @param[type=number] _PlayerID Player ID
+-- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
 -- @within Internal
 -- @local
 --
@@ -513,9 +513,9 @@ end
 -- <b>Hinweis</b>: Wird eine höherer Wert gesetzt, als das ursprüngliche
 -- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
 --
--- @param _PlayerID	[number] Händlergebäude
--- @param _GoodOrEntityType	[number] ID des Händlers im Gebäude
--- @param _NewAmount [number] Neue Menge an Angeboten
+-- @param[type=number] _PlayerID	     Händlergebäude
+-- @param[type=number] _GoodOrEntityType ID des Händlers im Gebäude
+-- @param[type=number] _NewAmount        Neue Menge an Angeboten
 -- @within Internal
 -- @local
 --

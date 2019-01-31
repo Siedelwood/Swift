@@ -27,7 +27,7 @@ QSB = QSB or {};
 
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
+-- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -44,7 +44,7 @@ end
 
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Dieben.
--- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
+-- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -60,7 +60,7 @@ end
 
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.
--- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
+-- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -76,7 +76,7 @@ end
 
 ---
 -- Deaktiviert oder aktiviert das Entlassen von Soldaten.
--- @param _Flag [boolean] Deaktiviert (false) / Aktiviert (true)
+-- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -93,8 +93,8 @@ end
 ---
 -- Prüpft ob das Entity selektiert ist.
 --
--- @param _Entity [string|number] Entity das selektiert sein soll
--- @return [boolean] Entity ist selektiert
+-- @param _Entity Entity das selektiert sein soll (Skriptname oder ID)
+-- @return[type=boolean] Entity ist selektiert
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -125,7 +125,7 @@ IsEntitySelected = API.IsEntityInSelection;
 -- Wenn mehr als ein Entity selektiert sind, wird das erste Entity
 -- zurückgegeben. Sind keine Entities selektiert, wird 0 zurückgegeben.
 --
--- @return [number] ID des selektierten Entities
+-- @return[type=number] ID des selektierten Entities
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -143,7 +143,7 @@ GetSelectedEntity = API.GetSelectedEntity;
 ---
 -- Gibt alle selektierten Entities zurück.
 --
--- @return [table] ID des selektierten Entities
+-- @return[type=table] ID des selektierten Entities
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -266,7 +266,7 @@ end
 
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param _Boolean Nachfüllen deaktiviert
+-- @param[type=boolean] _Boolean Nachfüllen deaktiviert
 -- @within Internal
 -- @local
 --
@@ -279,7 +279,7 @@ end
 
 ---
 -- Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
--- @param _EntityID EntityID of Trebuchet
+-- @param[type=number] _EntityID EntityID of Trebuchet
 -- @within Internal
 -- @local
 --
@@ -326,7 +326,7 @@ end
 
 ---
 -- Baut einen Trebuchet-Wagen zu einem Trebuchet aus.
--- @param _EntityID EntityID of Trebuchet
+-- @param[type=number] _EntityID EntityID of Trebuchet
 -- @within Internal
 -- @local
 --
@@ -368,7 +368,7 @@ end
 
 ---
 -- Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
--- @param _EntityID EntityID of Trebuchet
+-- @param[type=number] _EntityID EntityID of Trebuchet
 -- @within Internal
 -- @local
 --
@@ -458,7 +458,7 @@ end
 
 ---
 -- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param _Boolean Nachfüllen deaktiviert
+-- @param[type=boolean] _Boolean Nachfüllen deaktiviert
 -- @within Internal
 -- @local
 --
@@ -469,7 +469,7 @@ end
 ---
 -- Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.
 --
--- @param _Source Selection Source
+-- @param[type=number] _Source Selection Source
 -- @within Internal
 -- @local
 --
@@ -939,9 +939,9 @@ end
 ---
 -- Schreibt einen anderen Text in einen normalen Tooltip.
 --
--- @param _TitleText [string] Titel des Tooltip
--- @param _DescText [string] Text des Tooltip
--- @param _DisabledText [string] Disabled Text des Tooltip
+-- @param[type=string] _TitleText    Titel des Tooltip
+-- @param[type=string] _DescText     Text des Tooltip
+-- @param[type=string] _DisabledText Disabled Text des Tooltip
 -- @within Internal
 -- @local
 --

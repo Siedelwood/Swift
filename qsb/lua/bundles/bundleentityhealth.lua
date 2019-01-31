@@ -41,8 +41,8 @@ BundleEntityHealth = {};
 --
 -- <p><b>Alias</b>: GetHealth</p>
 --
--- @param _Entity [string|number] Angefragtes Entity
--- @return [number] Gesundheit in Prozent
+-- @param _Entity Angefragtes Entity (Striptname oder ID)
+-- @return[type=number] Gesundheit in Prozent
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -61,8 +61,8 @@ GetHealth = API.GetEntityHealth;
 --
 -- <p><b>Alias</b>: SetHealth</p>
 --
--- @param _Entity     [string|number] Entity dessen Gesundheit geändert wird
--- @param _Percentage [number] Gesundheit in Prozent
+-- @param              _Entity     Entity dessen Gesundheit geändert wird (Striptname oder ID)
+-- @param[type=number] _Percentage Gesundheit in Prozent
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -99,8 +99,8 @@ SetHealth = API.ChangeEntityHealth;
 --
 -- <p><b>Alias</b>: SetOnFire</p>
 --
--- @param _Entity   [string|number] Skriptname oder EntityID
--- @param _Strength [number] Stärke des Brandes
+-- @param              _Entity   Gebäude (Striptname oder ID)
+-- @param[type=number] _Strength Stärke des Brandes
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -138,9 +138,9 @@ SetOnFire = API.SetBuildingOnFire;
 --
 -- <p><b>Alias</b>: HurtEntityEx</p>
 --
--- @param _Target         [string|number] Ziel des Schadens
--- @param _AmountOfDamage [number] Menge an Schaden
--- @param _Attacker       [string|number] (Optional) Angreifendes Entity
+-- @param              _Target         Ziel des Schadens (Striptname oder ID)
+-- @param[type=number] _AmountOfDamage Menge an Schaden
+-- @param              _Attacker       (Optional) Angreifendes Entity (Striptname oder ID)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -176,7 +176,7 @@ HurtEntityEx = API.HurtEntity;
 --
 -- <p><b>Alias</b>: AddHurtAction</p>
 --
--- @param _Function [function] Funktion, die ausgeführt wird.
+-- @param[type=function] _Function Funktion, die ausgeführt wird.
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -203,7 +203,7 @@ AddHurtAction = API.AddOnEntityHurtAction;
 --
 -- <p><b>Alias</b>: AddKilledAction</p>
 --
--- @param _Function [function] Funktion, die ausgeführt wird.
+-- @param[type=function] _Function Funktion, die ausgeführt wird.
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -227,7 +227,7 @@ AddKilledAction = API.AddOnEntityDestroyedAction;
 --
 -- <p><b>Alias</b>: AddSpawnedAction</p>
 --
--- @param _Function [function] Funktion, die ausgeführt wird.
+-- @param[type=function] _Function Funktion, die ausgeführt wird.
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -286,8 +286,8 @@ end
 ---
 -- Ändert die Gesundheit des Entity zu dem angegeben Wert in Prozent.
 --
--- @param _Entity     [string|number] Entity to change
--- @param _Percentage [number] Health amount
+-- @param _Entity     Entity to change (Striptname oder ID)
+-- @param[type=number] _Percentage Health amount
 -- @within Internal
 -- @local
 --
@@ -309,9 +309,9 @@ end
 -- Angreifers übergeben, werden die entsprechenden Callbacks für
 -- Kampfhandlungen ausgelöst.
 --
--- @param _EntityID       [number] ID des Opfers
--- @param _AmountOfDamage [number] Menge an Schaden
--- @param _AttackerID     [number] (optional) ID des Angreifers
+-- @param[type=number] _EntityID       ID des Opfers
+-- @param[type=number] _AmountOfDamage Menge an Schaden
+-- @param[type=number] _AttackerID     (optional) ID des Angreifers
 -- @within Internal
 -- @local
 --
@@ -412,7 +412,7 @@ end
 -- verwundet. Dabei wird EntityID des Angreifers und des Verteidigers an die
 -- Funktion übergeben.
 --
--- @param _Function [function] Funktion, die ausgeführt wird
+-- @param[type=function] _Function Funktion, die ausgeführt wird
 -- @within Internal
 -- @local
 --
@@ -424,7 +424,7 @@ end
 -- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity zerstört
 -- wird. Die EntityID des zerstörten Entity wird übergeben.
 --
--- @param _Function [function] Funktion, die ausgeführt wird
+-- @param[type=function] _Function Funktion, die ausgeführt wird
 -- @within Internal
 -- @local
 --
@@ -436,7 +436,7 @@ end
 -- Fügt eine Funktion hinzu, die ausgeführt wird, wenn ein Entity erzeugt
 -- wird. Die EntityID des zerstörten Entity wird übergeben.
 --
--- @param _Function [function] Funktion, die ausgeführt wird
+-- @param[type=function] _Function Funktion, die ausgeführt wird
 -- @within Internal
 -- @local
 --
@@ -491,7 +491,7 @@ end
 ---
 -- Führt alle registrierten Events aus, wenn ein Entity erzeugt wird.
 --
--- @param _EntityID [number] ID des Entity
+-- @param[type=number] _EntityID ID des Entity
 -- @within Internal
 -- @local
 --
@@ -519,8 +519,8 @@ end
 ---
 -- Gibt die Gesundheit des Entity in prozent zurück.
 --
--- @param _Entity [string|number] Entity to change
--- @return [number] Health in percent
+-- @param _Entity Entity to change (Striptname oder ID)
+-- @return[type=number] Health in percent
 -- @within Internal
 -- @local
 --
@@ -541,8 +541,8 @@ Core:RegisterBundle("BundleEntityHealth");
 ---
 -- Ändert die Gesundheit eines Entity.
 --
--- @param _Entity     [string] Entity
--- @param _Percentage [number] Prozentwert
+-- @param[type=string] _Entity     Entity
+-- @param[type=number] _Percentage Prozentwert
 --
 -- @within Reprisal
 --
@@ -580,8 +580,7 @@ end
 
 function b_Reprisal_SetHealth:DEBUG(_Quest)
     if not IsExisting(self.Entity) then
-        fatal(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
-        -- return true;
+        warn(_Quest.Identifier.. " " ..self.Name.. ": Entity is dead! :(");
     end
     if self.Percentage < 0 or self.Percentage > 100 then
         fatal(_Quest.Identifier.. " " ..self.Name.. ": Percentage must be between 0 and 100!");
@@ -597,8 +596,8 @@ Core:RegisterBehavior(b_Reprisal_SetHealth);
 ---
 -- Ändert die Gesundheit eines Entity.
 --
--- @param _Entity     [string] Entity
--- @param _Percentage [number] Prozentwert
+-- @param[type=string] _Entity     Entity
+-- @param[type=number] _Percentage Prozentwert
 --
 -- @within Reward
 --
@@ -635,8 +634,8 @@ Core:RegisterBehavior(b_Reward_SetHealth);
 ---
 -- Die Gesundheit eines Entities muss einen bestimmten Wert erreichen.
 --
--- @param _Entity [string9 Entity, das überwacht wird
--- @param _Amount [number] Menge in Prozent
+-- @param[type=string] _Entity Entity, das überwacht wird
+-- @param[type=number] _Amount Menge in Prozent
 --
 -- @within Trigger
 --

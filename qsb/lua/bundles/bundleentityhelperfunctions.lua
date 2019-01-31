@@ -32,16 +32,16 @@ QSB = QSB or {};
 
 ---
 -- Sucht auf den angegebenen Territorium nach Entities mit bestimmten
--- Kategorien. Dabei kann für eine Partei oder für mehrere parteien gesucht
+-- Kategorien. Dabei kann für eine Partei oder für mehrere Parteien gesucht
 -- werden.
 --
 -- <p><b>Alias:</b> GetEntitiesOfCategoriesInTerritories<br></p>
 -- <p><b>Alias:</b> EntitiesInCategories</p>
 --
--- @param _player       [number|table] PlayerID [0-8] oder Table mit PlayerIDs
--- @param _category     [number|table] Kategorien oder Table mit Kategorien
--- @param _territory    [number|table] Zielterritorium oder Table mit Territorien
--- @return [table] Liste mit Resultaten
+-- @param _player      PlayerID [0-8] oder Table mit PlayerIDs (Einzelne Spielernummer oder Table)
+-- @param _category    Kategorien oder Table mit Kategorien (Einzelne Kategorie oder Table)
+-- @param _territory   Zielterritorium oder Table mit Territorien (Einzelnes Territorium oder Table)
+-- @return[type=table] Liste mit Resultaten
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -58,8 +58,8 @@ EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
 --
 -- <p><b>Alias:</b> GetEntitiesNamedWith</p>
 --
--- @param _Prefix [string] Präfix des Skriptnamen
--- @return [table] Liste mit Entities
+-- @param[type=string] _Prefix Präfix des Skriptnamen
+-- @return[type=table] Liste mit Entities
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -71,14 +71,15 @@ function API.GetEntitiesByPrefix(_Prefix)
 end
 GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 
+---
 -- Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
 -- in einer Mine.
 --
 -- <p><b>Alias:</b> SetResourceAmount</p>
 --
--- @param _Entity       [string|number] Skriptname, EntityID der Mine
--- @param _StartAmount  [number] Menge an Rohstoffen
--- @param _RefillAmount [number] Minimale Nachfüllmenge (> 0)
+-- @param              _Entity       Rohstoffvorkommen (Skriptname oder ID)
+-- @param[type=number] _StartAmount  Menge an Rohstoffen
+-- @param[type=number] _RefillAmount Minimale Nachfüllmenge (> 0)
 -- @within User Spase
 --
 -- @usage
@@ -105,11 +106,11 @@ SetResourceAmount = API.SetResourceAmount;
 --
 -- <p><b>Alias:</b> GetRelativePos</p>
 --
--- @param _target          [string|number|table] Basisposition
--- @param _distance        [number] Entfernung
--- @param _angle           [number] Winkel
--- @param _buildingRealPos [boolean] Gebäudemitte statt Gebäudeeingang
--- @return [table] Position
+-- @param               _target          Basisposition (Skriptname, ID oder Position)
+-- @param[type=number]  _distance        Entfernung
+-- @param[type=number]  _angle           Winkel
+-- @param[type=boolean] _buildingRealPos Gebäudemitte statt Gebäudeeingang
+-- @return[type=table] Position
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -131,8 +132,8 @@ GetRelativePos = API.GetRelativePosition;
 --
 -- <p><b>Alias:</b> GetEntityName</p>
 --
--- @param _entity [number] Gesuchtes Entity
--- @return [string] Skriptname
+-- @param[type=number] _entity Gesuchtes Entity
+-- @return[type=string] Skriptname
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -153,9 +154,9 @@ GetEntityName = API.EntityGetName;
 --
 -- <p><b>Alias:</b> SetEntityName</p>
 --
--- @param _entity [number] Entity
--- @param _name   [string] Skriptname
--- @return [string] Skriptname
+-- @param[type=number] _entity Entity
+-- @param[type=string] _name   Skriptname
+-- @return[type=string] Skriptname
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -179,8 +180,8 @@ SetEntityName = API.EntitySetName;
 --
 -- <p><b>Alias:</b> SetOrientation</p>
 --
--- @param _entity [string|number] Gesuchtes Entity
--- @param _ori    [number] Ausrichtung in Grad
+-- @param              _entity Betreffendes Entity (Skriptname oder ID)
+-- @param[type=number] _ori    Ausrichtung in Grad
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -205,8 +206,8 @@ SetOrientation = API.EntitySetOrientation;
 --
 -- <p><b>Alias:</b> GetOrientation</p>
 --
--- @param _entity [string|number] Gesuchtes Entity
--- @return [number] Orientierung in Grad
+-- @param _entity       Betreffendes Entity (Skriptname oder ID)
+-- @return[type=number] Orientierung in Grad
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -227,9 +228,9 @@ GetOrientation = API.EntityGetOrientation;
 --
 -- <p><b>Alias:</b> GetClosestKnight</p>
 --
--- @param _eID      [number] Basis-Entity
--- @param _playerID [number] Besitzer der Helden
--- @return [number] Nächstes Entity
+-- @param[type=number] _eID      Basis-Entity
+-- @param[type=number] _playerID Besitzer der Helden
+-- @return[type=number] Nächstes Entity
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -248,9 +249,9 @@ GetClosestKnight = API.GetKnightsNearby;
 --
 -- <p><b>Alias:</b> GetClosestEntity</p>
 --
--- @param _eID      [number] Basis-Entity
--- @param _entities [table] Liste von Entities
--- @return [number] Nächstes Entity
+-- @param[type=number] _eID      Basis-Entity
+-- @param[type=table]  _entities Liste von Entities
+-- @return[type=number] Nächstes Entity
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -326,10 +327,10 @@ end
 -- Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
 -- in einer Mine.
 --
--- @param _Entity       [string|number] Skriptname, EntityID der Mine
--- @param _StartAmount  [number] Menge an Rohstoffen
--- @param _RefillAmount [number] Minimale Nachfüllmenge (> 0)
--- @return [boolean] Operation erfolgreich
+-- @param              _Entity       Rohstoffvorkommen (Skriptname oder ID)
+-- @param[type=number] _StartAmount  Menge an Rohstoffen
+-- @param[type=number] _RefillAmount Minimale Nachfüllmenge (> 0)
+-- @return[type=boolean] Operation erfolgreich
 -- @within Internal
 -- @local
 --
@@ -358,10 +359,10 @@ end
 -- Ermittelt alle Entities in den Kategorien auf den Territorien für die
 -- Liste von Parteien und gibt sie als Liste zurück.
 --
--- @param _player       [number|table] PlayerID [0-8] oder Table mit PlayerIDs
--- @param _category     [number|table] Kategorien oder Table mit Kategorien
--- @param _territory    [number|table] Zielterritorium oder Table mit Territorien
--- @return [table] Liste mit Resultaten
+-- @param _player      PlayerID [0-8] oder Table mit PlayerIDs (Einzelne Spielernummer oder Table)
+-- @param _category    Kategorien oder Table mit Kategorien (Einzelne Kategorie oder Table)
+-- @param _territory   Zielterritorium oder Table mit Territorien (Einzelnes Territorium oder Table)
+-- @return[type=table] Liste mit Resultaten
 -- @within Internal
 -- @local
 --
@@ -386,8 +387,8 @@ end
 ---
 -- Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.
 --
--- @param _Prefix [string] Präfix des Skriptnamen
--- @return [table] Liste mit Entities
+-- @param[type=string] _Prefix Präfix des Skriptnamen
+-- @return[type=table] Liste mit Entities
 -- @within Internal
 -- @local
 --
@@ -411,11 +412,11 @@ end
 -- Errechnet eine Position relativ im angegebenen Winkel und Position zur
 -- Basisposition. Die Basis kann ein Entity oder eine Positionstabelle sein.
 --
--- @param _target          [string|number|table] Basisposition
--- @param _distance        [number] Entfernung
--- @param _angle           [number] Winkel
--- @param _buildingRealPos [boolean] Gebäudemitte statt Gebäudeeingang
--- @return [table] Position
+-- @param               _target          Basisposition (Skriptname, ID oder Position)
+-- @param[type=number]  _distance        Entfernung
+-- @param[type=number]  _angle           Winkel
+-- @param[type=boolean] _buildingRealPos Gebäudemitte statt Gebäudeeingang
+-- @return[type=table] Position
 -- @within Internal
 -- @local
 --
@@ -452,9 +453,9 @@ end
 -- Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
 -- am nächsten ist.
 --
--- @param _eID      [number] Basis-Entity
--- @param _entities [table] Liste von Entities
--- @return [number] Nächstes Entity
+-- @param[type=number] _eID      Basis-Entity
+-- @param[type=table]  _entities Liste von Entities
+-- @return[type=number] Nächstes Entity
 -- @within Internal
 -- @local
 --

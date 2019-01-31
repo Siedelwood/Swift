@@ -33,8 +33,8 @@ QSB = QSB or {};
 ---
 -- Untersagt den Bau des Typs im Territorium.
 --
--- @param _type      [number] Entitytyp
--- @param _territory [number] Territorium
+-- @param[type=number] _type      Entitytyp
+-- @param[type=number] _territory Territorium
 -- @within Anwenderfunktionen
 --
 -- @usage API.BanTypeAtTerritory(Entities.B_Bakery, 1);
@@ -58,8 +58,8 @@ end
 ---
 -- Untersagt den Bau der Kategorie im Territorium.
 --
--- @param _eCat      [number] Entitykategorie
--- @param _territory [number] Territorium
+-- @param[type=number] _eCat      Entitykategorie
+-- @param[type=number] _territory Territorium
 -- @within Anwenderfunktionen
 --
 -- @usage API.BanCategoryAtTerritory(EntityCategories.AttackableBuilding, 2);
@@ -83,9 +83,9 @@ end
 ---
 -- Untersagt den Bau des Typs im Gebiet.
 --
--- @param _type   [number] Entitytyp
--- @param _center [string] Gebietszentrum
--- @param _area   [number] Gebietsgröße
+-- @param[type=number] _type   Entitytyp
+-- @param[type=string] _center Gebietszentrum
+-- @param[type=number] _area   Gebietsgröße
 -- @within Anwenderfunktionen
 --
 -- @usage API.BanTypeInArea(Entities.B_Bakery, "groundZero", 4000);
@@ -106,9 +106,9 @@ end
 ---
 -- Untersagt den Bau der Kategorie im Gebiet.
 --
--- @param _eCat   [number] Entitytyp
--- @param _center [string] Gebietszentrum
--- @param _area   [number] Gebietsgröße
+-- @param[type=number] _eCat   Entitytyp
+-- @param[type=string] _center Gebietszentrum
+-- @param[type=number] _area   Gebietsgröße
 -- @within Anwenderfunktionen
 --
 -- @usage API.BanTypeInArea(EntityCategories.CityBuilding, "groundZero", 4000);
@@ -129,8 +129,8 @@ end
 ---
 -- Gibt einen Typ zum Bau im Territorium wieder frei.
 --
--- @param _type      [number] Entitytyp
--- @param _territory [number] Territorium
+-- @param[type=number] _type      Entitytyp
+-- @param[type=number] _territory Territorium
 -- @within Anwenderfunktionen
 --
 -- @usage API.UnbanTypeAtTerritory(Entities.B_Bakery, 1);
@@ -159,8 +159,8 @@ end
 ---
 -- Gibt eine Kategorie zum Bau im Territorium wieder frei.
 --
--- @param _eCat      [number] Entitykategorie
--- @param _territory [number] Territorium
+-- @param[type=number] _eCat      Entitykategorie
+-- @param[type=number] _territory Territorium
 -- @within Anwenderfunktionen
 --
 -- @usage API.UnbanCategoryAtTerritory(EntityCategories.AttackableBuilding, 1);
@@ -189,8 +189,8 @@ end
 ---
 -- Gibt einen Typ zum Bau im Gebiet wieder frei.
 --
--- @param _type   [number] Entitytyp
--- @param _center [string] Gebiet
+-- @param[type=number] _type   Entitytyp
+-- @param[type=string] _center Gebiet
 -- @within Anwenderfunktionen
 --
 -- @usage API.UnbanTypeInArea(Entities.B_Bakery, "groundZero");
@@ -216,8 +216,8 @@ end
 ---
 -- Gibt eine Kategorie zum Bau im Gebiet wieder frei.
 --
--- @param _eCat   [number] Entitykategorie
--- @param _center [string] Gebiet
+-- @param[type=number] _eCat   Entitykategorie
+-- @param[type=string] _center Gebiet
 -- @within Anwenderfunktionen
 --
 -- @usage API.UnbanCategoryInArea(EntityCategories.CityBuilding, "groundZero");
@@ -273,10 +273,10 @@ end
 ---
 -- Verhindert den Bau von Entities in Gebieten und Territorien.
 --
--- @param _PlayerID Spieler
--- @param _Type     Gebäudetyp
--- @param _x        X-Position
--- @param _y        Y-Position
+-- @param[type=number] _PlayerID Spieler
+-- @param[type=number] _Type     Gebäudetyp
+-- @param[type=number] _x        X-Position
+-- @param[type=number] _y        Y-Position
 -- @within Internal
 -- @local
 --
