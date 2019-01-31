@@ -33,7 +33,7 @@ QSB = QSB or {};
 ---
 -- Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
 --
--- @param _entry [string] Nicht abreißbares Entity
+-- @param[type=string] _entry Nicht abreißbares Entity
 -- @within Anwenderfunktionen
 --
 -- @usage API.ProtectEntity("bakery");
@@ -53,7 +53,7 @@ end
 ---
 -- Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
 --
--- @param _entry [number] Nicht abreißbarer Typ
+-- @param[type=number] _entry Nicht abreißbarer Typ
 -- @within Anwenderfunktionen
 --
 -- @usage API.ProtectEntityType(Entities.B_Bakery);
@@ -73,7 +73,7 @@ end
 ---
 -- Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
 --
--- @param _entry [number] Nicht abreißbare Kategorie
+-- @param[type=number] _entry Nicht abreißbare Kategorie
 -- @within Anwenderfunktionen
 --
 -- @usage API.ProtectCategory(EntityCategories.CityBuilding);
@@ -93,7 +93,7 @@ end
 ---
 -- Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
 --
--- @param _entry [number] Geschütztes Territorium
+-- @param[type=number] _entry Geschütztes Territorium
 -- @within Anwenderfunktionen
 --
 -- @usage API.ProtectTerritory(1);
@@ -113,7 +113,7 @@ end
 ---
 -- Entfernt ein Entity, dass nicht abgerissen werden darf.
 --
--- @param _entry [string] Nicht abreißbares Entity
+-- @param[type=string] _entry Nicht abreißbares Entity
 -- @within Anwenderfunktionen
 --
 -- @usage API.UnprotectEntity("bakery");
@@ -136,7 +136,7 @@ end
 ---
 -- Entfernt einen Entitytyp, der nicht abgerissen werden darf.
 --
--- @param _entry [number] Nicht abreißbarer Typ
+-- @param[type=number] _entry Nicht abreißbarer Typ
 -- @within Anwenderfunktionen
 --
 -- @usage API.UnprotectEntityType(Entities.B_Bakery);
@@ -159,7 +159,7 @@ end
 ---
 -- Entfernt eine Kategorie, die nicht abgerissen werden darf.
 --
--- @param _entry [number] Nicht abreißbare Kategorie
+-- @param[type=number] _entry Nicht abreißbare Kategorie
 -- @within Anwenderfunktionen
 --
 -- @usage API.UnprotectCategory(EntityCategories.CityBuilding);
@@ -182,7 +182,7 @@ end
 ---
 -- Entfernt ein Territory, auf dem nichts abgerissen werden kann.
 --
--- @param _entry [number] Geschütztes Territorium
+-- @param[type=number] _entry Geschütztes Territorium
 -- @within Anwenderfunktionen
 --
 -- @usage API.UnprotectTerritory(1);
@@ -235,7 +235,7 @@ end
 ---
 -- Verhindert den Abriss von Entities.
 --
--- @param _BuildingID EntityID des Gebäudes
+-- @param[type=number] _BuildingID EntityID des Gebäudes
 -- @within Internal
 -- @local
 --
