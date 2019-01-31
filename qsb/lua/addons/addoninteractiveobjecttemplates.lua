@@ -15,20 +15,20 @@
 -- ein Gebäude bauen zu lassen.
 -- <br>Die Baustelle muss durch den Helden aktiviert
 -- werden. Ein Siedler wird aus dem Lagerhaus kommen und das Gebäude bauen.
--- <br><a href="API.CreateIOBuildingSite">Eine Baustelle anlegen</a>
+-- <br><a href="#API.CreateIOBuildingSite">Eine Baustelle anlegen</a>
 -- </p>
 -- <p>
 -- <b>Interaktive Schatztruhen:</b><br>
 -- Es werden Schatztruhen mit zufälligem Inhalt erzeugt. Diese Truhen werden
 -- aktiviert und der Inhalt wird in einem Karren abtransportiert.
--- <br><a href="API.CreateRandomChest">Eine Schatztruhe anlegen</a>
+-- <br><a href="#API.CreateRandomChest">Eine Schatztruhe anlegen</a>
 -- </p>
 -- <p>
 -- <b>Interaktive Minen:</b><br>
 -- Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch
 -- Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.
 -- <br>Optional kann die Mine einstürzen, wenn sie erschöpft wurde.
--- <br><a href="API.CreateIOMine">Eine Mine anlegen</a>
+-- <br><a href="#API.CreateIOMine">Eine Mine anlegen</a>
 -- </p>
 -- <p>
 -- <b>Trebuchet-Baustellen:</b><br>
@@ -37,7 +37,7 @@
 -- ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.<br>
 -- Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
 -- ankommt, wird die Baustelle wieder freigegeben.
--- <br><a href="API.CreateTrebuchetConstructionSite">Eine Baustelle anlegen</a>
+-- <br><a href="#API.CreateTrebuchetConstructionSite">Eine Baustelle anlegen</a>
 -- </p>
 --
 -- @within Modulbeschreibung
