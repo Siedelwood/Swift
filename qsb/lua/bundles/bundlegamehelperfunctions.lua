@@ -45,9 +45,9 @@ QSB = QSB or {};
 --
 -- <p><b>Alias:</b> SetCameraToPlayerKnight</p>
 --
--- @param _Player [number] Partei
--- @param _Rotation [number] Kamerawinkel
--- @param _ZoomFactor [number] Zoomfaktor
+-- @param[type=number] _Player Partei
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
 -- @within Anwenderfunktionen
 --
 function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
@@ -60,9 +60,9 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 --
 -- <p><b>Alias:</b> SetCameraToEntity</p>
 --
--- @param _Entity [string|number] Entity
--- @param _Rotation [number] Kamerawinkel
--- @param _ZoomFactor [number] Zoomfaktor
+-- @param _Entity Entity (Skriptname oder ID)
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
 -- @within Anwenderfunktionen
 --
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
@@ -85,7 +85,7 @@ SetCameraToEntity = API.FocusCameraOnEntity;
 --
 -- <p><b>Alias:</b> SetSpeedLimit</p>
 --
--- @param _Limit [number] Obergrenze
+-- @param[type=number] _Limit Obergrenze
 -- @within Anwenderfunktionen
 --
 function API.SpeedLimitSet(_Limit)
@@ -103,7 +103,7 @@ SetSpeedLimit = API.SpeedLimitSet
 --
 -- <p><b>Alias:</b> ActivateSpeedLimit</p>
 --
--- @param _Flag [boolean] Speedbremse ist aktiv
+-- @param[type=boolean] _Flag Speedbremse ist aktiv
 -- @within Anwenderfunktionen
 --
 function API.SpeedLimitActivate(_Flag)
@@ -152,7 +152,7 @@ RessurectCheats = API.AllowCheats;
 --
 -- <p><b>Alias:</b> ForbidSaveGame</p>
 --
--- @param _Flag [boolean] Speichern gesperrt
+-- @param[type=boolean] _Flag Speichern gesperrt
 -- @within Anwenderfunktionen
 --
 function API.ForbidSaveGame(_Flag)
@@ -172,7 +172,7 @@ ForbidSaveGame = API.ForbidSaveGame;
 --
 -- <p><b>Alias:</b> AllowExtendedZoom</p>
 --
--- @param _Flag [boolean] Erweiterter Zoom gestattet
+-- @param[type=boolean] _Flag Erweiterter Zoom gestattet
 -- @within Anwenderfunktionen
 --
 function API.AllowExtendedZoom(_Flag)
@@ -194,8 +194,8 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 --
 -- <p><b>Alias:</b> HeroCameraActivate</p>
 --
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
+-- @param _Hero Held, dem die Kamera folgt (Skriptname oder ID)
+-- @param[type=number] _MaxZoom Maximaler Zoomfaktor
 -- @within Anwenderfunktionen
 --
 function API.ThridPersonActivate(_Hero, _MaxZoom)
@@ -229,7 +229,7 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 --
 -- <p><b>Alias:</b> HeroCameraIsRuning</p>
 --
--- @return [boolean] Kamera aktiv
+-- @return[type=boolean] Kamera aktiv
 -- @within Anwenderfunktionen
 --
 function API.ThridPersonIsRuning()
@@ -250,11 +250,11 @@ HeroCameraIsRuning = API.ThridPersonIsRuning;
 --
 -- <p><b>Alias:</b> AddFollowKnightSave</p>
 --
--- @param _Entity [string|number] Entity das folgt
--- @param _Knight [string|number] Held
--- @param _Distance [number] Entfernung, die uberschritten sein muss
--- @param _Angle [number] Ausrichtung
--- @return [number] Job-ID
+-- @param              _Entity Entity das folgt (skriptname oder ID)
+-- @param              _Knight Held (Skriptname oder ID)
+-- @param[type=number] _Distance Entfernung, die uberschritten sein muss
+-- @param[type=number] _Angle Ausrichtung
+-- @return[type=number] Job-ID
 -- @within Anwenderfunktionen
 --
 function API.FollowKnightSaveStart(_Entity, _Knight, _Distance, _Angle)
@@ -273,7 +273,7 @@ AddFollowKnightSave = API.FollowKnightSaveStart;
 --
 -- <p><b>Alias:</b> StopFollowKnightSave</p>
 --
--- @param _JobID [number] Job-ID
+-- @param[type=number] _JobID Job-ID
 -- @within Anwenderfunktionen
 --
 function API.FollowKnightSaveStop(_JobID)
@@ -295,9 +295,9 @@ StopFollowKnightSave = API.FollowKnightSaveStop;
 --
 -- <p><b>Alias:</b> TerrainType</p>
 --
--- @param _Center [string|number] Zentralpunkt
--- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _TerrainType [number] Textur ID
+-- @param              _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number] _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number] _TerrainType Textur ID
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -329,10 +329,10 @@ TerrainType = API.ChangeTerrainTypeInSquare;
 --
 -- <p><b>Alias:</b> WaterHeight</p>
 --
--- @param _Center [string|number] Zentralpunkt
--- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _Height [number] Neue Höhe
--- @param _Relative [boolean] Relative Höhe benutzen
+-- @param               _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number]  _Height Neue Höhe
+-- @param[type=boolean] _Relative Relative Höhe benutzen
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -365,10 +365,10 @@ WaterHeight = API.ChangeWaterHeightInSquare;
 --
 -- <p><b>Alias:</b> TerrainHeight</p>
 --
--- @param _Center [string|number] Zentralpunkt
--- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _Height [number] Neue Höhe
--- @param _Relative [boolean] Relative Höhe benutzen
+-- @param               _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number]  _Height Neue Höhe
+-- @param[type=boolean] _Relative Relative Höhe benutzen
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -524,8 +524,8 @@ end
 -- Held kann 0 sein, dann wird entweder der letzte Held verwendet
 -- oder über den GUI-Spieler ermittelt.
 --
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
+-- @param              _Hero Held (Skriptname oder ID)
+-- @param[type=number] _MaxZoom Maximaler Zoomfaktor
 -- @within Internal
 -- @local
 --
@@ -556,7 +556,7 @@ end
 ---
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
--- @return [boolean] Kamera aktiv
+-- @return[type=boolean] Kamera aktiv
 -- @within Internal
 -- @local
 --
@@ -603,11 +603,11 @@ end
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
 -- zurück, der die Verfolgung steuert.
 --
--- @param _Entity [string|number] Entity das folgt
--- @param _Knight [string|number] Held
--- @param _Distance [number] Entfernung, die uberschritten sein muss
--- @param _Angle [number] Ausrichtung
--- @return [number] Job-ID
+-- @param              _Entity Entity das folgt (skriptname oder ID)
+-- @param              _Knight Held (Skriptname oder ID)
+-- @param[type=number] _Distance Entfernung, die uberschritten sein muss
+-- @param[type=number] _Angle Ausrichtung
+-- @return[type=number] Job-ID
 -- @within Internal
 -- @local
 --
@@ -630,7 +630,7 @@ end
 ---
 -- Beendet einen Verfolgungsjob.
 --
--- @param _JobID [number] Job-ID
+-- @param[type=number] _JobID Job-ID
 -- @within Internal
 -- @local
 --
@@ -646,10 +646,10 @@ end
 ---
 -- Kontrolliert die Verfolgung eines Helden durch einen Siedler.
 --
--- @param _EntityID [number]Entity das folgt
--- @param _KnightID [number]Held
--- @param _Distance [number] Entfernung, die uberschritten sein muss
--- @param _Angle [number] Ausrichtung
+-- @param              _Entity Entity das folgt (skriptname oder ID)
+-- @param              _Knight Held (Skriptname oder ID)
+-- @param[type=number] _Distance Entfernung, die uberschritten sein muss
+-- @param[type=number] _Angle Ausrichtung
 -- @within Internal
 -- @local
 --
@@ -692,9 +692,9 @@ ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSa
 ---
 -- Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
 -- Abstände der Eckpunkte zum Zentralpunkt.
--- @param _Center [string|number] Zentralpunkt
--- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _TerrainType [number] Textur ID
+-- @param              _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number] _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number] _TerrainType Textur ID
 -- @within Internal
 -- @local
 --
@@ -716,10 +716,10 @@ end
 ---
 -- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
 -- der Eckpunkte zum Zentralpunkt.
--- @param _Center [string|number] Zentralpunkt
--- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _Height [number] Neue Höhe
--- @param _Relative [boolean] Relative Höhe benutzen
+-- @param               _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number]  _Height Neue Höhe
+-- @param[type=boolean] _Relative Relative Höhe benutzen
 -- @within Internal
 -- @local
 --
@@ -746,10 +746,10 @@ end
 ---
 -- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
 -- der Eckpunkte zum Zentralpunkt.
--- @param _Center [string|number] Zentralpunkt
--- @param _Offset [number] Entfernung der Ecken zum Zentrum
--- @param _Height [number] Neue Höhe
--- @param _Relative [boolean] Relative Höhe benutzen
+-- @param               _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number]  _Height Neue Höhe
+-- @param[type=boolean] _Relative Relative Höhe benutzen
 -- @within Internal
 -- @local
 --
@@ -785,13 +785,13 @@ end
 --
 -- Wird verwendet von: WaterHeight, TerrainHeight, TerrainType
 --
--- @param _Center [string|number] Zentralpunkt des Quadrat
--- @param _Offset [number] Abstand der Ecken zum Zentrum
--- @return [number] X-Koordinate von Punkt 1
--- @return [number] Y-Koordinate von Punkt 1
--- @return [number] X-Koordinate von Punkt 2
--- @return [number] Y-Koordinate von Punkt 2
--- @return [number] Bodenhöhe
+-- @param              _Center Zentralpunkt des Quadrat (Skriptname oder ID)
+-- @param[type=number] _Offset Abstand der Ecken zum Zentrum
+-- @return[type=number] X-Koordinate von Punkt 1
+-- @return[type=number] Y-Koordinate von Punkt 1
+-- @return[type=number] X-Koordinate von Punkt 2
+-- @return[type=number] Y-Koordinate von Punkt 2
+-- @return[type=number] Bodenhöhe
 -- @within Internal
 -- @local
 --
@@ -850,9 +850,9 @@ end
 ---
 -- Fokusiert die Kamera auf dem Entity.
 --
--- @param _Entity [string|number] Entity
--- @param _Rotation [number] Kamerawinkel
--- @param _ZoomFactor [number] Zoomfaktor
+-- @param _Entity Entity (Skriptname oder ID)
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
 -- @within Internal
 -- @local
 --
@@ -870,7 +870,7 @@ end
 ---
 -- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
 --
--- @param _Limit [number] Obergrenze
+-- @param[type=number] _Limit Obergrenze
 -- @within Internal
 -- @local
 --
@@ -883,7 +883,7 @@ end
 -- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
 -- kann nicht mehr überschritten werden.
 --
--- @param _Flag [boolean] Speedbremse ist aktiv
+-- @param[type=boolean] _Flag Speedbremse ist aktiv
 -- @within Internal
 -- @local
 --
@@ -1030,7 +1030,7 @@ end
 ---
 -- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
 --
--- @param _Flag [boolean] Speicherbuttons sichtbar
+-- @param[type=boolean] _Flag Speicherbuttons sichtbar
 -- @within Internal
 -- @local
 --
@@ -1046,8 +1046,8 @@ end
 -- Held kann 0 sein, dann wird entweder der letzte Held verwendet
 -- oder über den GUI-Spieler ermittelt.
 --
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
+-- @param _Hero Held (Skriptname oder ID)
+-- @param[type=number] _MaxZoom Maximaler Zoomfaktor
 -- @within Internal
 -- @local
 --
@@ -1089,7 +1089,7 @@ end
 ---
 -- Prüft, ob die Heldenkamera aktiv ist.
 --
--- @return [boolean] Kamera aktiv
+-- @return[type=boolean] Kamera aktiv
 -- @within Internal
 -- @local
 --
