@@ -64,9 +64,9 @@ MarkerColor = {
 --
 -- <b>Alias</b>: CreateMinimapSignal
 --
--- @param _PlayerID [number|table] PlayerID oder Farbtabelle
--- @param _Position [string|number|table] Position des Markers
--- @return [number] ID des Markers
+-- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param _Position Position des Markers (Skriptname, ID oder Position)
+-- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
 --
 -- @usage API.CreateMinimapSignal(1, GetPosition("pos"));
@@ -97,9 +97,9 @@ CreateMinimapSignal = API.CreateMinimapSignal;
 --
 -- <b>Alias</b>: CreateMinimapMarker
 --
--- @param _PlayerID [number|table] PlayerID oder Farbtabelle
--- @param _Position [string|number|table] Position des Markers
--- @return [number] ID des Markers
+-- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param _Position Position des Markers (Skriptname, ID oder Position)
+-- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
 --
 -- @usage API.CreateMinimapMarker(1, GetPosition("pos"));
@@ -130,9 +130,9 @@ CreateMinimapMarker = API.CreateMinimapMarker;
 --
 -- <b>Alias</b>: CreateMinimapPulse
 --
--- @param _PlayerID [number|table] PlayerID oder Farbtabelle
--- @param _Position [string|number|table] Position des Markers
--- @return [number] ID des Markers
+-- @param _PlayerID PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
+-- @param _Position Position des Markers (Skriptname, ID oder Position)
+-- @return[type=number] ID des Markers
 -- @within Anwenderfunktionen
 --
 -- @usage API.CreateMinimapPulse(1, GetPosition("pos"));
@@ -161,7 +161,7 @@ CreateMinimapPulse = API.CreateMinimapPulse;
 --
 -- <b>Alias</b>: DestroyMinimapSignal
 --
--- @param _ID [number] ID des Markers
+-- @param[type=number] _ID ID des Markers
 -- @within Anwenderfunktionen
 --
 -- @usage API.DestroyMinimapSignal(SomeMarkerID);
@@ -209,11 +209,11 @@ end
 ---
 -- Erstellt eine neue Markierung auf der Minimap.
 -- 
--- @param _PlayerID [number] ID des Besitzers
--- @param _X [number] X-Koordinate des Markers
--- @param _Y [number] Y-Koordinate des Makers
--- @param _Type [number] Typ des Markers
--- @return [number] ID des Markers
+-- @param[type=number] _PlayerID ID des Besitzers
+-- @param[type=number] _X X-Koordinate des Markers
+-- @param[type=number] _Y Y-Koordinate des Makers
+-- @param[type=number] _Type Typ des Markers
+-- @return[type=number] ID des Markers
 -- @within Internal
 -- @local
 --
@@ -230,7 +230,7 @@ end
 ---
 -- Zerstort eine Markierung auf der Minimap.
 -- 
--- @param _ID [number] ID des Markers
+-- @param[type=number] _ID ID des Markers
 -- @within Internal
 -- @local
 --
@@ -242,7 +242,7 @@ end
 ---
 -- Zeigt eine erstellte Markierung auf der Minimap an.
 -- 
--- @param _ID [number] ID des Markers
+-- @param[type=number] _ID ID des Markers
 -- @within Internal
 -- @local
 --
@@ -292,11 +292,11 @@ end
 ---
 -- Initialisiert das Bundle im globalen Skript.
 --
--- @param _ID [number|table] Besitzer oder Farbtabelle
--- @param _PlayerID [number] ID des Besitzers
--- @param _X [number] X-Koordinate des Markers
--- @param _Y [number] Y-Koordinate des Makers
--- @param _Type [number] Typ des Markers
+-- @param[type=number] _PlayerID ID des Besitzers
+-- @param[type=number] _X X-Koordinate des Markers
+-- @param[type=number] _Y Y-Koordinate des Makers
+-- @param[type=number] _Type Typ des Markers
+-- @return[type=number] ID des Markers
 -- @within Internal
 -- @local
 --
