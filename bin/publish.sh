@@ -43,6 +43,10 @@ echo "Copy Siedelwood Cutscene Assistant..."
 cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
 echo "Done"
 
+echo "Copy Cutscene Maker..."
+cp -r "bin/CutsceneMakerInstaller.exe" Release/bin/CutsceneMakerInstaller.exe &>/dev/null
+echo "Done"
+
 echo "Creating archive..."
 zip -r Release/doc Release/guide Release/* &>/dev/null
 mv Release/doc.zip Release.zip &>/dev/null
