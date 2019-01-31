@@ -383,10 +383,10 @@ AddOnQuestDebug = {
 -- </tr>
 -- </table>
 --
--- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
--- @param _TraceQuests [boolean] Aktiviert Questverfolgung
--- @param _DevelopingCheats [boolean] Aktiviert Cheats und Konsole
--- @param _DevelopingShell [boolean] Aktiviert Cheats und Konsole
+-- @param[type=boolean] _CheckAtRun Prüfe Quests zur Laufzeit
+-- @param[type=boolean] _TraceQuests Aktiviert Questverfolgung
+-- @param[type=boolean] _DevelopingCheats Aktiviert Cheats und Konsole
+-- @param[type=boolean] _DevelopingShell Aktiviert Cheats und Konsole
 -- @see Reward_DEBUG
 -- @within Anwenderfunktionen
 --
@@ -406,10 +406,10 @@ ActivateDebugMode = API.ActivateDebugMode;
 ---
 -- Aktiviert den Debug.
 --
--- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
--- @param _TraceQuests [boolean] Aktiviert Questverfolgung
--- @param _DevelopingCheats [boolean] Aktiviert Cheats
--- @param _DevelopingShell [boolean] Aktiviert Konsole
+-- @param[type=boolean] _CheckAtRun Prüfe Quests zur Laufzeit
+-- @param[type=boolean] _TraceQuests Aktiviert Questverfolgung
+-- @param[type=boolean] _DevelopingCheats Aktiviert Cheats und Konsole
+-- @param[type=boolean] _DevelopingShell Aktiviert Cheats und Konsole
 -- @see API.ActivateDebugMode
 --
 -- @within Reward

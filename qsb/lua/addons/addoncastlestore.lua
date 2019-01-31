@@ -53,8 +53,8 @@ QSB = QSB or {};
 ---
 -- Erstellt ein Burglager für den angegebenen Spieler.
 --
--- @param _PlayerID [number] ID des Spielers
--- @return [table] Burglager-Instanz
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=table] Burglager-Instanz
 -- @within Anwenderfunktionen
 -- @usage
 -- API.CastleStoreCreate(1);
@@ -72,7 +72,7 @@ end
 --
 -- Alle Waren im Burglager werden dabei unwiederuflich gelöscht!
 --
--- @param _PlayerID [number] ID des Spielers
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Anwenderfunktionen
 -- @usage
 -- API.CastleStoreDestroy(1)
@@ -91,9 +91,9 @@ end
 ---
 -- Fügt dem Burglager des Spielers eine Menga an Waren hinzu.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Good [number] Typ der Ware
--- @param _Amount [number] Menge der Ware
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _Good Typ der Ware
+-- @param[type=number] _Amount Menge der Ware
 -- @within Anwenderfunktionen
 -- @usage
 -- API.CastleStoreAddGood(1, Goods.G_Wood, 50);
@@ -112,9 +112,9 @@ end
 ---
 -- Entfernt eine Menge von Waren aus dem Burglager des Spielers.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Good [number] Typ der Ware
--- @param _Amount [number] Menge der Ware
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _Good Typ der Ware
+-- @param[type=number] _Amount Menge der Ware
 -- @within Anwenderfunktionen
 -- @usage
 -- API.CastleStoreRemoveGood(1, Goods.G_Iron, 15);
@@ -133,9 +133,9 @@ end
 ---
 -- Gibt die Menge an Waren des Typs im Burglager des Spielers zurück.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Good [number] Typ der Ware
--- @return [number] Menge an Waren
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _Good Typ der Ware
+-- @return[type=number] Menge an Waren
 -- @within Anwenderfunktionen
 -- @usage
 -- local Amount = API.CastleStoreCountGood(1, Goods.G_Milk);
@@ -154,8 +154,8 @@ end
 ---
 -- Gibt die Gesamtmenge aller Waren im Burglager zurück.
 --
--- @param _PlayerID [number] ID des Spielers
--- @return [number] Menge an Waren
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=number] Menge an Waren
 -- @within Anwenderfunktionen
 -- @usage
 -- local Amount = API.CastleStoreTotalAmount(1);
@@ -173,8 +173,8 @@ end
 
 ---
 -- Gibt die maximale Kapazität des Burglagers zurück.
--- @param _PlayerID [number] ID des Spielers
--- @return [number] Große des Lagers
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=number] Große des Lagers
 -- @within Anwenderfunktionen
 -- @usage
 -- local Size = API.CastleStoreGetSize(1);
@@ -196,8 +196,8 @@ end
 -- Die Basiskapazität ist das Limit der ersten Stufe der Burg. Mit jedem
 -- Ausbau wird dieser Wert verdoppelt.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Capacity [number] Basisgröße des Lagers
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _Capacity Basisgröße des Lagers
 -- @within Anwenderfunktionen
 -- @usage
 -- -- -> [150, 300, 600, 1200]
@@ -217,9 +217,9 @@ end
 ---
 -- Setzt die Obergrenze ab der ins Burglager ausgelagert wird.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Good [number] Warentyp
--- @param _Limit [number] Obergrenze
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _Good     Warentyp
+-- @param[type=number] _Limit    Obergrenze
 -- @within Anwenderfunktionen
 -- @usage
 -- API.CastleStoreSetOutsourceBoundary(1, Goods.G_Milk, 50);
