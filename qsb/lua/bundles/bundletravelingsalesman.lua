@@ -36,12 +36,12 @@ QSB.TravelingSalesman = {
 --
 -- <b>Alias</b>: ActivateTravelingSalesman
 --
--- @param _PlayerID [number] Spieler-ID des Händlers
--- @param _Offers [table] Liste an Angeboten
--- @param _Waypoints [table] Wegpunktliste Anfahrt
--- @param _Reversed [table] Wegpunktliste Abfahrt
--- @param _Appearance [table] Ankunft und Abfahrt
--- @param _RotationMode [boolean] Angebote werden der Reihe nach durchgegangen
+-- @param[type=number]  _PlayerID Spieler-ID des Händlers
+-- @param[type=table]   _Offers Liste an Angeboten
+-- @param[type=table]   _Waypoints Wegpunktliste Anfahrt
+-- @param[type=table]   _Reversed (optional) Wegpunktliste Abfahrt
+-- @param[type=table]   _Appearance (optional) Ankunft und Abfahrt
+-- @param[type=boolean] _RotationMode (optional) Angebote werden der Reihe nach durchgegangen
 -- @within Anwenderfunktionen
 --
 -- @usage -- Angebote deklarieren
@@ -70,7 +70,7 @@ QSB.TravelingSalesman = {
 -- };
 -- -- Es sind maximal 4 Angebote pro Block erlaubt. Es können Waren, Soldaten
 -- -- oder Entertainer angeboten werden. Es wird immer automatisch 1 Block
--- -- selektiert und die ANgebote gesetzt.
+-- -- selektiert und die Angebote gesetzt.
 --
 -- -- Wegpunkte deklarieren
 -- local Waypoints = {"WP1", "WP2", "WP3", "WP4"};
@@ -79,7 +79,7 @@ QSB.TravelingSalesman = {
 -- -- Schiff bei der Abfahrt automatisch rückwärts abgefahren.
 -- -- 2. Es wird ein anderer Pfad für die Abfahrt deklariert.
 --
--- -- Anfahrt und Abfanrtsmonate deklarieren
+-- -- An- und Abfanrtsmonate deklarieren
 -- local Appearance = {{4, 6}, {8, 10}};
 -- -- Auch hier gibt es 2 Möglichkeiten:
 -- -- 1. Neue Anfahrts- und Abfahrtszeiten setzen.
@@ -109,12 +109,12 @@ end
 ActivateTravelingSalesman = API.TravelingSalesmanActivate;
 
 ---
--- Zerstört den fahrender Händler. Der Spieler wird dabei natürlich
--- nicht zerstört.
+-- Entfernt den fahrenden Händler von dem Spieler. Der Spieler bleibt
+-- erhalten wird aber nicht mal als fahrender Händler fungieren.
 --
 -- <b>Alias</b>: DeactivateTravelingSalesman
 --
--- @param _PlayerID [number] Spieler-ID des Händlers
+-- @param[type=number] _PlayerID Spieler-ID des Händlers
 -- @within Anwenderfunktionen
 --
 -- @usage -- Fahrenden Händler von Spieler 2 löschen
@@ -134,19 +134,20 @@ DeactivateTravelingSalesman = API.TravelingSalesmanDeactivate;
 -- Hafen überschrieben werden.
 --
 -- Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
--- im Hafen befinden und wenn es abreist. Der Hafen ist "Handelspartner", wenn
+-- im Hafen befindet und wenn es abreist. Der Hafen ist "Handelspartner", wenn
 -- ein Schiff angelegt hat, sonst "Bekannt".
 --
 -- Bei diplomatischen Beziehungen geringer als "Bekannt", kann es zu Fehlern
 -- kommen. Dann werden Handelsangebote angezeigt, konnen aber nicht durch
 -- den Spieler erworben werden.
 --
--- <b>Hinweis</b>: Standardmäßig als aktiv voreingestellt.
+-- <b>Hinweis</b>: Überschreiben der Beziehungen ist Standardmäßig als aktiv
+-- voreingestellt.
 --
 -- <b>Alias</b>: TravelingSalesmanDiplomacyOverride
 --
--- @param _PlayerID [number] Spieler-ID des Händlers
--- @param _Flag [boolean] Diplomatie überschreiben
+-- @param[type=number]  _PlayerID Spieler-ID des Händlers
+-- @param[type=boolean] _Flag Diplomatie überschreiben
 -- @within Anwenderfunktionen
 --
 -- @usage -- Spieler 2 überschreibt nicht mehr die Diplomatie
@@ -167,8 +168,8 @@ TravelingSalesmanDiplomacyOverride = API.TravelingSalesmanDiplomacyOverride;
 --
 -- <b>Alias</b>: TravelingSalesmanRotationMode
 --
--- @param _PlayerID [number] Spieler-ID des Händlers
--- @param _Flag [boolean] Angebotsrotation einschalten
+-- @param[type=number]  _PlayerID Spieler-ID des Händlers
+-- @param[type=boolean] _Flag Angebotsrotation einschalten
 -- @within Anwenderfunktionen
 --
 -- @usage -- Spieler 2 geht Angebote der Reihe nach durch.

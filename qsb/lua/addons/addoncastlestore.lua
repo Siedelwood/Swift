@@ -1049,7 +1049,7 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:GetAmount(_PlayerID, _Good)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not self:HasCastleStore(_PlayerID) then
+    if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
         return 0;
     end
     return self.Data[_PlayerID].Goods[_Good][1];
@@ -1115,7 +1115,7 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:SetAmount(_PlayerID, _Good, _Amount)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not self:HasCastleStore(_PlayerID) then
+    if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
         return;
     end
     self.Data[_PlayerID].Goods[_Good][1] = _Amount;
@@ -1135,10 +1135,7 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:IsAccepted(_PlayerID, _Good)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not self:HasCastleStore(_PlayerID) then
-        return false;
-    end
-    if not self.Data[_PlayerID].Goods[_Good] then
+    if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
         return false;
     end
     return self.Data[_PlayerID].Goods[_Good][2] == true;
@@ -1158,10 +1155,8 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:SetAccepted(_PlayerID, _Good, _Flag)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if self:HasCastleStore(_PlayerID) then
-        if self.Data[_PlayerID].Goods[_Good] then
-            self.Data[_PlayerID].Goods[_Good][2] = _Flag == true;
-        end
+    if self:HasCastleStore(_PlayerID) and self.Data[_PlayerID].Goods[_Good] then
+        self.Data[_PlayerID].Goods[_Good][2] = _Flag == true;
     end
     return self;
 end
@@ -1179,11 +1174,8 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:IsLocked(_PlayerID, _Good)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if not self:HasCastleStore(_PlayerID) then
+    if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
         return true;
-    end
-    if not self.Data[_PlayerID].Goods[_Good] then
-        return false;
     end
     return self.Data[_PlayerID].Goods[_Good][3] == true;
 end
@@ -1202,10 +1194,8 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:SetLocked(_PlayerID, _Good, _Flag)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
-    if self:HasCastleStore(_PlayerID) then
-        if self.Data[_PlayerID].Goods[_Good] then
-            self.Data[_PlayerID].Goods[_Good][3] = _Flag == true;
-        end
+    if self:HasCastleStore(_PlayerID) and self.Data[_PlayerID].Goods[_Good] then
+        self.Data[_PlayerID].Goods[_Good][3] = _Flag == true;
     end
     return self;
 end

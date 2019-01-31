@@ -15,16 +15,16 @@
 --
 -- <li>Viehzucht: Hernzüchten von Kühen und Schafen in Gattern
 -- <br>Kühe züchten:<br><a href="#API.UseBreedCattle">Zucht aktivieren</a>,
--- <a href="#API.SetCattleNeeded">Mindestanzahl Tiere festlegen</a>,
+-- <a href="#API.SetCattleNeeded">Mindestanzahl Kühe festlegen</a>,
 -- <a href="#API.SetCattleGrainCost">Getreidekosten festlegen</a>
 -- <br>Schafe züchten:<br><a href="#API.UseBreedSheeps">Zucht aktivieren</a>,
--- <a href="#API.SetSheepNeeded">Mindestanzahl Tiere festlegen</a>,
+-- <a href="#API.SetSheepNeeded">Mindestanzahl Schafe festlegen</a>,
 -- <a href="#API.SetSheepGrainCost">Getreidekosten festlegen</a>
 -- </li>
 --
 -- <li>Single Stop: Anhalten der Produktion von einzelnen Gebäuden
 -- <br><a href="#API.ActivateSingleStop">aktivieren</a>,
--- <a href="#API.ActivateSingleStop">deaktivieren</a>
+-- <a href="#API.DeactivateSingleStop">deaktivieren</a>
 -- </li>
 --
 -- <li>Downgrade: Rückbau von Stadt- und Rohstoffgebäuden
@@ -130,7 +130,7 @@ DeactivateDowngrade = API.DeactivateDowngrade;
 --
 -- <p><b>Alias:</b> UseBreedSheeps</p>
 --
--- @param _flag [boolean] Schafzucht aktiv/inaktiv
+-- @param[type=boolean] _flag Schafzucht aktiv/inaktiv
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -161,7 +161,7 @@ UseBreedSheeps = API.UseBreedSheeps;
 --
 -- <p><b>Alias:</b> UseBreedCattle</p>
 --
--- @param _flag [boolean] Kuhzucht aktiv/inaktiv
+-- @param[type=boolean] _flag Kuhzucht aktiv/inaktiv
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -192,7 +192,7 @@ UseBreedCattle = API.UseBreedCattle;
 --
 -- <p><b>Alias:</b> SetSheepGrainCost</p>
 --
--- @param _Amount [number] Getreidekosten
+-- @param[type=number] _Amount Getreidekosten
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -213,7 +213,7 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 --
 -- <p><b>Alias:</b> SetCattleGrainCost</p>
 --
--- @param _Amount [number] Getreidekosten
+-- @param[type=number] _Amount Getreidekosten
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -230,11 +230,11 @@ end
 SetCattleGrainCost = API.SetCattleGrainCost;
 
 ---
--- Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
+-- Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
 --
 -- <p><b>Alias:</b> SetSheepNeeded</p>
 --
--- @param _Amount [number] Benötigte Menge
+-- @param[type=number] _Amount Benötigte Menge
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -254,11 +254,11 @@ end
 SetSheepNeeded = API.SetSheepNeeded;
 
 ---
--- Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
+-- Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
 --
 -- <p><b>Alias:</b> SetCattleNeeded</p>
 --
--- @param _Amount [number] Benötigte Menge
+-- @param[type=number] _Amount Benötigte Menge
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -305,10 +305,10 @@ SetCattleNeeded = API.SetCattleNeeded;
 --
 -- <p><b>Alias:</b> AddBuildingButton</p>
 --
--- @param _Index   [number] Index des Buttons
--- @param _Action  [function] Aktion des Buttons
--- @param _Tooltip [function] Tooltip Control
--- @param _Update  [function] Button Update
+-- @param[type=number]   _Index Index des Buttons
+-- @param[type=function] _Action Aktion des Buttons
+-- @param[type=function] _Tooltip Tooltip Control
+-- @param[type=function] _Update Button Update
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -353,7 +353,7 @@ AddBuildingButton = API.AddCustomBuildingButton;
 --
 -- <p><b>Alias:</b> DeleteBuildingButton</p>
 --
--- @param _Index   [number] Index des Buttons
+-- @param[type=number] _Index Index des Buttons
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -547,10 +547,10 @@ end
 -- hinzugefügt werden. Buttons brauchen immer eine Action-, eine
 -- Tooltip- und eine Update-Funktion.
 --
--- @param _idx              Indexposition des Button (1 oder 2)
--- @param _actionFunction   Action-Funktion (String in Global)
--- @param _tooltipFunction  Tooltip-Funktion (String in Global)
--- @param _updateFunction   Update-Funktion (String in Global)
+-- @param[type=number]   _idx              Indexposition des Button (1 oder 2)
+-- @param[type=function] _actionFunction   Action-Funktion (String in Global)
+-- @param[type=function] _tooltipFunction  Tooltip-Funktion (String in Global)
+-- @param[type=function] _updateFunction   Update-Funktion (String in Global)
 -- @within Internal
 -- @local
 -- @see API.AddCustomBuildingButton
@@ -571,7 +571,7 @@ end
 ---
 -- Entfernt den Zusatz-Button auf dem Index.
 --
--- @param _idx Indexposition des Button (1 oder 2)
+-- @param[type=number] _idx Indexposition des Button (1 oder 2)
 -- @within Internal
 -- @local
 --
@@ -993,8 +993,8 @@ end
 ---
 -- Ändert die Textur eines Icons im House Menu.
 --
--- @param _Widget Icon Widget
--- @param _Icon   Icon Textur
+-- @param[type=string] _Widget Icon Widget
+-- @param[type=table]  _Icon   Icon Textur
 -- @within BundleBuildingButtons
 -- @local
 --
@@ -1035,9 +1035,9 @@ end
 ---
 -- Setzt einen für den Tooltip des aktuellen Widget einen neuen Text.
 --
--- @param _Title        Titel des Tooltip
--- @param _Text         Text des Tooltip
--- @param _DisabledText Textzusatz wenn inaktiv
+-- @param[type=string] _Title        Titel des Tooltip
+-- @param[type=string] _Text         Text des Tooltip
+-- @param[type=string] _DisabledText (optional) Textzusatz wenn inaktiv
 -- @within BundleBuildingButtons
 -- @local
 --
@@ -1070,11 +1070,11 @@ end
 ---
 -- Setzt den Kostentooltip des aktuellen Widgets.
 --
--- @param _Title        Titel des Tooltip
--- @param _Text         Text des Tooltip
--- @param _DisabledText Textzusatz wenn inaktiv
--- @param _Costs        Kostentabelle
--- @param _InSettlement Kosten in Siedlung suchen
+-- @param[type=string]  _Title        Titel des Tooltip
+-- @param[type=string]  _Text         Text des Tooltip
+-- @param[type=string]  _DisabledText (optional) Textzusatz wenn inaktiv
+-- @param[type=number]  _Costs        Kostentabelle
+-- @param[type=boolean] _InSettlement Kosten in Siedlung suchen
 -- @within Internal
 -- @local
 --
@@ -1158,7 +1158,7 @@ end
 --
 -- Hier werden die ausgeblendeten ungenutzten Gebäudeschalter eingeblendet.
 --
--- @param _Source Quelle der Änderung
+-- @param[type=number] _Source Quelle der Änderung
 -- @within Internal
 -- @local
 --

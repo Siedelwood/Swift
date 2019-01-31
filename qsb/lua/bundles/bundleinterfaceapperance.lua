@@ -34,8 +34,8 @@ QSB.PlayerNames = {};
 -- sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
 -- unterschiedlich ist.</p>
 --
--- @param _widget [string|number] Widgetpfad oder ID
--- @param _file [string] Pfad zur Datei
+-- @param[type=string] _widget Widgetpfad oder ID
+-- @param[type=string] _file Pfad zur Datei
 -- @within Anwenderfunktionen
 --
 function API.InterfaceSetTexture(_widget, _file)
@@ -72,10 +72,10 @@ UserSetTexture = API.InterfaceSetTexture;
 -- <li>Für riesige Icons: _Name .. verybig.png</li>
 -- </ul>
 --
--- @param _WidgetID [string|number] Widgetpfad oder ID
--- @param _Coordinates [table] Koordinaten
--- @param _Size [number] Größe des Icon
--- @param _Name [string] Name der Icon Matrix
+-- @param[type=string] _WidgetID Widgetpfad oder ID
+-- @param[type=table]  _Coordinates Koordinaten
+-- @param[type=number] _Size Größe des Icon
+-- @param[type=string] _Name Name der Icon Matrix
 -- @within Anwenderfunktionen
 --
 function API.InterfaceSetIcon(_WidgetID, _Coordinates, _Size, _Name)
@@ -100,9 +100,9 @@ UserSetIcon = API.InterfaceSetIcon;
 -- wenn es sich um eine deutsche Spielversion handelt. Andernfalls wird
 -- immer der englische Text verwendet.
 --
--- @param _title [string] Titel des Tooltip
--- @param _text [string] Text des Tooltip
--- @param _disabledText [string] Textzusatz wenn inaktiv
+-- @param[type=string] _title        Titel des Tooltip
+-- @param[type=string] _text         Text des Tooltip
+-- @param[type=string] _disabledText Textzusatz wenn inaktiv
 -- @within Anwenderfunktionen
 --
 function API.InterfaceSetTooltipNormal(_title, _text, _disabledText)
@@ -120,11 +120,11 @@ UserSetTextNormal = API.InterfaceSetTooltipNormal;
 --
 -- @see API.InterfaceSetTooltipNormal
 --
--- @param _title [string] Titel des Tooltip
--- @param _text [string] Text des Tooltip
--- @param _disabledText [string] Textzusatz wenn inaktiv
--- @param _costs [table] Kostentabelle
--- @param _inSettlement [boolean] Kosten in Siedlung suchen
+-- @param[type=string]  _title        Titel des Tooltip
+-- @param[type=string]  _text         Text des Tooltip
+-- @param[type=string]  _disabledText Textzusatz wenn inaktiv
+-- @param[type=table]   _costs        Kostentabelle
+-- @param[type=boolean] _inSettlement Kosten in Siedlung suchen
 -- @within Anwenderfunktionen
 --
 function API.InterfaceSetTooltipCosts(_title,_text,_disabledText,_costs,_inSettlement)
@@ -140,8 +140,8 @@ UserSetTextBuy = API.InterfaceSetTooltipCosts;
 --
 -- <p><b>Alias:</b> GetTerritoryName</p>
 --
--- @param _TerritoryID [number] ID des Territoriums
--- @return [string]  Name des Territorium
+-- @param[type=number] _TerritoryID ID des Territoriums
+-- @return[type=string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
 function API.InterfaceGetTerritoryName(_TerritoryID)
@@ -167,8 +167,8 @@ GetTerritoryName = API.InterfaceGetTerritoryName;
 --
 -- <p><b>Alias:</b> GetPlayerName</p>
 --
--- @param _PlayerID [number] ID des Spielers
--- @return [string]  Name des Territorium
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
 function API.InterfaceGetPlayerName(_PlayerID)
@@ -200,9 +200,9 @@ GetPlayerName = API.InterfaceGetPlayerName;
 --
 -- <p><b>Alias:</b> SetPlayerName</p>
 --
--- @param _playerID [number] ID des Spielers
--- @param _name [string] Name des Spielers
--- @return [string]  Name des Territorium
+-- @param[type=number] _playerID ID des Spielers
+-- @param[type=string] _name Name des Spielers
+-- @return[type=string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
 function API.InterfaceSetPlayerName(_playerID,_name)
@@ -221,11 +221,10 @@ SetPlayerName = API.InterfaceSetPlayerName;
 ---
 -- Setzt zu Spielbeginn eine andere Spielerfarbe.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Color [number] Spielerfarbe
--- @param _Logo [number] Logo (optional)
--- @param _Pattern [number] Pattern (optional)
--- @return [string]  Name des Territorium
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _Color Spielerfarbe
+-- @param[type=number] _Logo Logo (optional)
+-- @param[type=number] _Pattern Pattern (optional)
 -- @within Anwenderfunktionen
 --
 function API.InterfaceSetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
@@ -261,8 +260,8 @@ end
 --
 -- Wenn kein Portrait bestimmt werden kann, wird H_NPC_Generic_Trader verwendet.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Portrait [string] Name des Models
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=string] _Portrait Name des Models
 -- @within Anwenderfunktionen
 --
 -- @usage -- Primary Knight
@@ -331,7 +330,7 @@ end
 
 ---
 -- Setzt das Portrait des Spielers anhand des Primary Knight.
--- @param _PlayerID [number] ID des Spielers
+-- @param[type=number] _PlayerID ID des Spielers
 -- @within Internal
 -- @local
 --
@@ -352,8 +351,8 @@ end
 
 ---
 -- Setzt das Portrait des Spielers anhand der übergebenen Script Entity.
--- @param _PlayerID [number] ID des Spielers
--- @param _Portrait [string] Skriptname des Entity
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=string] _Portrait Skriptname des Entity
 -- @within Internal
 -- @local
 --
@@ -412,8 +411,8 @@ end
 
 ---
 -- Setzt das Portrait des Spielers anhand des angegebenen Models.
--- @param _PlayerID [number] ID des Spielers
--- @param _Portrait [string] Name des Models
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=string] _Portrait Name des Models
 -- @within Internal
 -- @local
 --
@@ -427,8 +426,8 @@ end
 ---
 -- Setzt einen Icon aus einer benutzerdefinerten Datei.
 --
--- @param _widget [string|number] Widgetpfad oder ID
--- @param _file [string] Pfad zur Datei
+-- @param[type=string] _widget Widgetpfad oder ID
+-- @param[type=string] _file Pfad zur Datei
 -- @within Internal
 -- @local
 --
@@ -457,10 +456,10 @@ end
 ---
 -- Setzt einen Icon aus einer benutzerdefinierten Matrix.
 --
--- @param _WidgetID [string|number] Widgetpfad oder ID
--- @param _Coordinates [table] Koordinaten
--- @param _Size [number] Größe des Icon
--- @param _Name [string] Name der Icon Matrix
+-- @param[type=string] _WidgetID Widgetpfad oder ID
+-- @param[type=table]  _Coordinates Koordinaten
+-- @param[type=number] _Size Größe des Icon
+-- @param[type=string] _Name Name der Icon Matrix
 -- @within Internal
 -- @local
 --
@@ -500,9 +499,9 @@ end
 ---
 -- Setzt einen Beschreibungstooltip.
 --
--- @param _title [string] Titel des Tooltip
--- @param _text [string] Text des Tooltip
--- @param _disabledText [string] Textzusatz wenn inaktiv
+-- @param[type=string] _title        Titel des Tooltip
+-- @param[type=string] _text         Text des Tooltip
+-- @param[type=string] _disabledText Textzusatz wenn inaktiv
 -- @within Internal
 -- @local
 --
@@ -549,11 +548,11 @@ end
 ---
 -- Setzt den Kostentooltip.
 --
--- @param _title [string] Titel des Tooltip
--- @param _text [string] Text des Tooltip
--- @param _disabledText [string] Textzusatz wenn inaktiv
--- @param _costs [table] Kostentabelle
--- @param _inSettlement [boolean] Kosten in Siedlung suchen
+-- @param[type=string]  _title        Titel des Tooltip
+-- @param[type=string]  _text         Text des Tooltip
+-- @param[type=string]  _disabledText Textzusatz wenn inaktiv
+-- @param[type=table]   _costs        Kostentabelle
+-- @param[type=boolean] _inSettlement Kosten in Siedlung suchen
 -- @within Internal
 -- @local
 --

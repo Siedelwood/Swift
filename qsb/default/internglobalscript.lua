@@ -17,20 +17,12 @@ GlobalMissionScript = {
     CreditsLookAt    = Logic.GetHeadquarters(1),
 }
 
-function GlobalMissionScript_Trigger_WaitingForCreditsFinished()
-    return GlobalMissionScript.CreditsFinished == true;
-end
-
-function GlobalMissionScript_Reward_DisplayUI()
-    API.Bridge("Mission_LocalDisplayUI(1)");
-end
-
-function GlobalMissionScript_SetIntro(_Name)
+function GlobalMissionScript.SetIntro(_Name)
     GlobalMissionScript.IntroName = _Name;
     GlobalMissionScript.UseIntro = true;
 end
 
-function GlobalMissionScript_SetCredits(_MapName, _Author, _Tester, _LookAt)
+function GlobalMissionScript.SetCredits(_MapName, _Author, _Tester, _LookAt)
     _LookAt = _LookAt or Logic.GetHeadquarters(1);
     GlobalMissionScript.CreditsMapName = _MapName;
     GlobalMissionScript.CreditsMapAuthor = _Author;
@@ -38,6 +30,22 @@ function GlobalMissionScript_SetCredits(_MapName, _Author, _Tester, _LookAt)
     GlobalMissionScript.CreditsLookAt = GetID(_LookAt);
     GlobalMissionScript.UseCredits = true;
     GlobalMissionScript.CreditsFinished = false;
+end
+
+function GlobalMissionScript.AreCreditsFinished()
+    return GlobalMissionScript.CreditsFinished == true;
+end
+
+function GlobalMissionScript.DisplayUI()
+    API.Bridge("Mission_LocalDisplayUI(1)");
+end
+
+function GlobalMissionScript_Trigger_WaitingForCreditsFinished()
+    return GlobalMissionScript.AreCreditsFinished();
+end
+
+function GlobalMissionScript_Reward_DisplayUI()
+    GlobalMissionScript.DisplayUI()
 end
 
 -- -------------------------------------------------------------------------- --
@@ -100,7 +108,7 @@ function Mission_QuestOnGameStart()
             Trigger_OnQuestSuccess("MissionStartQuest_A", 0),
         };
         if GlobalMissionScript.UseIntro then
-            table.insert(Behaviors, Trigger_BriefingSuccess("MissionStartQuest_A"));
+            table.insert(Behaviors, Trigger_Briefing("MissionStartQuest_A"));
         end
         API.CreateQuest { Name = "MissionStartQuest",  unpack(Behaviors)};
     end

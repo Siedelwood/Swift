@@ -29,7 +29,7 @@ QSB = QSB or {};
 --
 -- <p><b>Alias</b>: GetScale</p>
 --
--- @param[type=string] _Entity Entity
+-- @param _Entity Entity (skriptname oder ID)
 -- @return[type=number] Größenfaktor
 -- @within Anwenderfunktionen
 --
@@ -51,7 +51,7 @@ GetScale = API.GetEntityScale;
 --
 -- <p><b>Alias</b>: GetPlayer</p>
 --
--- @param[type=string] _Entity Entity
+-- @param _Entity Entity (skriptname oder ID)
 -- @return[type=number] Besitzer
 -- @within Anwenderfunktionen
 --
@@ -73,7 +73,7 @@ GetPlayer = API.GetEntityPlayer;
 --
 -- <p><b>Alias</b>: GetMovingTarget</p>
 --
--- @param[type=string] _Entity Entity
+-- @param _Entity Entity (skriptname oder ID)
 -- @return[type=table] Positionstabelle
 -- @within Anwenderfunktionen
 --
@@ -102,7 +102,7 @@ GetMovingTarget = API.GetMovementTarget;
 --
 -- <p><b>Alias</b>: IsNpc</p>
 --
--- @param[type=string] _Entity Entity
+-- @param _Entity Entity (skriptname oder ID)
 -- @return[type=boolean] Ist NPC
 -- @within Anwenderfunktionen
 --
@@ -127,7 +127,7 @@ IsNpc = API.IsActiveNpc;
 --
 -- <p><b>Alias</b>: IsVisible</p>
 --
--- @param[type=string] _Entity Entity
+-- @param _Entity Entity (skriptname oder ID)
 -- @return[type=boolean] Ist sichtbar
 -- @within Anwenderfunktionen
 --
@@ -149,8 +149,8 @@ IsVisible = API.IsEntityVisible;
 --
 -- <p><b>Alias</b>: SetScale</p>
 --
--- @param[type=string] _Entity Entity
--- @param[type=number] _Scale Größenfaktor
+-- @param              _Entity Entity (skriptname oder ID)
+-- @param[type=number] _Scale  Größenfaktor
 -- @within Anwenderfunktionen
 --
 function API.SetEntityScale(_Entity, _Scale)
@@ -175,7 +175,7 @@ SetScale = API.SetEntityScale;
 --
 -- <p><b>Alias</b>: ChangePlayer</p>
 --
--- @param[type=string] _Entity Entity
+-- @param              _Entity   Entity (skriptname oder ID)
 -- @param[type=number] _PlayerID Besitzer
 -- @within Anwenderfunktionen
 --
@@ -238,8 +238,8 @@ end
 
 ---
 -- Ändert die Größe des Entity.
--- @param[type=number] _Scale Größenfaktor
--- @return[type=table] self
+-- @param              _Entity Entity (skriptname oder ID)
+-- @param[type=number] _Scale  Größenfaktor
 -- @within QSB.EntityScriptingValue
 -- @local
 --
@@ -260,8 +260,8 @@ end
 ---
 -- Ändert den Besitzer des Entity.
 --
+-- @param              _Entity   Entity (skriptname oder ID)
 -- @param[type=number] _PlayerID Besitzer
--- @return[type=table] self
 -- @within QSB.EntityScriptingValue
 -- @local
 --
@@ -361,7 +361,7 @@ function QSB.EntityScriptingValue:IsOnScreenInformationActive()
     assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 or Logic.IsSettler(EntityID) == 0 then
+    if EntityID == 0 or Logic.IsSettler(EntityID) > 0 then
         return false;
     end
     return self:GetValueAsInteger(6) > 0;
@@ -457,7 +457,7 @@ end
 ---
 -- Gibt die Scripting Value des Entity als Ganzzahl zurück.
 --
--- @param[type=number] _index Index im RAM
+-- @param[type=number] _index  Index im RAM
 -- @return[type=number] Ganzzahl
 -- @within QSB.EntityScriptingValue
 -- @local
@@ -475,7 +475,7 @@ end
 ---
 -- Gibt die Scripting Value des Entity als Dezimalzahl zurück.
 --
--- @param[type=number] _index Index im RAM
+-- @param[type=number] _index  Index im RAM
 -- @return[type=number] Dezimalzahl
 -- @within QSB.EntityScriptingValue
 -- @local
@@ -552,7 +552,7 @@ end
 -- Stellt eine Zahl als eine Folge von Bits in einer Table dar.
 --
 -- @param[type=number] num Integer
--- @param[type=table] t Table
+-- @param[type=table]  t   Table
 -- @return[type=table] Table mit Bits
 -- @within QSB.EntityScriptingValue
 -- @local

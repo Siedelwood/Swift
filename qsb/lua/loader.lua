@@ -177,7 +177,7 @@ SymfoniaLoader = {
 -- _Path ist der absolute Pfad, wo die QSB auf dem Rechner liegt oder der
 -- relative Pfad in der Map, in den die Quellen gepackt wurden.
 --
--- @param _Path Root-Verzeichnis
+-- @param[type=string] _Path Root-Verzeichnis
 -- @within SymfoniaLoader
 -- @usage SymfoniaLoader:Load("C:/My/Path/To/Symfonia")
 --
@@ -223,8 +223,8 @@ end
 
 ---
 -- Läd den Inhalt der Datei und gibt ihn als String zurück.
--- @param _Path Pfad zur Datei
--- @return Dateiinhalt als String
+-- @param[type=string] _Path Pfad zur Datei
+-- @return[type=string] Dateiinhalt als String
 -- @within SymfoniaLoader
 -- @local
 --
@@ -240,7 +240,7 @@ end
 ---
 -- Läd alle Inhalte der QSB und gibt sie als Table zurück. Jeder Index des
 -- Tables enthält den Inhalt einer Quelldatei.
--- @return Table mit Inhalten
+-- @return[type=table] Table aller gelesenen Dateien
 -- @within SymfoniaLoader
 -- @local
 --
@@ -296,10 +296,10 @@ function SymfoniaLoader:ConcatSources(_External)
 end
 
 ---
--- Checks, if the dependency is loaded.
--- @param _Name Name of dependency
--- @param _i    Current addon index
--- @return boolean: Will be loaded
+-- Prüft, ob alle Abhängigkeiten des Addons geladen werden.
+-- @param[type=string] _Name Name der Abhängigkeit
+-- @param[type=number] _i    Index des Addons
+-- @return[type=boolean] Abhängigkeiten sind erfüllt
 -- @within SymfoniaLoader
 -- @local
 --
@@ -319,7 +319,7 @@ end
 
 ---
 -- Fügt die Quelldateien von Symfonia zu einer QSB zusammen.
--- @param _Externals [table] Liste der externen Bundles
+-- @param[type=table] _Externals Liste der externen Bundles
 -- @within SymfoniaLoader
 -- @local
 --
