@@ -126,7 +126,7 @@ function API.SetBuildingOnFire(_Entity, _Strength)
         return;
     end
     _Strength = (_Strength < 0 and 0) or _Strength;
-    Logic.DEBUG_SetBuildingOnFile(GetID(_Entity), _Strength);
+    Logic.DEBUG_SetBuildingOnFire(GetID(_Entity), _Strength);
 end
 SetOnFire = API.SetBuildingOnFire;
 

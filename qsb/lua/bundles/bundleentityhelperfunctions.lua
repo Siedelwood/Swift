@@ -80,7 +80,7 @@ GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 -- @param              _Entity       Rohstoffvorkommen (Skriptname oder ID)
 -- @param[type=number] _StartAmount  Menge an Rohstoffen
 -- @param[type=number] _RefillAmount Minimale Nachfüllmenge (> 0)
--- @within User Spase
+-- @within Anwenderfunktionen
 --
 -- @usage
 -- API.SetResourceAmount("mine1", 250, 150);
