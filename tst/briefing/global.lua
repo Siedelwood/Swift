@@ -1,60 +1,82 @@
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Mission_InitPlayers
-----------------------------------
--- Diese Funktion kann benutzt werden um für die AI
--- Vereinbarungen zu treffen.
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function Mission_InitPlayers()
+-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- # Global Script - <MAPNAME>                                              # --
+-- # © <AUTHOR>                                                             # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+-- Pfad an das Verzeichnis anpassen, in dem die Skripte liegen.
+-- g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
+g_ContentPath = "E:/Repositories/symfonia/tst/briefing/";
+Script.Load(g_ContentPath.. "internmapscript.lua");
+
+-- Triggere deine Quests auf "MissionStartQuest".
+-- Rufe GlobalMissionScript_SetIntro auf um eine Intro zu setzen.
+-- Rufe GlobalMissionScript_SetCredits auf um die Credits einzustellen.
+-- "MissionStartQuest" wird auf Intro und/oder Credits warten.
+
+
+GlobalMissionScript_SetIntro("BriefingTest");
+
+GlobalMissionScript_SetCredits(
+    "A little Testmap",
+    "totalwarANGEL",
+    "Bockwurst, Schweinshaxe, Hackbraten",
+    "meredith"
+)
+
+-- In dieser Funktion können Spieler initialisiert werden.
+function InitPlayers()
 end
 
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Mission_SetStartingMonth
-----------------------------------
--- Diese Funktion setzt einzig den Startmonat.
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function Mission_SetStartingMonth()
+-- Diese Funktion setzt den Startmonat.
+function SetStartingMonth()
     Logic.SetMonthOffset(3);
 end
 
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Mission_InitMerchants
-----------------------------------
--- Hier kannst du Hдndler und Handelsposten vereinbaren.
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function Mission_InitMerchants()
+-- In dieser Funktion kannst Du zusätzliche Skripte laden.
+function InitMissionScript()
 end
 
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Mission_FirstMapAction
-----------------------------------
--- Die FirstMapAction wird am Spielstart aufgerufen.
--- Starte von hier aus deine Funktionen.
---~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function Mission_FirstMapAction()
-    local Path = "E:/Repositories/symfonia/qsb/lua";
-    Script.Load(Path .. "/loader.lua");
-    SymfoniaLoader:Load(Path);
+-- Diese Funktion wird aufgerufen, sobald die Map bereit ist.
+function FirstMapAction()
+    API.ActivateDebugMode(true, false, true, true);
 
-    if Framework.IsNetworkGame() ~= true then
-        Startup_Player()
-        Startup_StartGoods()
-        Startup_Diplomacy()
-    end
-    
-    API.ActivateDebugMode(true, true, true, true)
-    
     AddGood(Goods.G_Gold,   500, 1)
     AddGood(Goods.G_Wood,    30, 1)
     AddGood(Goods.G_Grain,   25, 1)
+
+    API.CreateQuest {
+        Name = "TestQuest",
+        EndMessage = true,
+
+        Goal_InstantSuccess(),
+        Trigger_OnQuestSuccess("MissionStartQuest"),
+    }
+end
+
+function BriefingTest()
+    local briefing = {
+        barStyle = "big",
+        restoreCamera = true,
+        restoreGameSpeed = false,
+        skipPerPage = true,
+        hideFoW = true,
+        showSky = true,
+        hideBorderPins = true
+    };
+    local AP, ASP, ASMC = API.AddPages(briefing)
     
-    -----
+    --[[1]]  ASP("meredith", "Lorem ipsum (1)", "dolor sit amet, consetetur"..
+        " sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore"..
+        " et dolore magna aliquyam erat, sed diam voluptua. At vero eos et"..
+        " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
+        " gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+         false)
     
-    -- StartSimpleJobEx(function()
-    --     if Logic.GetTime() >= 10 then
-    --         BriefingTest()
-    --         return true;
-    --     end
-    -- end)
+    briefing.finished = function()
+    end
+    return API.StartBriefing(briefing)
 end
 
 function BriefingSelectionTest()
@@ -90,7 +112,7 @@ function BriefingSelectionTest()
     return API.StartBriefing(briefing);
 end
 
-function BriefingTest()
+function BriefingMCTest()
     local briefing = {
         barStyle = "big",
         restoreCamera = true,

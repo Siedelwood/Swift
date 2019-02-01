@@ -26,8 +26,8 @@ QSB = QSB or {};
 --
 -- <p><b>Alias:</b> UndiscoverTerritory</p>
 --
--- @param _PlayerID [number] Spieler-ID
--- @param _TerritoryID [number] Territorium-ID
+-- @param[type=number] _PlayerID    Spieler-ID
+-- @param[type=number] _TerritoryID Territorium-ID
 -- @within Anwenderfunktionen
 --
 function API.UndiscoverTerritory(_PlayerID, _TerritoryID)
@@ -45,8 +45,8 @@ UndiscoverTerritory = API.UndiscoverTerritory;
 --
 -- <p><b>Alias:</b> UndiscoverTerritories</p>
 --
--- @param _PlayerID [number] Spieler-ID
--- @param _TargetPlayerID [number] Zielpartei
+-- @param[type=number] _PlayerID    Spieler-ID
+-- @param[type=number] _TargetPlayerID Anderer Spieler
 -- @within Anwenderfunktionen
 --
 function API.UndiscoverTerritories(_PlayerID, _TargetPlayerID)
@@ -64,8 +64,8 @@ UndiscoverTerritories = API.UndiscoverTerritories;
 --
 -- <p><b>Alias:</b> SetPlayerEarnings</p>
 --
--- @param _PlayerID [number] Partei oder nil für alle
--- @param _Earnings [number] Einnahmen [0 | 100]
+-- @param[type=number] _PlayerID Partei oder nil für alle
+-- @param[type=number] _Earnings Einnahmen [0 | 100]
 -- @within Anwenderfunktionen
 --
 function API.SetEarningsOfPlayerCity(_PlayerID, _Earnings)
@@ -92,9 +92,9 @@ SetPlayerEarnings = API.SetEarningsOfPlayerCity;
 --
 -- <p><b>Alias:</b> SetNeedSatisfactionLevel</p>
 --
--- @param _Need [number] Bedürfnis
--- @param _State [number] Erfüllung des Bedürfnisses
--- @param _PlayerID [number] Partei oder -1 für alle
+-- @param[type=number] _Need Bedürfnis
+-- @param[type=number] _State Erfüllung des Bedürfnisses
+-- @param[type=number] _PlayerID Partei oder -1 für alle
 -- @within Anwenderfunktionen
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
@@ -119,8 +119,8 @@ SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 --
 -- <p><b>Alias:</b> UnlockTitleForPlayer</p>
 --
--- @param _PlayerID [number] Zielpartei
--- @param _KnightTitle [number] Titel zum Entsperren
+-- @param[type=number] _PlayerID Zielpartei
+-- @param[type=number] _KnightTitle Titel zum Entsperren
 -- @within Anwenderfunktionen
 --
 function API.UnlockTitleForPlayer(_PlayerID, _KnightTitle)
@@ -138,7 +138,7 @@ UnlockTitleForPlayer = API.UnlockTitleForPlayer;
 --
 -- <p><b>Alias:</b> StartNormalFestival</p>
 --
--- @param _PlayerID [number] Spieler
+-- @param[type=number] _PlayerID Spieler
 -- @within Anwenderfunktionen
 --
 function API.StartNormalFestival(_PlayerID)
@@ -157,7 +157,7 @@ StartNormalFestival = API.StartNormalFestival;
 --
 -- <p><b>Alias:</b> StartCityUpgradeFestival</p>
 --
--- @param _PlayerID [number] Spieler
+-- @param[type=number] _PlayerID Spieler
 -- @within Anwenderfunktionen
 --
 function API.StartCityUpgradeFestival(_PlayerID)
@@ -175,7 +175,7 @@ StartCityUpgradeFestival = API.StartCityUpgradeFestival;
 --
 -- <p><b>Alias:</b> ForbidFestival</p>
 --
--- @param _PlayerID [number] Spieler
+-- @param[type=number] _PlayerID Spieler
 -- @within Anwenderfunktionen
 --
 function API.ForbidFestival(_PlayerID)
@@ -201,7 +201,7 @@ ForbidFestival = API.ForbidFestival;
 --
 -- <p><b>Alias:</b> AllowFestival</p>
 --
--- @param _PlayerID [number] Spieler
+-- @param[type=number] _PlayerID Spieler
 -- @within Anwenderfunktionen
 --
 function API.AllowFestival(_PlayerID)
@@ -229,10 +229,10 @@ AllowFestival = API.AllowFestival;
 --
 -- <p><b>Alias:</b> PlayerSetPlayerID</p>
 --
--- @param _OldID [number] Alte ID des menschlichen Spielers
--- @param _NewID [number] Neue ID des menschlichen Spielers
--- @param _NewName [string] Name in der Statistik
--- @param _RetainKnight [boolean] Ritter mitnehmen
+-- @param[type=number]  _OldID Alte ID des menschlichen Spielers
+-- @param[type=number]  _NewID Neue ID des menschlichen Spielers
+-- @param[type=string]  _NewName Name in der Statistik
+-- @param[type=boolean] _RetainKnight Ritter mitnehmen
 -- @within Anwenderfunktionen
 --
 function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
@@ -250,7 +250,7 @@ PlayerSetPlayerID = API.SetControllingPlayer;
 --
 -- <p><b>Alias:</b> PlayerGetPlayerID</p>
 --
--- @return [number] PlayerID
+-- @return[type=number] PlayerID
 -- @within Anwenderfunktionen
 --
 function API.GetControllingPlayer()
@@ -318,8 +318,8 @@ end
 -- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
 -- der entdeckten Territorien.
 --
--- @param _PlayerID [number] Spieler-ID
--- @param _TerritoryID [number] Territorium-ID
+-- @param[type=number] _PlayerID    Spieler-ID
+-- @param[type=number] _TerritoryID Territorium-ID
 -- @within Internal
 -- @local
 --
@@ -339,8 +339,8 @@ end
 -- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
 -- Territorien. Als Nebeneffekt gild die Partei als unentdeckt-
 --
--- @param _PlayerID [number] Spieler-ID
--- @param _TargetPlayerID [number] Zielpartei
+-- @param[type=number] _PlayerID    Spieler-ID
+-- @param[type=number] _TargetPlayerID Anderer Spieler
 -- @within Internal
 -- @local
 --
@@ -365,8 +365,8 @@ end
 --
 -- <b>Alias:</b> SetPlayerEarnings
 --
--- @param _PlayerID [number] Partei oder nil für alle
--- @param _Earnings [number] Einnahmen [0 | 100]
+-- @param[type=number] _PlayerID Partei oder nil für alle
+-- @param[type=number] _Earnings Einnahmen [0 | 100]
 -- @within Internal
 -- @local
 --
@@ -388,9 +388,9 @@ end
 -- des angegebenen Spielers. Der Befriedigungsstatus ist eine Zahl
 -- zwischen 0.0 und 1.0.
 --
--- @param _Need [number] Bedürfnis
--- @param _State [number] Erfüllung des Bedürfnisses
--- @param _PlayerID [number] Partei oder -1 für alle
+-- @param[type=number] _Need Bedürfnis
+-- @param[type=number] _State Erfüllung des Bedürfnisses
+-- @param[type=number] _PlayerID Partei oder -1 für alle
 -- @within Internal
 -- @local
 --
@@ -416,8 +416,8 @@ end
 ---
 -- Entsperrt einen gesperrten Titel für den Spieler.
 --
--- @param _PlayerID [number] Zielpartei
--- @param _KnightTitle [number] Titel zum Entsperren
+-- @param[type=number] _PlayerID Zielpartei
+-- @param[type=number] _KnightTitle Titel zum Entsperren
 -- @within Internal
 -- @local
 --
@@ -443,9 +443,9 @@ end
 ---
 -- Erlaubt oder verbietet ein Fest für den angegebenen Spieler.
 --
--- @param _PlayerID [number] ID des Spielers
--- @param _Index    Index des Fest
--- @param _Flag [boolean] Erlauben/verbieten
+-- @param[type=number]  _PlayerID ID des Spielers
+-- @param[type=number]  _Index    Index des Fest
+-- @param[type=boolean] _Flag     Erlauben/verbieten
 -- @within Internal
 -- @local
 --
@@ -464,10 +464,10 @@ end
 -- einen Primärritter haben. Diese Funktion kann nicht im Multiplayer
 -- Mode verwendet werden.
 --
--- @param _oldPlayerID [number]Alte ID des menschlichen Spielers
--- @param _newPlayerID [number]Neue ID des menschlichen Spielers
--- @param _newNameForStatistics [string]Name in der Statistik
--- @param _retainPrimaryKnight [boolean]Ritter mitnehmen
+-- @param[type=number] _oldPlayerID Alte ID des menschlichen Spielers
+-- @param[type=number] _newPlayerID Neue ID des menschlichen Spielers
+-- @param[type=string] _newNameForStatistics Name in der Statistik
+-- @param[type=boolean] _retainPrimaryKnight Ritter mitnehmen
 -- @within Internal
 -- @local
 --
@@ -544,7 +544,7 @@ end
 -- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
 -- definierte Spieler wird als kontrollierender Spieler angenommen.
 --
--- @return [number] PlayerID
+-- @return[type=number] PlayerID
 -- @within Internal
 -- @local
 --
@@ -615,7 +615,7 @@ function BundlePlayerHelperFunctions.Local:InitForbidFestival()
 end
 
 ---
--- 
+-- Überschreibt das Quest Icon für Spieler, die keinem Typen zugeordnet sind.
 --
 -- @within Internal
 -- @local
@@ -653,7 +653,7 @@ function BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon()
 end
 
 ---
--- 
+-- Überschreibt das Quest log Icon für Spieler, die keinem Typen zugeordnet sind.
 --
 -- @within Internal
 -- @local

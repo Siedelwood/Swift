@@ -7,7 +7,9 @@
 ---
 -- Mit diesem Bundle können Dialogfenster ernstellt werden. Über Dialogfenster
 -- kann der Spieler informiert werden. Er kann aber auch aufgefordert werden
--- eine Antwort auf eine Frage zu geben.
+-- eine Antwort auf eine Frage zu geben. Sollte bereits ein Dialog zu sehen
+-- sein, werden neue Dialoge einer Warteschlange hinzugefügt und nacheinander
+-- angezeigt.
 --
 -- Zudem bietet das Bundle ein Textfenster an, welches eine nicht limitierte
 -- Menge an Text anzeigen kann. Erreicht der Text eine entsprechende Menge,
@@ -41,9 +43,9 @@ QSB = QSB or {};
 --
 -- <b>Alias</b>: UserOpenDialog
 --
--- @param _Title  [string] Titel des Dialog
--- @param _Text   [string] Text des Dialog
--- @param _Action [function] Callback-Funktion
+-- @param[type=string]   _Title  Titel des Dialog
+-- @param[type=string]   _Text   Text des Dialog
+-- @param[type=function] _Action Callback-Funktion
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -76,10 +78,10 @@ UserOpenDialog = API.DialogInfoBox;
 --
 -- <b>Alias</b>: UserOpenRequesterDialog
 --
--- @param _Title    [string] Titel des Dialog
--- @param _Text     [string] Text des Dialog
--- @param _Action   [function] Callback-Funktion
--- @param _OkCancel [boolean] Okay/Abbrechen statt Ja/Nein
+-- @param[type=string]   _Title    Titel des Dialog
+-- @param[type=string]   _Text     Text des Dialog
+-- @param[type=function] _Action   Callback-Funktion
+-- @param[type=boolean]  _OkCancel Okay/Abbrechen statt Ja/Nein
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -114,10 +116,10 @@ UserOpenRequesterDialog = API.DialogRequestBox;
 --
 -- <b>Alias</b>: UserOpenSelectionDialog
 --
--- @param _Title  [string] Titel des Dialog
--- @param _Text   [string] Text des Dialog
--- @param _Action [function] Callback-Funktion
--- @param _List   [table] Liste der Optionen
+-- @param[type=string]   _Title  Titel des Dialog
+-- @param[type=string]   _Text   Text des Dialog
+-- @param[type=function] _Action Callback-Funktion
+-- @param[type=table]    _List   Liste der Optionen
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -151,8 +153,8 @@ UserOpenSelectionDialog = API.DialogSelectBox;
 -- Die Länge des Textes ist nicht beschränkt. Überschreitet der Text die
 -- Größe des Fensters, wird automatisch eine Bildlaufleiste eingeblendet.
 --
--- @param _Caption [string] Titel des Fensters
--- @param _Content [string] Inhalt des Fensters
+-- @param[type=string] _Caption Titel des Fenster
+-- @param[type=string] _content Inhalt des Fenster
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -258,7 +260,7 @@ end
 ---
 -- Führt das Callback eines Ja-Nein-Dialogs aus.
 --
--- @param _yes [boolean] Gegebene Antwort
+-- @param[type=boolean] _yes Gegebene Antwort
 -- @within Internal
 -- @local
 --
@@ -305,8 +307,8 @@ end
 ---
 -- Fügt der Dialogwarteschlange einen neuen Dialog hinten an.
 --
--- @param _Methode [string] Dialogfunktion als String
--- @param _Args    [table] Argumente als Table
+-- @param[type=string] _Methode Dialogfunktion als String
+-- @param[type=table] _Args    Argumente als Table
 -- @within Internal
 -- @local
 --
@@ -319,9 +321,9 @@ end
 -- Öffnet einen Info-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- @param _Title  [string] Titel des Dialog
--- @param _Text   [string] Text des Dialog
--- @param _Action [function] Callback-Funktion
+-- @param[type=string]   _Title  Titel des Dialog
+-- @param[type=string]   _Text   Text des Dialog
+-- @param[type=function] _Action Callback-Funktion
 -- @within Internal
 -- @local
 --
@@ -379,10 +381,10 @@ end
 -- Öffnet einen Ja-Nein-Dialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- @param _Title    [string] Titel des Dialog
--- @param _Text     [string] Text des Dialog
--- @param _Action   [function] Callback-Funktion
--- @param _OkCancel [boolean] Okay/Abbrechen statt Ja/Nein
+-- @param[type=string]   _Title    Titel des Dialog
+-- @param[type=string]   _Text     Text des Dialog
+-- @param[type=function] _Action   Callback-Funktion
+-- @param[type=boolean]  _OkCancel Okay/Abbrechen statt Ja/Nein
 -- @within Internal
 -- @local
 --
@@ -427,10 +429,10 @@ end
 -- Öffnet einen Auswahldialog. Sollte bereits ein Dialog zu sehen sein, wird
 -- der Dialog der Dialogwarteschlange hinzugefügt.
 --
--- @param _Title  [string] Titel des Dialog
--- @param _Text   [string] Text des Dialog
--- @param _Action [function] Callback-Funktion
--- @param _List   [table] Liste der Optionen
+-- @param[type=string]   _Title  Titel des Dialog
+-- @param[type=string]   _Text   Text des Dialog
+-- @param[type=function] _Action Callback-Funktion
+-- @param[type=table]    _List   Liste der Optionen
 -- @within Internal
 -- @local
 --
@@ -554,8 +556,8 @@ end
 -- </tr>
 -- </table>
 --
--- @param ... [mixed..] Parameterliste
--- @return [table] Instanz des konfigurierten Fensters
+-- @param ... Parameterliste
+-- @return[type=table] Instanz des konfigurierten Fensters
 -- @within TextWindow
 -- @local
 --
@@ -580,8 +582,8 @@ end
 --
 -- <p><b>Alias</b>: TextWindow:AddParamater</p>
 --
--- @param _Key   [string] Schlüssel
--- @param _Value [mixed] Wert
+-- @param[type=string] _Key   Schlüssel
+-- @param              _Value Wert
 -- @return self
 -- @within TextWindow
 -- @local
@@ -601,7 +603,7 @@ end
 --
 -- <p><b>Alias</b>: TextWindow:SetCaption</p>
 --
--- @param _Text [string] Titel des Textfenster
+-- @param[type=string] _Text Titel des Textfenster
 -- @return self
 -- @within TextWindow
 -- @local
@@ -625,7 +627,7 @@ end
 --
 -- <p><b>Alias</b>: TextWindow:SetContent</p>
 --
--- @param _Text [string] Inhalt des Textfenster
+-- @param[type=string] _Text Inhalt des Textfenster
 -- @return self
 -- @within TextWindow
 -- @local
@@ -650,7 +652,7 @@ end
 --
 -- <p><b>Alias</b>: TextWindow:SetAction</p>
 --
--- @param _Function [function] Close Callback
+-- @param[type=function] _Function Close Callback
 -- @return self
 -- @within TextWindow
 -- @local
@@ -676,8 +678,8 @@ end
 --
 -- <p><b>Alias</b>: TextWindow:SetButton</p>
 --
--- @param _Text     [string] Beschriftung des Buttons
--- @param _Callback [function] Aktion des Buttons
+-- @param[type=string]   _Text     Beschriftung des Buttons
+-- @param[type=function] _Callback Aktion des Buttons
 -- @return self
 -- @within TextWindow
 -- @local

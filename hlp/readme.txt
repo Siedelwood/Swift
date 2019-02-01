@@ -1,3 +1,11 @@
+Lua-Skripte
+
+1. Wechsele in den Ordner src.
+2. Kopiere eine der QSB-Dateien.
+3. Kopiere die entsprechenden Vorlagen.
+   Assistent: Kopiere die Vorlagen aus dem Ordner beginner.
+   Skript: Kopiere die Vorlagen aus dem Ordner advanced.
+
 Beginers Guides
 
 1. Wechsele in den Ordner guide

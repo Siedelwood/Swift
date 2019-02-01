@@ -12,7 +12,7 @@
 -- die Eingabe von Befehlen zu steuern, einzelne einfache Lua-Kommandos im
 -- Spiel auszuführen und sogar komplette Skripte zu laden.
 --
--- <p><a href="API.ActivateDebugMode">Debug starten</a></p>
+-- <p><a href="#API.ActivateDebugMode">Debug starten</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -383,10 +383,10 @@ AddOnQuestDebug = {
 -- </tr>
 -- </table>
 --
--- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
--- @param _TraceQuests [boolean] Aktiviert Questverfolgung
--- @param _DevelopingCheats [boolean] Aktiviert Cheats und Konsole
--- @param _DevelopingShell [boolean] Aktiviert Cheats und Konsole
+-- @param[type=boolean] _CheckAtRun Prüfe Quests zur Laufzeit
+-- @param[type=boolean] _TraceQuests Aktiviert Questverfolgung
+-- @param[type=boolean] _DevelopingCheats Aktiviert Cheats und Konsole
+-- @param[type=boolean] _DevelopingShell Aktiviert Cheats und Konsole
 -- @see Reward_DEBUG
 -- @within Anwenderfunktionen
 --
@@ -406,10 +406,10 @@ ActivateDebugMode = API.ActivateDebugMode;
 ---
 -- Aktiviert den Debug.
 --
--- @param _CheckAtRun [boolean] Prüfe Quests zur Laufzeit
--- @param _TraceQuests [boolean] Aktiviert Questverfolgung
--- @param _DevelopingCheats [boolean] Aktiviert Cheats
--- @param _DevelopingShell [boolean] Aktiviert Konsole
+-- @param[type=boolean] _CheckAtRun Prüfe Quests zur Laufzeit
+-- @param[type=boolean] _TraceQuests Aktiviert Questverfolgung
+-- @param[type=boolean] _DevelopingCheats Aktiviert Cheats und Konsole
+-- @param[type=boolean] _DevelopingShell Aktiviert Cheats und Konsole
 -- @see API.ActivateDebugMode
 --
 -- @within Reward
@@ -427,8 +427,8 @@ b_Reward_DEBUG = {
     Parameter = {
         { ParameterType.Custom,     en = "Check quest while runtime", de = "Quests zur Laufzeit prüfen" },
         { ParameterType.Custom,     en = "Use quest trace", de = "Questverfolgung" },
-        { ParameterType.Custom,     en = "Activate developing cheats", de = "Testmodus aktivieren" },
-        { ParameterType.Custom,     en = "Activate developing shell", de = "Testmodus aktivieren" },
+        { ParameterType.Custom,     en = "Activate developing cheats", de = "Cheats aktivieren" },
+        { ParameterType.Custom,     en = "Activate developing shell", de = "Eingabe aktivieren" },
     },
 }
 
@@ -958,13 +958,32 @@ function AddOnQuestDebug.Global.ShowVersion()
 end
 
 ---
+-- Sucht nach allen Quests, auf die den angegebenen Namen enthalten und gibt
+-- die Namen der gefundenen Quests zurück.
+--
+-- @within Internal
+-- @local
+--
+function AddOnQuestDebug.Global.FindQuestNames(_Pattern, _ExactName)
+    local FoundQuests = FindQuestsByName(_Pattern, _ExactName);
+    if #FoundQuests == 0 then
+        return {};
+    end
+    local NamesOfFoundQuests = {};
+    for i= 1, #FoundQuests, 1 do
+        table.insert(NamesOfFoundQuests, FoundQuests[i].Identifier);
+    end
+    return NamesOfFoundQuests;
+end
+
+---
 -- Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.
 --
 -- @within Internal
 -- @local
 --
 function AddOnQuestDebug.Global.QuestSuccess(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -978,7 +997,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.QuestFailure(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -992,7 +1011,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.QuestInterrupt(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -1006,7 +1025,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.QuestTrigger(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end
@@ -1020,7 +1039,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.QuestReset(_QuestName, _ExactName)
-    local FoundQuests = FindQuestsByName(_QuestName[2], _ExactName);
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
     if #FoundQuests == 0 then
         return;
     end

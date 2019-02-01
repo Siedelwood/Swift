@@ -6,7 +6,7 @@
 
 ---
 -- Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie
--- zu bewegen.
+-- von A nach B zu bewegen.
 --
 -- Das wichtigste Auf einen Blick:
 -- <ul>
@@ -33,12 +33,13 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
+---
 -- Setzt ein Entity oder ein Battalion an eine neue Position.
 --
 -- <p><b>Alias:</b> SetPosition</p>
 --
--- @param _Entity   [string|number] Entity zum versetzen
--- @param _Position [string|number|table] Neue Position
+-- @param _Entity   Entity zum versetzen (Skriptname oder ID)
+-- @param _Position Neue Position (Skriptname, ID oder Position)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -69,18 +70,20 @@ end
 SetPosition = API.SetPosition;
 
 ---
--- Das Entity wird relativ zu einem Winkel zum Ziel bewegt.
+-- Das Entity wird relativ zu einem Winkel zum Ziel bewegt. Nachdem das Entity
+-- angekommen ist, wird es zum Ziel ausgerichtet.
 --
 -- <b>Hinweis</b>: Beim Alias MoveEntityToPositionToAnotherOne sind die
 -- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 --
 -- <p><b>Alias:</b> MoveEntityToPositionToAnotherOne</p>
+-- <p><b>Alias:</b> MoveEx</br></p>
 --
--- @param _Entity       [string|number] Zu bewegendes Entity
--- @param _Position     [string|number] Ziel
--- @param _Distance     [number] Entfernung zum Ziel
--- @param _Angle        [number] Winkel
--- @param _moveAsEntity [boolean] Blocking ignorieren
+-- @param               _Entity       Entity zum versetzen (Skriptname oder ID)
+-- @param               _Position     Neue Position (Skriptname oder ID)
+-- @param[type=number]  _Distance     Entfernung zum Ziel
+-- @param[type=number]  _Angle        Winkel
+-- @param[type=boolean] _moveAsEntity Blocking ignorieren
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -101,26 +104,25 @@ function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity
         API.Fatal("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
+    return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
 end
 MoveEntityToPositionToAnotherOne = function(_Entity, _Distance, _Position, _Angle, _moveAsEntity)
     API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
 end
+MoveEx = API.MoveToPosition;
 
 ---
--- Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
--- anschließend an.
+-- Das Entity wird zum Ziel bewegt und schaut es anschließend an.
 --
 -- <b>Hinweis</b>: Beim Alias MoveEntityFaceToFaceToAnotherOne sind die
 -- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 --
--- <p><b>Alias:</b> MoveEx</br></p>
 -- <p><b>Alias:</b> MoveEntityFaceToFaceToAnotherOne</p>
 --
--- @param _Entity       [string|number] Zu bewegendes Entity
--- @param _Position     [string|number] Ziel
--- @param _Distance     [number] Entfernung zum Ziel
--- @param _moveAsEntity [boolean] Blocking ignorieren
+-- @param               _Entity       Entity zum versetzen (Skriptname oder ID)
+-- @param               _Position     Neue Ziel (Skriptname oder ID)
+-- @param[type=number]  _Distance     Entfernung zum Ziel
+-- @param[type=boolean] _moveAsEntity Blocking ignorieren
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -141,12 +143,11 @@ function API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
         API.Fatal("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
+    return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, 0, _moveAsEntity);
 end
 MoveEntityFaceToFaceToAnotherOne = function(_Entity, _Distance, _Position, _moveAsEntity)
     API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
 end
-MoveEx = API.MoveAndLookAt;
 
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.
@@ -156,10 +157,10 @@ MoveEx = API.MoveAndLookAt;
 --
 -- <p><b>Alias:</b> PlaceEntityToPositionToAnotherOne</p>
 --
--- @param _Entity          [string|number|table] Entity das bewegt wird
--- @param _Position        [string|number|table] Position zu der bewegt wird
--- @param _Distance        [number] Entfernung
--- @param _Angle           [number] Winkel
+-- @param               _Entity   Entity zum versetzen (Skriptname oder ID)
+-- @param               _Position Neue Ziel (Skriptname oder ID)
+-- @param[type=number]  _Distance Entfernung zum Ziel
+-- @param[type=number]  _Angle    Winkel
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -188,8 +189,7 @@ PlaceEntityToPositionToAnotherOne = function(_Entity, _Distance, _Position, _Ang
 end
 
 ---
--- Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
--- das Ziel an.
+-- Das Entity wird zum Zielpunkt gesetzt und schaut das Ziel an.
 --
 -- <b>Hinweis</b>: Beim Alias PlaceEntityFaceToFaceToAnotherOne sind die
 -- Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
@@ -197,9 +197,9 @@ end
 -- <p><b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne</p>
 -- <p><b>Alias:</b> SetPositionEx<br></p>
 --
--- @param _Entity          [string|number|table] Entity das bewegt wird
--- @param _Position        [string|number|table] Position zu der bewegt wird
--- @param _Distance        [number] Entfernung
+-- @param              _Entity   Entity zum versetzen (Skriptname oder ID)
+-- @param              _Position Neue Ziel (Skriptname oder ID)
+-- @param[type=number] _Distance Entfernung
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -223,8 +223,8 @@ SetPositionEx = API.PlaceAndLookAt;
 --
 -- <p><b>Alias:</b> Attack</p>
 --
--- @param_Entity  [string|number] Angreifendes Entity
--- @param _Target [string|number] Angegriffenes Entity
+-- @param _Entity Entity zum versetzen (Skriptname oder ID)
+-- @param _Target Neue Ziel (Skriptname oder ID)
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -245,7 +245,9 @@ function API.CommandAttack(_Entity, _Target)
         API.Fatal("API.CommandAttack: Target " ..Subject.. " does not exist!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:Attack(_Entity, _Target);
+    local EntityID = GetID(_Entity);
+    local TargetID = GetID(_Target);
+    Logic.GroupAttack(EntityID, TargetID);
 end
 Attack = API.CommandAttack;
 
@@ -255,8 +257,8 @@ Attack = API.CommandAttack;
 --
 -- <p><b>Alias:</b> AttackMove</p>
 --
--- @param _Entity   [string|number] Angreifendes Entity
--- @param _Position [string] Skriptname, EntityID oder Positionstable
+-- @param              _Entity   Angreifendes Entity (Skriptname oder ID)
+-- @param[type=string] _Position Zielposition
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -277,7 +279,9 @@ function API.CommandAttackMove(_Entity, _Position)
         API.Fatal("API.CommandAttackMove: Position is invalid!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:AttackMove(_Entity, Position);
+    local EntityID = GetID(_Entity);
+    local Position = GetPosition(_Position);
+    Logic.GroupAttackMove(EntityID, Position.X, Position.Y);
 end
 AttackMove = API.CommandAttackMove;
 
@@ -286,8 +290,8 @@ AttackMove = API.CommandAttackMove;
 --
 -- <p><b>Alias:</b> Move</p>
 --
--- @param _Entity   [string|number] Bewegendes Entity
--- @param _Position [table] Positionstable
+-- @param             _Entity   Angreifendes Entity (Skriptname oder ID)
+-- @param[type=table] _Position  Positionstable
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -308,7 +312,9 @@ function API.CommandMove(_Entity, _Position)
         API.Fatal("API.CommandMove: Position is invalid!");
         return;
     end
-    return BundleEntityCommandFunctions.Global:Move(_Entity, Position);
+    local EntityID = GetID(_Entity);
+    local Position = GetPosition(_Position);
+    Logic.MoveSettler(EntityID, Position.X, Position.Y);
 end
 Move = API.CommandMove;
 
@@ -338,8 +344,8 @@ end
 
 -- Setzt ein Entity oder ein Battalion an eine neue Position.
 --
--- @param _Entity   [string|number] Entity zum versetzen
--- @param _Position [string|number|table] Neue Position
+-- @param _Entity   Entity zum versetzen (Skriptname oder ID)
+-- @param _Position Neue Position (Skriptname, ID oder Position)
 -- @within Internal
 -- @local
 --
@@ -362,11 +368,11 @@ end
 ---
 -- Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt.
 --
--- @param _Entity       [string|number] Zu bewegendes Entity
--- @param _Position     [string|number] Ziel
--- @param _Distance     [number] Entfernung zum Ziel
--- @param _Angle        [number] Winkel
--- @param _moveAsEntity [boolean] Blocking ignorieren
+-- @param               _Entity       Entity zum versetzen (Skriptname oder ID)
+-- @param               _Position     Neue Position (Skriptname oder ID)
+-- @param[type=number]  _Distance     Entfernung zum Ziel
+-- @param[type=number]  _Angle        Winkel
+-- @param[type=boolean] _moveAsEntity Blocking ignorieren
 -- @within Internal
 -- @local
 --
@@ -374,15 +380,9 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     if not IsExisting(_Entity)then
         return
     end
-    if not _Distance then
-        _Distance = 0;
-    end
     local eID = GetID(_Entity);
     local tID = GetID(_Position);
-    local pos = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance);
-    if type(_Angle) == "number" then
-        pos = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance, _Angle);
-    end
+    local pos = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance or 0, _Angle or 0);
 
     if _moveAsEntity then
         Logic.MoveEntity(eID, pos.X, pos.Y);
@@ -391,6 +391,9 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     end
 
     StartSimpleJobEx( function(_EntityID, _TargetID)
+        if not IsExisting(_EntityID) or not IsExisting(_EntityID) then
+            return true;
+        end
         if not Logic.IsEntityMoving(_EntityID) then
             LookAt(_EntityID, _TargetID);
             return true;
@@ -398,87 +401,17 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     end, eID, tID);
 end
 
----
--- Das Entity wird relativ zu einem Winkel zum Zielpunkt bewegt und schaut
--- das Ziel anschließend an.
---
--- @param _Entity       [string|number] Zu bewegendes Entity
--- @param _Position     [string|number] Ziel
--- @param _Distance     [number] Entfernung zum Ziel
--- @param _moveAsEntity [boolean] Blocking ignorieren
--- @within Internal
--- @local
---
-function BundleEntityCommandFunctions.Global:MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
-    if not IsExisting(_Entity)then
-        return
-    end
-    if not _Distance then
-        _Distance = 0;
-    end
-
-    self:MoveToPosition(_Entity, _Position, _Distance, 0, _moveAsEntity);
-    StartSimpleJobEx( function(_EntityID, _TargetID)
-        if not Logic.IsEntityMoving(_EntityID) then
-            LookAt(_EntityID, _TargetID);
-            return true;
-        end
-    end, GetID(_Entity), GetID(_Position));
-end
-
----
--- Das Entity greift ein anderes Entity an, sofern möglich.
---
--- @param_Entity  [string|number] Angreifendes Entity
--- @param _Target [string|number] Angegriffenes Entity
--- @within Internal
--- @local
---
-function BundleEntityCommandFunctions.Global:Attack(_Entity, _Target)
-    local EntityID = GetID(_Entity);
-    local TargetID = GetID(_Target);
-    Logic.GroupAttack(EntityID, TargetID);
-end
-
----
--- Ein Entity oder ein Battalion wird zu einer Position laufen und
--- alle gültigen Ziele auf dem Weg angreifen.
---
--- @param _Entity   [string|number] Angreifendes Entity
--- @param _Position [string] Skriptname, EntityID oder Positionstable
--- @within Internal
--- @local
---
-function BundleEntityCommandFunctions.Global:AttackMove(_Entity, _Position)
-    local EntityID = GetID(_Entity);
-    Logic.GroupAttackMove(EntityID, _Position.X, _Position.Y);
-end
-
----
--- Bewegt das Entity zur Zielposition.
---
--- @param _Entity   [string|number] Bewegendes Entity
--- @param _Position [table] Positionstable
--- @within Internal
--- @local
---
-function BundleEntityCommandFunctions.Global:Move(_Entity, _Position)
-    local EntityID = GetID(_Entity);
-    Logic.MoveSettler(EntityID, _Position.X, _Position.Y);
-end
-
-
 -- Shared ----------------------------------------------------------------------
 
 ---
 -- Errechnet eine Position relativ im angegebenen Winkel und Position zur
 -- Basisposition. Die Basis kann ein Entity oder eine Positionstabelle sein.
 --
--- @param _target          [string|number|table] Basisposition
--- @param _distance        [number] Entfernung
--- @param _angle           [number] Winkel
--- @param _buildingRealPos [boolean] Gebäudemitte statt Gebäudeeingang
--- @return [table] Position
+-- @param               _target          Basisposition (Skriptname, ID oder Position)
+-- @param[type=number]  _distance        Entfernung
+-- @param[type=number]  _angle           Winkel
+-- @param[type=boolean] _buildingRealPos Gebäudemitte statt Gebäudeeingang
+-- @return[type=table] Position
 -- @within Internal
 -- @local
 --

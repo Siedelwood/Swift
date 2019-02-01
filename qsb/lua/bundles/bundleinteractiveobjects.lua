@@ -141,7 +141,7 @@ QSB.IOList = {};
 --
 -- <p><b>Alias:</b> CreateObject</p>
 --
--- @param _Description [table] Beschreibung
+-- @param[type=table] _Description Beschreibung
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -171,7 +171,7 @@ CreateObject = API.CreateObject;
 --
 -- <p><b>Alias:</b> RemoveInteractiveObject</p>
 --
--- @param _EntityName [string] Skriptname des IO
+-- @param[type=string] _EntityName Skriptname des IO
 -- @within Anwenderfunktionen
 --
 function API.RemoveInteractiveObject(_EntityName)
@@ -197,8 +197,8 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 --
 -- <p><b>Alias</b>: InteractiveObjectActivate</p>
 --
--- @param _EntityName [string] Skriptname des Objektes
--- @param _State [number] State des Objektes
+-- @param[type=string] _EntityName Skriptname des Objektes
+-- @param[type=number] _State  State des Objektes
 -- @within Anwenderfunktionen
 --
 function API.InteractiveObjectActivate(_EntityName, _State)
@@ -228,7 +228,7 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 --
 -- <p><b>Alias</b>: InteractiveObjectDeactivate</p>
 --
--- @param _EntityName [string] Scriptname des Objektes
+-- @param[type=string] _EntityName Scriptname des Objektes
 -- @within Anwenderfunktionen
 --
 function API.InteractiveObjectDeactivate(_EntityName)
@@ -259,8 +259,8 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 --
 -- <p><b>Alias:</b> AddCustomIOName</p>
 --
--- @param _Key [string] Typname des Entity
--- @param _Text [string|table] Text der Beschriftung
+-- @param[type=string] _Key Typname des Entity
+-- @param              _Text Text der Beschriftung
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -306,6 +306,48 @@ BundleInteractiveObjects = {
 --
 function BundleInteractiveObjects.Global:Install()
     IO = {};
+    self:OverrideVanillaBehavior();
+end
+
+---
+-- Überschreibt Reward_ObjectInit, damit IO korrekt funktionieren.
+--
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Global:OverrideVanillaBehavior()
+    if b_Reward_ObjectInit then
+        b_Reward_ObjectInit.CustomFunction = function(_Behavior, _Quest)
+            local eID = GetID(_Behavior.ScriptName);
+            if eID == 0 then
+                return;
+            end
+            QSB.InitalizedObjekts[eID] = _Quest.Identifier;
+            
+            local RewardTable = nil;
+            if _Behavior.RewardType and _Behavior.RewardType ~= "-" then
+                RewardTable = {Goods[_Behavior.RewardType], _Behavior.RewardAmount};
+            end
+
+            local CostsTable = nil;
+            if _Behavior.FirstCostType and _Behavior.FirstCostType ~= "-" then
+                CostsTable = {Goods[_Behavior.FirstCostType], _Behavior.FirstCostAmount};
+                if _Behavior.SecondCostType and _Behavior.SecondCostType ~= "-" then
+                    table.insert(CostsTable, Goods[_Behavior.SecondCostType]);
+                    table.insert(CostsTable, _Behavior.SecondCostAmount);
+                end
+            end
+
+            API.CreateObject{
+                Name        = _Behavior.ScriptName,
+                State       = _Behavior.UsingState or 0,
+                Distance    = _Behavior.Distance,
+                Waittime    = _Behavior.Waittime,
+                Reward      = RewardTable,
+                Costs       = CostsTable,
+            };
+        end
+    end
 end
 
 ---
@@ -316,7 +358,7 @@ end
 -- Angaben hängen teilweise vom Typ der Entity, teilweise vom
 -- Verwendungszweck ab.
 --
--- @param _Description [table] Beschreibung
+-- @param[type=table] _Description Beschreibung
 -- @within Internal
 -- @local
 --
@@ -390,7 +432,7 @@ end
 -- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
 -- Konfiguration des Objektes entfernt.
 --
--- @param _EntityName [string] Skriptname des IO
+-- @param[type=string] _EntityName Skriptname des IO
 -- @within Internal
 -- @local
 --
@@ -411,8 +453,8 @@ end
 -- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
 -- Mit dieser Funktion kann ein Name angelegt werden.
 --
--- @param _Key [string] Identifier der Beschriftung
--- @param _Text [string] Text der Beschriftung
+-- @param[type=string] _Key Identifier der Beschriftung
+-- @param[type=string] _Text Text der Beschriftung
 -- @within Internal
 -- @local
 --
@@ -552,9 +594,9 @@ end
 ---
 -- Prüft, ob die Kosten für ein interaktives Objekt beglichen werden können.
 --
--- @param _PlayerID [number] Spieler, der zahlt
--- @param _Good [number] Typ der Ware
--- @param _Amount [number] Menge der Ware
+-- @param[type=number] _PlayerID Spieler, der zahlt
+-- @param[type=number] _Good Typ der Ware
+-- @param[type=number] _Amount Menge der Ware
 -- @within Internal
 -- @local
 --
@@ -569,9 +611,9 @@ end
 ---
 -- Zieht die Kosten des Objektes aus dem Lagerhaus des Spielers ab.
 --
--- @param _PlayerID [number] Spieler, der zahlt
--- @param _Good [number] Typ der Ware
--- @param _Amount [number] Menge der Ware
+-- @param[type=number] _PlayerID Spieler, der zahlt
+-- @param[type=number] _Good Typ der Ware
+-- @param[type=number] _Amount Menge der Ware
 -- @within Internal
 -- @local
 --
@@ -1009,11 +1051,11 @@ end
 ---
 -- Setzt den Kostentooltip des aktuellen Widgets.
 --
--- @param _Title [string] Titel des Tooltip
--- @param _Text [string] Text des Tooltip
--- @param _DisabledText [string] Textzusatz wenn inaktiv
--- @param _Costs [table] Kostentabelle
--- @param _InSettlement [boolean] Kosten in Siedlung suchen
+-- @param[type=string]  _Title Titel des Tooltip
+-- @param[type=string]  _Text Text des Tooltip
+-- @param[type=string]  _DisabledText (optional) Textzusatz wenn inaktiv
+-- @param[type=table]   _Costs Kostentabelle
+-- @param[type=boolean] _InSettlement Kosten in Siedlung suchen
 -- @within Internal
 -- @local
 --
@@ -1050,8 +1092,8 @@ end
 -- Ändert die Textur eines Icons des aktuellen Widget.
 -- TODO: Eigene Matrizen funktionieren nicht - Grund unbekannt.
 --
--- @param _Widget [string|number] Icon Widget
--- @param _Icon [string|table] Icon Textur
+-- @param[type=string] _Widget Icon Widget
+-- @param              _Icon Icon Textur (Dateiname oder Positionsmatrix)
 -- @within Internal
 -- @local
 --
@@ -1098,10 +1140,10 @@ Core:RegisterBundle("BundleInteractiveObjects");
 ---
 -- Der Spieler muss bis zu 4 interaktive Objekte benutzen.
 --
--- @param _ScriptName1 Erstes Objekt
--- @param _ScriptName2 (optional) Zweites Objekt
--- @param _ScriptName3 (optional) Drittes Objekt
--- @param _ScriptName4 (optional) Viertes Objekt
+-- @param[type=string] _ScriptName1 Erstes Objekt
+-- @param[type=string] _ScriptName2 (optional) Zweites Objekt
+-- @param[type=string] _ScriptName3 (optional) Drittes Objekt
+-- @param[type=string] _ScriptName4 (optional) Viertes Objekt
 --
 -- @within Goal
 --
@@ -1116,10 +1158,10 @@ b_Goal_ActivateSeveralObjects = {
         de = "Ziel: Aktiviere ein interaktives Objekt",
     },
     Parameter = {
-        { ParameterType.ScriptName, en = "Object name 1", de = "Skriptname 1" },
-        { ParameterType.ScriptName, en = "Object name 2", de = "Skriptname 2" },
-        { ParameterType.ScriptName, en = "Object name 3", de = "Skriptname 3" },
-        { ParameterType.ScriptName, en = "Object name 4", de = "Skriptname 4" },
+        { ParameterType.Default, en = "Object name 1", de = "Skriptname 1" },
+        { ParameterType.Default, en = "Object name 2", de = "Skriptname 2" },
+        { ParameterType.Default, en = "Object name 3", de = "Skriptname 3" },
+        { ParameterType.Default, en = "Object name 4", de = "Skriptname 4" },
     },
     ScriptNames = {};
 }

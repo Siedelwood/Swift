@@ -42,7 +42,7 @@ QSB = QSB or {};
 -- <li>MuteUI   - GUI-Sounds aus</li>
 -- </ul>
 --
--- @param _Description [table] Definition des Musikstück
+-- @param[type=table] _Description Definition des Musikstück
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -69,10 +69,10 @@ StartSong = API.StartMusic;
 --
 -- <p><b>Alias:</b> StartSongSimple</p>
 --
--- @param _File [string] Pfad zur Datei
--- @param _Volume [number] Lautstärke
--- @param _Length [number] Abspieldower (<= Dauer Musikstück)
--- @param _FadeOut [number] Ausblenden in Sekunden
+-- @param[type=string] _File Pfad zur Datei
+-- @param[type=number] _Volume Lautstärke
+-- @param[type=number] _Length Abspieldauer (<= Dauer Musikstück)
+-- @param[type=number] _FadeOut Ausblenden in Sekunden
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -106,7 +106,7 @@ StartSongSimple = API.StartMusicSimple;
 -- Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
 -- sich die Playlist endlos wiederholt.
 --
--- @param _Playlist [table] Definition der Playlist
+-- @param[type=table] _Playlist Definition der Playlist
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -146,7 +146,7 @@ StartPlaylist = API.StartPlaylist;
 --
 -- <p><b>Alias:</b> StartPlaylistTitle</p>
 --
--- @param _Title [number] Index des Titels
+-- @param[type=number] _Title Index des Titels
 -- @within Anwenderfunktionen
 --
 function API.StartPlaylistTitle(_Title)
@@ -225,7 +225,7 @@ end
 ---
 -- Startet ein Musikstück als Stimme.
 --
--- @param _Description [table] Beschreibung des Musikstücks
+-- @param[type=table] _Description Beschreibung des Musikstücks
 -- @within Internal
 -- @local
 --
@@ -264,7 +264,7 @@ end
 ---
 -- Spielt eine Playlist ab.
 --
--- @param _Playlist [table] Playlist
+-- @param[type=table] _Playlist Playlist
 -- @within Internal
 -- @local
 --
@@ -281,7 +281,7 @@ end
 -- angegebenen Titel. Es muss eine Playlist existieren! Nachdem der
 -- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
 --
--- @param _Title [number] Index des Titels
+-- @param[type=number] _Title Index des Titels
 -- @within Internal
 -- @local
 --
@@ -400,10 +400,10 @@ end
 ---
 -- Speichert die Soundeinstellungen.
 --
--- @param _Volume [number] Lautstärke
--- @param _Song [string] Pfad zum Titel
--- @param _MuteAtmo [boolean] Atmosphäre stumm schalten
--- @param _MuteUI [boolean] UI stumm schalten
+-- @param[type=number]  _Volume Lautstärke
+-- @param[type=string]  _Song Pfad zum Titel
+-- @param[type=boolean] _MuteAtmo Atmosphäre stumm schalten
+-- @param[type=boolean] _MuteUI UI stumm schalten
 -- @within Internal
 -- @local
 --
@@ -435,8 +435,8 @@ end
 ---
 -- Stellt die Soundeinstellungen wieder her.
 --
--- @param _File [string] Pfad zur Datei
--- @param _QueueLength [number] Länge der Warteschlange
+-- @param[type=string] _File Pfad zur Datei
+-- @param[type=number] _QueueLength Länge der Warteschlange
 -- @within Internal
 -- @local
 --

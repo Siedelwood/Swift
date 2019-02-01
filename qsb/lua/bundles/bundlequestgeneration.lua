@@ -54,9 +54,9 @@ QSB.GeneratedQuestDialogs = {};
 --
 -- <p><b>Alias:</b> AddQuest</p>
 --
--- @param _Data [table] Questdefinition
--- @return [string] Name des Quests
--- @return [number] Gesamtzahl Quests
+-- @param[type=table] _Data Questdefinition
+-- @return[type=string] Name des Quests
+-- @return[type=number] Gesamtzahl Quests
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -82,8 +82,7 @@ AddQuest = API.CreateQuest;
 ---
 -- Erzeugt eine Nachricht im Questfenster.
 --
--- Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
--- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+-- Der Quest wird immer nach Ablauf der Wartezeit nach
 -- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
 -- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
 -- des Quests ausgeführt wird.
@@ -93,13 +92,13 @@ AddQuest = API.CreateQuest;
 --
 -- <b>Alias</b>: QuestMessage
 --
--- @param _Text       [string] Anzeigetext der Nachricht
--- @param _Sender     [number] Sender der Nachricht
--- @param _Receiver   [number] Receiver der Nachricht
--- @param _AncestorWt [number] Wartezeit
--- @param _Callback   [function] Callback
--- @param _Ancestor   [string] Vorgänger-Quest
--- @return [string] QuestName
+-- @param[type=string]   _Text        Anzeigetext der Nachricht
+-- @param[type=number]   _Sender      Sender der Nachricht
+-- @param[type=number]   _Receiver    Receiver der Nachricht
+-- @param[type=number]   _AncestorWt  Wartezeit
+-- @param[type=function] _Callback    Callback
+-- @param[type=string]   _Ancestor    Vorgänger-Quest
+-- @return[type=string] QuestName
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -118,27 +117,31 @@ QuestMessage = API.CreateQuestMessage;
 -- Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
 -- einander angezeigt werden.
 --
--- Der Vorgänger-Quest und die Wartezeit müssen als Felder gesondert
--- angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
--- sie nicht angegeben sein. Es können Einträge von rechts nach links
--- weggelassen werden.
+-- Dabei sind die eingestellten Wartezeiten in Echtzeit gemessen. Somit ist es
+-- egal, wie hoch die Spielgeschwindigkeit ist. Die Dialoge warten alle
+-- automatisch 12 Sekunden, wenn nichts anderes eingestellt wird.
 --
--- Diese Funktion ist geeignet um Dialoge zu konfigurieren!
+-- Ein Dialog kann als Nachfolge auf einen Quest oder einen anderen Dialog
+-- erzeugt werden, indem Ancestor gleich dem Questnamen gesetzt wird. Die
+-- Wartezeit ist automatisch 0 Sekunden. Will man eine andere Wartezeit,
+-- so muss Delay gesetzt werden.
+--
+-- Diese Funktion ist geeignet um längere Quest-Dialoge zu konfigurieren!
 --
 -- <b>Alias</b>: QuestDialog
 --
--- Einzelne Einträge pro Quest:
+-- Einzelne Parameter pro Eintrag:
 -- <ul>
 -- <li>Anzeigetext der Nachricht</li>
 -- <li>PlayerID des Sender der Nachricht</li>
 -- <li>PlayerID des Empfängers der Nachricht</li>
--- <li>Name des vorangegangenen Quest</li>
--- <li>Wartezeit bis zum Start</li>
+-- <li>Wartezeit zur vorangegangenen Nachricht</li>
+-- <li>Action-Funktion der Nachricht</li>
 -- </ul>
 --
--- @param _Messages [table] Liste der anzuzeigenden Nachrichten
--- @return [string] Name des letzten Quest
--- @return [table] Namensliste der Quests
+-- @param[type=table] _Messages Liste der anzuzeigenden Nachrichten
+-- @return[type=string] Name des letzten Quest
+-- @return[type=table] Namensliste der Quests
 -- @within Anwenderfunktionen
 --
 -- @usage
@@ -147,9 +150,9 @@ QuestMessage = API.CreateQuestMessage;
 --     Ancestor = "SomeQuestName",
 --     Delay = 12,
 --
---     {"Hallo, wie geht es dir?", 4, 1},
---     {"Mir geht es gut, wie immer!", 1, 1},
---     {"Das ist doch schön.", 4, 1},
+--     {"Hallo, wie geht es dir?", 4, 1, 8},
+--     {"Mir geht es gut, wie immer!", 1, 1, 8, SomeCallbackFunction},
+--     {"Das ist doch schön.", 4, 1, 8},
 -- };
 --
 function API.CreateQuestDialog(_Messages)
@@ -194,7 +197,7 @@ QuestDialog = API.CreateQuestDialog;
 --
 -- <b>Alias</b>: QuestDialogInterrupt
 --
--- @param _Dialog [string|table] Dialog der neu gestartet wird
+-- @param[type=string] _Dialog Dialog der abgebrochen wird
 -- @within Anwenderfunktionen
 --
 function API.InterruptQuestDialog(_Dialog)
@@ -226,7 +229,7 @@ QuestDialogInterrupt = API.InterruptQuestDialog;
 --
 -- <b>Alias</b>: QuestDialogRestart
 --
--- @param _Dialog [string|table] Dialog der neu gestartet wird
+-- @param[type=string] _Dialog Dialog der neu gestartet wird
 -- @within Anwenderfunktionen
 --
 function API.RestartQuestDialog(_Dialog)
@@ -286,14 +289,14 @@ end
 -- Alle Paramater sind optional und können von rechts nach links weggelassen
 -- oder mit nil aufgefüllt werden.
 --
--- @param _Text       [string] Anzeigetext der Nachricht
--- @param _Sender     [number] Sender der Nachricht
--- @param _Receiver   [number] Receiver der Nachricht
--- @param _AncestorWt [number] Wartezeit
--- @param _Callback   [function] Callback
--- @param _Ancestor   [string] Vorgänger-Quest
--- @param _QuestName  [string] Name des Auftrags
--- @return [string] QuestName
+-- @param[type=string]   _Text        Anzeigetext der Nachricht
+-- @param[type=number]   _Sender      Sender der Nachricht
+-- @param[type=number]   _Receiver    Receiver der Nachricht
+-- @param[type=number]   _AncestorWt  Wartezeit
+-- @param[type=function] _Callback    Callback
+-- @param[type=string]   _Ancestor    Vorgänger-Quest
+-- @param[type=string]   _QuestName   Questname überschreiben
+-- @return[type=string] QuestName
 --
 -- @within Internal
 -- @local
@@ -342,8 +345,8 @@ end
 ---
 -- Erzeugt einen Quest.
 --
--- @param _Data [table] Daten des Quest.
--- @return [string] Name des erzeugten Quests
+-- @param[type=table] _Data Daten des Quest.
+-- @return[type=string] Name des erzeugten Quests
 -- @within Internal
 -- @local
 --
@@ -419,8 +422,8 @@ end
 ---
 -- Validiert die Felder eines Quests.
 --
--- @param _Data [table] Daten des Quest.
--- @return [boolean] Quest OK
+-- @param[type=table] _Data Daten des Quest.
+-- @return[type=boolean] Quest OK
 -- @within Internal
 -- @local
 --
@@ -444,8 +447,8 @@ end
 ---
 -- Validiert den Namen eines Quests.
 --
--- @param _Name [string] Name des Quest.
--- @return [boolean] Name OK
+-- @param[type=string] _Name Name des Quest.
+-- @return[type=boolean] Name OK
 -- @within Internal
 -- @local
 --

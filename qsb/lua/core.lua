@@ -5,6 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 --
+-- (Alte Beschreibung, die niemand wollte)
+--
 -- Die Hauptaufgabe des Framework ist es, Funktionen zur Installation und der
 -- Verwaltung der einzelnen Bundles bereitzustellen. Bundles sind in sich
 -- geschlossene Module, die wenig bis gar keine Abhänigkeiten haben. Damit
@@ -40,17 +42,15 @@
 
 ---
 -- Hier werden wichtige Basisfunktionen bereitgestellt. Diese Funktionen sind
--- auch in der Minimalkonfiguration der QSB vorhanden.
+-- auch in der Minimalkonfiguration der QSB vorhanden und essentiell für alle
+-- anderen Bundles.
 --
 -- @set sort=true
 --
 
 API = API or {};
 QSB = QSB or {};
--- Das ist die Version der QSB.
--- Bei jedem Release wird die Tausenderstelle hochgezählt.
--- Bei Bugfixes werden die anderen Stellen hochgezählt.
-QSB.Version = "RE 1.1.11 6/1/2019";
+QSB.Version = "RE 1.2.12 1/2/2019";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -79,6 +79,7 @@ end
 -- Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
 -- Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
 -- werden, bevor die QSB verwendet werden kann.
+--
 -- @within Anwenderfunktionen
 --
 function API.Install()
@@ -96,9 +97,9 @@ end
 --
 -- <p><b>Alias:</b> CopyTableRecursive</p>
 --
--- @param _Source    [table] Quelltabelle
--- @param _Dest      [table] (optional) Zieltabelle
--- @return [table] Kopie der Tabelle
+-- @param[type=table] _Source Quelltabelle
+-- @param[type=table] _Dest   (optional) Zieltabelle
+-- @return[type=table] Kopie der Tabelle
 -- @within Anwenderfunktionen
 -- @usage Table = {1, 2, 3, {a = true}}
 -- Copy = API.InstanceTable(Table)
@@ -109,14 +110,17 @@ end
 CopyTableRecursive = API.InstanceTable;
 
 ---
--- Sucht in einer Table nach einem Wert. Das erste Aufkommen des Suchwerts
--- wird als Erfolg gewertet.
+-- Sucht in einer eindimensionalen Table nach einem Wert. Das erste Auftreten
+-- des Suchwerts wird als Erfolg gewertet.
+--
+-- Es können praktisch alle Lua-Werte gesucht werden, obwohl dies nur für
+-- Strings und Numbers wirklich sinnvoll ist.
 --
 -- <p><b>Alias:</b> Inside</p>
 --
--- @param _Data  [mixed] Datum, das gesucht wird
--- @param _Table [table] Tabelle, die durchquert wird
--- @return [booelan] Wert gefunden
+-- @param             _Data Datum, das gesucht wird
+-- @param[type=table] _Table Tabelle, die durchquert wird
+-- @return[type=booelan] Wert gefunden
 -- @within Anwenderfunktionen
 -- @usage Table = {1, 2, 3, {a = true}}
 -- local Found = API.TraverseTable(3, Table)
@@ -135,8 +139,8 @@ Inside = API.TraverseTable;
 -- Schreibt ein genaues Abbild der Table ins Log. Funktionen, Threads und
 -- Metatables werden als Adresse geschrieben.
 --
--- @param _Table [table] Tabelle, die gedumpt wird
--- @param _Name  [name] Optionaler Name im Log
+-- @param[type=table]  _Table Tabelle, die gedumpt wird
+-- @param[type=string] _Name Optionaler Name im Log
 -- @within Anwenderfunktionen
 -- @local
 -- @usage Table = {1, 2, 3, {a = true}}
@@ -167,8 +171,9 @@ end
 -- einen String. Die Funktion ist rekursiv, d.h. es werden auch alle
 -- Untertabellen mit konvertiert. Alles was kein Number, Boolean oder
 -- String ist, wird als Adresse geschrieben.
--- @param _Table [table] Table zum konvertieren
--- @return [string] Converted table
+--
+-- @param[type=table] _Table Table zum konvertieren
+-- @return[type=string] Converted table
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -207,8 +212,8 @@ end
 --
 -- <p><b>Alias:</b> GetQuestID</p>
 --
--- @param _Name [string] Name des Quest
--- @return [number] ID des Quest
+-- @param[type=string] _Name Name des Quest
+-- @return[type=number] ID des Quest
 -- @within Anwenderfunktionen
 --
 function API.GetQuestID(_Name)
@@ -226,13 +231,13 @@ end
 GetQuestID = API.GetQuestID;
 
 ---
--- Prüft, ob die ID zu einem Quest gehört bzw. der Quest existiert. Es kann
--- auch ein Questname angegeben werden.
+-- Prüft, ob zu der angegebenen ID ein Quest existiert. Wird ein Questname
+-- angegeben wird dessen Quest-ID ermittelt und geprüft.
 --
 -- <p><b>Alias:</b> IsValidQuest</p>
 --
--- @param _QuestID [number] ID oder Name des Quest
--- @return [boolean] Quest existiert
+-- @param[type=number] _QuestID ID oder Name des Quest
+-- @return[type=boolean] Quest existiert
 -- @within Anwenderfunktionen
 --
 function API.IsValidateQuest(_QuestID)
@@ -247,7 +252,7 @@ IsValidQuest = API.IsValidateQuest;
 --
 -- <p><b>Alias:</b> FailQuestsByName</p>
 --
--- @param ...  [string..] Liste mit Quests
+-- @param[type=string] ... Liste mit Quests
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -265,8 +270,8 @@ FailQuestsByName = API.FailAllQuests;
 --
 -- <p><b>Alias:</b> FailQuestByName</p>
 --
--- @param _QuestName  [string] Name des Quest
--- @param _Quiet      [boolean] Keine Meldung anzeigen
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _Quiet Keine Meldung anzeigen
 -- @within Anwenderfunktionen
 --
 function API.FailQuest(_QuestName, _Quiet)
@@ -286,7 +291,7 @@ FailQuestByName = API.FailQuest;
 --
 -- <p><b>Alias:</b> StartQuestsByName</p>
 --
--- @param ...  [string..] Liste mit Quests
+-- @param[type=string] ... Liste mit Quests
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -310,8 +315,8 @@ RestartQuestsByName = API.RestartAllQuests;
 --
 -- <p><b>Alias:</b> RestartQuestByName</p>
 --
--- @param _QuestName  [string] Name des Quest
--- @param _Quiet      [boolean] Keine Meldung anzeigen
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _Quiet Keine Meldung anzeigen
 -- @within Anwenderfunktionen
 --
 function API.RestartQuest(_QuestName, _Quiet)
@@ -390,7 +395,7 @@ RestartQuestByName = API.RestartQuest;
 --
 -- <p><b>Alias:</b> StartQuestsByName</p>
 --
--- @param ...  [string..] Liste mit Quests
+-- @param[type=string] ... Liste mit Quests
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -408,8 +413,8 @@ StartQuestsByName = API.StartAllQuests;
 --
 -- <p><b>Alias:</b> StartQuestByName</p>
 --
--- @param _QuestName  [string] Name des Quest
--- @param _Quiet      [boolean] Keine Meldung anzeigen
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _Quiet Keine Meldung anzeigen
 -- @within Anwenderfunktionen
 --
 function API.StartQuest(_QuestName, _Quiet)
@@ -430,7 +435,7 @@ StartQuestByName = API.StartQuest;
 --
 -- <p><b>Alias:</b> StopQuestsByName</p>
 --
--- @param ...  [string..] Liste mit Quests
+-- @param[type=string] ... Liste mit Quests
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -449,8 +454,8 @@ StopQuestsByName = API.StopAllQuests;
 --
 -- <p><b>Alias:</b> StopQuestByName</p>
 --
--- @param _QuestName  [string] Name des Quest
--- @param _Quiet      [boolean] Keine Meldung anzeigen
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _Quiet Keine Meldung anzeigen
 -- @within Anwenderfunktionen
 --
 function API.StopQuest(_QuestName, _Quiet)
@@ -472,7 +477,7 @@ StopQuestByName = API.StopQuest;
 --
 -- <p><b>Alias:</b> WinQuestsByName</p>
 --
--- @param ...  [string..] Liste mit Quests
+-- @param[type=string] ... Liste mit Quests
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -490,8 +495,8 @@ WinQuestsByName = API.WinAllQuests;
 --
 -- <p><b>Alias:</b> WinQuestByName</p>
 --
--- @param _QuestName  [string] Name des Quest
--- @param _Quiet      [boolean] Keine Meldung anzeigen
+-- @param[type=string]  _QuestName Name des Quest
+-- @param[type=boolean] _Quiet Keine Meldung anzeigen
 -- @within Anwenderfunktionen
 --
 function API.WinQuest(_QuestName, _Quiet)
@@ -514,7 +519,7 @@ WinQuestByName = API.WinQuest;
 --
 -- <p><b>Alias:</b> GUI_Note</p>
 --
--- @param _Message [string] Anzeigetext
+-- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -532,7 +537,9 @@ GUI_Note = API.Note;
 -- Schreibt eine Nachricht in das Debug Window. Der Text erscheint links am
 -- Bildschirm und verbleibt dauerhaft am Bildschirm.
 --
--- @param _Message [string] Anzeigetext
+-- <p><b>Alias:</b> GUI_StaticNote</p>
+--
+-- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 --
 function API.StaticNote(_Message)
@@ -543,6 +550,7 @@ function API.StaticNote(_Message)
     end
     GUI.AddStaticNote(_Message);
 end
+GUI_StaticNote = API.StaticNote;
 
 ---
 -- Löscht alle Nachrichten im Debug Window.
@@ -558,11 +566,11 @@ function API.ClearNotes()
 end
 
 ---
--- Schreibt eine einzelne Zeile Text ins Log. Vor dem Text steh, ob aus dem
+-- Schreibt eine einzelne Zeile Text ins Log. Vor dem Text steht, ob aus dem
 -- globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
 -- Spiels die Nachricht gesendet wurde.
 --
--- @param _Message [string] Nachricht für's Log
+-- @param[type=string] _Message Text des Log-Eintrag
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -577,7 +585,7 @@ end
 --
 -- <p><b>Alias:</b> GUI_NoteDown</p>
 --
--- @param _Message [string] Anzeigetext
+-- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 --
 function API.Message(_Message)
@@ -594,8 +602,8 @@ GUI_NoteDown = API.Message;
 -- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
 -- übergeben wird.
 --
--- @param _Message [string] Anzeigetext
--- @return string: Message
+-- @param[type=string] _Message Anzeigetext
+-- @return[type=string] Message
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -612,7 +620,7 @@ end
 --
 -- <p><b>Alias:</b> dbg</p>
 --
--- @param _Message [string] Anzeigetext
+-- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -630,7 +638,7 @@ dbg = API.Fatal;
 --
 -- <p><p><b>Alias:</b> warn</p></p>
 --
--- @param _Message [string] Anzeigetext
+-- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -647,7 +655,7 @@ warn = API.Warn;
 --
 -- <p><b>Alias:</b> info</p>
 --
--- @param _Message [string] Anzeigetext
+-- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -664,7 +672,7 @@ info = API.Info;
 --
 -- <p><b>Alias:</b> info</p>
 --
--- @param _Message [string] Anzeigetext
+-- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -741,7 +749,7 @@ QSB.Log.CurrentLevel = QSB.Log.Level.FATAL;
 -- </tr>
 -- </table>
 --
--- @param _Level [number] Level
+-- @param[type=number] _Level Level
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -758,13 +766,13 @@ end
 --
 -- <p><b>Alias:</b> SendCart</p>
 --
--- @param _position            [string|number] Position
--- @param _player              [number] Zielspieler
--- @param _good                [number] Warentyp
--- @param _amount              [number] Warenmenge
--- @param _cartOverlay         [number] (optional) Overlay für Goldkarren
--- @param _ignoreReservation   [boolean] (optional) Marktplatzreservation ignorieren
--- @return number: Entity-ID des erzeugten Wagens
+-- @param _position                        Position (Skriptname oder Positionstable)
+-- @param[type=number] _player             Zielspieler
+-- @param[type=number] _good               Warentyp
+-- @param[type=number] _amount             Warenmenge
+-- @param[type=number] _cartOverlay        (optional) Overlay für Goldkarren
+-- @param[type=boolean] _ignoreReservation (optional) Marktplatzreservation ignorieren
+-- @return[type=number] Entity-ID des erzeugten Wagens
 -- @within Anwenderfunktionen
 -- @usage -- API-Call
 -- API.SendCart(Logic.GetStoreHouse(1), 2, Goods.G_Grain, 45)
@@ -807,12 +815,15 @@ SendCart = API.SendCart;
 -- Ersetzt ein Entity mit einem neuen eines anderen Typs. Skriptname,
 -- Rotation, Position und Besitzer werden übernommen.
 --
+-- <b>Hinweis</b>: Die Entity-ID ändert sich und beim Ersetzen von
+-- Spezialgebäuden kann eine Niederlage erfolgen.
+--
 -- <p><b>Alias:</b> ReplaceEntity</p>
 --
--- @param _Entity   [string|number] Entity
--- @param _Type     [number] Neuer Typ
--- @param _NewOwner [number] (optional) Neuer Besitzer
--- @return [number] Entity-ID des Entity
+-- @param _Entity      Entity (Skriptname oder ID)
+-- @param[type=number] _Type     Neuer Typ
+-- @param[type=number] _NewOwner (optional) Neuer Besitzer
+-- @return[type=number] Entity-ID des Entity
 -- @within Anwenderfunktionen
 -- @usage API.ReplaceEntity("Stein", Entities.XD_ScriptEntity)
 --
@@ -839,9 +850,9 @@ ReplaceEntity = API.ReplaceEntity;
 --
 -- <p><b>Alias:</b> LookAt</p>
 --
--- @param _entity           [string|number] Entity
--- @param _entityToLookAt   [string|number] Ziel
--- @param _offsetEntity   [number] Winkel Offset
+-- @param _entity         Entity (Skriptname oder ID)
+-- @param _entityToLookAt Ziel (Skriptname oder ID)
+-- @param[type=number]    _offsetEntity Winkel Offset
 -- @within Anwenderfunktionen
 -- @usage API.LookAt("Hakim", "Alandra")
 --
@@ -866,8 +877,8 @@ LookAt = API.LookAt;
 ---
 -- Lässt zwei Entities sich gegenseitig anschauen.
 --
--- @param _entity           [string|number] Erstes Entity
--- @param _entityToLookAt   [string|number] Zweites Entity
+-- @param _entity         Entity (Skriptname oder ID)
+-- @param _entityToLookAt Ziel (Skriptname oder ID)
 -- @within Anwenderfunktionen
 -- @usage API.Confront("Hakim", "Alandra")
 --
@@ -880,11 +891,13 @@ end
 -- Bestimmt die Distanz zwischen zwei Punkten. Es können Entity-IDs,
 -- Skriptnamen oder Positionstables angegeben werden.
 --
+-- Wenn die Distanz nicht bestimmt werden kann, wird -1 zurückgegeben.
+--
 -- <p><b>Alias:</b> GetDistance</p>
 --
--- @param _pos1 [string|number|table] Erste Vergleichsposition
--- @param _pos2 [string|number|table] Zweite Vergleichsposition
--- @return [number] Entfernung zwischen den Punkten
+-- @param _pos1 Erste Vergleichsposition (Skriptname, ID oder Positions-Table)
+-- @param _pos2 Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
+-- @return[type=number] Entfernung zwischen den Punkten
 -- @within Anwenderfunktionen
 -- @usage local Distance = API.GetDistance("HQ1", Logic.GetKnightID(1))
 --
@@ -896,7 +909,7 @@ function API.GetDistance( _pos1, _pos2 )
         _pos2 = GetPosition(_pos2);
     end
     if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
-        return {X= 1, Y= 1};
+        return -1;
     end
     local xDistance = (_pos1.X - _pos2.X);
     local yDistance = (_pos1.Y - _pos2.Y);
@@ -907,16 +920,23 @@ GetDistance = API.GetDistance;
 ---
 -- Prüft, ob eine Positionstabelle eine gültige Position enthält.
 --
+-- Eine Position ist Ungültig, wenn sie sich nicht auf der Welt befindet.
+-- Das ist der Fall bei negativen Werten oder Werten, welche die Größe
+-- der Welt übersteigen.
+--
 -- <p><b>Alias:</b> IsValidPosition</p>
 --
--- @param _pos [table] Positionstable {X= x, Y= y}
--- @return [boolean] Position ist valide
+-- @param[type=table] _pos Positionstable {X= x, Y= y}
+-- @return[type=boolean] Position ist valide
 -- @within Anwenderfunktionen
 --
 function API.ValidatePosition(_pos)
     if type(_pos) == "table" then
         if (_pos.X ~= nil and type(_pos.X) == "number") and (_pos.Y ~= nil and type(_pos.Y) == "number") then
             local world = {Logic.WorldGetSize()}
+            if _pos.Z and _pos.Z < 0 then
+                return false;
+            end
             if _pos.X <= world[1] and _pos.X >= 0 and _pos.Y <= world[2] and _pos.Y >= 0 then
                 return true;
             end
@@ -933,8 +953,8 @@ IsValidPosition = API.ValidatePosition;
 --
 -- <p><b>Alias:</b> GetPosition</p>
 --
--- @param _Entity [string|number] Entity, dessen Position bestimmt wird.
--- @return [table] Positionstabelle {X= x, Y= y, Z= z}
+-- @param _Entity Entity (Skriptname oder ID)
+-- @return[type=table] Positionstabelle {X= x, Y= y, Z= z}
 -- @within Anwenderfunktionen
 -- @usage local Position = API.LocateEntity("Hans")
 --
@@ -959,16 +979,16 @@ GetPosition = API.LocateEntity;
 --
 -- <p><b>Alias:</b> InteractiveObjectActivate</p>
 --
--- @param _ScriptName  [string] Skriptname des IO
--- @param _State       [number] Aktivierungszustand
+-- @param[type=string] _ScriptName  Skriptname des IO
+-- @param[type=number] _State       Aktivierungszustand
 -- @within Anwenderfunktionen
 -- @usage API.ActivateIO("Haus1", 0)
 -- API.ActivateIO("Hut1")
 --
 function API.ActivateIO(_ScriptName, _State)
-    State = State or 0;
+    _State = _State or 0;
     if GUI then
-        GUI.SendScriptCommand('API.ActivateIO("' .._ScriptName.. '", ' ..State..')');
+        GUI.SendScriptCommand('API.ActivateIO("' .._ScriptName.. '", ' .._State..')');
         return;
     end
     if not IsExisting(_ScriptName) then
@@ -976,7 +996,7 @@ function API.ActivateIO(_ScriptName, _State)
     end
     Logic.InteractiveObjectSetAvailability(GetID(_ScriptName), true);
     for i = 1, 8 do
-        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, State);
+        Logic.InteractiveObjectSetPlayerState(GetID(_ScriptName), i, _State);
     end
 end
 InteractiveObjectActivate = API.ActivateIO;
@@ -987,7 +1007,7 @@ InteractiveObjectActivate = API.ActivateIO;
 --
 -- <p><b>Alias:</b> InteractiveObjectDeactivate</p>
 --
--- @param _ScriptName [string] Skriptname des IO
+-- @param[type=string] _ScriptName Skriptname des IO
 -- @within Anwenderfunktionen
 -- @usage API.DeactivateIO("Hut1")
 --
@@ -1012,9 +1032,9 @@ InteractiveObjectDeactivate = API.DeactivateIO;
 --
 -- <p><b>Alias:</b> GetEntitiesOfCategoryInTerritory</p>
 --
--- @param _player    [number] PlayerID [0-8] oder -1 für alle
--- @param _category  [number] Kategorie, der die Entities angehören
--- @param _territory [number] Zielterritorium
+-- @param[type=number] _player    PlayerID [0-8] oder -1 für alle
+-- @param[type=number] _category  Kategorie, der die Entities angehören
+-- @param[type=number] _territory Zielterritorium
 -- @within Anwenderfunktionen
 -- @usage local Found = API.GetEntitiesOfCategoryInTerritory(1, EntityCategories.Hero, 5)
 --
@@ -1046,8 +1066,8 @@ GetEntitiesOfCategoryInTerritory = API.GetEntitiesOfCategoryInTerritory;
 -- Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
 -- Hat das Entity einen Namen, bleibt dieser unverändert und wird
 -- zurückgegeben.
--- @param _EntityID [number] Entity ID
--- @return [string] Skriptname
+-- @param[type=number] _EntityID Entity ID
+-- @return[type=string] Skriptname
 -- @within Anwenderfunktionen
 --
 function API.EnsureScriptName(_EntityID)
@@ -1075,8 +1095,8 @@ GiveEntityName = API.EnsureScriptName;
 -- Befehl an das lokale Skript. Wird diese Funktion im lokalen Skript genutzt,
 -- wird der Befehl an das globale Skript geschickt.
 --
--- @param _Command [string] Lua-Befehl als String
--- @param _Flag [boolean] FIXME Optional für GUI.SendScriptCommand benötigt
+-- @param[type=string]  _Command Lua-Befehl als String
+-- @param[type=boolean] _Flag FIXME Optional für GUI.SendScriptCommand benötigt. Was macht das Flag?
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -1098,8 +1118,8 @@ end
 --
 -- <p><b>Alias:</b> AcceptAlternativeBoolean</p>
 --
--- @param _Value [mixed] Wahrheitswert
--- @return [boolean] Wahrheitswert
+-- @param _Value Wahrheitswert
+-- @return[type=boolean] Wahrheitswert
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -1116,7 +1136,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 --
 -- <b>Alias</b>: AddOnSaveGameLoadedAction
 --
--- @param _Function [function] Funktion, die ausgeführt werden soll
+-- @param[type=function] _Function Funktion, die ausgeführt werden soll
 -- @within Anwenderfunktionen
 -- @usage SaveGame = function()
 --     API.Note("foo")
@@ -1137,9 +1157,9 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 --
 -- Ist der Hotkey bereits vorhanden, wird -1 zurückgegeben.
 --
--- @param _Key         [string] Tastenkombination
--- @param _Description [string] Beschreibung des Hotkey
--- @return [number] Index oder Fehlercode
+-- @param[type=string] _Key         Tastenkombination
+-- @param[type=string] _Description Beschreibung des Hotkey
+-- @return[type=number] Index oder Fehlercode
 -- @within Anwenderfunktionen
 --
 function API.AddHotKey(_Key, _Description)
@@ -1155,7 +1175,7 @@ end
 ---
 -- Entfernt eine Beschreibung eines selbst gewählten Hotkeys.
 --
--- @param _Index [number] Index in Table
+-- @param[type=number] _Index Index in Table
 -- @within Anwenderfunktionen
 --
 function API.RemoveHotKey(_Index)
@@ -1174,7 +1194,7 @@ end
 
 ---
 -- Gibt die real vergangene Zeit seit dem Spielstart in Sekunden zurück.
--- @return [number] Vergangene reale Zeit
+-- @return[type=number] Vergangene reale Zeit
 -- @within Anwenderfunktionen
 --
 function API.RealTimeGetSecondsPassedSinceGameStart()
@@ -1187,10 +1207,10 @@ end
 --
 -- Hinweis: Einmal gestartet, kann wait nicht beendet werden.
 --
--- @param _Waittime Wartezeit in realen Sekunden
--- @param _Action [function] Callback-Funktion
--- @param ... [mixed..] Liste der Argumente
--- @return [number] Vergangene reale Zeit
+-- @param[type=number] _Waittime Wartezeit in realen Sekunden
+-- @param[type=function] _Action Callback-Funktion
+-- @param ... Liste der Argumente
+-- @return[type=number] Vergangene reale Zeit
 -- @within Anwenderfunktionen
 --
 function API.RealTimeWait(_Waittime, _Action, ...)
@@ -1219,9 +1239,9 @@ end
 -- Kopiert die Quelltabelle rekursiv in die Zieltabelle. Ist ein Wert im
 -- Ziel vorhanden, wird er nicht überschrieben.
 --
--- @param _Source [table] Quelltabelle
--- @param _Dest [table] Zieltabelle
--- @return [table] Kindklasse
+-- @param[type=table] _Source Quelltabelle
+-- @param[type=table] _Dest Zieltabelle
+-- @return[type=table] Kindklasse
 -- @within OOP
 --
 function copy(_Source, _Dest)
@@ -1245,18 +1265,18 @@ end
 ---
 -- Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.
 --
--- @param _Table [table] Referenz auf Table
--- @return [table] Klasse
+-- @param[type=table] _Table Referenz auf Table
+-- @return[type=table] Klasse
 -- @within OOP
 --
 function class(_Table)
     -- className hinzufügen
-    for k, v in pairs(_G) do 
+    for k, v in pairs(_G) do
         if v == _Table then
             _Table.className = k;
         end
     end
-    
+
     -- construct hinzufügen
     _Table.construct = _Table.construct or function(self) end
 
@@ -1277,7 +1297,7 @@ function class(_Table)
     -- equals hinzufügen
     _Table.equals = _Table.equals or function(self, _Other)
         -- Anderes Objekt muss table sein.
-        if type(_Other) ~= "table" then 
+        if type(_Other) ~= "table" then
             return false;
         end
         -- Gehe Inhalt durch
@@ -1295,8 +1315,8 @@ end
 ---
 -- Erzeugt eine Ableitung einer Klasse
 --
--- @param _Parent [table] Referenz auf Klasse
--- @return [table] Kindklasse
+-- @param[type=table] _Parent Referenz auf Klasse
+-- @return[type=table] Kindklasse
 -- @within OOP
 --
 function inherit(_Class, _Parent)
@@ -1308,9 +1328,9 @@ end
 ---
 -- Erzeugt eine Instanz der Klasse.
 --
--- @param _Class [table] Referenz auf Klasse
--- @param ... [mixed] Argumente des Konstruktors
--- @return [table] Instanz der Klasse
+-- @param[type=table] _Class Referenz auf Klasse
+-- @param ...         Argumente des Konstruktors
+-- @return[type=table] Instanz der Klasse
 -- @within OOP
 --
 function new(_Class, ...)
@@ -1563,19 +1583,19 @@ end
 ---
 -- Prüft, ob das Bundle bereits initalisiert ist.
 --
--- @param _Bundle Name des Moduls
--- @return boolean: Bundle initalisiert
+-- @param[type=string] _Bundle Name des Moduls
+-- @return[type=boolean] Bundle initalisiert
 -- @within Internal
 -- @local
 --
-function Core:RegisterBundle(_Bundle)
+function Core:IsBundleRegistered(_Bundle)
     return self.Data.InitalizedBundles[Bundle] == true;
 end
 
 ---
 -- Registiert ein Bundle, sodass es initialisiert wird.
 --
--- @param _Bundle Name des Moduls
+-- @param[type=string] _Bundle Name des Moduls
 -- @within Internal
 -- @local
 --
@@ -1591,7 +1611,7 @@ end
 -- Diese Funktion macht prinziplell das Gleiche wie Core:RegisterBundle und
 -- existiert nur zur Übersichtlichkeit.
 --
--- @param _AddOn Name des Moduls
+-- @param[type=string] _AddOn Name des Moduls
 -- @within Internal
 -- @local
 --
@@ -1605,7 +1625,7 @@ end
 -- Bereitet ein Behavior für den Einsatz im Assistenten und im Skript vor.
 -- Erzeugt zudem den Konstruktor.
 --
--- @param _Behavior    Behavior-Objekt
+-- @param[type=table] _Behavior Behavior-Objekt
 -- @within Internal
 -- @local
 --
@@ -1645,8 +1665,8 @@ end
 -- Prüft, ob der Questname formal korrekt ist. Questnamen dürfen i.d.R. nur
 -- die Zeichen A-Z, a-7, 0-9, - und _ enthalten.
 --
--- @param _Name     Quest
--- @return boolean: Questname ist fehlerfrei
+-- @param[type=string] _Name Name des Quest
+-- @return[type=boolean] Questname ist fehlerfrei
 -- @within Internal
 -- @local
 --
@@ -1658,8 +1678,8 @@ end
 -- Ändert den Text des Beschreibungsfensters eines Quests. Die Beschreibung
 -- wird erst dann aktualisiert, wenn der Quest ausgeblendet wird.
 --
--- @param _Text   Neuer Text
--- @param _Quest  Identifier des Quest
+-- @param[type=string] _Text Neuer Text
+-- @param[type=table] _Quest Quest Table
 -- @within Internal
 -- @local
 --
@@ -1690,9 +1710,9 @@ end
 -- ausgeführt werden, müssen etwas zurückgeben, um die Funktion an
 -- gegebener Stelle zu verlassen.
 --
--- @param _FunctionName
--- @param _StackFunction
--- @param _Index
+-- @param[type=string]   _FunctionName Name der erweiterten Funktion
+-- @param[type=function] _StackFunction Neuer Funktionsinhalt
+-- @param[type=number]   _Index Reihenfolgeindex
 -- @within Internal
 -- @local
 --
@@ -1705,8 +1725,9 @@ function Core:StackFunction(_FunctionName, _StackFunction, _Index)
 
         local batch = function(...)
             local ReturnValue;
-            for k, v in pairs(self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments) do
-                ReturnValue = v(unpack(arg))
+            for i= 1, #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments, 1 do
+                local Function = self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments[i];
+                ReturnValue = Function(unpack(arg));
                 if ReturnValue ~= nil then
                     return ReturnValue;
                 end
@@ -1717,7 +1738,7 @@ function Core:StackFunction(_FunctionName, _StackFunction, _Index)
         self:ReplaceFunction(_FunctionName, batch);
     end
 
-    _Index = _Index or #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments;
+    _Index = _Index or #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments+1;
     table.insert(self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments, _Index, _StackFunction);
 end
 
@@ -1729,9 +1750,9 @@ end
 -- Funktion ist nicht gedacht, um sie direkt auszuführen. Für jede Funktion
 -- im Spiel sollte eine API-Funktion erstellt werden.
 --
--- @param _FunctionName
--- @param _AppendFunction
--- @param _Index
+-- @param[type=string]   _FunctionName Name der erweiterten Funktion
+-- @param[type=function] _AppendFunction Neuer Funktionsinhalt
+-- @param[type=number]   _Index Reihenfolgeindex
 -- @within Internal
 -- @local
 --
@@ -1744,15 +1765,16 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
 
         local batch = function(...)
             local ReturnValue = self.Data.Overwrite.AppendedFunctions[_FunctionName].Original(unpack(arg));
-            for k, v in pairs(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments) do
-                ReturnValue = v(unpack(arg))
+            for i= 1, #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, 1 do
+                local Function = self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments[i];
+                ReturnValue = Function(unpack(arg))
             end
             return ReturnValue;
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
 
-    _Index = _Index or #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments;
+    _Index = _Index or #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments+1;
     table.insert(self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, _Index, _AppendFunction);
 end
 
@@ -1762,6 +1784,8 @@ end
 -- Funktionen in einer Tabelle werden überschrieben, indem jede Ebene des
 -- Tables mit einem Punkt angetrennt wird.
 --
+-- @param[type=string]   _FunctionName Name der erweiterten Funktion
+-- @param[type=function] _AppendFunction Neuer Funktionsinhalt
 -- @local
 -- @within Internal
 -- @usage A = {foo = function() API.Note("bar") end}
@@ -1793,35 +1817,27 @@ end
 -- Ist die Funktionen innerhalb einer Table, so sind alle Ebenen bis zum
 -- Funktionsnamen mit anzugeben, abgetrennt durch einen Punkt.
 --
--- @param _FunctionName Name der Funktion
--- @param _Reference    Aktuelle Referenz (für Rekursion)
--- @return function: Gefundene Funktion
+-- @param[type=string] _FunctionName Name der erweiterten Funktion
+-- @return[type=function] Referenz auf die Funktion
 -- @within Internal
 -- @local
 --
-function Core:GetFunctionInString(_FunctionName, _Reference)
-    -- Wenn wir uns in der ersten Rekursionsebene beinden, suche in _G
-    if not _Reference then
-        local s, e = _FunctionName:find("%.");
-        if s then
-            local FirstLayer = _FunctionName:sub(1, s-1);
-            local Rest = _FunctionName:sub(e+1, _FunctionName:len());
-            return self:GetFunctionInString(Rest, _G[FirstLayer]);
-        else
-            return _G[_FunctionName];
-        end
+function Core:GetFunctionInString(_FunctionName)
+    assert(type(_FunctionName) == "string");
+    local ref = _G;
+
+    local s, e = _FunctionName:find("%.");
+    while (s ~= nil) do
+        local SubName = _FunctionName:sub(1, e-1);
+        SubName = (tonumber(SubName) ~= nil and tonumber(SubName)) or SubName;
+
+        ref = ref[SubName];
+        _FunctionName = _FunctionName:sub(e+1);
+        s, e = _FunctionName:find("%.");
     end
-    -- Andernfalls suche in der Referenz
-    if type(_Reference) == "table" then
-        local s, e = _FunctionName:find("%.");
-        if s then
-            local FirstLayer = _FunctionName:sub(1, s-1);
-            local Rest = _FunctionName:sub(e+1, _FunctionName:len());
-            return self:GetFunctionInString(Rest, _Reference[FirstLayer]);
-        else
-            return _Reference[_FunctionName];
-        end
-    end
+
+    local SubName = (tonumber(_FunctionName) ~= nil and tonumber(_FunctionName)) or _FunctionName;
+    return ref[SubName];
 end
 
 ---
@@ -1832,8 +1848,8 @@ end
 --
 -- Ist die Eingabe bereits ein Boolean wird es direkt zurückgegeben.
 --
--- @param _Input Boolean-Darstellung
--- @return boolean: Konvertierte Boolean
+-- @param[type=string] _Input Boolean-Darstellung
+-- @return[type=boolean] Konvertierte Boolean
 -- @within Internal
 -- @local
 --

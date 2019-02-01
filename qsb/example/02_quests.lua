@@ -33,6 +33,7 @@ API.CreateQuest {
     Name        = "Bockwurst2",
     Success     = "Ich habe hunger!",
 
+    Goal_InstantSuccess();
     Trigger_MapScriptFunction("Trg_IsHeroHungry")
 }
 

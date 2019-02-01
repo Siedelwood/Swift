@@ -177,7 +177,7 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global.ControlFollowKnightSave">BundleGameHelperFunctions.Global.ControlFollowKnightSave (_EntityID, _KnightID, _Distance, _Angle)</a></td>
+	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Global.ControlFollowKnightSave">BundleGameHelperFunctions.Global.ControlFollowKnightSave (_Entity, _Knight, _Distance, _Angle)</a></td>
 	<td class="summary">Kontrolliert die Verfolgung eines Helden durch einen Siedler.</td>
 	</tr>
 	<tr>
@@ -369,7 +369,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flag</span>
-         [boolean] Erweiterter Zoom gestattet
+            <span class="types"><span class="type">boolean</span></span>
+         Erweiterter Zoom gestattet
         </li>
     </ul>
 
@@ -395,16 +396,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Center</span>
-         [string|number] Zentralpunkt
+         Zentralpunkt (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Offset</span>
-         [number] Entfernung der Ecken zum Zentrum
+            <span class="types"><span class="type">number</span></span>
+         Entfernung der Ecken zum Zentrum
         </li>
         <li><span class="parameter">_Height</span>
-         [number] Neue Höhe
+            <span class="types"><span class="type">number</span></span>
+         Neue Höhe
         </li>
         <li><span class="parameter">_Relative</span>
-         [boolean] Relative Höhe benutzen
+            <span class="types"><span class="type">boolean</span></span>
+         Relative Höhe benutzen
         </li>
     </ul>
 
@@ -433,13 +437,15 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Center</span>
-         [string|number] Zentralpunkt
+         Zentralpunkt (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Offset</span>
-         [number] Entfernung der Ecken zum Zentrum
+            <span class="types"><span class="type">number</span></span>
+         Entfernung der Ecken zum Zentrum
         </li>
         <li><span class="parameter">_TerrainType</span>
-         [number] Textur ID
+            <span class="types"><span class="type">number</span></span>
+         Textur ID
         </li>
     </ul>
 
@@ -468,16 +474,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Center</span>
-         [string|number] Zentralpunkt
+         Zentralpunkt (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Offset</span>
-         [number] Entfernung der Ecken zum Zentrum
+            <span class="types"><span class="type">number</span></span>
+         Entfernung der Ecken zum Zentrum
         </li>
         <li><span class="parameter">_Height</span>
-         [number] Neue Höhe
+            <span class="types"><span class="type">number</span></span>
+         Neue Höhe
         </li>
         <li><span class="parameter">_Relative</span>
-         [boolean] Relative Höhe benutzen
+            <span class="types"><span class="type">boolean</span></span>
+         Relative Höhe benutzen
         </li>
     </ul>
 
@@ -503,13 +512,15 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Entity
+         Entity (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Rotation</span>
-         [number] Kamerawinkel
+            <span class="types"><span class="type">number</span></span>
+         Kamerawinkel
         </li>
         <li><span class="parameter">_ZoomFactor</span>
-         [number] Zoomfaktor
+            <span class="types"><span class="type">number</span></span>
+         Zoomfaktor
         </li>
     </ul>
 
@@ -531,13 +542,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Player</span>
-         [number] Partei
+            <span class="types"><span class="type">number</span></span>
+         Partei
         </li>
         <li><span class="parameter">_Rotation</span>
-         [number] Kamerawinkel
+            <span class="types"><span class="type">number</span></span>
+         Kamerawinkel
         </li>
         <li><span class="parameter">_ZoomFactor</span>
-         [number] Zoomfaktor
+            <span class="types"><span class="type">number</span></span>
+         Zoomfaktor
         </li>
     </ul>
 
@@ -562,23 +576,26 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Entity das folgt
+         Entity das folgt (skriptname oder ID)
         </li>
         <li><span class="parameter">_Knight</span>
-         [string|number] Held
+         Held (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Distance</span>
-         [number] Entfernung, die uberschritten sein muss
+            <span class="types"><span class="type">number</span></span>
+         Entfernung, die uberschritten sein muss
         </li>
         <li><span class="parameter">_Angle</span>
-         [number] Ausrichtung
+            <span class="types"><span class="type">number</span></span>
+         Ausrichtung
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Job-ID
+           <span class="types"><span class="type">number</span></span>
+        Job-ID
     </ol>
 
 
@@ -598,7 +615,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_JobID</span>
-         [number] Job-ID
+            <span class="types"><span class="type">number</span></span>
+         Job-ID
         </li>
     </ul>
 
@@ -636,7 +654,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flag</span>
-         [boolean] Speichern gesperrt
+            <span class="types"><span class="type">boolean</span></span>
+         Speichern gesperrt
         </li>
     </ul>
 
@@ -659,7 +678,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flag</span>
-         [boolean] Speedbremse ist aktiv
+            <span class="types"><span class="type">boolean</span></span>
+         Speedbremse ist aktiv
         </li>
     </ul>
 
@@ -681,7 +701,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Limit</span>
-         [number] Obergrenze
+            <span class="types"><span class="type">number</span></span>
+         Obergrenze
         </li>
     </ul>
 
@@ -705,10 +726,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Hero</span>
-         [string|number] Skriptname/Entity-ID des Helden
+         Held, dem die Kamera folgt (Skriptname oder ID)
         </li>
         <li><span class="parameter">_MaxZoom</span>
-         [number] Maximaler Zoomfaktor
+            <span class="types"><span class="type">number</span></span>
+         Maximaler Zoomfaktor
         </li>
     </ul>
 
@@ -747,7 +769,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Kamera aktiv
+           <span class="types"><span class="type">boolean</span></span>
+        Kamera aktiv
     </ol>
 
 
@@ -760,7 +783,7 @@
     <dl class="function">
     <dt>
     <a name = "BundleGameHelperFunctions.Global.ControlFollowKnightSave"></a>
-    <strong>BundleGameHelperFunctions.Global.ControlFollowKnightSave (_EntityID, _KnightID, _Distance, _Angle)</strong>
+    <strong>BundleGameHelperFunctions.Global.ControlFollowKnightSave (_Entity, _Knight, _Distance, _Angle)</strong>
     </dt>
     <dd>
     Kontrolliert die Verfolgung eines Helden durch einen Siedler.
@@ -768,17 +791,19 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_EntityID</span>
-         [number]Entity das folgt
+        <li><span class="parameter">_Entity</span>
+         Entity das folgt (skriptname oder ID)
         </li>
-        <li><span class="parameter">_KnightID</span>
-         [number]Held
+        <li><span class="parameter">_Knight</span>
+         Held (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Distance</span>
-         [number] Entfernung, die uberschritten sein muss
+            <span class="types"><span class="type">number</span></span>
+         Entfernung, die uberschritten sein muss
         </li>
         <li><span class="parameter">_Angle</span>
-         [number] Ausrichtung
+            <span class="types"><span class="type">number</span></span>
+         Ausrichtung
         </li>
     </ul>
 
@@ -828,23 +853,26 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Entity das folgt
+         Entity das folgt (skriptname oder ID)
         </li>
         <li><span class="parameter">_Knight</span>
-         [string|number] Held
+         Held (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Distance</span>
-         [number] Entfernung, die uberschritten sein muss
+            <span class="types"><span class="type">number</span></span>
+         Entfernung, die uberschritten sein muss
         </li>
         <li><span class="parameter">_Angle</span>
-         [number] Ausrichtung
+            <span class="types"><span class="type">number</span></span>
+         Ausrichtung
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Job-ID
+           <span class="types"><span class="type">number</span></span>
+        Job-ID
     </ol>
 
 
@@ -863,16 +891,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Center</span>
-         [string|number] Zentralpunkt
+         Zentralpunkt (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Offset</span>
-         [number] Entfernung der Ecken zum Zentrum
+            <span class="types"><span class="type">number</span></span>
+         Entfernung der Ecken zum Zentrum
         </li>
         <li><span class="parameter">_Height</span>
-         [number] Neue Höhe
+            <span class="types"><span class="type">number</span></span>
+         Neue Höhe
         </li>
         <li><span class="parameter">_Relative</span>
-         [boolean] Relative Höhe benutzen
+            <span class="types"><span class="type">boolean</span></span>
+         Relative Höhe benutzen
         </li>
     </ul>
 
@@ -893,13 +924,15 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Center</span>
-         [string|number] Zentralpunkt
+         Zentralpunkt (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Offset</span>
-         [number] Entfernung der Ecken zum Zentrum
+            <span class="types"><span class="type">number</span></span>
+         Entfernung der Ecken zum Zentrum
         </li>
         <li><span class="parameter">_TerrainType</span>
-         [number] Textur ID
+            <span class="types"><span class="type">number</span></span>
+         Textur ID
         </li>
     </ul>
 
@@ -920,16 +953,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Center</span>
-         [string|number] Zentralpunkt
+         Zentralpunkt (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Offset</span>
-         [number] Entfernung der Ecken zum Zentrum
+            <span class="types"><span class="type">number</span></span>
+         Entfernung der Ecken zum Zentrum
         </li>
         <li><span class="parameter">_Height</span>
-         [number] Neue Höhe
+            <span class="types"><span class="type">number</span></span>
+         Neue Höhe
         </li>
         <li><span class="parameter">_Relative</span>
-         [boolean] Relative Höhe benutzen
+            <span class="types"><span class="type">boolean</span></span>
+         Relative Höhe benutzen
         </li>
     </ul>
 
@@ -965,25 +1001,31 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Center</span>
-         [string|number] Zentralpunkt des Quadrat
+         Zentralpunkt des Quadrat (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Offset</span>
-         [number] Abstand der Ecken zum Zentrum
+            <span class="types"><span class="type">number</span></span>
+         Abstand der Ecken zum Zentrum
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [number] X-Koordinate von Punkt 1</li>
+           <span class="types"><span class="type">number</span></span>
+        X-Koordinate von Punkt 1</li>
         <li>
-        [number] Y-Koordinate von Punkt 1</li>
+           <span class="types"><span class="type">number</span></span>
+        Y-Koordinate von Punkt 1</li>
         <li>
-        [number] X-Koordinate von Punkt 2</li>
+           <span class="types"><span class="type">number</span></span>
+        X-Koordinate von Punkt 2</li>
         <li>
-        [number] Y-Koordinate von Punkt 2</li>
+           <span class="types"><span class="type">number</span></span>
+        Y-Koordinate von Punkt 2</li>
         <li>
-        [number] Bodenhöhe</li>
+           <span class="types"><span class="type">number</span></span>
+        Bodenhöhe</li>
     </ol>
 
 
@@ -1071,7 +1113,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_JobID</span>
-         [number] Job-ID
+            <span class="types"><span class="type">number</span></span>
+         Job-ID
         </li>
     </ul>
 
@@ -1094,10 +1137,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Hero</span>
-         [string|number] Skriptname/Entity-ID des Helden
+         Held (Skriptname oder ID)
         </li>
         <li><span class="parameter">_MaxZoom</span>
-         [number] Maximaler Zoomfaktor
+            <span class="types"><span class="type">number</span></span>
+         Maximaler Zoomfaktor
         </li>
     </ul>
 
@@ -1132,7 +1176,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Kamera aktiv
+           <span class="types"><span class="type">boolean</span></span>
+        Kamera aktiv
     </ol>
 
 
@@ -1209,7 +1254,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flag</span>
-         [boolean] Speedbremse ist aktiv
+            <span class="types"><span class="type">boolean</span></span>
+         Speedbremse ist aktiv
         </li>
     </ul>
 
@@ -1243,7 +1289,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flag</span>
-         [boolean] Speicherbuttons sichtbar
+            <span class="types"><span class="type">boolean</span></span>
+         Speicherbuttons sichtbar
         </li>
     </ul>
 
@@ -1348,13 +1395,15 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Entity
+         Entity (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Rotation</span>
-         [number] Kamerawinkel
+            <span class="types"><span class="type">number</span></span>
+         Kamerawinkel
         </li>
         <li><span class="parameter">_ZoomFactor</span>
-         [number] Zoomfaktor
+            <span class="types"><span class="type">number</span></span>
+         Zoomfaktor
         </li>
     </ul>
 
@@ -1374,7 +1423,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Limit</span>
-         [number] Obergrenze
+            <span class="types"><span class="type">number</span></span>
+         Obergrenze
         </li>
     </ul>
 
@@ -1397,10 +1447,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Hero</span>
-         [string|number] Skriptname/Entity-ID des Helden
+         Held (Skriptname oder ID)
         </li>
         <li><span class="parameter">_MaxZoom</span>
-         [number] Maximaler Zoomfaktor
+            <span class="types"><span class="type">number</span></span>
+         Maximaler Zoomfaktor
         </li>
     </ul>
 
@@ -1435,7 +1486,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Kamera aktiv
+           <span class="types"><span class="type">boolean</span></span>
+        Kamera aktiv
     </ol>
 
 
@@ -1481,7 +1533,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-06 16:31:26 </i>
+<i style="float:right;">Last updated 2019-02-01 09:49:22 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

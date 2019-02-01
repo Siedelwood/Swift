@@ -48,7 +48,8 @@
 <h1>Module <code>core</code></h1>
 <p>Hier werden wichtige Basisfunktionen bereitgestellt.</p>
 <p> Diese Funktionen sind
- auch in der Minimalkonfiguration der QSB vorhanden.
+ auch in der Minimalkonfiguration der QSB vorhanden und essentiell für alle
+ anderen Bundles.
 </p>
 
 
@@ -110,7 +111,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.IsValidateQuest">API.IsValidateQuest (_QuestID)</a></td>
-	<td class="summary">Prüft, ob die ID zu einem Quest gehört bzw.</td>
+	<td class="summary">Prüft, ob zu der angegebenen ID ein Quest existiert.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.LocateEntity">API.LocateEntity (_Entity)</a></td>
@@ -163,7 +164,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TraverseTable">API.TraverseTable (_Data, _Table)</a></td>
-	<td class="summary">Sucht in einer Table nach einem Wert.</td>
+	<td class="summary">Sucht in einer eindimensionalen Table nach einem Wert.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.ValidatePosition">API.ValidatePosition (_pos)</a></td>
@@ -217,10 +218,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ScriptName</span>
-          [string] Skriptname des IO
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Skriptname des IO
         </li>
         <li><span class="parameter">_State</span>
-               [number] Aktivierungszustand
+            <span class="types"><span class="type">number</span></span>
+               Aktivierungszustand
         </li>
     </ul>
 
@@ -247,17 +250,20 @@ API.ActivateIO(<span class="string">"Hut1"</span>)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Key</span>
-                 [string] Tastenkombination
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                 Tastenkombination
         </li>
         <li><span class="parameter">_Description</span>
-         [string] Beschreibung des Hotkey
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Beschreibung des Hotkey
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Index oder Fehlercode
+           <span class="types"><span class="type">number</span></span>
+        Index oder Fehlercode
     </ol>
 
 
@@ -277,7 +283,8 @@ API.ActivateIO(<span class="string">"Hut1"</span>)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Function</span>
-         [function] Funktion, die ausgeführt werden soll
+            <span class="types"><span class="type">function</span></span>
+         Funktion, die ausgeführt werden soll
         </li>
     </ul>
 
@@ -318,10 +325,10 @@ API.AddSaveGameAction(SaveGame)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-                   [string|number] Erstes Entity
+                 Entity (Skriptname oder ID)
         </li>
         <li><span class="parameter">_entityToLookAt</span>
-           [string|number] Zweites Entity
+         Ziel (Skriptname oder ID)
         </li>
     </ul>
 
@@ -348,7 +355,8 @@ API.AddSaveGameAction(SaveGame)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ScriptName</span>
-         [string] Skriptname des IO
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des IO
         </li>
     </ul>
 
@@ -374,14 +382,16 @@ API.AddSaveGameAction(SaveGame)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_EntityID</span>
-         [number] Entity ID
+            <span class="types"><span class="type">number</span></span>
+         Entity ID
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [string] Skriptname
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Skriptname
     </ol>
 
 
@@ -402,10 +412,12 @@ API.AddSaveGameAction(SaveGame)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
         </li>
         <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
+            <span class="types"><span class="type">boolean</span></span>
+         Keine Meldung anzeigen
         </li>
     </ul>
 
@@ -421,6 +433,7 @@ API.AddSaveGameAction(SaveGame)</pre>
     <dd>
     Bestimmt die Distanz zwischen zwei Punkten.  Es können Entity-IDs,
  Skriptnamen oder Positionstables angegeben werden.
+<p> Wenn die Distanz nicht bestimmt werden kann, wird -1 zurückgegeben.
 <p> <p><b>Alias:</b> GetDistance</p>
 
 
@@ -428,17 +441,18 @@ API.AddSaveGameAction(SaveGame)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_pos1</span>
-         [string|number|table] Erste Vergleichsposition
+         Erste Vergleichsposition (Skriptname, ID oder Positions-Table)
         </li>
         <li><span class="parameter">_pos2</span>
-         [string|number|table] Zweite Vergleichsposition
+         Zweite Vergleichsposition (Skriptname, ID oder Positions-Table)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Entfernung zwischen den Punkten
+           <span class="types"><span class="type">number</span></span>
+        Entfernung zwischen den Punkten
     </ol>
 
 
@@ -463,13 +477,16 @@ API.AddSaveGameAction(SaveGame)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_player</span>
-            [number] PlayerID [0-8] oder -1 für alle
+            <span class="types"><span class="type">number</span></span>
+            PlayerID [0-8] oder -1 für alle
         </li>
         <li><span class="parameter">_category</span>
-          [number] Kategorie, der die Entities angehören
+            <span class="types"><span class="type">number</span></span>
+          Kategorie, der die Entities angehören
         </li>
         <li><span class="parameter">_territory</span>
-         [number] Zielterritorium
+            <span class="types"><span class="type">number</span></span>
+         Zielterritorium
         </li>
     </ul>
 
@@ -496,14 +513,16 @@ API.AddSaveGameAction(SaveGame)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Name</span>
-         [string] Name des Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] ID des Quest
+           <span class="types"><span class="type">number</span></span>
+        ID des Quest
     </ol>
 
 
@@ -519,6 +538,7 @@ API.AddSaveGameAction(SaveGame)</pre>
 <p> Bundles werden immer getrennt im globalen und im lokalen Skript gestartet.
  Diese Funktion muss zwingend im globalen und lokalen Skript ausgeführt
  werden, bevor die QSB verwendet werden kann.
+
 
 
 
@@ -544,17 +564,20 @@ API.AddSaveGameAction(SaveGame)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Source</span>
-            [table] Quelltabelle
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Quelltabelle
         </li>
         <li><span class="parameter">_Dest</span>
-              [table] (optional) Zieltabelle
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+           (optional) Zieltabelle
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Kopie der Tabelle
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Kopie der Tabelle
     </ol>
 
 
@@ -571,8 +594,8 @@ Copy = API.InstanceTable(Table)</pre>
     <strong>API.IsValidateQuest (_QuestID)</strong>
     </dt>
     <dd>
-    Prüft, ob die ID zu einem Quest gehört bzw.  der Quest existiert. Es kann
- auch ein Questname angegeben werden.
+    Prüft, ob zu der angegebenen ID ein Quest existiert.  Wird ein Questname
+ angegeben wird dessen Quest-ID ermittelt und geprüft.
 <p> <p><b>Alias:</b> IsValidQuest</p>
 
 
@@ -580,14 +603,16 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestID</span>
-         [number] ID oder Name des Quest
+            <span class="types"><span class="type">number</span></span>
+         ID oder Name des Quest
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Quest existiert
+           <span class="types"><span class="type">boolean</span></span>
+        Quest existiert
     </ol>
 
 
@@ -609,14 +634,15 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Entity, dessen Position bestimmt wird.
+         Entity (Skriptname oder ID)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Positionstabelle {X= x, Y= y, Z= z}
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Positionstabelle {X= x, Y= y, Z= z}
     </ol>
 
 
@@ -640,13 +666,14 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-                   [string|number] Entity
+                 Entity (Skriptname oder ID)
         </li>
         <li><span class="parameter">_entityToLookAt</span>
-           [string|number] Ziel
+         Ziel (Skriptname oder ID)
         </li>
         <li><span class="parameter">_offsetEntity</span>
-           [number] Winkel Offset
+            <span class="types"><span class="type">number</span></span>
+         Winkel Offset
         </li>
     </ul>
 
@@ -672,7 +699,8 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Anzeigetext
         </li>
     </ul>
 
@@ -693,7 +721,8 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Returns:</h3>
     <ol>
 
-        [number] Vergangene reale Zeit
+           <span class="types"><span class="type">number</span></span>
+        Vergangene reale Zeit
     </ol>
 
 
@@ -714,20 +743,23 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Waittime</span>
+            <span class="types"><span class="type">number</span></span>
          Wartezeit in realen Sekunden
         </li>
         <li><span class="parameter">_Action</span>
-         [function] Callback-Funktion
+            <span class="types"><span class="type">function</span></span>
+         Callback-Funktion
         </li>
         <li><span class="parameter">...</span>
-         [mixed..] Liste der Argumente
+         Liste der Argumente
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Vergangene reale Zeit
+           <span class="types"><span class="type">number</span></span>
+        Vergangene reale Zeit
     </ol>
 
 
@@ -745,7 +777,8 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Index</span>
-         [number] Index in Table
+            <span class="types"><span class="type">number</span></span>
+         Index in Table
         </li>
     </ul>
 
@@ -761,6 +794,8 @@ Copy = API.InstanceTable(Table)</pre>
     <dd>
     Ersetzt ein Entity mit einem neuen eines anderen Typs.  Skriptname,
  Rotation, Position und Besitzer werden übernommen.
+<p> <b>Hinweis</b>: Die Entity-ID ändert sich und beim Ersetzen von
+ Spezialgebäuden kann eine Niederlage erfolgen.
 <p> <p><b>Alias:</b> ReplaceEntity</p>
 
 
@@ -768,20 +803,23 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-           [string|number] Entity
+              Entity (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Type</span>
-             [number] Neuer Typ
+            <span class="types"><span class="type">number</span></span>
+             Neuer Typ
         </li>
         <li><span class="parameter">_NewOwner</span>
-         [number] (optional) Neuer Besitzer
+            <span class="types"><span class="type">number</span></span>
+         (optional) Neuer Besitzer
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Entity-ID des Entity
+           <span class="types"><span class="type">number</span></span>
+        Entity-ID des Entity
     </ol>
 
 
@@ -811,10 +849,12 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
         </li>
         <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
+            <span class="types"><span class="type">boolean</span></span>
+         Keine Meldung anzeigen
         </li>
     </ul>
 
@@ -837,29 +877,35 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_position</span>
-                    [string|number] Position
+                                Position (Skriptname oder Positionstable)
         </li>
         <li><span class="parameter">_player</span>
-                      [number] Zielspieler
+            <span class="types"><span class="type">number</span></span>
+                     Zielspieler
         </li>
         <li><span class="parameter">_good</span>
-                        [number] Warentyp
+            <span class="types"><span class="type">number</span></span>
+                       Warentyp
         </li>
         <li><span class="parameter">_amount</span>
-                      [number] Warenmenge
+            <span class="types"><span class="type">number</span></span>
+                     Warenmenge
         </li>
         <li><span class="parameter">_cartOverlay</span>
-                 [number] (optional) Overlay für Goldkarren
+            <span class="types"><span class="type">number</span></span>
+                (optional) Overlay für Goldkarren
         </li>
         <li><span class="parameter">_ignoreReservation</span>
-           [boolean] (optional) Marktplatzreservation ignorieren
+            <span class="types"><span class="type">boolean</span></span>
+         (optional) Marktplatzreservation ignorieren
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        number: Entity-ID des erzeugten Wagens
+           <span class="types"><span class="type">number</span></span>
+        Entity-ID des erzeugten Wagens
     </ol>
 
 
@@ -887,10 +933,12 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
         </li>
         <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
+            <span class="types"><span class="type">boolean</span></span>
+         Keine Meldung anzeigen
         </li>
     </ul>
 
@@ -906,13 +954,15 @@ Copy = API.InstanceTable(Table)</pre>
     <dd>
     Schreibt eine Nachricht in das Debug Window.  Der Text erscheint links am
  Bildschirm und verbleibt dauerhaft am Bildschirm.
+<p> <p><b>Alias:</b> GUI_StaticNote</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Message</span>
-         [string] Anzeigetext
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Anzeigetext
         </li>
     </ul>
 
@@ -936,10 +986,12 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
         </li>
         <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
+            <span class="types"><span class="type">boolean</span></span>
+         Keine Meldung anzeigen
         </li>
     </ul>
 
@@ -953,8 +1005,10 @@ Copy = API.InstanceTable(Table)</pre>
     <strong>API.TraverseTable (_Data, _Table)</strong>
     </dt>
     <dd>
-    Sucht in einer Table nach einem Wert.  Das erste Aufkommen des Suchwerts
- wird als Erfolg gewertet.
+    Sucht in einer eindimensionalen Table nach einem Wert.  Das erste Auftreten
+ des Suchwerts wird als Erfolg gewertet.
+<p> Es können praktisch alle Lua-Werte gesucht werden, obwohl dies nur für
+ Strings und Numbers wirklich sinnvoll ist.
 <p> <p><b>Alias:</b> Inside</p>
 
 
@@ -962,17 +1016,19 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Data</span>
-          [mixed] Datum, das gesucht wird
+         Datum, das gesucht wird
         </li>
         <li><span class="parameter">_Table</span>
-         [table] Tabelle, die durchquert wird
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Tabelle, die durchquert wird
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [booelan] Wert gefunden
+           <span class="types"><span class="type">booelan</span></span>
+        Wert gefunden
     </ol>
 
 
@@ -990,6 +1046,9 @@ Copy = API.InstanceTable(Table)</pre>
     </dt>
     <dd>
     Prüft, ob eine Positionstabelle eine gültige Position enthält.
+<p> Eine Position ist Ungültig, wenn sie sich nicht auf der Welt befindet.
+ Das ist der Fall bei negativen Werten oder Werten, welche die Größe
+ der Welt übersteigen.
 <p> <p><b>Alias:</b> IsValidPosition</p>
 
 
@@ -997,14 +1056,16 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_pos</span>
-         [table] Positionstable {X= x, Y= y}
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Positionstable {X= x, Y= y}
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Position ist valide
+           <span class="types"><span class="type">boolean</span></span>
+        Position ist valide
     </ol>
 
 
@@ -1025,10 +1086,12 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
-          [string] Name des Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
         </li>
         <li><span class="parameter">_Quiet</span>
-              [boolean] Keine Meldung anzeigen
+            <span class="types"><span class="type">boolean</span></span>
+         Keine Meldung anzeigen
         </li>
     </ul>
 
@@ -1052,14 +1115,16 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Table</span>
-         [table] Referenz auf Table
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Referenz auf Table
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Klasse
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Klasse
     </ol>
 
 
@@ -1079,17 +1144,20 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Source</span>
-         [table] Quelltabelle
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Quelltabelle
         </li>
         <li><span class="parameter">_Dest</span>
-         [table] Zieltabelle
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Zieltabelle
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Kindklasse
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Kindklasse
     </ol>
 
 
@@ -1107,14 +1175,16 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Parent</span>
-         [table] Referenz auf Klasse
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Referenz auf Klasse
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Kindklasse
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Kindklasse
     </ol>
 
 
@@ -1132,17 +1202,19 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Class</span>
-         [table] Referenz auf Klasse
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Referenz auf Klasse
         </li>
         <li><span class="parameter">...</span>
-         [mixed] Argumente des Konstruktors
+                 Argumente des Konstruktors
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Instanz der Klasse
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Instanz der Klasse
     </ol>
 
 
@@ -1156,7 +1228,7 @@ Copy = API.InstanceTable(Table)</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-06 16:31:01 </i>
+<i style="float:right;">Last updated 2019-02-01 09:48:51 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
