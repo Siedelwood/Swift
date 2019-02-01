@@ -31,8 +31,8 @@ QSB.DestroyedSoldiers = QSB.DestroyedSoldiers or {};
 --
 -- <b>Hinweis</b>: Es wird nur die letzte Eingabe zurückgegeben.
 --
--- @param _QuestName [string] Name des Quest
--- @return [string] Eingabe des Spielers
+-- @param[type=string] _QuestName Name des Quest
+-- @return[type=string] Eingabe des Spielers
 -- @within Anwenderfunktionen
 --
 function API.GetInputStringFromQuest(_QuestName)
@@ -53,8 +53,8 @@ end
 --
 -- <b>Hinweis</b>: Es wird nur die letzte Eingabe zurückgegeben.
 --
--- @param _QuestName [string] Name des Quest
--- @return [number] Eingabe des Spielers
+-- @param[type=string] _QuestName Name des Quest
+-- @return[type=number] Eingabe des Spielers
 -- @within Anwenderfunktionen
 --
 function API.GetInputNumberFromQuest(_QuestName)
@@ -1871,7 +1871,7 @@ Core:RegisterBehavior(b_Goal_SoldierCount);
 -- Der Auftragnehmer muss wenigstens einen bestimmten Titel erreichen.
 --
 -- Folgende Titel können verwendet werden:
--- <table>
+-- <table border="1">
 -- <tr>
 -- <td><b>Titel</b></td>
 -- <td><b>Übersetzung</b></td>
@@ -8596,8 +8596,8 @@ end
 --
 -- <b>Hinweis</b>: Es wird nur die letzte Eingabe zurückgegeben.
 --
--- @param _QuestName [string] Name des Quest
--- @return [string] Eingabe des Spielers
+-- @param[type=string] _QuestName Name des Quest
+-- @return[type=string] Eingabe des Spielers
 -- @within Internal
 -- @local
 --

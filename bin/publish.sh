@@ -10,6 +10,7 @@ cd ..
 rm -rf Release &>/dev/null
 mkdir -p Release/src/advanced
 mkdir -p Release/src/beginner
+mkdir -p Release/bin
 echo "Done!"
 
 echo "Copy qsb files..."
@@ -32,6 +33,18 @@ echo "Done!"
 
 echo "Copy examples..."
 cp -r qsb/example Release/example &>/dev/null
+echo "Done"
+
+echo "Copy Map Iconator..."
+cp -r bin/MapIconator.jar Release/bin/MapIconator.jar &>/dev/null
+echo "Done"
+
+echo "Copy Siedelwood Cutscene Assistant..."
+cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
+echo "Done"
+
+echo "Copy Cutscene Maker..."
+cp -r "bin/CutsceneMakerInstaller.exe" Release/bin/CutsceneMakerInstaller.exe &>/dev/null
 echo "Done"
 
 echo "Creating archive..."
