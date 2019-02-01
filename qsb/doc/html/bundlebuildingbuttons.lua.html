@@ -53,15 +53,15 @@
  <ul>
 <p> <li>Viehzucht: Hernzüchten von Kühen und Schafen in Gattern
  <br>Kühe züchten:<br><a href="#API.UseBreedCattle">Zucht aktivieren</a>,
- <a href="#API.SetCattleNeeded">Mindestanzahl Tiere festlegen</a>,
+ <a href="#API.SetCattleNeeded">Mindestanzahl Kühe festlegen</a>,
  <a href="#API.SetCattleGrainCost">Getreidekosten festlegen</a>
  <br>Schafe züchten:<br><a href="#API.UseBreedSheeps">Zucht aktivieren</a>,
- <a href="#API.SetSheepNeeded">Mindestanzahl Tiere festlegen</a>,
+ <a href="#API.SetSheepNeeded">Mindestanzahl Schafe festlegen</a>,
  <a href="#API.SetSheepGrainCost">Getreidekosten festlegen</a>
  </li>
 <p> <li>Single Stop: Anhalten der Produktion von einzelnen Gebäuden
  <br><a href="#API.ActivateSingleStop">aktivieren</a>,
- <a href="#API.ActivateSingleStop">deaktivieren</a>
+ <a href="#API.DeactivateSingleStop">deaktivieren</a>
  </li>
 <p> <li>Downgrade: Rückbau von Stadt- und Rohstoffgebäuden
  <br><a href="#API.ActivateDowngrade">aktivieren</a>,
@@ -107,11 +107,11 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SetSheepNeeded">API.SetSheepNeeded (_Amount)</a></td>
-	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
+	<td class="summary">Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.SetCattleNeeded">API.SetCattleNeeded (_Amount)</a></td>
-	<td class="summary">Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.</td>
+	<td class="summary">Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.AddCustomBuildingButton">API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</a></td>
@@ -218,7 +218,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_flag</span>
-         [boolean] Schafzucht aktiv/inaktiv
+            <span class="types"><span class="type">boolean</span></span>
+         Schafzucht aktiv/inaktiv
         </li>
     </ul>
 
@@ -245,7 +246,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_flag</span>
-         [boolean] Kuhzucht aktiv/inaktiv
+            <span class="types"><span class="type">boolean</span></span>
+         Kuhzucht aktiv/inaktiv
         </li>
     </ul>
 
@@ -272,7 +274,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Amount</span>
-         [number] Getreidekosten
+            <span class="types"><span class="type">number</span></span>
+         Getreidekosten
         </li>
     </ul>
 
@@ -299,7 +302,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Amount</span>
-         [number] Getreidekosten
+            <span class="types"><span class="type">number</span></span>
+         Getreidekosten
         </li>
     </ul>
 
@@ -318,7 +322,7 @@
     <strong>API.SetSheepNeeded (_Amount)</strong>
     </dt>
     <dd>
-    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
+    Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
 <p> <p><b>Alias:</b> SetSheepNeeded</p>
 
 
@@ -326,7 +330,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Amount</span>
-         [number] Benötigte Menge
+            <span class="types"><span class="type">number</span></span>
+         Benötigte Menge
         </li>
     </ul>
 
@@ -345,7 +350,7 @@
     <strong>API.SetCattleNeeded (_Amount)</strong>
     </dt>
     <dd>
-    Setzt die zur Zucht benötigte Menge an benötigten Tieren in einem Gatter.
+    Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
 <p> <p><b>Alias:</b> SetCattleNeeded</p>
 
 
@@ -353,7 +358,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Amount</span>
-         [number] Benötigte Menge
+            <span class="types"><span class="type">number</span></span>
+         Benötigte Menge
         </li>
     </ul>
 
@@ -399,16 +405,20 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Index</span>
-           [number] Index des Buttons
+            <span class="types"><span class="type">number</span></span>
+         Index des Buttons
         </li>
         <li><span class="parameter">_Action</span>
-          [function] Aktion des Buttons
+            <span class="types"><span class="type">function</span></span>
+         Aktion des Buttons
         </li>
         <li><span class="parameter">_Tooltip</span>
-         [function] Tooltip Control
+            <span class="types"><span class="type">function</span></span>
+         Tooltip Control
         </li>
         <li><span class="parameter">_Update</span>
-          [function] Button Update
+            <span class="types"><span class="type">function</span></span>
+         Button Update
         </li>
     </ul>
 
@@ -449,7 +459,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Index</span>
-           [number] Index des Buttons
+            <span class="types"><span class="type">number</span></span>
+         Index des Buttons
         </li>
     </ul>
 
@@ -470,7 +481,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-08 18:56:48 </i>
+<i style="float:right;">Last updated 2019-02-01 09:48:56 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

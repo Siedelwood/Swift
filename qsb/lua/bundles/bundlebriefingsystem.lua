@@ -91,7 +91,7 @@ QSB = QSB or {};
 --
 -- <p><b>Alias</b>: PauseQuestsDuringBriefings</p>
 --
--- @param _Flag [boolean] Quest Timer pausiert
+-- @param[type=boolean] _Flag Quest Timer pausiert
 -- @within Anwenderfunktionen
 --
 function API.PauseQuestsDuringBriefings(_Flag)
@@ -108,8 +108,8 @@ PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 --
 -- <p><b>Alias</b>: IsBriefingFinished</p>
 --
--- @param _briefingID [number] ID des Briefing
--- @return [boolean] Briefing ist beendet
+-- @param[type=number] _briefingID ID des Briefing
+-- @return[type=boolean] Briefing ist beendet
 -- @within Anwenderfunktionen
 --
 function API.IsBriefingFinished(_briefingID)
@@ -129,8 +129,8 @@ IsBriefingFinished = API.IsBriefingFinished;
 --
 -- <p><b>Alias</b>: MCGetSelectedAnswer</p>
 --
--- @param _page [table] Referenz auf die Seite
--- @return [number] Gewählte Antwort
+-- @param[type=table] _page Referenz auf die Seite
+-- @return[type=number] Gewählte Antwort
 -- @within Anwenderfunktionen
 --
 function API.GetSelectedAnswerFromMCPage(_page)
@@ -149,8 +149,8 @@ MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 --
 -- <p><b>Alias</b>: GetCurrentBriefingPage</p>
 --
--- @param _pageNumber [number] Index der Seite
--- @return [table] Seite des aktuellen Briefing
+-- @param[type=number] _pageNumber Index der Seite
+-- @return[type=table] Seite des aktuellen Briefing
 -- @within Anwenderfunktionen
 --
 function API.GetCurrentBriefingPage(_pageNumber)
@@ -169,7 +169,7 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 --
 -- <p><b>Alias</b>: GetCurrentBriefing</p>
 --
--- @return [table] Briefing mit allen Seiten
+-- @return[type=table] Briefing mit allen Seiten
 -- @within Anwenderfunktionen
 --
 function API.GetCurrentBriefing()
@@ -189,10 +189,10 @@ GetCurrentBriefing = API.GetCurrentBriefing;
 --
 -- <p><b>Alias</b>: AddPages</p>
 --
--- @param _Briefing [table] Briefing
--- @return [function] AP - Allround-Funktion zur Erzeugung von Seiten
--- @return [function] ASP - Vereinfachte Funktion für Dialoge
--- @return [function] ASMC - Vereinfachte Funktion für Auswahl-Dialoge
+-- @param[type=table] _Briefing Briefing
+-- @return[type=function] AP - Allround-Funktion zur Erzeugung von Seiten
+-- @return[type=function] ASP - Vereinfachte Funktion für Dialoge
+-- @return[type=function] ASMC - Vereinfachte Funktion für Auswahl-Dialoge
 -- @within Anwenderfunktionen
 --
 function API.AddPages(_Briefing)
@@ -212,9 +212,9 @@ AddPages = API.AddPages;
 --
 -- <p><b>Alias</b>: AddPages</p>
 --
--- @param _Cutscene [table] Cutscene
--- @return [function] AF - Funktion für komfortable Notation von Flights
--- @return [function] ASF - Kurzschreibweise für AF
+-- @param[type=table] _Cutscene Cutscene
+-- @return[type=function] AF - Funktion für komfortable Notation von Flights
+-- @return[type=function] ASF - Kurzschreibweise für AF
 -- @within Anwenderfunktionen
 --
 function API.AddFlights(_Cutscene)
@@ -256,8 +256,8 @@ AddFlights = API.AddFlights;
 -- Splashscreens können eine Grafik anzeigen. Sie bieten zudem die Möglichkeit
 -- über die Grafik zu scrollen oder zu zoomen.
 --
--- @param _Page	[table] Spezifikation der Seite
--- @return [table] Refernez auf die angelegte Seite
+-- @param[type=table] _Page Spezifikation der Seite
+-- @return[type=table] Refernez auf die angelegte Seite
 -- @within Briefing
 --
 function AP(_Page)
@@ -324,7 +324,7 @@ end
 -- </tr>
 -- </table>
 --
--- @param _Flight	[table] Spezifikation des Flight
+-- @param[type=table] _Fligh Spezifikation des Flight
 -- @within Briefing
 --
 -- @usage
@@ -360,11 +360,11 @@ end
 -- <p><b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
 -- wenigen Kamerastationen oder für eine generische Nutzung.</p>
 --
--- @param _Text     [string] Angezeigter Text
--- @param _Duration [number] Dauer des Flight
--- @param _Action   [function] Aktion zu Beginn des Flight
--- @param _Fading   [boolen] Einblenden und Abblenden
--- @param ...       [number] Liste der XYZ-Koordinaten
+-- @param[type=string]   _Text     Angezeigter Text
+-- @param[type=number]   _Duration Dauer des Flight
+-- @param[type=function] _Action   Aktion zu Beginn des Flight
+-- @param[type=boolen]   _Fading   Einblenden und Abblenden
+-- @param[type=number]   ...       Liste der XYZ-Koordinaten
 -- @within Briefing
 --
 -- @usage
@@ -380,12 +380,12 @@ end
 -- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
 -- schaut den Siedler an.
 --
--- @param _entity		[string] Zielentity
--- @param _title		[string] Titel der Seite
--- @param _text		    [string] Text der Seite
--- @param _dialogCamera [boolean] Nahsicht an/aus
--- @param _action       [function] Callback-Funktion
--- @return [table] Referenz auf die Seite
+-- @param[type=string]   _entity        Zielentity
+-- @param[type=string]   _title         Titel der Seite
+-- @param[type=string]   _text          Text der Seite
+-- @param[type=boolean]  _dialogCamera  Nahsicht an/aus
+-- @param[type=function] _action        Callback-Funktion
+-- @return[type=table] Referenz auf die Seite
 -- @within Briefing
 --
 -- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
@@ -400,13 +400,13 @@ end
 -- wird davon Ausgegangen, dass das Entity ein Siedler ist. Die
 -- Kamera schaut den Siedler an.
 --
--- @param _entity		[string] Zielentity
--- @param _title		[tring] Titel der Seite
--- @param _text		    [string] Text der Seite
--- @param _dialogCamera [boolean] Nahsicht an/aus
--- @param ...			[mixed] Liste der Antworten und Sprungziele (string,
+-- @param[type=string]  _entity       Zielentity
+-- @param[type=string]  _title        Titel der Seite
+-- @param[type=string]  _text         Text der Seite
+-- @param[type=boolean] _dialogCamera Nahsicht an/aus
+-- @param               ...			  Liste der Antworten und Sprungziele (string,
 -- number, string, number, ...)
--- @return [table] Referenz auf die Seite
+-- @return[table=table] Referenz auf die Seite
 -- @within Briefing
 --
 -- @usage
@@ -874,8 +874,8 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- <p><b>Alias</b>: BriefingSystem.StartCutscene <br/></p>
     -- <p><b>Alias</b>: StartCutscene</p>
     --
-    -- @param _briefing [table] Briefing
-    -- @return [number] Briefing-ID
+    -- @param[type=table] _briefing Briefing
+    -- @return[type=number] Briefing-ID
     -- @within Anwenderfunktionen
     --
     function API.StartCutscene(_briefing)
@@ -920,9 +920,9 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- <p><b>Alias</b>: BriefingSystem.StartBriefing <br/></p>
     -- <p><b>Alias</b>: StartBriefing</p>
     --
-    -- @param _briefing     [table] Briefing
-    -- @param _cutsceneMode [boolean] Cutscene-Mode nutzen
-    -- @return number: Briefing-ID
+    -- @param[type=table]   _briefing     Briefing
+    -- @param[type=boolean] _cutsceneMode Cutscene-Mode nutzen
+    -- @return[type=number] Briefing-ID
     -- @within Anwenderfunktionen
     --
     function API.StartBriefing(_briefing, _cutsceneMode)
@@ -3151,7 +3151,7 @@ Core:RegisterBundle("BundleBriefingSystem");
 -- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
 -- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
 --
--- @param _Briefing [string] Funktionsname als String
+-- @param[type=string] _Briefing Funktionsname als String
 --
 -- @within Reward
 --
@@ -3215,7 +3215,7 @@ Core:RegisterBehavior(b_Reward_Briefing);
 -- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
 -- überwacht werden. Es kann pro Quest nur ein Briefing gebunden werden!
 --
--- @param _Briefing [string] Funktionsname als String
+-- @param[type=string] _Briefing Funktionsname als String
 --
 -- @within Reprisal
 --
@@ -3276,8 +3276,8 @@ Core:RegisterBehavior(b_Reprisal_Briefing);
 -- Startet einen Quest, nachdem das Briefing, das an einen anderen Quest
 -- angehangen ist, beendet ist.
 --
--- @param _QuestName [string] Name des Quest
--- @param _Waittime  [number] Wartezeit in Sekunden
+-- @param[type=string] _QuestName  Name des Quest
+-- @param[type=number] _Waittime  Wartezeit in Sekunden
 -- @within Trigger
 --
 function Trigger_Briefing(...)

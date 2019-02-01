@@ -12,16 +12,16 @@ Siedler oder andere "lebende" Figuren sein.
 -- Es folgt nun ein einfaches Beispiel für einen NPC, der beim Ansprechen durch
 -- einen Helden eine Folgefunktion auslöst.
 
-NonPlayerCharacter:New("HorstHackebeil")
-                  :SetCallback(BriefingButcher1)
-                  :Activate();
+API.NpcCompose {
+    Name     = "HorstHackebeil",
+    Callback = BriefingButcher1,
+}
 
--- Um später auf den NPC zuzugreifen kann man entweder das Objekt in einer
--- Variable speichern oder die Instanz über den Skriptnamen ermitteln:
-local NPC = NonPlayerCharacter:GetInstance("HorstHackkebeil");
+-- Um später auf den NPC zuzugreifen braucht man nur den Skriptnamen.
 
--- Um zu prüfen, ob der NPC angesprochen wurde, wird :HasTalkedTo() verwendet.
-if NonPlayerCharacter:GetInstance("HorstHackkebeil"):HasTalkedTo() then
+-- Um zu prüfen, ob der NPC angesprochen wurde, wird API.NpcHasSpoken()
+-- verwendet.
+if API.NpcHasSpoken("HorstHackebeil") then
     -- ...
 end
 
@@ -30,8 +30,8 @@ end
 -- Großangriff von Feinden. Natürlich kann man auch ein Briefing damit starten.
 
 -- Es ist zu beachten, dass das NPC-System seperat vom Questsystem läuft.
--- :HasTalkedTo() gibt true zurück sobald der NPC angesprochen wurde und somit
--- bereits in dem Moment in dem das Callback ausgelöst wird.
+-- API.NpcHasSpoken() gibt true zurück sobald der NPC angesprochen wurde und
+-- somit bereits in dem Moment in dem das Callback ausgelöst wird.
 
 -- Möchte man NPC's mit dem Questsystem verdrahten, sollte man die Behavior
 -- verwenden, auch wenn sie nicht die volle Funktionalität beinhalten.

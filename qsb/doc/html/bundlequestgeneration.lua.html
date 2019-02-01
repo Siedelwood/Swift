@@ -119,16 +119,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Data</span>
-         [table] Questdefinition
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Questdefinition
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [string] Name des Quests</li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name des Quests</li>
         <li>
-        [number] Gesamtzahl Quests</li>
+           <span class="types"><span class="type">number</span></span>
+        Gesamtzahl Quests</li>
     </ol>
 
 
@@ -153,8 +156,7 @@
     </dt>
     <dd>
     Erzeugt eine Nachricht im Questfenster.
-<p> Der erzeugte Quest wird immer fehlschlagen. Der angezeigte Test ist die
- Failure Message. Der Quest wird immer nach Ablauf der Wartezeit nach
+<p> Der Quest wird immer nach Ablauf der Wartezeit nach
  Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
  Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
  des Quests ausgeführt wird.
@@ -167,29 +169,36 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Text</span>
-               [string] Anzeigetext der Nachricht
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Anzeigetext der Nachricht
         </li>
         <li><span class="parameter">_Sender</span>
-             [number] Sender der Nachricht
+            <span class="types"><span class="type">number</span></span>
+              Sender der Nachricht
         </li>
         <li><span class="parameter">_Receiver</span>
-           [number] Receiver der Nachricht
+            <span class="types"><span class="type">number</span></span>
+            Receiver der Nachricht
         </li>
         <li><span class="parameter">_AncestorWt</span>
-         [number] Wartezeit
+            <span class="types"><span class="type">number</span></span>
+          Wartezeit
         </li>
         <li><span class="parameter">_Callback</span>
-           [function] Callback
+            <span class="types"><span class="type">function</span></span>
+            Callback
         </li>
         <li><span class="parameter">_Ancestor</span>
-           [string] Vorgänger-Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Vorgänger-Quest
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [string] QuestName
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        QuestName
     </ol>
 
 
@@ -207,19 +216,22 @@
     <dd>
     Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
  einander angezeigt werden.
-<p> Der Vorgänger-Quest und die Wartezeit müssen als Felder gesondert
- angegeben werden. Ab dem zweiten Eintrag werden sie ermittelt, sollten
- sie nicht angegeben sein. Es können Einträge von rechts nach links
- weggelassen werden.
-<p> Diese Funktion ist geeignet um Dialoge zu konfigurieren!
+<p> Dabei sind die eingestellten Wartezeiten in Echtzeit gemessen. Somit ist es
+ egal, wie hoch die Spielgeschwindigkeit ist. Die Dialoge warten alle
+ automatisch 12 Sekunden, wenn nichts anderes eingestellt wird.
+<p> Ein Dialog kann als Nachfolge auf einen Quest oder einen anderen Dialog
+ erzeugt werden, indem Ancestor gleich dem Questnamen gesetzt wird. Die
+ Wartezeit ist automatisch 0 Sekunden. Will man eine andere Wartezeit,
+ so muss Delay gesetzt werden.
+<p> Diese Funktion ist geeignet um längere Quest-Dialoge zu konfigurieren!
 <p> <b>Alias</b>: QuestDialog
-<p> Einzelne Einträge pro Quest:
+<p> Einzelne Parameter pro Eintrag:
  <ul>
  <li>Anzeigetext der Nachricht</li>
  <li>PlayerID des Sender der Nachricht</li>
  <li>PlayerID des Empfängers der Nachricht</li>
- <li>Name des vorangegangenen Quest</li>
- <li>Wartezeit bis zum Start</li>
+ <li>Wartezeit zur vorangegangenen Nachricht</li>
+ <li>Action-Funktion der Nachricht</li>
  </ul>
 
 
@@ -227,16 +239,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Messages</span>
-         [table] Liste der anzuzeigenden Nachrichten
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Liste der anzuzeigenden Nachrichten
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [string] Name des letzten Quest</li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name des letzten Quest</li>
         <li>
-        [table] Namensliste der Quests</li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Namensliste der Quests</li>
     </ol>
 
 
@@ -248,9 +263,9 @@
     Ancestor = <span class="string">"SomeQuestName"</span>,
     Delay = <span class="number">12</span>,
 
-    {<span class="string">"Hallo, wie geht es dir?"</span>, <span class="number">4</span>, <span class="number">1</span>},
-    {<span class="string">"Mir geht es gut, wie immer!"</span>, <span class="number">1</span>, <span class="number">1</span>},
-    {<span class="string">"Das ist doch schön."</span>, <span class="number">4</span>, <span class="number">1</span>},
+    {<span class="string">"Hallo, wie geht es dir?"</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">8</span>},
+    {<span class="string">"Mir geht es gut, wie immer!"</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">8</span>, SomeCallbackFunction},
+    {<span class="string">"Das ist doch schön."</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">8</span>},
 };</pre>
     </ul>
 
@@ -270,7 +285,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Dialog</span>
-         [string|table] Dialog der neu gestartet wird
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Dialog der abgebrochen wird
         </li>
     </ul>
 
@@ -294,7 +310,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Dialog</span>
-         [string|table] Dialog der neu gestartet wird
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Dialog der neu gestartet wird
         </li>
     </ul>
 
@@ -310,7 +327,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-08 18:56:46 </i>
+<i style="float:right;">Last updated 2019-02-01 09:48:52 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

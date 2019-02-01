@@ -156,7 +156,7 @@
 	<td class="summary">Erstellt eine Seite für ein Dialog-Briefing in der alten Notation.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AF">AF (_Flight)</a></td>
+	<td class="name" nowrap><a href="#AF">AF (_Fligh)</a></td>
 	<td class="summary">Erstellt einen Flight einer Fake-Cutscene.</td>
 	</tr>
 	<tr>
@@ -221,7 +221,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flag</span>
-         [boolean] Quest Timer pausiert
+            <span class="types"><span class="type">boolean</span></span>
+         Quest Timer pausiert
         </li>
     </ul>
 
@@ -243,14 +244,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_briefingID</span>
-         [number] ID des Briefing
+            <span class="types"><span class="type">number</span></span>
+         ID des Briefing
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Briefing ist beendet
+           <span class="types"><span class="type">boolean</span></span>
+        Briefing ist beendet
     </ol>
 
 
@@ -272,14 +275,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_page</span>
-         [table] Referenz auf die Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Referenz auf die Seite
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Gewählte Antwort
+           <span class="types"><span class="type">number</span></span>
+        Gewählte Antwort
     </ol>
 
 
@@ -300,14 +305,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_pageNumber</span>
-         [number] Index der Seite
+            <span class="types"><span class="type">number</span></span>
+         Index der Seite
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Seite des aktuellen Briefing
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Seite des aktuellen Briefing
     </ol>
 
 
@@ -329,7 +336,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        [table] Briefing mit allen Seiten
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Briefing mit allen Seiten
     </ol>
 
 
@@ -351,18 +359,22 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Briefing</span>
-         [table] Briefing
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Briefing
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [function] AP - Allround-Funktion zur Erzeugung von Seiten</li>
+           <span class="types"><span class="type">function</span></span>
+        AP - Allround-Funktion zur Erzeugung von Seiten</li>
         <li>
-        [function] ASP - Vereinfachte Funktion für Dialoge</li>
+           <span class="types"><span class="type">function</span></span>
+        ASP - Vereinfachte Funktion für Dialoge</li>
         <li>
-        [function] ASMC - Vereinfachte Funktion für Auswahl-Dialoge</li>
+           <span class="types"><span class="type">function</span></span>
+        ASMC - Vereinfachte Funktion für Auswahl-Dialoge</li>
     </ol>
 
 
@@ -384,16 +396,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Cutscene</span>
-         [table] Cutscene
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Cutscene
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [function] AF - Funktion für komfortable Notation von Flights</li>
+           <span class="types"><span class="type">function</span></span>
+        AF - Funktion für komfortable Notation von Flights</li>
         <li>
-        [function] ASF - Kurzschreibweise für AF</li>
+           <span class="types"><span class="type">function</span></span>
+        ASF - Kurzschreibweise für AF</li>
     </ol>
 
 
@@ -419,14 +434,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_briefing</span>
-         [table] Briefing
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Briefing
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] Briefing-ID
+           <span class="types"><span class="type">number</span></span>
+        Briefing-ID
     </ol>
 
 
@@ -451,17 +468,20 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_briefing</span>
-             [table] Briefing
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+             Briefing
         </li>
         <li><span class="parameter">_cutsceneMode</span>
-         [boolean] Cutscene-Mode nutzen
+            <span class="types"><span class="type">boolean</span></span>
+         Cutscene-Mode nutzen
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        number: Briefing-ID
+           <span class="types"><span class="type">number</span></span>
+        Briefing-ID
     </ol>
 
 
@@ -504,14 +524,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Page</span>
-        	[table] Spezifikation der Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Spezifikation der Seite
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Refernez auf die angelegte Seite
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Refernez auf die angelegte Seite
     </ol>
 
 
@@ -520,7 +542,7 @@
 </dd>
     <dt>
     <a name = "AF"></a>
-    <strong>AF (_Flight)</strong>
+    <strong>AF (_Fligh)</strong>
     </dt>
     <dd>
     Erstellt einen Flight einer Fake-Cutscene.
@@ -581,8 +603,9 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Flight</span>
-        	[table] Spezifikation des Flight
+        <li><span class="parameter">_Fligh</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Spezifikation des Flight
         </li>
     </ul>
 
@@ -627,19 +650,24 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Text</span>
-             [string] Angezeigter Text
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Angezeigter Text
         </li>
         <li><span class="parameter">_Duration</span>
-         [number] Dauer des Flight
+            <span class="types"><span class="type">number</span></span>
+         Dauer des Flight
         </li>
         <li><span class="parameter">_Action</span>
-           [function] Aktion zu Beginn des Flight
+            <span class="types"><span class="type">function</span></span>
+           Aktion zu Beginn des Flight
         </li>
         <li><span class="parameter">_Fading</span>
-           [boolen] Einblenden und Abblenden
+            <span class="types"><span class="type">boolen</span></span>
+           Einblenden und Abblenden
         </li>
         <li><span class="parameter">...</span>
-               [number] Liste der XYZ-Koordinaten
+            <span class="types"><span class="type">number</span></span>
+               Liste der XYZ-Koordinaten
         </li>
     </ul>
 
@@ -666,26 +694,32 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-        		[string] Zielentity
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Zielentity
         </li>
         <li><span class="parameter">_title</span>
-        		[string] Titel der Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                 Titel der Seite
         </li>
         <li><span class="parameter">_text</span>
-        		    [string] Text der Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                  Text der Seite
         </li>
         <li><span class="parameter">_dialogCamera</span>
-         [boolean] Nahsicht an/aus
+            <span class="types"><span class="type">boolean</span></span>
+          Nahsicht an/aus
         </li>
         <li><span class="parameter">_action</span>
-               [function] Callback-Funktion
+            <span class="types"><span class="type">function</span></span>
+                Callback-Funktion
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Referenz auf die Seite
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Referenz auf die Seite
     </ol>
 
 
@@ -710,19 +744,23 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_entity</span>
-        		[string] Zielentity
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+               Zielentity
         </li>
         <li><span class="parameter">_title</span>
-        		[tring] Titel der Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Titel der Seite
         </li>
         <li><span class="parameter">_text</span>
-        		    [string] Text der Seite
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                 Text der Seite
         </li>
         <li><span class="parameter">_dialogCamera</span>
-         [boolean] Nahsicht an/aus
+            <span class="types"><span class="type">boolean</span></span>
+         Nahsicht an/aus
         </li>
         <li><span class="parameter">...</span>
-        			[mixed] Liste der Antworten und Sprungziele (string,
+        			  Liste der Antworten und Sprungziele (string,
  number, string, number, ...)
         </li>
     </ul>
@@ -730,7 +768,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        [table] Referenz auf die Seite
+        Referenz auf die Seite
     </ol>
 
 
@@ -762,7 +800,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Briefing</span>
-         [string] Funktionsname als String
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Funktionsname als String
         </li>
     </ul>
 
@@ -790,7 +829,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Briefing</span>
-         [string] Funktionsname als String
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Funktionsname als String
         </li>
     </ul>
 
@@ -815,10 +855,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_QuestName</span>
-         [string] Name des Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Name des Quest
         </li>
         <li><span class="parameter">_Waittime</span>
-          [number] Wartezeit in Sekunden
+            <span class="types"><span class="type">number</span></span>
+          Wartezeit in Sekunden
         </li>
     </ul>
 
@@ -834,7 +876,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-08 18:56:45 </i>
+<i style="float:right;">Last updated 2019-02-01 09:48:51 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
