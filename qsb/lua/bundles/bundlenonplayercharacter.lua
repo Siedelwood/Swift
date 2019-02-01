@@ -23,6 +23,8 @@ BundleNonPlayerCharacter = {};
 API = API or {};
 QSB = QSB or {};
 
+QSB.NonPlayerCharacterObjects = {};
+
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -78,7 +80,7 @@ function API.NpcCompose(_Data)
         end
     end
 
-    local NPC = NonPlayerCharacter:New(_Data.Name);
+    local NPC = new {QSB.NonPlayerCharacter, _Data.Name};
     NPC:SetDialogPartner(_Data.Hero);
     NPC:SetWrongPartnerCallback(WronHeroCallback);
     NPC:SetCallback(_Data.Callback);
@@ -99,7 +101,7 @@ CreateNPC = API.NpcCompose;
 --
 function API.NpcDispose(_Entity)
     local ScriptName = Logic.GetEntityName(GetID(_Entity));
-    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    local NPC = QSB.NonPlayerCharacter:GetInstance(ScriptName);
     if not NPC then
         return;
     end
@@ -121,7 +123,7 @@ DestroyNPC = API.NpcDispose;
 --
 function API.NpcActivate(_Entity)
     local ScriptName = Logic.GetEntityName(GetID(_Entity));
-    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    local NPC = QSB.NonPlayerCharacter:GetInstance(ScriptName);
     if not NPC then
         return;
     end
@@ -142,7 +144,7 @@ EnableNPC = API.NpcActivate;
 --
 function API.NpcDeactivate(_Entity)
     local ScriptName = Logic.GetEntityName(GetID(_Entity));
-    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    local NPC = QSB.NonPlayerCharacter:GetInstance(ScriptName);
     if not NPC then
         return;
     end
@@ -163,7 +165,7 @@ DisableNPC = API.NpcDeactivate;
 --
 function API.NpcReset(_Entity)
     local ScriptName = Logic.GetEntityName(GetID(_Entity));
-    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    local NPC = QSB.NonPlayerCharacter:GetInstance(ScriptName);
     if not NPC then
         return;
     end
@@ -186,7 +188,7 @@ ResetNPC = API.NpcReset;
 --
 function API.NpcHasSpoken(_Entity)
     local ScriptName = Logic.GetEntityName(GetID(_Entity));
-    local NPC = NonPlayerCharacter:GetInstance(ScriptName);
+    local NPC = QSB.NonPlayerCharacter:GetInstance(ScriptName);
     if not NPC then
         return;
     end
@@ -195,71 +197,48 @@ end
 TalkedToNPC = API.NpcHasSpoken;
 
 -- -------------------------------------------------------------------------- --
--- Application-Space                                                          --
+-- Klassen                                                                    --
 -- -------------------------------------------------------------------------- --
 
-BundleNonPlayerCharacter = {
-    Global = {
-        NonPlayerCharacter = {
-            Data = {},
-        },
-        NonPlayerCharacterObjects = {},
-        LastNpcEntityID = 0,
-        LastHeroEntityID = 0,
-        DefaultNpcType = 1,
-    },
-    Local = {}
-};
-
 ---
--- Erzeugt ein neues Objekt von NonPlayerCharacter und bindet es an den
--- angegebenen Siedler. Dadurch wird der Siedler zu einem NPC, ist allerdings
--- noch nicht aktiv.
+-- Klasse zum erstellen und verwalten von NPC.
+-- @within Klassen
 --
--- <p><b>Alias:</b> NonPlayerCharacter:New</p>
---
--- @param[type=string] _ScriptName Skriptname des NPC
--- @return[type=table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
---
--- @usage
--- Einen normalen NPC erzeugen:
--- local NPC = NonPlayerCharacter:New("npc")
---     :SetDialogPartner("hero")                -- Optional
---     :SetCallback(Briefing1)                  -- Optional
---     :Activate();
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
-    assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
-    assert(IsExisting(_ScriptName), 'entity "' .._ScriptName.. '" does not exist!');
-
-    local npc = CopyTableRecursive(self);
-    npc.Data.NpcName = _ScriptName;
-    npc.Data.NpcType = BundleNonPlayerCharacter.Global.DefaultNpcType
-    BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[_ScriptName] = npc;
-    npc:CreateMarker();
-    return npc;
-end
+QSB.NonPlayerCharacter = {
+    ---
+    -- Konstruktor
+    -- @param[type=string] _ScriptName Skriptname des NPC
+    -- @within QSB.NonPlayerCharacter
+    -- @usage
+    -- Einen normalen NPC erzeugen:
+    -- new {QSB.NonPlayerCharacter, "npc"}
+    --     :SetDialogPartner("hero")                 -- Optional
+    --     :SetCallback(Briefing1)                   -- Optional
+    --     :Activate();
+    --
+    construct = function(self, _ScriptName)
+        self.m_NpcName = _ScriptName;
+        self.m_NpcType = BundleNonPlayerCharacter.Global.DefaultNpcType
+        QSB.NonPlayerCharacterObjects[_ScriptName] = self;
+        self:CreateMarker();
+    end
+};
 
 ---
 -- Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.
 --
 -- Wurde noch kein NPC für diesen Skriptnamen erzeugt, wird nil zurückgegeben.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:GetInstance</p>
---
 -- @param[type=string] _ScriptName Skriptname des NPC
 -- @return[type=table] Interaktives Objekt
--- @within NonPlayerCharacter
--- @local
+-- @within QSB.NonPlayerCharacter
 -- @usage -- NPC ermitteln
--- local NPC = NonPlayerCharacter:GetInstance("horst");
+-- local NPC = QSB.NonPlayerCharacter:GetInstance("horst");
 -- -- Etwas mit dem NPC tun
 -- NPC:SetDialogPartner("hilda");
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance(_ScriptName)
-    assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
+function QSB.NonPlayerCharacter:GetInstance(_ScriptName)
+    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     local EntityID = GetID(_ScriptName)
     local ScriptName = Logic.GetEntityName(EntityID);
     if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 1 then
@@ -268,20 +247,17 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetInstance(_ScriptN
             ScriptName = Logic.GetEntityName(LeaderID);
         end
     end
-    return BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[ScriptName];
+    return QSB.NonPlayerCharacterObjects[ScriptName];
 end
 
 ---
 -- Gibt die Entity ID des letzten angesprochenen NPC zurück.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:GetNpcId</p>
---
 -- @return[type=number] ID des letzten NPC
--- @within NonPlayerCharacter
--- @local
+-- @within QSB.NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetNpcId()
-    assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
+function QSB.NonPlayerCharacter:GetNpcId()
+    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     return BundleNonPlayerCharacter.Global.LastNpcEntityID;
 end
 
@@ -289,14 +265,11 @@ end
 -- Gibt die Entity ID des letzten Helden zurück, der einen NPC
 -- angesprochen hat.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:GetHeroId</p>
---
 -- @return[type=number] ID des letzten Heden
--- @within NonPlayerCharacter
--- @local
+-- @within QSB.NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetHeroId()
-    assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
+function QSB.NonPlayerCharacter:GetHeroId()
+    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     return BundleNonPlayerCharacter.Global.LastHeroEntityID;
 end
 
@@ -304,15 +277,12 @@ end
 -- Gibt die Entity ID des NPC zurück. Ist der NPC ein Leader, wird
 -- der erste Soldat zurückgegeben, wenn es einen gibt.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:GetID</p>
---
 -- @return[type=number] ID des NPC
--- @within NonPlayerCharacter
--- @local
+-- @within QSB.NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:GetID()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    local EntityID = GetID(self.Data.NpcName);
+function QSB.NonPlayerCharacter:GetID()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    local EntityID = GetID(self.m_NpcName);
     if Logic.IsEntityInCategory(EntityID, EntityCategories.Leader) == 1 then
         local Soldiers = {Logic.GetSoldiersAttachedToLeader(EntityID)};
         if Soldiers[1] > 0 then
@@ -325,36 +295,31 @@ end
 ---
 -- Löscht einen NPC.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:Dispose</p>
---
--- @within NonPlayerCharacter
--- @local
+-- @within QSB.NonPlayerCharacter
 --
 -- @usage -- NPC löschen
 -- NPC:Dispose();
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Dispose()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+function QSB.NonPlayerCharacter:Dispose()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     self:Deactivate();
     self:DestroyMarker();
-    BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[self.Data.NpcName] = nil;
+    QSB.NonPlayerCharacterObjects[self.m_NpcName] = nil;
 end
 
 ---
 -- Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:Activate</p>
---
--- @return[type=table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
+-- @param[type=number] _Type NPC-Typ [1-4]
+-- @return[type=table] self
+-- @within QSB.NonPlayerCharacter
 -- @usage -- NPC aktivieren:
 -- NPC:Activate();
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Activate()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if IsExisting(self.Data.NpcName) then
-        Logic.SetOnScreenInformation(self:GetID(), self.Data.NpcType);
+function QSB.NonPlayerCharacter:Activate(_Type)
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if IsExisting(self.m_NpcName) then
+        Logic.SetOnScreenInformation(self:GetID(), _Type or self.m_NpcType);
         self:ShowMarker();
     end
     return self;
@@ -363,17 +328,14 @@ end
 ---
 -- Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:Deactivate</p>
---
--- @return[type=table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
+-- @return[type=table] self
+-- @within QSB.NonPlayerCharacter
 -- @usage -- NPC deaktivieren:
 -- NPC:Deactivate();
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Deactivate()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if IsExisting(self.Data.NpcName) then
+function QSB.NonPlayerCharacter:Deactivate()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if IsExisting(self.m_NpcName) then
         Logic.SetOnScreenInformation(self:GetID(), 0);
         self:HideMarker();
     end
@@ -383,31 +345,25 @@ end
 ---
 -- <p>Gibt true zurück, wenn der NPC aktiv ist.</p>
 --
--- <p><b>Alias:</b> NonPlayerCharacter:IsActive</p>
---
 -- @return[type=boolean] NPC ist aktiv
--- @within NonPlayerCharacter
--- @local
+-- @within QSB.NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsActive()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+function QSB.NonPlayerCharacter:IsActive()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     return Logic.GetEntityScriptingValue(self:GetID(), 6) > 0;
 end
 
 ---
 -- Setzt den NPC zurück, sodass er erneut aktiviert werden kann.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:Reset</p>
+-- @return[type=table] self
+-- @within QSB.NonPlayerCharacter
 --
--- @return[type=table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:Reset()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if IsExisting(self.Data.NpcName) then
+function QSB.NonPlayerCharacter:Reset()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if IsExisting(self.m_NpcName) then
         Logic.SetOnScreenInformation(self:GetID(), 0);
-        self.Data.TalkedTo = nil;
+        self.m_TalkedTo = nil;
         self:HideMarker();
     end
     return self;
@@ -418,33 +374,27 @@ end
 -- spezieller Ansprechpartner definiert, wird nur dann true
 -- zurückgegeben, wenn dieser Held mit dem NPC spricht.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:HasTalkedTo</p>
---
 -- @return[type=boolean] NPC wurde angesprochen
--- @within NonPlayerCharacter
--- @local
+-- @within QSB.NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if self.Data.HeroName then
-        return self.Data.TalkedTo == GetID(self.Data.HeroName);
+function QSB.NonPlayerCharacter:HasTalkedTo()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if self.m_HeroName then
+        return self.m_TalkedTo == GetID(self.m_HeroName);
     end
-    return self.Data.TalkedTo ~= nil;
+    return self.m_TalkedTo ~= nil;
 end
 
 ---
 -- Gibt die Entity ID des letzten angesprochenen NPC zurück.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:GetNpcId</p>
+-- @param[type=number] _Type Typ des Npc
+-- @return[type=number] ID des letzten NPC
+-- @within QSB.NonPlayerCharacter
 --
--- @param _Type [number] Typ des Npc
--- @return [number] ID des letzten NPC
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetType(_Type)
-    assert( self == BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used from instance!');
-    self.Data.NpcType = _Type;
+function QSB.NonPlayerCharacter:SetType(_Type)
+    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    self.m_NpcType = _Type;
     if _Type > 1 then
         self:HideMarker();
     end
@@ -454,16 +404,13 @@ end
 ---
 -- Setzt den Ansprechpartner für diesen NPC.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:SetDialogPartner</p>
---
 -- @param[type=string] _HeroName Skriptname des Helden
--- @return[type=table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
+-- @return[type=table] self
+-- @within QSB.NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetDialogPartner(_HeroName)
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.HeroName = _HeroName;
+function QSB.NonPlayerCharacter:SetDialogPartner(_HeroName)
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    self.m_HeroName = _HeroName;
     return self;
 end
 
@@ -471,163 +418,181 @@ end
 -- Setzt das Callback für den Fall, dass ein falscher Held den
 -- NPC anspricht.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:SetWrongPartnerCallback</p>
---
 -- @param[type=function] _Callback Callback
--- @return[type=table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
+-- @return[type=table] self
+-- @within QSB.NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetWrongPartnerCallback(_Callback)
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    self.Data.WrongHeroCallback = _Callback;
+function QSB.NonPlayerCharacter:SetWrongPartnerCallback(_Callback)
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    self.m_WrongHeroCallback = _Callback;
     return self;
 end
 
 ---
 -- Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.
 --
--- <p><b>Alias:</b> NonPlayerCharacter:SetCallback</p>
---
 -- @param[type=function] _Callback Callback
--- @return[type=table] Instanz von NonPlayerCharacter
--- @within NonPlayerCharacter
--- @local
+-- @return[type=table] self
+-- @within QSB.NonPlayerCharacter
 --
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetCallback(_Callback)
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+function QSB.NonPlayerCharacter:SetCallback(_Callback)
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     assert(type(_Callback) == "function", 'callback must be a function!');
-    self.Data.Callback = _Callback;
+    self.m_Callback = _Callback;
     return self;
 end
 
--- -------------------------------------------------------------------------- --
--- Behavior                                                                   --
--- -------------------------------------------------------------------------- --
+---
+-- Rotiert alle nahen Helden zum NPC und den NPC zu dem Helden,
+-- der ihn angesprochen hat.
+--
+-- @within QSB.NonPlayerCharacter
+-- @local
+--
+function QSB.NonPlayerCharacter:RotateActors()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+
+    local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
+    local KnightIDs = {};
+    Logic.GetKnights(PlayerID, KnightIDs);
+    for i= 1, #KnightIDs, 1 do
+        if Logic.GetDistanceBetweenEntities(KnightIDs[i], BundleNonPlayerCharacter.Global.LastNpcEntityID) < 3000 then
+            local x,y,z = Logic.EntityGetPos(KnightIDs[i]);
+            if Logic.IsEntityMoving(KnightIDs[i]) then
+                Logic.MoveEntity(KnightIDs[i], x, y);
+            end
+            LookAt(KnightIDs[i], self.m_NpcName);
+        end
+    end
+
+    local NpcOffset = 0;
+    if Logic.IsKnight(GetID(self.m_NpcName)) then
+        NpcOffset = 15;
+    end
+    LookAt(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, NpcOffset);
+    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.m_NpcName, 15);
+end
 
 ---
--- Der Held muss einen Nichtspielercharakter ansprechen.
+-- Erzeugt das Entity des NPC-Markers.
 --
--- Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
--- aktiviert wurde.
+-- @within QSB.NonPlayerCharacter
+-- @local
 --
--- @param[type=string] _NpcName  Skriptname des NPC
--- @param[type=string] _HeroName (optional) Skriptname des Helden
--- @within Goal
---
-function Goal_NPC(...)
-    return b_Goal_NPC:new(...);
+function QSB.NonPlayerCharacter:CreateMarker()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    local x,y,z = Logic.EntityGetPos(self:GetID());
+    local MarkerID = Logic.CreateEntity(Entities.XD_ScriptEntity, x, y, 0, 0);
+    DestroyEntity(self.m_MarkerID);
+    self.m_MarkerID = MarkerID;
+    self:HideMarker();
+    return self;
 end
-
-b_Goal_NPC = {
-    Name             = "Goal_NPC",
-    Description     = {
-        en = "Goal: The hero has to talk to a non-player character.",
-        de = "Ziel: Der Held muss einen Nichtspielercharakter ansprechen.",
-    },
-    Parameter = {
-        { ParameterType.ScriptName, en = "NPC",  de = "NPC" },
-        { ParameterType.ScriptName, en = "Hero", de = "Held" },
-    },
-}
-
-function b_Goal_NPC:GetGoalTable(__quest_)
-    return {Objective.Distance, -65565, self.Hero, self.NPC, self }
-end
-
-function b_Goal_NPC:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.NPC = __parameter_
-    elseif (__index_ == 1) then
-        self.Hero = __parameter_
-        if self.Hero == "-" then
-            self.Hero = nil
-        end
-   end
-end
-
-function b_Goal_NPC:GetIcon()
-    return {14,10}
-end
-
-Core:RegisterBehavior(b_Goal_NPC);
-
--- -------------------------------------------------------------------------- --
 
 ---
--- Startet den Quest, sobald der NPC angesprochen wurde.
+-- Entfernt das Entity des NPC-Markers.
 --
--- Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
--- erzeugt wurde.
+-- @within QSB.NonPlayerCharacter
+-- @local
 --
--- @param[type=string] _NpcName  Skriptname des NPC
--- @param[type=string] _HeroName (optional) Skriptname des Helden
--- @within Trigger
---
-function Trigger_NPC(...)
-    return b_Trigger_NPC:new(...);
+function QSB.NonPlayerCharacter:DestroyMarker()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if self.m_MarkerID then
+        DestroyEntity(self.m_MarkerID);
+        self.m_MarkerID = nil;
+    end
+    return self;
 end
 
-b_Trigger_NPC = {
-    Name = "Trigger_NPC",
-    Description = {
-        en = "Trigger: Starts the quest after the npc was spoken to.",
-        de = "Ausloeser: Startet den Quest, sobald der NPC angesprochen wurde.",
-    },
-    Parameter = {
-        { ParameterType.ScriptName, en = "NPC",  de = "NPC" },
-        { ParameterType.ScriptName, en = "Hero", de = "Held" },
-    },
-}
-
-function b_Trigger_NPC:GetTriggerTable()
-    return { Triggers.Custom2,{self, self.CustomFunction} }
+---
+-- Zeigt den NPC-Marker des NPC an.
+--
+-- @within QSB.NonPlayerCharacter
+-- @local
+--
+function QSB.NonPlayerCharacter:ShowMarker()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if self.m_NpcType == 1 and IsExisting(self.m_MarkerID) then
+        local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), -45);
+        Logic.SetEntityScriptingValue(self.m_MarkerID, -45, EntityScale);
+        Logic.SetModel(self.m_MarkerID, Models.Effects_E_Wealth);
+        Logic.SetVisible(self.m_MarkerID, true);
+    end
+    self.m_MarkerVisibility = true;
+    return self;
 end
 
-function b_Trigger_NPC:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.NPC = __parameter_
-    elseif (__index_ == 1) then
-        self.Hero = __parameter_
-        if self.Hero == "-" then
-            self.Hero = nil
+---
+-- Versteckt den NPC-Marker des NPC.
+--
+-- @within QSB.NonPlayerCharacter
+-- @local
+--
+function QSB.NonPlayerCharacter:HideMarker()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    if IsExisting(self.m_MarkerID) then
+        Logic.SetModel(self.m_MarkerID, Models.Effects_E_NullFX);
+        Logic.SetVisible(self.m_MarkerID, false);
+    end
+    self.m_MarkerVisibility = false;
+    return self;
+end
+
+---
+-- Gibt true zurück, wenn der Marker des NPC sichtbar ist.
+--
+-- @return[type=boolen] Sichtbarkeit
+-- @within QSB.NonPlayerCharacter
+-- @local
+--
+function QSB.NonPlayerCharacter:IsMarkerVisible()
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    return IsExisting(self.m_MarkerID) and self.m_MarkerVisibility == true;
+end
+
+---
+-- Kontrolliert die Sichtbarkeit und die Position des NPC-Markers.
+--
+-- @within QSB.NonPlayerCharacter
+-- @local
+--
+function QSB.NonPlayerCharacter:ControlMarker()
+    -- Nur, wenn Standard-NPC
+    if self.m_NpcType == 1 then
+        if self:IsActive() and not self:HasTalkedTo() then
+            -- Blinken
+            if self:IsMarkerVisible() then
+                self:HideMarker();
+            else
+                self:ShowMarker();
+            end
+
+            -- Repositionierung
+            local x1,y1,z1 = Logic.EntityGetPos(self.m_MarkerID);
+            local x2,y2,z2 = Logic.EntityGetPos(self:GetID());
+            if math.abs(x1-x2) > 20 or math.abs(y1-y2) > 20 then
+                Logic.DEBUG_SetPosition(self.m_MarkerID, x2, y2);
+            end
+        end
+        -- Während Briefings immer verstecken
+        if IsBriefingActive and IsBriefingActive() then
+            self:HideMarker();
         end
     end
 end
-
-function b_Trigger_NPC:CustomFunction()
-    if not IsExisting(self.NPC) then
-        return;
-    end
-    if not self.NpcInstance then
-        local NPC = NonPlayerCharacter:New(self.NPC);
-        NPC:SetDialogPartner(self.Hero);
-        self.NpcInstance = NPC;
-    end
-    local TalkedTo = self.NpcInstance:HasTalkedTo(self.Hero);
-    if not TalkedTo then
-        if not self.NpcInstance:IsActive() then
-            self.NpcInstance:Activate();
-        end
-    end
-    return TalkedTo;
-end
-
-function b_Trigger_NPC:Reset(__quest_)
-    if self.NpcInstance then
-        self.NpcInstance:Dispose();
-    end
-end
-
-function b_Trigger_NPC:DEBUG(__quest_)
-    return false;
-end
-
-Core:RegisterBehavior(b_Trigger_NPC);
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
+
+BundleNonPlayerCharacter = {
+    Global = {
+        LastNpcEntityID = 0,
+        LastHeroEntityID = 0,
+        DefaultNpcType = 1,
+    },
+    Local = {}
+};
 
 -- Global Script ---------------------------------------------------------------
 
@@ -637,13 +602,11 @@ Core:RegisterBehavior(b_Trigger_NPC);
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
-    NonPlayerCharacter = BundleNonPlayerCharacter.Global.NonPlayerCharacter;
-
     ---
     -- Führt die statische Steuerungsfunktion für alle NPC aus.
     --
     StartSimpleJobEx( function()
-        for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
+        for k, v in pairs(QSB.NonPlayerCharacterObjects) do
             v:ControlMarker();
         end
     end);
@@ -670,20 +633,20 @@ function BundleNonPlayerCharacter.Global:Install()
             end
         end
         BundleNonPlayerCharacter.Global.LastHeroEntityID = ClosestKnightID;
-        local NPC = NonPlayerCharacter:GetInstance(_EntityID);
+        local NPC = QSB.NonPlayerCharacter:GetInstance(_EntityID);
         BundleNonPlayerCharacter.Global.LastNpcEntityID = NPC:GetID();
 
         if NPC then
             NPC:RotateActors();
-            NPC.Data.TalkedTo = ClosestKnightID;
+            NPC.m_TalkedTo = ClosestKnightID;
             if NPC:HasTalkedTo() then
                 NPC:Deactivate();
-                if NPC.Data.Callback then
-                    NPC.Data.Callback(NPC, ClosestKnightID);
+                if NPC.m_Callback then
+                    NPC.m_Callback(NPC, ClosestKnightID);
                 end
             else
-                if NPC.Data.WrongHeroCallback then
-                    NPC.Data.WrongHeroCallback(NPC, ClosestKnightID);
+                if NPC.m_WrongHeroCallback then
+                    NPC.m_WrongHeroCallback(NPC, ClosestKnightID);
                 end
             end
         end
@@ -749,7 +712,7 @@ function BundleNonPlayerCharacter.Global:Install()
                     objective.Completed = false;
                 else
                     if not data[4].NpcInstance then
-                        local NPC = NonPlayerCharacter:New(data[3]);
+                        local NPC = new {QSB.NonPlayerCharacter, data[3]};
                         NPC:SetDialogPartner(data[2]);
                         data[4].NpcInstance = NPC;
                     end
@@ -773,151 +736,12 @@ end
 -- Setzt den Standardtypen des NPC. Der Typ gibt an, ob Glitter verwendet wird
 -- oder auf die NPC-Marker zurückgegriffen wird.
 --
--- @param _Type [number] Typ des NPC (1 oder 2)
+-- @param[type=number] _Type Typ des NPC [1-4]
 -- @within Internal
 -- @local
 --
 function BundleNonPlayerCharacter.Global:SetDefaultNPCType(_Type)
     self.DefaultNpcType = _Type;
-end
-
----
--- Rotiert alle nahen Helden zum NPC und den NPC zu dem Helden,
--- der ihn angesprochen hat.
---
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:RotateActors()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-
-    local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
-    local KnightIDs = {};
-    Logic.GetKnights(PlayerID, KnightIDs);
-    for i= 1, #KnightIDs, 1 do
-        if Logic.GetDistanceBetweenEntities(KnightIDs[i], BundleNonPlayerCharacter.Global.LastNpcEntityID) < 3000 then
-            local x,y,z = Logic.EntityGetPos(KnightIDs[i]);
-            if Logic.IsEntityMoving(KnightIDs[i]) then
-                Logic.MoveEntity(KnightIDs[i], x, y);
-            end
-            LookAt(KnightIDs[i], self.Data.NpcName);
-        end
-    end
-
-    local NpcOffset = 0;
-    if Logic.IsKnight(GetID(self.Data.NpcName)) then
-        NpcOffset = 15;
-    end
-    LookAt(self.Data.NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, NpcOffset);
-    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.Data.NpcName, 15);
-end
-
----
--- Erzeugt das Entity des NPC-Markers.
---
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:CreateMarker()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    local x,y,z = Logic.EntityGetPos(self:GetID());
-    local MarkerID = Logic.CreateEntity(Entities.XD_ScriptEntity, x, y, 0, 0);
-    DestroyEntity(self.Data.MarkerID);
-    self.Data.MarkerID = MarkerID;
-    self:HideMarker();
-    return self;
-end
-
----
--- Entfernt das Entity des NPC-Markers.
---
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:DestroyMarker()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if self.Data.MarkerID then
-        DestroyEntity(self.Data.MarkerID);
-        self.Data.MarkerID = nil;
-    end
-    return self;
-end
-
----
--- Zeigt den NPC-Marker des NPC an.
---
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:ShowMarker()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if self.Data.NpcType == 1 and IsExisting(self.Data.MarkerID) then
-        local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), -45);
-        Logic.SetEntityScriptingValue(self.Data.MarkerID, -45, EntityScale);
-        Logic.SetModel(self.Data.MarkerID, Models.Effects_E_Wealth);
-        Logic.SetVisible(self.Data.MarkerID, true);
-    end
-    self.Data.MarkerVisibility = true;
-    return self;
-end
-
----
--- Versteckt den NPC-Marker des NPC.
---
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:HideMarker()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    if IsExisting(self.Data.MarkerID) then
-        Logic.SetModel(self.Data.MarkerID, Models.Effects_E_NullFX);
-        Logic.SetVisible(self.Data.MarkerID, false);
-    end
-    self.Data.MarkerVisibility = false;
-    return self;
-end
-
----
--- Gibt true zurück, wenn der Marker des NPC sichtbar ist.
---
--- @return[type=boolen] Sichtbarkeit
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsMarkerVisible()
-    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
-    return IsExisting(self.Data.MarkerID) and self.Data.MarkerVisibility == true;
-end
-
----
--- Kontrolliert die Sichtbarkeit und die Position des NPC-Markers.
---
--- @within NonPlayerCharacter
--- @local
---
-function BundleNonPlayerCharacter.Global.NonPlayerCharacter:ControlMarker()
-    -- Nur, wenn Standard-NPC
-    if self.Data.NpcType == 1 then
-        if self:IsActive() and not self:HasTalkedTo() then
-            -- Blinken
-            if self:IsMarkerVisible() then
-                self:HideMarker();
-            else
-                self:ShowMarker();
-            end
-
-            -- Repositionierung
-            local x1,y1,z1 = Logic.EntityGetPos(self.Data.MarkerID);
-            local x2,y2,z2 = Logic.EntityGetPos(self:GetID());
-            if math.abs(x1-x2) > 20 or math.abs(y1-y2) > 20 then
-                Logic.DEBUG_SetPosition(self.Data.MarkerID, x2, y2);
-            end
-        end
-        -- Während Briefings immer verstecken
-        if IsBriefingActive and IsBriefingActive() then
-            self:HideMarker();
-        end
-    end
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -1022,4 +846,128 @@ function BundleNonPlayerCharacter.Local:Install()
 end
 
 Core:RegisterBundle("BundleNonPlayerCharacter");
+
+-- -------------------------------------------------------------------------- --
+-- Behavior                                                                   --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Held muss einen Nichtspielercharakter ansprechen.
+--
+-- Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
+-- aktiviert wurde.
+--
+-- @param[type=string] _NpcName  Skriptname des NPC
+-- @param[type=string] _HeroName (optional) Skriptname des Helden
+-- @within Goal
+--
+function Goal_NPC(...)
+    return b_Goal_NPC:new(...);
+end
+
+b_Goal_NPC = {
+    Name             = "Goal_NPC",
+    Description     = {
+        en = "Goal: The hero has to talk to a non-player character.",
+        de = "Ziel: Der Held muss einen Nichtspielercharakter ansprechen.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "NPC",  de = "NPC" },
+        { ParameterType.ScriptName, en = "Hero", de = "Held" },
+    },
+}
+
+function b_Goal_NPC:GetGoalTable(__quest_)
+    return {Objective.Distance, -65565, self.Hero, self.NPC, self }
+end
+
+function b_Goal_NPC:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.NPC = __parameter_
+    elseif (__index_ == 1) then
+        self.Hero = __parameter_
+        if self.Hero == "-" then
+            self.Hero = nil
+        end
+   end
+end
+
+function b_Goal_NPC:GetIcon()
+    return {14,10}
+end
+
+Core:RegisterBehavior(b_Goal_NPC);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet den Quest, sobald der NPC angesprochen wurde.
+--
+-- Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
+-- erzeugt wurde.
+--
+-- @param[type=string] _NpcName  Skriptname des NPC
+-- @param[type=string] _HeroName (optional) Skriptname des Helden
+-- @within Trigger
+--
+function Trigger_NPC(...)
+    return b_Trigger_NPC:new(...);
+end
+
+b_Trigger_NPC = {
+    Name = "Trigger_NPC",
+    Description = {
+        en = "Trigger: Starts the quest after the npc was spoken to.",
+        de = "Ausloeser: Startet den Quest, sobald der NPC angesprochen wurde.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "NPC",  de = "NPC" },
+        { ParameterType.ScriptName, en = "Hero", de = "Held" },
+    },
+}
+
+function b_Trigger_NPC:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_NPC:AddParameter(__index_, __parameter_)
+    if (__index_ == 0) then
+        self.NPC = __parameter_
+    elseif (__index_ == 1) then
+        self.Hero = __parameter_
+        if self.Hero == "-" then
+            self.Hero = nil
+        end
+    end
+end
+
+function b_Trigger_NPC:CustomFunction()
+    if not IsExisting(self.NPC) then
+        return;
+    end
+    if not self.NpcInstance then
+        local NPC = new {QSB.NonPlayerCharacter, self.NPC};
+        NPC:SetDialogPartner(self.Hero);
+        self.NpcInstance = NPC;
+    end
+    local TalkedTo = self.NpcInstance:HasTalkedTo(self.Hero);
+    if not TalkedTo then
+        if not self.NpcInstance:IsActive() then
+            self.NpcInstance:Activate();
+        end
+    end
+    return TalkedTo;
+end
+
+function b_Trigger_NPC:Reset(__quest_)
+    if self.NpcInstance then
+        self.NpcInstance:Dispose();
+    end
+end
+
+function b_Trigger_NPC:DEBUG(__quest_)
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_NPC);
 
