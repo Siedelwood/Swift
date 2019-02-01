@@ -172,7 +172,7 @@ CreateIOStoneMine = API.CreateIOStoneMine;
 --
 -- <p><b>Alias</b>: CreateIOBuildingSite</p>
 --
--- @param[type=string]   _Position [string] Zielpunkt
+-- @param[type=string]   _Position Zielpunkt
 -- @param[type=number]   _PlayerID Besitzer des Gebäudes
 -- @param[type=number]   _Type Typ des Gebäudes
 -- @param[type=table]    _Costs (optional) Eigene Gebäudekosten

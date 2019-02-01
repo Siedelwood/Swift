@@ -71,7 +71,7 @@ StartSong = API.StartMusic;
 --
 -- @param[type=string] _File Pfad zur Datei
 -- @param[type=number] _Volume Lautstärke
--- @param[type=number] _Length Abspieldower (<= Dauer Musikstück)
+-- @param[type=number] _Length Abspieldauer (<= Dauer Musikstück)
 -- @param[type=number] _FadeOut Ausblenden in Sekunden
 -- @within Anwenderfunktionen
 --
