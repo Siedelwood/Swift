@@ -126,7 +126,7 @@ SymfoniaLoader = {
             -- Fortgeschrittene Bibliothek
             -- Neue Funktionen für fortgeschrittene Anwender.
             {"BundleBuildingButtons",               true},
-            {"BundleEntityScriptingValues",         true},
+            {"BundleEntityProperties",              true},
             {"BundleEntitySelection",               true},
             {"BundleGameHelperFunctions",           true},
             {"BundleInteractiveObjects",            true},

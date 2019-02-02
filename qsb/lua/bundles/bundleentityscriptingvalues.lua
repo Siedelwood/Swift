@@ -9,8 +9,6 @@
 -- verändert werden, die sonst unzugänglich wären. Dazu zählen beispielsweise
 -- die Größe des Entity und das Bewegungsziel.
 --
--- <a href="#API.GetEntityPlayer">Scripting Values</a>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -44,7 +42,7 @@ function API.GetEntityScale(_Entity)
         API.Fatal("API.GetEntityScale: Target " ..Subject.. " is invalid!");
         return -1;
     end
-    return BundleEntityScriptingValues.Shared:GetEntitySize(_Entity);
+    return QSB.EntityScriptingValue:GetInstance(_Entity):GetEntitySize();
 end
 GetScale = API.GetEntityScale;
 
@@ -63,7 +61,7 @@ function API.GetEntityPlayer(_Entity)
         API.Fatal("API.GetEntityPlayer: Target " ..Subject.. " is invalid!");
         return -1;
     end
-    return BundleEntityScriptingValues.Shared:GetPlayerID(_Entity);
+    return QSB.EntityScriptingValue:GetInstance(_Entity):GetPlayerID();
 end
 GetPlayer = API.GetEntityPlayer;
 
@@ -93,7 +91,7 @@ function API.GetMovementTarget(_Entity)
         API.Fatal("API.GetMovementTarget: Target " ..Subject.. " is invalid!");
         return nil;
     end
-    return BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity);
+    return QSB.EntityScriptingValue:GetInstance(_Entity):GetMovingTargetPosition();
 end
 GetMovingTarget = API.GetMovementTarget;
 
@@ -120,7 +118,7 @@ function API.IsActiveNpc(_Entity)
         API.Fatal("API.IsActiveNpc: Target " ..Subject.. " is invalid!");
         return false;
     end
-    return BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity);
+    return QSB.EntityScriptingValue:GetInstance(_Entity):IsOnScreenInformationActive();
 end
 IsNpc = API.IsActiveNpc;
 
@@ -139,7 +137,7 @@ function API.IsEntityVisible(_Entity)
         API.Fatal("API.IsEntityVisible: Target " ..Subject.. " is invalid!");
         return false;
     end
-    return BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity);
+    return QSB.EntityScriptingValue:GetInstance(_Entity):IsEntityVisible();
 end
 IsVisible = API.IsEntityVisible;
 
@@ -165,7 +163,7 @@ function API.SetEntityScale(_Entity, _Scale)
         API.Fatal("API.SetEntityScale: Scale must be a number!");
         return;
     end
-    return BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale);
+    QSB.EntityScriptingValue:GetInstance(_Entity):SetEntitySize(_Scale);
 end
 SetScale = API.SetEntityScale;
 
@@ -191,7 +189,7 @@ function API.SetEntityPlayer(_Entity, _PlayerID)
         API.Fatal("API.SetEntityPlayer: Player-ID must between 0 and 8!");
         return;
     end
-    return BundleEntityScriptingValues.Global:SetPlayerID(_Entity, math.floor(_PlayerID));
+    QSB.EntityScriptingValue:GetInstance(_Entity):SetPlayerID(math.floor(_PlayerID));
 end
 ChangePlayer = API.SetEntityPlayer;
 
@@ -199,43 +197,64 @@ ChangePlayer = API.SetEntityPlayer;
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleEntityScriptingValues = {
-    Global = {
-        Data = {}
-    },
-    Local = {
-        Data = {}
-    },
-    Shared = {
-        Data = {}
-    },
-}
+-- Scripting Value Class -------------------------------------------------------
 
--- Global Script ---------------------------------------------------------------
+QSB.EntityScriptingValueObjects = {};
 
 ---
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
+-- Diese Klasse definiert einen Entity-Wrapper mit dem einfach auf ESV
+-- zugegriffen werden kann.
+-- @within Klassen
 -- @local
 --
-function BundleEntityScriptingValues.Global:Install()
+QSB.EntityScriptingValue = class {
+    ---
+    -- Konstruktor
+    -- @param[type=string] _Entity Skriptname des Entity
+    -- @within QSB.EntityScriptingValue
+    -- @local
+    --
+    construct = function(self, _Entity)
+        self.m_EntityName = _Entity;
+        QSB.EntityScriptingValueObjects[_Entity] = self;
+    end
+};
 
+---
+-- Gibt die Scripting Value Instanz des Entity zurück.
+-- @param[type=string] _Entity Skriptname des Entity
+-- @return[type=table] Instanz
+-- @within QSB.EntityScriptingValue
+-- @local
+--
+function QSB.EntityScriptingValue:GetInstance(_Entity)
+    assert(self == QSB.EntityScriptingValue, "Can not be used from instance!");
+
+    if not QSB.EntityScriptingValueObjects[_Entity] then
+        QSB.EntityScriptingValueObjects[_Entity] = new{QSB.EntityScriptingValue, _Entity};
+    end
+    return QSB.EntityScriptingValueObjects[_Entity];
 end
 
 ---
 -- Ändert die Größe des Entity.
 -- @param              _Entity Entity (skriptname oder ID)
 -- @param[type=number] _Scale  Größenfaktor
--- @within Internal
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Global:SetEntitySize(_Entity, _Scale)
-    local EntityID = GetID(_Entity);
-    Logic.SetEntityScriptingValue(EntityID, -45, BundleEntityScriptingValues.Shared:Float2Int(_Scale));
-    if Logic.IsSettler(EntityID) == 1 then
-        Logic.SetSpeedFactor(EntityID, _Scale);
+function QSB.EntityScriptingValue:SetEntitySize(_Scale)
+    assert(not GUI, "Can not be used in local script");
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 then
+        Logic.SetEntityScriptingValue(EntityID, -45, self:Float2Int(_Scale));
+        if Logic.IsSettler(EntityID) == 1 then
+            Logic.SetSpeedFactor(EntityID, _Scale);
+        end
     end
+    return self;
 end
 
 ---
@@ -243,130 +262,235 @@ end
 --
 -- @param              _Entity   Entity (skriptname oder ID)
 -- @param[type=number] _PlayerID Besitzer
--- @within Internal
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Global:SetPlayerID(_Entity, _PlayerID)
-    local EntityID = GetID(_Entity);
-    if Logic.IsLeader(EntityID) == 1 then
-        Logic.ChangeSettlerPlayerID(EntityID, _PLayerID);
-    else
-        Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
-    end
-end
+function QSB.EntityScriptingValue:SetPlayerID(_PlayerID)
+    assert(not GUI, "Can not be used in local script");
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
 
--- Local Script ----------------------------------------------------------------
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 then
+        if Logic.IsLeader(EntityID) == 1 then
+            Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
+        else
+            Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+        end
+    end
+    return self;
+end
 
 ---
--- Initalisiert das Bundle im lokalen Skript.
+-- Ändert die aktuelle Gesundheit des Entity.
 --
--- @within Internal
+-- @param[type=number] _Health Neue aktuelle Gesundheit
+-- @return[type=table] self
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Local:Install()
+function QSB.EntityScriptingValue:SetHealth(_Health)
+    assert(not GUI, "Can not be used in local script");
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
 
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 then
+        Logic.SetEntityScriptingValue(EntityID, -41, _Health);
+    end
+    return self;
 end
-
--- Shared ----------------------------------------------------------------------
 
 ---
 -- Gibt die relative Größe des Entity zurück.
 --
--- @param _Entity Entity (skriptname oder ID)
 -- @return[type=number] Größenfaktor
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetEntitySize(_Entity)
-    local EntityID = GetID(_Entity);
-    local size = Logic.GetEntityScriptingValue(EntityID, -45);
-    return self:Int2Float(size);
+function QSB.EntityScriptingValue:GetEntitySize()
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID == 0 then
+        return 0.0;
+    end
+    return self:GetValueAsFloat(-45);
 end
 
 ---
 -- Gibt den Besitzer des Entity zurück.
 --
--- @param _Entity Entity (skriptname oder ID)
 -- @return[type=number] Besitzer
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetPlayerID(_Entity)
-    local EntityID = GetID(_Entity);
-    return Logic.GetEntityScriptingValue(EntityID, -71);
+function QSB.EntityScriptingValue:GetPlayerID()
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID == 0 then
+        return -1;
+    end
+    return self:GetValueAsInteger(-71);
 end
 
 ---
 -- Gibt zurück, ob das Entity sichtbar ist.
 --
--- @param _Entity Entity (skriptname oder ID)
 -- @return[type=boolean] Ist sichtbar
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:IsEntityVisible(_Entity)
-    local EntityID = GetID(_Entity);
-    return Logic.GetEntityScriptingValue(EntityID, -50) == 801280;
+function QSB.EntityScriptingValue:IsEntityVisible()
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID == 0 then
+        return false;
+    end
+    return self:GetValueAsInteger(-50) == 801280;
 end
 
 ---
 -- Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
 --
--- @param _Entity Entity (skriptname oder ID)
 -- @return[type=boolean] Ist NPC
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:IsOnScreenInformationActive(_Entity)
-    local EntityID = GetID(_Entity);
-    if Logic.IsSettler(EntityID) == 0 then
+function QSB.EntityScriptingValue:IsOnScreenInformationActive()
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID == 0 or Logic.IsSettler(EntityID) > 0 then
         return false;
     end
-    return Logic.GetEntityScriptingValue(EntityID, 6) > 0;
+    return self:GetValueAsInteger(6) > 0;
 end
 
 ---
 -- Gibt das Bewegungsziel des Entity zurück.
 --
--- @param _Entity Entity (skriptname oder ID)
 -- @return[type=table] Positionstabelle
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetMovingTargetPosition(_Entity)
-    local pos = {};
-    pos.X = self:GetValueAsFloat(_Entity, 19) or 0;
-    pos.Y = self:GetValueAsFloat(_Entity, 20) or 0;
-    return pos;
+function QSB.EntityScriptingValue:GetMovingTargetPosition(_Entity)
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 then
+        return {X= self:GetValueAsFloat(19), Y= self:GetValueAsFloat(20)};
+    end
+    return {X= 0, Y= 0};
+end
+
+---
+-- Gibt die aktuelle Gesundheit des Entity zurück.
+--
+-- @return[type=number] Gesundheit des Entity
+-- @within QSB.EntityScriptingValue
+-- @local
+--
+function QSB.EntityScriptingValue:GetCurrentHealth()
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 then
+        return self:GetValueAsInteger(-41);
+    end
+    return 0;
+end
+
+---
+-- Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen
+--
+-- @return[type=number] Menge an Soldaten
+-- @within QSB.EntityScriptingValue
+-- @local
+--
+function QSB.EntityScriptingValue:CountSoldiers()
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 and Logic.IsLeader(EntityID) == 1 then
+        return self:GetValueAsInteger(-57);
+    end
+    return 0;
+end
+
+---
+-- Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
+--
+-- @return[type=table] Liste aller Soldaten
+-- @within QSB.EntityScriptingValue
+-- @local
+--
+function QSB.EntityScriptingValue:GetSoldiers()
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 and Logic.IsLeader(EntityID) == 1 then
+        local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+        table.remove(SoldierTable, 1);
+        return SoldierTable;
+    end
+    return {};
+end
+
+---
+-- Gibt den Leader des Soldaten zurück.
+--
+-- @return[type=number] Menge an Soldaten
+-- @within QSB.EntityScriptingValue
+-- @local
+--
+function QSB.EntityScriptingValue:GetLeaderID()
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 and Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 1 then
+        return self:GetValueAsInteger(46);
+    end
+    return 0;
 end
 
 ---
 -- Gibt die Scripting Value des Entity als Ganzzahl zurück.
 --
--- @param              _Entity Zu untersuchendes Entity (skriptname oder ID)
 -- @param[type=number] _index  Index im RAM
 -- @return[type=number] Ganzzahl
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetValueAsInteger(_Entity, _index)
-    local value = Logic.GetEntityScriptingValue(GetID(_Entity),_index);
-    return value;
+function QSB.EntityScriptingValue:GetValueAsInteger(_index)
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID == 0 then
+        return 0;
+    end
+    return math.floor(Logic.GetEntityScriptingValue(EntityID, _index) + 0.5);
 end
 
 ---
 -- Gibt die Scripting Value des Entity als Dezimalzahl zurück.
 --
--- @param              _Entity Zu untersuchendes Entity (skriptname oder ID)
 -- @param[type=number] _index  Index im RAM
 -- @return[type=number] Dezimalzahl
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:GetValueAsFloat(_Entity, _index)
-    local value = Logic.GetEntityScriptingValue(GetID(_Entity),_index);
-    return self:Int2Float(value);
+function QSB.EntityScriptingValue:GetValueAsFloat(_index)
+    assert(self ~= QSB.EntityScriptingValue, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID == 0 then
+        return 0.0;
+    end
+    return self:Int2Float(Logic.GetEntityScriptingValue(EntityID,_index));
 end
+
+-- -------------------------------------------------------------------------- --
 
 ---
 -- Bestimmt das Modul b der Zahl a.
@@ -374,10 +498,10 @@ end
 -- @param[type=number] a Zahl
 -- @param[type=number] b Modul
 -- @return[type=number] qmod der Zahl
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:qmod(a, b)
+function QSB.EntityScriptingValue:qmod(a, b)
     return a - math.floor(a/b)*b
 end
 
@@ -386,10 +510,10 @@ end
 --
 -- @param[type=number] num Integer
 -- @return[type=number] Integer als Float
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:Int2Float(num)
+function QSB.EntityScriptingValue:Int2Float(num)
     if(num == 0) then return 0 end
     local sign = 1
     if(num < 0) then num = 2147483648 + num; sign = -1 end
@@ -412,10 +536,10 @@ end
 --
 -- @param[type=number] num Bits
 -- @return[type=table] Table mit Bits
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:bitsInt(num)
+function QSB.EntityScriptingValue:bitsInt(num)
     local t={}
     while num>0 do
         rest=self:qmod(num, 2) table.insert(t,1,rest) num=(num-rest)/2
@@ -430,10 +554,10 @@ end
 -- @param[type=number] num Integer
 -- @param[type=table]  t   Table
 -- @return[type=table] Table mit Bits
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:bitsFrac(num, t)
+function QSB.EntityScriptingValue:bitsFrac(num, t)
     for i = 1, 48 do
         num = num * 2
         if(num >= 1) then table.insert(t, 1); num = num - 1 else table.insert(t, 0) end
@@ -447,10 +571,10 @@ end
 --
 -- @param[type=number] fval Float
 -- @return[type=number] Float als Integer
--- @within BundleEntityScriptingValues
+-- @within QSB.EntityScriptingValue
 -- @local
 --
-function BundleEntityScriptingValues.Shared:Float2Int(fval)
+function QSB.EntityScriptingValue:Float2Int(fval)
     if(fval == 0) then return 0 end
     local signed = false
     if(fval < 0) then signed = true; fval = fval * -1 end
