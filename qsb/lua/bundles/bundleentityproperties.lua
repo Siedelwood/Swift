@@ -31,11 +31,6 @@ QSB = QSB or {};
 
 QSB.EntityPropertyObjects = {};
 
----
--- Diese Klasse definiert einen Entity-Wrapper mit dem einfach auf ESV
--- und andere Eigenschaften zugegriffen werden kann.
--- @within Klassen
---
 QSB.EntityProperty = class {
     ---
     -- Konstruktor

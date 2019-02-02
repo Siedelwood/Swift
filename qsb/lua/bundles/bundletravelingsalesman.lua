@@ -222,11 +222,6 @@ end
 
 QSB.TravelingSalesmanInstances = {};
 
----
--- Diese Klasse definiert den Fahrenden Händler.
--- @within Klassen
--- @local
---
 QSB.TravelingSalesman = class {
     ---
     -- Konstruktor

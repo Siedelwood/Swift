@@ -55,7 +55,7 @@
   <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
-  <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
   <li><a href="../bibliotheken/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
@@ -154,7 +154,7 @@
 	<td class="summary">Stößt einen angehaltenen Zeitstrahl wieder an.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Start">BundleTimeLine.Shared.TimeLine:Start (_description)</a></td>
+	<td class="name" nowrap><a href="#BundleTimeLine.Shared.TimeLine:Start">BundleTimeLine.Shared.TimeLine:Start (_description, _ID)</a></td>
 	<td class="summary">Startet einen Zeitstrahl.</td>
 	</tr>
 	<tr>
@@ -183,14 +183,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Zeitstrahl ist aktiv
+           <span class="types"><span class="type">boolean</span></span>
+        Zeitstrahl ist aktiv
     </ol>
 
 
@@ -215,7 +217,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
@@ -241,7 +244,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
@@ -271,14 +275,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Description</span>
-         [table] Beschreibung
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Beschreibung
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] ID des Zeitstrahls
+           <span class="types"><span class="type">number</span></span>
+        ID des Zeitstrahls
     </ol>
 
 
@@ -308,7 +314,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
@@ -384,14 +391,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Zeistrahl ist aktiv
+           <span class="types"><span class="type">boolean</span></span>
+        Zeistrahl ist aktiv
     </ol>
 
 
@@ -412,7 +421,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
@@ -436,7 +446,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
@@ -447,7 +458,7 @@
 </dd>
     <dt>
     <a name = "BundleTimeLine.Shared.TimeLine:Start"></a>
-    <strong>BundleTimeLine.Shared.TimeLine:Start (_description)</strong>
+    <strong>BundleTimeLine.Shared.TimeLine:Start (_description, _ID)</strong>
     </dt>
     <dd>
     Startet einen Zeitstrahl.  Ein Zeitstrahl hat bestimmte Stationen,
@@ -459,15 +470,15 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_description</span>
-         [table] Beschreibung
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Beschreibung
+        </li>
+        <li><span class="parameter">_ID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-        [number] ID des Zeitstrahl
-    </ol>
 
 
 
@@ -487,7 +498,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [table] ID des Zeitstrahl
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
         </li>
     </ul>
 
@@ -503,7 +515,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-27 19:40:00 </i>
+<i style="float:right;">Last updated 2019-02-02 17:51:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

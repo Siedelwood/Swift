@@ -54,7 +54,7 @@
   <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
-  <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
   <li><a href="../bibliotheken/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
@@ -182,16 +182,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Data</span>
-         [table] Questdefinition
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Questdefinition
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [string] Name des Quests</li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name des Quests</li>
         <li>
-        [number] Gesamtzahl Quests</li>
+           <span class="types"><span class="type">number</span></span>
+        Gesamtzahl Quests</li>
     </ol>
 
 
@@ -240,16 +243,19 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Messages</span>
-         [table] Liste der anzuzeigenden Nachrichten
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Liste der anzuzeigenden Nachrichten
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        [string] Name des letzten Quest</li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name des letzten Quest</li>
         <li>
-        [table] Namensliste der Quests</li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Namensliste der Quests</li>
     </ol>
 
 
@@ -287,29 +293,36 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Text</span>
-               [string] Anzeigetext der Nachricht
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Anzeigetext der Nachricht
         </li>
         <li><span class="parameter">_Sender</span>
-             [number] Sender der Nachricht
+            <span class="types"><span class="type">number</span></span>
+              Sender der Nachricht
         </li>
         <li><span class="parameter">_Receiver</span>
-           [number] Receiver der Nachricht
+            <span class="types"><span class="type">number</span></span>
+            Receiver der Nachricht
         </li>
         <li><span class="parameter">_AncestorWt</span>
-         [number] Wartezeit
+            <span class="types"><span class="type">number</span></span>
+          Wartezeit
         </li>
         <li><span class="parameter">_Callback</span>
-           [function] Callback
+            <span class="types"><span class="type">function</span></span>
+            Callback
         </li>
         <li><span class="parameter">_Ancestor</span>
-           [string] Vorgänger-Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Vorgänger-Quest
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [string] QuestName
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        QuestName
     </ol>
 
 
@@ -335,7 +348,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Dialog</span>
-         [string|table] Dialog der neu gestartet wird
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Dialog der abgebrochen wird
         </li>
     </ul>
 
@@ -359,7 +373,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Dialog</span>
-         [string|table] Dialog der neu gestartet wird
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Dialog der neu gestartet wird
         </li>
     </ul>
 
@@ -397,14 +412,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Data</span>
-         [table] Daten des Quest.
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Daten des Quest.
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [string] Name des erzeugten Quests
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name des erzeugten Quests
     </ol>
 
 
@@ -430,32 +447,40 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Text</span>
-               [string] Anzeigetext der Nachricht
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Anzeigetext der Nachricht
         </li>
         <li><span class="parameter">_Sender</span>
-             [number] Sender der Nachricht
+            <span class="types"><span class="type">number</span></span>
+              Sender der Nachricht
         </li>
         <li><span class="parameter">_Receiver</span>
-           [number] Receiver der Nachricht
+            <span class="types"><span class="type">number</span></span>
+            Receiver der Nachricht
         </li>
         <li><span class="parameter">_AncestorWt</span>
-         [number] Wartezeit
+            <span class="types"><span class="type">number</span></span>
+          Wartezeit
         </li>
         <li><span class="parameter">_Callback</span>
-           [function] Callback
+            <span class="types"><span class="type">function</span></span>
+            Callback
         </li>
         <li><span class="parameter">_Ancestor</span>
-           [string] Vorgänger-Quest
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Vorgänger-Quest
         </li>
         <li><span class="parameter">_QuestName</span>
-          [string] Name des Auftrags
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Questname überschreiben
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [string] QuestName
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        QuestName
     </ol>
 
 
@@ -473,14 +498,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Data</span>
-         [table] Daten des Quest.
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Daten des Quest.
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Quest OK
+           <span class="types"><span class="type">boolean</span></span>
+        Quest OK
     </ol>
 
 
@@ -498,14 +525,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Name</span>
-         [string] Name des Quest.
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest.
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] Name OK
+           <span class="types"><span class="type">boolean</span></span>
+        Name OK
     </ol>
 
 
@@ -519,7 +548,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-27 19:40:00 </i>
+<i style="float:right;">Last updated 2019-02-02 17:51:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -55,7 +55,7 @@
   <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
-  <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
   <li><a href="../bibliotheken/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
@@ -89,7 +89,9 @@
 <p>Mit diesem Bundle können Dialogfenster ernstellt werden.</p>
 <p> Über Dialogfenster
  kann der Spieler informiert werden. Er kann aber auch aufgefordert werden
- eine Antwort auf eine Frage zu geben.
+ eine Antwort auf eine Frage zu geben. Sollte bereits ein Dialog zu sehen
+ sein, werden neue Dialoge einer Warteschlange hinzugefügt und nacheinander
+ angezeigt.
 <p> Zudem bietet das Bundle ein Textfenster an, welches eine nicht limitierte
  Menge an Text anzeigen kann. Erreicht der Text eine entsprechende Menge,
  wird automatisch eine Scrollbar eingeblendet.
@@ -120,7 +122,7 @@
 	<td class="summary">Öffnet einen Auswahldialog.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SimpleTextWindow">API.SimpleTextWindow (_Caption, _Content)</a></td>
+	<td class="name" nowrap><a href="#API.SimpleTextWindow">API.SimpleTextWindow (_Caption, _content)</a></td>
 	<td class="summary">Öffnet ein einfaches Textfenster mit dem angegebenen Text.</td>
 	</tr>
 </table>
@@ -234,13 +236,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Title</span>
-          [string] Titel des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Titel des Dialog
         </li>
         <li><span class="parameter">_Text</span>
-           [string] Text des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Text des Dialog
         </li>
         <li><span class="parameter">_Action</span>
-         [function] Callback-Funktion
+            <span class="types"><span class="type">function</span></span>
+         Callback-Funktion
         </li>
     </ul>
 
@@ -270,16 +275,20 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Title</span>
-            [string] Titel des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Titel des Dialog
         </li>
         <li><span class="parameter">_Text</span>
-             [string] Text des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Text des Dialog
         </li>
         <li><span class="parameter">_Action</span>
-           [function] Callback-Funktion
+            <span class="types"><span class="type">function</span></span>
+           Callback-Funktion
         </li>
         <li><span class="parameter">_OkCancel</span>
-         [boolean] Okay/Abbrechen statt Ja/Nein
+            <span class="types"><span class="type">boolean</span></span>
+         Okay/Abbrechen statt Ja/Nein
         </li>
     </ul>
 
@@ -311,16 +320,20 @@ API.DialogRequestBox(<span class="string">"Frage"</span>, <span class="string">"
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Title</span>
-          [string] Titel des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Titel des Dialog
         </li>
         <li><span class="parameter">_Text</span>
-           [string] Text des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Text des Dialog
         </li>
         <li><span class="parameter">_Action</span>
-         [function] Callback-Funktion
+            <span class="types"><span class="type">function</span></span>
+         Callback-Funktion
         </li>
         <li><span class="parameter">_List</span>
-           [table] Liste der Optionen
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+           Liste der Optionen
         </li>
     </ul>
 
@@ -339,7 +352,7 @@ API.DialogSelectBox(<span class="string">"Auswahl"</span>, <span class="string">
 </dd>
     <dt>
     <a name = "API.SimpleTextWindow"></a>
-    <strong>API.SimpleTextWindow (_Caption, _Content)</strong>
+    <strong>API.SimpleTextWindow (_Caption, _content)</strong>
     </dt>
     <dd>
     Öffnet ein einfaches Textfenster mit dem angegebenen Text.
@@ -351,10 +364,12 @@ API.DialogSelectBox(<span class="string">"Auswahl"</span>, <span class="string">
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Caption</span>
-         [string] Titel des Fensters
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Titel des Fenster
         </li>
-        <li><span class="parameter">_Content</span>
-         [string] Inhalt des Fensters
+        <li><span class="parameter">_content</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Inhalt des Fenster
         </li>
     </ul>
 
@@ -421,7 +436,8 @@ API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_yes</span>
-         [boolean] Gegebene Antwort
+            <span class="types"><span class="type">boolean</span></span>
+         Gegebene Antwort
         </li>
     </ul>
 
@@ -456,10 +472,12 @@ API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Methode</span>
-         [string] Dialogfunktion als String
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Dialogfunktion als String
         </li>
         <li><span class="parameter">_Args</span>
-            [table] Argumente als Table
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Argumente als Table
         </li>
     </ul>
 
@@ -524,13 +542,16 @@ API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Title</span>
-          [string] Titel des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Titel des Dialog
         </li>
         <li><span class="parameter">_Text</span>
-           [string] Text des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Text des Dialog
         </li>
         <li><span class="parameter">_Action</span>
-         [function] Callback-Funktion
+            <span class="types"><span class="type">function</span></span>
+         Callback-Funktion
         </li>
     </ul>
 
@@ -552,16 +573,20 @@ API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Title</span>
-            [string] Titel des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Titel des Dialog
         </li>
         <li><span class="parameter">_Text</span>
-             [string] Text des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Text des Dialog
         </li>
         <li><span class="parameter">_Action</span>
-           [function] Callback-Funktion
+            <span class="types"><span class="type">function</span></span>
+           Callback-Funktion
         </li>
         <li><span class="parameter">_OkCancel</span>
-         [boolean] Okay/Abbrechen statt Ja/Nein
+            <span class="types"><span class="type">boolean</span></span>
+         Okay/Abbrechen statt Ja/Nein
         </li>
     </ul>
 
@@ -583,16 +608,20 @@ API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Title</span>
-          [string] Titel des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Titel des Dialog
         </li>
         <li><span class="parameter">_Text</span>
-           [string] Text des Dialog
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Text des Dialog
         </li>
         <li><span class="parameter">_Action</span>
-         [function] Callback-Funktion
+            <span class="types"><span class="type">function</span></span>
+         Callback-Funktion
         </li>
         <li><span class="parameter">_List</span>
-           [table] Liste der Optionen
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+           Liste der Optionen
         </li>
     </ul>
 
@@ -634,10 +663,11 @@ API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Key</span>
-           [string] Schlüssel
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           Schlüssel
         </li>
         <li><span class="parameter">_Value</span>
-         [mixed] Wert
+         Wert
         </li>
     </ul>
 
@@ -697,14 +727,15 @@ API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">...</span>
-         [mixed..] Parameterliste
+         Parameterliste
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] Instanz des konfigurierten Fensters
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Instanz des konfigurierten Fensters
     </ol>
 
 
@@ -743,7 +774,8 @@ API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Function</span>
-         [function] Close Callback
+            <span class="types"><span class="type">function</span></span>
+         Close Callback
         </li>
     </ul>
 
@@ -779,10 +811,12 @@ MyWindow:SetAction(MyAction);</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Text</span>
-             [string] Beschriftung des Buttons
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Beschriftung des Buttons
         </li>
         <li><span class="parameter">_Callback</span>
-         [function] Aktion des Buttons
+            <span class="types"><span class="type">function</span></span>
+         Aktion des Buttons
         </li>
     </ul>
 
@@ -816,7 +850,8 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Text</span>
-         [string] Titel des Textfenster
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Titel des Textfenster
         </li>
     </ul>
 
@@ -847,7 +882,8 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Text</span>
-         [string] Inhalt des Textfenster
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Inhalt des Textfenster
         </li>
     </ul>
 
@@ -892,7 +928,7 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-27 19:40:00 </i>
+<i style="float:right;">Last updated 2019-02-02 17:51:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

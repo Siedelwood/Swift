@@ -32,6 +32,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#QSB_NonPlayerCharacter">QSB.NonPlayerCharacter</a></li>
 <li><a href="#Goal">Goal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
 </ul>
@@ -85,6 +86,71 @@
 	<td class="summary">Setzt einen NPC zurück, sodass er nicht mehr als angesprochen gilt.</td>
 	</tr>
 </table>
+<h2><a href="#QSB_NonPlayerCharacter">QSB.NonPlayerCharacter</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:Activate">QSB.NonPlayerCharacter:Activate (_Type)</a></td>
+	<td class="summary">Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:Deactivate">QSB.NonPlayerCharacter:Deactivate ()</a></td>
+	<td class="summary">Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:Dispose">QSB.NonPlayerCharacter:Dispose ()</a></td>
+	<td class="summary">Löscht einen NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:GetHeroId">QSB.NonPlayerCharacter:GetHeroId ()</a></td>
+	<td class="summary">Gibt die Entity ID des letzten Helden zurück, der einen NPC
+ angesprochen hat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:GetID">QSB.NonPlayerCharacter:GetID ()</a></td>
+	<td class="summary">Gibt die Entity ID des NPC zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:GetInstance">QSB.NonPlayerCharacter:GetInstance (_ScriptName)</a></td>
+	<td class="summary">Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:GetNpcId">QSB.NonPlayerCharacter:GetNpcId ()</a></td>
+	<td class="summary">Gibt die Entity ID des letzten angesprochenen NPC zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:HasTalkedTo">QSB.NonPlayerCharacter:HasTalkedTo ()</a></td>
+	<td class="summary">Gibt true zurück, wenn der NPC angesprochen wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:IsActive">QSB.NonPlayerCharacter:IsActive ()</a></td>
+	<td class="summary"><p>Gibt true zurück, wenn der NPC aktiv ist.</p></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:Reset">QSB.NonPlayerCharacter:Reset ()</a></td>
+	<td class="summary">Setzt den NPC zurück, sodass er erneut aktiviert werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:SetCallback">QSB.NonPlayerCharacter:SetCallback (_Callback)</a></td>
+	<td class="summary">Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:SetDialogPartner">QSB.NonPlayerCharacter:SetDialogPartner (_HeroName)</a></td>
+	<td class="summary">Setzt den Ansprechpartner für diesen NPC.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:SetType">QSB.NonPlayerCharacter:SetType (_Type)</a></td>
+	<td class="summary">Gibt die Entity ID des letzten angesprochenen NPC zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:SetWrongPartnerCallback">QSB.NonPlayerCharacter:SetWrongPartnerCallback (_Callback)</a></td>
+	<td class="summary">Setzt das Callback für den Fall, dass ein falscher Held den
+ NPC anspricht.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#construct">construct (_ScriptName)</a></td>
+	<td class="summary">Konstruktor</td>
+	</tr>
+</table>
 <h2><a href="#Goal">Goal</a></h2>
 <table class="function_list">
 	<tr>
@@ -121,7 +187,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Nichtspieler-Charakter
+         Nichtspieler-Charakter (Skriptname oder ID)
         </li>
     </ul>
 
@@ -172,14 +238,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Data</span>
-         [table] Nichtspieler-Charakter
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Nichtspieler-Charakter
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [table] NPC-Objekt
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        NonPlayerCharacter Objekt
     </ol>
 
 
@@ -208,7 +276,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Nichtspieler-Charakter
+         Nichtspieler-Charakter (Skriptname oder ID)
         </li>
     </ul>
 
@@ -234,7 +302,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Nichtspieler-Charakter
+         Nichtspieler-Charakter (Skriptname oder ID)
         </li>
     </ul>
 
@@ -261,14 +329,15 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Nichtspieler-Charakter
+         Nichtspieler-Charakter (Skriptname oder ID)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [boolean] NPC wurde angesprochen
+           <span class="types"><span class="type">boolean</span></span>
+        NPC wurde angesprochen
     </ol>
 
 
@@ -292,7 +361,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-         [string|number] Nichtspieler-Charakter
+         Nichtspieler-Charakter (Skriptname oder ID)
         </li>
     </ul>
 
@@ -302,6 +371,386 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example">API.NpcReset(<span class="string">"horst"</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="QSB_NonPlayerCharacter"></a>QSB.NonPlayerCharacter</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:Activate"></a>
+    <strong>QSB.NonPlayerCharacter:Activate (_Type)</strong>
+    </dt>
+    <dd>
+    Aktiviert einen inaktiven NPC, sodass er wieder angesprochen werden kann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Type</span>
+            <span class="types"><span class="type">number</span></span>
+         NPC-Typ [1-4]
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        self
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC aktivieren:
+</span>NPC:Activate();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:Deactivate"></a>
+    <strong>QSB.NonPlayerCharacter:Deactivate ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert einen aktiven NPC, sodass er nicht angesprochen werden kann.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        self
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC deaktivieren:
+</span>NPC:Deactivate();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:Dispose"></a>
+    <strong>QSB.NonPlayerCharacter:Dispose ()</strong>
+    </dt>
+    <dd>
+    Löscht einen NPC.
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC löschen
+</span>NPC:Dispose();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:GetHeroId"></a>
+    <strong>QSB.NonPlayerCharacter:GetHeroId ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des letzten Helden zurück, der einen NPC
+ angesprochen hat.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des letzten Heden
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:GetID"></a>
+    <strong>QSB.NonPlayerCharacter:GetID ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des NPC zurück.  Ist der NPC ein Leader, wird
+ der erste Soldat zurückgegeben, wenn es einen gibt.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des NPC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:GetInstance"></a>
+    <strong>QSB.NonPlayerCharacter:GetInstance (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.
+<p> Wurde noch kein NPC für diesen Skriptnamen erzeugt, wird nil zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des NPC
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Interaktives Objekt
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- NPC ermitteln
+</span><span class="keyword">local</span> NPC = QSB.NonPlayerCharacter:GetInstance(<span class="string">"horst"</span>);
+<span class="comment">-- Etwas mit dem NPC tun
+</span>NPC:SetDialogPartner(<span class="string">"hilda"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:GetNpcId"></a>
+    <strong>QSB.NonPlayerCharacter:GetNpcId ()</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des letzten angesprochenen NPC zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des letzten NPC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:HasTalkedTo"></a>
+    <strong>QSB.NonPlayerCharacter:HasTalkedTo ()</strong>
+    </dt>
+    <dd>
+    Gibt true zurück, wenn der NPC angesprochen wurde.  Ist ein
+ spezieller Ansprechpartner definiert, wird nur dann true
+ zurückgegeben, wenn dieser Held mit dem NPC spricht.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        NPC wurde angesprochen
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:IsActive"></a>
+    <strong>QSB.NonPlayerCharacter:IsActive ()</strong>
+    </dt>
+    <dd>
+    <p>Gibt true zurück, wenn der NPC aktiv ist.</p>
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        NPC ist aktiv
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:Reset"></a>
+    <strong>QSB.NonPlayerCharacter:Reset ()</strong>
+    </dt>
+    <dd>
+    Setzt den NPC zurück, sodass er erneut aktiviert werden kann.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:SetCallback"></a>
+    <strong>QSB.NonPlayerCharacter:SetCallback (_Callback)</strong>
+    </dt>
+    <dd>
+    Setzt das Callback des NPC, dass beim Ansprechen ausgeführt wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Callback</span>
+            <span class="types"><span class="type">function</span></span>
+         Callback
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:SetDialogPartner"></a>
+    <strong>QSB.NonPlayerCharacter:SetDialogPartner (_HeroName)</strong>
+    </dt>
+    <dd>
+    Setzt den Ansprechpartner für diesen NPC.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_HeroName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des Helden
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:SetType"></a>
+    <strong>QSB.NonPlayerCharacter:SetType (_Type)</strong>
+    </dt>
+    <dd>
+    Gibt die Entity ID des letzten angesprochenen NPC zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Type</span>
+            <span class="types"><span class="type">number</span></span>
+         Typ des Npc
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des letzten NPC
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.NonPlayerCharacter:SetWrongPartnerCallback"></a>
+    <strong>QSB.NonPlayerCharacter:SetWrongPartnerCallback (_Callback)</strong>
+    </dt>
+    <dd>
+    Setzt das Callback für den Fall, dass ein falscher Held den
+ NPC anspricht.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Callback</span>
+            <span class="types"><span class="type">function</span></span>
+         Callback
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "construct"></a>
+    <strong>construct (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Konstruktor
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des NPC
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Einen normalen NPC erzeugen:
+</span>new {QSB.NonPlayerCharacter, <span class="string">"npc"</span>}
+    :SetDialogPartner(<span class="string">"hero"</span>)                 <span class="comment">-- Optional
+</span>    :SetCallback(Briefing1)                   <span class="comment">-- Optional
+</span>    :Activate();</pre>
     </ul>
 
 </dd>
@@ -323,10 +772,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_NpcName</span>
-          [string] Skriptname des NPC
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Skriptname des NPC
         </li>
         <li><span class="parameter">_HeroName</span>
-         [string] Skriptname des Helden (optional)
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         (optional) Skriptname des Helden
         </li>
     </ul>
 
@@ -353,10 +804,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_NpcName</span>
-          [string] Skriptname des NPC
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+          Skriptname des NPC
         </li>
         <li><span class="parameter">_HeroName</span>
-         [string] Skriptname des Helden (optional)
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         (optional) Skriptname des Helden
         </li>
     </ul>
 
@@ -372,7 +825,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-03 19:39:09 </i>
+<i style="float:right;">Last updated 2019-02-02 17:50:57 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

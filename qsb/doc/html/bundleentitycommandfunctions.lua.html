@@ -46,7 +46,7 @@
 
 <h1>Module <code>bundleentitycommandfunctions</code></h1>
 <p>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie
- zu bewegen.</p>
+ von A nach B zu bewegen.</p>
 <p>
 <p> Das wichtigste Auf einen Blick:
  <ul>
@@ -80,8 +80,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.MoveAndLookAt">API.MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</a></td>
-	<td class="summary">Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
- anschließend an.</td>
+	<td class="summary">Das Entity wird zum Ziel bewegt und schaut es anschließend an.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.MoveToPosition">API.MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</a></td>
@@ -89,12 +88,15 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.PlaceAndLookAt">API.PlaceAndLookAt (_Entity, _Position, _Distance)</a></td>
-	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
- das Ziel an.</td>
+	<td class="summary">Das Entity wird zum Zielpunkt gesetzt und schaut das Ziel an.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.PlaceToPosition">API.PlaceToPosition (_Entity, _Position, _Distance, _Angle)</a></td>
 	<td class="summary">Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetPosition">API.SetPosition (_Entity, _Position)</a></td>
+	<td class="summary">Setzt ein Entity oder ein Battalion an eine neue Position.</td>
 	</tr>
 </table>
 
@@ -118,10 +120,10 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-          [string|number] Angreifendes Entity
+         Entity zum versetzen (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Target</span>
-         [string|number] Angegriffenes Entity
+         Neue Ziel (Skriptname oder ID)
         </li>
     </ul>
 
@@ -148,10 +150,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-           [string|number] Angreifendes Entity
+           Angreifendes Entity (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Position</span>
-         [string] Skriptname, EntityID oder Positionstable
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Zielposition
         </li>
     </ul>
 
@@ -177,10 +180,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-           [string|number] Bewegendes Entity
+           Angreifendes Entity (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Position</span>
-         [table] Positionstable
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+          Positionstable
         </li>
     </ul>
 
@@ -198,26 +202,28 @@
     <strong>API.MoveAndLookAt (_Entity, _Position, _Distance, _moveAsEntity)</strong>
     </dt>
     <dd>
-    Das Entity wird relativ zu einem Winkel zum Ziel bewegt und schaut es
- anschließend an.
-<p> <p><b>Alias:</b> MoveEx</br></p>
- <p><b>Alias:</b> MoveEntityFaceToFaceToAnotherOne</p>
+    Das Entity wird zum Ziel bewegt und schaut es anschließend an.
+<p> <b>Hinweis</b>: Beim Alias MoveEntityFaceToFaceToAnotherOne sind die
+ Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
+<p> <p><b>Alias:</b> MoveEntityFaceToFaceToAnotherOne</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-               [string|number] Zu bewegendes Entity
+               Entity zum versetzen (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Position</span>
-             [string|number] Ziel
+             Neue Ziel (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Distance</span>
-             [number] Entfernung zum Ziel
+            <span class="types"><span class="type">number</span></span>
+             Entfernung zum Ziel
         </li>
         <li><span class="parameter">_moveAsEntity</span>
-         [boolean] Blocking ignorieren
+            <span class="types"><span class="type">boolean</span></span>
+         Blocking ignorieren
         </li>
     </ul>
 
@@ -235,27 +241,34 @@
     <strong>API.MoveToPosition (_Entity, _Position, _Distance, _Angle, _moveAsEntity)</strong>
     </dt>
     <dd>
-    Das Entity wird relativ zu einem Winkel zum Ziel bewegt.
+    Das Entity wird relativ zu einem Winkel zum Ziel bewegt.  Nachdem das Entity
+ angekommen ist, wird es zum Ziel ausgerichtet.
+<p> <b>Hinweis</b>: Beim Alias MoveEntityToPositionToAnotherOne sind die
+ Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 <p> <p><b>Alias:</b> MoveEntityToPositionToAnotherOne</p>
+ <p><b>Alias:</b> MoveEx</br></p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-               [string|number] Zu bewegendes Entity
+               Entity zum versetzen (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Position</span>
-             [string|number] Ziel
+             Neue Position (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Distance</span>
-             [number] Entfernung zum Ziel
+            <span class="types"><span class="type">number</span></span>
+             Entfernung zum Ziel
         </li>
         <li><span class="parameter">_Angle</span>
-                [number] Winkel
+            <span class="types"><span class="type">number</span></span>
+                Winkel
         </li>
         <li><span class="parameter">_moveAsEntity</span>
-         [boolean] Blocking ignorieren
+            <span class="types"><span class="type">boolean</span></span>
+         Blocking ignorieren
         </li>
     </ul>
 
@@ -273,8 +286,9 @@
     <strong>API.PlaceAndLookAt (_Entity, _Position, _Distance)</strong>
     </dt>
     <dd>
-    Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt und schaut
- das Ziel an.
+    Das Entity wird zum Zielpunkt gesetzt und schaut das Ziel an.
+<p> <b>Hinweis</b>: Beim Alias PlaceEntityFaceToFaceToAnotherOne sind die
+ Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 <p> <p><b>Alias:</b> PlaceEntityFaceToFaceToAnotherOne</p>
  <p><b>Alias:</b> SetPositionEx<br></p>
 
@@ -283,13 +297,14 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-                  [string|number|table] Entity das bewegt wird
+           Entity zum versetzen (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Position</span>
-                [string|number|table] Position zu der bewegt wird
+         Neue Ziel (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Distance</span>
-                [number] Entfernung
+            <span class="types"><span class="type">number</span></span>
+         Entfernung
         </li>
     </ul>
 
@@ -308,6 +323,8 @@
     </dt>
     <dd>
     Das Entity wird relativ zu einem Winkel zum Zielpunkt gesetzt.
+<p> <b>Hinweis</b>: Beim Alias PlaceEntityToPositionToAnotherOne sind die
+ Parameter _Position und _Distance im Sinne der Kompatibelität vertauscht!
 <p> <p><b>Alias:</b> PlaceEntityToPositionToAnotherOne</p>
 
 
@@ -315,16 +332,18 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Entity</span>
-                  [string|number|table] Entity das bewegt wird
+           Entity zum versetzen (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Position</span>
-                [string|number|table] Position zu der bewegt wird
+         Neue Ziel (Skriptname oder ID)
         </li>
         <li><span class="parameter">_Distance</span>
-                [number] Entfernung
+            <span class="types"><span class="type">number</span></span>
+         Entfernung zum Ziel
         </li>
         <li><span class="parameter">_Angle</span>
-                   [number] Winkel
+            <span class="types"><span class="type">number</span></span>
+            Winkel
         </li>
     </ul>
 
@@ -337,6 +356,35 @@
     </ul>
 
 </dd>
+    <dt>
+    <a name = "API.SetPosition"></a>
+    <strong>API.SetPosition (_Entity, _Position)</strong>
+    </dt>
+    <dd>
+    Setzt ein Entity oder ein Battalion an eine neue Position.
+<p> <p><b>Alias:</b> SetPosition</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+           Entity zum versetzen (Skriptname oder ID)
+        </li>
+        <li><span class="parameter">_Position</span>
+         Neue Position (Skriptname, ID oder Position)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SetPostion(<span class="string">"hakim"</span>, <span class="string">"hakimPos1"</span>);</pre>
+    </ul>
+
+</dd>
 </dl>
 
 
@@ -344,7 +392,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-03 19:39:06 </i>
+<i style="float:right;">Last updated 2019-02-02 17:50:54 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

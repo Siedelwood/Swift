@@ -200,17 +200,13 @@ TalkedToNPC = API.NpcHasSpoken;
 -- Klassen                                                                    --
 -- -------------------------------------------------------------------------- --
 
----
--- Klasse zum erstellen und verwalten von NPC.
--- @within Klassen
---
-QSB.NonPlayerCharacter = {
+QSB.NonPlayerCharacter = class {
     ---
     -- Konstruktor
     -- @param[type=string] _ScriptName Skriptname des NPC
     -- @within QSB.NonPlayerCharacter
     -- @usage
-    -- Einen normalen NPC erzeugen:
+    -- -- Einen normalen NPC erzeugen:
     -- new {QSB.NonPlayerCharacter, "npc"}
     --     :SetDialogPartner("hero")                 -- Optional
     --     :SetCallback(Briefing1)                   -- Optional
@@ -602,9 +598,7 @@ BundleNonPlayerCharacter = {
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
-    ---
     -- Führt die statische Steuerungsfunktion für alle NPC aus.
-    --
     StartSimpleJobEx( function()
         for k, v in pairs(QSB.NonPlayerCharacterObjects) do
             v:ControlMarker();

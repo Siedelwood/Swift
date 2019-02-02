@@ -55,7 +55,7 @@
   <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
-  <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
   <li><a href="../bibliotheken/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
@@ -164,7 +164,7 @@
 	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleMinimapMarker.Local:ShowMinimapMarker">BundleMinimapMarker.Local:ShowMinimapMarker (_ID, _PlayerID, _X, _Y, _Type)</a></td>
+	<td class="name" nowrap><a href="#BundleMinimapMarker.Local:ShowMinimapMarker">BundleMinimapMarker.Local:ShowMinimapMarker (_PlayerID, _X, _Y, _Type)</a></td>
 	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
 	</tr>
 </table>
@@ -227,17 +227,18 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number|table] PlayerID oder Farbtabelle
+         PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
         </li>
         <li><span class="parameter">_Position</span>
-         [string|number|table] Position des Markers
+         Position des Markers (Skriptname, ID oder Position)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] ID des Markers
+           <span class="types"><span class="type">number</span></span>
+        ID des Markers
     </ol>
 
 
@@ -262,17 +263,18 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number|table] PlayerID oder Farbtabelle
+         PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
         </li>
         <li><span class="parameter">_Position</span>
-         [string|number|table] Position des Markers
+         Position des Markers (Skriptname, ID oder Position)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] ID des Markers
+           <span class="types"><span class="type">number</span></span>
+        ID des Markers
     </ol>
 
 
@@ -297,17 +299,18 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number|table] PlayerID oder Farbtabelle
+         PlayerID oder Farbtabelle (Spielernummer oder Farbtabelle)
         </li>
         <li><span class="parameter">_Position</span>
-         [string|number|table] Position des Markers
+         Position des Markers (Skriptname, ID oder Position)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] ID des Markers
+           <span class="types"><span class="type">number</span></span>
+        ID des Markers
     </ol>
 
 
@@ -331,7 +334,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [number] ID des Markers
+            <span class="types"><span class="type">number</span></span>
+         ID des Markers
         </li>
     </ul>
 
@@ -376,23 +380,28 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] ID des Besitzers
+            <span class="types"><span class="type">number</span></span>
+         ID des Besitzers
         </li>
         <li><span class="parameter">_X</span>
-         [number] X-Koordinate des Markers
+            <span class="types"><span class="type">number</span></span>
+         X-Koordinate des Markers
         </li>
         <li><span class="parameter">_Y</span>
-         [number] Y-Koordinate des Makers
+            <span class="types"><span class="type">number</span></span>
+         Y-Koordinate des Makers
         </li>
         <li><span class="parameter">_Type</span>
-         [number] Typ des Markers
+            <span class="types"><span class="type">number</span></span>
+         Typ des Markers
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        [number] ID des Markers
+           <span class="types"><span class="type">number</span></span>
+        ID des Markers
     </ol>
 
 
@@ -411,7 +420,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [number] ID des Markers
+            <span class="types"><span class="type">number</span></span>
+         ID des Markers
         </li>
     </ul>
 
@@ -446,7 +456,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ID</span>
-         [number] ID des Markers
+            <span class="types"><span class="type">number</span></span>
+         ID des Markers
         </li>
     </ul>
 
@@ -471,7 +482,7 @@
 </dd>
     <dt>
     <a name = "BundleMinimapMarker.Local:ShowMinimapMarker"></a>
-    <strong>BundleMinimapMarker.Local:ShowMinimapMarker (_ID, _PlayerID, _X, _Y, _Type)</strong>
+    <strong>BundleMinimapMarker.Local:ShowMinimapMarker (_PlayerID, _X, _Y, _Type)</strong>
     </dt>
     <dd>
     Initialisiert das Bundle im globalen Skript.
@@ -479,23 +490,30 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_ID</span>
-         [number|table] Besitzer oder Farbtabelle
-        </li>
         <li><span class="parameter">_PlayerID</span>
-         [number] ID des Besitzers
+            <span class="types"><span class="type">number</span></span>
+         ID des Besitzers
         </li>
         <li><span class="parameter">_X</span>
-         [number] X-Koordinate des Markers
+            <span class="types"><span class="type">number</span></span>
+         X-Koordinate des Markers
         </li>
         <li><span class="parameter">_Y</span>
-         [number] Y-Koordinate des Makers
+            <span class="types"><span class="type">number</span></span>
+         Y-Koordinate des Makers
         </li>
         <li><span class="parameter">_Type</span>
-         [number] Typ des Markers
+            <span class="types"><span class="type">number</span></span>
+         Typ des Markers
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des Markers
+    </ol>
 
 
 
@@ -508,7 +526,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-27 19:40:00 </i>
+<i style="float:right;">Last updated 2019-02-02 17:51:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

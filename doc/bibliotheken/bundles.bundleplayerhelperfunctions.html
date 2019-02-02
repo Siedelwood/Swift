@@ -54,7 +54,7 @@
   <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
-  <li><a href="../bibliotheken/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../bibliotheken/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
   <li><a href="../bibliotheken/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../bibliotheken/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
@@ -197,11 +197,11 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Local:OverrideQuestLogPlayerIcon">BundlePlayerHelperFunctions.Local:OverrideQuestLogPlayerIcon ()</a></td>
-	<td class="summary"></td>
+	<td class="summary">Überschreibt das Quest log Icon für Spieler, die keinem Typen zugeordnet sind.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon">BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon ()</a></td>
-	<td class="summary"></td>
+	<td class="summary">Überschreibt das Quest Icon für Spieler, die keinem Typen zugeordnet sind.</td>
 	</tr>
 </table>
 
@@ -225,7 +225,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Spieler
+            <span class="types"><span class="type">number</span></span>
+         Spieler
         </li>
     </ul>
 
@@ -247,7 +248,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Spieler
+            <span class="types"><span class="type">number</span></span>
+         Spieler
         </li>
     </ul>
 
@@ -271,7 +273,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        [number] PlayerID
+           <span class="types"><span class="type">number</span></span>
+        PlayerID
     </ol>
 
 
@@ -293,16 +296,20 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_OldID</span>
-         [number] Alte ID des menschlichen Spielers
+            <span class="types"><span class="type">number</span></span>
+         Alte ID des menschlichen Spielers
         </li>
         <li><span class="parameter">_NewID</span>
-         [number] Neue ID des menschlichen Spielers
+            <span class="types"><span class="type">number</span></span>
+         Neue ID des menschlichen Spielers
         </li>
         <li><span class="parameter">_NewName</span>
-         [string] Name in der Statistik
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name in der Statistik
         </li>
         <li><span class="parameter">_RetainKnight</span>
-         [boolean] Ritter mitnehmen
+            <span class="types"><span class="type">boolean</span></span>
+         Ritter mitnehmen
         </li>
     </ul>
 
@@ -325,10 +332,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Partei oder nil für alle
+            <span class="types"><span class="type">number</span></span>
+         Partei oder nil für alle
         </li>
         <li><span class="parameter">_Earnings</span>
-         [number] Einnahmen [0 | 100]
+            <span class="types"><span class="type">number</span></span>
+         Einnahmen [0 | 100]
         </li>
     </ul>
 
@@ -352,13 +361,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Need</span>
-         [number] Bedürfnis
+            <span class="types"><span class="type">number</span></span>
+         Bedürfnis
         </li>
         <li><span class="parameter">_State</span>
-         [number] Erfüllung des Bedürfnisses
+            <span class="types"><span class="type">number</span></span>
+         Erfüllung des Bedürfnisses
         </li>
         <li><span class="parameter">_PlayerID</span>
-         [number] Partei oder -1 für alle
+            <span class="types"><span class="type">number</span></span>
+         Partei oder -1 für alle
         </li>
     </ul>
 
@@ -381,7 +393,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Spieler
+            <span class="types"><span class="type">number</span></span>
+         Spieler
         </li>
     </ul>
 
@@ -404,7 +417,8 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Spieler
+            <span class="types"><span class="type">number</span></span>
+         Spieler
         </li>
     </ul>
 
@@ -427,10 +441,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Spieler-ID
+            <span class="types"><span class="type">number</span></span>
+            Spieler-ID
         </li>
         <li><span class="parameter">_TargetPlayerID</span>
-         [number] Zielpartei
+            <span class="types"><span class="type">number</span></span>
+         Anderer Spieler
         </li>
     </ul>
 
@@ -453,10 +469,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Spieler-ID
+            <span class="types"><span class="type">number</span></span>
+            Spieler-ID
         </li>
         <li><span class="parameter">_TerritoryID</span>
-         [number] Territorium-ID
+            <span class="types"><span class="type">number</span></span>
+         Territorium-ID
         </li>
     </ul>
 
@@ -478,10 +496,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Zielpartei
+            <span class="types"><span class="type">number</span></span>
+         Zielpartei
         </li>
         <li><span class="parameter">_KnightTitle</span>
-         [number] Titel zum Entsperren
+            <span class="types"><span class="type">number</span></span>
+         Titel zum Entsperren
         </li>
     </ul>
 
@@ -522,7 +542,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        [number] PlayerID
+           <span class="types"><span class="type">number</span></span>
+        PlayerID
     </ol>
 
 
@@ -569,13 +590,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] ID des Spielers
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
         </li>
         <li><span class="parameter">_Index</span>
+            <span class="types"><span class="type">number</span></span>
             Index des Fest
         </li>
         <li><span class="parameter">_Flag</span>
-         [boolean] Erlauben/verbieten
+            <span class="types"><span class="type">boolean</span></span>
+             Erlauben/verbieten
         </li>
     </ul>
 
@@ -598,16 +622,20 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_oldPlayerID</span>
-         [number]Alte ID des menschlichen Spielers
+            <span class="types"><span class="type">number</span></span>
+         Alte ID des menschlichen Spielers
         </li>
         <li><span class="parameter">_newPlayerID</span>
-         [number]Neue ID des menschlichen Spielers
+            <span class="types"><span class="type">number</span></span>
+         Neue ID des menschlichen Spielers
         </li>
         <li><span class="parameter">_newNameForStatistics</span>
-         [string]Name in der Statistik
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name in der Statistik
         </li>
         <li><span class="parameter">_retainPrimaryKnight</span>
-         [boolean]Ritter mitnehmen
+            <span class="types"><span class="type">boolean</span></span>
+         Ritter mitnehmen
         </li>
     </ul>
 
@@ -630,10 +658,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Partei oder nil für alle
+            <span class="types"><span class="type">number</span></span>
+         Partei oder nil für alle
         </li>
         <li><span class="parameter">_Earnings</span>
-         [number] Einnahmen [0 | 100]
+            <span class="types"><span class="type">number</span></span>
+         Einnahmen [0 | 100]
         </li>
     </ul>
 
@@ -656,13 +686,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Need</span>
-         [number] Bedürfnis
+            <span class="types"><span class="type">number</span></span>
+         Bedürfnis
         </li>
         <li><span class="parameter">_State</span>
-         [number] Erfüllung des Bedürfnisses
+            <span class="types"><span class="type">number</span></span>
+         Erfüllung des Bedürfnisses
         </li>
         <li><span class="parameter">_PlayerID</span>
-         [number] Partei oder -1 für alle
+            <span class="types"><span class="type">number</span></span>
+         Partei oder -1 für alle
         </li>
     </ul>
 
@@ -684,10 +717,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Spieler-ID
+            <span class="types"><span class="type">number</span></span>
+            Spieler-ID
         </li>
         <li><span class="parameter">_TargetPlayerID</span>
-         [number] Zielpartei
+            <span class="types"><span class="type">number</span></span>
+         Anderer Spieler
         </li>
     </ul>
 
@@ -708,10 +743,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Spieler-ID
+            <span class="types"><span class="type">number</span></span>
+            Spieler-ID
         </li>
         <li><span class="parameter">_TerritoryID</span>
-         [number] Territorium-ID
+            <span class="types"><span class="type">number</span></span>
+         Territorium-ID
         </li>
     </ul>
 
@@ -731,10 +768,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_PlayerID</span>
-         [number] Zielpartei
+            <span class="types"><span class="type">number</span></span>
+         Zielpartei
         </li>
         <li><span class="parameter">_KnightTitle</span>
-         [number] Titel zum Entsperren
+            <span class="types"><span class="type">number</span></span>
+         Titel zum Entsperren
         </li>
     </ul>
 
@@ -763,7 +802,7 @@
     <strong>BundlePlayerHelperFunctions.Local:OverrideQuestLogPlayerIcon ()</strong>
     </dt>
     <dd>
-
+    Überschreibt das Quest log Icon für Spieler, die keinem Typen zugeordnet sind.
 
 
 
@@ -777,7 +816,7 @@
     <strong>BundlePlayerHelperFunctions.Local:OverrideQuestPlayerIcon ()</strong>
     </dt>
     <dd>
-
+    Überschreibt das Quest Icon für Spieler, die keinem Typen zugeordnet sind.
 
 
 
@@ -793,7 +832,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-01-27 19:40:00 </i>
+<i style="float:right;">Last updated 2019-02-02 17:51:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
