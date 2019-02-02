@@ -130,7 +130,7 @@ function QSB.EntityProperty:Resource(_Amount)
         if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
             EntityID = ReplaceEntity(EntityID, Logic.GetEntityType(EntityID));
         end
-        Logic.SetResourceDoodadGoodAmount(EntityID, _StartAmount);
+        Logic.SetResourceDoodadGoodAmount(EntityID, _Amount);
     end
     return Logic.GetResourceDoodadGoodAmount(EntityID);
 end
@@ -264,7 +264,7 @@ function QSB.EntityProperty:Burning(_FireSize)
     if _FireSize and _FireSize > 0 then
         Logic.DEBUG_SetBuildingOnFire(EntityID, _FireSize);
     end
-    return Logic.IsBuirning(EntityID);
+    return Logic.IsBurning(EntityID);
 end
 
 ---
@@ -282,7 +282,7 @@ function QSB.EntityProperty:Visible(_Visble)
     if EntityID == 0 then
         return false;
     end
-    if _Visble then
+    if _Visble ~= nil then
         Logic.SetVisible(EntityID, _Visble);
     end
     return self:GetValueAsInteger(-50) == 801280;
@@ -304,7 +304,7 @@ function QSB.EntityProperty:Ill(_SetIll)
     if self:InGategory(EntityCategories.CattlePasture) or self:InGategory(EntityCategories.SheepPasture) then
         FarmAnimal = true;
     end
-    if EntityID == 0 or Logic.IsSettler(EntityID) == 0 or FarmAnimal == false then
+    if EntityID == 0 or (Logic.IsSettler(EntityID) == 0 and FarmAnimal == false) then
         return false;
     end
     if FarmAnimal then
@@ -342,7 +342,7 @@ end
 -- @return[type=table] Positionstabelle
 -- @within QSB.EntityProperty
 --
-function QSB.EntityProperty:Destination()
+function QSB.EntityProperty:GetDestination()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
@@ -436,7 +436,7 @@ function QSB.EntityProperty:GetTypeName()
     if EntityID == 0 then
         return;
     end
-    return Logic.GetEntityTypeName(EntityID);
+    return Logic.GetEntityTypeName(self:Type());
 end
 
 ---
