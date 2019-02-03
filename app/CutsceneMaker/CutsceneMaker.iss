@@ -5,10 +5,10 @@
 
 [Setup]
 AppName=Cutscene Maker
-AppVerName=Version 1.0
+AppVerName=Version 1.1
 DefaultDirName={pf}\CutsceneMaker
 DefaultGroupName=CutsceneMaker
-UninstallDisplayIcon={app}\CutsceneMaker.png
+UninstallDisplayIcon={app}\CutsceneMaker.ico
 Compression=lzma2
 SolidCompression=yes
 OutputDir=E:/Repositories/symfonia/app/CutsceneMaker
@@ -21,8 +21,4 @@ Source: "CutsceneMaker";     DestDir: "{app}";     DestName: "CutsceneMaker"
 Source: "tpl/*";             DestDir: "{app}/tpl"; Flags: ignoreversion recursesubdirs
 
 [Icons]
-Name: "{group}\CutsceneMaker"; Filename: "{app}\CutsceneMaker.png"
-
-[Registry]
-Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; \
-    ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"
+Name: "{group}\CutsceneMaker"; Filename: "{app}\CutsceneMaker.ico"
