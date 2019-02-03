@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import twa.symfonia.cutscenemaker.gui.CutsceneMakerUI;
 import twa.symfonia.cutscenemaker.lua.CutsceneFlightParser;
 import twa.symfonia.cutscenemaker.lua.CutsceneLuaBuilder;
 import twa.symfonia.cutscenemaker.xml.CutsceneXMLReader;
@@ -63,8 +64,7 @@ public class CutsceneMaker {
      * @throws Exception 
      */
     public static void startGUI() throws Exception {
-        System.err.println("usage: java -jar CutsceneMaker <cutscene name> <cs-file 1> <cs-file 2> ...");
-        throw new Exception("GUI not implemented!");
+        CutsceneMakerUI.startGUI();
     }
 
     /**
