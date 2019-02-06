@@ -777,6 +777,11 @@ BundleNonPlayerCharacter_ControlMarkerJob = BundleNonPlayerCharacter.Global.Cont
 -- wird. Die Bedingung wird für alle NPCs geprüft. Der erste NPC, der
 -- die Bedingung erfüllt, wird aktiviert.
 --
+-- TODO: Potentielle Probleme können auftreten, wenn 2 NPC so nah an
+-- einander Platziert werden, dass man versehentlich den anderen snspricht. 
+-- Außerdem könnte ein Held auf dem Weg zu NPC A zu nah an NPC B herankommen
+-- und ihn ansprechen. Folglich sollte dieses Feature gut ausgetestet werden!
+--
 -- @within Internal
 -- @local
 --
@@ -787,11 +792,13 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
     for i= 1, #PlayersKnights, 1 do
         if Logic.GetCurrentTaskList(PlayersKnights[i]) == TaskLists.TL_NPC_INTERACTION then
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
-                if v and v.Distance > 300 and IsNear(PlayersKnights[i], k, v.Distance) then
-                    local x, y, z = Logic.EntityGetPos(PlayersKnights[i]);
-                    Logic.MoveSettler(PlayersKnights[i], x, y);
-                    GameCallback_OnNPCInteraction(GetID(k), PlayerID);
-                    return;
+                if v and v.m_TalkedTo == nil and v.Distance > 300 then
+                    if IsExisting(k) and IsNear(PlayersKnights[i], k, v.Distance) then
+                        local x, y, z = Logic.EntityGetPos(PlayersKnights[i]);
+                        Logic.MoveSettler(PlayersKnights[i], x, y);
+                        GameCallback_OnNPCInteraction(GetID(k), PlayerID);
+                        return;
+                    end
                 end
             end
         end
