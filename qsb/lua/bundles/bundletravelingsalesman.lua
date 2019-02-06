@@ -230,7 +230,7 @@ QSB.TravelingSalesman = {}
 -- @within QSB.TravelingSalesman
 -- @local
 --
-function QSB.TravelingSalesman:GetInstance(_PlayerID)
+function QSB.TravelingSalesman:New(_PlayerID)
     local salesman = API.InstanceTable(self);
     salesman.m_PlayerID = _PlayerID;
     salesman.m_Offers = {};

@@ -214,10 +214,14 @@ QSB.NonPlayerCharacter = {};
 --     :Activate();
 --
 function QSB.NonPlayerCharacter:New(_ScriptName)
-    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     local npc = API.InstanceTable(self);
-    npc.m_NpcName = _ScriptName;
-    npc.m_NpcType = BundleNonPlayerCharacter.Global.DefaultNpcType
+    npc.m_NpcName  = _ScriptName;
+    npc.m_NpcType  = BundleNonPlayerCharacter.Global.DefaultNpcType
+    npc.m_Distance = 400;
+    if Logic.IsKnight(GetID(_ScriptName)) then
+        npc.m_Distance = 500;
+    end
     QSB.NonPlayerCharacterObjects[_ScriptName] = npc;
     npc:CreateMarker();
     return npc;
@@ -392,7 +396,7 @@ end
 -- @within QSB.NonPlayerCharacter
 --
 function QSB.NonPlayerCharacter:SetType(_Type)
-    assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     self.m_NpcType = _Type;
     if _Type > 1 then
         self:HideMarker();
@@ -408,8 +412,8 @@ end
 -- @within QSB.NonPlayerCharacter
 --
 function QSB.NonPlayerCharacter:SetTalkDistance(_Distance)
-    assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
-    self.m_Distance = _Distance;
+    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
+    self.m_Distance = _Distance or 400;
     return self;
 end
 
@@ -463,19 +467,20 @@ end
 --
 function QSB.NonPlayerCharacter:RotateActors()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
-    local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
-    local KnightIDs = {};
-    Logic.GetKnights(PlayerID, KnightIDs);
-    for i= 1, #KnightIDs, 1 do
-        if Logic.GetDistanceBetweenEntities(KnightIDs[i], BundleNonPlayerCharacter.Global.LastNpcEntityID) < 3000 then
-            local x,y,z = Logic.EntityGetPos(KnightIDs[i]);
-            if Logic.IsEntityMoving(KnightIDs[i]) then
-                Logic.MoveEntity(KnightIDs[i], x, y);
-            end
-            LookAt(KnightIDs[i], self.m_NpcName);
-        end
-    end
+    -- local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
+    -- local KnightIDs = {};
+    -- Logic.GetKnights(PlayerID, KnightIDs);
+    -- Andere Helden stoppen, die ebenfalls den NPC ansprechen wollen
+    -- for i= 1, #KnightIDs, 1 do
+    --     local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(KnightIDs[i], 19)));
+    --     local y2 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(KnightIDs[i], 20)));
+    --     local x2, y2 = Logic.EntityGetPos(BundleNonPlayerCharacter.Global.LastNpcEntityID);
+    --     if x1 == math.floor(x2) and y1 == math.floor(y2) then
+    --         API.Bridge("GUI.SendCommandStationaryDefend(" ..KnightIDs[i].. ")");
+    --     end
+    -- end
     LookAt(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
+    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.m_NpcName);
 end
 
 ---
@@ -754,11 +759,42 @@ end
 --
 function BundleNonPlayerCharacter.Global:GetControllingPlayer()
     for i= 1, 8, 1 do
-        if Logic.PlayerGetIsHumanFlag(1) == true then
+        if Logic.PlayerGetIsHumanFlag(i) == true then
             return i;
         end
     end
     return 0;
+end
+
+---
+-- Konvertiert eine Ganzzahl in eine Gleitkommazahl.
+-- @param[type=number] num Zahl zum Konvertieren
+-- @return[type=number] Ganzzahl
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global:IntegerToFloat(num)
+    if(num == 0) then 
+        return 0;
+    end
+    local sign = 1
+    if(num < 0) then 
+        num = 2147483648 + num; sign = -1;
+    end
+    local frac = (num - math.floor(num/8388608)*8388608);
+    local headPart = (num-frac)/8388608
+    local expNoSign = (headPart - math.floor(headPart/256)*256);
+    local exp = expNoSign-127
+    local fraction = 1
+    local fp = 0.5
+    local check = 4194304
+    for i = 23, 0, -1 do
+        if(frac - check) > 0 then
+            fraction = fraction + fp; frac = frac - check;
+        end
+        check = check / 2; fp = fp / 2
+    end
+    return fraction * math.pow(2, exp) * sign
 end
 
 ---
@@ -779,10 +815,7 @@ BundleNonPlayerCharacter_ControlMarkerJob = BundleNonPlayerCharacter.Global.Cont
 -- wird. Die Bedingung wird für alle NPCs geprüft. Der erste NPC, der
 -- die Bedingung erfüllt, wird aktiviert.
 --
--- TODO: Potentielle Probleme können auftreten, wenn 2 NPC so nah an
--- einander Platziert werden, dass man versehentlich den anderen snspricht. 
--- Außerdem könnte ein Held auf dem Weg zu NPC A zu nah an NPC B herankommen
--- und ihn ansprechen. Folglich sollte dieses Feature gut ausgetestet werden!
+-- Der Job prüft nur NPCs, deren Aktivierungsdistanz 400 oder höher ist.
 --
 -- @within Internal
 -- @local
@@ -792,14 +825,19 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
     local PlayersKnights = {};
     Logic.GetKnights(PlayerID, PlayersKnights);
     for i= 1, #PlayersKnights, 1 do
-        if Logic.GetCurrentTaskList(PlayersKnights[i]) == TaskLists.TL_NPC_INTERACTION then
+        if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
-                if v and v.m_TalkedTo == nil and v.Distance > 300 then
-                    if IsExisting(k) and IsNear(PlayersKnights[i], k, v.Distance) then
-                        local x, y, z = Logic.EntityGetPos(PlayersKnights[i]);
-                        Logic.MoveSettler(PlayersKnights[i], x, y);
-                        GameCallback_OnNPCInteraction(GetID(k), PlayerID);
-                        return;
+                if v and v.m_TalkedTo == nil and v.m_Distance >= 400 then
+                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 19)));
+                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 20)));
+                    local x2, y2 = Logic.EntityGetPos(GetID(k));
+                    if x1 == math.floor(x2) and y1 == math.floor(y2) then
+                        if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
+                            local x, y, z = Logic.EntityGetPos(PlayersKnights[i]);
+                            Logic.MoveSettler(PlayersKnights[i], x, y);
+                            GameCallback_OnNPCInteraction(GetID(k), PlayerID);
+                            return;
+                        end
                     end
                 end
             end
@@ -961,77 +999,4 @@ function b_Goal_NPC:GetIcon()
 end
 
 Core:RegisterBehavior(b_Goal_NPC);
-
--- -------------------------------------------------------------------------- --
-
----
--- Startet den Quest, sobald der NPC angesprochen wurde.
---
--- Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
--- erzeugt wurde.
---
--- @param[type=string] _NpcName  Skriptname des NPC
--- @param[type=string] _HeroName (optional) Skriptname des Helden
--- @within Trigger
---
-function Trigger_NPC(...)
-    return b_Trigger_NPC:new(...);
-end
-
-b_Trigger_NPC = {
-    Name = "Trigger_NPC",
-    Description = {
-        en = "Trigger: Starts the quest after the npc was spoken to.",
-        de = "Ausloeser: Startet den Quest, sobald der NPC angesprochen wurde.",
-    },
-    Parameter = {
-        { ParameterType.ScriptName, en = "NPC",  de = "NPC" },
-        { ParameterType.ScriptName, en = "Hero", de = "Held" },
-    },
-}
-
-function b_Trigger_NPC:GetTriggerTable()
-    return { Triggers.Custom2,{self, self.CustomFunction} }
-end
-
-function b_Trigger_NPC:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.NPC = __parameter_
-    elseif (__index_ == 1) then
-        self.Hero = __parameter_
-        if self.Hero == "-" then
-            self.Hero = nil
-        end
-    end
-end
-
-function b_Trigger_NPC:CustomFunction()
-    if not IsExisting(self.NPC) then
-        return;
-    end
-    if not self.NpcInstance then
-        local NPC = QSB.NonPlayerCharacter(self.NPC);
-        NPC:SetDialogPartner(self.Hero);
-        self.NpcInstance = NPC;
-    end
-    local TalkedTo = self.NpcInstance:HasTalkedTo(self.Hero);
-    if not TalkedTo then
-        if not self.NpcInstance:IsActive() then
-            self.NpcInstance:Activate();
-        end
-    end
-    return TalkedTo;
-end
-
-function b_Trigger_NPC:Reset(__quest_)
-    if self.NpcInstance then
-        self.NpcInstance:Dispose();
-    end
-end
-
-function b_Trigger_NPC:DEBUG(__quest_)
-    return false;
-end
-
-Core:RegisterBehavior(b_Trigger_NPC);
 
