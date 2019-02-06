@@ -132,7 +132,7 @@ CopyTableRecursive = API.InstanceTable;
 --
 -- <p><b>Alias:</b> Inside</p>
 --
--- @param             _Data Datum, das gesucht wird
+-- @param             _Data Gesuchter Eintrag (multible Datentypen)
 -- @param[type=table] _Table Tabelle, die durchquert wird
 -- @return[type=booelan] Wert gefunden
 -- @within Anwenderfunktionen
@@ -1111,7 +1111,8 @@ GiveEntityName = API.EnsureScriptName;
 -- wird der Befehl an das globale Skript geschickt.
 --
 -- @param[type=string]  _Command Lua-Befehl als String
--- @param[type=boolean] _Flag FIXME Optional für GUI.SendScriptCommand benötigt. Was macht das Flag?
+-- @param[type=boolean] _Flag FIXME Optional für GUI.SendScriptCommand benötigt. 
+--                      Was macht das Flag?
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -1145,27 +1146,6 @@ function API.ToBoolean(_Value)
     return Core:ToBoolean(_Value);
 end
 AcceptAlternativeBoolean = API.ToBoolean;
-
----
--- Registriert eine Funktion, die nach dem laden ausgeführt wird.
---
--- <b>Alias</b>: AddOnSaveGameLoadedAction
---
--- @param[type=function] _Function Funktion, die ausgeführt werden soll
--- @within Anwenderfunktionen
--- @usage SaveGame = function()
---     API.Note("foo")
--- end
--- API.AddSaveGameAction(SaveGame)
---
-function API.AddSaveGameAction(_Function)
-    if GUI then
-        API.Fatal("API.AddSaveGameAction: Can not be used from the local script!");
-        return;
-    end
-    return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
-end
-AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
@@ -1204,6 +1184,110 @@ function API.RemoveHotKey(_Index)
     end
     Core.Data.HotkeyDescriptions[_Index] = nil;
 end
+
+-- Simple Job Overhaul ---------------------------------------------------------
+
+---
+-- Registriert eine Funktion, die nach dem laden ausgeführt wird.
+--
+-- <b>Alias</b>: AddOnSaveGameLoadedAction
+--
+-- @param[type=function] _Function Funktion, die ausgeführt werden soll
+-- @within Anwenderfunktionen
+-- @usage SaveGame = function()
+--     API.Note("foo")
+-- end
+-- API.AddSaveGameAction(SaveGame)
+--
+function API.AddSaveGameAction(_Function)
+    if GUI then
+        API.Fatal("API.AddSaveGameAction: Can not be used from the local script!");
+        return;
+    end
+    return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
+end
+AddOnSaveGameLoadedAction = API.AddSaveGameAction;
+
+---
+-- Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
+-- wird. Die Argumente werden an die Funktion übergeben.
+--
+-- <b>Alias</b>: StartSimpleJobEx
+--
+-- @param[type=number] _Function Funktion, die ausgeführt wird
+-- @param              ...       Liste von Argumenten
+-- @return[type=number] Job ID
+-- @within Anwenderfunktionen
+--
+function API.StartJob(_Function, ...)
+    Core.Data.Events.JobIDCounter = Core.Data.Events.JobIDCounter +1;
+    local JobID = Core.Data.Events.JobIDCounter;
+    Core.Data.Events.EverySecond[JobID] = {
+        Function  = _Function,
+        Arguments = API.InstanceTable({...});
+    };
+    return JobID;
+end
+StartSimpleJobEx = API.StartJob;
+
+---
+-- Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
+-- wird. Die Argumente werden an die Funktion übergeben.
+--
+-- <b>Alias</b>: StartSimpleHiResJobEx
+--
+-- @param[type=number] _Function Funktion, die ausgeführt wird
+-- @param              ...       Liste von Argumenten
+-- @return[type=number] Job ID
+-- @within Anwenderfunktionen
+--
+function API.StartHiResJob(_Function, ...)
+    Core.Data.Events.JobIDCounter = Core.Data.Events.JobIDCounter +1;
+    local JobID = Core.Data.Events.JobIDCounter;
+    Core.Data.Events.EveryTurn[JobID] = {
+        Function  = _Function,
+        Arguments = API.InstanceTable({...});
+    };
+    return JobID;
+end
+StartSimpleHiResJobEx = API.StartHiResJob;
+
+---
+-- Prüft ob ein Job mit der ID existiert.
+--
+-- <b>Alias</b>: JobIsRunningEx
+--
+-- @param[type=number] _JobID ID des Jobs
+-- @within Anwenderfunktionen
+--
+function API.JobIsRunning(_JobID)
+    if Core.Data.Events.EveryTurn[_JobID] then
+        return true;
+    end
+    if Core.Data.Events.EverySecond[_JobID] then
+        return true;
+    end
+    return false;
+end
+JobIsRunningEx = API.JobIsRunning;
+
+---
+-- Bendet einen QSB-Job.
+--
+-- <b>Alias</b>: EndJobEx
+--
+-- @param[type=number] _JobID ID des Jobs
+-- @within Anwenderfunktionen
+--
+function API.EndJob(_JobID)
+    if Core.Data.Events.EveryTurn[_JobID] then
+        Core.Data.Events.EveryTurn[_JobID] = nil;
+    end
+    if Core.Data.Events.EverySecond[_JobID] then
+        Core.Data.Events.EverySecond[_JobID] = nil;
+    end
+end
+EndJobEx = API.EndJob;
 
 -- Echtzeit --------------------------------------------------------------------
 
@@ -1247,6 +1331,11 @@ end
 
 Core = {
     Data = {
+        Events = {
+            EverySecond = {},
+            EveryTurn = {},
+            JobIDCounter = 0,
+        },
         Overwrite = {
             StackedFunctions = {},
             AppendedFunctions = {},
@@ -1268,12 +1357,22 @@ function Core:InitalizeBundles()
     if not GUI then
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
+        
+        StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
 
-        StartSimpleJobEx(CoreJob_CalculateRealTimeSinceGameStart);
+        Trigger.RequestTrigger(Event.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1);
+        Trigger.RequestTrigger(Event.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1);
+        StartSimpleHiResJob("CoreEventJob_OnEveryTurn");
+        StartSimpleJob("CoreEventJob_OnEverySecond");
     else
         self:SetupLocal_HackRegisterHotkey();
 
-        StartSimpleJobEx(CoreJob_CalculateRealTimeSinceGameStart);
+        StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
+
+        Trigger.RequestTrigger(Event.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1);
+        Trigger.RequestTrigger(Event.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1);
+        StartSimpleHiResJob("CoreEventJob_OnEveryTurn");
+        StartSimpleJob("CoreEventJob_OnEverySecond");
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
@@ -1768,7 +1867,7 @@ end
 -- Dieser Job ermittelt automatisch, ob eine Sekunde reale Zeit vergangen ist
 -- und zählt eine Variable hoch, die die gesamt verstrichene reale Zeit hält.
 
-function CoreJob_CalculateRealTimeSinceGameStart()
+function Core.EventJob_EventOnEveryRealTimeSecond()
     if not QSB.RealTime_LastTimeStamp then
         if GUI then
             QSB.RealTime_LastTimeStamp = XGUIEng.GetSystemTime();
@@ -1790,3 +1889,30 @@ function CoreJob_CalculateRealTimeSinceGameStart()
         QSB.RealTime_SecondsSinceGameStart = QSB.RealTime_SecondsSinceGameStart +1;
     end
 end
+CoreEventJob_OnEveryRealTimeSecond = Core.EventJob_EventOnEveryRealTimeSecond;
+
+-- Dieser Job führt alle registrierten Events aus, die einmal pro Sekunde
+-- gestartet werden sollen.
+
+function Core.EventJob_EventOnEverySecond()
+    for k, v in pairs(Core.Data.Events.EverySecond) do
+        if v then
+            local Arguments = API.InstanceTable(v);
+            table.remove(Arguments, 1);
+            v.Function(unpack(v.Arguments));
+        end
+    end
+end
+CoreEventJob_OnEverySecond = Core.EventJob_EventOnEverySecond;
+
+-- Dieser Job führt alle registrierten Events aus, die zehn Mal pro Sekunde
+-- gestartet werden sollen.
+
+function Core.EventJob_EventOnEveryTurn()
+    for k, v in pairs(Core.Data.Events.EveryTurn) do
+        if v then
+            v.Function(unpack(v.Arguments));
+        end
+    end
+end
+CoreEventJob_OnEveryTurn = Core.EventJob_EventOnEveryTurn;
