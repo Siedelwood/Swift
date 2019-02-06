@@ -31,17 +31,21 @@ QSB = QSB or {};
 
 QSB.EntityPropertyObjects = {};
 
-QSB.EntityProperty = class {
-    ---
-    -- Konstruktor
-    -- @param[type=string] _Entity Skriptname des Entity
-    -- @within QSB.EntityProperty
-    --
-    construct = function(self, _Entity)
-        self.m_EntityName = _Entity;
-        QSB.EntityPropertyObjects[_Entity] = self;
-    end
-};
+QSB.EntityProperty = {};
+
+---
+-- Konstruktor
+-- @param[type=string] _Entity Skriptname des Entity
+-- @return[type=table] Neue Instanz
+-- @within QSB.EntityProperty
+--
+function QSB.EntityProperty:New(_Entity)
+    assert(self == QSB.EntityProperty, "Can not be used from instance!");
+    local property = copy(self);
+    property.m_EntityName = _Entity;
+    QSB.EntityPropertyObjects[_Entity] = property;
+    return property;
+end
 
 ---
 -- Gibt die Properties Instanz des Entity zurück.
@@ -57,7 +61,7 @@ function QSB.EntityProperty:GetInstance(_Entity)
     assert(self == QSB.EntityProperty, "Can not be used from instance!");
 
     if not QSB.EntityPropertyObjects[_Entity] then
-        QSB.EntityPropertyObjects[_Entity] = new{QSB.EntityProperty, _Entity};
+        QSB.EntityPropertyObjects[_Entity] = QSB.EntityProperty:New(_Entity);
     end
     return QSB.EntityPropertyObjects[_Entity];
 end
