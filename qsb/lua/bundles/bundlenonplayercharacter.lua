@@ -218,9 +218,9 @@ function QSB.NonPlayerCharacter:New(_ScriptName)
     local npc = API.InstanceTable(self);
     npc.m_NpcName  = _ScriptName;
     npc.m_NpcType  = BundleNonPlayerCharacter.Global.DefaultNpcType
-    npc.m_Distance = 400;
+    npc.m_Distance = 350;
     if Logic.IsKnight(GetID(_ScriptName)) then
-        npc.m_Distance = 500;
+        npc.m_Distance = 400;
     end
     QSB.NonPlayerCharacterObjects[_ScriptName] = npc;
     npc:CreateMarker();
@@ -413,7 +413,7 @@ end
 --
 function QSB.NonPlayerCharacter:SetTalkDistance(_Distance)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
-    self.m_Distance = _Distance or 400;
+    self.m_Distance = _Distance or 350;
     return self;
 end
 
@@ -467,18 +467,13 @@ end
 --
 function QSB.NonPlayerCharacter:RotateActors()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
-    -- local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
-    -- local KnightIDs = {};
-    -- Logic.GetKnights(PlayerID, KnightIDs);
-    -- Andere Helden stoppen, die ebenfalls den NPC ansprechen wollen
-    -- for i= 1, #KnightIDs, 1 do
-    --     local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(KnightIDs[i], 19)));
-    --     local y2 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(KnightIDs[i], 20)));
-    --     local x2, y2 = Logic.EntityGetPos(BundleNonPlayerCharacter.Global.LastNpcEntityID);
-    --     if x1 == math.floor(x2) and y1 == math.floor(y2) then
-    --         API.Bridge("GUI.SendCommandStationaryDefend(" ..KnightIDs[i].. ")");
-    --     end
-    -- end
+    local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
+    local PlayerKnights = {};
+    Logic.GetKnights(PlayerID, PlayerKnights);
+    for k, v in pairs(PlayerKnights) do
+        local x, y, z = Logic.EntityGetPos(v);
+        Logic.MoveEntity(v, x, y);
+    end
     LookAt(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
     LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.m_NpcName);
 end
@@ -815,7 +810,7 @@ BundleNonPlayerCharacter_ControlMarkerJob = BundleNonPlayerCharacter.Global.Cont
 -- wird. Die Bedingung wird für alle NPCs geprüft. Der erste NPC, der
 -- die Bedingung erfüllt, wird aktiviert.
 --
--- Der Job prüft nur NPCs, deren Aktivierungsdistanz 400 oder höher ist.
+-- Der Job prüft nur NPCs, deren Aktivierungsdistanz 350 oder höher ist.
 --
 -- @within Internal
 -- @local
@@ -827,14 +822,12 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
     for i= 1, #PlayersKnights, 1 do
         if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
-                if v and v.m_TalkedTo == nil and v.m_Distance >= 400 then
+                if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
                     local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 19)));
                     local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 20)));
                     local x2, y2 = Logic.EntityGetPos(GetID(k));
                     if x1 == math.floor(x2) and y1 == math.floor(y2) then
                         if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
-                            local x, y, z = Logic.EntityGetPos(PlayersKnights[i]);
-                            Logic.MoveSettler(PlayersKnights[i], x, y);
                             GameCallback_OnNPCInteraction(GetID(k), PlayerID);
                             return;
                         end
