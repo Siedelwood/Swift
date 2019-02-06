@@ -80,7 +80,7 @@ function API.NpcCompose(_Data)
         end
     end
 
-    local NPC = new {QSB.NonPlayerCharacter, _Data.Name};
+    local NPC = QSB.NonPlayerCharacter:New(_Data.Name);
     NPC:SetDialogPartner(_Data.Hero);
     NPC:SetWrongPartnerCallback(WronHeroCallback);
     NPC:SetCallback(_Data.Callback);
@@ -200,26 +200,28 @@ TalkedToNPC = API.NpcHasSpoken;
 -- Klassen                                                                    --
 -- -------------------------------------------------------------------------- --
 
-QSB.NonPlayerCharacter = class {
-    ---
-    -- Konstruktor
-    -- @param[type=string] _ScriptName Skriptname des NPC
-    -- @within QSB.NonPlayerCharacter
-    -- @usage
-    -- -- Einen normalen NPC erzeugen:
-    -- new {QSB.NonPlayerCharacter, "npc"}
-    --     :SetDialogPartner("hero")                 -- Optional
-    --     :SetCallback(Briefing1)                   -- Optional
-    --     :Activate();
-    --
-    construct = function(self, _ScriptName)
-        self.m_NpcName  = _ScriptName;
-        self.m_NpcType  = BundleNonPlayerCharacter.Global.DefaultNpcType
-        self.m_Distance = 500;
-        QSB.NonPlayerCharacterObjects[_ScriptName] = self;
-        self:CreateMarker();
-    end
-};
+QSB.NonPlayerCharacter = {};
+
+---
+-- Konstruktor
+-- @param[type=string] _ScriptName Skriptname des NPC
+-- @within QSB.NonPlayerCharacter
+-- @usage
+-- -- Einen normalen NPC erzeugen:
+-- QSB.NonPlayerCharacter:New("npc")
+--     :SetDialogPartner("hero")                 -- Optional
+--     :SetCallback(Briefing1)                   -- Optional
+--     :Activate();
+--
+function QSB.NonPlayerCharacter:New(_ScriptName)
+    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    local npc = API.InstanceTable(self);
+    npc.m_NpcName = _ScriptName;
+    npc.m_NpcType = BundleNonPlayerCharacter.Global.DefaultNpcType
+    QSB.NonPlayerCharacterObjects[_ScriptName] = npc;
+    npc:CreateMarker();
+    return npc;
+end
 
 ---
 -- Gibt das Objekt des NPC zurück, wenn denn eins für dieses Entity existiert.
@@ -711,7 +713,7 @@ function BundleNonPlayerCharacter.Global:Install()
                     objective.Completed = false;
                 else
                     if not data[4].NpcInstance then
-                        local NPC = new {QSB.NonPlayerCharacter, data[3]};
+                        local NPC = QSB.NonPlayerCharacter(data[3]);
                         NPC:SetDialogPartner(data[2]);
                         data[4].NpcInstance = NPC;
                     end
@@ -1008,7 +1010,7 @@ function b_Trigger_NPC:CustomFunction()
         return;
     end
     if not self.NpcInstance then
-        local NPC = new {QSB.NonPlayerCharacter, self.NPC};
+        local NPC = QSB.NonPlayerCharacter(self.NPC);
         NPC:SetDialogPartner(self.Hero);
         self.NpcInstance = NPC;
     end
