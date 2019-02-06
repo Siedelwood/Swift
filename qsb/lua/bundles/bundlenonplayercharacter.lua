@@ -213,8 +213,9 @@ QSB.NonPlayerCharacter = class {
     --     :Activate();
     --
     construct = function(self, _ScriptName)
-        self.m_NpcName = _ScriptName;
-        self.m_NpcType = BundleNonPlayerCharacter.Global.DefaultNpcType
+        self.m_NpcName  = _ScriptName;
+        self.m_NpcType  = BundleNonPlayerCharacter.Global.DefaultNpcType
+        self.m_Distance = 500;
         QSB.NonPlayerCharacterObjects[_ScriptName] = self;
         self:CreateMarker();
     end
@@ -234,7 +235,7 @@ QSB.NonPlayerCharacter = class {
 -- NPC:SetDialogPartner("hilda");
 --
 function QSB.NonPlayerCharacter:GetInstance(_ScriptName)
-    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     local EntityID = GetID(_ScriptName)
     local ScriptName = Logic.GetEntityName(EntityID);
     if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 1 then
@@ -253,7 +254,7 @@ end
 -- @within QSB.NonPlayerCharacter
 --
 function QSB.NonPlayerCharacter:GetNpcId()
-    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     return BundleNonPlayerCharacter.Global.LastNpcEntityID;
 end
 
@@ -265,7 +266,7 @@ end
 -- @within QSB.NonPlayerCharacter
 --
 function QSB.NonPlayerCharacter:GetHeroId()
-    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     return BundleNonPlayerCharacter.Global.LastHeroEntityID;
 end
 
@@ -389,11 +390,24 @@ end
 -- @within QSB.NonPlayerCharacter
 --
 function QSB.NonPlayerCharacter:SetType(_Type)
-    assert( self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
     self.m_NpcType = _Type;
     if _Type > 1 then
         self:HideMarker();
     end
+    return self;
+end
+
+---
+-- Setzt die Entfernung, die unterschritten werden muss, damit
+-- ein NPC als angesprochen gilt.
+--
+-- @param[type=number] _Distance Aktivierungsdistanz
+-- @within QSB.NonPlayerCharacter
+--
+function QSB.NonPlayerCharacter:SetTalkDistance(_Distance)
+    assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
+    self.m_Distance = _Distance;
     return self;
 end
 
@@ -447,7 +461,6 @@ end
 --
 function QSB.NonPlayerCharacter:RotateActors()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
-
     local PlayerID = Logic.EntityGetPlayer(BundleNonPlayerCharacter.Global.LastHeroEntityID);
     local KnightIDs = {};
     Logic.GetKnights(PlayerID, KnightIDs);
@@ -460,13 +473,7 @@ function QSB.NonPlayerCharacter:RotateActors()
             LookAt(KnightIDs[i], self.m_NpcName);
         end
     end
-
-    local NpcOffset = 0;
-    if Logic.IsKnight(GetID(self.m_NpcName)) then
-        NpcOffset = 15;
-    end
-    LookAt(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID, NpcOffset);
-    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.m_NpcName, 15);
+    LookAt(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
 end
 
 ---
@@ -598,14 +605,10 @@ BundleNonPlayerCharacter = {
 -- @local
 --
 function BundleNonPlayerCharacter.Global:Install()
-    -- Führt die statische Steuerungsfunktion für alle NPC aus.
-    StartSimpleJobEx( function()
-        for k, v in pairs(QSB.NonPlayerCharacterObjects) do
-            v:ControlMarker();
-        end
-    end);
+    -- NPC stuff --
 
-    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    StartSimpleJob("BundleNonPlayerCharacter_ControlMarkerJob");
+    StartSimpleHiResJob("BundleNonPlayerCharacter_DialogTriggerJob");
 
     GameCallback_OnNPCInteraction_Orig_QSB_NPC_Rewrite = GameCallback_OnNPCInteraction
     GameCallback_OnNPCInteraction = function(_EntityID, _PlayerID)
@@ -616,7 +619,7 @@ function BundleNonPlayerCharacter.Global:Install()
     Quest_OnNPCInteraction = function(_EntityID, _PlayerID)
         local KnightIDs = {};
         Logic.GetKnights(_PlayerID, KnightIDs);
-        -- Akteure ermitteln
+
         local ClosestKnightID = 0;
         local ClosestKnightDistance = Logic.WorldGetSize();
         for i= 1, #KnightIDs, 1 do
@@ -645,6 +648,8 @@ function BundleNonPlayerCharacter.Global:Install()
             end
         end
     end
+
+    -- Quest stuff --
 
     function QuestTemplate:RemoveQuestMarkers()
         for i=1, self.Objectives[0] do
@@ -737,6 +742,62 @@ end
 function BundleNonPlayerCharacter.Global:SetDefaultNPCType(_Type)
     self.DefaultNpcType = _Type;
 end
+
+---
+-- Gibt die ID des kontrollierenden Spielers zurück.
+-- 
+-- @return[type=number] Kontrollierender Spieler
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global:GetControllingPlayer()
+    for i= 1, 8, 1 do
+        if Logic.PlayerGetIsHumanFlag(1) == true then
+            return i;
+        end
+    end
+    return 0;
+end
+
+---
+-- Kontrolliert die "Glitter Marker" der NPCs.
+--
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global.ControlMarker()
+    for k, v in pairs(QSB.NonPlayerCharacterObjects) do
+        v:ControlMarker();
+    end
+end
+BundleNonPlayerCharacter_ControlMarkerJob = BundleNonPlayerCharacter.Global.ControlMarker;
+
+---
+-- Prüft, ob ein NPC durch die emulierte Aktivierungsdistanz angesprochen
+-- wird. Die Bedingung wird für alle NPCs geprüft. Der erste NPC, der
+-- die Bedingung erfüllt, wird aktiviert.
+--
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global.DialogTriggerController()
+    local PlayerID = BundleNonPlayerCharacter.Global:GetControllingPlayer();
+    local PlayersKnights = {};
+    Logic.GetKnights(PlayerID, PlayersKnights);
+    for i= 1, #PlayersKnights, 1 do
+        if Logic.GetCurrentTaskList(PlayersKnights[i]) == TaskLists.TL_NPC_INTERACTION then
+            for k, v in pairs(QSB.NonPlayerCharacterObjects) do
+                if v and v.Distance > 300 and IsNear(PlayersKnights[i], k, v.Distance) then
+                    local x, y, z = Logic.EntityGetPos(PlayersKnights[i]);
+                    Logic.MoveSettler(PlayersKnights[i], x, y);
+                    GameCallback_OnNPCInteraction(GetID(k), PlayerID);
+                    return;
+                end
+            end
+        end
+    end
+end
+BundleNonPlayerCharacter_DialogTriggerJob = BundleNonPlayerCharacter.Global.DialogTriggerController;
 
 -- Local Script ----------------------------------------------------------------
 
