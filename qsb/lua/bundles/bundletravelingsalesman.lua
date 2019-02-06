@@ -99,7 +99,7 @@ function API.TravelingSalesmanActivate(_PlayerID, _Offers, _Waypoints, _Reversed
         API.Log("Can not execute API.TravelingSalesmanActivate in local script!");
         return;
     end
-    return new{QSB.TravelingSalesman, _PlayerID}
+    return QSB.TravelingSalesman:New(_PlayerID)
         :SetOffers(_Offers)
         :SetApproachRoute(_Waypoints)
         :SetReturnRouteRoute(_Reversed)
@@ -222,27 +222,28 @@ end
 
 QSB.TravelingSalesmanInstances = {};
 
-QSB.TravelingSalesman = class {
-    ---
-    -- Konstruktor
-    -- @param[type=number] _PlayerID Player-ID des Händlers
-    -- @within QSB.TravelingSalesman
-    -- @local
-    --
-    construct = function(self, _PlayerID)
-        self.m_PlayerID = _PlayerID;
-        self.m_Offers = {};
-        self.m_Appearance = {{3, 5}, {7, 9}};
-        self.m_Waypoints = {};
-        self.m_Reversed = {};
-        self.m_ChangeDiplomacy = true;
-        self.m_OfferRotation = false;
-        self.m_LastOffer = 0;
-        self.m_Status = 0;
+QSB.TravelingSalesman = {}
 
-        QSB.TravelingSalesmanInstances[_PlayerID] = self;
-    end
-}
+---
+-- Konstruktor
+-- @param[type=number] _PlayerID Player-ID des Händlers
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:GetInstance(_PlayerID)
+    local salesman = API.InstanceTable(self);
+    salesman.m_PlayerID = _PlayerID;
+    salesman.m_Offers = {};
+    salesman.m_Appearance = {{3, 5}, {7, 9}};
+    salesman.m_Waypoints = {};
+    salesman.m_Reversed = {};
+    salesman.m_ChangeDiplomacy = true;
+    salesman.m_OfferRotation = false;
+    salesman.m_LastOffer = 0;
+    salesman.m_Status = 0;
+    QSB.TravelingSalesmanInstances[_PlayerID] = salesman;
+    return salesman;
+end
 
 ---
 -- Gibt die Instanz des Fahrenden Händlers für die Player-ID zurück.
@@ -259,7 +260,7 @@ function QSB.TravelingSalesman:GetInstance(_PlayerID)
     if QSB.TravelingSalesmanInstances[_PlayerID] then
         return QSB.TravelingSalesmanInstances[_PlayerID];
     end
-    local NullInstance = new{QSB.TravelingSalesman, _PlayerID};
+    local NullInstance = QSB.TravelingSalesman:New(_PlayerID);
     NullInstance.SymfoniaDebugValue_NullInstance = true;
     return NullInstance;
 end
@@ -359,7 +360,7 @@ end
 -- @local
 --
 function QSB.TravelingSalesman:SetApproachRoute(_List)
-    self.m_Waypoints = copy(_List);
+    self.m_Waypoints = API.InstanceTable(_List);
     self.m_SpawnPos = self.m_Waypoints[1];
     self.m_Destination = self.m_Waypoints[#_List];
     return self;
@@ -381,7 +382,7 @@ function QSB.TravelingSalesman:SetReturnRouteRoute(_List)
             table.insert(Reversed, self.m_Waypoints[i]);
         end
     end
-    self.m_Reversed = copy(Reversed);
+    self.m_Reversed = API.InstanceTable(Reversed);
     return self;
 end
 
