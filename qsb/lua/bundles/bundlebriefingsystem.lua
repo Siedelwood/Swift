@@ -1524,7 +1524,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         if _EntityID == nil then
             return;
         end
-        if BriefingSystem.IsBriefingActive == false then
+        if BriefingSystem.IsBriefingActive() == false then
             return;
         end
         local Page = BriefingSystem.currBriefing[BriefingSystem.page];
@@ -1546,7 +1546,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         if _X == nil or _Y == nil then
             return;
         end
-        if BriefingSystem.IsBriefingActive == false then
+        if BriefingSystem.IsBriefingActive() == false then
             return;
         end
         local Page = BriefingSystem.currBriefing[BriefingSystem.page];
@@ -1568,7 +1568,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         if _X == nil or _Y == nil then
             return;
         end
-        if BriefingSystem.IsBriefingActive == false then
+        if BriefingSystem.IsBriefingActive() == false then
             return;
         end
         local Page = BriefingSystem.currBriefing[BriefingSystem.page];
