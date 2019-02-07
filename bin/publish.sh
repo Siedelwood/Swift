@@ -44,7 +44,7 @@ cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssi
 echo "Done"
 
 echo "Copy Cutscene Maker..."
-cp -r "bin/CutsceneMakerInstaller.exe" Release/bin/CutsceneMakerInstaller.exe &>/dev/null
+cp -r "app/CutsceneMaker/CutsceneMaker.jar" Release/bin/CutsceneMaker.jar &>/dev/null
 echo "Done"
 
 echo "Creating archive..."

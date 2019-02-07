@@ -1,2 +1,3 @@
 echo off
-java -jar E:/Programme/CutsceneMaker/CutsceneMaker.jar %*
+for /f %%i in ('where /r CutsceneMaker.jar') do set location=%%i
+java -jar %location%
