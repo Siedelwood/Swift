@@ -471,11 +471,16 @@ function QSB.NonPlayerCharacter:RotateActors()
     local PlayerKnights = {};
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
-        local x, y, z = Logic.EntityGetPos(v);
-        Logic.MoveEntity(v, x, y);
+        -- Alle Helden stoppen, die sich zu NPC bewegen
+        local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, 19)));
+        local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, 20)));
+        local x2, y2 = Logic.EntityGetPos(GetID(self.m_NpcName));
+        if x1 == math.floor(x2) and y1 == math.floor(y2) then
+            local x, y, z = Logic.EntityGetPos(v);
+            Logic.MoveEntity(v, x, y);
+        end
     end
-    LookAt(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID);
-    LookAt(BundleNonPlayerCharacter.Global.LastHeroEntityID, self.m_NpcName);
+    API.Confront(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID)
 end
 
 ---

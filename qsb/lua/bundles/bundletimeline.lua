@@ -46,11 +46,11 @@ QSB = QSB or {};
 -- @within Anwenderfunktionen
 --
 -- @usage MyTimeLine = API.TimeLineStart {
---     {Time = 1, Action = MyFirstAction},
+--     {Time = 15, Action = MyFirstAction},
 --     -- MySecondAction erhält "BOCKWURST" als Parameter
---     {Time = 3, Action = MySecondAction, "BOCKWURST"},
+--     {Time = 35, Action = MySecondAction, "BOCKWURST"},
 --     -- Inline-Funktion
---     {Time = 9, Action = function() end},
+--     {Time = 49, Action = function() end},
 -- }
 --
 function API.TimeLineStart(_Description)
@@ -194,7 +194,7 @@ function BundleTimeLine.Shared.TimeLine:Start(_description)
 
     self.Data.TimeLineJobs[JobID] = _description;
     if not self.Data.ControlerID then
-        local Controler = StartSimpleJobEx( BundleTimeLine.Shared.TimeLine.TimeLineControler );
+        local Controler = StartSimpleHiResJobEx(BundleTimeLine.Shared.TimeLine.TimeLineControler);
         self.Data.ControlerID = Controler;
     end
     return JobID;
