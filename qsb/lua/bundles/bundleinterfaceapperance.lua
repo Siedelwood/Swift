@@ -403,7 +403,7 @@ GetTerritoryName = API.InterfaceGetTerritoryName;
 -- <p><b>Alias:</b> GetPlayerName</p>
 --
 -- @param[type=number] _PlayerID ID des Spielers
--- @return[type=string]  Name des Territorium
+-- @return[type=string]  Name des Spielers
 -- @within Anwenderfunktionen
 --
 function API.InterfaceGetPlayerName(_PlayerID)
@@ -437,7 +437,6 @@ GetPlayerName = API.InterfaceGetPlayerName;
 --
 -- @param[type=number] _playerID ID des Spielers
 -- @param[type=string] _name Name des Spielers
--- @return[type=string]  Name des Territorium
 -- @within Anwenderfunktionen
 --
 function API.InterfaceSetPlayerName(_playerID,_name)
