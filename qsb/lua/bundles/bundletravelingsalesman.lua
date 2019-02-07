@@ -96,7 +96,7 @@ QSB.TravelingSalesman = {
 --
 function API.TravelingSalesmanActivate(_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)
     if GUI then
-        API.Log("Can not execute API.TravelingSalesmanActivate in local script!");
+        API.Fatal("Can not execute API.TravelingSalesmanActivate in local script!");
         return;
     end
     return QSB.TravelingSalesman:New(_PlayerID)

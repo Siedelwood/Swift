@@ -285,14 +285,14 @@ FailQuestsByName = API.FailAllQuests;
 -- <p><b>Alias:</b> FailQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.FailQuest(_QuestName, _Quiet)
+function API.FailQuest(_QuestName, _Verbose)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Quiet then
-            API.Info("fail quest " .._QuestName);
+        if not _Verbose then
+            API.Note("fail quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
         Quest:Fail();
@@ -330,15 +330,15 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <p><b>Alias:</b> RestartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.RestartQuest(_QuestName, _Quiet)
+function API.RestartQuest(_QuestName, _Verbose)
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then
-        if not _Quiet then
-            API.Info("restart quest " .._QuestName);
+        if not _Verbose then
+            API.Note("restart quest " .._QuestName);
         end
 
         if Quest.Objectives then
@@ -428,14 +428,14 @@ StartQuestsByName = API.StartAllQuests;
 -- <p><b>Alias:</b> StartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.StartQuest(_QuestName, _Quiet)
+function API.StartQuest(_QuestName, _Verbose)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Quiet then
-            API.Info("start quest " .._QuestName);
+        if not _Verbose then
+            API.Note("start quest " .._QuestName);
         end
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
@@ -469,14 +469,14 @@ StopQuestsByName = API.StopAllQuests;
 -- <p><b>Alias:</b> StopQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.StopQuest(_QuestName, _Quiet)
+function API.StopQuest(_QuestName, _Verbose)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Quiet then
-            API.Info("interrupt quest " .._QuestName);
+        if not _Verbose then
+            API.Note("interrupt quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
@@ -510,14 +510,14 @@ WinQuestsByName = API.WinAllQuests;
 -- <p><b>Alias:</b> WinQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.WinQuest(_QuestName, _Quiet)
+function API.WinQuest(_QuestName, _Verbose)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Quiet then
-            API.Info("win quest " .._QuestName);
+        if not _Verbose then
+            API.Note("win quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
         Quest:Success();
@@ -580,21 +580,6 @@ function API.ClearNotes()
 end
 
 ---
--- Schreibt eine einzelne Zeile Text ins Log. Vor dem Text steht, ob aus dem
--- globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
--- Spiels die Nachricht gesendet wurde.
---
--- @param[type=string] _Message Text des Log-Eintrag
--- @within Anwenderfunktionen
--- @local
---
-function API.Log(_Message)
-    local Env  = (GUI and "Local") or "Global";
-    local Turn = Logic.GetTimeMs();
-    Framework.WriteToLog(Env.. ":" ..Turn.. ": " .._Message);
-end
-
----
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
 -- <p><b>Alias:</b> GUI_NoteDown</p>
@@ -632,17 +617,17 @@ end
 ---
 -- Schreibt einen FATAL auf den Bildschirm und ins Log.
 --
+-- <p><b>Alias:</b> API.Dbg</p>
 -- <p><b>Alias:</b> fatal</p>
+-- <p><b>Alias:</b> dbg</p>
 --
 -- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
 -- @local
 --
 function API.Fatal(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.FATAL then
-        API.StaticNote("FATAL: " .._Message)
-    end
-    API.Log("FATAL: " .._Message);
+    API.StaticNote("FATAL: " .._Message)
+    Framework.WriteToLog("FATAL: " .._Message);
 end
 API.Dbg = API.Fatal;
 fatal = API.Fatal;
@@ -658,120 +643,10 @@ dbg = API.Fatal;
 -- @local
 --
 function API.Warn(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
-        API.StaticNote("WARNING: " .._Message)
-    end
-    API.Log("WARNING: " .._Message);
+    API.StaticNote("WARNING: " .._Message)
+    Framework.WriteToLog("WARNING: " .._Message);
 end
 warn = API.Warn;
-
----
--- Schreibt eine INFO auf den Bildschirm und ins Log.
---
--- <p><b>Alias:</b> info</p>
---
--- @param[type=string] _Message Anzeigetext
--- @within Anwenderfunktionen
--- @local
---
-function API.Info(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
-        API.Note("INFO: " .._Message)
-    end
-    API.Log("INFO: " .._Message);
-end
-info = API.Info;
-
----
--- Schreibt einen TRACE auf den Bildschirm und ins Log.
---
--- <p><b>Alias:</b> info</p>
---
--- @param[type=string] _Message Anzeigetext
--- @within Anwenderfunktionen
--- @local
---
-function API.Trace(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.TRACE then
-        API.Note("TRACE: " .._Message)
-    end
-    API.Log("TRACE: " .._Message);
-end
-trace = API.Trace;
-
--- Log Levels
-QSB.Log = {
-    Level = {
-        OFF      = 90000,
-        FATAL    = 4000,
-        WARNING  = 3000,
-        INFO     = 2000,
-        TRACE    = 1000,
-        ALL      = 0,
-    },
-}
-
--- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.FATAL;
-
----
--- Setzt das Log-Level für die aktuelle Skriptumgebung.
---
--- Als Voreinstellung werden nur FATAL-Meldungen angezeigt!
---
--- Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
--- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
--- angezeigt werden.
---
--- <table border="1">
--- <tr>
--- <th>
--- Level
--- </th>
--- <th>
--- Beschreibung
--- </th>
--- </tr>
--- <td>
--- QSB.Log.Level.OFF
--- </td>
--- <td>
--- Alle Meldungen werden unterdrückt.
--- </td>
--- <tr>
--- <td>
--- QSB.Log.Level.FATAL
--- </td>
--- <td>
--- Es werden nur Fehler angezeigt.
--- </td>
--- </tr>
--- <tr>
--- <td>
--- QSB.Log.Level.WARNING
--- </td>
--- <td>
--- Es werden nur Warnungen und Fehler angezeigt.
--- </td>
--- </tr>
--- <tr>
--- <td>
--- QSB.Log.Level.INFO
--- </td>
--- <td>
--- Es werden Meldungen aller Stufen angezeigt.
--- </td>
--- </tr>
--- </table>
---
--- @param[type=number] _Level Level
--- @within Anwenderfunktionen
--- @local
---
-function API.SetLogLevel(_Level)
-    assert(type(_Level) == "number");
-    QSB.Log.CurrentLevel = _Level;
-end
 
 -- Entities --------------------------------------------------------------------
 

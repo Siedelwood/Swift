@@ -112,7 +112,6 @@ SymfoniaLoader = {
             {"BundleDestructionControl",            true},
             {"BundleDialogWindows",                 true},
             {"BundleEntityCommandFunctions",        true},
-            {"BundleEntityHealth",                  true},
             {"BundleEntityHelperFunctions",         true},
             {"BundleExtendedZoom",                  true},
             {"BundleInterfaceFeatureVisibility",    true},
@@ -189,7 +188,6 @@ function SymfoniaLoader:Load(_Path)
         if self.Data.LoadOrder[i][2] then
             local Name = self.Data.LoadOrder[i][1]:lower();
             Script.Load(_Path.. "/bundles/" ..Name.. ".lua");
-            API.Log("Load bundle '" .. _Path.. "/bundles/" ..Name.. ".lua'");
         end
     end
 
@@ -207,7 +205,6 @@ function SymfoniaLoader:Load(_Path)
             local Name = self.Data.AddOnLoadOrder[i][1]:lower();
             if LoadAddon then
                 Script.Load(_Path.. "/addons/" ..Name.. ".lua");
-                API.Log("Load addon '" .. _Path.. "/addons/" ..Name.. ".lua'");
             else
                 -- Only show once
                 if not GUI then
