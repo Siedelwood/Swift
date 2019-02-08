@@ -46,7 +46,7 @@ QSB.TimeLine = {};
 -- @return[type=number] ID des Zeitstrahls
 -- @within Anwenderfunktionen
 --
--- @usage MyTimeLine = API.TimeLineStart {
+-- @usage MyTimeLine = QSB.TimeLine:Start {
 --     {Time = 15, Action = MyFirstAction},
 --     -- MySecondAction erhält "BOCKWURST" als Parameter
 --     {Time = 35, Action = MySecondAction, "BOCKWURST"},
@@ -86,7 +86,7 @@ end
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
 --
--- @usage API.TimeLineRestart(MyTimeLine);
+-- @usage QSB.TimeLine:Restart(MyTimeLine);
 --
 function QSB.TimeLine:Restart(_ID)
     if not self.Data.TimeLineJobs[_ID] then
@@ -104,7 +104,7 @@ end
 -- @return[type=boolean] Zeitstrahl ist aktiv
 -- @within Anwenderfunktionen
 --
--- @usage local IsRunning = API.TimeLineIsRunning(MyTimeLine);
+-- @usage local IsRunning = QSB.TimeLine:IsRunning(MyTimeLine);
 --
 function QSB.TimeLine:IsRunning(_ID)
     if self.Data.TimeLineJobs[_ID] then
@@ -119,7 +119,7 @@ end
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
 --
--- @usage API.TimeLineYield(MyTimeLine);
+-- @usage QSB.TimeLine:Yield(MyTimeLine);
 --
 function QSB.TimeLine:Yield(_ID)
     if not self.Data.TimeLineJobs[_ID] then
@@ -135,7 +135,7 @@ end
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
 --
--- @usage API.TimeLineResume(MyTimeLine);
+-- @usage QSB.TimeLine:Resume(MyTimeLine);
 --
 function QSB.TimeLine:Resume(_ID)
     if not self.Data.TimeLineJobs[_ID] then
