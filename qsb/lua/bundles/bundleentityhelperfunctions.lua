@@ -48,7 +48,21 @@ QSB = QSB or {};
 -- local Result = API.GetEntitiesOfCategoriesInTerritories({1, 2, 3}, EntityCategories.Hero, {5, 12, 23, 24});
 --
 function API.GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
-    return BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory);
+    -- Tables erzwingen
+    local p = (type(_player) == "table" and _player) or {_player};
+    local c = (type(_category) == "table" and _category) or {_category};
+    local t = (type(_territory) == "table" and _territory) or {_territory};
+
+    local PlayerEntities = {};
+    for i=1, #p, 1 do
+        for j=1, #c, 1 do
+            for k=1, #t, 1 do
+                local Units = API.GetEntitiesOfCategoryInTerritory(p[i], c[j], t[k]);
+                PlayerEntities = Array_Append(PlayerEntities, Units);
+            end
+        end
+    end
+    return PlayerEntities;
 end
 GetEntitiesOfCategoriesInTerritories = API.GetEntitiesOfCategoriesInTerritories;
 EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
@@ -67,7 +81,19 @@ EntitiesInCategories = API.GetEntitiesOfCategoriesInTerritories;
 -- local Result = API.GetEntitiesByPrefix("entranceCave");
 --
 function API.GetEntitiesByPrefix(_Prefix)
-    return BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix(_Prefix);
+    local list = {};
+    local i = 1;
+    local bFound = true;
+    while bFound do
+        local entity = GetID(_Prefix ..i);
+        if entity ~= 0 then
+            table.insert(list, entity);
+        else
+            bFound = false;
+        end
+        i = i + 1;
+    end
+    return list;
 end
 GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 
@@ -354,59 +380,6 @@ function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmo
 end
 
 -- Shared ----------------------------------------------------------------------
-
----
--- Ermittelt alle Entities in den Kategorien auf den Territorien für die
--- Liste von Parteien und gibt sie als Liste zurück.
---
--- @param _player      PlayerID [0-8] oder Table mit PlayerIDs (Einzelne Spielernummer oder Table)
--- @param _category    Kategorien oder Table mit Kategorien (Einzelne Kategorie oder Table)
--- @param _territory   Zielterritorium oder Table mit Territorien (Einzelnes Territorium oder Table)
--- @return[type=table] Liste mit Resultaten
--- @within Internal
--- @local
---
-function BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories(_player, _category, _territory)
-    -- Tables erzwingen
-    local p = (type(_player) == "table" and _player) or {_player};
-    local c = (type(_category) == "table" and _category) or {_category};
-    local t = (type(_territory) == "table" and _territory) or {_territory};
-
-    local PlayerEntities = {};
-    for i=1, #p, 1 do
-        for j=1, #c, 1 do
-            for k=1, #t, 1 do
-                local Units = API.GetEntitiesOfCategoryInTerritory(p[i], c[j], t[k]);
-                PlayerEntities = Array_Append(PlayerEntities, Units);
-            end
-        end
-    end
-    return PlayerEntities;
-end
-
----
--- Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.
---
--- @param[type=string] _Prefix Präfix des Skriptnamen
--- @return[type=table] Liste mit Entities
--- @within Internal
--- @local
---
-function BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix(_Prefix)
-    local list = {};
-    local i = 1;
-    local bFound = true;
-    while bFound do
-        local entity = GetID(_Prefix ..i);
-        if entity ~= 0 then
-            table.insert(list, entity);
-        else
-            bFound = false;
-        end
-        i = i + 1;
-    end
-    return list;
-end
 
 ---
 -- Errechnet eine Position relativ im angegebenen Winkel und Position zur

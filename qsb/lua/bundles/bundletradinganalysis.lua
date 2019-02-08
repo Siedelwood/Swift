@@ -64,7 +64,7 @@ QSB.TraderTypes = {
 --
 function API.GetOfferInformation(_PlayerID)
     if GUI then
-        API.Log("Can not execute API.GetOfferInformation in local script!");
+        API.Fatal("Can not execute API.GetOfferInformation in local script!");
         return;
     end
     return BundleTradingAnalysis.Global:GetStorehouseInformation(_PlayerID);
@@ -83,7 +83,7 @@ end
 --
 function API.GetOfferCount(_PlayerID)
     if GUI then
-        API.Log("Can not execute API.GetOfferCount in local script!");
+        API.Fatal("Can not execute API.GetOfferCount in local script!");
         return;
     end
     return BundleTradingAnalysis.Global:GetOfferCount(_PlayerID);
@@ -105,7 +105,7 @@ end
 --
 function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
     if GUI then
-        API.Log("Can not execute API.IsGoodOrUnitOffered in local script!");
+        API.Fatal("Can not execute API.IsGoodOrUnitOffered in local script!");
         return;
     end
     local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);

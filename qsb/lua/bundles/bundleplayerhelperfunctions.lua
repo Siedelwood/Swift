@@ -289,6 +289,7 @@ BundlePlayerHelperFunctions = {
 -- @local
 --
 function BundlePlayerHelperFunctions.Global:Install()
+    self:InitFestival();
     API.AddSaveGameAction(BundlePlayerHelperFunctions.Global.OnSaveGameLoaded);
 end
 
@@ -300,10 +301,7 @@ end
 -- @local
 --
 function BundlePlayerHelperFunctions.Global:InitFestival()
-    if not Logic.StartFestival_Orig_NothingToCelebrate then
-        Logic.StartFestival_Orig_NothingToCelebrate = Logic.StartFestival;
-    end
-
+    Logic.StartFestival_Orig_NothingToCelebrate = Logic.StartFestival;
     Logic.StartFestival = function(_PlayerID, _Index)
         if BundlePlayerHelperFunctions.Global.Data.FestivalBlacklist[_PlayerID] then
             if BundlePlayerHelperFunctions.Global.Data.FestivalBlacklist[_PlayerID][_Index] then
@@ -450,12 +448,7 @@ end
 -- @local
 --
 function BundlePlayerHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, _Index, _Flag)
-    self:InitFestival();
-
-    if not self.Data.FestivalBlacklist[_PlayerID]
-    then
-        self.Data.FestivalBlacklist[_PlayerID] = {};
-    end
+    self.Data.FestivalBlacklist[_PlayerID] = self.Data.FestivalBlacklist[_PlayerID] or {};
     self.Data.FestivalBlacklist[_PlayerID][_Index] = _Flag == true;
 end
 
