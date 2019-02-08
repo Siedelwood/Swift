@@ -844,6 +844,53 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
 end
 BundleNonPlayerCharacter_DialogTriggerJob = BundleNonPlayerCharacter.Global.DialogTriggerController;
 
+---
+-- Kontrolliert die "Glitter Marker" der NPCs.
+--
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global.ControlMarker()
+    for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
+        v:ControlMarker();
+    end
+end
+BundleNonPlayerCharacter_ControlMarkerJob = BundleNonPlayerCharacter.Global.ControlMarker;
+
+---
+-- Prüft, ob ein NPC durch die emulierte Aktivierungsdistanz angesprochen
+-- wird. Die Bedingung wird für alle NPCs geprüft. Der erste NPC, der
+-- die Bedingung erfüllt, wird aktiviert.
+--
+-- Der Job prüft nur NPCs, deren Aktivierungsdistanz 350 oder höher ist.
+--
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global.DialogTriggerController()
+    local PlayerID = BundleNonPlayerCharacter.Global:GetControllingPlayer();
+    local PlayersKnights = {};
+    Logic.GetKnights(PlayerID, PlayersKnights);
+    for i= 1, #PlayersKnights, 1 do
+        if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
+            for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
+                if v and v.Data.TalkedTo == nil and v.Data.Distance >= 350 then
+                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 19)));
+                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 20)));
+                    local x2, y2 = Logic.EntityGetPos(GetID(k));
+                    if x1 == math.floor(x2) and y1 == math.floor(y2) then
+                        if IsExisting(k) and IsNear(PlayersKnights[i], k, v.Data.Distance) then
+                            GameCallback_OnNPCInteraction(GetID(k), PlayerID);
+                            return;
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+BundleNonPlayerCharacter_DialogTriggerJob = BundleNonPlayerCharacter.Global.DialogTriggerController;
+
 -- Local Script ----------------------------------------------------------------
 
 ---
