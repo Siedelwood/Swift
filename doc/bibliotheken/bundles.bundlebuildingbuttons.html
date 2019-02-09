@@ -53,7 +53,6 @@
   <li><a href="../bibliotheken/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="../bibliotheken/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
   <li><a href="../bibliotheken/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
-  <li><a href="../bibliotheken/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../bibliotheken/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
@@ -115,24 +114,8 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.ActivateDowngrade">API.ActivateDowngrade ()</a></td>
-	<td class="summary">Aktiviere Rückbau bei Stadt- und Rohstoffgebäuden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ActivateSingleStop">API.ActivateSingleStop ()</a></td>
-	<td class="summary">Aktiviert die Single Stop Buttons.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.AddCustomBuildingButton">API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</a></td>
 	<td class="summary">Fügt einen optionalen Gebäudeschalter hinzu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.DeactivateDowngrade">API.DeactivateDowngrade ()</a></td>
-	<td class="summary">Deaktiviert den Rückbau von Gebäuden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.DeactivateSingleStop">API.DeactivateSingleStop ()</a></td>
-	<td class="summary">Deaktiviert die Single Stop Buttons.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.RemoveCustomBuildingButton">API.RemoveCustomBuildingButton (_Index)</a></td>
@@ -161,6 +144,14 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_flag)</a></td>
 	<td class="summary">Erlaube oder verbiete dem Spieler Schafe zu züchten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseDowngrade">API.UseDowngrade (_Flag)</a></td>
+	<td class="summary">Aktiviere oder deaktiviere Rückbau bei Stadt- und Rohstoffgebäuden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UseSingleStop">API.UseSingleStop (_Flag)</a></td>
+	<td class="summary">Aktiviert oder deaktiviert die Single Stop Buttons.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
@@ -252,49 +243,6 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.ActivateDowngrade"></a>
-    <strong>API.ActivateDowngrade ()</strong>
-    </dt>
-    <dd>
-    Aktiviere Rückbau bei Stadt- und Rohstoffgebäuden.  Die Rückbaufunktion
- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
- jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
-<p> <p><b>Alias:</b> UseDowngrade</p>
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.ActivateSingleStop"></a>
-    <strong>API.ActivateSingleStop ()</strong>
-    </dt>
-    <dd>
-    Aktiviert die Single Stop Buttons.  Single Stop ermöglicht das Anhalten
- eines einzelnen Betriebes, anstelle des Anhaltens aller Betriebe des
- gleichen Typs.
-<p> Im Gegensatz zur Viehzucht und zum Rückbau, welche feste eigeständige
- Buttons sind, handelt es sich hierbei um einen Custom Button. Single
- Stop belegt Index 1.
-<p> <p><b>Alias:</b> ActivateSingleStop</p>
-
-
-
-
-
-
-    <h3>See also:</h3>
-    <ul>
-         <a href="../bibliotheken/bundles.bundlebuildingbuttons.html#API.AddCustomBuildingButton">API.AddCustomBuildingButton</a>
-    </ul>
-
-
-</dd>
-    <dt>
     <a name = "API.AddCustomBuildingButton"></a>
     <strong>API.AddCustomBuildingButton (_Index, _Action, _Tooltip, _Update)</strong>
     </dt>
@@ -316,9 +264,6 @@
  </ul>
  Alle drei Funktionen erhalten die ID des Buttons und die ID des Gebäudes,
  das gerade selektiert ist.
-<p> <b>Achtung:</b> Wenn die Funktion aus dem globalen Skript ausgeführt wird,
- müssen sich die Buttonfunktionen im lokalen Skript befinden. Die Namen der
- Funktionen sind in diesem Fall als Zeichenkette zu übergeben!
 <p> <p><b>Alias:</b> AddBuildingButton</p>
 
 
@@ -365,38 +310,6 @@
 </span><span class="comment">-- eines Apfels trägt und eine Nachricht anzeigt.
 </span>API.AddCustomBuildingButton(<span class="number">1</span>, ExampleButtonAction, ExampleButtonTooltip, ExampleButtonUpdate);</pre>
     </ul>
-
-</dd>
-    <dt>
-    <a name = "API.DeactivateDowngrade"></a>
-    <strong>API.DeactivateDowngrade ()</strong>
-    </dt>
-    <dd>
-    Deaktiviert den Rückbau von Gebäuden.
-<p> <p><b>Alias:</b> DeactivateDowngrade</p>
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.DeactivateSingleStop"></a>
-    <strong>API.DeactivateSingleStop ()</strong>
-    </dt>
-    <dd>
-    Deaktiviert die Single Stop Buttons.
-<p> <p><b>Alias:</b> DeactivateSingleStop</p>
-
-
-
-
-
-
-
 
 </dd>
     <dt>
@@ -593,6 +506,62 @@
         <pre class="example"><span class="comment">-- Schafsaufzucht ist erlaubt
 </span>API.UseBreedSheeps(<span class="keyword">true</span>);</pre>
     </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UseDowngrade"></a>
+    <strong>API.UseDowngrade (_Flag)</strong>
+    </dt>
+    <dd>
+    Aktiviere oder deaktiviere Rückbau bei Stadt- und Rohstoffgebäuden.  Die
+ Rückbaufunktion erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude
+ der Stufe 2 und 3 jeweils eine Stufe zu zerstören. Der überflüssige
+ Arbeiter wird entlassen.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Downgrade nutzen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.UseSingleStop"></a>
+    <strong>API.UseSingleStop (_Flag)</strong>
+    </dt>
+    <dd>
+    Aktiviert oder deaktiviert die Single Stop Buttons.  Single Stop ermöglicht
+ das Anhalten eines einzelnen Betriebes, anstelle des Anhaltens aller
+ Betriebe des gleichen Typs.
+<p> Im Gegensatz zur Viehzucht und zum Rückbau, welche feste eigeständige
+ Buttons sind, handelt es sich hierbei um einen Custom Button. Single
+ Stop belegt Index 1.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Single Stop nutzen
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../bibliotheken/bundles.bundlebuildingbuttons.html#API.AddCustomBuildingButton">API.AddCustomBuildingButton</a>
+    </ul>
+
 
 </dd>
 </dl>
@@ -998,7 +967,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-02 17:51:15 </i>
+<i style="float:right;">Last updated 2019-02-09 11:28:51 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
