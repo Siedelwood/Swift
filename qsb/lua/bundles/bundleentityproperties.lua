@@ -9,6 +9,8 @@
 -- Abfragen an ein Entity in sich vereint. Mit diesem Properties Wrapper
 -- kannst Du bequem die Eigenschaften von Entities abfragen und ändern.
 --
+-- 
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -18,16 +20,67 @@ API = API or {};
 QSB = QSB or {};
 
 -- -------------------------------------------------------------------------- --
--- User-Space                                                                 --
+-- Backwards compability                                                      --
 -- -------------------------------------------------------------------------- --
 
--- Keine prozeduralen Funktionen
+function API.GetEntityScale(_Entity)
+    return QSB.EntityProperty:GetInstance(_Entity):EntitySize();
+end
+GetScale = API.GetEntityScale;
+
+function API.GetEntityPlayer(_Entity)
+    return QSB.EntityProperty:GetInstance(_Entity):PlayerID();
+end
+GetPlayer = API.GetEntityPlayer;
+
+function API.GetMovementTarget(_Entity)
+    return QSB.EntityProperty:GetInstance(_Entity):GetDestination();
+end
+GetMovingTarget = API.GetMovementTarget;
+
+function API.IsActiveNpc(_Entity)
+    return QSB.EntityProperty:GetInstance(_Entity):OnScreenInfo();
+end
+IsNpc = API.IsActiveNpc;
+
+function API.IsEntityVisible(_Entity)
+    return QSB.EntityProperty:GetInstance(_Entity):Visible();
+end
+IsVisible = API.IsEntityVisible;
+
+function API.SetEntityScale(_Entity, _Scale)
+    return QSB.EntityProperty:GetInstance(_Entity):EntitySize(_Scale);
+end
+SetScale = API.SetEntityScale;
+
+function API.SetEntityPlayer(_Entity, _PlayerID)
+    return QSB.EntityProperty:GetInstance(_Entity):PlayerID(_PlayerID);
+end
+ChangePlayer = API.SetEntityPlayer;
+
+function API.GetEntityHealth(_Entity)
+    return QSB.EntityProperty:GetInstance(_Entity):Health();
+end
+GetHealth = API.GetEntityHealth;
+
+function API.ChangeEntityHealth(_Entity, _Percentage)
+    return QSB.EntityProperty:GetInstance(_Entity):Health(_Percentage, true);
+end
+SetHealth = API.ChangeEntityHealth;
+
+function API.SetBuildingOnFire(_Entity, _FireSize)
+    QSB.EntityProperty:GetInstance(_Entity):Burning(_FireSize)
+end
+SetOnFire = API.SetBuildingOnFire;
+
+function API.HurtEntity(_Entity, _Damage, _Attacker)
+    QSB.EntityProperty:GetInstance(_Entity):Hurt(_Damage);
+end
+HurtEntityEx = API.HurtEntity;
 
 -- -------------------------------------------------------------------------- --
--- Application-Space                                                          --
+-- Scripting Values Class                                                     --
 -- -------------------------------------------------------------------------- --
-
--- Scripting Value Class -------------------------------------------------------
 
 QSB.EntityPropertyObjects = {};
 
@@ -621,3 +674,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleEntityProperties");
+
