@@ -78,6 +78,9 @@ function QSB.TimeLine:Start(_description)
     end
     return JobID;
 end
+function API.TimeLineStart(_ID)
+    return QSB.TimeLine:Start(_ID);
+end
 
 ---
 -- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
@@ -96,6 +99,9 @@ function QSB.TimeLine:Restart(_ID)
     self.Data.TimeLineJobs[_ID].StartTime = Logic.GetTime();
     self.Data.TimeLineJobs[_ID].Iterator = 1;
 end
+function API.TimeLineRestart(_ID)
+    QSB.TimeLine:Restart(_ID);
+end
 
 ---
 -- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
@@ -112,6 +118,9 @@ function QSB.TimeLine:IsRunning(_ID)
     end
     return false;
 end
+function API.TimeLineIsRunning(_ID)
+    QSB.TimeLine:IsRunning(_ID);
+end
 
 ---
 -- Hält einen Zeitstrahl an.
@@ -127,6 +136,9 @@ function QSB.TimeLine:Yield(_ID)
     end
     self.Data.TimeLineJobs[_ID].YieldTime = Logic.GetTime();
     self.Data.TimeLineJobs[_ID].Running = false;
+end
+function API.TimeLineYield(_ID)
+    QSB.TimeLine:Yield(_ID);
 end
 
 ---
@@ -148,6 +160,9 @@ function QSB.TimeLine:Resume(_ID)
         self.Data.TimeLineJobs[_ID].YieldTime = nil;
     end
     self.Data.TimeLineJobs[_ID].Running = true;
+end
+function API.TimeLineResume(_ID)
+    QSB.TimeLine:Resume(_ID);
 end
 
 ---
