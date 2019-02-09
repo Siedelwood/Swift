@@ -1771,10 +1771,8 @@ CoreEventJob_OnEveryRealTimeSecond = Core.EventJob_EventOnEveryRealTimeSecond;
 
 function Core.EventJob_EventOnEverySecond()
     for k, v in pairs(Core.Data.Events.EverySecond) do
-        if v then
-            local Arguments = API.InstanceTable(v);
-            table.remove(Arguments, 1);
-            v.Function(unpack(v.Arguments));
+        if v and v.Function(unpack(v.Arguments)) then
+            Core.Data.Events.EverySecond[k] = nil;
         end
     end
 end
@@ -1785,8 +1783,8 @@ CoreEventJob_OnEverySecond = Core.EventJob_EventOnEverySecond;
 
 function Core.EventJob_EventOnEveryTurn()
     for k, v in pairs(Core.Data.Events.EveryTurn) do
-        if v then
-            v.Function(unpack(v.Arguments));
+        if v and v.Function(unpack(v.Arguments)) then
+            Core.Data.Events.EveryTurn[k] = nil;
         end
     end
 end

@@ -226,7 +226,6 @@ BundleDialogWindows = {
 -- @local
 --
 function BundleDialogWindows.Global:Install()
-
 end
 
 

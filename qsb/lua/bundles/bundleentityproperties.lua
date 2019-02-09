@@ -41,7 +41,7 @@ QSB.EntityProperty = {};
 --
 function QSB.EntityProperty:New(_Entity)
     assert(self == QSB.EntityProperty, "Can not be used from instance!");
-    local property = copy(self);
+    local property = API.InstanceTable(self);
     property.m_EntityName = _Entity;
     QSB.EntityPropertyObjects[_Entity] = property;
     return property;

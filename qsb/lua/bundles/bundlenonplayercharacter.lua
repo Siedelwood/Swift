@@ -718,7 +718,7 @@ function BundleNonPlayerCharacter.Global:Install()
                     objective.Completed = false;
                 else
                     if not data[4].NpcInstance then
-                        local NPC = QSB.NonPlayerCharacter(data[3]);
+                        local NPC = QSB.NonPlayerCharacter:New(data[3]);
                         NPC:SetDialogPartner(data[2]);
                         data[4].NpcInstance = NPC;
                     end
@@ -851,7 +851,7 @@ BundleNonPlayerCharacter_DialogTriggerJob = BundleNonPlayerCharacter.Global.Dial
 -- @local
 --
 function BundleNonPlayerCharacter.Global.ControlMarker()
-    for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
+    for k, v in pairs(QSB.NonPlayerCharacterObjects) do
         v:ControlMarker();
     end
 end
@@ -873,7 +873,7 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
     Logic.GetKnights(PlayerID, PlayersKnights);
     for i= 1, #PlayersKnights, 1 do
         if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
-            for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
+            for k, v in pairs(QSB.NonPlayerCharacterObjects) do
                 if v and v.Data.TalkedTo == nil and v.Data.Distance >= 350 then
                     local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 19)));
                     local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 20)));
