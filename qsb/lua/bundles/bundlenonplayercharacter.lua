@@ -236,6 +236,10 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:New(_ScriptName)
 
     local npc = CopyTableRecursive(self);
     npc.Data.NpcName = _ScriptName;
+    npc.Data.Distance = 350;
+    if Logic.IsKnight(GetID(_ScriptName)) then
+        npc.Data.Distance = 400;
+    end
     BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects[_ScriptName] = npc;
     npc:CreateMarker();
     npc:HideMarker();
@@ -433,6 +437,19 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:HasTalkedTo()
 end
 
 ---
+-- Setzt die Entfernung, die unterschritten werden muss, damit
+-- ein NPC als angesprochen gilt.
+--
+-- @param[type=number] _Distance Aktivierungsdistanz
+-- @within QSB.NonPlayerCharacter
+--
+function BundleNonPlayerCharacter.Global.NonPlayerCharacter:SetTalkDistance(_Distance)
+    assert(self ~= BundleNonPlayerCharacter.Global.NonPlayerCharacter, 'Can not be used in static context!');
+    self.Data.Distance = Distance or 350;
+    return self;
+end
+
+---
 -- Setzt den Ansprechpartner für diesen NPC.
 --
 -- <p><b>Alias:</b> NonPlayerCharacter:SetDialogPartner</p>
@@ -620,14 +637,8 @@ Core:RegisterBehavior(b_Trigger_NPC);
 function BundleNonPlayerCharacter.Global:Install()
     NonPlayerCharacter = BundleNonPlayerCharacter.Global.NonPlayerCharacter;
 
-    ---
-    -- Führt die statische Steuerungsfunktion für alle NPC aus.
-    --
-    StartSimpleJobEx( function()
-        for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
-            v:ControlMarker();
-        end
-    end);
+    StartSimpleJob("BundleNonPlayerCharacter_ControlMarkerJob");
+    StartSimpleHiResJob("BundleNonPlayerCharacter_DialogTriggerJob");
 
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -859,6 +870,53 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:IsMarkerVisible()
 end
 
 ---
+-- Gibt die ID des kontrollierenden Spielers zurück.
+-- 
+-- @return[type=number] Kontrollierender Spieler
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global:GetControllingPlayer()
+    for i= 1, 8, 1 do
+        if Logic.PlayerGetIsHumanFlag(i) == true then
+            return i;
+        end
+    end
+    return 0;
+end
+
+---
+-- Konvertiert eine Ganzzahl in eine Gleitkommazahl.
+-- @param[type=number] num Zahl zum Konvertieren
+-- @return[type=number] Ganzzahl
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global:IntegerToFloat(num)
+    if(num == 0) then 
+        return 0;
+    end
+    local sign = 1
+    if(num < 0) then 
+        num = 2147483648 + num; sign = -1;
+    end
+    local frac = (num - math.floor(num/8388608)*8388608);
+    local headPart = (num-frac)/8388608
+    local expNoSign = (headPart - math.floor(headPart/256)*256);
+    local exp = expNoSign-127
+    local fraction = 1
+    local fp = 0.5
+    local check = 4194304
+    for i = 23, 0, -1 do
+        if(frac - check) > 0 then
+            fraction = fraction + fp; frac = frac - check;
+        end
+        check = check / 2; fp = fp / 2
+    end
+    return fraction * math.pow(2, exp) * sign
+end
+
+---
 -- Kontrolliert die Sichtbarkeit und die Position des NPC-Markers.
 --
 -- @within NonPlayerCharacter
@@ -885,6 +943,53 @@ function BundleNonPlayerCharacter.Global.NonPlayerCharacter:ControlMarker()
         self:HideMarker();
     end
 end
+
+---
+-- Kontrolliert die "Glitter Marker" der NPCs.
+--
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global.ControlMarker()
+    for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
+        v:ControlMarker();
+    end
+end
+BundleNonPlayerCharacter_ControlMarkerJob = BundleNonPlayerCharacter.Global.ControlMarker;
+
+---
+-- Prüft, ob ein NPC durch die emulierte Aktivierungsdistanz angesprochen
+-- wird. Die Bedingung wird für alle NPCs geprüft. Der erste NPC, der
+-- die Bedingung erfüllt, wird aktiviert.
+--
+-- Der Job prüft nur NPCs, deren Aktivierungsdistanz 350 oder höher ist.
+--
+-- @within Internal
+-- @local
+--
+function BundleNonPlayerCharacter.Global.DialogTriggerController()
+    local PlayerID = BundleNonPlayerCharacter.Global:GetControllingPlayer();
+    local PlayersKnights = {};
+    Logic.GetKnights(PlayerID, PlayersKnights);
+    for i= 1, #PlayersKnights, 1 do
+        if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
+            for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
+                if v and v.Data.TalkedTo == nil and v.Data.Distance >= 350 then
+                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 19)));
+                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 20)));
+                    local x2, y2 = Logic.EntityGetPos(GetID(k));
+                    if x1 == math.floor(x2) and y1 == math.floor(y2) then
+                        if IsExisting(k) and IsNear(PlayersKnights[i], k, v.Data.Distance) then
+                            GameCallback_OnNPCInteraction(GetID(k), PlayerID);
+                            return;
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+BundleNonPlayerCharacter_DialogTriggerJob = BundleNonPlayerCharacter.Global.DialogTriggerController;
 
 -- Local Script ----------------------------------------------------------------
 
