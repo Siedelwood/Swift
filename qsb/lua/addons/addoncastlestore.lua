@@ -365,7 +365,7 @@ function AddOnCastleStore.Global.CastleStore:New(_PlayerID)
 
     if not self.Data.UpdateCastleStore then
         self.Data.UpdateCastleStore = true;
-        StartSimpleJobEx(AddOnCastleStore.Global.CastleStore.UpdateStores);
+        StartSimpleHiResJobEx(AddOnCastleStore.Global.CastleStore.UpdateStores);
     end
     Logic.ExecuteInLuaLocalState([[
         QSB.CastleStore:CreateStore(]] ..Store.Data.PlayerID.. [[);
@@ -820,25 +820,15 @@ function AddOnCastleStore.Global.CastleStore.UpdateStores()
                         -- Auslagern, wenn möglich
                         if AmountInStore < (v.Data.Goods[kk][4] * (Level+1)) then
                             if vv[3] == false then
-                                local Amount = (v.Data.Goods[kk][4] * (Level+1)) - AmountInStore;
-                                Amount = (Amount > 10 and 10) or Amount;
-                                for i= 1, Amount, 1 do
-                                    v:Outsource(kk, 1);
-                                end
+                                v:Outsource(kk, 1);
                             end
                         -- Einlagern, falls möglich
                         else
-                            local Amount = (AmountInStore > 10 and 10) or AmountInStore;
-                            for i= 1, Amount, 1 do
-                                v:Store(kk, 1);
-                            end
+                            v:Store(kk, 1);
                         end
                     -- Ware ist gebannt
                     else
-                        local Amount = (v:GetAmount(kk) >= 10 and 10) or v:GetAmount(kk);
-                        for i= 1, Amount, 1 do
-                            v:Outsource(kk, 1);
-                        end
+                        v:Outsource(kk, 1);
                     end
                 end
             end
