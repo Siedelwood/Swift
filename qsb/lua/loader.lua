@@ -161,6 +161,13 @@ SymfoniaLoader = {
             "BundleInteractiveObjects",
             "BundleEntitySelection",
             },
+
+            {
+            "AddOnRandomRequests",                  true,
+            "BundleInteractiveObjects",
+            "BundleSymfoniaBehaviors",
+            "BundleTradingAnalysis",
+            },
         },
     }
 }
