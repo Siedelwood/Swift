@@ -2023,6 +2023,12 @@ function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objec
                     SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
                 until (#SpawnedEntities == _Objective.Data[3]);
             end
+            if not _Objective.Data[5] then
+                _Objective.Data[5] = {7, 12};
+                if Logic.IsEntityInCategory(SpawnedEntities[1], EntityCategories.AttackableAnimal) == 1 then
+                    _Objective.Data[5] = {13, 8};
+                end
+            end
             _Objective.Data[4] = true;
         end
         -- Gibt es keine gespawnten Entities mehr, ist das Ziel erreicht.
@@ -2043,6 +2049,54 @@ end
 function BundleSymfoniaBehaviors.Local:Install()
     Core:StackFunction("GUI_Interaction.GetEntitiesOrTerritoryListForQuest", self.GetEntitiesOrTerritoryList);
     Core:StackFunction("GUI_Interaction.SaveQuestEntityTypes", self.SaveQuestEntityTypes);
+    Core:StackFunction("GUI_Interaction.DisplayQuestObjective", self.DisplayQuestObjective);
+end
+
+---
+-- Erweitert die Funktion, welche das Auftragsziel darstellt. Das richtige
+-- Icon für Spawned Entities wird angezeigt.
+-- @within Internal
+-- @local
+--
+function BundleSymfoniaBehaviors.Local.DisplayQuestObjective(_QuestIndex, _MessageKey)
+    local QuestIndexTemp = tonumber(_QuestIndex);
+    if QuestIndexTemp then
+        _QuestIndex = QuestIndexTemp;
+    end
+    local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
+    local QuestObjectivesPath = "/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives";
+    XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
+    if QuestType == Objective.DestroyEntities and Quest.Objectives[1].Data[1] == 3 then
+        local QuestObjectiveContainer = QuestObjectivesPath .. "/GroupEntityType";
+        local QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestDestroy");
+        local EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest( Quest, QuestType );
+        local EntitiesAmount = #EntitiesList;
+        if not Quest.Objectives[1].Data[4] and #EntitiesList == 0 then
+            EntitiesAmount = Quest.Objectives[1].Data[3];
+        end
+
+        XGUIEng.ShowWidget(QuestObjectiveContainer .. "/AdditionalCaption", 0);
+        XGUIEng.ShowWidget(QuestObjectiveContainer .. "/AdditionalCondition", 0);
+        SetIcon(QuestObjectiveContainer .. "/Icon", Quest.Objectives[1].Data[5]);
+        XGUIEng.SetText(QuestObjectiveContainer .. "/Number", "{center}" .. EntitiesAmount);
+
+        XGUIEng.SetText(QuestObjectiveContainer .. "/Caption", "{center}" .. QuestTypeCaption);
+        XGUIEng.ShowWidget(QuestObjectiveContainer, 1);
+        GUI_Interaction.SetQuestTypeIcon(QuestObjectiveContainer .. "/QuestTypeIcon", _QuestIndex);
+        if Quest.State == QuestState.Over then
+            if Quest.Result == QuestResult.Success then
+                XGUIEng.ShowWidget(QuestObjectivesPath .. "/QuestOverSuccess", 1);
+            elseif Quest.Result == QuestResult.Failure then
+                XGUIEng.ShowWidget(QuestObjectivesPath .. "/QuestOverFailure", 1);
+            end
+        end
+        return true;
+    end
+
+    --end if dummy quest
+    if QuestObjectiveContainer == nil then
+        return
+    end
 end
 
 ---

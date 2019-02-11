@@ -347,20 +347,26 @@ function API.RestartQuest(_QuestName, _Verbose)
                 local objective = questObjectives[i];
                 objective.Completed = nil
                 local objectiveType = objective.Type;
+
                 if objectiveType == Objective.Deliver then
                     local data = objective.Data;
-                    data[3] = nil
-                    data[4] = nil
-                    data[5] = nil
+                    data[3] = nil;
+                    data[4] = nil;
+                    data[5] = nil;
+
                 elseif g_GameExtraNo and g_GameExtraNo >= 1 and objectiveType == Objective.Refill then
-                    objective.Data[2] = nil
+                    objective.Data[2] = nil;
+
                 elseif objectiveType == Objective.Protect or objectiveType == Objective.Object then
                     local data = objective.Data;
                     for j=1, data[0], 1 do
-                        data[-j] = nil
+                        data[-j] = nil;
                     end
-                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] ~= 1 and objective.DestroyTypeAmount then
+
+                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 2 and objective.DestroyTypeAmount then
                     objective.Data[3] = objective.DestroyTypeAmount;
+                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 3 then
+                    objective.Data[4] = nil;
 
                 elseif objectiveType == Objective.Distance then
                     if objective.Data[1] == -65565 then
@@ -368,10 +374,11 @@ function API.RestartQuest(_QuestName, _Verbose)
                     end
 
                 elseif objectiveType == Objective.Custom2 and objective.Data[1].Reset then
-                    objective.Data[1]:Reset(Quest, i)
+                    objective.Data[1]:Reset(Quest, i);
                 end
             end
         end
+
         local function resetCustom(_type, _customType)
             local Quest = Quest;
             local behaviors = Quest[_type];
@@ -392,12 +399,12 @@ function API.RestartQuest(_QuestName, _Verbose)
         resetCustom("Rewards", Reward.Custom);
         resetCustom("Reprisals", Reprisal.Custom);
 
-        Quest.Result = nil
-        local OldQuestState = Quest.State
-        Quest.State = QuestState.NotTriggered
-        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..Quest.Index..")")
+        Quest.Result = nil;
+        local OldQuestState = Quest.State;
+        Quest.State = QuestState.NotTriggered;
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..Quest.Index..")");
         if OldQuestState == QuestState.Over then
-            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { Quest.QueueID })
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { Quest.QueueID });
         end
         return QuestID, Quest;
     end
