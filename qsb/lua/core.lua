@@ -1601,13 +1601,13 @@ function Core:StackFunction(_FunctionName, _StackFunction, _Index)
             local ReturnValue;
             for i= 1, #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments, 1 do
                 local Function = self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments[i];
-                ReturnValue = Function(unpack(arg));
-                if ReturnValue ~= nil then
-                    return ReturnValue;
+                ReturnValue = {Function(unpack(arg))};
+                if #ReturnValue > 0 then
+                    return unpack(ReturnValue);
                 end
             end
-            ReturnValue = self.Data.Overwrite.StackedFunctions[_FunctionName].Original(unpack(arg));
-            return ReturnValue;
+            ReturnValue = {self.Data.Overwrite.StackedFunctions[_FunctionName].Original(unpack(arg))};
+            return unpack(ReturnValue);
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
@@ -1641,9 +1641,9 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
             local ReturnValue = self.Data.Overwrite.AppendedFunctions[_FunctionName].Original(unpack(arg));
             for i= 1, #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, 1 do
                 local Function = self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments[i];
-                ReturnValue = Function(unpack(arg))
+                ReturnValue = {Function(unpack(arg))};
             end
-            return ReturnValue;
+            return unpack(ReturnValue);
         end
         self:ReplaceFunction(_FunctionName, batch);
     end

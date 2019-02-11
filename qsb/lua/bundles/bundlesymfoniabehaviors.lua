@@ -591,6 +591,54 @@ end
 Core:RegisterBehavior(b_Goal_AmmunitionAmount)
 
 -- -------------------------------------------------------------------------- --
+
+---
+-- Eine Menge an Entities des angegebenen Spawnpoint muss zerstört werden.
+--
+-- Wenn die angegebene Anzahl zu Beginn des Quest nicht mit der Anzahl an
+-- bereits gespawnten Entities übereinstimmt, wird dies automatisch korrigiert.
+-- (Neue Entities gespawnt bzw. überschüssige gelöscht)
+--
+-- @param[type=string] _SpawnPoint Spawnpoint oder Liste von Spawnpoints
+-- @param[type=number] _Amount     Menge zu zerstörender Entities
+--
+-- @within Goal
+--
+function Goal_DestroySpawnedEntities(...)
+    return b_Goal_DestroySpawnedEntities:new(...);
+end
+
+b_Goal_DestroySpawnedEntities = {
+    Name = "Goal_DestroySpawnedEntities",
+    Description = {
+        en = "Goal: Destroy all entities spawned at the spawnpoint.",
+        de = "Ziel: Zerstöre alle Entitäten, die bei dem Spawnpoint erzeugt wurde.",
+    },
+    Parameter = {
+        { ParameterType.ScriptName, en = "Spawnpoint", de = "Spawnpoint" },
+        { ParameterType.Number,     en = "Amount",     de = "Menge" },
+    },
+};
+
+function b_Goal_DestroySpawnedEntities:GetGoalTable()
+    return {Objective.DestroyEntities, 3, self.SpawnPoint, self.Amount};
+end
+
+function b_Goal_DestroySpawnedEntities:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.SpawnPoint = _Parameter;
+    elseif (_Index == 1) then
+        self.Amount = _Parameter * 1;
+    end
+end
+
+function b_Goal_DestroySpawnedEntities:GetMsgKey()
+    return "Quest_DestroyEntities";
+end
+
+Core:RegisterBehavior(b_Goal_DestroySpawnedEntities);
+
+-- -------------------------------------------------------------------------- --
 -- Reprisals                                                                  --
 -- -------------------------------------------------------------------------- --
 
@@ -1865,26 +1913,17 @@ function BundleSymfoniaBehaviors.Global:Install()
     QuestTemplate.IsObjectiveCompleted_Orig_QSB_SymfoniaBehaviors = QuestTemplate.IsObjectiveCompleted;
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
-        local data = objective.Data;
-
         if objective.Completed ~= nil then
             return objective.Completed;
         end
 
         if objectiveType == Objective.Distance then
-
-            -- Distance with parameter
-            local IDdata2 = GetID(data[1]);
-            local IDdata3 = GetID(data[2]);
-            data[3] = data[3] or 2500;
-            if not (Logic.IsEntityDestroyed(IDdata2) or Logic.IsEntityDestroyed(IDdata3)) then
-                if Logic.GetDistanceBetweenEntities(IDdata2,IDdata3) <= data[3] then
-                    DestroyQuestMarker(IDdata3);
-                    objective.Completed = true;
-                end
+            objective.Completed = BundleSymfoniaBehaviors.Global:IsQuestPositionReached(self, objective);
+        elseif objectiveType == Objective.DestroyEntities then
+            if objective.Data[1] == 3 then
+                objective.Completed = BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(self, objective);
             else
-                DestroyQuestMarker(IDdata3);
-                objective.Completed = false;
+                return self:IsObjectiveCompleted_Orig_QSB_SymfoniaBehaviors(objective);
             end
         else
             return self:IsObjectiveCompleted_Orig_QSB_SymfoniaBehaviors(objective);
@@ -1934,6 +1973,66 @@ function BundleSymfoniaBehaviors.Global:Install()
     end
 end
 
+---
+-- Prüft, ob das Entity das Ziel erreicht hat.
+-- @param[type=table] _Quest     Quest Data
+-- @param[type=table] _Objective Behavior Data
+-- @return[type=boolean] Ziel wurde erreicht
+-- @within Internal
+-- @local
+--
+function BundleSymfoniaBehaviors.Global:IsQuestPositionReached(_Quest, _Objective)
+    local IDdata2 = GetID(_Objective.Data[1]);
+    local IDdata3 = GetID(_Objective.Data[2]);
+    _Objective.Data[3] = _Objective.Data[3] or 2500;
+    if not (Logic.IsEntityDestroyed(IDdata2) or Logic.IsEntityDestroyed(IDdata3)) then
+        if Logic.GetDistanceBetweenEntities(IDdata2,IDdata3) <= _Objective.Data[3] then
+            DestroyQuestMarker(IDdata3);
+            return true;
+        end
+    else
+        DestroyQuestMarker(IDdata3);
+        return false;
+    end
+end
+
+---
+-- Prüft, ob alle gespawnten Entities zerstört wurden.
+-- @param[type=table] _Quest     Quest Data
+-- @param[type=table] _Objective Behavior Data
+-- @return[type=boolean] Resultat des Behavior
+-- @within Internal
+-- @local
+--
+function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objective)
+    if _Objective.Data[1] == 3 then
+        -- Initial wird die Anzahl an Entities sichergestellt. Gibt es zu,
+        -- viel werden überschüssige gelöscht. Gibt es zu wenig, werden
+        -- Entities gespawnt.
+        if not _Objective.Data[4] then
+            local EntityID        = GetID(_Objective.Data[2]);
+            local SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
+            if #SpawnedEntities < _Objective.Data[3] then
+                repeat
+                    Logic.RespawnResourceEntity_Spawn(EntityID);
+                    SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
+                until (#SpawnedEntities == _Objective.Data[3]);
+            elseif #SpawnedEntities > _Objective.Data[3] then
+                repeat
+                    DestroyEntity(SpawnedEntities[1]);
+                    SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
+                until (#SpawnedEntities == _Objective.Data[3]);
+            end
+            _Objective.Data[4] = true;
+        end
+        -- Gibt es keine gespawnten Entities mehr, ist das Ziel erreicht.
+        local SpawnedEntities = {Logic.GetSpawnedEntities(_Objective.Data[2])};
+        if #SpawnedEntities == 0 then
+            return true;
+        end
+    end
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -1942,7 +2041,58 @@ end
 -- @local
 --
 function BundleSymfoniaBehaviors.Local:Install()
+    Core:StackFunction("GUI_Interaction.GetEntitiesOrTerritoryListForQuest", self.GetEntitiesOrTerritoryList);
+    Core:StackFunction("GUI_Interaction.SaveQuestEntityTypes", self.SaveQuestEntityTypes);
+end
 
+---
+-- Erweitert die Funktion zur Ermittlung der Sprungziele für die Lupe.
+-- Alle gespawnten Entities werden durch die Lupe angezeigt.
+-- @param[type=table]  _Quest     Quest Table
+-- @param[type=number] _QuestType Typ des Quest
+-- @within Internal
+-- @local
+--
+function BundleSymfoniaBehaviors.Local.GetEntitiesOrTerritoryList(_Quest, _QuestType)
+    local IsEntity = true;
+    local EntityOrTerritoryList = {};
+    if _QuestType == Objective.DestroyEntities then
+        if _Quest.Objectives[1].Data and _Quest.Objectives[1].Data[1] == 3 then
+            EntityOrTerritoryList = Array_Append(EntityOrTerritoryList, {Logic.GetSpawnedEntities(GetID(_Quest.Objectives[1].Data[2]))});
+            return EntityOrTerritoryList, IsEntity;
+        end
+    end
+end
+
+---
+-- Erweitert die Funktion zur Speicherung der Quest Entities. Es wird der
+-- neue Typ 3 für Objective.DestroyEntities implementiert.
+-- @param[type=number] _QuestIndex Index des Quest
+-- @within Internal
+-- @local
+--
+function BundleSymfoniaBehaviors.Local.SaveQuestEntityTypes(_QuestIndex)
+    if g_Interaction.SavedQuestEntityTypes[_QuestIndex] ~= nil then
+        return;
+    end
+    local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
+    local EntitiesList;
+    if QuestType ~= Objective.DestroyEntities or Quest.Objectives[1].Data[1] == 2 then
+        return;
+    end
+    EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest(Quest, QuestType);
+    EntitiesList[0] = #EntitiesList;
+    if EntitiesList ~= nil then
+        g_Interaction.SavedQuestEntityTypes[_QuestIndex] = {};
+        for i = 1, EntitiesList[0], 1 do
+            if Logic.IsEntityAlive(EntitiesList[i]) then
+                local EntityType = Logic.GetEntityType(GetEntityId(EntitiesList[i]));
+                table.insert(g_Interaction.SavedQuestEntityTypes[_QuestIndex], i, EntityType);
+            end
+        end
+        return true;
+    end
 end
 
 Core:RegisterBundle("BundleSymfoniaBehaviors");
+
