@@ -642,6 +642,70 @@ end
 Core:RegisterBehavior(b_Goal_DestroySpawnedEntities);
 
 -- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler muss mindestens den angegebenen Ruf erreichen. Der Ruf muss
+-- in Prozent angegeben werden.
+--
+-- @param[type=number] _Reputation Benötigter Ruf
+--
+-- @within Goal
+--
+function Goal_CityReputation(...)
+    return b_Goal_CityReputation:new(...);
+end
+
+b_Goal_CityReputation = {
+    Name = "Goal_CityReputation",
+    Description = {
+        en = "Goal: Der Ruf der Stadt des Empfängers muss mindestens so hoch sein, wie angegeben.",
+        de = "Ziel: The reputation of the quest receivers city must at least reach the desired hight.",
+    },
+    Parameter = {
+        { ParameterType.Number, en = "City reputation", de = "Ruf der Stadt" },
+    },
+    Text = {
+        en = "RUF DER STADT{cr}{cr}Hebe den Ruf der Stadt durch weise Herrschaft an!{cr}Benötigter Ruf: %d",
+        de = "CITY REPUTATION{cr}{cr}Raise your reputation by fair rulership!{cr}Needed reputation: %d",
+    }
+}
+
+function b_Goal_CityReputation:GetGoalTable()
+    return {Objective.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Goal_CityReputation:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Reputation = _Parameter * 1;
+    end
+end
+
+function b_Goal_CityReputation:CustomFunction(_Quest)
+    self:SetCaption(_Quest);
+    local CityReputation = Logic.GetCityReputation(_Quest.ReceivingPlayer) * 100;
+    if CityReputation >= self.Reputation then
+        return true;
+    end
+end
+
+function b_Goal_CityReputation:SetCaption(_Quest)
+    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
+        local Text = string.format(self.Text[Language], self.Reputation);
+        Core:ChangeCustomQuestCaptionText(Text, _Quest);
+    end
+end
+
+function b_Goal_CityReputation:Debug(_Quest)
+    if type(self.Reputation) ~= "number" or self.Reputation < 0 or self.Reputation > 100 then
+        API.Fatal(_Quest.Identifier.. " " ..self.Name.. ": Reputation must be between 0 and 100!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Goal_CityReputation);
+
+-- -------------------------------------------------------------------------- --
 -- Reprisals                                                                  --
 -- -------------------------------------------------------------------------- --
 

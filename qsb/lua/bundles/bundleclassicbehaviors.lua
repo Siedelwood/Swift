@@ -2882,8 +2882,8 @@ function b_Goal_TributeDiplomacy:Interrupt(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:GetCustomData(_index)
-    if (_index == 6) then
+function b_Goal_TributeDiplomacy:GetCustomData(_Index)
+    if (_Index == 6) then
         return {"true", "false"};
     end
 end
@@ -3138,8 +3138,8 @@ function b_Goal_TributeClaim:Interrupt(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:GetCustomData(_index)
-    if (_index == 9) or (_index == 10) then
+function b_Goal_TributeClaim:GetCustomData(_Index)
+    if (_Index == 9) or (_Index == 10) then
         return {"false", "true"};
     end
 end
@@ -8258,8 +8258,8 @@ function b_Trigger_MapScriptFunction:GetTriggerTable(__quest_)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_MapScriptFunction:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
+function b_Trigger_MapScriptFunction:AddParameter(__Index_, __parameter_)
+    if (__Index_ == 0) then
         self.FuncName = __parameter_
     end
 end

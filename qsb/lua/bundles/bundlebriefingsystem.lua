@@ -3289,9 +3289,9 @@ function b_Reward_Briefing:GetRewardTable()
     return { Reward.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reward_Briefing:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Function = __parameter_;
+function b_Reward_Briefing:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Function = _Parameter;
     end
 end
 
@@ -3354,9 +3354,9 @@ function b_Reprisal_Briefing:GetReprisalTable()
     return { Reprisal.Custom,{self, self.CustomFunction} }
 end
 
-function b_Reprisal_Briefing:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Function = __parameter_;
+function b_Reprisal_Briefing:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Function = _Parameter;
     end
 end
 
@@ -3416,11 +3416,11 @@ function b_Trigger_Briefing:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_Briefing:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Quest = __parameter_;
-    elseif (__index_ == 1) then
-        self.WaitTime = tonumber(__parameter_) or 0
+function b_Trigger_Briefing:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Quest = _Parameter;
+    elseif (_Index == 1) then
+        self.WaitTime = tonumber(_Parameter) or 0
     end
 end
 
@@ -3494,11 +3494,11 @@ function b_Trigger_BriefingSuccess:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_BriefingSuccess:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Quest = __parameter_;
-    elseif (__index_ == 1) then
-        self.WaitTime = tonumber(__parameter_) or 0
+function b_Trigger_BriefingSuccess:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Quest = _Parameter;
+    elseif (_Index == 1) then
+        self.WaitTime = tonumber(_Parameter) or 0
     end
 end
 
@@ -3570,11 +3570,11 @@ function b_Trigger_BriefingFailure:GetTriggerTable()
     return { Triggers.Custom2,{self, self.CustomFunction} }
 end
 
-function b_Trigger_BriefingFailure:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.Quest = __parameter_;
-    elseif (__index_ == 1) then
-        self.WaitTime = tonumber(__parameter_) or 0
+function b_Trigger_BriefingFailure:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Quest = _Parameter;
+    elseif (_Index == 1) then
+        self.WaitTime = tonumber(_Parameter) or 0
     end
 end
 

@@ -1024,15 +1024,15 @@ b_Goal_NPC = {
     },
 }
 
-function b_Goal_NPC:GetGoalTable(__quest_)
+function b_Goal_NPC:GetGoalTable(_Quest)
     return {Objective.Distance, -65565, self.Hero, self.NPC, self }
 end
 
-function b_Goal_NPC:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
-        self.NPC = __parameter_
-    elseif (__index_ == 1) then
-        self.Hero = __parameter_
+function b_Goal_NPC:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.NPC = _Parameter
+    elseif (_Index == 1) then
+        self.Hero = _Parameter
         if self.Hero == "-" then
             self.Hero = nil
         end

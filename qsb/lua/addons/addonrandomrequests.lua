@@ -7,6 +7,11 @@
 ---
 -- Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.
 --
+-- Es gibt verschiedene Typen von zufälligen Aufträgen. Es wird versucht, immer
+-- einen einzigartigen Auftrag für den jeweiligen Auftraggeber zu erzeugen.
+-- Wenn kein Auftrag erzeugt werden kann, wird der Spieler aufgefordert 2000
+-- Gold zu bezahlen.
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -28,6 +33,10 @@ AddOnRandomRequests = {
     Global = {
         Data = {
             RandomQuestNameCounter = 0;
+            Claim = {},
+            Deliver = {},
+            KnightTitle = {},
+
             Text = {
                 Suggestion = {
                     {de = "Ihr müsst Euer Können unter Beweis stellen!",
@@ -79,6 +88,10 @@ end
 function AddOnRandomRequests.Global:CreateSlaveQuest(_Behavior, _Quest)
     if not _Behavior.SlaveQuest then
         local QuestGoals = self:GetPossibleBehaviors(_Behavior, _Quest);
+        -- Fallback
+        if #QuestGoals == 0 then
+            QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", 2000};
+        end
         local SelectedGoal = QuestGoals[math.random(1, #QuestGoals)];
         local FunctionName = table.remove(SelectedGoal, 1);
 
@@ -95,7 +108,7 @@ function AddOnRandomRequests.Global:CreateSlaveQuest(_Behavior, _Quest)
             _G[FunctionName](unpack(SelectedGoal)),
             Trigger_Time(0),
         };
-        _Behavior.SlaveQuest = Quests[GetQuestID(_Behavior.SlaveQuest)];
+        _Behavior.SlaveQuest = Quests[GetQuestID(QuestName)];
     end
 end
 
@@ -109,38 +122,46 @@ end
 --
 function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     local QuestGoals = {};
-    if self.TypeDeliverGoods then
-        local Data = self:GetDeliverGoodsBehavior(_Behavior, _Quest);
-        if Data then
-            QuestGoals[#QuestGoals+1] = Data;
-        end
-
-    elseif self.TypeDeliverGold then
+    if _Behavior.TypeDeliverGoods then
+        QuestGoals[#QuestGoals+1] = self:GetDeliverGoodsBehavior(_Behavior, _Quest);
+    end
+    if _Behavior.TypeDeliverGold then
         local Amount = math.random(150, 225) * (Logic.GetKnightTitle(_Quest.ReceivingPlayer) +1);
         QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
-
-    elseif self.TypeClaim then
-        local Data = self:GetClaimTerritoryBehavior(_Behavior, _Quest);
-        if Data then
-            QuestGoals[#QuestGoals+1] = Data;
-        end
-        
-    elseif self.TypeKnightTitle then
-        if Logic.GetKnightTitle(_Quest.ReceivingPlayer) < KnightTitles.Archduke then
-            local PossibleTitles = {"Mayor", "Baron", "Earl", "Marquees", "Duke", "Archduke"};
-            QuestGoals[#QuestGoals+1] = {"Goal_KnightTitle", PossibleTitles[Logic.GetKnightTitle(_Quest.ReceivingPlayer)+1]};
-        end
-
-    elseif self.TypeReputation then
-        QuestGoals[#QuestGoals+1] = {"Goal_Reputation", 25 + (10 * Logic.GetKnightTitle(_Quest.ReceivingPlayer))};
-
-    elseif self.TypeBuildWall then
-        local Data = self:GetBuildWallBehavior(_Behavior, _Quest);
-        if Data then
-            QuestGoals[#QuestGoals+1] = Data;
-        end
+    end
+    if _Behavior.TypeClaim then
+        QuestGoals[#QuestGoals+1] = self:GetClaimTerritoryBehavior(_Behavior, _Quest);
+    end
+    if _Behavior.TypeKnightTitle then
+        QuestGoals[#QuestGoals+1] = self:GetKnightTitleBehavior(_Behavior, _Quest);
+    end
+    if _Behavior.TypeReputation then
+        QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", 25 + (10 * Logic.GetKnightTitle(_Quest.ReceivingPlayer))};
+    end
+    if _Behavior.TypeBuildWall then
+        QuestGoals[#QuestGoals+1] = self:GetBuildWallBehavior(_Behavior, _Quest);
     end
     return QuestGoals;
+end
+
+---
+-- Erstellt Goal_KnightTitle für den Random Quest.
+-- @param[type=table] _Behavior Behavior Data
+-- @param[type=table] _Quest    Quest Data
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetKnightTitleBehavior(_Behavior, _Quest)
+    if Logic.GetKnightTitle(_Quest.ReceivingPlayer) < KnightTitles.Archduke then
+        local PossibleTitles = {"Mayor", "Baron", "Earl", "Marquees", "Duke", "Archduke"};
+        local NextTitle = PossibleTitles[Logic.GetKnightTitle(_Quest.ReceivingPlayer)+1];
+        self.Data.KnightTitle[_Quest.ReceivingPlayer] = self.Data.KnightTitle[_Quest.ReceivingPlayer] or {};
+        if self.Data.KnightTitle[_Quest.ReceivingPlayer][NextTitle] then
+            return;
+        end
+        self.Data.KnightTitle[_Quest.ReceivingPlayer][NextTitle] = true;
+        return {"Goal_KnightTitle", NextTitle};
+    end 
 end
 
 ---
@@ -174,16 +195,21 @@ end
 --
 function AddOnRandomRequests.Global:GetClaimTerritoryBehavior(_Behavior, _Quest)
     local AllTerritories = {Logic.GetTerritories()};
+    self.Data.Claim[_Quest.ReceivingPlayer] = self.Data.Claim[_Quest.ReceivingPlayer] or {};
     for i= #AllTerritories, 1, -1 do
-        if Logic.GetTerritoryPlayerID(AllTerritories[i]) ~= 0 then
+        if self.Data.Claim[_Quest.ReceivingPlayer][NextTitle] then
+            return;
+        end
+        if AllTerritories[i] == 0 or Logic.GetTerritoryPlayerID(AllTerritories[i]) ~= 0 
+        or self.Data.Claim[_Quest.ReceivingPlayer][AllTerritories[i]] then
             table.remove(AllTerritories, i);
         end
     end
-    if #AllTerritories == 0 then
-        local Fallback = GetTerritoryUnderEntity(Logic.GetStoreHouse(_Quest.ReceivingPlayer));
-        table.insert(AllTerritories, Fallback);
+    if #AllTerritories > 0 then
+        local Territory = AllTerritories[math.random(1, #AllTerritories)];
+        self.Data.Claim[_Quest.ReceivingPlayer][Territory] = true;
+        return {"Goal_Claim", AllTerritories[math.random(1, #AllTerritories)]};
     end
-    return {"Goal_Claim", AllTerritories[math.random(1, #AllTerritories)]};
 end
 
 ---
@@ -198,65 +224,53 @@ function AddOnRandomRequests.Global:GetDeliverGoodsBehavior(_Behavior, _Quest)
         "G_Wood", "G_Iron", "G_Stone", "G_Carcass", "G_Herb", "G_Wool",
         "G_Honeycomb", "G_Grain", "G_Milk", "G_RawFish"
     };
-    local TrialCounter = 0;
+
+    local Receiver = _Quest.ReceivingPlayer;
+    local Sender   = _Quest.SendingPlayer;
+    self.Data.Deliver[Receiver] = self.Data.Deliver[Receiver] or {};
+    self.Data.Deliver[Receiver][Sender] = self.Data.Deliver[Receiver][Sender] or {};
+
     local SelectedGood;
     repeat
         SelectedGood = GoodTypes[math.random(1, #GoodTypes)];
-        -- Endlosschleife verhindern
-        TrialCounter = TrialCounter +1
-    until (TrialCounter == 100 or IsGoodInTradeBlackList(_Quest.SendingPlayer, Goods[SelectedGood]) == false);
-    local Amount = math.random(9, 18) * (Logic.GetKnightTitle(_Quest.ReceivingPlayer) +1);
+    until (self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[SelectedGood]));
+    local Amount = math.random(15, 25) * (Logic.GetKnightTitle(Receiver) +1);
+    self.Data.Deliver[Receiver][Sender][Goods[SelectedGood]] = true;
     return {"Goal_Deliver", SelectedGood, Amount};
+end 
+
+---
+-- Prüft, ob eine Ware für ein Goal_Deliver verwendet werden kann.
+-- @param[type=number] _SenderID   Sendender Spieler
+-- @param[type=number] _ReceiverID Empfangender Spieler
+-- @param[type=number] _Good       Warentyp
+-- @return[type=boolean] Ware kann benutzt werden.
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:CanGoodBeSetAsGoal(_SenderID, _ReceiverID, _Good)
+    if self.Data.Deliver[_ReceiverID][_SenderID][_Good] then
+        return false;
+    end
+    if MerchantSystem.TradeBlackList[_SenderID] then
+        for k, v in pairs(MerchantSystem.TradeBlackList[_SenderID]) do
+            if v == _Good then
+                return false;
+            end
+        end
+    end
+    return true;
 end
 
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Spieler muss mindestens den angegebenen Ruf erreichen. Der Ruf muss
--- in Prozent angegeben werden.
---
--- @param[type=number] _Reputation Benötigter Ruf
---
--- @within Goal
---
-function Goal_Reputation(...)
-    return b_Goal_Reputation:new(...);
-end
-
-b_Goal_Reputation = {
-    Name = "Goal_Reputation",
-    Description = {
-        en = "Goal: Der Ruf der Stadt des Empfängers muss mindestens so hoch sein, wie angegeben.",
-        de = "Ziel: The reputation of the quest receivers city must at least reach the desired hight.",
-    },
-    Parameter = {
-        { ParameterType.Number, en = "City reputation", de = "Ruf der Stadt" },
-    },
-}
-
-function b_Goal_Reputation:GetGoalTable()
-    return {Objective.Custom2, {self, self.CustomFunction}};
-end
-
-function b_Goal_Reputation:AddParameter(_Index, _Parameter)
-    if (_Index == 0) then
-        self.Reputation = _Parameter * 1;
-    end
-end
-
-function b_Goal_Reputation:b_Goal_Reputation(_Quest)
-    local CityReputation = Logic.GetCityReputation(_Quest.ReceivingPlayer) * 100;
-    if CityReputation >= self.Reputation then
-        return true;
-    end
-end
-
-Core:RegisterBehavior(b_Goal_Reputation);
-
----
 -- Wählt einen zufälligen Auftrag für den Spieler aus. Über die Parameter kann
 -- bestimmt werden, welche Typen von Aufträgen erscheinen können. Dieses
 -- Behavior sollte in versteckten Quests benutzt werden.
+--
+-- Tribute und Warenanforderungen steigen in der Menge mit höherem Titel
+-- des Auftragnehmers.
 --
 -- <b>Hinweis</b>: Das Behavior erzeugt einen weiteren Quest mit dem zufällig
 -- gewählten Ziel.
@@ -286,6 +300,7 @@ b_Goal_RandomRequest = {
         { ParameterType.Custom, en = "Claim territory",      de = "Territorium beanspruchen" },
         { ParameterType.Custom, en = "Knight title",         de = "Titel erreichen" },
         { ParameterType.Custom, en = "City reputation",      de = "Ruf der Stadt" },
+        { ParameterType.Custom, en = "Build rampart",        de = "Festung bauen" },
         { ParameterType.Number, en = "Time limit (0 = off)", de = "Leitlimit (0 = aus)" },
     },
 }
@@ -303,7 +318,11 @@ function b_Goal_RandomRequest:AddParameter(_Index, _Parameter)
         self.TypeClaim = API.ToBoolean(_Parameter);
     elseif (_Index == 3) then
         self.TypeKnightTitle = API.ToBoolean(_Parameter);
-    elseif (_Index == 4) then
+    elseif (_Index == 3) then
+        self.TypeReputation = API.ToBoolean(_Parameter);
+    elseif (_Index == 3) then
+        self.TypeBuildWall = API.ToBoolean(_Parameter);
+    elseif (_Index == 6) then
         self.TimeLimit = _Parameter * 1;
     end
 end
@@ -324,13 +343,15 @@ end
 
 function b_Goal_RandomRequest:Reset(_Quest)
     self:Interrupt(_Quest);
+    if self.SlaveQuest then
+        API.RestartQuest(self.SlaveQuest.Identifier, false);
+    end
 end
 
 function b_Goal_RandomRequest:Interrupt(_Quest)
     if self.SlaveQuest and self.SlaveQuest.State == QuestState.Active then
         API.StopQuest(self.SlaveQuest.Identifier, false);
     end
-    self.SlaveQuest = nil;
 end
 
 function b_Goal_RandomRequest:Debug(_Quest)
