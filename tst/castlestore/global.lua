@@ -100,17 +100,6 @@ function Mission_FirstMapAction()
         Reward_MapScriptFunction("SomeFunction", "Was ist lecker?", "Bockwurst"),
         Trigger_Time(5)
     }
-
-    AddQuest {
-        Name = "RandomTestQuest",
-        Sender = 2,
-
-        Goal_RandomRequest(true, true, true, true, true, true, 20*60),
-        Goal_RandomRequest(true, true, true, true, true, true, 20*60),
-        Goal_RandomRequest(true, true, true, true, true, true, 20*60),
-        Goal_RandomRequest(true, true, true, true, true, true, 20*60),
-        Trigger_Time(5)
-    }
 end
 
 function SomeFunction(_Behavior, _Quest)
