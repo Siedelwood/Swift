@@ -42,7 +42,7 @@ function Mission_FirstMapAction()
         Startup_Diplomacy()
     end
     
-    API.ActivateDebugMode(true, true, true, true)
+    API.ActivateDebugMode(true, false, true, true)
     
     AddGood(Goods.G_Gold,   500, 1)
     AddGood(Goods.G_Grain,   10, 1)
@@ -98,6 +98,17 @@ function Mission_FirstMapAction()
 
         Goal_Deliver("G_Wood", 100),
         Reward_MapScriptFunction("SomeFunction", "Was ist lecker?", "Bockwurst"),
+        Trigger_Time(5)
+    }
+
+    AddQuest {
+        Name = "RandomTestQuest",
+        Sender = 2,
+
+        Goal_RandomRequest(true, true, true, true, true, true, 20*60),
+        Goal_RandomRequest(true, true, true, true, true, true, 20*60),
+        Goal_RandomRequest(true, true, true, true, true, true, 20*60),
+        Goal_RandomRequest(true, true, true, true, true, true, 20*60),
         Trigger_Time(5)
     }
 end

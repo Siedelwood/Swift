@@ -510,7 +510,7 @@ function AddOnQuestDebug.Global:Install()
             v.CustomFunction2 = v.CustomFunction;
             v.CustomFunction = function(self, __quest_)
                 if AddOnQuestDebug.Global.Data.CheckAtRun then
-                    if self.DEBUG and not self.FOUND_ERROR and self:DEBUG(__quest_) then
+                    if self.DEBUG and not self.FOUND_ERROR and self:Debug(__quest_) then
                         self.FOUND_ERROR = true;
                     end
                 end

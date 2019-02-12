@@ -788,7 +788,7 @@ function b_Goal_DestroySoldiers:CustomFunction(_Quest)
     return self.KillsNeeded <= currentKills - self.SaveAmount or nil
 end
 
-function b_Goal_DestroySoldiers:DEBUG(_Quest)
+function b_Goal_DestroySoldiers:Debug(_Quest)
     if Logic.GetStoreHouse(self.AttackingPlayer) == 0 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AttackinPlayer .. " is dead :-(")
         return true
@@ -881,7 +881,7 @@ function b_Goal_EntityDistance:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_EntityDistance:DEBUG(_Quest)
+function b_Goal_EntityDistance:Debug(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
         fatal("".._Quest.Identifier.." "..self.Name..": At least 1 of the entities for distance check don't exist!");
         return true;
@@ -1018,7 +1018,7 @@ function b_Goal_UnitsOnTerritory:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_UnitsOnTerritory:DEBUG(_Quest)
+function b_Goal_UnitsOnTerritory:Debug(_Quest)
     local territories = {Logic.GetTerritories()}
     if tonumber(self.TerritoryID) == nil or self.TerritoryID < 0 or not Inside(self.TerritoryID,territories) then
         fatal("".._Quest.Identifier.." "..self.Name..": got an invalid territoryID!");
@@ -1190,7 +1190,7 @@ function b_Goal_ActivateBuff:GetIcon()
     return tMapping[self.Buff]
 end
 
-function b_Goal_ActivateBuff:DEBUG(_Quest)
+function b_Goal_ActivateBuff:Debug(_Quest)
     if not self.Buff then
         fatal("".._Quest.Identifier.." "..self.Name..": buff '" ..self.BuffName.. "' does not exist!");
         return true;
@@ -1258,7 +1258,7 @@ function b_Goal_BuildRoad:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_BuildRoad:DEBUG(_Quest)
+function b_Goal_BuildRoad:Debug(_Quest)
     if not IsExisting(self.Entity1) or not IsExisting(self.Entity2) then
         fatal("".._Quest.Identifier.." "..self.Name..": first or second entity does not exist!");
         return true;
@@ -1348,7 +1348,7 @@ function b_Goal_BuildWall:GetIcon()
     return {3,9}
 end
 
-function b_Goal_BuildWall:DEBUG(_Quest)
+function b_Goal_BuildWall:Debug(_Quest)
     if not IsExisting(self.EntityName1) or not IsExisting(self.EntityName2) then
         fatal("".._Quest.Identifier.." "..self.Name..": first or second entity does not exist!");
         return true;
@@ -1852,7 +1852,7 @@ function b_Goal_SoldierCount:GetMsgKey()
     return "Quest_Create_Unit"
 end
 
-function b_Goal_SoldierCount:DEBUG(_Quest)
+function b_Goal_SoldierCount:Debug(_Quest)
     if tonumber(self.NumberOfUnits) == nil or self.NumberOfUnits < 0 then
         fatal("".._Quest.Identifier.." "..self.Name..": amount can not be below 0!");
         return true;
@@ -2020,7 +2020,7 @@ function b_Goal_Festivals:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_Festivals:DEBUG(_Quest)
+function b_Goal_Festivals:Debug(_Quest)
     if Logic.GetStoreHouse( self.PlayerID ) == 0 then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is dead :-(")
         return true
@@ -2376,7 +2376,7 @@ function b_Goal_ResourceAmount:GetCustomData( _Index )
     return Data
 end
 
-function b_Goal_ResourceAmount:DEBUG(_Quest)
+function b_Goal_ResourceAmount:Debug(_Quest)
     if not IsExisting(self.ScriptName) then
         fatal("".._Quest.Identifier.." "..self.Name..": entity '" ..self.ScriptName.. "' does not exist!");
         return true;
@@ -2512,7 +2512,7 @@ function b_Goal_MapScriptFunction:CustomFunction(_Quest)
     return _G[self.FuncName](self, _Quest);
 end
 
-function b_Goal_MapScriptFunction:DEBUG(_Quest)
+function b_Goal_MapScriptFunction:Debug(_Quest)
     if not self.FuncName or not _G[self.FuncName] then
         fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
         return true;
@@ -2614,7 +2614,7 @@ function b_Goal_CustomVariables:GetCustomData( _Index )
     return {"==", "~=", "<=", "<", ">", ">="};
 end
 
-function b_Goal_CustomVariables:DEBUG(_Quest)
+function b_Goal_CustomVariables:Debug(_Quest)
     local relations = {"==", "~=", "<=", "<", ">", ">="}
     local results    = {true, false, nil}
 
@@ -2857,7 +2857,7 @@ function b_Goal_TributeDiplomacy:CustomFunction(_Quest)
     self:TributQuestRestarter(_Quest);
 end
 
-function b_Goal_TributeDiplomacy:DEBUG(_Quest)
+function b_Goal_TributeDiplomacy:Debug(_Quest)
     if self.Amount < 0 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Amount is negative!");
         return true;
@@ -2882,8 +2882,8 @@ function b_Goal_TributeDiplomacy:Interrupt(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:GetCustomData(_index)
-    if (_index == 6) then
+function b_Goal_TributeDiplomacy:GetCustomData(_Index)
+    if (_Index == 6) then
         return {"true", "false"};
     end
 end
@@ -3101,7 +3101,7 @@ function b_Goal_TributeClaim:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:DEBUG(_Quest)
+function b_Goal_TributeClaim:Debug(_Quest)
     if self.TerritoryID == 0 then
         fatal(_Quest.Identifier .. ": " .. self.Name .. ": Unknown Territory");
         return true;
@@ -3138,8 +3138,8 @@ function b_Goal_TributeClaim:Interrupt(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:GetCustomData(_index)
-    if (_index == 9) or (_index == 10) then
+function b_Goal_TributeClaim:GetCustomData(_Index)
+    if (_Index == 9) or (_Index == 10) then
         return {"false", "true"};
     end
 end
@@ -3188,7 +3188,7 @@ function b_Reprisal_ObjectDeactivate:CustomFunction(_Quest)
     InteractiveObjectDeactivate(self.ScriptName);
 end
 
-function b_Reprisal_ObjectDeactivate:DEBUG(_Quest)
+function b_Reprisal_ObjectDeactivate:Debug(_Quest)
     if not Logic.IsInteractiveObject(GetID(self.ScriptName)) then
         warn("".._Quest.Identifier.." "..self.Name..": '" ..self.ScriptName.. "' is not a interactive object!");
         self.WarningPrinted = true;
@@ -3261,7 +3261,7 @@ function b_Reprisal_ObjectActivate:GetCustomData( _Index )
     end
 end
 
-function b_Reprisal_ObjectActivate:DEBUG(_Quest)
+function b_Reprisal_ObjectActivate:Debug(_Quest)
     if not Logic.IsInteractiveObject(GetID(self.ScriptName)) then
         warn("".._Quest.Identifier.." "..self.Name..": '" ..self.ScriptName.. "' is not a interactive object!");
         self.WarningPrinted = true;
@@ -3364,7 +3364,7 @@ function b_Reprisal_Diplomacy:CustomFunction(_Quest)
     SetDiplomacyState(self.PlayerID1, self.PlayerID2, self.Relation);
 end
 
-function b_Reprisal_Diplomacy:DEBUG(_Quest)
+function b_Reprisal_Diplomacy:Debug(_Quest)
     if not tonumber(self.PlayerID1) or self.PlayerID1 < 1 or self.PlayerID1 > 8 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": PlayerID 1 is invalid!");
         return true;
@@ -3418,7 +3418,7 @@ function b_Reprisal_DestroyEntity:CustomFunction(_Quest)
     ReplaceEntity(self.ScriptName, Entities.XD_ScriptEntity);
 end
 
-function b_Reprisal_DestroyEntity:DEBUG(_Quest)
+function b_Reprisal_DestroyEntity:Debug(_Quest)
     if not IsExisting(self.ScriptName) then
         warn(_Quest.Identifier.." " ..self.Name..": '" ..self.ScriptName.. "' is already destroyed!");
         self.WarningPrinted = true;
@@ -3469,7 +3469,7 @@ function b_Reprisal_DestroyEffect:CustomFunction(_Quest)
     Logic.DestroyEffect(QSB.EffectNameToID[self.EffectName]);
 end
 
-function b_Reprisal_DestroyEffect:DEBUG(_Quest)
+function b_Reprisal_DestroyEffect:Debug(_Quest)
     if not QSB.EffectNameToID[self.EffectName] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Effect " .. self.EffectName .. " never created")
     end
@@ -3608,7 +3608,7 @@ function b_Reprisal_ReplaceEntity:GetCustomData(_Index)
     return Data
 end
 
-function b_Reprisal_ReplaceEntity:DEBUG(_Quest)
+function b_Reprisal_ReplaceEntity:Debug(_Quest)
     if not Entities[self.NewType] then
         fatal(_Quest.Identifier.." "..self.Name..": got an invalid entity type!");
         return true;
@@ -3664,7 +3664,7 @@ function b_Reprisal_QuestRestart:CustomFunction(_Quest)
     RestartQuestByName(self.QuestName, true);
 end
 
-function b_Reprisal_QuestRestart:DEBUG(_Quest)
+function b_Reprisal_QuestRestart:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
         return true;
@@ -3712,7 +3712,7 @@ function b_Reprisal_QuestFailure:CustomFunction(_Quest)
     FailQuestByName(self.QuestName, true);
 end
 
-function b_Reprisal_QuestFailure:DEBUG(_Quest)
+function b_Reprisal_QuestFailure:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         fatal("".._Quest.Identifier.." "..self.Name..": got an invalid quest!");
         return true;
@@ -3760,7 +3760,7 @@ function b_Reprisal_QuestSuccess:CustomFunction(_Quest)
     WinQuestByName(self.QuestName, true);
 end
 
-function b_Reprisal_QuestSuccess:DEBUG(_Quest)
+function b_Reprisal_QuestSuccess:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
         return true;
@@ -3810,7 +3810,7 @@ function b_Reprisal_QuestActivate:CustomFunction(_Quest)
     StartQuestByName(self.QuestName, true);
 end
 
-function b_Reprisal_QuestActivate:DEBUG(_Quest)
+function b_Reprisal_QuestActivate:Debug(_Quest)
     if not IsValidQuest(self.QuestName) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
         return true;
@@ -3865,7 +3865,7 @@ function b_Reprisal_QuestInterrupt:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_QuestInterrupt:DEBUG(_Quest)
+function b_Reprisal_QuestInterrupt:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
         return true;
@@ -3938,7 +3938,7 @@ function b_Reprisal_QuestForceInterrupt:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_QuestForceInterrupt:DEBUG(_Quest)
+function b_Reprisal_QuestForceInterrupt:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": quest "..  self.QuestName .. " does not exist!");
         return true;
@@ -4028,7 +4028,7 @@ function b_Reprisal_CustomVariables:GetCustomData( _Index )
     return {"=", "+", "-", "*", "/", "^"};
 end
 
-function b_Reprisal_CustomVariables:DEBUG(_Quest)
+function b_Reprisal_CustomVariables:Debug(_Quest)
     local operators = {"=", "+", "-", "*", "/", "^"};
     if not Inside(self.Operator,operators) then
         fatal(_Quest.Identifier.." "..self.Name..": got an invalid operator!");
@@ -4094,7 +4094,7 @@ function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
     _G[self.Function](self, _Quest);
 end
 
-function b_Reprisal_MapScriptFunction:DEBUG(_Quest)
+function b_Reprisal_MapScriptFunction:Debug(_Quest)
     if not self.Function then
         fatal("".._Quest.Identifier.." "..self.Name..": function reference is invalid!");
         return true;
@@ -4178,7 +4178,7 @@ function b_Reprisal_Technology:GetCustomData(_Index)
     return Data
 end
 
-function b_Reprisal_Technology:DEBUG(_Quest)
+function b_Reprisal_Technology:Debug(_Quest)
     if not Technologies[self.Technology] then
         fatal("".._Quest.Identifier.." "..self.Name..": got an invalid technology type!");
         return true;
@@ -4411,7 +4411,7 @@ function b_Reward_ObjectInit:GetCustomData( _Index )
     end
 end
 
-function b_Reward_ObjectInit:DEBUG(_Quest)
+function b_Reward_ObjectInit:Debug(_Quest)
     if Logic.IsInteractiveObject(GetID(self.ScriptName)) == false then
         fatal("".._Quest.Identifier.." "..self.Name..": '"..self.ScriptName.."' is not a interactive object!");
         return true;
@@ -4612,7 +4612,7 @@ function b_Reward_TradeOffers:CustomFunction()
     end
 end
 
-function b_Reward_TradeOffers:DEBUG(_Quest)
+function b_Reward_TradeOffers:Debug(_Quest)
     if Logic.GetStoreHouse(self.PlayerID ) == 0 then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is dead. :-(")
         return true
@@ -4832,7 +4832,7 @@ function b_Reward_CreateBattalion:GetCustomData( _Index )
     return Data
 end
 
-function b_Reward_CreateBattalion:DEBUG(_Quest)
+function b_Reward_CreateBattalion:Debug(_Quest)
     if not Entities[self.UnitKey] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
         return true;
@@ -4949,7 +4949,7 @@ function b_Reward_CreateSeveralBattalions:GetCustomData( _Index )
     return Data
 end
 
-function b_Reward_CreateSeveralBattalions:DEBUG(_Quest)
+function b_Reward_CreateSeveralBattalions:Debug(_Quest)
     if not Entities[self.UnitKey] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
         return true;
@@ -5043,7 +5043,7 @@ function b_Reward_CreateEffect:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_CreateEffect:DEBUG(_Quest)
+function b_Reward_CreateEffect:Debug(_Quest)
     if QSB.EffectNameToID[self.EffectName] and Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]) then
         fatal("".._Quest.Identifier.." "..self.Name..": effect already exists!");
         return true;
@@ -5174,7 +5174,7 @@ function b_Reward_CreateEntity:GetCustomData( _Index )
     return Data
 end
 
-function b_Reward_CreateEntity:DEBUG(_Quest)
+function b_Reward_CreateEntity:Debug(_Quest)
     if not Entities[self.UnitKey] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
         return true;
@@ -5296,7 +5296,7 @@ function b_Reward_CreateSeveralEntities:GetCustomData( _Index )
 
 end
 
-function b_Reward_CreateSeveralEntities:DEBUG(_Quest)
+function b_Reward_CreateSeveralEntities:Debug(_Quest)
     if not Entities[self.UnitKey] then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": got an invalid entity type!");
         return true;
@@ -5368,7 +5368,7 @@ function b_Reward_MoveSettler:CustomFunction(_Quest)
     Logic.MoveSettler( GetID( self.ScriptNameUnit ), DestX, DestY )
 end
 
-function b_Reward_MoveSettler:DEBUG(_Quest)
+function b_Reward_MoveSettler:Debug(_Quest)
     if not IsExisting(self.ScriptNameUnit) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": mover entity does not exist!");
         return true;
@@ -5594,7 +5594,7 @@ function b_Reward_AI_SpawnAndAttackTerritory:CustomFunction(_Quest)
 
 end
 
-function b_Reward_AI_SpawnAndAttackTerritory:DEBUG(_Quest)
+function b_Reward_AI_SpawnAndAttackTerritory:Debug(_Quest)
     if self.AIPlayerID < 2 then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
@@ -5733,7 +5733,7 @@ function b_Reward_AI_SpawnAndAttackArea:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_AI_SpawnAndAttackArea:DEBUG(_Quest)
+function b_Reward_AI_SpawnAndAttackArea:Debug(_Quest)
     if self.AIPlayerID < 2 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
@@ -5878,7 +5878,7 @@ function b_Reward_AI_SpawnAndProtectArea:CustomFunction(_Quest)
 
 end
 
-function b_Reward_AI_SpawnAndProtectArea:DEBUG(_Quest)
+function b_Reward_AI_SpawnAndProtectArea:Debug(_Quest)
     if self.AIPlayerID < 2 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong")
         return true
@@ -6017,7 +6017,7 @@ function b_Reward_AI_SetNumericalFact:GetCustomData(_Index)
     end
 end
 
-function b_Reward_AI_SetNumericalFact:DEBUG(_Quest)
+function b_Reward_AI_SetNumericalFact:Debug(_Quest)
     if Logic.GetStoreHouse(self.AIPlayerID) == 0 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Player " .. self.AIPlayerID .. " is wrong or dead!");
         return true;
@@ -6101,7 +6101,7 @@ function b_Reward_AI_Aggressiveness:CustomFunction()
     end
 end
 
-function b_Reward_AI_Aggressiveness:DEBUG(_Quest)
+function b_Reward_AI_Aggressiveness:Debug(_Quest)
     if self.AIPlayer < 2 or Logic.GetStoreHouse(self.AIPlayer) == 0 then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.PlayerID .. " is wrong")
         return true
@@ -6170,7 +6170,7 @@ function b_Reward_AI_SetEnemy:CustomFunction()
 
 end
 
-function b_Reward_AI_SetEnemy:DEBUG(_Quest)
+function b_Reward_AI_SetEnemy:Debug(_Quest)
     if self.AIPlayer <= 1 or self.AIPlayer >= 8 or Logic.PlayerGetIsHumanFlag(self.AIPlayer) then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong")
         return true;
@@ -6261,7 +6261,7 @@ function b_Reward_SetResourceAmount:CustomFunction(_Quest)
     Logic.SetResourceDoodadGoodAmount( EntityID, self.Amount )
 end
 
-function b_Reward_SetResourceAmount:DEBUG(_Quest)
+function b_Reward_SetResourceAmount:Debug(_Quest)
     if not IsExisting(self.ScriptName) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": resource entity does not exist!")
         return true
@@ -6429,7 +6429,7 @@ function b_Reward_SendCart:GetCustomData( _Index )
     return Data;
 end
 
-function b_Reward_SendCart:DEBUG(_Quest)
+function b_Reward_SendCart:Debug(_Quest)
     if not IsExisting(self.ScriptNameEntity) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": spawnpoint does not exist!");
         return true;
@@ -6845,7 +6845,7 @@ function b_Reward_AI_MountOutpost:GetCustomData(_Index)
     end
 end
 
-function b_Reward_AI_MountOutpost:DEBUG(_Quest)
+function b_Reward_AI_MountOutpost:Debug(_Quest)
     if Logic.IsEntityDestroyed(self.Scriptname) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Outpost " .. self.Scriptname .. " is missing")
         return true
@@ -6897,7 +6897,7 @@ function b_Reward_QuestRestartForceActive:CustomFunction(_Quest)
 end
 
 b_Reward_QuestRestartForceActive.ResetQuest = b_Reward_QuestRestart.CustomFunction;
-function b_Reward_QuestRestartForceActive:DEBUG(_Quest)
+function b_Reward_QuestRestartForceActive:Debug(_Quest)
     if not Quests[GetQuestID(self.QuestName)] then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest: "..  self.QuestName .. " does not exist");
         return true;
@@ -6961,7 +6961,7 @@ function b_Reward_UpgradeBuilding:CustomFunction(_Quest)
 
 end
 
-function b_Reward_UpgradeBuilding:DEBUG(_Quest)
+function b_Reward_UpgradeBuilding:Debug(_Quest)
 
     local building = GetID(self.Building);
     if not (building ~= 0
@@ -7104,7 +7104,7 @@ function b_Trigger_OnNeedUnsatisfied:CustomFunction(_Quest)
     return Logic.GetNumberOfStrikingWorkersPerNeed( self.PlayerID, Needs[self.Need] ) >= self.WorkersOnStrike
 end
 
-function b_Trigger_OnNeedUnsatisfied:DEBUG(_Quest)
+function b_Trigger_OnNeedUnsatisfied:Debug(_Quest)
     if Logic.GetStoreHouse(self.PlayerID) == 0 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": " .. self.PlayerID .. " does not exist.")
         return true
@@ -7217,7 +7217,7 @@ function b_Trigger_OnAmountOfGoods:CustomFunction(_Quest)
     return false
 end
 
-function b_Trigger_OnAmountOfGoods:DEBUG(_Quest)
+function b_Trigger_OnAmountOfGoods:Debug(_Quest)
     if Logic.GetStoreHouse(self.PlayerID) == 0 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": " .. self.PlayerID .. " does not exist.")
         return true
@@ -7293,7 +7293,7 @@ function b_Trigger_OnQuestActive:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestActive:DEBUG(_Quest)
+function b_Trigger_OnQuestActive:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
@@ -7372,7 +7372,7 @@ function b_Trigger_OnQuestFailure:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestFailure:DEBUG(_Quest)
+function b_Trigger_OnQuestFailure:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
@@ -7441,7 +7441,7 @@ function b_Trigger_OnQuestNotTriggered:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestNotTriggered:DEBUG(_Quest)
+function b_Trigger_OnQuestNotTriggered:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
@@ -7506,7 +7506,7 @@ function b_Trigger_OnQuestInterrupted:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestInterrupted:DEBUG(_Quest)
+function b_Trigger_OnQuestInterrupted:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
@@ -7585,7 +7585,7 @@ function b_Trigger_OnQuestOver:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestOver:DEBUG(_Quest)
+function b_Trigger_OnQuestOver:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
@@ -7661,7 +7661,7 @@ function b_Trigger_OnQuestSuccess:CustomFunction()
     return false;
 end
 
-function b_Trigger_OnQuestSuccess:DEBUG(_Quest)
+function b_Trigger_OnQuestSuccess:Debug(_Quest)
     if type(self.QuestName) ~= "string" then
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
@@ -7754,7 +7754,7 @@ function b_Trigger_CustomVariables:GetCustomData( _Index )
     end
 end
 
-function b_Trigger_CustomVariables:DEBUG(_Quest)
+function b_Trigger_CustomVariables:Debug(_Quest)
     local relations = {"==", "~=", "<=", "<", ">", ">="}
     local results    = {true, false, nil}
 
@@ -7846,7 +7846,7 @@ function b_Trigger_OnMonth:GetCustomData( _Index )
     return Data
 end
 
-function b_Trigger_OnMonth:DEBUG(_Quest)
+function b_Trigger_OnMonth:Debug(_Quest)
     if self.Month < 1 or self.Month > 12 then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": Month has the wrong value")
         return true
@@ -8042,7 +8042,7 @@ function b_Trigger_OnAtLeastOneQuestFailure:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnAtLeastOneQuestFailure:DEBUG(_Quest)
+function b_Trigger_OnAtLeastOneQuestFailure:Debug(_Quest)
     if self.Quest1 == self.Quest2 then
         fatal(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
@@ -8108,7 +8108,7 @@ function b_Trigger_OnAtLeastOneQuestSuccess:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnAtLeastOneQuestSuccess:DEBUG(_Quest)
+function b_Trigger_OnAtLeastOneQuestSuccess:Debug(_Quest)
     if self.Quest1 == self.Quest2 then
         fatal(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
@@ -8198,7 +8198,7 @@ function b_Trigger_OnAtLeastXOfYQuestsSuccess:CustomFunction()
     return false
 end
 
-function b_Trigger_OnAtLeastXOfYQuestsSuccess:DEBUG(_Quest)
+function b_Trigger_OnAtLeastXOfYQuestsSuccess:Debug(_Quest)
     local leastAmount = self.LeastAmount
     local questAmount = self.QuestAmount
     if leastAmount <= 0 or leastAmount >5 then
@@ -8258,8 +8258,8 @@ function b_Trigger_MapScriptFunction:GetTriggerTable(__quest_)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_MapScriptFunction:AddParameter(__index_, __parameter_)
-    if (__index_ == 0) then
+function b_Trigger_MapScriptFunction:AddParameter(__Index_, __parameter_)
+    if (__Index_ == 0) then
         self.FuncName = __parameter_
     end
 end
@@ -8268,7 +8268,7 @@ function b_Trigger_MapScriptFunction:CustomFunction(__quest_)
     return _G[self.FuncName](self, __quest_);
 end
 
-function b_Trigger_MapScriptFunction:DEBUG(__quest_)
+function b_Trigger_MapScriptFunction:Debug(__quest_)
     if not self.FuncName or not _G[self.FuncName] then
         local text = string.format("%s Trigger_MapScriptFunction: function '%s' does not exist!", __quest_.Identifier, tostring(self.FuncName));
         fatal(text);
@@ -8434,7 +8434,7 @@ function b_Goal_InputDialog:InitReturnVariable(_QuestName)
     ]])
 end
 
-function b_Goal_InputDialog:DEBUG(_Quest)
+function b_Goal_InputDialog:Debug(_Quest)
     return false;
 end
 
@@ -8490,7 +8490,7 @@ function b_Trigger_OnEffectDestroyed:CustomFunction()
 	return not QSB.EffectNameToID[self.EffectName] or not Logic.IsEffectRegistered(QSB.EffectNameToID[self.EffectName]);
 end
 
-function b_Trigger_OnEffectDestroyed:DEBUG(_Quest)
+function b_Trigger_OnEffectDestroyed:Debug(_Quest)
 	if not QSB.EffectNameToID[self.EffectName] then
 		fatal(_Quest.Identifier .. " " .. self.Name .. ": Effect has never existed")
 		return true
@@ -8552,7 +8552,7 @@ function b_Reward_SetBuildingUpgradeLevel:CustomFunction()
 	end
 end
 
-function b_Reward_SetBuildingUpgradeLevel:DEBUG(_Quest)
+function b_Reward_SetBuildingUpgradeLevel:Debug(_Quest)
 	local building = Logic.GetEntityIDByName( self.Building )
 	local maxUpgradeLevel = Logic.GetMaxUpgradeLevel(building);
 	if not building or Logic.IsBuilding(building) == 0  then
