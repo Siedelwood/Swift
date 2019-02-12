@@ -3308,7 +3308,7 @@ function b_Reward_Briefing:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_Briefing:DEBUG(_Quest)
+function b_Reward_Briefing:Debug(_Quest)
     if not type(_G[self.Function]) == "function" then
         fatal(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
         return true;
@@ -3373,7 +3373,7 @@ function b_Reprisal_Briefing:CustomFunction(_Quest)
     end
 end
 
-function b_Reprisal_Briefing:DEBUG(_Quest)
+function b_Reprisal_Briefing:Debug(_Quest)
     if not type(_G[self.Function]) == "function" then
         fatal(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
         return true;
@@ -3453,7 +3453,7 @@ function b_Trigger_Briefing:Reset(_Quest)
     self.WaitTimeTimer = nil
 end
 
-function b_Trigger_Briefing:DEBUG(__quest_)
+function b_Trigger_Briefing:Debug(__quest_)
     if self.WaitTime and self.WaitTime < 0 then
         dbg(__quest_.Identifier.." "..self.Name..": waittime is below 0!");
         return true;
@@ -3529,7 +3529,7 @@ function b_Trigger_BriefingSuccess:Reset(_Quest)
     self.WaitTimeTimer = nil
 end
 
-function b_Trigger_BriefingSuccess:DEBUG(__quest_)
+function b_Trigger_BriefingSuccess:Debug(__quest_)
     if self.WaitTime and self.WaitTime < 0 then
         dbg(__quest_.Identifier.." "..self.Name..": waittime is below 0!");
         return true;
@@ -3605,7 +3605,7 @@ function b_Trigger_BriefingFailure:Reset(_Quest)
     self.WaitTimeTimer = nil
 end
 
-function b_Trigger_BriefingFailure:DEBUG(_Quest)
+function b_Trigger_BriefingFailure:Debug(_Quest)
     if self.WaitTime ~= nil and self.WaitTime < 0 then
         fatal(_Quest.Identifier.." "..self.Name..": waittime is below 0!");
         return true;

@@ -128,7 +128,7 @@ function b_Goal_WinQuest:CustomFunction(_Quest)
     return nil;
 end
 
-function b_Goal_WinQuest:DEBUG(_Quest)
+function b_Goal_WinQuest:Debug(_Quest)
     if Quests[GetQuestID(self.Quest)] == nil then
         fatal(_Quest.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
         return true;
@@ -245,7 +245,7 @@ function b_Goal_StealGold:GetIcon()
     return {5,13};
 end
 
-function b_Goal_StealGold:DEBUG(_Quest)
+function b_Goal_StealGold:Debug(_Quest)
     if tonumber(self.Amount) == nil and self.Amount < 0 then
         fatal(_Quest.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
         return true;
@@ -362,7 +362,7 @@ function b_Goal_StealBuilding:GetIcon()
     return {5,13};
 end
 
-function b_Goal_StealBuilding:DEBUG(_Quest)
+function b_Goal_StealBuilding:Debug(_Quest)
     local eTypeName = Logic.GetEntityTypeName(Logic.GetEntityType(GetID(self.Building)));
     local IsHeadquarter = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Headquarters) == 1;
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
@@ -493,7 +493,7 @@ function b_Goal_SpyBuilding:GetIcon()
     return self.IconOverwrite;
 end
 
-function b_Goal_SpyBuilding:DEBUG(_Quest)
+function b_Goal_SpyBuilding:Debug(_Quest)
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
         fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
         return true;
@@ -575,7 +575,7 @@ function b_Goal_AmmunitionAmount:CustomFunction()
     return nil;
 end
 
-function b_Goal_AmmunitionAmount:DEBUG(_Quest)
+function b_Goal_AmmunitionAmount:Debug(_Quest)
     if self.Amount < 0 then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Amount is negative");
         return true
@@ -599,7 +599,7 @@ Core:RegisterBehavior(b_Goal_AmmunitionAmount)
 -- bereits gespawnten Entities übereinstimmt, wird dies automatisch korrigiert.
 -- (Neue Entities gespawnt bzw. überschüssige gelöscht)
 --
--- @param[type=string] _SpawnPoint Spawnpoint oder Liste von Spawnpoints
+-- @param              _SpawnPoint Spawnpoint oder Liste von Spawnpoints
 -- @param[type=number] _Amount     Menge zu zerstörender Entities
 --
 -- @within Goal
@@ -626,6 +626,9 @@ end
 
 function b_Goal_DestroySpawnedEntities:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
+        if type(_Parameter) ~= "table" then
+            _Parameter = {_Parameter};
+        end
         self.SpawnPoint = _Parameter;
     elseif (_Index == 1) then
         self.Amount = _Parameter * 1;
@@ -722,7 +725,7 @@ function b_Reprisal_SetPosition:GetCustomData(_Index)
     end
 end
 
-function b_Reprisal_SetPosition:DEBUG(_Quest)
+function b_Reprisal_SetPosition:Debug(_Quest)
     if self.FaceToFace then
         if tonumber(self.Distance) == nil or self.Distance < 50 then
             fatal(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
@@ -794,7 +797,7 @@ function b_Reprisal_ChangePlayer:GetCustomData(_Index)
     end
 end
 
-function b_Reprisal_ChangePlayer:DEBUG(_Quest)
+function b_Reprisal_ChangePlayer:Debug(_Quest)
     if not IsExisting(self.Entity) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
@@ -883,7 +886,7 @@ function b_Reprisal_SetVisible:GetCustomData(_Index)
     end
 end
 
-function b_Reprisal_SetVisible:DEBUG(_Quest)
+function b_Reprisal_SetVisible:Debug(_Quest)
     if not IsExisting(self.Entity) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
@@ -968,7 +971,7 @@ function b_Reprisal_SetVulnerability:GetCustomData(_Index)
     end
 end
 
-function b_Reprisal_SetVulnerability:DEBUG(_Quest)
+function b_Reprisal_SetVulnerability:Debug(_Quest)
     if not IsExisting(self.Entity) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
@@ -1042,7 +1045,7 @@ function b_Reprisal_SetModel:GetCustomData(_Index)
     end
 end
 
-function b_Reprisal_SetModel:DEBUG(_Quest)
+function b_Reprisal_SetModel:Debug(_Quest)
     if not IsExisting(self.Entity) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
@@ -1189,7 +1192,7 @@ function b_Reward_MoveToPosition:CustomFunction(_Quest)
     end, entity, target);
 end
 
-function b_Reward_MoveToPosition:DEBUG(_Quest)
+function b_Reward_MoveToPosition:Debug(_Quest)
     if tonumber(self.Distance) == nil or self.Distance < 50 then
         fatal(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
         return true;
@@ -1275,7 +1278,7 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
     end
 end
 
-function b_Reward_VictoryWithParty:DEBUG(_Quest)
+function b_Reward_VictoryWithParty:Debug(_Quest)
     return false;
 end
 
@@ -1372,7 +1375,7 @@ function b_Reward_AI_SetEntityControlled:GetCustomData(_Index)
     end
 end
 
-function b_Reward_AI_SetEntityControlled:DEBUG(_Quest)
+function b_Reward_AI_SetEntityControlled:Debug(_Quest)
     if not IsExisting(self.Entity) then
         fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
@@ -1490,7 +1493,7 @@ function b_Reward_RefillAmmunition:CustomFunction()
     end
 end
 
-function b_Reward_RefillAmmunition:DEBUG(_Quest)
+function b_Reward_RefillAmmunition:Debug(_Quest)
     if not IsExisting(self.Scriptname) then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
         return true
@@ -1576,7 +1579,7 @@ function b_Trigger_OnAtLeastXOfYQuestsFailed:CustomFunction()
     return false
 end
 
-function b_Trigger_OnAtLeastXOfYQuestsFailed:DEBUG(_Quest)
+function b_Trigger_OnAtLeastXOfYQuestsFailed:Debug(_Quest)
     local leastAmount = self.LeastAmount
     local questAmount = self.QuestAmount
     if leastAmount <= 0 or leastAmount >5 then
@@ -1653,7 +1656,7 @@ function b_Trigger_AmmunitionDepleted:CustomFunction()
     return true;
 end
 
-function b_Trigger_AmmunitionDepleted:DEBUG(_Quest)
+function b_Trigger_AmmunitionDepleted:Debug(_Quest)
     if not IsExisting(self.Scriptname) then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
         return true
@@ -1716,7 +1719,7 @@ function b_Trigger_OnExactOneQuestIsWon:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnExactOneQuestIsWon:DEBUG(_Quest)
+function b_Trigger_OnExactOneQuestIsWon:Debug(_Quest)
     if self.Quest1 == self.Quest2 then
         fatal(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
@@ -1785,7 +1788,7 @@ function b_Trigger_OnExactOneQuestIsLost:CustomFunction(_Quest)
     return false;
 end
 
-function b_Trigger_OnExactOneQuestIsLost:DEBUG(_Quest)
+function b_Trigger_OnExactOneQuestIsLost:Debug(_Quest)
     if self.Quest1 == self.Quest2 then
         fatal(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
         return true;
@@ -2006,34 +2009,44 @@ end
 --
 function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objective)
     if _Objective.Data[1] == 3 then
-        -- Initial wird die Anzahl an Entities sichergestellt. Gibt es zu,
-        -- viel werden überschüssige gelöscht. Gibt es zu wenig, werden
-        -- Entities gespawnt.
+        -- Initial wird die Anzahl an Entities sichergestellt.
         if not _Objective.Data[4] then
-            local EntityID        = GetID(_Objective.Data[2]);
-            local SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
-            if #SpawnedEntities < _Objective.Data[3] then
-                repeat
-                    Logic.RespawnResourceEntity_Spawn(EntityID);
-                    SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
-                until (#SpawnedEntities == _Objective.Data[3]);
-            elseif #SpawnedEntities > _Objective.Data[3] then
-                repeat
-                    DestroyEntity(SpawnedEntities[1]);
-                    SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
-                until (#SpawnedEntities == _Objective.Data[3]);
+            local FirstEntityID;
+            local SpawnAmount = _Objective.Data[3];
+            for k, v in pairs(_Objective.Data[2]) do
+                local EntityID        = GetID(v);
+                local SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
+                if #SpawnedEntities < SpawnAmount then
+                    repeat
+                        Logic.RespawnResourceEntity_Spawn(EntityID);
+                        SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
+                    until (#SpawnedEntities == SpawnAmount);
+                elseif #SpawnedEntities > SpawnAmount then
+                    repeat
+                        DestroyEntity(SpawnedEntities[1]);
+                        SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
+                    until (#SpawnedEntities == SpawnAmount);
+                end
+                if not FirstEntityID then
+                    FirstEntityID = SpawnedEntities[1];
+                end
             end
+            -- Icon setzen
             if not _Objective.Data[5] then
                 _Objective.Data[5] = {7, 12};
-                if Logic.IsEntityInCategory(SpawnedEntities[1], EntityCategories.AttackableAnimal) == 1 then
+                if Logic.IsEntityInCategory(FirstEntityID, EntityCategories.AttackableAnimal) == 1 then
                     _Objective.Data[5] = {13, 8};
                 end
             end
             _Objective.Data[4] = true;
         end
+
         -- Gibt es keine gespawnten Entities mehr, ist das Ziel erreicht.
-        local SpawnedEntities = {Logic.GetSpawnedEntities(_Objective.Data[2])};
-        if #SpawnedEntities == 0 then
+        local AllSpawnedEntities = {};
+        for k, v in pairs(_Objective.Data[2]) do
+            AllSpawnedEntities = Array_Append(AllSpawnedEntities, {Logic.GetSpawnedEntities(v)});
+        end
+        if #AllSpawnedEntities == 0 then
             return true;
         end
     end
@@ -2072,7 +2085,7 @@ function BundleSymfoniaBehaviors.Local.DisplayQuestObjective(_QuestIndex, _Messa
         local EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest( Quest, QuestType );
         local EntitiesAmount = #EntitiesList;
         if not Quest.Objectives[1].Data[4] and #EntitiesList == 0 then
-            EntitiesAmount = Quest.Objectives[1].Data[3];
+            EntitiesAmount = #Quest.Objectives[1].Data[2] * Quest.Objectives[1].Data[3];
         end
 
         XGUIEng.ShowWidget(QuestObjectiveContainer .. "/AdditionalCaption", 0);
@@ -2112,7 +2125,9 @@ function BundleSymfoniaBehaviors.Local.GetEntitiesOrTerritoryList(_Quest, _Quest
     local EntityOrTerritoryList = {};
     if _QuestType == Objective.DestroyEntities then
         if _Quest.Objectives[1].Data and _Quest.Objectives[1].Data[1] == 3 then
-            EntityOrTerritoryList = Array_Append(EntityOrTerritoryList, {Logic.GetSpawnedEntities(GetID(_Quest.Objectives[1].Data[2]))});
+            for k, v in pairs(_Quest.Objectives[1].Data[2]) do
+                EntityOrTerritoryList = Array_Append(EntityOrTerritoryList, {Logic.GetSpawnedEntities(GetID(v))});
+            end
             return EntityOrTerritoryList, IsEntity;
         end
     end
