@@ -665,8 +665,8 @@ b_Goal_CityReputation = {
         { ParameterType.Number, en = "City reputation", de = "Ruf der Stadt" },
     },
     Text = {
-        en = "RUF DER STADT{cr}{cr}Hebe den Ruf der Stadt durch weise Herrschaft an!{cr}Benötigter Ruf: %d",
-        de = "CITY REPUTATION{cr}{cr}Raise your reputation by fair rulership!{cr}Needed reputation: %d",
+        de = "RUF DER STADT{cr}{cr}Hebe den Ruf der Stadt durch weise Herrschaft an!{cr}Benötigter Ruf: %d",
+        en = "CITY REPUTATION{cr}{cr}Raise your reputation by fair rulership!{cr}Needed reputation: %d",
     }
 }
 
@@ -690,6 +690,7 @@ end
 
 function b_Goal_CityReputation:SetCaption(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local Text = string.format(self.Text[Language], self.Reputation);
         Core:ChangeCustomQuestCaptionText(Text, _Quest);
     end

@@ -35,6 +35,7 @@ AddOnRandomRequests = {
             RandomQuestNameCounter = 0;
             Claim = {},
             Deliver = {},
+            Reputation = {},
             KnightTitle = {},
 
             Text = {
@@ -136,7 +137,13 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
         QuestGoals[#QuestGoals+1] = self:GetKnightTitleBehavior(_Behavior, _Quest);
     end
     if _Behavior.TypeReputation then
-        QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", 25 + (10 * Logic.GetKnightTitle(_Quest.ReceivingPlayer))};
+        self.Data.KnightTitle[_Quest.ReceivingPlayer] = self.Data.KnightTitle[_Quest.ReceivingPlayer] or {};
+        local Reputation = 25 + (10 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
+        if self.Data.KnightTitle[_Quest.ReceivingPlayer][Reputation] then
+            return QuestGoals;
+        end
+        self.Data.KnightTitle[_Quest.ReceivingPlayer][Reputation] = true;
+        QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", Reputation};
     end
     if _Behavior.TypeBuildWall then
         QuestGoals[#QuestGoals+1] = self:GetBuildWallBehavior(_Behavior, _Quest);
@@ -174,7 +181,7 @@ end
 function AddOnRandomRequests.Global:GetBuildWallBehavior(_Behavior, _Quest)
     local FirstEnemy;
     for i= 1, 8, 1 do
-        if i ~= _Quest.SendingPlayer and i ~= _Quest.ReceivingPlayer and GetDiplomacyState(i, _Quest.ReceivingPlayer) == DiplomacyState.Enemy then
+        if i ~= _Quest.SendingPlayer and i ~= _Quest.ReceivingPlayer and DiplomaticEntity.GetRelationBetween(i, _Quest.ReceivingPlayer) == DiplomacyStates.Enemy then
             FirstEnemy = i;
             break;
         end

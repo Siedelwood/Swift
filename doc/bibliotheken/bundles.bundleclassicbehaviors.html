@@ -37,9 +37,9 @@
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
 <li><a href="#Reward">Reward</a></li>
+<li><a href="#Goal">Goal</a></li>
 <li><a href="#Reprisal">Reprisal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
-<li><a href="#Goal">Goal</a></li>
 </ul>
 
 
@@ -49,6 +49,7 @@
   <li><a href="../bibliotheken/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
   <li><a href="../bibliotheken/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
   <li><a href="../bibliotheken/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../bibliotheken/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../bibliotheken/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../bibliotheken/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><strong>bundles.bundleclassicbehaviors</strong></li>
@@ -289,180 +290,6 @@
 	<td class="summary">Der Spieler gewinnt das Spiel.</td>
 	</tr>
 </table>
-<h2><a href="#Reprisal">Reprisal</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_CustomVariables">Reprisal_CustomVariables (_Name, _Operator, _Value)</a></td>
-	<td class="summary">Ändert den Wert einer benutzerdefinierten Variable.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_Defeat">Reprisal_Defeat ()</a></td>
-	<td class="summary">Der Spieler verliert das Spiel.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_DestroyEffect">Reprisal_DestroyEffect (_EffectName)</a></td>
-	<td class="summary">Zerstört einen über die QSB erzeugten Effekt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_DestroyEntity">Reprisal_DestroyEntity (_ScriptName)</a></td>
-	<td class="summary">Ein benanntes Entity wird zerstört.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_Diplomacy">Reprisal_Diplomacy (_Party1, _Party2, _State)</a></td>
-	<td class="summary">Änder den Diplomatiestatus zwischen zwei Spielern.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_DiplomacyDecrease">Reprisal_DiplomacyDecrease ()</a></td>
-	<td class="summary">Der diplomatische Status zwischen Sender und Empfänger verschlechtert sich
- um eine Stufe.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_FakeDefeat">Reprisal_FakeDefeat ()</a></td>
-	<td class="summary">Zeigt die Niederlagedekoration am Quest an.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_MapScriptFunction">Reprisal_MapScriptFunction (_Function)</a></td>
-	<td class="summary">Führt eine Funktion im Skript als Reprisal aus.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_ObjectActivate">Reprisal_ObjectActivate (_ScriptName, _State)</a></td>
-	<td class="summary">Aktiviert ein interaktives Objekt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_ObjectDeactivate">Reprisal_ObjectDeactivate (_ScriptName)</a></td>
-	<td class="summary">Deaktiviert ein interaktives Objekt</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_QuestActivate">Reprisal_QuestActivate (_QuestName)</a></td>
-	<td class="summary">Triggert einen Quest.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_QuestFailure">Reprisal_QuestFailure (_QuestName)</a></td>
-	<td class="summary">Lässt einen Quest fehlschlagen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_QuestForceInterrupt">Reprisal_QuestForceInterrupt (_QuestName, _EndetQuests)</a></td>
-	<td class="summary">Unterbricht einen Quest, selbst wenn dieser noch nicht ausgelöst wurde.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_QuestInterrupt">Reprisal_QuestInterrupt (_QuestName)</a></td>
-	<td class="summary">Unterbricht einen Quest.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_QuestRestart">Reprisal_QuestRestart (_QuestName)</a></td>
-	<td class="summary">Startet einen Quest neu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_QuestSuccess">Reprisal_QuestSuccess (_QuestName)</a></td>
-	<td class="summary">Wertet einen Quest als erfolgreich.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_ReplaceEntity">Reprisal_ReplaceEntity (_Entity, _Type, _Owner)</a></td>
-	<td class="summary">Ein Entity wird durch ein neues anderen Typs ersetzt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Reprisal_Technology">Reprisal_Technology (_PlayerID, _Lock, _Technology)</a></td>
-	<td class="summary">Erlaubt oder verbietet einem Spieler eine Technologie.</td>
-	</tr>
-</table>
-<h2><a href="#Trigger">Trigger</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_AlwaysActive">Trigger_AlwaysActive ()</a></td>
-	<td class="summary">Startet den Quest sofort.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_CustomVariables">Trigger_CustomVariables (_Name, _Relation, _Value)</a></td>
-	<td class="summary">Startet den Quest, wenn eine benutzerdefinierte Variable einen bestimmten
- Wert angenommen hat.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_MapScriptFunction">Trigger_MapScriptFunction (_FunctionName)</a></td>
-	<td class="summary">Führt eine Funktion im Skript als Trigger aus.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_NeverTriggered">Trigger_NeverTriggered ()</a></td>
-	<td class="summary">Startet den Quest niemals.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnAmountOfGoods">Trigger_OnAmountOfGoods (_PlayerID, _Type, _Amount)</a></td>
-	<td class="summary">Startet den Quest, sobald der angegebene Spieler eine Menge an Rohstoffen
- im Lagerhaus hat.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnAtLeastOneQuestFailure">Trigger_OnAtLeastOneQuestFailure (_QuestName1, _QuestName2)</a></td>
-	<td class="summary">Startet den Quest, sobald wenigstens einer von zwei Quests fehlschlägt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnAtLeastOneQuestSuccess">Trigger_OnAtLeastOneQuestSuccess (_QuestName1, _QuestName2)</a></td>
-	<td class="summary">Startet den Quest, sobald wenigstens einer von zwei Quests erfolgreich ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnAtLeastXOfYQuestsSuccess">Trigger_OnAtLeastXOfYQuestsSuccess (_MinAmount, _QuestAmount, _Quest1, _Quest2, _Quest3, _Quest4, _Quest5)</a></td>
-	<td class="summary">Startet den Quest, sobald mindestens X von Y Quests erfolgreich sind.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnDiplomacy">Trigger_OnDiplomacy (_PlayerID, _State)</a></td>
-	<td class="summary">Starte den Quest, wenn zwischen dem Empfänger und der angegebenen Partei
- der geforderte Diplomatiestatus herrscht.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnEffectDestroyed">Trigger_OnEffectDestroyed (_EffectName)</a></td>
-	<td class="summary">Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnMonsoon">Trigger_OnMonsoon ()</a></td>
-	<td class="summary">Startet den Quest sobald der Monsunregen einsetzt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnMonth">Trigger_OnMonth (_Month)</a></td>
-	<td class="summary">Startet den Quest im angegebenen Monat.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnNeedUnsatisfied">Trigger_OnNeedUnsatisfied (_PlayerID, _Need, _Amount)</a></td>
-	<td class="summary">Starte den Quest, sobald ein Bedürfnis nicht erfüllt wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnQuestActive">Trigger_OnQuestActive (_QuestName, _Time)</a></td>
-	<td class="summary">Startet den Quest, sobald ein anderer aktiv ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnQuestFailure">Trigger_OnQuestFailure (_QuestName, _Time)</a></td>
-	<td class="summary">Startet einen Quest, sobald ein anderer fehlschlägt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnQuestInterrupted">Trigger_OnQuestInterrupted (_QuestName, _Time)</a></td>
-	<td class="summary">Startet den Quest, sobald ein anderer unterbrochen wurde.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnQuestNotTriggered">Trigger_OnQuestNotTriggered (_QuestName, _Time)</a></td>
-	<td class="summary">Startet einen Quest, wenn ein anderer noch nicht ausgelöst wurde.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnQuestOver">Trigger_OnQuestOver (_QuestName, _Time)</a></td>
-	<td class="summary">Startet den Quest, sobald ein anderer bendet wurde.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnQuestSuccess">Trigger_OnQuestSuccess (_QuestName, _Time)</a></td>
-	<td class="summary">Startet den Quest, sobald ein anderer Quest erfolgreich abgeschlossen wurde.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnResourceDepleted">Trigger_OnResourceDepleted (_ScriptName)</a></td>
-	<td class="summary">Startet den Quest, wenn die angegebene Mine erschöpft ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_OnWaterFreezes">Trigger_OnWaterFreezes ()</a></td>
-	<td class="summary">Startet den Quest sobald das Wasser gefriert.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_PlayerDiscovered">Trigger_PlayerDiscovered (_PlayerID)</a></td>
-	<td class="summary">Starte den Quest, wenn ein anderer Spieler entdeckt wurde.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_Time">Trigger_Time (_Time)</a></td>
-	<td class="summary">Startet den Quest sobald der Timer abgelaufen ist.</td>
-	</tr>
-</table>
 <h2><a href="#Goal">Goal</a></h2>
 <table class="function_list">
 	<tr>
@@ -637,6 +464,180 @@
 	<td class="name" nowrap><a href="#Goal_UnitsOnTerritory">Goal_UnitsOnTerritory (_Territory, _PlayerID, _Category, _Relation, _Amount)</a></td>
 	<td class="summary">Eine bestimmte Anzahl an Einheiten einer Kategorie muss sich auf dem
  Territorium befinden.</td>
+	</tr>
+</table>
+<h2><a href="#Reprisal">Reprisal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_CustomVariables">Reprisal_CustomVariables (_Name, _Operator, _Value)</a></td>
+	<td class="summary">Ändert den Wert einer benutzerdefinierten Variable.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_Defeat">Reprisal_Defeat ()</a></td>
+	<td class="summary">Der Spieler verliert das Spiel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_DestroyEffect">Reprisal_DestroyEffect (_EffectName)</a></td>
+	<td class="summary">Zerstört einen über die QSB erzeugten Effekt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_DestroyEntity">Reprisal_DestroyEntity (_ScriptName)</a></td>
+	<td class="summary">Ein benanntes Entity wird zerstört.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_Diplomacy">Reprisal_Diplomacy (_Party1, _Party2, _State)</a></td>
+	<td class="summary">Änder den Diplomatiestatus zwischen zwei Spielern.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_DiplomacyDecrease">Reprisal_DiplomacyDecrease ()</a></td>
+	<td class="summary">Der diplomatische Status zwischen Sender und Empfänger verschlechtert sich
+ um eine Stufe.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_FakeDefeat">Reprisal_FakeDefeat ()</a></td>
+	<td class="summary">Zeigt die Niederlagedekoration am Quest an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_MapScriptFunction">Reprisal_MapScriptFunction (_Function)</a></td>
+	<td class="summary">Führt eine Funktion im Skript als Reprisal aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_ObjectActivate">Reprisal_ObjectActivate (_ScriptName, _State)</a></td>
+	<td class="summary">Aktiviert ein interaktives Objekt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_ObjectDeactivate">Reprisal_ObjectDeactivate (_ScriptName)</a></td>
+	<td class="summary">Deaktiviert ein interaktives Objekt</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_QuestActivate">Reprisal_QuestActivate (_QuestName)</a></td>
+	<td class="summary">Triggert einen Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_QuestFailure">Reprisal_QuestFailure (_QuestName)</a></td>
+	<td class="summary">Lässt einen Quest fehlschlagen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_QuestForceInterrupt">Reprisal_QuestForceInterrupt (_QuestName, _EndetQuests)</a></td>
+	<td class="summary">Unterbricht einen Quest, selbst wenn dieser noch nicht ausgelöst wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_QuestInterrupt">Reprisal_QuestInterrupt (_QuestName)</a></td>
+	<td class="summary">Unterbricht einen Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_QuestRestart">Reprisal_QuestRestart (_QuestName)</a></td>
+	<td class="summary">Startet einen Quest neu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_QuestSuccess">Reprisal_QuestSuccess (_QuestName)</a></td>
+	<td class="summary">Wertet einen Quest als erfolgreich.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_ReplaceEntity">Reprisal_ReplaceEntity (_Entity, _Type, _Owner)</a></td>
+	<td class="summary">Ein Entity wird durch ein neues anderen Typs ersetzt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Reprisal_Technology">Reprisal_Technology (_PlayerID, _Lock, _Technology)</a></td>
+	<td class="summary">Erlaubt oder verbietet einem Spieler eine Technologie.</td>
+	</tr>
+</table>
+<h2><a href="#Trigger">Trigger</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_AlwaysActive">Trigger_AlwaysActive ()</a></td>
+	<td class="summary">Startet den Quest sofort.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_CustomVariables">Trigger_CustomVariables (_Name, _Relation, _Value)</a></td>
+	<td class="summary">Startet den Quest, wenn eine benutzerdefinierte Variable einen bestimmten
+ Wert angenommen hat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_MapScriptFunction">Trigger_MapScriptFunction (_FunctionName)</a></td>
+	<td class="summary">Führt eine Funktion im Skript als Trigger aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_NeverTriggered">Trigger_NeverTriggered ()</a></td>
+	<td class="summary">Startet den Quest niemals.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnAmountOfGoods">Trigger_OnAmountOfGoods (_PlayerID, _Type, _Amount)</a></td>
+	<td class="summary">Startet den Quest, sobald der angegebene Spieler eine Menge an Rohstoffen
+ im Lagerhaus hat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnAtLeastOneQuestFailure">Trigger_OnAtLeastOneQuestFailure (_QuestName1, _QuestName2)</a></td>
+	<td class="summary">Startet den Quest, sobald wenigstens einer von zwei Quests fehlschlägt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnAtLeastOneQuestSuccess">Trigger_OnAtLeastOneQuestSuccess (_QuestName1, _QuestName2)</a></td>
+	<td class="summary">Startet den Quest, sobald wenigstens einer von zwei Quests erfolgreich ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnAtLeastXOfYQuestsSuccess">Trigger_OnAtLeastXOfYQuestsSuccess (_MinAmount, _QuestAmount, _Quest1, _Quest2, _Quest3, _Quest4, _Quest5)</a></td>
+	<td class="summary">Startet den Quest, sobald mindestens X von Y Quests erfolgreich sind.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnDiplomacy">Trigger_OnDiplomacy (_PlayerID, _State)</a></td>
+	<td class="summary">Starte den Quest, wenn zwischen dem Empfänger und der angegebenen Partei
+ der geforderte Diplomatiestatus herrscht.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnEffectDestroyed">Trigger_OnEffectDestroyed (_EffectName)</a></td>
+	<td class="summary">Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnMonsoon">Trigger_OnMonsoon ()</a></td>
+	<td class="summary">Startet den Quest sobald der Monsunregen einsetzt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnMonth">Trigger_OnMonth (_Month)</a></td>
+	<td class="summary">Startet den Quest im angegebenen Monat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnNeedUnsatisfied">Trigger_OnNeedUnsatisfied (_PlayerID, _Need, _Amount)</a></td>
+	<td class="summary">Starte den Quest, sobald ein Bedürfnis nicht erfüllt wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnQuestActive">Trigger_OnQuestActive (_QuestName, _Time)</a></td>
+	<td class="summary">Startet den Quest, sobald ein anderer aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnQuestFailure">Trigger_OnQuestFailure (_QuestName, _Time)</a></td>
+	<td class="summary">Startet einen Quest, sobald ein anderer fehlschlägt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnQuestInterrupted">Trigger_OnQuestInterrupted (_QuestName, _Time)</a></td>
+	<td class="summary">Startet den Quest, sobald ein anderer unterbrochen wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnQuestNotTriggered">Trigger_OnQuestNotTriggered (_QuestName, _Time)</a></td>
+	<td class="summary">Startet einen Quest, wenn ein anderer noch nicht ausgelöst wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnQuestOver">Trigger_OnQuestOver (_QuestName, _Time)</a></td>
+	<td class="summary">Startet den Quest, sobald ein anderer bendet wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnQuestSuccess">Trigger_OnQuestSuccess (_QuestName, _Time)</a></td>
+	<td class="summary">Startet den Quest, sobald ein anderer Quest erfolgreich abgeschlossen wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnResourceDepleted">Trigger_OnResourceDepleted (_ScriptName)</a></td>
+	<td class="summary">Startet den Quest, wenn die angegebene Mine erschöpft ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_OnWaterFreezes">Trigger_OnWaterFreezes ()</a></td>
+	<td class="summary">Startet den Quest sobald das Wasser gefriert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_PlayerDiscovered">Trigger_PlayerDiscovered (_PlayerID)</a></td>
+	<td class="summary">Starte den Quest, wenn ein anderer Spieler entdeckt wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_Time">Trigger_Time (_Time)</a></td>
+	<td class="summary">Startet den Quest sobald der Timer abgelaufen ist.</td>
 	</tr>
 </table>
 
@@ -1943,948 +1944,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Reprisal"></a>Reprisal</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "Reprisal_CustomVariables"></a>
-    <strong>Reprisal_CustomVariables (_Name, _Operator, _Value)</strong>
-    </dt>
-    <dd>
-    Ändert den Wert einer benutzerdefinierten Variable.
-<p> Benutzerdefinierte Variablen können ausschließlich Zahlen sein.
-<p> <p>Operatoren</p>
- <ul>
- <li>= - Variablenwert wird auf den Wert gesetzt</li>
- <li>- - Variablenwert mit Wert Subtrahieren</li>
- <li>+ - Variablenwert mit Wert addieren</li>
- <li>* - Variablenwert mit Wert multiplizieren</li>
- <li>/ - Variablenwert mit Wert dividieren</li>
- <li>^ - Variablenwert mit Wert potenzieren</li>
- </ul>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Name</span>
-             Name der Variable
-        </li>
-        <li><span class="parameter">_Operator</span>
-         Rechen- oder Zuweisungsoperator
-        </li>
-        <li><span class="parameter">_Value</span>
-            Wert oder andere Custom Variable
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_Defeat"></a>
-    <strong>Reprisal_Defeat ()</strong>
-    </dt>
-    <dd>
-    Der Spieler verliert das Spiel.
-<p>
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_DestroyEffect"></a>
-    <strong>Reprisal_DestroyEffect (_EffectName)</strong>
-    </dt>
-    <dd>
-    Zerstört einen über die QSB erzeugten Effekt.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_EffectName</span>
-         Name des Effekts
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_DestroyEntity"></a>
-    <strong>Reprisal_DestroyEntity (_ScriptName)</strong>
-    </dt>
-    <dd>
-    Ein benanntes Entity wird zerstört.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-         Skriptname des Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_Diplomacy"></a>
-    <strong>Reprisal_Diplomacy (_Party1, _Party2, _State)</strong>
-    </dt>
-    <dd>
-    Änder den Diplomatiestatus zwischen zwei Spielern.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Party1</span>
-           ID der ersten Partei
-        </li>
-        <li><span class="parameter">_Party2</span>
-           ID der zweiten Partei
-        </li>
-        <li><span class="parameter">_State</span>
-            Neuer Diplomatiestatus
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_DiplomacyDecrease"></a>
-    <strong>Reprisal_DiplomacyDecrease ()</strong>
-    </dt>
-    <dd>
-    Der diplomatische Status zwischen Sender und Empfänger verschlechtert sich
- um eine Stufe.
-<p>
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_FakeDefeat"></a>
-    <strong>Reprisal_FakeDefeat ()</strong>
-    </dt>
-    <dd>
-    Zeigt die Niederlagedekoration am Quest an.
-<p> Es handelt sich dabei um reine Optik! Der Spieler wird nicht verlieren.
-<p>
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_MapScriptFunction"></a>
-    <strong>Reprisal_MapScriptFunction (_Function)</strong>
-    </dt>
-    <dd>
-    Führt eine Funktion im Skript als Reprisal aus.
-<p> Wird ein Funktionsname als String übergeben, wird die Funktion mit den
- Daten des Behavors und des zugehörigen Quest aufgerufen (Standard).
-<p> Wird eine Funktionsreferenz angegeben, wird die Funktion zusammen mit allen
- optionalen Parametern aufgerufen, als sei es ein gewöhnlicher Aufruf im
- Skript.
- <pre>Reprisal_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
- -- entspricht: ReplaceEntity("block", Entities.XD_ScriptEntity);</pre>
- <b>Achtung:</b> Nicht über den Assistenten verfügbar!
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Function</span>
-         Name der Funktion oder Funktionsreferenz
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_ObjectActivate"></a>
-    <strong>Reprisal_ObjectActivate (_ScriptName, _State)</strong>
-    </dt>
-    <dd>
-    Aktiviert ein interaktives Objekt.
-<p> Der Status bestimmt, wie das objekt aktiviert wird.
- <ul>
- <li>0: Kann nur mit Helden aktiviert werden</li>
- <li>1: Kann immer aktiviert werden</li>
- </ul>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-         Skriptname des interaktiven Objektes
-        </li>
-        <li><span class="parameter">_State</span>
-         Status des Objektes
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_ObjectDeactivate"></a>
-    <strong>Reprisal_ObjectDeactivate (_ScriptName)</strong>
-    </dt>
-    <dd>
-    Deaktiviert ein interaktives Objekt
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-         Skriptname des interaktiven Objektes
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_QuestActivate"></a>
-    <strong>Reprisal_QuestActivate (_QuestName)</strong>
-    </dt>
-    <dd>
-    Triggert einen Quest.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_QuestFailure"></a>
-    <strong>Reprisal_QuestFailure (_QuestName)</strong>
-    </dt>
-    <dd>
-    Lässt einen Quest fehlschlagen.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_QuestForceInterrupt"></a>
-    <strong>Reprisal_QuestForceInterrupt (_QuestName, _EndetQuests)</strong>
-    </dt>
-    <dd>
-    Unterbricht einen Quest, selbst wenn dieser noch nicht ausgelöst wurde.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-           Name des Quest
-        </li>
-        <li><span class="parameter">_EndetQuests</span>
-         Bereits beendete unterbrechen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_QuestInterrupt"></a>
-    <strong>Reprisal_QuestInterrupt (_QuestName)</strong>
-    </dt>
-    <dd>
-    Unterbricht einen Quest.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_QuestRestart"></a>
-    <strong>Reprisal_QuestRestart (_QuestName)</strong>
-    </dt>
-    <dd>
-    Startet einen Quest neu.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_QuestSuccess"></a>
-    <strong>Reprisal_QuestSuccess (_QuestName)</strong>
-    </dt>
-    <dd>
-    Wertet einen Quest als erfolgreich.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_ReplaceEntity"></a>
-    <strong>Reprisal_ReplaceEntity (_Entity, _Type, _Owner)</strong>
-    </dt>
-    <dd>
-    Ein Entity wird durch ein neues anderen Typs ersetzt.
-<p> Das neue Entity übernimmt Skriptname und Ausrichtung des alten Entity.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-         Skriptname oder ID des Entity
-        </li>
-        <li><span class="parameter">_Type</span>
-           Neuer Typ des Entity
-        </li>
-        <li><span class="parameter">_Owner</span>
-          Besitzer des Entity
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Reprisal_Technology"></a>
-    <strong>Reprisal_Technology (_PlayerID, _Lock, _Technology)</strong>
-    </dt>
-    <dd>
-    Erlaubt oder verbietet einem Spieler eine Technologie.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-           ID des Spielers
-        </li>
-        <li><span class="parameter">_Lock</span>
-               Sperren/Entsperren
-        </li>
-        <li><span class="parameter">_Technology</span>
-         Name der Technologie
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Trigger"></a>Trigger</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "Trigger_AlwaysActive"></a>
-    <strong>Trigger_AlwaysActive ()</strong>
-    </dt>
-    <dd>
-    Startet den Quest sofort.
-<p>
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_CustomVariables"></a>
-    <strong>Trigger_CustomVariables (_Name, _Relation, _Value)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, wenn eine benutzerdefinierte Variable einen bestimmten
- Wert angenommen hat.
-<p> Benutzerdefinierte Variablen müssen Zahlen sein.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Name</span>
-             Name der Variable
-        </li>
-        <li><span class="parameter">_Relation</span>
-         Vergleichsoperator
-        </li>
-        <li><span class="parameter">_Value</span>
-            Wert oder Custom Variable
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_MapScriptFunction"></a>
-    <strong>Trigger_MapScriptFunction (_FunctionName)</strong>
-    </dt>
-    <dd>
-    Führt eine Funktion im Skript als Trigger aus.
-<p> Die Funktion muss entweder true or false zurückgeben.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_FunctionName</span>
-         Name der Funktion
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_NeverTriggered"></a>
-    <strong>Trigger_NeverTriggered ()</strong>
-    </dt>
-    <dd>
-    Startet den Quest niemals.
-<p> Quests, für die dieser Trigger gesetzt ist, müssen durch einen anderen
- Quest über Reward_QuestActive oder Reprisal_QuestActive gestartet werden.
-<p>
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnAmountOfGoods"></a>
-    <strong>Trigger_OnAmountOfGoods (_PlayerID, _Type, _Amount)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald der angegebene Spieler eine Menge an Rohstoffen
- im Lagerhaus hat.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         ID des Spielers
-        </li>
-        <li><span class="parameter">_Type</span>
-             Typ des Rohstoffes
-        </li>
-        <li><span class="parameter">_Amount</span>
-            Menge an Rohstoffen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnAtLeastOneQuestFailure"></a>
-    <strong>Trigger_OnAtLeastOneQuestFailure (_QuestName1, _QuestName2)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald wenigstens einer von zwei Quests fehlschlägt.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName1</span>
-         Name des ersten Quest
-        </li>
-        <li><span class="parameter">_QuestName2</span>
-         Name des zweiten Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnAtLeastOneQuestSuccess"></a>
-    <strong>Trigger_OnAtLeastOneQuestSuccess (_QuestName1, _QuestName2)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald wenigstens einer von zwei Quests erfolgreich ist.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName1</span>
-         Name des ersten Quest
-        </li>
-        <li><span class="parameter">_QuestName2</span>
-         Name des zweiten Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnAtLeastXOfYQuestsSuccess"></a>
-    <strong>Trigger_OnAtLeastXOfYQuestsSuccess (_MinAmount, _QuestAmount, _Quest1, _Quest2, _Quest3, _Quest4, _Quest5)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald mindestens X von Y Quests erfolgreich sind.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_MinAmount</span>
-           Mindestens zu erfüllen (max. 5)
-        </li>
-        <li><span class="parameter">_QuestAmount</span>
-         Anzahl geprüfter Quests (max. 5 und >= _MinAmount)
-        </li>
-        <li><span class="parameter">_Quest1</span>
-              Name des 1. Quest
-        </li>
-        <li><span class="parameter">_Quest2</span>
-              Name des 2. Quest
-        </li>
-        <li><span class="parameter">_Quest3</span>
-              Name des 3. Quest
-        </li>
-        <li><span class="parameter">_Quest4</span>
-              Name des 4. Quest
-        </li>
-        <li><span class="parameter">_Quest5</span>
-              Name des 5. Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnDiplomacy"></a>
-    <strong>Trigger_OnDiplomacy (_PlayerID, _State)</strong>
-    </dt>
-    <dd>
-    Starte den Quest, wenn zwischen dem Empfänger und der angegebenen Partei
- der geforderte Diplomatiestatus herrscht.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         ID der Partei
-        </li>
-        <li><span class="parameter">_State</span>
-            Diplomatie-Status
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnEffectDestroyed"></a>
-    <strong>Trigger_OnEffectDestroyed (_EffectName)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_EffectName</span>
-         Name des Effekt
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnMonsoon"></a>
-    <strong>Trigger_OnMonsoon ()</strong>
-    </dt>
-    <dd>
-    Startet den Quest sobald der Monsunregen einsetzt.
-<p> <b>Achtung:</b> Dieses Behavior ist nur für Reich des Ostens verfügbar.
-<p>
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnMonth"></a>
-    <strong>Trigger_OnMonth (_Month)</strong>
-    </dt>
-    <dd>
-    Startet den Quest im angegebenen Monat.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Month</span>
-         Monat
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnNeedUnsatisfied"></a>
-    <strong>Trigger_OnNeedUnsatisfied (_PlayerID, _Need, _Amount)</strong>
-    </dt>
-    <dd>
-    Starte den Quest, sobald ein Bedürfnis nicht erfüllt wird.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         ID des Spielers
-        </li>
-        <li><span class="parameter">_Need</span>
-             Bedürfnis
-        </li>
-        <li><span class="parameter">_Amount</span>
-           Menge an skreikenden Siedlern
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnQuestActive"></a>
-    <strong>Trigger_OnQuestActive (_QuestName, _Time)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald ein anderer aktiv ist.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-        <li><span class="parameter">_Time</span>
-              Wartezeit
- return Table mit Behavior
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnQuestFailure"></a>
-    <strong>Trigger_OnQuestFailure (_QuestName, _Time)</strong>
-    </dt>
-    <dd>
-    Startet einen Quest, sobald ein anderer fehlschlägt.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-        <li><span class="parameter">_Time</span>
-              Wartezeit
- return Table mit Behavior
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnQuestInterrupted"></a>
-    <strong>Trigger_OnQuestInterrupted (_QuestName, _Time)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald ein anderer unterbrochen wurde.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-        <li><span class="parameter">_Time</span>
-              Wartezeit
- return Table mit Behavior
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnQuestNotTriggered"></a>
-    <strong>Trigger_OnQuestNotTriggered (_QuestName, _Time)</strong>
-    </dt>
-    <dd>
-    Startet einen Quest, wenn ein anderer noch nicht ausgelöst wurde.
-<p> Der Trigger löst auch aus, wenn der Quest bereits beendet wurde, da er
- dazu vorher ausgelöst wurden sein muss.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-        <li><span class="parameter">_Time</span>
-              Wartezeit
- return Table mit Behavior
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnQuestOver"></a>
-    <strong>Trigger_OnQuestOver (_QuestName, _Time)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald ein anderer bendet wurde.
-<p> Dabei ist das Resultat egal. Der Quest kann entweder erfolgreich beendet
- wurden oder fehlgeschlagen sein.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-        <li><span class="parameter">_Time</span>
-              Wartezeit
- return Table mit Behavior
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnQuestSuccess"></a>
-    <strong>Trigger_OnQuestSuccess (_QuestName, _Time)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald ein anderer Quest erfolgreich abgeschlossen wurde.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-        <li><span class="parameter">_Time</span>
-              Wartezeit
- return Table mit Behavior
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnResourceDepleted"></a>
-    <strong>Trigger_OnResourceDepleted (_ScriptName)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, wenn die angegebene Mine erschöpft ist.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-         Skriptname der Mine
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_OnWaterFreezes"></a>
-    <strong>Trigger_OnWaterFreezes ()</strong>
-    </dt>
-    <dd>
-    Startet den Quest sobald das Wasser gefriert.
-<p>
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_PlayerDiscovered"></a>
-    <strong>Trigger_PlayerDiscovered (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Starte den Quest, wenn ein anderer Spieler entdeckt wurde.
-<p> Ein Spieler ist dann entdeckt, wenn sein Heimatterritorium aufgedeckt wird.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-         Zu entdeckender Spieler
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Trigger_Time"></a>
-    <strong>Trigger_Time (_Time)</strong>
-    </dt>
-    <dd>
-    Startet den Quest sobald der Timer abgelaufen ist.
-<p> Der Timer zählt immer vom Start der Map an.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Time</span>
-         Zeit bis zum Start
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Goal"></a>Goal</h2>
 
     <dl class="function">
@@ -4038,13 +3097,955 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Reprisal"></a>Reprisal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Reprisal_CustomVariables"></a>
+    <strong>Reprisal_CustomVariables (_Name, _Operator, _Value)</strong>
+    </dt>
+    <dd>
+    Ändert den Wert einer benutzerdefinierten Variable.
+<p> Benutzerdefinierte Variablen können ausschließlich Zahlen sein.
+<p> <p>Operatoren</p>
+ <ul>
+ <li>= - Variablenwert wird auf den Wert gesetzt</li>
+ <li>- - Variablenwert mit Wert Subtrahieren</li>
+ <li>+ - Variablenwert mit Wert addieren</li>
+ <li>* - Variablenwert mit Wert multiplizieren</li>
+ <li>/ - Variablenwert mit Wert dividieren</li>
+ <li>^ - Variablenwert mit Wert potenzieren</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+             Name der Variable
+        </li>
+        <li><span class="parameter">_Operator</span>
+         Rechen- oder Zuweisungsoperator
+        </li>
+        <li><span class="parameter">_Value</span>
+            Wert oder andere Custom Variable
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_Defeat"></a>
+    <strong>Reprisal_Defeat ()</strong>
+    </dt>
+    <dd>
+    Der Spieler verliert das Spiel.
+<p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_DestroyEffect"></a>
+    <strong>Reprisal_DestroyEffect (_EffectName)</strong>
+    </dt>
+    <dd>
+    Zerstört einen über die QSB erzeugten Effekt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EffectName</span>
+         Name des Effekts
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_DestroyEntity"></a>
+    <strong>Reprisal_DestroyEntity (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Ein benanntes Entity wird zerstört.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_Diplomacy"></a>
+    <strong>Reprisal_Diplomacy (_Party1, _Party2, _State)</strong>
+    </dt>
+    <dd>
+    Änder den Diplomatiestatus zwischen zwei Spielern.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Party1</span>
+           ID der ersten Partei
+        </li>
+        <li><span class="parameter">_Party2</span>
+           ID der zweiten Partei
+        </li>
+        <li><span class="parameter">_State</span>
+            Neuer Diplomatiestatus
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_DiplomacyDecrease"></a>
+    <strong>Reprisal_DiplomacyDecrease ()</strong>
+    </dt>
+    <dd>
+    Der diplomatische Status zwischen Sender und Empfänger verschlechtert sich
+ um eine Stufe.
+<p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_FakeDefeat"></a>
+    <strong>Reprisal_FakeDefeat ()</strong>
+    </dt>
+    <dd>
+    Zeigt die Niederlagedekoration am Quest an.
+<p> Es handelt sich dabei um reine Optik! Der Spieler wird nicht verlieren.
+<p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_MapScriptFunction"></a>
+    <strong>Reprisal_MapScriptFunction (_Function)</strong>
+    </dt>
+    <dd>
+    Führt eine Funktion im Skript als Reprisal aus.
+<p> Wird ein Funktionsname als String übergeben, wird die Funktion mit den
+ Daten des Behavors und des zugehörigen Quest aufgerufen (Standard).
+<p> Wird eine Funktionsreferenz angegeben, wird die Funktion zusammen mit allen
+ optionalen Parametern aufgerufen, als sei es ein gewöhnlicher Aufruf im
+ Skript.
+ <pre>Reprisal_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
+ -- entspricht: ReplaceEntity("block", Entities.XD_ScriptEntity);</pre>
+ <b>Achtung:</b> Nicht über den Assistenten verfügbar!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+         Name der Funktion oder Funktionsreferenz
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_ObjectActivate"></a>
+    <strong>Reprisal_ObjectActivate (_ScriptName, _State)</strong>
+    </dt>
+    <dd>
+    Aktiviert ein interaktives Objekt.
+<p> Der Status bestimmt, wie das objekt aktiviert wird.
+ <ul>
+ <li>0: Kann nur mit Helden aktiviert werden</li>
+ <li>1: Kann immer aktiviert werden</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des interaktiven Objektes
+        </li>
+        <li><span class="parameter">_State</span>
+         Status des Objektes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_ObjectDeactivate"></a>
+    <strong>Reprisal_ObjectDeactivate (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Deaktiviert ein interaktives Objekt
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des interaktiven Objektes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_QuestActivate"></a>
+    <strong>Reprisal_QuestActivate (_QuestName)</strong>
+    </dt>
+    <dd>
+    Triggert einen Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_QuestFailure"></a>
+    <strong>Reprisal_QuestFailure (_QuestName)</strong>
+    </dt>
+    <dd>
+    Lässt einen Quest fehlschlagen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_QuestForceInterrupt"></a>
+    <strong>Reprisal_QuestForceInterrupt (_QuestName, _EndetQuests)</strong>
+    </dt>
+    <dd>
+    Unterbricht einen Quest, selbst wenn dieser noch nicht ausgelöst wurde.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+           Name des Quest
+        </li>
+        <li><span class="parameter">_EndetQuests</span>
+         Bereits beendete unterbrechen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_QuestInterrupt"></a>
+    <strong>Reprisal_QuestInterrupt (_QuestName)</strong>
+    </dt>
+    <dd>
+    Unterbricht einen Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_QuestRestart"></a>
+    <strong>Reprisal_QuestRestart (_QuestName)</strong>
+    </dt>
+    <dd>
+    Startet einen Quest neu.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_QuestSuccess"></a>
+    <strong>Reprisal_QuestSuccess (_QuestName)</strong>
+    </dt>
+    <dd>
+    Wertet einen Quest als erfolgreich.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_ReplaceEntity"></a>
+    <strong>Reprisal_ReplaceEntity (_Entity, _Type, _Owner)</strong>
+    </dt>
+    <dd>
+    Ein Entity wird durch ein neues anderen Typs ersetzt.
+<p> Das neue Entity übernimmt Skriptname und Ausrichtung des alten Entity.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+         Skriptname oder ID des Entity
+        </li>
+        <li><span class="parameter">_Type</span>
+           Neuer Typ des Entity
+        </li>
+        <li><span class="parameter">_Owner</span>
+          Besitzer des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Reprisal_Technology"></a>
+    <strong>Reprisal_Technology (_PlayerID, _Lock, _Technology)</strong>
+    </dt>
+    <dd>
+    Erlaubt oder verbietet einem Spieler eine Technologie.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+           ID des Spielers
+        </li>
+        <li><span class="parameter">_Lock</span>
+               Sperren/Entsperren
+        </li>
+        <li><span class="parameter">_Technology</span>
+         Name der Technologie
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Trigger"></a>Trigger</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Trigger_AlwaysActive"></a>
+    <strong>Trigger_AlwaysActive ()</strong>
+    </dt>
+    <dd>
+    Startet den Quest sofort.
+<p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_CustomVariables"></a>
+    <strong>Trigger_CustomVariables (_Name, _Relation, _Value)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, wenn eine benutzerdefinierte Variable einen bestimmten
+ Wert angenommen hat.
+<p> Benutzerdefinierte Variablen müssen Zahlen sein.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+             Name der Variable
+        </li>
+        <li><span class="parameter">_Relation</span>
+         Vergleichsoperator
+        </li>
+        <li><span class="parameter">_Value</span>
+            Wert oder Custom Variable
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_MapScriptFunction"></a>
+    <strong>Trigger_MapScriptFunction (_FunctionName)</strong>
+    </dt>
+    <dd>
+    Führt eine Funktion im Skript als Trigger aus.
+<p> Die Funktion muss entweder true or false zurückgeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_FunctionName</span>
+         Name der Funktion
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_NeverTriggered"></a>
+    <strong>Trigger_NeverTriggered ()</strong>
+    </dt>
+    <dd>
+    Startet den Quest niemals.
+<p> Quests, für die dieser Trigger gesetzt ist, müssen durch einen anderen
+ Quest über Reward_QuestActive oder Reprisal_QuestActive gestartet werden.
+<p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnAmountOfGoods"></a>
+    <strong>Trigger_OnAmountOfGoods (_PlayerID, _Type, _Amount)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald der angegebene Spieler eine Menge an Rohstoffen
+ im Lagerhaus hat.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Type</span>
+             Typ des Rohstoffes
+        </li>
+        <li><span class="parameter">_Amount</span>
+            Menge an Rohstoffen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnAtLeastOneQuestFailure"></a>
+    <strong>Trigger_OnAtLeastOneQuestFailure (_QuestName1, _QuestName2)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald wenigstens einer von zwei Quests fehlschlägt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName1</span>
+         Name des ersten Quest
+        </li>
+        <li><span class="parameter">_QuestName2</span>
+         Name des zweiten Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnAtLeastOneQuestSuccess"></a>
+    <strong>Trigger_OnAtLeastOneQuestSuccess (_QuestName1, _QuestName2)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald wenigstens einer von zwei Quests erfolgreich ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName1</span>
+         Name des ersten Quest
+        </li>
+        <li><span class="parameter">_QuestName2</span>
+         Name des zweiten Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnAtLeastXOfYQuestsSuccess"></a>
+    <strong>Trigger_OnAtLeastXOfYQuestsSuccess (_MinAmount, _QuestAmount, _Quest1, _Quest2, _Quest3, _Quest4, _Quest5)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald mindestens X von Y Quests erfolgreich sind.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_MinAmount</span>
+           Mindestens zu erfüllen (max. 5)
+        </li>
+        <li><span class="parameter">_QuestAmount</span>
+         Anzahl geprüfter Quests (max. 5 und >= _MinAmount)
+        </li>
+        <li><span class="parameter">_Quest1</span>
+              Name des 1. Quest
+        </li>
+        <li><span class="parameter">_Quest2</span>
+              Name des 2. Quest
+        </li>
+        <li><span class="parameter">_Quest3</span>
+              Name des 3. Quest
+        </li>
+        <li><span class="parameter">_Quest4</span>
+              Name des 4. Quest
+        </li>
+        <li><span class="parameter">_Quest5</span>
+              Name des 5. Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnDiplomacy"></a>
+    <strong>Trigger_OnDiplomacy (_PlayerID, _State)</strong>
+    </dt>
+    <dd>
+    Starte den Quest, wenn zwischen dem Empfänger und der angegebenen Partei
+ der geforderte Diplomatiestatus herrscht.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         ID der Partei
+        </li>
+        <li><span class="parameter">_State</span>
+            Diplomatie-Status
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnEffectDestroyed"></a>
+    <strong>Trigger_OnEffectDestroyed (_EffectName)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EffectName</span>
+         Name des Effekt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnMonsoon"></a>
+    <strong>Trigger_OnMonsoon ()</strong>
+    </dt>
+    <dd>
+    Startet den Quest sobald der Monsunregen einsetzt.
+<p> <b>Achtung:</b> Dieses Behavior ist nur für Reich des Ostens verfügbar.
+<p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnMonth"></a>
+    <strong>Trigger_OnMonth (_Month)</strong>
+    </dt>
+    <dd>
+    Startet den Quest im angegebenen Monat.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Month</span>
+         Monat
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnNeedUnsatisfied"></a>
+    <strong>Trigger_OnNeedUnsatisfied (_PlayerID, _Need, _Amount)</strong>
+    </dt>
+    <dd>
+    Starte den Quest, sobald ein Bedürfnis nicht erfüllt wird.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Need</span>
+             Bedürfnis
+        </li>
+        <li><span class="parameter">_Amount</span>
+           Menge an skreikenden Siedlern
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnQuestActive"></a>
+    <strong>Trigger_OnQuestActive (_QuestName, _Time)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald ein anderer aktiv ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Time</span>
+              Wartezeit
+ return Table mit Behavior
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnQuestFailure"></a>
+    <strong>Trigger_OnQuestFailure (_QuestName, _Time)</strong>
+    </dt>
+    <dd>
+    Startet einen Quest, sobald ein anderer fehlschlägt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Time</span>
+              Wartezeit
+ return Table mit Behavior
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnQuestInterrupted"></a>
+    <strong>Trigger_OnQuestInterrupted (_QuestName, _Time)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald ein anderer unterbrochen wurde.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Time</span>
+              Wartezeit
+ return Table mit Behavior
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnQuestNotTriggered"></a>
+    <strong>Trigger_OnQuestNotTriggered (_QuestName, _Time)</strong>
+    </dt>
+    <dd>
+    Startet einen Quest, wenn ein anderer noch nicht ausgelöst wurde.
+<p> Der Trigger löst auch aus, wenn der Quest bereits beendet wurde, da er
+ dazu vorher ausgelöst wurden sein muss.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Time</span>
+              Wartezeit
+ return Table mit Behavior
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnQuestOver"></a>
+    <strong>Trigger_OnQuestOver (_QuestName, _Time)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald ein anderer bendet wurde.
+<p> Dabei ist das Resultat egal. Der Quest kann entweder erfolgreich beendet
+ wurden oder fehlgeschlagen sein.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Time</span>
+              Wartezeit
+ return Table mit Behavior
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnQuestSuccess"></a>
+    <strong>Trigger_OnQuestSuccess (_QuestName, _Time)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, sobald ein anderer Quest erfolgreich abgeschlossen wurde.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Time</span>
+              Wartezeit
+ return Table mit Behavior
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnResourceDepleted"></a>
+    <strong>Trigger_OnResourceDepleted (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Startet den Quest, wenn die angegebene Mine erschöpft ist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname der Mine
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_OnWaterFreezes"></a>
+    <strong>Trigger_OnWaterFreezes ()</strong>
+    </dt>
+    <dd>
+    Startet den Quest sobald das Wasser gefriert.
+<p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_PlayerDiscovered"></a>
+    <strong>Trigger_PlayerDiscovered (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Starte den Quest, wenn ein anderer Spieler entdeckt wurde.
+<p> Ein Spieler ist dann entdeckt, wenn sein Heimatterritorium aufgedeckt wird.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Zu entdeckender Spieler
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Trigger_Time"></a>
+    <strong>Trigger_Time (_Time)</strong>
+    </dt>
+    <dd>
+    Startet den Quest sobald der Timer abgelaufen ist.
+<p> Der Timer zählt immer vom Start der Map an.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Time</span>
+         Zeit bis zum Start
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-09 16:14:06 </i>
+<i style="float:right;">Last updated 2019-02-13 21:49:32 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
