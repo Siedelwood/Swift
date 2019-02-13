@@ -98,9 +98,9 @@ function AddOnRandomRequests.Global:CreateSlaveQuest(_Behavior, _Quest)
         self.Data.RandomQuestNameCounter = self.Data.RandomQuestNameCounter +1;
         local QuestName = API.CreateQuest {
             Name        = "RandomRequest_Player" .._Quest.SendingPlayer.. "_" ..self.Data.RandomQuestNameCounter;
-            Suggestion  = _Quest.QuestStartMsg or self.Data.Text.Suggestion[math.random(1, 3)],
-            Success     = _Quest.QuestSuccessMsg or self.Data.Text.Success[math.random(1, 3)],
-            Failure     = _Quest.QuestFailureMsg or self.Data.Text.Failure[math.random(1, 3)],
+            Suggestion  = _Behavior.OptionalSuggestion or self.Data.Text.Suggestion[math.random(1, 3)],
+            Success     = _Behavior.OptionalSuccess or self.Data.Text.Success[math.random(1, 3)],
+            Failure     = _Behavior.OptionalFailure or self.Data.Text.Failure[math.random(1, 3)],
             Receiver    = _Quest.ReceivingPlayer,
             Sender      = _Quest.SendingPlayer,
             Time        = _Behavior.TimeLimit,
@@ -281,6 +281,9 @@ end
 -- @param[type=boolean] _KnightTitle    Ziel: Nächst höherer Titel
 -- @param[type=boolean] _CityReputation Ziel: Ruf der Stadt
 -- @param[type=number]  _Time           Zeit bis zur Niederlage (0 = aus)
+-- @param[type=string]  _Suggestion     (optional) Startnachricht
+-- @param[type=string]  _Success        (optional) Erfolgsnachricht
+-- @param[type=string]  _Failure        (optional) Fehlschlagnachricht
 --
 -- @within Goal
 --
@@ -295,13 +298,16 @@ b_Goal_RandomRequest = {
         de = "Ziel: The player receives an randomly generated quest that he needs to complete. Define which types of quest possibly appear by setting the parameters. Tip: Use this quest as invisible quest!",
     },
     Parameter = {
-        { ParameterType.Custom, en = "Deliver goods",        de = "Waren liefern" },
-        { ParameterType.Custom, en = "Pay tribute",          de = "Tribut entrichten" },
-        { ParameterType.Custom, en = "Claim territory",      de = "Territorium beanspruchen" },
-        { ParameterType.Custom, en = "Knight title",         de = "Titel erreichen" },
-        { ParameterType.Custom, en = "City reputation",      de = "Ruf der Stadt" },
-        { ParameterType.Custom, en = "Build rampart",        de = "Festung bauen" },
-        { ParameterType.Number, en = "Time limit (0 = off)", de = "Leitlimit (0 = aus)" },
+        { ParameterType.Custom,  en = "Deliver goods",           de = "Waren liefern" },
+        { ParameterType.Custom,  en = "Pay tribute",             de = "Tribut entrichten" },
+        { ParameterType.Custom,  en = "Claim territory",         de = "Territorium beanspruchen" },
+        { ParameterType.Custom,  en = "Knight title",            de = "Titel erreichen" },
+        { ParameterType.Custom,  en = "City reputation",         de = "Ruf der Stadt" },
+        { ParameterType.Custom,  en = "Build rampart",           de = "Festung bauen" },
+        { ParameterType.Number,  en = "Time limit (0 = off)",    de = "Leitlimit (0 = aus)" },
+        { ParameterType.Default, en = "(optional) Mission text", de = "(optional) Auftragsnachricht" },
+        { ParameterType.Default, en = "(optional) Success text", de = "(optional) Erfolgsnachricht" },
+        { ParameterType.Default, en = "(optional) Failure text", de = "(optional) Fehlschlagsnachricht" },
     },
 }
 
@@ -318,12 +324,24 @@ function b_Goal_RandomRequest:AddParameter(_Index, _Parameter)
         self.TypeClaim = API.ToBoolean(_Parameter);
     elseif (_Index == 3) then
         self.TypeKnightTitle = API.ToBoolean(_Parameter);
-    elseif (_Index == 3) then
+    elseif (_Index == 4) then
         self.TypeReputation = API.ToBoolean(_Parameter);
-    elseif (_Index == 3) then
+    elseif (_Index == 5) then
         self.TypeBuildWall = API.ToBoolean(_Parameter);
     elseif (_Index == 6) then
         self.TimeLimit = _Parameter * 1;
+    elseif (_Index == 7) then
+        if _Parameter and _Parameter ~= "" then
+            self.OptionalSuggestion = _Parameter;
+        end
+    elseif (_Index == 8) then
+        if _Parameter and _Parameter ~= "" then
+            self.OptionalSuccess = _Parameter;
+        end
+    elseif (_Index == 9) then
+        if _Parameter and _Parameter ~= "" then
+            self.OptionalFailure = _Parameter;
+        end
     end
 end
 
@@ -355,6 +373,10 @@ function b_Goal_RandomRequest:Interrupt(_Quest)
 end
 
 function b_Goal_RandomRequest:Debug(_Quest)
+    if (type(self.TimeLimit) ~= "number" or self.TimeLimit < 0) then 
+        API.Fatal(_Quest.Identifier.. ": " ..self.Name.. ": Time limit must be a number and at least 0!");
+        return true;
+    end
     return false;
 end
 
