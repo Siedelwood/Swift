@@ -809,7 +809,7 @@ end
 function AddOnCastleStore.Global.CastleStore.UpdateStores()
     assert(self == nil, "This method is only procedural!");
     for k, v in pairs(AddOnCastleStore.Global.Data.CastleStoreObjects) do
-        if v ~= nil then
+        if v ~= nil and Logic.GetStoreHouse(k) ~= 0 then
             local Level = Logic.GetUpgradeLevel(Logic.GetHeadquarters(v.Data.PlayerID));
             for kk, vv in pairs(v.Data.Goods) do
                 if vv ~= nil then

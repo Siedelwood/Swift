@@ -888,22 +888,20 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
 
             SetIcon(CurrentWidgetID, {3,16})
 
-            if _Technology == Technologies.R_Catapult then
-                if BundleBuildingButtons.Local.Data.BreedCattle then
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
+            if _Technology == Technologies.R_Catapult and BundleBuildingButtons.Local.Data.BreedCattle then
+                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
+                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
 
-                    if curAnimal >= maxAnimal then
-                        XGUIEng.DisableButton(CurrentWidgetID, 1);
-                    elseif grain < BundleBuildingButtons.Local.Data.CattleCosts then
-                        XGUIEng.DisableButton(CurrentWidgetID, 1);
-                    elseif KnightTitle < BundleBuildingButtons.Local.Data.CattleKnightTitle then
-                        XGUIEng.DisableButton(CurrentWidgetID, 1);
-                    elseif cows[1] < BundleBuildingButtons.Local.Data.CattleNeeded then
-                        XGUIEng.DisableButton(CurrentWidgetID, 1);
-                    else
-                        XGUIEng.DisableButton(CurrentWidgetID, 0);
-                    end
+                if curAnimal >= maxAnimal then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                elseif grain < BundleBuildingButtons.Local.Data.CattleCosts then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                elseif KnightTitle < BundleBuildingButtons.Local.Data.CattleKnightTitle then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                elseif cows[1] < BundleBuildingButtons.Local.Data.CattleNeeded then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                else
+                    XGUIEng.DisableButton(CurrentWidgetID, 0);
                 end
             else
                 XGUIEng.ShowWidget(CurrentWidgetID,0);
@@ -920,22 +918,20 @@ function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
             sheeps = Array_Append(sheeps,sheeps2)
             SetIcon(CurrentWidgetID, {4,1})
 
-            if _Technology == Technologies.R_Catapult then
-                if BundleBuildingButtons.Local.Data.BreedSheeps then
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
-                    XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
+            if _Technology == Technologies.R_Catapult and BundleBuildingButtons.Local.Data.BreedSheeps then
+                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
+                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
 
-                    if curAnimal >= maxAnimal then
-                        XGUIEng.DisableButton(CurrentWidgetID, 1);
-                    elseif grain < BundleBuildingButtons.Local.Data.SheepCosts then
-                        XGUIEng.DisableButton(CurrentWidgetID, 1);
-                    elseif #sheeps < BundleBuildingButtons.Local.Data.SheepKnightTitle then
-                        XGUIEng.DisableButton(CurrentWidgetID, 1);
-                    elseif #sheeps < BundleBuildingButtons.Local.Data.SheepNeeded then
-                        XGUIEng.DisableButton(CurrentWidgetID, 1);
-                    else
-                        XGUIEng.DisableButton(CurrentWidgetID, 0);
-                    end
+                if curAnimal >= maxAnimal then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                elseif grain < BundleBuildingButtons.Local.Data.SheepCosts then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                elseif #sheeps < BundleBuildingButtons.Local.Data.SheepKnightTitle then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                elseif #sheeps < BundleBuildingButtons.Local.Data.SheepNeeded then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                else
+                    XGUIEng.DisableButton(CurrentWidgetID, 0);
                 end
             else
                 XGUIEng.ShowWidget(CurrentWidgetID,0);

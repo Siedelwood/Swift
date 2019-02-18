@@ -23,7 +23,7 @@
 -- Maximale Spielgeschwindigkeit festlegen
 -- </li>
 -- <li>
--- <a href="#API.ThridPersonActivate">Schulterblick aktivieren</a><br>Die
+-- <a href="#API.ThirdPersonActivate">Schulterblick aktivieren</a><br>Die
 -- Kamera folgt einem Entity in der 3rd-Person-Ansicht.
 -- </li>
 -- </ul>
@@ -198,15 +198,15 @@ AllowExtendedZoom = API.AllowExtendedZoom;
 -- @param[type=number] _MaxZoom Maximaler Zoomfaktor
 -- @within Anwenderfunktionen
 --
-function API.ThridPersonActivate(_Hero, _MaxZoom)
+function API.ThirdPersonActivate(_Hero, _MaxZoom)
     if GUI then
         local Target = (type(_Hero) == "string" and "'".._Hero.."'") or _Hero;
-        API.Bridge("API.ThridPersonActivate(".. Target ..", ".. _MaxZoom ..")");
+        API.Bridge("API.ThirdPersonActivate(".. Target ..", ".. _MaxZoom ..")");
         return;
     end
-    return BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom);
+    return BundleGameHelperFunctions.Global:ThirdPersonActivate(_Hero, _MaxZoom);
 end
-HeroCameraActivate = API.ThridPersonActivate;
+HeroCameraActivate = API.ThirdPersonActivate;
 
 ---
 -- Deaktiviert die Heldenkamera.
@@ -215,14 +215,14 @@ HeroCameraActivate = API.ThridPersonActivate;
 --
 -- @within Anwenderfunktionen
 --
-function API.ThridPersonDeactivate()
+function API.ThirdPersonDeactivate()
     if GUI then
-        API.Bridge("API.ThridPersonDeactivate()");
+        API.Bridge("API.ThirdPersonDeactivate()");
         return;
     end
-    return BundleGameHelperFunctions.Global:ThridPersonDeactivate();
+    return BundleGameHelperFunctions.Global:ThirdPersonDeactivate();
 end
-HeroCameraDeactivate = API.ThridPersonDeactivate;
+HeroCameraDeactivate = API.ThirdPersonDeactivate;
 
 ---
 -- Prüft, ob die Heldenkamera aktiv ist.
@@ -232,14 +232,14 @@ HeroCameraDeactivate = API.ThridPersonDeactivate;
 -- @return[type=boolean] Kamera aktiv
 -- @within Anwenderfunktionen
 --
-function API.ThridPersonIsRuning()
+function API.ThirdPersonIsRuning()
     if not GUI then
-        return BundleGameHelperFunctions.Global:ThridPersonIsRuning();
+        return BundleGameHelperFunctions.Global:ThirdPersonIsRuning();
     else
-        return BundleGameHelperFunctions.Local:ThridPersonIsRuning();
+        return BundleGameHelperFunctions.Local:ThirdPersonIsRuning();
     end
 end
-HeroCameraIsRuning = API.ThridPersonIsRuning;
+HeroCameraIsRuning = API.ThirdPersonIsRuning;
 
 ---
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
@@ -529,15 +529,15 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:ThridPersonActivate(_Hero, _MaxZoom)
+function BundleGameHelperFunctions.Global:ThirdPersonActivate(_Hero, _MaxZoom)
     if BriefingSystem then
-        BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing();
+        BundleGameHelperFunctions.Global:ThirdPersonOverwriteStartAndEndBriefing();
     end
 
     local Hero = GetID(_Hero);
-    BundleGameHelperFunctions.Global.Data.ThridPersonIsActive = true;
+    BundleGameHelperFunctions.Global.Data.ThirdPersonIsActive = true;
     Logic.ExecuteInLuaLocalState([[
-        BundleGameHelperFunctions.Local:ThridPersonActivate(]]..tostring(Hero)..[[, ]].. tostring(_MaxZoom) ..[[);
+        BundleGameHelperFunctions.Local:ThirdPersonActivate(]]..tostring(Hero)..[[, ]].. tostring(_MaxZoom) ..[[);
     ]]);
 end
 
@@ -546,10 +546,10 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:ThridPersonDeactivate()
-    BundleGameHelperFunctions.Global.Data.ThridPersonIsActive = false;
+function BundleGameHelperFunctions.Global:ThirdPersonDeactivate()
+    BundleGameHelperFunctions.Global.Data.ThirdPersonIsActive = false;
     Logic.ExecuteInLuaLocalState([[
-        BundleGameHelperFunctions.Local:ThridPersonDeactivate();
+        BundleGameHelperFunctions.Local:ThirdPersonDeactivate();
     ]]);
 end
 
@@ -560,8 +560,8 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:ThridPersonIsRuning()
-    return self.Data.ThridPersonIsActive;
+function BundleGameHelperFunctions.Global:ThirdPersonIsRuning()
+    return self.Data.ThirdPersonIsActive;
 end
 
 ---
@@ -570,13 +570,13 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefing()
+function BundleGameHelperFunctions.Global:ThirdPersonOverwriteStartAndEndBriefing()
     if BriefingSystem then
         if not BriefingSystem.StartBriefing_Orig_HeroCamera then
             BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
             BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
-                if BundleGameHelperFunctions.Global:ThridPersonIsRuning() then
-                    BundleGameHelperFunctions.Global:ThridPersonDeactivate();
+                if BundleGameHelperFunctions.Global:ThirdPersonIsRuning() then
+                    BundleGameHelperFunctions.Global:ThirdPersonDeactivate();
                     BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode = true;
                 end
                 BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
@@ -588,9 +588,9 @@ function BundleGameHelperFunctions.Global:ThridPersonOverwriteStartAndEndBriefin
             BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
             BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
                 BriefingSystem.EndBriefing_Orig_HeroCamera();
-                if BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode then
-                    BundleGameHelperFunctions.Global:ThridPersonActivate(0);
-                    BundleGameHelperFunctions.Global.Data.ThridPersonStoppedByCode = false;
+                if BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode then
+                    BundleGameHelperFunctions.Global:ThirdPersonActivate(0);
+                    BundleGameHelperFunctions.Global.Data.ThirdPersonStoppedByCode = false;
                 end
             end
         end
@@ -1051,20 +1051,20 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Local:ThridPersonActivate(_Hero, _MaxZoom)
-    _Hero = (_Hero ~= 0 and _Hero) or self.Data.ThridPersonLastHero or Logic.GetKnightID(GUI.GetPlayerID());
-    _MaxZoom = _MaxZoom or self.Data.ThridPersonLastZoom or 0.5;
+function BundleGameHelperFunctions.Local:ThirdPersonActivate(_Hero, _MaxZoom)
+    _Hero = (_Hero ~= 0 and _Hero) or self.Data.ThirdPersonLastHero or Logic.GetKnightID(GUI.GetPlayerID());
+    _MaxZoom = _MaxZoom or self.Data.ThirdPersonLastZoom or 0.5;
     if not _Hero then
         return;
     end
 
     if not GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera then
-        self:ThridPersonOverwriteGetBorderScrollFactor();
+        self:ThirdPersonOverwriteGetBorderScrollFactor();
     end
 
-    self.Data.ThridPersonLastHero = _Hero;
-    self.Data.ThridPersonLastZoom = _MaxZoom;
-    self.Data.ThridPersonIsActive = true;
+    self.Data.ThirdPersonLastHero = _Hero;
+    self.Data.ThirdPersonLastZoom = _MaxZoom;
+    self.Data.ThirdPersonIsActive = true;
 
     local Orientation = Logic.GetEntityOrientation(_Hero);
     Camera.RTS_FollowEntity(_Hero);
@@ -1079,8 +1079,8 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Local:ThridPersonDeactivate()
-    self.Data.ThridPersonIsActive = false;
+function BundleGameHelperFunctions.Local:ThirdPersonDeactivate()
+    self.Data.ThirdPersonIsActive = false;
     Camera.RTS_SetZoomFactorMax(0.5);
     Camera.RTS_SetZoomFactor(0.5);
     Camera.RTS_FollowEntity(0);
@@ -1093,8 +1093,8 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Local:ThridPersonIsRuning()
-    return self.Data.ThridPersonIsActive;
+function BundleGameHelperFunctions.Local:ThirdPersonIsRuning()
+    return self.Data.ThirdPersonIsActive;
 end
 
 ---
@@ -1106,10 +1106,10 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Local:ThridPersonOverwriteGetBorderScrollFactor()
+function BundleGameHelperFunctions.Local:ThirdPersonOverwriteGetBorderScrollFactor()
     GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera = GameCallback_Camera_GetBorderscrollFactor
     GameCallback_Camera_GetBorderscrollFactor = function()
-        if not BundleGameHelperFunctions.Local.Data.ThridPersonIsActive then
+        if not BundleGameHelperFunctions.Local.Data.ThirdPersonIsActive then
             return GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera();
         end
 
