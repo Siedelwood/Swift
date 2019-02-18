@@ -1646,7 +1646,7 @@ b_Goal_SatisfyNeed = {
 }
 
 function b_Goal_SatisfyNeed:GetGoalTable()
-    return { Objective.SatisfyNeed, self.PlayerID, assert( Needs[self.Need] ) }
+    return { Objective.SatisfyNeed, Needs[self.Need], self.PlayerID }
 
 end
 
