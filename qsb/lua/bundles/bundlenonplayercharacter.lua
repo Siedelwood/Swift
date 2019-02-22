@@ -957,6 +957,10 @@ Core:RegisterBundle("BundleNonPlayerCharacter");
 -- Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
 -- aktiviert wurde.
 --
+-- <b>Hinweis</b>: Jeder Siedler kann zu jedem Zeitpunkt nur <u>einen</u> NPC 
+-- haben. Wird ein weiterer NPC zugewiesen, wird der alte überschrieben und
+-- der verknüpfte Quest funktioniert nicht mehr!
+--
 -- @param[type=string] _NpcName  Skriptname des NPC
 -- @param[type=string] _HeroName (optional) Skriptname des Helden
 -- @within Goal
