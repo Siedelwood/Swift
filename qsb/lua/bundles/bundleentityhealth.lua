@@ -570,7 +570,7 @@ function b_Reprisal_SetHealth:AddParameter( _Index, _Parameter )
     if (_Index == 0) then
         self.Entity = _Parameter;
     elseif (_Index == 1) then
-        self.Percentage = _Parameter;
+        self.Percentage = _Parameter * 1;
     end
 end
 

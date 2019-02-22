@@ -105,7 +105,21 @@ end
 -- Copy = API.InstanceTable(Table)
 --
 function API.InstanceTable(_Source, _Dest)
-    return copy(_Source, _Dest);
+    _Dest = _Dest or {};
+    assert(type(_Source) == "table")
+    assert(type(_Dest) == "table")
+
+    for k, v in pairs(_Source) do
+        if type(v) == "table" then
+            _Dest[k] = _Dest[k] or {};
+            for kk, vv in pairs(API.InstanceTable(v)) do
+                _Dest[k][kk] = _Dest[k][kk] or vv;
+            end
+        else
+            _Dest[k] = _Dest[k] or v;
+        end
+    end
+    return _Dest;
 end
 CopyTableRecursive = API.InstanceTable;
 
@@ -118,7 +132,7 @@ CopyTableRecursive = API.InstanceTable;
 --
 -- <p><b>Alias:</b> Inside</p>
 --
--- @param             _Data Datum, das gesucht wird
+-- @param             _Data Gesuchter Eintrag (multible Datentypen)
 -- @param[type=table] _Table Tabelle, die durchquert wird
 -- @return[type=booelan] Wert gefunden
 -- @within Anwenderfunktionen
@@ -271,14 +285,14 @@ FailQuestsByName = API.FailAllQuests;
 -- <p><b>Alias:</b> FailQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.FailQuest(_QuestName, _Quiet)
+function API.FailQuest(_QuestName, _Verbose)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Quiet then
-            API.Info("fail quest " .._QuestName);
+        if not _Verbose then
+            API.Note("fail quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
         Quest:Fail();
@@ -316,15 +330,15 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <p><b>Alias:</b> RestartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.RestartQuest(_QuestName, _Quiet)
+function API.RestartQuest(_QuestName, _Verbose)
     local QuestID = GetQuestID(_QuestName);
     local Quest = Quests[QuestID];
     if Quest then
-        if not _Quiet then
-            API.Info("restart quest " .._QuestName);
+        if not _Verbose then
+            API.Note("restart quest " .._QuestName);
         end
 
         if Quest.Objectives then
@@ -333,20 +347,26 @@ function API.RestartQuest(_QuestName, _Quiet)
                 local objective = questObjectives[i];
                 objective.Completed = nil
                 local objectiveType = objective.Type;
+
                 if objectiveType == Objective.Deliver then
                     local data = objective.Data;
-                    data[3] = nil
-                    data[4] = nil
-                    data[5] = nil
+                    data[3] = nil;
+                    data[4] = nil;
+                    data[5] = nil;
+
                 elseif g_GameExtraNo and g_GameExtraNo >= 1 and objectiveType == Objective.Refill then
-                    objective.Data[2] = nil
+                    objective.Data[2] = nil;
+
                 elseif objectiveType == Objective.Protect or objectiveType == Objective.Object then
                     local data = objective.Data;
                     for j=1, data[0], 1 do
-                        data[-j] = nil
+                        data[-j] = nil;
                     end
-                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] ~= 1 and objective.DestroyTypeAmount then
+
+                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 2 and objective.DestroyTypeAmount then
                     objective.Data[3] = objective.DestroyTypeAmount;
+                elseif objectiveType == Objective.DestroyEntities and objective.Data[1] == 3 then
+                    objective.Data[4] = nil;
 
                 elseif objectiveType == Objective.Distance then
                     if objective.Data[1] == -65565 then
@@ -354,10 +374,11 @@ function API.RestartQuest(_QuestName, _Quiet)
                     end
 
                 elseif objectiveType == Objective.Custom2 and objective.Data[1].Reset then
-                    objective.Data[1]:Reset(Quest, i)
+                    objective.Data[1]:Reset(Quest, i);
                 end
             end
         end
+
         local function resetCustom(_type, _customType)
             local Quest = Quest;
             local behaviors = Quest[_type];
@@ -378,12 +399,12 @@ function API.RestartQuest(_QuestName, _Quiet)
         resetCustom("Rewards", Reward.Custom);
         resetCustom("Reprisals", Reprisal.Custom);
 
-        Quest.Result = nil
-        local OldQuestState = Quest.State
-        Quest.State = QuestState.NotTriggered
-        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..Quest.Index..")")
+        Quest.Result = nil;
+        local OldQuestState = Quest.State;
+        Quest.State = QuestState.NotTriggered;
+        Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..Quest.Index..")");
         if OldQuestState == QuestState.Over then
-            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { Quest.QueueID })
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { Quest.QueueID });
         end
         return QuestID, Quest;
     end
@@ -414,14 +435,14 @@ StartQuestsByName = API.StartAllQuests;
 -- <p><b>Alias:</b> StartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.StartQuest(_QuestName, _Quiet)
+function API.StartQuest(_QuestName, _Verbose)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Quiet then
-            API.Info("start quest " .._QuestName);
+        if not _Verbose then
+            API.Note("start quest " .._QuestName);
         end
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
@@ -455,14 +476,14 @@ StopQuestsByName = API.StopAllQuests;
 -- <p><b>Alias:</b> StopQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.StopQuest(_QuestName, _Quiet)
+function API.StopQuest(_QuestName, _Verbose)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Quiet then
-            API.Info("interrupt quest " .._QuestName);
+        if not _Verbose then
+            API.Note("interrupt quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
         Quest:Interrupt(-1);
@@ -496,14 +517,14 @@ WinQuestsByName = API.WinAllQuests;
 -- <p><b>Alias:</b> WinQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Quiet Keine Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung anzeigen
 -- @within Anwenderfunktionen
 --
-function API.WinQuest(_QuestName, _Quiet)
+function API.WinQuest(_QuestName, _Verbose)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest then
-        if not _Quiet then
-            API.Info("win quest " .._QuestName);
+        if not _Verbose then
+            API.Note("win quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
         Quest:Success();
@@ -566,21 +587,6 @@ function API.ClearNotes()
 end
 
 ---
--- Schreibt eine einzelne Zeile Text ins Log. Vor dem Text steht, ob aus dem
--- globalen oder lokalen Skript geschrieben wurde und bei welchem Turn des
--- Spiels die Nachricht gesendet wurde.
---
--- @param[type=string] _Message Text des Log-Eintrag
--- @within Anwenderfunktionen
--- @local
---
-function API.Log(_Message)
-    local Env  = (GUI and "Local") or "Global";
-    local Turn = Logic.GetTimeMs();
-    Framework.WriteToLog(Env.. ":" ..Turn.. ": " .._Message);
-end
-
----
 -- Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 --
 -- <p><b>Alias:</b> GUI_NoteDown</p>
@@ -618,6 +624,8 @@ end
 ---
 -- Schreibt einen FATAL auf den Bildschirm und ins Log.
 --
+-- <p><b>Alias:</b> API.Dbg</p>
+-- <p><b>Alias:</b> fatal</p>
 -- <p><b>Alias:</b> dbg</p>
 --
 -- @param[type=string] _Message Anzeigetext
@@ -625,12 +633,11 @@ end
 -- @local
 --
 function API.Fatal(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.FATAL then
-        API.StaticNote("FATAL: " .._Message)
-    end
-    API.Log("FATAL: " .._Message);
+    API.StaticNote("FATAL: " .._Message)
+    Framework.WriteToLog("FATAL: " .._Message);
 end
 API.Dbg = API.Fatal;
+fatal = API.Fatal;
 dbg = API.Fatal;
 
 ---
@@ -643,120 +650,10 @@ dbg = API.Fatal;
 -- @local
 --
 function API.Warn(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.WARNING then
-        API.StaticNote("WARNING: " .._Message)
-    end
-    API.Log("WARNING: " .._Message);
+    API.StaticNote("WARNING: " .._Message)
+    Framework.WriteToLog("WARNING: " .._Message);
 end
 warn = API.Warn;
-
----
--- Schreibt eine INFO auf den Bildschirm und ins Log.
---
--- <p><b>Alias:</b> info</p>
---
--- @param[type=string] _Message Anzeigetext
--- @within Anwenderfunktionen
--- @local
---
-function API.Info(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.INFO then
-        API.Note("INFO: " .._Message)
-    end
-    API.Log("INFO: " .._Message);
-end
-info = API.Info;
-
----
--- Schreibt einen TRACE auf den Bildschirm und ins Log.
---
--- <p><b>Alias:</b> info</p>
---
--- @param[type=string] _Message Anzeigetext
--- @within Anwenderfunktionen
--- @local
---
-function API.Trace(_Message)
-    if QSB.Log.CurrentLevel <= QSB.Log.Level.TRACE then
-        API.Note("TRACE: " .._Message)
-    end
-    API.Log("TRACE: " .._Message);
-end
-trace = API.Trace;
-
--- Log Levels
-QSB.Log = {
-    Level = {
-        OFF      = 90000,
-        FATAL    = 4000,
-        WARNING  = 3000,
-        INFO     = 2000,
-        TRACE    = 1000,
-        ALL      = 0,
-    },
-}
-
--- Aktuelles Level
-QSB.Log.CurrentLevel = QSB.Log.Level.FATAL;
-
----
--- Setzt das Log-Level für die aktuelle Skriptumgebung.
---
--- Als Voreinstellung werden nur FATAL-Meldungen angezeigt!
---
--- Das Log-Level bestimmt, welche Meldungen ausgegeben und welche unterdrückt
--- werden. Somit können Debug-Meldungen unterdrückt, während Fehlermeldungen
--- angezeigt werden.
---
--- <table border="1">
--- <tr>
--- <th>
--- Level
--- </th>
--- <th>
--- Beschreibung
--- </th>
--- </tr>
--- <td>
--- QSB.Log.Level.OFF
--- </td>
--- <td>
--- Alle Meldungen werden unterdrückt.
--- </td>
--- <tr>
--- <td>
--- QSB.Log.Level.FATAL
--- </td>
--- <td>
--- Es werden nur Fehler angezeigt.
--- </td>
--- </tr>
--- <tr>
--- <td>
--- QSB.Log.Level.WARNING
--- </td>
--- <td>
--- Es werden nur Warnungen und Fehler angezeigt.
--- </td>
--- </tr>
--- <tr>
--- <td>
--- QSB.Log.Level.INFO
--- </td>
--- <td>
--- Es werden Meldungen aller Stufen angezeigt.
--- </td>
--- </tr>
--- </table>
---
--- @param[type=number] _Level Level
--- @within Anwenderfunktionen
--- @local
---
-function API.SetLogLevel(_Level)
-    assert(type(_Level) == "number");
-    QSB.Log.CurrentLevel = _Level;
-end
 
 -- Entities --------------------------------------------------------------------
 
@@ -1096,7 +993,8 @@ GiveEntityName = API.EnsureScriptName;
 -- wird der Befehl an das globale Skript geschickt.
 --
 -- @param[type=string]  _Command Lua-Befehl als String
--- @param[type=boolean] _Flag FIXME Optional für GUI.SendScriptCommand benötigt. Was macht das Flag?
+-- @param[type=boolean] _Flag FIXME Optional für GUI.SendScriptCommand benötigt. 
+--                      Was macht das Flag?
 -- @within Anwenderfunktionen
 -- @local
 --
@@ -1130,27 +1028,6 @@ function API.ToBoolean(_Value)
     return Core:ToBoolean(_Value);
 end
 AcceptAlternativeBoolean = API.ToBoolean;
-
----
--- Registriert eine Funktion, die nach dem laden ausgeführt wird.
---
--- <b>Alias</b>: AddOnSaveGameLoadedAction
---
--- @param[type=function] _Function Funktion, die ausgeführt werden soll
--- @within Anwenderfunktionen
--- @usage SaveGame = function()
---     API.Note("foo")
--- end
--- API.AddSaveGameAction(SaveGame)
---
-function API.AddSaveGameAction(_Function)
-    if GUI then
-        API.Fatal("API.AddSaveGameAction: Can not be used from the local script!");
-        return;
-    end
-    return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
-end
-AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 
 ---
 -- Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
@@ -1190,6 +1067,110 @@ function API.RemoveHotKey(_Index)
     Core.Data.HotkeyDescriptions[_Index] = nil;
 end
 
+-- Simple Job Overhaul ---------------------------------------------------------
+
+---
+-- Registriert eine Funktion, die nach dem laden ausgeführt wird.
+--
+-- <b>Alias</b>: AddOnSaveGameLoadedAction
+--
+-- @param[type=function] _Function Funktion, die ausgeführt werden soll
+-- @within Anwenderfunktionen
+-- @usage SaveGame = function()
+--     API.Note("foo")
+-- end
+-- API.AddSaveGameAction(SaveGame)
+--
+function API.AddSaveGameAction(_Function)
+    if GUI then
+        API.Fatal("API.AddSaveGameAction: Can not be used from the local script!");
+        return;
+    end
+    return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)
+end
+AddOnSaveGameLoadedAction = API.AddSaveGameAction;
+
+---
+-- Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
+-- wird. Die Argumente werden an die Funktion übergeben.
+--
+-- <b>Alias</b>: StartSimpleJobEx
+--
+-- @param[type=number] _Function Funktion, die ausgeführt wird
+-- @param              ...       Liste von Argumenten
+-- @return[type=number] Job ID
+-- @within Anwenderfunktionen
+--
+function API.StartJob(_Function, ...)
+    Core.Data.Events.JobIDCounter = Core.Data.Events.JobIDCounter +1;
+    local JobID = Core.Data.Events.JobIDCounter;
+    Core.Data.Events.EverySecond[JobID] = {
+        Function  = _Function,
+        Arguments = API.InstanceTable({...});
+    };
+    return JobID;
+end
+StartSimpleJobEx = API.StartJob;
+
+---
+-- Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
+-- wird. Die Argumente werden an die Funktion übergeben.
+--
+-- <b>Alias</b>: StartSimpleHiResJobEx
+--
+-- @param[type=number] _Function Funktion, die ausgeführt wird
+-- @param              ...       Liste von Argumenten
+-- @return[type=number] Job ID
+-- @within Anwenderfunktionen
+--
+function API.StartHiResJob(_Function, ...)
+    Core.Data.Events.JobIDCounter = Core.Data.Events.JobIDCounter +1;
+    local JobID = Core.Data.Events.JobIDCounter;
+    Core.Data.Events.EveryTurn[JobID] = {
+        Function  = _Function,
+        Arguments = API.InstanceTable({...});
+    };
+    return JobID;
+end
+StartSimpleHiResJobEx = API.StartHiResJob;
+
+---
+-- Prüft ob ein Job mit der ID existiert.
+--
+-- <b>Alias</b>: JobIsRunningEx
+--
+-- @param[type=number] _JobID ID des Jobs
+-- @within Anwenderfunktionen
+--
+function API.JobIsRunning(_JobID)
+    if Core.Data.Events.EveryTurn[_JobID] then
+        return true;
+    end
+    if Core.Data.Events.EverySecond[_JobID] then
+        return true;
+    end
+    return false;
+end
+JobIsRunningEx = API.JobIsRunning;
+
+---
+-- Bendet einen QSB-Job.
+--
+-- <b>Alias</b>: EndJobEx
+--
+-- @param[type=number] _JobID ID des Jobs
+-- @within Anwenderfunktionen
+--
+function API.EndJob(_JobID)
+    if Core.Data.Events.EveryTurn[_JobID] then
+        Core.Data.Events.EveryTurn[_JobID] = nil;
+    end
+    if Core.Data.Events.EverySecond[_JobID] then
+        Core.Data.Events.EverySecond[_JobID] = nil;
+    end
+end
+EndJobEx = API.EndJob;
+
 -- Echtzeit --------------------------------------------------------------------
 
 ---
@@ -1227,129 +1208,16 @@ function API.RealTimeWait(_Waittime, _Action, ...)
 end
 
 -- -------------------------------------------------------------------------- --
--- Object Oriented Programming                                                --
--- -------------------------------------------------------------------------- --
-
--- Ermöglicht das objektorientierte programmieren in Siedler-Lua. Klassen
--- müssen sich immer direkt in _G befinden, damit className automatisch
--- gesetzt werden kann. Andernfalls muss der Name der Klasse per Hand
--- gesetzt werden.
-
----
--- Kopiert die Quelltabelle rekursiv in die Zieltabelle. Ist ein Wert im
--- Ziel vorhanden, wird er nicht überschrieben.
---
--- @param[type=table] _Source Quelltabelle
--- @param[type=table] _Dest Zieltabelle
--- @return[type=table] Kindklasse
--- @within OOP
---
-function copy(_Source, _Dest)
-    _Dest = _Dest or {};
-    assert(type(_Source) == "table")
-    assert(type(_Dest) == "table")
-
-    for k, v in pairs(_Source) do
-        if type(v) == "table" then
-            _Dest[k] = _Dest[k] or {};
-            for kk, vv in pairs(copy(v)) do
-                _Dest[k][kk] = _Dest[k][kk] or vv;
-            end
-        else
-            _Dest[k] = _Dest[k] or v;
-        end
-    end
-    return _Dest;
-end
-
----
--- Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.
---
--- @param[type=table] _Table Referenz auf Table
--- @return[type=table] Klasse
--- @within OOP
---
-function class(_Table)
-    -- className hinzufügen
-    for k, v in pairs(_G) do
-        if v == _Table then
-            _Table.className = k;
-        end
-    end
-
-    -- construct hinzufügen
-    _Table.construct = _Table.construct or function(self) end
-
-    -- clone hinzufügen
-    _Table.clone = _Table.clone or function(self)
-        return copy(self);
-    end
-
-    -- toString hinzufügen
-    _Table.toString = _Table.toString or function(self)
-        local s = "";
-        for k, v in pairs(self) do
-            s = s .. tostring(k) .. ":" .. tostring(v) .. ";";
-        end
-        return "{" ..s.. "}";
-    end
-
-    -- equals hinzufügen
-    _Table.equals = _Table.equals or function(self, _Other)
-        -- Anderes Objekt muss table sein.
-        if type(_Other) ~= "table" then
-            return false;
-        end
-        -- Gehe Inhalt durch
-        for k, v in pairs(self) do
-            if v ~= _Other[k] then
-                return false;
-            end
-        end
-        return true;
-    end
-
-    return _Table;
-end
-
----
--- Erzeugt eine Ableitung einer Klasse
---
--- @param[type=table] _Parent Referenz auf Klasse
--- @return[type=table] Kindklasse
--- @within OOP
---
-function inherit(_Class, _Parent)
-    local c = copy(_Parent, _Class);
-    c.parent = _Parent;
-    return class(c);
-end
-
----
--- Erzeugt eine Instanz der Klasse.
---
--- @param[type=table] _Class Referenz auf Klasse
--- @param ...         Argumente des Konstruktors
--- @return[type=table] Instanz der Klasse
--- @within OOP
---
-function new(_Class, ...)
-    local instance = copy(_Class);
-    -- Parent instanzieren
-    if instance.parent then
-        instance.parent = new(instance.parent, ...);
-    end
-    -- Instanz erzeugen
-    instance:construct(...);
-    return instance;
-end
-
--- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 Core = {
     Data = {
+        Events = {
+            EverySecond = {},
+            EveryTurn = {},
+            JobIDCounter = 0,
+        },
         Overwrite = {
             StackedFunctions = {},
             AppendedFunctions = {},
@@ -1371,12 +1239,22 @@ function Core:InitalizeBundles()
     if not GUI then
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
+        
+        StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
 
-        StartSimpleJobEx(CoreJob_CalculateRealTimeSinceGameStart);
+        Trigger.RequestTrigger(Event.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1);
+        Trigger.RequestTrigger(Event.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1);
+        StartSimpleHiResJob("CoreEventJob_OnEveryTurn");
+        StartSimpleJob("CoreEventJob_OnEverySecond");
     else
         self:SetupLocal_HackRegisterHotkey();
 
-        StartSimpleJobEx(CoreJob_CalculateRealTimeSinceGameStart);
+        StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
+
+        Trigger.RequestTrigger(Event.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1);
+        Trigger.RequestTrigger(Event.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1);
+        StartSimpleHiResJob("CoreEventJob_OnEveryTurn");
+        StartSimpleJob("CoreEventJob_OnEverySecond");
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
@@ -1469,7 +1347,7 @@ function Core:SetupGobal_HackCreateQuest()
             );
             g_QuestNameToID[_QuestName] = QuestID;
         else
-            dbg("Quest '"..tostring(questName).."': invalid questname! Contains forbidden characters!");
+            fatal("Quest '"..tostring(questName).."': invalid questname! Contains forbidden characters!");
         end
     end
 end
@@ -1638,14 +1516,17 @@ function Core:RegisterBehavior(_Behavior)
     end
 
     if not _G["b_" .. _Behavior.Name] then
-        dbg("AddQuestBehavior: can not find ".. _Behavior.Name .."!");
+        fatal("AddQuestBehavior: can not find ".. _Behavior.Name .."!");
     else
         if not _G["b_" .. _Behavior.Name].new then
             _G["b_" .. _Behavior.Name].new = function(self, ...)
                 local behavior = API.InstanceTable(self);
-                if self.Parameter then
-                    for i=1,table.getn(self.Parameter) do
+                behavior.i47ya_6aghw_frxil = {};
+                for i= 1, #arg, 1 do
+                    if self.Parameter and self.Parameter[i] ~= nil then
                         behavior:AddParameter(i-1, arg[i]);
+                    else
+                        table.insert(behavior.i47ya_6aghw_frxil, arg[i]);
                     end
                 end
                 return behavior;
@@ -1727,13 +1608,13 @@ function Core:StackFunction(_FunctionName, _StackFunction, _Index)
             local ReturnValue;
             for i= 1, #self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments, 1 do
                 local Function = self.Data.Overwrite.StackedFunctions[_FunctionName].Attachments[i];
-                ReturnValue = Function(unpack(arg));
-                if ReturnValue ~= nil then
-                    return ReturnValue;
+                ReturnValue = {Function(unpack(arg))};
+                if #ReturnValue > 0 then
+                    return unpack(ReturnValue);
                 end
             end
-            ReturnValue = self.Data.Overwrite.StackedFunctions[_FunctionName].Original(unpack(arg));
-            return ReturnValue;
+            ReturnValue = {self.Data.Overwrite.StackedFunctions[_FunctionName].Original(unpack(arg))};
+            return unpack(ReturnValue);
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
@@ -1767,9 +1648,9 @@ function Core:AppendFunction(_FunctionName, _AppendFunction, _Index)
             local ReturnValue = self.Data.Overwrite.AppendedFunctions[_FunctionName].Original(unpack(arg));
             for i= 1, #self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments, 1 do
                 local Function = self.Data.Overwrite.AppendedFunctions[_FunctionName].Attachments[i];
-                ReturnValue = Function(unpack(arg))
+                ReturnValue = {Function(unpack(arg))};
             end
-            return ReturnValue;
+            return unpack(ReturnValue);
         end
         self:ReplaceFunction(_FunctionName, batch);
     end
@@ -1868,7 +1749,7 @@ end
 -- Dieser Job ermittelt automatisch, ob eine Sekunde reale Zeit vergangen ist
 -- und zählt eine Variable hoch, die die gesamt verstrichene reale Zeit hält.
 
-function CoreJob_CalculateRealTimeSinceGameStart()
+function Core.EventJob_EventOnEveryRealTimeSecond()
     if not QSB.RealTime_LastTimeStamp then
         if GUI then
             QSB.RealTime_LastTimeStamp = XGUIEng.GetSystemTime();
@@ -1890,3 +1771,28 @@ function CoreJob_CalculateRealTimeSinceGameStart()
         QSB.RealTime_SecondsSinceGameStart = QSB.RealTime_SecondsSinceGameStart +1;
     end
 end
+CoreEventJob_OnEveryRealTimeSecond = Core.EventJob_EventOnEveryRealTimeSecond;
+
+-- Dieser Job führt alle registrierten Events aus, die einmal pro Sekunde
+-- gestartet werden sollen.
+
+function Core.EventJob_EventOnEverySecond()
+    for k, v in pairs(Core.Data.Events.EverySecond) do
+        if v and v.Function(unpack(v.Arguments)) then
+            Core.Data.Events.EverySecond[k] = nil;
+        end
+    end
+end
+CoreEventJob_OnEverySecond = Core.EventJob_EventOnEverySecond;
+
+-- Dieser Job führt alle registrierten Events aus, die zehn Mal pro Sekunde
+-- gestartet werden sollen.
+
+function Core.EventJob_EventOnEveryTurn()
+    for k, v in pairs(Core.Data.Events.EveryTurn) do
+        if v and v.Function(unpack(v.Arguments)) then
+            Core.Data.Events.EveryTurn[k] = nil;
+        end
+    end
+end
+CoreEventJob_OnEveryTurn = Core.EventJob_EventOnEveryTurn;
