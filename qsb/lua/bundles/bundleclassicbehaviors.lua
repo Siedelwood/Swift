@@ -1682,9 +1682,10 @@ Core:RegisterBehavior(b_Goal_SatisfyNeed);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Auftragnehmer muss eine Menge an Siedlern in der Stadt haben.
+-- Der angegebene Spieler muss eine Menge an Siedlern in der Stadt haben.
 --
--- @param _Amount Menge an Siedlern
+-- @param _Amount   Menge an Siedlern
+-- @param _PlayerID ID des Spielers
 --
 -- @within Goal
 --
@@ -1699,22 +1700,25 @@ b_Goal_SettlersNumber = {
         de = "Ziel: Erreiche eine bestimmte Anzahl Siedler.",
     },
     Parameter = {
-        { ParameterType.Number, en = "Amount", de = "Anzahl" },
+        { ParameterType.Number,   en = "Amount", de = "Anzahl" },
+        { ParameterType.PlayerID, en = "Player", de = "Spieler" },
     },
 }
 
 function b_Goal_SettlersNumber:GetGoalTable()
-    return {Objective.SettlersNumber, 1, self.SettlersAmount }
+    return {Objective.SettlersNumber, self.PlayerID, self.SettlersAmount };
 end
 
 function b_Goal_SettlersNumber:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
-        self.SettlersAmount = _Parameter * 1
+        self.SettlersAmount = _Parameter * 1;
+    elseif (_Index == 1) then
+        self.PlayerID = (_Parameter or 1) * 1;
     end
 end
 
 function b_Goal_SettlersNumber:GetMsgKey()
-    return "Quest_NumberSettlers"
+    return "Quest_NumberSettlers";
 end
 
 Core:RegisterBehavior(b_Goal_SettlersNumber);
