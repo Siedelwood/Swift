@@ -23,7 +23,7 @@ if [ $# -gt 0 ]; then
 fi
 
 # Rufe das Skript compile auf
-./compile "${scriptArguments[@]/#/-}" "$1"
+./compile "${scriptArguments[@]/#/}"
 # Zurück ins QSB-Verzeichnis
 cd ../qsb
 
