@@ -851,7 +851,7 @@ BundleNonPlayerCharacter_DialogTriggerJob = BundleNonPlayerCharacter.Global.Dial
 -- @local
 --
 function BundleNonPlayerCharacter.Global.ControlMarker()
-    for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
+    for k, v in pairs(QSB.NonPlayerCharacterObjects) do
         v:ControlMarker();
     end
 end
@@ -873,13 +873,13 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
     Logic.GetKnights(PlayerID, PlayersKnights);
     for i= 1, #PlayersKnights, 1 do
         if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
-            for k, v in pairs(BundleNonPlayerCharacter.Global.NonPlayerCharacterObjects) do
-                if v and v.Data.TalkedTo == nil and v.Data.Distance >= 350 then
+            for k, v in pairs(QSB.NonPlayerCharacterObjects) do
+                if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
                     local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 19)));
                     local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 20)));
                     local x2, y2 = Logic.EntityGetPos(GetID(k));
                     if x1 == math.floor(x2) and y1 == math.floor(y2) then
-                        if IsExisting(k) and IsNear(PlayersKnights[i], k, v.Data.Distance) then
+                        if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
                             GameCallback_OnNPCInteraction(GetID(k), PlayerID);
                             return;
                         end

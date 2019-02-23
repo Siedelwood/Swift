@@ -1017,7 +1017,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                             ObjectName = ObjectName[lang];
                         end
                     end
-                    if ObjectName == "" then
+                    if ObjectName == nil then
                         ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectEntityName];
                         if type(ObjectName) == "table" then
                             local lang = Network.GetDesiredLanguage();
@@ -1025,7 +1025,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                             ObjectName = ObjectName[lang];
                         end
                     end
-                    if ObjectName == "" then
+                    if ObjectName == nil then
                         ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName
                     end
                 end
