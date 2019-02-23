@@ -552,7 +552,7 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
                     end
                 else
                     if not IO[EntityName] then
-                        return false;
+                        return;
                     end
                     if IO[EntityName].Used ~= true then
                         return false;
