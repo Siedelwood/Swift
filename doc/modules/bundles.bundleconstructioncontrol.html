@@ -1,0 +1,474 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><strong>bundles.bundleconstructioncontrol</strong></li>
+  <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/loader.html">loader</a></li>
+  <li><a href="../modules/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundleconstructioncontrol</code></h1>
+<p>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien
+ unterbunden werden.</p>
+<p> Verbote können für bestimmte Bereiche (kreisförmige
+ Gebiete um ein Zentrum) oder ganze Territorien vereinbart werden.
+<p> Das wichtigste Auf einen Blick:
+ <ul>
+ <li>
+ Den Bau von Gebäuden an bestimmten Orten steuern.<br>
+ <a href="#API.BanCategoryInArea">Bau verbieten</a>,
+ <a href="#API.UnbanCategoryInArea">Bau erlauben</a>
+ </li>
+ </ul>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.BanCategoryAtTerritory">API.BanCategoryAtTerritory (_eCat, _territory)</a></td>
+	<td class="summary">Untersagt den Bau der Kategorie im Territorium.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.BanCategoryInArea">API.BanCategoryInArea (_eCat, _center, _area)</a></td>
+	<td class="summary">Untersagt den Bau der Kategorie im Gebiet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.BanTypeAtTerritory">API.BanTypeAtTerritory (_type, _territory)</a></td>
+	<td class="summary">Untersagt den Bau des Typs im Territorium.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.BanTypeInArea">API.BanTypeInArea (_type, _center, _area)</a></td>
+	<td class="summary">Untersagt den Bau des Typs im Gebiet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnbanCategoryAtTerritory">API.UnbanCategoryAtTerritory (_eCat, _territory)</a></td>
+	<td class="summary">Gibt eine Kategorie zum Bau im Territorium wieder frei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnbanCategoryInArea">API.UnbanCategoryInArea (_eCat, _center)</a></td>
+	<td class="summary">Gibt eine Kategorie zum Bau im Gebiet wieder frei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnbanTypeAtTerritory">API.UnbanTypeAtTerritory (_type, _territory)</a></td>
+	<td class="summary">Gibt einen Typ zum Bau im Territorium wieder frei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.UnbanTypeInArea">API.UnbanTypeInArea (_type, _center)</a></td>
+	<td class="summary">Gibt einen Typ zum Bau im Gebiet wieder frei.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Global.CanPlayerPlaceBuilding">BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</a></td>
+	<td class="summary">Verhindert den Bau von Entities in Gebieten und Territorien.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleConstructionControl.Global:Install">BundleConstructionControl.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.BanCategoryAtTerritory"></a>
+    <strong>API.BanCategoryAtTerritory (_eCat, _territory)</strong>
+    </dt>
+    <dd>
+    Untersagt den Bau der Kategorie im Territorium.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eCat</span>
+            <span class="types"><span class="type">number</span></span>
+              Entitykategorie
+        </li>
+        <li><span class="parameter">_territory</span>
+            <span class="types"><span class="type">number</span></span>
+         Territorium
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.BanCategoryAtTerritory(EntityCategories.AttackableBuilding, <span class="number">2</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.BanCategoryInArea"></a>
+    <strong>API.BanCategoryInArea (_eCat, _center, _area)</strong>
+    </dt>
+    <dd>
+    Untersagt den Bau der Kategorie im Gebiet.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eCat</span>
+            <span class="types"><span class="type">number</span></span>
+           Entitytyp
+        </li>
+        <li><span class="parameter">_center</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Gebietszentrum
+        </li>
+        <li><span class="parameter">_area</span>
+            <span class="types"><span class="type">number</span></span>
+           Gebietsgröße
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.BanTypeInArea(EntityCategories.CityBuilding, <span class="string">"groundZero"</span>, <span class="number">4000</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.BanTypeAtTerritory"></a>
+    <strong>API.BanTypeAtTerritory (_type, _territory)</strong>
+    </dt>
+    <dd>
+    Untersagt den Bau des Typs im Territorium.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_type</span>
+            <span class="types"><span class="type">number</span></span>
+              Entitytyp
+        </li>
+        <li><span class="parameter">_territory</span>
+            <span class="types"><span class="type">number</span></span>
+         Territorium
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.BanTypeAtTerritory(Entities.B_Bakery, <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.BanTypeInArea"></a>
+    <strong>API.BanTypeInArea (_type, _center, _area)</strong>
+    </dt>
+    <dd>
+    Untersagt den Bau des Typs im Gebiet.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_type</span>
+            <span class="types"><span class="type">number</span></span>
+           Entitytyp
+        </li>
+        <li><span class="parameter">_center</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Gebietszentrum
+        </li>
+        <li><span class="parameter">_area</span>
+            <span class="types"><span class="type">number</span></span>
+           Gebietsgröße
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.BanTypeInArea(Entities.B_Bakery, <span class="string">"groundZero"</span>, <span class="number">4000</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnbanCategoryAtTerritory"></a>
+    <strong>API.UnbanCategoryAtTerritory (_eCat, _territory)</strong>
+    </dt>
+    <dd>
+    Gibt eine Kategorie zum Bau im Territorium wieder frei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eCat</span>
+            <span class="types"><span class="type">number</span></span>
+              Entitykategorie
+        </li>
+        <li><span class="parameter">_territory</span>
+            <span class="types"><span class="type">number</span></span>
+         Territorium
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnbanCategoryAtTerritory(EntityCategories.AttackableBuilding, <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnbanCategoryInArea"></a>
+    <strong>API.UnbanCategoryInArea (_eCat, _center)</strong>
+    </dt>
+    <dd>
+    Gibt eine Kategorie zum Bau im Gebiet wieder frei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_eCat</span>
+            <span class="types"><span class="type">number</span></span>
+           Entitykategorie
+        </li>
+        <li><span class="parameter">_center</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Gebiet
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnbanCategoryInArea(EntityCategories.CityBuilding, <span class="string">"groundZero"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnbanTypeAtTerritory"></a>
+    <strong>API.UnbanTypeAtTerritory (_type, _territory)</strong>
+    </dt>
+    <dd>
+    Gibt einen Typ zum Bau im Territorium wieder frei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_type</span>
+            <span class="types"><span class="type">number</span></span>
+              Entitytyp
+        </li>
+        <li><span class="parameter">_territory</span>
+            <span class="types"><span class="type">number</span></span>
+         Territorium
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnbanTypeAtTerritory(Entities.B_Bakery, <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.UnbanTypeInArea"></a>
+    <strong>API.UnbanTypeInArea (_type, _center)</strong>
+    </dt>
+    <dd>
+    Gibt einen Typ zum Bau im Gebiet wieder frei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_type</span>
+            <span class="types"><span class="type">number</span></span>
+           Entitytyp
+        </li>
+        <li><span class="parameter">_center</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Gebiet
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.UnbanTypeInArea(Entities.B_Bakery, <span class="string">"groundZero"</span>);</pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleConstructionControl.Global.CanPlayerPlaceBuilding"></a>
+    <strong>BundleConstructionControl.Global.CanPlayerPlaceBuilding (_PlayerID, _Type, _x, _y)</strong>
+    </dt>
+    <dd>
+    Verhindert den Bau von Entities in Gebieten und Territorien.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Spieler
+        </li>
+        <li><span class="parameter">_Type</span>
+            <span class="types"><span class="type">number</span></span>
+             Gebäudetyp
+        </li>
+        <li><span class="parameter">_x</span>
+            <span class="types"><span class="type">number</span></span>
+                X-Position
+        </li>
+        <li><span class="parameter">_y</span>
+            <span class="types"><span class="type">number</span></span>
+                Y-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleConstructionControl.Global:Install"></a>
+    <strong>BundleConstructionControl.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-02-23 10:41:09 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>
