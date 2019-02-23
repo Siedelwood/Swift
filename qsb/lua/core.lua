@@ -50,7 +50,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "RE 2.0.0 1/1/2020 (Early Access 1)";
+QSB.Version = "RE 2.0.0 1/1/2020 (Early Access 2)";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -1752,21 +1752,21 @@ end
 function Core.EventJob_EventOnEveryRealTimeSecond()
     if not QSB.RealTime_LastTimeStamp then
         if GUI then
-            QSB.RealTime_LastTimeStamp = XGUIEng.GetSystemTime();
+            QSB.RealTime_LastTimeStamp = math.floor(XGUIEng.GetSystemTime());
         else
-            QSB.RealTime_LastTimeStamp = Framework.TimeGetTime();
+            QSB.RealTime_LastTimeStamp = math.floor(Framework.TimeGetTime());
         end
     end
 
     local CurrentTimeStamp;
     if GUI then
-        CurrentTimeStamp = XGUIEng.GetSystemTime();
+        CurrentTimeStamp = math.floor(XGUIEng.GetSystemTime());
     else
-        CurrentTimeStamp = Framework.TimeGetTime();
+        CurrentTimeStamp = math.floor(Framework.TimeGetTime());
     end
 
     -- Eine Sekunde ist vergangen
-    if QSB.RealTime_LastTimeStamp+1 <= CurrentTimeStamp then
+    if QSB.RealTime_LastTimeStamp ~= CurrentTimeStamp then
         QSB.RealTime_LastTimeStamp = CurrentTimeStamp;
         QSB.RealTime_SecondsSinceGameStart = QSB.RealTime_SecondsSinceGameStart +1;
     end
