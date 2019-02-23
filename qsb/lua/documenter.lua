@@ -1,5 +1,17 @@
 dofile("lua/loader.lua");
 
+---
+-- Dieses Skript erzeugt die Benutzerdokumentation. Dazu wird jede Datei
+-- einzeln an LDoc übergeben und anschließend ein Index aufgebaut. Das
+-- Resultat ist eine Index-Seite auf der alle Bundles als Button-Links
+-- angezeigt werden und wo nach Schlagwörtern gesucht werden kann.
+--
+-- Die Suche nach Schlagwörtern schränkt die Auswahl an Bundles ein. Nur
+-- Bundles, die das Schlagwort enthalten, werden noch angezeigt.
+--
+-- @set sort=true
+--
+
 QSB = QSB or {};
 
 SymfoniaDocumenter = {}
