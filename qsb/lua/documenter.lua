@@ -12,10 +12,10 @@ SymfoniaDocumenter = {}
 --
 function SymfoniaDocumenter:CreateBundleHtmlDocumentation()
     -- Windows <-> Linux Fix
-    local docCommand = "cd ../bin && bash.exe ./createdoc.sh";
+    local docCommand = "cd ../bin && bash.exe ./createdoc";
     local osName = self:GetOsName();
     if osName and osName:find("Linux") then
-        docCommand = "cd ../bin && ./createdoc.sh";
+        docCommand = "cd ../bin && ./createdoc";
     end
     
     os.execute(docCommand.. " / core");
