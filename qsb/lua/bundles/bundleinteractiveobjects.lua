@@ -268,7 +268,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- API.AddCustomIOName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
 function API.AddCustomIOName(_Key, _Text)
-    if type(_Text == "table") then
+    if type(_Text) == "table" then
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         _Text = _Text[lang];
     end

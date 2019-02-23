@@ -1074,15 +1074,28 @@ function AddOnQuestDebug.Global.OverwriteCreateQuests()
                     table.insert(Behaviors, Template:new(unpack(Parameters)));
                 end
 
+                local SuggestionText;
+                if (QuestData[6] and QuestData[6] ~= "" and QuestData[6] ~= "KEY(NO_MESSAGE)") then
+                    SuggestionText = QuestData[6];
+                end
+                local SuccessText;
+                if (QuestData[8] and QuestData[8] ~= "" and QuestData[8] ~= "KEY(NO_MESSAGE)") then
+                    SuccessText = QuestData[8];
+                end
+                local FailureText;
+                if (QuestData[7] and QuestData[7] ~= "" and QuestData[7] ~= "KEY(NO_MESSAGE)") then
+                    FailureText = QuestData[7];
+                end
+
                 API.CreateQuest {
                     Name        = QuestName,
                     Sender      = QuestData[1],
                     Receiver    = QuestData[2],
                     Time        = QuestData[4],
                     Description = QuestData[5],
-                    Suggestion  = QuestData[6],
-                    Failure     = QuestData[7],
-                    Success     = QuestData[8],
+                    Suggestion  = SuggestionText,
+                    Failure     = FailureText,
+                    Success     = SuccessText,
 
                     unpack(Behaviors),
                 };

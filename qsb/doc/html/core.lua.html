@@ -32,7 +32,6 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
-<li><a href="#OOP">OOP</a></li>
 </ul>
 
 
@@ -81,11 +80,15 @@
  aktiviert werden kann.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.EndJob">API.EndJob (_JobID)</a></td>
+	<td class="summary">Bendet einen QSB-Job.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.EnsureScriptName">API.EnsureScriptName (_EntityID)</a></td>
 	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.FailQuest">API.FailQuest (_QuestName, _Quiet)</a></td>
+	<td class="name" nowrap><a href="#API.FailQuest">API.FailQuest (_QuestName, _Verbose)</a></td>
 	<td class="summary">Lässt den Quest fehlschlagen.</td>
 	</tr>
 	<tr>
@@ -112,6 +115,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.IsValidateQuest">API.IsValidateQuest (_QuestID)</a></td>
 	<td class="summary">Prüft, ob zu der angegebenen ID ein Quest existiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.JobIsRunning">API.JobIsRunning (_JobID)</a></td>
+	<td class="summary">Prüft ob ein Job mit der ID existiert.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.LocateEntity">API.LocateEntity (_Entity)</a></td>
@@ -143,7 +150,7 @@
 	<td class="summary">Ersetzt ein Entity mit einem neuen eines anderen Typs.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.RestartQuest">API.RestartQuest (_QuestName, _Quiet)</a></td>
+	<td class="name" nowrap><a href="#API.RestartQuest">API.RestartQuest (_QuestName, _Verbose)</a></td>
 	<td class="summary">Startet den Quest neu.</td>
 	</tr>
 	<tr>
@@ -151,7 +158,17 @@
 	<td class="summary">Sendet einen Handelskarren zu dem Spieler.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StartQuest">API.StartQuest (_QuestName, _Quiet)</a></td>
+	<td class="name" nowrap><a href="#API.StartHiResJob">API.StartHiResJob (_Function, ...)</a></td>
+	<td class="summary">Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
+ wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartJob">API.StartJob (_Function, ...)</a></td>
+	<td class="summary">Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
+ wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartQuest">API.StartQuest (_QuestName, _Verbose)</a></td>
 	<td class="summary">Startet den Quest sofort, sofern er existiert.</td>
 	</tr>
 	<tr>
@@ -159,7 +176,7 @@
 	<td class="summary">Schreibt eine Nachricht in das Debug Window.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StopQuest">API.StopQuest (_QuestName, _Quiet)</a></td>
+	<td class="name" nowrap><a href="#API.StopQuest">API.StopQuest (_QuestName, _Verbose)</a></td>
 	<td class="summary">Unterbricht den Quest.</td>
 	</tr>
 	<tr>
@@ -171,27 +188,8 @@
 	<td class="summary">Prüft, ob eine Positionstabelle eine gültige Position enthält.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.WinQuest">API.WinQuest (_QuestName, _Quiet)</a></td>
+	<td class="name" nowrap><a href="#API.WinQuest">API.WinQuest (_QuestName, _Verbose)</a></td>
 	<td class="summary">Gewinnt den Quest.</td>
-	</tr>
-</table>
-<h2><a href="#OOP">OOP</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#class">class (_Table)</a></td>
-	<td class="summary">Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#copy">copy (_Source, _Dest)</a></td>
-	<td class="summary">Kopiert die Quelltabelle rekursiv in die Zieltabelle.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#inherit">inherit (_Parent)</a></td>
-	<td class="summary">Erzeugt eine Ableitung einer Klasse</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#new">new (_Class, ...)</a></td>
-	<td class="summary">Erzeugt eine Instanz der Klasse.</td>
 	</tr>
 </table>
 
@@ -370,6 +368,29 @@ API.AddSaveGameAction(SaveGame)</pre>
 
 </dd>
     <dt>
+    <a name = "API.EndJob"></a>
+    <strong>API.EndJob (_JobID)</strong>
+    </dt>
+    <dd>
+    Bendet einen QSB-Job.
+<p> <b>Alias</b>: EndJobEx
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_JobID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Jobs
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.EnsureScriptName"></a>
     <strong>API.EnsureScriptName (_EntityID)</strong>
     </dt>
@@ -400,7 +421,7 @@ API.AddSaveGameAction(SaveGame)</pre>
 </dd>
     <dt>
     <a name = "API.FailQuest"></a>
-    <strong>API.FailQuest (_QuestName, _Quiet)</strong>
+    <strong>API.FailQuest (_QuestName, _Verbose)</strong>
     </dt>
     <dd>
     Lässt den Quest fehlschlagen.
@@ -415,9 +436,9 @@ API.AddSaveGameAction(SaveGame)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Quiet</span>
+        <li><span class="parameter">_Verbose</span>
             <span class="types"><span class="type">boolean</span></span>
-         Keine Meldung anzeigen
+           Meldung anzeigen
         </li>
     </ul>
 
@@ -614,6 +635,29 @@ Copy = API.InstanceTable(Table)</pre>
            <span class="types"><span class="type">boolean</span></span>
         Quest existiert
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.JobIsRunning"></a>
+    <strong>API.JobIsRunning (_JobID)</strong>
+    </dt>
+    <dd>
+    Prüft ob ein Job mit der ID existiert.
+<p> <b>Alias</b>: JobIsRunningEx
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_JobID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Jobs
+        </li>
+    </ul>
+
 
 
 
@@ -832,7 +876,7 @@ Copy = API.InstanceTable(Table)</pre>
 </dd>
     <dt>
     <a name = "API.RestartQuest"></a>
-    <strong>API.RestartQuest (_QuestName, _Quiet)</strong>
+    <strong>API.RestartQuest (_QuestName, _Verbose)</strong>
     </dt>
     <dd>
     Startet den Quest neu.
@@ -852,9 +896,9 @@ Copy = API.InstanceTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Quiet</span>
+        <li><span class="parameter">_Verbose</span>
             <span class="types"><span class="type">boolean</span></span>
-         Keine Meldung anzeigen
+           Meldung anzeigen
         </li>
     </ul>
 
@@ -920,8 +964,74 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.StartHiResJob"></a>
+    <strong>API.StartHiResJob (_Function, ...)</strong>
+    </dt>
+    <dd>
+    Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
+ wird.  Die Argumente werden an die Funktion übergeben.
+<p> <b>Alias</b>: StartSimpleHiResJobEx
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+            <span class="types"><span class="type">number</span></span>
+         Funktion, die ausgeführt wird
+        </li>
+        <li><span class="parameter">...</span>
+               Liste von Argumenten
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Job ID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartJob"></a>
+    <strong>API.StartJob (_Function, ...)</strong>
+    </dt>
+    <dd>
+    Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
+ wird.  Die Argumente werden an die Funktion übergeben.
+<p> <b>Alias</b>: StartSimpleJobEx
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Function</span>
+            <span class="types"><span class="type">number</span></span>
+         Funktion, die ausgeführt wird
+        </li>
+        <li><span class="parameter">...</span>
+               Liste von Argumenten
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Job ID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.StartQuest"></a>
-    <strong>API.StartQuest (_QuestName, _Quiet)</strong>
+    <strong>API.StartQuest (_QuestName, _Verbose)</strong>
     </dt>
     <dd>
     Startet den Quest sofort, sofern er existiert.
@@ -936,9 +1046,9 @@ Copy = API.InstanceTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Quiet</span>
+        <li><span class="parameter">_Verbose</span>
             <span class="types"><span class="type">boolean</span></span>
-         Keine Meldung anzeigen
+           Meldung anzeigen
         </li>
     </ul>
 
@@ -973,7 +1083,7 @@ Copy = API.InstanceTable(Table)</pre>
 </dd>
     <dt>
     <a name = "API.StopQuest"></a>
-    <strong>API.StopQuest (_QuestName, _Quiet)</strong>
+    <strong>API.StopQuest (_QuestName, _Verbose)</strong>
     </dt>
     <dd>
     Unterbricht den Quest.
@@ -989,9 +1099,9 @@ Copy = API.InstanceTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Quiet</span>
+        <li><span class="parameter">_Verbose</span>
             <span class="types"><span class="type">boolean</span></span>
-         Keine Meldung anzeigen
+           Meldung anzeigen
         </li>
     </ul>
 
@@ -1016,7 +1126,7 @@ Copy = API.InstanceTable(Table)</pre>
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Data</span>
-         Datum, das gesucht wird
+         Gesuchter Eintrag (multible Datentypen)
         </li>
         <li><span class="parameter">_Table</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
@@ -1074,7 +1184,7 @@ Copy = API.InstanceTable(Table)</pre>
 </dd>
     <dt>
     <a name = "API.WinQuest"></a>
-    <strong>API.WinQuest (_QuestName, _Quiet)</strong>
+    <strong>API.WinQuest (_QuestName, _Verbose)</strong>
     </dt>
     <dd>
     Gewinnt den Quest.
@@ -1089,133 +1199,12 @@ Copy = API.InstanceTable(Table)</pre>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name des Quest
         </li>
-        <li><span class="parameter">_Quiet</span>
+        <li><span class="parameter">_Verbose</span>
             <span class="types"><span class="type">boolean</span></span>
-         Keine Meldung anzeigen
+           Meldung anzeigen
         </li>
     </ul>
 
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="OOP"></a>OOP</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "class"></a>
-    <strong>class (_Table)</strong>
-    </dt>
-    <dd>
-    Fügt einer Table Magic Methods hinzu und macht sie zur Klasse.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Table</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Referenz auf Table
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Klasse
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "copy"></a>
-    <strong>copy (_Source, _Dest)</strong>
-    </dt>
-    <dd>
-    Kopiert die Quelltabelle rekursiv in die Zieltabelle.  Ist ein Wert im
- Ziel vorhanden, wird er nicht überschrieben.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Source</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Quelltabelle
-        </li>
-        <li><span class="parameter">_Dest</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Zieltabelle
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Kindklasse
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "inherit"></a>
-    <strong>inherit (_Parent)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Ableitung einer Klasse
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Parent</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Referenz auf Klasse
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Kindklasse
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "new"></a>
-    <strong>new (_Class, ...)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Instanz der Klasse.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Class</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Referenz auf Klasse
-        </li>
-        <li><span class="parameter">...</span>
-                 Argumente des Konstruktors
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Instanz der Klasse
-    </ol>
 
 
 
@@ -1228,7 +1217,7 @@ Copy = API.InstanceTable(Table)</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-01 09:48:51 </i>
+<i style="float:right;">Last updated 2019-02-23 16:10:26 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

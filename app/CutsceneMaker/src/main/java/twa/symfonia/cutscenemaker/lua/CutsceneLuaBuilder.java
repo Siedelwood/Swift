@@ -1,11 +1,13 @@
 package twa.symfonia.cutscenemaker.lua;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.io.IOUtils;
 
 import twa.symfonia.cutscenemaker.lua.models.Flight;
 import twa.symfonia.cutscenemaker.lua.models.FlightStation;
@@ -25,9 +27,15 @@ public class CutsceneLuaBuilder {
      */
     public CutsceneLuaBuilder() throws CutsceneBuilderException {
         try {
-            briefingTemplate = new String(Files.readAllBytes(Paths.get("tpl/briefingTemplate.txt")));
-            stationTemplate  = new String(Files.readAllBytes(Paths.get("tpl/cameraTemplate.txt")));
-            pageTemplate     = new String(Files.readAllBytes(Paths.get("tpl/flightTemplate.txt")));
+            //Get template files
+            final ClassLoader classLoader = getClass().getClassLoader();
+            final InputStream isBriefingTpl  = classLoader.getResourceAsStream("briefingTemplate.txt");
+            final InputStream isCameraTpl    = classLoader.getResourceAsStream("cameraTemplate.txt");
+            final InputStream isFlightTpl    = classLoader.getResourceAsStream("flightTemplate.txt");
+            //Read files
+            briefingTemplate = new String(IOUtils.toByteArray(isBriefingTpl), "UTF-8");
+            stationTemplate  = new String(IOUtils.toByteArray(isCameraTpl), "UTF-8");
+            pageTemplate     = new String(IOUtils.toByteArray(isFlightTpl), "UTF-8");
             flights          = new ArrayList<>();
         } catch (final IOException e) {
             throw new CutsceneBuilderException(e);
@@ -58,15 +66,15 @@ public class CutsceneLuaBuilder {
         if (flights.size() == 0) {
             return "";
         }
-        final StringBuilder flights = new StringBuilder();
+        String flights = "";
         for (final Flight page : this.flights) {
-            flights.append(buildFlight(page));
+            flights += buildFlight(page);
         }
         return String.format(
             Locale.ENGLISH,
             briefingTemplate,
             functionName,
-            flights.toString()
+            flights
         );
     }
 
@@ -90,11 +98,11 @@ public class CutsceneLuaBuilder {
      * @return Stations of the flight
      */
     private String buildFlightStations(final Flight flight) {
-        final StringBuilder stations = new StringBuilder();
+        String stations = "";
         for (final FlightStation station : flight.getPageStations()) {
-            stations.append(buildSingleFlightStation(station));
+            stations += buildSingleFlightStation(station);
         }
-        return stations.toString();
+        return stations;
     }
 
     /**
@@ -103,6 +111,19 @@ public class CutsceneLuaBuilder {
      * @return Station table
      */
     private String buildSingleFlightStation(final FlightStation station) {
+        // Get station title
+        String title = "";
+        if (station.getFlightTitle() != null) {
+            final byte[] content = station.getFlightTitle().getBytes(Charset.forName("UTF-8"));
+            title = new String(content);
+        }
+        // Get station text
+        String text = "";
+        if (station.getFlightText() != null) {
+            final byte[] content = station.getFlightText().getBytes(Charset.forName("UTF-8"));
+            text = new String(content);
+        }
+        
         return String.format(
             Locale.ENGLISH,
             stationTemplate,
@@ -113,8 +134,8 @@ public class CutsceneLuaBuilder {
             station.getCamTarget().getY(),
             station.getCamTarget().getZ(),
             station.getFieldOfView(),
-            station.getFlightTitle(),
-            station.getFlightText(),
+            title,
+            text,
             station.getFlightAction()
         );
     }

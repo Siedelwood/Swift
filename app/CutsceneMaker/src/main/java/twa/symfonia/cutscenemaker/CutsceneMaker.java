@@ -63,8 +63,7 @@ public class CutsceneMaker {
      * @throws Exception 
      */
     public static void startGUI() throws Exception {
-        System.err.println("usage: java -jar CutsceneMaker <cutscene name> <cs-file 1> <cs-file 2> ...");
-        throw new Exception("GUI not implemented!");
+        // CutsceneMakerUI.startGUI();
     }
 
     /**
