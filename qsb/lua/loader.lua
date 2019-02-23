@@ -186,7 +186,6 @@ function SymfoniaLoader:Load(_Path)
         if self.Data.LoadOrder[i][2] then
             local Name = self.Data.LoadOrder[i][1]:lower();
             Script.Load(_Path.. "/bundles/" ..Name.. ".lua");
-            API.Log("Load bundle '" .. _Path.. "/bundles/" ..Name.. ".lua'");
         end
     end
 
@@ -204,11 +203,10 @@ function SymfoniaLoader:Load(_Path)
             local Name = self.Data.AddOnLoadOrder[i][1]:lower();
             if LoadAddon then
                 Script.Load(_Path.. "/addons/" ..Name.. ".lua");
-                API.Log("Load addon '" .. _Path.. "/addons/" ..Name.. ".lua'");
             else
                 -- Only show once
                 if not GUI then
-                    API.Dbg("SymfoniaLoader:Load: AddOn '" ..Name.. "' has unsatisfied dependencies and was not loaded!");
+                    API.Fatal("SymfoniaLoader:Load: AddOn '" ..Name.. "' has unsatisfied dependencies and was not loaded!");
                 end
             end
         end
@@ -245,17 +243,17 @@ function SymfoniaLoader:ConcatSources(_External)
     local BasePath = "qsb/lua/";
     local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
 
-    local fh = io.open("qsb/userconfig.ld", "wt");
-    assert(fh, "Output file can not be created!");
-    fh:write("project='Symfonia'\n");
-    fh:write("kind_names={script='Skripte', module='Bibliotheken'}\n");
+    -- local fh = io.open("qsb/userconfig.ld", "wt");
+    -- assert(fh, "Output file can not be created!");
+    -- fh:write("project='Symfonia'\n");
+    -- fh:write("kind_names={script='Skripte', module='Bibliotheken'}\n");
 
-    local ActiveBundles = "file={\n'core.lua',\n";
+    -- local ActiveBundles = "file={\n'core.lua',\n";
 
     for k, v in pairs(self.Data.LoadOrder) do
         local FileContent = "";
         if v[2] then
-            ActiveBundles = ActiveBundles.. "'bundles/" ..v[1]:lower().. ".lua',\n";
+            -- ActiveBundles = ActiveBundles.. "'bundles/" ..v[1]:lower().. ".lua',\n";
             FileContent = self:LoadSource(BasePath.. "bundles/" ..v[1]:lower().. ".lua");
         end
         table.insert(QsbContent, FileContent);
@@ -271,7 +269,7 @@ function SymfoniaLoader:ConcatSources(_External)
                 end
             end
             if LoadAddOn == true then
-                ActiveBundles = ActiveBundles.. "'addons/" ..v[1]:lower().. ".lua',\n";
+                -- ActiveBundles = ActiveBundles.. "'addons/" ..v[1]:lower().. ".lua',\n";
                 FileContent = self:LoadSource(BasePath.. "addons/" ..v[1]:lower().. ".lua");
                 table.insert(QsbContent, FileContent);
             end
@@ -280,14 +278,14 @@ function SymfoniaLoader:ConcatSources(_External)
 
     for i= 1, #_External, 1 do
         local FileContent = "";
-            ActiveBundles = ActiveBundles.. "'" .._External[i]:lower().. ".lua',\n";
+            -- ActiveBundles = ActiveBundles.. "'" .._External[i]:lower().. ".lua',\n";
             FileContent = self:LoadSource(_External[i]:lower().. ".lua");
         table.insert(QsbContent, FileContent);
     end
 
-    ActiveBundles = ActiveBundles.. "}";
-    fh:write(ActiveBundles.. "\n");
-    fh:close();
+    -- ActiveBundles = ActiveBundles.. "}";
+    -- fh:write(ActiveBundles.. "\n");
+    -- fh:close();
 
     return QsbContent;
 end
