@@ -503,18 +503,35 @@ function BundleBuildingButtons.Local:BuyAnimal(_eID)
     if eType == Entities.B_CattlePasture then
         local Cost = BundleBuildingButtons.Local.Data.CattleCosts * (-1);
         GUI.SendScriptCommand([[
-            local pID = Logic.EntityGetPlayer(]].._eID..[[)
+            local PlayerID = Logic.EntityGetPlayer(]].._eID..[[)
             local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
-            Logic.CreateEntity(Entities.A_X_Cow01, x, y, 0, pID)
-            AddGood(Goods.G_Grain, ]] ..Cost.. [[, pID)
+            Logic.CreateEntity(Entities.A_X_Cow01, x, y, 0, PlayerID)
+            
+            local GrainAmount = GetPlayerResources(Goods.G_Grain, PlayerID)
+            local GrainCosts = ]] ..Cost.. [[
+            if GrainCosts > GrainAmount then
+                GrainCosts = GrainAmount
+            end
+            if GrainCosts > 0 then
+                AddGood(Goods.G_Grain, GrainCosts, PlayerID)
+            end
         ]]);
     elseif eType == Entities.B_SheepPasture then
         local Cost = BundleBuildingButtons.Local.Data.SheepCosts * (-1);
         GUI.SendScriptCommand([[
-            local pID = Logic.EntityGetPlayer(]].._eID..[[)
+            local PlayerID = Logic.EntityGetPlayer(]].._eID..[[)
             local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
-            Logic.CreateEntity(Entities.A_X_Sheep01, x, y, 0, pID)
-            AddGood(Goods.G_Grain, ]] ..Cost.. [[, pID)
+            Logic.CreateEntity(Entities.A_X_Sheep01, x, y, 0, PlayerID)
+            AddGood(Goods.G_Grain, ]] ..Cost.. [[, PlayerID)
+
+            local GrainAmount = GetPlayerResources(Goods.G_Grain, PlayerID)
+            local GrainCosts = ]] ..Cost.. [[
+            if GrainCosts > GrainAmount then
+                GrainCosts = GrainAmount
+            end
+            if GrainCosts > 0 then
+                AddGood(Goods.G_Grain, GrainCosts, PlayerID)
+            end
         ]]);
     end
 end
