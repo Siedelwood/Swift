@@ -634,8 +634,8 @@ Core:RegisterBehavior(b_Reward_SetHealth);
 ---
 -- Die Gesundheit eines Entities muss einen bestimmten Wert erreichen.
 --
--- @param[type=string] _Entity Entity, das überwacht wird
--- @param[type=number] _Amount Menge in Prozent
+-- @param[type=string] _Entity     Entity, das überwacht wird
+-- @param[type=number] _Percentage Menge in Prozent
 --
 -- @within Trigger
 --
