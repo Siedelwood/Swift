@@ -1,0 +1,749 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><strong>bundles.bundleinterfaceapperance</strong></li>
+  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
+  <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/loader.html">loader</a></li>
+  <li><a href="../modules/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundleinterfaceapperance</code></h1>
+<p>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche
+ des Spiels.</p>
+<p> Der Mapper hat die Möglichkeit, eigene Texte und Grafiken im
+ Interface anzuzeigen.
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceGetPlayerName">API.InterfaceGetPlayerName (_PlayerID)</a></td>
+	<td class="summary">Gibt den Namen des Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceGetTerritoryName">API.InterfaceGetTerritoryName (_TerritoryID)</a></td>
+	<td class="summary">Gibt den Namen des Territoriums zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetIcon">API.InterfaceSetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
+	<td class="summary">Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetPlayerColor">API.InterfaceSetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</a></td>
+	<td class="summary">Setzt zu Spielbeginn eine andere Spielerfarbe.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetPlayerName">API.InterfaceSetPlayerName (_playerID, _name)</a></td>
+	<td class="summary">Gibt dem Spieler einen neuen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetPlayerPortrait">API.InterfaceSetPlayerPortrait (_PlayerID, _Portrait)</a></td>
+	<td class="summary">Setzt das Portrait des Spielers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetTexture">API.InterfaceSetTexture (_widget, _file)</a></td>
+	<td class="summary">Setzt eine Grafik als Bild für einen Icon oder einen Button.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetTooltipCosts">API.InterfaceSetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</a></td>
+	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceSetTooltipNormal">API.InterfaceSetTooltipNormal (_title, _text, _disabledText)</a></td>
+	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:Install">BundleInterfaceApperance.Local:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:SetIcon">BundleInterfaceApperance.Local:SetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
+	<td class="summary">Setzt einen Icon aus einer benutzerdefinierten Matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:SetPlayerPortraitByModelName">BundleInterfaceApperance.Local:SetPlayerPortraitByModelName (_PlayerID, _Portrait)</a></td>
+	<td class="summary">Setzt das Portrait des Spielers anhand des angegebenen Models.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:SetPlayerPortraitByPrimaryKnight">BundleInterfaceApperance.Local:SetPlayerPortraitByPrimaryKnight (_PlayerID)</a></td>
+	<td class="summary">Setzt das Portrait des Spielers anhand des Primary Knight.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:SetPlayerPortraitBySettler">BundleInterfaceApperance.Local:SetPlayerPortraitBySettler (_PlayerID, _Portrait)</a></td>
+	<td class="summary">Setzt das Portrait des Spielers anhand der übergebenen Script Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:SetTexture">BundleInterfaceApperance.Local:SetTexture (_widget, _file)</a></td>
+	<td class="summary">Setzt einen Icon aus einer benutzerdefinerten Datei.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:TextCosts">BundleInterfaceApperance.Local:TextCosts (_title, _text, _disabledText, _costs, _inSettlement)</a></td>
+	<td class="summary">Setzt den Kostentooltip.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleInterfaceApperance.Local:TextNormal">BundleInterfaceApperance.Local:TextNormal (_title, _text, _disabledText)</a></td>
+	<td class="summary">Setzt einen Beschreibungstooltip.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.InterfaceGetPlayerName"></a>
+    <strong>API.InterfaceGetPlayerName (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Gibt den Namen des Spielers zurück.
+<p> <p><b>Alias:</b> GetPlayerName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name des Spielers
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceGetTerritoryName"></a>
+    <strong>API.InterfaceGetTerritoryName (_TerritoryID)</strong>
+    </dt>
+    <dd>
+    Gibt den Namen des Territoriums zurück.
+<p> <p><b>Alias:</b> GetTerritoryName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_TerritoryID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Territoriums
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name des Territorium
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetIcon"></a>
+    <strong>API.InterfaceSetIcon (_WidgetID, _Coordinates, _Size, _Name)</strong>
+    </dt>
+    <dd>
+    Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
+<p> Dabei müssen die Quellen nach gui_768, gui_920 und gui_1080 in der
+ entsprechenden Größe gepackt werden. Die Ordner liegen in graphics/textures.
+ Jede Map muss einen eigenen eindeutigen Namen für jede Grafik verwenden.
+<p> <u>Größen:</u>
+ Die Gesamtgröße ergibt sich aus der Anzahl der Buttons und der Pixelbreite
+ für die jeweilige Grö0e. z.B. 64 Buttons -> Größe * 8 x Größe * 8
+ <ul>
+ <li>768: 41x41</li>
+ <li>960: 52x52</li>
+ <li>1200: 64x64</li>
+ </ul>
+<p> <u>Namenskonvention:</u>
+ Die Namenskonvention wird durch das Spiel vorgegeben. Je nach Größe sind
+ die Namen der Matrizen erweitert mit .png, big.png und verybig.png. Du
+ gibst also niemals die Dateiendung mit an!
+ <ul>
+ <li>Für normale Icons: _Name .. .png</li>
+ <li>Für große Icons: _Name .. big.png</li>
+ <li>Für riesige Icons: _Name .. verybig.png</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_WidgetID</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_Coordinates</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Koordinaten
+        </li>
+        <li><span class="parameter">_Size</span>
+            <span class="types"><span class="type">number</span></span>
+         Größe des Icon
+        </li>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name der Icon Matrix
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetPlayerColor"></a>
+    <strong>API.InterfaceSetPlayerColor (_PlayerID, _Color, _Logo, _Pattern)</strong>
+    </dt>
+    <dd>
+    Setzt zu Spielbeginn eine andere Spielerfarbe.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Color</span>
+            <span class="types"><span class="type">number</span></span>
+         Spielerfarbe
+        </li>
+        <li><span class="parameter">_Logo</span>
+            <span class="types"><span class="type">number</span></span>
+         Logo (optional)
+        </li>
+        <li><span class="parameter">_Pattern</span>
+            <span class="types"><span class="type">number</span></span>
+         Pattern (optional)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetPlayerName"></a>
+    <strong>API.InterfaceSetPlayerName (_playerID, _name)</strong>
+    </dt>
+    <dd>
+    Gibt dem Spieler einen neuen Namen.
+<p> <p><b>Alias:</b> SetPlayerName</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_playerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetPlayerPortrait"></a>
+    <strong>API.InterfaceSetPlayerPortrait (_PlayerID, _Portrait)</strong>
+    </dt>
+    <dd>
+    Setzt das Portrait des Spielers.
+<p> Dabei gibt es 3 verschiedene Varianten:
+ <ul>
+ <li>Wenn _Portrait nicht gesetzt wird, wird das Portrait des Primary
+ Knight genommen.</li>
+ <li>Wenn _Portrait ein existierendes Entity ist, wird anhand des Typs
+ das Portrait bestimmt.</li>
+ <li>Wenn _Portrait der Modellname eines Portrait ist, wird der Wert
+ als Portrait gesetzt.</li>
+ </ul>
+<p> Wenn kein Portrait bestimmt werden kann, wird H_NPC_Generic_Trader verwendet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Portrait</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Models
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Primary Knight
+</span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>);
+<span class="comment">-- Durch Entity
+</span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>, <span class="string">"amma"</span>);
+<span class="comment">-- Durch Modelname
+</span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>, <span class="string">"H_NPC_Monk_AS"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetTexture"></a>
+    <strong>API.InterfaceSetTexture (_widget, _file)</strong>
+    </dt>
+    <dd>
+    Setzt eine Grafik als Bild für einen Icon oder einen Button.
+<p> Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem
+ beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
+ muss jedoch immer der korrekte Pfad angegeben werden.
+<p> <p><b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
+ sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
+ unterschiedlich ist.</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_widget</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_file</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Pfad zur Datei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetTooltipCosts"></a>
+    <strong>API.InterfaceSetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</strong>
+    </dt>
+    <dd>
+    Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.
+<p> <p><b>Alias:</b> UserSetTextBuy</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Textzusatz wenn inaktiv
+        </li>
+        <li><span class="parameter">_costs</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+                Kostentabelle
+        </li>
+        <li><span class="parameter">_inSettlement</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Kosten in Siedlung suchen
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/bundles.bundleinterfaceapperance.html#API.InterfaceSetTooltipNormal">API.InterfaceSetTooltipNormal</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceSetTooltipNormal"></a>
+    <strong>API.InterfaceSetTooltipNormal (_title, _text, _disabledText)</strong>
+    </dt>
+    <dd>
+    Ändert den aktuellen Tooltip mit der Beschreibung.
+<p> <p><b>Alias:</b> UserSetTextNormal</p>
+<p> Die Funtion ermittelt das aktuelle GUI Widget und ändert den Text des
+ Tooltip. Dazu muss die Funktion innerhalb der Mouseover-Funktion eines
+ Buttons oder Widgets mit Tooltip aufgerufen werden.
+<p> Die Funktion kann auch mit deutsch/english lokalisierten Tabellen als
+ Text gefüttert werden. In diesem Fall wird der deutsche Text genommen,
+ wenn es sich um eine deutsche Spielversion handelt. Andernfalls wird
+ immer der englische Text verwendet.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Textzusatz wenn inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:Install"></a>
+    <strong>BundleInterfaceApperance.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:SetIcon"></a>
+    <strong>BundleInterfaceApperance.Local:SetIcon (_WidgetID, _Coordinates, _Size, _Name)</strong>
+    </dt>
+    <dd>
+    Setzt einen Icon aus einer benutzerdefinierten Matrix.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_WidgetID</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_Coordinates</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Koordinaten
+        </li>
+        <li><span class="parameter">_Size</span>
+            <span class="types"><span class="type">number</span></span>
+         Größe des Icon
+        </li>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name der Icon Matrix
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:SetPlayerPortraitByModelName"></a>
+    <strong>BundleInterfaceApperance.Local:SetPlayerPortraitByModelName (_PlayerID, _Portrait)</strong>
+    </dt>
+    <dd>
+    Setzt das Portrait des Spielers anhand des angegebenen Models.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Portrait</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Models
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:SetPlayerPortraitByPrimaryKnight"></a>
+    <strong>BundleInterfaceApperance.Local:SetPlayerPortraitByPrimaryKnight (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Setzt das Portrait des Spielers anhand des Primary Knight.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:SetPlayerPortraitBySettler"></a>
+    <strong>BundleInterfaceApperance.Local:SetPlayerPortraitBySettler (_PlayerID, _Portrait)</strong>
+    </dt>
+    <dd>
+    Setzt das Portrait des Spielers anhand der übergebenen Script Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Spielers
+        </li>
+        <li><span class="parameter">_Portrait</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:SetTexture"></a>
+    <strong>BundleInterfaceApperance.Local:SetTexture (_widget, _file)</strong>
+    </dt>
+    <dd>
+    Setzt einen Icon aus einer benutzerdefinerten Datei.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_widget</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Widgetpfad oder ID
+        </li>
+        <li><span class="parameter">_file</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Pfad zur Datei
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:TextCosts"></a>
+    <strong>BundleInterfaceApperance.Local:TextCosts (_title, _text, _disabledText, _costs, _inSettlement)</strong>
+    </dt>
+    <dd>
+    Setzt den Kostentooltip.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Textzusatz wenn inaktiv
+        </li>
+        <li><span class="parameter">_costs</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+                Kostentabelle
+        </li>
+        <li><span class="parameter">_inSettlement</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Kosten in Siedlung suchen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleInterfaceApperance.Local:TextNormal"></a>
+    <strong>BundleInterfaceApperance.Local:TextNormal (_title, _text, _disabledText)</strong>
+    </dt>
+    <dd>
+    Setzt einen Beschreibungstooltip.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_title</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Titel des Tooltip
+        </li>
+        <li><span class="parameter">_text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                 Text des Tooltip
+        </li>
+        <li><span class="parameter">_disabledText</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Textzusatz wenn inaktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-02-23 10:43:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

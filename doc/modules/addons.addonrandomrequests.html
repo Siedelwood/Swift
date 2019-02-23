@@ -1,0 +1,441 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#Goal">Goal</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><strong>addons.addonrandomrequests</strong></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
+  <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/loader.html">loader</a></li>
+  <li><a href="../modules/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>addons.addonrandomrequests</code></h1>
+<p>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</p>
+<p>
+<p> Es gibt verschiedene Typen von zufälligen Aufträgen. Es wird versucht, immer
+ einen einzigartigen Auftrag für den jeweiligen Auftraggeber zu erzeugen.
+ Wenn kein Auftrag erzeugt werden kann, wird der Spieler aufgefordert 2000
+ Gold zu bezahlen.
+</p>
+
+
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:CanGoodBeSetAsGoal">AddOnRandomRequests.Global:CanGoodBeSetAsGoal (_SenderID, _ReceiverID, _Good)</a></td>
+	<td class="summary">Prüft, ob eine Ware für ein Goal_Deliver verwendet werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:CreateSlaveQuest">AddOnRandomRequests.Global:CreateSlaveQuest (_Behavior, _Quest)</a></td>
+	<td class="summary">Erzeugt einen zufälligen Slave Quest anhand der Einstellungen im Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetBuildWallBehavior">AddOnRandomRequests.Global:GetBuildWallBehavior (_Behavior, _Quest)</a></td>
+	<td class="summary">Erstellt Goal_BuildWall für den Random Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetClaimTerritoryBehavior">AddOnRandomRequests.Global:GetClaimTerritoryBehavior (_Behavior, _Quest)</a></td>
+	<td class="summary">Erstellt Goal_Claim für den Random Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetDeliverGoodsBehavior">AddOnRandomRequests.Global:GetDeliverGoodsBehavior (_Behavior, _Quest)</a></td>
+	<td class="summary">Erstellt Goal_Deliver (Rohstoffe) für den Random Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetKnightTitleBehavior">AddOnRandomRequests.Global:GetKnightTitleBehavior (_Behavior, _Quest)</a></td>
+	<td class="summary">Erstellt Goal_KnightTitle für den Random Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetPossibleBehaviors">AddOnRandomRequests.Global:GetPossibleBehaviors (_Behavior, _Quest)</a></td>
+	<td class="summary">Gibt eine Liste mit Behavior zurück, die für den Random Quest verfügbar
+ sind.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:Install">AddOnRandomRequests.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das AddOn.</td>
+	</tr>
+</table>
+<h2><a href="#Goal">Goal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Goal_RandomRequest">Goal_RandomRequest (_DeliverGoods, _DeliverGold, _ClaimTerritory, _KnightTitle, _CityReputation, _Time, _Suggestion, _Success, _Failure)</a></td>
+	<td class="summary">Wählt einen zufälligen Auftrag für den Spieler aus.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AddOnRandomRequests.Global:CanGoodBeSetAsGoal"></a>
+    <strong>AddOnRandomRequests.Global:CanGoodBeSetAsGoal (_SenderID, _ReceiverID, _Good)</strong>
+    </dt>
+    <dd>
+    Prüft, ob eine Ware für ein Goal_Deliver verwendet werden kann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_SenderID</span>
+            <span class="types"><span class="type">number</span></span>
+           Sendender Spieler
+        </li>
+        <li><span class="parameter">_ReceiverID</span>
+            <span class="types"><span class="type">number</span></span>
+         Empfangender Spieler
+        </li>
+        <li><span class="parameter">_Good</span>
+            <span class="types"><span class="type">number</span></span>
+               Warentyp
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ware kann benutzt werden.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:CreateSlaveQuest"></a>
+    <strong>AddOnRandomRequests.Global:CreateSlaveQuest (_Behavior, _Quest)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen zufälligen Slave Quest anhand der Einstellungen im Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Quest Data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:GetBuildWallBehavior"></a>
+    <strong>AddOnRandomRequests.Global:GetBuildWallBehavior (_Behavior, _Quest)</strong>
+    </dt>
+    <dd>
+    Erstellt Goal_BuildWall für den Random Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Quest Data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:GetClaimTerritoryBehavior"></a>
+    <strong>AddOnRandomRequests.Global:GetClaimTerritoryBehavior (_Behavior, _Quest)</strong>
+    </dt>
+    <dd>
+    Erstellt Goal_Claim für den Random Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Quest Data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:GetDeliverGoodsBehavior"></a>
+    <strong>AddOnRandomRequests.Global:GetDeliverGoodsBehavior (_Behavior, _Quest)</strong>
+    </dt>
+    <dd>
+    Erstellt Goal_Deliver (Rohstoffe) für den Random Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Quest Data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:GetKnightTitleBehavior"></a>
+    <strong>AddOnRandomRequests.Global:GetKnightTitleBehavior (_Behavior, _Quest)</strong>
+    </dt>
+    <dd>
+    Erstellt Goal_KnightTitle für den Random Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Quest Data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:GetPossibleBehaviors"></a>
+    <strong>AddOnRandomRequests.Global:GetPossibleBehaviors (_Behavior, _Quest)</strong>
+    </dt>
+    <dd>
+    Gibt eine Liste mit Behavior zurück, die für den Random Quest verfügbar
+ sind.  Es wird eines der Behavior ausgewählt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Quest Data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:Install"></a>
+    <strong>AddOnRandomRequests.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das AddOn.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Goal"></a>Goal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Goal_RandomRequest"></a>
+    <strong>Goal_RandomRequest (_DeliverGoods, _DeliverGold, _ClaimTerritory, _KnightTitle, _CityReputation, _Time, _Suggestion, _Success, _Failure)</strong>
+    </dt>
+    <dd>
+    Wählt einen zufälligen Auftrag für den Spieler aus.  Über die Parameter kann
+ bestimmt werden, welche Typen von Aufträgen erscheinen können. Dieses
+ Behavior sollte in versteckten Quests benutzt werden.
+<p> Tribute und Warenanforderungen steigen in der Menge mit höherem Titel
+ des Auftragnehmers.
+<p> <b>Hinweis</b>: Das Behavior erzeugt einen weiteren Quest mit dem zufällig
+ gewählten Ziel.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_DeliverGoods</span>
+            <span class="types"><span class="type">boolean</span></span>
+           Ziel: Waren liefern
+        </li>
+        <li><span class="parameter">_DeliverGold</span>
+            <span class="types"><span class="type">boolean</span></span>
+            Ziel: Tribut bezahlen
+        </li>
+        <li><span class="parameter">_ClaimTerritory</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Ziel: Territorium erobern
+        </li>
+        <li><span class="parameter">_KnightTitle</span>
+            <span class="types"><span class="type">boolean</span></span>
+            Ziel: Nächst höherer Titel
+        </li>
+        <li><span class="parameter">_CityReputation</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Ziel: Ruf der Stadt
+        </li>
+        <li><span class="parameter">_Time</span>
+            <span class="types"><span class="type">number</span></span>
+                   Zeit bis zur Niederlage (0 = aus)
+        </li>
+        <li><span class="parameter">_Suggestion</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             (optional) Startnachricht
+        </li>
+        <li><span class="parameter">_Success</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                (optional) Erfolgsnachricht
+        </li>
+        <li><span class="parameter">_Failure</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                (optional) Fehlschlagnachricht
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-02-23 10:43:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

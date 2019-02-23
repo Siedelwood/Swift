@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
+  <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/loader.html">loader</a></li>
+  <li><strong>writer</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>writer</code></h1>
+<p>Läd die Quelldateien und fügt sie zur QSB zusammen.</p>
+<p>
+<p> <p>Dieses Skript kann nicht aus dem Spiel ausgeführt werden! Es wird eine
+ Installation von Lua 5.1 oder höher auf dem PC benötigt!</p>
+<p> <h2>Installation auf Windows</h2>
+ <p>Um sauber mit Lua unter Windows zu arbeiten, wird die Distribution, ein
+ ordentlicher Source Code Editor und eine Git-Bash benötigt. Die Distribution
+ enthält die Binaries von Lua. Ohne die geht gar nichts! Die Installation von
+ Git bringt einen voll konfigurierten MinGW mit - ein Linux-Subsystem. Die
+ Wahl des Editors ist frei, jedoch gibt es nur wenige gute.</p>
+<p> <h3>Installation von Lua</h3>
+ <ul>
+ <li>
+ Lua-Binaries herunterladen:<br>
+ <a href="http://luadist.org/" target="_blank">LuaDist</a>
+ </li>
+ <li>
+ Den Inhalt des Archivs in den Programmordner kopieren und das LuaDist -
+ Verzeichnis umbenennen in "Lua".<br>
+ Beispiel: <pre>C:/Program Files/Lua</pre>
+ </li>
+ <li>
+ Das Verzeichnis .../Lua/bin der Systemvariable PATH hinzufügen. Das geschieht
+ über die Systemsteuerung.<br>
+ Beispiel: <pre>C:/Program Files/Lua/bin</pre>
+ </li>
+ <li>
+ Eine Eingabeaufforderung oder eine Powershell öffnen und lua -v bzw.
+ lua --version eingeben. Lua sollte nun die Versionsinfo anzeigen. Damit ist
+ Lua installiert.
+ </li>
+ </ul>
+<p> <h3>Installation von Git</h3>
+ <ul>
+ <li>
+ Git für Windows herunterladen:<br>
+ <a href="https://git-scm.com/download/win" target="_blank">Git</a>
+ </li>
+ <li>
+ Git installieren. Danach eine Eingabeaufforderung oder Powershell aufmachen
+ und git --version eingeben. Es sollte die Versionsinfo von Git angezeigt
+ werden.
+ </li>
+ <li>
+ Im Git-Verzeichnis nach bash.exe suchen. Der komplette Pfad muss zu PATH
+ hinzugefügt werden.<br>
+ Beispiel: <pre>C:/Program Files/Git/bin/bash.exe</pre>
+ </li>
+ </ul>
+
+ <h3>Setup Visual Studio Code</h3>
+ Neben Atom eignet sich auch Visual Studio Code als Editor. Hier ist der
+ Vorteil die Möglichkeit ein Terminal zu integrieren. So kann man Lua
+ sehr bequem ausführen!
+ <ul>
+ <li>
+ Visual Studio Code installieren:<br>
+ <a href="https://code.visualstudio.com/download" target="_blank">VS Code</a>
+ </li>
+ <li>
+ Einstellungen öffnen und Integiertes Terminal auf bash.exe setzen.
+ <br>Beispiel:
+ <pre>"terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe"</pre>
+ </li>
+ <li>
+ Visual Studio Code neu starten und danach das integrierte Terminal öffnen.
+ Es sollte nun eine Bash statt einer Eingabeaufforderung angezeigt werden.
+ (Die Bash hat mehrfarbige Texte, die Eingabeaufforderung ist nur weiß.)
+ </li>
+ </ul>
+<p> <h2>Installation auf Linux/Mac</h2>
+ <p>Unter Linux und Mac müssen einige Abhängigkeiten von LDoc nachinstalliert
+ werden um die Dokumentation generieren zu können. Die Installationen müssen
+ mit Root-Rechten durchgeführt werden!</p>
+
+ <h3>Beispiel für Debian / Ubuntu / Linux Mint:</h3>
+ Superuser werden:
+ <pre>su -</pre>
+ Lua installieren:
+ <pre>apt install lua</pre>
+ Lua Package Manager installieren:
+ <pre>apt install luarocks</pre>
+ LFS installieren:
+ <pre>luarocks install luafilesystem</pre>
+ Penlight installieren:
+ <pre>luarocks install penlight</pre>
+
+ <p>Anschließend kann man im Terminal lua -v ausführen und sollte die
+ Version angezeigt bekommen.</p>
+</p>
+
+
+
+<br/>
+<br/>
+
+
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-02-23 10:43:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

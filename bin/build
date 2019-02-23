@@ -31,7 +31,7 @@ cd ../qsb
 if [ $createDevDoc -gt 0 ]; then
     echo "Erzeuge Entwicklerdokumentation ..."
     rm -r ../doc &>/dev/null
-    lua ldoc/ldoc.lua -d ../doc -a lua #&>/dev/null
+    lua ldoc/ldoc.lua -d ../doc -a lua &>/dev/null
     echo "Fertig!"
 fi
 

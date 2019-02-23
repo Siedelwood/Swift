@@ -34,7 +34,6 @@
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#QSB_NonPlayerCharacter">QSB.NonPlayerCharacter</a></li>
 <li><a href="#Goal">Goal</a></li>
-<li><a href="#Trigger">Trigger</a></li>
 </ul>
 
 
@@ -126,6 +125,10 @@
 	<td class="summary"><p>Gibt true zurück, wenn der NPC aktiv ist.</p></td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:New">QSB.NonPlayerCharacter:New (_ScriptName)</a></td>
+	<td class="summary">Konstruktor</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:Reset">QSB.NonPlayerCharacter:Reset ()</a></td>
 	<td class="summary">Setzt den NPC zurück, sodass er erneut aktiviert werden kann.</td>
 	</tr>
@@ -138,6 +141,11 @@
 	<td class="summary">Setzt den Ansprechpartner für diesen NPC.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:SetTalkDistance">QSB.NonPlayerCharacter:SetTalkDistance (_Distance)</a></td>
+	<td class="summary">Setzt die Entfernung, die unterschritten werden muss, damit
+ ein NPC als angesprochen gilt.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#QSB.NonPlayerCharacter:SetType">QSB.NonPlayerCharacter:SetType (_Type)</a></td>
 	<td class="summary">Gibt die Entity ID des letzten angesprochenen NPC zurück.</td>
 	</tr>
@@ -146,23 +154,12 @@
 	<td class="summary">Setzt das Callback für den Fall, dass ein falscher Held den
  NPC anspricht.</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#construct">construct (_ScriptName)</a></td>
-	<td class="summary">Konstruktor</td>
-	</tr>
 </table>
 <h2><a href="#Goal">Goal</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Goal_NPC">Goal_NPC (_NpcName, _HeroName)</a></td>
 	<td class="summary">Der Held muss einen Nichtspielercharakter ansprechen.</td>
-	</tr>
-</table>
-<h2><a href="#Trigger">Trigger</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#Trigger_NPC">Trigger_NPC (_NpcName, _HeroName)</a></td>
-	<td class="summary">Startet den Quest, sobald der NPC angesprochen wurde.</td>
 	</tr>
 </table>
 
@@ -597,6 +594,35 @@
 
 </dd>
     <dt>
+    <a name = "QSB.NonPlayerCharacter:New"></a>
+    <strong>QSB.NonPlayerCharacter:New (_ScriptName)</strong>
+    </dt>
+    <dd>
+    Konstruktor
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des NPC
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Einen normalen NPC erzeugen:
+</span>QSB.NonPlayerCharacter:New(<span class="string">"npc"</span>)
+    :SetDialogPartner(<span class="string">"hero"</span>)                 <span class="comment">-- Optional
+</span>    :SetCallback(Briefing1)                   <span class="comment">-- Optional
+</span>    :Activate();</pre>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "QSB.NonPlayerCharacter:Reset"></a>
     <strong>QSB.NonPlayerCharacter:Reset ()</strong>
     </dt>
@@ -671,6 +697,28 @@
 
 </dd>
     <dt>
+    <a name = "QSB.NonPlayerCharacter:SetTalkDistance"></a>
+    <strong>QSB.NonPlayerCharacter:SetTalkDistance (_Distance)</strong>
+    </dt>
+    <dd>
+    Setzt die Entfernung, die unterschritten werden muss, damit
+ ein NPC als angesprochen gilt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Distance</span>
+            <span class="types"><span class="type">number</span></span>
+         Aktivierungsdistanz
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "QSB.NonPlayerCharacter:SetType"></a>
     <strong>QSB.NonPlayerCharacter:SetType (_Type)</strong>
     </dt>
@@ -725,35 +773,6 @@
 
 
 </dd>
-    <dt>
-    <a name = "construct"></a>
-    <strong>construct (_ScriptName)</strong>
-    </dt>
-    <dd>
-    Konstruktor
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Skriptname des NPC
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Einen normalen NPC erzeugen:
-</span>new {QSB.NonPlayerCharacter, <span class="string">"npc"</span>}
-    :SetDialogPartner(<span class="string">"hero"</span>)                 <span class="comment">-- Optional
-</span>    :SetCallback(Briefing1)                   <span class="comment">-- Optional
-</span>    :Activate();</pre>
-    </ul>
-
-</dd>
 </dl>
     <h2 class="section-header "><a name="Goal"></a>Goal</h2>
 
@@ -766,38 +785,9 @@
     Der Held muss einen Nichtspielercharakter ansprechen.
 <p> Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
  aktiviert wurde.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_NpcName</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-          Skriptname des NPC
-        </li>
-        <li><span class="parameter">_HeroName</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         (optional) Skriptname des Helden
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Trigger"></a>Trigger</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "Trigger_NPC"></a>
-    <strong>Trigger_NPC (_NpcName, _HeroName)</strong>
-    </dt>
-    <dd>
-    Startet den Quest, sobald der NPC angesprochen wurde.
-<p> Es wird automatisch ein NPC erzeugt und überwacht, sobald der Quest
- erzeugt wurde.
+<p> <b>Hinweis</b>: Jeder Siedler kann zu jedem Zeitpunkt nur <u>einen</u> NPC
+ haben. Wird ein weiterer NPC zugewiesen, wird der alte überschrieben und
+ der verknüpfte Quest funktioniert nicht mehr!
 
 
 
@@ -825,7 +815,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-02 17:50:57 </i>
+<i style="float:right;">Last updated 2019-02-23 10:43:56 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
