@@ -1,19 +1,19 @@
 #/bin/bash
 
-echo "==== Building QSB ===="
-./make.sh -d
+echo "==== QSB zusammenbauen ===="
+./build -userdoc
 
-echo "==== Creating Release ===="
+echo "==== Release erzeugen ===="
 
-echo "Creating release folder..."
+echo "Erzeuge Release-Verzeichnis..."
 cd ..
 rm -rf Release &>/dev/null
 mkdir -p Release/src/advanced
 mkdir -p Release/src/beginner
 mkdir -p Release/bin
-echo "Done!"
+echo "Fertig!"
 
-echo "Copy qsb files..."
+echo "Kopiere QSB-Dateien..."
 cp var/qsb.lua Release/src/questsystembehavior.lua &>/dev/null
 cp var/qsb_min.lua Release/src/questsystembehavior_min.lua &>/dev/null
 cp qsb/default/globalscript.lua Release/src/beginner/mapscript.lua &>/dev/null
@@ -22,38 +22,38 @@ cp qsb/default/globalscript2.lua Release/src/advanced/mapscript.lua &>/dev/null
 cp qsb/default/localscript2.lua Release/src/advanced/localmapscript.lua &>/dev/null
 cp qsb/default/internglobalscript.lua Release/src/advanced/internmapscript.lua &>/dev/null
 cp qsb/default/internlocalscript.lua Release/src/advanced/internlocalmapscript.lua &>/dev/null
-echo "Done!"
+echo "Fertig!"
 
-echo "Copy documentation..."
+echo "Dokumentation kopieren..."
 cp -r qsb/doc Release/doc &>/dev/null
 mkdir Release/guide &>/dev/null
 cp hlp/*.pdf Release/guide &>/dev/null
 cp hlp/readme.txt Release/start.txt &>/dev/null
-echo "Done!"
+echo "Fertig!"
 
-echo "Copy examples..."
+echo "Beispiele kopieren..."
 cp -r qsb/example Release/example &>/dev/null
-echo "Done"
+echo "Fertig!"
 
-echo "Copy Map Iconator..."
+echo "Kopiere Map Iconator..."
 cp -r bin/MapIconator.jar Release/bin/MapIconator.jar &>/dev/null
-echo "Done"
+echo "Fertig!"
 
-echo "Copy Siedelwood Cutscene Assistant..."
+echo "Siedelwood Cutscene Assistant kopieren..."
 cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
-echo "Done"
+echo "Fertig!"
 
-echo "Copy Cutscene Maker..."
+echo "Cutscene Maker kopieren..."
 cp -r "app/CutsceneMaker/CutsceneMaker.jar" Release/bin/CutsceneMaker.jar &>/dev/null
-echo "Done"
+echo "Fertig!"
 
-echo "Creating archive..."
+echo "Archiv zusammenstellen..."
 zip -r Release/doc Release/guide Release/* &>/dev/null
 mv Release/doc.zip Release.zip &>/dev/null
-echo "Done!"
+echo "Fertig!"
 
-echo "Cleanup mess..."
+echo "Aufräumen..."
 rm -rf Release
-echo "Done!"
+echo "Fertig!"
 
-echo "Publishing finished!"
+echo "Veröffentlichung abgeschlossen!"
