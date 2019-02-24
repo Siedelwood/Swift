@@ -311,6 +311,10 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:Start()
+    if self:CanBePlayed() then
+        self:Play();
+        return;
+    end
     StartSimpleHiResJobEx(self.WaitForBriefingEnd, self);
 end
 
@@ -405,8 +409,6 @@ function QSB.SimpleTypewriter:TokenizeText()
         table.insert(TempTokens, " ");
         Text = Text:sub(e+1);
     end
-
-    API.DumpTable(TempTokens, "TempTokens")
 
     for i= 1, #TempTokens, 1 do
         if TempTokens[i] == " " or string.find(TempTokens[i], "{") then

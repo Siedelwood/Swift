@@ -6,46 +6,50 @@
 
 -- Einfach alles so lassen, wie es ist!
 
+-- -------------------------------------------------------------------------- --
+
 GlobalMissionScript = {
-    UseCredits       = false,
-    UseIntro         = false,
-    IntroName        = "IntroCutsceneFunctionName",
-    CreditsFinished  = true,
-    CreditsMapName   = "A Siedelwood Map",
-    CreditsMapAuthor = "Author",
-    CreditsMapTester = "Tester1, Tester2, Tester3",
-    CreditsLookAt    = Logic.GetHeadquarters(1),
-}
+    UseCredits      = false,
+    CreditsStory    = "",
+    CreditsFinished = true,
 
-function GlobalMissionScript.SetIntro(_Name)
-    GlobalMissionScript.IntroName = _Name;
-    GlobalMissionScript.UseIntro = true;
-end
+    UseIntro        = false,
+    IntroBriefing   = nil,
+};
 
-function GlobalMissionScript.SetCredits(_MapName, _Author, _Tester, _LookAt)
-    _LookAt = _LookAt or Logic.GetHeadquarters(1);
-    GlobalMissionScript.CreditsMapName = _MapName;
-    GlobalMissionScript.CreditsMapAuthor = _Author;
-    GlobalMissionScript.CreditsMapTester = _Tester;
-    GlobalMissionScript.CreditsLookAt = GetID(_LookAt);
-    GlobalMissionScript.UseCredits = true;
+function GlobalMissionScript.RegisterCredits(_Story)
+    GlobalMissionScript.CreditsStory    = _Story;
     GlobalMissionScript.CreditsFinished = false;
+    GlobalMissionScript.UseCredits      = true;
 end
 
-function GlobalMissionScript.AreCreditsFinished()
-    return GlobalMissionScript.CreditsFinished == true;
+function GlobalMissionScript.StartCredits()
+    API.SimpleTypewriter(GlobalMissionScript.CreditsStory, GlobalMissionScript.FinishCredits);
 end
 
-function GlobalMissionScript.DisplayUI()
-    API.Bridge("Mission_LocalDisplayUI(1)");
+function GlobalMissionScript.FinishCredits()
+    GlobalMissionScript.CreditsFinished = true;
 end
 
-function GlobalMissionScript_Trigger_WaitingForCreditsFinished()
-    return GlobalMissionScript.AreCreditsFinished();
+function GlobalMissionScript.RegisterIntroBriefing(_Briefing)
+    GlobalMissionScript.IntroBriefing = _Briefing;
+    GlobalMissionScript.UseIntro      = true;
 end
 
-function GlobalMissionScript_Reward_DisplayUI()
-    GlobalMissionScript.DisplayUI()
+function GlobalMissionScript_Trigger_CreditsFinished()
+    if GlobalMissionScript.UseCredits and BundleDialogWindows then
+        return GlobalMissionScript.CreditsFinished == true;
+    else
+        return true;
+    end
+end
+
+function GlobalMissionScript_Trigger_IntroFinished()
+    if GlobalMissionScript.UseIntro and BriefingSystem then
+        return IsBriefingFinished(GlobalMissionScript.IntroBriefingID);
+    else
+        return true;
+    end
 end
 
 -- -------------------------------------------------------------------------- --
@@ -88,28 +92,29 @@ end
 function Mission_QuestOnGameStart()
     if BundleQuestGeneration then
         
-        local Behaviors = {
-            Goal_InstantSuccess(),
-            Trigger_Time(0)
-        };
         if GlobalMissionScript.UseCredits then
-            table.insert(Behaviors, Reward_MapScriptFunction("GlobalMissionScript_Reward_DisplayUI"));
-            table.insert(Behaviors, Trigger_MapScriptFunction("GlobalMissionScript_Trigger_WaitingForCreditsFinished"));
+            GlobalMissionScript.StartCredits();
         end
         if GlobalMissionScript.UseIntro then
-            table.insert(Behaviors, Reward_Briefing(GlobalMissionScript.IntroName));
+            StartSimpleHiResJobEx(function()
+                if _G[GlobalMissionScript.IntroBriefing] then
+                    if GlobalMissionScript.UseCredits and GlobalMissionScript.CreditsFinished then
+                        GlobalMissionScript.IntroBriefingID = _G[GlobalMissionScript.IntroBriefing]();
+                        return true;
+                    elseif not GlobalMissionScript.UseCredits then
+                        GlobalMissionScript.IntroBriefingID = _G[GlobalMissionScript.IntroBriefing]();
+                        return true;
+                    end
+                end
+            end)
         end
-        API.CreateQuest { Name = "MissionStartQuest_A",  unpack(Behaviors)};
-
-        -- ------------------------------------------------------------------ --
-
-        local Behaviors = {
+        
+        API.CreateQuest{
+            Name = "MissionStartQuest",
             Goal_InstantSuccess(),
-            Trigger_OnQuestSuccess("MissionStartQuest_A", 0),
+            Trigger_MapScriptFunction("GlobalMissionScript_Trigger_CreditsFinished"),
+            Trigger_MapScriptFunction("GlobalMissionScript_Trigger_IntroFinished"),
+            Trigger_Time(0),
         };
-        if GlobalMissionScript.UseIntro then
-            table.insert(Behaviors, Trigger_Briefing("MissionStartQuest_A"));
-        end
-        API.CreateQuest { Name = "MissionStartQuest",  unpack(Behaviors)};
     end
 end

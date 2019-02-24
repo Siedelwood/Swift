@@ -9,11 +9,6 @@
 g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
 Script.Load(g_ContentPath.. "internmapscript.lua");
 
--- Triggere deine Quests auf "MissionStartQuest".
--- Rufe GlobalMissionScript.SetIntro auf um eine Intro zu setzen.
--- Rufe GlobalMissionScript.SetCredits auf um die Credits einzustellen.
--- "MissionStartQuest" wird auf Intro und/oder Credits warten.
-
 -- In dieser Funktion können Spieler initialisiert werden.
 function InitPlayers()
 end
