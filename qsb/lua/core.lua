@@ -50,7 +50,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "RE 1.3.0 23/2/2019";
+QSB.Version = "RE 1.4.0 1/4/2019";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 

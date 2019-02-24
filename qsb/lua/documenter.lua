@@ -185,6 +185,9 @@ function SymfoniaDocumenter:CreateSearchTagsFromSourceFile(_File)
         -- Kommentare
         local s, e = LUA:find("^-- .*$");
         if s then
+            LUA = LUA:gsub("<.*>", "");
+            LUA = LUA:gsub("<", "");
+            LUA = LUA:gsub(">", "");
             TagString = TagString .. "<p>" .. LUA:sub(s, e) .. "</p>";
         end
         -- API calls
