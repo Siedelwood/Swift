@@ -1,0 +1,1330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+<li><a href="#Reward">Reward</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><strong>addons.addonquestdebug</strong></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/loader.html">loader</a></li>
+  <li><a href="../modules/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>addons.addonquestdebug</code></h1>
+<p>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher
+ neuer Möglichkeiten.</p>
+<p>
+<p> Die wichtigste Neuerung ist die Konsole, die es erlaubt Quests direkt über
+ die Eingabe von Befehlen zu steuern, einzelne einfache Lua-Kommandos im
+ Spiel auszuführen und sogar komplette Skripte zu laden.
+<p> <p><a href="#API.ActivateDebugMode">Debug starten</a></p>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ActivateDebugMode">API.ActivateDebugMode (_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)</a></td>
+	<td class="summary">Aktiviert den Debug.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.Clear">AddOnQuestDebug.Global.Clear ()</a></td>
+	<td class="summary">Konsolenbefehl: Leert das Debug Window.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.CollectGarbage">AddOnQuestDebug.Global.CollectGarbage ()</a></td>
+	<td class="summary">Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.CountLuaLoad">AddOnQuestDebug.Global.CountLuaLoad ()</a></td>
+	<td class="summary">Gibt die Speicherauslastung von Lua zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.Diplomacy">AddOnQuestDebug.Global.Diplomacy (_Arguments)</a></td>
+	<td class="summary">Konsolenbefehl: Ändert die Diplomatie zwischen zwei Spielern.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.ExecuteCommand">AddOnQuestDebug.Global.ExecuteCommand (_Arguments, _Flags)</a></td>
+	<td class="summary">Führt ein Lua-Kommando im Enviorment aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.FindQuestNames">AddOnQuestDebug.Global.FindQuestNames (_Pattern, _ExactName)</a></td>
+	<td class="summary">Sucht nach allen Quests, auf die den angegebenen Namen enthalten und gibt
+ die Namen der gefundenen Quests zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.LoadScript">AddOnQuestDebug.Global.LoadScript (_Arguments, _Flags)</a></td>
+	<td class="summary">Läd ein Lua-Skript in das Enviorment.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.OnSaveGameLoad">AddOnQuestDebug.Global.OnSaveGameLoad (_Arguments, _Original)</a></td>
+	<td class="summary">Stellt den Debug nach dem Laden eines Spielstandes wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.OverwriteCreateQuests">AddOnQuestDebug.Global.OverwriteCreateQuests ()</a></td>
+	<td class="summary">Überschreibt CreateQuests, sodass Assistentenquests über das Skript erzeugt
+ werden um diese sinnvoll überprüfen zu können.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.PrintQuests">AddOnQuestDebug.Global.PrintQuests (_Arguments, _Flags)</a></td>
+	<td class="summary">Zeigt alle Quests nach einem Filter an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestFailure">AddOnQuestDebug.Global.QuestFailure (_QuestName, _ExactName)</a></td>
+	<td class="summary">Lässt einen Quest, oder mehrere Quests mit ähnlichen Namen, fehlschlagen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestInterrupt">AddOnQuestDebug.Global.QuestInterrupt (_QuestName, _ExactName)</a></td>
+	<td class="summary">Stoppt einen Quest, oder mehrere Quests mit ähnlichen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestReset">AddOnQuestDebug.Global.QuestReset (_QuestName, _ExactName)</a></td>
+	<td class="summary">Setzt den Quest / die Quests zurück, sodass er neu gestartet werden kann.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestSuccess">AddOnQuestDebug.Global.QuestSuccess (_QuestName, _ExactName)</a></td>
+	<td class="summary">Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestTrigger">AddOnQuestDebug.Global.QuestTrigger (_QuestName, _ExactName)</a></td>
+	<td class="summary">Startet einen Quest, oder mehrere Quests mit ähnlichen Namen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.RestartMap">AddOnQuestDebug.Global.RestartMap ()</a></td>
+	<td class="summary">Konsolenbefehl: Startet die Map umgehend neu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.SetPosition">AddOnQuestDebug.Global.SetPosition (_Arguments)</a></td>
+	<td class="summary">Konsolenbefehl: Setzt die Position eines Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.ShareView">AddOnQuestDebug.Global.ShareView (_Arguments)</a></td>
+	<td class="summary">Konsolenbefehl: Aktiviert/deaktiviert die geteilte Sicht zweier Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.ShowVersion">AddOnQuestDebug.Global.ShowVersion ()</a></td>
+	<td class="summary">Konsolenbefehl: Zeigt die Version der QSB an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:ActivateDebug">AddOnQuestDebug.Global:ActivateDebug (_CheckAtRun, _TraceQuests, _Cheats, _Shell)</a></td>
+	<td class="summary">Aktiviert den Debug.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:ActivateDevelopingCheats">AddOnQuestDebug.Global:ActivateDevelopingCheats ()</a></td>
+	<td class="summary"><p>Aktiviert die Cheats.</p>
+ <p>Es werden die Development-Cheats benutzt und um einige neue erweitert.</p></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:ActivateDevelopingShell">AddOnQuestDebug.Global:ActivateDevelopingShell ()</a></td>
+	<td class="summary"><p>Aktiviert die Shell.</p>
+ <p>Der Debug stellt einige zusätzliche Tastenkombinationen bereit:</p>
+ <p>Die Konsole des Debug wird mit SHIFT + ^ geöffnet.</p>
+ <p>Die Konsole bietet folgende Kommandos:</p></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:ActivateQuestTrace">AddOnQuestDebug.Global:ActivateQuestTrace ()</a></td>
+	<td class="summary">Aktiviert die Questverfolgung.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:Install">AddOnQuestDebug.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:Parser">AddOnQuestDebug.Global:Parser (_Input)</a></td>
+	<td class="summary">Ließt eingegebene Kommandos und führt entsprechende Funktionen aus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global:Tokenize">AddOnQuestDebug.Global:Tokenize (_Input)</a></td>
+	<td class="summary">Zerlegt den Eingabestring in einzelne Kommandos und gibt diese als Table
+ zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:ActivateDevelopingCheats">AddOnQuestDebug.Local:ActivateDevelopingCheats ()</a></td>
+	<td class="summary">Aktiviert die Development Cheats des Spiels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:ActivateDevelopingShell">AddOnQuestDebug.Local:ActivateDevelopingShell ()</a></td>
+	<td class="summary">Aktiviert die Kommandokonsole.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:CollectGarbage">AddOnQuestDebug.Local:CollectGarbage ()</a></td>
+	<td class="summary">Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:CountLuaLoad">AddOnQuestDebug.Local:CountLuaLoad ()</a></td>
+	<td class="summary">Gibt die Speicherauslastung von Lua zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:Install">AddOnQuestDebug.Local:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+</table>
+<h2><a href="#Reward">Reward</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Reward_DEBUG">Reward_DEBUG (_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)</a></td>
+	<td class="summary">Aktiviert den Debug.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ActivateDebugMode"></a>
+    <strong>API.ActivateDebugMode (_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)</strong>
+    </dt>
+    <dd>
+    Aktiviert den Debug.
+<p> Der Developing Mode bietet viele Hotkeys und eine Konsole. Die Konsole ist
+ ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
+ sogar Funktionen während des Spiels zu überschreiben.
+<p> Die Konsole kann über <b>SHIFT + ^</b> geöffnet werden.
+<p> <p><b>Alias:</b> ActivateDebugMode</p>
+<p> <h3>Cheats</h3>
+ <table border="1">
+ <tr>
+ <td><b>Cheat</b></td>
+ <td><b>Beschreibung</b></td>
+ </tr>
+ <tr>
+ <td>SHIFT + ^</td>
+ <td>Konsole öffnen</td>
+ </tr>
+ <tr>
+ <td>CTRL + C</td>
+ <td>Zeitanzeige an/aus</td>
+ </tr>
+ <tr>
+ <td>CTRL + SHIFT + F</td>
+ <td>Nebel des Krieges abschalten</td>
+ </tr>
+ <tr>
+ <td>STRG + G</td>
+ <td>GUI ausschalten</td>
+ </tr>
+ <tr>
+ <td>ALT + F10</td>
+ <td>Selektiertes Gebäude anzünden</td>
+ </tr>
+ <tr>
+ <td>ALT + F11</td>
+ <td>Selektierte Einheit verwunden</td>
+ </tr>
+ <tr>
+ <td>ALT + F12</td>
+ <td>Alle Rechte freigeben / wieder sperren</td>
+ </tr>
+ <tr>
+ <td>CTRL + SHIFT + 1</td>
+ <td>FPS-Anzeige</td>
+ </tr>
+ <tr>
+ <td>CTRL + (Num) 4</td>
+ <td>Bogenschützen unter der Maus spawnen</td>
+ </tr>
+ <tr>
+ <td>CTRL + (Num) 5</td>
+ <td>Schwertkämpfer unter der Maus spawnen</td>
+ </tr>
+ <tr>
+ <td>CTRL + (Num) 6</td>
+ <td>Katapultkarren unter der Maus spawnen</td>
+ </tr>
+ <tr>
+ <td>CTRL + (Num) 7</td>
+ <td>Ramme unter der Maus spawnen</td>
+ </tr>
+ <tr>
+ <td>CTRL + (Num) 8</td>
+ <td>Belagerungsturm unter der Maus spawnen</td>
+ </tr>
+ <tr>
+ <td>CTRL + (Num) 9</td>
+ <td>Katapult unter der Maus spawnen</td>
+ </tr>
+ <tr>
+ <td>(Num) +</td>
+ <td>Spiel beschleunigen</td>
+ </tr>
+ <tr>
+ <td>(Num) -</td>
+ <td>Spiel verlangsamen</td>
+ </tr>
+ <tr>
+ <td>(Num) *</td>
+ <td>Geschwindigkeit zurücksetzen</td>
+ </tr>
+ <tr>
+ <td>CTRL + F1</td>
+ <td>+ 50 Gold</td>
+ </tr>
+ <tr>
+ <td>CTRL + F2</td>
+ <td>+ 10 Holz</td>
+ </tr>
+ <tr>
+ <td>CTRL + F3</td>
+ <td>+ 10 Stein</td>
+ </tr>
+ <tr>
+ <td>CTRL + F4</td>
+ <td>+ 10 Getreide</td>
+ </tr>
+ <tr>
+ <td>CTRL + F5</td>
+ <td>+ 10 Milch</td>
+ </tr>
+ <tr>
+ <td>CTRL + F6</td>
+ <td>+ 10 Kräuter</td>
+ </tr>
+ <tr>
+ <td>CTRL + F7</td>
+ <td>+ 10 Wolle</td>
+ </tr>
+ <tr>
+ <td>CTRL + F8</td>
+ <td>+ 10 auf alle Waren</td>
+ </tr>
+ <tr>
+ <td>SHIFT + F1</td>
+ <td>+ 10 Honig</td>
+ </tr>
+ <tr>
+ <td>SHIFT + F2</td>
+ <td>+ 10 Eisen</td>
+ </tr>
+ <tr>
+ <td>SHIFT + F3</td>
+ <td>+ 10 Fisch</td>
+ </tr>
+ <tr>
+ <td>SHIFT + F4</td>
+ <td>+ 10 Wild</td>
+ </tr>
+ <tr>
+ <td>CTRL + F9</td>
+ <td>Nahrung für selektiertes Gebäude erhöhen</td>
+ </tr>
+ <tr>
+ <td>SHIFT + F9</td>
+ <td>Nahrung für selektiertes Gebäude verringern</td>
+ </tr>
+ <tr>
+ <td>CTRL + F10</td>
+ <td>Kleidung für selektiertes Gebäude erhöhen</td>
+ </tr>
+ <tr>
+ <td>SHIFT + F10</td>
+ <td>Kleidung für selektiertes Gebäude verringern</td>
+ </tr>
+ <tr>
+ <td>CTRL + F11</td>
+ <td>Hygiene für selektiertes Gebäude erhöhen</td>
+ </tr>
+ <tr>
+ <td>SHIFT + F11</td>
+ <td>Hygiene für selektiertes Gebäude verringern</td>
+ </tr>
+ <tr>
+ <td>CTRL + F12</td>
+ <td>Unterhaltung für selektiertes Gebäude erhöhen</td>
+ </tr>
+ <tr>
+ <td>SHIFT + F12</td>
+ <td>Unterhaltung für selektiertes Gebäude verringern</td>
+ </tr>
+ <tr>
+ <td>ALT + CTRL + F10</td>
+ <td>Einnahmen des selektierten Gebäudes erhöhen</td>
+ </tr>
+ <tr>
+ <td>ALT + (Num) 1</td>
+ <td>Burg selektiert → Gold verringern, Werkstatt selektiert → Ware verringern</td>
+ </tr>
+ <tr>
+ <td>ALT + (Num) 2</td>
+ <td>Burg selektiert → Gold erhöhen, Werkstatt selektiert → Ware erhöhen</td>
+ </tr>
+ <tr>
+ <td>CTRL + ALT + 1</td>
+ <td>Kontrolle über Spieler 1</td>
+ </tr>
+ <tr>
+ <td>CTRL + ALT + 2</td>
+ <td>Kontrolle über Spieler 2</td>
+ </tr>
+ <tr>
+ <td>CTRL + ALT + 3</td>
+ <td>Kontrolle über Spieler 3</td>
+ </tr>
+ <tr>
+ <td>CTRL + ALT + 4</td>
+ <td>Kontrolle über Spieler 4</td>
+ </tr>
+ <tr>
+ <td>CTRL + ALT + 5</td>
+ <td>Kontrolle über Spieler 5</td>
+ </tr>
+ <tr>
+ <td>CTRL + ALT + 6</td>
+ <td>Kontrolle über Spieler 6</td>
+ </tr>
+ <tr>
+ <td>CTRL + ALT + 7</td>
+ <td>Kontrolle über Spieler 7</td>
+ </tr>
+ <tr>
+ <td>CTRL + ALT + 8</td>
+ <td>Kontrolle über Spieler 8</td>
+ </tr>
+ <tr>
+ <td>CTRL + (Num) 0</td>
+ <td>Kamera durchschalten</td>
+ </tr>
+ <tr>
+ <td>CTRL + (Num) 1</td>
+ <td>Kamerasprünge im RTS-Mode</td>
+ </tr>
+ <tr>
+ <td>CTRL + SHIFT + V</td>
+ <td>Territorien anzeigen</td>
+ </tr>
+ <tr>
+ <td>CTRL + SHIFT + B</td>
+ <td>Blocking anzeigen</td>
+ </tr>
+ <tr>
+ <td>CTRL + SHIFT + N</td>
+ <td>Gitter verstecken</td>
+ </tr>
+ <tr>
+ <td>CTRL + SHIFT + F9</td>
+ <td>DEBUG-Ausgabe einschalten</td>
+ </tr>
+ <tr>
+ <td>ALT + F9</td>
+ <td>Zufälligen Arbeiter verheiraten</td>
+ </tr>
+ </table>
+<p> <h3>Konsolenbefehle</h3>
+ <table border=1>
+ <tr>
+ <th><b>Befehl</b></th>
+ <th><b>Parameter</b></th>
+ <th><b>Beschreibung</b></th>
+ </tr>
+ <tr>
+ <td>clear</td>
+ <td></td>
+ <td>Entfernt alle Textnachrichten im Debug-Window.</td>
+ </tr>
+ <tr>
+ <td>diplomacy</td>
+ <td>PlayerID1, PlayerID2, Diplomacy</td>
+ <td>Ändert die Doplomatischen Beziehungen zwischen zwei Parteien</td>
+ </tr>
+ <tr>
+ <td>restartmap</td>
+ <td></td>
+ <td>Startet die Map sofort neu.</td>
+ </tr>
+ <tr>
+ <td>shareview</td>
+ <td>PlayerID1, PlayerID2, ActiveFlag</td>
+ <td>Teilt die Sicht zweier Parteien oder hebt es wieder auf.</td>
+ </tr>
+ <tr>
+ <td>setposition</td>
+ <td>Entity, Target</td>
+ <td>Versetzt ein Entity zu einer neuen Position.</td>
+ </tr>
+ <tr>
+ <td>version</td>
+ <td></td>
+ <td>Zeigt die Version der QSB an.</td>
+ </tr>
+ <tr>
+ <td>stop</td>
+ <td>QuestName</td>
+ <td>Unterbricht den angegebenen Quest.</td>
+ </tr>
+ <tr>
+ <td>start</td>
+ <td>QuestName</td>
+ <td>Startet den angegebenen Quest.</td>
+ </tr>
+ <tr>
+ <td>win</td>
+ <td>QuestName</td>
+ <td>Schließt den angegebenen Quest erfolgreich ab.</td>
+ </tr>
+ <tr>
+ <td>fail</td>
+ <td>QuestName</td>
+ <td>Lässt den angegebenen Quest fehlschlagen</td>
+ </tr>
+ <tr>
+ <td>restart</td>
+ <td>QuestName</td>
+ <td>Startet den angegebenen Quest neu.</td>
+ </tr>
+ <tr>
+ <td>printequal</td>
+ <td>Pattern</td>
+ <td>Gibt die Namen aller Quests aus, die das Pattern enthalten.</td>
+ </tr>
+ <tr>
+ <td>printactive</td>
+ <td></td>
+ <td>Gibt die namen aller aktiven Quests aus.</td>
+ </tr>
+ <tr>
+ <td>printdetail</td>
+ <td>QuestName</td>
+ <td>Zeigt genauere Informationen zum angegebenen Quest an.</td>
+ </tr>
+ <tr>
+ <td>gload</td>
+ <td>Path</td>
+ <td>Läd ein Skript zur Laufzeit ins globale Skript.</td>
+ </tr>
+ <tr>
+ <td>lload</td>
+ <td>Path</td>
+ <td>Läd ein Skript zur Laufzeit ins lokale Skript.</td>
+ </tr>
+ <tr>
+ <td>gexec</td>
+ <td>Command</td>
+ <td>Führt die Eingabe als Lua-Befahl im globalen Skript aus.</td>
+ </tr>
+ <tr>
+ <td>lexec</td>
+ <td>Command</td>
+ <td>Führt die Eingabe als Lua-Befahl im lokalen Skript aus.</td>
+ </tr>
+ <tr>
+ <td>collectgarbage</td>
+ <td></td>
+ <td>Löst die Garbage Collection von Lua aus.</td>
+ </tr>
+ <tr>
+ <td>dumpmemory</td>
+ <td></td>
+ <td>Zeigt die Größe des Speichers an, der von Lua belegt wird.</td>
+ </tr>
+ </table>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_CheckAtRun</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Prüfe Quests zur Laufzeit
+        </li>
+        <li><span class="parameter">_TraceQuests</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Aktiviert Questverfolgung
+        </li>
+        <li><span class="parameter">_DevelopingCheats</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Aktiviert Cheats und Konsole
+        </li>
+        <li><span class="parameter">_DevelopingShell</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Aktiviert Cheats und Konsole
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/addons.addonquestdebug.html#Reward_DEBUG">Reward_DEBUG</a>
+    </ul>
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AddOnQuestDebug.Global.Clear"></a>
+    <strong>AddOnQuestDebug.Global.Clear ()</strong>
+    </dt>
+    <dd>
+    Konsolenbefehl: Leert das Debug Window.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.CollectGarbage"></a>
+    <strong>AddOnQuestDebug.Global.CollectGarbage ()</strong>
+    </dt>
+    <dd>
+    Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.
+<p> Die Garbage Collection wird von Lua automatisch in Abständen ausgeführt.
+ Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
+ sein und der Speicher vollgemüllt werden.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.CountLuaLoad"></a>
+    <strong>AddOnQuestDebug.Global.CountLuaLoad ()</strong>
+    </dt>
+    <dd>
+    Gibt die Speicherauslastung von Lua zurück.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.Diplomacy"></a>
+    <strong>AddOnQuestDebug.Global.Diplomacy (_Arguments)</strong>
+    </dt>
+    <dd>
+    Konsolenbefehl: Ändert die Diplomatie zwischen zwei Spielern.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Arguments</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.ExecuteCommand"></a>
+    <strong>AddOnQuestDebug.Global.ExecuteCommand (_Arguments, _Flags)</strong>
+    </dt>
+    <dd>
+    Führt ein Lua-Kommando im Enviorment aus.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Arguments</span>
+
+        </li>
+        <li><span class="parameter">_Flags</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.FindQuestNames"></a>
+    <strong>AddOnQuestDebug.Global.FindQuestNames (_Pattern, _ExactName)</strong>
+    </dt>
+    <dd>
+    Sucht nach allen Quests, auf die den angegebenen Namen enthalten und gibt
+ die Namen der gefundenen Quests zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Pattern</span>
+
+        </li>
+        <li><span class="parameter">_ExactName</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.LoadScript"></a>
+    <strong>AddOnQuestDebug.Global.LoadScript (_Arguments, _Flags)</strong>
+    </dt>
+    <dd>
+    Läd ein Lua-Skript in das Enviorment.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Arguments</span>
+
+        </li>
+        <li><span class="parameter">_Flags</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.OnSaveGameLoad"></a>
+    <strong>AddOnQuestDebug.Global.OnSaveGameLoad (_Arguments, _Original)</strong>
+    </dt>
+    <dd>
+    Stellt den Debug nach dem Laden eines Spielstandes wieder her.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Arguments</span>
+         Argumente der überschriebenen Funktion
+        </li>
+        <li><span class="parameter">_Original</span>
+          Referenz auf Save-Funktion
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.OverwriteCreateQuests"></a>
+    <strong>AddOnQuestDebug.Global.OverwriteCreateQuests ()</strong>
+    </dt>
+    <dd>
+    Überschreibt CreateQuests, sodass Assistentenquests über das Skript erzeugt
+ werden um diese sinnvoll überprüfen zu können.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.PrintQuests"></a>
+    <strong>AddOnQuestDebug.Global.PrintQuests (_Arguments, _Flags)</strong>
+    </dt>
+    <dd>
+    Zeigt alle Quests nach einem Filter an.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Arguments</span>
+
+        </li>
+        <li><span class="parameter">_Flags</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.QuestFailure"></a>
+    <strong>AddOnQuestDebug.Global.QuestFailure (_QuestName, _ExactName)</strong>
+    </dt>
+    <dd>
+    Lässt einen Quest, oder mehrere Quests mit ähnlichen Namen, fehlschlagen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+
+        </li>
+        <li><span class="parameter">_ExactName</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.QuestInterrupt"></a>
+    <strong>AddOnQuestDebug.Global.QuestInterrupt (_QuestName, _ExactName)</strong>
+    </dt>
+    <dd>
+    Stoppt einen Quest, oder mehrere Quests mit ähnlichen Namen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+
+        </li>
+        <li><span class="parameter">_ExactName</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.QuestReset"></a>
+    <strong>AddOnQuestDebug.Global.QuestReset (_QuestName, _ExactName)</strong>
+    </dt>
+    <dd>
+    Setzt den Quest / die Quests zurück, sodass er neu gestartet werden kann.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+
+        </li>
+        <li><span class="parameter">_ExactName</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.QuestSuccess"></a>
+    <strong>AddOnQuestDebug.Global.QuestSuccess (_QuestName, _ExactName)</strong>
+    </dt>
+    <dd>
+    Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+
+        </li>
+        <li><span class="parameter">_ExactName</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.QuestTrigger"></a>
+    <strong>AddOnQuestDebug.Global.QuestTrigger (_QuestName, _ExactName)</strong>
+    </dt>
+    <dd>
+    Startet einen Quest, oder mehrere Quests mit ähnlichen Namen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+
+        </li>
+        <li><span class="parameter">_ExactName</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.RestartMap"></a>
+    <strong>AddOnQuestDebug.Global.RestartMap ()</strong>
+    </dt>
+    <dd>
+    Konsolenbefehl: Startet die Map umgehend neu.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.SetPosition"></a>
+    <strong>AddOnQuestDebug.Global.SetPosition (_Arguments)</strong>
+    </dt>
+    <dd>
+    Konsolenbefehl: Setzt die Position eines Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Arguments</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.ShareView"></a>
+    <strong>AddOnQuestDebug.Global.ShareView (_Arguments)</strong>
+    </dt>
+    <dd>
+    Konsolenbefehl: Aktiviert/deaktiviert die geteilte Sicht zweier Spieler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Arguments</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.ShowVersion"></a>
+    <strong>AddOnQuestDebug.Global.ShowVersion ()</strong>
+    </dt>
+    <dd>
+    Konsolenbefehl: Zeigt die Version der QSB an.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global:ActivateDebug"></a>
+    <strong>AddOnQuestDebug.Global:ActivateDebug (_CheckAtRun, _TraceQuests, _Cheats, _Shell)</strong>
+    </dt>
+    <dd>
+    Aktiviert den Debug.
+<p> Der Developing Mode bietet viele Hotkeys und eine Konsole. Die Konsole ist
+ ein mächtiges Werkzeug. Es ist möglich tief in das Spiel einzugreifen und
+ sogar Funktionen während des Spiels zu überschreiben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_CheckAtRun</span>
+         [boolean] Prüfe Quests zur Laufzeit
+        </li>
+        <li><span class="parameter">_TraceQuests</span>
+         [boolean] Aktiviert Questverfolgung
+        </li>
+        <li><span class="parameter">_Cheats</span>
+         [boolean] Aktiviert Cheats
+        </li>
+        <li><span class="parameter">_Shell</span>
+         [boolean] Aktiviert Konsole
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global:ActivateDevelopingCheats"></a>
+    <strong>AddOnQuestDebug.Global:ActivateDevelopingCheats ()</strong>
+    </dt>
+    <dd>
+    <p>Aktiviert die Cheats.</p>
+ <p>Es werden die Development-Cheats benutzt und um einige neue erweitert.</p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global:ActivateDevelopingShell"></a>
+    <strong>AddOnQuestDebug.Global:ActivateDevelopingShell ()</strong>
+    </dt>
+    <dd>
+    <p>Aktiviert die Shell.</p>
+ <p>Der Debug stellt einige zusätzliche Tastenkombinationen bereit:</p>
+ <p>Die Konsole des Debug wird mit SHIFT + ^ geöffnet.</p>
+ <p>Die Konsole bietet folgende Kommandos:</p>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global:ActivateQuestTrace"></a>
+    <strong>AddOnQuestDebug.Global:ActivateQuestTrace ()</strong>
+    </dt>
+    <dd>
+    Aktiviert die Questverfolgung.  Jede Statusänderung wird am Bildschirm
+ angezeigt.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global:Install"></a>
+    <strong>AddOnQuestDebug.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global:Parser"></a>
+    <strong>AddOnQuestDebug.Global:Parser (_Input)</strong>
+    </dt>
+    <dd>
+    Ließt eingegebene Kommandos und führt entsprechende Funktionen aus.
+<p> Für die Zerlegung der Kommandizeile wird der Tokenizer benutzt.
+<p> Für die Nutzung im LuaDebugger des Spiels, müssen Kommandos mit
+ eval() aufgerufen werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Input</span>
+
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/addons.addonquestdebug.html#AddOnQuestDebug.Global:Tokenize">AddOnQuestDebug.Global:Tokenize</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global:Tokenize"></a>
+    <strong>AddOnQuestDebug.Global:Tokenize (_Input)</strong>
+    </dt>
+    <dd>
+    Zerlegt den Eingabestring in einzelne Kommandos und gibt diese als Table
+ zurück.  Unterschiedliche Kommandos werden mit && abgetrennt und entsprechend
+ als mehrere Einträge im Table angelegt. Mit dem Wiederholungszeichen &
+ wird das Komanndo für alle angegebenen Eingaben wiederholt.
+<p> Beispiel:
+<p> <pre>
+ Eingabe:
+ "win QuestA & QuestB && fail QuestC && stop QuestD & Quest E"
+<p> Ausgabe:
+ {
+ {"win", "QuestA"}
+ {"win", "QuestB"}
+ {"fail", "QuestC"}
+ {"stop", "QuestD"}
+ {"stop", "QuestE"}
+ }</pre>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Input</span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table mit Tokens
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Local:ActivateDevelopingCheats"></a>
+    <strong>AddOnQuestDebug.Local:ActivateDevelopingCheats ()</strong>
+    </dt>
+    <dd>
+    Aktiviert die Development Cheats des Spiels.
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/addons.addonquestdebug.html#AddOnQuestDebug.Global:ActivateDevelopingCheats">AddOnQuestDebug.Global:ActivateDevelopingCheats</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Local:ActivateDevelopingShell"></a>
+    <strong>AddOnQuestDebug.Local:ActivateDevelopingShell ()</strong>
+    </dt>
+    <dd>
+    Aktiviert die Kommandokonsole.
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/addons.addonquestdebug.html#AddOnQuestDebug.Global:ActivateDevelopingShell">AddOnQuestDebug.Global:ActivateDevelopingShell</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Local:CollectGarbage"></a>
+    <strong>AddOnQuestDebug.Local:CollectGarbage ()</strong>
+    </dt>
+    <dd>
+    Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.
+<p> Die Garbage Collection wird von Lua automatisch in Abständen ausgeführt.
+ Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
+ sein und der Speicher vollgemüllt werden.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Local:CountLuaLoad"></a>
+    <strong>AddOnQuestDebug.Local:CountLuaLoad ()</strong>
+    </dt>
+    <dd>
+    Gibt die Speicherauslastung von Lua zurück.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Local:Install"></a>
+    <strong>AddOnQuestDebug.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Reward"></a>Reward</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Reward_DEBUG"></a>
+    <strong>Reward_DEBUG (_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)</strong>
+    </dt>
+    <dd>
+    Aktiviert den Debug.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_CheckAtRun</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Prüfe Quests zur Laufzeit
+        </li>
+        <li><span class="parameter">_TraceQuests</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Aktiviert Questverfolgung
+        </li>
+        <li><span class="parameter">_DevelopingCheats</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Aktiviert Cheats und Konsole
+        </li>
+        <li><span class="parameter">_DevelopingShell</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Aktiviert Cheats und Konsole
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/addons.addonquestdebug.html#API.ActivateDebugMode">API.ActivateDebugMode</a>
+    </ul>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-02-24 14:20:35 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

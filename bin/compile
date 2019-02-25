@@ -1,0 +1,26 @@
+#!/bin/bash
+
+cd ..
+rm -rf var &>/dev/null
+mkdir var &>/dev/null
+echo "Verbinde Quelldateien der QSB ..."
+
+# Zeige die eingebundenen Custom Bundles an
+if [ $# -gt 0 ]; then
+    echo "Beziehe externe Bundles ein:"
+    for var in "$@"
+    do
+        if [[ $var != -* ]]; then
+            echo "- $var"
+        fi
+    done
+fi
+
+lua qsb/lua/writer.lua $@ &>/dev/null
+echo "Fertig!"
+
+cd qsb/luaminifyer
+
+echo "Komprimiere qsb.lua zu qsb_min.lua ..."
+./LuaMinify.sh ../../var/qsb.lua &>/dev/null
+echo "Fertig!"

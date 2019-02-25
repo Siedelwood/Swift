@@ -1,0 +1,55 @@
+#/bin/bash
+
+echo "==== QSB zusammenbauen ===="
+./build -userdoc
+
+echo "==== Release erzeugen ===="
+
+echo "Erzeuge Release-Verzeichnis..."
+cd ..
+rm -rf Release &>/dev/null
+mkdir -p Release/src/advanced
+mkdir -p Release/src/beginner
+mkdir -p Release/bin
+echo "Fertig!"
+
+echo "Kopiere QSB-Dateien..."
+cp var/qsb.lua Release/src/questsystembehavior.lua &>/dev/null
+cp var/qsb_min.lua Release/src/questsystembehavior_min.lua &>/dev/null
+cp qsb/default/globalscript.lua Release/src/mapscript.lua &>/dev/null
+cp qsb/default/localscript.lua Release/src/localmapscript.lua &>/dev/null
+echo "Fertig!"
+
+echo "Dokumentation kopieren..."
+cp -r qsb/doc Release/doc &>/dev/null
+mkdir Release/guide &>/dev/null
+cp hlp/*.pdf Release/guide &>/dev/null
+cp hlp/readme.txt Release/start.txt &>/dev/null
+echo "Fertig!"
+
+echo "Beispiele kopieren..."
+cp -r qsb/example Release/example &>/dev/null
+echo "Fertig!"
+
+echo "Kopiere Map Iconator..."
+cp -r bin/MapIconator.jar Release/bin/MapIconator.jar &>/dev/null
+echo "Fertig!"
+
+echo "Siedelwood Cutscene Assistant kopieren..."
+cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
+echo "Fertig!"
+
+echo "Cutscene Maker kopieren..."
+cp -r "app/CutsceneMaker/CutsceneMaker.jar" Release/bin/CutsceneMaker.jar &>/dev/null
+echo "Fertig!"
+
+echo "Archiv zusammenstellen..."
+zip -r Release/doc Release/guide Release/* &>/dev/null
+mv Release/doc.zip Release.zip &>/dev/null
+echo "Fertig!"
+
+echo "Aufräumen..."
+rm -rf Release
+echo "Fertig!"
+
+echo "Veröffentlichung abgeschlossen!"

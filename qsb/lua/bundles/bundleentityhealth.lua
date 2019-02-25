@@ -570,7 +570,7 @@ function b_Reprisal_SetHealth:AddParameter( _Index, _Parameter )
     if (_Index == 0) then
         self.Entity = _Parameter;
     elseif (_Index == 1) then
-        self.Percentage = _Parameter;
+        self.Percentage = _Parameter * 1;
     end
 end
 
@@ -634,8 +634,8 @@ Core:RegisterBehavior(b_Reward_SetHealth);
 ---
 -- Die Gesundheit eines Entities muss einen bestimmten Wert erreichen.
 --
--- @param[type=string] _Entity Entity, das überwacht wird
--- @param[type=number] _Amount Menge in Prozent
+-- @param[type=string] _Entity     Entity, das überwacht wird
+-- @param[type=number] _Percentage Menge in Prozent
 --
 -- @within Trigger
 --
