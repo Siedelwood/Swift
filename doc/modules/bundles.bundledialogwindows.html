@@ -36,8 +36,7 @@
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
-<li><a href="#QSB_SimpleTypewriter">QSB.SimpleTypewriter</a></li>
-<li><a href="#QSB_TextWindow">QSB.TextWindow</a></li>
+<li><a href="#TextWindow">TextWindow</a></li>
 </ul>
 
 
@@ -47,7 +46,6 @@
   <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
   <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
-  <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
@@ -55,14 +53,13 @@
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><strong>bundles.bundledialogwindows</strong></li>
   <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
+  <li><a href="../modules/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
   <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
-  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
   <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
-  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
   <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
@@ -70,7 +67,6 @@
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
@@ -126,10 +122,6 @@
 	<td class="name" nowrap><a href="#API.SimpleTextWindow">API.SimpleTextWindow (_Caption, _content)</a></td>
 	<td class="summary">Öffnet ein einfaches Textfenster mit dem angegebenen Text.</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SimpleTypewriter">API.SimpleTypewriter (_Text, _Callback)</a></td>
-	<td class="summary">Blendet einen Text Zeichen für Zeichen auf schwarzem Grund ein.</td>
-	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
@@ -184,82 +176,38 @@
 	<td class="summary">Stellt die Hotkeys zum Speichern des Spiels wieder her.</td>
 	</tr>
 </table>
-<h2><a href="#QSB_SimpleTypewriter">QSB.SimpleTypewriter</a></h2>
+<h2><a href="#TextWindow">TextWindow</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter.ControllerJob">QSB.SimpleTypewriter.ControllerJob (Data)</a></td>
-	<td class="summary">Job: Kontrolliert die Anzeige der Schreibmaschine.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter.WaitForBriefingEnd">QSB.SimpleTypewriter.WaitForBriefingEnd (Data)</a></td>
-	<td class="summary">Job: Warte solange, bis Briefings beendet sind.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter:CanBePlayed">QSB.SimpleTypewriter:CanBePlayed ()</a></td>
-	<td class="summary">Prüft, ob die Schreibmaschine gestartet werden kann.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter:New">QSB.SimpleTypewriter:New (_Text, _Callback)</a></td>
-	<td class="summary">Erzeugt eine Neue Instanz der Schreibmaschinenschrift.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter:Play">QSB.SimpleTypewriter:Play ()</a></td>
-	<td class="summary">Spielt die Schreibmaschine ab.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter:SetSpeed">QSB.SimpleTypewriter:SetSpeed (_Speed)</a></td>
-	<td class="summary">Stellt ein, wie viele Zeichen in einer Interation angezeigt werden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter:SetWaittime">QSB.SimpleTypewriter:SetWaittime (_Waittime)</a></td>
-	<td class="summary">Stellt ein, wie lange nach Ausgabe des letzten Zeichens gewartet wird, bis
- die Schreibmaschine endet.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter:Start">QSB.SimpleTypewriter:Start ()</a></td>
-	<td class="summary">Startet die Laufschrift.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter:Stop">QSB.SimpleTypewriter:Stop ()</a></td>
-	<td class="summary">Stoppt eine aktive Schreibmaschine.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.SimpleTypewriter:TokenizeText">QSB.SimpleTypewriter:TokenizeText ()</a></td>
-	<td class="summary">Spaltet den Text in Tokens auf und speichert die Tokens für die Wiedergabe.</td>
-	</tr>
-</table>
-<h2><a href="#QSB_TextWindow">QSB.TextWindow</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TextWindow:AddParamater">QSB.TextWindow:AddParamater (_Key, _Value)</a></td>
+	<td class="name" nowrap><a href="#BundleDialogWindows.Local.TextWindow:AddParamater">BundleDialogWindows.Local.TextWindow:AddParamater (_Key, _Value)</a></td>
 	<td class="summary">Fügt einen beliebigen Parameter hinzu.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.TextWindow:New">QSB.TextWindow:New (...)</a></td>
+	<td class="name" nowrap><a href="#BundleDialogWindows.Local.TextWindow:New">BundleDialogWindows.Local.TextWindow:New (...)</a></td>
 	<td class="summary">Erzeugt ein Textfenster, dass einen beliebig großen Text anzeigen kann.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.TextWindow:Prepare">QSB.TextWindow:Prepare ()</a></td>
+	<td class="name" nowrap><a href="#BundleDialogWindows.Local.TextWindow:Prepare">BundleDialogWindows.Local.TextWindow:Prepare ()</a></td>
 	<td class="summary">Initialisiert das TextWindow, bevor es angezeigt wird.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.TextWindow:SetAction">QSB.TextWindow:SetAction (_Function)</a></td>
+	<td class="name" nowrap><a href="#BundleDialogWindows.Local.TextWindow:SetAction">BundleDialogWindows.Local.TextWindow:SetAction (_Function)</a></td>
 	<td class="summary">Setzt die Close Action des TextWindow.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.TextWindow:SetButton">QSB.TextWindow:SetButton (_Text, _Callback)</a></td>
+	<td class="name" nowrap><a href="#BundleDialogWindows.Local.TextWindow:SetButton">BundleDialogWindows.Local.TextWindow:SetButton (_Text, _Callback)</a></td>
 	<td class="summary">Setzt einen Aktionsbutton im TextWindow.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.TextWindow:SetCaption">QSB.TextWindow:SetCaption (_Text)</a></td>
+	<td class="name" nowrap><a href="#BundleDialogWindows.Local.TextWindow:SetCaption">BundleDialogWindows.Local.TextWindow:SetCaption (_Text)</a></td>
 	<td class="summary">Setzt die Überschrift des TextWindow.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.TextWindow:SetContent">QSB.TextWindow:SetContent (_Text)</a></td>
+	<td class="name" nowrap><a href="#BundleDialogWindows.Local.TextWindow:SetContent">BundleDialogWindows.Local.TextWindow:SetContent (_Text)</a></td>
 	<td class="summary">Setzt den Inhalt des TextWindow.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.TextWindow:Show">QSB.TextWindow:Show ()</a></td>
+	<td class="name" nowrap><a href="#BundleDialogWindows.Local.TextWindow:Show">BundleDialogWindows.Local.TextWindow:Show ()</a></td>
 	<td class="summary">Zeigt ein erzeigtes Fenster an.</td>
 	</tr>
 </table>
@@ -439,59 +387,6 @@ API.DialogSelectBox(<span class="string">"Auswahl"</span>, <span class="string">
              <span class="string">" kasd gubergren, no sea takimata sanctus est Lorem ipsum"</span>..
              <span class="string">" dolor sit amet."</span>;
 API.SimpleTextWindow(<span class="string">"Überschrift"</span>, Text);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SimpleTypewriter"></a>
-    <strong>API.SimpleTypewriter (_Text, _Callback)</strong>
-    </dt>
-    <dd>
-    Blendet einen Text Zeichen für Zeichen auf schwarzem Grund ein.
-<p> Diese Funktion ist der offizielle Nachfolger der Laufschrift!
-<p> Der Effekt startet erst, nachdem die Map geladen ist. Wenn ein Briefing
- läuft, wird gewartet, bis das Briefing beendet ist. Wärhend der Effekt
- läuft, können wiederrum keine Briefings starten.
-<p> <b>Hinweis</b>: Steuerzeichen wie {cr} oder {@color} werden als ein Token
- gewertet und immer sofort eingeblendet. Steht z.B. {cr}{cr} im Text, werden
- die Zeichen atomar behandelt, als seien sie ein einzelnes Zeichen.
- Gibt es mehr als 1 Leerzeichen hintereinander, werden alle zusammenhängenden
- Leerzeichen auf ein Leerzeichen reduziert!
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Text</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-             Anzuzeigender Text
-        </li>
-        <li><span class="parameter">_Callback</span>
-            <span class="types"><span class="type">function</span></span>
-         Funktion nach Ende des Effekt
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> Text = <span class="string">"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "</span>..
-             <span class="string">"sed diam nonumy eirmod tempor invidunt ut labore et dolore"</span>..
-             <span class="string">"magna aliquyam erat, sed diam voluptua. At vero eos et"</span>..
-             <span class="string">" accusam et justo duo dolores et ea rebum. Stet clita kasd"</span>..
-             <span class="string">" gubergren, no sea takimata sanctus est Lorem ipsum dolor"</span>..
-             <span class="string">" sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"</span>..
-             <span class="string">" elitr, sed diam nonumy eirmod tempor invidunt ut labore et"</span>..
-             <span class="string">" dolore magna aliquyam erat, sed diam voluptua. At vero eos"</span>..
-             <span class="string">" et accusam et justo duo dolores et ea rebum. Stet clita"</span>..
-             <span class="string">" kasd gubergren, no sea takimata sanctus est Lorem ipsum"</span>..
-             <span class="string">" dolor sit amet."</span>;
-<span class="keyword">local</span> Callback = <span class="keyword">function</span>(_Data)
-    <span class="comment">-- Hier kann was passieren
-</span><span class="keyword">end</span>
-API.SimpleTypewriter(Text, Callback);</pre>
     </ul>
 
 </dd>
@@ -747,209 +642,12 @@ API.SimpleTypewriter(Text, Callback);</pre>
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="QSB_SimpleTypewriter"></a>QSB.SimpleTypewriter</h2>
+    <h2 class="section-header "><a name="TextWindow"></a>TextWindow</h2>
 
     <dl class="function">
     <dt>
-    <a name = "QSB.SimpleTypewriter.ControllerJob"></a>
-    <strong>QSB.SimpleTypewriter.ControllerJob (Data)</strong>
-    </dt>
-    <dd>
-    Job: Kontrolliert die Anzeige der Schreibmaschine.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">Data</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter.WaitForBriefingEnd"></a>
-    <strong>QSB.SimpleTypewriter.WaitForBriefingEnd (Data)</strong>
-    </dt>
-    <dd>
-    Job: Warte solange, bis Briefings beendet sind.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">Data</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter:CanBePlayed"></a>
-    <strong>QSB.SimpleTypewriter:CanBePlayed ()</strong>
-    </dt>
-    <dd>
-    Prüft, ob die Schreibmaschine gestartet werden kann.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Schreibmaschine kann starten
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter:New"></a>
-    <strong>QSB.SimpleTypewriter:New (_Text, _Callback)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Neue Instanz der Schreibmaschinenschrift.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Text</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-             Anzuzeigender Text
-        </li>
-        <li><span class="parameter">_Callback</span>
-            <span class="types"><span class="type">function</span></span>
-         Funktion, die am Ende ausgeführt wird
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Neue Instanz
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter:Play"></a>
-    <strong>QSB.SimpleTypewriter:Play ()</strong>
-    </dt>
-    <dd>
-    Spielt die Schreibmaschine ab.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter:SetSpeed"></a>
-    <strong>QSB.SimpleTypewriter:SetSpeed (_Speed)</strong>
-    </dt>
-    <dd>
-    Stellt ein, wie viele Zeichen in einer Interation angezeigt werden.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Speed</span>
-            <span class="types"><span class="type">number</span></span>
-         Anzahl an Character pro 1/10 Sekunde
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter:SetWaittime"></a>
-    <strong>QSB.SimpleTypewriter:SetWaittime (_Waittime)</strong>
-    </dt>
-    <dd>
-    Stellt ein, wie lange nach Ausgabe des letzten Zeichens gewartet wird, bis
- die Schreibmaschine endet.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Waittime</span>
-            <span class="types"><span class="type">number</span></span>
-         Zeit in 1/10 Sekunden (8 Sekunden = 80)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter:Start"></a>
-    <strong>QSB.SimpleTypewriter:Start ()</strong>
-    </dt>
-    <dd>
-    Startet die Laufschrift.  Wenn ein Briefing aktiv ist, oder die Map noch
- nicht geladen ist, wird gewartet.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter:Stop"></a>
-    <strong>QSB.SimpleTypewriter:Stop ()</strong>
-    </dt>
-    <dd>
-    Stoppt eine aktive Schreibmaschine.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.SimpleTypewriter:TokenizeText"></a>
-    <strong>QSB.SimpleTypewriter:TokenizeText ()</strong>
-    </dt>
-    <dd>
-    Spaltet den Text in Tokens auf und speichert die Tokens für die Wiedergabe.
-
-
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="QSB_TextWindow"></a>QSB.TextWindow</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "QSB.TextWindow:AddParamater"></a>
-    <strong>QSB.TextWindow:AddParamater (_Key, _Value)</strong>
+    <a name = "BundleDialogWindows.Local.TextWindow:AddParamater"></a>
+    <strong>BundleDialogWindows.Local.TextWindow:AddParamater (_Key, _Value)</strong>
     </dt>
     <dd>
     Fügt einen beliebigen Parameter hinzu.  Parameter müssen immer als
@@ -985,8 +683,8 @@ API.SimpleTypewriter(Text, Callback);</pre>
 
 </dd>
     <dt>
-    <a name = "QSB.TextWindow:New"></a>
-    <strong>QSB.TextWindow:New (...)</strong>
+    <a name = "BundleDialogWindows.Local.TextWindow:New"></a>
+    <strong>BundleDialogWindows.Local.TextWindow:New (...)</strong>
     </dt>
     <dd>
     Erzeugt ein Textfenster, dass einen beliebig großen Text anzeigen kann.
@@ -1046,8 +744,8 @@ API.SimpleTypewriter(Text, Callback);</pre>
 
 </dd>
     <dt>
-    <a name = "QSB.TextWindow:Prepare"></a>
-    <strong>QSB.TextWindow:Prepare ()</strong>
+    <a name = "BundleDialogWindows.Local.TextWindow:Prepare"></a>
+    <strong>BundleDialogWindows.Local.TextWindow:Prepare ()</strong>
     </dt>
     <dd>
     Initialisiert das TextWindow, bevor es angezeigt wird.
@@ -1060,8 +758,8 @@ API.SimpleTypewriter(Text, Callback);</pre>
 
 </dd>
     <dt>
-    <a name = "QSB.TextWindow:SetAction"></a>
-    <strong>QSB.TextWindow:SetAction (_Function)</strong>
+    <a name = "BundleDialogWindows.Local.TextWindow:SetAction"></a>
+    <strong>BundleDialogWindows.Local.TextWindow:SetAction (_Function)</strong>
     </dt>
     <dd>
     Setzt die Close Action des TextWindow.  Die Funktion wird beim schließen
@@ -1096,8 +794,8 @@ MyWindow:SetAction(MyAction);</pre>
 
 </dd>
     <dt>
-    <a name = "QSB.TextWindow:SetButton"></a>
-    <strong>QSB.TextWindow:SetButton (_Text, _Callback)</strong>
+    <a name = "BundleDialogWindows.Local.TextWindow:SetButton"></a>
+    <strong>BundleDialogWindows.Local.TextWindow:SetButton (_Text, _Callback)</strong>
     </dt>
     <dd>
     Setzt einen Aktionsbutton im TextWindow.
@@ -1137,8 +835,8 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
 
 </dd>
     <dt>
-    <a name = "QSB.TextWindow:SetCaption"></a>
-    <strong>QSB.TextWindow:SetCaption (_Text)</strong>
+    <a name = "BundleDialogWindows.Local.TextWindow:SetCaption"></a>
+    <strong>BundleDialogWindows.Local.TextWindow:SetCaption (_Text)</strong>
     </dt>
     <dd>
     Setzt die Überschrift des TextWindow.
@@ -1169,8 +867,8 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
 
 </dd>
     <dt>
-    <a name = "QSB.TextWindow:SetContent"></a>
-    <strong>QSB.TextWindow:SetContent (_Text)</strong>
+    <a name = "BundleDialogWindows.Local.TextWindow:SetContent"></a>
+    <strong>BundleDialogWindows.Local.TextWindow:SetContent (_Text)</strong>
     </dt>
     <dd>
     Setzt den Inhalt des TextWindow.
@@ -1201,8 +899,8 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
 
 </dd>
     <dt>
-    <a name = "QSB.TextWindow:Show"></a>
-    <strong>QSB.TextWindow:Show ()</strong>
+    <a name = "BundleDialogWindows.Local.TextWindow:Show"></a>
+    <strong>BundleDialogWindows.Local.TextWindow:Show ()</strong>
     </dt>
     <dd>
     Zeigt ein erzeigtes Fenster an.
@@ -1227,7 +925,7 @@ MyWindow:SetAction(<span class="string">"Button Text"</span>, MyButtonAction);</
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-24 14:16:20 </i>
+<i style="float:right;">Last updated 2019-02-24 14:20:35 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

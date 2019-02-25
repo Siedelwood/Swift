@@ -36,9 +36,9 @@
 <ul>
 <li><a href="#Internal">Internal</a></li>
 <li><a href="#Reward">Reward</a></li>
-<li><a href="#Goal">Goal</a></li>
 <li><a href="#Reprisal">Reprisal</a></li>
 <li><a href="#Trigger">Trigger</a></li>
+<li><a href="#Goal">Goal</a></li>
 </ul>
 
 
@@ -48,7 +48,6 @@
   <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
   <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
-  <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
@@ -56,14 +55,13 @@
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
   <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
+  <li><a href="../modules/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
   <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
-  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
   <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
-  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
   <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
@@ -71,7 +69,6 @@
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><strong>bundles.bundlesymfoniabehaviors</strong></li>
-  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
@@ -95,28 +92,8 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed">BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed (_Quest, _Objective)</a></td>
-	<td class="summary">Prüft, ob alle gespawnten Entities zerstört wurden.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Global:Install">BundleSymfoniaBehaviors.Global:Install ()</a></td>
 	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Global:IsQuestPositionReached">BundleSymfoniaBehaviors.Global:IsQuestPositionReached (_Quest, _Objective)</a></td>
-	<td class="summary">Prüft, ob das Entity das Ziel erreicht hat.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Local.DisplayQuestObjective">BundleSymfoniaBehaviors.Local.DisplayQuestObjective (_QuestIndex, _MessageKey)</a></td>
-	<td class="summary">Erweitert die Funktion, welche das Auftragsziel darstellt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Local.GetEntitiesOrTerritoryList">BundleSymfoniaBehaviors.Local.GetEntitiesOrTerritoryList (_Quest, _QuestType)</a></td>
-	<td class="summary">Erweitert die Funktion zur Ermittlung der Sprungziele für die Lupe.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Local.SaveQuestEntityTypes">BundleSymfoniaBehaviors.Local.SaveQuestEntityTypes (_QuestIndex)</a></td>
-	<td class="summary">Erweitert die Funktion zur Speicherung der Quest Entities.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Local:Install">BundleSymfoniaBehaviors.Local:Install ()</a></td>
@@ -156,44 +133,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#Reward_VictoryWithParty">Reward_VictoryWithParty ()</a></td>
 	<td class="summary">Der Spieler gewinnt das Spiel mit einem animierten Siegesfest.</td>
-	</tr>
-</table>
-<h2><a href="#Goal">Goal</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#Goal_AmmunitionAmount">Goal_AmmunitionAmount (_ScriptName, _Relation, _Amount)</a></td>
-	<td class="summary">Es muss eine Menge an Munition in der Kriegsmaschine erreicht werden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goal_CityReputation">Goal_CityReputation (_Reputation)</a></td>
-	<td class="summary">Der Spieler muss mindestens den angegebenen Ruf erreichen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goal_DestroySpawnedEntities">Goal_DestroySpawnedEntities (_SpawnPoint, _Amount)</a></td>
-	<td class="summary">Eine Menge an Entities des angegebenen Spawnpoint muss zerstört werden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goal_MoveToPosition">Goal_MoveToPosition (_ScriptName, _Target, _Distance, _UseMarker)</a></td>
-	<td class="summary">Ein Entity muss sich zu einem Ziel bewegen und eine Distanz unterschreiten.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goal_SpyBuilding">Goal_SpyBuilding (_ScriptName, _DeleteThief)</a></td>
-	<td class="summary"><p>Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</p>
-<p> <p>Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goal_StealBuilding">Goal_StealBuilding (_ScriptName)</a></td>
-	<td class="summary"><p>Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</p>
-<p> <p>Eine Kirche wird immer Sabotiert.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goal_StealGold">Goal_StealGold (_Amount, _ShowProgress)</a></td>
-	<td class="summary"><p>Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</p>
-<p> <p>Dabei ist es egal von welchem Spieler.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goal_WinQuest">Goal_WinQuest (_QuestName)</a></td>
-	<td class="summary">Der Spieler muss einen bestimmten Quest abschließen.</td>
 	</tr>
 </table>
 <h2><a href="#Reprisal">Reprisal</a></h2>
@@ -242,6 +181,36 @@
 	<td class="summary">Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.</td>
 	</tr>
 </table>
+<h2><a href="#Goal">Goal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Goal_AmmunitionAmount">Goal_AmmunitionAmount (_ScriptName, _Relation, _Amount)</a></td>
+	<td class="summary">Es muss eine Menge an Munition in der Kriegsmaschine erreicht werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_MoveToPosition">Goal_MoveToPosition (_ScriptName, _Target, _Distance, _UseMarker)</a></td>
+	<td class="summary">Ein Entity muss sich zu einem Ziel bewegen und eine Distanz unterschreiten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_SpyBuilding">Goal_SpyBuilding (_ScriptName, _DeleteThief)</a></td>
+	<td class="summary"><p>Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</p>
+<p> <p>Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_StealBuilding">Goal_StealBuilding (_ScriptName)</a></td>
+	<td class="summary"><p>Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</p>
+<p> <p>Eine Kirche wird immer Sabotiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_StealGold">Goal_StealGold (_Amount, _ShowProgress)</a></td>
+	<td class="summary"><p>Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</p>
+<p> <p>Dabei ist es egal von welchem Spieler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_WinQuest">Goal_WinQuest (_QuestName)</a></td>
+	<td class="summary">Der Spieler muss einen bestimmten Quest abschließen.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
@@ -251,37 +220,6 @@
 
     <dl class="function">
     <dt>
-    <a name = "BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed"></a>
-    <strong>BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed (_Quest, _Objective)</strong>
-    </dt>
-    <dd>
-    Prüft, ob alle gespawnten Entities zerstört wurden.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Quest</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-             Quest Data
-        </li>
-        <li><span class="parameter">_Objective</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Behavior Data
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Resultat des Behavior
-    </ol>
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleSymfoniaBehaviors.Global:Install"></a>
     <strong>BundleSymfoniaBehaviors.Global:Install ()</strong>
     </dt>
@@ -289,109 +227,6 @@
     Initialisiert das Bundle im globalen Skript.
 
 
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleSymfoniaBehaviors.Global:IsQuestPositionReached"></a>
-    <strong>BundleSymfoniaBehaviors.Global:IsQuestPositionReached (_Quest, _Objective)</strong>
-    </dt>
-    <dd>
-    Prüft, ob das Entity das Ziel erreicht hat.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Quest</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-             Quest Data
-        </li>
-        <li><span class="parameter">_Objective</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Behavior Data
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Ziel wurde erreicht
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleSymfoniaBehaviors.Local.DisplayQuestObjective"></a>
-    <strong>BundleSymfoniaBehaviors.Local.DisplayQuestObjective (_QuestIndex, _MessageKey)</strong>
-    </dt>
-    <dd>
-    Erweitert die Funktion, welche das Auftragsziel darstellt.  Das richtige
- Icon für Spawned Entities wird angezeigt.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestIndex</span>
-
-        </li>
-        <li><span class="parameter">_MessageKey</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleSymfoniaBehaviors.Local.GetEntitiesOrTerritoryList"></a>
-    <strong>BundleSymfoniaBehaviors.Local.GetEntitiesOrTerritoryList (_Quest, _QuestType)</strong>
-    </dt>
-    <dd>
-    Erweitert die Funktion zur Ermittlung der Sprungziele für die Lupe.
- Alle gespawnten Entities werden durch die Lupe angezeigt.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Quest</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-             Quest Table
-        </li>
-        <li><span class="parameter">_QuestType</span>
-            <span class="types"><span class="type">number</span></span>
-         Typ des Quest
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleSymfoniaBehaviors.Local.SaveQuestEntityTypes"></a>
-    <strong>BundleSymfoniaBehaviors.Local.SaveQuestEntityTypes (_QuestIndex)</strong>
-    </dt>
-    <dd>
-    Erweitert die Funktion zur Speicherung der Quest Entities.  Es wird der
- neue Typ 3 für Objective.DestroyEntities implementiert.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestIndex</span>
-            <span class="types"><span class="type">number</span></span>
-         Index des Quest
-        </li>
-    </ul>
 
 
 
@@ -613,228 +448,6 @@
 <p>
 
 
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Goal"></a>Goal</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "Goal_AmmunitionAmount"></a>
-    <strong>Goal_AmmunitionAmount (_ScriptName, _Relation, _Amount)</strong>
-    </dt>
-    <dd>
-    Es muss eine Menge an Munition in der Kriegsmaschine erreicht werden.
-<p> <u>Relationen</u>
- <ul>
- <li>>= - Anzahl als Mindestmenge</li>
- <li>< - Weniger als Anzahl</li>
- </ul>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-          Name des Kriegsgerät
-        </li>
-        <li><span class="parameter">_Relation</span>
-            Mengenrelation
-        </li>
-        <li><span class="parameter">_Amount</span>
-              Menge an Munition
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goal_CityReputation"></a>
-    <strong>Goal_CityReputation (_Reputation)</strong>
-    </dt>
-    <dd>
-    Der Spieler muss mindestens den angegebenen Ruf erreichen.  Der Ruf muss
- in Prozent angegeben werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Reputation</span>
-            <span class="types"><span class="type">number</span></span>
-         Benötigter Ruf
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goal_DestroySpawnedEntities"></a>
-    <strong>Goal_DestroySpawnedEntities (_SpawnPoint, _Amount)</strong>
-    </dt>
-    <dd>
-    Eine Menge an Entities des angegebenen Spawnpoint muss zerstört werden.
-<p> Wenn die angegebene Anzahl zu Beginn des Quest nicht mit der Anzahl an
- bereits gespawnten Entities übereinstimmt, wird dies automatisch korrigiert.
- (Neue Entities gespawnt bzw. überschüssige gelöscht)
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_SpawnPoint</span>
-         Spawnpoint oder Liste von Spawnpoints
-        </li>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-             Menge zu zerstörender Entities
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goal_MoveToPosition"></a>
-    <strong>Goal_MoveToPosition (_ScriptName, _Target, _Distance, _UseMarker)</strong>
-    </dt>
-    <dd>
-    Ein Entity muss sich zu einem Ziel bewegen und eine Distanz unterschreiten.
-<p> Optional kann das Ziel mit einem Marker markiert werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-         Skriptname des Entity
-        </li>
-        <li><span class="parameter">_Target</span>
-             Skriptname des Ziels
-        </li>
-        <li><span class="parameter">_Distance</span>
-           Entfernung
-        </li>
-        <li><span class="parameter">_UseMarker</span>
-          Ziel markieren
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goal_SpyBuilding"></a>
-    <strong>Goal_SpyBuilding (_ScriptName, _DeleteThief)</strong>
-    </dt>
-    <dd>
-    <p>Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</p>
-<p> <p>Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt.  Es
- muss sich um ein Gebäude handeln, das bestohlen werden kann (Burg, Lager,
- Kirche, Stadtgebäude mit Einnahmen)!</p>
-<p> <p>Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
- es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.</p>
-<p> <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
- ein Dieb entsandt werden kann.</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-          Skriptname des Gebäudes
-        </li>
-        <li><span class="parameter">_DeleteThief</span>
-         Dieb nach Abschluss löschen
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goal_StealBuilding"></a>
-    <strong>Goal_StealBuilding (_ScriptName)</strong>
-    </dt>
-    <dd>
-    <p>Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</p>
-<p> <p>Eine Kirche wird immer Sabotiert.  Ein Lagerhaus verhält sich ähnlich zu
- einer Burg.</p>
-<p> <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
- ein Dieb entsandt werden kann.</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_ScriptName</span>
-         Skriptname des Gebäudes
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goal_StealGold"></a>
-    <strong>Goal_StealGold (_Amount, _ShowProgress)</strong>
-    </dt>
-    <dd>
-    <p>Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</p>
-<p> <p>Dabei ist es egal von welchem Spieler.  Diebe können Gold nur aus
- Stadtgebäude stehlen.</p>
-<p> <p><b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
- Gebäuden, damit der Quest stets erfüllbar bleibt.</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-               Menge an Gold
-        </li>
-        <li><span class="parameter">_ShowProgress</span>
-         Fortschritt ausgeben
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goal_WinQuest"></a>
-    <strong>Goal_WinQuest (_QuestName)</strong>
-    </dt>
-    <dd>
-    Der Spieler muss einen bestimmten Quest abschließen.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-         Name des Quest
-        </li>
-    </ul>
 
 
 
@@ -1110,13 +723,184 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Goal"></a>Goal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Goal_AmmunitionAmount"></a>
+    <strong>Goal_AmmunitionAmount (_ScriptName, _Relation, _Amount)</strong>
+    </dt>
+    <dd>
+    Es muss eine Menge an Munition in der Kriegsmaschine erreicht werden.
+<p> <u>Relationen</u>
+ <ul>
+ <li>>= - Anzahl als Mindestmenge</li>
+ <li>< - Weniger als Anzahl</li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+          Name des Kriegsgerät
+        </li>
+        <li><span class="parameter">_Relation</span>
+            Mengenrelation
+        </li>
+        <li><span class="parameter">_Amount</span>
+              Menge an Munition
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_MoveToPosition"></a>
+    <strong>Goal_MoveToPosition (_ScriptName, _Target, _Distance, _UseMarker)</strong>
+    </dt>
+    <dd>
+    Ein Entity muss sich zu einem Ziel bewegen und eine Distanz unterschreiten.
+<p> Optional kann das Ziel mit einem Marker markiert werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Entity
+        </li>
+        <li><span class="parameter">_Target</span>
+             Skriptname des Ziels
+        </li>
+        <li><span class="parameter">_Distance</span>
+           Entfernung
+        </li>
+        <li><span class="parameter">_UseMarker</span>
+          Ziel markieren
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_SpyBuilding"></a>
+    <strong>Goal_SpyBuilding (_ScriptName, _DeleteThief)</strong>
+    </dt>
+    <dd>
+    <p>Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</p>
+<p> <p>Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt.  Es
+ muss sich um ein Gebäude handeln, das bestohlen werden kann (Burg, Lager,
+ Kirche, Stadtgebäude mit Einnahmen)!</p>
+<p> <p>Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
+ es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.</p>
+<p> <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
+ ein Dieb entsandt werden kann.</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+          Skriptname des Gebäudes
+        </li>
+        <li><span class="parameter">_DeleteThief</span>
+         Dieb nach Abschluss löschen
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_StealBuilding"></a>
+    <strong>Goal_StealBuilding (_ScriptName)</strong>
+    </dt>
+    <dd>
+    <p>Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</p>
+<p> <p>Eine Kirche wird immer Sabotiert.  Ein Lagerhaus verhält sich ähnlich zu
+ einer Burg.</p>
+<p> <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
+ ein Dieb entsandt werden kann.</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ScriptName</span>
+         Skriptname des Gebäudes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_StealGold"></a>
+    <strong>Goal_StealGold (_Amount, _ShowProgress)</strong>
+    </dt>
+    <dd>
+    <p>Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</p>
+<p> <p>Dabei ist es egal von welchem Spieler.  Diebe können Gold nur aus
+ Stadtgebäude stehlen.</p>
+<p> <p><b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
+ Gebäuden, damit der Quest stets erfüllbar bleibt.</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Amount</span>
+               Menge an Gold
+        </li>
+        <li><span class="parameter">_ShowProgress</span>
+         Fortschritt ausgeben
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_WinQuest"></a>
+    <strong>Goal_WinQuest (_QuestName)</strong>
+    </dt>
+    <dd>
+    Der Spieler muss einen bestimmten Quest abschließen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+         Name des Quest
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-24 14:16:20 </i>
+<i style="float:right;">Last updated 2019-02-24 14:20:35 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -63,13 +63,13 @@
 	<td class="summary">Erstellt einen Quest.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.CreateQuestMessage">API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</a></td>
+	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.CreateQuestDialog">API.CreateQuestDialog (_Messages)</a></td>
 	<td class="summary">Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
  einander angezeigt werden.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.CreateQuestMessage">API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</a></td>
-	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterruptQuestDialog">API.InterruptQuestDialog (_Dialog)</a></td>
@@ -151,6 +151,65 @@
 
 </dd>
     <dt>
+    <a name = "API.CreateQuestMessage"></a>
+    <strong>API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Nachricht im Questfenster.
+<p> Der Quest wird immer nach Ablauf der Wartezeit nach
+ Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+ Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+ des Quests ausgeführt wird.
+<p> Alle Paramater sind optional und können von rechts nach links weggelassen
+ oder mit nil aufgefüllt werden.
+<p> <b>Alias</b>: QuestMessage
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Anzeigetext der Nachricht
+        </li>
+        <li><span class="parameter">_Sender</span>
+            <span class="types"><span class="type">number</span></span>
+              Sender der Nachricht
+        </li>
+        <li><span class="parameter">_Receiver</span>
+            <span class="types"><span class="type">number</span></span>
+            Receiver der Nachricht
+        </li>
+        <li><span class="parameter">_AncestorWt</span>
+            <span class="types"><span class="type">number</span></span>
+          Wartezeit
+        </li>
+        <li><span class="parameter">_Callback</span>
+            <span class="types"><span class="type">function</span></span>
+            Callback
+        </li>
+        <li><span class="parameter">_Ancestor</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Vorgänger-Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        QuestName
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateQuestMessage(<span class="string">"Das ist ein Text"</span>, <span class="number">4</span>, <span class="number">1</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "API.CreateQuestDialog"></a>
     <strong>API.CreateQuestDialog (_Messages)</strong>
     </dt>
@@ -212,65 +271,6 @@
 
 </dd>
     <dt>
-    <a name = "API.CreateQuestMessage"></a>
-    <strong>API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Nachricht im Questfenster.
-<p> Der Quest wird immer nach Ablauf der Wartezeit nach
- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
- des Quests ausgeführt wird.
-<p> Alle Paramater sind optional und können von rechts nach links weggelassen
- oder mit nil aufgefüllt werden.
-<p> <b>Alias</b>: QuestMessage
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Text</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-                Anzeigetext der Nachricht
-        </li>
-        <li><span class="parameter">_Sender</span>
-            <span class="types"><span class="type">number</span></span>
-              Sender der Nachricht
-        </li>
-        <li><span class="parameter">_Receiver</span>
-            <span class="types"><span class="type">number</span></span>
-            Receiver der Nachricht
-        </li>
-        <li><span class="parameter">_AncestorWt</span>
-            <span class="types"><span class="type">number</span></span>
-          Wartezeit
-        </li>
-        <li><span class="parameter">_Callback</span>
-            <span class="types"><span class="type">function</span></span>
-            Callback
-        </li>
-        <li><span class="parameter">_Ancestor</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-            Vorgänger-Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        QuestName
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.CreateQuestMessage(<span class="string">"Das ist ein Text"</span>, <span class="number">4</span>, <span class="number">1</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "API.InterruptQuestDialog"></a>
     <strong>API.InterruptQuestDialog (_Dialog)</strong>
     </dt>
@@ -327,7 +327,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-24 14:16:22 </i>
+<i style="float:right;">Last updated 2019-02-24 14:20:37 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

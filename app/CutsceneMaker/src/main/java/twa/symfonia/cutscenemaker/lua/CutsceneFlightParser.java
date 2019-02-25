@@ -96,7 +96,10 @@ public class CutsceneFlightParser {
         double duration = 0.0;
         for (final Map.Entry<Integer, FlightStation> entry : flightMap.entrySet()) {
             // Add duration assuming first station was at turn 0
-            duration += entry.getKey() * 0.1;
+            final double newDuration = (entry.getKey() * 0.1);
+            if (newDuration > duration) {
+                duration = newDuration;
+            }
             // Add flight
             flight.addStation(entry.getValue());
         }

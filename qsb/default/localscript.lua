@@ -5,24 +5,24 @@
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
--- Trage hier den Pfad ein auf dem die Inhalte liegen.
+-- Trage hier den Pfad ein, wo Deine Inhalte liegen.
 g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
 
--- Globaler Namespace für deine Missionsvariablen.
--- Variablen aus dem globalen Skript werden unter g_Mission.GlobalValues
--- automatisch referenziert.
+-- Globaler Namespace für Deine Variablen
+-- Variablen aus dem globalen Skript werden automatisch referenziert.
+-- (g_Mission.Var --> g_Mission.GlobalVariables.Var)
 g_Mission = {
-    GlobalValues = Logic.CreateReferenceToTableInGlobaLuaState("g_Mission")
+    GlobalVariables = Logic.CreateReferenceToTableInGlobaLuaState("g_Mission"),
 };
 
 -- -------------------------------------------------------------------------- --
 
--- In dieser Funktion kannst Du deine Skripte laden.
+-- Läd die Kartenskripte der Mission.
 function Mission_LoadFiles()
-    Script.Load(g_ContentPath.. "/questsystembehavior.lua");
-    Script.Load(g_ContentPath.. "/knighttitlerequirements.lua");
+    Script.Load(g_ContentPath.. "questsystembehavior.lua");
+    Script.Load(g_ContentPath.. "knighttitlerequirements.lua");
 
-    -- Lade hier weitere Skripte!
+    -- Füge hier weitere Skriptdateien hinzu.
 end
 
 -- Wird aufgerufen, sobald das Spiel gewonnen ist.
@@ -35,7 +35,7 @@ function Mission_LocalOnMapStart()
     API.Install();
     InitKnightTitleTables();
 
-    -- Rufe hier Deine Funktionen auf!
+    -- Hier kannst Du Deine Funktionen aufrufen:
 
 end
 

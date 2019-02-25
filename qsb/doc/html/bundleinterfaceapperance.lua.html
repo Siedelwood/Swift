@@ -47,8 +47,10 @@
 <h1>Module <code>bundleinterfaceapperance</code></h1>
 <p>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche
  des Spiels.</p>
-<p> Der Mapper hat die Möglichkeit, eigene Texte und Grafiken im
- Interface anzuzeigen.
+<p> Es gibt Funktionen zum Ausblenden einiger Buttons und Menüs und
+ die Möglichkeit eigene Texte in Tooltips und eigene Grafiken für Widgets
+ zu setzen.
+<p> <p><a href="#API.InterfaceHideBuildMenu">Interface-Steuerung</a></p>
 </p>
 
 
@@ -61,6 +63,46 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.InterfaceGetTerritoryName">API.InterfaceGetTerritoryName (_TerritoryID)</a></td>
 	<td class="summary">Gibt den Namen des Territoriums zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideBuildMenu">API.InterfaceHideBuildMenu (_Flag)</a></td>
+	<td class="summary">Versteckt das Baumenü oder blendet es ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideBuyTerritory">API.InterfaceHideBuyTerritory (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zum Territorienkauf oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideDiplomacyMenu">API.InterfaceHideDiplomacyMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Diplomatiemenü oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideKnightAbility">API.InterfaceHideKnightAbility (_Flag)</a></td>
+	<td class="summary">Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideKnightButton">API.InterfaceHideKnightButton (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zur Heldenselektion oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideMinimap">API.InterfaceHideMinimap (_Flag)</a></td>
+	<td class="summary">Graut die Minimap aus oder macht sie wieder verwendbar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideProductionMenu">API.InterfaceHideProductionMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Produktionsmenü oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideSelectionButton">API.InterfaceHideSelectionButton (_Flag)</a></td>
+	<td class="summary">Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideToggleMinimap">API.InterfaceHideToggleMinimap (_Flag)</a></td>
+	<td class="summary">Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.InterfaceHideWeatherMenu">API.InterfaceHideWeatherMenu (_Flag)</a></td>
+	<td class="summary">Versteckt den Button des Wettermenüs oder blendet ihn ein.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterfaceSetIcon">API.InterfaceSetIcon (_WidgetID, _Coordinates, _Size, _Name)</a></td>
@@ -152,6 +194,246 @@
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         Name des Territorium
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideBuildMenu"></a>
+    <strong>API.InterfaceHideBuildMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt das Baumenü oder blendet es ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideBuyTerritory"></a>
+    <strong>API.InterfaceHideBuyTerritory (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zum Territorienkauf oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideDiplomacyMenu"></a>
+    <strong>API.InterfaceHideDiplomacyMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Diplomatiemenü oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideKnightAbility"></a>
+    <strong>API.InterfaceHideKnightAbility (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button der Heldenfähigkeit oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideKnightButton"></a>
+    <strong>API.InterfaceHideKnightButton (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zur Heldenselektion oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideMinimap"></a>
+    <strong>API.InterfaceHideMinimap (_Flag)</strong>
+    </dt>
+    <dd>
+    Graut die Minimap aus oder macht sie wieder verwendbar.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideProductionMenu"></a>
+    <strong>API.InterfaceHideProductionMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Produktionsmenü oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideSelectionButton"></a>
+    <strong>API.InterfaceHideSelectionButton (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button zur Selektion des Militärs oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideToggleMinimap"></a>
+    <strong>API.InterfaceHideToggleMinimap (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Umschaltknopf der Minimap oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.InterfaceHideWeatherMenu"></a>
+    <strong>API.InterfaceHideWeatherMenu (_Flag)</strong>
+    </dt>
+    <dd>
+    Versteckt den Button des Wettermenüs oder blendet ihn ein.
+<p> <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
+ aktiv und muss explizit zurückgenommen werden!</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Widget versteckt
+        </li>
+    </ul>
+
 
 
 
@@ -436,7 +718,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-24 14:16:26 </i>
+<i style="float:right;">Last updated 2019-02-24 14:20:40 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

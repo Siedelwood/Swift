@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 
+import twa.symfonia.cutscenemaker.CutsceneMaker;
 import twa.symfonia.cutscenemaker.lua.models.Flight;
 import twa.symfonia.cutscenemaker.lua.models.FlightStation;
 
@@ -28,10 +29,9 @@ public class CutsceneLuaBuilder {
     public CutsceneLuaBuilder() throws CutsceneBuilderException {
         try {
             //Get template files
-            final ClassLoader classLoader = getClass().getClassLoader();
-            final InputStream isBriefingTpl  = classLoader.getResourceAsStream("briefingTemplate.txt");
-            final InputStream isCameraTpl    = classLoader.getResourceAsStream("cameraTemplate.txt");
-            final InputStream isFlightTpl    = classLoader.getResourceAsStream("flightTemplate.txt");
+            final InputStream isBriefingTpl  = CutsceneMaker.class.getResourceAsStream("/resources/briefingTemplate.txt");
+            final InputStream isCameraTpl    = CutsceneMaker.class.getResourceAsStream("/resources/cameraTemplate.txt");
+            final InputStream isFlightTpl    = CutsceneMaker.class.getResourceAsStream("/resources/flightTemplate.txt");
             //Read files
             briefingTemplate = new String(IOUtils.toByteArray(isBriefingTpl), "UTF-8");
             stationTemplate  = new String(IOUtils.toByteArray(isCameraTpl), "UTF-8");

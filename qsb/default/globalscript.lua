@@ -5,33 +5,37 @@
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
--- Trage hier den Pfad ein auf dem die Inhalte liegen.
+-- Trage hier den Pfad ein, wo Deine Inhalte liegen.
 g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
 
--- Globaler Namespace für deine Missionsvariablen.
+-- Globaler Namespace für Deine Variablen
 g_Mission = {};
 
 -- -------------------------------------------------------------------------- --
 
--- In dieser Funktion kannst Du deine Skripte laden.
+-- Läd die Kartenskripte der Mission.
 function Mission_LoadFiles()
-    Script.Load(g_ContentPath.. "/questsystembehavior.lua");
-    Script.Load(g_ContentPath.. "/knighttitlerequirements.lua");
+    Script.Load(g_ContentPath.. "questsystembehavior.lua");
+    Script.Load(g_ContentPath.. "knighttitlerequirements.lua");
 
-    -- Lade hier weitere Skripte!
+    -- Füge hier weitere Skriptdateien hinzu.
 end
 
--- Setzt Einstellungen für die Spielparteien.
--- (KI-Blacklist, Farben, ect.)
+-- Setzt Voreinstellungen für KI-Spieler.
+-- (Spielerfarbe, Blacklist, etc)
 function Mission_InitPlayers()
 end
 
--- Setzt den Monat in dem das Spiel beginnt.
+-- Setzt den Monat, mit dem das Spiel beginnt.
 function Mission_SetStartingMonth()
     Logic.SetMonthOffset(3);
 end
 
--- Nutze diese Funktion um Aktionen zu Spielstart auszuführen.
+-- Setzt Handelsangebote der Nichtspielerparteien.
+function Mission_InitMerchants()
+end
+
+-- Wird aufgerufen, wenn das Spiel gestartet wird.
 function Mission_FirstMapAction()
     Mission_LoadFiles();
     API.Install();
@@ -44,11 +48,11 @@ function Mission_FirstMapAction()
         Startup_Diplomacy();
     end
 
-    -- Erzeugt die Editor-Quests
+    -- Startet die Mapeditor-Quests
     CreateQuests();
 
-    -- Rufe hier Deine Funktionen auf!
-    
+    -- Hier kannst Du Deine Funktionen aufrufen:
+
 end
 
 -- -------------------------------------------------------------------------- --
