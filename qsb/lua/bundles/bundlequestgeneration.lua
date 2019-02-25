@@ -16,7 +16,7 @@
 -- <p><a href="#API.CreateQuest">Quests erzeugen</a></p>
 --
 -- @within Modulbeschreibung
--- @set sort=false
+-- @set sort=true
 --
 BundleQuestGeneration = {};
 
@@ -356,7 +356,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
     end
     if not Core:CheckQuestName(_Data.Name) then
-        dbg("Quest '"..tostring(_Data.Name).."': invalid questname! Contains forbidden characters!");
+        fatal("Quest '"..tostring(_Data.Name).."': invalid questname! Contains forbidden characters!");
         return;
     end
 
@@ -415,8 +415,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
     local QuestID, Quest = QuestTemplate:New(unpack(QuestData, 1, 16));
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
     Quest.IconOverride = _Data.IconOverwrite;
-    Quest.Arguments = (_Data.Arguments ~= nil and API.InstanceTable(_Data.Arguments)) or {};
-    return _Data.Name;
+    return _Data.Name, Quests[0];
 end
 
 ---

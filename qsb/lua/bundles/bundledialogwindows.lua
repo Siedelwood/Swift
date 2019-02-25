@@ -183,7 +183,56 @@ function API.SimpleTextWindow(_Caption, _Content)
         API.Bridge("API.SimpleTextWindow('" .._Caption.. "', '" .._Content.. "')");
         return;
     end
-    BundleDialogWindows.Local.TextWindow:New(_Caption, _Content):Show();
+    QSB.TextWindow:New(_Caption, _Content):Show();
+end
+
+---
+-- Blendet einen Text Zeichen für Zeichen auf schwarzem Grund ein.
+--
+-- Diese Funktion ist der offizielle Nachfolger der Laufschrift!
+--
+-- Der Effekt startet erst, nachdem die Map geladen ist. Wenn ein Briefing
+-- läuft, wird gewartet, bis das Briefing beendet ist. Wärhend der Effekt
+-- läuft, können wiederrum keine Briefings starten.
+--
+-- <b>Hinweis</b>: Steuerzeichen wie {cr} oder {@color} werden als ein Token
+-- gewertet und immer sofort eingeblendet. Steht z.B. {cr}{cr} im Text, werden
+-- die Zeichen atomar behandelt, als seien sie ein einzelnes Zeichen.
+-- Gibt es mehr als 1 Leerzeichen hintereinander, werden alle zusammenhängenden
+-- Leerzeichen auf ein Leerzeichen reduziert!
+--
+-- @param[type=string]   _Text     Anzuzeigender Text
+-- @param[type=function] _Callback Funktion nach Ende des Effekt
+--
+-- @usage
+-- local Text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "..
+--              "sed diam nonumy eirmod tempor invidunt ut labore et dolore"..
+--              "magna aliquyam erat, sed diam voluptua. At vero eos et"..
+--              " accusam et justo duo dolores et ea rebum. Stet clita kasd"..
+--              " gubergren, no sea takimata sanctus est Lorem ipsum dolor"..
+--              " sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing"..
+--              " elitr, sed diam nonumy eirmod tempor invidunt ut labore et"..
+--              " dolore magna aliquyam erat, sed diam voluptua. At vero eos"..
+--              " et accusam et justo duo dolores et ea rebum. Stet clita"..
+--              " kasd gubergren, no sea takimata sanctus est Lorem ipsum"..
+--              " dolor sit amet.";
+-- local Callback = function(_Data)
+--     -- Hier kann was passieren
+-- end
+-- API.SimpleTypewriter(Text, Callback);
+-- @within Anwenderfunktionen
+--
+function API.SimpleTypewriter(_Text, _Callback)
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if GUI then
+        API.Fatal("API.SimpleTypewriter: Can only be used from global script!");
+        return;
+    end
+    local Text = _Text;
+    if type(Text) == "table" then
+        Text = Text[lang];
+    end
+    QSB.SimpleTypewriter:New(_Text, _Callback):Start();
 end
 
 -- -------------------------------------------------------------------------- --
@@ -203,19 +252,578 @@ BundleDialogWindows = {
                 Queue = {},
             },
         },
-        TextWindow = {
-            Data = {
-                Shown       = false,
-                Caption     = "",
-                Text        = "",
-                ButtonText  = "",
-                Picture     = nil,
-                Action      = nil,
-                Callback    = function() end,
-            },
-        },
     },
 }
+
+-- Typewriter class ------------------------------------------------------------
+
+QSB.SimpleTypewriter = {
+    m_Tokens     = {},
+    m_Waittime   = 80,
+    m_Speed      = 1,
+    m_Index      = 0,
+    m_Text       = nil,
+    m_JobID      = nil,
+    m_Callback   = nil,
+    m_Loadscreen = true,
+};
+
+---
+-- Erzeugt eine Neue Instanz der Schreibmaschinenschrift.
+-- @param[type=string]   _Text     Anzuzeigender Text
+-- @param[type=function] _Callback Funktion, die am Ende ausgeführt wird
+-- @return[type=table] Neue Instanz
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:New(_Text, _Callback)
+    local typewriter = API.InstanceTable(self);
+    typewriter.m_Text = _Text;
+    typewriter.m_Callback = _Callback;
+    return typewriter;
+end
+
+---
+-- Stellt ein, wie viele Zeichen in einer Interation angezeigt werden.
+-- @param[type=number] _Speed Anzahl an Character pro 1/10 Sekunde
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetSpeed(_Speed)
+    self.m_Speed = _Speed;
+end
+
+---
+-- Stellt ein, wie lange nach Ausgabe des letzten Zeichens gewartet wird, bis
+-- die Schreibmaschine endet.
+-- @param[type=number] _Waittime Zeit in 1/10 Sekunden (8 Sekunden = 80)
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:SetWaittime(_Waittime)
+    self.m_Waittime = _Waittime;
+end
+
+---
+-- Startet die Laufschrift. Wenn ein Briefing aktiv ist, oder die Map noch
+-- nicht geladen ist, wird gewartet.
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:Start()
+    if self:CanBePlayed() then
+        self:Play();
+        return;
+    end
+    StartSimpleHiResJobEx(self.WaitForBriefingEnd, self);
+end
+
+---
+-- Spielt die Schreibmaschine ab.
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:Play()
+    if BriefingSystem then
+        BriefingSystem.isActive = true;
+    end
+    self:TokenizeText();
+    API.Bridge([[
+        XGUIEng.PushPage("/InGame/Root/Normal/NotesWindow", false)
+        XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
+        XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal",0)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/NotesWindow",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 1)
+        XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 0, 0, 0, 255)
+        Input.CutsceneMode()
+    ]]);
+    self.m_JobID = StartSimpleHiResJobEx(self.ControllerJob, self);
+end
+
+---
+-- Stoppt eine aktive Schreibmaschine.
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:Stop()
+    if BriefingSystem then
+        BriefingSystem.isActive = false;
+    end
+    API.Bridge([[
+        GUI.ClearNotes()
+        Input.GameMode()
+        XGUIEng.PopPage()
+        XGUIEng.PopPage()
+        XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen", 0)
+        XGUIEng.SetMaterialColor("/InGame/Root/Normal/PauseScreen", 0, 40, 40, 40, 180)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AnimatedCameraMovement", 1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopLeft/TopBar",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/InteractiveObjects",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/InteractiveObjects/Update",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopRight",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Merchant",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignTopCenter",1)
+        if g_PatchIdentifierExtra1 then
+            XGUIEng.ShowWidget("/InGame/Root/Normal/Selected_Tradepost",1)
+        end
+        XGUIEng.ShowWidget("/InGame/Root/Normal/TextMessages",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/PauseScreen",0)
+        XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay",1)
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ShowUi",1)
+        XGUIEng.ShowWidget("/InGame/Root/3dWorldView",1)
+    ]]);
+    API.EndJob(self.m_JobID);
+end
+
+---
+-- Spaltet den Text in Tokens auf und speichert die Tokens für die Wiedergabe.
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:TokenizeText()
+    self.m_Text = self.m_Text:gsub("%s+", " ");
+    local TempTokens = {};
+    local Text = self.m_Text;
+    while (true) do
+        local s, e = Text:find(" ");
+        if not s then
+            table.insert(TempTokens, Text);
+            break;
+        end
+        local NewToken = Text:sub(1, s-1);
+        if NewToken:find("}") then
+            for i= #NewToken, 1, -1 do
+                local Char = NewToken:sub(i, i);
+                if Char == "}" then
+                    table.insert(TempTokens, NewToken:sub(1, i));
+                    table.insert(TempTokens, NewToken:sub(i+1));
+                    break;
+                end
+            end
+        else
+            table.insert(TempTokens, NewToken);
+        end
+        table.insert(TempTokens, " ");
+        Text = Text:sub(e+1);
+    end
+
+    for i= 1, #TempTokens, 1 do
+        if TempTokens[i] == " " or string.find(TempTokens[i], "{") then
+            table.insert(self.m_Tokens, TempTokens[i]);
+        else
+            for letter in TempTokens[i]:gmatch(".") do
+                table.insert(self.m_Tokens, letter);
+            end
+        end
+    end
+end
+
+---
+-- Prüft, ob die Schreibmaschine gestartet werden kann.
+-- @return[type=boolean] Schreibmaschine kann starten
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter:CanBePlayed()
+    if QSB.SimpleTypewriter.m_Loadscreen then
+        API.Bridge([[
+            if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+                API.Bridge("QSB.SimpleTypewriter.m_Loadscreen = false")
+            end
+        ]])
+        return false;
+    end
+    if BriefingSystem and BriefingSystem.isActive then
+        return false;
+    end
+    return true;
+end
+
+---
+-- Job: Warte solange, bis Briefings beendet sind.
+-- @param[type=table] Data
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter.WaitForBriefingEnd(_Data)
+    if _Data:CanBePlayed() == true then
+        _Data:Play();
+        return true;
+    end
+end
+
+---
+-- Job: Kontrolliert die Anzeige der Schreibmaschine.
+-- @param[type=table] Data
+-- @within QSB.SimpleTypewriter
+-- @local
+--
+function QSB.SimpleTypewriter.ControllerJob(_Data)
+    _Data.m_Index = _Data.m_Index + _Data.m_Speed;
+    if _Data.m_Index > #_Data.m_Tokens then
+        _Data.m_Index = #_Data.m_Tokens;
+    end
+    local Index = math.ceil(_Data.m_Index);
+
+    local Text = "";
+    for i= 1, Index, 1 do
+        Text = Text .. _Data.m_Tokens[i];
+    end
+    API.Bridge([[
+        GUI.ClearNotes()
+        GUI.AddNote("]] ..Text.. [[");
+    ]])
+    
+    if Index == #_Data.m_Tokens then
+        _Data.m_Waittime = _Data.m_Waittime -1;
+        if _Data.m_Waittime <= 0 then
+            if _Data.m_Callback then
+                _Data.m_Callback(_Data);
+            end
+            _Data:Stop();
+            return true;
+        end
+    end
+end
+
+-- TextWindow class ------------------------------------------------------------
+
+QSB.TextWindow = {
+    Data = {
+        Shown       = false,
+        Caption     = "",
+        Text        = "",
+        ButtonText  = "",
+        Picture     = nil,
+        Action      = nil,
+        Callback    = function() end,
+    },
+};
+
+---
+-- Erzeugt ein Textfenster, dass einen beliebig großen Text anzeigen kann.
+-- Optional kann ein Button genutzt werden, der eine Aktion ausführt, wenn
+-- er gedrückt wird.
+--
+-- <p><b>Alias</b>: TextWindow:New</p>
+--
+-- Parameterliste:
+-- <table>
+-- <tr>
+-- <th>Index</th>
+-- <th>Beschreibung</th>
+-- </tr>
+-- <tr>
+-- <td>1</td>
+-- <td>Titel des Fensters</td>
+-- </tr>
+-- <tr>
+-- <td>2</td>
+-- <td>Text des Fensters</td>
+-- </tr>
+-- <tr>
+-- <td>3</td>
+-- <td>Aktion nach dem Schließen</td>
+-- </tr>
+-- <tr>
+-- <td>4</td>
+-- <td>Beschriftung des Buttons</td>
+-- </tr>
+-- <tr>
+-- <td>5</td>
+-- <td>Callback des Buttons</td>
+-- </tr>
+-- </table>
+--
+-- @param ... Parameterliste
+-- @return[type=table] Instanz des konfigurierten Fensters
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- local MyWindow = TextWindow:New("Fenster", "Das ist ein Text");
+--
+function QSB.TextWindow:New(...)
+    assert(self == QSB.TextWindow, "Can not be used from instance!")
+    local window           = API.InstanceTable(self);
+    window.Data.Caption    = arg[1] or window.Data.Caption;
+    window.Data.Text       = arg[2] or window.Data.Text;
+    window.Data.Action     = arg[3];
+    window.Data.ButtonText = arg[4] or window.Data.ButtonText;
+    window.Data.Callback   = arg[5] or window.Data.Callback;
+    return window;
+end
+
+---
+-- Fügt einen beliebigen Parameter hinzu. Parameter müssen immer als
+-- Schlüssel-Wert-Paare angegeben werden und dürfen vorhandene Pare nicht
+-- überschreiben.
+--
+-- <p><b>Alias</b>: TextWindow:AddParamater</p>
+--
+-- @param[type=string] _Key   Schlüssel
+-- @param              _Value Wert
+-- @return self
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- MyWindow:AddParameter("Name", "Horst");
+--
+function QSB.TextWindow:AddParamater(_Key, _Value)
+    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
+    assert(self.Data[_Key] ~= nil, "Key '" .._Key.. "' already exists!");
+    self.Data[_Key] = _Value;
+    return self;
+end
+
+---
+-- Setzt die Überschrift des TextWindow.
+--
+-- <p><b>Alias</b>: TextWindow:SetCaption</p>
+--
+-- @param[type=string] _Text Titel des Textfenster
+-- @return self
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- MyWindow:SetCaption("Das ist der Titel");
+--
+function QSB.TextWindow:SetCaption(_Text)
+    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Text) == "table" then
+        _Text = _Text[Language];
+    end
+    assert(type(_Text) == "string");
+    self.Data.Caption = _Text;
+    return self;
+end
+
+---
+-- Setzt den Inhalt des TextWindow.
+--
+-- <p><b>Alias</b>: TextWindow:SetContent</p>
+--
+-- @param[type=string] _Text Inhalt des Textfenster
+-- @return self
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- MyWindow:SetCaption("Das ist der Text. Er ist sehr informativ!");
+--
+function QSB.TextWindow:SetContent(_Text)
+    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(_Text) == "table" then
+        _Text = _Text[Language];
+    end
+    assert(type(_Text) == "string");
+    self.Data.Text = _Text;
+    return self;
+end
+
+---
+-- Setzt die Close Action des TextWindow. Die Funktion wird beim schließen
+-- des Fensters ausgeführt.
+--
+-- <p><b>Alias</b>: TextWindow:SetAction</p>
+--
+-- @param[type=function] _Function Close Callback
+-- @return self
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- local MyAction = function(_Window)
+--     -- Something is done here!
+-- end
+-- MyWindow:SetAction(MyAction);
+--
+function QSB.TextWindow:SetAction(_Function)
+    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
+    assert(nil or type(_Function) == "function");
+    self.Data.Callback = _Function;
+    return self;
+end
+
+---
+-- Setzt einen Aktionsbutton im TextWindow.
+--
+-- Der Button muss mit einer Funktion versehen werden. Sobald der Button
+-- betätigt wird, wird die Funktion ausgeführt.
+--
+-- <p><b>Alias</b>: TextWindow:SetButton</p>
+--
+-- @param[type=string]   _Text     Beschriftung des Buttons
+-- @param[type=function] _Callback Aktion des Buttons
+-- @return self
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- local MyButtonAction = function(_Window)
+--     -- Something is done here!
+-- end
+-- MyWindow:SetAction("Button Text", MyButtonAction);
+--
+function QSB.TextWindow:SetButton(_Text, _Callback)
+    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
+    if _Text then
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if type(_Text) == "table" then
+            _Text = _Text[Language];
+        end
+        assert(type(_Text) == "string");
+        assert(type(_Callback) == "function");
+    end
+    self.Data.ButtonText = _Text;
+    self.Data.Action     = _Callback;
+    return self;
+end
+
+---
+-- Zeigt ein erzeigtes Fenster an.
+--
+-- <p><b>Alias</b>: TextWindow:Show</p>
+--
+-- @within QSB.TextWindow
+-- @local
+--
+-- @usage
+-- MyWindow:Show();
+--
+function QSB.TextWindow:Show()
+    assert(self ~= QSB.TextWindow, "Can not be used in static context!");
+    QSB.TextWindow.Data.Shown = true;
+    self.Data.Shown = true;
+    self:Prepare();
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",1);
+    if not self.Data.Action then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",0);
+    end
+    XGUIEng.SetText("/InGame/Root/Normal/MessageLog/Name","{center}"..self.Data.Caption);
+    XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget","{center}"..self.Data.ButtonText);
+    GUI_Chat.ClearMessageLog();
+    GUI_Chat.ChatlogAddMessage(self.Data.Text);
+
+    local stringlen = string.len(self.Data.Text);
+    local iterator  = 1;
+    local carreturn = 0;
+    while (true)
+    do
+        local s,e = string.find(self.Data.Text, "{cr}", iterator);
+        if not e then
+            break;
+        end
+        if e-iterator <= 58 then
+            stringlen = stringlen + 58-(e-iterator);
+        end
+        iterator = e+1;
+    end
+    if (stringlen + (carreturn*55)) > 1000 then
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
+    end
+    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+end
+
+---
+-- Initialisiert das TextWindow, bevor es angezeigt wird.
+--
+-- @within QSB.TextWindow
+-- @local
+--
+function QSB.TextWindow:Prepare()
+    function GUI_Chat.CloseChatMenu()
+        QSB.TextWindow.Data.Shown = false;
+        self.Data.Shown = false;
+        if self.Data.Callback then
+            self.Data.Callback(self);
+        end
+        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",0);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",0);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",1);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",1);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",1);
+        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",1);
+        Game.GameTimeReset(GUI.GetPlayerID());
+    end
+
+    function GUI_Chat.ToggleWhisperTargetUpdate()
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
+    end
+
+    function GUI_Chat.CheckboxMessageTypeWhisperUpdate()
+        XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/TextCheckbox","{center}"..self.Data.Caption);
+    end
+
+    function GUI_Chat.ToggleWhisperTarget()
+        if self.Data.Action then
+            self.Data.Action(self);
+        end
+    end
+
+    function GUI_Chat.ClearMessageLog()
+        g_Chat.ChatHistory = {}
+    end
+
+    function GUI_Chat.ChatlogAddMessage(_Message)
+        table.insert(g_Chat.ChatHistory, _Message)
+        local ChatlogMessage = ""
+        for i,v in ipairs(g_Chat.ChatHistory) do
+            ChatlogMessage = ChatlogMessage .. v .. "{cr}"
+        end
+        XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", ChatlogMessage)
+    end
+
+    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if type(self.Data.Caption) == "table" then
+        self.Data.Caption = self.Data.Caption[lang];
+    end
+    if type(self.Data.ButtonText) == "table" then
+        self.Data.ButtonText = self.Data.ButtonText[lang];
+    end
+    if type(self.Data.Text) == "table" then
+        self.Data.Text = self.Data.Text[lang];
+    end
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeAllPlayers",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeTeam",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeWhisper",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatChooseModeCaption",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Background/TitleBig",1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Background/TitleBig/Info",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogCaption",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/BGChoose",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/BGChatLog",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",0);
+
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",0);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",0);
+
+    XGUIEng.DisableButton("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",0);
+
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog",0,95);
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog/Name",0,0);
+    XGUIEng.SetTextColor("/InGame/Root/Normal/MessageLog/Name",51,51,121,255);
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ChatLog",140,150);
+    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/Background/DialogBG/1 (2)/2",150,400);
+    XGUIEng.SetWidgetPositionAndSize("/InGame/Root/Normal/ChatOptions/Background/DialogBG/1 (2)/3",400,500,350,400);
+    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/ChatLog",640,580);
+    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/ChatLogSlider",46,660);
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ChatLogSlider",780,130);
+    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",110,760);
+end
 
 -- Global Script ---------------------------------------------------------------
 
@@ -226,10 +834,7 @@ BundleDialogWindows = {
 -- @local
 --
 function BundleDialogWindows.Global:Install()
-
 end
-
-
 
 -- Local Script ----------------------------------------------------------------
 
@@ -241,7 +846,6 @@ end
 --
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
-    TextWindow = self.TextWindow;
 end
 
 ---
@@ -519,328 +1123,6 @@ function BundleDialogWindows.Local:DialogOverwriteOriginal()
             OpenRequesterDialog_Orig_Windows(_Message, _Title, action, _OkCancel, no_action);
         end
     end
-end
-
----
--- Erzeugt ein Textfenster, dass einen beliebig großen Text anzeigen kann.
--- Optional kann ein Button genutzt werden, der eine Aktion ausführt, wenn
--- er gedrückt wird.
---
--- <p><b>Alias</b>: TextWindow:New</p>
---
--- Parameterliste:
--- <table>
--- <tr>
--- <th>Index</th>
--- <th>Beschreibung</th>
--- </tr>
--- <tr>
--- <td>1</td>
--- <td>Titel des Fensters</td>
--- </tr>
--- <tr>
--- <td>2</td>
--- <td>Text des Fensters</td>
--- </tr>
--- <tr>
--- <td>3</td>
--- <td>Aktion nach dem Schließen</td>
--- </tr>
--- <tr>
--- <td>4</td>
--- <td>Beschriftung des Buttons</td>
--- </tr>
--- <tr>
--- <td>5</td>
--- <td>Callback des Buttons</td>
--- </tr>
--- </table>
---
--- @param ... Parameterliste
--- @return[type=table] Instanz des konfigurierten Fensters
--- @within TextWindow
--- @local
---
--- @usage
--- local MyWindow = TextWindow:New("Fenster", "Das ist ein Text");
---
-function BundleDialogWindows.Local.TextWindow:New(...)
-    assert(self == BundleDialogWindows.Local.TextWindow, "Can not be used from instance!")
-    local window           = API.InstanceTable(self);
-    window.Data.Caption    = arg[1] or window.Data.Caption;
-    window.Data.Text       = arg[2] or window.Data.Text;
-    window.Data.Action     = arg[3];
-    window.Data.ButtonText = arg[4] or window.Data.ButtonText;
-    window.Data.Callback   = arg[5] or window.Data.Callback;
-    return window;
-end
-
----
--- Fügt einen beliebigen Parameter hinzu. Parameter müssen immer als
--- Schlüssel-Wert-Paare angegeben werden und dürfen vorhandene Pare nicht
--- überschreiben.
---
--- <p><b>Alias</b>: TextWindow:AddParamater</p>
---
--- @param[type=string] _Key   Schlüssel
--- @param              _Value Wert
--- @return self
--- @within TextWindow
--- @local
---
--- @usage
--- MyWindow:AddParameter("Name", "Horst");
---
-function BundleDialogWindows.Local.TextWindow:AddParamater(_Key, _Value)
-    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    assert(self.Data[_Key] ~= nil, "Key '" .._Key.. "' already exists!");
-    self.Data[_Key] = _Value;
-    return self;
-end
-
----
--- Setzt die Überschrift des TextWindow.
---
--- <p><b>Alias</b>: TextWindow:SetCaption</p>
---
--- @param[type=string] _Text Titel des Textfenster
--- @return self
--- @within TextWindow
--- @local
---
--- @usage
--- MyWindow:SetCaption("Das ist der Titel");
---
-function BundleDialogWindows.Local.TextWindow:SetCaption(_Text)
-    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    if type(_Text) == "table" then
-        _Text = _Text[Language];
-    end
-    assert(type(_Text) == "string");
-    self.Data.Caption = _Text;
-    return self;
-end
-
----
--- Setzt den Inhalt des TextWindow.
---
--- <p><b>Alias</b>: TextWindow:SetContent</p>
---
--- @param[type=string] _Text Inhalt des Textfenster
--- @return self
--- @within TextWindow
--- @local
---
--- @usage
--- MyWindow:SetCaption("Das ist der Text. Er ist sehr informativ!");
---
-function BundleDialogWindows.Local.TextWindow:SetContent(_Text)
-    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    if type(_Text) == "table" then
-        _Text = _Text[Language];
-    end
-    assert(type(_Text) == "string");
-    self.Data.Text = _Text;
-    return self;
-end
-
----
--- Setzt die Close Action des TextWindow. Die Funktion wird beim schließen
--- des Fensters ausgeführt.
---
--- <p><b>Alias</b>: TextWindow:SetAction</p>
---
--- @param[type=function] _Function Close Callback
--- @return self
--- @within TextWindow
--- @local
---
--- @usage
--- local MyAction = function(_Window)
---     -- Something is done here!
--- end
--- MyWindow:SetAction(MyAction);
---
-function BundleDialogWindows.Local.TextWindow:SetAction(_Function)
-    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    assert(nil or type(_Function) == "function");
-    self.Data.Callback = _Function;
-    return self;
-end
-
----
--- Setzt einen Aktionsbutton im TextWindow.
---
--- Der Button muss mit einer Funktion versehen werden. Sobald der Button
--- betätigt wird, wird die Funktion ausgeführt.
---
--- <p><b>Alias</b>: TextWindow:SetButton</p>
---
--- @param[type=string]   _Text     Beschriftung des Buttons
--- @param[type=function] _Callback Aktion des Buttons
--- @return self
--- @within TextWindow
--- @local
---
--- @usage
--- local MyButtonAction = function(_Window)
---     -- Something is done here!
--- end
--- MyWindow:SetAction("Button Text", MyButtonAction);
---
-function BundleDialogWindows.Local.TextWindow:SetButton(_Text, _Callback)
-    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    if _Text then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-        if type(_Text) == "table" then
-            _Text = _Text[Language];
-        end
-        assert(type(_Text) == "string");
-        assert(type(_Callback) == "function");
-    end
-    self.Data.ButtonText = _Text;
-    self.Data.Action     = _Callback;
-    return self;
-end
-
----
--- Zeigt ein erzeigtes Fenster an.
---
--- <p><b>Alias</b>: TextWindow:Show</p>
---
--- @within TextWindow
--- @local
---
--- @usage
--- MyWindow:Show();
---
-function BundleDialogWindows.Local.TextWindow:Show()
-    assert(self ~= BundleDialogWindows.Local.TextWindow, "Can not be used in static context!");
-    BundleDialogWindows.Local.TextWindow.Data.Shown = true;
-    self.Data.Shown = true;
-    self:Prepare();
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",1);
-    if not self.Data.Action then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",0);
-    end
-    XGUIEng.SetText("/InGame/Root/Normal/MessageLog/Name","{center}"..self.Data.Caption);
-    XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget","{center}"..self.Data.ButtonText);
-    GUI_Chat.ClearMessageLog();
-    GUI_Chat.ChatlogAddMessage(self.Data.Text);
-
-    local stringlen = string.len(self.Data.Text);
-    local iterator  = 1;
-    local carreturn = 0;
-    while (true)
-    do
-        local s,e = string.find(self.Data.Text, "{cr}", iterator);
-        if not e then
-            break;
-        end
-        if e-iterator <= 58 then
-            stringlen = stringlen + 58-(e-iterator);
-        end
-        iterator = e+1;
-    end
-    if (stringlen + (carreturn*55)) > 1000 then
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",1);
-    end
-    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
-end
-
----
--- Initialisiert das TextWindow, bevor es angezeigt wird.
---
--- @within TextWindow
--- @local
---
-function BundleDialogWindows.Local.TextWindow:Prepare()
-    function GUI_Chat.CloseChatMenu()
-        BundleDialogWindows.Local.TextWindow.Data.Shown = false;
-        self.Data.Shown = false;
-        if self.Data.Callback then
-            self.Data.Callback(self);
-        end
-        XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions",0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",0);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",1);
-        XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",1);
-        Game.GameTimeReset(GUI.GetPlayerID());
-    end
-
-    function GUI_Chat.ToggleWhisperTargetUpdate()
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
-    end
-
-    function GUI_Chat.CheckboxMessageTypeWhisperUpdate()
-        XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/TextCheckbox","{center}"..self.Data.Caption);
-    end
-
-    function GUI_Chat.ToggleWhisperTarget()
-        if self.Data.Action then
-            self.Data.Action(self);
-        end
-    end
-
-    function GUI_Chat.ClearMessageLog()
-        g_Chat.ChatHistory = {}
-    end
-
-    function GUI_Chat.ChatlogAddMessage(_Message)
-        table.insert(g_Chat.ChatHistory, _Message)
-        local ChatlogMessage = ""
-        for i,v in ipairs(g_Chat.ChatHistory) do
-            ChatlogMessage = ChatlogMessage .. v .. "{cr}"
-        end
-        XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", ChatlogMessage)
-    end
-
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    if type(self.Data.Caption) == "table" then
-        self.Data.Caption = self.Data.Caption[lang];
-    end
-    if type(self.Data.ButtonText) == "table" then
-        self.Data.ButtonText = self.Data.ButtonText[lang];
-    end
-    if type(self.Data.Text) == "table" then
-        self.Data.Text = self.Data.Text[lang];
-    end
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeAllPlayers",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeTeam",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeWhisper",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatChooseModeCaption",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Background/TitleBig",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/Background/TitleBig/Info",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogCaption",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/BGChoose",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/BGChatLog",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatLogSlider",0);
-
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog",1);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/BG",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Close",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Slider",0);
-    XGUIEng.ShowWidget("/InGame/Root/Normal/MessageLog/Text",0);
-
-    XGUIEng.DisableButton("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",0);
-
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog",0,95);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/MessageLog/Name",0,0);
-    XGUIEng.SetTextColor("/InGame/Root/Normal/MessageLog/Name",51,51,121,255);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ChatLog",140,150);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/Background/DialogBG/1 (2)/2",150,400);
-    XGUIEng.SetWidgetPositionAndSize("/InGame/Root/Normal/ChatOptions/Background/DialogBG/1 (2)/3",400,500,350,400);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/ChatLog",640,580);
-    XGUIEng.SetWidgetSize("/InGame/Root/Normal/ChatOptions/ChatLogSlider",46,660);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ChatLogSlider",780,130);
-    XGUIEng.SetWidgetLocalPosition("/InGame/Root/Normal/ChatOptions/ToggleWhisperTarget",110,760);
 end
 
 -- -------------------------------------------------------------------------- --

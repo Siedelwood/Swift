@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
+  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><strong>bundles.bundlethirdpersoncamera</strong></li>
+  <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
+  <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/loader.html">loader</a></li>
+  <li><a href="../modules/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundles.bundlethirdpersoncamera</code></h1>
+<p>Dieses Bundle bietet einen Kameramodus an, mit dem ein Entity aus der
+ Schulterperspektive verfolgt werden kann.</p>
+<p>
+<p> <a href="#API.ThirdPersonActivate">Schulterblick aktivieren</a><br>
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ThirdPersonActivate">API.ThirdPersonActivate (_Hero, _MaxZoom)</a></td>
+	<td class="summary">Aktiviert die Heldenkamera und setzt den verfolgten Helden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ThirdPersonDeactivate">API.ThirdPersonDeactivate ()</a></td>
+	<td class="summary">Deaktiviert die Heldenkamera.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ThirdPersonIsRuning">API.ThirdPersonIsRuning ()</a></td>
+	<td class="summary">Prüft, ob die Heldenkamera aktiv ist.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Global.OnSaveGameLoaded">BundleThirdPersonCamera.Global.OnSaveGameLoaded ()</a></td>
+	<td class="summary">Stellt nicht-persistente Änderungen nach dem laden wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Global:Install">BundleThirdPersonCamera.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Global:ThirdPersonActivate">BundleThirdPersonCamera.Global:ThirdPersonActivate (_Hero, _MaxZoom)</a></td>
+	<td class="summary">Aktiviert die Heldenkamera und setzt den verfolgten Helden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Global:ThirdPersonDeactivate">BundleThirdPersonCamera.Global:ThirdPersonDeactivate ()</a></td>
+	<td class="summary">Deaktiviert die Heldenkamera.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Global:ThirdPersonIsRuning">BundleThirdPersonCamera.Global:ThirdPersonIsRuning ()</a></td>
+	<td class="summary">Prüft, ob die Heldenkamera aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing">BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing ()</a></td>
+	<td class="summary">Überschreibt StartBriefing und EndBriefing des Briefing System,
+ wenn es vorhanden ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Local:ThirdPersonActivate">BundleThirdPersonCamera.Local:ThirdPersonActivate (_Hero, _MaxZoom)</a></td>
+	<td class="summary">Aktiviert die Heldenkamera und setzt den verfolgten Helden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Local:ThirdPersonDeactivate">BundleThirdPersonCamera.Local:ThirdPersonDeactivate ()</a></td>
+	<td class="summary">Deaktiviert die Heldenkamera.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Local:ThirdPersonIsRuning">BundleThirdPersonCamera.Local:ThirdPersonIsRuning ()</a></td>
+	<td class="summary">Prüft, ob die Heldenkamera aktiv ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleThirdPersonCamera.Local:ThirdPersonOverwriteGetBorderScrollFactor">BundleThirdPersonCamera.Local:ThirdPersonOverwriteGetBorderScrollFactor ()</a></td>
+	<td class="summary">Überschreibt GameCallback_GetBorderScrollFactor und wandelt den
+ Bildlauf am Bildschirmrand in Bildrotation um.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ThirdPersonActivate"></a>
+    <strong>API.ThirdPersonActivate (_Hero, _MaxZoom)</strong>
+    </dt>
+    <dd>
+    Aktiviert die Heldenkamera und setzt den verfolgten Helden.  Der
+ Held kann 0 sein, dann wird entweder der letzte Held verwendet
+ oder über den GUI-Spieler ermittelt.
+<p> <p><b>Alias:</b> HeroCameraActivate</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Hero</span>
+         [string|number] Skriptname/Entity-ID des Helden
+        </li>
+        <li><span class="parameter">_MaxZoom</span>
+         [number] Maximaler Zoomfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ThirdPersonDeactivate"></a>
+    <strong>API.ThirdPersonDeactivate ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Heldenkamera.
+<p> <p><b>Alias:</b> HeroCameraDeactivate</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ThirdPersonIsRuning"></a>
+    <strong>API.ThirdPersonIsRuning ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob die Heldenkamera aktiv ist.
+<p> <p><b>Alias:</b> HeroCameraIsRuning</p>
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Kamera aktiv
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleThirdPersonCamera.Global.OnSaveGameLoaded"></a>
+    <strong>BundleThirdPersonCamera.Global.OnSaveGameLoaded ()</strong>
+    </dt>
+    <dd>
+    Stellt nicht-persistente Änderungen nach dem laden wieder her.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Global:Install"></a>
+    <strong>BundleThirdPersonCamera.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das Bundle im globalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Global:ThirdPersonActivate"></a>
+    <strong>BundleThirdPersonCamera.Global:ThirdPersonActivate (_Hero, _MaxZoom)</strong>
+    </dt>
+    <dd>
+    Aktiviert die Heldenkamera und setzt den verfolgten Helden.  Der
+ Held kann 0 sein, dann wird entweder der letzte Held verwendet
+ oder über den GUI-Spieler ermittelt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Hero</span>
+         [string|number] Skriptname/Entity-ID des Helden
+        </li>
+        <li><span class="parameter">_MaxZoom</span>
+         [number] Maximaler Zoomfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Global:ThirdPersonDeactivate"></a>
+    <strong>BundleThirdPersonCamera.Global:ThirdPersonDeactivate ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Heldenkamera.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Global:ThirdPersonIsRuning"></a>
+    <strong>BundleThirdPersonCamera.Global:ThirdPersonIsRuning ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob die Heldenkamera aktiv ist.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Kamera aktiv
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing"></a>
+    <strong>BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing ()</strong>
+    </dt>
+    <dd>
+    Überschreibt StartBriefing und EndBriefing des Briefing System,
+ wenn es vorhanden ist.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Local:ThirdPersonActivate"></a>
+    <strong>BundleThirdPersonCamera.Local:ThirdPersonActivate (_Hero, _MaxZoom)</strong>
+    </dt>
+    <dd>
+    Aktiviert die Heldenkamera und setzt den verfolgten Helden.  Der
+ Held kann 0 sein, dann wird entweder der letzte Held verwendet
+ oder über den GUI-Spieler ermittelt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Hero</span>
+         [string|number] Skriptname/Entity-ID des Helden
+        </li>
+        <li><span class="parameter">_MaxZoom</span>
+         [number] Maximaler Zoomfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Local:ThirdPersonDeactivate"></a>
+    <strong>BundleThirdPersonCamera.Local:ThirdPersonDeactivate ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Heldenkamera.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Local:ThirdPersonIsRuning"></a>
+    <strong>BundleThirdPersonCamera.Local:ThirdPersonIsRuning ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob die Heldenkamera aktiv ist.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        [boolean] Kamera aktiv
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleThirdPersonCamera.Local:ThirdPersonOverwriteGetBorderScrollFactor"></a>
+    <strong>BundleThirdPersonCamera.Local:ThirdPersonOverwriteGetBorderScrollFactor ()</strong>
+    </dt>
+    <dd>
+    Überschreibt GameCallback_GetBorderScrollFactor und wandelt den
+ Bildlauf am Bildschirmrand in Bildrotation um.  Dabei wird die
+ Kamera um links oder rechts gedreht, abhänig von der Position
+ der Mouse.
+
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-02-24 14:16:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

@@ -523,8 +523,8 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
             end
         end
 
-        GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnID, _Type, _Amount)
-            local pos = GetPosition(_SpawnID);
+        GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnPos, _Type, _Amount)
+            local pos = GetPosition(_SpawnPos);
             local resCat = Logic.GetGoodCategoryForGoodType(_Type);
             local ID;
             if resCat == GoodCategories.GC_Resource then
@@ -552,7 +552,7 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
                     end
                 else
                     if not IO[EntityName] then
-                        return false;
+                        return;
                     end
                     if IO[EntityName].Used ~= true then
                         return false;
@@ -1017,7 +1017,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                             ObjectName = ObjectName[lang];
                         end
                     end
-                    if ObjectName == "" then
+                    if ObjectName == nil then
                         ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectEntityName];
                         if type(ObjectName) == "table" then
                             local lang = Network.GetDesiredLanguage();
@@ -1025,7 +1025,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                             ObjectName = ObjectName[lang];
                         end
                     end
-                    if ObjectName == "" then
+                    if ObjectName == nil then
                         ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName
                     end
                 end

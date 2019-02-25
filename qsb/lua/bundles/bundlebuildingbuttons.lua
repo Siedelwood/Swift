@@ -35,7 +35,7 @@
 -- </ul>
 --
 -- @within Modulbeschreibung
--- @set sort=false
+-- @set sort=true
 --
 BundleBuildingButtons = {};
 
@@ -47,83 +47,52 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Aktiviert die Single Stop Buttons. Single Stop ermöglicht das Anhalten
--- eines einzelnen Betriebes, anstelle des Anhaltens aller Betriebe des
--- gleichen Typs.
+-- Aktiviert oder deaktiviert die Single Stop Buttons. Single Stop ermöglicht
+-- das Anhalten eines einzelnen Betriebes, anstelle des Anhaltens aller
+-- Betriebe des gleichen Typs.
 --
 -- Im Gegensatz zur Viehzucht und zum Rückbau, welche feste eigeständige
 -- Buttons sind, handelt es sich hierbei um einen Custom Button. Single
 -- Stop belegt Index 1.
 --
--- <p><b>Alias:</b> ActivateSingleStop</p>
---
+-- @param[type=boolean] _Flag Single Stop nutzen
 -- @within Anwenderfunktionen
 -- @see API.AddCustomBuildingButton
 --
-function API.ActivateSingleStop()
+function API.UseSingleStop(_Flag)
     if not GUI then
-        API.Bridge("API.ActivateSingleStop()");
+        API.Bridge("API.UseSingleStop(" ..tostring(_Flag).. ")");
         return;
     end
 
-    BundleBuildingButtons.Local:AddOptionalButton(
-        2,
-        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action,
-        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip,
-        BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update
-    );
-end
-ActivateSingleStop = API.ActivateSingleStop;
-
----
--- Deaktiviert die Single Stop Buttons.
---
--- <p><b>Alias:</b> DeactivateSingleStop</p>
---
--- @within Anwenderfunktionen
---
-function API.DeactivateSingleStop()
-    if not GUI then
-        API.Bridge("API.DeactivateSingleStop()");
-        return;
+    if _Flag then
+        BundleBuildingButtons.Local:AddOptionalButton(
+            2,
+            BundleBuildingButtons.Local.ButtonDefaultSingleStop_Action,
+            BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip,
+            BundleBuildingButtons.Local.ButtonDefaultSingleStop_Update
+        );
+    else
+        BundleBuildingButtons.Local:DeleteOptionalButton(2);
     end
-    BundleBuildingButtons.Local:DeleteOptionalButton(2);
 end
-DeactivateSingleStop = API.DeactivateSingleStop;
 
 ---
--- Aktiviere Rückbau bei Stadt- und Rohstoffgebäuden. Die Rückbaufunktion
--- erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude der Stufe 2 und 3
--- jeweils eine Stufe zu zerstören. Der überflüssige Arbeiter wird entlassen.
+-- Aktiviere oder deaktiviere Rückbau bei Stadt- und Rohstoffgebäuden. Die
+-- Rückbaufunktion erlaubt es dem Spieler bei Stadt- und Rohstoffgebäude
+-- der Stufe 2 und 3 jeweils eine Stufe zu zerstören. Der überflüssige
+-- Arbeiter wird entlassen.
 --
--- <p><b>Alias:</b> UseDowngrade</p>
---
+-- @param[type=boolean] _Flag Downgrade nutzen
 -- @within Anwenderfunktionen
 --
-function API.ActivateDowngrade()
+function API.UseDowngrade(_Flag)
     if not GUI then
-        API.Bridge("API.ActivateDowngrade()");
+        API.Bridge("API.UseDowngrade(" ..tostring(_Flag).. ")");
         return;
     end
-    BundleBuildingButtons.Local.Data.Downgrade = true;
+    BundleBuildingButtons.Local.Data.Downgrade = _Flag == true;
 end
-ActivateDowngrade = API.ActivateDowngrade;
-
----
--- Deaktiviert den Rückbau von Gebäuden.
---
--- <p><b>Alias:</b> DeactivateDowngrade</p>
---
--- @within Anwenderfunktionen
---
-function API.DeactivateDowngrade()
-    if not GUI then
-        API.Bridge("API.DeactivateDowngrade()");
-        return;
-    end
-    BundleBuildingButtons.Local.Data.Downgrade = false;
-end
-DeactivateDowngrade = API.DeactivateDowngrade;
 
 ---
 -- Erlaube oder verbiete dem Spieler Schafe zu züchten.
@@ -299,10 +268,6 @@ SetCattleNeeded = API.SetCattleNeeded;
 -- Alle drei Funktionen erhalten die ID des Buttons und die ID des Gebäudes,
 -- das gerade selektiert ist.
 --
--- <b>Achtung:</b> Wenn die Funktion aus dem globalen Skript ausgeführt wird,
--- müssen sich die Buttonfunktionen im lokalen Skript befinden. Die Namen der
--- Funktionen sind in diesem Fall als Zeichenkette zu übergeben!
---
 -- <p><b>Alias:</b> AddBuildingButton</p>
 --
 -- @param[type=number]   _Index Index des Buttons
@@ -331,7 +296,7 @@ SetCattleNeeded = API.SetCattleNeeded;
 --
 function API.AddCustomBuildingButton(_Index, _Action, _Tooltip, _Update)
     if not GUI then
-        API.Bridge("API.AddCustomBuildingButton("..tostring(_Index)..","..tostring(_Action)..","..tostring(_Tooltip)..","..tostring(_Update)..",)");
+        API.Fatal("API.AddCustomBuildingButton: Can not be used from global script!");
         return;
     end
     if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) then
@@ -362,7 +327,7 @@ AddBuildingButton = API.AddCustomBuildingButton;
 --
 function API.RemoveCustomBuildingButton(_Index)
     if not GUI then
-        API.Fatal("API.RemoveCustomBuildingButton("..tostring(_Index)..")");
+        API.Bridge("API.RemoveCustomBuildingButton("..tostring(_Index)..")");
         return;
     end
     if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) then

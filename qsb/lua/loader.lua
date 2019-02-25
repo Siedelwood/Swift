@@ -112,18 +112,20 @@ SymfoniaLoader = {
             {"BundleDestructionControl",            true},
             {"BundleDialogWindows",                 true},
             {"BundleEntityCommandFunctions",        true},
-            {"BundleEntityHealth",                  true},
             {"BundleEntityHelperFunctions",         true},
+            {"BundleExtendedZoom",                  true},
+            {"BundleInterfaceFeatureVisibility",    true},
             {"BundleKnightTitleRequirements",       true},
             {"BundleMinimapMarker",                 true},
             {"BundleSymfoniaBehaviors",             true},
+            {"BundleThirdPersonCamera",             true},
             {"BundleTimeLine",                      true},
             {"BundleTravelingSalesman",             true},
 
             -- Fortgeschrittene Bibliothek
             -- Neue Funktionen für fortgeschrittene Anwender.
             {"BundleBuildingButtons",               true},
-            {"BundleEntityScriptingValues",         true},
+            {"BundleEntityProperties",              true},
             {"BundleEntitySelection",               true},
             {"BundleGameHelperFunctions",           true},
             {"BundleInteractiveObjects",            true},
@@ -158,6 +160,14 @@ SymfoniaLoader = {
             "AddOnInteractiveObjectTemplates",      true,
             "BundleInteractiveObjects",
             "BundleEntitySelection",
+            },
+
+            {
+            "AddOnRandomRequests",                  true,
+            "BundleClassicBehaviors",
+            "BundleEntityHelperFunctions",
+            "BundlePlayerHelperFunctions",
+            "BundleSymfoniaBehaviors",
             },
         },
     }
