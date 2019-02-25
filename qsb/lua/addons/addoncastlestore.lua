@@ -462,7 +462,7 @@ function AddOnCastleStore.Global.CastleStore:SetUperLimitInStorehouseForGoodType
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
     self.Data.Goods[_Good][4] = _Limit;
     Logic.ExecuteInLuaLocalState([[
-        AddOnCastleStore.Local.Data.CastleStore[]] ..self.Data.PlayerID.. [[].Goods[]] .._Good.. [[][4] = ]] .._Limit.. [[
+        AddOnCastleStore.Local.CastleStore.Data[]] ..self.Data.PlayerID.. [[].Goods[]] .._Good.. [[][4] = ]] .._Limit.. [[
     ]])
     return self;
 end
@@ -494,7 +494,7 @@ function AddOnCastleStore.Global.CastleStore:SetStorageLimit(_Limit)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
     self.Data.CapacityBase = math.floor(_Limit/2);
     Logic.ExecuteInLuaLocalState([[
-        AddOnCastleStore.Local.Data.CastleStore[]] ..self.Data.PlayerID.. [[].CapacityBase = ]] ..math.floor(_Limit/2).. [[
+        AddOnCastleStore.Local.CastleStore.Data[]] ..self.Data.PlayerID.. [[].CapacityBase = ]] ..math.floor(_Limit/2).. [[
     ]])
     return self;
 end
