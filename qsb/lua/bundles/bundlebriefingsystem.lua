@@ -735,18 +735,6 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:InitalizeBriefingSystem()
-    -- Setze Standardfarben
-    DBlau   = "{@color:70,70,255,255}";
-    Blau    = "{@color:153,210,234,255}";
-    Weiss   = "{@color:255,255,255,255}";
-    Rot     = "{@color:255,32,32,255}";
-    Gelb    = "{@color:244,184,0,255}";
-    Gruen   = "{@color:173,255,47,255}";
-    Orange  = "{@color:255,127,0,255}";
-    Mint    = "{@color:0,255,255,255}";
-    Grau    = "{@color:180,180,180,255}";
-    Trans   = "{@color:0,0,0,0}";
-
     Quest_Loop = function(_arguments)
         local self = JobQueue_GetParameter(_arguments)
 
@@ -864,23 +852,9 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     BriefingSystem.COLOR2 = "{@color:255,255,255,255}";
     BriefingSystem.COLOR3 = "{@color:250,255,0,255}";
     BriefingSystem.BRIEFING_FLYTIME = 0;
-    BriefingSystem.POINTER_HORIZONTAL = 1;
-    BriefingSystem.POINTER_VERTICAL = 4;
-    BriefingSystem.POINTER_VERTICAL_LOW = 5;
-    BriefingSystem.POINTER_VERTICAL_HIGH = 6;
-    BriefingSystem.ANIMATED_MARKER = 1;
-    BriefingSystem.STATIC_MARKER = 2;
-    BriefingSystem.POINTER_PERMANENT_MARKER = 6;
-    BriefingSystem.ENTITY_PERMANENT_MARKER = 8;
-    BriefingSystem.SIGNAL_MARKER = 0;
-    BriefingSystem.ATTACK_MARKER = 3;
-    BriefingSystem.CRASH_MARKER = 4;
-    BriefingSystem.POINTER_MARKER = 5;
-    BriefingSystem.ENTITY_MARKER = 7;
     BriefingSystem.BRIEFING_EXPLORATION_RANGE = 6000;
     BriefingSystem.SKIPMODE_ALL = 1;
     BriefingSystem.SKIPMODE_PERPAGE = 2;
-    BriefingSystem.DEFAULT_EXPLORE_ENTITY = "XD_Camera";
 
     ---
     -- Startet ein Briefing im Cutscene Mode. Alle nicht erlauten Operationen,
@@ -903,24 +877,8 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         _briefing.skipPerPage = false;
 
         for i=1, #_briefing, 1 do
-            -- Multiple Choice ist nicht erlaubt
             if _briefing[i].mc then
                 API.Fatal("API.StartCutscene: Unallowed multiple choice at page " ..i.. " found!");
-                return;
-            end
-            -- Marker sind nicht erlaubt
-            if _briefing[i].marker then
-                API.Fatal("API.StartCutscene: Unallowed marker at page " ..i.. " found!");
-                return;
-            end
-            -- Pointer sind nicht erlaubt
-            if _briefing[i].pointer then
-                API.Fatal("API.StartCutscene: Unallowed pointer at page " ..i.. " found!");
-                return;
-            end
-            -- Exploration ist nicht erlaubt
-            if _briefing[i].explore then
-                API.Fatal("API.StartCutscene: Unallowed explore at page " ..i.. " found!");
                 return;
             end
         end
@@ -1053,7 +1011,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     ---
     -- Führt das aktuelle Briefing aus.
     --
-    -- @param _briefing Aktuelles Briefing
+    -- @param[type=table] _briefing Aktuelles Briefing
     -- @within BriefingSystem
     -- @local
     --
@@ -1092,6 +1050,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
     -- Aktualisiert die verfügbaren Optionen wärhend eines Multiple Choice
     -- Dialogs.
     --
+    -- @param[type=table] _briefing Aktuelles Briefing
     -- @within BriefingSystem
     -- @local
     --
@@ -1214,46 +1173,6 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         end
         BriefingSystem.timer = page.duration or BriefingSystem.STANDARDTIME_PER_PAGE;
 
-        if page.explore then
-            page.exploreEntities = {};
-            if type(page.explore) == "table" then
-                if #page.explore > 0 or page.explore.default then
-                    for pId = 1, 8 do
-                        local playerExplore = page.explore[player] or page.explore.default;
-                        if playerExplore then
-                            if type(playerExplore) == "table" then
-                                BriefingSystem.CreateExploreEntity(page, playerExplore.exploration, playerExplore.type or Entities[BriefingSystem.DEFAULT_EXPLORE_ENTITY], pId, playerExplore.position);
-                            else
-                                BriefingSystem.CreateExploreEntity(page, playerExplore, Entities[BriefingSystem.DEFAULT_EXPLORE_ENTITY], pId);
-                            end
-                        end
-                    end
-                else
-                    BriefingSystem.CreateExploreEntity(page, page.explore.exploration, page.explore.type or Entities[BriefingSystem.DEFAULT_EXPLORE_ENTITY], 1, page.explore.position);
-                end
-            else
-                BriefingSystem.CreateExploreEntity(page, page.explore, Entities[BriefingSystem.DEFAULT_EXPLORE_ENTITY], 1);
-            end
-        end
-        if page.pointer then
-            local pointer = page.pointer;
-            page.pointerList = {};
-            if type(pointer) == "table" then
-                if #pointer > 0 then
-                    for i = 1, #pointer do
-                        BriefingSystem.CreatePointer(page, pointer[i]);
-                    end
-                else
-                    BriefingSystem.CreatePointer(page, pointer);
-                end
-            else
-                BriefingSystem.CreatePointer(page, { type = pointer, position = page.position or page.followEntity });
-            end
-        end
-        if page.marker then
-            BriefingSystem.maxMarkerListEntry = BriefingSystem.maxMarkerListEntry + 1;
-            page.markerList = BriefingSystem.maxMarkerListEntry;
-        end
         Logic.ExecuteInLuaLocalState("BriefingSystem.Briefing()");
         if page.action then
             page:action();
@@ -1315,196 +1234,6 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
             end
         end
     end
-
-    ---
-    -- Deckt einen bestimmten Bereich auf der Spielwelt auf.
-    -- FIXME: Diese Funktion deckt komplette Territorien auf!
-    --
-    -- @param _page        Aktuelle Seite
-    -- @param _exploration Aufdeckungsradius
-    -- @param _entityType  Typ des Exploration Entity
-    -- @param _player      PlayerID, für die aufgedeckt wird
-    -- @param _position    Mittelpunkt der Aufdeckung
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.CreateExploreEntity(_page, _exploration, _entityType, _player, _position)
-        local position = _position or _page.position;
-        if position then
-            if type(position) == "table" and (position[_player] or position.default or position.playerPositions) then
-                position = position[_player] or position.default;
-            end
-            if position then
-                local tPosition = type(position);
-                if tPosition == "string" or tPosition == "number" then
-                    position = GetPosition(position);
-                end
-            end
-        end
-        if not position then
-            local followEntity = _page.followEntity;
-            if type(followEntity) == "table" then
-                followEntity = followEntity[_player] or followEntity.default;
-            end
-            if followEntity then
-                position = GetPosition(followEntity);
-            end
-        end
-        assert(position);
-        local entity = Logic.CreateEntity(_entityType, position.X, position.Y, 0, _player);
-        assert(entity ~= 0);
-        Logic.SetEntityExplorationRange(entity, _exploration / 100);
-        table.insert(_page.exploreEntities, entity);
-    end
-
-    ---
-    -- Erstellt einen Questmarker auf der Spielwelt.
-    --
-    -- @param _page    Aktuelle Seite
-    -- @param _pointer Aufdeckungsradius
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.CreatePointer(_page, _pointer)
-        local pointerType = _pointer.type or BriefingSystem.POINTER_VERTICAL;
-        local position = _pointer.position;
-        assert(position);
-        if pointerType / BriefingSystem.POINTER_VERTICAL >= 1 then
-            local entity = position;
-            if type(position) == "table" then
-                local _;
-                _, entity = Logic.GetEntitiesInArea(0, position.X, position.Y, 50, 1);
-            else
-                position = GetPosition(position);
-            end
-            local effectType = EGL_Effects.E_Questmarker_low;
-            if pointerType == BriefingSystem.POINTER_VERTICAL_HIGH then
-                effectType = EGL_Effects.E_Questmarker;
-            elseif pointerType ~= BriefingSystem.POINTER_VERTICAL_LOW then
-                if entity ~= 0 then
-                    if Logic.IsBuilding(entity) == 1 then
-                        pointerType = EGL_Effects.E_Questmarker;
-                    end
-                end
-            end
-            table.insert(_page.pointerList, { id = Logic.CreateEffect(effectType, position.X, position.Y, _pointer.player or 0), type = pointerType });
-        else
-            assert(pointerType == BriefingSystem.POINTER_HORIZONTAL);
-            if type(position) ~= "table" then
-                position = GetPosition(position);
-            end
-            table.insert(_page.pointerList, { id = Logic.CreateEntityOnUnblockedLand(Entities.E_DirectionMarker, position.X, position.Y, _pointer.orientation or 0, _pointer.player or 0), type = pointerType });
-        end
-    end
-
-    ---
-    -- Zerstört den Marker der aktuellen Briefing-Seite.
-    --
-    -- @param _page  Aktuelle Seite
-    -- @param _index Index des Markers
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.DestroyPageMarker(_page, _index)
-        if _page.marker then
-            Logic.ExecuteInLuaLocalState("BriefingSystem.DestroyPageMarker(" .. _page.markerList .. ", " .. _index .. ")");
-        end
-    end
-
-    ---
-    -- Aktualisiert alle Marker der Briefing-Seite oder erstellt sie neu.
-    --
-    -- @param _page     Aktuelle Seite
-    -- @param _position Position des markers
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.RedeployPageMarkers(_page, _position)
-        if _page.marker then
-            if type(_position) ~= "table" then
-                _position = GetPosition(_position);
-            end
-            Logic.ExecuteInLuaLocalState("BriefingSystem.RedeployMarkerList(" .. _page.markerList .. ", " .. _position.X .. ", " .. _position.Y .. ")");
-        end
-    end
-
-    ---
-    -- Aktualisiert einen Marker der Briefing-Seite oder erstellt ihn neu.
-    --
-    -- @param _page     Aktuelle Seite
-    -- @param _index Index des Markers
-    -- @param _position Position des markers
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.RedeployPageMarker(_page, _index, _position)
-        if _page.marker then
-            if type(_position) ~= "table" then
-                _position = GetPosition(_position);
-            end
-            Logic.ExecuteInLuaLocalState("BriefingSystem.RedeployMarkerOfList(" .. _page.markerList .. ", " .. _index .. ", " .. _position.X .. ", " .. _position.Y .. ")");
-        end
-    end
-
-    ---
-    -- Erneuert alle Marker der Briefing-Seite.
-    --
-    -- @param _page     Aktuelle Seite
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.RefreshPageMarkers(_page)
-        if _page.marker then
-            Logic.ExecuteInLuaLocalState("BriefingSystem.RefreshMarkerList(" .. _page.markerList .. ")");
-        end
-    end
-
-    ---
-    -- Erneuert einen Marker der Briefing-Seite.
-    --
-    -- @param _page     Aktuelle Seite
-    -- @param _index Index des Markers
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.RefreshPageMarker(_page, _index)
-        if _page.marker then
-            Logic.ExecuteInLuaLocalState("BriefingSystem.RefreshMarkerOfList(" .. _page.markerList .. ", " .. _index .. ")");
-        end
-    end
-
-    ---
-    -- Entfernt alle Effekte, die mit der Briefing-Seite verbunden sind.
-    --
-    -- Effekte können sein: Aufdeckungsbereiche, Marker, Pointer.
-    --
-    -- @param _page     Aktuelle Seite
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.ResolveBriefingPage(_page)
-        if _page.explore and _page.exploreEntities then
-            for i, v in ipairs(_page.exploreEntities) do
-                Logic.DestroyEntity(v);
-            end
-            _page.exploreEntities = nil;
-        end
-        if _page.pointer and _page.pointerList then
-            for i, v in ipairs(_page.pointerList) do
-                if v.type ~= BriefingSystem.POINTER_HORIZONTAL then
-                    Logic.DestroyEffect(v.id);
-                else
-                    Logic.DestroyEntity(v.id);
-                end
-            end
-            _page.pointerList = nil;
-        end
-        if _page.marker and _page.markerList then
-            Logic.ExecuteInLuaLocalState("BriefingSystem.DestroyMarkerList(" .. _page.markerList .. ")");
-            _page.markerList = nil;
-        end
-    end
-    ResolveBriefingPage = BriefingSystem.ResolveBriefingPage;
 
     ---
     -- Wenn eine Antwort ausgewählt wurde, wird der entsprechende
@@ -1627,17 +1356,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
 
     -- ---------------------------------------------------------------------- --
 
-    DBlau     = "{@color:70,70,255,255}";
-    Blau     = "{@color:153,210,234,255}";
-    Weiss     = "{@color:255,255,255,255}";
-    Rot         = "{@color:255,32,32,255}";
-    Gelb       = "{@color:244,184,0,255}";
-    Gruen     = "{@color:173,255,47,255}";
-    Orange      = "{@color:255,127,0,255}";
-    Mint      = "{@color:0,255,255,255}";
-    Grau     = "{@color:180,180,180,255}";
-    Trans     = "{@color:0,0,0,0}";
-
     if not InitializeFader then
         Script.Load("Script\\MainMenu\\Fader.lua");
     end
@@ -1667,8 +1385,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 BriefingSystem.GameCallback_Escape();
             end
         end
-        -- Sieht so aus, als würde Siedler das selbst aufrufen.
-        -- BriefingSystem.Flight.Job = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, nil, "ThroneRoomCameraControl", 0);
     end
 
     ---
@@ -1706,8 +1422,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     function BriefingSystem.PrepareBriefing()
         BriefingSystem.barType = nil;
         BriefingSystem.currBriefing = BriefingSystem.GlobalSystem[BriefingSystem.GlobalSystem.currBriefingIndex];
-        -- Sieht so aus, als würde Siedler das selbst aufrufen.
-        -- Trigger.EnableTrigger(BriefingSystem.Flight.Job);
 
         local isLoadScreenVisible = XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 1;
         if isLoadScreenVisible then
@@ -1844,8 +1558,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
         XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
         XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
-        -- Sieht so aus, als würde Siedler das selbst aufrufen.
-        -- Trigger.DisableTrigger(BriefingSystem.Flight.Job);
 
         BundleBriefingSystem.Local:ConvertBriefingNotes();
     end
@@ -2061,31 +1773,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             end
             BriefingSystem.FollowFlight(followEntity, rotation, angle, zoom, FOV, page.flyTime or 0, height, UV0, UV1);
         end
-
-        if not _prepareBriefingStart then
-            if page.marker then
-                local marker = page.marker;
-                if type(marker) == "table" then
-                    if #marker > 0 then
-                        for _, v in ipairs(marker) do
-                            if not v.player or v.player == GUI.GetPlayerID() then
-                                BriefingSystem.CreateMarker(v, v.type, page.markerList, v.display, v.R, v.G, v.B, v.Alpha);
-                            else
-                                table.insert(BriefingSystem.listOfMarkers[page.markerList], {});
-                            end
-                        end
-                    else
-                        if not v.player or v.player == GUI.GetPlayerID() then
-                            BriefingSystem.CreateMarker(marker, marker.type, page.markerList, marker.display, marker.R, marker.G, marker.B, marker.Alpha);
-                        else
-                            table.insert(BriefingSystem.listOfMarkers[page.markerList], {});
-                        end
-                    end
-                else
-                    BriefingSystem.CreateMarker(page, marker, page.markerList);
-                end
-            end
-        end
     end
 
     ---
@@ -2288,190 +1975,6 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
             local pageID = BriefingSystem.currBriefing[index].mc.answers[answer].ID;
 
             GUI.SendScriptCommand([[BriefingSystem.OnConfirmed(]]..pageID..[[,]]..page.mc.current..[[,]]..answer..[[)]]);
-        end
-    end
-
-    ---
-    -- Erzeugt eine Markierung auf der Minikarte.
-    --
-    -- @param _t          Aktuelle Seite
-    -- @param _markerType Typ der Markierung
-    -- @param _markerList Liste der Markierungen
-    -- @param _r          Magenta-Wert
-    -- @param _g          Yellow-Wert
-    -- @param _b          Cyan-Wert
-    -- @param _alpha      Alpha-Wert
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.CreateMarker(_t, _markerType, _markerList, _r, _g, _b, _alpha)
-        local position = _t.position;
-        if position then
-            if type(position) == "table" then
-                if position[GUI.GetPlayerID()] or position.default or position.playerPositions then
-                    position = position[GUI.GetPlayerID()] or position.default;
-                end
-            end
-        end
-        if not position then
-            position = _t.followEntity;
-            if type(position) == "table" then
-                position = position[GUI.GetPlayerID()] or position.default;
-            end
-        end
-        assert(position);
-        if type(position) ~= "table" then
-            position = GetPosition(position);
-        end
-
-        if _markerList and not BriefingSystem.listOfMarkers[_markerList] then
-            BriefingSystem.listOfMarkers[_markerList] = {};
-        end
-
-        while GUI.IsMinimapSignalExisting(BriefingSystem.markerUniqueID) == 1 do
-            BriefingSystem.markerUniqueID = BriefingSystem.markerUniqueID + 1;
-        end
-        assert(type(_markerType) == "number" and _markerType > 0);
-        _r = _r or 32;
-        _g = _g or 245;
-        _b = _b or 110;
-        _alpha = _alpha or 255;
-        GUI.CreateMinimapSignalRGBA(BriefingSystem.markerUniqueID, position.X, position.Y, _r, _g, _b, _alpha, _markerType);
-        if _markerList then
-            table.insert(BriefingSystem.listOfMarkers[_markerList], { ID = BriefingSystem.markerUniqueID, X = position.X, Y = position.Y, R = _r, G = _g, B = _b, Alpha = _alpha, type = _markerType });
-        end
-        BriefingSystem.markerUniqueID = BriefingSystem.markerUniqueID + 1;
-    end
-
-    ---
-    -- Zerstört eine Liste von Markern auf der Minimap.
-    --
-    -- @param _index Index der Liste
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.DestroyMarkerList(_index)
-        if BriefingSystem.listOfMarkers[_index] then
-            for _, v in ipairs(BriefingSystem.listOfMarkers[_index]) do
-                if v.ID and GUI.IsMinimapSignalExisting(v.ID) == 1 then
-                    GUI.DestroyMinimapSignal(v.ID);
-                end
-            end
-            BriefingSystem.listOfMarkers[_index] = nil;
-        end
-    end
-
-    ---
-    -- Zerstört einen Marker innerhalb einer Liste.
-    --
-    -- @param _index  Index der Liste
-    -- @param _marker ID des Marker
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.DestroyMarkerOfList(_index, _marker)
-        if BriefingSystem.listOfMarkers[_index] then
-            local marker = BriefingSystem.listOfMarkers[_index][_marker];
-            if marker and marker.ID and GUI.IsMinimapSignalExisting(marker.ID) == 1 then
-                GUI.DestroyMinimapSignal(marker.ID);
-                marker.ID = nil;
-            end
-        end
-    end
-
-    ---
-    -- Aktualisiert die Position aller marker in der Liste oder erstellt sie
-    -- neu, falls er nicht existiert.
-    --
-    -- @param _index Index der Marker-List
-    -- @param _x     X-Position
-    -- @param _y     Y-Position
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.RedeployMarkerList(_index, _x, _y)
-        if BriefingSystem.listOfMarkers[_index] then
-            for _, v in ipairs(BriefingSystem.listOfMarkers[_index]) do
-                if v.ID then
-                    v.X = _x;
-                    v.Y = _y;
-                    if GUI.IsMinimapSignalExisting(v.ID) == 1 then
-                        GUI.RedeployMinimapSignal(v.ID, _x, _y);
-                    else
-                        GUI.CreateMinimapSignalRGBA(v.ID, _x, _y, v.R, v.G, v.B, v.Alpha, v.type);
-                    end
-                end
-            end
-        end
-    end
-
-    ---
-    -- Aktualisiert einen Marker aus einer Liste von Markern. Existiert der
-    -- Marker nicht, wird er erstellt.
-    --
-    -- @param _index  Index der Marker-List
-    -- @param _marker ID des Markers
-    -- @param _x      X-Position
-    -- @param _y      Y-Position
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.RedeployMarkerOfList(_index, _marker, _x, _y)
-        if BriefingSystem.listOfMarkers[_index] then
-            local marker = BriefingSystem.listOfMarkers[_index][_marker];
-            if marker and marker.ID then
-                marker.X = _x;
-                marker.Y = _y;
-                if GUI.IsMinimapSignalExisting(marker.ID) == 1 then
-                    GUI.RedeployMinimapSignal(marker.ID, _x, _y);
-                else
-                    GUI.CreateMinimapSignalRGBA(marker.ID, _x, _y, marker.R, marker.G, marker.B, marker.Alpha, marker.type);
-                end
-            end
-        end
-    end
-
-    ---
-    -- Aktualisiert die Position aller marker in der Liste oder erstellt sie
-    -- neu, falls er nicht existiert.
-    --
-    -- @param _index  Index der Marker-List
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.RefreshMarkerList(_index)
-        if BriefingSystem.listOfMarkers[_index] then
-            for _, v in ipairs(BriefingSystem.listOfMarkers[_index]) do
-                if v.ID then
-                    if GUI.IsMinimapSignalExisting(v.ID) == 1 then
-                        GUI.RedeployMinimapSignal(v.ID, v.X, v.Y);
-                    else
-                        GUI.CreateMinimapSignalRGBA(v.ID, v.X, v.Y, v.R, v.G, v.B, v.Alpha, v.type);
-                    end
-                end
-            end
-        end
-    end
-
-    ---
-    -- Aktualisiert einen Marker aus einer Liste von Markern. Existiert der
-    -- Marker nicht, wird er erstellt.
-    --
-    -- @param _index  Index der Marker-List
-    -- @param _marker ID des Markers
-    -- @within BriefingSystem
-    -- @local
-    --
-    function BriefingSystem.RefreshMarkerOfList(_index, _marker)
-        if BriefingSystem.listOfMarkers[_index] then
-            local marker = BriefingSystem.listOfMarkers[_index][_marker];
-            if marker and marker.ID then
-                if GUI.IsMinimapSignalExisting(marker.ID) == 1 then
-                    GUI.RedeployMinimapSignal(marker.ID, marker.X, marker.Y);
-                else
-                    GUI.CreateMinimapSignalRGBA(marker.ID, marker.X, marker.Y, marker.R, marker.G, marker.B, marker.Alpha, marker.type);
-                end
-            end
         end
     end
 
