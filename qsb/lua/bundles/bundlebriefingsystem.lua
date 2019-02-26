@@ -1848,7 +1848,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @within BriefingSystem
     -- @local
     --
-    function BriefingSystem.OnConfirmed()
+    function BriefingSystem.LocalOnConfirmed()
         local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
         local Position = BriefingSystem.OriginalBoxPosition;
         XGUIEng.SetWidgetScreenPosition(Widget, Position[1], Position[2]);
@@ -2094,7 +2094,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                 local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
                 if XGUIEng.IsWidgetShown(Widget) == 0 then
                     BriefingSystem.MCSelectionIsShown = false;
-                    BriefingSystem.OnConfirmed();
+                    BriefingSystem.LocalOnConfirmed();
                 end
             end
         end
@@ -2352,7 +2352,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     --
     -- <b>Alias:</b> IsBriefingActive
     --
-    -- @return boolean: Briefing aktiv
+    -- @return[type=boolean] Briefing aktiv
     -- @within BriefingSystem
     --
     function BriefingSystem.IsBriefingActive()
@@ -2362,7 +2362,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
 
     ---
     -- Setzt die Position des Textes und des Titels einer Briefing-Seite.
-    -- @param _page Briefing-Seite
+    -- @param[type=table] _page Briefing-Seite
     -- @within BriefingSystem
     -- @local
     --
@@ -2432,11 +2432,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Steuert die Scrollanimation des Splashscreen.
     --
-    -- @param _StartUV0 Startposition UV0
-    -- @param _EndUV0   Endposition UV0
-    -- @param _StartUV1 Startposition UV1
-    -- @param _EndUV1   Endposition UV1
-    -- @param _Factor   Interpolation Factor
+    -- @param[type=number] _StartUV0 Startposition UV0
+    -- @param[type=number] _EndUV0   Endposition UV0
+    -- @param[type=number] _StartUV1 Startposition UV1
+    -- @param[type=number] _EndUV1   Endposition UV1
+    -- @param[type=number] _Factor   Interpolation Factor
     -- @within BriefingSystem
     -- @local
     --
@@ -2495,8 +2495,8 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Schaltet zwischen Bars und Splashscreen um.
     --
-    -- @param _page  Aktuelle Briefing-Seite
-    -- @param _style Bar-Style
+    -- @param[tybe=table]  _page  Aktuelle Briefing-Seite
+    -- @param[type=string] _style Bar-Style
     -- @within BriefingSystem
     -- @local
     --
@@ -2600,11 +2600,12 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:UpdateBriefingNotes()
-    local Text = "{@color:255,255,255,255}";
+    local Color = "{@color:255,255,255,255}";
+    local Text = "";
     for k, v in pairs(self.Data.BriefingMessages) do
         if v and v[2] > 0 then
             self.Data.BriefingMessages[k][2] = v[2] -1;
-            Text = Text .. v[1] .. "{cr}";
+            Text = Text .. Color .. v[1] .. "{cr}";
         end
     end
     XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", Text);
