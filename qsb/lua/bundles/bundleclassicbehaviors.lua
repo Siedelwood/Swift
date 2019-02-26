@@ -8593,6 +8593,7 @@ BundleClassicBehaviors = {
 -- @local
 --
 function BundleClassicBehaviors.Global:Install()
+    self:OverrideIsObjectiveCompleted();
 end
 
 ---
@@ -8611,6 +8612,47 @@ function BundleClassicBehaviors.Global:GetInputFromQuest(_QuestName)
         return;
     end
     return Quest.InputDialogResult;
+end
+
+---
+-- Überschreibt IsObjectiveCompleted und behebt einen Fehler in dem
+-- Objective "DestroyAllPlayerUnits", der Baustellen ignorierte.
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted()
+    QuestTemplate.IsObjectiveCompleted_Orig_QSB_ClassicBehaviors = QuestTemplate.IsObjectiveCompleted;
+    QuestTemplate.IsObjectiveCompleted = function(self, objective)
+        local objectiveType = objective.Type;
+        if objective.Completed ~= nil then
+            return objective.Completed;
+        end
+        local data = objective.Data;
+
+        if objectiveType == Objective.DestroyAllPlayerUnits then
+            local PlayerEntities = GetPlayerEntities(data, 0);
+            local IllegalEntities = {};
+            
+            for i= #PlayerEntities, 1, -1 do
+                local Type = Logic.GetEntityType(PlayerEntities[i]);
+                if Logic.IsEntityInCategory(PlayerEntities[i], EntityCategories.AttackableBuilding) == 0 or Logic.IsEntityInCategory(PlayerEntities[i], EntityCategories.Wall) == 0 then
+                    if Logic.IsConstructionComplete(PlayerEntities[i]) == 0 then
+                        table.insert(IllegalEntities, PlayerEntities[i]);
+                    end
+                end
+                local IndestructableEntities = {Entities.XD_ScriptEntity, Entities.S_AIHomePosition, Entities.S_AIAreaDefinition};
+                if Inside(Type, IndestructableEntities) then
+                    table.insert(IllegalEntities, PlayerEntities[i]);
+                end
+            end
+
+            if #PlayerEntities == 0 or #PlayerEntities - #IllegalEntities == 0 then
+                objective.Completed = true;
+            end
+        else
+            return self:IsObjectiveCompleted_Orig_QSB_ClassicBehaviors(objective);
+        end
+    end
 end
 
 Core:RegisterBundle("BundleClassicBehaviors");
