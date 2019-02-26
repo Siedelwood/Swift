@@ -99,7 +99,7 @@ function API.PauseQuestsDuringBriefings(_Flag)
         API.Bridge("API.PauseQuestsDuringBriefings(" ..tostring(_Flag).. ")");
         return;
     end
-    return BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag);
+    BundleBriefingSystem.Global.Data.QuestsPausedWhileBriefingActive = _Flag == true
 end
 PauseQuestsDuringBriefings = API.PauseQuestsDuringBriefings;
 
@@ -117,7 +117,7 @@ function API.IsBriefingFinished(_briefingID)
         API.Warn("API.IsBriefingFinished: Can only be used in the global script!");
         return false;
     end
-    return BundleBriefingSystem.Global:IsBriefingFinished(_briefingID);
+    return BundleBriefingSystem.Global.Data.PlayedBriefings[_briefingID] == true;
 end
 IsBriefingFinished = API.IsBriefingFinished;
 
@@ -138,7 +138,10 @@ function API.GetSelectedAnswerFromMCPage(_page)
         API.Warn("API.GetSelectedAnswerFromMCPage: Can only be used in the global script!");
         return 0;
     end
-    return BundleBriefingSystem.Global:MCGetSelectedAnswer(_page);
+    if _page.mc and _page.mc.given then
+        return _page.mc.given;
+    end
+    return 0;
 end
 MCGetSelectedAnswer = API.GetSelectedAnswerFromMCPage;
 
@@ -158,7 +161,7 @@ function API.GetCurrentBriefingPage(_pageNumber)
         API.Warn("API.GetCurrentBriefingPage: Can only be used in the global script!");
         return 0;
     end
-    return BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber);
+    return BriefingSystem.currBriefing[_pageNumber]
 end
 GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 
@@ -174,10 +177,10 @@ GetCurrentBriefingPage = API.GetCurrentBriefingPage;
 --
 function API.GetCurrentBriefing()
     if GUI then
-        API.Fatal("API.GetCurrentBriefing: Can only be used in the global script!");
-        return;
+        API.Warn("API.GetCurrentBriefing: Can only be used in the global script!");
+        return {};
     end
-    return BundleBriefingSystem.Global:GetCurrentBriefing();
+    return BriefingSystem.currBriefing;
 end
 GetCurrentBriefing = API.GetCurrentBriefing;
 
@@ -214,7 +217,6 @@ AddPages = API.AddPages;
 --
 -- @param[type=table] _Cutscene Cutscene
 -- @return[type=function] AF - Funktion für komfortable Notation von Flights
--- @return[type=function] ASF - Kurzschreibweise für AF
 -- @within Anwenderfunktionen
 --
 function API.AddFlights(_Cutscene)
@@ -350,32 +352,6 @@ function AF(_Flight)
 end
 
 ---
--- Ermäglicht einen Flight als Einzeiler zu notieren. Allerdings sind nicht
--- alle Optionen verfügbar.
---
--- Bei der Notation der Koordinaten ist zu beachten, dass zuerst das Triple
--- der Kameraposition und danach das Triple des Blickpunktes angegeben wird.
--- Für jeden Punkt müssen also 6 Zahlen angegeben werden.
---
--- <p><b>Hinweis:</b> Diese Funktion eignet sich besser für einfache Flüge mit
--- wenigen Kamerastationen oder für eine generische Nutzung.</p>
---
--- @param[type=string] _Text     Angezeigter Text
--- @param[type=number] _Duration Dauer des Flight
--- @param[type=function] _Action Aktion zu Beginn des Flight
--- @param[type=boolen] _Fading   Einblenden und Abblenden
--- @param[type=number] ...       Liste der XYZ-Koordinaten
--- @within Briefing
---
--- @usage
--- ASF ("Das ist ein Text....", 10, nil, true, 12300, 23000, 3400, 22000, 34050, 200, 12300, 23000, 3400, 22500, 31050, 350);
---
-function ASF(_Text, _Duration, _Action, _Fading, ...)
-    -- Diese Funktion ist ein Dummy für LDoc!
-    API.Fatal("ASF: Please use the function provides by AddFlights!");
-end
-
----
 -- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
 -- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
 -- schaut den Siedler an.
@@ -467,80 +443,10 @@ function BundleBriefingSystem.Global:PushBriefingNote(_Text)
 end
 
 ---
--- Setzt den Zustand von Quest Timern während Biefings und Fake-Cutscenes.
---
--- Niederlage Timer sind generell inaktiv, können aber aktiviert werden.
---
--- @param _Flag Quest Timer pausiert
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Global:PauseQuestsDuringBriefings(_Flag)
-    self.Data.QuestsPausedWhileBriefingActive = _Flag == true;
-end
-
----
--- Prüft, ob ein Briefing abgespielt wurde (beendet ist).
---
--- @param _briefingID Briefing-ID
--- @return boolean: Briefing ist beendet
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Global:IsBriefingFinished(_briefingID)
-    return self.Data.PlayedBriefings[_briefingID] == true;
-end
-
----
--- Gibt die gewähtle Antwort für die MC Page zurück.
---
--- Wird eine Seite mehrmals durchlaufen, wird die jeweils letzte Antwort
--- zurückgegeben.
---
--- @param _page Seite
--- @return number: Gewählte Antwort
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Global:MCGetSelectedAnswer(_page)
-    if _page.mc and _page.mc.given then
-        return _page.mc.given;
-    end
-    return 0;
-end
-
----
--- Gibt die Seite im aktuellen Briefing zurück.
---
--- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
---
--- @param _pageNumber Index der Page
--- @return table: Page
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Global:GetCurrentBriefingPage(_pageNumber)
-    return BriefingSystem.currBriefing[_pageNumber];
-end
-
----
--- Gibt das aktuelle Briefing zurück.
---
--- Das aktuelle Briefing ist immer das letzte, das gestartet wurde.
---
--- @return table: Briefing
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Global:GetCurrentBriefing()
-    return BriefingSystem.currBriefing;
-end
-
----
 -- Initalisiert die Flight-Funktionen für die übergebene Cutscene.
 --
--- @param _Cutscene Cutscene
--- @return function: AF
+-- @param[type=table] _Cutscene Cutscene
+-- @return[type=function] AF
 -- @within Internal
 -- @local
 --
@@ -580,33 +486,16 @@ function BundleBriefingSystem.Global:AddFlights(_Cutscene)
             table.insert(_Cutscene, Flight);
         end
     end
-
-    local ASF = function(_Text, _Duration, _Action, _Fading, ...)
-        local Flights = {};
-        for i= 1, #arg, 6 do
-            local Action = (i == 1 and _Action) or nil;
-            table.insert(Flights, {
-                Position = {X= arg[i],   Y= arg[i+1], Z= arg[i+2]},
-                LookAt   = {X= arg[i+3], Y= arg[i+4], Z= arg[i+5]},
-                Text     = _Text,
-                Action   = Action,
-            });
-        end
-        Flights.FadeIn   = (_Fading == true and 0.5) or 0;
-        Flights.FadeOut  = (_Fading == true and 0.5) or 0;
-        Flights.Duration = _Duration;
-        AF(Flights);
-    end
-    return AF, ASF;
+    return AF;
 end
 
 ---
 -- Initalisiert die Page-Funktionen für das übergebene Briefing
 --
--- @param _briefing
--- @return function: AP
--- @return function: ASP
--- @return function: ASMC
+-- @param[type=table] _briefing Briefing
+-- @return[type=function] AP
+-- @return[type=function] ASP
+-- @return[type=function] ASMC
 -- @within Internal
 -- @local
 --
@@ -1455,7 +1344,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 
-        -- Portrait  und Message wirget
+        -- Portrait und Message wirget
         XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
         XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
@@ -2234,12 +2123,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Berechnet die Kameraposition wärhend eines Cutscene Flights.
     --
-    -- @param _Start  [table] Startposition des Flight
-    -- @param _End    [table] Endposition des Flight
-    -- @param _Factor [number] Interpolation Factor
-    -- @return [number] X-Position
-    -- @return [number] Y-Position
-    -- @return [number] Z-Position
+    -- @param[type=table]  _Start  Startposition des Flight
+    -- @param[type=table]  _End    Endposition des Flight
+    -- @param[type=number] _Factor Interpolation Factor
+    -- @return[type=number] X-Position
+    -- @return[type=number] Y-Position
+    -- @return[type=number] Z-Position
     -- @within BriefingSystem
     -- @local
     --
@@ -2253,11 +2142,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Speichert die Startposition der nächsten Kameraanimation.
     --
-    -- @param _cameraPosition [table] Position der Kamera
-    -- @param _cameraLookAt [table] Blickziel der Kamera
-    -- @param _FOV [number] Field of View
-    -- @param _UV0 [number] UV0 des Splashscreen
-    -- @param _UV1 [number] UV1 des Splashscreen
+    -- @param[type=table]  _cameraPosition Position der Kamera
+    -- @param[type=table]  _cameraLookAt   Blickziel der Kamera
+    -- @param[type=number] _FOV            Field of View
+    -- @param[type=number] _UV0            UV0 des Splashscreen
+    -- @param[type=number] _UV1            UV1 des Splashscreen
     -- @within BriefingSystem
     -- @local
     --
@@ -2275,12 +2164,12 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Initalisiert den Flug der Kamera zu einer Position auf der Welt.
     --
-    -- @param _cameraPosition [table] Position der Kamera
-    -- @param _cameraLookAt [table] Blickziel der Kamera
-    -- @param _FOV [number] Field of View
-    -- @param _Time [number] Dauer
-    -- @param _UV0 [number] UV0 des Splashscreen
-    -- @param _UV1 [number] UV1 des Splashscreen
+    -- @param[type=table]  _cameraPosition Position der Kamera
+    -- @param[type=table]  _cameraLookAt   Blickziel der Kamera
+    -- @param[type=number] _FOV            Field of View
+    -- @param[type=number] _Time           Dauer
+    -- @param[type=number] _UV0            UV0 des Splashscreen
+    -- @param[type=number] _UV1            UV1 des Splashscreen
     -- @within BriefingSystem
     -- @local
     --
@@ -2507,11 +2396,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
                             CarriageReturn = CarriageReturn + 1;
                             s,e = string.find(_page.text, "{cr}", e+1);
                         end
-                        Height = Height + math.floor((CarriageReturn/2));
+                        Height = Height + CarriageReturn;
 
                         -- Relativ
                         local Screen = {GUI.GetScreenSize()};
-                        Height = (Screen[2]/2) - (Height*15);
+                        Height = (Screen[2]/2) - (Height*25);
                     end
 
                     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 0 + Height);
@@ -2559,15 +2448,16 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         local BG     = "/InGame/ThroneRoomBars_2/BarTop";
         local BB     = "/InGame/ThroneRoomBars_2/BarBottom";
         local size   = {GUI.GetScreenSize()};
-        local is4To3 = math.floor((size[1]/size[2]) * 10) == 13;
+        local is4To3 = math.floor((size[1]/size[2]) * 100) == 133;
+        local is5To4 = math.floor((size[1]/size[2]) * 100) == 125;
 
         local u0 = _StartUV0[1] + (_EndUV0[1] - _StartUV0[1]) * _Factor;
         local v0 = _StartUV0[2] + (_EndUV0[2] - _StartUV0[2]) * _Factor;
         local u1 = _StartUV1[1] + (_EndUV1[1] - _StartUV1[1]) * _Factor;
         local v1 = _StartUV1[2] + (_EndUV1[2] - _StartUV1[2]) * _Factor;
 
-        -- Fix für 4:3
-        if is4To3 then
+        -- Fix für 4:3 und 5:4
+        if is4To3 or is5To4 then
             u0 = u0 + (u0 * 0.125);
             u1 = u1 - (u1 * 0.125);
         end
@@ -2578,15 +2468,24 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     ---
     -- Blendet das Character Sprite ein, wenn angegeben.
     --
-    -- @param _page  Aktuelle Briefing-Seite
+    -- @param[type=table] _page Aktuelle Briefing-Seite
     -- @within BriefingSystem
     -- @local
     --
     function BriefingSystem.SetBriefingPagePortrait(_page)
         if _page.portrait then
             local Portrait = _page.portrait;
+            local x, y, w, h = 0, 4000, 400, 600;
+            if type(Portrait) == "table" then
+                Portrait = Portrait.Image;
+                w = Portrait.Bounds[3] or w;
+                h = Portrait.Bounds[4] or h;
+                x = Portrait.Bounds[1] or x;
+                y = Portrait.Bounds[2] or y;
+            end
             XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 255);
-            XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, _page.portrait);
+            XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, Portrait);
+            XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", x, y, w, h);
             XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0, 0, 1, 1);
         else
             XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0);
