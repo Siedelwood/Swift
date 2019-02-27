@@ -2513,12 +2513,19 @@ function b_Goal_MapScriptFunction:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_MapScriptFunction:CustomFunction(_Quest)
+    if type(self.FuncName) == "function" then
+        return self.Function(unpack(self.i47ya_6aghw_frxil));
+    end
     return _G[self.FuncName](self, _Quest);
 end
 
 function b_Goal_MapScriptFunction:Debug(_Quest)
-    if not self.FuncName or not _G[self.FuncName] then
-        fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
+    if not self.FuncName then
+        fatal(_Quest.Identifier.." "..self.Name..": function reference is invalid!");
+        return true;
+    end
+    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+        fatal(_Quest.Identifier.." "..self.Name..": function does not exist!");
         return true;
     end
     return false;
@@ -4086,25 +4093,25 @@ end
 
 function b_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
     if _Index == 0 then
-        self.Function = _Parameter;
+        self.FuncName = _Parameter;
     end
 end
 
 function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
-    if type(self.Function) == "function" then
+    if type(self.FuncName) == "function" then
         self.Function(unpack(self.i47ya_6aghw_frxil));
         return;
     end
-    _G[self.Function](self, _Quest);
+    _G[self.FuncName](self, _Quest);
 end
 
 function b_Reprisal_MapScriptFunction:Debug(_Quest)
-    if not self.Function then
-        fatal("".._Quest.Identifier.." "..self.Name..": function reference is invalid!");
+    if not self.FuncName then
+        fatal(_Quest.Identifier.." "..self.Name..": function reference is invalid!");
         return true;
     end
-    if type(self.Function) == "string" and not _G[self.Function] then
-        fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.Function.. "' does not exist!");
+    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+        fatal(_Quest.Identifier.." "..self.Name..": function does not exist!");
         return true;
     end
     return false;
@@ -8258,24 +8265,30 @@ b_Trigger_MapScriptFunction = {
     },
 }
 
-function b_Trigger_MapScriptFunction:GetTriggerTable(__quest_)
+function b_Trigger_MapScriptFunction:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_MapScriptFunction:AddParameter(__Index_, __parameter_)
-    if (__Index_ == 0) then
-        self.FuncName = __parameter_
+function b_Trigger_MapScriptFunction:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Function = _Parameter
     end
 end
 
-function b_Trigger_MapScriptFunction:CustomFunction(__quest_)
-    return _G[self.FuncName](self, __quest_);
+function b_Trigger_MapScriptFunction:CustomFunction(_Quest)
+    if type(self.FuncName) == "function" then
+        return self.Function(unpack(self.i47ya_6aghw_frxil));
+    end
+    return _G[self.FuncName](self, _Quest);
 end
 
-function b_Trigger_MapScriptFunction:Debug(__quest_)
-    if not self.FuncName or not _G[self.FuncName] then
-        local text = string.format("%s Trigger_MapScriptFunction: function '%s' does not exist!", __quest_.Identifier, tostring(self.FuncName));
-        fatal(text);
+function b_Trigger_MapScriptFunction:Debug(_Quest)
+    if not self.FuncName then
+        fatal(_Quest.Identifier.." "..self.Name..": function reference is invalid!");
+        return true;
+    end
+    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+        fatal(_Quest.Identifier.." "..self.Name..": function does not exist!");
         return true;
     end
     return false;
