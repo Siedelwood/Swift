@@ -411,11 +411,18 @@ function QSB.SimpleTypewriter:TokenizeText()
     end
 
     for i= 1, #TempTokens, 1 do
-        if TempTokens[i] == " " or string.find(TempTokens[i], "{") then
+        if TempTokens[i] == " " or TempTokens[i]:find("{") then
             table.insert(self.m_Tokens, TempTokens[i]);
         else
-            for letter in TempTokens[i]:gmatch(".") do
-                table.insert(self.m_Tokens, letter);
+            local Index = 1;
+            while (Index <= #TempTokens[i]) do
+                if string.byte(TempTokens[i]:sub(Index, Index)) == 195 then
+                    table.insert(self.m_Tokens, TempTokens[i]:sub(Index, Index+1));
+                    Index = Index +1;
+                else
+                    table.insert(self.m_Tokens, TempTokens[i]:sub(Index, Index)); 
+                end
+                Index = Index +1;
             end
         end
     end
@@ -480,10 +487,10 @@ function QSB.SimpleTypewriter.ControllerJob(_Data)
     if Index == #_Data.m_Tokens then
         _Data.m_Waittime = _Data.m_Waittime -1;
         if _Data.m_Waittime <= 0 then
+            _Data:Stop();
             if _Data.m_Callback then
                 _Data.m_Callback(_Data);
             end
-            _Data:Stop();
             return true;
         end
     end

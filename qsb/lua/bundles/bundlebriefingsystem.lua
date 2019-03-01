@@ -851,7 +851,7 @@ function BundleBriefingSystem.Global:InitalizeBriefingSystem()
         if BriefingSystem.isActive then
             table.insert(BriefingSystem.waitList, _briefing);
             if not BriefingSystem.waitList.Job then
-                BriefingSystem.waitList.Job = StartSimpleJob("BriefingSystem_WaitForBriefingEnd");
+                BriefingSystem.waitList.Job = StartSimpleHiResJob("BriefingSystem_WaitForBriefingEnd");
             end
         else
             BriefingSystem.ExecuteBriefing(_briefing);
