@@ -346,9 +346,9 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:Stop()
-    if BriefingSystem then
-        BriefingSystem.isActive = false;
-    end
+    -- if BriefingSystem then
+    --     BriefingSystem.isActive = false;
+    -- end
     API.Bridge([[
         GUI.ClearNotes()
         Input.GameMode()
@@ -488,7 +488,14 @@ function QSB.SimpleTypewriter.ControllerJob(_Data)
     
     if Index == #_Data.m_Tokens then
         _Data.m_Waittime = _Data.m_Waittime -1;
-        if _Data.m_Waittime <= 0 then
+        
+        -- "Flackern" bei Briefings vermeiden
+        if _Data.m_Waittime == 1 then
+            if BriefingSystem then
+                BriefingSystem.isActive = false;
+            end
+        -- Schreibmaschine ist fertig
+        elseif _Data.m_Waittime <= 0 then
             if _Data.m_Callback then
                 _Data.m_Callback(_Data);
             end
