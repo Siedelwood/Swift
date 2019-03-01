@@ -8271,7 +8271,7 @@ end
 
 function b_Trigger_MapScriptFunction:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
-        self.Function = _Parameter
+        self.FuncName = _Parameter
     end
 end
 
