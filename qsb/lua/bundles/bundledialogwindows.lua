@@ -417,9 +417,7 @@ function QSB.SimpleTypewriter:TokenizeText()
             local Index = 1;
             while (Index <= #TempTokens[i]) do
                 if string.byte(string.sub(TempTokens[i], Index, Index)) == 195 then
-                    local lowByte  = string.byte(string.sub(TempTokens[i], Index, Index));
-                    local highByte = string.byte(string.sub(TempTokens[i], Index+1, Index+1));
-                    table.insert(self.m_Tokens, "\\" ..lowByte.. "\\" ..highByte); 
+                    table.insert(self.m_Tokens, string.sub(TempTokens[i], Index, Index+1));
                     Index = Index +1;
                 else
                     table.insert(self.m_Tokens, string.sub(TempTokens[i], Index, Index)); 
