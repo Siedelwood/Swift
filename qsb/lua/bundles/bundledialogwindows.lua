@@ -414,8 +414,17 @@ function QSB.SimpleTypewriter:TokenizeText()
         if TempTokens[i] == " " or string.find(TempTokens[i], "{") then
             table.insert(self.m_Tokens, TempTokens[i]);
         else
-            for letter in TempTokens[i]:gmatch(".") do
-                table.insert(self.m_Tokens, letter);
+            local Index = 1;
+            while (Index <= #TempTokens[i]) do
+                if string.byte(string.sub(TempTokens[i], Index, Index)) == 195 then
+                    local lowByte  = string.byte(string.sub(TempTokens[i], Index, Index));
+                    local highByte = string.byte(string.sub(TempTokens[i], Index+1, Index+1));
+                    table.insert(self.m_Tokens, "\\" ..lowByte.. "\\" ..highByte); 
+                    Index = Index +1;
+                else
+                    table.insert(self.m_Tokens, string.sub(TempTokens[i], Index, Index)); 
+                end
+                Index = Index +1;
             end
         end
     end
