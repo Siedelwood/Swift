@@ -805,7 +805,9 @@ end
 --
 function BundleNonPlayerCharacter.Global.ControlMarker()
     for k, v in pairs(QSB.NonPlayerCharacterObjects) do
-        v:ControlMarker();
+        if IsExisting(v:GetID()) then
+            v:ControlMarker();
+        end
     end
 end
 BundleNonPlayerCharacter_ControlMarkerJob = BundleNonPlayerCharacter.Global.ControlMarker;

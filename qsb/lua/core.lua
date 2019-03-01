@@ -694,7 +694,7 @@ function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreR
         ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
     elseif _good == Goods.G_Medicine then
         ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y,orientation,_player)
-    elseif _good == Goods.G_Gold then
+    elseif _good == Goods.G_Gold or _good == Goods.G_None or _good == Goods.G_Information then
         if _cartOverlay then
             ID = Logic.CreateEntityOnUnblockedLand(_cartOverlay, x, y,orientation,_player)
         else
