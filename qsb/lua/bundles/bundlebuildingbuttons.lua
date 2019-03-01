@@ -951,9 +951,9 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local:OverwriteHouseMenuButtons()
-    HouseMenuStopProductionClicked_Orig_tHEA_SingleStop = HouseMenuStopProductionClicked;
+    HouseMenuStopProductionClicked_Orig_SingleStop = HouseMenuStopProductionClicked;
     HouseMenuStopProductionClicked = function()
-        HouseMenuStopProductionClicked_Orig_tHEA_SingleStop();
+        HouseMenuStopProductionClicked_Orig_SingleStop();
         local WidgetName = HouseMenu.Widget.CurrentBuilding;
         local EntityType = Entities[WidgetName];
         local PlayerID = GUI.GetPlayerID();
