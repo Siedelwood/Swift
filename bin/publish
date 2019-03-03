@@ -8,8 +8,7 @@ echo "==== Release erzeugen ===="
 echo "Erzeuge Release-Verzeichnis..."
 cd ..
 rm -rf Release &>/dev/null
-mkdir -p Release/src/advanced
-mkdir -p Release/src/beginner
+mkdir -p Release/src
 mkdir -p Release/bin
 echo "Fertig!"
 

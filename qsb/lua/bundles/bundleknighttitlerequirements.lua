@@ -1726,7 +1726,7 @@ InitKnightTitleTables = function()
     -- Rechte und Pflichten                                                   --
     -- ---------------------------------------------------------------------- --
 
-    NeedsAndRightsByKnightTitle ={}
+    NeedsAndRightsByKnightTitle = {}
 
     -- Ritter ------------------------------------------------------------------
 

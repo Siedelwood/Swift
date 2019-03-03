@@ -267,7 +267,7 @@ end
 function QSB.EntityProperty:Hurt(_Damage)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
-    local EntityID   = GetID(self.m_EntityName);
+    local EntityID = GetID(self.m_EntityName);
     if EntityID == 0 then
         return;
     end

@@ -1353,7 +1353,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 1);
         XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/KnightBG", 1);
-        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 4000, 400, 600);
+        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
         XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
         local page = BriefingSystem.currBriefing[1];
