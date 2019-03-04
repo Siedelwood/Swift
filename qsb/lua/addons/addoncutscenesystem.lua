@@ -62,8 +62,8 @@ API = API or {};
 --    Finished = function(_Data)
 --         -- Hier kann eine abschließende Aktion ausgeführt werden.
 --    end
--- };
--- return API.StartCutscene(Cutscene);</pre>
+--};
+--return API.StartCutscene(Cutscene);</pre>
 --
 -- Die einzelnen Flights werden nacheinander als Tables angegeben:
 -- <pre>{
@@ -78,8 +78,14 @@ API = API or {};
 --
 -- Die Funktion gibt die ID der Cutscene zurück, mit der geprüft werden kann,
 -- ob die Cutscene beendet ist.
+--
+-- <b>Hinweis</b>: Überschreibt die gleichnamige Funktion im Briefing System
+-- und gibt ihr neue Funktionalität! Fake Cutscenes müssen jetzt über den
+-- folgenden Aufruf gestartet werden:
+-- <pre>StartBriefing(MyCutscene, true)</pre>
 -- 
 -- <b>Alias</b>: StartCutscene
+-- <b>Alias</b>: BriefingSystem.StartCutscene
 --
 -- @param[type=table]   _Cutscene Cutscene table
 -- @return[type=number] ID der Cutscene
@@ -90,9 +96,22 @@ function API.StartCutscene(_Cutscene)
         fatal("API.StartCutscene: Cannot start cutscene from local script!");
         return;
     end
+
+    -- Lokalisierung Texte
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    for i= 1, #_Cutscene, 1 do
+        if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
+            _Cutscene[i].Title = _Cutscene[i].Title[Language];
+        end
+        if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
+            _Cutscene[i].Text = _Cutscene[i].Text[Language];
+        end
+    end
+
     return AddOnCutsceneSystem.Global:StartCutscene(_Cutscene);
 end
 StartCutscene = API.StartCutscene;
+BriefingSystem.StartCutscene = API.StartCutscene;
 
 ---
 -- Prüft, ob zur Zeit eine Cutscene aktiv ist.
@@ -116,7 +135,11 @@ IsCutsceneActive = API.IsCutsceneActive;
 -- @within Anwenderfunktionen
 --
 function API.IsCutsceneFinished(_ID)
-    return AddOnCutsceneSystem.Global.Data.FinishedCutscenes[_ID] == true;
+    if GUI then
+        API.Warn("API.IsCutsceneFinished: Can only be used in the global script!");
+        return false;
+    end
+    return BundleBriefingSystem.Global.Data.PlayedBriefings[_ID] == true;
 end
 IsCutsceneFinished = API.IsCutsceneFinished;
 
@@ -127,10 +150,8 @@ IsCutsceneFinished = API.IsCutsceneFinished;
 AddOnCutsceneSystem = {
     Global = {
         Data = {
-            FinishedCutscenes = {},
             CurrentCutscene = {},
             CutsceneQueue = {},
-            UniqueCutsceneCounter = 0,
             CutsceneActive = false,
         },
     },
@@ -174,16 +195,16 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene)
         return;
     end
 
-    self.Data.UniqueCutsceneCounter = self.Data.UniqueCutsceneCounter +1;
+    BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.DisableSkipping = _NoEscapeMode == true;
-    self.Data.CurrentCutscene.ID = self.Data.UniqueCutsceneCounter;
+    self.Data.CurrentCutscene.ID = BundleBriefingSystem.Global.Data.BriefingID;
     local Cutscene = API.ConvertTableToString(self.Data.CurrentCutscene);
     API.Bridge("AddOnCutsceneSystem.Local:StartCutscene(" ..Cutscene.. ")");
     self.Data.CutsceneActive = true;
     BriefingSystem.isActive = true;
 
-    return self.Data.UniqueCutsceneCounter;
+    return BundleBriefingSystem.Global.Data.BriefingID;
 end
 
 ---
@@ -211,7 +232,7 @@ function AddOnCutsceneSystem.Global:StopCutscene()
         local Next = table.remove(self.Data.CutsceneQueue, 1);
         self:StartCutscene(Next);
     end
-    self.Data.FinishedCutscenes[CutsceneID] = true;
+    BundleBriefingSystem.Global.Data.PlayedBriefings[CutsceneID] = true;
     API.Bridge("AddOnCutsceneSystem.Local:StopCutscene(" ..tostring(LastCutscene).. ")");
 end
 
@@ -222,7 +243,7 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Global:IsCutsceneActive()
-    return IsBriefingActive() == false or self.Data.CutsceneActive == false;
+    return IsBriefingActive() == true or self.Data.CutsceneActive == true;
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -276,24 +297,13 @@ function AddOnCutsceneSystem.Local:StopCutscene(_LastCutscene)
 end
 
 ---
--- Prüft, ob ein Flight aktiv ist.
--- @param[type=boolean] Cutscene ist aktiv
--- @within Internal
--- @local
---
-function AddOnCutsceneSystem.Local:IsCutsceneFlightActive()
-    -- FIXME: Prüfen, welches Camera Behavior Cutscenes haben
-    return true;
-end
-
----
 -- Prüft, ob eine Cutscene aktiv ist.
 -- @param[type=boolean] Cutscene ist aktiv
 -- @within Internal
 -- @local
 --
 function AddOnCutsceneSystem.Local:IsCutsceneActive()
-    return IsBriefingActive() == false or self.Data.CutsceneActive == false;
+    return IsBriefingActive() == true or self.Data.CutsceneActive == true;
 end
 
 ---
@@ -318,12 +328,22 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
 
         if Camera.IsValidCutscene(Flight) then
             Camera.StartCutscene(Flight);
+            -- Setze Title
+            if string.sub(Title, 1, 1) ~= "{" then
+                Title = "{@color:255,250,0,255}{center}{darkshadow}" .. Title;
+            end
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", Title);
+            -- Setze Text
+            if string.sub(Text, 1, 1) ~= "{" then
+                Text = "{@color:255,250,255,255}{center}" .. Text;
+            end
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", Text);
+            -- Führe Action aus
             if Action then
                 API.Bridge("self.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
             end
 
+            -- Handle fader
             g_Fade.To = 0;
             SetFaderAlpha(0);
             if FadeIn then
@@ -374,30 +394,8 @@ end
 --
 function AddOnCutsceneSystem.Local:ThroneRoomCameraControl()
     if self:IsCutsceneActive() then
-        if not self:IsCutsceneFlightActive() then
-            local FlightIndex = self.Data.CurrentFlight;
-            local CurrentFlight = self.Data.CurrentCutscene[FlightIndex];
-            if not CurrentFlight then
-                API.Bridge("AddOnCutsceneSystem.Global:StopCutscene()");
-                return true;
-            end
-
-            local Flight = CurrentFlight.Flight;
-            local Title  = CurrentFlight.Title or "";
-            local Text   = CurrentFlight.Text or "";
-            local Action = CurrentFlight.Action;
-
-            if Camera.IsValidCutscene(Flight) then
-                g_Fade.To = 0;
-                SetFaderAlpha(0);
-                Camera.StartCutscene(Flight);
-                XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", Title);
-                XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", Text);
-                if Action then
-                    API.Bridge("self.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
-                end
-            end
-            self.Data.CurrentFlight = self.Data.CurrentFlight +1;
+        if self.Data.CurrentCutscene.Loop then
+            self.Data.CurrentCutscene:Loop();
         end
     end
 end
@@ -409,6 +407,11 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:ThroneRoomLeftClick()
+    if self:IsCutsceneActive() then
+        if self.Data.CurrentCutscene.LeftClick then
+            self.Data.CurrentCutscene:LeftClick();
+        end
+    end
 end
 
 ---
@@ -457,9 +460,11 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/BackButton", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/TitleContainer", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 0);
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
-    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
