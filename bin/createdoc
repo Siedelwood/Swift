@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 cd ../qsb
 
 echo "Generating developer documentation ..."
