@@ -209,7 +209,7 @@ function API.ConvertTableToString(_Table)
         elseif type(v) == "string" then
             TableString = TableString .. "[" .. key .. "] = \"" .. v .. "\", ";
         elseif type(v) == "boolean" or type(v) == "nil" then
-            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
+            TableString = TableString .. "[" .. key .. "] = " .. tostring(v) .. ", ";
         else
             TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
         end
@@ -1106,7 +1106,7 @@ function API.StartJob(_Function, ...)
     local JobID = Core.Data.Events.JobIDCounter;
     Core.Data.Events.EverySecond[JobID] = {
         Function  = _Function,
-        Arguments = API.InstanceTable({...});
+        Arguments = API.InstanceTable(arg);
     };
     return JobID;
 end
@@ -1128,7 +1128,7 @@ function API.StartHiResJob(_Function, ...)
     local JobID = Core.Data.Events.JobIDCounter;
     Core.Data.Events.EveryTurn[JobID] = {
         Function  = _Function,
-        Arguments = API.InstanceTable({...});
+        Arguments = API.InstanceTable(arg);
     };
     return JobID;
 end
@@ -1786,3 +1786,4 @@ function Core.EventJob_EventOnEveryTurn()
     end
 end
 CoreEventJob_OnEveryTurn = Core.EventJob_EventOnEveryTurn;
+

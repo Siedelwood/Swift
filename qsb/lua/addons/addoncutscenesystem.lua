@@ -53,9 +53,10 @@ API = API or {};
 --
 -- Das Gerüst für eine Cutscene sieht wie folgt aus:
 -- <pre>local Cutscene = {
---    DisableSkipping = false, -- Deaktiviere Abbrechen der Cutscene
+--    CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
 --    RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
---    RestoreCamera = true,    -- Kameraposition wird zurückgesetzt
+--    TransperentBars = false, -- Durchsichtige Bars verwenden
+--    HideBorderPins = true,   -- Grenzsteine ausblenden
 --
 --    ... -- Hier nacheinander die Flights auflisten
 --
@@ -85,7 +86,6 @@ API = API or {};
 -- <pre>StartBriefing(MyCutscene, true)</pre>
 -- 
 -- <b>Alias</b>: StartCutscene
--- <b>Alias</b>: BriefingSystem.StartCutscene
 --
 -- @param[type=table]   _Cutscene Cutscene table
 -- @return[type=number] ID der Cutscene
@@ -111,7 +111,6 @@ function API.StartCutscene(_Cutscene)
     return AddOnCutsceneSystem.Global:StartCutscene(_Cutscene);
 end
 StartCutscene = API.StartCutscene;
-BriefingSystem.StartCutscene = API.StartCutscene;
 
 ---
 -- Prüft, ob zur Zeit eine Cutscene aktiv ist.
@@ -190,14 +189,16 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene)
-    if self:IsCutsceneActive() then
+    if not self.Data.loadScreenHidden or self:IsCutsceneActive() then
         table.insert(self.Data.CutsceneQueue, _Cutscene);
+        if not self.Data.CutsceneQueueJobID then
+            self.Data.CutsceneQueueJobID = StartSimpleHiResJobEx(AddOnCutsceneSystem.Global.CutsceneQueueController);
+        end
         return;
     end
 
     BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
     self.Data.CurrentCutscene = _Cutscene;
-    self.Data.DisableSkipping = _NoEscapeMode == true;
     self.Data.CurrentCutscene.ID = BundleBriefingSystem.Global.Data.BriefingID;
     local Cutscene = API.ConvertTableToString(self.Data.CurrentCutscene);
     API.Bridge("AddOnCutsceneSystem.Local:StartCutscene(" ..Cutscene.. ")");
@@ -227,13 +228,8 @@ function AddOnCutsceneSystem.Global:StopCutscene()
     BriefingSystem.isActive = false;
 
     local CutsceneID = self.Data.CurrentCutscene.ID;
-    local LastCutscene = #self.Data.CutsceneQueue == 0;
-    if not LastCutscene then
-        local Next = table.remove(self.Data.CutsceneQueue, 1);
-        self:StartCutscene(Next);
-    end
     BundleBriefingSystem.Global.Data.PlayedBriefings[CutsceneID] = true;
-    API.Bridge("AddOnCutsceneSystem.Local:StopCutscene(" ..tostring(LastCutscene).. ")");
+    API.Bridge("AddOnCutsceneSystem.Local:StopCutscene()");
 end
 
 ---
@@ -244,6 +240,18 @@ end
 --
 function AddOnCutsceneSystem.Global:IsCutsceneActive()
     return IsBriefingActive() == true or self.Data.CutsceneActive == true;
+end
+
+function AddOnCutsceneSystem.Global.CutsceneQueueController()
+    if #AddOnCutsceneSystem.Global.Data.CutsceneQueue == 0 then
+        AddOnCutsceneSystem.Global.Data.CutsceneQueueJobID = nil;
+        return true;
+    end
+    
+    if AddOnCutsceneSystem.Global.Data.loadScreenHidden and not AddOnCutsceneSystem.Global:IsCutsceneActive() then
+        local Next = table.remove(AddOnCutsceneSystem.Global.Data.CutsceneQueue, 1);
+        AddOnCutsceneSystem.Global:StartCutscene(Next);
+    end
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -258,6 +266,7 @@ function AddOnCutsceneSystem.Local:Install()
     if not InitializeFader then
         Script.Load("script/mainmenu/fader.lua");
     end
+    StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.WaitForLoadScreenHidden);
 end
 
 ---
@@ -269,30 +278,52 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:StartCutscene(_Cutscene)
-    if not BriefingSystem.isInitialized then
-        -- Nur die Referenz erstellen
-        BriefingSystem.GlobalSystem = Logic.CreateReferenceToTableInGlobaLuaState("BriefingSystem");
-    end
-    if not self.Data.CinematicActive then
-        self:ActivateCinematicMode();
-    end
+    BundleBriefingSystem.Local.Data.DisplayIngameCutscene = true;
+
     self.Data.CurrentFlight = 1;
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.CutsceneActive = true;
+    
+    if self.Data.CurrentCutscene.HideBorderPins then
+        Display.SetRenderBorderPins(0);
+    end
+    if Game.GameTimeGetFactor() ~= 0 then
+        if self.Data.CurrentCutscene.RestoreGameSpeed and not self.Data.GaneSpeedBackup then
+            self.Data.GaneSpeedBackup = Game.GameTimeGetFactor();
+        end
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+    end
+    self.Data.SelectedEntities = {GUI.GetSelectedEntities()};
+    
+    if not self.Data.CinematicActive then
+        self:ActivateCinematicMode();
+    end
+
+    self:NextFlight();
 end
 
 ---
 -- Stoppt die Cutscene im lokalen Skript. Hier wird der Cinematic Mode
 -- deaktiviert und die Spielansicht wiederhergestellt.
 --
--- @param[type=boolean] _LastCutscene Letzte Cutscene in Queue
 -- @within Internal
 -- @local
 --
-function AddOnCutsceneSystem.Local:StopCutscene(_LastCutscene)
-    if _LastCutscene then
-        self:DeactivateCinematicMode();
+function AddOnCutsceneSystem.Local:StopCutscene()
+    if self.Data.CurrentCutscene.CameraLookAt then 
+        Camera.RTS_SetLookAtPosition(unpack(self.Data.CurrentCutscene.CameraLookAt));
     end
+    for k, v in pairs(self.Data.SelectedEntities) do
+        GUI.SelectEntity(v);
+    end
+    Display.SetRenderBorderPins(1);
+
+    local GameSpeed = (self.Data.GaneSpeedBackup or 1);
+    Game.GameTimeSetFactor(GUI.GetPlayerID(), GameSpeed);
+    self.Data.GaneSpeedBackup = nil;
+
+    BundleBriefingSystem.Local.Data.DisplayIngameCutscene = false;
+    self:DeactivateCinematicMode();
     self.Data.CutsceneActive = false;
 end
 
@@ -304,6 +335,22 @@ end
 --
 function AddOnCutsceneSystem.Local:IsCutsceneActive()
     return IsBriefingActive() == true or self.Data.CutsceneActive == true;
+end
+
+---
+-- 
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:NextFlight()
+    local FlightIndex = self.Data.CurrentFlight;
+    local CurrentFlight = self.Data.CurrentCutscene[FlightIndex];
+    if not CurrentFlight then
+        return;
+    end
+    if Camera.IsValidCutscene(CurrentFlight.Flight) then
+        Camera.StartCutscene(CurrentFlight.Flight);
+    end
 end
 
 ---
@@ -323,40 +370,35 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         local Title   = CurrentFlight.Title or "";
         local Text    = CurrentFlight.Text or "";
         local Action  = CurrentFlight.Action;
-        local FadeIn  = CurrentFlight.FadeIn;
-        local FadeOut = CurrentFlight.FadeOut;
 
-        if Camera.IsValidCutscene(Flight) then
-            Camera.StartCutscene(Flight);
-            -- Setze Title
-            if string.sub(Title, 1, 1) ~= "{" then
-                Title = "{@color:255,250,0,255}{center}{darkshadow}" .. Title;
-            end
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", Title);
-            -- Setze Text
-            if string.sub(Text, 1, 1) ~= "{" then
-                Text = "{@color:255,250,255,255}{center}" .. Text;
-            end
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", Text);
-            -- Führe Action aus
-            if Action then
-                API.Bridge("self.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
-            end
+        -- Setze Title
+        if string.sub(Title, 1, 1) ~= "{" then
+            Title = "{@color:255,250,0,255}{center}{darkshadow}" .. Title;
+        end
+        XGUIEng.SetText("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", Title);
+        -- Setze Text
+        if string.sub(Text, 1, 1) ~= "{" then
+            Text = "{@color:255,250,255,255}{center}" .. Text;
+        end
+        XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", "{cr}{cr}{cr}" .. Text);
+        -- Führe Action aus
+        if Action then
+            API.Bridge("AddOnCutsceneSystem.Global.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
+        end
 
-            -- Handle fader
-            g_Fade.To = 0;
-            SetFaderAlpha(0);
-            if FadeIn then
-                FadeIn(FadeIn);
-            end
-            if FadeOut then
-                StartSimpleHiResJobEx(function(_Time, _FadeOut)
-                    if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
-                        FadeOut(_FadeOut);
-                        return true;
-                    end
-                end, Logic.GetTimeMs() + (_Duration*100), FadeOut);
-            end
+        -- Handle fader
+        g_Fade.To = 0;
+        SetFaderAlpha(0);
+        if CurrentFlight.FadeIn then
+            FadeIn(CurrentFlight.FadeIn);
+        end
+        if CurrentFlight.FadeOut then
+            StartSimpleHiResJobEx(function(_Time, _FadeOut)
+                if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
+                    FadeOut(_FadeOut);
+                    return true;
+                end
+            end, Logic.GetTimeMs() + (_Duration*1000), CurrentFlight.FadeOut);
         end
     end
 end
@@ -372,14 +414,13 @@ end
 function AddOnCutsceneSystem.Local:FlightFinished()
     if self:IsCutsceneActive() then
         local FlightIndex = self.Data.CurrentFlight;
-        local CurrentFlight = self.Data.CurrentCutscene[FlightIndex];
-        if not CurrentFlight then
+        if FlightIndex == #self.Data.CurrentCutscene then
             API.Bridge("AddOnCutsceneSystem.Global:StopCutscene()");
             return true;
         end
         self.Data.CurrentFlight = self.Data.CurrentFlight +1;
         SetFaderAlpha(1);
-        self:FlightStarted();
+        self:NextFlight();
     end
 end
 CutsceneFlightFinished = function()
@@ -415,6 +456,15 @@ function AddOnCutsceneSystem.Local:ThroneRoomLeftClick()
 end
 
 ---
+-- Löst aus, wenn der Spieler den Überspringen-Button drückt.
+--
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:SkipButtonPressed()
+end
+
+---
 -- Aktiviert den Cinematic Mode. Alle selektierten Entities werden gespeichert
 -- und anschließend deselektiert. Optional wird die Kameraposition und die
 -- Spielgeschwindigkeit ebenfalls gespeichert.
@@ -424,32 +474,21 @@ end
 --
 function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     self.Data.CinematicActive = true;
-
-    if Game.GameTimeGetFactor() ~= 0 then
-        if self.Data.CurrentCutscene.RestoreGameSpeed and not self.Data.GaneSpeedBackup then
-            self.Data.GaneSpeedBackup = Game.GameTimeGetFactor();
-        end
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
-    end
-    if self.Data.CurrentCutscene.RestoreCamera then
-        self.Data.CameraPositionBackup = { Camera.RTS_GetLookAtPosition() };
-    end
-    self.Data.SelectedEntities = { GUI.GetSelectedEntities() };
     
     local LoadScreenVisible = XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 1;
     if LoadScreenVisible then
         XGUIEng.PopPage();
     end
 
-    local Skipping = (self.Data.CurrentCutscene.DisableSkipping and 0) or 1;
+    XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", Skipping);
     XGUIEng.PushPage("/InGame/ThroneRoomBars", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_2", false);
     XGUIEng.PushPage("/InGame/ThroneRoom/Main", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_Dodge", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_2_Dodge", false);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/Frame", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/DialogBG", 0);
@@ -463,6 +502,10 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 0);
+
+    local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
+    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
+
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
@@ -476,6 +519,8 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
+    BriefingSystem.ShowBriefingBar((self.Data.CurrentCutscene.TransperentBars == true and "transsmall") or "small");
+
     GUI.ClearSelection();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
     GUI.ActivateCutSceneState();
@@ -483,6 +528,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     GUI.EnableBattleSignals(false);
     Input.CutsceneMode();
     Display.SetRenderFogOfWar(0);
+    Camera.SwitchCameraBehaviour(0);
 
     InitializeFader();
     g_Fade.To = 0;
@@ -509,31 +555,17 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
         self.Data.FaderJobID = nil;
     end
 
-    local x, y = Camera.ThroneRoom_GetPosition();
-
     g_Fade.To = 0;
     SetFaderAlpha(0);
     XGUIEng.PopPage();
+    Camera.SwitchCameraBehaviour(0);
     Display.UseStandardSettings();
+    Input.GameMode();
     GUI.EnableBattleSignals(true);
     GUI.SetFeedbackSoundOutputState(1);
     GUI.ActivateSelectionState();
     GUI.PermitContextSensitiveCommandsInSelectionState();
     Display.SetRenderFogOfWar(1);
-
-    Camera.RTS_SetLookAtPosition(x, y);
-    if self.Data.CurrentCutscene.RestoreCamera then
-        Camera.RTS_SetLookAtPosition(unpack(self.Data.CameraPositionBackup));
-        self.Data.CameraPositionBackup = nil;
-    end
-
-    local GameSpeed = (self.Data.GaneSpeedBackup or 1);
-    Game.GameTimeSetFactor(GUI.GetPlayerID(), GameSpeed);
-    self.Data.GaneSpeedBackup = nil;
-
-    for k, v in pairs(self.Data.SelectedEntities) do
-        GUI.SelectEntity(v);
-    end
 
     XGUIEng.PopPage();
     XGUIEng.PopPage();
@@ -548,6 +580,19 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
+end
+
+---
+-- 
+--
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local.WaitForLoadScreenHidden()
+    if  XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+        GUI.SendScriptCommand("AddOnCutsceneSystem.Global.Data.loadScreenHidden = true;");
+        return true;
+    end
 end
 
 -- -------------------------------------------------------------------------- --
