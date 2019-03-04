@@ -1751,19 +1751,9 @@ end
 
 function Core.EventJob_EventOnEveryRealTimeSecond()
     if not QSB.RealTime_LastTimeStamp then
-        if GUI then
-            QSB.RealTime_LastTimeStamp = math.floor(XGUIEng.GetSystemTime());
-        else
-            QSB.RealTime_LastTimeStamp = math.floor(Framework.TimeGetTime());
-        end
+        QSB.RealTime_LastTimeStamp = math.floor(Framework.TimeGetTime());
     end
-
-    local CurrentTimeStamp;
-    if GUI then
-        CurrentTimeStamp = math.floor(XGUIEng.GetSystemTime());
-    else
-        CurrentTimeStamp = math.floor(Framework.TimeGetTime());
-    end
+    local CurrentTimeStamp = math.floor(Framework.TimeGetTime());
 
     -- Eine Sekunde ist vergangen
     if QSB.RealTime_LastTimeStamp ~= CurrentTimeStamp then
