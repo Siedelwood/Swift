@@ -152,7 +152,12 @@ SymfoniaLoader = {
             },
 
             {
-            "AddOnGameCutscenes",                   true,
+            "AddOnGameCutscenes",                   false,
+            "BundleBriefingSystem",
+            },
+
+            {
+            "AddOnCutscenesSystem",                 true,
             "BundleBriefingSystem",
             },
 

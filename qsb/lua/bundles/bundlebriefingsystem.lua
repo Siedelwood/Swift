@@ -1909,192 +1909,199 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @local
     --
     function ThroneRoomCameraControl()
-        if Camera.GetCameraBehaviour(5) == 5 and BriefingSystem.GlobalSystem.isActive == true then
-            local flight = BriefingSystem.Flight;
+        if BriefingSystem.GlobalSystem.isActive == true then
+            if Camera.GetCameraBehaviour() == 5 then
+                local flight = BriefingSystem.Flight;
 
-            -- -------------------------------------------------------------- --
-            -- Briefing Notation von OldMacDonald
-            -- -------------------------------------------------------------- --
+                -- -------------------------------------------------------------- --
+                -- Briefing Notation von OldMacDonald
+                -- -------------------------------------------------------------- --
 
-            -- Dies steuert die altbekannte Notation, entwickelt von OMD.
-            -- Bis auf wenige Erweiterungen von totalwarANGEL ist es wie
-            -- zum ursürunglichen Release der letzten Version.
+                -- Dies steuert die altbekannte Notation, entwickelt von OMD.
+                -- Bis auf wenige Erweiterungen von totalwarANGEL ist es wie
+                -- zum ursürunglichen Release der letzten Version.
 
-            if flight.systemEnabled then
-                -- Kameraanimation
-                local startTime = flight.StartTime;
-                local flyTime = flight.FlyTime;
-                local startPosition = flight.StartPosition or flight.EndPosition;
-                local endPosition = flight.EndPosition;
-                local startRotation = flight.StartRotation or flight.EndRotation;
-                local endRotation = flight.EndRotation;
-                local startZoomAngle = flight.StartZoomAngle or flight.EndZoomAngle;
-                local endZoomAngle = flight.EndZoomAngle;
-                local startZoomDistance = flight.StartZoomDistance or flight.EndZoomDistance;
-                local endZoomDistance = flight.EndZoomDistance;
-                local startFOV = flight.StartFOV or flight.EndFOV;
-                local endFOV = flight.EndFOV;
-
-                -- Splashscreen-Animation
-                local startUV0 = flight.StartUV0 or flight.EndUV0;
-                local endUV0 = flight.EndUV0;
-                local startUV1 = flight.StartUV1 or flight.EndUV1;
-                local endUV1 = flight.EndUV1;
-
-                local currTime = Logic.GetTimeMs() / 1000;
-                local math = math;
-                if flight.Follow then
-                    local currentPosition = GetPosition(flight.Follow);
-                    if endPosition.X ~= currentPosition.X and endPosition.Y ~= currentPosition.Y then
-                        flight.StartPosition = endPosition;
-                        flight.EndPosition = currentPosition;
-                    end
-                    if flight.StartPosition and Logic.IsEntityMoving(GetEntityId(flight.Follow)) then
-
-                        local orientation = math.rad(Logic.GetEntityOrientation(GetEntityId(flight.Follow)));
-                        local x1, y1, x2, y2 = flight.StartPosition.X, flight.StartPosition.Y, currentPosition.X, currentPosition.Y;
-                        x1 = x1 - x2;
-                        y1 = y1 - y2;
-                        local distance = math.sqrt( x1 * x1 + y1 * y1 ) * 10;
-                        local disttoend = distance * (flyTime - currTime + startTime);
-                        local disttostart = distance * (currTime + startTime);
-                        endPosition = { X = currentPosition.X + math.cos(orientation) * distance, Y = currentPosition.Y + math.sin(orientation) * distance }
-
-                        flight.FollowTemp = flight.FollowTemp or {};
-                        local factor = BriefingSystem.InterpolationFactor(currTime, currTime, 1, flight.FollowTemp);
-                        x1, y1, z1 = BriefingSystem.GetCameraPosition(currentPosition, endPosition, factor);
-                        startPosition = { X = x1, Y = y1, Z = z1 };
-                    else
-                        startPosition = currentPosition;
-                    end
-                    endPosition = startPosition;
-                end
-
-                -- Interpolationsfaktor
-                local factor = BriefingSystem.InterpolationFactor(startTime, currTime, flyTime, flight);
-
-                -- Kamera
-                local lookAtX, lookAtY, lookAtZ = BriefingSystem.GetCameraPosition(startPosition, endPosition, factor);
-                local zoomDistance = startZoomDistance + (endZoomDistance - startZoomDistance) * factor;
-                local zoomAngle = startZoomAngle + (endZoomAngle - startZoomAngle) * factor;
-                local rotation = startRotation + (endRotation - startRotation) * factor;
-                local line = zoomDistance * math.cos(math.rad(zoomAngle));
-
-                Camera.ThroneRoom_SetLookAt(lookAtX, lookAtY, lookAtZ);
-                Camera.ThroneRoom_SetPosition(
-                    lookAtX + math.cos(math.rad(rotation - 90)) * line,
-                    lookAtY + math.sin(math.rad(rotation - 90)) * line,
-                    lookAtZ + (zoomDistance) * math.sin(math.rad(zoomAngle))
-                );
-                Camera.ThroneRoom_SetFOV(startFOV + (endFOV - startFOV) * factor);
-
-                -- Splashscreen
-                BriefingSystem.SetBriefingSplashscreenUV(startUV0, endUV0, startUV1, endUV1, factor);
-
-            -- -------------------------------------------------------------- --
-            -- Cutscene notation by totalwarANGEL
-            -- -------------------------------------------------------------- --
-
-            -- Die Cutscene Notation von totalwarANGEL ermöglicht es viele
-            -- Kameraeffekte einfacher umzusetzen, da man die Kamera über
-            -- eine Position und eine Blickrichtung steuert.
-            -- Es KANN vorkommen, dass die Bewegung flüssiger wird.
-
-            else
-                local cutscene = BriefingSystem.Flight.Cutscene;
-
-                if cutscene then
-                    -- Kamera
-                    local StartPosition = cutscene.StartPosition or cutscene.EndPosition;
-                    local EndPosition = cutscene.EndPosition;
-                    local StartLookAt = cutscene.StartLookAt or cutscene.EndLookAt;
-                    local EndLookAt = cutscene.EndLookAt;
-                    local StartFOV = cutscene.StartFOV or cutscene.EndFOV;
-                    local EndFOV = cutscene.EndFOV;
-                    local StartTime = cutscene.StartTime;
-                    local FlyTime = cutscene.FlyTime;
-                    local CurrTime = Logic.GetTimeMs()/1000;
+                if flight.systemEnabled then
+                    -- Kameraanimation
+                    local startTime = flight.StartTime;
+                    local flyTime = flight.FlyTime;
+                    local startPosition = flight.StartPosition or flight.EndPosition;
+                    local endPosition = flight.EndPosition;
+                    local startRotation = flight.StartRotation or flight.EndRotation;
+                    local endRotation = flight.EndRotation;
+                    local startZoomAngle = flight.StartZoomAngle or flight.EndZoomAngle;
+                    local endZoomAngle = flight.EndZoomAngle;
+                    local startZoomDistance = flight.StartZoomDistance or flight.EndZoomDistance;
+                    local endZoomDistance = flight.EndZoomDistance;
+                    local startFOV = flight.StartFOV or flight.EndFOV;
+                    local endFOV = flight.EndFOV;
 
                     -- Splashscreen-Animation
-                    local startUV0 = cutscene.StartUV0 or cutscene.EndUV0;
-                    local endUV0 = cutscene.EndUV0;
-                    local startUV1 = cutscene.StartUV1 or cutscene.EndUV1;
-                    local endUV1 = cutscene.EndUV1;
+                    local startUV0 = flight.StartUV0 or flight.EndUV0;
+                    local endUV0 = flight.EndUV0;
+                    local startUV1 = flight.StartUV1 or flight.EndUV1;
+                    local endUV1 = flight.EndUV1;
 
-                    local Factor = BriefingSystem.InterpolationFactor(StartTime, CurrTime, FlyTime, cutscene);
-
-                    -- Setzt das Blickziel der Kamera zum Animationsbeginn
-                    if not StartLookAt.X then
-                        local CamPos = GetPosition(StartLookAt[1], (StartLookAt[2] or 0));
-                        if StartLookAt[3] then
-                            CamPos.X = CamPos.X + StartLookAt[3] * math.cos( math.rad(StartLookAt[4]) );
-                            CamPos.Y = CamPos.Y + StartLookAt[3] * math.sin( math.rad(StartLookAt[4]) );
+                    local currTime = Logic.GetTimeMs() / 1000;
+                    local math = math;
+                    if flight.Follow then
+                        local currentPosition = GetPosition(flight.Follow);
+                        if endPosition.X ~= currentPosition.X and endPosition.Y ~= currentPosition.Y then
+                            flight.StartPosition = endPosition;
+                            flight.EndPosition = currentPosition;
                         end
-                        StartLookAt = CamPos;
+                        if flight.StartPosition and Logic.IsEntityMoving(GetEntityId(flight.Follow)) then
+
+                            local orientation = math.rad(Logic.GetEntityOrientation(GetEntityId(flight.Follow)));
+                            local x1, y1, x2, y2 = flight.StartPosition.X, flight.StartPosition.Y, currentPosition.X, currentPosition.Y;
+                            x1 = x1 - x2;
+                            y1 = y1 - y2;
+                            local distance = math.sqrt( x1 * x1 + y1 * y1 ) * 10;
+                            local disttoend = distance * (flyTime - currTime + startTime);
+                            local disttostart = distance * (currTime + startTime);
+                            endPosition = { X = currentPosition.X + math.cos(orientation) * distance, Y = currentPosition.Y + math.sin(orientation) * distance }
+
+                            flight.FollowTemp = flight.FollowTemp or {};
+                            local factor = BriefingSystem.InterpolationFactor(currTime, currTime, 1, flight.FollowTemp);
+                            x1, y1, z1 = BriefingSystem.GetCameraPosition(currentPosition, endPosition, factor);
+                            startPosition = { X = x1, Y = y1, Z = z1 };
+                        else
+                            startPosition = currentPosition;
+                        end
+                        endPosition = startPosition;
                     end
 
-                    -- Setzt das Blickziel der Kamera zum Animationsende
-                    if not EndLookAt.X then
-                        local CamPos = GetPosition(EndLookAt[1], (EndLookAt[2] or 0));
-                        if EndLookAt[3] then
-                            CamPos.X = CamPos.X + EndLookAt[3] * math.cos( math.rad(EndLookAt[4]) );
-                            CamPos.Y = CamPos.Y + EndLookAt[3] * math.sin( math.rad(EndLookAt[4]) );
-                        end
-                        EndLookAt = CamPos;
-                    end
-                    local lookAtX, lookAtY, lookAtZ = BriefingSystem.CutsceneGetPosition(StartLookAt, EndLookAt, Factor);
+                    -- Interpolationsfaktor
+                    local factor = BriefingSystem.InterpolationFactor(startTime, currTime, flyTime, flight);
+
+                    -- Kamera
+                    local lookAtX, lookAtY, lookAtZ = BriefingSystem.GetCameraPosition(startPosition, endPosition, factor);
+                    local zoomDistance = startZoomDistance + (endZoomDistance - startZoomDistance) * factor;
+                    local zoomAngle = startZoomAngle + (endZoomAngle - startZoomAngle) * factor;
+                    local rotation = startRotation + (endRotation - startRotation) * factor;
+                    local line = zoomDistance * math.cos(math.rad(zoomAngle));
+
                     Camera.ThroneRoom_SetLookAt(lookAtX, lookAtY, lookAtZ);
-
-                    -- Setzt die Startposition der Kamera
-                    -- Positionstabelle {X= x, Y= y, Z= z}
-
-                    if not StartPosition.X then
-                        local CamPos = GetPosition(StartPosition[1], (StartPosition[2] or 0));
-                        if StartPosition[3] then
-                            CamPos.X = CamPos.X + StartPosition[3] * math.cos( math.rad(StartPosition[4]) );
-                            CamPos.Y = CamPos.Y + StartPosition[3] * math.sin( math.rad(StartPosition[4]) );
-                        end
-                        StartPosition = CamPos;
-                    end
-
-                    -- Setzt die Endposition der Kamera
-                    -- Positionstabelle {X= x, Y= y, Z= z}
-
-                    if not EndPosition.X then
-                        local CamPos = GetPosition(EndPosition[1], (EndPosition[2] or 0));
-                        if EndPosition[3] then
-                            CamPos.X = CamPos.X + EndPosition[3] * math.cos( math.rad(EndPosition[4]) );
-                            CamPos.Y = CamPos.Y + EndPosition[3] * math.sin( math.rad(EndPosition[4]) );
-                        end
-                        EndPosition = CamPos;
-                    end
-
-                    local posX, posY, posZ = BriefingSystem.CutsceneGetPosition(StartPosition, EndPosition, Factor);
-                    Camera.ThroneRoom_SetPosition(posX, posY, posZ);
-
-                    -- Setzt den Bildschirmausschnitt
-                    Camera.ThroneRoom_SetFOV(StartFOV + (EndFOV - StartFOV) * Factor);
+                    Camera.ThroneRoom_SetPosition(
+                        lookAtX + math.cos(math.rad(rotation - 90)) * line,
+                        lookAtY + math.sin(math.rad(rotation - 90)) * line,
+                        lookAtZ + (zoomDistance) * math.sin(math.rad(zoomAngle))
+                    );
+                    Camera.ThroneRoom_SetFOV(startFOV + (endFOV - startFOV) * factor);
 
                     -- Splashscreen
                     BriefingSystem.SetBriefingSplashscreenUV(startUV0, endUV0, startUV1, endUV1, factor);
+
+                -- -------------------------------------------------------------- --
+                -- Cutscene notation by totalwarANGEL
+                -- -------------------------------------------------------------- --
+
+                -- Die Cutscene Notation von totalwarANGEL ermöglicht es viele
+                -- Kameraeffekte einfacher umzusetzen, da man die Kamera über
+                -- eine Position und eine Blickrichtung steuert.
+                -- Es KANN vorkommen, dass die Bewegung flüssiger wird.
+
+                else
+                    local cutscene = BriefingSystem.Flight.Cutscene;
+
+                    if cutscene then
+                        -- Kamera
+                        local StartPosition = cutscene.StartPosition or cutscene.EndPosition;
+                        local EndPosition = cutscene.EndPosition;
+                        local StartLookAt = cutscene.StartLookAt or cutscene.EndLookAt;
+                        local EndLookAt = cutscene.EndLookAt;
+                        local StartFOV = cutscene.StartFOV or cutscene.EndFOV;
+                        local EndFOV = cutscene.EndFOV;
+                        local StartTime = cutscene.StartTime;
+                        local FlyTime = cutscene.FlyTime;
+                        local CurrTime = Logic.GetTimeMs()/1000;
+
+                        -- Splashscreen-Animation
+                        local startUV0 = cutscene.StartUV0 or cutscene.EndUV0;
+                        local endUV0 = cutscene.EndUV0;
+                        local startUV1 = cutscene.StartUV1 or cutscene.EndUV1;
+                        local endUV1 = cutscene.EndUV1;
+
+                        local Factor = BriefingSystem.InterpolationFactor(StartTime, CurrTime, FlyTime, cutscene);
+
+                        -- Setzt das Blickziel der Kamera zum Animationsbeginn
+                        if not StartLookAt.X then
+                            local CamPos = GetPosition(StartLookAt[1], (StartLookAt[2] or 0));
+                            if StartLookAt[3] then
+                                CamPos.X = CamPos.X + StartLookAt[3] * math.cos( math.rad(StartLookAt[4]) );
+                                CamPos.Y = CamPos.Y + StartLookAt[3] * math.sin( math.rad(StartLookAt[4]) );
+                            end
+                            StartLookAt = CamPos;
+                        end
+
+                        -- Setzt das Blickziel der Kamera zum Animationsende
+                        if not EndLookAt.X then
+                            local CamPos = GetPosition(EndLookAt[1], (EndLookAt[2] or 0));
+                            if EndLookAt[3] then
+                                CamPos.X = CamPos.X + EndLookAt[3] * math.cos( math.rad(EndLookAt[4]) );
+                                CamPos.Y = CamPos.Y + EndLookAt[3] * math.sin( math.rad(EndLookAt[4]) );
+                            end
+                            EndLookAt = CamPos;
+                        end
+                        local lookAtX, lookAtY, lookAtZ = BriefingSystem.CutsceneGetPosition(StartLookAt, EndLookAt, Factor);
+                        Camera.ThroneRoom_SetLookAt(lookAtX, lookAtY, lookAtZ);
+
+                        -- Setzt die Startposition der Kamera
+                        -- Positionstabelle {X= x, Y= y, Z= z}
+
+                        if not StartPosition.X then
+                            local CamPos = GetPosition(StartPosition[1], (StartPosition[2] or 0));
+                            if StartPosition[3] then
+                                CamPos.X = CamPos.X + StartPosition[3] * math.cos( math.rad(StartPosition[4]) );
+                                CamPos.Y = CamPos.Y + StartPosition[3] * math.sin( math.rad(StartPosition[4]) );
+                            end
+                            StartPosition = CamPos;
+                        end
+
+                        -- Setzt die Endposition der Kamera
+                        -- Positionstabelle {X= x, Y= y, Z= z}
+
+                        if not EndPosition.X then
+                            local CamPos = GetPosition(EndPosition[1], (EndPosition[2] or 0));
+                            if EndPosition[3] then
+                                CamPos.X = CamPos.X + EndPosition[3] * math.cos( math.rad(EndPosition[4]) );
+                                CamPos.Y = CamPos.Y + EndPosition[3] * math.sin( math.rad(EndPosition[4]) );
+                            end
+                            EndPosition = CamPos;
+                        end
+
+                        local posX, posY, posZ = BriefingSystem.CutsceneGetPosition(StartPosition, EndPosition, Factor);
+                        Camera.ThroneRoom_SetPosition(posX, posY, posZ);
+
+                        -- Setzt den Bildschirmausschnitt
+                        Camera.ThroneRoom_SetFOV(StartFOV + (EndFOV - StartFOV) * Factor);
+
+                        -- Splashscreen
+                        BriefingSystem.SetBriefingSplashscreenUV(startUV0, endUV0, startUV1, endUV1, factor);
+                    end
                 end
-            end
 
-            -- -------------------------------------------------------------- --
+                -- -------------------------------------------------------------- --
 
-                    -- Notizen im Briefing
-            -- Blendet zusätzlichen Text während eines Briefings ein. Siehe
-            -- dazu Kommentar bei der Funktion.
-            BundleBriefingSystem.Local:UpdateBriefingNotes();
+                        -- Notizen im Briefing
+                -- Blendet zusätzlichen Text während eines Briefings ein. Siehe
+                -- dazu Kommentar bei der Funktion.
+                BundleBriefingSystem.Local:UpdateBriefingNotes();
 
-            -- Multiple Choice ist bestätigt, wenn das Auswahlfeld
-            -- verschwindet. In diesem Fall hat der Spieler geklickt.
+                -- Multiple Choice ist bestätigt, wenn das Auswahlfeld
+                -- verschwindet. In diesem Fall hat der Spieler geklickt.
 
-            if BriefingSystem.MCSelectionIsShown then
-                local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
-                if XGUIEng.IsWidgetShown(Widget) == 0 then
-                    BriefingSystem.MCSelectionIsShown = false;
-                    BriefingSystem.LocalOnConfirmed();
+                if BriefingSystem.MCSelectionIsShown then
+                    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+                    if XGUIEng.IsWidgetShown(Widget) == 0 then
+                        BriefingSystem.MCSelectionIsShown = false;
+                        BriefingSystem.LocalOnConfirmed();
+                    end
+                end
+            else
+                -- Cutscene Addon
+                if AddOnCutsceneSystem then
+                    AddOnCutsceneSystem.Local:ThroneRoomCameraControl();
                 end
             end
         end
@@ -2114,6 +2121,11 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
         API.Bridge("BriefingSystem.LeftClickOnPosition(" ..tostring(x).. ", " ..tostring(y).. ")");
         local x,y = GUI.GetMousePosition();
         API.Bridge("BriefingSystem.LeftClickOnScreen(" ..tostring(x).. ", " ..tostring(y).. ")");
+
+        -- Cutscene Addon
+        if AddOnCutsceneSystem then
+            AddOnCutsceneSystem.Local:ThroneRoomLeftClick();
+        end
     end
 
     -- ---------------------------------------------------------------------- --
