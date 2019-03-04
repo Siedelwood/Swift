@@ -895,8 +895,8 @@ function BundleNonPlayerCharacter.Local:Install()
                 local MoverEntityID = GetEntityId(Quest.Objectives[1].Data[2]);
                 local MoverEntityType = Logic.GetEntityType(MoverEntityID);
                 local MoverIcon = g_TexturePositions.Entities[MoverEntityType];
-                if Quest.Objectives[1].Data[1] == -65567 or not MoverIcon then
-                    MoverIcon = {16,12};
+                if not MoverIcon then
+                    MoverIcon = {7, 9};
                 end
                 SetIcon(QuestObjectiveContainer .. "/IconMover", MoverIcon);
 
@@ -904,7 +904,7 @@ function BundleNonPlayerCharacter.Local:Install()
                 local TargetEntityType = Logic.GetEntityType(TargetEntityID);
                 local TargetIcon = g_TexturePositions.Entities[TargetEntityType];
                 if not TargetIcon then
-                    TargetIcon = {14,10};
+                    TargetIcon = {14, 10};
                 end
 
                 local IconWidget = QuestObjectiveContainer .. "/IconTarget";
