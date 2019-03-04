@@ -255,6 +255,7 @@ function AddOnCutsceneSystem.Local:StartCutscene(_Cutscene)
     if not self.Data.CinematicActive then
         self:ActivateCinematicMode();
     end
+    self.Data.CurrentFlight = 1;
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.CutsceneActive = true;
 end
@@ -296,6 +297,76 @@ function AddOnCutsceneSystem.Local:IsCutsceneActive()
 end
 
 ---
+-- Experimental: To be add to the cutscene as starting script event!
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
+    if self:IsCutsceneActive() then
+        local FlightIndex = self.Data.CurrentFlight;
+        local CurrentFlight = self.Data.CurrentCutscene[FlightIndex];
+        if not CurrentFlight then
+            return;
+        end
+
+        local Flight  = CurrentFlight.Flight;
+        local Title   = CurrentFlight.Title or "";
+        local Text    = CurrentFlight.Text or "";
+        local Action  = CurrentFlight.Action;
+        local FadeIn  = CurrentFlight.FadeIn;
+        local FadeOut = CurrentFlight.FadeOut;
+
+        if Camera.IsValidCutscene(Flight) then
+            Camera.StartCutscene(Flight);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", Title);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", Text);
+            if Action then
+                API.Bridge("self.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
+            end
+
+            g_Fade.To = 0;
+            SetFaderAlpha(0);
+            if FadeIn then
+                FadeIn(FadeIn);
+            end
+            if FadeOut then
+                StartSimpleHiResJobEx(function(_Time, _FadeOut)
+                    if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
+                        FadeOut(_FadeOut);
+                        return true;
+                    end
+                end, Logic.GetTimeMs() + (_Duration*100), FadeOut);
+            end
+        end
+    end
+end
+CutsceneFlightStarted = function(_Duration)
+    AddOnCutsceneSystem.Local:FlightStarted(_Duration);
+end
+
+---
+-- Experimental: To be add to the cs-file as finishing script event!
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:FlightFinished()
+    if self:IsCutsceneActive() then
+        local FlightIndex = self.Data.CurrentFlight;
+        local CurrentFlight = self.Data.CurrentCutscene[FlightIndex];
+        if not CurrentFlight then
+            API.Bridge("AddOnCutsceneSystem.Global:StopCutscene()");
+            return true;
+        end
+        self.Data.CurrentFlight = self.Data.CurrentFlight +1;
+        SetFaderAlpha(1);
+        self:FlightStarted();
+    end
+end
+CutsceneFlightFinished = function()
+    AddOnCutsceneSystem.Local:FlightFinished();
+end
+
+---
 -- Steuert die Wiedergabe der Cutscenes.
 --
 -- @within Internal
@@ -305,7 +376,7 @@ function AddOnCutsceneSystem.Local:ThroneRoomCameraControl()
     if self:IsCutsceneActive() then
         if not self:IsCutsceneFlightActive() then
             local FlightIndex = self.Data.CurrentFlight;
-            local CurrentFlight = self.Data.CurrentCutscene[FlightIndex]
+            local CurrentFlight = self.Data.CurrentCutscene[FlightIndex];
             if not CurrentFlight then
                 API.Bridge("AddOnCutsceneSystem.Global:StopCutscene()");
                 return true;
@@ -317,6 +388,8 @@ function AddOnCutsceneSystem.Local:ThroneRoomCameraControl()
             local Action = CurrentFlight.Action;
 
             if Camera.IsValidCutscene(Flight) then
+                g_Fade.To = 0;
+                SetFaderAlpha(0);
                 Camera.StartCutscene(Flight);
                 XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", Title);
                 XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", Text);
