@@ -2,6 +2,8 @@ package twa.symfonia.cutscenemaker.v2.lua;
 
 import twa.symfonia.cutscenemaker.v1.xml.CutsceneEventTypes;
 import twa.symfonia.cutscenemaker.v1.xml.models.Event;
+import twa.symfonia.cutscenemaker.v2.ini.models.FlightData;
+import twa.symfonia.cutscenemaker.v2.ini.models.FlightEntryData;
 import twa.symfonia.cutscenemaker.v2.lua.models.Flight;
 import twa.symfonia.cutscenemaker.v2.lua.models.FlightEntry;
 import twa.symfonia.cutscenemaker.v2.xml.CutsceneXMLWorker;
@@ -33,7 +35,7 @@ public class CutsceneFlightParser {
      * @param transparentBars Show transparent bars
      * @return New flight
      */
-    public Flight createFlightWithDefaults(List<Root> flights, boolean hideBorderPins, boolean restoreGameSpeed, boolean transparentBars) {
+    public Flight createFlightWithDefaults(List<Root> flights, boolean restoreGameSpeed, boolean hideBorderPins, boolean transparentBars) {
         return new Flight(createFlightEntriesWithDefaults(flights), restoreGameSpeed, hideBorderPins, transparentBars);
     }
 
@@ -54,54 +56,56 @@ public class CutsceneFlightParser {
 
     /**
      * Creates a flight were every entry uses real data.
-     * @param flightMap Flight entry data
-     * @param hideBorderPins Show border pins
-     * @param restoreGameSpeed Reset game speed
-     * @param transparentBars Show transparent bars
+     * @param flightData Flight entry data
      * @return New flight
      */
-    public Flight createFlight(Map<String, List<String>> flightMap, boolean hideBorderPins, boolean restoreGameSpeed, boolean transparentBars) {
-        return new Flight(createFlightEntries(flightMap), restoreGameSpeed, hideBorderPins, transparentBars);
+    public Flight createFlight(List<Root> flights, FlightData flightData) {
+        return new Flight(createFlightEntries(flights, flightData), flightData.isRestoreGameTime(), flightData.isHideBorderPins(), flightData.isTransparentBars());
     }
 
     /**
      * Creates a list of flight entries for a cutscene.
-     * @param flightMap Map with the data of the flight
+     * @param flights Cutscene data with all flight entries
+     * @param flightData ...
      * @return List of flights
      */
-    private List<FlightEntry> createFlightEntries(Map<String, List<String>> flightMap) {
+    private List<FlightEntry> createFlightEntries(List<Root> flights, FlightData flightData) {
         List<FlightEntry> entries = new ArrayList<>();
-        for (final Map.Entry<String, List<String>> entry : flightMap.entrySet()) {
-            FlightEntry element = createFlightEntry(entry.getKey(), entry.getValue());
+
+
+        for (int i=0; i<flights.size(); i++) {
+            FlightEntryData flightEntryData = null;
+            for (int j=0; j<flightData.getFlightEntries().size(); j++) {
+                if (flightData.getFlightEntries().get(j).getFlight().equals(flights.get(i).getFileName())) {
+                    flightEntryData = flightData.getFlightEntries().get(j);
+                }
+            }
+
+            if (flightEntryData == null) {
+                flightEntryData = new FlightEntryData(flights.get(i).getFileName(), "", "", "nil", "nil", "nil");
+                flightData.getFlightEntries().add(flightEntryData);
+            }
+
+            FlightEntry element = createFlightEntry(flightEntryData);
             entries.add(element);
         }
         return entries;
     }
 
     /**
-     * Creates a flight entry from the description. The description is a list of strings.
+     * Creates a flight entry from the flight entry data.
      *
-     * The list contains:
-     * <ul>
-     *     <li>title of flight</li>
-     *     <li>text of flight</li>
-     *     <li>fade in time</li>
-     *     <li>fade out time</li>
-     *     <li>action function</li>
-     * </ul>
-     *
-     * @param fileName Name of cutscene file (without .cs)
-     * @param flightsDescription Description of flight
+     * @param data Flight data
      * @return FlightEntry
      */
-    private FlightEntry createFlightEntry(String fileName, List<String> flightsDescription) {
+    private FlightEntry createFlightEntry(FlightEntryData data) {
         return new FlightEntry(
-            fileName,
-            flightsDescription.get(0),
-            flightsDescription.get(1),
-            flightsDescription.get(2),
-            flightsDescription.get(3),
-            flightsDescription.get(4)
+            data.getFlight(),
+            data.getTitle(),
+            data.getText(),
+            data.getAction(),
+            data.getFadeIn(),
+            data.getFadeIn()
         );
     }
 }

@@ -1,97 +1,36 @@
 function CutsceneTest()
-    local cutscene = {
-        barStyle = "small",
-        disableGlobalInvulnerability = false,
-        restoreCamera = true,
-        restoreGameSpeed = false,
-        disableSkipping = true,
-        hideFoW = true,
-        showSky = true,
-        hideBorderPins = true
+    local Cutscene = {
+        RestoreGameSpeed = true,
+        HideBorderPins   = true,
+        TransperentBars  = false,
+
+        {
+            Flight  = "c01",
+            Title   = ""Bockwurst 1"",
+            Text    = ""Das ist ein Test."",
+            Action  = 3.0,
+            FadeIn  = nil,
+            FadeOut = 3.0,
+        },
+        {
+            Flight  = "c02",
+            Title   = ""Bockwurst 2"",
+            Text    = ""Das ist ein Test."",
+            Action  = nil,
+            FadeIn  = nil,
+            FadeOut = nil,
+        },
+        {
+            Flight  = "c03",
+            Title   = "",
+            Text    = "",
+            Action  = nil,
+            FadeIn  = nil,
+            FadeOut = nil,
+        },
+
+        Finished = function(_Data)
+        end
     };
-    local AF = AddFlights(cutscene);
-
-    AF {
-        {
-            Position = {X=   12793.41, Y=    3042.22, Z=    1601.68},
-            LookAt   = {X=   12821.73, Y=    3137.92, Z=    1607.95},
-            FOV      = 42.0,
-            Title    = "Titel 1",
-            Text     = "Das ist ein Text!",
-            Action   = DoOneThing
-        },
-        {
-            Position = {X=   12793.41, Y=    3042.22, Z=    1601.68},
-            LookAt   = {X=   12821.73, Y=    3137.92, Z=    1607.95},
-            FOV      = 42.0,
-            Title    = "Titel 2",
-            Text     = "Das ist ein Text!",
-            Action   = DoAnotherThing
-        },
-        {
-            Position = {X=   12793.41, Y=    3042.22, Z=    1601.68},
-            LookAt   = {X=   12821.73, Y=    3137.92, Z=    1607.95},
-            FOV      = 42.0,
-            Title    = "",
-            Text     = "",
-            Action   = nil
-        },
-        {
-            Position = {X=   12793.41, Y=    3042.22, Z=    1601.68},
-            LookAt   = {X=   12821.73, Y=    3137.92, Z=    1607.95},
-            FOV      = 42.0,
-            Title    = "Titel 4",
-            Text     = "Das ist ein Text!",
-            Action   = nil
-        },
-
-        Duration   = 25.0,
-        -- Add fader and other stuff here
-    }
-    AF {
-        {
-            Position = {X=   12793.41, Y=    3042.22, Z=    1601.68},
-            LookAt   = {X=   12821.73, Y=    3137.92, Z=    1607.95},
-            FOV      = 42.0,
-            Title    = "Titel 5",
-            Text     = "Das ist ein Text!",
-            Action   = DoOneThing
-        },
-        {
-            Position = {X=   12793.41, Y=    3042.22, Z=    1601.68},
-            LookAt   = {X=   12821.73, Y=    3137.92, Z=    1607.95},
-            FOV      = 42.0,
-            Title    = "Titel 6",
-            Text     = "Das ist ein Text!",
-            Action   = nil
-        },
-
-        Duration   = 4.0,
-        -- Add fader and other stuff here
-    }
-    AF {
-        {
-            Position = {X=   12793.41, Y=    3042.22, Z=    1601.68},
-            LookAt   = {X=   12821.73, Y=    3137.92, Z=    1607.95},
-            FOV      = 42.0,
-            Title    = "",
-            Text     = "",
-            Action   = nil
-        },
-        {
-            Position = {X=   12793.41, Y=    3042.22, Z=    1601.68},
-            LookAt   = {X=   12821.73, Y=    3137.92, Z=    1607.95},
-            FOV      = 42.0,
-            Title    = "Titel 10",
-            Text     = "Das ist ein Text!",
-            Action   = nil
-        },
-
-        Duration   = 2.5,
-        -- Add fader and other stuff here
-    }
-
-    cutscene.finished = function()
-    end
-    return StartCutscene(cutscene);
+    return API.StartCutscene(Cutscene);
 end

@@ -18,7 +18,7 @@ import twa.symfonia.cutscenemaker.v1.xml.models.Event;
  *
  * Called standalone it will create a lua file in the working directory containing the cutscene.
  *
- * Called by using the static method <i>createCutscene</i> just a string is returned. This mode is for potential usage
+ * Called by using the static method <i>createCutsceneWithDefaults</i> just a string is returned. This mode is for potential usage
  * in a GUI wrapper application.
  */
 public class CutsceneMakerVersion1 {

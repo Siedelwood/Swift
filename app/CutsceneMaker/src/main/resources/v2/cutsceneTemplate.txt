@@ -1,8 +1,8 @@
 function %s()
     local Cutscene = {
         RestoreGameSpeed = %b,
-        TransperentBars  = %b,
         HideBorderPins   = %b,
+        TransperentBars  = %b,
 
 %s
         Finished = function(_Data)
