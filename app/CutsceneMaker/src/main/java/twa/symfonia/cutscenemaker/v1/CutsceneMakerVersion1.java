@@ -1,4 +1,4 @@
-package twa.symfonia.cutscenemaker;
+package twa.symfonia.cutscenemaker.v1;
 
 import java.io.File;
 import java.nio.file.Files;

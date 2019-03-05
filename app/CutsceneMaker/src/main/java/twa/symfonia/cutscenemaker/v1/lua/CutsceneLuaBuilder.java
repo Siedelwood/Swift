@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 
-import twa.symfonia.cutscenemaker.CutsceneMakerVersion1;
+import twa.symfonia.cutscenemaker.v1.CutsceneMakerVersion1;
 import twa.symfonia.cutscenemaker.v1.lua.models.Flight;
 import twa.symfonia.cutscenemaker.v1.lua.models.FlightStation;
 
