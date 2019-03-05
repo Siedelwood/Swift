@@ -1,12 +1,12 @@
 package twa.symfonia.cutscenemaker.v2.ini;
 
+import org.apache.commons.io.IOUtils;
 import org.ini4j.Ini;
 import org.ini4j.Profile;
 import twa.symfonia.cutscenemaker.v2.ini.models.FlightData;
 import twa.symfonia.cutscenemaker.v2.ini.models.FlightEntryData;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class CutsceneIniReader {
      * @param cutsceneName
      * @return
      */
-    public FlightData getFlightData(String cutsceneName) {
+    public FlightData getFlightData(String cutsceneName) throws UnsupportedEncodingException {
         FlightData data = readCutsceneProperties(cutsceneName);
         List<FlightEntryData> flights = readFlightProperties();
         data.setFlightEntries(flights);
@@ -73,18 +73,18 @@ public class CutsceneIniReader {
      *
      * @return
      */
-    private List<FlightEntryData> readFlightProperties() {
+    private List<FlightEntryData> readFlightProperties() throws UnsupportedEncodingException {
         List<FlightEntryData> data = new ArrayList<>();
 
         for (Profile.Section section: iniFile.values()) {
             String flightName = section.getName();
             if (!flightName.equals("Cutscene")) {
 
-                String title = section.get("Title");
+                String title = new String(section.get("Title").getBytes("UTF-8"));
                 if (title == null) {
                     title = "";
                 }
-                String text = section.get("Text");
+                String text = new String(section.get("Text").getBytes("UTF-8"));
                 if (text == null) {
                     text = "";
                 }
