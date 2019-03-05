@@ -1,0 +1,12 @@
+function %s()
+    local Cutscene = {
+        RestoreGameSpeed = %b,
+        TransperentBars  = %b,
+        HideBorderPins   = %b,
+
+%s
+        Finished = function(_Data)
+        end
+    };
+    return API.StartCutscene(Cutscene);
+end

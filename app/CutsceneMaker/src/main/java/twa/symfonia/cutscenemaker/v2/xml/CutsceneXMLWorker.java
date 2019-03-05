@@ -46,6 +46,9 @@ public class CutsceneXMLWorker {
             document = serializer.read(Root.class, input);
             injectCutsceneStartEvent();
             injectCutsceneClosingEvent();
+            document.setDuration(getCutsceneDuration());
+            String fileName = input.getName().substring(0, input.getName().lastIndexOf("."));
+            document.setFileName(fileName);
         } catch (final Exception e) {
             throw new CutsceneEventException(e);
         }
