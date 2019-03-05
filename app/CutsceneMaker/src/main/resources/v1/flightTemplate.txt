@@ -1,0 +1,5 @@
+    AF {
+%s
+        Duration   = %1.1f,
+        -- Add fader and other stuff here
+    }
