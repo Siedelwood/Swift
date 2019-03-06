@@ -7,9 +7,16 @@ import java.util.regex.Pattern;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
-
 import twa.symfonia.cutscenemaker.v2.xml.models.Event;
 import twa.symfonia.cutscenemaker.v2.xml.models.Root;
+
+import org.w3c.dom.Document;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 /**
  * Reader for the XML cutscenes that can be created with the internal cutscene editor.
@@ -49,7 +56,6 @@ public class CutsceneXMLWorker {
             document.setDuration(getCutsceneDuration());
             String fileName = input.getName().substring(0, input.getName().lastIndexOf("."));
             document.setFileName(fileName);
-
         } catch (final Exception e) {
             throw new CutsceneEventException(e);
         }
@@ -62,11 +68,14 @@ public class CutsceneXMLWorker {
      */
     public void saveDocument(File output) throws CutsceneEventException {
         try {
-            final Serializer serializer = new Persister();
-            if (output.exists()) {
-                output.delete();
-            }
-            serializer.write(document, output);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(output);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(doc);
+            StreamResult streamResult = new StreamResult(output);
+            transformer.transform(domSource, streamResult);
         } catch (final Exception e) {
             throw new CutsceneEventException(e);
         }
