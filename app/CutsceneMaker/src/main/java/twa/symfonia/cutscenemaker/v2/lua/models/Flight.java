@@ -8,12 +8,22 @@ public class Flight {
     private boolean restoreGameSpeed;
     private boolean transperentBars;
     private boolean hideBorderPins;
+    private String finishedFunction;
 
-    public Flight(List<FlightEntry> flightEntries, boolean restoreGameSpeed, boolean transperentBars, boolean hideBorderPins) {
+    public Flight(List<FlightEntry> flightEntries, boolean restoreGameSpeed, boolean transperentBars, boolean hideBorderPins, String finishedFunction) {
         this.flightEntries = flightEntries;
         this.restoreGameSpeed = restoreGameSpeed;
         this.transperentBars = transperentBars;
         this.hideBorderPins = hideBorderPins;
+        this.finishedFunction = finishedFunction;
+    }
+
+    public String getFinishedFunction() {
+        return finishedFunction;
+    }
+
+    public void setFinishedFunction(String finishedFunction) {
+        this.finishedFunction = finishedFunction;
     }
 
     public Flight() {

@@ -5,8 +5,7 @@ function %s()
         TransperentBars  = %b,
 
 %s
-        Finished = function(_Data)
-        end
+        Finished = %s;
     };
     return API.StartCutscene(Cutscene);
 end

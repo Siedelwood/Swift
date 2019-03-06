@@ -22,6 +22,20 @@ public class FlightEntry {
     public FlightEntry() {
     }
 
+    @Override
+    public String toString() {
+
+        return String.format(
+                "FlightEntry[\"%s\", \"%s\", %s, %s, %s, %s]",
+                this.flight,
+                this.title,
+                this.text,
+                this.action,
+                this.fadeIn,
+                this.fadeOut
+        );
+    }
+
     public String getFlight() {
         return flight;
     }

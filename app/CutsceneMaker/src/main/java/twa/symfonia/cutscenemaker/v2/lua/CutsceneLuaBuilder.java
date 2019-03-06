@@ -56,7 +56,8 @@ public class CutsceneLuaBuilder {
             flight.isRestoreGameSpeed(),
             flight.isTransperentBars(),
             flight.isHideBorderPins(),
-            buildFlightEntries(flight)
+            buildFlightEntries(flight),
+            flight.getFinishedFunction()
         );
     }
 

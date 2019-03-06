@@ -192,7 +192,7 @@ public class CutsceneMaker {
             reader.loadDocument(new File(flights.get(i)));
             data.add(reader.getDocument());
         }
-        Flight flight = parser.createFlightWithDefaults(data, true, true, false);
+        Flight flight = parser.createFlightWithDefaults(data, true, true, false, "nil");
         return builder.buildCutsceneString(cutsceneName, flight);
     }
 }

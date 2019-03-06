@@ -398,7 +398,7 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
                     FadeOut(_FadeOut);
                     return true;
                 end
-            end, Logic.GetTimeMs() + (_Duration*1000), CurrentFlight.FadeOut);
+            end, Logic.GetTimeMs() + (_Duration*100), CurrentFlight.FadeOut);
         end
     end
 end
