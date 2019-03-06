@@ -109,7 +109,6 @@ public class CutsceneIniReader {
                     fadeOut = "nil";
                 }
                 FlightEntryData flight = new FlightEntryData(sectionName, title, text, action, fadeIn, fadeOut);
-                System.out.println(flight.toString());
                 data.add(flight);
             }
         }

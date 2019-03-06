@@ -93,8 +93,6 @@ public class CutsceneLuaBuilder {
             text = new String(content);
         }
 
-        System.out.println(entry);
-
         return String.format(
             Locale.ENGLISH,
             flightTemplate,
