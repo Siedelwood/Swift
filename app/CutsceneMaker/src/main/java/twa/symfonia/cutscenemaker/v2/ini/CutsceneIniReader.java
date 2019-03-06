@@ -1,15 +1,18 @@
 package twa.symfonia.cutscenemaker.v2.ini;
 
-import org.apache.commons.io.IOUtils;
 import org.ini4j.Ini;
-import org.ini4j.Profile;
 import twa.symfonia.cutscenemaker.v2.ini.models.FlightData;
 import twa.symfonia.cutscenemaker.v2.ini.models.FlightEntryData;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Simple reader for cutscene properties stored in INI files.
+ */
 public class CutsceneIniReader {
     private Ini iniFile;
 
@@ -20,8 +23,8 @@ public class CutsceneIniReader {
     {}
 
     /**
-     *
-     * @param ini
+     * Loads the INI file to the reader and prepares it.
+     * @param ini INI file to load
      * @throws IOException
      */
     public void loadFile(File ini) throws IOException {
@@ -29,9 +32,9 @@ public class CutsceneIniReader {
     }
 
     /**
-     *
-     * @param cutsceneName
-     * @return
+     * Returns the flight data of the cutscene.
+     * @param cutsceneName Name of cutscene
+     * @return Flight data
      */
     public FlightData getFlightData(String cutsceneName) throws UnsupportedEncodingException {
         FlightData data = readCutsceneProperties(cutsceneName);
@@ -41,9 +44,9 @@ public class CutsceneIniReader {
     }
 
     /**
-     *
-     * @param cutsceneName
-     * @return
+     * Reads the properties of the cutscene and returns flight data with all flight entries data.
+     * @param cutsceneName Name of cutscene
+     * @return Cutscene data
      */
     private FlightData readCutsceneProperties(String cutsceneName) {
         String restoreGameSpeed = iniFile.get("Cutscene", "RestoreGameSpeed");
@@ -70,38 +73,39 @@ public class CutsceneIniReader {
     }
 
     /**
-     *
-     * @return
+     * Reads the properties of the cutscene and returns flight entry data.
+     * @return List of flight entry data
      */
     private List<FlightEntryData> readFlightProperties() throws UnsupportedEncodingException {
         List<FlightEntryData> data = new ArrayList<>();
 
-        for (Profile.Section section: iniFile.values()) {
-            String flightName = section.getName();
-            if (!flightName.equals("Cutscene")) {
-
-                String title = new String(section.get("Title").getBytes("UTF-8"));
+        for (String sectionName: iniFile.keySet()) {
+            if (!sectionName.equals("Cutscene")) {
+                String title = iniFile.get(sectionName, "Title");
                 if (title == null) {
                     title = "";
                 }
-                String text = new String(section.get("Text").getBytes("UTF-8"));
+                title = new String(title.getBytes("UTF-8"));
+
+                String text = iniFile.get(sectionName, "Text");
                 if (text == null) {
                     text = "";
                 }
-                String action = section.get("Action");
+                text = new String(text.getBytes("UTF-8"));
+
+                String action = iniFile.get(sectionName, "Action");
                 if (action == null) {
                     action = "nil";
                 }
-                String fadeIn = section.get("FadeIn");
+                String fadeIn = iniFile.get(sectionName, "FadeIn");
                 if (fadeIn == null) {
                     fadeIn = "nil";
                 }
-                String fadeOut = section.get("FadeOut");
+                String fadeOut = iniFile.get(sectionName, "FadeIn");
                 if (fadeOut == null) {
                     fadeOut = "nil";
                 }
-
-                FlightEntryData flight = new FlightEntryData(flightName, title, text, action, fadeIn, fadeOut);
+                FlightEntryData flight = new FlightEntryData(sectionName, title, text, action, fadeIn, fadeOut);
                 data.add(flight);
             }
         }

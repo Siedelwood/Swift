@@ -59,6 +59,7 @@ public class CutsceneMaker {
         System.out.println("Creating cutscene \"" + cutsceneName + "\".");
         System.out.println("Reading directory:");
         File[] content = (new File(directory)).listFiles();
+        Arrays.sort(content);
         for (int i=0; i<content.length; i++) {
             System.out.println("  - " + content[i].getName());
         }
@@ -109,6 +110,7 @@ public class CutsceneMaker {
         File dir = new File(directory);
         if (dir.isDirectory()) {
             File[] content = dir.listFiles();
+            Arrays.sort(content);
 
 
             FlightData flightData = null;

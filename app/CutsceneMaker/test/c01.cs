@@ -1,4 +1,4 @@
-<root>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>
    <EventCollection class="java.util.ArrayList">
       <event classname="ECam::CCutsceneEventCamera">
          <EventType>1</EventType>

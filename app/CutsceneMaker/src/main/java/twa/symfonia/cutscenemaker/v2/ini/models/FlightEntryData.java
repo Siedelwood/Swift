@@ -20,6 +20,20 @@ public class FlightEntryData {
         this.fadeOut = fadeOut;
     }
 
+    @Override
+    public String toString() {
+
+        return String.format(
+            "FlightEntryData[\"%s\", \"%s\", %s, %s, %s, %s]",
+            this.flight,
+            this.title,
+            this.text,
+            this.action,
+            this.fadeIn,
+            this.fadeOut
+        );
+    }
+
     public String getFlight() {
         return flight;
     }

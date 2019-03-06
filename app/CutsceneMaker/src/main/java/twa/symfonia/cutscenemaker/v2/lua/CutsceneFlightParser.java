@@ -73,16 +73,16 @@ public class CutsceneFlightParser {
         List<FlightEntry> entries = new ArrayList<>();
 
 
-        for (int i=0; i<flights.size(); i++) {
+        for (Root flight : flights) {
             FlightEntryData flightEntryData = null;
-            for (int j=0; j<flightData.getFlightEntries().size(); j++) {
-                if (flightData.getFlightEntries().get(j).getFlight().equals(flights.get(i).getFileName())) {
+            for (int j = 0; j < flightData.getFlightEntries().size(); j++) {
+                if (flightData.getFlightEntries().get(j).getFlight().equals(flight.getFileName())) {
                     flightEntryData = flightData.getFlightEntries().get(j);
                 }
             }
 
             if (flightEntryData == null) {
-                flightEntryData = new FlightEntryData(flights.get(i).getFileName(), "", "", "nil", "nil", "nil");
+                flightEntryData = new FlightEntryData(flight.getFileName(), "", "", "nil", "nil", "nil");
                 flightData.getFlightEntries().add(flightEntryData);
             }
 
@@ -103,9 +103,9 @@ public class CutsceneFlightParser {
             data.getFlight(),
             data.getTitle(),
             data.getText(),
-            data.getAction(),
             data.getFadeIn(),
-            data.getFadeIn()
+            data.getFadeIn(),
+            data.getAction()
         );
     }
 }
