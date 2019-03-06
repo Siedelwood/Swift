@@ -64,11 +64,14 @@ public class CutsceneIniReader {
             transperentBars = "false";
         }
 
+        String finishedFunction = iniFile.get("Cutscene", "FinishedFunction");
+
         return new FlightData(
                 cutsceneName,
                 Boolean.parseBoolean(restoreGameSpeed),
                 Boolean.parseBoolean(hideBorderPins),
-                Boolean.parseBoolean(transperentBars)
+                Boolean.parseBoolean(transperentBars),
+                (finishedFunction == null) ? "nil" : finishedFunction
         );
     }
 
@@ -101,11 +104,12 @@ public class CutsceneIniReader {
                 if (fadeIn == null) {
                     fadeIn = "nil";
                 }
-                String fadeOut = iniFile.get(sectionName, "FadeIn");
+                String fadeOut = iniFile.get(sectionName, "FadeOut");
                 if (fadeOut == null) {
                     fadeOut = "nil";
                 }
                 FlightEntryData flight = new FlightEntryData(sectionName, title, text, action, fadeIn, fadeOut);
+                System.out.println(flight.toString());
                 data.add(flight);
             }
         }

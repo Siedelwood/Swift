@@ -10,7 +10,7 @@ function CutsceneTest()
             Text    = "Text, während ich Umlaute nutzen muss!",
             Action  = BockwurstFunktion,
             FadeIn  = 3.0,
-            FadeOut = 3.0,
+            FadeOut = nil,
         },
         {
             Flight  = "c02",
@@ -18,7 +18,7 @@ function CutsceneTest()
             Text    = "Das ist ein Test.",
             Action  = nil,
             FadeIn  = nil,
-            FadeOut = nil,
+            FadeOut = 3.0,
         },
         {
             Flight  = "c03",
@@ -29,8 +29,7 @@ function CutsceneTest()
             FadeOut = nil,
         },
 
-        Finished = function(_Data)
-        end
+        Finished = BockwurstFinished;
     };
     return API.StartCutscene(Cutscene);
 end

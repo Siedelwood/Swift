@@ -56,7 +56,8 @@ public class CutsceneLuaBuilder {
             flight.isRestoreGameSpeed(),
             flight.isTransperentBars(),
             flight.isHideBorderPins(),
-            buildFlightEntries(flight)
+            buildFlightEntries(flight),
+            flight.getFinishedFunction()
         );
     }
 
@@ -91,6 +92,8 @@ public class CutsceneLuaBuilder {
             final byte[] content = entry.getText().getBytes(Charset.forName("UTF-8"));
             text = new String(content);
         }
+
+        System.out.println(entry);
 
         return String.format(
             Locale.ENGLISH,

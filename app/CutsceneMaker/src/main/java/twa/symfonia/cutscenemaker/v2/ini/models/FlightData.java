@@ -8,18 +8,28 @@ public class FlightData {
     private boolean restoreGameTime;
     private boolean hideBorderPins;
     private boolean transparentBars;
+    private String finishedFunction;
     private List<FlightEntryData> flightEntries;
 
     public FlightData() {
         flightEntries = new ArrayList<>();
     }
 
-    public FlightData(String cutsceneName, boolean restoreGameTime, boolean hideBorderPins, boolean transparentBars) {
+    public FlightData(String cutsceneName, boolean restoreGameTime, boolean hideBorderPins, boolean transparentBars, String finishedFunction) {
         flightEntries = new ArrayList<>();
         this.cutsceneName = cutsceneName;
         this.restoreGameTime = restoreGameTime;
         this.hideBorderPins = hideBorderPins;
         this.transparentBars = transparentBars;
+        this.finishedFunction = finishedFunction;
+    }
+
+    public String getFinishedFunction() {
+        return finishedFunction;
+    }
+
+    public void setFinishedFunction(String finishedFunction) {
+        this.finishedFunction = finishedFunction;
     }
 
     public List<FlightEntryData> getFlightEntries() {
