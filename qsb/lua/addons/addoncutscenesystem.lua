@@ -171,7 +171,7 @@ AddOnCutsceneSystem = {
             FastForward = {
                 Active = false,
                 Indent = 1,
-                Speed = 10,
+                Speed = 15,
             }
         },
     },
@@ -179,7 +179,7 @@ AddOnCutsceneSystem = {
     Text = {
         FastForwardActivate   = {de = "Beschleunigen", en = "Fast Forward"},
         FastForwardDeactivate = {de = "Zurücksetzen",  en = "Normal Speed"},
-        FastFormardMessage    = {de = "Schneller Vorlauf",  en = "Fast Forward"},
+        FastFormardMessage    = {de = "SCHNELLER VORLAUG",  en = "FAST FORWARD"},
     }
 }
 
@@ -406,7 +406,7 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
             API.Bridge("AddOnCutsceneSystem.Global.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
         end
 
-        XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", (self.Data.CurrentFlight.FastForward and 1) or 0);
+        XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", (self.Data.CurrentCutscene.FastForward and 1) or 0);
 
         -- Handle fader
         g_Fade.To = 0;
@@ -457,8 +457,11 @@ end
 --
 function AddOnCutsceneSystem.Local:ThroneRoomCameraControl()
     if self:IsCutsceneActive() then
-        if self.Data.CurrentCutscene.Loop then
-            self.Data.CurrentCutscene:Loop();
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        if self.Data.FastForward.Active == false then
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardActivate[Language]);
+        else 
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardDeactivate[Language]);
         end
     end
 end
@@ -486,14 +489,11 @@ end
 --
 function AddOnCutsceneSystem.Local:SkipButtonPressed()
     if self:IsCutsceneActive() then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         if Game.GameTimeGetFactor() > 1 then
             Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", AddOnCutsceneSystem.Text.FastForwardActivate[Language]);
             self.Data.FastForward.Active = false;
         else
             Game.GameTimeSetFactor(GUI.GetPlayerID(), self.Data.FastForward.Speed);
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", AddOnCutsceneSystem.Text.FastForwardDeaActivate[Language]);
             self.Data.FastForward.Active = true;
         end
     end
@@ -536,7 +536,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
 
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
@@ -544,6 +544,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
@@ -620,6 +621,7 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 end
 
 ---
@@ -629,7 +631,7 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local.DisplayFastForwardMessage()
-    if AddOnCutsceneSystem.Local:IsCutsceneActive() then
+    if AddOnCutsceneSystem.Local.Data.CutsceneActive == true then
         if AddOnCutsceneSystem.Local.Data.FastForward.Active then
             -- Realzeit ermitteln
             local RealTime = API.RealTimeGetSecondsPassedSinceGameStart();
@@ -646,9 +648,9 @@ function AddOnCutsceneSystem.Local.DisplayFastForwardMessage()
             end
             -- Message anzeigen
             local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-            local Text = "{cr}{cr}{cr}{cr}" ..AddOnCutsceneSystem.Text.FastFormardMessage[Language];
-            local Indent = string.rep(" ", AddOnCutsceneSystem.Local.Data.FastForward.Indent);
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", Text..Indent.. "...");
+            local Text = "{cr}{cr}" ..AddOnCutsceneSystem.Text.FastFormardMessage[Language];
+            local Indent = string.rep("  ", AddOnCutsceneSystem.Local.Data.FastForward.Indent);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", Text..Indent.. ". . .");
         else
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
         end
@@ -662,7 +664,7 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local.WaitForLoadScreenHidden()
-    if  XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+    if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
         GUI.SendScriptCommand("AddOnCutsceneSystem.Global.Data.LoadScreenHidden = true;");
         return true;
     end

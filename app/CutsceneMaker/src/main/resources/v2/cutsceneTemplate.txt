@@ -8,5 +8,5 @@ function %s()
 %s
         Finished = %s;
     };
-    return API.StartCutscene(Cutscene);
+    return API.CutsceneStart(Cutscene);
 end
