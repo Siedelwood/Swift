@@ -3,9 +3,10 @@ function %s()
         RestoreGameSpeed = %b,
         HideBorderPins   = %b,
         TransperentBars  = %b,
+        FastForward      = %b,
 
 %s
         Finished = %s;
     };
-    return API.StartCutscene(Cutscene);
+    return API.CutsceneStart(Cutscene);
 end
