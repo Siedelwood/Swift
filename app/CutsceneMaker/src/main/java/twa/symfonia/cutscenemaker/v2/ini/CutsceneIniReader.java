@@ -64,6 +64,11 @@ public class CutsceneIniReader {
             transperentBars = "false";
         }
 
+        String fastForward = iniFile.get("Cutscene", "FastForward");
+        if (fastForward == null) {
+            fastForward = "false";
+        }
+
         String finishedFunction = iniFile.get("Cutscene", "FinishedFunction");
 
         return new FlightData(
@@ -71,6 +76,7 @@ public class CutsceneIniReader {
                 Boolean.parseBoolean(restoreGameSpeed),
                 Boolean.parseBoolean(hideBorderPins),
                 Boolean.parseBoolean(transperentBars),
+                Boolean.parseBoolean(fastForward),
                 (finishedFunction == null) ? "nil" : finishedFunction
         );
     }

@@ -9,19 +9,29 @@ public class FlightData {
     private boolean hideBorderPins;
     private boolean transparentBars;
     private String finishedFunction;
+    private boolean fastForward;
     private List<FlightEntryData> flightEntries;
 
     public FlightData() {
         flightEntries = new ArrayList<>();
     }
 
-    public FlightData(String cutsceneName, boolean restoreGameTime, boolean hideBorderPins, boolean transparentBars, String finishedFunction) {
+    public FlightData(String cutsceneName, boolean restoreGameTime, boolean hideBorderPins, boolean transparentBars, boolean fastForward, String finishedFunction) {
         flightEntries = new ArrayList<>();
         this.cutsceneName = cutsceneName;
         this.restoreGameTime = restoreGameTime;
         this.hideBorderPins = hideBorderPins;
         this.transparentBars = transparentBars;
         this.finishedFunction = finishedFunction;
+        this.fastForward = fastForward;
+    }
+
+    public boolean isFastForward() {
+        return fastForward;
+    }
+
+    public void setFastForward(boolean fastForward) {
+        this.fastForward = fastForward;
     }
 
     public String getFinishedFunction() {

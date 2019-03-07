@@ -8,14 +8,24 @@ public class Flight {
     private boolean restoreGameSpeed;
     private boolean transperentBars;
     private boolean hideBorderPins;
+    private boolean fastForward;
     private String finishedFunction;
 
-    public Flight(List<FlightEntry> flightEntries, boolean restoreGameSpeed, boolean transperentBars, boolean hideBorderPins, String finishedFunction) {
+    public Flight(List<FlightEntry> flightEntries, boolean restoreGameSpeed, boolean transperentBars, boolean hideBorderPins, boolean fastForward, String finishedFunction) {
         this.flightEntries = flightEntries;
         this.restoreGameSpeed = restoreGameSpeed;
         this.transperentBars = transperentBars;
         this.hideBorderPins = hideBorderPins;
         this.finishedFunction = finishedFunction;
+        this.fastForward = fastForward;
+    }
+
+    public boolean isFastForward() {
+        return fastForward;
+    }
+
+    public void setFastForward(boolean fastForward) {
+        this.fastForward = fastForward;
     }
 
     public String getFinishedFunction() {

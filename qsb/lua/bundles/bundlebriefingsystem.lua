@@ -1639,7 +1639,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @local
     --
     function OnSkipButtonPressed()
-        if BundleBriefingSystem.Local.Data.DisplayIngameCutscene then
+        if BundleBriefingSystem.Local.Data.displayIngameCutscene then
             if AddOnCutsceneSystem.Local.SkipButtonPressed then
                 AddOnCutsceneSystem.Local:SkipButtonPressed();
             end
@@ -1884,7 +1884,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @local
     --
     function ThroneRoomCameraControl()
-        if BundleBriefingSystem.Local.Data.DisplayIngameCutscene then
+        if BundleBriefingSystem.Local.Data.displayIngameCutscene then
             if AddOnCutsceneSystem then
                 AddOnCutsceneSystem.Local:ThroneRoomCameraControl();
             end
@@ -2089,7 +2089,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     -- @local
     --
     function ThroneRoomLeftClick()
-        if BundleBriefingSystem.Local.Data.DisplayIngameCutscene then
+        if BundleBriefingSystem.Local.Data.displayIngameCutscene then
             if AddOnCutsceneSystem then
                 AddOnCutsceneSystem.Local:ThroneRoomLeftClick();
             end
