@@ -2801,14 +2801,28 @@ end
 
 function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
     if not self.InternTributeQuest then
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local StartMsg = self.StartMsg;
+        if type(StartMsg) == "table" then
+            StartMsg = StartMsg[Language];
+        end
+        local SuccessMsg = self.SuccessMsg;
+        if type(SuccessMsg) == "table" then
+            SuccessMsg = SuccessMsg[Language];
+        end
+        local FailureMsg = self.FailureMsg;
+        if type(FailureMsg) == "table" then
+            FailureMsg = FailureMsg[Language];
+        end
+
         local QuestID, Quest = QuestTemplate:New (
             _Quest.Identifier.."_TributeDiplomacyQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
             self.TributTime, nil, nil, nil, nil, true, true, nil,
-            self.StartMsg,
-            self.SuccessMsg,
-            self.FailureMsg
+            StartMsg,
+            SuccessMsg,
+            FailureMsg
         );
         self.InternTributeQuest = Quest;
     end
@@ -3008,6 +3022,20 @@ end
 
 function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
     if not self.InternTributeQuest then
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local StartMsg = self.StartMsg;
+        if type(StartMsg) == "table" then
+            StartMsg = StartMsg[Language];
+        end
+        local SuccessMsg = self.SuccessMsg;
+        if type(SuccessMsg) == "table" then
+            SuccessMsg = SuccessMsg[Language];
+        end
+        local FailureMsg = self.FailureMsg;
+        if type(FailureMsg) == "table" then
+            FailureMsg = FailureMsg[Language];
+        end
+
         local OnFinished = function()
             self.Time = Logic.GetTime();
         end
@@ -3016,9 +3044,9 @@ function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
             self.TributTime, nil, nil, OnFinished, nil, true, true, nil,
-            self.StartMsg,
-            self.SuccessMsg,
-            self.FailureMsg
+            StartMsg,
+            SuccessMsg,
+            FailureMsg
         );
         self.InternTributeQuest = Quest;
     end
