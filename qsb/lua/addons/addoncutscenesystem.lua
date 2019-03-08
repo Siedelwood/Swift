@@ -172,6 +172,15 @@ AddOnCutsceneSystem = {
                 Active = false,
                 Indent = 1,
                 Speed = 15,
+            },
+            Fader = {
+                From = 1.0,
+                To = 0.0,
+                TimeStamp = 0,
+                Duration = 0,
+                Callback = nil,
+                Widget = "/InGame/Fader/Element",      
+                Page = "/InGame/Fader" 
             }
         },
     },
@@ -282,11 +291,10 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:Install()
-    if not InitializeFader then
-        Script.Load("script/mainmenu/fader.lua");
-    end
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.WaitForLoadScreenHidden);
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.DisplayFastForwardMessage);
+
+    self:OverrideUpdateFader();
 end
 
 ---
@@ -409,15 +417,14 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", (self.Data.CurrentCutscene.FastForward and 1) or 0);
 
         -- Handle fader
-        g_Fade.To = 0;
-        SetFaderAlpha(0);
+        self:SetFaderAlpha(0);
         if CurrentFlight.FadeIn then
-            FadeIn(CurrentFlight.FadeIn);
+            self:FadeIn(CurrentFlight.FadeIn);
         end
         if CurrentFlight.FadeOut then
             StartSimpleHiResJobEx(function(_Time, _FadeOut)
                 if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
-                    FadeOut(_FadeOut);
+                    self:FadeOut(_FadeOut);
                     return true;
                 end
             end, Logic.GetTimeMs() + (_Duration*100), CurrentFlight.FadeOut);
@@ -441,7 +448,7 @@ function AddOnCutsceneSystem.Local:FlightFinished()
             return true;
         end
         self.Data.CurrentFlight = self.Data.CurrentFlight +1;
-        SetFaderAlpha(1);
+        self:SetFaderAlpha(1);
         self:NextFlight();
     end
 end
@@ -495,6 +502,143 @@ function AddOnCutsceneSystem.Local:SkipButtonPressed()
         else
             Game.GameTimeSetFactor(GUI.GetPlayerID(), self.Data.FastForward.Speed);
             self.Data.FastForward.Active = true;
+        end
+    end
+end
+
+---
+-- Initialisiert den Fader. Bei diesem Fader handelt es sich um eine leicht
+-- abgewandelte Version des normalen Fader. Dieser Fader verhält sich relativ
+-- zur Spielgeschwindigkeit.
+-- @return[type=boolean] Fading läuft gerade
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:InitializeFader()
+    self.Data.Fader.Duration = 0;
+    self.Data.Fader.To = 0.0;
+    self:SetFaderAlpha(1.0);
+    XGUIEng.PushPage(self.Data.Fader.Page, false);
+end
+
+---
+-- Prüft, ob gerade ein Fading-Prozess läuft.
+-- @return[type=boolean] Fading läuft gerade
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:IsFading()
+	return self.Data.Fader.Duration ~= 0;
+end
+
+---
+-- Blendet zur Fader-Maske aus. Callback wird am Ende ausgeführt.
+-- @param[type=number] _Duration Dauer in Sekunden
+-- @param[type=number] _Callback (optional) Callback-Funktion
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:FadeOut(_Duration, _Callback)
+	if self:IsFading() then
+        local time = Logic.GetTimeMs();
+        local progress = (time - self.Data.Fader.TimeStamp) / (self.Data.Fader.Duration * 1000);
+        local alpha = self:LERP(self.Data.Fader.From, self.Data.Fader.To, progress);
+		self.Data.Fader.From = alpha;
+		self.Data.Fader.To = 1;
+		self.Data.Fader.Duration = _Duration * (self.Data.Fader.To - self.Data.Fader.From);
+		
+	else
+        self.Data.Fader.From = 0;
+        self.Data.Fader.To = 1;
+        self.Data.Fader.Duration = _Duration;
+	end
+    self.Data.Fader.Callback = _Callback;
+    self.Data.Fader.TimeStamp = Logic.GetTimeMs();
+end
+
+---
+-- Blendet von der Fader-Maske ein. Callback wird am Ende ausgeführt.
+-- @param[type=number] _Duration Dauer in Sekunden
+-- @param[type=number] _Callback (optional) Callback-Funktion
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:FadeIn(_Duration, _Callback)
+	if self:IsFading() then
+		return;
+	end
+    self.Data.Fader.Callback = _Callback;
+    self.Data.Fader.Duration = _Duration;
+    self.Data.Fader.From = 1;
+    self.Data.Fader.To = 0;
+    self.Data.Fader.TimeStamp = Logic.GetTimeMs();
+end
+
+---
+-- Setzt den Alpha-Wert der Fader-Maske auf den angegebenen Wert.
+-- @param[type=number] _Alpha Alpha-Wert
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:SetFaderAlpha(_Alpha)
+	if XGUIEng.IsWidgetExisting(self.Data.Fader.Widget) == 0 then
+		return;
+	end
+	XGUIEng.SetMaterialColor(self.Data.Fader.Widget,0,0,0,0,255 * _Alpha);
+	XGUIEng.SetMaterialColor(self.Data.Fader.Widget,1,0,0,0,255 * _Alpha);
+end
+
+---
+-- Berechnet die lineare Interpolation des Alpha der Fader-Maske.
+-- @param[type=number] _A Startwert
+-- @param[type=number] _B Endwert
+-- @param[type=number] _T Zeitfaktor
+-- @return[number] Interpolationsfaktor
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:LERP(_A, _B, _T)
+    return _A + ((_B - _A) * _T);
+end
+
+---
+-- Überschreibt die Update-Funktion des normalen Fader, sodass während einer
+-- Cutscene Spielzeit statt Realzeit verwendet wird.
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:OverrideUpdateFader()
+    UpdateFader_Orig_CutsceneSystem = UpdateFader;
+    UpdateFader = function()
+        if AddOnCutsceneSystem.Local.Data.CutsceneActive then
+            AddOnCutsceneSystem.Local:UpdateFader();
+        else
+            UpdateFader_Orig_CutsceneSystem();
+        end
+    end
+end
+
+---
+-- Aktualisiert den Alpha-Wert der Fader-Maske, wenn eine Cutscene aktiv ist.
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:UpdateFader()
+    if self.Data.CutsceneActive == true then
+        if self.Data.Fader.Duration > 0 then
+            local time = Logic.GetTimeMs();
+            local progress = (time - self.Data.Fader.TimeStamp) / (self.Data.Fader.Duration * 1000);
+            local alpha = self:LERP(self.Data.Fader.From, self.Data.Fader.To, progress);
+            self:SetFaderAlpha(alpha);
+            if time > self.Data.Fader.TimeStamp + (self.Data.Fader.Duration * 1000)  then
+                self.Data.Fader.Duration = 0;
+                if self.Data.Fader.Callback ~= nil then
+                    self.Data.Fader:Callback();
+                    return false;
+                end
+            end
+        else
+            self:SetFaderAlpha(self.Data.Fader.To);
         end
     end
 end
@@ -571,9 +715,8 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     Display.SetRenderFogOfWar(0);
     Camera.SwitchCameraBehaviour(0);
 
-    InitializeFader();
-    g_Fade.To = 0;
-    SetFaderAlpha(0);
+    self:InitializeFader();
+    self:SetFaderAlpha(0);
 
     if LoadScreenVisible then
         XGUIEng.PushPage("/LoadScreen/LoadScreen", false);
@@ -596,8 +739,7 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
         self.Data.SkipButtonTextBackup =  nil;
     end
 
-    g_Fade.To = 0;
-    SetFaderAlpha(0);
+    self:SetFaderAlpha(0);
     XGUIEng.PopPage();
     Camera.SwitchCameraBehaviour(0);
     Display.UseStandardSettings();
