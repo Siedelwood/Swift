@@ -293,6 +293,8 @@ end
 function AddOnCutsceneSystem.Local:Install()
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.WaitForLoadScreenHidden);
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.DisplayFastForwardMessage);
+
+    self:OverrideUpdateFader();
 end
 
 ---
@@ -462,15 +464,12 @@ end
 --
 function AddOnCutsceneSystem.Local:ThroneRoomCameraControl()
     if self:IsCutsceneActive() then
-        -- Skip-Button Text
         local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         if self.Data.FastForward.Active == false then
             XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardActivate[Language]);
         else 
             XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardDeactivate[Language]);
         end
-        -- Fader
-        self:UpdateFader();
     end
 end
 
@@ -519,7 +518,7 @@ function AddOnCutsceneSystem.Local:InitializeFader()
     self.Data.Fader.Duration = 0;
     self.Data.Fader.To = 0.0;
     self:SetFaderAlpha(1.0);
-    XGUIEng.PushPage(self.Data.Fader.Page,false);
+    XGUIEng.PushPage(self.Data.Fader.Page, false);
 end
 
 ---
@@ -542,7 +541,7 @@ end
 function AddOnCutsceneSystem.Local:FadeOut(_Duration, _Callback)
 	if self:IsFading() then
         local time = Logic.GetTimeMs();
-        local progress = (time - self.Data.Fader.TimeStamp) / self.Data.Fader.Duration;
+        local progress = (time - self.Data.Fader.TimeStamp) / (self.Data.Fader.Duration * 1000);
         local alpha = self:LERP(self.Data.Fader.From, self.Data.Fader.To, progress);
 		self.Data.Fader.From = alpha;
 		self.Data.Fader.To = 1;
@@ -583,7 +582,7 @@ end
 --
 function AddOnCutsceneSystem.Local:SetFaderAlpha(_Alpha)
 	if XGUIEng.IsWidgetExisting(self.Data.Fader.Widget) == 0 then
-		return true;
+		return;
 	end
 	XGUIEng.SetMaterialColor(self.Data.Fader.Widget,0,0,0,0,255 * _Alpha);
 	XGUIEng.SetMaterialColor(self.Data.Fader.Widget,1,0,0,0,255 * _Alpha);
@@ -603,6 +602,23 @@ function AddOnCutsceneSystem.Local:LERP(_A, _B, _T)
 end
 
 ---
+-- Überschreibt die Update-Funktion des normalen Fader, sodass während einer
+-- Cutscene Spielzeit statt Realzeit verwendet wird.
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:OverrideUpdateFader()
+    UpdateFader_Orig_CutsceneSystem = UpdateFader;
+    UpdateFader = function()
+        if AddOnCutsceneSystem.Local.Data.CutsceneActive then
+            AddOnCutsceneSystem.Local:UpdateFader();
+        else
+            UpdateFader_Orig_CutsceneSystem();
+        end
+    end
+end
+
+---
 -- Aktualisiert den Alpha-Wert der Fader-Maske, wenn eine Cutscene aktiv ist.
 -- @within Internal
 -- @local
@@ -611,7 +627,7 @@ function AddOnCutsceneSystem.Local:UpdateFader()
     if self.Data.CutsceneActive == true then
         if self.Data.Fader.Duration > 0 then
             local time = Logic.GetTimeMs();
-            local progress = (time - self.Data.Fader.TimeStamp) / self.Data.Fader.Duration;
+            local progress = (time - self.Data.Fader.TimeStamp) / (self.Data.Fader.Duration * 1000);
             local alpha = self:LERP(self.Data.Fader.From, self.Data.Fader.To, progress);
             self:SetFaderAlpha(alpha);
             if time > self.Data.Fader.TimeStamp + (self.Data.Fader.Duration * 1000)  then
