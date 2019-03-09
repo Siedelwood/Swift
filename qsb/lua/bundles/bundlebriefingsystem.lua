@@ -5,7 +5,18 @@
 -- -------------------------------------------------------------------------- --
 
 ---
+-- Ermöglicht es Briefing zu verwenden.
 --
+-- Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
+-- der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
+-- Auswahlmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
+-- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiten
+-- kann innerhalb des Multiple Choice Briefings navigiert werden.
+--
+-- <p>Das wichtigste auf einen Blick:
+-- <ul>
+-- <li><a href="#API.StartBriefing">Ein Briefing starten</a></li>
+-- <li>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -19,7 +30,104 @@ QSB = QSB or {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
+---
+-- Startet ein Briefing.
+--
+-- <b>Alias</b>: StartBriefing
+--
+-- @param[type=table] _Briefing Briefing Definition
+-- @return[type=number] ID des Briefing
+-- @within Anwenderfunktionen
+--
+function API.StartBriefing(_Briefing)
+    if GUI then
+        warn("API.StartBriefing: Cannot start briefing from local script!");
+        return -1;
+    end
+    return BundleBriefingSystem.Global:StartBriefing(_Briefing);
+end
+StartBriefing = API.StartBriefing;
 
+---
+-- Prüft, ob ein Briefing abgeschlossen wurde.
+--
+-- <b>Alias</b>: IsBriefingFinished
+--
+-- @param[type=table] _Briefing Briefing Definition
+-- @return[type=boolean] Briefing ist beendet
+-- @within Anwenderfunktionen
+--
+function API.IsBriefingFinished(_BriefingID)
+    if GUI then
+        warn("API.IsBriefingFinished: Cannot check briefing state from local script!");
+        return false;
+    end
+    return BundleBriefingSystem.Global.Data.FinishedBriefings[_BriefingID] == true;
+end
+IsBriefingFinished = API.IsBriefingFinished;
+
+---
+-- Prüft, ob ein Briefing abgeschlossen wurde.
+--
+-- <b>Alias</b>: IsBriefingActive
+--
+-- @param[type=table] _Briefing Briefing Definition
+-- @return[type=boolean] Briefing ist beendet
+-- @within Anwenderfunktionen
+--
+function API.IsBriefingActive(_BriefingID)
+    if GUI then
+        return BundleBriefingSystem.Local.Data.BriefingActive == true;
+    end
+    return BundleBriefingSystem.Global.Data.BriefingActive == true;
+end
+IsBriefingActive = API.IsBriefingActive;
+
+---
+-- Fügt einem Briefing eine Seite hinzu. Diese Funktion muss gestartet werden,
+-- bevor das Briefing gestartet wird.
+--
+-- <b>Alias</b>: AddPages
+--
+-- @param[type=table] _Briefing Briefing Definition
+-- @return[type=function] AP-Funktion zum Seiten hinzufügen
+-- @within Anwenderfunktionen
+--
+function API.AddPages(_Briefing)
+    if GUI then
+        fatal("API.AddPages: Cannot be used from local script!");
+        return;
+    end
+
+    local AP = function(_Page)
+        if type(_Page) == "table" then
+            -- Sprache anpassen
+            local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+            if type(_Page.Title) == "table" then
+                _Page.Title = _Page.Title[Language];
+            end
+            if type(_Page.Text) == "table" then
+                _Page.Text = _Page.Text[Language];
+            end
+            -- Lookat mappen
+            if type(_Page.LookAt) == "string" or type(_Page.LookAt) == "number" then
+                local x, y, z = Logic.EntityGetPos(GetID(_Page.LookAt));
+                _Page.LookAt = {_Page.LookAt, z}
+            end
+            -- Position mappen
+            if type(_Page.Position) == "string" or type(_Page.Position) == "number" then
+                local x, y, z = Logic.EntityGetPos(GetID(_Page.Position));
+                _Page.Position = {_Page.Position, z}
+            end
+
+            table.insert(_Briefing, _Page);
+        else
+            table.insert(_briefing, (_Page ~= nil and _Page) or -1);
+        end
+    end
+    return AP;
+end
+AddPages = API.AddPages;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -44,6 +152,8 @@ BundleBriefingSystem = {
             CurrentBriefing = {},
             CurrentPage = {},
             DisplayIngameCutscene = false,
+            BriefingActive = false,
+            LastSkipButtonPressed = 0,
         }
     },
     Text = {
@@ -54,17 +164,18 @@ BundleBriefingSystem = {
 -- Global Script ------------------------------------------------------------ --
 
 ---
---
---
+-- Startet das Bundle im globalen Skript.
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:Install()
-    StartSimpleHiResJobEx(BundleBriefingSystem.Global.BriefingExecutionController);
+    StartSimpleHiResJobEx(self.BriefingExecutionController);
 end
 
 ---
--- 
+-- Startet ein Briefing.
+-- @param[type=table] _Briefing Briefing Definition
+-- @return[type=number] ID des Briefing
 -- @within Internal
 -- @local
 --
@@ -88,19 +199,20 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     API.Bridge("BundleBriefingSystem.Local:StartBriefing(" ..Briefing.. ")");
     
     self.Data.BriefingActive = true;
-    if self.Data.CurrentBriefing.Started then
-        self.Data.CurrentBriefing:Started();
+    if self.Data.CurrentBriefing.Starting then
+        self.Data.CurrentBriefing:Starting();
     end
     self:PageStarted();
     return self.Data.BriefingID;
 end
 
 ---
--- 
+-- Beendet ein Briefing.
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:FinishBriefing()
+    self.Data.FinishedBriefings[self.Data.CurrentBriefing.ID] = true;
     self.Data.CurrentBriefing = {};
     self.Data.CurrentPage = {};
     self.Data.BriefingActive = false;
@@ -114,7 +226,7 @@ function BundleBriefingSystem.Global:FinishBriefing()
 end
 
 ---
--- 
+-- Startet die aktuelle Briefing-Seite.
 -- @within Internal
 -- @local
 --
@@ -125,19 +237,24 @@ function BundleBriefingSystem.Global:PageStarted()
             self.Data.CurrentBriefing[PageID]:Action();
         end
         self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
-        self.Data.CurrentPage.Started  = Logic.GetTime();
+        self.Data.CurrentPage.Started = Logic.GetTime();
+        API.Bridge("BundleBriefingSystem.Local:PageStarted()");
     end
-    API.Bridge("BundleBriefingSystem.Local:PageStarted()");
 end
 
 ---
--- 
+-- Beendet die aktuelle Briefing-Seite
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global:PageFinished()
-    self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
     API.Bridge("BundleBriefingSystem.Local:PageFinished()");
+    self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
+    if self.Data.CurrentBriefing.Page > #self.Data.CurrentBriefing then
+        BundleBriefingSystem.Global:FinishBriefing();
+    else
+        BundleBriefingSystem.Global:PageStarted();
+    end
 end
 
 ---
@@ -151,7 +268,7 @@ function BundleBriefingSystem.Global:IsBriefingActive()
 end
 
 ---
--- 
+-- Steuert das automatische weiter blättern und Sprünge zwischen Pages.
 -- @within Internal
 -- @local
 --
@@ -167,11 +284,10 @@ function BundleBriefingSystem.Global.BriefingExecutionController()
             BundleBriefingSystem.Global:FinishBriefing();
 
         else
-            local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
-            if PageID then
-                local Duration = (BundleBriefingSystem.Global.Data.CurrentBriefing[PageID].Duration or 0);
+            if BundleBriefingSystem.Global.Data.CurrentPage then
+                local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
                 if Duration > -1 then
-                    if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentBriefing[PageID].Started + Duration then
+                    if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
                         BundleBriefingSystem.Global:PageFinished();
                     end
                 end
@@ -181,7 +297,7 @@ function BundleBriefingSystem.Global.BriefingExecutionController()
 end
 
 ---
--- 
+-- Steuert die Briefing-Warteschlange.
 -- @within Internal
 -- @local
 --
@@ -200,8 +316,7 @@ end
 -- Local Script ------------------------------------------------------------- --
 
 ---
---
---
+-- Startet das Bundle im globalen Skript.
 -- @within Internal
 -- @local
 --
@@ -215,30 +330,30 @@ function BundleBriefingSystem.Local:Install()
 end
 
 ---
--- 
+-- Startet ein Briefing.
+-- @param[type=table] _Briefing Briefing Definition
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Local:StartBriefing(_Briefing)
     self.Data.SelectedEntities = {GUI.GetSelectedEntities()};
-
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing = _Briefing;
-    
     if self.Data.CurrentBriefing.HideBorderPins then
         Display.SetRenderBorderPins(0);
     end
     if self.Data.CurrentBriefing.ShowSky then
         Display.SetRenderSky(1);
     end
-
     if Game.GameTimeGetFactor() ~= 0 then
-        if self.Data.CurrentBriefing.RestoreGameSpeed and not self.Data.GaneSpeedBackup then
-            self.Data.GaneSpeedBackup = Game.GameTimeGetFactor();
+        if self.Data.CurrentBriefing.RestoreGameSpeed and not self.Data.GameSpeedBackup then
+            self.Data.GameSpeedBackup = Game.GameTimeGetFactor();
         end
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
     end
-
+    if self.Data.CurrentBriefing.RestoreCamera and not self.Data.CameraBackup then
+        self.Data.CameraBackup = {Camera.RTS_GetLookAtPosition()};
+    end
     if not self.Data.CinematicActive then
         self:ActivateCinematicMode();
     end
@@ -246,62 +361,106 @@ function BundleBriefingSystem.Local:StartBriefing(_Briefing)
 end
 
 ---
--- 
+-- Beendet ein Briefing.
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Local:FinishBriefing()
-    if self.Data.CurrentBriefing.CameraLookAt then 
-        Camera.RTS_SetLookAtPosition(unpack(self.Data.CurrentBriefing.CameraLookAt));
-        self.Data.CurrentBriefing.CameraLookAt = nil;
+    if self.Data.CurrentBriefing.CameraBackup then 
+        Camera.RTS_SetLookAtPosition(unpack(self.Data.CurrentBriefing.CameraBackup));
+        self.Data.CurrentBriefing.CameraBackup = nil;
     end
-
     for k, v in pairs(self.Data.SelectedEntities) do
         GUI.SelectEntity(v);
     end
-
     Display.SetRenderBorderPins(1);
     Display.SetRenderSky(0);
-
-    local GameSpeed = (self.Data.GaneSpeedBackup or 1);
+    local GameSpeed = (self.Data.GameSpeedBackup or 1);
     Game.GameTimeSetFactor(GUI.GetPlayerID(), GameSpeed);
-    self.Data.GaneSpeedBackup = nil;
-
+    self.Data.GameSpeedBackup = nil;
     self:DeactivateCinematicMode();
     self.Data.BriefingActive = false;
 end
 
 ---
--- 
+-- Zeigt die aktuele Seite an.
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Local:PageStarted()
     local PageID = self.Data.CurrentBriefing.Page;
-    if type(self.Data.CurrentBriefing[PageID]) == "table" then
+    if type(self.Data.CurrentPage) == "table" then
+        if PageID > 1 and self.Data.CurrentPage then
+            self.Data.LastPage = self.Data.CurrentPage;
+        end
         self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
+        self.Data.CurrentPage.Started = Logic.GetTime();
 
-        local TitleWidget = "/InGame/ThroneRoom/Main/MissionBriefing/Title";
+        -- Skip-Button
+        XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
+
+        -- Titel setzen
+        local TitleWidget = "/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight";
         XGUIEng.SetText(TitleWidget, "");
         if self.Data.CurrentPage.Title then
-            XGUIEng.SetText(TitleWidget, self.Data.CurrentPage.Title);
+            local Title = self.Data.CurrentPage.Title;
+            if Title:sub(1, 1) ~= "{" then
+                Title = "{@color:255,250,0,255}{center}" ..Title;
+            end
+            XGUIEng.SetText(TitleWidget, Title);
         end
 
+        -- Text setzen
         local TextWidget = "/InGame/ThroneRoom/Main/MissionBriefing/Text";
         XGUIEng.SetText(TextWidget, "");
         if self.Data.CurrentPage.Text then
             XGUIEng.SetText(TextWidget, self.Data.CurrentPage.Text);
         end
+
+        -- Fadein starten
+        local PageFadeIn = self.Data.CurrentPage.FadeIn;
+        if PageFadeIn then
+            FadeIn(PageFadeIn);
+        end
+
+        -- Fadeout starten
+        local PageFadeOut = self.Data.CurrentPage.FadeOut;
+        if PageFadeOut then
+            self.Data.CurrentBriefing.FaderJob = StartSimpleHiResJobEx(function(_Time, _FadeOut)
+                if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
+                    FadeOut(_FadeOut);
+                    return true;
+                end
+            end, Logic.GetTimeMs() + ((self.Data.CurrentPage.Duration or 0) * 1000), PageFadeOut);
+        end
+
+        -- Alpha der Fader-Maske
+        local PageFaderAlpha = self.Data.CurrentPage.FaderAlpha;
+        if PageFaderAlpha then
+            SetFaderAlpha(1);
+        end
+
+        -- Portrait
+        local PagePortrait = self.Data.CurrentPage.Portrait;
+        if PagePortrait then
+            XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 255);
+            XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, PagePortrait);
+            XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
+            XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0, 0, 1, 1);
+        else
+            XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0);
+        end
     end
 end
 
 ---
--- 
+-- Beendet die aktuelle Seite.
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Local:PageFinished()
     self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
+    EndJobEx(self.Data.CurrentBriefing.FaderJob);
 end
 
 ---
@@ -326,56 +485,158 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
         end
     else
         if type(self.Data.CurrentPage) == "table" then
-            local PX, PY, PZ = self:GetPagePosition(PageID);
+            local PX, PY, PZ = self:GetPagePosition();
+            local LX, LY, LZ = self:GetPageLookAt();
+            local PageFOV = 42.0;
+            
+            if PX and not LX then
+                LX, LY, LZ, PX, PY, PZ = self:GetCameraProperties();
+            end
             Camera.ThroneRoom_SetPosition(PX, PY, PZ);
-
-            local LX, LY, LZ = self:GetPageLookAt(PageID);
             Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
-
-            local FOV = self:GetFOV(PageID);
-            Camera.ThroneRoom_SetFOV(FOV);
+            Camera.ThroneRoom_SetFOV(PageFOV);
         end
     end
 end
 
 ---
--- 
+-- Gibt die Blickrichtung der Kamera und die Position der Kamera für den
+-- Kompatibelitätsmodus zurück.
+-- @return[type=number] LookAt X
+-- @return[type=number] LookAt Y
+-- @return[type=number] LookAt Z
+-- @return[type=number] Position X
+-- @return[type=number] Position Y
+-- @return[type=number] Position Z
 -- @within Internal
 -- @local
 --
-function BundleBriefingSystem.Local:GetPagePosition(_PageID)
+function BundleBriefingSystem.Local:GetCameraProperties()
+    local CurrPage = self.Data.CurrentPage;
+    local LastPage = self.Data.LastPage;
+
+    local startTime = CurrPage.Started;
+    local flyTime = CurrPage.FlyTime;
+    local startPosition = (LastPage and LastPage.Position) or CurrPage.Position;
+    local endPosition = CurrPage.Position;
+    local startRotation = (LastPage and LastPage.Rotation) or CurrPage.Rotation;
+    local endRotation = CurrPage.Rotation;
+    local startZoomAngle = (LastPage and LastPage.Angle) or CurrPage.Angle;
+    local endZoomAngle = CurrPage.Angle;
+    local startZoomDistance = (LastPage and LastPage.Zoom) or CurrPage.Zoom;
+    local endZoomDistance = CurrPage.Zoom;
+    local startFOV = ((LastPage and LastPage.FOV) or CurrPage.FOV) or 42.0;
+    local endFOV = (CurrPage.FOV) or 42.0;
+
+    local factor = self:GetLERP();
+    
+    local lPLX, lPLY, lPLZ = BundleBriefingSystem.Local:ConvertPosition(startPosition);
+    local cPLX, cPLY, cPLZ = BundleBriefingSystem.Local:ConvertPosition(endPosition);
+    local lookAtX = lPLX + (cPLX - lPLX) * factor;
+    local lookAtY = lPLY + (cPLY - lPLY) * factor;
+    local lookAtZ = lPLZ + (cPLZ - lPLZ) * factor;
+
+    local zoomDistance = startZoomDistance + (endZoomDistance - startZoomDistance) * factor;
+    local zoomAngle = startZoomAngle + (endZoomAngle - startZoomAngle) * factor;
+    local rotation = startRotation + (endRotation - startRotation) * factor;
+    local line = zoomDistance * math.cos(math.rad(zoomAngle));
+    local positionX = lookAtX + math.cos(math.rad(rotation - 90)) * line;
+    local positionY = lookAtY + math.sin(math.rad(rotation - 90)) * line;
+    local positionZ = lookAtZ + (zoomDistance) * math.sin(math.rad(zoomAngle));
+
+    return lookAtX, lookAtY, lookAtZ, positionX, positionY, positionZ;
+end
+
+---
+-- Gibt die interpolierte Kameraposition zurück.
+-- @return[type=number] X
+-- @return[type=number] Y
+-- @return[type=number] Z
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:GetPagePosition()
     local Position = self.Data.CurrentPage.Position;
-    if (type(Position) == "table") then
-        return unpack(Position);
+    local x, y, z = self:ConvertPosition(Position);
+    local LastPage = self.Data.LastPage;
+    if LastPage then
+        local lX, lY, lZ = self:ConvertPosition(LastPage.Position);
+        if lX then
+            x = lX + (x - lX) * self:GetLERP();
+            y = lY + (y - lY) * self:GetLERP();
+            z = lZ + (z - lZ) * self:GetLERP();
+        end
     end
-    return 100.0, 100.0, 100.0;
+    return x, y, z;
 end
 
 ---
--- 
+-- Gibt die interpolierte Blickrichtung der Kamera zurück.
+-- @return[type=number] X
+-- @return[type=number] Y
+-- @return[type=number] Z
 -- @within Internal
 -- @local
 --
-function BundleBriefingSystem.Local:GetPageLookAt(_PageID)
+function BundleBriefingSystem.Local:GetPageLookAt()
     local LookAt = self.Data.CurrentPage.LookAt;
-    if (type(LookAt) == "table") then
-        return unpack(LookAt);
+    local x, y, z = self:ConvertPosition(LookAt);
+    local LastPage = self.Data.LastPage;
+    if LastPage and x then
+        local lX, lY, lZ = self:ConvertPosition(LastPage.LookAt);
+        if lX then
+            x = lX + (x - lX) * self:GetLERP();
+            y = lY + (y - lY) * self:GetLERP();
+            z = lZ + (z - lZ) * self:GetLERP();
+        end
     end
-    return 1000.0, 1000.0, 1000.0;
+    return x, y, z;
 end
 
 ---
--- 
+-- Konvertiert die angegebenen Koordinaten zu XYZ.
+-- @return[type=number] X
+-- @return[type=number] Y
+-- @return[type=number] Z
 -- @within Internal
 -- @local
 --
-function BundleBriefingSystem.Local:GetPageFOV(_PageID)
-
-    return 42.0;
+function BundleBriefingSystem.Local:ConvertPosition(_Table)
+    local x, y, z;
+    if _Table and _Table.X then
+        x = _Table.X; y = _Table.Y; z = _Table.Z;
+    elseif _Table and not _Table.X then
+        x, y, z = Logic.EntityGetPos(GetID(_Table[1]));
+        z = z + (_Table[2] or 0);
+    end
+    return x, y, z;
 end
 
 ---
--- 
+-- Gibt den linearen Interpolationsfaktor zurück
+-- @param[type=number] LERP
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:GetLERP()
+    local Current = Logic.GetTime();
+    local FlyTime = self.Data.CurrentPage.FlyTime;
+    local Started = self.Data.CurrentPage.Started;
+
+    local Factor = 1.0;
+    if FlyTime then
+        if Started + FlyTime > Current then
+            Factor = (Current - Started) / FlyTime;
+            if Factor > 1 then
+                Factor = 1.0;
+            end
+        end
+    end
+    return Factor;
+end
+
+---
+-- Reagiert auf einen beliebigen Linksklick im Throneroom.
 -- @within Internal
 -- @local
 --
@@ -385,7 +646,30 @@ function BundleBriefingSystem.Local:ThroneRoomLeftClick()
             AddOnCutsceneSystem.Local:ThroneRoomLeftClick();
         end
     else
-
+        -- Klick auf Entity
+        local EntityID = GUI.GetMouseOverEntity();
+        API.Bridge([[
+            local CurrentPage = BundleBriefingSystem.Global.CurrentPage;
+            if CurrentPage and CurrentPage.LeftClickOnEntity then
+                BundleBriefingSystem.Global.CurrentPage:LeftClickOnEntity(]] ..tostring(EntityID).. [[)
+            end
+        ]]);
+        -- Klick in die Spielwelt
+        local x,y = GUI.Debug_GetMapPositionUnderMouse();
+        API.Bridge([[
+            local CurrentPage = BundleBriefingSystem.Global.CurrentPage;
+            if CurrentPage and CurrentPage.LeftClickOnPosition then
+                BundleBriefingSystem.Global.CurrentPage:LeftClickOnPosition(]] ..tostring(x).. [[, ]] ..tostring(y).. [[)
+            end
+        ]]);
+        -- Klick auf den Bildschirm
+        local x,y = GUI.GetMousePosition();
+        API.Bridge([[
+            local CurrentPage = BundleBriefingSystem.Global.CurrentPage;
+            if CurrentPage and CurrentPage.LeftClickOnScreen then
+                BundleBriefingSystem.Global.CurrentPage:LeftClickOnScreen(]] ..tostring(x).. [[, ]] ..tostring(y).. [[)
+            end
+        ]]);
     end
 end
 
@@ -400,13 +684,35 @@ function BundleBriefingSystem.Local:SkipButtonPressed()
             AddOnCutsceneSystem.Local:SkipButtonPressed();
         end
     else
-
+        if (self.Data.LastSkipButtonPressed + 500) < Logic.GetTimeMs() then
+            self.Data.LastSkipButtonPressed = Logic.GetTimeMs();
+            API.Bridge("BundleBriefingSystem.Global:PageFinished()");
+        end
     end
 end
 
 ---
--- Aktiviert den Cinematic Mode.
+-- Setzt den Stil der Briefing-Bars.
+-- @param[type=boolean] _Transparend Transparente Bars benutzen
+-- @within Internal
+-- @local
 --
+function BundleBriefingSystem.Local:SetBarStyle(_Transparend)
+    local Alpha = (_Transparend and 100) or 255;
+
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 1);
+
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, Alpha);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, Alpha);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, Alpha);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, Alpha);
+end
+
+---
+-- Aktiviert den Cinematic Mode.
 -- @within Internal
 -- @local
 --
@@ -444,6 +750,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
@@ -456,6 +763,8 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
+    BundleBriefingSystem.Local:SetBarStyle(false);
+
     GUI.ClearSelection();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
     GUI.ActivateCutSceneState();
@@ -464,7 +773,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     Input.CutsceneMode();
     Display.SetRenderFogOfWar(0);
     Display.SetUserOptionOcclusionEffect(0);
-    Camera.SwitchCameraBehaviour(0);
+    Camera.SwitchCameraBehaviour(5);
 
     InitializeFader();
     g_Fade.To = 0;
@@ -565,8 +874,7 @@ function BundleBriefingSystem.Local:OverrideThroneRoomFunctions()
 end
 
 ---
--- 
---
+-- Speichert, wenn der Ladebildschirm geschlossen wird.
 -- @within Internal
 -- @local
 --

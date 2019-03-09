@@ -2462,7 +2462,7 @@ function BundleBriefingSystem.Local:InitalizeBriefingSystem()
     function BriefingSystem.SetBriefingPagePortrait(_page)
         if _page.portrait then
             local Portrait = _page.portrait;
-            local x, y, w, h = 0, 4000, 400, 600;
+            local x, y, w, h = 0, 6000, 400, 600;
             if type(Portrait) == "table" then
                 Portrait = Portrait.Image;
                 w = Portrait.Bounds[3] or w;
