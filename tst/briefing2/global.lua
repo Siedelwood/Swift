@@ -54,7 +54,7 @@ function Mission_FirstMapAction()
 
     -- Hier kannst Du Deine Funktionen aufrufen:
 
-    Briefing01()
+    Briefing02()
 end
 
 -- -------------------------------------------------------------------------- --
@@ -71,26 +71,25 @@ function Briefing01()
     AP {
         Title    = "Title 1",
         Text     = "Text 1",
-        Position = "pos1",
+        Position = {"pos1", 3000},
+        LookAt   = {"pos2", 0},
         Duration = 2.0,
-        Zoom     = 1000,
-        Rotation = -40,
-        Angle    = 48,
         FadeIn   = 3,
         Action   = function(_Data)
         end
     }
     AP {
-        Title    = "Title 2",
-        Text     = "Text 2",
-        Position = "pos3",
-        Zoom     = 2000,
-        Rotation = 40,
-        Angle    = 12,
-        Duration = 10.0,
-        FlyTime  = 10.0,
-        FadeOut  = 3,
-        Action   = function(_Data)
+        Title     = "Title 2",
+        Text      = "Text 2",
+        Position  = {"pos3", 3000},
+        LookAt    = {"pos4", 0},
+        FlyTo     = {
+            Position  = {"pos3", 3000},
+            LookAt    = {"pos4", 1000},
+            Duration  = 10.0
+        },
+        FadeOut   = 3,
+        Action    = function(_Data)
         end
     }
 
@@ -108,25 +107,38 @@ function Briefing02()
         RestoreGameSpeed = true,
         RestoreCamera = true,
     }
-    local AP = API.AddPages(Briefing);
+    local AP, ASP = API.AddPages(Briefing);
 
     AP {
+        Title    = "Title 1",
+        Text     = "Text 1",
+        Position = "pos3",
+        DialogCamera = true,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "Title 2",
+        Text     = "Text 2",
+        Position = "pos4",
+        DialogCamera = false,
+        Splashscreen = "C:/Users/angermanager/Downloads/shio.png",
+        Action   = function(_Data)
+        end
+    }
+    AP {
         Title    = "Title 3",
-        Text     = "Text 3",
-        Position = {"pos3", 1000},
-        LookAt   = {"pos4", 0},
-        Duration = 10.0,
-        FadeIn   = 3,
+        Text     = "Text 1",
+        Position = Logic.GetKnightID(1),
+        DialogCamera = true,
         Action   = function(_Data)
         end
     }
     AP {
         Title    = "Title 4",
-        Text     = "Text 4",
-        Position = {"pos1", 1000},
-        LookAt   = {"pos2", 0},
-        Duration = 10.0,
-        FadeOut  = 3,
+        Text     = "Text 2",
+        Position = "pos4",
+        DialogCamera = false,
         Action   = function(_Data)
         end
     }

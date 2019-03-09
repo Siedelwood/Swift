@@ -111,21 +111,57 @@ function API.AddPages(_Briefing)
             end
             -- Lookat mappen
             if type(_Page.LookAt) == "string" or type(_Page.LookAt) == "number" then
-                local x, y, z = Logic.EntityGetPos(GetID(_Page.LookAt));
-                _Page.LookAt = {_Page.LookAt, z}
+                _Page.LookAt = {_Page.LookAt, 0}
             end
             -- Position mappen
             if type(_Page.Position) == "string" or type(_Page.Position) == "number" then
-                local x, y, z = Logic.EntityGetPos(GetID(_Page.Position));
-                _Page.Position = {_Page.Position, z}
+                _Page.Position = {_Page.Position, 0}
+            end
+            -- Dialogkamera
+            if _Page.DialogCamera == true then
+                _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
+                _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.DLGCAMERA_ZOOMDEFAULT;
+                _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.DLGCAMERA_FOVDEFAULT;
+                _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.DLGCAMERA_ROTATIONDEFAULT;
+            end
+            if _Page.DialogCamera == false then
+                _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
+                _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
+                _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.CAMERA_FOVDEFAULT;
+                _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.CAMERA_ROTATIONDEFAULT;
+            end
+            -- FlyTo Animation für MC entfernen
+            if _Page.FlyTo and _Page.MC then
+                _Page.FlyTo = nil;
+            end
+            -- Anzeigezeit setzen
+            if not _Page.Duration then
+                if _Page.FlyTo then
+                    _Page.Duration = _Page.FlyTo.Duration;
+                else
+                    _Briefing.DisableSkipping = false;
+                    _Briefing.SkipPerPage = true;
+                    _Page.Duration = -1;
+                end
             end
 
             table.insert(_Briefing, _Page);
         else
             table.insert(_briefing, (_Page ~= nil and _Page) or -1);
         end
+        return _Page;
     end
-    return AP;
+
+    local ASP = function(_Entity, _Title, _Text, _DialogCamera, _Action)
+        return AP {
+            Title        = _Title,
+            Text         = _Title,
+            Position     = _Entity,
+            DialogCamera = _DialogCamera == true,
+            Action       = _Action
+        }
+    end
+    return AP, ASP;
 end
 AddPages = API.AddPages;
 
@@ -136,6 +172,15 @@ AddPages = API.AddPages;
 BundleBriefingSystem = {
     Global = {
         Data = {
+            CAMERA_ANGLEDEFAULT = 43,
+            CAMERA_ROTATIONDEFAULT = -45,
+            CAMERA_ZOOMDEFAULT = 6250,
+            CAMERA_FOVDEFAULT = 42,
+            DLGCAMERA_ANGLEDEFAULT = 29,
+            DLGCAMERA_ROTATIONDEFAULT = -45,
+            DLGCAMERA_ZOOMDEFAULT = 3400,
+            DLGCAMERA_FOVDEFAULT = 25,
+
             FinishedBriefings = {},
             CurrentBriefing = {},
             CurrentPage = {},
@@ -146,9 +191,6 @@ BundleBriefingSystem = {
     },
     Local = {
         Data = {
-            Defaults = {
-
-            },
             CurrentBriefing = {},
             CurrentPage = {},
             DisplayIngameCutscene = false,
@@ -173,6 +215,49 @@ function BundleBriefingSystem.Global:Install()
 end
 
 ---
+-- Konvertiert eine Briefing-Table des alten Formats in das neue. Diese
+-- Funktion ist auf Zeit im Skript und wird später wieder entfernt.
+-- @param[type=table] _Briefing Briefing Definition
+-- @return[type=number] ID des Briefing
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
+    _Briefing.DisableGlobalInvulnerability = _Briefing.disableGlobalInvulnerability or _Briefing.DisableGlobalInvulnerability;
+    _Briefing.HideBorderPins = _Briefing.hideBorderPins or _Briefing.HideBorderPins;
+    _Briefing.ShowSky = _Briefing.showSky or _Briefing.ShowSky;
+    _Briefing.RestoreGameSpeed = _Briefing.restoreGameSpeed or _Briefing.RestoreGameSpeed;
+    _Briefing.RestoreCamera = _Briefing.restoreCamera or _Briefing.RestoreCamera;
+    _Briefing.Finished = _Briefing.finished or _Briefing.Finished;
+    _Briefing.Starting = _Briefing.starting or _Briefing.Starting;
+    
+    for k, v in pairs(_Briefing) do
+        if type(v) == "table" then
+            -- Normale Optionen
+            _Briefing[k].Title = v.title or _Briefing[k].Title;
+            _Briefing[k].Text = v.text or _Briefing[k].Text;
+            _Briefing[k].Position = v.position or _Briefing[k].Position;
+            _Briefing[k].Angle = v.angle or _Briefing[k].Angle;
+            _Briefing[k].Rotation = v.rotation or _Briefing[k].Rotation;
+            _Briefing[k].Zoom = v.zoom or _Briefing[k].Zoom;
+            _Briefing[k].Action = v.action or _Briefing[k].Action;
+            _Briefing[k].FadeIn = v.fadeIn or _Briefing[k].FadeIn;
+            _Briefing[k].FadeOut = v.fadeOut or _Briefing[k].FadeOut;
+            _Briefing[k].FaderAlpha = v.faderAlpha or _Briefing[k].FaderAlpha;
+            _Briefing[k].DialogCamera = v.dialogCamera or _Briefing[k].DialogCamera;
+            -- Splashscreen
+            if v.splashscreen then
+                v.Splashscreen = v.splashscreen;
+                if type(v.Splashscreen) == "table" then
+                    v.Splashscreen = v.Splashscreen.image;
+                end
+            end
+        end
+    end
+    return _Briefing;
+end
+
+---
 -- Startet ein Briefing.
 -- @param[type=table] _Briefing Briefing Definition
 -- @return[type=number] ID des Briefing
@@ -180,6 +265,8 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:StartBriefing(_Briefing)
+    _Briefing = self:ConvertBriefingTable(_Briefing);
+    
     if not self.Data.LoadScreenHidden or self:IsBriefingActive() then
         table.insert(self.Data.BriefingQueue, _Briefing);
         if not self.Data.BriefingQueueJobID then
@@ -398,7 +485,10 @@ function BundleBriefingSystem.Local:PageStarted()
 
         -- Skip-Button
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
-
+        -- Rotation an Rotation des Ziels anpassen
+        if self.Data.CurrentPage.DialogCamera and IsExisting(self.Data.CurrentPage.Position[1]) then
+            self.Data.CurrentPage.Rotation = Logic.GetEntityOrientation(GetID(self.Data.CurrentPage.Position[1])) + 90;
+        end
         -- Titel setzen
         local TitleWidget = "/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight";
         XGUIEng.SetText(TitleWidget, "");
@@ -409,20 +499,17 @@ function BundleBriefingSystem.Local:PageStarted()
             end
             XGUIEng.SetText(TitleWidget, Title);
         end
-
         -- Text setzen
         local TextWidget = "/InGame/ThroneRoom/Main/MissionBriefing/Text";
         XGUIEng.SetText(TextWidget, "");
         if self.Data.CurrentPage.Text then
             XGUIEng.SetText(TextWidget, self.Data.CurrentPage.Text);
         end
-
         -- Fadein starten
         local PageFadeIn = self.Data.CurrentPage.FadeIn;
         if PageFadeIn then
             FadeIn(PageFadeIn);
         end
-
         -- Fadeout starten
         local PageFadeOut = self.Data.CurrentPage.FadeOut;
         if PageFadeOut then
@@ -433,23 +520,15 @@ function BundleBriefingSystem.Local:PageStarted()
                 end
             end, Logic.GetTimeMs() + ((self.Data.CurrentPage.Duration or 0) * 1000), PageFadeOut);
         end
-
         -- Alpha der Fader-Maske
         local PageFaderAlpha = self.Data.CurrentPage.FaderAlpha;
         if PageFaderAlpha then
-            SetFaderAlpha(1);
+            SetFaderAlpha(PageFaderAlpha);
         end
-
         -- Portrait
-        local PagePortrait = self.Data.CurrentPage.Portrait;
-        if PagePortrait then
-            XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 255);
-            XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, PagePortrait);
-            XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
-            XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0, 0, 1, 1);
-        else
-            XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0);
-        end
+        self:SetPortrait();
+        -- Splashscreen
+        self:SetSplashscreen();
     end
 end
 
@@ -487,7 +566,7 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
         if type(self.Data.CurrentPage) == "table" then
             local PX, PY, PZ = self:GetPagePosition();
             local LX, LY, LZ = self:GetPageLookAt();
-            local PageFOV = 42.0;
+            local PageFOV = self.Data.CurrentPage.FOV or 42.0;
             
             if PX and not LX then
                 LX, LY, LZ, PX, PY, PZ = self:GetCameraProperties();
@@ -513,19 +592,19 @@ end
 --
 function BundleBriefingSystem.Local:GetCameraProperties()
     local CurrPage = self.Data.CurrentPage;
-    local LastPage = self.Data.LastPage;
+    local FlyTo = self.Data.CurrentPage.FlyTo;
 
     local startTime = CurrPage.Started;
     local flyTime = CurrPage.FlyTime;
-    local startPosition = (LastPage and LastPage.Position) or CurrPage.Position;
+    local startPosition = (FlyTo and FlyTo.Position) or CurrPage.Position;
     local endPosition = CurrPage.Position;
-    local startRotation = (LastPage and LastPage.Rotation) or CurrPage.Rotation;
+    local startRotation = (FlyTo and FlyTo.Rotation) or CurrPage.Rotation;
     local endRotation = CurrPage.Rotation;
-    local startZoomAngle = (LastPage and LastPage.Angle) or CurrPage.Angle;
+    local startZoomAngle = (FlyTo and FlyTo.Angle) or CurrPage.Angle;
     local endZoomAngle = CurrPage.Angle;
-    local startZoomDistance = (LastPage and LastPage.Zoom) or CurrPage.Zoom;
+    local startZoomDistance = (FlyTo and FlyTo.Zoom) or CurrPage.Zoom;
     local endZoomDistance = CurrPage.Zoom;
-    local startFOV = ((LastPage and LastPage.FOV) or CurrPage.FOV) or 42.0;
+    local startFOV = ((FlyTo and FlyTo.FOV) or CurrPage.FOV) or 42.0;
     local endFOV = (CurrPage.FOV) or 42.0;
 
     local factor = self:GetLERP();
@@ -558,13 +637,13 @@ end
 function BundleBriefingSystem.Local:GetPagePosition()
     local Position = self.Data.CurrentPage.Position;
     local x, y, z = self:ConvertPosition(Position);
-    local LastPage = self.Data.LastPage;
-    if LastPage then
-        local lX, lY, lZ = self:ConvertPosition(LastPage.Position);
+    local FlyTo = self.Data.CurrentPage.FlyTo;
+    if FlyTo then
+        local lX, lY, lZ = self:ConvertPosition(FlyTo.Position);
         if lX then
-            x = lX + (x - lX) * self:GetLERP();
-            y = lY + (y - lY) * self:GetLERP();
-            z = lZ + (z - lZ) * self:GetLERP();
+            x = x + (lX - x) * self:GetLERP();
+            y = y + (lY - y) * self:GetLERP();
+            z = z + (lZ - z) * self:GetLERP();
         end
     end
     return x, y, z;
@@ -581,13 +660,13 @@ end
 function BundleBriefingSystem.Local:GetPageLookAt()
     local LookAt = self.Data.CurrentPage.LookAt;
     local x, y, z = self:ConvertPosition(LookAt);
-    local LastPage = self.Data.LastPage;
-    if LastPage and x then
-        local lX, lY, lZ = self:ConvertPosition(LastPage.LookAt);
+    local FlyTo = self.Data.CurrentPage.FlyTo;
+    if FlyTo and x then
+        local lX, lY, lZ = self:ConvertPosition(FlyTo.LookAt);
         if lX then
-            x = lX + (x - lX) * self:GetLERP();
-            y = lY + (y - lY) * self:GetLERP();
-            z = lZ + (z - lZ) * self:GetLERP();
+            x = x + (lX - x) * self:GetLERP();
+            y = y + (lY - y) * self:GetLERP();
+            z = z + (lZ - z) * self:GetLERP();
         end
     end
     return x, y, z;
@@ -613,15 +692,18 @@ function BundleBriefingSystem.Local:ConvertPosition(_Table)
 end
 
 ---
--- Gibt den linearen Interpolationsfaktor zurück
+-- Gibt den linearen Interpolationsfaktor zurück.
 -- @param[type=number] LERP
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Local:GetLERP()
     local Current = Logic.GetTime();
-    local FlyTime = self.Data.CurrentPage.FlyTime;
     local Started = self.Data.CurrentPage.Started;
+    local FlyTime;
+    if self.Data.CurrentPage.FlyTo then
+        FlyTime = self.Data.CurrentPage.FlyTo.Duration;
+    end
 
     local Factor = 1.0;
     if FlyTime then
@@ -709,6 +791,72 @@ function BundleBriefingSystem.Local:SetBarStyle(_Transparend)
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, Alpha);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, Alpha);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, Alpha);
+end
+
+---
+-- Setzt das Portrait der aktuellen Seite.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:SetPortrait()
+    if self.Data.CurrentPage.Portrait then
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 255);
+        XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, self.Data.CurrentPage.Portrait);
+        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
+        XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0, 0, 1, 1);
+    else
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0);
+    end
+end
+
+---
+-- Setzt den Splashscreen der aktuellen Seite.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:SetSplashscreen()
+    local BG = "/InGame/ThroneRoomBars_2/BarTop";
+    local BB = "/InGame/ThroneRoomBars_2/BarBottom";
+
+    if self.Data.CurrentPage.Splashscreen == nil then
+        XGUIEng.SetMaterialTexture(BG, 1, "");
+        XGUIEng.SetMaterialTexture(BB, 1, "");
+        XGUIEng.SetMaterialColor(BG, 1, 0, 0, 0, 255);
+        XGUIEng.SetMaterialColor(BB, 1, 0, 0, 0, 255);
+        if self.Data.CurrentBriefing.BriefingBarSizeBackup then
+            local Position = self.Data.CurrentBriefing.BriefingBarSizeBackup;
+            XGUIEng.SetWidgetSize(BG, Position[1], Position[2]);
+            self.Data.CurrentBriefing.BriefingBarSizeBackup = nil;
+        end
+        self:SetBarStyle(false);
+        return;
+    end
+
+    if self.Data.CurrentPage.Splashscreen then
+        local size   = {GUI.GetScreenSize()};
+        local is4To3 = math.floor((size[1]/size[2]) * 100) == 133;
+        local is5To4 = math.floor((size[1]/size[2]) * 100) == 125;
+        local u0, v0, u1, v1 = 0, 0, 1, 1;
+        if is4To3 or is5To4 then
+            u0 = u0 + (u0 * 0.125); u1 = u1 - (u1 * 0.125);
+        end
+        XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
+        XGUIEng.SetMaterialTexture(BG, 1, self.Data.CurrentPage.Splashscreen);
+        XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
+    end
+    if not self.Data.CurrentBriefing.BriefingBarSizeBackup then
+        local x, y = XGUIEng.GetWidgetSize(BG);
+        self.Data.CurrentBriefing.BriefingBarSizeBackup = {x, y};
+    end
+
+    local BarX    = self.Data.CurrentBriefing.BriefingBarSizeBackup[1];
+    local _, BarY = XGUIEng.GetWidgetSize("/InGame/ThroneRoomBars");
+    XGUIEng.SetWidgetSize(BG, BarX, BarY);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
+    XGUIEng.ShowWidget(BG, 1);
 end
 
 ---
