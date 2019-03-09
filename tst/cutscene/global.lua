@@ -62,29 +62,37 @@ end
 
 function Cutscene01()
     local Cutscene = {
-        TransperentBars = false,
         RestoreGameSpeed = false,
-        HideBorderPins = true,
-        
+        HideBorderPins   = true,
+        TransperentBars  = false,
+        FastForward      = true,
+
         {
-            Flight  = "c01",
-            Title   = "Angezeigter Titel",
-            Text    = "Angezeigter Text",
-            FadeIn  = 3,
-            Action  = function(_Data)
-            end,
+            Flight  = "c01_f01",
+            Title   = "Flight 1",
+            Text    = "Das ist ein Test!",
+            Action  = nil,
+            FadeIn  = 3.0,
+            FadeOut = nil,
         },
         {
-            Flight  = "c02",
-            Title   = "Angezeigter Titel",
-            Text    = "Angezeigter Text",
-            FadeOut = 3,
-            Action  = function(_Data)
-            end,
+            Flight  = "c01_f02",
+            Title   = "Flight 2",
+            Text    = "Das ist ein Test!",
+            Action  = nil,
+            FadeIn  = nil,
+            FadeOut = nil,
+        },
+        {
+            Flight  = "c01_f03",
+            Title   = "Flight 3",
+            Text    = "Das ist ein Test!",
+            Action  = nil,
+            FadeIn  = nil,
+            FadeOut = 3.0,
         },
 
-        Finished = function(_Data)
-        end
+        Finished = nil;
     };
-    return API.StartCutscene(Cutscene);
+    return API.CutsceneStart(Cutscene);
 end
