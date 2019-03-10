@@ -1509,3 +1509,4 @@ Core:RegisterBehavior(b_Trigger_Briefing);
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleBriefingSystem");
+
