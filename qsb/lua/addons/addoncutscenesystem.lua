@@ -61,8 +61,11 @@ API = API or {};
 --
 --    ... -- Hier nacheinander die Flights auflisten
 --
+--    Starting = function(_Data)
+--        -- Hier werden Aktionen vor dem Start ausgeführt.
+--    end,
 --    Finished = function(_Data)
---         -- Hier kann eine abschließende Aktion ausgeführt werden.
+--        -- Hier kann eine abschließende Aktion ausgeführt werden.
 --    end
 --};
 --return API.StartCutscene(Cutscene);</pre>
@@ -196,7 +199,6 @@ AddOnCutsceneSystem = {
 
 ---
 -- Initalisiert das Bundle im globalen Skript.
---
 -- @within Internal
 -- @local
 --
@@ -223,6 +225,9 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene)
             self.Data.CutsceneQueueJobID = StartSimpleHiResJobEx(AddOnCutsceneSystem.Global.CutsceneQueueController);
         end
         return;
+    end
+    if self.Data.CurrentCutscene.Starting then
+        self.Data.CurrentCutscene:Starting();
     end
 
     BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
@@ -286,7 +291,6 @@ end
 
 ---
 -- Initalisiert das Bundle im lokalen Skript.
---
 -- @within Internal
 -- @local
 --
@@ -300,7 +304,6 @@ end
 ---
 -- Startet die Cutscene im lokalen Skript. Die Spielansicht wird versteckt
 -- und der Cinematic Mode aktiviert.
---
 -- @param[type=table] _Cutscene Cutscene table
 -- @within Internal
 -- @local
@@ -333,7 +336,6 @@ end
 ---
 -- Stoppt die Cutscene im lokalen Skript. Hier wird der Cinematic Mode
 -- deaktiviert und die Spielansicht wiederhergestellt.
---
 -- @within Internal
 -- @local
 --
@@ -366,7 +368,7 @@ function AddOnCutsceneSystem.Local:IsCutsceneActive()
 end
 
 ---
--- 
+-- Startet den nächsten Flight.
 -- @within Internal
 -- @local
 --
@@ -382,7 +384,8 @@ function AddOnCutsceneSystem.Local:NextFlight()
 end
 
 ---
--- Experimental: To be add to the cutscene as starting script event!
+-- Script Event: Flight wurde gestartet.
+-- @param[type=number] _Duration Dauer in Turns
 -- @within Internal
 -- @local
 --
@@ -436,7 +439,7 @@ CutsceneFlightStarted = function(_Duration)
 end
 
 ---
--- Experimental: To be add to the cs-file as finishing script event!
+-- Script Event: Flight ist beendet.
 -- @within Internal
 -- @local
 --
@@ -458,7 +461,6 @@ end
 
 ---
 -- Steuert die Wiedergabe der Cutscenes.
---
 -- @within Internal
 -- @local
 --
@@ -475,7 +477,6 @@ end
 
 ---
 -- Steuert Reaktionen auf Klicks des Spielers.
---
 -- @within Internal
 -- @local
 --
@@ -490,7 +491,6 @@ end
 ---
 -- Startet oder beendet den schnellen Vorlauf, wenn der Spieler den Skip-Button
 -- klickt. Außerdem wird der Text des Skip-Button gesetzt und ein Flag gesetzt.
---
 -- @within Internal
 -- @local
 --
@@ -647,7 +647,6 @@ end
 -- Aktiviert den Cinematic Mode. Alle selektierten Entities werden gespeichert
 -- und anschließend deselektiert. Optional wird die Kameraposition und die
 -- Spielgeschwindigkeit ebenfalls gespeichert.
---
 -- @within Internal
 -- @local
 --
@@ -727,7 +726,6 @@ end
 -- Stoppt den Cinematic Mode. Die Selektion wird wiederhergestellt. Falls
 -- aktiviert, werden auch Kameraposition und Spielgeschwindigkeit auf ihre
 -- alten Werte zurückgesetzt.
---
 -- @within Internal
 -- @local
 --
@@ -768,7 +766,6 @@ end
 
 ---
 -- Steuert die Nachricht bei aktiven schnellen Vorlauf von Cutscenes.
---
 -- @within Internal
 -- @local
 --
@@ -800,8 +797,8 @@ function AddOnCutsceneSystem.Local.DisplayFastForwardMessage()
 end
 
 ---
--- 
---
+-- Wartet bis der Ladebildschirm inaktiv ist und setzt dann ein Flag, dass
+-- das Starten von Cutscenes erlaubt.
 -- @within Internal
 -- @local
 --
