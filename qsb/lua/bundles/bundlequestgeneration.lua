@@ -456,3 +456,4 @@ function BundleQuestGeneration.Global:QuestValidateQuestName(_Name)
 end
 
 Core:RegisterBundle("BundleQuestGeneration");
+

@@ -8701,3 +8701,4 @@ function BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted()
 end
 
 Core:RegisterBundle("BundleClassicBehaviors");
+

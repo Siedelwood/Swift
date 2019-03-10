@@ -589,3 +589,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleTravelingSalesman");
+

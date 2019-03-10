@@ -1207,3 +1207,4 @@ function AddOnQuestDebug.Local:ActivateDevelopingShell()
 end
 
 Core:RegisterBundle("AddOnQuestDebug");
+

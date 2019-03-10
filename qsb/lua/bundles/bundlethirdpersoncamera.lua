@@ -296,3 +296,4 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleThirdPersonCamera");
+
