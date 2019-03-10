@@ -236,7 +236,8 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene)
     local Cutscene = API.ConvertTableToString(self.Data.CurrentCutscene);
     API.Bridge("AddOnCutsceneSystem.Local:StartCutscene(" ..Cutscene.. ")");
     self.Data.CutsceneActive = true;
-    BriefingSystem.isActive = true;
+    BundleBriefingSystem.Global.Data.BriefingActive = true;
+    BundleBriefingSystem.Global.Data.DisplayIngameCutscene = true;
 
     return BundleBriefingSystem.Global.Data.BriefingID;
 end
@@ -258,10 +259,11 @@ function AddOnCutsceneSystem.Global:StopCutscene()
     end
 
     self.Data.CutsceneActive = false;
-    BriefingSystem.isActive = false;
+    BundleBriefingSystem.Global.Data.BriefingActive = false;
+    BundleBriefingSystem.Global.Data.DisplayIngameCutscene = false;
 
     local CutsceneID = self.Data.CurrentCutscene.ID;
-    BundleBriefingSystem.Global.Data.PlayedBriefings[CutsceneID] = true;
+    BundleBriefingSystem.Global.Data.FinishedBriefings[CutsceneID] = true;
     API.Bridge("AddOnCutsceneSystem.Local:StopCutscene()");
 end
 
@@ -275,6 +277,11 @@ function AddOnCutsceneSystem.Global:IsCutsceneActive()
     return IsBriefingActive() == true or self.Data.CutsceneActive == true;
 end
 
+---
+-- Steuert die Cutscene-Warteschlange.
+-- @within Internal
+-- @local
+--
 function AddOnCutsceneSystem.Global.CutsceneQueueController()
     if #AddOnCutsceneSystem.Global.Data.CutsceneQueue == 0 then
         AddOnCutsceneSystem.Global.Data.CutsceneQueueJobID = nil;
@@ -309,7 +316,7 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:StartCutscene(_Cutscene)
-    BundleBriefingSystem.Local.Data.displayIngameCutscene = true;
+    BundleBriefingSystem.Local.Data.DisplayIngameCutscene = true;
 
     self.Data.CurrentFlight = 1;
     self.Data.CurrentCutscene = _Cutscene;
@@ -352,7 +359,7 @@ function AddOnCutsceneSystem.Local:StopCutscene()
     Game.GameTimeSetFactor(GUI.GetPlayerID(), GameSpeed);
     self.Data.GaneSpeedBackup = nil;
 
-    BundleBriefingSystem.Local.Data.displayIngameCutscene = false;
+    BundleBriefingSystem.Local.Data.DisplayIngameCutscene = false;
     self:DeactivateCinematicMode();
     self.Data.CutsceneActive = false;
 end
@@ -644,6 +651,25 @@ function AddOnCutsceneSystem.Local:UpdateFader()
 end
 
 ---
+-- Setzt den Bar-Style für die aktuelle Cutscene.
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:SetBarStyle(_Transparend)
+    local Alpha = (_Transparend and 100) or 255;
+
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 1);
+
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, Alpha);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, Alpha);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, Alpha);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, Alpha);
+end
+
+---
 -- Aktiviert den Cinematic Mode. Alle selektierten Entities werden gespeichert
 -- und anschließend deselektiert. Optional wird die Kameraposition und die
 -- Spielgeschwindigkeit ebenfalls gespeichert.
@@ -681,12 +707,13 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
 
-    local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
-    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
-
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+
+    local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
+    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
+
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
@@ -699,7 +726,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    BriefingSystem.ShowBriefingBar((self.Data.CurrentCutscene.TransperentBars == true and "transsmall") or "small");
+    AddOnCutsceneSystem.Local:SetBarStyle(self.Data.CurrentCutscene.TransperentBars);
 
     if not self.Data.SkipButtonTextBackup then
         self.Data.SkipButtonTextBackup = XGUIEng.GetText("/InGame/ThroneRoom/Main/Skip");
