@@ -84,6 +84,19 @@ end
 IsBriefingActive = API.IsBriefingActive;
 
 ---
+-- Steuert, ob Quest Timer während Briefings pausiert sind oder weiterzählen.
+--
+-- <b>Alias</b>: PauseQuestsDuringBriefings
+--
+-- @param[type=briefing] _Flag Briefing Definition
+-- @within Anwenderfunktionen
+--
+function API.BriefingPauseQuests(_Flag)
+    BundleBriefingSystem.Global.Data.PauseQuests = _Flag == true;
+end
+PauseQuestsDuringBriefings = API.BriefingPauseQuests;
+
+---
 -- Fügt einem Briefing eine Seite hinzu. Diese Funktion muss gestartet werden,
 -- bevor das Briefing gestartet wird.
 --
@@ -139,15 +152,21 @@ function API.AddPages(_Briefing)
                 if _Page.FlyTo then
                     _Page.Duration = _Page.FlyTo.Duration;
                 else
-                    _Briefing.DisableSkipping = false;
-                    _Briefing.SkipPerPage = true;
+                    _Briefing.SkippingAllowed = true;
                     _Page.Duration = -1;
                 end
+            end
+            -- Multiple Choice
+            if _Page.MC then
+                _Page.Text = "";
+                _Page.text = "";
+                _Page.NoSkipping = true;
+                _Page.Duration = -1;
             end
 
             table.insert(_Briefing, _Page);
         else
-            table.insert(_briefing, (_Page ~= nil and _Page) or -1);
+            table.insert(_Briefing, (_Page ~= nil and _Page) or -1);
         end
         return _Page;
     end
@@ -187,6 +206,7 @@ BundleBriefingSystem = {
             BriefingQueue = {},
             BriefingID = 0,
             BriefingActive = false,
+            PauseQuests = true,
         }
     },
     Local = {
@@ -198,9 +218,6 @@ BundleBriefingSystem = {
             LastSkipButtonPressed = 0,
         }
     },
-    Text = {
-
-    }
 }
 
 -- Global Script ------------------------------------------------------------ --
@@ -212,6 +229,7 @@ BundleBriefingSystem = {
 --
 function BundleBriefingSystem.Global:Install()
     StartSimpleHiResJobEx(self.BriefingExecutionController);
+    StartSimpleJobEx(self.BriefingQuestPausedController);
 end
 
 ---
@@ -228,6 +246,7 @@ function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
     _Briefing.ShowSky = _Briefing.showSky or _Briefing.ShowSky;
     _Briefing.RestoreGameSpeed = _Briefing.restoreGameSpeed or _Briefing.RestoreGameSpeed;
     _Briefing.RestoreCamera = _Briefing.restoreCamera or _Briefing.RestoreCamera;
+    _Briefing.SkippingAllowed = (_Briefing.skipPerPage or _Briefing.skipAll) or _Briefing.SkippingAllowed;
     _Briefing.Finished = _Briefing.finished or _Briefing.Finished;
     _Briefing.Starting = _Briefing.starting or _Briefing.Starting;
     
@@ -236,7 +255,7 @@ function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
             -- Normale Optionen
             _Briefing[k].Title = v.title or _Briefing[k].Title;
             _Briefing[k].Text = v.text or _Briefing[k].Text;
-            _Briefing[k].Position = v.position or _Briefing[k].Position;
+            _Briefing[k].Position = (v.position and {v.position, 0}) or _Briefing[k].Position;
             _Briefing[k].Angle = v.angle or _Briefing[k].Angle;
             _Briefing[k].Rotation = v.rotation or _Briefing[k].Rotation;
             _Briefing[k].Zoom = v.zoom or _Briefing[k].Zoom;
@@ -245,12 +264,19 @@ function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
             _Briefing[k].FadeOut = v.fadeOut or _Briefing[k].FadeOut;
             _Briefing[k].FaderAlpha = v.faderAlpha or _Briefing[k].FaderAlpha;
             _Briefing[k].DialogCamera = v.dialogCamera or _Briefing[k].DialogCamera;
+            _Briefing[k].Portrait = v.portrait or _Briefing[k].Portrait;
             -- Splashscreen
             if v.splashscreen then
                 v.Splashscreen = v.splashscreen;
                 if type(v.Splashscreen) == "table" then
                     v.Splashscreen = v.Splashscreen.image;
                 end
+            end
+            -- Multiple Choice
+            if v.mc then
+                _Briefing[k].Title = v.mc.title;
+                _Briefing[k].Text = v.mc.title;
+                _Briefing[k].MC = v.mc.answers;
             end
         end
     end
@@ -320,12 +346,16 @@ end
 function BundleBriefingSystem.Global:PageStarted()
     local PageID = self.Data.CurrentBriefing.Page;
     if PageID then
-        if self.Data.CurrentBriefing[PageID].Action then
-            self.Data.CurrentBriefing[PageID]:Action();
+        if type(self.Data.CurrentBriefing[PageID]) == "table" or self.Data.CurrentBriefing[PageID] > 0 then
+            if self.Data.CurrentBriefing[PageID].Action then
+                self.Data.CurrentBriefing[PageID]:Action();
+            end
+            self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
+            self.Data.CurrentPage.Started = Logic.GetTime();
+            API.Bridge("BundleBriefingSystem.Local:PageStarted()");
+        else
+            self:FinishBriefing();
         end
-        self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
-        self.Data.CurrentPage.Started = Logic.GetTime();
-        API.Bridge("BundleBriefingSystem.Local:PageStarted()");
     end
 end
 
@@ -337,7 +367,8 @@ end
 function BundleBriefingSystem.Global:PageFinished()
     API.Bridge("BundleBriefingSystem.Local:PageFinished()");
     self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
-    if self.Data.CurrentBriefing.Page > #self.Data.CurrentBriefing then
+    local PageID = self.Data.CurrentBriefing.Page;
+    if not self.Data.CurrentBriefing[PageID] or PageID > #self.Data.CurrentBriefing then
         BundleBriefingSystem.Global:FinishBriefing();
     else
         BundleBriefingSystem.Global:PageStarted();
@@ -352,6 +383,24 @@ end
 --
 function BundleBriefingSystem.Global:IsBriefingActive()
     return self.Data.BriefingActive == true;
+end
+
+---
+-- Reagiert auf die Auswahl einer Option einer Multiple-Choice-Page.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:OnMCConfirmed(_Selected)
+    if self.Data.CurrentPage.MC then
+        local JumpTarget = self.Data.CurrentPage.MC[_Selected][2];
+        if type(JumpTarget) == "function" then
+            self.Data.CurrentBriefing.Page = JumpTarget(self.Data.CurrentPage)-1;
+        else
+            self.Data.CurrentBriefing.Page = JumpTarget-1;
+        end
+        API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
+        self:PageFinished();
+    end
 end
 
 ---
@@ -378,6 +427,21 @@ function BundleBriefingSystem.Global.BriefingExecutionController()
                         BundleBriefingSystem.Global:PageFinished();
                     end
                 end
+            end
+        end
+    end
+end
+
+---
+-- Verhindert, dass während Briefings Quest-Timer weiter laufen.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global.BriefingQuestPausedController()
+    if BundleBriefingSystem.Global.Data.BriefingActive and BundleBriefingSystem.Global.Data.PauseQuests then
+        for i= 1, #Quests, 1 do
+            if Quests[i].State == QuestState.Active then
+                Quests[i].StartTime = Quests[i].StartTime +1;
             end
         end
     end
@@ -484,11 +548,17 @@ function BundleBriefingSystem.Local:PageStarted()
         self.Data.CurrentPage.Started = Logic.GetTime();
 
         -- Skip-Button
-        XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
+        local SkipFlag = 1;
+        if not self.Data.CurrentBriefing.SkippingAllowed or self.Data.CurrentPage.NoSkipping then 
+            SkipFlag = 0;
+        end
+        XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", SkipFlag);
+
         -- Rotation an Rotation des Ziels anpassen
         if self.Data.CurrentPage.DialogCamera and IsExisting(self.Data.CurrentPage.Position[1]) then
             self.Data.CurrentPage.Rotation = Logic.GetEntityOrientation(GetID(self.Data.CurrentPage.Position[1])) + 90;
         end
+
         -- Titel setzen
         local TitleWidget = "/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight";
         XGUIEng.SetText(TitleWidget, "");
@@ -499,36 +569,26 @@ function BundleBriefingSystem.Local:PageStarted()
             end
             XGUIEng.SetText(TitleWidget, Title);
         end
+
         -- Text setzen
         local TextWidget = "/InGame/ThroneRoom/Main/MissionBriefing/Text";
         XGUIEng.SetText(TextWidget, "");
         if self.Data.CurrentPage.Text then
-            XGUIEng.SetText(TextWidget, self.Data.CurrentPage.Text);
+            local Text = self.Data.CurrentPage.Text;
+            if Text:sub(1, 1) ~= "{" then
+                Text = "{center}" ..Text;
+            end
+            XGUIEng.SetText(TextWidget, Text);
         end
-        -- Fadein starten
-        local PageFadeIn = self.Data.CurrentPage.FadeIn;
-        if PageFadeIn then
-            FadeIn(PageFadeIn);
-        end
-        -- Fadeout starten
-        local PageFadeOut = self.Data.CurrentPage.FadeOut;
-        if PageFadeOut then
-            self.Data.CurrentBriefing.FaderJob = StartSimpleHiResJobEx(function(_Time, _FadeOut)
-                if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
-                    FadeOut(_FadeOut);
-                    return true;
-                end
-            end, Logic.GetTimeMs() + ((self.Data.CurrentPage.Duration or 0) * 1000), PageFadeOut);
-        end
-        -- Alpha der Fader-Maske
-        local PageFaderAlpha = self.Data.CurrentPage.FaderAlpha;
-        if PageFaderAlpha then
-            SetFaderAlpha(PageFaderAlpha);
-        end
+
+        -- Fader
+        self:SetFader();
         -- Portrait
         self:SetPortrait();
         -- Splashscreen
         self:SetSplashscreen();
+        -- Multiple Choice
+        self:SetOptionsDialog();
     end
 end
 
@@ -553,6 +613,24 @@ function BundleBriefingSystem.Local:IsBriefingActive()
 end
 
 ---
+-- Reagiert auf die Auswahl einer Option einer Multiple-Choice-Page.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:LocalOnMCConfirmed()
+    local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+    local Position = self.Data.OriginalBoxPosition;
+    XGUIEng.SetWidgetScreenPosition(Widget, Position[1], Position[2]);
+    XGUIEng.ShowWidget(Widget, 0);
+    XGUIEng.PopPage();
+
+    if self.Data.CurrentPage.MC then
+        local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
+        API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..Selected.. ")");
+    end
+end
+
+---
 -- Steuert die Kamera während des Throneroom Mode.
 -- @within Internal
 -- @local
@@ -564,6 +642,7 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
         end
     else
         if type(self.Data.CurrentPage) == "table" then
+            -- Kamera
             local PX, PY, PZ = self:GetPagePosition();
             local LX, LY, LZ = self:GetPageLookAt();
             local PageFOV = self.Data.CurrentPage.FOV or 42.0;
@@ -574,6 +653,15 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             Camera.ThroneRoom_SetPosition(PX, PY, PZ);
             Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
             Camera.ThroneRoom_SetFOV(PageFOV);
+
+            -- Multiple Choice
+            if self.Data.MCSelectionIsShown then
+                local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+                if XGUIEng.IsWidgetShown(Widget) == 0 then
+                    self.Data.MCSelectionIsShown = false;
+                    self:LocalOnMCConfirmed();
+                end
+            end
         end
     end
 end
@@ -794,6 +882,67 @@ function BundleBriefingSystem.Local:SetBarStyle(_Transparend)
 end
 
 ---
+-- Setzt die Fader-Optionen der aktuellen Seite.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:SetFader()
+    -- Alpha der Fader-Maske
+    g_Fade.To = 0;
+    SetFaderAlpha(self.Data.CurrentPage.FaderAlpha or 0);
+
+    -- Fadein starten
+    local PageFadeIn = self.Data.CurrentPage.FadeIn;
+    if PageFadeIn then
+        FadeIn(PageFadeIn);
+    end
+
+    -- Fadeout starten
+    local PageFadeOut = self.Data.CurrentPage.FadeOut;
+    if PageFadeOut then
+        self.Data.CurrentBriefing.FaderJob = StartSimpleHiResJobEx(function(_Time, _FadeOut)
+            if Logic.GetTimeMs() > _Time - (_FadeOut * 1000) then
+                FadeOut(_FadeOut);
+                return true;
+            end
+        end, Logic.GetTimeMs() + ((self.Data.CurrentPage.Duration or 0) * 1000), PageFadeOut);
+    end
+end
+
+---
+-- Aktiviert den Auswahldialog einer Multiple-Choice-Seite.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:SetOptionsDialog()
+    if self.Data.CurrentPage.MC then
+        local Screen = {GUI.GetScreenSize()};
+        local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
+
+        self.Data.OriginalBoxPosition = {
+            XGUIEng.GetWidgetScreenPosition(Widget)
+        };
+
+        local listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
+        XGUIEng.ListBoxPopAll(listbox);
+        for i=1, #self.Data.CurrentPage.MC, 1 do
+            XGUIEng.ListBoxPushItem(listbox, self.Data.CurrentPage.MC[i][1]);
+        end
+        XGUIEng.ListBoxSetSelectedIndex(listbox, 0);
+
+        local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
+        local xFactor = (Screen[1]/1920);
+        local xFix = math.ceil((Screen[1]/2) - (wSize[1] /2));
+        local yFix = math.ceil(Screen[2] - (wSize[2]-20));
+        XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
+        XGUIEng.PushPage(Widget, false);
+        XGUIEng.ShowWidget(Widget, 1);
+
+        self.Data.MCSelectionIsShown = true;
+    end
+end
+
+---
 -- Setzt das Portrait der aktuellen Seite.
 -- @within Internal
 -- @local
@@ -899,6 +1048,8 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 
+    local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
+    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
@@ -1035,7 +1186,205 @@ end
 
 -- Behavior ----------------------------------------------------------------- --
 
+---
+-- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+-- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
+--
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_BriefingFailure
+-- überwacht werden. Es kann pro Quest nur ein Niederlage-Briefing 
+-- gebunden werden!
+--
+-- @param[type=string] _Briefing Funktionsname als String
+--
+-- @within Reprisal
+--
+function Reprisal_Briefing(...)
+    return b_Reprisal_Briefing:new(...);
+end
 
+b_Reprisal_Briefing = {
+    Name = "Reprisal_Briefing",
+    Description = {
+        en = "Reward: Calls a function that creates a briefing and saves the returned briefing ID into the quest.",
+        de = "Lohn: Ruft eine Funktion auf, die ein Briefing erzeugt und die zurueckgegebene ID in der Quest speichert.",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Briefing function", de = "Funktion mit Briefing" },
+    },
+}
+
+function b_Reprisal_Briefing:GetReprisalTable()
+    return { Reprisal.Custom,{self, self.CustomFunction} }
+end
+
+function b_Reprisal_Briefing:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Function = _Parameter;
+    end
+end
+
+function b_Reprisal_Briefing:CustomFunction(_Quest)
+    local BriefingID = _G[self.Function](self, _Quest);
+    local QuestID = GetQuestID(_Quest.Identifier);
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = BriefingID;
+end
+
+function b_Reprisal_Briefing:Debug(_Quest)
+    if not type(_G[self.Function]) == "function" then
+        fatal(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
+        return true;
+    end
+    return false;
+end
+
+function b_Reprisal_Briefing:Reset(_Quest)
+    local QuestID = GetQuestID(_Quest.Identifier);
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
+end
+
+Core:RegisterBehavior(b_Reprisal_Briefing);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
+-- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
+--
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_BriefingSuccess
+-- überwacht werden. Es kann pro Quest nur ein Erfolgs-Briefing gebunden werden!
+--
+-- @param[type=string] _Briefing Funktionsname als String
+--
+-- @within Reward
+--
+function Reward_Briefing(...)
+    return b_Reward_Briefing:new(...);
+end
+
+b_Reward_Briefing = API.InstanceTable(b_Reprisal_Briefing);
+b_Reward_Briefing.Name = "Reward_Briefing";
+b_Reward_Briefing.Description.en = "Reward: Calls a function that creates a briefing and saves the returned briefing ID into the quest.";
+b_Reward_Briefing.Description.de = "Lohn: Ruft eine Funktion auf, die ein Briefing erzeugt und die zurueckgegebene ID in der Quest speichert.";
+b_Reward_Briefing.GetReprisalTable = nil;
+
+b_Reward_Briefing.GetRewardTable = function(self, _Quest)
+    return { Reward.Custom,{self, self.CustomFunction} }
+end
+
+b_Reward_Briefing.CustomFunction = function(self, _Quest)
+    local BriefingID = _G[self.Function](self, _Quest);
+    local QuestID = GetQuestID(_Quest.Identifier);
+    Quests[QuestID].w5kur_xig0q_d9k7e = BriefingID;
+end
+
+b_Reward_Briefing.Reset = function(self, _Quest)
+    local QuestID = GetQuestID(_Quest.Identifier);
+    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
+end
+
+Core:RegisterBehavior(b_Reward_Briefing);
+
+-- -------------------------------------------------------------------------- --
+
+--
+-- Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
+-- gestartet und durchlaufen wurde.
+--
+-- @param[type=string] _QuestName Name des Quest
+-- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
+-- @within Trigger
+--
+function Trigger_Briefing(...)
+    return b_Trigger_Briefing:new(...);
+end
+
+b_Trigger_Briefing = {
+    Name = "Trigger_Briefing",
+    Description = {
+        en = "Trigger: After a briefing of the given quest has finished, this quest will be started. Additionally you can choose the type of briefing this trigger shall react to.",
+        de = "Ausloeser: Wenn ein Briefing des angegebenen Quest beendet ist, wird dieser Quest gestartet. Optional kann gewählt werden, auf welchen Typ von Briefing reagiert werden soll.",
+    },
+    Parameter = {
+        { ParameterType.QuestName, en = "Quest name",    de = "Questname" },
+        { ParameterType.Custom,    en = "Briefing type", de = "Briefing-Typ" },
+        { ParameterType.Number,    en = "Wait time",     de = "Wartezeit" },
+    },
+}
+
+function b_Trigger_Briefing:GetTriggerTable()
+    return { Triggers.Custom2,{self, self.CustomFunction} }
+end
+
+function b_Trigger_Briefing:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.Quest = _Parameter;
+    elseif (_Index == 1) then
+        _Paramater = _Parameter or "All";
+        self.BriefingType = _Parameter;
+    elseif (_Index == 2) then
+        _Parameter = _Parameter or 0;
+        self.WaitTime = _Parameter * 1;
+    end
+end
+
+function b_Trigger_Briefing:GetCustomData( _Index )
+    if _Index == 1 then
+        return {"All", "Success", "Failure"};
+    end
+end
+
+function b_Trigger_Briefing:IsConditionFulfilled(_QuestID)
+    if self.BriefingType == "All" then
+        return IsBriefingFinished(Quests[_QuestID].zl97d_ukfs5_0dpm0) or IsBriefingFinished(Quests[_QuestID].w5kur_xig0q_d9k7e);
+    elseif self.BriefingType == "Failure" then
+        return IsBriefingFinished(Quests[_QuestID].zl97d_ukfs5_0dpm0);
+    elseif self.BriefingType == "Success" then
+        return IsBriefingFinished(Quests[_QuestID].w5kur_xig0q_d9k7e);
+    end
+    return false;
+end
+
+function b_Trigger_Briefing:CustomFunction(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    if self:IsConditionFulfilled(QuestID) then
+        if self.WaitTime and self.WaitTime > 0 then
+            self.WaitTimeTimer = self.WaitTimeTimer or Logic.GetTime();
+            if Logic.GetTime() >= self.WaitTimeTimer + self.WaitTime then
+                return true;
+            end
+        else
+            return true;
+        end
+    end
+    return false;
+end
+
+function b_Trigger_Briefing:Interrupt(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
+    self.WaitTimeTimer = nil
+end
+
+function b_Trigger_Briefing:Reset(_Quest)
+    local QuestID = GetQuestID(self.Quest);
+    Quests[QuestID].w5kur_xig0q_d9k7e = nil;
+    Quests[QuestID].zl97d_ukfs5_0dpm0 = nil;
+    self.WaitTimeTimer = nil
+end
+
+function b_Trigger_Briefing:Debug(__quest_)
+    if self.WaitTime and self.WaitTime < 0 then
+        dbg(__quest_.Identifier.." "..self.Name..": waittime is below 0!");
+        return true;
+    elseif not IsValidQuest(self.Quest) then
+        fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Trigger_Briefing);
 
 -- -------------------------------------------------------------------------- --
 

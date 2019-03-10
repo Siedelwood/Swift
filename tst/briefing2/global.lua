@@ -47,14 +47,12 @@ function Mission_FirstMapAction()
         Startup_Diplomacy();
     end
 
-    API.ActivateDebugMode(true, false, true, true);
+    API.ActivateDebugMode(true, true, true, true);
 
     -- Startet die Mapeditor-Quests
     CreateQuests();
 
     -- Hier kannst Du Deine Funktionen aufrufen:
-
-    Briefing02()
 end
 
 -- -------------------------------------------------------------------------- --
@@ -65,6 +63,7 @@ function Briefing01()
         ShowSky = true,
         RestoreGameSpeed = true,
         RestoreCamera = true,
+        SkippingAllowed = false,
     }
     local AP = API.AddPages(Briefing);
 
@@ -97,7 +96,7 @@ function Briefing01()
     end
     Briefing.Finished = function(_Data)
     end
-    API.StartBriefing(Briefing)
+    return API.StartBriefing(Briefing)
 end
 
 function Briefing02()
@@ -147,5 +146,127 @@ function Briefing02()
     end
     Briefing.Finished = function(_Data)
     end
-    API.StartBriefing(Briefing)
+    return API.StartBriefing(Briefing)
+end
+
+function Briefing03()
+    local Briefing = {
+        HideBorderPins = true,
+        ShowSky = true,
+        RestoreGameSpeed = true,
+        RestoreCamera = true,
+        SkippingAllowed = false,
+    }
+    local AP, ASP = API.AddPages(Briefing);
+    local CastleID = Logic.GetHeadquarters(1);
+
+    -- Page 1
+    ASP(CastleID, "Seite 1", "Das ist Seite 1!", false);
+    -- Page 2
+    ASP(CastleID, "Seite 2", "Das ist Seite 2!", false);
+
+    local JumpTo7 = function()
+        return 7;
+    end
+    AP {
+        position     = CastleID,
+        title        = "Auswahl",
+        text         = "Eine wichtige Entscheidung muss getroffen werden!",
+        DialogCamera = false,
+        MC           = {
+            {"Zu Seite 4 springen", 4},
+            {"Zu Seite 7 springen", JumpTo7}
+        }
+    }
+
+    -- Page 4
+    local JumpedToPage4 = function()
+        API.StaticNote("4");
+    end
+    ASP(CastleID, "Seite 4", "Das ist Seite 4!", false, JumpedToPage4);
+    -- Page 5
+    ASP(CastleID, "Seite 5", "Das ist Seite 5!", false);
+    AP();
+
+    -- Page 7
+    local JumpedToPage7 = function()
+        API.StaticNote("7");
+    end
+    ASP(CastleID, "Seite 7", "Das ist Seite 7!", false, JumpedToPage7);
+    -- Page 8
+    ASP(CastleID, "Seite 8", "Das ist Seite 8!", false);
+
+    Briefing.Starting = function(_Data)
+    end
+    Briefing.Finished = function(_Data)
+    end
+    return API.StartBriefing(Briefing)
+end
+
+function Briefing04()
+    local Briefing = {
+        HideBorderPins = true,
+        ShowSky = true,
+        RestoreGameSpeed = true,
+        RestoreCamera = true,
+    }
+    local AP, ASP = API.AddPages(Briefing);
+
+    AP {
+        Title    = "Title 1",
+        Text     = "Text 1",
+        Position = "pos3",
+        DialogCamera = false,
+        FadeIn   = 3.0,
+        Duration = 5.0,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "Title 2",
+        Text     = "Text 2",
+        Position = "pos4",
+        DialogCamera = false,
+        Duration = 5.0,
+        FadeOut  = 3.0,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "Title 3",
+        Text     = "Text 3",
+        Position = "pos3",
+        DialogCamera = false,
+        FadeIn   = 3.0,
+        FadeOut  = 3.0,
+        Duration = 10.0,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "Title 4",
+        Text     = "Text 4",
+        Position = "pos4",
+        DialogCamera = false,
+        FadeIn   = 3.0,
+        Duration = 5.0,
+        Action   = function(_Data)
+        end
+    }
+    AP {
+        Title    = "Title 5",
+        Text     = "Text 5",
+        Position = "pos1",
+        FadeOut  = 3.0,
+        Duration = 5.0,
+        DialogCamera = false,
+        Action   = function(_Data)
+        end
+    }
+
+    Briefing.Starting = function(_Data)
+    end
+    Briefing.Finished = function(_Data)
+    end
+    return API.StartBriefing(Briefing)
 end
