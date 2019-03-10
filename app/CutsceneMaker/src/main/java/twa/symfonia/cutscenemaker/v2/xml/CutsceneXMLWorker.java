@@ -68,6 +68,9 @@ public class CutsceneXMLWorker {
      */
     public void saveDocument(File output) throws CutsceneEventException {
         try {
+            final Serializer serializer = new Persister();
+            serializer.write(document, output);
+
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(output);
