@@ -437,11 +437,11 @@ function b_Reward_DEBUG:GetRewardTable(__quest_)
 end
 
 function b_Reward_DEBUG:AddParameter(_Index, _Parameter)
-    if (_Index == 1) then
+    if (_Index == 0) then
         self.CheckWhileRuntime = AcceptAlternativeBoolean(_Parameter)
-    elseif (_Index == 2) then
+    elseif (_Index == 1) then
         self.UseQuestTrace = AcceptAlternativeBoolean(_Parameter)
-    elseif (_Index == 3) then
+    elseif (_Index == 2) then
         self.DelepoingCheats = AcceptAlternativeBoolean(_Parameter)
     elseif (_Index == 3) then
         self.DelepoingShell = AcceptAlternativeBoolean(_Parameter)

@@ -4615,19 +4615,23 @@ function b_Reward_TradeOffers:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter
     elseif (_Index == 1) then
-        self.AmountOffer1 = tonumber(_Parameter)
+        _Parameter = _Parameter or 0;
+        self.AmountOffer1 = _Parameter * 1;
     elseif (_Index == 2) then
         self.Offer1 = _Parameter
     elseif (_Index == 3) then
-        self.AmountOffer2 = tonumber(_Parameter)
+        _Parameter = _Parameter or 0;
+        self.AmountOffer2 = _Parameter * 1;
     elseif (_Index == 4) then
         self.Offer2 = _Parameter
     elseif (_Index == 5) then
-        self.AmountOffer3 = tonumber(_Parameter)
+        _Parameter = _Parameter or 0;
+        self.AmountOffer3 = _Parameter * 1;
     elseif (_Index == 6) then
         self.Offer3 = _Parameter
     elseif (_Index == 7) then
-        self.AmountOffer4 = tonumber(_Parameter)
+        _Parameter = _Parameter or 0;
+        self.AmountOffer4 = _Parameter * 1;
     elseif (_Index == 8) then
         self.Offer4 = _Parameter
     end
