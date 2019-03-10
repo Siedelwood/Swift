@@ -16,6 +16,7 @@
 -- <p>Das wichtigste auf einen Blick:
 -- <ul>
 -- <li><a href="#API.StartBriefing">Ein Briefing starten</a></li>
+-- <li><a href="#AP">Ein Seite erzeugen</a></li>
 -- <li>
 --
 -- @within Modulbeschreibung
@@ -97,14 +98,18 @@ end
 PauseQuestsDuringBriefings = API.BriefingPauseQuests;
 
 ---
--- Fügt einem Briefing eine Seite hinzu. Diese Funktion muss gestartet werden,
--- bevor das Briefing gestartet wird.
+-- Erzeugt die Funktionen zum erzeugen von Seiten in einem Briefing und bindet
+-- sie an das Briefing. Diese Funktion muss vor dem Start eines Briefing
+-- aufgerufen werden.
 --
 -- <b>Alias</b>: AddPages
 --
 -- @param[type=table] _Briefing Briefing Definition
--- @return[type=function] AP-Funktion zum Seiten hinzufügen
+-- @return[type=function] <a href="#AP">AP</a>
+-- @return[type=function] <a href="#ASP">ASP</a>
 -- @within Anwenderfunktionen
+--
+-- @usage local AP, ASP = API.AddPages(Briefing);
 --
 function API.AddPages(_Briefing)
     if GUI then
@@ -163,6 +168,12 @@ function API.AddPages(_Briefing)
                 _Page.NoSkipping = true;
                 _Page.Duration = -1;
             end
+            _Page.GetSelectedAnswer = function(self)
+                if not self.MC or not self.MC.Selected then
+                    return 0;
+                end
+                return self.MC.Selected;
+            end
 
             table.insert(_Briefing, _Page);
         else
@@ -183,6 +194,109 @@ function API.AddPages(_Briefing)
     return AP, ASP;
 end
 AddPages = API.AddPages;
+
+---
+-- Erstellt eine Seite für ein Dialog-Briefing.
+--
+-- <b>Achtung</b>: Diese Funktion wird von
+-- <a href="#API.AddPages">API.AddPages</a> erzeugt und an
+-- das Briefing gebunden.
+--
+-- Eine einfache Seite lässt sich unter Nutzung von DialogCamera erstellen.
+-- Dadurch wird entweder Nahsicht oder Fernsicht verwendet. Werte für Angle,
+-- Rotation oder Zoom werden automatisch gesetzt, wenn sie fehlen.
+-- <pre>AP {
+--    Title        = "Titel",
+--    Text         = "Das ist der Text der Seite.",
+--    Position     = "HQ2",
+--    DialogCamera = false,
+--    Angle        = 30
+--}</pre>
+-- Es gilt zu beachten, dass Seiten ohne Duration solange angezeigt werden,
+-- bis der Benutzer die Seite mit "Überspringen" verlässt.
+--
+-- Es kann eine einfache Bewegung erzeugt werden. Hierzu wird FlyTo benutzt.
+-- <pre>AP {
+--    ...
+--    FlyTo        = {
+--        Position = {"hero", 250},
+--        Zoom     = 2200,
+--        Rotation = Logic.GetEntityOrientation(GetID("hero"))+90,
+--        Angle    = 12,
+--        Duration = 15,
+--    }
+--}</pre>
+-- Die Dauer der Animation (FlyTo.Duration) wird automatisch zur Dauer der
+-- Seite, wenn nicht gesetzt oder geringer als die Dauer der Animation.
+--
+-- Jede Seite kann eine Grafik am linken Rand anzeigen. Diese Grafik wird
+-- als Portrait betrachtet.
+-- <pre>Portrait = "Path/to/Portrait.ong",</pre>
+-- Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
+-- heißt Splashscreen.
+-- <pre>Splashscreen = "Path/to/Graphic.ong",</pre>
+--
+-- AP unterstützt ebenso die Angabe von XYZ-Koordinaten. Positionen können auch
+-- als Vektoren angegeben werden. Dann hat die Kamera eine Kosition und eine
+-- Blockrichtung.
+-- <pre>Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
+--LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
+--
+-- In einem Dialog kann der Spieler auch zur Auswahl einer Option gebeten
+-- werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
+-- in eine Subtable MC.
+-- <pre>ReallyImportantChoice = AP {
+--    ...
+--    MC = {
+--        {"Antwort 1", 5},
+--        {"Antwort 2", 9},
+--    },
+--}</pre>
+-- Nachdem der Spieler eine Antwort gewählt hat, wird er auf die Seite mit
+-- der angegebenen ID geleitet. Um das Briefing zu beendet, nachdem ein Pfad
+-- beendet ist, wird eine leere AP-Seite genutzt. Auf diese Weise weiß das
+-- Briefing, das es an dieser Stelle zuende ist.
+-- <pre>AP()</pre>
+-- Soll stattdessen zu einer anderen Seite gesprungen werden, kann bei AP die
+-- ID der Seite angeben werden, zu der gesprungen werden soll.
+-- <pre>AP(8)</pre>
+-- Es ist zu beachten, dass auch so ein Aufruf von AP als Seite zählt.
+--
+-- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
+-- erfahren, muss eine Referenz auf die Seite benutzt werden.
+-- <pre>local Choosen = ReallyImportantChoice:GetSelectedAnswer();</pre>
+-- Die zurückgegebene Zahl ist die Position der Antwort, angefangen von oben.
+-- Wird 0 zurückgegeben, wurde noch nicht geantwortet.
+--
+-- @param[type=table] _Page Spezifikation der Seite
+-- @return[type=table] Refernez auf die angelegte Seite
+-- @within Briefing
+--
+function AP(_Page)
+    API.Fatal("AP: Please use the function provides by AddPages!");
+end
+
+---
+-- Erstellt eine Seite in vereinfachter Syntax. Es wird davon
+-- Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
+-- schaut den Siedler an.
+--
+-- <b>Achtung</b>: Diese Funktion wird von
+-- <a href="#API.AddPages">API.AddPages</a> erzeugt und an
+-- das Briefing gebunden.
+--
+-- @param[type=string]  _entity       Zielentity
+-- @param[type=string]  _title	      Titel der Seite
+-- @param[type=string]  _text         Text der Seite
+-- @param[type=boolean] _dialogCamera Nahsicht an/aus
+-- @param[type=function] _action      Callback-Funktion
+-- @return[type=table] Referenz auf die Seite
+-- @within Briefing
+-- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+--
+function ASP(...)
+    fatal("ASP: Please use the function provided by AddPages!");
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -205,6 +319,7 @@ BundleBriefingSystem = {
             CurrentPage = {},
             BriefingQueue = {},
             BriefingID = 0,
+            DisplayIngameCutscene = false,
             BriefingActive = false,
             PauseQuests = true,
         }
@@ -392,6 +507,8 @@ end
 --
 function BundleBriefingSystem.Global:OnMCConfirmed(_Selected)
     if self.Data.CurrentPage.MC then
+        local PageID = self.Data.CurrentBriefing.Page;
+        self.Data.CurrentBriefing[PageID].MC.Selected = _Selected;
         local JumpTarget = self.Data.CurrentPage.MC[_Selected][2];
         if type(JumpTarget) == "function" then
             self.Data.CurrentBriefing.Page = JumpTarget(self.Data.CurrentPage)-1;
@@ -409,22 +526,24 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global.BriefingExecutionController()
-    if BundleBriefingSystem.Global:IsBriefingActive() then
-        if type(BundleBriefingSystem.Global.Data.CurrentPage) == "number" then
-            local PageID = BundleBriefingSystem.Global.Data.CurrentPage;
-            BundleBriefingSystem.Global.Data.CurrentBriefing.Page = PageID;
-            API.Bridge("BundleBriefingSystem.Global.Data.CurrentBriefing.Page = " ..PageID);
-            BundleBriefingSystem.Global:PageStarted();
+    if not BundleBriefingSystem.Global.Data.DisplayIngameCutscene then
+        if BundleBriefingSystem.Global:IsBriefingActive() then
+            if type(BundleBriefingSystem.Global.Data.CurrentPage) == "number" then
+                local PageID = BundleBriefingSystem.Global.Data.CurrentPage;
+                BundleBriefingSystem.Global.Data.CurrentBriefing.Page = PageID;
+                API.Bridge("BundleBriefingSystem.Global.Data.CurrentBriefing.Page = " ..PageID);
+                BundleBriefingSystem.Global:PageStarted();
 
-        elseif BundleBriefingSystem.Global.Data.CurrentPage == nil then
-            BundleBriefingSystem.Global:FinishBriefing();
+            elseif BundleBriefingSystem.Global.Data.CurrentPage == nil then
+                BundleBriefingSystem.Global:FinishBriefing();
 
-        else
-            if BundleBriefingSystem.Global.Data.CurrentPage then
-                local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
-                if Duration > -1 then
-                    if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
-                        BundleBriefingSystem.Global:PageFinished();
+            else
+                if BundleBriefingSystem.Global.Data.CurrentPage then
+                    local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
+                    if Duration > -1 then
+                        if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
+                            BundleBriefingSystem.Global:PageFinished();
+                        end
                     end
                 end
             end
@@ -1050,6 +1169,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
 
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
+
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
