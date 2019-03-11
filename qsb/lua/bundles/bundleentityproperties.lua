@@ -285,15 +285,17 @@ function QSB.EntityProperty:Hurt(_Damage)
 
     local EntityKilled = false;
     local Health = Logic.GetEntityHealth(EntityToHurt);
-    if Health <= _Damage then
-        _Damage = _Damage - Health;
-        EntityKilled = true;
-        Logic.HurtEntity(EntityToHurt, Health);
-        if _Damage > 0 then
-            self:Hurt(_Damage);
+    if EntityToHurt then
+        if Health <= _Damage then
+            _Damage = _Damage - Health;
+            EntityKilled = true;
+            Logic.HurtEntity(EntityToHurt, Health);
+            if IsLeader and _Damage > 0 then
+                self:Hurt(_Damage);
+            end
+        else
+            Logic.HurtEntity(EntityToHurt, _Damage);
         end
-    else
-        Logic.HurtEntity(EntityToHurt, _Damage);
     end
 end
 
