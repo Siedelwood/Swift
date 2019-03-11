@@ -34,9 +34,9 @@ echo "Kopiere Map Iconator..."
 cp -r bin/MapIconator.jar Release/bin/MapIconator.jar &>/dev/null
 echo "Fertig!"
 
-echo "Siedelwood Cutscene Assistant kopieren..."
-cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
-echo "Fertig!"
+#echo "Siedelwood Cutscene Assistant kopieren..."
+#cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
+#echo "Fertig!"
 
 echo "Cutscene Maker kopieren..."
 cp -r "app/CutsceneMaker/CutsceneMaker.jar" Release/bin/CutsceneMaker.jar &>/dev/null
