@@ -478,6 +478,7 @@ function QSB.NonPlayerCharacter:RotateActors()
         if x1 == math.floor(x2) and y1 == math.floor(y2) then
             local x, y, z = Logic.EntityGetPos(v);
             Logic.MoveEntity(v, x, y);
+            LookAt(v, self.m_NpcName);
         end
     end
     API.Confront(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID)

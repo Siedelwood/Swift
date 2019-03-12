@@ -322,6 +322,7 @@ function AddOnCutsceneSystem.Local:StartCutscene(_Cutscene)
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.CutsceneActive = true;
     
+    Display.SetRenderSky(1);
     if self.Data.CurrentCutscene.HideBorderPins then
         Display.SetRenderBorderPins(0);
     end
@@ -354,6 +355,7 @@ function AddOnCutsceneSystem.Local:StopCutscene()
         GUI.SelectEntity(v);
     end
     Display.SetRenderBorderPins(1);
+    Display.SetRenderSky(0);
 
     local GameSpeed = (self.Data.GaneSpeedBackup or 1);
     Game.GameTimeSetFactor(GUI.GetPlayerID(), GameSpeed);
@@ -427,6 +429,7 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", (self.Data.CurrentCutscene.FastForward and 1) or 0);
 
         -- Handle fader
+        self.Data.Fader.To = 0;
         self:SetFaderAlpha(0);
         if CurrentFlight.FadeIn then
             self:FadeIn(CurrentFlight.FadeIn);
@@ -523,7 +526,7 @@ end
 --
 function AddOnCutsceneSystem.Local:InitializeFader()
     self.Data.Fader.Duration = 0;
-    self.Data.Fader.To = 0.0;
+    self.Data.Fader.To = 0;
     self:SetFaderAlpha(1.0);
     XGUIEng.PushPage(self.Data.Fader.Page, false);
 end
