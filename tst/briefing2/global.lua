@@ -63,7 +63,7 @@ function Briefing01()
         ShowSky = true,
         RestoreGameSpeed = true,
         RestoreCamera = true,
-        SkippingAllowed = false,
+        SkippingAllowed = true,
     }
     local AP = API.AddPages(Briefing);
 
@@ -127,7 +127,7 @@ function Briefing02()
     }
     AP {
         Title    = "Title 3",
-        Text     = "Text 1",
+        Text     = "Text 3",
         Position = Logic.GetKnightID(1),
         DialogCamera = true,
         Action   = function(_Data)
@@ -135,7 +135,7 @@ function Briefing02()
     }
     AP {
         Title    = "Title 4",
-        Text     = "Text 2",
+        Text     = "Text 4",
         Position = "pos4",
         DialogCamera = false,
         Action   = function(_Data)
@@ -168,11 +168,12 @@ function Briefing03()
     local JumpTo7 = function()
         return 7;
     end
-    AP {
+    local ReallyImportantChoice = AP {
         position     = CastleID,
         title        = "Auswahl",
         text         = "Eine wichtige Entscheidung muss getroffen werden!",
         DialogCamera = false,
+        NoRethink    = true,
         MC           = {
             {"Zu Seite 4 springen", 4},
             {"Zu Seite 7 springen", JumpTo7}
@@ -181,7 +182,6 @@ function Briefing03()
 
     -- Page 4
     local JumpedToPage4 = function()
-        API.StaticNote("4");
     end
     ASP(CastleID, "Seite 4", "Das ist Seite 4!", false, JumpedToPage4);
     -- Page 5
@@ -190,7 +190,6 @@ function Briefing03()
 
     -- Page 7
     local JumpedToPage7 = function()
-        API.StaticNote("7");
     end
     ASP(CastleID, "Seite 7", "Das ist Seite 7!", false, JumpedToPage7);
     -- Page 8
@@ -199,6 +198,7 @@ function Briefing03()
     Briefing.Starting = function(_Data)
     end
     Briefing.Finished = function(_Data)
+        API.StaticNote(ReallyImportantChoice:GetSelectedAnswer());
     end
     return API.StartBriefing(Briefing)
 end

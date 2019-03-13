@@ -34,6 +34,39 @@ QSB = QSB or {};
 ---
 -- Startet ein Briefing.
 --
+-- Für ein Briefing könn verschiedene spezielle Einstellungen vorgenommen
+-- werden. Jede dieser Einstellungen wird mit true aktiviert.
+-- <table border="1">
+-- <tr>
+-- <td><b>Einstellung</b></td>
+-- <td><b>Beschreibung</b></td>
+-- </tr>
+-- <tr>
+-- <td>HideBorderPins</td>
+-- <td>Die Grenzsteine werden während des Briefing ausgeblendet</td>
+-- </tr>
+-- <tr>
+-- <td>ShowSky</td>
+-- <td>Der Himmel wird während des Briefing angezeigt</td>
+-- </tr>
+-- <tr>
+-- <td>RestoreGameSpeed</td>
+-- <td>Die Spielgeschwindigkeit wird nach Ende des Briefing zurückgesetzt</td>
+-- </tr>
+-- <tr>
+-- <td>RestoreCamera</td>
+-- <td>Die Kameraposition vor dem Briefing wird wiederhergestellt</td>
+-- </tr>
+-- <tr>
+-- <td>SkippingAllowed</td>
+-- <td>Das manuelle Springen zwischen Seiten wird erlaubt.</td>
+-- </tr>
+-- <tr>
+-- <td>ReturnForbidden</td>
+-- <td>Das Zurückspringen zur Vorherigen Seite wird verboten</td>
+-- </tr>
+-- </table>
+--
 -- <b>Alias</b>: StartBriefing
 --
 -- @param[type=table] _Briefing Briefing Definition
@@ -268,6 +301,15 @@ AddPages = API.AddPages;
 -- Die zurückgegebene Zahl ist die Position der Antwort, angefangen von oben.
 -- Wird 0 zurückgegeben, wurde noch nicht geantwortet.
 --
+-- Wenn man zurückblättern erlaubt, aber nicht will, dass die Entscheidung
+-- erneut getroffen werden kann, kann man dies mit NoRethink unterbinden.
+-- <pre>AP {
+--    ...
+--    NoRethink = true,
+--}
+-- Auf diese Weise hat der Spieler die Möglichkeit die Texte nach der letzten
+-- Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändert.
+--
 -- @param[type=table] _Page Spezifikation der Seite
 -- @return[type=table] Refernez auf die angelegte Seite
 -- @within Briefing
@@ -331,7 +373,13 @@ BundleBriefingSystem = {
             DisplayIngameCutscene = false,
             BriefingActive = false,
             LastSkipButtonPressed = 0,
-        }
+        },
+    },
+
+    Text = {
+        NextButton = {de = "Weiter",  en = "Forward"},
+        PrevButton = {de = "Zurück",  en = "Previous"},
+        EndButton  = {de = "Beenden", en = "Close"},
     },
 }
 
@@ -362,6 +410,7 @@ function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
     _Briefing.RestoreGameSpeed = _Briefing.restoreGameSpeed or _Briefing.RestoreGameSpeed;
     _Briefing.RestoreCamera = _Briefing.restoreCamera or _Briefing.RestoreCamera;
     _Briefing.SkippingAllowed = (_Briefing.skipPerPage or _Briefing.skipAll) or _Briefing.SkippingAllowed;
+    _Briefing.ReturnForbidden = _Briefing.returnForbidden or _Briefing.ReturnForbidden;
     _Briefing.Finished = _Briefing.finished or _Briefing.Finished;
     _Briefing.Starting = _Briefing.starting or _Briefing.Starting;
     
@@ -380,6 +429,7 @@ function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
             _Briefing[k].FaderAlpha = v.faderAlpha or _Briefing[k].FaderAlpha;
             _Briefing[k].DialogCamera = v.dialogCamera or _Briefing[k].DialogCamera;
             _Briefing[k].Portrait = v.portrait or _Briefing[k].Portrait;
+            _Briefing[k].NoRethink = v.noRethink or _Briefing[k].NoRethink;
             -- Splashscreen
             if v.splashscreen then
                 v.Splashscreen = v.splashscreen;
@@ -419,6 +469,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     self.Data.BriefingID = self.Data.BriefingID +1;
     self.Data.CurrentBriefing = _Briefing;
     self.Data.CurrentBriefing.Page = 1;
+    self.Data.CurrentBriefing.PageHistory = {};
     self.Data.CurrentBriefing.ID = self.Data.BriefingID;
     if self.Data.CurrentBriefing.DisableGlobalInvulnerability ~= false then
         Logic.SetGlobalInvulnerability(1);
@@ -461,13 +512,19 @@ end
 function BundleBriefingSystem.Global:PageStarted()
     local PageID = self.Data.CurrentBriefing.Page;
     if PageID then
-        if type(self.Data.CurrentBriefing[PageID]) == "table" or self.Data.CurrentBriefing[PageID] > 0 then
-            if self.Data.CurrentBriefing[PageID].Action then
-                self.Data.CurrentBriefing[PageID]:Action();
+        if type(self.Data.CurrentBriefing[PageID]) == "table" then
+            if type(self.Data.CurrentBriefing[PageID]) == "table" then
+                if self.Data.CurrentBriefing[PageID].Action then
+                    self.Data.CurrentBriefing[PageID]:Action();
+                end
+                self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
+                self.Data.CurrentPage.Started = Logic.GetTime();
+                API.Bridge("BundleBriefingSystem.Local:PageStarted()");
             end
-            self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
-            self.Data.CurrentPage.Started = Logic.GetTime();
-            API.Bridge("BundleBriefingSystem.Local:PageStarted()");
+        elseif type(self.Data.CurrentBriefing[PageID]) == "number" and self.Data.CurrentBriefing[PageID] > 0 then
+            self.Data.CurrentBriefing.Page = self.Data.CurrentBriefing[PageID];
+            API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
+            self:PageStarted();
         else
             self:FinishBriefing();
         end
@@ -480,6 +537,9 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:PageFinished()
+    local PageID = self.Data.CurrentBriefing.Page;
+
+
     API.Bridge("BundleBriefingSystem.Local:PageFinished()");
     self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
     local PageID = self.Data.CurrentBriefing.Page;
@@ -528,20 +588,16 @@ end
 function BundleBriefingSystem.Global.BriefingExecutionController()
     if not BundleBriefingSystem.Global.Data.DisplayIngameCutscene then
         if BundleBriefingSystem.Global:IsBriefingActive() then
-            if type(BundleBriefingSystem.Global.Data.CurrentPage) == "number" then
-                local PageID = BundleBriefingSystem.Global.Data.CurrentPage;
-                BundleBriefingSystem.Global.Data.CurrentBriefing.Page = PageID;
-                API.Bridge("BundleBriefingSystem.Global.Data.CurrentBriefing.Page = " ..PageID);
-                BundleBriefingSystem.Global:PageStarted();
-
-            elseif BundleBriefingSystem.Global.Data.CurrentPage == nil then
+            if BundleBriefingSystem.Global.Data.CurrentPage == nil then
                 BundleBriefingSystem.Global:FinishBriefing();
 
-            else
+            elseif type(BundleBriefingSystem.Global.Data.CurrentPage) == "table" then
                 if BundleBriefingSystem.Global.Data.CurrentPage then
                     local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
                     if Duration > -1 then
                         if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
+                            local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
+                            API.Bridge("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
                             BundleBriefingSystem.Global:PageFinished();
                         end
                     end
@@ -659,19 +715,28 @@ end
 --
 function BundleBriefingSystem.Local:PageStarted()
     local PageID = self.Data.CurrentBriefing.Page;
+    self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
     if type(self.Data.CurrentPage) == "table" then
-        if PageID > 1 and self.Data.CurrentPage then
-            self.Data.LastPage = self.Data.CurrentPage;
-        end
-        self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
         self.Data.CurrentPage.Started = Logic.GetTime();
 
-        -- Skip-Button
+        -- Zurück und Weiter
+        local BackFlag = 1;
         local SkipFlag = 1;
-        if not self.Data.CurrentBriefing.SkippingAllowed or self.Data.CurrentPage.NoSkipping then 
+        if not self.Data.CurrentBriefing.SkippingAllowed or self.Data.CurrentPage.NoSkipping then
+            if self.Data.CurrentPage.MC then
+                table.insert(self.Data.CurrentBriefing.PageHistory, PageID);
+            end
             SkipFlag = 0;
+            BackFlag = 0;
+        end
+        local LastPageID = self.Data.CurrentBriefing.PageHistory[#self.Data.CurrentBriefing.PageHistory];
+        local LastPage = self.Data.CurrentBriefing[LastPageID];
+        local NoRethinkMC = (type(LastPage) == "table" and LastPage.NoRethink and 0) or 1;
+        if PageID == 1 or NoRethinkMC == 0 or self.Data.CurrentBriefing.ReturnForbidden == true then
+            BackFlag = 0;
         end
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", SkipFlag);
+        XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", BackFlag);
 
         -- Rotation an Rotation des Ziels anpassen
         if self.Data.CurrentPage.DialogCamera and IsExisting(self.Data.CurrentPage.Position[1]) then
@@ -717,6 +782,8 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:PageFinished()
+    -- TODO: Warum ist PageHistory hier u.U. nil?
+    -- self.Data.CurrentBriefing.PageHistory = self.Data.CurrentBriefing.PageHistory or {};
     self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
     EndJobEx(self.Data.CurrentBriefing.FaderJob);
 end
@@ -781,6 +848,16 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
                     self:LocalOnMCConfirmed();
                 end
             end
+
+            -- Button Texte
+            local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/StartButton", "{center}" ..BundleBriefingSystem.Text.PrevButton[Language]);
+            local SkipText = BundleBriefingSystem.Text.NextButton[Language];
+            local PageID = self.Data.CurrentBriefing.Page;
+            if PageID == #self.Data.CurrentBriefing or self.Data.CurrentBriefing[PageID+1] == -1 then
+                SkipText = BundleBriefingSystem.Text.EndButton[Language];
+            end
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..SkipText);
         end
     end
 end
@@ -967,15 +1044,48 @@ end
 -- @within Internal
 -- @local
 --
-function BundleBriefingSystem.Local:SkipButtonPressed()
+function BundleBriefingSystem.Local:NextButtonPressed()
     if self.Data.DisplayIngameCutscene then
         if AddOnCutsceneSystem then
-            AddOnCutsceneSystem.Local:SkipButtonPressed();
+            AddOnCutsceneSystem.Local:NextButtonPressed();
         end
     else
         if (self.Data.LastSkipButtonPressed + 500) < Logic.GetTimeMs() then
             self.Data.LastSkipButtonPressed = Logic.GetTimeMs();
+            table.insert(self.Data.CurrentBriefing.PageHistory, self.Data.CurrentBriefing.Page);
             API.Bridge("BundleBriefingSystem.Global:PageFinished()");
+        end
+    end
+end
+
+---
+-- Reagiert auch Klick auf den Back-Button während des Throneroom Mode.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:PrevButtonPressed()
+    if not self.Data.DisplayIngameCutscene then
+        if (self.Data.LastSkipButtonPressed + 500) < Logic.GetTimeMs() then
+            self.Data.LastSkipButtonPressed = Logic.GetTimeMs();
+
+            local LastPageID = table.remove(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory);
+            if not LastPageID then
+                return;
+            end
+            local LastPage = BundleBriefingSystem.Local.Data.CurrentBriefing[LastPageID];
+            if type(LastPage) == "number" then
+                LastPageID = table.remove(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory);
+                LastPage = BundleBriefingSystem.Local.Data.CurrentBriefing[LastPageID];
+            end
+            if not LastPageID or LastPageID < 1 or not LastPage then
+                return;
+            end
+
+            BundleBriefingSystem.Local.Data.CurrentBriefing.Page = LastPageID -1;
+            API.Bridge([[
+                BundleBriefingSystem.Global.Data.CurrentBriefing.Page = ]] ..(LastPageID -1).. [[
+                BundleBriefingSystem.Global:PageFinished()
+            ]]);
         end
     end
 end
@@ -1149,16 +1259,16 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.PushPage("/InGame/ThroneRoomBars_Dodge", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_2_Dodge", false);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/Frame", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/DialogBG", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight/FrameEdges", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogBottomRight3pcs", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/KnightInfoButton", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Briefing", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/BackButton", 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Briefing", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/TitleContainer", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Text", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
@@ -1169,8 +1279,10 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
 
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
-
+    local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/Skip");
+    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/StartButton", 20, y);
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
+
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
@@ -1179,7 +1291,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 1);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/KnightBG", 1);
-    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
+    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
     BundleBriefingSystem.Local:SetBarStyle(false);
@@ -1283,11 +1395,30 @@ function BundleBriefingSystem.Local:OverrideThroneRoomFunctions()
         if BundleBriefingSystem then
             if BundleBriefingSystem.Local.Data.DisplayIngameCutscene then
                 if AddOnCutsceneSystem then
-                    AddOnCutsceneSystem.Local:SkipButtonPressed();
+                    AddOnCutsceneSystem.Local:NextButtonPressed();
                 end
             else
-                BundleBriefingSystem.Local:SkipButtonPressed();
+                BundleBriefingSystem.Local:NextButtonPressed();
             end
+        end
+    end
+
+    OnStartButtonPressed = function()
+        if BundleBriefingSystem then
+            BundleBriefingSystem.Local:PrevButtonPressed();
+        end
+    end
+
+    OnBackButtonPressed = function()
+        if BundleBriefingSystem then
+            BundleBriefingSystem.Local:PrevButtonPressed();
+        end
+    end
+
+    BundleBriefingSystem.Local.GameCallback_Escape = GameCallback_Escape;
+    GameCallback_Escape = function()
+        if not BundleBriefingSystem.Local:IsBriefingActive() then
+            BundleBriefingSystem.Local.GameCallback_Escape();
         end
     end
 end
