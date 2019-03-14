@@ -640,7 +640,9 @@ function BundleBriefingSystem.Global.BriefingExecutionController()
                     if Duration > -1 then
                         if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
                             local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
-                            API.Bridge("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
+                            if not BundleBriefingSystem.Global.Data.CurrentPage.NoHistory then
+                                API.Bridge("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
+                            end
                             BundleBriefingSystem.Global:PageFinished();
                         end
                     end
@@ -766,7 +768,7 @@ function BundleBriefingSystem.Local:PageStarted()
         local BackFlag = 1;
         local SkipFlag = 1;
         if not self.Data.CurrentBriefing.SkippingAllowed or self.Data.CurrentPage.NoSkipping then
-            if self.Data.CurrentPage.MC then
+            if self.Data.CurrentPage.MC and not self.Data.CurrentPage.NoHistory then
                 table.insert(self.Data.CurrentBriefing.PageHistory, PageID);
             end
             SkipFlag = 0;
@@ -1084,6 +1086,10 @@ end
 
 ---
 -- Reagiert auf Klick auf den Skip-Button während des Throneroom Mode.
+--
+-- Wenn eine Cutscene aktiv ist, wird die überschriebene Methode aus dem
+-- Addon benutzt.
+--
 -- @within Internal
 -- @local
 --
@@ -1095,7 +1101,12 @@ function BundleBriefingSystem.Local:NextButtonPressed()
     else
         if (self.Data.LastSkipButtonPressed + 500) < Logic.GetTimeMs() then
             self.Data.LastSkipButtonPressed = Logic.GetTimeMs();
-            table.insert(self.Data.CurrentBriefing.PageHistory, self.Data.CurrentBriefing.Page);
+            if not self.Data.CurrentPage.NoHistory then
+                table.insert(self.Data.CurrentBriefing.PageHistory, self.Data.CurrentBriefing.Page);
+            end
+            if self.Data.CurrentPage.OnForward then
+                API.Bridge("BundleBriefingSystem.Global.CurrentPage:OnForward()");
+            end
             API.Bridge("BundleBriefingSystem.Global:PageFinished()");
         end
     end
@@ -1124,6 +1135,9 @@ function BundleBriefingSystem.Local:PrevButtonPressed()
                 return;
             end
 
+            if self.Data.CurrentPage.OnReturn then
+                API.Bridge("BundleBriefingSystem.Global.CurrentPage:OnReturn()");
+            end
             BundleBriefingSystem.Local.Data.CurrentBriefing.Page = LastPageID -1;
             API.Bridge([[
                 BundleBriefingSystem.Global.Data.CurrentBriefing.Page = ]] ..(LastPageID -1).. [[
