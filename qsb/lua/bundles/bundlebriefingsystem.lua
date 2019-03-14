@@ -149,6 +149,10 @@ function API.AddPages(_Briefing)
         fatal("API.AddPages: Cannot be used from local script!");
         return;
     end
+    _Briefing.GetPage = function(self, _NameOrID)
+        local ID = BundleBriefingSystem.Global:GetPageIDByName(_NameOrID);
+        return BundleBriefingSystem.Global.Data.CurrentBriefing[ID];
+    end
 
     local AP = function(_Page)
         if type(_Page) == "table" then
@@ -283,7 +287,7 @@ AddPages = API.AddPages;
 -- In einem Dialog kann der Spieler auch zur Auswahl einer Option gebeten
 -- werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
 -- in eine Subtable MC.
--- <pre>ReallyImportantChoice = AP {
+-- <pre>AP {
 --    ...
 --    MC = {
 --        {"Antwort 1", 5},
@@ -298,11 +302,13 @@ AddPages = API.AddPages;
 -- Soll stattdessen zu einer anderen Seite gesprungen werden, kann bei AP die
 -- ID der Seite angeben werden, zu der gesprungen werden soll.
 -- <pre>AP(8)</pre>
--- Es ist zu beachten, dass auch so ein Aufruf von AP als Seite zählt.
+-- Pages können auch einen Namen erhalten. Der Name kann anstelle der ID für
+-- Sprünge und Multiple Choice genutzt werden.
+-- <pre>AP("SomePageID")</pre>
 --
 -- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
--- erfahren, muss eine Referenz auf die Seite benutzt werden.
--- <pre>local Choosen = ReallyImportantChoice:GetSelectedAnswer();</pre>
+-- erfahren, muss der Name der Seite oder die ID genutzt werden.
+-- <pre>local Choosen = Briefing:GetPage("Choice"):GetSelectedAnswer();</pre>
 -- Die zurückgegebene Zahl ist die Position der Antwort, angefangen von oben.
 -- Wird 0 zurückgegeben, wurde noch nicht geantwortet.
 --
@@ -311,7 +317,7 @@ AddPages = API.AddPages;
 -- <pre>AP {
 --    ...
 --    NoRethink = true,
---}
+--}</pre>
 -- Auf diese Weise hat der Spieler die Möglichkeit die Texte nach der letzten
 -- Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändert.
 --
@@ -435,6 +441,7 @@ function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
             _Briefing[k].DialogCamera = v.dialogCamera or _Briefing[k].DialogCamera;
             _Briefing[k].Portrait = v.portrait or _Briefing[k].Portrait;
             _Briefing[k].NoRethink = v.noRethink or _Briefing[k].NoRethink;
+            _Briefing[k].NoHistory = v.noHistory or _Briefing[k].NoHistory;
             -- Splashscreen
             if v.splashscreen then
                 v.Splashscreen = v.splashscreen;

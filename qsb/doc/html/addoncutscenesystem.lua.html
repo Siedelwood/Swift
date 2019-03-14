@@ -32,6 +32,9 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#_Anwenderfunktionen"> Anwenderfunktionen
+
+</a></li>
 </ul>
 
 
@@ -73,16 +76,21 @@ cs01_flight2.cs
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.IsCutsceneActive">API.IsCutsceneActive ()</a></td>
-	<td class="summary">Prüft, ob zur Zeit eine Cutscene aktiv ist.</td>
+	<td class="name" nowrap><a href="#API.CutsceneSetFastForwardSpeed">API.CutsceneSetFastForwardSpeed (_Speed)</a></td>
+	<td class="summary">Setzt die Geschwindigkeit für den schnellen Vorlauf für alle Cutscenes.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.IsCutsceneFinished">API.IsCutsceneFinished (_ID)</a></td>
-	<td class="summary">Prüft, ob die Cutscene mit der ID beendet ist.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.StartCutscene">API.StartCutscene (_Cutscene)</a></td>
+	<td class="name" nowrap><a href="#API.CutsceneStart">API.CutsceneStart (_Cutscene)</a></td>
 	<td class="summary">Startet eine Cutscene.</td>
+	</tr>
+</table>
+<h2><a href="#_Anwenderfunktionen"> Anwenderfunktionen
+
+</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.CutsceneIsActive">API.CutsceneIsActive ()</a></td>
+	<td class="summary">Prüft, ob zur Zeit eine Cutscene aktiv ist.</td>
 	</tr>
 </table>
 
@@ -94,60 +102,36 @@ cs01_flight2.cs
 
     <dl class="function">
     <dt>
-    <a name = "API.IsCutsceneActive"></a>
-    <strong>API.IsCutsceneActive ()</strong>
+    <a name = "API.CutsceneSetFastForwardSpeed"></a>
+    <strong>API.CutsceneSetFastForwardSpeed (_Speed)</strong>
     </dt>
     <dd>
-    Prüft, ob zur Zeit eine Cutscene aktiv ist.
-
- <b>Alias</b>: IsCutsceneActive
-
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Cutscene aktiv
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.IsCutsceneFinished"></a>
-    <strong>API.IsCutsceneFinished (_ID)</strong>
-    </dt>
-    <dd>
-    Prüft, ob die Cutscene mit der ID beendet ist.
-
- <b>Alias</b>: IsCutsceneFinished
+    Setzt die Geschwindigkeit für den schnellen Vorlauf für alle Cutscenes.
+<p> Beim schnellen Vorlauf wird eine Cutscene beschleunigt abgespielt.
+<p> <b>Alias</b>: SetCutsceneFastForwardSpeed
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_ID</span>
-
+        <li><span class="parameter">_Speed</span>
+            <span class="types"><span class="type">number</span></span>
+         Geschwindigkeit
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Cutscene aktiv
-    </ol>
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CutsceneSetFastForwardSpeed(<span class="number">6</span>);</pre>
+    </ul>
 
 </dd>
     <dt>
-    <a name = "API.StartCutscene"></a>
-    <strong>API.StartCutscene (_Cutscene)</strong>
+    <a name = "API.CutsceneStart"></a>
+    <strong>API.CutsceneStart (_Cutscene)</strong>
     </dt>
     <dd>
     Startet eine Cutscene.
@@ -157,15 +141,20 @@ cs01_flight2.cs
  Briefing System für einen Vergleich.
 <p> Das Gerüst für eine Cutscene sieht wie folgt aus:
  <pre>local Cutscene = {
-    DisableSkipping = false, -- Deaktiviere Abbrechen der Cutscene
+    CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
     RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
-    RestoreCamera = true,    -- Kameraposition wird zurückgesetzt
+    TransperentBars = false, -- Durchsichtige Bars verwenden
+    HideBorderPins = true,   -- Grenzsteine ausblenden
+    FastForward = false,     -- Beschleunigt abspielen erlauben
 <p>    ... -- Hier nacheinander die Flights auflisten
-<p>    Finished = function(_Data)
-         -- Hier kann eine abschließende Aktion ausgeführt werden.
+<p>    Starting = function(_Data)
+        -- Hier werden Aktionen vor dem Start ausgeführt.
+    end,
+    Finished = function(_Data)
+        -- Hier kann eine abschließende Aktion ausgeführt werden.
     end
- };
- return API.StartCutscene(Cutscene);</pre>
+};
+return API.StartCutscene(Cutscene);</pre>
 <p> Die einzelnen Flights werden nacheinander als Tables angegeben:
  <pre>{
     Flight = "some_file", -- .cs wird nicht mit angegeben!
@@ -178,6 +167,10 @@ cs01_flight2.cs
  Ersetze ... mit den Flights, die zur Cutscene gehören sollen.
 <p> Die Funktion gibt die ID der Cutscene zurück, mit der geprüft werden kann,
  ob die Cutscene beendet ist.
+<p> <b>Hinweis</b>: Überschreibt die gleichnamige Funktion im Briefing System
+ und gibt ihr neue Funktionalität! Fake Cutscenes müssen jetzt über den
+ folgenden Aufruf gestartet werden:
+ <pre>StartBriefing(MyCutscene, true)</pre>
 
  <b>Alias</b>: StartCutscene
 
@@ -203,13 +196,42 @@ cs01_flight2.cs
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="_Anwenderfunktionen"></a> Anwenderfunktionen
+
+</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.CutsceneIsActive"></a>
+    <strong>API.CutsceneIsActive ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob zur Zeit eine Cutscene aktiv ist.
+
+ <b>Alias</b>: IsCutsceneActive
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Cutscene aktiv
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-04 10:46:53 </i>
+<i style="float:right;">Last updated 2019-03-14 19:37:56 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
