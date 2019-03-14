@@ -169,29 +169,30 @@ function Briefing03()
         return 7;
     end
     local ReallyImportantChoice = AP {
+        Name         = "ChoicePage1",
         position     = CastleID,
         title        = "Auswahl",
         text         = "Eine wichtige Entscheidung muss getroffen werden!",
         DialogCamera = false,
         NoRethink    = true,
         MC           = {
-            {"Zu Seite 4 springen", 4},
-            {"Zu Seite 7 springen", JumpTo7}
+            {"Zu Seite 4 springen", "ResultPage1"},
+            {"Zu Seite 7 springen", "ResultPage2"}
         }
     }
 
     -- Page 4
     local JumpedToPage4 = function()
     end
-    ASP(CastleID, "Seite 4", "Das ist Seite 4!", false, JumpedToPage4);
+    ASP("ResultPage1", CastleID, "Seite 4", "Das ist Seite 4!", false, JumpedToPage4);
     -- Page 5
     ASP(CastleID, "Seite 5", "Das ist Seite 5!", false);
-    AP();
+    AP("ChoicePage1");
 
     -- Page 7
     local JumpedToPage7 = function()
     end
-    ASP(CastleID, "Seite 7", "Das ist Seite 7!", false, JumpedToPage7);
+    ASP("ResultPage2", CastleID, "Seite 7", "Das ist Seite 7!", false, JumpedToPage7);
     -- Page 8
     ASP(CastleID, "Seite 8", "Das ist Seite 8!", false);
 

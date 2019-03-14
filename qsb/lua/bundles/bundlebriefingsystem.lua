@@ -215,13 +215,18 @@ function API.AddPages(_Briefing)
         return _Page;
     end
 
-    local ASP = function(_Entity, _Title, _Text, _DialogCamera, _Action)
+    local ASP = function(...)
+        local Name;
+        if #arg > 5 then
+            PageName = table.remove(arg, 1);
+        end
         return AP {
-            Title        = _Title,
-            Text         = _Title,
-            Position     = _Entity,
-            DialogCamera = _DialogCamera == true,
-            Action       = _Action
+            Name         = PageName,
+            Title        = arg[2],
+            Text         = arg[3],
+            Position     = arg[1],
+            DialogCamera = arg[4] == true,
+            Action       = arg[5]
         }
     end
     return AP, ASP;
@@ -505,6 +510,32 @@ function BundleBriefingSystem.Global:FinishBriefing()
 end
 
 ---
+-- Gibt die Page-ID zum angegebenen Page-Namen zurück.
+--
+-- Wenn keine Seite gefunden wird, die den angegebenen Namen hat, wird 0
+-- zurückgegeben. Wenn eine Page-ID angegeben wird, wird diese zurückgegeben.
+--
+-- @param[type=string] _PageName Name der Seite
+-- @return[type=number] ID der Seite
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:GetPageIDByName(_PageName)
+    if self.Data.CurrentBriefing then
+        if type(_PageName) == "number" then
+            return _PageName;
+        end
+        for i= 1, #self.Data.CurrentBriefing, 1 do
+            local Page = self.Data.CurrentBriefing[i];
+            if Page and type(Page) == "table" and Page.Name == _PageName then
+                return i;
+            end
+        end
+    end
+    return 0;
+end
+
+---
 -- Startet die aktuelle Briefing-Seite.
 -- @within Internal
 -- @local
@@ -521,10 +552,22 @@ function BundleBriefingSystem.Global:PageStarted()
                 self.Data.CurrentPage.Started = Logic.GetTime();
                 API.Bridge("BundleBriefingSystem.Local:PageStarted()");
             end
+
+        elseif type(self.Data.CurrentBriefing[PageID]) == "string" then
+            PageID = self:GetPageIDByName(self.Data.CurrentBriefing[PageID]);
+            if PageID > 0 then
+                self.Data.CurrentBriefing.Page = PageID;
+                API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..PageID);
+                self:PageStarted();
+            else
+                self:FinishBriefing();
+            end
+
         elseif type(self.Data.CurrentBriefing[PageID]) == "number" and self.Data.CurrentBriefing[PageID] > 0 then
             self.Data.CurrentBriefing.Page = self.Data.CurrentBriefing[PageID];
             API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
             self:PageStarted();
+
         else
             self:FinishBriefing();
         end
@@ -571,9 +614,9 @@ function BundleBriefingSystem.Global:OnMCConfirmed(_Selected)
         self.Data.CurrentBriefing[PageID].MC.Selected = _Selected;
         local JumpTarget = self.Data.CurrentPage.MC[_Selected][2];
         if type(JumpTarget) == "function" then
-            self.Data.CurrentBriefing.Page = JumpTarget(self.Data.CurrentPage)-1;
+            self.Data.CurrentBriefing.Page = self:GetPageIDByName(JumpTarget(self.Data.CurrentPage))-1;
         else
-            self.Data.CurrentBriefing.Page = JumpTarget-1;
+            self.Data.CurrentBriefing.Page = self:GetPageIDByName(JumpTarget)-1;
         end
         API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
         self:PageFinished();
