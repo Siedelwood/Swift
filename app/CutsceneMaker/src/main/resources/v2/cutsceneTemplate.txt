@@ -6,6 +6,7 @@ function %s()
         FastForward      = %b,
 
 %s
+        Starting = %s;
         Finished = %s;
     };
     return API.CutsceneStart(Cutscene);

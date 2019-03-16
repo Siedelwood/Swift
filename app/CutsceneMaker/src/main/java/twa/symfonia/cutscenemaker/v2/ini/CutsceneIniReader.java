@@ -69,6 +69,7 @@ public class CutsceneIniReader {
             fastForward = "false";
         }
 
+        String startingFunction = iniFile.get("Cutscene", "StartingFunction");
         String finishedFunction = iniFile.get("Cutscene", "FinishedFunction");
 
         return new FlightData(
@@ -77,6 +78,7 @@ public class CutsceneIniReader {
                 Boolean.parseBoolean(hideBorderPins),
                 Boolean.parseBoolean(transperentBars),
                 Boolean.parseBoolean(fastForward),
+                (startingFunction == null) ? "nil" : startingFunction,
                 (finishedFunction == null) ? "nil" : finishedFunction
         );
     }

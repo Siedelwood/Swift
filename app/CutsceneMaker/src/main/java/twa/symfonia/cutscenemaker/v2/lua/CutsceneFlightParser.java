@@ -33,13 +33,15 @@ public class CutsceneFlightParser {
      * @param hideBorderPins Show border pins
      * @param restoreGameSpeed Reset game speed
      * @param transparentBars Show transparent bars
+     * @param startingFunction Starting function
      * @param finishedFunction Finished function
      * @return New flight
      */
     public Flight createFlightWithDefaults(
-        List<Root> flights, boolean restoreGameSpeed, boolean hideBorderPins, boolean transparentBars, boolean fastForward, String finishedFunction
+        List<Root> flights, boolean restoreGameSpeed, boolean hideBorderPins, boolean transparentBars, boolean fastForward,
+        String startingFunction, String finishedFunction
     ) {
-        return new Flight(createFlightEntriesWithDefaults(flights), restoreGameSpeed, hideBorderPins, transparentBars, fastForward, finishedFunction);
+        return new Flight(createFlightEntriesWithDefaults(flights), restoreGameSpeed, hideBorderPins, transparentBars, fastForward, startingFunction, finishedFunction);
     }
 
     /**
@@ -65,7 +67,7 @@ public class CutsceneFlightParser {
     public Flight createFlight(List<Root> flights, FlightData flightData) {
         return new Flight(
             createFlightEntries(flights, flightData), flightData.isRestoreGameTime(), flightData.isHideBorderPins(), flightData.isTransparentBars(),
-            flightData.isFastForward(), flightData.getFinishedFunction()
+            flightData.isFastForward(), flightData.getStartingFunction(), flightData.getFinishedFunction()
         );
     }
 

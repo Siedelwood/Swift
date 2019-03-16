@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlightData {
+    private String startingFunction;
     private String cutsceneName;
     private boolean restoreGameTime;
     private boolean hideBorderPins;
@@ -16,14 +17,24 @@ public class FlightData {
         flightEntries = new ArrayList<>();
     }
 
-    public FlightData(String cutsceneName, boolean restoreGameTime, boolean hideBorderPins, boolean transparentBars, boolean fastForward, String finishedFunction) {
+    public FlightData(String cutsceneName, boolean restoreGameTime, boolean hideBorderPins, boolean transparentBars, boolean fastForward,
+                      String startingFunction, String finishedFunction) {
         flightEntries = new ArrayList<>();
         this.cutsceneName = cutsceneName;
         this.restoreGameTime = restoreGameTime;
         this.hideBorderPins = hideBorderPins;
         this.transparentBars = transparentBars;
+        this.startingFunction = startingFunction;
         this.finishedFunction = finishedFunction;
         this.fastForward = fastForward;
+    }
+
+    public String getStartingFunction() {
+        return startingFunction;
+    }
+
+    public void setStartingFunction(String startingFunction) {
+        this.startingFunction = startingFunction;
     }
 
     public boolean isFastForward() {
