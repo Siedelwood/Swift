@@ -468,7 +468,7 @@ function QSB.TravelingSalesman:DisplayInfoMessage()
 
         local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local Text = { de = "Ein Schiff hat angelegt. Es bringt Güter von weit her.",
-                       en = "A ship is at the pier. It deliver goods from far away."};
+                       en = "A ship is at the pier. It delivers goods from far away."};
         QuestTemplate:New(
             "TravelingSalesman_Info_P" ..self.m_PlayerID,
             self.m_PlayerID,
