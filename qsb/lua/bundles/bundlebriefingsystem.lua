@@ -178,8 +178,7 @@ function API.AddPages(_Briefing)
                 _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.DLGCAMERA_ZOOMDEFAULT;
                 _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.DLGCAMERA_FOVDEFAULT;
                 _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.DLGCAMERA_ROTATIONDEFAULT;
-            end
-            if _Page.DialogCamera == false then
+            else
                 _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
                 _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
                 _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.CAMERA_FOVDEFAULT;
@@ -503,17 +502,17 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:FinishBriefing()
-    self.Data.FinishedBriefings[self.Data.CurrentBriefing.ID] = true;
-    self.Data.CurrentBriefing = {};
-    self.Data.CurrentPage = {};
-    self.Data.BriefingActive = false;
-
     Logic.SetGlobalInvulnerability(0);
     API.Bridge("BundleBriefingSystem.Local:FinishBriefing()");
 
     if self.Data.CurrentBriefing.Finished then
         self.Data.CurrentBriefing:Finished();
     end
+
+    self.Data.FinishedBriefings[self.Data.CurrentBriefing.ID] = true;
+    self.Data.CurrentBriefing = {};
+    self.Data.CurrentPage = {};
+    self.Data.BriefingActive = false;
 end
 
 ---
@@ -619,11 +618,11 @@ function BundleBriefingSystem.Global:OnMCConfirmed(_Selected)
     if self.Data.CurrentPage.MC then
         local PageID = self.Data.CurrentBriefing.Page;
         self.Data.CurrentBriefing[PageID].MC.Selected = _Selected;
-        local JumpTarget = self.Data.CurrentPage.MC[_Selected][2];
-        if type(JumpTarget) == "function" then
-            self.Data.CurrentBriefing.Page = self:GetPageIDByName(JumpTarget(self.Data.CurrentPage))-1;
+        local JumpData = self.Data.CurrentPage.MC[_Selected];
+        if type(JumpData[2]) == "function" then
+            self.Data.CurrentBriefing.Page = self:GetPageIDByName(JumpData[2](self.Data.CurrentPage, JumpData))-1;
         else
-            self.Data.CurrentBriefing.Page = self:GetPageIDByName(JumpTarget)-1;
+            self.Data.CurrentBriefing.Page = self:GetPageIDByName(JumpData[2])-1;
         end
         API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
         self:PageFinished();
