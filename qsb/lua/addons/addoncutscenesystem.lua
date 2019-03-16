@@ -226,8 +226,8 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene)
         end
         return;
     end
-    if self.Data.CurrentCutscene.Starting then
-        self.Data.CurrentCutscene:Starting();
+    if _Cutscene.Starting then
+        _Cutscene:Starting();
     end
 
     BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
@@ -504,7 +504,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnCutsceneSystem.Local:SkipButtonPressed()
+function AddOnCutsceneSystem.Local:NextButtonPressed()
     if self:IsCutsceneActive() then
         if Game.GameTimeGetFactor() > 1 then
             Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
