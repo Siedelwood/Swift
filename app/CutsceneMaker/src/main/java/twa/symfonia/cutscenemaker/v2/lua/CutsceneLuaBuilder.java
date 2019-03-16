@@ -58,6 +58,7 @@ public class CutsceneLuaBuilder {
             flight.isHideBorderPins(),
             flight.isFastForward(),
             buildFlightEntries(flight),
+            flight.getStartingFunction(),
             flight.getFinishedFunction()
         );
     }
