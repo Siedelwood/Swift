@@ -1272,10 +1272,18 @@ Core:RegisterBehavior(b_Goal_BuildRoad);
 
 
 ---
--- Eine Mauer muss die Bewegung eines Spielers zwischen 2 Punkten einschränken.
+-- Eine Mauer muss gebaut werden um die Bewegung eines Spielers einzuschränken.
+-- 
+-- Einschränken bedeutet, dass sich der angegebene Spieler nicht von Punkt A
+-- nach Punkt B bewegen kann, weil eine Mauer im Weg ist. Die Punkte sind
+-- frei wählbar. In den meisten Fällen reicht es, Marktplätze anzugeben.
 --
--- <b>Achtung:</b> Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt gewertet
--- werden, wenn der Weg durch Wasser blockiert wird!
+-- Beispiel: Spieler 3 ist der Feind von Spieler 1, aber Bekannt mit Spieler 2.
+-- Wenn er sich nicht mehr zwischen den Marktplätzen von Spieler 1 und 2
+-- bewegen kann, weil eine Mauer dazwischen ist, ist das Ziel erreicht.
+--
+-- <b>Achtung:</b> Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt
+-- gewertet werden, wenn der Weg durch Wasser blockiert wird!
 --
 -- @param _PlayerID  PlayerID, die blockiert wird
 -- @param _Position1 Erste Position
