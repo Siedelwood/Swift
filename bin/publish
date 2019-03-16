@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 echo "==== QSB zusammenbauen ===="
 ./build -userdoc
@@ -8,8 +8,7 @@ echo "==== Release erzeugen ===="
 echo "Erzeuge Release-Verzeichnis..."
 cd ..
 rm -rf Release &>/dev/null
-mkdir -p Release/src/advanced
-mkdir -p Release/src/beginner
+mkdir -p Release/src
 mkdir -p Release/bin
 echo "Fertig!"
 
@@ -35,9 +34,9 @@ echo "Kopiere Map Iconator..."
 cp -r bin/MapIconator.jar Release/bin/MapIconator.jar &>/dev/null
 echo "Fertig!"
 
-echo "Siedelwood Cutscene Assistant kopieren..."
-cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
-echo "Fertig!"
+#echo "Siedelwood Cutscene Assistant kopieren..."
+#cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
+#echo "Fertig!"
 
 echo "Cutscene Maker kopieren..."
 cp -r "app/CutsceneMaker/CutsceneMaker.jar" Release/bin/CutsceneMaker.jar &>/dev/null

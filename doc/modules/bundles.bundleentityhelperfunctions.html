@@ -36,16 +36,17 @@
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
-<li><a href="#User_Spase">User Spase</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
   <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
   <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
@@ -53,13 +54,14 @@
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
   <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
-  <li><a href="../modules/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><strong>bundles.bundleentityhelperfunctions</strong></li>
-  <li><a href="../modules/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
   <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
   <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
@@ -67,6 +69,7 @@
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
@@ -139,6 +142,11 @@
 	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
  Basisposition.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetResourceAmount">API.SetResourceAmount (_Entity, _StartAmount, _RefillAmount)</a></td>
+	<td class="summary">Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
+ in einer Mine.</td>
+	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
@@ -152,15 +160,6 @@
  auch während des Spiels setzen zu können.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix">BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix (_Prefix)</a></td>
-	<td class="summary">Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories">BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</a></td>
-	<td class="summary">Ermittelt alle Entities in den Kategorien auf den Territorien für die
- Liste von Parteien und gibt sie als Liste zurück.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetNearestEntity">BundleEntityHelperFunctions.Shared:GetNearestEntity (_eID, _entities)</a></td>
 	<td class="summary">Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
  am nächsten ist.</td>
@@ -169,14 +168,6 @@
 	<td class="name" nowrap><a href="#BundleEntityHelperFunctions.Shared:GetRelativePos">BundleEntityHelperFunctions.Shared:GetRelativePos (_target, _distance, _angle, _buildingRealPos)</a></td>
 	<td class="summary">Errechnet eine Position relativ im angegebenen Winkel und Position zur
  Basisposition.</td>
-	</tr>
-</table>
-<h2><a href="#User_Spase">User Spase</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.SetResourceAmount">API.SetResourceAmount (_Entity, _StartAmount, _RefillAmount)</a></td>
-	<td class="summary">Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
- in einer Mine.</td>
 	</tr>
 </table>
 
@@ -515,6 +506,41 @@
     </ul>
 
 </dd>
+    <dt>
+    <a name = "API.SetResourceAmount"></a>
+    <strong>API.SetResourceAmount (_Entity, _StartAmount, _RefillAmount)</strong>
+    </dt>
+    <dd>
+    Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
+ in einer Mine.
+<p> <p><b>Alias:</b> SetResourceAmount</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+               Rohstoffvorkommen (Skriptname oder ID)
+        </li>
+        <li><span class="parameter">_StartAmount</span>
+            <span class="types"><span class="type">number</span></span>
+          Menge an Rohstoffen
+        </li>
+        <li><span class="parameter">_RefillAmount</span>
+            <span class="types"><span class="type">number</span></span>
+         Minimale Nachfüllmenge (> 0)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SetResourceAmount(<span class="string">"mine1"</span>, <span class="number">250</span>, <span class="number">150</span>);</pre>
+    </ul>
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
@@ -543,66 +569,6 @@
 
 
 
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix"></a>
-    <strong>BundleEntityHelperFunctions.Shared:GetEntitiesByPrefix (_Prefix)</strong>
-    </dt>
-    <dd>
-    Gibt alle Entities zurück, deren Name mit dem Prefix beginnt.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Prefix</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Präfix des Skriptnamen
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Liste mit Entities
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories"></a>
-    <strong>BundleEntityHelperFunctions.Shared:GetEntitiesOfCategoriesInTerritories (_player, _category, _territory)</strong>
-    </dt>
-    <dd>
-    Ermittelt alle Entities in den Kategorien auf den Territorien für die
- Liste von Parteien und gibt sie als Liste zurück.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_player</span>
-              PlayerID [0-8] oder Table mit PlayerIDs (Einzelne Spielernummer oder Table)
-        </li>
-        <li><span class="parameter">_category</span>
-            Kategorien oder Table mit Kategorien (Einzelne Kategorie oder Table)
-        </li>
-        <li><span class="parameter">_territory</span>
-           Zielterritorium oder Table mit Territorien (Einzelnes Territorium oder Table)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Liste mit Resultaten
-    </ol>
 
 
 
@@ -681,52 +647,13 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="User_Spase"></a>User Spase</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.SetResourceAmount"></a>
-    <strong>API.SetResourceAmount (_Entity, _StartAmount, _RefillAmount)</strong>
-    </dt>
-    <dd>
-    Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
- in einer Mine.
-<p> <p><b>Alias:</b> SetResourceAmount</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Entity</span>
-               Rohstoffvorkommen (Skriptname oder ID)
-        </li>
-        <li><span class="parameter">_StartAmount</span>
-            <span class="types"><span class="type">number</span></span>
-          Menge an Rohstoffen
-        </li>
-        <li><span class="parameter">_RefillAmount</span>
-            <span class="types"><span class="type">number</span></span>
-         Minimale Nachfüllmenge (> 0)
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.SetResourceAmount(<span class="string">"mine1"</span>, <span class="number">250</span>, <span class="number">150</span>);</pre>
-    </ul>
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-24 14:20:35 </i>
+<i style="float:right;">Last updated 2019-03-14 19:37:45 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

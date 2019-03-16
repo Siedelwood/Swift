@@ -209,7 +209,7 @@ function API.ConvertTableToString(_Table)
         elseif type(v) == "string" then
             TableString = TableString .. "[" .. key .. "] = \"" .. v .. "\", ";
         elseif type(v) == "boolean" or type(v) == "nil" then
-            TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
+            TableString = TableString .. "[" .. key .. "] = " .. tostring(v) .. ", ";
         else
             TableString = TableString .. "[" .. key .. "] = \"" .. tostring(v) .. "\", ";
         end
@@ -694,7 +694,7 @@ function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreR
         ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
     elseif _good == Goods.G_Medicine then
         ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, x, y,orientation,_player)
-    elseif _good == Goods.G_Gold then
+    elseif _good == Goods.G_Gold or _good == Goods.G_None or _good == Goods.G_Information then
         if _cartOverlay then
             ID = Logic.CreateEntityOnUnblockedLand(_cartOverlay, x, y,orientation,_player)
         else
@@ -1106,7 +1106,7 @@ function API.StartJob(_Function, ...)
     local JobID = Core.Data.Events.JobIDCounter;
     Core.Data.Events.EverySecond[JobID] = {
         Function  = _Function,
-        Arguments = API.InstanceTable({...});
+        Arguments = API.InstanceTable(arg);
     };
     return JobID;
 end
@@ -1128,7 +1128,7 @@ function API.StartHiResJob(_Function, ...)
     local JobID = Core.Data.Events.JobIDCounter;
     Core.Data.Events.EveryTurn[JobID] = {
         Function  = _Function,
-        Arguments = API.InstanceTable({...});
+        Arguments = API.InstanceTable(arg);
     };
     return JobID;
 end
@@ -1751,19 +1751,9 @@ end
 
 function Core.EventJob_EventOnEveryRealTimeSecond()
     if not QSB.RealTime_LastTimeStamp then
-        if GUI then
-            QSB.RealTime_LastTimeStamp = math.floor(XGUIEng.GetSystemTime());
-        else
-            QSB.RealTime_LastTimeStamp = math.floor(Framework.TimeGetTime());
-        end
+        QSB.RealTime_LastTimeStamp = math.floor(Framework.TimeGetTime());
     end
-
-    local CurrentTimeStamp;
-    if GUI then
-        CurrentTimeStamp = math.floor(XGUIEng.GetSystemTime());
-    else
-        CurrentTimeStamp = math.floor(Framework.TimeGetTime());
-    end
+    local CurrentTimeStamp = math.floor(Framework.TimeGetTime());
 
     -- Eine Sekunde ist vergangen
     if QSB.RealTime_LastTimeStamp ~= CurrentTimeStamp then
@@ -1796,3 +1786,4 @@ function Core.EventJob_EventOnEveryTurn()
     end
 end
 CoreEventJob_OnEveryTurn = Core.EventJob_EventOnEveryTurn;
+

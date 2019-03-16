@@ -478,6 +478,7 @@ function QSB.NonPlayerCharacter:RotateActors()
         if x1 == math.floor(x2) and y1 == math.floor(y2) then
             local x, y, z = Logic.EntityGetPos(v);
             Logic.MoveEntity(v, x, y);
+            LookAt(v, self.m_NpcName);
         end
     end
     API.Confront(self.m_NpcName, BundleNonPlayerCharacter.Global.LastHeroEntityID)
@@ -805,7 +806,9 @@ end
 --
 function BundleNonPlayerCharacter.Global.ControlMarker()
     for k, v in pairs(QSB.NonPlayerCharacterObjects) do
-        v:ControlMarker();
+        if IsExisting(v:GetID()) then
+            v:ControlMarker();
+        end
     end
 end
 BundleNonPlayerCharacter_ControlMarkerJob = BundleNonPlayerCharacter.Global.ControlMarker;
@@ -893,8 +896,8 @@ function BundleNonPlayerCharacter.Local:Install()
                 local MoverEntityID = GetEntityId(Quest.Objectives[1].Data[2]);
                 local MoverEntityType = Logic.GetEntityType(MoverEntityID);
                 local MoverIcon = g_TexturePositions.Entities[MoverEntityType];
-                if Quest.Objectives[1].Data[1] == -65567 or not MoverIcon then
-                    MoverIcon = {16,12};
+                if not MoverIcon then
+                    MoverIcon = {7, 9};
                 end
                 SetIcon(QuestObjectiveContainer .. "/IconMover", MoverIcon);
 
@@ -902,7 +905,7 @@ function BundleNonPlayerCharacter.Local:Install()
                 local TargetEntityType = Logic.GetEntityType(TargetEntityID);
                 local TargetIcon = g_TexturePositions.Entities[TargetEntityType];
                 if not TargetIcon then
-                    TargetIcon = {14,10};
+                    TargetIcon = {14, 10};
                 end
 
                 local IconWidget = QuestObjectiveContainer .. "/IconTarget";

@@ -1272,10 +1272,18 @@ Core:RegisterBehavior(b_Goal_BuildRoad);
 
 
 ---
--- Eine Mauer muss die Bewegung eines Spielers zwischen 2 Punkten einschränken.
+-- Eine Mauer muss gebaut werden um die Bewegung eines Spielers einzuschränken.
+-- 
+-- Einschränken bedeutet, dass sich der angegebene Spieler nicht von Punkt A
+-- nach Punkt B bewegen kann, weil eine Mauer im Weg ist. Die Punkte sind
+-- frei wählbar. In den meisten Fällen reicht es, Marktplätze anzugeben.
 --
--- <b>Achtung:</b> Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt gewertet
--- werden, wenn der Weg durch Wasser blockiert wird!
+-- Beispiel: Spieler 3 ist der Feind von Spieler 1, aber Bekannt mit Spieler 2.
+-- Wenn er sich nicht mehr zwischen den Marktplätzen von Spieler 1 und 2
+-- bewegen kann, weil eine Mauer dazwischen ist, ist das Ziel erreicht.
+--
+-- <b>Achtung:</b> Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt
+-- gewertet werden, wenn der Weg durch Wasser blockiert wird!
 --
 -- @param _PlayerID  PlayerID, die blockiert wird
 -- @param _Position1 Erste Position
@@ -2513,12 +2521,19 @@ function b_Goal_MapScriptFunction:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_MapScriptFunction:CustomFunction(_Quest)
+    if type(self.FuncName) == "function" then
+        return self.Function(unpack(self.i47ya_6aghw_frxil));
+    end
     return _G[self.FuncName](self, _Quest);
 end
 
 function b_Goal_MapScriptFunction:Debug(_Quest)
-    if not self.FuncName or not _G[self.FuncName] then
-        fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.FuncName.. "' does not exist!");
+    if not self.FuncName then
+        fatal(_Quest.Identifier.." "..self.Name..": function reference is invalid!");
+        return true;
+    end
+    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+        fatal(_Quest.Identifier.." "..self.Name..": function does not exist!");
         return true;
     end
     return false;
@@ -2794,14 +2809,28 @@ end
 
 function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
     if not self.InternTributeQuest then
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local StartMsg = self.StartMsg;
+        if type(StartMsg) == "table" then
+            StartMsg = StartMsg[Language];
+        end
+        local SuccessMsg = self.SuccessMsg;
+        if type(SuccessMsg) == "table" then
+            SuccessMsg = SuccessMsg[Language];
+        end
+        local FailureMsg = self.FailureMsg;
+        if type(FailureMsg) == "table" then
+            FailureMsg = FailureMsg[Language];
+        end
+
         local QuestID, Quest = QuestTemplate:New (
             _Quest.Identifier.."_TributeDiplomacyQuest" , _Quest.SendingPlayer, _Quest.ReceivingPlayer,
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
             self.TributTime, nil, nil, nil, nil, true, true, nil,
-            self.StartMsg,
-            self.SuccessMsg,
-            self.FailureMsg
+            StartMsg,
+            SuccessMsg,
+            FailureMsg
         );
         self.InternTributeQuest = Quest;
     end
@@ -3001,6 +3030,20 @@ end
 
 function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
     if not self.InternTributeQuest then
+        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local StartMsg = self.StartMsg;
+        if type(StartMsg) == "table" then
+            StartMsg = StartMsg[Language];
+        end
+        local SuccessMsg = self.SuccessMsg;
+        if type(SuccessMsg) == "table" then
+            SuccessMsg = SuccessMsg[Language];
+        end
+        local FailureMsg = self.FailureMsg;
+        if type(FailureMsg) == "table" then
+            FailureMsg = FailureMsg[Language];
+        end
+
         local OnFinished = function()
             self.Time = Logic.GetTime();
         end
@@ -3009,9 +3052,9 @@ function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
             {{ Objective.Deliver, {Goods.G_Gold, self.Amount}}},
             {{ Triggers.Time, 0 }},
             self.TributTime, nil, nil, OnFinished, nil, true, true, nil,
-            self.StartMsg,
-            self.SuccessMsg,
-            self.FailureMsg
+            StartMsg,
+            SuccessMsg,
+            FailureMsg
         );
         self.InternTributeQuest = Quest;
     end
@@ -4086,25 +4129,25 @@ end
 
 function b_Reprisal_MapScriptFunction:AddParameter(_Index, _Parameter)
     if _Index == 0 then
-        self.Function = _Parameter;
+        self.FuncName = _Parameter;
     end
 end
 
 function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
-    if type(self.Function) == "function" then
+    if type(self.FuncName) == "function" then
         self.Function(unpack(self.i47ya_6aghw_frxil));
         return;
     end
-    _G[self.Function](self, _Quest);
+    _G[self.FuncName](self, _Quest);
 end
 
 function b_Reprisal_MapScriptFunction:Debug(_Quest)
-    if not self.Function then
-        fatal("".._Quest.Identifier.." "..self.Name..": function reference is invalid!");
+    if not self.FuncName then
+        fatal(_Quest.Identifier.." "..self.Name..": function reference is invalid!");
         return true;
     end
-    if type(self.Function) == "string" and not _G[self.Function] then
-        fatal("".._Quest.Identifier.." "..self.Name..": function '" ..self.Function.. "' does not exist!");
+    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+        fatal(_Quest.Identifier.." "..self.Name..": function does not exist!");
         return true;
     end
     return false;
@@ -4580,19 +4623,23 @@ function b_Reward_TradeOffers:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.PlayerID = _Parameter
     elseif (_Index == 1) then
-        self.AmountOffer1 = tonumber(_Parameter)
+        _Parameter = _Parameter or 0;
+        self.AmountOffer1 = _Parameter * 1;
     elseif (_Index == 2) then
         self.Offer1 = _Parameter
     elseif (_Index == 3) then
-        self.AmountOffer2 = tonumber(_Parameter)
+        _Parameter = _Parameter or 0;
+        self.AmountOffer2 = _Parameter * 1;
     elseif (_Index == 4) then
         self.Offer2 = _Parameter
     elseif (_Index == 5) then
-        self.AmountOffer3 = tonumber(_Parameter)
+        _Parameter = _Parameter or 0;
+        self.AmountOffer3 = _Parameter * 1;
     elseif (_Index == 6) then
         self.Offer3 = _Parameter
     elseif (_Index == 7) then
-        self.AmountOffer4 = tonumber(_Parameter)
+        _Parameter = _Parameter or 0;
+        self.AmountOffer4 = _Parameter * 1;
     elseif (_Index == 8) then
         self.Offer4 = _Parameter
     end
@@ -8258,24 +8305,30 @@ b_Trigger_MapScriptFunction = {
     },
 }
 
-function b_Trigger_MapScriptFunction:GetTriggerTable(__quest_)
+function b_Trigger_MapScriptFunction:GetTriggerTable(_Quest)
     return {Triggers.Custom2, {self, self.CustomFunction}};
 end
 
-function b_Trigger_MapScriptFunction:AddParameter(__Index_, __parameter_)
-    if (__Index_ == 0) then
-        self.FuncName = __parameter_
+function b_Trigger_MapScriptFunction:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.FuncName = _Parameter
     end
 end
 
-function b_Trigger_MapScriptFunction:CustomFunction(__quest_)
-    return _G[self.FuncName](self, __quest_);
+function b_Trigger_MapScriptFunction:CustomFunction(_Quest)
+    if type(self.FuncName) == "function" then
+        return self.Function(unpack(self.i47ya_6aghw_frxil));
+    end
+    return _G[self.FuncName](self, _Quest);
 end
 
-function b_Trigger_MapScriptFunction:Debug(__quest_)
-    if not self.FuncName or not _G[self.FuncName] then
-        local text = string.format("%s Trigger_MapScriptFunction: function '%s' does not exist!", __quest_.Identifier, tostring(self.FuncName));
-        fatal(text);
+function b_Trigger_MapScriptFunction:Debug(_Quest)
+    if not self.FuncName then
+        fatal(_Quest.Identifier.." "..self.Name..": function reference is invalid!");
+        return true;
+    end
+    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+        fatal(_Quest.Identifier.." "..self.Name..": function does not exist!");
         return true;
     end
     return false;
@@ -8593,6 +8646,7 @@ BundleClassicBehaviors = {
 -- @local
 --
 function BundleClassicBehaviors.Global:Install()
+    self:OverrideIsObjectiveCompleted();
 end
 
 ---
@@ -8613,4 +8667,46 @@ function BundleClassicBehaviors.Global:GetInputFromQuest(_QuestName)
     return Quest.InputDialogResult;
 end
 
+---
+-- Überschreibt IsObjectiveCompleted und behebt einen Fehler in dem
+-- Objective "DestroyAllPlayerUnits", der Baustellen ignorierte.
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted()
+    QuestTemplate.IsObjectiveCompleted_Orig_QSB_ClassicBehaviors = QuestTemplate.IsObjectiveCompleted;
+    QuestTemplate.IsObjectiveCompleted = function(self, objective)
+        local objectiveType = objective.Type;
+        if objective.Completed ~= nil then
+            return objective.Completed;
+        end
+        local data = objective.Data;
+
+        if objectiveType == Objective.DestroyAllPlayerUnits then
+            local PlayerEntities = GetPlayerEntities(data, 0);
+            local IllegalEntities = {};
+            
+            for i= #PlayerEntities, 1, -1 do
+                local Type = Logic.GetEntityType(PlayerEntities[i]);
+                if Logic.IsEntityInCategory(PlayerEntities[i], EntityCategories.AttackableBuilding) == 0 or Logic.IsEntityInCategory(PlayerEntities[i], EntityCategories.Wall) == 0 then
+                    if Logic.IsConstructionComplete(PlayerEntities[i]) == 0 then
+                        table.insert(IllegalEntities, PlayerEntities[i]);
+                    end
+                end
+                local IndestructableEntities = {Entities.XD_ScriptEntity, Entities.S_AIHomePosition, Entities.S_AIAreaDefinition};
+                if Inside(Type, IndestructableEntities) then
+                    table.insert(IllegalEntities, PlayerEntities[i]);
+                end
+            end
+
+            if #PlayerEntities == 0 or #PlayerEntities - #IllegalEntities == 0 then
+                objective.Completed = true;
+            end
+        else
+            return self:IsObjectiveCompleted_Orig_QSB_ClassicBehaviors(objective);
+        end
+    end
+end
+
 Core:RegisterBundle("BundleClassicBehaviors");
+

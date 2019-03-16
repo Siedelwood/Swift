@@ -42,9 +42,11 @@
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
   <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
   <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
@@ -52,13 +54,14 @@
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
   <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
-  <li><a href="../modules/bundles.bundleentityhealth.html">bundles.bundleentityhealth</a></li>
   <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
-  <li><a href="../modules/bundles.bundleentityscriptingvalues.html">bundles.bundleentityscriptingvalues</a></li>
+  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
   <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
   <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
   <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
   <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
   <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
@@ -66,6 +69,7 @@
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><strong>bundles.bundlequestgeneration</strong></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
@@ -100,13 +104,13 @@
 	<td class="summary">Erstellt einen Quest.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.CreateQuestMessage">API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</a></td>
-	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.CreateQuestDialog">API.CreateQuestDialog (_Messages)</a></td>
 	<td class="summary">Erzeugt aus einer Table mit Daten eine Reihe von Nachrichten, die nach
  einander angezeigt werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateQuestMessage">API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</a></td>
+	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterruptQuestDialog">API.InterruptQuestDialog (_Dialog)</a></td>
@@ -124,12 +128,12 @@
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestMessage">BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)</a></td>
-	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestCreateNewQuest">BundleQuestGeneration.Global:QuestCreateNewQuest (_Data)</a></td>
 	<td class="summary">Erzeugt einen Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestMessage">BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)</a></td>
+	<td class="summary">Erzeugt eine Nachricht im Questfenster.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleQuestGeneration.Global:QuestValidateQuestData">BundleQuestGeneration.Global:QuestValidateQuestData (_Data)</a></td>
@@ -211,65 +215,6 @@
 
 </dd>
     <dt>
-    <a name = "API.CreateQuestMessage"></a>
-    <strong>API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</strong>
-    </dt>
-    <dd>
-    Erzeugt eine Nachricht im Questfenster.
-<p> Der Quest wird immer nach Ablauf der Wartezeit nach
- Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
- Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
- des Quests ausgeführt wird.
-<p> Alle Paramater sind optional und können von rechts nach links weggelassen
- oder mit nil aufgefüllt werden.
-<p> <b>Alias</b>: QuestMessage
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Text</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-                Anzeigetext der Nachricht
-        </li>
-        <li><span class="parameter">_Sender</span>
-            <span class="types"><span class="type">number</span></span>
-              Sender der Nachricht
-        </li>
-        <li><span class="parameter">_Receiver</span>
-            <span class="types"><span class="type">number</span></span>
-            Receiver der Nachricht
-        </li>
-        <li><span class="parameter">_AncestorWt</span>
-            <span class="types"><span class="type">number</span></span>
-          Wartezeit
-        </li>
-        <li><span class="parameter">_Callback</span>
-            <span class="types"><span class="type">function</span></span>
-            Callback
-        </li>
-        <li><span class="parameter">_Ancestor</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-            Vorgänger-Quest
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        QuestName
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.CreateQuestMessage(<span class="string">"Das ist ein Text"</span>, <span class="number">4</span>, <span class="number">1</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "API.CreateQuestDialog"></a>
     <strong>API.CreateQuestDialog (_Messages)</strong>
     </dt>
@@ -327,6 +272,65 @@
     {<span class="string">"Mir geht es gut, wie immer!"</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">8</span>, SomeCallbackFunction},
     {<span class="string">"Das ist doch schön."</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">8</span>},
 };</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateQuestMessage"></a>
+    <strong>API.CreateQuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Nachricht im Questfenster.
+<p> Der Quest wird immer nach Ablauf der Wartezeit nach
+ Abschluss des Ancestor Quest gestartet bzw. unmittelbar, wenn es keinen
+ Ancestor Quest gibt. Das Callback ist eine Funktion, die zur Anzeigezeit
+ des Quests ausgeführt wird.
+<p> Alle Paramater sind optional und können von rechts nach links weggelassen
+ oder mit nil aufgefüllt werden.
+<p> <b>Alias</b>: QuestMessage
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Anzeigetext der Nachricht
+        </li>
+        <li><span class="parameter">_Sender</span>
+            <span class="types"><span class="type">number</span></span>
+              Sender der Nachricht
+        </li>
+        <li><span class="parameter">_Receiver</span>
+            <span class="types"><span class="type">number</span></span>
+            Receiver der Nachricht
+        </li>
+        <li><span class="parameter">_AncestorWt</span>
+            <span class="types"><span class="type">number</span></span>
+          Wartezeit
+        </li>
+        <li><span class="parameter">_Callback</span>
+            <span class="types"><span class="type">function</span></span>
+            Callback
+        </li>
+        <li><span class="parameter">_Ancestor</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            Vorgänger-Quest
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        QuestName
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateQuestMessage(<span class="string">"Das ist ein Text"</span>, <span class="number">4</span>, <span class="number">1</span>);</pre>
     </ul>
 
 </dd>
@@ -399,6 +403,33 @@
 
 </dd>
     <dt>
+    <a name = "BundleQuestGeneration.Global:QuestCreateNewQuest"></a>
+    <strong>BundleQuestGeneration.Global:QuestCreateNewQuest (_Data)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen Quest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Daten des Quest.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name des erzeugten Quests
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "BundleQuestGeneration.Global:QuestMessage"></a>
     <strong>BundleQuestGeneration.Global:QuestMessage (_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)</strong>
     </dt>
@@ -451,33 +482,6 @@
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         QuestName
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleQuestGeneration.Global:QuestCreateNewQuest"></a>
-    <strong>BundleQuestGeneration.Global:QuestCreateNewQuest (_Data)</strong>
-    </dt>
-    <dd>
-    Erzeugt einen Quest.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Data</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Daten des Quest.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        Name des erzeugten Quests
     </ol>
 
 
@@ -545,7 +549,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-02-24 14:20:35 </i>
+<i style="float:right;">Last updated 2019-03-14 19:37:45 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

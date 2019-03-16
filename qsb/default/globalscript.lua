@@ -22,7 +22,7 @@ function Mission_LoadFiles()
 end
 
 -- Setzt Voreinstellungen für KI-Spieler.
--- (Spielerfarbe, Blacklist, etc)
+-- (Spielerfarbe, AI-Blacklist, etc)
 function Mission_InitPlayers()
 end
 

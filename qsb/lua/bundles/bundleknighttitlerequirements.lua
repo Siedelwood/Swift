@@ -1726,7 +1726,7 @@ InitKnightTitleTables = function()
     -- Rechte und Pflichten                                                   --
     -- ---------------------------------------------------------------------- --
 
-    NeedsAndRightsByKnightTitle ={}
+    NeedsAndRightsByKnightTitle = {}
 
     -- Ritter ------------------------------------------------------------------
 
@@ -1958,3 +1958,4 @@ InitKnightTitleTables = function()
     -- Einstellungen Aktivieren
     CreateTechnologyKnightTitleTable()
 end
+
