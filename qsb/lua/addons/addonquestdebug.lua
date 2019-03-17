@@ -442,14 +442,14 @@ function b_Reward_DEBUG:AddParameter(_Index, _Parameter)
     elseif (_Index == 1) then
         self.UseQuestTrace = AcceptAlternativeBoolean(_Parameter)
     elseif (_Index == 2) then
-        self.DelepoingCheats = AcceptAlternativeBoolean(_Parameter)
+        self.DevelopingCheats = AcceptAlternativeBoolean(_Parameter)
     elseif (_Index == 3) then
-        self.DelepoingShell = AcceptAlternativeBoolean(_Parameter)
+        self.DevelopingShell = AcceptAlternativeBoolean(_Parameter)
     end
 end
 
 function b_Reward_DEBUG:CustomFunction(__quest_)
-    API.ActivateDebugMode(self.CheckWhileRuntime, self.UseQuestTrace, self.DelepoingCheats, self.DelepoingShell);
+    API.ActivateDebugMode(self.CheckWhileRuntime, self.UseQuestTrace, self.DevelopingCheats, self.DevelopingShell);
 end
 
 function b_Reward_DEBUG:GetCustomData(_Index)
