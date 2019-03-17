@@ -358,6 +358,7 @@ function AddOnCutsceneSystem.Local:StopCutscene()
     BundleBriefingSystem.Local.Data.DisplayIngameCutscene = false;
     self:DeactivateCinematicMode();
     self.Data.CutsceneActive = false;
+    self.Data.FastForward.Active = false;
 end
 
 ---
@@ -412,7 +413,7 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         XGUIEng.SetText("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", Title);
         -- Setze Text
         if string.sub(Text, 1, 1) ~= "{" then
-            Text = "{@color:255,250,255,255}{center}" .. Text;
+            Text = "{center}" .. Text;
         end
         XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", "{cr}{cr}{cr}" .. Text);
         -- Führe Action aus
@@ -762,7 +763,6 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
         self.Data.SkipButtonTextBackup =  nil;
     end
 
-    self.Data.FastForward.Active = false;
     self.Data.Fader.To = 0;
     self:SetFaderAlpha(0);
     XGUIEng.PopPage();

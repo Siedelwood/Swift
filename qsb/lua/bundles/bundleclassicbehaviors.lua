@@ -2583,7 +2583,10 @@ Core:RegisterBehavior(b_Goal_MapScriptFunction);
 ---
 -- Eine benutzerdefinierte Variable muss einen bestimmten Wert haben.
 --
--- Custom Variables können ausschließlich Zahlen enthalten.
+-- Custom Variables können ausschließlich Zahlen enthalten. Bevor eine
+-- Variable in einem Goal abgefragt werden kann, muss sie zuvor mit
+-- Reprisal_CustomVariables oder Reward_CutsomVariables initialisiert
+-- worden sein.
 --
 -- <p>Vergleichsoperatoren</p>
 -- <ul>
@@ -2635,32 +2638,32 @@ function b_Goal_CustomVariables:AddParameter(_Index, _Parameter)
 end
 
 function b_Goal_CustomVariables:CustomFunction()
-    if _G["QSB_CustomVariables_"..self.VariableName] then
-        local Value = (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
-        if self.Relation == "==" then
-            if _G["QSB_CustomVariables_"..self.VariableName] == Value then
-                return true;
-            end
-        elseif self.Relation == "~=" then
-            if _G["QSB_CustomVariables_"..self.VariableName] == Value then
-                return true;
-            end
-        elseif self.Relation == "<" then
-            if _G["QSB_CustomVariables_"..self.VariableName] < Value then
-                return true;
-            end
-        elseif self.Relation == "<=" then
-            if _G["QSB_CustomVariables_"..self.VariableName] <= Value then
-                return true;
-            end
-        elseif self.Relation == ">=" then
-            if _G["QSB_CustomVariables_"..self.VariableName] >= Value then
-                return true;
-            end
-        else
-            if _G["QSB_CustomVariables_"..self.VariableName] > Value then
-                return true;
-            end
+    _G["QSB_CustomVariables_"..self.VariableName] = _G["QSB_CustomVariables_"..self.VariableName] or 0;
+
+    local Value = (type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value];
+    if self.Relation == "==" then
+        if _G["QSB_CustomVariables_"..self.VariableName] == Value then
+            return true;
+        end
+    elseif self.Relation == "~=" then
+        if _G["QSB_CustomVariables_"..self.VariableName] == Value then
+            return true;
+        end
+    elseif self.Relation == "<" then
+        if _G["QSB_CustomVariables_"..self.VariableName] < Value then
+            return true;
+        end
+    elseif self.Relation == "<=" then
+        if _G["QSB_CustomVariables_"..self.VariableName] <= Value then
+            return true;
+        end
+    elseif self.Relation == ">=" then
+        if _G["QSB_CustomVariables_"..self.VariableName] >= Value then
+            return true;
+        end
+    else
+        if _G["QSB_CustomVariables_"..self.VariableName] > Value then
+            return true;
         end
     end
     return nil;
@@ -2675,9 +2678,9 @@ function b_Goal_CustomVariables:Debug(_Quest)
     local results    = {true, false, nil}
 
     if not _G["QSB_CustomVariables_"..self.VariableName] then
-        fatal(_Quest.Identifier.." "..self.Name..": variable '"..self.VariableName.."' do not exist!");
-        return true;
-    elseif not Inside(self.Relation,relations) then
+        warn(_Quest.Identifier.." "..self.Name..": variable '"..self.VariableName.."' do not exist!");
+    end
+    if not Inside(self.Relation, relations) then
         fatal(_Quest.Identifier.." "..self.Name..": '"..self.Relation.."' is an invalid relation!");
         return true;
     end
@@ -4045,7 +4048,9 @@ Core:RegisterBehavior(b_Reprisal_QuestForceInterrupt);
 ---
 -- Ändert den Wert einer benutzerdefinierten Variable.
 --
--- Benutzerdefinierte Variablen können ausschließlich Zahlen sein.
+-- Benutzerdefinierte Variablen können ausschließlich Zahlen sein. Nutze
+-- dieses Behavior bevor die Variable in einem Goal oder Trigger abgefragt
+-- wird, um sie zu initialisieren!
 --
 ---- <p>Operatoren</p>
 -- <ul>
@@ -6763,7 +6768,9 @@ Core:RegisterBehavior(b_Reward_QuestForceInterrupt);
 ---
 -- Ändert den Wert einer benutzerdefinierten Variable.
 --
--- Benutzerdefinierte Variablen können ausschließlich Zahlen sein.
+-- Benutzerdefinierte Variablen können ausschließlich Zahlen sein. Nutze
+-- dieses Behavior bevor die Variable in einem Goal oder Trigger abgefragt
+-- wird, um sie zu initialisieren!
 --
 ---- <p>Operatoren</p>
 -- <ul>
@@ -7800,7 +7807,10 @@ Core:RegisterBehavior(b_Trigger_OnQuestSuccess);
 -- Startet den Quest, wenn eine benutzerdefinierte Variable einen bestimmten
 -- Wert angenommen hat.
 --
--- Benutzerdefinierte Variablen müssen Zahlen sein.
+-- Benutzerdefinierte Variablen müssen Zahlen sein. Bevor eine
+-- Variable in einem Goal abgefragt werden kann, muss sie zuvor mit
+-- Reprisal_CustomVariables oder Reward_CutsomVariables initialisiert
+-- worden sein.
 --
 -- @param _Name     Name der Variable
 -- @param _Relation Vergleichsoperator
@@ -7842,20 +7852,20 @@ function b_Trigger_CustomVariables:AddParameter(_Index, _Parameter)
 end
 
 function b_Trigger_CustomVariables:CustomFunction()
-    if _G["QSB_CustomVariables_"..self.VariableName] ~= nil then
-        if self.Relation == "==" then
-            return _G["QSB_CustomVariables_"..self.VariableName] == ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
-        elseif self.Relation ~= "~=" then
-            return _G["QSB_CustomVariables_"..self.VariableName] ~= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
-        elseif self.Relation == ">" then
-            return _G["QSB_CustomVariables_"..self.VariableName] > ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
-        elseif self.Relation == ">=" then
-            return _G["QSB_CustomVariables_"..self.VariableName] >= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
-        elseif self.Relation == "<=" then
-            return _G["QSB_CustomVariables_"..self.VariableName] <= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
-        else
-            return _G["QSB_CustomVariables_"..self.VariableName] < ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
-        end
+    _G["QSB_CustomVariables_"..self.VariableName] = _G["QSB_CustomVariables_"..self.VariableName] or 0;
+
+    if self.Relation == "==" then
+        return _G["QSB_CustomVariables_"..self.VariableName] == ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+    elseif self.Relation ~= "~=" then
+        return _G["QSB_CustomVariables_"..self.VariableName] ~= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+    elseif self.Relation == ">" then
+        return _G["QSB_CustomVariables_"..self.VariableName] > ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+    elseif self.Relation == ">=" then
+        return _G["QSB_CustomVariables_"..self.VariableName] >= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+    elseif self.Relation == "<=" then
+        return _G["QSB_CustomVariables_"..self.VariableName] <= ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
+    else
+        return _G["QSB_CustomVariables_"..self.VariableName] < ((type(self.Value) ~= "string" and self.Value) or _G["QSB_CustomVariables_"..self.Value]);
     end
     return false;
 end
@@ -7871,9 +7881,9 @@ function b_Trigger_CustomVariables:Debug(_Quest)
     local results    = {true, false, nil}
 
     if not _G["QSB_CustomVariables_"..self.VariableName] then
-        fatal(_Quest.Identifier.." "..self.Name..": variable '"..self.VariableName.."' do not exist!");
-        return true;
-    elseif not Inside(self.Relation,relations) then
+        warn(_Quest.Identifier.." "..self.Name..": variable '"..self.VariableName.."' do not exist!");
+    end
+    if not Inside(self.Relation,relations) then
         fatal(_Quest.Identifier.." "..self.Name..": '"..self.Relation.."' is an invalid relation!");
         return true;
     end

@@ -28,7 +28,12 @@ BundleTimeLine = {};
 API = API or {};
 QSB = QSB or {};
 
-QSB.TimeLine = {};
+QSB.TimeLine = {
+    Data = {
+        TimeLineUniqueJobID = 1,
+        TimeLineJobs = {},
+    }
+};
 
 -- -------------------------------------------------------------------------- --
 -- TimeLine Klasse                                                            --
@@ -47,16 +52,16 @@ QSB.TimeLine = {};
 -- @within Anwenderfunktionen
 --
 -- @usage MyTimeLine = QSB.TimeLine:Start {
---     {Time = 15, Action = MyFirstAction},
+--     {Time = 5, Action = MyFirstAction},
 --     -- MySecondAction erhält "BOCKWURST" als Parameter
---     {Time = 35, Action = MySecondAction, "BOCKWURST"},
+--     {Time = 15, Action = MySecondAction, "BOCKWURST"},
 --     -- Inline-Funktion
---     {Time = 49, Action = function() end},
+--     {Time = 30, Action = function() end},
 -- }
 --
 function QSB.TimeLine:Start(_description)
-    local JobID = self.Data.TimeLineUniqueJobID;
-    self.Data.TimeLineUniqueJobID = JobID +1;
+    local JobID = QSB.TimeLine.Data.TimeLineUniqueJobID;
+    QSB.TimeLine.Data.TimeLineUniqueJobID = JobID +1;
 
     _description.Running = true;
     _description.StartTime = Logic.GetTime();
@@ -71,10 +76,10 @@ function QSB.TimeLine:Start(_description)
         end
     end
 
-    self.Data.TimeLineJobs[JobID] = _description;
-    if not self.Data.ControlerID then
-        local Controler = StartSimpleHiResJobEx(QSB.TimeLine.TimeLineControler);
-        self.Data.ControlerID = Controler;
+    QSB.TimeLine.Data.TimeLineJobs[JobID] = _description;
+    if not QSB.TimeLine.Data.ControlerID then
+        local Controler = StartSimpleJobEx(QSB.TimeLine.TimeLineControler);
+        QSB.TimeLine.Data.ControlerID = Controler;
     end
     return JobID;
 end
@@ -92,12 +97,12 @@ end
 -- @usage QSB.TimeLine:Restart(MyTimeLine);
 --
 function QSB.TimeLine:Restart(_ID)
-    if not self.Data.TimeLineJobs[_ID] then
+    if not QSB.TimeLine.Data.TimeLineJobs[_ID] then
         return;
     end
-    self.Data.TimeLineJobs[_ID].Running = true;
-    self.Data.TimeLineJobs[_ID].StartTime = Logic.GetTime();
-    self.Data.TimeLineJobs[_ID].Iterator = 1;
+    QSB.TimeLine.Data.TimeLineJobs[_ID].Running = true;
+    QSB.TimeLine.Data.TimeLineJobs[_ID].StartTime = Logic.GetTime();
+    QSB.TimeLine.Data.TimeLineJobs[_ID].Iterator = 1;
 end
 function API.TimeLineRestart(_ID)
     QSB.TimeLine:Restart(_ID);
@@ -113,8 +118,8 @@ end
 -- @usage local IsRunning = QSB.TimeLine:IsRunning(MyTimeLine);
 --
 function QSB.TimeLine:IsRunning(_ID)
-    if self.Data.TimeLineJobs[_ID] then
-        return self.Data.TimeLineJobs[_ID].Running == true;
+    if QSB.TimeLine.Data.TimeLineJobs[_ID] then
+        return QSB.TimeLine.Data.TimeLineJobs[_ID].Running == true;
     end
     return false;
 end
@@ -131,11 +136,11 @@ end
 -- @usage QSB.TimeLine:Yield(MyTimeLine);
 --
 function QSB.TimeLine:Yield(_ID)
-    if not self.Data.TimeLineJobs[_ID] then
+    if not QSB.TimeLine.Data.TimeLineJobs[_ID] then
         return;
     end
-    self.Data.TimeLineJobs[_ID].YieldTime = Logic.GetTime();
-    self.Data.TimeLineJobs[_ID].Running = false;
+    QSB.TimeLine.Data.TimeLineJobs[_ID].YieldTime = Logic.GetTime();
+    QSB.TimeLine.Data.TimeLineJobs[_ID].Running = false;
 end
 function API.TimeLineYield(_ID)
     QSB.TimeLine:Yield(_ID);
@@ -150,16 +155,16 @@ end
 -- @usage QSB.TimeLine:Resume(MyTimeLine);
 --
 function QSB.TimeLine:Resume(_ID)
-    if not self.Data.TimeLineJobs[_ID] then
+    if not QSB.TimeLine.Data.TimeLineJobs[_ID] then
         return;
     end
-    if self.Data.TimeLineJobs[_ID].YieldTime then
-        local OldStartTime = self.Data.TimeLineJobs[_ID].StartTime;
-        local TimeYielded = Logic.GetTime() - self.Data.TimeLineJobs[_ID].YieldTime;
-        self.Data.TimeLineJobs[_ID].StartTime = OldStartTime + TimeYielded;
-        self.Data.TimeLineJobs[_ID].YieldTime = nil;
+    if QSB.TimeLine.Data.TimeLineJobs[_ID].YieldTime then
+        local OldStartTime = QSB.TimeLine.Data.TimeLineJobs[_ID].StartTime;
+        local TimeYielded = Logic.GetTime() - QSB.TimeLine.Data.TimeLineJobs[_ID].YieldTime;
+        QSB.TimeLine.Data.TimeLineJobs[_ID].StartTime = OldStartTime + TimeYielded;
+        QSB.TimeLine.Data.TimeLineJobs[_ID].YieldTime = nil;
     end
-    self.Data.TimeLineJobs[_ID].Running = true;
+    QSB.TimeLine.Data.TimeLineJobs[_ID].Running = true;
 end
 function API.TimeLineResume(_ID)
     QSB.TimeLine:Resume(_ID);
@@ -196,14 +201,6 @@ BundleTimeLine = {
     Local = {
         Data = {}
     },
-    Shared = {
-        TimeLine = {
-            Data = {
-                TimeLineUniqueJobID = 1,
-                TimeLineJobs = {},
-            }
-        }
-    }
 }
 
 -- Global Script ---------------------------------------------------------------
