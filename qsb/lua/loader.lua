@@ -134,6 +134,7 @@ SymfoniaLoader = {
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
             {"BundleTradingAnalysis",               true},
+            {"BundleWeatherManipulation",           true},
         },
 
         AddOnLoadOrder = {

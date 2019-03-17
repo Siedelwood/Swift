@@ -254,7 +254,7 @@ AddPages = API.AddPages;
 --    Angle        = 30
 --}</pre>
 -- Es gilt zu beachten, dass Seiten ohne Duration solange angezeigt werden,
--- bis der Benutzer die Seite mit "Überspringen" verlässt.
+-- bis der Benutzer die Seite per Button-Klick verlässt.
 --
 -- Es kann eine einfache Bewegung erzeugt werden. Hierzu wird FlyTo benutzt.
 -- <pre>AP {
@@ -268,7 +268,7 @@ AddPages = API.AddPages;
 --    }
 --}</pre>
 -- Die Dauer der Animation (FlyTo.Duration) wird automatisch zur Dauer der
--- Seite, wenn nicht gesetzt oder geringer als die Dauer der Animation.
+-- Seite, wenn nicht gesetzt oder geringer als die Dauer der Animation ist.
 --
 -- Jede Seite kann eine Grafik am linken Rand anzeigen. Diese Grafik wird
 -- als Portrait betrachtet.
@@ -278,8 +278,8 @@ AddPages = API.AddPages;
 -- <pre>Splashscreen = "Path/to/Graphic.ong",</pre>
 --
 -- AP unterstützt ebenso die Angabe von XYZ-Koordinaten. Positionen können auch
--- als Vektoren angegeben werden. Dann hat die Kamera eine Kosition und eine
--- Blockrichtung.
+-- als Vektoren angegeben werden. Dann hat die Kamera eine Position und eine
+-- Blickrichtung.
 -- <pre>Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
 --LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
 --
@@ -290,24 +290,26 @@ AddPages = API.AddPages;
 --    ...
 --    MC = {
 --        {"Antwort 1", 5},
---        {"Antwort 2", 9},
+--        {"Antwort 2", "SomePageName"},
 --    },
 --}</pre>
 -- Nachdem der Spieler eine Antwort gewählt hat, wird er auf die Seite mit
--- der angegebenen ID geleitet. Um das Briefing zu beendet, nachdem ein Pfad
--- beendet ist, wird eine leere AP-Seite genutzt. Auf diese Weise weiß das
--- Briefing, das es an dieser Stelle zuende ist.
+-- der angegebenen ID oder dem Namen geleitet. Um das Briefing zu beenden,
+-- nachdem ein Pfad beendet ist, wird eine leere AP-Seite genutzt. Auf diese
+-- Weise weiß das Briefing, das es an dieser Stelle zuende ist.
 -- <pre>AP()</pre>
 -- Soll stattdessen zu einer anderen Seite gesprungen werden, kann bei AP die
 -- ID der Seite angeben werden, zu der gesprungen werden soll.
 -- <pre>AP(8)</pre>
 -- Pages können auch einen Namen erhalten. Der Name kann anstelle der ID für
 -- Sprünge und Multiple Choice genutzt werden.
--- <pre>AP("SomePageID")</pre>
+-- <pre>AP("SomePageName")</pre>
 --
 -- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
 -- erfahren, muss der Name der Seite oder die ID genutzt werden.
--- <pre>local Choosen = Briefing:GetPage("Choice"):GetSelectedAnswer();</pre>
+-- <pre>Briefing.Finished(_Data)
+--local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
+--end</pre>
 -- Die zurückgegebene Zahl ist die Position der Antwort, angefangen von oben.
 -- Wird 0 zurückgegeben, wurde noch nicht geantwortet.
 --
@@ -1398,7 +1400,7 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
     GUI.PermitContextSensitiveCommandsInSelectionState();
     Display.SetRenderFogOfWar(1);
     if Options.GetIntValue("Display", "Occlusion", 0) > 0 then
-        Display.SetUserOptionOcclusionEffect(1)
+        Display.SetUserOptionOcclusionEffect(1);
     end
 
     XGUIEng.PopPage();

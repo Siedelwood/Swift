@@ -83,11 +83,6 @@ API = API or {};
 --
 -- Die Funktion gibt die ID der Cutscene zurück, mit der geprüft werden kann,
 -- ob die Cutscene beendet ist.
---
--- <b>Hinweis</b>: Überschreibt die gleichnamige Funktion im Briefing System
--- und gibt ihr neue Funktionalität! Fake Cutscenes müssen jetzt über den
--- folgenden Aufruf gestartet werden:
--- <pre>StartBriefing(MyCutscene, true)</pre>
 -- 
 -- <b>Alias</b>: StartCutscene
 --
@@ -123,7 +118,6 @@ StartCutscene = API.CutsceneStart;
 -- 
 -- @return[type=boolean] Cutscene aktiv
 -- @within Anwenderfunktionen
--- 
 --
 function API.CutsceneIsActive()
     if GUI then
@@ -742,6 +736,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     GUI.EnableBattleSignals(false);
     Input.CutsceneMode();
     Display.SetRenderFogOfWar(0);
+    Display.SetUserOptionOcclusionEffect(0);
     Camera.SwitchCameraBehaviour(0);
 
     self:InitializeFader();
@@ -767,6 +762,8 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
         self.Data.SkipButtonTextBackup =  nil;
     end
 
+    self.Data.FastForward.Active = false;
+    self.Data.Fader.To = 0;
     self:SetFaderAlpha(0);
     XGUIEng.PopPage();
     Camera.SwitchCameraBehaviour(0);
@@ -777,6 +774,9 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
     GUI.ActivateSelectionState();
     GUI.PermitContextSensitiveCommandsInSelectionState();
     Display.SetRenderFogOfWar(1);
+    if Options.GetIntValue("Display", "Occlusion", 0) > 0 then
+        Display.SetUserOptionOcclusionEffect(1);
+    end
 
     XGUIEng.PopPage();
     XGUIEng.PopPage();

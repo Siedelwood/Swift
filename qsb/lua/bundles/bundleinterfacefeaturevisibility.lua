@@ -31,7 +31,7 @@ QSB.PlayerNames = {};
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideMinimap(_Flag)
@@ -56,7 +56,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideToggleMinimap(_Flag)
@@ -77,7 +77,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideDiplomacyMenu(_Flag)
@@ -98,7 +98,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideProductionMenu(_Flag)
@@ -119,7 +119,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideWeatherMenu(_Flag)
@@ -140,7 +140,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideBuyTerritory(_Flag)
@@ -161,7 +161,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideKnightAbility(_Flag)
@@ -186,7 +186,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideKnightButton(_Flag)
@@ -219,7 +219,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideSelectionButton(_Flag)
@@ -242,7 +242,7 @@ end
 -- <p><b>Hinweis:</b> Diese Änderung bleibt auch nach dem Laden eines Spielstandes
 -- aktiv und muss explizit zurückgenommen werden!</p>
 --
--- @param _Flag [boolean] Widget versteckt
+-- @param[type=boolean] _Flag Widget versteckt
 -- @within Anwenderfunktionen
 --
 function API.InterfaceHideBuildMenu(_Flag)
