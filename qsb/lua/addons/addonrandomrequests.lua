@@ -280,7 +280,7 @@ end
 -- des Auftragnehmers.
 --
 -- <b>Hinweis</b>: Das Behavior erzeugt einen weiteren Quest mit dem zufällig
--- gewählten Ziel.
+-- gewählten Ziel. Somit ist es mit den Tribut-Quests vergleichbar.
 --
 -- @param[type=boolean] _DeliverGoods   Ziel: Waren liefern
 -- @param[type=boolean] _DeliverGold    Ziel: Tribut bezahlen

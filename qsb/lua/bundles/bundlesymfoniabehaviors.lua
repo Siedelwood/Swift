@@ -5,7 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle enthält einige weitere nützliche Standard-Behavior.
+-- Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht
+-- in der ursprünglichen QSB gab.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -141,13 +142,14 @@ Core:RegisterBehavior(b_Goal_WinQuest);
 -- -------------------------------------------------------------------------- --
 
 ---
--- <p>Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</p>
+-- Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.
 --
--- <p>Dabei ist es egal von welchem Spieler. Diebe können Gold nur aus
--- Stadtgebäude stehlen.</p>
+-- Dabei ist es egal von welchem Spieler. Diebe können Gold nur aus
+-- Stadtgebäude stehlen und nur von feindlichen Spielern.
 --
--- <p><b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
--- Gebäuden, damit der Quest stets erfüllbar bleibt.</p>
+-- <b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
+-- Gebäuden, damit der Quest stets erfüllbar bleibt. Dies gilt auch, wenn
+-- der menschliche Spieler das Ziel ist!
 --
 -- @param _Amount       Menge an Gold
 -- @param _ShowProgress Fortschritt ausgeben
@@ -262,13 +264,13 @@ Core:RegisterBehavior(b_Goal_StealGold)
 -- -------------------------------------------------------------------------- --
 
 ---
--- <p>Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</p>
+-- Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.
 --
--- <p>Eine Kirche wird immer Sabotiert. Ein Lagerhaus verhält sich ähnlich zu
--- einer Burg.</p>
+-- Eine Kirche wird immer Sabotiert. Ein Lagerhaus verhält sich ähnlich zu
+-- einer Burg.
 --
--- <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
--- ein Dieb entsandt werden kann.</p>
+-- <b>Hinweis</b>: Das Behavior cheatet in dem Zielgebäude Einnahmen, damit
+-- ein Dieb entsandt werden kann.
 --
 -- @param _ScriptName Skriptname des Gebäudes
 --
@@ -396,17 +398,17 @@ Core:RegisterBehavior(b_Goal_StealBuilding)
 -- -------------------------------------------------------------------------- --
 
 ---
--- <p>Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</p>
+-- Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.
 --
--- <p>Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt. Es
+-- Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt. Es
 -- muss sich um ein Gebäude handeln, das bestohlen werden kann (Burg, Lager,
--- Kirche, Stadtgebäude mit Einnahmen)!</p>
+-- Kirche, Stadtgebäude mit Einnahmen)!
 --
--- <p>Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
--- es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.</p>
+-- Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
+-- es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu "ersetzen".
 --
--- <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
--- ein Dieb entsandt werden kann.</p>
+-- <b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude Einnahmen, damit
+-- ein Dieb entsandt werden kann.
 --
 -- @param _ScriptName  Skriptname des Gebäudes
 -- @param _DeleteThief Dieb nach Abschluss löschen
@@ -645,7 +647,7 @@ Core:RegisterBehavior(b_Goal_DestroySpawnedEntities);
 
 ---
 -- Der Spieler muss mindestens den angegebenen Ruf erreichen. Der Ruf muss
--- in Prozent angegeben werden.
+-- in Prozent angegeben werden (ohne %-Zeichen).
 --
 -- @param[type=number] _Reputation Benötigter Ruf
 --
@@ -785,7 +787,7 @@ function b_Reprisal_SetPosition:CustomFunction(_Quest)
 end
 
 function b_Reprisal_SetPosition:GetCustomData(_Index)
-    if _Index == 3 then
+    if _Index == 2 then
         return { "true", "false" }
     end
 end
@@ -1277,7 +1279,6 @@ Core:RegisterBehavior(b_Reward_MoveToPosition);
 --
 -- Es ist nicht möglich weiterzuspielen!
 --
---
 -- @within Reward
 --
 function Reward_VictoryWithParty()
@@ -1334,9 +1335,9 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
         Logic.ExecuteInLuaLocalState([[
             if IsExisting(]]..market..[[) then
                 CameraAnimation.AllowAbort = false
-                CameraAnimation.QueueAnimation( CameraAnimation.SetCameraToEntity, ]]..market..[[)
-                CameraAnimation.QueueAnimation( CameraAnimation.StartCameraRotation,  5 )
-                CameraAnimation.QueueAnimation( CameraAnimation.Stay ,  9999 )
+                CameraAnimation.QueueAnimation(CameraAnimation.SetCameraToEntity, ]]..market..[[)
+                CameraAnimation.QueueAnimation(CameraAnimation.StartCameraRotation, 5)
+                CameraAnimation.QueueAnimation(CameraAnimation.Stay ,9999)
             end
             XGUIEng.ShowWidget("/InGame/InGame/MissionEndScreen/ContinuePlaying", 0);
         ]]);
@@ -1803,7 +1804,7 @@ Core:RegisterBehavior(b_Trigger_OnExactOneQuestIsWon);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.
+-- Startet den Quest, wenn exakt einer von beiden Quests fehlgeschlagen ist.
 --
 -- @param _QuestName1 Name des ersten Quest
 -- @param _QuestName2 Name des zweiten Quest

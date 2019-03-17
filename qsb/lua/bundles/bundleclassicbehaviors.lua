@@ -209,7 +209,7 @@ Core:RegisterBehavior(b_Goal_Deliver);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Es muss ein bestimmter Diplomatiestatus zu einer anderen Datei erreicht
+-- Es muss ein bestimmter Diplomatiestatus zu einer anderen Patei erreicht
 -- werden. Der Status kann eine Verbesserung oder eine Verschlechterung zum
 -- aktuellen Status sein.
 --
@@ -356,6 +356,9 @@ Core:RegisterBehavior(b_Goal_DiscoverPlayer);
 ---
 -- Ein Territorium muss erstmalig vom Auftragnehmer betreten werden.
 --
+-- Wenn ein Spieler zuvor mit seinen Einheiten auf dem Territorium war, ist
+-- es bereits entdeckt und das Ziel sofort erfüllt.
+--
 -- @param _Territory Name oder ID des Territorium
 --
 -- @within Goal
@@ -401,7 +404,11 @@ Core:RegisterBehavior(b_Goal_DiscoverTerritory);
 -- Eine andere Partei muss besiegt werden.
 --
 -- Die Partei gilt als besiegt, wenn ein Hauptgebäude (Burg, Kirche, Lager)
--- zerstört wurde. <b>Achtung:</b> Funktioniert nicht bei Banditen!
+-- zerstört wurde.
+-- 
+-- <b>Achtung:</b> Bei Banditen ist dieses Behavior wenig sinnvoll, da sie
+-- nicht durch zerstörung ihres Hauptzeltes vernichtet werden. Hier bietet
+-- sich Goal_DestroyAllPlayerUnits an.
 --
 -- @param _PlayerID ID des Spielers
 --
@@ -460,7 +467,9 @@ Core:RegisterBehavior(b_Goal_DestroyPlayer)
 -- Es sollen Informationen aus der Burg gestohlen werden.
 --
 -- Der Spieler muss einen Dieb entsenden um Informationen aus der Burg zu
--- stehlen. <b>Achtung:</b> Das ist nur bei Feinden möglich!
+-- stehlen. 
+--
+-- <b>Achtung:</b> Das ist nur bei Feinden möglich!
 --
 -- @param _PlayerID ID der Partei
 --
@@ -511,6 +520,9 @@ Core:RegisterBehavior(b_Goal_StealInformation);
 
 ---
 -- Alle Einheiten des Spielers müssen zerstört werden.
+--
+-- <b>Achtung</b>: Bei normalen Parteien, welche ein Dorf oder eine Stadt
+-- besitzen, ist Goal_DestroyPlayer besser geeignet!
 --
 -- @param _PlayerID ID des Spielers
 --
@@ -566,6 +578,12 @@ Core:RegisterBehavior(b_Goal_DestroyAllPlayerUnits);
 
 ---
 -- Ein benanntes Entity muss zerstört werden.
+--
+-- Ein Entity gilt als zerstört, wenn es nicht mehr existiert oder während
+-- der Laufzeit des Quests seine Entity-ID oder den Besitzer verändert.
+--
+-- <b>Achtung</b>: Helden können nicht direkt zerstört werden. Bei ihnen
+-- genügt es, wenn sie sich "in die Burg zurückziehen".
 --
 -- @param _ScriptName Skriptname des Ziels
 --
@@ -630,8 +648,8 @@ Core:RegisterBehavior(b_Goal_DestroyScriptEntity);
 ---
 -- Eine Menge an Entities eines Typs müssen zerstört werden.
 --
--- Wenn Raubtiere zerstört werden sollen, muss Spieler 0 als Besitzer
--- angegeben werden.
+-- <b>Achtung</b>: Wenn Raubtiere zerstört werden sollen, muss Spieler 0
+-- als Besitzer angegeben werden.
 --
 -- @param _EntityType Typ des Entity
 -- @param _Amount     Menge an Entities des Typs
@@ -730,7 +748,10 @@ do
 end
 
 ---
--- Spieler A muss Soldaten von Spieler B zerstören.
+-- Ein beliebiger Spieler muss Soldaten eines anderen Spielers zerstören.
+--
+-- Dieses Behavior kann auch in versteckten Quests bentutzt werden, wenn die
+-- Menge an zerstörten Soldaten durch einen Feind des Spielers gefragt ist.
 --
 -- @param _PlayerA Angreifende Partei
 -- @param _PlayerB Zielpartei
@@ -815,7 +836,7 @@ Core:RegisterBehavior(b_Goal_DestroySoldiers)
 -- Eine Entfernung zwischen zwei Entities muss erreicht werden.
 --
 -- Je nach angegebener Relation muss die Entfernung unter- oder überschritten
--- werden um den Quest zu gewinnen.
+-- werden, um den Quest zu gewinnen.
 --
 -- @param _ScriptName1  Erstes Entity
 -- @param _ScriptName2  Zweites Entity
@@ -896,6 +917,8 @@ Core:RegisterBehavior(b_Goal_EntityDistance);
 ---
 -- Der Primary Knight des angegebenen Spielers muss sich dem Ziel nähern.
 --
+-- Die Distanz ist auf 2500 festgelegt. Es wird immer ein Marker genutzt.
+--
 -- @param _PlayerID   PlayerID des Helden
 -- @param _ScriptName Skriptname des Ziels
 --
@@ -935,8 +958,9 @@ Core:RegisterBehavior(b_Goal_KnightDistance);
 -- Eine bestimmte Anzahl an Einheiten einer Kategorie muss sich auf dem
 -- Territorium befinden.
 --
--- Die gegenebe Anzahl kann entweder als Mindestwert oder als Maximalwert
--- gesucht werden.
+-- Es kann entweder gefordert werden, weniger als die angegebene Menge auf
+-- dem Territorium zu haben (z.B. "<"" 1 für 0) oder mindestens so
+-- viele Entities (z.B. ">=" 5 für mindestens 5).
 --
 -- @param _Territory  TerritoryID oder TerritoryName
 -- @param _PlayerID   PlayerID der Einheiten
@@ -1043,7 +1067,7 @@ Core:RegisterBehavior(b_Goal_UnitsOnTerritory);
 ---
 -- Der angegebene Spieler muss einen Buff aktivieren.
 --
--- <u>Buffs</u>
+-- <u>Buffs "Aufstieg eines Königreich"</u>
 -- <li>Buff_Spice: Salz</li>
 -- <li>Buff_Colour: Farben</li>
 -- <li>Buff_Entertainers: Entertainer anheuern</li>
@@ -1058,7 +1082,7 @@ Core:RegisterBehavior(b_Goal_UnitsOnTerritory);
 -- <li>Buff_NoPayment: Sold streichen</li>
 -- <li>Buff_NoTaxes: Keine Steuern verlangen</li>
 -- <br/>
--- <u>RdO Buffs</u>
+-- <u>Buffs "Reich des Ostens"</u>
 -- <li>Buff_Gems: Edelsteine</li>
 -- <li>Buff_MusicalInstrument: Musikinstrumente</li>
 -- <li>Buff_Olibanum: Weihrauch</li>
@@ -1232,12 +1256,9 @@ b_Goal_BuildRoad = {
 }
 
 function b_Goal_BuildRoad:GetGoalTable()
-    return { Objective.BuildRoad, { GetID( self.Entity1 ),
-                                     GetID( self.Entity2 ),
-                                     false,
-                                     0,
-                                     self.bRoadsOnly } }
-
+    -- {BehaviorType, {EntityID1, EntityID2, BeSmalerThan, Length, RoadsOnly}}
+    -- -> Length wird nicht mehr benutzt. Sorgte für Promleme im Spiel
+    return { Objective.BuildRoad, { GetID( self.Entity1 ), GetID( self.Entity2 ), false, 0, self.bRoadsOnly } }
 end
 
 function b_Goal_BuildRoad:AddParameter(_Index, _Parameter)
@@ -1421,7 +1442,6 @@ Core:RegisterBehavior(b_Goal_Claim);
 
 ---
 -- Der Auftragnehmer muss eine Menge an Territorien besitzen.
---
 -- Das Heimatterritorium des Spielers wird mitgezählt!
 --
 -- @param _Amount Anzahl Territorien
@@ -1463,6 +1483,9 @@ Core:RegisterBehavior(b_Goal_ClaimXTerritories);
 
 ---
 -- Der Auftragnehmer muss auf dem Territorium einen Entitytyp erstellen.
+--
+-- Dieses Behavior eignet sich für Aufgaben vom Schlag "Baue X Getreidefarmen
+-- Auf Territorium >".
 --
 -- @param _Type      Typ des Entity
 -- @param _Amount    Menge an Entities
@@ -1782,6 +1805,9 @@ Core:RegisterBehavior(b_Goal_Spouses);
 -- <li>< - Weniger als Anzahl</li>
 -- </ul>
 --
+-- Dieses Behavior kann verwendet werden um die Menge an feindlichen
+-- Soldaten zu zählen oder die Menge an Soldaten des Spielers.
+--
 -- @param _PlayerID ID des Spielers
 -- @param _Relation Mengenrelation
 -- @param _Amount   Menge an Soldaten
@@ -1962,6 +1988,12 @@ Core:RegisterBehavior(b_Goal_KnightTitle);
 
 ---
 -- Der angegebene Spieler muss mindestens die Menge an Festen feiern.
+--
+-- Ein Fest wird gewertet, sobald die Metfässer auf dem Markt erscheinen. Diese
+-- Metfässer erscheinen im normalen Spielverlauf nur durch ein Fest!
+--
+-- <b>Achtung</b>: Wenn ein Spieler aus einem anderen Grund Metfässer besitzt,
+-- wird dieses Behavior nicht mehr richtig funktionieren!
 --
 -- @param _PlayerID ID des Spielers
 -- @param _Amount   Menge an Festen
@@ -2204,7 +2236,7 @@ Core:RegisterBehavior(b_Goal_CaptureType);
 -- Wird ein Wagen zerstört oder in das Lagerhaus / die Burg eines Feindes
 -- gebracht, schlägt das Ziel fehl.
 --
--- @param _ScriptName
+-- @param _ScriptName Zu beschützendes Entity
 --
 -- @within Goal
 --
@@ -2248,7 +2280,6 @@ function b_Goal_Protect:GetMsgKey()
                         [PlayerCategories.Cloister]    = "Quest_Protect_Cloister",
                         [PlayerCategories.Village]    = "Quest_Protect_Village",
                     }
-
                     local PlayerCategory = GetPlayerCategoryType( Logic.EntityGetPlayer(GetID(self.ScriptName)) )
                     if PlayerCategory then
                         local Key = tMapping[PlayerCategory]
@@ -2256,7 +2287,6 @@ function b_Goal_Protect:GetMsgKey()
                             return Key
                         end
                     end
-
                     return "Quest_Protect_Building"
 
                 elseif Logic.IsEntityTypeInCategory( ID, EntityCategories.Hero ) == 1 then
@@ -2264,12 +2294,10 @@ function b_Goal_Protect:GetMsgKey()
 
                 elseif Logic.IsEntityTypeInCategory( ID, EntityCategories.AttackableMerchant ) == 1 then
                     return "Quest_Protect_Cart"
-
                 end
             end
         end
     end
-
     return "Quest_Protect"
 end
 
@@ -2278,7 +2306,9 @@ Core:RegisterBehavior(b_Goal_Protect);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der AUftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.
+-- Der Auftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.
+--
+-- <b>Achtung</b>: Dieses Behavior ist nur in "Reich des Ostens" verfügbar.
 --
 -- @param _ScriptName Skriptname der Mine
 --
@@ -2321,7 +2351,10 @@ end
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Auftragnehmer muss eine Menge an Rohstoffen in einer Mine erreichen.
+-- Eine bestimmte Menge an Rohstoffen in einer Mine muss erreicht werden.
+--
+-- Dieses Behavior eignet sich besonders für den Einsatz als versteckter
+-- Quest um eine Reaktion auszulösen, wenn z.B. eine Mine leer ist.
 --
 -- <u>Relationen</u>
 -- <ul>
@@ -2406,7 +2439,6 @@ Core:RegisterBehavior(b_Goal_ResourceAmount);
 ---
 -- Der Quest schlägt sofort fehl.
 --
---
 -- @within Goal
 --
 function Goal_InstantFailure()
@@ -2431,7 +2463,6 @@ Core:RegisterBehavior(b_Goal_InstantFailure);
 
 ---
 -- Der Quest wird sofort erfüllt.
---
 --
 -- @within Goal
 --
@@ -2458,6 +2489,8 @@ Core:RegisterBehavior(b_Goal_InstantSuccess);
 ---
 -- Der Zustand des Quests ändert sich niemals
 --
+-- Wenn ein Zeitlimit auf dem Quest liegt, wird dieses Behavior nicht
+-- fehlschlagen sondern automatisch erfüllt.
 --
 -- @within Goal
 --
@@ -2490,6 +2523,10 @@ Core:RegisterBehavior(b_Goal_NoChange);
 -- <li>false: Fehlschlag</li>
 -- <li>nichts: Zustand unbestimmt</li>
 -- </ul>
+--
+-- Anstelle eines Strings kann beim Einsatz im Skript eine Funktionsreferenz
+-- übergeben werden. In diesem Fall werden alle weiteren Parameter direkt an
+-- die Funktion weitergereicht.
 --
 -- @param _FunctionName Name der Funktion
 --
@@ -2652,14 +2689,13 @@ Core:RegisterBehavior(b_Goal_CustomVariables)
 -- -------------------------------------------------------------------------- --
 
 ---
--- <p>Lässt den Spieler zwischen zwei Antworten wählen.</p>
+-- Lässt den Spieler zwischen zwei Antworten wählen.
 --
--- <p>Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
--- </p>
+-- Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
 --
--- <p><b>Hinweis:</b> Es können nur geschlossene Fragen gestellt werden. Dialoge
+-- <b>Hinweis:</b> Es können nur geschlossene Fragen gestellt werden. Dialoge
 -- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
--- Abbrechen passen.</p>
+-- Abbrechen passen.
 --
 -- @param _Title  Fenstertitel
 -- @param _Text   Fenstertext
@@ -2753,6 +2789,9 @@ Core:RegisterBehavior(b_Goal_Decide);
 --
 -- Die Zeit zum Bezahlen des Tributes muss immer kleiner sein als die
 -- Wiederholungsperiode.
+--
+-- <b>Hinweis</b>: Je mehr Zeit sich der Spieler lässt um den Tribut zu
+-- begleichen, desto mehr wird sich der Start der nächsten Periode verzögern.
 --
 -- @param _GoldAmount Menge an Gold
 -- @param _Periode    Zahlungsperiode in Sekunden
@@ -2926,13 +2965,17 @@ Core:RegisterBehavior(b_Goal_TributeDiplomacy);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erlaubt es dem Spieler ein Territorium zu mieten.
+-- Erlaubt es dem Spieler ein Territorium zu "mieten".
 --
 -- Zerstört der Spieler den Außenposten, schlägt der Quest fehl und das
--- Territorium wird an den Vermieter übergeben.
+-- Territorium wird an den Vermieter übergeben. Wenn der Spieler die Pacht
+-- nicht bezahlt, geht der Besitz an den Vermieter über.
 --
 -- Die Zeit zum Bezahlen des Tributes muss immer kleiner sein als die
 -- Wiederholungsperiode.
+--
+-- <b>Hinweis</b>: Je mehr Zeit sich der Spieler lässt um den Tribut zu
+-- begleichen, desto mehr wird sich der Start der nächsten Periode verzögern.
 --
 -- @param _Territory  Name des Territorium
 -- @param _PlayerID   PlayerID des Zahlungsanforderer
@@ -3198,7 +3241,7 @@ Core:RegisterBehavior(b_Goal_TributeClaim);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Deaktiviert ein interaktives Objekt
+-- Deaktiviert ein interaktives Objekt.
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
 --
@@ -3255,14 +3298,15 @@ Core:RegisterBehavior(b_Reprisal_ObjectDeactivate);
 ---
 -- Aktiviert ein interaktives Objekt.
 --
--- Der Status bestimmt, wie das objekt aktiviert wird.
+-- Der Status bestimmt, wie das Objekt aktiviert wird.
 -- <ul>
 -- <li>0: Kann nur mit Helden aktiviert werden</li>
 -- <li>1: Kann immer aktiviert werden</li>
+-- <li>2: Kann niemals aktiviert werden</li>
 -- </ul>
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
--- @param _State Status des Objektes
+-- @param _State      Status des Objektes
 --
 -- @within Reprisal
 --
@@ -3328,7 +3372,6 @@ Core:RegisterBehavior(b_Reprisal_ObjectActivate);
 ---
 -- Der diplomatische Status zwischen Sender und Empfänger verschlechtert sich
 -- um eine Stufe.
---
 --
 -- @within Reprisal
 --
@@ -3430,7 +3473,10 @@ Core:RegisterBehavior(b_Reprisal_Diplomacy);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ein benanntes Entity wird zerstört.
+-- Ein benanntes Entity wird entfernt.
+--
+-- <b>Hinweis</b>: Das Entity wird durch ein XD_ScriptEntity ersetzt. Es
+-- behält Name, Besitzer und Ausrichtung.
 --
 -- @param _ScriptName Skriptname des Entity
 --
@@ -3478,7 +3524,7 @@ Core:RegisterBehavior(b_Reprisal_DestroyEntity);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Zerstört einen über die QSB erzeugten Effekt.
+-- Zerstört einen über ein Behavior erzeugten Effekt.
 --
 -- @param _EffectName Name des Effekts
 --
@@ -3530,7 +3576,6 @@ Core:RegisterBehavior(b_Reprisal_DestroyEffect);
 ---
 -- Der Spieler verliert das Spiel.
 --
---
 -- @within Reprisal
 --
 function Reprisal_Defeat()
@@ -3558,7 +3603,6 @@ Core:RegisterBehavior(b_Reprisal_Defeat);
 --
 -- Es handelt sich dabei um reine Optik! Der Spieler wird nicht verlieren.
 --
---
 -- @within Reprisal
 --
 function Reprisal_FakeDefeat()
@@ -3584,7 +3628,8 @@ Core:RegisterBehavior(b_Reprisal_FakeDefeat);
 ---
 -- Ein Entity wird durch ein neues anderen Typs ersetzt.
 --
--- Das neue Entity übernimmt Skriptname und Ausrichtung des alten Entity.
+-- Das neue Entity übernimmt Skriptname, Besitzer  und Ausrichtung des 
+-- alten Entity.
 --
 -- @param _Entity Skriptname oder ID des Entity
 -- @param _Type   Neuer Typ des Entity
@@ -4100,7 +4145,7 @@ Core:RegisterBehavior(b_Reprisal_CustomVariables)
 -- Wird eine Funktionsreferenz angegeben, wird die Funktion zusammen mit allen
 -- optionalen Parametern aufgerufen, als sei es ein gewöhnlicher Aufruf im
 -- Skript.
--- <pre>Reprisal_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
+-- <pre> Reprisal_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
 -- -- entspricht: ReplaceEntity("block", Entities.XD_ScriptEntity);</pre>
 -- <b>Achtung:</b> Nicht über den Assistenten verfügbar!
 --
@@ -4158,11 +4203,11 @@ Core:RegisterBehavior(b_Reprisal_MapScriptFunction);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erlaubt oder verbietet einem Spieler eine Technologie.
+-- Erlaubt oder verbietet einem Spieler ein Recht.
 --
 -- @param _PlayerID   ID des Spielers
 -- @param _Lock       Sperren/Entsperren
--- @param _Technology Name der Technologie
+-- @param _Technology Name des Rechts
 --
 -- @within Reprisal
 --
@@ -4274,6 +4319,7 @@ Core:RegisterBehavior(b_Reward_ObjectDeactivate);
 -- <ul>
 -- <li>0: Kann nur mit Helden aktiviert werden</li>
 -- <li>1: Kann immer aktiviert werden</li>
+-- <li>2: Kann niemals aktiviert werden</li>
 -- </ul>
 --
 -- @param _ScriptName Skriptname des interaktiven Objektes
@@ -4535,7 +4581,6 @@ Core:RegisterBehavior(b_Reward_Diplomacy);
 -- Verbessert die diplomatischen Beziehungen zwischen Sender und Empfänger
 -- um einen Grad.
 --
---
 -- @within Reward
 --
 function Reward_DiplomacyIncrease()
@@ -4745,7 +4790,10 @@ Core:RegisterBehavior(b_Reward_TradeOffers)
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ein benanntes Entity wird zerstört.
+-- Ein benanntes Entity wird entfernt.
+--
+-- <b>Hinweis</b>: Das Entity wird durch ein XD_ScriptEntity ersetzt. Es
+-- behält Name, Besitzer und Ausrichtung.
 --
 -- @param _ScriptName Skriptname des Entity
 --
@@ -4770,7 +4818,7 @@ Core:RegisterBehavior(b_Reward_DestroyEntity);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Zerstört einen über die QSB erzeugten Effekt.
+-- Zerstört einen über ein Behavior erzeugten Effekt.
 --
 -- @param _EffectName Name des Effekts
 --
@@ -4799,6 +4847,8 @@ Core:RegisterBehavior(b_Reward_DestroyEffect);
 --
 -- Ist die Position ein Gebäude, werden die Battalione am Eingang erzeugt und
 -- Das Entity wird nicht ersetzt.
+--
+-- Das erzeugte Battalion kann vor der KI des Besitzers versteckt werden.
 --
 -- @param _Position    Skriptname des Entity
 -- @param _PlayerID    PlayerID des Battalion
@@ -4909,6 +4959,8 @@ Core:RegisterBehavior(b_Reward_CreateBattalion);
 
 ---
 -- Erzeugt eine Menga von Battalionen an der Position.
+--
+-- Die erzeugten Battalione können vor der KI ihres Besitzers versteckt werden.
 --
 -- @param _Amount      Anzahl erzeugter Battalione
 -- @param _Position    Skriptname des Entity
@@ -5030,6 +5082,12 @@ Core:RegisterBehavior(b_Reward_CreateSeveralBattalions);
 ---
 -- Erzeugt einen Effekt an der angegebenen Position.
 --
+-- Der Effekt kann über seinen Namen jeder Zeit gelöscht werden.
+--
+-- <b>Achtung</b>: Feuereffekte sind bekannt dafür Abstürzue zu verursachen.
+-- Vermeide sie entweder ganz oder unterbinde das Speichern, solange ein
+-- solcher Effekt aktiv ist!
+--
 -- @param _EffectName  Einzigartiger Effektname
 -- @param _TypeName    Typ des Effekt
 -- @param _PlayerID    PlayerID des Effekt
@@ -5129,6 +5187,8 @@ Core:RegisterBehavior(b_Reward_CreateEffect);
 --
 -- Ist die Position ein Gebäude, werden die Entities am Eingang erzeugt und
 -- die Position wird nicht ersetzt.
+--
+-- Das erzeugte Entity kann vor der KI des Besitzers versteckt werden.
 --
 -- @param _ScriptName  Skriptname des Entity
 -- @param _PlayerID    PlayerID des Effekt
@@ -5247,7 +5307,9 @@ Core:RegisterBehavior(b_Reward_CreateEntity);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erzeugt mehrere Entities an der angegebenen Position
+-- Erzeugt mehrere Entities an der angegebenen Position.
+--
+-- Die erzeugten Entities können vor der KI ihres Besitzers versteckt werden.
 --
 -- @param _Amount      Anzahl an Entities
 -- @param _ScriptName  Skriptname des Entity
@@ -5372,7 +5434,8 @@ Core:RegisterBehavior(b_Reward_CreateSeveralEntities);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Bewegt einen Siedler oder ein Battalion zum angegebenen Zielort.
+-- Bewegt einen Siedler, einen Helden oder ein Battalion zum angegebenen 
+-- Zielort.
 --
 -- @param _Settler     Einheit, die bewegt wird
 -- @param _Destination Bewegungsziel
@@ -5437,7 +5500,6 @@ Core:RegisterBehavior(b_Reward_MoveSettler);
 ---
 -- Der Spieler gewinnt das Spiel.
 --
---
 -- @within Reward
 --
 function Reward_Victory()
@@ -5496,7 +5558,6 @@ Core:RegisterBehavior(b_Reward_Defeat);
 -- Zeigt die Siegdekoration an dem Quest an.
 --
 -- Dies ist reine Optik! Der Spieler wird dadurch nicht das Spiel gewinnen.
---
 --
 -- @within Reward
 --
@@ -6235,7 +6296,8 @@ Core:RegisterBehavior(b_Reward_AI_SetEnemy)
 ---
 -- Ein Entity wird durch ein neues anderen Typs ersetzt.
 --
--- Das neue Entity übernimmt Skriptname und Ausrichtung des alten Entity.
+-- Das neue Entity übernimmt Skriptname, Besitzer und Ausrichtung des
+-- alten Entity.
 --
 -- @param _Entity Skriptname oder ID des Entity
 -- @param _Type   Neuer Typ des Entity
@@ -6265,6 +6327,7 @@ Core:RegisterBehavior(b_Reward_ReplaceEntity);
 -- Setzt die Menge von Rohstoffen in einer Mine.
 --
 -- <b>Achtung:</b> Im Reich des Ostens darf die Mine nicht eingestürzt sein!
+-- Außerdem bringt dieses Behavior die Nachfüllmechanik durcheinander.
 --
 -- @param _ScriptName Skriptname der Mine
 -- @param _Amount     Menge an Rohstoffen
@@ -6328,7 +6391,8 @@ Core:RegisterBehavior(b_Reward_SetResourceAmount);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Fügt dem Lagerhaus des Auftragnehmers eine Menge an Rohstoffen hinzu.
+-- Fügt dem Lagerhaus des Auftragnehmers eine Menge an Rohstoffen hinzu. Die
+-- Rohstoffe werden direkt ins Lagerhaus bzw. die Schatzkammer gelegt.
 --
 -- @param _Type   Rohstofftyp
 -- @param _Amount Menge an Rohstoffen
@@ -6438,12 +6502,7 @@ function b_Reward_SendCart:CustomFunction(_Quest)
         return false;
     end
 
-    local ID = SendCart(self.ScriptNameEntity,
-                        self.PlayerID,
-                        Goods[self.GoodType],
-                        self.GoodAmount,
-                        Entities[self.UnitKey],
-                        self.IgnoreReservation    );
+    local ID = SendCart(self.ScriptNameEntity, self.PlayerID, Goods[self.GoodType], self.GoodAmount, Entities[self.UnitKey], self.IgnoreReservation);
 
     if self.ReplaceEntity and Logic.IsBuilding(GetID(self.ScriptNameEntity)) == 0 then
         DestroyEntity(self.ScriptNameEntity);
@@ -6776,11 +6835,11 @@ Core:RegisterBehavior(b_Reward_MapScriptFunction);
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erlaubt oder verbietet einem Spieler eine Technologie.
+-- Erlaubt oder verbietet einem Spieler ein Recht.
 --
 -- @param _PlayerID   ID des Spielers
 -- @param _Lock       Sperren/Entsperren
--- @param _Technology Name der Technologie
+-- @param _Technology Name des Rechts
 --
 -- @within Reward
 --
@@ -6802,6 +6861,9 @@ Core:RegisterBehavior(b_Reward_Technology);
 
 ---
 -- Gibt dem Auftragnehmer eine Anzahl an Prestigepunkten.
+--
+-- Prestige hat i.d.R. keine Funktion und wird nur als Zusatzpunkte in der
+-- Statistik angezeigt.
 --
 -- @param _Amount Menge an Prestige
 --
@@ -6961,7 +7023,9 @@ Core:RegisterBehavior(b_Reward_QuestRestartForceActive)
 -- -------------------------------------------------------------------------- --
 
 ---
--- Baut das angegebene Gabäude um eine Stufe aus.
+-- Baut das angegebene Gabäude um eine Stufe aus. Das Gebäude wird durch einen
+-- Arbeiter um eine Stufe erweitert. Der Arbeiter muss zuerst aus dem Lagerhaus
+-- kommen und sich zum Gebäude bewegen.
 --
 -- <b>Achtung:</b> Ein Gebäude muss erst fertig ausgebaut sein, bevor ein
 -- weiterer Ausbau begonnen werden kann!
@@ -7449,9 +7513,6 @@ Core:RegisterBehavior(b_Trigger_OnQuestFailure);
 ---
 -- Startet einen Quest, wenn ein anderer noch nicht ausgelöst wurde.
 --
--- Der Trigger löst auch aus, wenn der Quest bereits beendet wurde, da er
--- dazu vorher ausgelöst wurden sein muss.
---
 -- @param _QuestName Name des Quest
 -- @param _Time      Wartezeit
 -- return Table mit Behavior
@@ -7826,7 +7887,6 @@ Core:RegisterBehavior(b_Trigger_CustomVariables)
 ---
 -- Startet den Quest sofort.
 --
---
 -- @within Trigger
 --
 function Trigger_AlwaysActive()
@@ -7914,7 +7974,6 @@ Core:RegisterBehavior(b_Trigger_OnMonth);
 --
 -- <b>Achtung:</b> Dieses Behavior ist nur für Reich des Ostens verfügbar.
 --
---
 -- @within Trigger
 --
 function Trigger_OnMonsoon()
@@ -7985,7 +8044,6 @@ Core:RegisterBehavior(b_Trigger_Time);
 ---
 -- Startet den Quest sobald das Wasser gefriert.
 --
---
 -- @within Trigger
 --
 function Trigger_OnWaterFreezes()
@@ -8019,7 +8077,6 @@ Core:RegisterBehavior(b_Trigger_OnWaterFreezes);
 --
 -- Quests, für die dieser Trigger gesetzt ist, müssen durch einen anderen
 -- Quest über Reward_QuestActive oder Reprisal_QuestActive gestartet werden.
---
 --
 -- @within Trigger
 --
@@ -8286,6 +8343,9 @@ Core:RegisterBehavior(b_Trigger_OnAtLeastXOfYQuestsSuccess)
 --
 -- Die Funktion muss entweder true or false zurückgeben.
 --
+-- Nur Skipt: Wird statt einem Funktionsnamen (String) eine Funktionsreferenz
+-- übergeben, werden alle weiteren Parameter an die Funktion weitergereicht.
+--
 -- @param _FunctionName Name der Funktion
 --
 -- @within Trigger
@@ -8514,6 +8574,9 @@ Core:RegisterBehavior(b_Goal_InputDialog);
 ---
 -- Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.
 --
+-- <b>Achtung</b>: Das Behavior kann nur auf Effekte angewand werden, die
+-- über Effekt-Behavior erzeugt wurden.
+--
 -- @param _EffectName Name des Effekt
 --
 -- @within Trigger
@@ -8559,6 +8622,9 @@ Core:RegisterBehavior(b_Trigger_OnEffectDestroyed)
 
 ---
 -- Setzt das Upgrade Level des angegebenen Gebäudes.
+--
+-- Ein Geböude erhält sofort eine neue Stufe, ohne dass ein Arbeiter kommen
+-- und es ausbauen muss. Für eine Werkstatt wird ein neuer Arbeiter gespawnt.
 --
 -- @param _ScriptName Skriptname des Gebäudes
 -- @param _Level Upgrade Level

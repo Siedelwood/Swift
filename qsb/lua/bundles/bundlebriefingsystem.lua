@@ -1504,12 +1504,11 @@ end
 -- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
 -- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
 --
--- Das Brieifng wird an den Quest gebunden und kann mit Trigger_BriefingFailure
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
 -- überwacht werden. Es kann pro Quest nur ein Niederlage-Briefing 
 -- gebunden werden!
 --
 -- @param[type=string] _Briefing Funktionsname als String
---
 -- @within Reprisal
 --
 function Reprisal_Briefing(...)
@@ -1564,11 +1563,10 @@ Core:RegisterBehavior(b_Reprisal_Briefing);
 -- Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing
 -- in ihr ab. Die Funktion muss eine Briefing-ID zurückgeben.
 --
--- Das Brieifng wird an den Quest gebunden und kann mit Trigger_BriefingSuccess
+-- Das Brieifng wird an den Quest gebunden und kann mit Trigger_Briefing
 -- überwacht werden. Es kann pro Quest nur ein Erfolgs-Briefing gebunden werden!
 --
 -- @param[type=string] _Briefing Funktionsname als String
---
 -- @within Reward
 --
 function Reward_Briefing(...)
@@ -1601,8 +1599,11 @@ Core:RegisterBehavior(b_Reward_Briefing);
 -- -------------------------------------------------------------------------- --
 
 --
--- Startet einen Quest, nachdem das Erfolgs-Briefing eines Quests
--- gestartet und durchlaufen wurde.
+-- Startet einen Quest, nachdem das Briefing eines Quests gestartet und
+-- durchlaufen wurde.
+--
+-- Der Trigger wird sowohl Erfolgs- als auch Niederlage-Briefings prüfen.
+-- Über den Typ-Parameter kann auf eine spezielle Art eingeschränt werden.
 --
 -- @param[type=string] _QuestName Name des Quest
 -- @param[type=number] _Waittime (optional) Wartezeit in Sekunden

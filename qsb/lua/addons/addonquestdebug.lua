@@ -1127,7 +1127,6 @@ end
 -- @local
 --
 function AddOnQuestDebug.Local:Install()
-
 end
 
 ---
