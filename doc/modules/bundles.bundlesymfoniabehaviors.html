@@ -76,6 +76,7 @@
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
@@ -89,7 +90,8 @@
 <div id="content">
 
 <h1>Module <code>bundles.bundlesymfoniabehaviors</code></h1>
-<p>Dieses Bundle enthält einige weitere nützliche Standard-Behavior.</p>
+<p>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht
+ in der ursprünglichen QSB gab.</p>
 <p></p>
 
 
@@ -179,18 +181,15 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_SpyBuilding">Goal_SpyBuilding (_ScriptName, _DeleteThief)</a></td>
-	<td class="summary"><p>Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</p>
-<p> <p>Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt.</td>
+	<td class="summary">Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_StealBuilding">Goal_StealBuilding (_ScriptName)</a></td>
-	<td class="summary"><p>Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</p>
-<p> <p>Eine Kirche wird immer Sabotiert.</td>
+	<td class="summary">Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_StealGold">Goal_StealGold (_Amount, _ShowProgress)</a></td>
-	<td class="summary"><p>Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</p>
-<p> <p>Dabei ist es egal von welchem Spieler.</td>
+	<td class="summary">Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_WinQuest">Goal_WinQuest (_QuestName)</a></td>
@@ -236,7 +235,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Trigger_OnExactOneQuestIsLost">Trigger_OnExactOneQuestIsLost (_QuestName1, _QuestName2)</a></td>
-	<td class="summary">Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.</td>
+	<td class="summary">Startet den Quest, wenn exakt einer von beiden Quests fehlgeschlagen ist.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Trigger_OnExactOneQuestIsWon">Trigger_OnExactOneQuestIsWon (_QuestName1, _QuestName2)</a></td>
@@ -611,7 +610,7 @@
     <dd>
     Der Spieler gewinnt das Spiel mit einem animierten Siegesfest.
 <p> Es ist nicht möglich weiterzuspielen!
-<p>
+
 
 
 
@@ -662,7 +661,7 @@
     </dt>
     <dd>
     Der Spieler muss mindestens den angegebenen Ruf erreichen.  Der Ruf muss
- in Prozent angegeben werden.
+ in Prozent angegeben werden (ohne %-Zeichen).
 
 
 
@@ -743,14 +742,14 @@
     <strong>Goal_SpyBuilding (_ScriptName, _DeleteThief)</strong>
     </dt>
     <dd>
-    <p>Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.</p>
-<p> <p>Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt.  Es
+    Der Spieler muss ein Gebäude mit einem Dieb ausspoinieren.
+<p> Der Quest ist erfolgreich, sobald der Dieb in das Gebäude eindringt. Es
  muss sich um ein Gebäude handeln, das bestohlen werden kann (Burg, Lager,
- Kirche, Stadtgebäude mit Einnahmen)!</p>
-<p> <p>Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
- es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu ersetzen.</p>
-<p> <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
- ein Dieb entsandt werden kann.</p>
+ Kirche, Stadtgebäude mit Einnahmen)!
+<p> Optional kann der Dieb nach Abschluss gelöscht werden. Diese Option macht
+ es einfacher ihn durch z.B. einen Abfahrenden U_ThiefCart zu "ersetzen".
+<p> <b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude Einnahmen, damit
+ ein Dieb entsandt werden kann.
 
 
 
@@ -774,11 +773,11 @@
     <strong>Goal_StealBuilding (_ScriptName)</strong>
     </dt>
     <dd>
-    <p>Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.</p>
-<p> <p>Eine Kirche wird immer Sabotiert.  Ein Lagerhaus verhält sich ähnlich zu
- einer Burg.</p>
-<p> <p><b>Hinweis</b>:Das Behavior cheatet in dem Zielgebäude einnahmen, damit
- ein Dieb entsandt werden kann.</p>
+    Der Spieler muss ein bestimmtes Stadtgebäude bestehlen.
+<p> Eine Kirche wird immer Sabotiert. Ein Lagerhaus verhält sich ähnlich zu
+ einer Burg.
+<p> <b>Hinweis</b>: Das Behavior cheatet in dem Zielgebäude Einnahmen, damit
+ ein Dieb entsandt werden kann.
 
 
 
@@ -799,11 +798,12 @@
     <strong>Goal_StealGold (_Amount, _ShowProgress)</strong>
     </dt>
     <dd>
-    <p>Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.</p>
-<p> <p>Dabei ist es egal von welchem Spieler.  Diebe können Gold nur aus
- Stadtgebäude stehlen.</p>
-<p> <p><b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
- Gebäuden, damit der Quest stets erfüllbar bleibt.</p>
+    Der Spieler muss eine bestimmte Menge Gold mit Dieben stehlen.
+<p> Dabei ist es egal von welchem Spieler. Diebe können Gold nur aus
+ Stadtgebäude stehlen und nur von feindlichen Spielern.
+<p> <b>Hinweis</b>:Das Behavior cheatet allen Zielspielern Einnahmen in den
+ Gebäuden, damit der Quest stets erfüllbar bleibt. Dies gilt auch, wenn
+ der menschliche Spieler das Ziel ist!
 
 
 
@@ -1069,7 +1069,7 @@
     <strong>Trigger_OnExactOneQuestIsLost (_QuestName1, _QuestName2)</strong>
     </dt>
     <dd>
-    Startet den Quest, wenn exakt einer von beiden Quests erfolgreich ist.
+    Startet den Quest, wenn exakt einer von beiden Quests fehlgeschlagen ist.
 
 
     <h3>Parameters:</h3>
@@ -1117,7 +1117,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-14 19:37:45 </i>
+<i style="float:right;">Last updated 2019-03-17 16:58:17 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

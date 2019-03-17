@@ -36,9 +36,6 @@
 <ul>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
-<li><a href="#_Anwenderfunktionen"> Anwenderfunktionen
-
-</a></li>
 </ul>
 
 
@@ -76,6 +73,7 @@
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
@@ -116,6 +114,10 @@ cs01_flight2.cs
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.CutsceneIsActive">API.CutsceneIsActive ()</a></td>
+	<td class="summary">Prüft, ob zur Zeit eine Cutscene aktiv ist.</td>
+	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.CutsceneSetFastForwardSpeed">API.CutsceneSetFastForwardSpeed (_Speed)</a></td>
 	<td class="summary">Setzt die Geschwindigkeit für den schnellen Vorlauf für alle Cutscenes.</td>
@@ -201,6 +203,11 @@ cs01_flight2.cs
 	<td class="summary">Berechnet die lineare Interpolation des Alpha der Fader-Maske.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#AddOnCutsceneSystem.Local:NextButtonPressed">AddOnCutsceneSystem.Local:NextButtonPressed ()</a></td>
+	<td class="summary">Startet oder beendet den schnellen Vorlauf, wenn der Spieler den Skip-Button
+ klickt.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#AddOnCutsceneSystem.Local:NextFlight">AddOnCutsceneSystem.Local:NextFlight ()</a></td>
 	<td class="summary">Startet den nächsten Flight.</td>
 	</tr>
@@ -216,11 +223,6 @@ cs01_flight2.cs
 	<tr>
 	<td class="name" nowrap><a href="#AddOnCutsceneSystem.Local:SetFaderAlpha">AddOnCutsceneSystem.Local:SetFaderAlpha (_Alpha)</a></td>
 	<td class="summary">Setzt den Alpha-Wert der Fader-Maske auf den angegebenen Wert.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnCutsceneSystem.Local:SkipButtonPressed">AddOnCutsceneSystem.Local:SkipButtonPressed ()</a></td>
-	<td class="summary">Startet oder beendet den schnellen Vorlauf, wenn der Spieler den Skip-Button
- klickt.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnCutsceneSystem.Local:StartCutscene">AddOnCutsceneSystem.Local:StartCutscene (_Cutscene)</a></td>
@@ -243,15 +245,6 @@ cs01_flight2.cs
 	<td class="summary">Aktualisiert den Alpha-Wert der Fader-Maske, wenn eine Cutscene aktiv ist.</td>
 	</tr>
 </table>
-<h2><a href="#_Anwenderfunktionen"> Anwenderfunktionen
-
-</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#API.CutsceneIsActive">API.CutsceneIsActive ()</a></td>
-	<td class="summary">Prüft, ob zur Zeit eine Cutscene aktiv ist.</td>
-	</tr>
-</table>
 
 <br/>
 <br/>
@@ -260,6 +253,29 @@ cs01_flight2.cs
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "API.CutsceneIsActive"></a>
+    <strong>API.CutsceneIsActive ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob zur Zeit eine Cutscene aktiv ist.
+
+ <b>Alias</b>: IsCutsceneActive
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Cutscene aktiv
+    </ol>
+
+
+
+
+</dd>
     <dt>
     <a name = "API.CutsceneSetFastForwardSpeed"></a>
     <strong>API.CutsceneSetFastForwardSpeed (_Speed)</strong>
@@ -326,10 +342,6 @@ return API.StartCutscene(Cutscene);</pre>
  Ersetze ... mit den Flights, die zur Cutscene gehören sollen.
 <p> Die Funktion gibt die ID der Cutscene zurück, mit der geprüft werden kann,
  ob die Cutscene beendet ist.
-<p> <b>Hinweis</b>: Überschreibt die gleichnamige Funktion im Briefing System
- und gibt ihr neue Funktionalität! Fake Cutscenes müssen jetzt über den
- folgenden Aufruf gestartet werden:
- <pre>StartBriefing(MyCutscene, true)</pre>
 
  <b>Alias</b>: StartCutscene
 
@@ -716,6 +728,21 @@ return API.StartCutscene(Cutscene);</pre>
 
 </dd>
     <dt>
+    <a name = "AddOnCutsceneSystem.Local:NextButtonPressed"></a>
+    <strong>AddOnCutsceneSystem.Local:NextButtonPressed ()</strong>
+    </dt>
+    <dd>
+    Startet oder beendet den schnellen Vorlauf, wenn der Spieler den Skip-Button
+ klickt.  Außerdem wird der Text des Skip-Button gesetzt und ein Flag gesetzt.
+
+
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "AddOnCutsceneSystem.Local:NextFlight"></a>
     <strong>AddOnCutsceneSystem.Local:NextFlight ()</strong>
     </dt>
@@ -779,21 +806,6 @@ return API.StartCutscene(Cutscene);</pre>
          Alpha-Wert
         </li>
     </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnCutsceneSystem.Local:SkipButtonPressed"></a>
-    <strong>AddOnCutsceneSystem.Local:SkipButtonPressed ()</strong>
-    </dt>
-    <dd>
-    Startet oder beendet den schnellen Vorlauf, wenn der Spieler den Skip-Button
- klickt.  Außerdem wird der Text des Skip-Button gesetzt und ein Flag gesetzt.
-
-
 
 
 
@@ -880,42 +892,13 @@ return API.StartCutscene(Cutscene);</pre>
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="_Anwenderfunktionen"></a> Anwenderfunktionen
-
-</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "API.CutsceneIsActive"></a>
-    <strong>API.CutsceneIsActive ()</strong>
-    </dt>
-    <dd>
-    Prüft, ob zur Zeit eine Cutscene aktiv ist.
-
- <b>Alias</b>: IsCutsceneActive
-
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Cutscene aktiv
-    </ol>
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-14 19:37:45 </i>
+<i style="float:right;">Last updated 2019-03-17 16:58:17 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

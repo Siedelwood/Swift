@@ -83,7 +83,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_BuildWall">Goal_BuildWall (_PlayerID, _Position1, _Position2)</a></td>
-	<td class="summary">Eine Mauer muss die Bewegung eines Spielers zwischen 2 Punkten einschränken.</td>
+	<td class="summary">Eine Mauer muss gebaut werden um die Bewegung eines Spielers einzuschränken.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_Capture">Goal_Capture (_ScriptName)</a></td>
@@ -112,8 +112,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_Decide">Goal_Decide (_Title, _Text, _Labels)</a></td>
-	<td class="summary"><p>Lässt den Spieler zwischen zwei Antworten wählen.</p>
-<p> <p>Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.</td>
+	<td class="summary">Lässt den Spieler zwischen zwei Antworten wählen.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_Deliver">Goal_Deliver (_GoodType, _GoodAmount, _OtherTarget, _IgnoreCapture)</a></td>
@@ -133,7 +132,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_DestroySoldiers">Goal_DestroySoldiers (_PlayerA, _PlayerB, _Amount)</a></td>
-	<td class="summary">Spieler A muss Soldaten von Spieler B zerstören.</td>
+	<td class="summary">Ein beliebiger Spieler muss Soldaten eines anderen Spielers zerstören.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_DestroyType">Goal_DestroyType (_EntityType, _Amount, _PlayerID)</a></td>
@@ -141,7 +140,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_Diplomacy">Goal_Diplomacy (_PlayerID, _State)</a></td>
-	<td class="summary">Es muss ein bestimmter Diplomatiestatus zu einer anderen Datei erreicht
+	<td class="summary">Es muss ein bestimmter Diplomatiestatus zu einer anderen Patei erreicht
  werden.</td>
 	</tr>
 	<tr>
@@ -202,11 +201,11 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_Refill">Goal_Refill (_ScriptName)</a></td>
-	<td class="summary">Der AUftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.</td>
+	<td class="summary">Der Auftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_ResourceAmount">Goal_ResourceAmount (_ScriptName, _Relation, _Amount)</a></td>
-	<td class="summary">Der Auftragnehmer muss eine Menge an Rohstoffen in einer Mine erreichen.</td>
+	<td class="summary">Eine bestimmte Menge an Rohstoffen in einer Mine muss erreicht werden.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_SatisfyNeed">Goal_SatisfyNeed (_PlayerID, _Need)</a></td>
@@ -230,7 +229,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_TributeClaim">Goal_TributeClaim (_Territory, _PlayerID, _Cost, _Periode, _Time, _StartMsg, _SuccessMsg, _FailMsg, _HowOften, _OtherOwner, _Abort)</a></td>
-	<td class="summary">Erlaubt es dem Spieler ein Territorium zu mieten.</td>
+	<td class="summary">Erlaubt es dem Spieler ein Territorium zu "mieten".</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_TributeDiplomacy">Goal_TributeDiplomacy (_GoldAmount, _Periode, _Time, _StartMsg, _SuccessMsg, _FailureMsg, _Restart)</a></td>
@@ -255,11 +254,11 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reprisal_DestroyEffect">Reprisal_DestroyEffect (_EffectName)</a></td>
-	<td class="summary">Zerstört einen über die QSB erzeugten Effekt.</td>
+	<td class="summary">Zerstört einen über ein Behavior erzeugten Effekt.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reprisal_DestroyEntity">Reprisal_DestroyEntity (_ScriptName)</a></td>
-	<td class="summary">Ein benanntes Entity wird zerstört.</td>
+	<td class="summary">Ein benanntes Entity wird entfernt.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reprisal_Diplomacy">Reprisal_Diplomacy (_Party1, _Party2, _State)</a></td>
@@ -284,7 +283,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reprisal_ObjectDeactivate">Reprisal_ObjectDeactivate (_ScriptName)</a></td>
-	<td class="summary">Deaktiviert ein interaktives Objekt</td>
+	<td class="summary">Deaktiviert ein interaktives Objekt.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reprisal_QuestActivate">Reprisal_QuestActivate (_QuestName)</a></td>
@@ -316,7 +315,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reprisal_Technology">Reprisal_Technology (_PlayerID, _Lock, _Technology)</a></td>
-	<td class="summary">Erlaubt oder verbietet einem Spieler eine Technologie.</td>
+	<td class="summary">Erlaubt oder verbietet einem Spieler ein Recht.</td>
 	</tr>
 </table>
 <h2><a href="#Reward">Reward</a></h2>
@@ -367,7 +366,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_CreateSeveralEntities">Reward_CreateSeveralEntities (_Amount, _ScriptName, _PlayerID, _TypeName, _Orientation, _HideFromAI)</a></td>
-	<td class="summary">Erzeugt mehrere Entities an der angegebenen Position</td>
+	<td class="summary">Erzeugt mehrere Entities an der angegebenen Position.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_CustomVariables">Reward_CustomVariables (_Name, _Operator, _Value)</a></td>
@@ -379,11 +378,11 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_DestroyEffect">Reward_DestroyEffect (_EffectName)</a></td>
-	<td class="summary">Zerstört einen über die QSB erzeugten Effekt.</td>
+	<td class="summary">Zerstört einen über ein Behavior erzeugten Effekt.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_DestroyEntity">Reward_DestroyEntity (_ScriptName)</a></td>
-	<td class="summary">Ein benanntes Entity wird zerstört.</td>
+	<td class="summary">Ein benanntes Entity wird entfernt.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_Diplomacy">Reward_Diplomacy (_Party1, _Party2, _State)</a></td>
@@ -404,7 +403,8 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_MoveSettler">Reward_MoveSettler (_Settler, _Destination)</a></td>
-	<td class="summary">Bewegt einen Siedler oder ein Battalion zum angegebenen Zielort.</td>
+	<td class="summary">Bewegt einen Siedler, einen Helden oder ein Battalion zum angegebenen
+ Zielort.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_ObjectActivate">Reward_ObjectActivate (_ScriptName, _State)</a></td>
@@ -472,7 +472,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_Technology">Reward_Technology (_PlayerID, _Lock, _Technology)</a></td>
-	<td class="summary">Erlaubt oder verbietet einem Spieler eine Technologie.</td>
+	<td class="summary">Erlaubt oder verbietet einem Spieler ein Recht.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Reward_TradeOffers">Reward_TradeOffers (_PlayerID, _Amount1, _Type1, _Amount2, _Type2, _Amount3, _Type3, _Amount4, _Type4)</a></td>
@@ -665,7 +665,7 @@
     </dt>
     <dd>
     Der angegebene Spieler muss einen Buff aktivieren.
-<p> <u>Buffs</u>
+<p> <u>Buffs "Aufstieg eines Königreich"</u>
  <li>Buff_Spice: Salz</li>
  <li>Buff_Colour: Farben</li>
  <li>Buff_Entertainers: Entertainer anheuern</li>
@@ -680,7 +680,7 @@
  <li>Buff_NoPayment: Sold streichen</li>
  <li>Buff_NoTaxes: Keine Steuern verlangen</li>
  <br/>
- <u>RdO Buffs</u>
+ <u>Buffs "Reich des Ostens"</u>
  <li>Buff_Gems: Edelsteine</li>
  <li>Buff_MusicalInstrument: Musikinstrumente</li>
  <li>Buff_Olibanum: Weihrauch</li>
@@ -753,9 +753,16 @@
     <strong>Goal_BuildWall (_PlayerID, _Position1, _Position2)</strong>
     </dt>
     <dd>
-    Eine Mauer muss die Bewegung eines Spielers zwischen 2 Punkten einschränken.
-<p> <b>Achtung:</b> Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt gewertet
- werden, wenn der Weg durch Wasser blockiert wird!
+    Eine Mauer muss gebaut werden um die Bewegung eines Spielers einzuschränken.
+
+ Einschränken bedeutet, dass sich der angegebene Spieler nicht von Punkt A
+ nach Punkt B bewegen kann, weil eine Mauer im Weg ist. Die Punkte sind
+ frei wählbar. In den meisten Fällen reicht es, Marktplätze anzugeben.
+<p> Beispiel: Spieler 3 ist der Feind von Spieler 1, aber Bekannt mit Spieler 2.
+ Wenn er sich nicht mehr zwischen den Marktplätzen von Spieler 1 und 2
+ bewegen kann, weil eine Mauer dazwischen ist, ist das Ziel erreicht.
+<p> <b>Achtung:</b> Bei Monsun kann dieses Ziel fälschlicher Weise als erfüllt
+ gewertet werden, wenn der Weg durch Wasser blockiert wird!
 
 
 
@@ -850,7 +857,7 @@
     </dt>
     <dd>
     Der Auftragnehmer muss eine Menge an Territorien besitzen.
-<p> Das Heimatterritorium des Spielers wird mitgezählt!
+ Das Heimatterritorium des Spielers wird mitgezählt!
 
 
 
@@ -872,6 +879,9 @@
     </dt>
     <dd>
     Der Auftragnehmer muss auf dem Territorium einen Entitytyp erstellen.
+<p> Dieses Behavior eignet sich für Aufgaben vom Schlag "Baue X Getreidefarmen
+ Auf Territorium >".
+
 
 
     <h3>Parameters:</h3>
@@ -934,12 +944,11 @@
     <strong>Goal_Decide (_Title, _Text, _Labels)</strong>
     </dt>
     <dd>
-    <p>Lässt den Spieler zwischen zwei Antworten wählen.</p>
-<p> <p>Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
- </p>
-<p> <p><b>Hinweis:</b> Es können nur geschlossene Fragen gestellt werden. Dialoge
+    Lässt den Spieler zwischen zwei Antworten wählen.
+<p> Dabei kann zwischen den Labels Ja/Nein und Ok/Abbrechen gewählt werden.
+<p> <b>Hinweis:</b> Es können nur geschlossene Fragen gestellt werden. Dialoge
  müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
- Abbrechen passen.</p>
+ Abbrechen passen.
 
 
 
@@ -1001,6 +1010,9 @@
     </dt>
     <dd>
     Alle Einheiten des Spielers müssen zerstört werden.
+<p> <b>Achtung</b>: Bei normalen Parteien, welche ein Dorf oder eine Stadt
+ besitzen, ist Goal_DestroyPlayer besser geeignet!
+
 
 
     <h3>Parameters:</h3>
@@ -1022,7 +1034,11 @@
     <dd>
     Eine andere Partei muss besiegt werden.
 <p> Die Partei gilt als besiegt, wenn ein Hauptgebäude (Burg, Kirche, Lager)
- zerstört wurde. <b>Achtung:</b> Funktioniert nicht bei Banditen!
+ zerstört wurde.
+
+ <b>Achtung:</b> Bei Banditen ist dieses Behavior wenig sinnvoll, da sie
+ nicht durch zerstörung ihres Hauptzeltes vernichtet werden. Hier bietet
+ sich Goal_DestroyAllPlayerUnits an.
 
 
 
@@ -1044,6 +1060,11 @@
     </dt>
     <dd>
     Ein benanntes Entity muss zerstört werden.
+<p> Ein Entity gilt als zerstört, wenn es nicht mehr existiert oder während
+ der Laufzeit des Quests seine Entity-ID oder den Besitzer verändert.
+<p> <b>Achtung</b>: Helden können nicht direkt zerstört werden. Bei ihnen
+ genügt es, wenn sie sich "in die Burg zurückziehen".
+
 
 
     <h3>Parameters:</h3>
@@ -1063,7 +1084,10 @@
     <strong>Goal_DestroySoldiers (_PlayerA, _PlayerB, _Amount)</strong>
     </dt>
     <dd>
-    Spieler A muss Soldaten von Spieler B zerstören.
+    Ein beliebiger Spieler muss Soldaten eines anderen Spielers zerstören.
+<p> Dieses Behavior kann auch in versteckten Quests bentutzt werden, wenn die
+ Menge an zerstörten Soldaten durch einen Feind des Spielers gefragt ist.
+
 
 
     <h3>Parameters:</h3>
@@ -1090,8 +1114,8 @@
     </dt>
     <dd>
     Eine Menge an Entities eines Typs müssen zerstört werden.
-<p> Wenn Raubtiere zerstört werden sollen, muss Spieler 0 als Besitzer
- angegeben werden.
+<p> <b>Achtung</b>: Wenn Raubtiere zerstört werden sollen, muss Spieler 0
+ als Besitzer angegeben werden.
 
 
 
@@ -1118,7 +1142,7 @@
     <strong>Goal_Diplomacy (_PlayerID, _State)</strong>
     </dt>
     <dd>
-    Es muss ein bestimmter Diplomatiestatus zu einer anderen Datei erreicht
+    Es muss ein bestimmter Diplomatiestatus zu einer anderen Patei erreicht
  werden.  Der Status kann eine Verbesserung oder eine Verschlechterung zum
  aktuellen Status sein.
 
@@ -1168,6 +1192,9 @@
     </dt>
     <dd>
     Ein Territorium muss erstmalig vom Auftragnehmer betreten werden.
+<p> Wenn ein Spieler zuvor mit seinen Einheiten auf dem Territorium war, ist
+ es bereits entdeckt und das Ziel sofort erfüllt.
+
 
 
     <h3>Parameters:</h3>
@@ -1189,7 +1216,7 @@
     <dd>
     Eine Entfernung zwischen zwei Entities muss erreicht werden.
 <p> Je nach angegebener Relation muss die Entfernung unter- oder überschritten
- werden um den Quest zu gewinnen.
+ werden, um den Quest zu gewinnen.
 
 
 
@@ -1220,6 +1247,11 @@
     </dt>
     <dd>
     Der angegebene Spieler muss mindestens die Menge an Festen feiern.
+<p> Ein Fest wird gewertet, sobald die Metfässer auf dem Markt erscheinen. Diese
+ Metfässer erscheinen im normalen Spielverlauf nur durch ein Fest!
+<p> <b>Achtung</b>: Wenn ein Spieler aus einem anderen Grund Metfässer besitzt,
+ wird dieses Behavior nicht mehr richtig funktionieren!
+
 
 
     <h3>Parameters:</h3>
@@ -1305,7 +1337,6 @@
     </dt>
     <dd>
     Der Quest schlägt sofort fehl.
-<p>
 
 
 
@@ -1320,7 +1351,6 @@
     </dt>
     <dd>
     Der Quest wird sofort erfüllt.
-<p>
 
 
 
@@ -1335,6 +1365,8 @@
     </dt>
     <dd>
     Der Primary Knight des angegebenen Spielers muss sich dem Ziel nähern.
+<p> Die Distanz ist auf 2500 festgelegt. Es wird immer ein Marker genutzt.
+
 
 
     <h3>Parameters:</h3>
@@ -1421,6 +1453,9 @@
  <li>false: Fehlschlag</li>
  <li>nichts: Zustand unbestimmt</li>
  </ul>
+<p> Anstelle eines Strings kann beim Einsatz im Skript eine Funktionsreferenz
+ übergeben werden. In diesem Fall werden alle weiteren Parameter direkt an
+ die Funktion weitergereicht.
 
 
 
@@ -1441,7 +1476,9 @@
     <strong>Goal_NoChange ()</strong>
     </dt>
     <dd>
-    Der Zustand des Quests ändert sich niemals
+    Der Zustand des Quests ändert sich niemals  Wenn ein Zeitlimit auf dem Quest liegt, wird dieses Behavior nicht
+ fehlschlagen sondern automatisch erfüllt.
+
 
 
 
@@ -1487,7 +1524,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_ScriptName</span>
-
+         Zu beschützendes Entity
         </li>
     </ul>
 
@@ -1501,7 +1538,9 @@
     <strong>Goal_Refill (_ScriptName)</strong>
     </dt>
     <dd>
-    Der AUftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.
+    Der Auftragnehmer muss eine Mine mit einem Geologen wieder auffüllen.
+<p> <b>Achtung</b>: Dieses Behavior ist nur in "Reich des Ostens" verfügbar.
+
 
 
     <h3>Parameters:</h3>
@@ -1521,7 +1560,9 @@
     <strong>Goal_ResourceAmount (_ScriptName, _Relation, _Amount)</strong>
     </dt>
     <dd>
-    Der Auftragnehmer muss eine Menge an Rohstoffen in einer Mine erreichen.
+    Eine bestimmte Menge an Rohstoffen in einer Mine muss erreicht werden.
+<p> Dieses Behavior eignet sich besonders für den Einsatz als versteckter
+ Quest um eine Reaktion auszulösen, wenn z.B. eine Mine leer ist.
 <p> <u>Relationen</u>
  <ul>
  <li>> - Mehr als Anzahl</li>
@@ -1614,6 +1655,8 @@
  <li>>= - Anzahl als Mindestmenge</li>
  <li>< - Weniger als Anzahl</li>
  </ul>
+<p> Dieses Behavior kann verwendet werden um die Menge an feindlichen
+ Soldaten zu zählen oder die Menge an Soldaten des Spielers.
 
 
 
@@ -1662,7 +1705,8 @@
     <dd>
     Es sollen Informationen aus der Burg gestohlen werden.
 <p> Der Spieler muss einen Dieb entsenden um Informationen aus der Burg zu
- stehlen. <b>Achtung:</b> Das ist nur bei Feinden möglich!
+ stehlen.
+<p> <b>Achtung:</b> Das ist nur bei Feinden möglich!
 
 
 
@@ -1683,11 +1727,14 @@
     <strong>Goal_TributeClaim (_Territory, _PlayerID, _Cost, _Periode, _Time, _StartMsg, _SuccessMsg, _FailMsg, _HowOften, _OtherOwner, _Abort)</strong>
     </dt>
     <dd>
-    Erlaubt es dem Spieler ein Territorium zu mieten.
+    Erlaubt es dem Spieler ein Territorium zu "mieten".
 <p> Zerstört der Spieler den Außenposten, schlägt der Quest fehl und das
- Territorium wird an den Vermieter übergeben.
+ Territorium wird an den Vermieter übergeben. Wenn der Spieler die Pacht
+ nicht bezahlt, geht der Besitz an den Vermieter über.
 <p> Die Zeit zum Bezahlen des Tributes muss immer kleiner sein als die
  Wiederholungsperiode.
+<p> <b>Hinweis</b>: Je mehr Zeit sich der Spieler lässt um den Tribut zu
+ begleichen, desto mehr wird sich der Start der nächsten Periode verzögern.
 
 
 
@@ -1742,6 +1789,8 @@
  Diplomatie zu einen Spieler erreichen.
 <p> Die Zeit zum Bezahlen des Tributes muss immer kleiner sein als die
  Wiederholungsperiode.
+<p> <b>Hinweis</b>: Je mehr Zeit sich der Spieler lässt um den Tribut zu
+ begleichen, desto mehr wird sich der Start der nächsten Periode verzögern.
 
 
 
@@ -1782,8 +1831,9 @@
     <dd>
     Eine bestimmte Anzahl an Einheiten einer Kategorie muss sich auf dem
  Territorium befinden.
-<p> Die gegenebe Anzahl kann entweder als Mindestwert oder als Maximalwert
- gesucht werden.
+<p> Es kann entweder gefordert werden, weniger als die angegebene Menge auf
+ dem Territorium zu haben (z.B. "<"" 1 für 0) oder mindestens so
+ viele Entities (z.B. ">=" 5 für mindestens 5).
 
 
 
@@ -1858,7 +1908,6 @@
     </dt>
     <dd>
     Der Spieler verliert das Spiel.
-<p>
 
 
 
@@ -1872,7 +1921,7 @@
     <strong>Reprisal_DestroyEffect (_EffectName)</strong>
     </dt>
     <dd>
-    Zerstört einen über die QSB erzeugten Effekt.
+    Zerstört einen über ein Behavior erzeugten Effekt.
 
 
     <h3>Parameters:</h3>
@@ -1892,7 +1941,10 @@
     <strong>Reprisal_DestroyEntity (_ScriptName)</strong>
     </dt>
     <dd>
-    Ein benanntes Entity wird zerstört.
+    Ein benanntes Entity wird entfernt.
+<p> <b>Hinweis</b>: Das Entity wird durch ein XD_ScriptEntity ersetzt. Es
+ behält Name, Besitzer und Ausrichtung.
+
 
 
     <h3>Parameters:</h3>
@@ -1940,7 +1992,6 @@
     <dd>
     Der diplomatische Status zwischen Sender und Empfänger verschlechtert sich
  um eine Stufe.
-<p>
 
 
 
@@ -1956,7 +2007,7 @@
     <dd>
     Zeigt die Niederlagedekoration am Quest an.
 <p> Es handelt sich dabei um reine Optik! Der Spieler wird nicht verlieren.
-<p>
+
 
 
 
@@ -1976,7 +2027,7 @@
 <p> Wird eine Funktionsreferenz angegeben, wird die Funktion zusammen mit allen
  optionalen Parametern aufgerufen, als sei es ein gewöhnlicher Aufruf im
  Skript.
- <pre>Reprisal_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
+ <pre> Reprisal_MapScriptFunction(ReplaceEntity, "block", Entities.XD_ScriptEntity);
  -- entspricht: ReplaceEntity("block", Entities.XD_ScriptEntity);</pre>
  <b>Achtung:</b> Nicht über den Assistenten verfügbar!
 
@@ -2000,10 +2051,11 @@
     </dt>
     <dd>
     Aktiviert ein interaktives Objekt.
-<p> Der Status bestimmt, wie das objekt aktiviert wird.
+<p> Der Status bestimmt, wie das Objekt aktiviert wird.
  <ul>
  <li>0: Kann nur mit Helden aktiviert werden</li>
  <li>1: Kann immer aktiviert werden</li>
+ <li>2: Kann niemals aktiviert werden</li>
  </ul>
 
 
@@ -2014,7 +2066,7 @@
          Skriptname des interaktiven Objektes
         </li>
         <li><span class="parameter">_State</span>
-         Status des Objektes
+              Status des Objektes
         </li>
     </ul>
 
@@ -2028,7 +2080,7 @@
     <strong>Reprisal_ObjectDeactivate (_ScriptName)</strong>
     </dt>
     <dd>
-    Deaktiviert ein interaktives Objekt
+    Deaktiviert ein interaktives Objekt.
 
 
     <h3>Parameters:</h3>
@@ -2172,7 +2224,8 @@
     </dt>
     <dd>
     Ein Entity wird durch ein neues anderen Typs ersetzt.
-<p> Das neue Entity übernimmt Skriptname und Ausrichtung des alten Entity.
+<p> Das neue Entity übernimmt Skriptname, Besitzer  und Ausrichtung des
+ alten Entity.
 
 
 
@@ -2199,7 +2252,7 @@
     <strong>Reprisal_Technology (_PlayerID, _Lock, _Technology)</strong>
     </dt>
     <dd>
-    Erlaubt oder verbietet einem Spieler eine Technologie.
+    Erlaubt oder verbietet einem Spieler ein Recht.
 
 
     <h3>Parameters:</h3>
@@ -2211,7 +2264,7 @@
                Sperren/Entsperren
         </li>
         <li><span class="parameter">_Technology</span>
-         Name der Technologie
+         Name des Rechts
         </li>
     </ul>
 
@@ -2494,6 +2547,7 @@
     Ersetzt ein Entity mit einem Batallion.
 <p> Ist die Position ein Gebäude, werden die Battalione am Eingang erzeugt und
  Das Entity wird nicht ersetzt.
+<p> Das erzeugte Battalion kann vor der KI des Besitzers versteckt werden.
 
 
 
@@ -2530,6 +2584,11 @@
     </dt>
     <dd>
     Erzeugt einen Effekt an der angegebenen Position.
+<p> Der Effekt kann über seinen Namen jeder Zeit gelöscht werden.
+<p> <b>Achtung</b>: Feuereffekte sind bekannt dafür Abstürzue zu verursachen.
+ Vermeide sie entweder ganz oder unterbinde das Speichern, solange ein
+ solcher Effekt aktiv ist!
+
 
 
     <h3>Parameters:</h3>
@@ -2564,6 +2623,7 @@
     Ersetzt ein Entity mit dem Skriptnamen durch ein neues Entity.
 <p> Ist die Position ein Gebäude, werden die Entities am Eingang erzeugt und
  die Position wird nicht ersetzt.
+<p> Das erzeugte Entity kann vor der KI des Besitzers versteckt werden.
 
 
 
@@ -2597,6 +2657,8 @@
     </dt>
     <dd>
     Erzeugt eine Menga von Battalionen an der Position.
+<p> Die erzeugten Battalione können vor der KI ihres Besitzers versteckt werden.
+
 
 
     <h3>Parameters:</h3>
@@ -2634,7 +2696,9 @@
     <strong>Reward_CreateSeveralEntities (_Amount, _ScriptName, _PlayerID, _TypeName, _Orientation, _HideFromAI)</strong>
     </dt>
     <dd>
-    Erzeugt mehrere Entities an der angegebenen Position
+    Erzeugt mehrere Entities an der angegebenen Position.
+<p> Die erzeugten Entities können vor der KI ihres Besitzers versteckt werden.
+
 
 
     <h3>Parameters:</h3>
@@ -2721,7 +2785,7 @@
     <strong>Reward_DestroyEffect (_EffectName)</strong>
     </dt>
     <dd>
-    Zerstört einen über die QSB erzeugten Effekt.
+    Zerstört einen über ein Behavior erzeugten Effekt.
 
 
     <h3>Parameters:</h3>
@@ -2741,7 +2805,10 @@
     <strong>Reward_DestroyEntity (_ScriptName)</strong>
     </dt>
     <dd>
-    Ein benanntes Entity wird zerstört.
+    Ein benanntes Entity wird entfernt.
+<p> <b>Hinweis</b>: Das Entity wird durch ein XD_ScriptEntity ersetzt. Es
+ behält Name, Besitzer und Ausrichtung.
+
 
 
     <h3>Parameters:</h3>
@@ -2789,7 +2856,6 @@
     <dd>
     Verbessert die diplomatischen Beziehungen zwischen Sender und Empfänger
  um einen Grad.
-<p>
 
 
 
@@ -2805,7 +2871,7 @@
     <dd>
     Zeigt die Siegdekoration an dem Quest an.
 <p> Dies ist reine Optik! Der Spieler wird dadurch nicht das Spiel gewinnen.
-<p>
+
 
 
 
@@ -2848,7 +2914,8 @@
     <strong>Reward_MoveSettler (_Settler, _Destination)</strong>
     </dt>
     <dd>
-    Bewegt einen Siedler oder ein Battalion zum angegebenen Zielort.
+    Bewegt einen Siedler, einen Helden oder ein Battalion zum angegebenen
+ Zielort.
 
 
     <h3>Parameters:</h3>
@@ -2876,6 +2943,7 @@
  <ul>
  <li>0: Kann nur mit Helden aktiviert werden</li>
  <li>1: Kann immer aktiviert werden</li>
+ <li>2: Kann niemals aktiviert werden</li>
  </ul>
 
 
@@ -2972,6 +3040,9 @@
     </dt>
     <dd>
     Gibt dem Auftragnehmer eine Anzahl an Prestigepunkten.
+<p> Prestige hat i.d.R. keine Funktion und wird nur als Zusatzpunkte in der
+ Statistik angezeigt.
+
 
 
     <h3>Parameters:</h3>
@@ -3135,7 +3206,8 @@
     </dt>
     <dd>
     Ein Entity wird durch ein neues anderen Typs ersetzt.
-<p> Das neue Entity übernimmt Skriptname und Ausrichtung des alten Entity.
+<p> Das neue Entity übernimmt Skriptname, Besitzer und Ausrichtung des
+ alten Entity.
 
 
 
@@ -3162,7 +3234,9 @@
     <strong>Reward_Resources (_Type, _Amount)</strong>
     </dt>
     <dd>
-    Fügt dem Lagerhaus des Auftragnehmers eine Menge an Rohstoffen hinzu.
+    Fügt dem Lagerhaus des Auftragnehmers eine Menge an Rohstoffen hinzu.  Die
+ Rohstoffe werden direkt ins Lagerhaus bzw. die Schatzkammer gelegt.
+
 
 
     <h3>Parameters:</h3>
@@ -3231,6 +3305,9 @@
     </dt>
     <dd>
     Setzt das Upgrade Level des angegebenen Gebäudes.
+<p> Ein Geböude erhält sofort eine neue Stufe, ohne dass ein Arbeiter kommen
+ und es ausbauen muss. Für eine Werkstatt wird ein neuer Arbeiter gespawnt.
+
 
 
     <h3>Parameters:</h3>
@@ -3255,6 +3332,7 @@
     <dd>
     Setzt die Menge von Rohstoffen in einer Mine.
 <p> <b>Achtung:</b> Im Reich des Ostens darf die Mine nicht eingestürzt sein!
+ Außerdem bringt dieses Behavior die Nachfüllmechanik durcheinander.
 
 
 
@@ -3278,7 +3356,7 @@
     <strong>Reward_Technology (_PlayerID, _Lock, _Technology)</strong>
     </dt>
     <dd>
-    Erlaubt oder verbietet einem Spieler eine Technologie.
+    Erlaubt oder verbietet einem Spieler ein Recht.
 
 
     <h3>Parameters:</h3>
@@ -3290,7 +3368,7 @@
                Sperren/Entsperren
         </li>
         <li><span class="parameter">_Technology</span>
-         Name der Technologie
+         Name des Rechts
         </li>
     </ul>
 
@@ -3377,7 +3455,9 @@
     <strong>Reward_UpgradeBuilding (_ScriptName)</strong>
     </dt>
     <dd>
-    Baut das angegebene Gabäude um eine Stufe aus.
+    Baut das angegebene Gabäude um eine Stufe aus.  Das Gebäude wird durch einen
+ Arbeiter um eine Stufe erweitert. Der Arbeiter muss zuerst aus dem Lagerhaus
+ kommen und sich zum Gebäude bewegen.
 <p> <b>Achtung:</b> Ein Gebäude muss erst fertig ausgebaut sein, bevor ein
  weiterer Ausbau begonnen werden kann!
 
@@ -3401,7 +3481,6 @@
     </dt>
     <dd>
     Der Spieler gewinnt das Spiel.
-<p>
 
 
 
@@ -3420,7 +3499,6 @@
     </dt>
     <dd>
     Startet den Quest sofort.
-<p>
 
 
 
@@ -3465,6 +3543,8 @@
     <dd>
     Führt eine Funktion im Skript als Trigger aus.
 <p> Die Funktion muss entweder true or false zurückgeben.
+<p> Nur Skipt: Wird statt einem Funktionsnamen (String) eine Funktionsreferenz
+ übergeben, werden alle weiteren Parameter an die Funktion weitergereicht.
 
 
 
@@ -3488,7 +3568,7 @@
     Startet den Quest niemals.
 <p> Quests, für die dieser Trigger gesetzt ist, müssen durch einen anderen
  Quest über Reward_QuestActive oder Reprisal_QuestActive gestartet werden.
-<p>
+
 
 
 
@@ -3638,6 +3718,9 @@
     </dt>
     <dd>
     Startet den Quest, sobald ein Effekt zerstört wird oder verschwindet.
+<p> <b>Achtung</b>: Das Behavior kann nur auf Effekte angewand werden, die
+ über Effekt-Behavior erzeugt wurden.
+
 
 
     <h3>Parameters:</h3>
@@ -3659,7 +3742,7 @@
     <dd>
     Startet den Quest sobald der Monsunregen einsetzt.
 <p> <b>Achtung:</b> Dieses Behavior ist nur für Reich des Ostens verfügbar.
-<p>
+
 
 
 
@@ -3792,9 +3875,6 @@
     </dt>
     <dd>
     Startet einen Quest, wenn ein anderer noch nicht ausgelöst wurde.
-<p> Der Trigger löst auch aus, wenn der Quest bereits beendet wurde, da er
- dazu vorher ausgelöst wurden sein muss.
-
 
 
     <h3>Parameters:</h3>
@@ -3890,7 +3970,6 @@
     </dt>
     <dd>
     Startet den Quest sobald das Wasser gefriert.
-<p>
 
 
 
@@ -3950,7 +4029,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-14 19:37:48 </i>
+<i style="float:right;">Last updated 2019-03-17 16:58:20 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
