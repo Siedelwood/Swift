@@ -384,6 +384,8 @@ function AddOnCutsceneSystem.Local:NextFlight()
     end
     if Camera.IsValidCutscene(CurrentFlight.Flight) then
         Camera.StartCutscene(CurrentFlight.Flight);
+    else
+        self:FlightFinished();
     end
 end
 
