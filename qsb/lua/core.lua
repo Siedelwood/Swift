@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "RE 1.4.0 1/4/2019";
+QSB.Version = "2-Beta";
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -249,7 +249,7 @@ FailQuestsByName = API.FailAllQuests;
 -- <p><b>Alias:</b> FailQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
 function API.FailQuest(_QuestName, _Verbose)
@@ -294,7 +294,7 @@ RestartQuestsByName = API.RestartAllQuests;
 -- <p><b>Alias:</b> RestartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
 function API.RestartQuest(_QuestName, _Verbose)
@@ -399,7 +399,7 @@ StartQuestsByName = API.StartAllQuests;
 -- <p><b>Alias:</b> StartQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
 function API.StartQuest(_QuestName, _Verbose)
@@ -440,7 +440,7 @@ StopQuestsByName = API.StopAllQuests;
 -- <p><b>Alias:</b> StopQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
 function API.StopQuest(_QuestName, _Verbose)
@@ -481,7 +481,7 @@ WinQuestsByName = API.WinAllQuests;
 -- <p><b>Alias:</b> WinQuestByName</p>
 --
 -- @param[type=string]  _QuestName Name des Quest
--- @param[type=boolean] _Verbose   Meldung anzeigen
+-- @param[type=boolean] _Verbose   Meldung nicht anzeigen
 -- @within Anwenderfunktionen
 --
 function API.WinQuest(_QuestName, _Verbose)

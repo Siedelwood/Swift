@@ -92,8 +92,8 @@
  neuer Möglichkeiten.</p>
 <p>
 <p> Die wichtigste Neuerung ist die Konsole, die es erlaubt Quests direkt über
- die Eingabe von Befehlen zu steuern, einzelne einfache Lua-Kommandos im
- Spiel auszuführen und sogar komplette Skripte zu laden.
+ die Eingabe von Befehlen zu steuern, einzelne Lua-Funktionen im Spiel
+ auszuführen und sogar komplette Skripte zu laden.
 <p> <p><a href="#API.ActivateDebugMode">Debug starten</a></p>
 </p>
 
@@ -112,25 +112,21 @@
 	<td class="summary">Konsolenbefehl: Leert das Debug Window.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.CollectGarbage">AddOnQuestDebug.Global.CollectGarbage ()</a></td>
-	<td class="summary">Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.CountLuaLoad">AddOnQuestDebug.Global.CountLuaLoad ()</a></td>
-	<td class="summary">Gibt die Speicherauslastung von Lua zurück.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.Diplomacy">AddOnQuestDebug.Global.Diplomacy (_Arguments)</a></td>
 	<td class="summary">Konsolenbefehl: Ändert die Diplomatie zwischen zwei Spielern.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.ExecuteCommand">AddOnQuestDebug.Global.ExecuteCommand (_Arguments, _Flags)</a></td>
-	<td class="summary">Führt ein Lua-Kommando im Enviorment aus.</td>
+	<td class="summary">Ruft eine Funktion (optional mit Parametern) im Enviorment auf.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.FindQuestNames">AddOnQuestDebug.Global.FindQuestNames (_Pattern, _ExactName)</a></td>
-	<td class="summary">Sucht nach allen Quests, auf die den angegebenen Namen enthalten und gibt
- die Namen der gefundenen Quests zurück.</td>
+	<td class="summary">Konsolenbefehl: Sucht nach allen Quests, auf die den angegebenen Namen
+ enthalten und gibt die Namen der gefundenen Quests zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.FindQuestsByState">AddOnQuestDebug.Global.FindQuestsByState (_Data, _Flag)</a></td>
+	<td class="summary">Konsolenbefehl: Gibt die Namen aller Quests mit dem Status zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.LoadScript">AddOnQuestDebug.Global.LoadScript (_Arguments, _Flags)</a></td>
@@ -146,30 +142,6 @@
  werden um diese sinnvoll überprüfen zu können.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.PrintQuests">AddOnQuestDebug.Global.PrintQuests (_Arguments, _Flags)</a></td>
-	<td class="summary">Zeigt alle Quests nach einem Filter an.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestFailure">AddOnQuestDebug.Global.QuestFailure (_QuestName, _ExactName)</a></td>
-	<td class="summary">Lässt einen Quest, oder mehrere Quests mit ähnlichen Namen, fehlschlagen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestInterrupt">AddOnQuestDebug.Global.QuestInterrupt (_QuestName, _ExactName)</a></td>
-	<td class="summary">Stoppt einen Quest, oder mehrere Quests mit ähnlichen Namen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestReset">AddOnQuestDebug.Global.QuestReset (_QuestName, _ExactName)</a></td>
-	<td class="summary">Setzt den Quest / die Quests zurück, sodass er neu gestartet werden kann.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestSuccess">AddOnQuestDebug.Global.QuestSuccess (_QuestName, _ExactName)</a></td>
-	<td class="summary">Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.QuestTrigger">AddOnQuestDebug.Global.QuestTrigger (_QuestName, _ExactName)</a></td>
-	<td class="summary">Startet einen Quest, oder mehrere Quests mit ähnlichen Namen.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.RestartMap">AddOnQuestDebug.Global.RestartMap ()</a></td>
 	<td class="summary">Konsolenbefehl: Startet die Map umgehend neu.</td>
 	</tr>
@@ -178,7 +150,11 @@
 	<td class="summary">Konsolenbefehl: Setzt die Position eines Entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.ShareView">AddOnQuestDebug.Global.ShareView (_Arguments)</a></td>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.SetQuestState">AddOnQuestDebug.Global.SetQuestState (_Data, _Flag)</a></td>
+	<td class="summary">Konsolenbefehl: Setzt den Status eines Quests.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnQuestDebug.Global.ShareView">AddOnQuestDebug.Global.ShareView (_Arguments, _Flag)</a></td>
 	<td class="summary">Konsolenbefehl: Aktiviert/deaktiviert die geteilte Sicht zweier Spieler.</td>
 	</tr>
 	<tr>
@@ -225,14 +201,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:ActivateDevelopingShell">AddOnQuestDebug.Local:ActivateDevelopingShell ()</a></td>
 	<td class="summary">Aktiviert die Kommandokonsole.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:CollectGarbage">AddOnQuestDebug.Local:CollectGarbage ()</a></td>
-	<td class="summary">Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:CountLuaLoad">AddOnQuestDebug.Local:CountLuaLoad ()</a></td>
-	<td class="summary">Gibt die Speicherauslastung von Lua zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnQuestDebug.Local:Install">AddOnQuestDebug.Local:Install ()</a></td>
@@ -515,9 +483,14 @@
  <td>Startet die Map sofort neu.</td>
  </tr>
  <tr>
- <td>shareview</td>
- <td>PlayerID1, PlayerID2, ActiveFlag</td>
- <td>Teilt die Sicht zweier Parteien oder hebt es wieder auf.</td>
+ <td>reveal</td>
+ <td>PlayerID1, PlayerID2</td>
+ <td>Teilt die Sicht zweier Spieler.</td>
+ </tr>
+ <tr>
+ <td>conceal</td>
+ <td>PlayerID1, PlayerID2</td>
+ <td>Hebt die geteilte Sicht wieder auf.</td>
  </tr>
  <tr>
  <td>setposition</td>
@@ -555,49 +528,54 @@
  <td>Startet den angegebenen Quest neu.</td>
  </tr>
  <tr>
- <td>printequal</td>
+ <td>stopped</td>
  <td>Pattern</td>
- <td>Gibt die Namen aller Quests aus, die das Pattern enthalten.</td>
+ <td>Gibt die Namen abgebrochener Quests zurück.</td>
  </tr>
  <tr>
- <td>printactive</td>
- <td></td>
- <td>Gibt die namen aller aktiven Quests aus.</td>
+ <td>active</td>
+ <td>Pattern</td>
+ <td>Gibt die Namen aktiver Quests zurück.</td>
  </tr>
  <tr>
- <td>printdetail</td>
- <td>QuestName</td>
- <td>Zeigt genauere Informationen zum angegebenen Quest an.</td>
+ <td>won</td>
+ <td>Pattern</td>
+ <td>Gibt die Namen gewonnener Quests zurück.</td>
  </tr>
  <tr>
- <td>gload</td>
+ <td>failed</td>
+ <td>Pattern</td>
+ <td>Gibt die Namen fehlgeschlagener Quests zurück.</td>
+ </tr>
+ <tr>
+ <td>waiting</td>
+ <td>Pattern</td>
+ <td>Gibt die Namen nicht ausgelöster Quests zurück.</td>
+ </tr>
+ <tr>
+ <td>find</td>
+ <td>Pattern</td>
+ <td>Gibt die Namen von Quests mit ähnlichen Namen zurück.</td>
+ </tr>
+ <tr>
+ <td><</td>
  <td>Path</td>
  <td>Läd ein Skript zur Laufzeit ins globale Skript.</td>
  </tr>
  <tr>
- <td>lload</td>
+ <td><<</td>
  <td>Path</td>
  <td>Läd ein Skript zur Laufzeit ins lokale Skript.</td>
  </tr>
  <tr>
- <td>gexec</td>
+ <td>></td>
  <td>Command</td>
  <td>Führt die Eingabe als Lua-Befahl im globalen Skript aus.</td>
  </tr>
  <tr>
- <td>lexec</td>
+ <td>>></td>
  <td>Command</td>
  <td>Führt die Eingabe als Lua-Befahl im lokalen Skript aus.</td>
- </tr>
- <tr>
- <td>collectgarbage</td>
- <td></td>
- <td>Löst die Garbage Collection von Lua aus.</td>
- </tr>
- <tr>
- <td>dumpmemory</td>
- <td></td>
- <td>Zeigt die Größe des Speichers an, der von Lua belegt wird.</td>
  </tr>
  </table>
 
@@ -615,11 +593,11 @@
         </li>
         <li><span class="parameter">_DevelopingCheats</span>
             <span class="types"><span class="type">boolean</span></span>
-         Aktiviert Cheats und Konsole
+         Aktiviert Cheats
         </li>
         <li><span class="parameter">_DevelopingShell</span>
             <span class="types"><span class="type">boolean</span></span>
-         Aktiviert Cheats und Konsole
+         Aktiviert Eingabe
         </li>
     </ul>
 
@@ -642,38 +620,6 @@
     </dt>
     <dd>
     Konsolenbefehl: Leert das Debug Window.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestDebug.Global.CollectGarbage"></a>
-    <strong>AddOnQuestDebug.Global.CollectGarbage ()</strong>
-    </dt>
-    <dd>
-    Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.
-<p> Die Garbage Collection wird von Lua automatisch in Abständen ausgeführt.
- Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
- sein und der Speicher vollgemüllt werden.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestDebug.Global.CountLuaLoad"></a>
-    <strong>AddOnQuestDebug.Global.CountLuaLoad ()</strong>
-    </dt>
-    <dd>
-    Gibt die Speicherauslastung von Lua zurück.
 
 
 
@@ -707,7 +653,7 @@
     <strong>AddOnQuestDebug.Global.ExecuteCommand (_Arguments, _Flags)</strong>
     </dt>
     <dd>
-    Führt ein Lua-Kommando im Enviorment aus.
+    Ruft eine Funktion (optional mit Parametern) im Enviorment auf.
 
 
     <h3>Parameters:</h3>
@@ -730,8 +676,8 @@
     <strong>AddOnQuestDebug.Global.FindQuestNames (_Pattern, _ExactName)</strong>
     </dt>
     <dd>
-    Sucht nach allen Quests, auf die den angegebenen Namen enthalten und gibt
- die Namen der gefundenen Quests zurück.
+    Konsolenbefehl: Sucht nach allen Quests, auf die den angegebenen Namen
+ enthalten und gibt die Namen der gefundenen Quests zurück.
 
 
     <h3>Parameters:</h3>
@@ -740,6 +686,32 @@
 
         </li>
         <li><span class="parameter">_ExactName</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnQuestDebug.Global.FindQuestsByState"></a>
+    <strong>AddOnQuestDebug.Global.FindQuestsByState (_Data, _Flag)</strong>
+    </dt>
+    <dd>
+    Konsolenbefehl: Gibt die Namen aller Quests mit dem Status zurück.  Die
+ Suche kann mit einem Pattern eingeschränkt werden. Es werden maximal 12
+ Quests angezeigt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+
+        </li>
+        <li><span class="parameter">_Flag</span>
 
         </li>
     </ul>
@@ -811,144 +783,6 @@
 
 </dd>
     <dt>
-    <a name = "AddOnQuestDebug.Global.PrintQuests"></a>
-    <strong>AddOnQuestDebug.Global.PrintQuests (_Arguments, _Flags)</strong>
-    </dt>
-    <dd>
-    Zeigt alle Quests nach einem Filter an.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Arguments</span>
-
-        </li>
-        <li><span class="parameter">_Flags</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestDebug.Global.QuestFailure"></a>
-    <strong>AddOnQuestDebug.Global.QuestFailure (_QuestName, _ExactName)</strong>
-    </dt>
-    <dd>
-    Lässt einen Quest, oder mehrere Quests mit ähnlichen Namen, fehlschlagen.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-
-        </li>
-        <li><span class="parameter">_ExactName</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestDebug.Global.QuestInterrupt"></a>
-    <strong>AddOnQuestDebug.Global.QuestInterrupt (_QuestName, _ExactName)</strong>
-    </dt>
-    <dd>
-    Stoppt einen Quest, oder mehrere Quests mit ähnlichen Namen.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-
-        </li>
-        <li><span class="parameter">_ExactName</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestDebug.Global.QuestReset"></a>
-    <strong>AddOnQuestDebug.Global.QuestReset (_QuestName, _ExactName)</strong>
-    </dt>
-    <dd>
-    Setzt den Quest / die Quests zurück, sodass er neu gestartet werden kann.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-
-        </li>
-        <li><span class="parameter">_ExactName</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestDebug.Global.QuestSuccess"></a>
-    <strong>AddOnQuestDebug.Global.QuestSuccess (_QuestName, _ExactName)</strong>
-    </dt>
-    <dd>
-    Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-
-        </li>
-        <li><span class="parameter">_ExactName</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestDebug.Global.QuestTrigger"></a>
-    <strong>AddOnQuestDebug.Global.QuestTrigger (_QuestName, _ExactName)</strong>
-    </dt>
-    <dd>
-    Startet einen Quest, oder mehrere Quests mit ähnlichen Namen.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_QuestName</span>
-
-        </li>
-        <li><span class="parameter">_ExactName</span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "AddOnQuestDebug.Global.RestartMap"></a>
     <strong>AddOnQuestDebug.Global.RestartMap ()</strong>
     </dt>
@@ -983,8 +817,33 @@
 
 </dd>
     <dt>
+    <a name = "AddOnQuestDebug.Global.SetQuestState"></a>
+    <strong>AddOnQuestDebug.Global.SetQuestState (_Data, _Flag)</strong>
+    </dt>
+    <dd>
+    Konsolenbefehl: Setzt den Status eines Quests.  Mit der Statusänderung wird
+ ggf. Fortschrit zurückgesetzt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Data</span>
+
+        </li>
+        <li><span class="parameter">_Flag</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "AddOnQuestDebug.Global.ShareView"></a>
-    <strong>AddOnQuestDebug.Global.ShareView (_Arguments)</strong>
+    <strong>AddOnQuestDebug.Global.ShareView (_Arguments, _Flag)</strong>
     </dt>
     <dd>
     Konsolenbefehl: Aktiviert/deaktiviert die geteilte Sicht zweier Spieler.
@@ -993,6 +852,9 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Arguments</span>
+
+        </li>
+        <li><span class="parameter">_Flag</span>
 
         </li>
     </ul>
@@ -1217,38 +1079,6 @@
 
 </dd>
     <dt>
-    <a name = "AddOnQuestDebug.Local:CollectGarbage"></a>
-    <strong>AddOnQuestDebug.Local:CollectGarbage ()</strong>
-    </dt>
-    <dd>
-    Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.
-<p> Die Garbage Collection wird von Lua automatisch in Abständen ausgeführt.
- Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
- sein und der Speicher vollgemüllt werden.
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddOnQuestDebug.Local:CountLuaLoad"></a>
-    <strong>AddOnQuestDebug.Local:CountLuaLoad ()</strong>
-    </dt>
-    <dd>
-    Gibt die Speicherauslastung von Lua zurück.
-
-
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "AddOnQuestDebug.Local:Install"></a>
     <strong>AddOnQuestDebug.Local:Install ()</strong>
     </dt>
@@ -1286,11 +1116,11 @@
         </li>
         <li><span class="parameter">_DevelopingCheats</span>
             <span class="types"><span class="type">boolean</span></span>
-         Aktiviert Cheats und Konsole
+         Aktiviert Cheats
         </li>
         <li><span class="parameter">_DevelopingShell</span>
             <span class="types"><span class="type">boolean</span></span>
-         Aktiviert Cheats und Konsole
+         Aktiviert Eingabe
         </li>
     </ul>
 
@@ -1310,7 +1140,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-17 16:58:17 </i>
+<i style="float:right;">Last updated 2019-03-19 18:20:41 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

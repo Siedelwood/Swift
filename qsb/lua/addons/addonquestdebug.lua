@@ -9,8 +9,8 @@
 -- neuer Möglichkeiten.
 --
 -- Die wichtigste Neuerung ist die Konsole, die es erlaubt Quests direkt über
--- die Eingabe von Befehlen zu steuern, einzelne einfache Lua-Kommandos im
--- Spiel auszuführen und sogar komplette Skripte zu laden.
+-- die Eingabe von Befehlen zu steuern, einzelne Lua-Funktionen im Spiel
+-- auszuführen und sogar komplette Skripte zu laden.
 --
 -- <p><a href="#API.ActivateDebugMode">Debug starten</a></p>
 --
@@ -297,9 +297,14 @@ AddOnQuestDebug = {
 -- <td>Startet die Map sofort neu.</td>
 -- </tr>
 -- <tr>
--- <td>shareview</td>
--- <td>PlayerID1, PlayerID2, ActiveFlag</td>
--- <td>Teilt die Sicht zweier Parteien oder hebt es wieder auf.</td>
+-- <td>reveal</td>
+-- <td>PlayerID1, PlayerID2</td>
+-- <td>Teilt die Sicht zweier Spieler.</td>
+-- </tr>
+-- <tr>
+-- <td>conceal</td>
+-- <td>PlayerID1, PlayerID2</td>
+-- <td>Hebt die geteilte Sicht wieder auf.</td>
 -- </tr>
 -- <tr>
 -- <td>setposition</td>
@@ -337,56 +342,61 @@ AddOnQuestDebug = {
 -- <td>Startet den angegebenen Quest neu.</td>
 -- </tr>
 -- <tr>
--- <td>printequal</td>
+-- <td>stopped</td>
 -- <td>Pattern</td>
--- <td>Gibt die Namen aller Quests aus, die das Pattern enthalten.</td>
+-- <td>Gibt die Namen abgebrochener Quests zurück.</td>
 -- </tr>
 -- <tr>
--- <td>printactive</td>
--- <td></td>
--- <td>Gibt die namen aller aktiven Quests aus.</td>
+-- <td>active</td>
+-- <td>Pattern</td>
+-- <td>Gibt die Namen aktiver Quests zurück.</td>
 -- </tr>
 -- <tr>
--- <td>printdetail</td>
--- <td>QuestName</td>
--- <td>Zeigt genauere Informationen zum angegebenen Quest an.</td>
+-- <td>won</td>
+-- <td>Pattern</td>
+-- <td>Gibt die Namen gewonnener Quests zurück.</td>
 -- </tr>
 -- <tr>
--- <td>gload</td>
+-- <td>failed</td>
+-- <td>Pattern</td>
+-- <td>Gibt die Namen fehlgeschlagener Quests zurück.</td>
+-- </tr>
+-- <tr>
+-- <td>waiting</td>
+-- <td>Pattern</td>
+-- <td>Gibt die Namen nicht ausgelöster Quests zurück.</td>
+-- </tr>
+-- <tr>
+-- <td>find</td>
+-- <td>Pattern</td>
+-- <td>Gibt die Namen von Quests mit ähnlichen Namen zurück.</td>
+-- </tr>
+-- <tr>
+-- <td><</td>
 -- <td>Path</td>
 -- <td>Läd ein Skript zur Laufzeit ins globale Skript.</td>
 -- </tr>
 -- <tr>
--- <td>lload</td>
+-- <td><<</td>
 -- <td>Path</td>
 -- <td>Läd ein Skript zur Laufzeit ins lokale Skript.</td>
 -- </tr>
 -- <tr>
--- <td>gexec</td>
+-- <td>></td>
 -- <td>Command</td>
 -- <td>Führt die Eingabe als Lua-Befahl im globalen Skript aus.</td>
 -- </tr>
 -- <tr>
--- <td>lexec</td>
+-- <td>>></td>
 -- <td>Command</td>
 -- <td>Führt die Eingabe als Lua-Befahl im lokalen Skript aus.</td>
--- </tr>
--- <tr>
--- <td>collectgarbage</td>
--- <td></td>
--- <td>Löst die Garbage Collection von Lua aus.</td>
--- </tr>
--- <tr>
--- <td>dumpmemory</td>
--- <td></td>
--- <td>Zeigt die Größe des Speichers an, der von Lua belegt wird.</td>
 -- </tr>
 -- </table>
 --
 -- @param[type=boolean] _CheckAtRun Prüfe Quests zur Laufzeit
 -- @param[type=boolean] _TraceQuests Aktiviert Questverfolgung
--- @param[type=boolean] _DevelopingCheats Aktiviert Cheats und Konsole
--- @param[type=boolean] _DevelopingShell Aktiviert Cheats und Konsole
+-- @param[type=boolean] _DevelopingCheats Aktiviert Cheats
+-- @param[type=boolean] _DevelopingShell Aktiviert Eingabe
 -- @see Reward_DEBUG
 -- @within Anwenderfunktionen
 --
@@ -408,8 +418,8 @@ ActivateDebugMode = API.ActivateDebugMode;
 --
 -- @param[type=boolean] _CheckAtRun Prüfe Quests zur Laufzeit
 -- @param[type=boolean] _TraceQuests Aktiviert Questverfolgung
--- @param[type=boolean] _DevelopingCheats Aktiviert Cheats und Konsole
--- @param[type=boolean] _DevelopingShell Aktiviert Cheats und Konsole
+-- @param[type=boolean] _DevelopingCheats Aktiviert Cheats
+-- @param[type=boolean] _DevelopingShell Aktiviert Eingabe
 -- @see API.ActivateDebugMode
 --
 -- @within Reward
@@ -474,35 +484,31 @@ function AddOnQuestDebug.Global:Install()
 
     AddOnQuestDebug.Global.Data.DebugCommands = {
         -- groupless commands
-        {"clear",               AddOnQuestDebug.Global.Clear,},
-        {"diplomacy",           AddOnQuestDebug.Global.Diplomacy,},
-        {"restartmap",          AddOnQuestDebug.Global.RestartMap,},
-        {"shareview",           AddOnQuestDebug.Global.ShareView,},
-        {"setposition",         AddOnQuestDebug.Global.SetPosition,},
-        {"version",             AddOnQuestDebug.Global.ShowVersion,},
+        {"clear",       AddOnQuestDebug.Global.Clear,},
+        {"diplomacy",   AddOnQuestDebug.Global.Diplomacy,},
+        {"restartmap",  AddOnQuestDebug.Global.RestartMap,},
+        {"reveal",      AddOnQuestDebug.Global.ShareView,                1},
+        {"conceal",     AddOnQuestDebug.Global.ShareView,                0},
+        {"setposition", AddOnQuestDebug.Global.SetPosition,},
+        {"version",     AddOnQuestDebug.Global.ShowVersion,},
         -- quest control
-        {"win",                 AddOnQuestDebug.Global.QuestSuccess,      true,},
-        {"winall",              AddOnQuestDebug.Global.QuestSuccess,      false,},
-        {"fail",                AddOnQuestDebug.Global.QuestFailure,      true,},
-        {"failall",             AddOnQuestDebug.Global.QuestFailure,      false,},
-        {"stop",                AddOnQuestDebug.Global.QuestInterrupt,    true,},
-        {"stopall",             AddOnQuestDebug.Global.QuestInterrupt,    false,},
-        {"start",               AddOnQuestDebug.Global.QuestTrigger,      true,},
-        {"startall",            AddOnQuestDebug.Global.QuestTrigger,      false,},
-        {"restart",             AddOnQuestDebug.Global.QuestReset,        true,},
-        {"restartall",          AddOnQuestDebug.Global.QuestReset,        false,},
-        {"printequal",          AddOnQuestDebug.Global.PrintQuests,       1,},
-        {"printactive",         AddOnQuestDebug.Global.PrintQuests,       2,},
-        {"printdetail",         AddOnQuestDebug.Global.PrintQuests,       3,},
+        {"win",         AddOnQuestDebug.Global.SetQuestState,            1},
+        {"fail",        AddOnQuestDebug.Global.SetQuestState,            2},
+        {"stop",        AddOnQuestDebug.Global.SetQuestState,            3},
+        {"start",       AddOnQuestDebug.Global.SetQuestState,            4},
+        {"restart",     AddOnQuestDebug.Global.SetQuestState,            5},
+        {"won",         AddOnQuestDebug.Global.FindQuestsByState,        1},
+        {"failed",      AddOnQuestDebug.Global.FindQuestsByState,        2},
+        {"stoped",      AddOnQuestDebug.Global.FindQuestsByState,        3},
+        {"active",      AddOnQuestDebug.Global.FindQuestsByState,        4},
+        {"waiting",     AddOnQuestDebug.Global.FindQuestsByState,        5},
+        {"find",        AddOnQuestDebug.Global.FindQuestsByState,        6},
         -- loading scripts into running game and execute them
-        {"lload",               AddOnQuestDebug.Global.LoadScript,        true},
-        {"gload",               AddOnQuestDebug.Global.LoadScript,        false},
+        {"<<",          AddOnQuestDebug.Global.LoadScript,               true},
+        {"<",           AddOnQuestDebug.Global.LoadScript,               false},
         -- execute short lua commands
-        {"lexec",               AddOnQuestDebug.Global.ExecuteCommand,    true},
-        {"gexec",               AddOnQuestDebug.Global.ExecuteCommand,    false},
-        -- garbage collector printouts
-        {"collectgarbage",      AddOnQuestDebug.Global.CollectGarbage,},
-        {"dumpmemory",          AddOnQuestDebug.Global.CountLuaLoad,},
+        {">>",          AddOnQuestDebug.Global.ExecuteCommand,           true},
+        {">",           AddOnQuestDebug.Global.ExecuteCommand,           false},
     }
 
     for k,v in pairs(_G) do
@@ -666,7 +672,7 @@ end
 function AddOnQuestDebug.Global:Tokenize(_Input)
     local Commands = {};
     local DAmberCommands = {_Input};
-    local AmberCommands = {_Input};
+    local AmberCommands = {};
 
     -- parse & delimiter
     local s, e = string.find(_Input, "%s+&&%s+");
@@ -684,9 +690,6 @@ function AddOnQuestDebug.Global:Tokenize(_Input)
     end
 
     -- parse & delimiter
-    if #DAmberCommands > 0 then
-        AmberCommands = {};
-    end
     for i= 1, #DAmberCommands, 1 do
         local s, e = string.find(DAmberCommands[i], "%s+&%s+");
         if s then
@@ -730,127 +733,6 @@ function AddOnQuestDebug.Global:Tokenize(_Input)
 end
 
 ---
--- Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.
---
--- Die Garbage Collection wird von Lua automatisch in Abständen ausgeführt.
--- Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
--- sein und der Speicher vollgemüllt werden.
---
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Global.CollectGarbage()
-    collectgarbage();
-    Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:CollectGarbage()");
-end
-
----
--- Gibt die Speicherauslastung von Lua zurück.
---
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Global.CountLuaLoad()
-    Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:CountLuaLoad()");
-    local LuaLoad = collectgarbage("count");
-    API.StaticNote("Global Lua Size: " ..LuaLoad);
-end
-
----
--- Zeigt alle Quests nach einem Filter an.
---
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Global.PrintQuests(_Arguments, _Flags)
-    local questText = ""
-    local counter   = 0;
-
-    local accept = function(_quest, _state)
-        return _quest.State == _state;
-    end
-
-    if _Flags == 3 then
-        return AddOnQuestDebug.PrintDetail(_Arguments);
-    end
-
-    if _Flags == 1 then
-        accept = function(_quest, _arg)
-            return string.find(_quest.Identifier, _arg);
-        end
-    elseif _Flags == 2 then
-        _Arguments[2] = QuestState.Active;
-    end
-
-    for i= 1, Quests[0] do
-        if Quests[i] then
-            if accept(Quests[i], _Arguments[2]) then
-                counter = counter +1;
-                if counter <= 15 then
-                    questText = questText .. ((questText:len() > 0 and "{cr}") or "");
-                    questText = questText ..  Quests[i].Identifier;
-                end
-            end
-        end
-    end
-
-    if counter >= 15 then
-        questText = questText .. "{cr}{cr}(" .. (counter-15) .. " weitere Ergebnis(se) gefunden!)";
-    end
-
-    Logic.ExecuteInLuaLocalState([[
-        GUI.ClearNotes()
-        GUI.AddStaticNote("]]..questText..[[")
-    ]]);
-
-    questText = string.gsub(questText, "{cr}", "\n");
-    return questText;
-end
-
----
---
---
-function AddOnQuestDebug.Global.PrintDetail(_Arguments)
-    local questText = "";
-    local questID = GetQuestID(string.gsub(_Arguments[2], " ", ""));
-
-    if Quests[questID] then
-        local state        = (Quests[questID].State == QuestState.NotTriggered and "not triggered") or
-                              (Quests[questID].State == QuestState.Active and "active") or
-                                "over";
-        local result        = (Quests[questID].Result == QuestResult.Success and "success") or
-                              (Quests[questID].Result == QuestResult.Failure and "failure") or
-                              (Quests[questID].Result == QuestResult.Interrupted and "interrupted") or
-                                "undecided";
-
-        questText = questText .. "Name: " .. Quests[questID].Identifier .. "{cr}";
-        questText = questText .. "State: " .. state .. "{cr}";
-        questText = questText .. "Result: " .. result .. "{cr}";
-        questText = questText .. "Sender: " .. Quests[questID].SendingPlayer .. "{cr}";
-        questText = questText .. "Receiver: " .. Quests[questID].ReceivingPlayer .. "{cr}";
-        questText = questText .. "Duration: " .. Quests[questID].Duration .. "{cr}";
-        questText = questText .. "Start Text: "  .. tostring(Quests[questID].QuestStartMsg) .. "{cr}";
-        questText = questText .. "Failure Text: " .. tostring(Quests[questID].QuestFailureMsg) .. "{cr}";
-        questText = questText .. "Success Text: " .. tostring(Quests[questID].QuestSuccessMsg) .. "{cr}";
-        questText = questText .. "Description: " .. tostring(Quests[questID].QuestDescription) .. "{cr}";
-        questText = questText .. "Objectives: " .. #Quests[questID].Objectives .. "{cr}";
-        questText = questText .. "Reprisals: " .. #Quests[questID].Reprisals .. "{cr}";
-        questText = questText .. "Rewards: " .. #Quests[questID].Rewards .. "{cr}";
-        questText = questText .. "Triggers: " .. #Quests[questID].Triggers .. "{cr}";
-    else
-        questText = questText .. tostring(_Arguments[2]) .. " not found!";
-    end
-
-    Logic.ExecuteInLuaLocalState([[
-        GUI.ClearNotes()
-        GUI.AddStaticNote("]]..questText..[[")
-    ]]);
-
-    questText = string.gsub(questText, "{cr}", "\n");
-    return questText;
-end
-
----
 -- Läd ein Lua-Skript in das Enviorment.
 --
 -- @within Internal
@@ -863,14 +745,12 @@ function AddOnQuestDebug.Global.LoadScript(_Arguments, _Flags)
         elseif _Flags == false then
             Script.Load(_Arguments[2]);
         end
-        if not AddOnQuestDebug.Global.Data.SurpassMessages then
-            Logic.DEBUG_AddNote("load script ".._Arguments[2]);
-        end
+        API.Note("load script ".._Arguments[2]);
     end
 end
 
 ---
--- Führt ein Lua-Kommando im Enviorment aus.
+-- Ruft eine Funktion (optional mit Parametern) im Enviorment auf.
 --
 -- @within Internal
 -- @local
@@ -878,14 +758,15 @@ end
 function AddOnQuestDebug.Global.ExecuteCommand(_Arguments, _Flags)
     if _Arguments[2] then
         local args = "";
-        for i=2,#_Arguments do
+        for i=3,#_Arguments do
+            args = args .. ((i>3 and ",") or "");
             args = args .. " " .. _Arguments[i];
         end
 
         if _Flags == true then
-            Logic.ExecuteInLuaLocalState([[]]..args..[[]]);
+            Logic.ExecuteInLuaLocalState([[]].. _Arguments[2] .. [[(]] ..args..[[)]]);
         elseif _Flags == false then
-            Logic.ExecuteInLuaLocalState([[GUI.SendScriptCommand("]]..args..[[")]]);
+            Logic.ExecuteInLuaLocalState([[GUI.SendScriptCommand("]].. _Arguments[2] .. [[(]]..args..[[)")]]);
         end
     end
 end
@@ -926,8 +807,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global.ShareView(_Arguments)
-    Logic.SetShareExplorationWithPlayerFlag(_Arguments[2], _Arguments[3], _Arguments[4]);
+function AddOnQuestDebug.Global.ShareView(_Arguments, _Flag)
+    Logic.SetShareExplorationWithPlayerFlag(_Arguments[2], _Arguments[3], _Flag);
 end
 
 ---
@@ -944,6 +825,14 @@ function AddOnQuestDebug.Global.SetPosition(_Arguments)
         x,y = Logic.GetBuildingApproachPosition(target);
     end
     Logic.DEBUG_SetSettlerPosition(entity, x, y);
+    if Logic.IsLeader(entity) == 1 then
+        local Soldiers = {Logic.GetSoldiersAttachedToLeader(entity)};
+        for i= 1, #Soldiers, 1 do
+            if isExisting(Soldiers[i]) then
+                Logic.DEBUG_SetSettlerPosition(Soldiers[i], x, y);
+            end
+        end
+    end
 end
 
 ---
@@ -953,13 +842,13 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.ShowVersion()
-    API.Bridge("GUI.AddStaticNote(QSB.Version)");
+    API.Bridge("GUI.ClearNotes(); GUI.AddStaticNote(QSB.Version)");
     return QSB.Version;
 end
 
 ---
--- Sucht nach allen Quests, auf die den angegebenen Namen enthalten und gibt
--- die Namen der gefundenen Quests zurück.
+-- Konsolenbefehl: Sucht nach allen Quests, auf die den angegebenen Namen
+-- enthalten und gibt die Namen der gefundenen Quests zurück.
 --
 -- @within Internal
 -- @local
@@ -977,73 +866,96 @@ function AddOnQuestDebug.Global.FindQuestNames(_Pattern, _ExactName)
 end
 
 ---
--- Beendet einen Quest, oder mehrere Quests mit ähnlichen Namen, erfolgreich.
+-- Konsolenbefehl: Gibt die Namen aller Quests mit dem Status zurück. Die
+-- Suche kann mit einem Pattern eingeschränkt werden. Es werden maximal 12
+-- Quests angezeigt.
 --
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global.QuestSuccess(_QuestName, _ExactName)
-    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
-    if #FoundQuests == 0 then
-        return;
+function AddOnQuestDebug.Global.FindQuestsByState(_Data, _Flag)
+    local QuestsOfState = {};
+    for i= 1, Quests[0], 1 do
+        if _Flag == 1 and Quests[i].Result == QuestResult.Success then
+            table.insert(QuestsOfState, Quests[i]);
+        end
+        if _Flag == 2 and Quests[i].Result == QuestResult.Failure then
+            table.insert(QuestsOfState, Quests[i]);
+        end
+        if _Flag == 3 and Quests[i].Result == QuestResult.Interrupted then
+            table.insert(QuestsOfState, Quests[i]);
+        end
+        if _Flag == 4 and Quests[i].State == QuestState.Active then
+            table.insert(QuestsOfState, Quests[i]);
+        end
+        if _Flag == 5 and Quests[i].State == QuestState.NotTriggered then
+            table.insert(QuestsOfState, Quests[i]);
+        end
+        if _Flag == 6 and ((_Data[2] and string.find(Quests[i].Identifier, _Data[2])) or not _Data[2]) then
+            table.insert(QuestsOfState, Quests[i]);
+        end
     end
-    API.WinAllQuests(unpack(FoundQuests));
+
+    local QuestNames = "";
+    local Matching = 0;
+    for i= 1, #QuestsOfState, 1 do
+        if Matching < 15 then
+            if _Data[2] then
+                if string.find(QuestsOfState[i].Identifier, _Data[2]) then
+                    QuestNames = QuestNames .. "- " .. QuestsOfState[i].Identifier .. "{cr}";
+                    Matching = Matching +1;
+                end
+            else
+                QuestNames = QuestNames .. "- " .. QuestsOfState[i].Identifier .. "{cr}";
+                Matching = Matching +1;
+            end
+        else
+            QuestNames = QuestNames .. "... (" .. (#QuestsOfState-Matching) .. " more)";
+            break;
+        end
+    end
+
+    Logic.ExecuteInLuaLocalState([[
+        GUI.ClearNotes()
+        GUI.AddStaticNote("Found quests:{cr}]]..QuestNames..[[")
+    ]]);
+    return "Found quests:{cr}"..QuestNames;
 end
 
 ---
--- Lässt einen Quest, oder mehrere Quests mit ähnlichen Namen, fehlschlagen.
+-- Konsolenbefehl: Setzt den Status eines Quests. Mit der Statusänderung wird
+-- ggf. Fortschrit zurückgesetzt.
 --
 -- @within Internal
 -- @local
 --
-function AddOnQuestDebug.Global.QuestFailure(_QuestName, _ExactName)
-    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
-    if #FoundQuests == 0 then
-        return;
+function AddOnQuestDebug.Global.SetQuestState(_Data, _Flag)
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_Data[2], true);
+    if #FoundQuests ~= 1 then
+        API.Note("Unable to find quest containing '" .._Data[2].. "'");
+        return "Unable to find quest containing '" .._Data[2].. "'";
     end
-    API.FailAllQuests(unpack(FoundQuests));
-end
-
----
--- Stoppt einen Quest, oder mehrere Quests mit ähnlichen Namen.
---
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Global.QuestInterrupt(_QuestName, _ExactName)
-    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
-    if #FoundQuests == 0 then
-        return;
+    if _Flag == 1 then
+        API.WinQuest(FoundQuests[1], true);
+        API.Note("win quest '" ..FoundQuests[1].. "'");
+        return "win quest '" ..FoundQuests[1].. "'"
+    elseif _Flag == 2 then
+        API.FailQuest(FoundQuests[1], true);
+        API.Note("fail quest '" ..FoundQuests[1].. "'");
+        return "fail quest '" ..FoundQuests[1].. "'"
+    elseif _Flag == 3 then
+        API.StopQuest(FoundQuests[1], true);
+        API.Note("interrupt quest '" ..FoundQuests[1].. "'");
+        return "interrupt quest '" ..FoundQuests[1].. "'";
+    elseif _Flag == 4 then
+        API.StartQuest(FoundQuests[1], true);
+        API.Note("trigger quest '" ..FoundQuests[1].. "'");
+        return "trigger quest '" ..FoundQuests[1].. "'";
+    else
+        API.RestartQuest(FoundQuests[1], true);
+        API.Note("restart quest '" ..FoundQuests[1].. "'");
+        return "restart quest '" ..FoundQuests[1].. "'";
     end
-    API.StopAllQuests(unpack(FoundQuests));
-end
-
----
--- Startet einen Quest, oder mehrere Quests mit ähnlichen Namen.
---
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Global.QuestTrigger(_QuestName, _ExactName)
-    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
-    if #FoundQuests == 0 then
-        return;
-    end
-    API.StartAllQuests(unpack(FoundQuests));
-end
-
----
--- Setzt den Quest / die Quests zurück, sodass er neu gestartet werden kann.
---
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Global.QuestReset(_QuestName, _ExactName)
-    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_QuestName[2], _ExactName);
-    if #FoundQuests == 0 then
-        return;
-    end
-    API.RestartAllQuests(unpack(FoundQuests));
 end
 
 ---
@@ -1127,31 +1039,6 @@ end
 -- @local
 --
 function AddOnQuestDebug.Local:Install()
-end
-
----
--- Führt die Garbage Collection aus um nicht benötigten Speicher freizugeben.
---
--- Die Garbage Collection wird von Lua automatisch in Abständen ausgeführt.
--- Mit dieser Funktion kann man nachhelfen, sollten die Intervalle zu lang
--- sein und der Speicher vollgemüllt werden.
---
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Local:CollectGarbage()
-    collectgarbage();
-end
-
----
--- Gibt die Speicherauslastung von Lua zurück.
---
--- @within Internal
--- @local
---
-function AddOnQuestDebug.Local:CountLuaLoad()
-    local LuaLoad = collectgarbage("count");
-    API.StaticNote("Local Lua Size: " ..LuaLoad)
 end
 
 ---
