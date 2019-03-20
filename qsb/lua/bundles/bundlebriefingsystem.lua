@@ -228,8 +228,10 @@ function API.AddPages(_Briefing)
             Title        = arg[2],
             Text         = arg[3],
             Position     = arg[1],
+            Action       = arg[5],
+            Angle        = (arg[4] == true and 40) or 26,
+            Zoom         = (arg[4] == true and 2400) or 6250,
             DialogCamera = arg[4] == true,
-            Action       = arg[5]
         }
     end
     return AP, ASP;
@@ -339,7 +341,8 @@ end
 -- <a href="#API.AddPages">API.AddPages</a> erzeugt und an
 -- das Briefing gebunden.
 --
--- @param[type=string]  _entity       Zielentity
+-- @param[type=string]  _pageName     (optional) Briefing-Seite Namen geben
+-- @param[type=string]  _entity       Entity, das die Kamera zeigt
 -- @param[type=string]  _title	      Titel der Seite
 -- @param[type=string]  _text         Text der Seite
 -- @param[type=boolean] _dialogCamera Nahsicht an/aus
@@ -363,7 +366,7 @@ BundleBriefingSystem = {
             CAMERA_ROTATIONDEFAULT = -45,
             CAMERA_ZOOMDEFAULT = 6250,
             CAMERA_FOVDEFAULT = 42,
-            DLGCAMERA_ANGLEDEFAULT = 29,
+            DLGCAMERA_ANGLEDEFAULT = 26,
             DLGCAMERA_ROTATIONDEFAULT = -45,
             DLGCAMERA_ZOOMDEFAULT = 3400,
             DLGCAMERA_FOVDEFAULT = 25,
@@ -645,7 +648,7 @@ function BundleBriefingSystem.Global.BriefingExecutionController()
             elseif type(BundleBriefingSystem.Global.Data.CurrentPage) == "table" then
                 if BundleBriefingSystem.Global.Data.CurrentPage then
                     local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
-                    if Duration > -1 then
+                    if Duration > -1 and BundleBriefingSystem.Global.Data.CurrentPage.Started then
                         if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
                             local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
                             if not BundleBriefingSystem.Global.Data.CurrentPage.NoHistory then
@@ -793,7 +796,10 @@ function BundleBriefingSystem.Local:PageStarted()
 
         -- Rotation an Rotation des Ziels anpassen
         if self.Data.CurrentPage.DialogCamera and IsExisting(self.Data.CurrentPage.Position[1]) then
-            self.Data.CurrentPage.Rotation = Logic.GetEntityOrientation(GetID(self.Data.CurrentPage.Position[1])) + 90;
+            self.Data.CurrentPage.Rotation = Logic.GetEntityOrientation(GetID(self.Data.CurrentPage.Position[1]));
+            if Logic.IsSettler(GetID(self.Data.CurrentPage.Position[1])) == 1 then
+                self.Data.CurrentPage.Rotation = self.Data.CurrentPage.Rotation + 90;
+            end
         end
 
         -- Titel setzen

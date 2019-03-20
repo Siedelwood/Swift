@@ -36,14 +36,32 @@ function commenceSearch() {
     if (value == "") {
         return;
     }
+    $("#notFound").hide();
 
     // Suche nach Stichwort
     var hits = 0;
     $(".docInvisibleContent").each(function(index) {
         var htmlString = $(this).html().toLowerCase();
-        if (htmlString.includes(value.toLowerCase())) {
-            $(this).parent().parent().show();
-            hits = hits +1;
+        // Wenigstens 1 Wort des Patterns
+        if (value.includes(",")) {
+            if (containsAny(value.toLowerCase(), htmlString)) {
+                $(this).parent().parent().show();
+                hits = hits +1;
+            }
+        }
+        // Alle Worte des Patterns
+        else if (value.includes("+")) {
+            if (containsAll(value.toLowerCase(), htmlString)) {
+                $(this).parent().parent().show();
+                hits = hits +1;
+            }
+        }
+        // Einzelwort
+        else {
+            if (htmlString.includes(value.toLowerCase())) {
+                $(this).parent().parent().show();
+                hits = hits +1;
+            }
         }
     });
 
@@ -63,4 +81,38 @@ function resetSearch() {
     $("#modulesContainer").children().show();
     $("#pattern").val("");
     $("#notFound").hide();
+}
+
+/**
+ * Checks, if the pattern is found in the string.
+ * @param {string} pattern Words to find
+ * @param {string} htmlString HTML string
+ * @return {boolean} Pattern contained in string
+ */
+function containsAny(pattern, htmlString) {
+    var patternArray = pattern.split(",");
+    var patternFound = false;
+    patternArray.forEach(function(element) {
+        if (htmlString.includes(element)) {
+            patternFound = true;
+        }
+    });
+    return patternFound;
+}
+
+/**
+ * Checks, if the pattern is found in the string.
+ * @param {string} pattern Words to find
+ * @param {string} htmlString HTML string
+ * @return {boolean} Pattern contained in string
+ */
+function containsAll(pattern, htmlString) {
+    var patternArray = pattern.split("+");
+    var patternFound = true;
+    patternArray.forEach(function(element) {
+        if (!htmlString.includes(element)) {
+            patternFound = false;
+        }
+    });
+    return patternFound;
 }

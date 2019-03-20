@@ -248,17 +248,17 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Global:StopCutscene()
-    if self.Data.CurrentCutscene.Finished then
-        self.Data.CurrentCutscene:Finished();
-    end
-
-    self.Data.CutsceneActive = false;
     BundleBriefingSystem.Global.Data.BriefingActive = false;
     BundleBriefingSystem.Global.Data.DisplayIngameCutscene = false;
 
     local CutsceneID = self.Data.CurrentCutscene.ID;
     BundleBriefingSystem.Global.Data.FinishedBriefings[CutsceneID] = true;
     API.Bridge("AddOnCutsceneSystem.Local:StopCutscene()");
+
+    if self.Data.CurrentCutscene.Finished then
+        self.Data.CurrentCutscene:Finished();
+    end
+    self.Data.CutsceneActive = false;
 end
 
 ---
@@ -323,6 +323,9 @@ function AddOnCutsceneSystem.Local:StartCutscene(_Cutscene)
     if Game.GameTimeGetFactor() ~= 0 then
         if self.Data.CurrentCutscene.RestoreGameSpeed and not self.Data.GaneSpeedBackup then
             self.Data.GaneSpeedBackup = Game.GameTimeGetFactor();
+            if self.Data.GaneSpeedBackup < 1 then
+                self.Data.GaneSpeedBackup = 1;
+            end
         end
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
     end
@@ -767,6 +770,7 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
 
     self.Data.Fader.To = 0;
     self:SetFaderAlpha(0);
+
     XGUIEng.PopPage();
     Camera.SwitchCameraBehaviour(0);
     Display.UseStandardSettings();

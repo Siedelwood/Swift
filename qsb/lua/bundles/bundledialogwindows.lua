@@ -324,11 +324,15 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:Play()
-    if BriefingSystem then
-        BriefingSystem.isActive = true;
+    if BundleBriefingSystem then
+        BundleBriefingSystem.Global.Data.BriefingActive = true;
     end
     self:TokenizeText();
     API.Bridge([[
+        if BundleBriefingSystem then
+            BundleBriefingSystem.Local.Data.BriefingActive = true
+        end
+
         XGUIEng.PushPage("/InGame/Root/Normal/NotesWindow", false)
         XGUIEng.PushPage("/InGame/Root/Normal/PauseScreen", false)
         XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal",0)
@@ -348,10 +352,14 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:Stop()
-    if BriefingSystem then
-        BriefingSystem.isActive = false;
+    if BundleBriefingSystem then
+        BundleBriefingSystem.Global.Data.BriefingActive = false
     end
     API.Bridge([[
+        if BundleBriefingSystem then
+            BundleBriefingSystem.Local.Data.BriefingActive = false
+        end
+
         GUI.ClearNotes()
         Game.GameTimeSetFactor(GUI.GetPlayerID(), g_Typewriter_GameSpeedBackup or 1)
         Input.GameMode()
@@ -446,7 +454,10 @@ function QSB.SimpleTypewriter:CanBePlayed()
         ]])
         return false;
     end
-    if BriefingSystem and BriefingSystem.isActive then
+    if BundleBriefingSystem and IsBriefingActive() then
+        return false;
+    end
+    if AddOnCutsceneSystem and IsCutsceneActive() then
         return false;
     end
     return true;

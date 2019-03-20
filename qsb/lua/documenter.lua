@@ -182,44 +182,8 @@ function SymfoniaDocumenter:CreateSearchTagsFromSourceFile(_File)
     local TagString = "";
     local LUA = fh:read();
     while (LUA ~= nil) do
-        -- Kommentare
-        local s, e = LUA:find("^-- .*$");
-        if s then
-            LUA = LUA:gsub("<.*>", "");
-            LUA = LUA:gsub("<", "");
-            LUA = LUA:gsub(">", "");
-            TagString = TagString .. "<p>" .. LUA:sub(s, e) .. "</p>";
-        end
-        -- API calls
-        local s, e = LUA:find("^function API.*$");
-        if s then
-            TagString = TagString .. "<p>" .. LUA:sub(s, e) .. "</p>";
-        end
-        -- Alias
-        local s, e = LUA:find("<b>Alias<\\/b>: ");
-        if e then
-            TagString = TagString .. "<p>" .. LUA:sub(e+1) .. "</p>";
-        end
-        -- Rewards
-        local s, e = LUA:find("^b_Reward.*=.*$");
-        if s then
-            TagString = TagString .. "<p>" .. LUA:sub(s+2, e-4) .. "</p>";
-        end
-        -- Reprisals
-        local s, e = LUA:find("^b_Reprisal.*=.*$");
-        if s then
-            TagString = TagString .. "<p>" .. LUA:sub(s+2, e-4) .. "</p>";
-        end
-        -- Trigger
-        local s, e = LUA:find("^b_Trigger.*=.*$");
-        if s then
-            TagString = TagString .. "<p>" .. LUA:sub(s+2, e-4) .. "</p>";
-        end
-        -- Goals
-        local s, e = LUA:find("^b_Goal.*=.*$");
-        if s then
-            TagString = TagString .. "<p>" .. LUA:sub(s+2, e-4) .. "</p>";
-        end
+        -- Einfach alles lesen... fuck of parsing
+        TagString = TagString .. LUA:gsub("<", "&#x3C;"):gsub(">", "&#x3E;") .. "\n";
         -- Nächste Zeile
         LUA = fh:read();
     end

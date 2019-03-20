@@ -509,6 +509,14 @@ function AddOnQuestDebug.Global:Install()
         -- execute short lua commands
         {">>",          AddOnQuestDebug.Global.ExecuteCommand,           true},
         {">",           AddOnQuestDebug.Global.ExecuteCommand,           false},
+        -- old shit -> "inoffical commands"
+        {"shareview",   AddOnQuestDebug.Global.ShareView,                -1},
+        {"printequal",  AddOnQuestDebug.Global.FindQuestsByState,        6},
+        {"printactive", AddOnQuestDebug.Global.FindQuestsByState,        4},
+        {"lexec",       AddOnQuestDebug.Global.ExecuteLuaCommand,        true},
+        {"gexec",       AddOnQuestDebug.Global.ExecuteLuaCommand,        false},
+        {"lload",       AddOnQuestDebug.Global.LoadScript,               true},
+        {"gload",       AddOnQuestDebug.Global.LoadScript,               false},
     }
 
     for k,v in pairs(_G) do
@@ -772,6 +780,27 @@ function AddOnQuestDebug.Global.ExecuteCommand(_Arguments, _Flags)
 end
 
 ---
+-- Führt ein Lua-Command innerhalb des Strings aus.
+--
+-- @within Internal
+-- @local
+--
+function AddOnQuestDebug.Global.ExecuteLuaCommand(_Arguments, _Flags)
+    if _Arguments[2] then
+        local args = "";
+        for i=2,#_Arguments do
+            args = args .. " " .. _Arguments[i];
+        end
+
+        if _Flags == true then
+            Logic.ExecuteInLuaLocalState([[]]..args..[[]]);
+        elseif _Flags == false then
+            Logic.ExecuteInLuaLocalState([[GUI.SendScriptCommand("]]..args..[[")]]);
+        end
+    end
+end
+
+---
 -- Konsolenbefehl: Leert das Debug Window.
 --
 -- @within Internal
@@ -808,6 +837,9 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.ShareView(_Arguments, _Flag)
+    if _Flag == -1 then
+        Logic.SetShareExplorationWithPlayerFlag(_Arguments[2], _Arguments[3], _Arguments[4]);
+    end
     Logic.SetShareExplorationWithPlayerFlag(_Arguments[2], _Arguments[3], _Flag);
 end
 
