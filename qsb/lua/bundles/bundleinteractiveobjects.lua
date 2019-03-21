@@ -417,6 +417,12 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
         Logic.InteractiveObjectSetInteractionDistance(eID,_Description.Distance);
         Logic.InteractiveObjectSetTimeToOpen(eID,_Description.Waittime);
         Logic.InteractiveObjectAddRewards(eID,_Description.Reward[1],_Description.Reward[2]);
+        if _Description.Costs[1] then
+            Logic.InteractiveObjectAddCosts(eID, _Description.Costs[1], _Description.Costs[2]);
+        end
+        if _Description.Costs[3] then
+            Logic.InteractiveObjectAddCosts(eID, _Description.Costs[3], _Description.Costs[4]);
+        end
 
         Logic.InteractiveObjectSetAvailability(eID, true);
         Logic.InteractiveObjectSetPlayerState(eID, _Description.PlayerID or 1, _Description.State);
@@ -833,7 +839,6 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                 return;
             end
         end
-
         -- Führe für Ruinen Originalfunktion aus, wenn Skriptname Nummer ist
         local EntityTypeName = Logic.GetEntityTypeName(EntityType);
         if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(eID)) ~= nil then
@@ -843,122 +848,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
         for k,v in pairs(IO)do
             if eID == GetID(k)then
-                local ActivationSound = "menu_left_prestige";
-                if v.ActivationSound then
-                    ActivationSound = v.ActivationSound;
-                end
-
-                local Reward = {};
-                if IO[k].Reward and IO[k].Reward[1] ~= nil then
-                    table.insert(Reward,IO[k].Reward[1]);
-                    table.insert(Reward,IO[k].Reward[2]);
-                end
-                local space = true;
-                if  Reward[2] and type(Reward[2]) == "number" and Reward[1] ~= Goods.G_Gold
-                and Logic.GetGoodCategoryForGoodType(Reward[1]) == GoodCategories.GC_Resource then
-                    local freeSpace = Logic.GetPlayerUnreservedStorehouseSpace(pID);
-                    if freeSpace < Reward[2] then
-                        space = false;
-                    end
-                end
-
-                local CheckSettlement;
-                if IO[k].Costs and IO[k].Costs[1] then
-                    if Logic.GetGoodCategoryForGoodType(IO[k].Costs[1]) ~= GoodCategories.GC_Resource then
-                        CheckSettlement = true;
-                    end
-
-                    -- space
-                    if space == false then
-                        local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace")
-                        Message(MessageText);
-                        return;
-                    end
-
-                    local Costs = IO[k].Costs;
-                    local CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
-                    local CanBuyBoolean = true;
-
-                    -- costs 1
-                    if Costs[1] then
-                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[1], Costs[2]);
-                    end
-                    -- costs 2
-                    if Costs[3] then
-                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[3], Costs[4]);
-                    end
-
-                    -- check condition
-                    if not IO[k].ConditionFullfilled then
-                        if IO[k].ConditionUnfulfilled then
-                            local MessageText = IO[k].ConditionUnfulfilled;
-                            if type(MessageText) == "table" then
-                                MessageText = MessageText[lang];
-                            end
-                            Message(MessageText);
-                        end
-                        return;
-                    end
-
-                    -- check opener
-                    if IO[k].Opener then
-                        if Logic.GetDistanceBetweenEntities(GetID(IO[k].Opener),GetID(k)) > IO[k].Distance then
-                            if IO[k].WrongKnight and IO[k].WrongKnight ~= "" then
-                                Message(IO[k].WrongKnight);
-                            end
-                            return;
-                        end
-                    end
-
-                    if CanBuyBoolean == true then
-                        if Costs[1] ~= nil then
-                            BundleInteractiveObjects.Local:BuyObject(pID, Costs[1], Costs[2]);
-                        end
-                        if Costs[3] ~= nil then
-                            BundleInteractiveObjects.Local:BuyObject(pID, Costs[3], Costs[4]);
-                        end
-                        -- reward
-                        if #Reward > 0 then
-                            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..pID..",'"..k.."',"..Reward[1]..","..Reward[2]..")");
-                        end
-                        Play2DSound(pID, ActivationSound);
-                        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
-                    else
-                        Message(CanNotBuyString)
-                    end
-                else
-                    -- space
-                    if space == false then
-                        local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace")
-                        Message(MessageText);
-                        return;
-                    end
-
-                    -- check condition
-                    if not IO[k].ConditionFullfilled then
-                        if IO[k].ConditionUnfulfilled and IO[k].ConditionUnfulfilled ~= "" then
-                            Message(IO[k].ConditionUnfulfilled);
-                        end
-                        return;
-                    end
-
-                    -- check opener
-                    if IO[k].Opener then
-                        if Logic.GetDistanceBetweenEntities(GetID(IO[k].Opener),GetID(k)) > IO[k].Distance then
-                            if IO[k].WrongKnight and IO[k].WrongKnight ~= "" then
-                                Message(IO[k].WrongKnight);
-                            end
-                            return;
-                        end
-                    end
-
-                    -- reward
-                    if #Reward > 0 then
-                        GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..pID..",'"..k.."',"..Reward[1]..","..Reward[2]..")");
-                    end
-                    Play2DSound(pID, ActivationSound);
-                    GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
-                end
+                BundleInteractiveObjects.Local:OnObjectClicked(v);
             end
         end
     end
@@ -1046,6 +936,125 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects(_QuestIndex, _MessageKey);
         end
     end
+end
+
+---
+-- Führt die Objektinteraktion aus.
+--
+-- @param[type=table]    _IO Table des IO
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:OnObjectClicked(_IO)
+    if not self:OnObjectClicked_DoesRewardFitInStorehouse(_IO) then
+        return;
+    end
+    if not self:OnObjectClicked_CanPlayerPayCosts(_IO) then
+        return;
+    end
+    if not self:OnObjectClicked_IsConditionFulfulled(_IO) then
+        return;
+    end
+
+    local PlayerID = GUI.GetPlayerID();
+    local EntityID = GetID(_IO.Name);
+    if Logic.IsInteractiveObject(EntityID) == false then
+        if _IO.Costs[1] ~= nil then
+            self:BuyObject(PlayerID, _IO.Costs[1], _IO.Costs[2]);
+        end
+        if _IO.Costs[3] ~= nil then
+            self:BuyObject(PlayerID, _IO.Costs[3], _IO.Costs[4]);
+        end
+        if _IO.Reward[1] ~= nil then
+            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
+        end
+        Play2DSound(pID, _IO.ActivationSound or "menu_left_prestige");
+        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
+        return;
+    end
+
+    GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
+    Sound.FXPlay2DSound( "ui\\menu_click");
+    GUI.ExecuteObjectInteraction(EntityID, PlayerID);
+end
+
+---
+-- Prüft, ob die Aktivierungsbedinung erfüllt ist. Wenn das nicht der Fall
+-- ist, wird eine optionale Nachricht angezeigt.
+--
+-- @param[type=table]    _IO Table des IO
+-- @return[type=boolean] Bedingung ist erfüllt
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:OnObjectClicked_IsConditionFulfulled(_IO)
+    local PlayerID = GUI.GetPlayerID();
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if not _IO.ConditionFullfilled then
+        if _IO.ConditionUnfulfilled then
+            local MessageText = _IO.ConditionUnfulfilled;
+            if type(MessageText) == "table" then
+                MessageText = MessageText[Language];
+            end
+            Message(MessageText);
+        end
+        return false;
+    end
+    return true;
+end
+
+---
+-- Prüft, ob der Schatz in das Lagerhaus des Spielers passt und zeigt eine
+-- Meldung an, sollte das nicht der Fall sein.
+--
+-- @param[type=table]    _IO Table des IO
+-- @return[type=boolean] Schatz passt ins Lagerhaus
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:OnObjectClicked_DoesRewardFitInStorehouse(_IO)
+    local PlayerID = GUI.GetPlayerID();
+    if not _IO.Reward or type(_IO.Reward[1]) ~= "number" then
+        return true;
+    end
+    if  _IO.Reward[1] ~= Goods.G_Gold 
+    and Logic.GetGoodCategoryForGoodType(_IO.Reward[1]) ~= GoodCategories.GC_Resource then
+        return true;
+    end
+    if Logic.GetPlayerUnreservedStorehouseSpace(PlayerID) >= _IO.Reward[2] then
+        return true;
+    end
+    local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace");
+    Message(MessageText);
+    return false;
+end
+
+---
+-- Prüft, ob der Spieler die Kosten des interaktiven Objektes begleichen kann
+-- und zeigt eine Meldung an, wenn das nicht der Fall ist.
+--
+-- @param[type=table]    _IO Table des IO
+-- @return[type=boolean] Kosten können bezahlt werden
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:OnObjectClicked_CanPlayerPayCosts(_IO)
+    local PlayerID = GUI.GetPlayerID();
+    local CanBuyBoolean = true;
+    if not _IO.Costs or type(_IO.Costs[1]) ~= "number" then
+        return true;
+    end
+    if _IO.Costs[2] then
+        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(PlayerID, _IO.Costs[1], _IO.Costs[2]);
+    end
+    if _IO.Costs[4] then
+        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(PlayerID, _IO.Costs[3], _IO.Costs[4]);
+    end
+    if not CanBuyBoolean then
+        local CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
+        Message(CanNotBuyString);
+    end
+    return CanBuyBoolean;
 end
 
 ---

@@ -976,7 +976,7 @@ function AddOnCastleStore.Local:Install()
     QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions();
     self:OverwriteGetStringTableText();
-    self:OverwriteInteractiveObject();
+    -- self:OverwriteInteractiveObject();
 end
 
 ---
@@ -1615,7 +1615,33 @@ end
 -- @local
 --
 function AddOnCastleStore.Local:OverwriteInteractiveObject()
-    function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
+    BundleInteractiveObjects.Local.OnObjectClicked = function(self, _IO)
+        if not self:OnObjectClicked_DoesRewardFitInStorehouse(_IO) then
+            return;
+        end
+        if not self:OnObjectClicked_CanPlayerPayCosts(_IO) then
+            return;
+        end
+        if not self:OnObjectClicked_IsConditionFulfulled(_IO) then
+            return;
+        end
+    
+        local PlayerID = GUI.GetPlayerID();
+        local EntityID = GetID(_IO.Name);
+        if _IO.Costs[1] ~= nil then
+            self:BuyObject(PlayerID, _IO.Costs[1], _IO.Costs[2]);
+        end
+        if _IO.Costs[3] ~= nil then
+            self:BuyObject(PlayerID, _IO.Costs[3], _IO.Costs[4]);
+        end
+        if _IO.Reward[1] ~= nil then
+            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
+        end
+        Play2DSound(pID, _IO.ActivationSound or "menu_left_prestige");
+        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
+    end
+    
+    BundleInteractiveObjects.Local.CanBeBought = function(self, _PlayerID, _Good, _Amount)
         local AmountOfGoods = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
         if AddOnCastleStore.Local.CastleStore:HasCastleStore(_PlayerID) then
             if Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
@@ -1629,7 +1655,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
         return true;
     end
 
-    function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
+    BundleInteractiveObjects.Local.BuyObject = function(self, _PlayerID, _Good, _Amount)
         if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
             local buildings = GetPlayerEntities(_PlayerID,0);
             local goodAmount = _Amount;
@@ -1744,6 +1770,7 @@ function AddOnCastleStore.Local.CastleStore:DescribeHotkeys()
         API.AddHotKey("Umschalt + B", {de = "Burglager: Waren einlagern", en = "Vault: Store goods"});
         API.AddHotKey("Umschalt + N", {de = "Burglager: Waren sperren", en = "Vault: Lock goods"});
         API.AddHotKey("Umschalt + M", {de = "Burglager: Lager räumen", en = "Vault: Empty store"});
+        AddOnCastleStore.Local:OverwriteInteractiveObject();
         self.HotkeysAddToList = true;
     end
 end
