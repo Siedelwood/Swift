@@ -472,8 +472,10 @@ function QSB.NonPlayerCharacter:RotateActors()
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
         -- Alle Helden stoppen, die sich zu NPC bewegen
-        local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, 19)));
-        local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, 20)));
+        local SV = (QSB.HistoryEdition and 17) or 19;
+        local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
+        local SV = (QSB.HistoryEdition and 18) or 20;
+        local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
         local x2, y2 = Logic.EntityGetPos(GetID(self.m_NpcName));
         if x1 == math.floor(x2) and y1 == math.floor(y2) then
             local x, y, z = Logic.EntityGetPos(v);
@@ -524,8 +526,9 @@ end
 function QSB.NonPlayerCharacter:ShowMarker()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     if self.m_NpcType == 1 and IsExisting(self.m_MarkerID) then
-        local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), -45);
-        Logic.SetEntityScriptingValue(self.m_MarkerID, -45, EntityScale);
+        local SV = (QSB.HistoryEdition and -42) or -45;
+        local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), SV);
+        Logic.SetEntityScriptingValue(self.m_MarkerID, SV, EntityScale);
         Logic.SetModel(self.m_MarkerID, Models.Effects_E_Wealth);
         Logic.SetVisible(self.m_MarkerID, true);
     end
@@ -831,8 +834,10 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
         if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
                 if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
-                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 19)));
-                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 20)));
+                    local SV = (QSB.HistoryEdition and 17) or 19;
+                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
+                    local SV = (QSB.HistoryEdition and 18) or 20;
+                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
                     local x2, y2 = Logic.EntityGetPos(GetID(k));
                     if x1 == math.floor(x2) and y1 == math.floor(y2) then
                         if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
