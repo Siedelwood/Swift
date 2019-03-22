@@ -14,7 +14,8 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "2-Beta";
+QSB.Version = "2.0.0 Beta-3";
+QSB.HistoryEdition = false;
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -1203,6 +1204,7 @@ function Core:InitalizeBundles()
     if not GUI then
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
+        self:IdentifyHistoryEdition();
         
         StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
 
@@ -1706,6 +1708,23 @@ function Core:ToBoolean(_Input)
         return true;
     end
     return false;
+end
+
+---
+-- Identifiziert anhand der um +3 Verschobenen PlayerID bei den Scripting
+-- Values die infamous History Edition. Ob es sich um die History Edition
+-- hält, wird in der Variable QSB.HistoryEdition gespeichert.
+-- @within Internal
+-- @local
+--
+function Core:IdentifyHistoryEdition()
+    local EntityID = Logic.CreateEntity(Entities.U_NPC_Amma_NE, 100, 100, 0, 8);
+    MakeInvulnerable(EntityID);
+    if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
+        API.Bridge("QSB.HistoryEdition = true");
+        QSB.HistoryEdition = true;
+    end
+    DestroyEntity(EntityID);
 end
 
 -- Jobs ------------------------------------------------------------------------

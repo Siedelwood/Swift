@@ -130,16 +130,17 @@ end
 function QSB.EntityProperty:EntitySize(_Scale)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
+    local SV = (QSB.HistoryEdition and -42) or -45;
     if _Scale then
         local EntityID = GetID(self.m_EntityName);
         if EntityID > 0 then
-            Logic.SetEntityScriptingValue(EntityID, -45, self:Float2Int(_Scale));
+            Logic.SetEntityScriptingValue(EntityID, SV, self:Float2Int(_Scale));
             if Logic.IsSettler(EntityID) == 1 then
                 Logic.SetSpeedFactor(EntityID, _Scale);
             end
         end
     end
-    return self:GetValueAsFloat(-45);
+    return self:GetValueAsFloat(SV);
 end
 
 ---
@@ -198,17 +199,18 @@ end
 function QSB.EntityProperty:PlayerID(_PlayerID)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
+    local SV = (QSB.HistoryEdition and -68) or -71;
     if _PlayerID then
         local EntityID = GetID(self.m_EntityName);
         if EntityID > 0 then
             if Logic.IsLeader(EntityID) == 1 then
                 Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
             else
-                Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+                Logic.SetEntityScriptingValue(EntityID, SV, _PlayerID);
             end
         end
     end
-    return self:GetValueAsInteger(-71);
+    return self:GetValueAsInteger(SV);
 end
 
 ---
@@ -227,6 +229,7 @@ function QSB.EntityProperty:Health(_Health, _Relative)
     if EntityID == 0 or Logic.IsLeader(EntityID) == 1 then
         return 0;
     end
+    local SV = (QSB.HistoryEdition and -38) or -41;
     if _Health then
         local NewHealth = _Health;
         -- Relative Gesundheit berechnen
@@ -236,9 +239,9 @@ function QSB.EntityProperty:Health(_Health, _Relative)
             local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
             NewHealth = math.ceil((MaxHealth) * (_Health/100));
         end
-        Logic.SetEntityScriptingValue(EntityID, -41, NewHealth);
+        Logic.SetEntityScriptingValue(EntityID, SV, NewHealth);
     end
-    return self:GetValueAsInteger(-41);
+    return self:GetValueAsInteger(SV);
 end
 
 ---
@@ -339,7 +342,8 @@ function QSB.EntityProperty:Visible(_Visble)
     if _Visble ~= nil then
         Logic.SetVisible(EntityID, _Visble);
     end
-    return self:GetValueAsInteger(-50) == 801280;
+    local SV = (QSB.HistoryEdition and -47) or -50;
+    return self:GetValueAsInteger(SV) == 801280;
 end
 
 ---
@@ -401,7 +405,9 @@ function QSB.EntityProperty:GetDestination()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
-        return {X= self:GetValueAsFloat(19), Y= self:GetValueAsFloat(20)};
+        local SVX = (QSB.HistoryEdition and 17) or 19;
+        local SVY = (QSB.HistoryEdition and 18) or 20;
+        return {X= self:GetValueAsFloat(SVX), Y= self:GetValueAsFloat(SVY)};
     end
     return {X= 0, Y= 0};
 end
@@ -417,7 +423,8 @@ function QSB.EntityProperty:CountSoldiers()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 and Logic.IsLeader(EntityID) == 1 then
-        return self:GetValueAsInteger(-57);
+        local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+        return #SoldierTable;
     end
     return 0;
 end
@@ -451,7 +458,7 @@ function QSB.EntityProperty:GetLeader()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 and Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 1 then
-        return self:GetValueAsInteger(46);
+        return Logic.SoldierGetLeaderEntityID(EntityID);
     end
     return 0;
 end
