@@ -232,18 +232,23 @@ SetOrientation = API.EntitySetOrientation;
 --
 -- <p><b>Alias:</b> GetOrientation</p>
 --
--- @param _entity       Betreffendes Entity (Skriptname oder ID)
+-- @param               _entity Betreffendes Entity (Skriptname oder ID)
+-- @param[type=boolean] _Round  Wert wird kaufmännisch auf Ganzzahl gerundet
 -- @return[type=number] Orientierung in Grad
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- local Orientation = API.EntityGetOrientation("marcus");
 --
-function API.EntityGetOrientation(_entity)
+function API.EntityGetOrientation(_entity, _Round)
     if not IsExisting(_entity) then
         local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
         API.Warn("API.EntityGetOrientation: Entity " ..Subject.. " does not exist!");
         return 0;
+    end
+    local Orientation = Logic.GetEntityOrientation(GetID(_entity));
+    if _Round then
+        Orientation = math.floor(Orientation + 0.5);
     end
     return Logic.GetEntityOrientation(GetID(_entity));
 end

@@ -223,9 +223,9 @@ function API.AddPages(_Briefing)
         if #arg > 5 then
             PageName = table.remove(arg, 1);
         end
-        local Position = {arg[1], 100};
+        local Position = {arg[1], 70};
         if Logic.IsKnight(GetID(arg[1])) then
-            Position[2] = 225;
+            Position[2] = 120;
         end
         return AP {
             Name         = PageName,
