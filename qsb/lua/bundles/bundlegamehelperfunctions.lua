@@ -598,6 +598,8 @@ function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
     if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
         BundleGameHelperFunctions.Global:KillCheats();
     end
+    -- Illegale Speicherstände
+    API.Bridge("BundleGameHelperFunctions.Local:CloseIllegalSaveGame()");
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -726,6 +728,21 @@ function BundleGameHelperFunctions.Local:InitForbidSaveGame()
             return;
         end
         KeyBindings_SaveGame_Orig_Preferences_SaveGame();
+    end
+end
+
+---
+-- Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
+--
+-- <b>Hinweis</b>: Dies ist ein Fallback wegen dem automatischen Speichern
+-- der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
+--
+-- @within Internal
+-- @local
+--
+function BundleGameHelperFunctions.Local:CloseIllegalSaveGame()
+    if BundleGameHelperFunctions.Local.Data.ForbidSave then
+        Framework.CloseGame();
     end
 end
 
