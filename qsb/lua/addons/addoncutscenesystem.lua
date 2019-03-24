@@ -55,7 +55,7 @@ API = API or {};
 -- <pre>local Cutscene = {
 --    CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
 --    RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
---    TransperentBars = false, -- Durchsichtige Bars verwenden
+--    TransperentBars = false, -- Durchsichtige Bars verwenden (Opacity = 39%)
 --    HideBorderPins = true,   -- Grenzsteine ausblenden
 --    FastForward = false,     -- Beschleunigt abspielen erlauben
 --
@@ -729,7 +729,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    AddOnCutsceneSystem.Local:SetBarStyle(self.Data.CurrentCutscene.TransperentBars);
+    AddOnCutsceneSystem.Local:SetBarStyle(self.Data.CurrentCutscene.TransperentBars == true);
 
     if not self.Data.SkipButtonTextBackup then
         self.Data.SkipButtonTextBackup = XGUIEng.GetText("/InGame/ThroneRoom/Main/Skip");

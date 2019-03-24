@@ -45,6 +45,11 @@ QSB = QSB or {};
 -- <td>HideBorderPins</td>
 -- <td>Die Grenzsteine werden während des Briefing ausgeblendet</td>
 -- </tr>
+-- </tr>
+-- <tr>
+-- <td>TransparentBars</td>
+-- <td>Die Bars werden transparent dargestellt. (Opacity = 39%)</td>
+-- </tr>
 -- <tr>
 -- <td>ShowSky</td>
 -- <td>Der Himmel wird während des Briefing angezeigt</td>
@@ -1281,7 +1286,7 @@ function BundleBriefingSystem.Local:SetSplashscreen()
             XGUIEng.SetWidgetSize(BG, Position[1], Position[2]);
             self.Data.CurrentBriefing.BriefingBarSizeBackup = nil;
         end
-        self:SetBarStyle(false);
+        self:SetBarStyle(self.Data.CurrentBriefing.TransparentBars == true);
         return;
     end
 
@@ -1293,6 +1298,7 @@ function BundleBriefingSystem.Local:SetSplashscreen()
         if is4To3 or is5To4 then
             u0 = u0 + (u0 * 0.125); u1 = u1 - (u1 * 0.125);
         end
+        self:SetBarStyle(false);
         XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
         XGUIEng.SetMaterialTexture(BG, 1, self.Data.CurrentPage.Splashscreen);
         XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
@@ -1369,7 +1375,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    BundleBriefingSystem.Local:SetBarStyle(false);
+    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.TransparentBars == true);
 
     GUI.ClearSelection();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
