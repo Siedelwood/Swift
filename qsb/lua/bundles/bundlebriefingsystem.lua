@@ -394,6 +394,7 @@ BundleBriefingSystem = {
         Data = {
             CurrentBriefing = {},
             CurrentPage = {},
+            BriefingMessages = {},
             DisplayIngameCutscene = false,
             BriefingActive = false,
             LastSkipButtonPressed = 0,
@@ -415,6 +416,7 @@ BundleBriefingSystem = {
 -- @local
 --
 function BundleBriefingSystem.Global:Install()
+    BundleBriefingSystem:OverrideApiNote();
     StartSimpleHiResJobEx(self.BriefingExecutionController);
     StartSimpleJobEx(self.BriefingQuestPausedController);
 end
@@ -704,6 +706,22 @@ function BundleBriefingSystem.Global.BriefingQueueController()
     end
 end
 
+---
+-- Fügt den Briefing Messages einen neuen Eintrag hinzu. Jede Nachricht ist
+-- 120 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
+-- Briefing beendet ist, werden sie zu normalen Notes.
+--
+-- Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
+-- Eintrag auf 0 reduziert.
+--
+-- @param[type=string] _Text Text der Nachricht
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:PushBriefingNote(_Text)
+    API.Bridge("BundleBriefingSystem.Local:PushBriefingNote('" .._Text.. "')");
+end
+
 -- Local Script ------------------------------------------------------------- --
 
 ---
@@ -716,6 +734,7 @@ function BundleBriefingSystem.Local:Install()
         Script.Load("script/mainmenu/fader.lua");
     end
     self:OverrideThroneRoomFunctions();
+    BundleBriefingSystem:OverrideApiNote();
 
     StartSimpleHiResJobEx(self.WaitForLoadScreenHidden);
 end
@@ -926,6 +945,9 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
                 SkipText = BundleBriefingSystem.Text.EndButton[Language];
             end
             XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..SkipText);
+
+            -- Briefing Messages
+            self:UpdateBriefingNotes();
         end
     end
 end
@@ -1432,6 +1454,8 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
+
+    self:ConvertBriefingNotes();
 end
 
 ---
@@ -1513,6 +1537,86 @@ function BundleBriefingSystem.Local.WaitForLoadScreenHidden()
     if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
         GUI.SendScriptCommand("BundleBriefingSystem.Global.Data.LoadScreenHidden = true");
         return true;
+    end
+end
+
+---
+-- Fügt den Briefing Messages einen neuen Eintrag hinzu. Jede Nachricht ist
+-- 12 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
+-- Briefing beendet ist, werden sie zu normalen Notes.
+--
+-- Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
+-- Eintrag auf 0 reduziert.
+--
+-- @param[type=string] _Text Text der Nachricht
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:PushBriefingNote(_Text)
+    local Size = #self.Data.BriefingMessages;
+    if Size > 8 then
+        local Index = Size -8;
+        self.Data.BriefingMessages[Index][2] = 0;
+    end
+    self.Data.BriefingMessages[Size+1] = {_Text, 12000};
+end
+
+---
+-- Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+-- die Table. Diese Funktion wird automatisch vom Briefing System aufgerufen.
+--
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:ConvertBriefingNotes()
+    for k, v in pairs(self.Data.BriefingMessages) do
+        if v and v[2] > 0 then
+            API.Note(v[1]);
+        end
+    end
+    self.Data.BriefingMessages = {};
+end
+
+---
+-- Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+-- die Table. Diese Funktion wird automatisch vom Briefing System aufgerufen.
+--
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:UpdateBriefingNotes()
+    local Color = "{@color:255,255,255,255}";
+    local Text = "";
+    for k, v in pairs(self.Data.BriefingMessages) do
+        if v and v[2] > 0 then
+            self.Data.BriefingMessages[k][2] = v[2] -1;
+            Text = Text .. Color .. v[1] .. "{cr}";
+        end
+    end
+    XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", Text);
+end
+
+-- Shared ------------------------------------------------------------------- --
+
+---
+-- Überschreibt API.Note, damit Nachrichten auch während Briefings angezeigt
+-- werden können.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem:OverrideApiNote()
+    API.Note_Orig_BriefingSystem = API.Note;
+    API.Note = function(_Text)
+        if IsBriefingActive() then
+            local Text = API.EnsureMessage(_Text);
+            if not GUI then
+                BundleBriefingSystem.Global:PushBriefingNote(Text);
+            else
+                BundleBriefingSystem.Local:PushBriefingNote(Text);
+            end
+            return;
+        end
+        API.Note_Orig_BriefingSystem(_Text);
     end
 end
 
