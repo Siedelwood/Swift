@@ -9,7 +9,7 @@
 --
 -- Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
 -- der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
--- Auswahlmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
+-- Auswahlmöglichkeiten gegeben, multiple Handlungsstränge gestartet
 -- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiten
 -- kann innerhalb des Multiple Choice Briefings navigiert werden.
 --
@@ -34,7 +34,7 @@ QSB = QSB or {};
 ---
 -- Startet ein Briefing.
 --
--- Für ein Briefing könn verschiedene spezielle Einstellungen vorgenommen
+-- Für ein Briefing können verschiedene spezielle Einstellungen vorgenommen
 -- werden. Jede dieser Einstellungen wird mit true aktiviert.
 -- <table border="1">
 -- <tr>
@@ -136,9 +136,9 @@ end
 PauseQuestsDuringBriefings = API.BriefingPauseQuests;
 
 ---
--- Erzeugt die Funktionen zum erzeugen von Seiten in einem Briefing und bindet
+-- Erzeugt die Funktionen zur Erstellung von Seiten in einem Briefing und bindet
 -- sie an das Briefing. Diese Funktion muss vor dem Start eines Briefing
--- aufgerufen werden.
+-- aufgerufen werden um Seiten hinzuzufügen.
 --
 -- <b>Alias</b>: AddPages
 --
@@ -282,9 +282,9 @@ AddPages = API.AddPages;
 --    }
 --}</pre>
 -- Die Dauer der Animation (FlyTo.Duration) wird automatisch zur Dauer der
--- Seite, wenn nicht gesetzt oder geringer als die Dauer der Animation ist.
+-- Seite, wenn diese nicht gesetzt ist oder die Animation länger ist.
 --
--- Jede Seite kann eine Grafik am linken Rand anzeigen. Diese Grafik wird
+-- Jede Seite kann eine Grafik am linken oberen Rand anzeigen. Diese Grafik wird
 -- als Portrait betrachtet.
 -- <pre>Portrait = "Path/to/Portrait.ong",</pre>
 -- Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
@@ -320,10 +320,13 @@ AddPages = API.AddPages;
 -- <pre>AP("SomePageName")</pre>
 --
 -- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
--- erfahren, muss der Name der Seite oder die ID genutzt werden.
+-- erfahren, muss der Name der Seite oder die ID genutzt werden. Dies kann
+-- entweder in der Finishedfunktion geschehen...
 -- <pre>Briefing.Finished(_Data)
---local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
+--    local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
 --end</pre>
+-- ... oder über eine Referenz auf die Seite zu einem beliebigen Zeitpunkt.
+-- <pre>local Choosen = SomePageReference:GetSelectedAnswer()</pre>
 -- Die zurückgegebene Zahl ist die Position der Antwort, angefangen von oben.
 -- Wird 0 zurückgegeben, wurde noch nicht geantwortet.
 --
@@ -334,7 +337,7 @@ AddPages = API.AddPages;
 --    NoRethink = true,
 --}</pre>
 -- Auf diese Weise hat der Spieler die Möglichkeit die Texte nach der letzten
--- Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändert.
+-- Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändern kann.
 --
 -- @param[type=table] _Page Spezifikation der Seite
 -- @return[type=table] Refernez auf die angelegte Seite
