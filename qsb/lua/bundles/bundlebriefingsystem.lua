@@ -204,6 +204,9 @@ function API.AddPages(_Briefing)
             end
             -- Multiple Choice
             if _Page.MC then
+                for i= 1, #_Page.MC do
+                    _Page.MC[i].ID = i;
+                end
                 _Page.Text = "";
                 _Page.text = "";
                 _Page.NoSkipping = true;
@@ -570,6 +573,7 @@ function BundleBriefingSystem.Global:PageStarted()
                 if self.Data.CurrentBriefing[PageID].Action then
                     self.Data.CurrentBriefing[PageID]:Action();
                 end
+                self:DisableMCAnswers();
                 self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
                 self.Data.CurrentPage.Started = Logic.GetTime();
                 API.Bridge("BundleBriefingSystem.Local:PageStarted()");
@@ -642,6 +646,25 @@ function BundleBriefingSystem.Global:OnMCConfirmed(_Selected)
         end
         API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
         self:PageFinished();
+    end
+end
+
+---
+-- Aktualisiert, ob eine Option sichtbar ist oder nicht. Eine Option
+-- braucht eine Update-Funktion an 3. Stelle. Die Update-Funktion
+-- erhält Daten der Seite und Daten der Antwort.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:DisableMCAnswers()
+    local PageID = self.Data.CurrentBriefing.Page;
+    if self.Data.CurrentBriefing[PageID].MC then
+        for k, v in pairs(self.Data.CurrentBriefing[PageID].MC) do 
+            if type(v[3]) == "function" then
+                local Invisible = v[3](self.Data.CurrentBriefing[PageID], v) == true;
+                API.Bridge("self.Data.CurrentBriefing[" ..PageID.. "].MC[k].Invisible = " ..tostring(Invisible));
+            end
+        end
     end
 end
 
@@ -899,7 +922,11 @@ function BundleBriefingSystem.Local:LocalOnMCConfirmed()
 
     if self.Data.CurrentPage.MC then
         local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
-        API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..Selected.. ")");
+        local AnswerID = self.Data.CurrentPage.MC[Selected].ID;
+        if self.Data.CurrentPage.MC[Selected].Remove then
+            table.remove(self.Data.CurrentPage.MC, Selected);
+        end
+        API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..AnswerID.. ")");
     end
 end
 
@@ -1257,7 +1284,9 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
         local listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
         XGUIEng.ListBoxPopAll(listbox);
         for i=1, #self.Data.CurrentPage.MC, 1 do
-            XGUIEng.ListBoxPushItem(listbox, self.Data.CurrentPage.MC[i][1]);
+            if self.Data.CurrentPage.MC.Invisible ~= true then
+                XGUIEng.ListBoxPushItem(listbox, self.Data.CurrentPage.MC[i][1]);
+            end
         end
         XGUIEng.ListBoxSetSelectedIndex(listbox, 0);
 
