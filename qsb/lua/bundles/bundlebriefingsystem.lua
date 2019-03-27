@@ -160,6 +160,7 @@ function API.AddPages(_Briefing)
     end
 
     local AP = function(_Page)
+        _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
             -- Sprache anpassen
             local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -227,7 +228,7 @@ function API.AddPages(_Briefing)
     end
 
     local ASP = function(...)
-        local Name;
+        local PageName;
         if #arg > 5 then
             PageName = table.remove(arg, 1);
         end
@@ -500,7 +501,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     end
 
     self.Data.BriefingID = self.Data.BriefingID +1;
-    self.Data.CurrentBriefing = _Briefing;
+    self.Data.CurrentBriefing = API.InstanceTable(_Briefing);
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing.PageHistory = {};
     self.Data.CurrentBriefing.ID = self.Data.BriefingID;
@@ -554,7 +555,7 @@ function BundleBriefingSystem.Global:GetPageIDByName(_PageName)
         if type(_PageName) == "number" then
             return _PageName;
         end
-        for i= 1, #self.Data.CurrentBriefing, 1 do
+        for i= 1, self.Data.CurrentBriefing.Length, 1 do
             local Page = self.Data.CurrentBriefing[i];
             if Page and type(Page) == "table" and Page.Name == _PageName then
                 return i;
@@ -610,8 +611,6 @@ end
 --
 function BundleBriefingSystem.Global:PageFinished()
     local PageID = self.Data.CurrentBriefing.Page;
-
-
     API.Bridge("BundleBriefingSystem.Local:PageFinished()");
     self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
     local PageID = self.Data.CurrentBriefing.Page;
@@ -813,6 +812,8 @@ function BundleBriefingSystem.Local:FinishBriefing()
     self.Data.GameSpeedBackup = nil;
     self:DeactivateCinematicMode();
     self.Data.BriefingActive = false;
+    self.Data.CurrentBriefing = {};
+    self.Data.CurrentPage = {};
 end
 
 ---
@@ -1598,11 +1599,12 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:ConvertBriefingNotes()
-    for k, v in pairs(self.Data.BriefingMessages) do
-        if v and v[2] > 0 then
-            API.Note(v[1]);
-        end
-    end
+    -- Broken! Spiel friert ein!
+    -- for k, v in pairs(self.Data.BriefingMessages) do
+    --     if v and v[2] > 0 then
+    --         API.Note(v[1]);
+    --     end
+    -- end
     self.Data.BriefingMessages = {};
 end
 
