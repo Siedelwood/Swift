@@ -971,7 +971,7 @@ function AddOnInteractiveObjectTemplates.Global.ActionBuildIOMine(_Data)
     if type(_Data.CallbackCreate) == "function" then
         _Data.CallbackCreate(_Data);
     end
-    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "ControlIOMine", 1, {}, { _Data.Name });
+    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "AddOnInteractiveObjectTemplates_JobControlIOMine", 1, {}, {_Data.Name});
 end
 
 ---
@@ -992,6 +992,7 @@ function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
     local eID = GetID(_Mine);
 
     if Logic.GetResourceDoodadGoodAmount(eID) == 0 then
+        API.Note(IO[_Mine].Special)
         if IO[_Mine].Special == true then
             local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
             if IO[_Mine].Type == Entities.R_StoneMine then
@@ -1008,6 +1009,7 @@ function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
         return true;
     end
 end
+AddOnInteractiveObjectTemplates_JobControlIOMine = AddOnInteractiveObjectTemplates.Global.ControlIOMine;
 
 ---
 -- Initialisiert die interaktiven Baustellen.

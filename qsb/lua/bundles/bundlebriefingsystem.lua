@@ -504,6 +504,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing.PageHistory = {};
     self.Data.CurrentBriefing.ID = self.Data.BriefingID;
+    -- self:DisableMCAnswers(); --> Broken!
     if self.Data.CurrentBriefing.DisableGlobalInvulnerability ~= false then
         Logic.SetGlobalInvulnerability(1);
     end
@@ -576,7 +577,6 @@ function BundleBriefingSystem.Global:PageStarted()
                 if self.Data.CurrentBriefing[PageID].Action then
                     self.Data.CurrentBriefing[PageID]:Action();
                 end
-                self:DisableMCAnswers();
                 self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
                 self.Data.CurrentPage.Started = Logic.GetTime();
                 API.Bridge("BundleBriefingSystem.Local:PageStarted()");
@@ -660,12 +660,13 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:DisableMCAnswers()
-    local PageID = self.Data.CurrentBriefing.Page;
-    if self.Data.CurrentBriefing[PageID].MC then
-        for k, v in pairs(self.Data.CurrentBriefing[PageID].MC) do 
-            if type(v[3]) == "function" then
-                local Invisible = v[3](self.Data.CurrentBriefing[PageID], v) == true;
-                API.Bridge("self.Data.CurrentBriefing[" ..PageID.. "].MC[k].Invisible = " ..tostring(Invisible));
+    for i= 1, #self.Data.CurrentBriefing, 1 do
+        if self.Data.CurrentBriefing[i].MC then
+            for k, v in pairs(self.Data.CurrentBriefing[i].MC) do 
+                if type(v) == "table" and type(v[3]) == "function" then
+                    local Invisible = v[3](self.Data.CurrentBriefing[i], v) == true;
+                    self.Data.CurrentBriefing[i].MC[k].Invisible = Invisible;
+                end
             end
         end
     end
@@ -677,23 +678,19 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global.BriefingExecutionController()
-    if not BundleBriefingSystem.Global.Data.DisplayIngameCutscene then
-        if BundleBriefingSystem.Global:IsBriefingActive() then
-            if BundleBriefingSystem.Global.Data.CurrentPage == nil then
-                BundleBriefingSystem.Global:FinishBriefing();
+    if not BundleBriefingSystem.Global.Data.DisplayIngameCutscene and BundleBriefingSystem.Global:IsBriefingActive() then
+        if BundleBriefingSystem.Global.Data.CurrentPage == nil then
+            BundleBriefingSystem.Global:FinishBriefing();
 
-            elseif type(BundleBriefingSystem.Global.Data.CurrentPage) == "table" then
-                if BundleBriefingSystem.Global.Data.CurrentPage then
-                    local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
-                    if Duration > -1 and BundleBriefingSystem.Global.Data.CurrentPage.Started then
-                        if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
-                            local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
-                            if not BundleBriefingSystem.Global.Data.CurrentPage.NoHistory then
-                                API.Bridge("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
-                            end
-                            BundleBriefingSystem.Global:PageFinished();
-                        end
+        elseif type(BundleBriefingSystem.Global.Data.CurrentPage) == "table" then
+            local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
+            if Duration > -1 and BundleBriefingSystem.Global.Data.CurrentPage.Started then
+                if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
+                    local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
+                    if not BundleBriefingSystem.Global.Data.CurrentPage.NoHistory then
+                        API.Bridge("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
                     end
+                    BundleBriefingSystem.Global:PageFinished();
                 end
             end
         end
@@ -1287,7 +1284,7 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
         local listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
         XGUIEng.ListBoxPopAll(listbox);
         for i=1, #self.Data.CurrentPage.MC, 1 do
-            if self.Data.CurrentPage.MC.Invisible ~= true then
+            if self.Data.CurrentPage.MC[i].Invisible ~= true then
                 XGUIEng.ListBoxPushItem(listbox, self.Data.CurrentPage.MC[i][1]);
             end
         end
