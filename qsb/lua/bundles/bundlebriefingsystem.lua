@@ -923,9 +923,11 @@ function BundleBriefingSystem.Local:LocalOnMCConfirmed()
 
     if self.Data.CurrentPage.MC then
         local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
-        local AnswerID = self.Data.CurrentPage.MC[Selected].ID;
-        if self.Data.CurrentPage.MC[Selected].Remove then
-            table.remove(self.Data.CurrentPage.MC, Selected);
+        local AnswerID = self.Data.CurrentPage.MC.Map[Selected];
+        for i= #self.Data.CurrentPage.MC, 1, -1 do
+            if self.Data.CurrentPage.MC[i].ID == AnswerID and self.Data.CurrentPage.MC[i].Remove then
+                table.remove(self.Data.CurrentPage.MC, Selected);
+            end
         end
         API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..AnswerID.. ")");
     end
@@ -1284,9 +1286,11 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
 
         local listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
         XGUIEng.ListBoxPopAll(listbox);
+        self.Data.CurrentPage.MC.Map = {};
         for i=1, #self.Data.CurrentPage.MC, 1 do
             if self.Data.CurrentPage.MC[i].Invisible ~= true then
                 XGUIEng.ListBoxPushItem(listbox, self.Data.CurrentPage.MC[i][1]);
+                table.insert(self.Data.CurrentPage.MC.Map, self.Data.CurrentPage.MC[i].ID);
             end
         end
         XGUIEng.ListBoxSetSelectedIndex(listbox, 0);
