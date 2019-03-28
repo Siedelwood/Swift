@@ -168,7 +168,7 @@ function Briefing03()
     local JumpTo7 = function()
         return 7;
     end
-    local ReallyImportantChoice = AP {
+    AP {
         Name         = "ChoicePage1",
         position     = CastleID,
         title        = "Auswahl",
@@ -177,6 +177,8 @@ function Briefing03()
         NoRethink    = true,
         MC           = {
             {"Zu Seite 4 springen", "ResultPage1"},
+            {"Remove me", "ResultPage1", Remove = true},
+            {"Do not show me", "ResultPage1", Disable = function() return true end},
             {"Zu Seite 7 springen", "ResultPage2"}
         }
     }
@@ -199,7 +201,7 @@ function Briefing03()
     Briefing.Starting = function(_Data)
     end
     Briefing.Finished = function(_Data)
-        API.StaticNote(ReallyImportantChoice:GetSelectedAnswer());
+        API.StaticNote(_Data:GetPage("ChoicePage1"):GetSelectedAnswer());
     end
     return API.StartBriefing(Briefing)
 end

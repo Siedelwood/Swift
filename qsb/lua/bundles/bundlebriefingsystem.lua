@@ -258,6 +258,8 @@ AddPages = API.AddPages;
 -- <a href="#API.AddPages">API.AddPages</a> erzeugt und an
 -- das Briefing gebunden.
 --
+-- <h5>Normale Briefings</h5>
+--
 -- Eine einfache Seite lässt sich unter Nutzung von DialogCamera erstellen.
 -- Dadurch wird entweder Nahsicht oder Fernsicht verwendet. Werte für Angle,
 -- Rotation oder Zoom werden automatisch gesetzt, wenn sie fehlen.
@@ -285,18 +287,21 @@ AddPages = API.AddPages;
 -- Die Dauer der Animation (FlyTo.Duration) wird automatisch zur Dauer der
 -- Seite, wenn diese nicht gesetzt ist oder die Animation länger ist.
 --
--- Jede Seite kann eine Grafik am linken oberen Rand anzeigen. Diese Grafik wird
--- als Portrait betrachtet.
 -- <pre>Portrait = "Path/to/Portrait.ong",</pre>
--- Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
--- heißt Splashscreen.
+-- Jede Seite kann eine Grafik am linken oberen Rand anzeigen. Diese Grafik wird
+-- als Portrait betrachtet und sollte 400x600 Pixel groß sein.
+-- 
 -- <pre>Splashscreen = "Path/to/Graphic.ong",</pre>
+-- Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
+-- heißt Splashscreen. Splashscreens sollten immer das Format 16:9 haben.
 --
+--<pre>Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
+--LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
 -- AP unterstützt ebenso die Angabe von XYZ-Koordinaten. Positionen können auch
 -- als Vektoren angegeben werden. Dann hat die Kamera eine Position und eine
 -- Blickrichtung.
--- <pre>Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
---LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
+--
+-- <h5>Multiple Choice</h5>
 --
 -- In einem Dialog kann der Spieler auch zur Auswahl einer Option gebeten
 -- werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
@@ -308,6 +313,9 @@ AddPages = API.AddPages;
 --        {"Antwort 2", "SomePageName"},
 --    },
 --}</pre>
+-- Eine Antwort kann auch markiert werden, dass sie auch bei einem Rücksprung,
+-- nicht mehrfach gewählt werden kann.
+-- <pre>{"Antwort 3", "AnotherPage", Remove = true},</pre>
 -- Nachdem der Spieler eine Antwort gewählt hat, wird er auf die Seite mit
 -- der angegebenen ID oder dem Namen geleitet. Um das Briefing zu beenden,
 -- nachdem ein Pfad beendet ist, wird eine leere AP-Seite genutzt. Auf diese
@@ -317,19 +325,17 @@ AddPages = API.AddPages;
 -- ID der Seite angeben werden, zu der gesprungen werden soll.
 -- <pre>AP(8)</pre>
 -- Pages können auch einen Namen erhalten. Der Name kann anstelle der ID für
--- Sprünge und Multiple Choice genutzt werden.
+-- Sprünge genutzt werden.
 -- <pre>AP("SomePageName")</pre>
 --
 -- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
--- erfahren, muss der Name der Seite oder die ID genutzt werden. Dies kann
--- entweder in der Finishedfunktion geschehen...
+-- erfahren, muss der Name der Seite oder die ID genutzt werden.
 -- <pre>Briefing.Finished(_Data)
 --    local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
 --end</pre>
--- ... oder über eine Referenz auf die Seite zu einem beliebigen Zeitpunkt.
--- <pre>local Choosen = SomePageReference:GetSelectedAnswer()</pre>
--- Die zurückgegebene Zahl ist die Position der Antwort, angefangen von oben.
--- Wird 0 zurückgegeben, wurde noch nicht geantwortet.
+-- Die zurückgegebene Zahl ist der Index der Antwort, angefangen von oben.
+-- Wird 0 zurückgegeben, wurde noch nicht geantwortet. Wenn Anworten nicht
+-- aktiv sind, verändert sich der Index anderer Antworten nicht.
 --
 -- Wenn man zurückblättern erlaubt, aber nicht will, dass die Entscheidung
 -- erneut getroffen werden kann, kann man dies mit NoRethink unterbinden.
@@ -357,15 +363,18 @@ end
 -- <a href="#API.AddPages">API.AddPages</a> erzeugt und an
 -- das Briefing gebunden.
 --
--- @param[type=string]  _pageName     (optional) Briefing-Seite Namen geben
--- @param[type=string]  _entity       Entity, das die Kamera zeigt
--- @param[type=string]  _title	      Titel der Seite
--- @param[type=string]  _text         Text der Seite
--- @param[type=boolean] _dialogCamera Nahsicht an/aus
--- @param[type=function] _action      Callback-Funktion
+-- @param[type=string]   _pageName     (optional) Briefing-Seite Namen geben
+-- @param[type=string]   _entity       Entity, das die Kamera zeigt
+-- @param[type=string]   _title	       Titel der Seite
+-- @param[type=string]   _text         Text der Seite
+-- @param[type=boolean]  _dialogCamera Nahsicht an/aus
+-- @param[type=function] _action       Callback-Funktion
 -- @return[type=table] Referenz auf die Seite
 -- @within Briefing
--- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+-- @usage -- Beispiel ohne Page Name
+-- ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+-- -- Beispiel mit Page Name
+-- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
 --
 function ASP(...)
     fatal("ASP: Please use the function provided by AddPages!");
@@ -505,7 +514,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing.PageHistory = {};
     self.Data.CurrentBriefing.ID = self.Data.BriefingID;
-    -- self:DisableMCAnswers(); --> Broken!
+    self:DisableMCAnswers();
     if self.Data.CurrentBriefing.DisableGlobalInvulnerability ~= false then
         Logic.SetGlobalInvulnerability(1);
     end
@@ -662,8 +671,8 @@ function BundleBriefingSystem.Global:DisableMCAnswers()
     for i= 1, #self.Data.CurrentBriefing, 1 do
         if self.Data.CurrentBriefing[i].MC then
             for k, v in pairs(self.Data.CurrentBriefing[i].MC) do 
-                if type(v) == "table" and type(v.Display) == "function" then
-                    local Invisible = v.Display(self.Data.CurrentBriefing[i], v) == true;
+                if type(v) == "table" and type(v.Disable) == "function" then
+                    local Invisible = v.Disable(self.Data.CurrentBriefing[i], v) == true;
                     self.Data.CurrentBriefing[i].MC[k].Invisible = Invisible;
                 end
             end
@@ -1753,7 +1762,7 @@ Core:RegisterBehavior(b_Reward_Briefing);
 
 -- -------------------------------------------------------------------------- --
 
---
+---
 -- Startet einen Quest, nachdem das Briefing eines Quests gestartet und
 -- durchlaufen wurde.
 --
@@ -1761,6 +1770,7 @@ Core:RegisterBehavior(b_Reward_Briefing);
 -- Über den Typ-Parameter kann auf eine spezielle Art eingeschränt werden.
 --
 -- @param[type=string] _QuestName Name des Quest
+-- @param[type=string] _Type     (Optional) Briefing-Typ
 -- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --
@@ -1804,7 +1814,7 @@ function b_Trigger_Briefing:GetCustomData( _Index )
 end
 
 function b_Trigger_Briefing:IsConditionFulfilled(_QuestID)
-    if self.BriefingType == "All" then
+    if self.BriefingType == nil or self.BriefingType == "All" then
         return IsBriefingFinished(Quests[_QuestID].zl97d_ukfs5_0dpm0) or IsBriefingFinished(Quests[_QuestID].w5kur_xig0q_d9k7e);
     elseif self.BriefingType == "Failure" then
         return IsBriefingFinished(Quests[_QuestID].zl97d_ukfs5_0dpm0);

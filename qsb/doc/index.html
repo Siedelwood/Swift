@@ -65,7 +65,8 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "2-Beta";
+QSB.Version = "2.0.0 Beta-3";
+QSB.HistoryEdition = false;
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -1254,6 +1255,7 @@ function Core:InitalizeBundles()
     if not GUI then
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
+        self:IdentifyHistoryEdition();
         
         StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
 
@@ -1759,6 +1761,23 @@ function Core:ToBoolean(_Input)
     return false;
 end
 
+---
+-- Identifiziert anhand der um +3 Verschobenen PlayerID bei den Scripting
+-- Values die infamous History Edition. Ob es sich um die History Edition
+-- hält, wird in der Variable QSB.HistoryEdition gespeichert.
+-- @within Internal
+-- @local
+--
+function Core:IdentifyHistoryEdition()
+    local EntityID = Logic.CreateEntity(Entities.U_NPC_Amma_NE, 100, 100, 0, 8);
+    MakeInvulnerable(EntityID);
+    if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
+        API.Bridge("QSB.HistoryEdition = true");
+        QSB.HistoryEdition = true;
+    end
+    DestroyEntity(EntityID);
+end
+
 -- Jobs ------------------------------------------------------------------------
 
 -- Dieser Job ermittelt automatisch, ob eine Sekunde reale Zeit vergangen ist
@@ -1824,7 +1843,7 @@ CoreEventJob_OnEveryTurn = Core.EventJob_EventOnEveryTurn;
 --
 -- Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
 -- der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
--- Auswahlmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
+-- Auswahlmöglichkeiten gegeben, multiple Handlungsstränge gestartet
 -- oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiten
 -- kann innerhalb des Multiple Choice Briefings navigiert werden.
 --
@@ -1849,7 +1868,7 @@ QSB = QSB or {};
 ---
 -- Startet ein Briefing.
 --
--- Für ein Briefing könn verschiedene spezielle Einstellungen vorgenommen
+-- Für ein Briefing können verschiedene spezielle Einstellungen vorgenommen
 -- werden. Jede dieser Einstellungen wird mit true aktiviert.
 -- &#x3C;table border="1"&#x3E;
 -- &#x3C;tr&#x3E;
@@ -1859,6 +1878,11 @@ QSB = QSB or {};
 -- &#x3C;tr&#x3E;
 -- &#x3C;td&#x3E;HideBorderPins&#x3C;/td&#x3E;
 -- &#x3C;td&#x3E;Die Grenzsteine werden während des Briefing ausgeblendet&#x3C;/td&#x3E;
+-- &#x3C;/tr&#x3E;
+-- &#x3C;/tr&#x3E;
+-- &#x3C;tr&#x3E;
+-- &#x3C;td&#x3E;TransparentBars&#x3C;/td&#x3E;
+-- &#x3C;td&#x3E;Die Bars werden transparent dargestellt. (Opacity = 39)&#x3C;/td&#x3E;
 -- &#x3C;/tr&#x3E;
 -- &#x3C;tr&#x3E;
 -- &#x3C;td&#x3E;ShowSky&#x3C;/td&#x3E;
@@ -1946,9 +1970,9 @@ end
 PauseQuestsDuringBriefings = API.BriefingPauseQuests;
 
 ---
--- Erzeugt die Funktionen zum erzeugen von Seiten in einem Briefing und bindet
+-- Erzeugt die Funktionen zur Erstellung von Seiten in einem Briefing und bindet
 -- sie an das Briefing. Diese Funktion muss vor dem Start eines Briefing
--- aufgerufen werden.
+-- aufgerufen werden um Seiten hinzuzufügen.
 --
 -- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: AddPages
 --
@@ -1970,6 +1994,7 @@ function API.AddPages(_Briefing)
     end
 
     local AP = function(_Page)
+        _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
             -- Sprache anpassen
             local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
@@ -2014,6 +2039,9 @@ function API.AddPages(_Briefing)
             end
             -- Multiple Choice
             if _Page.MC then
+                for i= 1, #_Page.MC do
+                    _Page.MC[i].ID = i;
+                end
                 _Page.Text = "";
                 _Page.text = "";
                 _Page.NoSkipping = true;
@@ -2034,15 +2062,19 @@ function API.AddPages(_Briefing)
     end
 
     local ASP = function(...)
-        local Name;
+        local PageName;
         if #arg &#x3E; 5 then
             PageName = table.remove(arg, 1);
+        end
+        local Position = {arg[1], 70};
+        if Logic.IsKnight(GetID(arg[1])) then
+            Position[2] = 120;
         end
         return AP {
             Name         = PageName,
             Title        = arg[2],
             Text         = arg[3],
-            Position     = arg[1],
+            Position     = Position,
             Action       = arg[5],
             Angle        = (arg[4] == true and 40) or 26,
             Zoom         = (arg[4] == true and 2400) or 6250,
@@ -2059,6 +2091,8 @@ AddPages = API.AddPages;
 -- &#x3C;b&#x3E;Achtung&#x3C;/b&#x3E;: Diese Funktion wird von
 -- &#x3C;a href="#API.AddPages"&#x3E;API.AddPages&#x3C;/a&#x3E; erzeugt und an
 -- das Briefing gebunden.
+--
+-- &#x3C;h5&#x3E;Normale Briefings&#x3C;/h5&#x3E;
 --
 -- Eine einfache Seite lässt sich unter Nutzung von DialogCamera erstellen.
 -- Dadurch wird entweder Nahsicht oder Fernsicht verwendet. Werte für Angle,
@@ -2085,20 +2119,23 @@ AddPages = API.AddPages;
 --    }
 --}&#x3C;/pre&#x3E;
 -- Die Dauer der Animation (FlyTo.Duration) wird automatisch zur Dauer der
--- Seite, wenn nicht gesetzt oder geringer als die Dauer der Animation ist.
+-- Seite, wenn diese nicht gesetzt ist oder die Animation länger ist.
 --
--- Jede Seite kann eine Grafik am linken Rand anzeigen. Diese Grafik wird
--- als Portrait betrachtet.
 -- &#x3C;pre&#x3E;Portrait = "Path/to/Portrait.ong",&#x3C;/pre&#x3E;
--- Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
--- heißt Splashscreen.
+-- Jede Seite kann eine Grafik am linken oberen Rand anzeigen. Diese Grafik wird
+-- als Portrait betrachtet und sollte 400x600 Pixel groß sein.
+-- 
 -- &#x3C;pre&#x3E;Splashscreen = "Path/to/Graphic.ong",&#x3C;/pre&#x3E;
+-- Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
+-- heißt Splashscreen. Splashscreens sollten immer das Format 16:9 haben.
 --
+--&#x3C;pre&#x3E;Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
+--LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},&#x3C;/pre&#x3E;
 -- AP unterstützt ebenso die Angabe von XYZ-Koordinaten. Positionen können auch
 -- als Vektoren angegeben werden. Dann hat die Kamera eine Position und eine
 -- Blickrichtung.
--- &#x3C;pre&#x3E;Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
---LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},&#x3C;/pre&#x3E;
+--
+-- &#x3C;h5&#x3E;Multiple Choice&#x3C;/h5&#x3E;
 --
 -- In einem Dialog kann der Spieler auch zur Auswahl einer Option gebeten
 -- werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
@@ -2110,6 +2147,9 @@ AddPages = API.AddPages;
 --        {"Antwort 2", "SomePageName"},
 --    },
 --}&#x3C;/pre&#x3E;
+-- Eine Antwort kann auch markiert werden, dass sie auch bei einem Rücksprung,
+-- nicht mehrfach gewählt werden kann.
+-- &#x3C;pre&#x3E;{"Antwort 3", "AnotherPage", Remove = true},&#x3C;/pre&#x3E;
 -- Nachdem der Spieler eine Antwort gewählt hat, wird er auf die Seite mit
 -- der angegebenen ID oder dem Namen geleitet. Um das Briefing zu beenden,
 -- nachdem ein Pfad beendet ist, wird eine leere AP-Seite genutzt. Auf diese
@@ -2119,16 +2159,17 @@ AddPages = API.AddPages;
 -- ID der Seite angeben werden, zu der gesprungen werden soll.
 -- &#x3C;pre&#x3E;AP(8)&#x3C;/pre&#x3E;
 -- Pages können auch einen Namen erhalten. Der Name kann anstelle der ID für
--- Sprünge und Multiple Choice genutzt werden.
+-- Sprünge genutzt werden.
 -- &#x3C;pre&#x3E;AP("SomePageName")&#x3C;/pre&#x3E;
 --
 -- Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
 -- erfahren, muss der Name der Seite oder die ID genutzt werden.
 -- &#x3C;pre&#x3E;Briefing.Finished(_Data)
---local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
+--    local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
 --end&#x3C;/pre&#x3E;
--- Die zurückgegebene Zahl ist die Position der Antwort, angefangen von oben.
--- Wird 0 zurückgegeben, wurde noch nicht geantwortet.
+-- Die zurückgegebene Zahl ist der Index der Antwort, angefangen von oben.
+-- Wird 0 zurückgegeben, wurde noch nicht geantwortet. Wenn Anworten nicht
+-- aktiv sind, verändert sich der Index anderer Antworten nicht.
 --
 -- Wenn man zurückblättern erlaubt, aber nicht will, dass die Entscheidung
 -- erneut getroffen werden kann, kann man dies mit NoRethink unterbinden.
@@ -2137,7 +2178,7 @@ AddPages = API.AddPages;
 --    NoRethink = true,
 --}&#x3C;/pre&#x3E;
 -- Auf diese Weise hat der Spieler die Möglichkeit die Texte nach der letzten
--- Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändert.
+-- Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändern kann.
 --
 -- @param[type=table] _Page Spezifikation der Seite
 -- @return[type=table] Refernez auf die angelegte Seite
@@ -2156,15 +2197,18 @@ end
 -- &#x3C;a href="#API.AddPages"&#x3E;API.AddPages&#x3C;/a&#x3E; erzeugt und an
 -- das Briefing gebunden.
 --
--- @param[type=string]  _pageName     (optional) Briefing-Seite Namen geben
--- @param[type=string]  _entity       Entity, das die Kamera zeigt
--- @param[type=string]  _title	      Titel der Seite
--- @param[type=string]  _text         Text der Seite
--- @param[type=boolean] _dialogCamera Nahsicht an/aus
--- @param[type=function] _action      Callback-Funktion
+-- @param[type=string]   _pageName     (optional) Briefing-Seite Namen geben
+-- @param[type=string]   _entity       Entity, das die Kamera zeigt
+-- @param[type=string]   _title	       Titel der Seite
+-- @param[type=string]   _text         Text der Seite
+-- @param[type=boolean]  _dialogCamera Nahsicht an/aus
+-- @param[type=function] _action       Callback-Funktion
 -- @return[type=table] Referenz auf die Seite
 -- @within Briefing
--- @usage ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+-- @usage -- Beispiel ohne Page Name
+-- ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+-- -- Beispiel mit Page Name
+-- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
 --
 function ASP(...)
     fatal("ASP: Please use the function provided by AddPages!");
@@ -2200,6 +2244,7 @@ BundleBriefingSystem = {
         Data = {
             CurrentBriefing = {},
             CurrentPage = {},
+            BriefingMessages = {},
             DisplayIngameCutscene = false,
             BriefingActive = false,
             LastSkipButtonPressed = 0,
@@ -2221,6 +2266,7 @@ BundleBriefingSystem = {
 -- @local
 --
 function BundleBriefingSystem.Global:Install()
+    BundleBriefingSystem:OverrideApiNote();
     StartSimpleHiResJobEx(self.BriefingExecutionController);
     StartSimpleJobEx(self.BriefingQuestPausedController);
 end
@@ -2298,10 +2344,11 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     end
 
     self.Data.BriefingID = self.Data.BriefingID +1;
-    self.Data.CurrentBriefing = _Briefing;
+    self.Data.CurrentBriefing = API.InstanceTable(_Briefing);
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing.PageHistory = {};
     self.Data.CurrentBriefing.ID = self.Data.BriefingID;
+    self:DisableMCAnswers();
     if self.Data.CurrentBriefing.DisableGlobalInvulnerability ~= false then
         Logic.SetGlobalInvulnerability(1);
     end
@@ -2351,7 +2398,7 @@ function BundleBriefingSystem.Global:GetPageIDByName(_PageName)
         if type(_PageName) == "number" then
             return _PageName;
         end
-        for i= 1, #self.Data.CurrentBriefing, 1 do
+        for i= 1, self.Data.CurrentBriefing.Length, 1 do
             local Page = self.Data.CurrentBriefing[i];
             if Page and type(Page) == "table" and Page.Name == _PageName then
                 return i;
@@ -2407,8 +2454,6 @@ end
 --
 function BundleBriefingSystem.Global:PageFinished()
     local PageID = self.Data.CurrentBriefing.Page;
-
-
     API.Bridge("BundleBriefingSystem.Local:PageFinished()");
     self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
     local PageID = self.Data.CurrentBriefing.Page;
@@ -2450,28 +2495,44 @@ function BundleBriefingSystem.Global:OnMCConfirmed(_Selected)
 end
 
 ---
+-- Aktualisiert, ob eine Option sichtbar ist oder nicht. Eine Option
+-- braucht eine Update-Funktion "Display". Die Update-Funktion
+-- erhält Daten der Seite und Daten der Antwort.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:DisableMCAnswers()
+    for i= 1, #self.Data.CurrentBriefing, 1 do
+        if self.Data.CurrentBriefing[i].MC then
+            for k, v in pairs(self.Data.CurrentBriefing[i].MC) do 
+                if type(v) == "table" and type(v.Disable) == "function" then
+                    local Invisible = v.Disable(self.Data.CurrentBriefing[i], v) == true;
+                    self.Data.CurrentBriefing[i].MC[k].Invisible = Invisible;
+                end
+            end
+        end
+    end
+end
+
+---
 -- Steuert das automatische weiter blättern und Sprünge zwischen Pages.
 -- @within Internal
 -- @local
 --
 function BundleBriefingSystem.Global.BriefingExecutionController()
-    if not BundleBriefingSystem.Global.Data.DisplayIngameCutscene then
-        if BundleBriefingSystem.Global:IsBriefingActive() then
-            if BundleBriefingSystem.Global.Data.CurrentPage == nil then
-                BundleBriefingSystem.Global:FinishBriefing();
+    if not BundleBriefingSystem.Global.Data.DisplayIngameCutscene and BundleBriefingSystem.Global:IsBriefingActive() then
+        if BundleBriefingSystem.Global.Data.CurrentPage == nil then
+            BundleBriefingSystem.Global:FinishBriefing();
 
-            elseif type(BundleBriefingSystem.Global.Data.CurrentPage) == "table" then
-                if BundleBriefingSystem.Global.Data.CurrentPage then
-                    local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
-                    if Duration &#x3E; -1 and BundleBriefingSystem.Global.Data.CurrentPage.Started then
-                        if Logic.GetTime() &#x3E; BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
-                            local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
-                            if not BundleBriefingSystem.Global.Data.CurrentPage.NoHistory then
-                                API.Bridge("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
-                            end
-                            BundleBriefingSystem.Global:PageFinished();
-                        end
+        elseif type(BundleBriefingSystem.Global.Data.CurrentPage) == "table" then
+            local Duration = (BundleBriefingSystem.Global.Data.CurrentPage.Duration or 0);
+            if Duration &#x3E; -1 and BundleBriefingSystem.Global.Data.CurrentPage.Started then
+                if Logic.GetTime() &#x3E; BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
+                    local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
+                    if not BundleBriefingSystem.Global.Data.CurrentPage.NoHistory then
+                        API.Bridge("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
                     end
+                    BundleBriefingSystem.Global:PageFinished();
                 end
             end
         end
@@ -2510,6 +2571,22 @@ function BundleBriefingSystem.Global.BriefingQueueController()
     end
 end
 
+---
+-- Fügt den Briefing Messages einen neuen Eintrag hinzu. Jede Nachricht ist
+-- 120 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
+-- Briefing beendet ist, werden sie zu normalen Notes.
+--
+-- Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
+-- Eintrag auf 0 reduziert.
+--
+-- @param[type=string] _Text Text der Nachricht
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:PushBriefingNote(_Text)
+    API.Bridge("BundleBriefingSystem.Local:PushBriefingNote('" .._Text.. "')");
+end
+
 -- Local Script ------------------------------------------------------------- --
 
 ---
@@ -2522,6 +2599,7 @@ function BundleBriefingSystem.Local:Install()
         Script.Load("script/mainmenu/fader.lua");
     end
     self:OverrideThroneRoomFunctions();
+    BundleBriefingSystem:OverrideApiNote();
 
     StartSimpleHiResJobEx(self.WaitForLoadScreenHidden);
 end
@@ -2577,6 +2655,9 @@ function BundleBriefingSystem.Local:FinishBriefing()
     self.Data.GameSpeedBackup = nil;
     self:DeactivateCinematicMode();
     self.Data.BriefingActive = false;
+    self:ConvertBriefingNotes();
+    self.Data.CurrentBriefing = {};
+    self.Data.CurrentPage = {};
 end
 
 ---
@@ -2686,7 +2767,13 @@ function BundleBriefingSystem.Local:LocalOnMCConfirmed()
 
     if self.Data.CurrentPage.MC then
         local Selected = XGUIEng.ListBoxGetSelectedIndex(Widget .. "/ListBox")+1;
-        API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..Selected.. ")");
+        local AnswerID = self.Data.CurrentPage.MC.Map[Selected];
+        for i= #self.Data.CurrentPage.MC, 1, -1 do
+            if self.Data.CurrentPage.MC[i].ID == AnswerID and self.Data.CurrentPage.MC[i].Remove then
+                table.remove(self.Data.CurrentPage.MC, Selected);
+            end
+        end
+        API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..AnswerID.. ")");
     end
 end
 
@@ -2732,6 +2819,9 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
                 SkipText = BundleBriefingSystem.Text.EndButton[Language];
             end
             XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..SkipText);
+
+            -- Briefing Messages
+            self:UpdateBriefingNotes();
         end
     end
 end
@@ -3040,8 +3130,12 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
 
         local listbox = XGUIEng.GetWidgetID(Widget .. "/ListBox");
         XGUIEng.ListBoxPopAll(listbox);
+        self.Data.CurrentPage.MC.Map = {};
         for i=1, #self.Data.CurrentPage.MC, 1 do
-            XGUIEng.ListBoxPushItem(listbox, self.Data.CurrentPage.MC[i][1]);
+            if self.Data.CurrentPage.MC[i].Invisible ~= true then
+                XGUIEng.ListBoxPushItem(listbox, self.Data.CurrentPage.MC[i][1]);
+                table.insert(self.Data.CurrentPage.MC.Map, self.Data.CurrentPage.MC[i].ID);
+            end
         end
         XGUIEng.ListBoxSetSelectedIndex(listbox, 0);
 
@@ -3092,7 +3186,7 @@ function BundleBriefingSystem.Local:SetSplashscreen()
             XGUIEng.SetWidgetSize(BG, Position[1], Position[2]);
             self.Data.CurrentBriefing.BriefingBarSizeBackup = nil;
         end
-        self:SetBarStyle(false);
+        self:SetBarStyle(self.Data.CurrentBriefing.TransparentBars == true);
         return;
     end
 
@@ -3104,6 +3198,7 @@ function BundleBriefingSystem.Local:SetSplashscreen()
         if is4To3 or is5To4 then
             u0 = u0 + (u0 * 0.125); u1 = u1 - (u1 * 0.125);
         end
+        self:SetBarStyle(false);
         XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
         XGUIEng.SetMaterialTexture(BG, 1, self.Data.CurrentPage.Splashscreen);
         XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
@@ -3180,7 +3275,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    BundleBriefingSystem.Local:SetBarStyle(false);
+    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.TransparentBars == true);
 
     GUI.ClearSelection();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -3321,6 +3416,86 @@ function BundleBriefingSystem.Local.WaitForLoadScreenHidden()
     end
 end
 
+---
+-- Fügt den Briefing Messages einen neuen Eintrag hinzu. Jede Nachricht ist
+-- 12 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
+-- Briefing beendet ist, werden sie zu normalen Notes.
+--
+-- Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
+-- Eintrag auf 0 reduziert.
+--
+-- @param[type=string] _Text Text der Nachricht
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:PushBriefingNote(_Text)
+    local Size = #self.Data.BriefingMessages;
+    if Size &#x3E; 8 then
+        local Index = Size -8;
+        self.Data.BriefingMessages[Index][2] = 0;
+    end
+    self.Data.BriefingMessages[Size+1] = {_Text, 12000};
+end
+
+---
+-- Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+-- die Table. Diese Funktion wird automatisch vom Briefing System aufgerufen.
+--
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:ConvertBriefingNotes()
+    for k, v in pairs(self.Data.BriefingMessages) do
+        if v and v[2] &#x3E; 0 then
+            API.Note(v[1]);
+        end
+    end
+    self.Data.BriefingMessages = {};
+end
+
+---
+-- Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+-- die Table. Diese Funktion wird automatisch vom Briefing System aufgerufen.
+--
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:UpdateBriefingNotes()
+    local Color = "{@color:255,255,255,255}";
+    local Text = "";
+    for k, v in pairs(self.Data.BriefingMessages) do
+        if v and v[2] &#x3E; 0 then
+            self.Data.BriefingMessages[k][2] = v[2] -1;
+            Text = Text .. Color .. v[1] .. "{cr}";
+        end
+    end
+    XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", Text);
+end
+
+-- Shared ------------------------------------------------------------------- --
+
+---
+-- Überschreibt API.Note, damit Nachrichten auch während Briefings angezeigt
+-- werden können.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem:OverrideApiNote()
+    API.Note_Orig_BriefingSystem = API.Note;
+    API.Note = function(_Text)
+        if IsBriefingActive() then
+            local Text = API.EnsureMessage(_Text);
+            if not GUI then
+                BundleBriefingSystem.Global:PushBriefingNote(Text);
+            else
+                BundleBriefingSystem.Local:PushBriefingNote(Text);
+            end
+            return;
+        end
+        API.Note_Orig_BriefingSystem(_Text);
+    end
+end
+
 -- Behavior ----------------------------------------------------------------- --
 
 ---
@@ -3421,7 +3596,7 @@ Core:RegisterBehavior(b_Reward_Briefing);
 
 -- -------------------------------------------------------------------------- --
 
---
+---
 -- Startet einen Quest, nachdem das Briefing eines Quests gestartet und
 -- durchlaufen wurde.
 --
@@ -3429,6 +3604,7 @@ Core:RegisterBehavior(b_Reward_Briefing);
 -- Über den Typ-Parameter kann auf eine spezielle Art eingeschränt werden.
 --
 -- @param[type=string] _QuestName Name des Quest
+-- @param[type=string] _Type     (Optional) Briefing-Typ
 -- @param[type=number] _Waittime (optional) Wartezeit in Sekunden
 -- @within Trigger
 --
@@ -3472,7 +3648,7 @@ function b_Trigger_Briefing:GetCustomData( _Index )
 end
 
 function b_Trigger_Briefing:IsConditionFulfilled(_QuestID)
-    if self.BriefingType == "All" then
+    if self.BriefingType == nil or self.BriefingType == "All" then
         return IsBriefingFinished(Quests[_QuestID].zl97d_ukfs5_0dpm0) or IsBriefingFinished(Quests[_QuestID].w5kur_xig0q_d9k7e);
     elseif self.BriefingType == "Failure" then
         return IsBriefingFinished(Quests[_QuestID].zl97d_ukfs5_0dpm0);
@@ -15992,18 +16168,23 @@ SetOrientation = API.EntitySetOrientation;
 --
 -- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GetOrientation&#x3C;/p&#x3E;
 --
--- @param _entity       Betreffendes Entity (Skriptname oder ID)
+-- @param               _entity Betreffendes Entity (Skriptname oder ID)
+-- @param[type=boolean] _Round  Wert wird kaufmännisch auf Ganzzahl gerundet
 -- @return[type=number] Orientierung in Grad
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- local Orientation = API.EntityGetOrientation("marcus");
 --
-function API.EntityGetOrientation(_entity)
+function API.EntityGetOrientation(_entity, _Round)
     if not IsExisting(_entity) then
         local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
         API.Warn("API.EntityGetOrientation: Entity " ..Subject.. " does not exist!");
         return 0;
+    end
+    local Orientation = Logic.GetEntityOrientation(GetID(_entity));
+    if _Round then
+        Orientation = math.floor(Orientation + 0.5);
     end
     return Logic.GetEntityOrientation(GetID(_entity));
 end
@@ -16352,16 +16533,17 @@ end
 function QSB.EntityProperty:EntitySize(_Scale)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
+    local SV = (QSB.HistoryEdition and -42) or -45;
     if _Scale then
         local EntityID = GetID(self.m_EntityName);
         if EntityID &#x3E; 0 then
-            Logic.SetEntityScriptingValue(EntityID, -45, self:Float2Int(_Scale));
+            Logic.SetEntityScriptingValue(EntityID, SV, self:Float2Int(_Scale));
             if Logic.IsSettler(EntityID) == 1 then
                 Logic.SetSpeedFactor(EntityID, _Scale);
             end
         end
     end
-    return self:GetValueAsFloat(-45);
+    return self:GetValueAsFloat(SV);
 end
 
 ---
@@ -16420,17 +16602,18 @@ end
 function QSB.EntityProperty:PlayerID(_PlayerID)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
+    local SV = (QSB.HistoryEdition and -68) or -71;
     if _PlayerID then
         local EntityID = GetID(self.m_EntityName);
         if EntityID &#x3E; 0 then
             if Logic.IsLeader(EntityID) == 1 then
                 Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
             else
-                Logic.SetEntityScriptingValue(EntityID, -71, _PlayerID);
+                Logic.SetEntityScriptingValue(EntityID, SV, _PlayerID);
             end
         end
     end
-    return self:GetValueAsInteger(-71);
+    return self:GetValueAsInteger(SV);
 end
 
 ---
@@ -16449,6 +16632,7 @@ function QSB.EntityProperty:Health(_Health, _Relative)
     if EntityID == 0 or Logic.IsLeader(EntityID) == 1 then
         return 0;
     end
+    local SV = (QSB.HistoryEdition and -38) or -41;
     if _Health then
         local NewHealth = _Health;
         -- Relative Gesundheit berechnen
@@ -16458,9 +16642,9 @@ function QSB.EntityProperty:Health(_Health, _Relative)
             local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
             NewHealth = math.ceil((MaxHealth) * (_Health/100));
         end
-        Logic.SetEntityScriptingValue(EntityID, -41, NewHealth);
+        Logic.SetEntityScriptingValue(EntityID, SV, NewHealth);
     end
-    return self:GetValueAsInteger(-41);
+    return self:GetValueAsInteger(SV);
 end
 
 ---
@@ -16561,7 +16745,8 @@ function QSB.EntityProperty:Visible(_Visble)
     if _Visble ~= nil then
         Logic.SetVisible(EntityID, _Visble);
     end
-    return self:GetValueAsInteger(-50) == 801280;
+    local SV = (QSB.HistoryEdition and -47) or -50;
+    return self:GetValueAsInteger(SV) == 801280;
 end
 
 ---
@@ -16623,7 +16808,9 @@ function QSB.EntityProperty:GetDestination()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID &#x3E; 0 then
-        return {X= self:GetValueAsFloat(19), Y= self:GetValueAsFloat(20)};
+        local SVX = (QSB.HistoryEdition and 17) or 19;
+        local SVY = (QSB.HistoryEdition and 18) or 20;
+        return {X= self:GetValueAsFloat(SVX), Y= self:GetValueAsFloat(SVY)};
     end
     return {X= 0, Y= 0};
 end
@@ -16639,7 +16826,8 @@ function QSB.EntityProperty:CountSoldiers()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID &#x3E; 0 and Logic.IsLeader(EntityID) == 1 then
-        return self:GetValueAsInteger(-57);
+        local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+        return #SoldierTable;
     end
     return 0;
 end
@@ -16673,7 +16861,7 @@ function QSB.EntityProperty:GetLeader()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID &#x3E; 0 and Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 1 then
-        return self:GetValueAsInteger(46);
+        return Logic.SoldierGetLeaderEntityID(EntityID);
     end
     return 0;
 end
@@ -18891,6 +19079,8 @@ function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
     if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
         BundleGameHelperFunctions.Global:KillCheats();
     end
+    -- Illegale Speicherstände
+    API.Bridge("BundleGameHelperFunctions.Local:CloseIllegalSaveGame()");
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -19019,6 +19209,21 @@ function BundleGameHelperFunctions.Local:InitForbidSaveGame()
             return;
         end
         KeyBindings_SaveGame_Orig_Preferences_SaveGame();
+    end
+end
+
+---
+-- Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
+--
+-- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Dies ist ein Fallback wegen dem automatischen Speichern
+-- der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
+--
+-- @within Internal
+-- @local
+--
+function BundleGameHelperFunctions.Local:CloseIllegalSaveGame()
+    if BundleGameHelperFunctions.Local.Data.ForbidSave then
+        Framework.CloseGame();
     end
 end
 
@@ -19468,6 +19673,12 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
         Logic.InteractiveObjectSetInteractionDistance(eID,_Description.Distance);
         Logic.InteractiveObjectSetTimeToOpen(eID,_Description.Waittime);
         Logic.InteractiveObjectAddRewards(eID,_Description.Reward[1],_Description.Reward[2]);
+        if _Description.Costs[1] then
+            Logic.InteractiveObjectAddCosts(eID, _Description.Costs[1], _Description.Costs[2]);
+        end
+        if _Description.Costs[3] then
+            Logic.InteractiveObjectAddCosts(eID, _Description.Costs[3], _Description.Costs[4]);
+        end
 
         Logic.InteractiveObjectSetAvailability(eID, true);
         Logic.InteractiveObjectSetPlayerState(eID, _Description.PlayerID or 1, _Description.State);
@@ -19884,7 +20095,6 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                 return;
             end
         end
-
         -- Führe für Ruinen Originalfunktion aus, wenn Skriptname Nummer ist
         local EntityTypeName = Logic.GetEntityTypeName(EntityType);
         if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(eID)) ~= nil then
@@ -19894,122 +20104,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
         for k,v in pairs(IO)do
             if eID == GetID(k)then
-                local ActivationSound = "menu_left_prestige";
-                if v.ActivationSound then
-                    ActivationSound = v.ActivationSound;
-                end
-
-                local Reward = {};
-                if IO[k].Reward and IO[k].Reward[1] ~= nil then
-                    table.insert(Reward,IO[k].Reward[1]);
-                    table.insert(Reward,IO[k].Reward[2]);
-                end
-                local space = true;
-                if  Reward[2] and type(Reward[2]) == "number" and Reward[1] ~= Goods.G_Gold
-                and Logic.GetGoodCategoryForGoodType(Reward[1]) == GoodCategories.GC_Resource then
-                    local freeSpace = Logic.GetPlayerUnreservedStorehouseSpace(pID);
-                    if freeSpace &#x3C; Reward[2] then
-                        space = false;
-                    end
-                end
-
-                local CheckSettlement;
-                if IO[k].Costs and IO[k].Costs[1] then
-                    if Logic.GetGoodCategoryForGoodType(IO[k].Costs[1]) ~= GoodCategories.GC_Resource then
-                        CheckSettlement = true;
-                    end
-
-                    -- space
-                    if space == false then
-                        local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace")
-                        Message(MessageText);
-                        return;
-                    end
-
-                    local Costs = IO[k].Costs;
-                    local CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
-                    local CanBuyBoolean = true;
-
-                    -- costs 1
-                    if Costs[1] then
-                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[1], Costs[2]);
-                    end
-                    -- costs 2
-                    if Costs[3] then
-                        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(pID, Costs[3], Costs[4]);
-                    end
-
-                    -- check condition
-                    if not IO[k].ConditionFullfilled then
-                        if IO[k].ConditionUnfulfilled then
-                            local MessageText = IO[k].ConditionUnfulfilled;
-                            if type(MessageText) == "table" then
-                                MessageText = MessageText[lang];
-                            end
-                            Message(MessageText);
-                        end
-                        return;
-                    end
-
-                    -- check opener
-                    if IO[k].Opener then
-                        if Logic.GetDistanceBetweenEntities(GetID(IO[k].Opener),GetID(k)) &#x3E; IO[k].Distance then
-                            if IO[k].WrongKnight and IO[k].WrongKnight ~= "" then
-                                Message(IO[k].WrongKnight);
-                            end
-                            return;
-                        end
-                    end
-
-                    if CanBuyBoolean == true then
-                        if Costs[1] ~= nil then
-                            BundleInteractiveObjects.Local:BuyObject(pID, Costs[1], Costs[2]);
-                        end
-                        if Costs[3] ~= nil then
-                            BundleInteractiveObjects.Local:BuyObject(pID, Costs[3], Costs[4]);
-                        end
-                        -- reward
-                        if #Reward &#x3E; 0 then
-                            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..pID..",'"..k.."',"..Reward[1]..","..Reward[2]..")");
-                        end
-                        Play2DSound(pID, ActivationSound);
-                        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
-                    else
-                        Message(CanNotBuyString)
-                    end
-                else
-                    -- space
-                    if space == false then
-                        local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace")
-                        Message(MessageText);
-                        return;
-                    end
-
-                    -- check condition
-                    if not IO[k].ConditionFullfilled then
-                        if IO[k].ConditionUnfulfilled and IO[k].ConditionUnfulfilled ~= "" then
-                            Message(IO[k].ConditionUnfulfilled);
-                        end
-                        return;
-                    end
-
-                    -- check opener
-                    if IO[k].Opener then
-                        if Logic.GetDistanceBetweenEntities(GetID(IO[k].Opener),GetID(k)) &#x3E; IO[k].Distance then
-                            if IO[k].WrongKnight and IO[k].WrongKnight ~= "" then
-                                Message(IO[k].WrongKnight);
-                            end
-                            return;
-                        end
-                    end
-
-                    -- reward
-                    if #Reward &#x3E; 0 then
-                        GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..pID..",'"..k.."',"..Reward[1]..","..Reward[2]..")");
-                    end
-                    Play2DSound(pID, ActivationSound);
-                    GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..eID..","..pID..")");
-                end
+                BundleInteractiveObjects.Local:OnObjectClicked(v);
             end
         end
     end
@@ -20097,6 +20192,125 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects(_QuestIndex, _MessageKey);
         end
     end
+end
+
+---
+-- Führt die Objektinteraktion aus.
+--
+-- @param[type=table]    _IO Table des IO
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:OnObjectClicked(_IO)
+    if not self:OnObjectClicked_DoesRewardFitInStorehouse(_IO) then
+        return;
+    end
+    if not self:OnObjectClicked_CanPlayerPayCosts(_IO) then
+        return;
+    end
+    if not self:OnObjectClicked_IsConditionFulfulled(_IO) then
+        return;
+    end
+
+    local PlayerID = GUI.GetPlayerID();
+    local EntityID = GetID(_IO.Name);
+    if Logic.IsInteractiveObject(EntityID) == false then
+        if _IO.Costs[1] ~= nil then
+            self:BuyObject(PlayerID, _IO.Costs[1], _IO.Costs[2]);
+        end
+        if _IO.Costs[3] ~= nil then
+            self:BuyObject(PlayerID, _IO.Costs[3], _IO.Costs[4]);
+        end
+        if _IO.Reward[1] ~= nil then
+            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
+        end
+        Play2DSound(pID, _IO.ActivationSound or "menu_left_prestige");
+        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
+        return;
+    end
+
+    GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
+    Sound.FXPlay2DSound( "ui\\menu_click");
+    GUI.ExecuteObjectInteraction(EntityID, PlayerID);
+end
+
+---
+-- Prüft, ob die Aktivierungsbedinung erfüllt ist. Wenn das nicht der Fall
+-- ist, wird eine optionale Nachricht angezeigt.
+--
+-- @param[type=table]    _IO Table des IO
+-- @return[type=boolean] Bedingung ist erfüllt
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:OnObjectClicked_IsConditionFulfulled(_IO)
+    local PlayerID = GUI.GetPlayerID();
+    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    if not _IO.ConditionFullfilled then
+        if _IO.ConditionUnfulfilled then
+            local MessageText = _IO.ConditionUnfulfilled;
+            if type(MessageText) == "table" then
+                MessageText = MessageText[Language];
+            end
+            Message(MessageText);
+        end
+        return false;
+    end
+    return true;
+end
+
+---
+-- Prüft, ob der Schatz in das Lagerhaus des Spielers passt und zeigt eine
+-- Meldung an, sollte das nicht der Fall sein.
+--
+-- @param[type=table]    _IO Table des IO
+-- @return[type=boolean] Schatz passt ins Lagerhaus
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:OnObjectClicked_DoesRewardFitInStorehouse(_IO)
+    local PlayerID = GUI.GetPlayerID();
+    if not _IO.Reward or type(_IO.Reward[1]) ~= "number" then
+        return true;
+    end
+    if  _IO.Reward[1] ~= Goods.G_Gold 
+    and Logic.GetGoodCategoryForGoodType(_IO.Reward[1]) ~= GoodCategories.GC_Resource then
+        return true;
+    end
+    if Logic.GetPlayerUnreservedStorehouseSpace(PlayerID) &#x3E;= _IO.Reward[2] then
+        return true;
+    end
+    local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace");
+    Message(MessageText);
+    return false;
+end
+
+---
+-- Prüft, ob der Spieler die Kosten des interaktiven Objektes begleichen kann
+-- und zeigt eine Meldung an, wenn das nicht der Fall ist.
+--
+-- @param[type=table]    _IO Table des IO
+-- @return[type=boolean] Kosten können bezahlt werden
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Local:OnObjectClicked_CanPlayerPayCosts(_IO)
+    local PlayerID = GUI.GetPlayerID();
+    local CanBuyBoolean = true;
+    if not _IO.Costs or type(_IO.Costs[1]) ~= "number" then
+        return true;
+    end
+    if _IO.Costs[2] then
+        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(PlayerID, _IO.Costs[1], _IO.Costs[2]);
+    end
+    if _IO.Costs[4] then
+        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(PlayerID, _IO.Costs[3], _IO.Costs[4]);
+    end
+    if not CanBuyBoolean then
+        local CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
+        Message(CanNotBuyString);
+    end
+    return CanBuyBoolean;
 end
 
 ---
@@ -24472,8 +24686,10 @@ function QSB.NonPlayerCharacter:RotateActors()
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
         -- Alle Helden stoppen, die sich zu NPC bewegen
-        local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, 19)));
-        local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, 20)));
+        local SV = (QSB.HistoryEdition and 17) or 19;
+        local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
+        local SV = (QSB.HistoryEdition and 18) or 20;
+        local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
         local x2, y2 = Logic.EntityGetPos(GetID(self.m_NpcName));
         if x1 == math.floor(x2) and y1 == math.floor(y2) then
             local x, y, z = Logic.EntityGetPos(v);
@@ -24524,8 +24740,9 @@ end
 function QSB.NonPlayerCharacter:ShowMarker()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     if self.m_NpcType == 1 and IsExisting(self.m_MarkerID) then
-        local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), -45);
-        Logic.SetEntityScriptingValue(self.m_MarkerID, -45, EntityScale);
+        local SV = (QSB.HistoryEdition and -42) or -45;
+        local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), SV);
+        Logic.SetEntityScriptingValue(self.m_MarkerID, SV, EntityScale);
         Logic.SetModel(self.m_MarkerID, Models.Effects_E_Wealth);
         Logic.SetVisible(self.m_MarkerID, true);
     end
@@ -24831,8 +25048,10 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
         if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
                 if v and v.m_TalkedTo == nil and v.m_Distance &#x3E;= 350 then
-                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 19)));
-                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], 20)));
+                    local SV = (QSB.HistoryEdition and 17) or 19;
+                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
+                    local SV = (QSB.HistoryEdition and 18) or 20;
+                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
                     local x2, y2 = Logic.EntityGetPos(GetID(k));
                     if x1 == math.floor(x2) and y1 == math.floor(y2) then
                         if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
@@ -31560,7 +31779,7 @@ function AddOnCastleStore.Local:Install()
     QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions();
     self:OverwriteGetStringTableText();
-    self:OverwriteInteractiveObject();
+    -- self:OverwriteInteractiveObject();
 end
 
 ---
@@ -32199,7 +32418,33 @@ end
 -- @local
 --
 function AddOnCastleStore.Local:OverwriteInteractiveObject()
-    function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
+    BundleInteractiveObjects.Local.OnObjectClicked = function(self, _IO)
+        if not self:OnObjectClicked_DoesRewardFitInStorehouse(_IO) then
+            return;
+        end
+        if not self:OnObjectClicked_CanPlayerPayCosts(_IO) then
+            return;
+        end
+        if not self:OnObjectClicked_IsConditionFulfulled(_IO) then
+            return;
+        end
+    
+        local PlayerID = GUI.GetPlayerID();
+        local EntityID = GetID(_IO.Name);
+        if _IO.Costs[1] ~= nil then
+            self:BuyObject(PlayerID, _IO.Costs[1], _IO.Costs[2]);
+        end
+        if _IO.Costs[3] ~= nil then
+            self:BuyObject(PlayerID, _IO.Costs[3], _IO.Costs[4]);
+        end
+        if _IO.Reward[1] ~= nil then
+            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
+        end
+        Play2DSound(pID, _IO.ActivationSound or "menu_left_prestige");
+        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
+    end
+    
+    BundleInteractiveObjects.Local.CanBeBought = function(self, _PlayerID, _Good, _Amount)
         local AmountOfGoods = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
         if AddOnCastleStore.Local.CastleStore:HasCastleStore(_PlayerID) then
             if Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
@@ -32213,7 +32458,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
         return true;
     end
 
-    function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
+    BundleInteractiveObjects.Local.BuyObject = function(self, _PlayerID, _Good, _Amount)
         if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
             local buildings = GetPlayerEntities(_PlayerID,0);
             local goodAmount = _Amount;
@@ -32328,6 +32573,7 @@ function AddOnCastleStore.Local.CastleStore:DescribeHotkeys()
         API.AddHotKey("Umschalt + B", {de = "Burglager: Waren einlagern", en = "Vault: Store goods"});
         API.AddHotKey("Umschalt + N", {de = "Burglager: Waren sperren", en = "Vault: Lock goods"});
         API.AddHotKey("Umschalt + M", {de = "Burglager: Lager räumen", en = "Vault: Empty store"});
+        AddOnCastleStore.Local:OverwriteInteractiveObject();
         self.HotkeysAddToList = true;
     end
 end
@@ -33603,7 +33849,7 @@ function AddOnInteractiveObjectTemplates.Global.ActionBuildIOMine(_Data)
     if type(_Data.CallbackCreate) == "function" then
         _Data.CallbackCreate(_Data);
     end
-    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "ControlIOMine", 1, {}, { _Data.Name });
+    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "AddOnInteractiveObjectTemplates_JobControlIOMine", 1, {}, {_Data.Name});
 end
 
 ---
@@ -33624,6 +33870,7 @@ function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
     local eID = GetID(_Mine);
 
     if Logic.GetResourceDoodadGoodAmount(eID) == 0 then
+        API.Note(IO[_Mine].Special)
         if IO[_Mine].Special == true then
             local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
             if IO[_Mine].Type == Entities.R_StoneMine then
@@ -33640,6 +33887,7 @@ function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
         return true;
     end
 end
+AddOnInteractiveObjectTemplates_JobControlIOMine = AddOnInteractiveObjectTemplates.Global.ControlIOMine;
 
 ---
 -- Initialisiert die interaktiven Baustellen.
@@ -35398,7 +35646,7 @@ API = API or {};
 -- &#x3C;pre&#x3E;local Cutscene = {
 --    CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
 --    RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
---    TransperentBars = false, -- Durchsichtige Bars verwenden
+--    TransperentBars = false, -- Durchsichtige Bars verwenden (Opacity = 39)
 --    HideBorderPins = true,   -- Grenzsteine ausblenden
 --    FastForward = false,     -- Beschleunigt abspielen erlauben
 --
@@ -36072,7 +36320,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    AddOnCutsceneSystem.Local:SetBarStyle(self.Data.CurrentCutscene.TransperentBars);
+    AddOnCutsceneSystem.Local:SetBarStyle(self.Data.CurrentCutscene.TransperentBars == true);
 
     if not self.Data.SkipButtonTextBackup then
         self.Data.SkipButtonTextBackup = XGUIEng.GetText("/InGame/ThroneRoom/Main/Skip");
