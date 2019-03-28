@@ -653,7 +653,7 @@ end
 
 ---
 -- Aktualisiert, ob eine Option sichtbar ist oder nicht. Eine Option
--- braucht eine Update-Funktion an 3. Stelle. Die Update-Funktion
+-- braucht eine Update-Funktion "Display". Die Update-Funktion
 -- erhält Daten der Seite und Daten der Antwort.
 -- @within Internal
 -- @local
@@ -662,8 +662,8 @@ function BundleBriefingSystem.Global:DisableMCAnswers()
     for i= 1, #self.Data.CurrentBriefing, 1 do
         if self.Data.CurrentBriefing[i].MC then
             for k, v in pairs(self.Data.CurrentBriefing[i].MC) do 
-                if type(v) == "table" and type(v[3]) == "function" then
-                    local Invisible = v[3](self.Data.CurrentBriefing[i], v) == true;
+                if type(v) == "table" and type(v.Display) == "function" then
+                    local Invisible = v.Display(self.Data.CurrentBriefing[i], v) == true;
                     self.Data.CurrentBriefing[i].MC[k].Invisible = Invisible;
                 end
             end
@@ -812,6 +812,7 @@ function BundleBriefingSystem.Local:FinishBriefing()
     self.Data.GameSpeedBackup = nil;
     self:DeactivateCinematicMode();
     self.Data.BriefingActive = false;
+    self:ConvertBriefingNotes();
     self.Data.CurrentBriefing = {};
     self.Data.CurrentPage = {};
 end
@@ -1488,8 +1489,6 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
-
-    self:ConvertBriefingNotes();
 end
 
 ---
@@ -1603,12 +1602,11 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:ConvertBriefingNotes()
-    -- Broken! Spiel friert ein!
-    -- for k, v in pairs(self.Data.BriefingMessages) do
-    --     if v and v[2] > 0 then
-    --         API.Note(v[1]);
-    --     end
-    -- end
+    for k, v in pairs(self.Data.BriefingMessages) do
+        if v and v[2] > 0 then
+            API.Note(v[1]);
+        end
+    end
     self.Data.BriefingMessages = {};
 end
 
