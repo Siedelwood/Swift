@@ -56,7 +56,7 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)</a></td>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_Description)</a></td>
 	<td class="summary">Erstellt einen fahrender Händler mit zufälligen Angeboten.</td>
 	</tr>
 	<tr>
@@ -84,42 +84,30 @@
     <dl class="function">
     <dt>
     <a name = "API.TravelingSalesmanActivate"></a>
-    <strong>API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)</strong>
+    <strong>API.TravelingSalesmanActivate (_Description)</strong>
     </dt>
     <dd>
     Erstellt einen fahrender Händler mit zufälligen Angeboten.
 <p> Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
  definiert werden.
  Es kann mehr als einen fahrender Händler auf der Map geben.
+<p> <h5>Angebote</h5>
+ Es sind maximal 4 Angebote pro Angebotsblock erlaubt. Es können Waren,
+ Soldaten oder Entertainer angeboten werden. Es wird immer automatisch 1
+ Block selektiert und die Angebote gesetzt.
+<p> <h5>Routen</h5>
+ Über Waypoints wird der Weg bestimmt, den das Handelsschiff nehmen wird.
+ Die Umkehrung der Route ist standardmäßig als Rückweg festgelegt. Will
+ man einen anderen Rückweg, muss dieser als Reversed angegeben werden.
 <p> <b>Alias</b>: ActivateTravelingSalesman
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-         Spieler-ID des Händlers
-        </li>
-        <li><span class="parameter">_Offers</span>
+        <li><span class="parameter">_Description</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Liste an Angeboten
-        </li>
-        <li><span class="parameter">_Waypoints</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Wegpunktliste Anfahrt
-        </li>
-        <li><span class="parameter">_Reversed</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         (optional) Wegpunktliste Abfahrt
-        </li>
-        <li><span class="parameter">_Appearance</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         (optional) Ankunft und Abfahrt
-        </li>
-        <li><span class="parameter">_RotationMode</span>
-            <span class="types"><span class="type">boolean</span></span>
-         (optional) Angebote werden der Reihe nach durchgegangen
+         Definition des Händlers
         </li>
     </ul>
 
@@ -128,55 +116,35 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Angebote deklarieren
-</span><span class="keyword">local</span> Offers = {
-    {
-        {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
-    },
-    {
-        {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
-        {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
-        {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
-    },
-    {
-        {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
-        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
-    },
-    {
-        {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
-        {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
-        {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,},
+        <pre class="example"><span class="comment">-- Händler deklarieren
+</span><span class="keyword">local</span> TraderDescription = {
+    PlayerID = <span class="number">2</span>,
+    Waypoints = {<span class="string">"WP1"</span>, <span class="string">"WP2"</span>, <span class="string">"WP3"</span>, <span class="string">"WP4"</span>},
+    Offers = {
+        {
+            {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
+            {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
+            {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
+        },
+        {
+            {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
+            {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+            {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
+            {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
+        },
+        {
+            {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
+            {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
+            {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+        },
+        {
+            {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
+            {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
+            {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,},
+        },
     },
 };
-<span class="comment">-- Es sind maximal 4 Angebote pro Block erlaubt. Es können Waren, Soldaten
-</span><span class="comment">-- oder Entertainer angeboten werden. Es wird immer automatisch 1 Block
-</span><span class="comment">-- selektiert und die Angebote gesetzt.
-</span>
-<span class="comment">-- Wegpunkte deklarieren
-</span><span class="keyword">local</span> Waypoints = {<span class="string">"WP1"</span>, <span class="string">"WP2"</span>, <span class="string">"WP3"</span>, <span class="string">"WP4"</span>};
-<span class="comment">-- Es gibt nun zwei Möglichkeiten:
-</span><span class="comment">-- 1. Durch weglassen des Reversed Path werden die Wegpunkte durch das
-</span><span class="comment">-- Schiff bei der Abfahrt automatisch rückwärts abgefahren.
-</span><span class="comment">-- 2. Es wird ein anderer Pfad für die Abfahrt deklariert.
-</span>
-<span class="comment">-- An- und Abfanrtsmonate deklarieren
-</span><span class="keyword">local</span> Appearance = {{<span class="number">4</span>, <span class="number">6</span>}, {<span class="number">8</span>, <span class="number">10</span>}};
-<span class="comment">-- Auch hier gibt es 2 Möglichkeiten:
-</span><span class="comment">-- 1. Neue Anfahrts- und Abfahrtszeiten setzen.
-</span><span class="comment">-- 2. _Apperance weglassen / nil setzen und den Standard verwenden
-</span><span class="comment">-- (März bis Mai und August bis Oktober)
-</span>
-<span class="comment">-- Jetzt kann ein fahrender Händler erzeugt werden
-</span>API.TravelingSalesmanActivate(<span class="number">2</span>, Offers, Waypoints, <span class="keyword">nil</span>, Appearance);
-<span class="comment">-- Hier ist der Rückweg automatisch die Umkehr des Hinwegs (_Reversed = nil).
-</span>
-<span class="comment">-- _Reversed und _Apperance können in den meisten Fällen immer weggelassen
-</span><span class="comment">-- bzw. nil sein!
-</span>API.TravelingSalesmanActivate(<span class="number">2</span>, Offers, Waypoints);</pre>
+API.TravelingSalesmanActivate(TraderDescription);</pre>
     </ul>
 
 </dd>
@@ -290,7 +258,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-28 17:07:20 </i>
+<i style="float:right;">Last updated 2019-03-30 11:37:36 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

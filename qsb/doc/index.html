@@ -29787,77 +29787,63 @@ QSB.TravelingSalesman = {
 -- definiert werden.
 -- Es kann mehr als einen fahrender Händler auf der Map geben.
 --
+-- &#x3C;h5&#x3E;Angebote&#x3C;/h5&#x3E;
+-- Es sind maximal 4 Angebote pro Angebotsblock erlaubt. Es können Waren,
+-- Soldaten oder Entertainer angeboten werden. Es wird immer automatisch 1
+-- Block selektiert und die Angebote gesetzt.
+--
+-- &#x3C;h5&#x3E;Routen&#x3C;/h5&#x3E;
+-- Über Waypoints wird der Weg bestimmt, den das Handelsschiff nehmen wird.
+-- Die Umkehrung der Route ist standardmäßig als Rückweg festgelegt. Will
+-- man einen anderen Rückweg, muss dieser als Reversed angegeben werden.
+--
 -- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: ActivateTravelingSalesman
 --
--- @param[type=number]  _PlayerID Spieler-ID des Händlers
--- @param[type=table]   _Offers Liste an Angeboten
--- @param[type=table]   _Waypoints Wegpunktliste Anfahrt
--- @param[type=table]   _Reversed (optional) Wegpunktliste Abfahrt
--- @param[type=table]   _Appearance (optional) Ankunft und Abfahrt
--- @param[type=boolean] _RotationMode (optional) Angebote werden der Reihe nach durchgegangen
+-- @param[type=table]  _Description Definition des Händlers
 -- @within Anwenderfunktionen
 --
--- @usage -- Angebote deklarieren
--- local Offers = {
---     {
---         {"G_Gems", 5,},
---         {"G_Iron", 5,},
---         {"G_Beer", 2,},
---     },
---     {
---         {"G_Stone", 5,},
---         {"G_Sheep", 1,},
---         {"G_Cheese", 2,},
---         {"G_Milk", 5,},
---     },
---     {
---         {"G_Grain", 5,},
---         {"G_Broom", 2,},
---         {"G_Sheep", 1,},
---     },
---     {
---         {"U_CatapultCart", 1,},
---         {"U_MilitarySword", 3,},
---         {"U_MilitaryBow", 3,},
+-- @usage -- Händler deklarieren
+-- local TraderDescription = {
+--     PlayerID = 2,
+--     Waypoints = {"WP1", "WP2", "WP3", "WP4"},
+--     Offers = {
+--         {
+--             {"G_Gems", 5,},
+--             {"G_Iron", 5,},
+--             {"G_Beer", 2,},
+--         },
+--         {
+--             {"G_Stone", 5,},
+--             {"G_Sheep", 1,},
+--             {"G_Cheese", 2,},
+--             {"G_Milk", 5,},
+--         },
+--         {
+--             {"G_Grain", 5,},
+--             {"G_Broom", 2,},
+--             {"G_Sheep", 1,},
+--         },
+--         {
+--             {"U_CatapultCart", 1,},
+--             {"U_MilitarySword", 3,},
+--             {"U_MilitaryBow", 3,},
+--         },
 --     },
 -- };
--- -- Es sind maximal 4 Angebote pro Block erlaubt. Es können Waren, Soldaten
--- -- oder Entertainer angeboten werden. Es wird immer automatisch 1 Block
--- -- selektiert und die Angebote gesetzt.
+-- API.TravelingSalesmanActivate(TraderDescription);
 --
--- -- Wegpunkte deklarieren
--- local Waypoints = {"WP1", "WP2", "WP3", "WP4"};
--- -- Es gibt nun zwei Möglichkeiten:
--- -- 1. Durch weglassen des Reversed Path werden die Wegpunkte durch das
--- -- Schiff bei der Abfahrt automatisch rückwärts abgefahren.
--- -- 2. Es wird ein anderer Pfad für die Abfahrt deklariert.
---
--- -- An- und Abfanrtsmonate deklarieren
--- local Appearance = {{4, 6}, {8, 10}};
--- -- Auch hier gibt es 2 Möglichkeiten:
--- -- 1. Neue Anfahrts- und Abfahrtszeiten setzen.
--- -- 2. _Apperance weglassen / nil setzen und den Standard verwenden
--- -- (März bis Mai und August bis Oktober)
---
--- -- Jetzt kann ein fahrender Händler erzeugt werden
--- API.TravelingSalesmanActivate(2, Offers, Waypoints, nil, Appearance);
--- -- Hier ist der Rückweg automatisch die Umkehr des Hinwegs (_Reversed = nil).
---
--- -- _Reversed und _Apperance können in den meisten Fällen immer weggelassen
--- -- bzw. nil sein!
--- API.TravelingSalesmanActivate(2, Offers, Waypoints);
---
-function API.TravelingSalesmanActivate(_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)
+function API.TravelingSalesmanActivate(_TraderDescription)
     if GUI then
         API.Fatal("Can not execute API.TravelingSalesmanActivate in local script!");
         return;
     end
-    return QSB.TravelingSalesman:New(_PlayerID)
-        :SetOffers(_Offers)
-        :SetApproachRoute(_Waypoints)
-        :SetReturnRouteRoute(_Reversed)
-        :SetApperance(_Appearance)
-        :UseOfferRotation(_Flag);
+    return QSB.TravelingSalesman:New(_TraderDescription.PlayerID)
+        :SetOffers(_TraderDescription.Offers)
+        :SetApproachRoute(_TraderDescription.Waypoints)
+        :SetReturnRouteRoute(_TraderDescription.Reversed)
+        :SetApperance(_TraderDescription.Appearance)
+        :UseOfferRotation(_TraderDescription.Flag or true)
+        :Activate();
 end
 ActivateTravelingSalesman = API.TravelingSalesmanActivate;
 
@@ -29988,8 +29974,8 @@ function QSB.TravelingSalesman:New(_PlayerID)
     salesman.m_PlayerID = _PlayerID;
     salesman.m_Offers = {};
     salesman.m_Appearance = {{3, 5}, {7, 9}};
-    salesman.m_Waypoints = {};
-    salesman.m_Reversed = {};
+    salesman.m_Waypoints = nil;
+    salesman.m_Reversed = nil;
     salesman.m_ChangeDiplomacy = true;
     salesman.m_OfferRotation = false;
     salesman.m_LastOffer = 0;
@@ -30016,6 +30002,21 @@ function QSB.TravelingSalesman:GetInstance(_PlayerID)
     local NullInstance = QSB.TravelingSalesman:New(_PlayerID);
     NullInstance.SymfoniaDebugValue_NullInstance = true;
     return NullInstance;
+end
+
+---
+-- Startet einen initialisierten Händler.
+-- @return[type=table] Instanz
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:Activate()
+    self.m_Active = true;
+    if type(self.m_Waypoints) ~= "table" or type(self.m_Reversed) ~= "table" then
+        fatal("QSB.TravelingSalesman:Activate: trader "..self.m_PlayerID.." must have a approach and a return route!");
+        return;
+    end
+    return self;
 end
 
 ---
@@ -30290,49 +30291,51 @@ end
 --
 function QSB.TravelingSalesman:Loop()
     if not self.SymfoniaDebugValue_NullInstance and Logic.PlayerGetIsHumanFlag(self.m_PlayerID) == false then
-        if self.m_Status == 0 then
-            local month = Logic.GetCurrentMonth();
-            local start = false;
-            for i=1, #self.m_Appearance,1 do
-                if month == self.m_Appearance[i][1] then
-                    start = true;
+        if self.m_Active == true then
+            if self.m_Status == 0 then
+                local month = Logic.GetCurrentMonth();
+                local start = false;
+                for i=1, #self.m_Appearance,1 do
+                    if month == self.m_Appearance[i][1] then
+                        start = true;
+                    end
                 end
-            end
-            if start then
-                local orientation = Logic.GetEntityOrientation(GetID(self.m_SpawnPos))
-                local ID = CreateEntity(0, Entities.D_X_TradeShip, GetPosition(self.m_SpawnPos), "TravelingSalesmanShip_Player" ..self.m_PlayerID, orientation);
-                Path:new(ID,self.m_Waypoints, nil, nil, nil, nil, true, nil, nil, 300);
-                self.m_Status = 1;
-            end
-
-        elseif self.m_Status == 1 then
-            if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_Destination, 400) then
-                self:IntroduceNewOffer():DisplayInfoMessage();
-                self.m_Status = 2;
-            end
-            
-        elseif self.m_Status == 2 then
-            local month = Logic.GetCurrentMonth();
-            local stop = false;
-            for i=1, #self.m_Appearance,1 do
-                if month == self.m_Appearance[i][2] then
-                    stop = true;
+                if start then
+                    local orientation = Logic.GetEntityOrientation(GetID(self.m_SpawnPos))
+                    local ID = CreateEntity(0, Entities.D_X_TradeShip, GetPosition(self.m_SpawnPos), "TravelingSalesmanShip_Player" ..self.m_PlayerID, orientation);
+                    Path:new(ID,self.m_Waypoints, nil, nil, nil, nil, true, nil, nil, 300);
+                    self.m_Status = 1;
                 end
-            end
 
-            if stop then
-                if self.m_ChangeDiplomacy then
-                    SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.EstablishedContact);
+            elseif self.m_Status == 1 then
+                if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_Destination, 400) then
+                    self:IntroduceNewOffer():DisplayInfoMessage();
+                    self.m_Status = 2;
                 end
-                Path:new(GetID("TravelingSalesmanShip_Player" ..self.m_PlayerID), self.m_Reversed, nil, nil, nil, nil, true, nil, nil, 300);
-                Logic.RemoveAllOffers(Logic.GetStoreHouse(self.m_PlayerID));
-                self.m_Status = 3;
-            end
+                
+            elseif self.m_Status == 2 then
+                local month = Logic.GetCurrentMonth();
+                local stop = false;
+                for i=1, #self.m_Appearance,1 do
+                    if month == self.m_Appearance[i][2] then
+                        stop = true;
+                    end
+                end
 
-        elseif self.m_Status == 3 then
-            if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_SpawnPos, 400) then
-                DestroyEntity("TravelingSalesmanShip_Player" ..self.m_PlayerID);
-                self.m_Status = 0;
+                if stop then
+                    if self.m_ChangeDiplomacy then
+                        SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.EstablishedContact);
+                    end
+                    Path:new(GetID("TravelingSalesmanShip_Player" ..self.m_PlayerID), self.m_Reversed, nil, nil, nil, nil, true, nil, nil, 300);
+                    Logic.RemoveAllOffers(Logic.GetStoreHouse(self.m_PlayerID));
+                    self.m_Status = 3;
+                end
+
+            elseif self.m_Status == 3 then
+                if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_Reversed[#self.m_Reversed], 400) then
+                    DestroyEntity("TravelingSalesmanShip_Player" ..self.m_PlayerID);
+                    self.m_Status = 0;
+                end
             end
         end
     end
