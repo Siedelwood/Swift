@@ -56,17 +56,25 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_Description)</a></td>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_PlayerID)</a></td>
+	<td class="summary">Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanCreate">API.TravelingSalesmanCreate (_Description)</a></td>
 	<td class="summary">Erstellt einen fahrender Händler mit zufälligen Angeboten.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TravelingSalesmanDeactivate">API.TravelingSalesmanDeactivate (_PlayerID)</a></td>
-	<td class="summary">Entfernt den fahrenden Händler von dem Spieler.</td>
+	<td class="summary">Deaktiviert einen fahrenden Händler.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TravelingSalesmanDiplomacyOverride">API.TravelingSalesmanDiplomacyOverride (_PlayerID, _Flag)</a></td>
 	<td class="summary">Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
  Hafen überschrieben werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanDispose">API.TravelingSalesmanDispose (_PlayerID)</a></td>
+	<td class="summary">Entfernt den fahrenden Händler von dem Spieler.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TravelingSalesmanRotationMode">API.TravelingSalesmanRotationMode (_PlayerID, _Flag)</a></td>
@@ -84,7 +92,34 @@
     <dl class="function">
     <dt>
     <a name = "API.TravelingSalesmanActivate"></a>
-    <strong>API.TravelingSalesmanActivate (_Description)</strong>
+    <strong>API.TravelingSalesmanActivate (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.
+<p> <b>Alias</b>: TravelingSalesmanResume
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Spieler-ID des Händlers
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TravelingSalesmanActivate(<span class="number">2</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanCreate"></a>
+    <strong>API.TravelingSalesmanCreate (_Description)</strong>
     </dt>
     <dd>
     Erstellt einen fahrender Händler mit zufälligen Angeboten.
@@ -99,7 +134,7 @@
  Über Waypoints wird der Weg bestimmt, den das Handelsschiff nehmen wird.
  Die Umkehrung der Route ist standardmäßig als Rückweg festgelegt. Will
  man einen anderen Rückweg, muss dieser als Reversed angegeben werden.
-<p> <b>Alias</b>: ActivateTravelingSalesman
+<p> <b>Alias</b>: TravelingSalesmanActivate
 
 
 
@@ -116,8 +151,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Händler deklarieren
-</span><span class="keyword">local</span> TraderDescription = {
+        <pre class="example"><span class="keyword">local</span> TraderDescription = {
     PlayerID = <span class="number">2</span>,
     Waypoints = {<span class="string">"WP1"</span>, <span class="string">"WP2"</span>, <span class="string">"WP3"</span>, <span class="string">"WP4"</span>},
     Offers = {
@@ -153,9 +187,9 @@ API.TravelingSalesmanActivate(TraderDescription);</pre>
     <strong>API.TravelingSalesmanDeactivate (_PlayerID)</strong>
     </dt>
     <dd>
-    Entfernt den fahrenden Händler von dem Spieler.  Der Spieler bleibt
- erhalten wird aber nicht mal als fahrender Händler fungieren.
-<p> <b>Alias</b>: DeactivateTravelingSalesman
+    Deaktiviert einen fahrenden Händler.  Der aktuelle Zyklus wird noch beendet,
+ aber danach kommt der Händler nicht mehr wieder.
+<p> <b>Alias</b>: TravelingSalesmanYield
 
 
 
@@ -172,8 +206,7 @@ API.TravelingSalesmanActivate(TraderDescription);</pre>
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Fahrenden Händler von Spieler 2 löschen
-</span>API.TravelingSalesmanDeactivate(<span class="number">2</span>)</pre>
+        <pre class="example">API.TravelingSalesmanDeactivate(<span class="number">2</span>);</pre>
     </ul>
 
 </dd>
@@ -213,8 +246,35 @@ API.TravelingSalesmanActivate(TraderDescription);</pre>
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Spieler 2 überschreibt nicht mehr die Diplomatie
-</span>API.TravelingSalesmanDiplomacyOverride(<span class="number">2</span>, <span class="keyword">false</span>)</pre>
+        <pre class="example">API.TravelingSalesmanDiplomacyOverride(<span class="number">2</span>, <span class="keyword">false</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanDispose"></a>
+    <strong>API.TravelingSalesmanDispose (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Entfernt den fahrenden Händler von dem Spieler.  Der Spieler bleibt
+ erhalten wird aber nicht mal als fahrender Händler fungieren.
+<p> <b>Alias</b>: TravelingSalesmanDeactivate
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Spieler-ID des Händlers
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TravelingSalesmanDispose(<span class="number">2</span>);</pre>
     </ul>
 
 </dd>
@@ -246,8 +306,7 @@ API.TravelingSalesmanActivate(TraderDescription);</pre>
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Spieler 2 geht Angebote der Reihe nach durch.
-</span>API.TravelingSalesmanRotationMode(<span class="number">2</span>, <span class="keyword">true</span>)</pre>
+        <pre class="example">API.TravelingSalesmanRotationMode(<span class="number">2</span>, <span class="keyword">true</span>);</pre>
     </ul>
 
 </dd>
@@ -258,7 +317,7 @@ API.TravelingSalesmanActivate(TraderDescription);</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-30 11:37:36 </i>
+<i style="float:right;">Last updated 2019-03-30 11:51:46 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

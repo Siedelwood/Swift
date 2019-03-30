@@ -29797,13 +29797,12 @@ QSB.TravelingSalesman = {
 -- Die Umkehrung der Route ist standardmäßig als Rückweg festgelegt. Will
 -- man einen anderen Rückweg, muss dieser als Reversed angegeben werden.
 --
--- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: ActivateTravelingSalesman
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanActivate
 --
 -- @param[type=table]  _Description Definition des Händlers
 -- @within Anwenderfunktionen
 --
--- @usage -- Händler deklarieren
--- local TraderDescription = {
+-- @usage local TraderDescription = {
 --     PlayerID = 2,
 --     Waypoints = {"WP1", "WP2", "WP3", "WP4"},
 --     Offers = {
@@ -29832,7 +29831,7 @@ QSB.TravelingSalesman = {
 -- };
 -- API.TravelingSalesmanActivate(TraderDescription);
 --
-function API.TravelingSalesmanActivate(_TraderDescription)
+function API.TravelingSalesmanCreate(_TraderDescription)
     if GUI then
         API.Fatal("Can not execute API.TravelingSalesmanActivate in local script!");
         return;
@@ -29845,28 +29844,66 @@ function API.TravelingSalesmanActivate(_TraderDescription)
         :UseOfferRotation(_TraderDescription.Flag or true)
         :Activate();
 end
-ActivateTravelingSalesman = API.TravelingSalesmanActivate;
+TravelingSalesmanActivate = API.TravelingSalesmanCreate;
 
 ---
 -- Entfernt den fahrenden Händler von dem Spieler. Der Spieler bleibt
 -- erhalten wird aber nicht mal als fahrender Händler fungieren.
 --
--- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: DeactivateTravelingSalesman
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanDeactivate
 --
 -- @param[type=number] _PlayerID Spieler-ID des Händlers
 -- @within Anwenderfunktionen
 --
--- @usage -- Fahrenden Händler von Spieler 2 löschen
--- API.TravelingSalesmanDeactivate(2)
+-- @usage API.TravelingSalesmanDispose(2);
+--
+function API.TravelingSalesmanDispose(_PlayerID)
+    if GUI then
+        API.Bridge("API.TravelingSalesmanDispose(" .._PlayerID.. ")");
+        return;
+    end
+    QSB.TravelingSalesman:GetInstance(_PlayerID):Dispose();
+end
+TravelingSalesmanDeactivate = API.TravelingSalesmanDispose;
+
+---
+-- Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanResume
+--
+-- @param[type=number] _PlayerID Spieler-ID des Händlers
+-- @within Anwenderfunktionen
+--
+-- @usage API.TravelingSalesmanActivate(2);
+--
+function API.TravelingSalesmanActivate(_PlayerID)
+    if GUI then
+        API.Bridge("API.TravelingSalesmanDeactivate(" .._PlayerID.. ")");
+        return;
+    end
+    QSB.TravelingSalesman:GetInstance(_PlayerID):Aktivate();
+end
+TravelingSalesmanResume = API.TravelingSalesmanActivate;
+
+---
+-- Deaktiviert einen fahrenden Händler. Der aktuelle Zyklus wird noch beendet,
+-- aber danach kommt der Händler nicht mehr wieder.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanYield
+--
+-- @param[type=number] _PlayerID Spieler-ID des Händlers
+-- @within Anwenderfunktionen
+--
+-- @usage API.TravelingSalesmanDeactivate(2);
 --
 function API.TravelingSalesmanDeactivate(_PlayerID)
     if GUI then
         API.Bridge("API.TravelingSalesmanDeactivate(" .._PlayerID.. ")");
         return;
     end
-    QSB.TravelingSalesman:GetInstance(_PlayerID):Dispose();
+    QSB.TravelingSalesman:GetInstance(_PlayerID):Deaktivate();
 end
-DeactivateTravelingSalesman = API.TravelingSalesmanDeactivate;
+TravelingSalesmanYield = API.TravelingSalesmanDeactivate;
 
 ---
 -- Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
@@ -29889,8 +29926,7 @@ DeactivateTravelingSalesman = API.TravelingSalesmanDeactivate;
 -- @param[type=boolean] _Flag Diplomatie überschreiben
 -- @within Anwenderfunktionen
 --
--- @usage -- Spieler 2 überschreibt nicht mehr die Diplomatie
--- API.TravelingSalesmanDiplomacyOverride(2, false)
+-- @usage API.TravelingSalesmanDiplomacyOverride(2, false);
 --
 function API.TravelingSalesmanDiplomacyOverride(_PlayerID, _Flag)
     if GUI then
@@ -29911,8 +29947,7 @@ TravelingSalesmanDiplomacyOverride = API.TravelingSalesmanDiplomacyOverride;
 -- @param[type=boolean] _Flag Angebotsrotation einschalten
 -- @within Anwenderfunktionen
 --
--- @usage -- Spieler 2 geht Angebote der Reihe nach durch.
--- API.TravelingSalesmanRotationMode(2, true)
+-- @usage API.TravelingSalesmanRotationMode(2, true);
 --
 function API.TravelingSalesmanRotationMode(_PlayerID, _Flag)
     if GUI then
@@ -30016,6 +30051,17 @@ function QSB.TravelingSalesman:Activate()
         fatal("QSB.TravelingSalesman:Activate: trader "..self.m_PlayerID.." must have a approach and a return route!");
         return;
     end
+    return self;
+end
+
+---
+-- Stoppt einen aktiven Händler, sodass der nächste Zyklus nicht mehr startet.
+-- @return[type=table] Instanz
+-- @within QSB.TravelingSalesman
+-- @local
+--
+function QSB.TravelingSalesman:Deactivate()
+    self.m_Active = false;
     return self;
 end
 
@@ -30291,51 +30337,49 @@ end
 --
 function QSB.TravelingSalesman:Loop()
     if not self.SymfoniaDebugValue_NullInstance and Logic.PlayerGetIsHumanFlag(self.m_PlayerID) == false then
-        if self.m_Active == true then
-            if self.m_Status == 0 then
-                local month = Logic.GetCurrentMonth();
-                local start = false;
-                for i=1, #self.m_Appearance,1 do
-                    if month == self.m_Appearance[i][1] then
-                        start = true;
-                    end
+        if self.m_Status == 0 and self.m_Active == true then
+            local month = Logic.GetCurrentMonth();
+            local start = false;
+            for i=1, #self.m_Appearance,1 do
+                if month == self.m_Appearance[i][1] then
+                    start = true;
                 end
-                if start then
-                    local orientation = Logic.GetEntityOrientation(GetID(self.m_SpawnPos))
-                    local ID = CreateEntity(0, Entities.D_X_TradeShip, GetPosition(self.m_SpawnPos), "TravelingSalesmanShip_Player" ..self.m_PlayerID, orientation);
-                    Path:new(ID,self.m_Waypoints, nil, nil, nil, nil, true, nil, nil, 300);
-                    self.m_Status = 1;
-                end
+            end
+            if start then
+                local orientation = Logic.GetEntityOrientation(GetID(self.m_SpawnPos))
+                local ID = CreateEntity(0, Entities.D_X_TradeShip, GetPosition(self.m_SpawnPos), "TravelingSalesmanShip_Player" ..self.m_PlayerID, orientation);
+                Path:new(ID,self.m_Waypoints, nil, nil, nil, nil, true, nil, nil, 300);
+                self.m_Status = 1;
+            end
 
-            elseif self.m_Status == 1 then
-                if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_Destination, 400) then
-                    self:IntroduceNewOffer():DisplayInfoMessage();
-                    self.m_Status = 2;
+        elseif self.m_Status == 1 then
+            if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_Destination, 400) then
+                self:IntroduceNewOffer():DisplayInfoMessage();
+                self.m_Status = 2;
+            end
+            
+        elseif self.m_Status == 2 then
+            local month = Logic.GetCurrentMonth();
+            local stop = false;
+            for i=1, #self.m_Appearance,1 do
+                if month == self.m_Appearance[i][2] then
+                    stop = true;
                 end
-                
-            elseif self.m_Status == 2 then
-                local month = Logic.GetCurrentMonth();
-                local stop = false;
-                for i=1, #self.m_Appearance,1 do
-                    if month == self.m_Appearance[i][2] then
-                        stop = true;
-                    end
-                end
+            end
 
-                if stop then
-                    if self.m_ChangeDiplomacy then
-                        SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.EstablishedContact);
-                    end
-                    Path:new(GetID("TravelingSalesmanShip_Player" ..self.m_PlayerID), self.m_Reversed, nil, nil, nil, nil, true, nil, nil, 300);
-                    Logic.RemoveAllOffers(Logic.GetStoreHouse(self.m_PlayerID));
-                    self.m_Status = 3;
+            if stop then
+                if self.m_ChangeDiplomacy then
+                    SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.EstablishedContact);
                 end
+                Path:new(GetID("TravelingSalesmanShip_Player" ..self.m_PlayerID), self.m_Reversed, nil, nil, nil, nil, true, nil, nil, 300);
+                Logic.RemoveAllOffers(Logic.GetStoreHouse(self.m_PlayerID));
+                self.m_Status = 3;
+            end
 
-            elseif self.m_Status == 3 then
-                if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_Reversed[#self.m_Reversed], 400) then
-                    DestroyEntity("TravelingSalesmanShip_Player" ..self.m_PlayerID);
-                    self.m_Status = 0;
-                end
+        elseif self.m_Status == 3 then
+            if IsNear("TravelingSalesmanShip_Player" ..self.m_PlayerID, self.m_Reversed[#self.m_Reversed], 400) then
+                DestroyEntity("TravelingSalesmanShip_Player" ..self.m_PlayerID);
+                self.m_Status = 0;
             end
         end
     end
