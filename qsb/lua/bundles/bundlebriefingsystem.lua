@@ -1326,7 +1326,7 @@ function BundleBriefingSystem.Local:SetPortrait()
     if self.Data.CurrentPage.Portrait then
         XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 255);
         XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, self.Data.CurrentPage.Portrait);
-        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
+        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0, 400, 600);
         XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0, 0, 1, 1);
     else
         XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0);
