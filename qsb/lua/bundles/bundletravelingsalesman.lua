@@ -76,7 +76,7 @@ QSB.TravelingSalesman = {
 --         },
 --     },
 -- };
--- API.TravelingSalesmanActivate(TraderDescription);
+-- API.TravelingSalesmanCreate(TraderDescription);
 --
 function API.TravelingSalesmanCreate(_TraderDescription)
     if GUI then
@@ -153,38 +153,6 @@ end
 TravelingSalesmanYield = API.TravelingSalesmanDeactivate;
 
 ---
--- Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
--- Hafen überschrieben werden.
---
--- Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
--- im Hafen befindet und wenn es abreist. Der Hafen ist "Handelspartner", wenn
--- ein Schiff angelegt hat, sonst "Bekannt".
---
--- Bei diplomatischen Beziehungen geringer als "Bekannt", kann es zu Fehlern
--- kommen. Dann werden Handelsangebote angezeigt, konnen aber nicht durch
--- den Spieler erworben werden.
---
--- <b>Hinweis</b>: Überschreiben der Beziehungen ist Standardmäßig als aktiv
--- voreingestellt.
---
--- <b>Alias</b>: TravelingSalesmanDiplomacyOverride
---
--- @param[type=number]  _PlayerID Spieler-ID des Händlers
--- @param[type=boolean] _Flag Diplomatie überschreiben
--- @within Anwenderfunktionen
---
--- @usage API.TravelingSalesmanDiplomacyOverride(2, false);
---
-function API.TravelingSalesmanDiplomacyOverride(_PlayerID, _Flag)
-    if GUI then
-        API.Bridge("API.TravelingSalesmanDiplomacyOverride(" .._PlayerID.. ", " ..tostring(_Flag).. ")");
-        return;
-    end
-    QSB.TravelingSalesman:GetInstance(_PlayerID):UseChangeDiplomacy(_Flag);
-end
-TravelingSalesmanDiplomacyOverride = API.TravelingSalesmanDiplomacyOverride;
-
----
 -- Legt fest, ob die Angebote der Reihe nach durchgegangen werden (beginnt von
 -- vorn, wenn am Ende angelangt) oder zufällig ausgesucht werden.
 --
@@ -258,7 +226,6 @@ function QSB.TravelingSalesman:New(_PlayerID)
     salesman.m_Appearance = {{3, 5}, {7, 9}};
     salesman.m_Waypoints = nil;
     salesman.m_Reversed = nil;
-    salesman.m_ChangeDiplomacy = true;
     salesman.m_OfferRotation = false;
     salesman.m_LastOffer = 0;
     salesman.m_Status = 0;
@@ -269,9 +236,6 @@ end
 ---
 -- Gibt die Instanz des Fahrenden Händlers für die Player-ID zurück.
 --
--- Sollte keine Instanz für den Spieler existieren, wird eine Null-Instanz
--- erzeugt und zurückgegeben.
---
 -- @param[type=number] _PlayerID Player-ID des Händlers
 -- @return[type=table] Instanz
 -- @within QSB.TravelingSalesman
@@ -281,9 +245,6 @@ function QSB.TravelingSalesman:GetInstance(_PlayerID)
     if QSB.TravelingSalesmanInstances[_PlayerID] then
         return QSB.TravelingSalesmanInstances[_PlayerID];
     end
-    local NullInstance = QSB.TravelingSalesman:New(_PlayerID);
-    NullInstance.SymfoniaDebugValue_NullInstance = true;
-    return NullInstance;
 end
 
 ---
@@ -447,18 +408,6 @@ function QSB.TravelingSalesman:UseOfferRotation(_Flag)
 end
 
 ---
--- Aktiviert oder deaktiviert die automatische Anpasung der Diplomatie.
--- @param[type=boolean] _Flag Diplomatie wird überschrieben
--- @return[type=table] self
--- @within QSB.TravelingSalesman
--- @local
---
-function QSB.TravelingSalesman:UseChangeDiplomacy(_Flag)
-    self.m_ChangeDiplomacy = _Flag == true;
-    return self;
-end
-
----
 -- Invalidiert die Instanz dieses Fliegenden Händlers.
 -- @within QSB.TravelingSalesman
 -- @local
@@ -569,9 +518,7 @@ function QSB.TravelingSalesman:IntroduceNewOffer()
             end
         end
     end
-    if self.m_ChangeDiplomacy then
-        SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.TradeContact);
-    end
+    SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.TradeContact);
     Logic.SetTraderPlayerState(Logic.GetStoreHouse(self.m_PlayerID), self:GetHumanPlayer(), 1);
     return self;
 end
@@ -583,7 +530,7 @@ end
 -- @local
 --
 function QSB.TravelingSalesman:Loop()
-    if not self.SymfoniaDebugValue_NullInstance and Logic.PlayerGetIsHumanFlag(self.m_PlayerID) == false then
+    if Logic.PlayerGetIsHumanFlag(self.m_PlayerID) == false then
         if self.m_Status == 0 and self.m_Active == true then
             local month = Logic.GetCurrentMonth();
             local start = false;
@@ -615,9 +562,7 @@ function QSB.TravelingSalesman:Loop()
             end
 
             if stop then
-                if self.m_ChangeDiplomacy then
-                    SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.EstablishedContact);
-                end
+                SetDiplomacyState(self:GetHumanPlayer(), self.m_PlayerID, DiplomacyStates.EstablishedContact);
                 Path:new(GetID("TravelingSalesmanShip_Player" ..self.m_PlayerID), self.m_Reversed, nil, nil, nil, nil, true, nil, nil, 300);
                 Logic.RemoveAllOffers(Logic.GetStoreHouse(self.m_PlayerID));
                 self.m_Status = 3;
