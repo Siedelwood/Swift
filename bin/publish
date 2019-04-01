@@ -39,7 +39,7 @@ echo "Fertig!"
 #echo "Fertig!"
 
 echo "Cutscene Maker kopieren..."
-cp -r "app/CutsceneMaker/CutsceneMaker.jar" Release/bin/CutsceneMaker.jar &>/dev/null
+cp -r "bin/CutsceneMaker.jar" Release/bin/CutsceneMaker.jar &>/dev/null
 echo "Fertig!"
 
 echo "Archiv zusammenstellen..."

@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "2.0.0 Beta-3";
+QSB.Version = "Early Access 3";
 QSB.HistoryEdition = false;
 
 QSB.RealTime_SecondsSinceGameStart = 0;
