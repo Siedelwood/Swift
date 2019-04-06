@@ -15,6 +15,7 @@
 API = API or {};
 QSB = QSB or {};
 QSB.Version = "Early Access 3";
+QSB.Language = "de";
 QSB.HistoryEdition = false;
 
 QSB.RealTime_SecondsSinceGameStart = 0;
@@ -579,9 +580,8 @@ GUI_NoteDown = API.Message;
 -- @local
 --
 function API.EnsureMessage(_Message)
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Message) == "table" then
-        _Message = _Message[Language];
+        _Message = _Message[QSB.Language];
     end
     return tostring(_Message);
 end
@@ -1202,6 +1202,8 @@ Core = {
 --
 function Core:InitalizeBundles()
     if not GUI then
+        QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
         self:IdentifyHistoryEdition();
@@ -1213,6 +1215,8 @@ function Core:InitalizeBundles()
         StartSimpleHiResJob("CoreEventJob_OnEveryTurn");
         StartSimpleJob("CoreEventJob_OnEverySecond");
     else
+        QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+
         self:SetupLocal_HackRegisterHotkey();
 
         StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
@@ -1361,7 +1365,7 @@ end
 --
 function Core:SetupLocal_HackRegisterHotkey()
     function g_KeyBindingsOptions:OnShow()
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         if Game ~= nil then
             XGUIEng.ShowWidget("/InGame/KeyBindingsMain/Backdrop", 1);
         else
@@ -1409,8 +1413,8 @@ function Core:SetupLocal_HackRegisterHotkey()
 
             for k,v in pairs(Core.Data.HotkeyDescriptions) do
                 if v then
-                    v[1] = (type(v[1]) == "table" and v[1][lang]) or v[1];
-                    v[2] = (type(v[2]) == "table" and v[2][lang]) or v[2];
+                    v[1] = (type(v[1]) == "table" and v[1][QSB.Language]) or v[1];
+                    v[2] = (type(v[2]) == "table" and v[2][QSB.Language]) or v[2];
                     table.insert(g_KeyBindingsOptions.Descriptions, 1, v);
                 end
             end

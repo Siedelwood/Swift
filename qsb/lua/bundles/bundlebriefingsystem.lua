@@ -163,12 +163,11 @@ function API.AddPages(_Briefing)
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
             -- Sprache anpassen
-            local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
             if type(_Page.Title) == "table" then
-                _Page.Title = _Page.Title[Language];
+                _Page.Title = _Page.Title[QSB.Language];
             end
             if type(_Page.Text) == "table" then
-                _Page.Text = _Page.Text[Language];
+                _Page.Text = _Page.Text[QSB.Language];
             end
             -- Lookat mappen
             if type(_Page.LookAt) == "string" or type(_Page.LookAt) == "number" then
@@ -977,7 +976,7 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             end
 
             -- Button Texte
-            local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+            local Language = QSB.Language;
             XGUIEng.SetText("/InGame/ThroneRoom/Main/StartButton", "{center}" ..BundleBriefingSystem.Text.PrevButton[Language]);
             local SkipText = BundleBriefingSystem.Text.NextButton[Language];
             local PageID = self.Data.CurrentBriefing.Page;

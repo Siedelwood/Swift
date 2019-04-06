@@ -252,8 +252,7 @@ end
 
 function b_Goal_Diplomacy:ChangeCaption(_Quest)
     local PlayerName = GetPlayerName(self.PlayerID) or "";
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    local Text = string.format(self.TextPattern[lang], self.DiploNameMap[self.DiplState][lang], PlayerName);
+    local Text = string.format(self.TextPattern[lang], self.DiploNameMap[self.DiplState][QSB.Language], PlayerName);
     Core:ChangeCustomQuestCaptionText(Text, _Quest);
 end
 
@@ -792,7 +791,7 @@ end
 
 function b_Goal_DestroySoldiers:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local lang = QSB.Language
         local caption = (lang == "de" and "SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: ") or
                          "DESTROY SOLDIERS {cr}{cr}from faction: "
         local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
@@ -1123,7 +1122,7 @@ end
 
 function b_Goal_ActivateBuff:CustomFunction(_Quest)
    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local lang = QSB.Language
         local caption = (lang == "de" and "BONUS AKTIVIEREN{cr}{cr}") or "ACTIVATE BUFF{cr}{cr}"
 
         local tMapping = {
@@ -1847,7 +1846,7 @@ end
 
 function b_Goal_SoldierCount:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local lang = QSB.Language
         local caption = (lang == "de" and "SOLDATENANZAHL {cr}Partei: ") or
                             "SOLDIERS {cr}faction: "
         local relation = tostring(self.bRelSmallerThan);
@@ -2031,7 +2030,7 @@ end
 
 function b_Goal_Festivals:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local lang = QSB.Language
         local caption = (lang == "de" and "FESTE FEIERN {cr}{cr}Partei: ") or
                             "HOLD PARTIES {cr}{cr}faction: "
         local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
@@ -2851,7 +2850,7 @@ end
 
 function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
     if not self.InternTributeQuest then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local Language = QSB.Language;
         local StartMsg = self.StartMsg;
         if type(StartMsg) == "table" then
             StartMsg = StartMsg[Language];
@@ -3076,7 +3075,7 @@ end
 
 function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
     if not self.InternTributeQuest then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local Language = QSB.Language;
         local StartMsg = self.StartMsg;
         if type(StartMsg) == "table" then
             StartMsg = StartMsg[Language];
@@ -8463,7 +8462,7 @@ function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
         self.Trials = (_Parameter or 0) * 1;
     elseif (_Index == 2) then
         self.Message = _Parameter;
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         if type(self.Message) == "table" then
             self.Message = self.Message[lang];
         end
@@ -8515,7 +8514,7 @@ end
 
 function b_Goal_InputDialog:OnWrongInput(_Quest)
     if self.Trials > 0 and not self.Message then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         Logic.DEBUG_AddNote(self.DefaultMessage .. self.TrialCounter);
         return;
     end

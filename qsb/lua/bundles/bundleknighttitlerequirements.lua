@@ -835,7 +835,7 @@ end
 -- @local
 --
 function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     local PlayerID = GUI.GetPlayerID();
     local KnightTitle = Logic.GetKnightTitle(PlayerID);
     local Title = ""

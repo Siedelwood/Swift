@@ -199,7 +199,7 @@ function b_Goal_StealGold:GetCustomData(_Index)
 end
 
 function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     local TargetPlayerName = (lang == "de" and " anderen Spielern ") or " different parties";
     if self.Target ~= -1 then
         TargetPlayerName = GetPlayerName(self.Target);
@@ -311,7 +311,7 @@ end
 function b_Goal_StealBuilding:SetDescriptionOverwrite(_Quest)
     local isCathedral = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Cathedrals) == 1;
     local isWarehouse = Logic.GetEntityType(GetID(self.Building)) == Entities.B_StoreHouse;
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     local text;
 
     if isCathedral then
@@ -453,7 +453,7 @@ end
 
 function b_Goal_SpyBuilding:SetDescriptionOverwrite(_Quest)
     if not _Quest.QuestDescription then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         local text = {
             de = "Gebäude infriltrieren {cr}{cr}Spioniere das markierte Gebäude mit einem Dieb aus!",
             en = "Infiltrate building {cr}{cr}Spy on the highlighted buildings with a thief!",
@@ -692,7 +692,7 @@ end
 
 function b_Goal_CityReputation:SetCaption(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Language = QSB.Language;
         local Text = string.format(self.Text[Language], self.Reputation);
         Core:ChangeCustomQuestCaptionText(Text, _Quest);
     end
@@ -1921,7 +1921,7 @@ function BundleSymfoniaBehaviors.Global:Install()
                             end
                             Quests[i].Objectives[j].Data[1].StohlenGold = Quests[i].Objectives[j].Data[1].StohlenGold + _GoodAmount;
                             if CurrentObjective.Printout then
-                                local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+                                local lang = QSB.Language;
                                 local msg  = {de = "Talern gestohlen",en = "gold stolen",};
                                 local curr = CurrentObjective.StohlenGold;
                                 local need = CurrentObjective.Amount;

@@ -462,19 +462,18 @@ function QSB.TravelingSalesman:DisplayInfoMessage()
             return self;
         end
 
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local Text = { de = "Ein Schiff hat angelegt. Es bringt Güter von weit her.",
                        en = "A ship is at the pier. It delivers goods from far away."};
         QuestTemplate:New(
             "TravelingSalesman_Info_P" ..self.m_PlayerID,
             self.m_PlayerID,
             self:GetHumanPlayer(),
-            {{ Objective.Dummy,}},
-            {{ Triggers.Time, 0 }},
+            {{Objective.Dummy,}},
+            {{Triggers.Time, 0}},
             0,
             nil, nil, nil, nil, false, true,
             nil, nil,
-            Text[lang],
+            Text[QSB.Language],
             nil
         );
     end

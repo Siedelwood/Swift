@@ -57,12 +57,11 @@ function API.DialogInfoBox(_Title, _Text, _Action)
         return;
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Title) == "table" then
-       _Title = _Title[lang];
+       _Title = _Title[QSB.Language];
     end
     if type(_Text) == "table" then
-       _Text = _Text[lang];
+       _Text = _Text[QSB.Language];
     end
     return BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action);
 end
@@ -96,7 +95,7 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
         return;
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if type(_Title) == "table" then
        _Title = _Title[lang];
     end
@@ -135,7 +134,7 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
         return;
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if type(_Title) == "table" then
        _Title = _Title[lang];
     end
@@ -172,7 +171,7 @@ UserOpenSelectionDialog = API.DialogSelectBox;
 -- API.SimpleTextWindow("Überschrift", Text);
 --
 function API.SimpleTextWindow(_Caption, _Content)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if type(_Caption) == "table" then
        _Caption = _Caption[lang];
     end
@@ -223,7 +222,7 @@ end
 -- @within Anwenderfunktionen
 --
 function API.SimpleTypewriter(_Text, _Callback)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if GUI then
         API.Fatal("API.SimpleTypewriter: Can only be used from global script!");
         return;
@@ -616,7 +615,7 @@ end
 --
 function QSB.TextWindow:SetCaption(_Text)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Language = QSB.Language;
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
@@ -640,7 +639,7 @@ end
 --
 function QSB.TextWindow:SetContent(_Text)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Language = QSB.Language;
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
@@ -696,7 +695,7 @@ end
 function QSB.TextWindow:SetButton(_Text, _Callback)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
     if _Text then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local Language = QSB.Language;
         if type(_Text) == "table" then
             _Text = _Text[Language];
         end
@@ -804,7 +803,7 @@ function QSB.TextWindow:Prepare()
         XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", ChatlogMessage)
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if type(self.Data.Caption) == "table" then
         self.Data.Caption = self.Data.Caption[lang];
     end

@@ -1784,7 +1784,7 @@ end
 function AddOnCastleStore.Local:OverwriteGetStringTableText()
     GetStringTableText_Orig_QSB_CatsleStore = XGUIEng.GetStringTableText;
     XGUIEng.GetStringTableText = function(_key)
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID = GUI.GetPlayerID();
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();

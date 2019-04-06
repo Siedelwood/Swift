@@ -269,8 +269,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 --
 function API.AddCustomIOName(_Key, _Text)
     if type(_Text) == "table" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-        _Text = _Text[lang];
+        _Text = _Text[QSB.Language];
     end
     if GUI then
         API.Bridge("API.AddCustomIOName('" .._Key.. "', '" .._Text.. "')");
@@ -902,17 +901,13 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                     if ObjectName == "" then
                         ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectTypeName];
                         if type(ObjectName) == "table" then
-                            local lang = Network.GetDesiredLanguage();
-                            lang = (lang == "de" and "de") or "en";
-                            ObjectName = ObjectName[lang];
+                            ObjectName = ObjectName[QSB.Language];
                         end
                     end
                     if ObjectName == nil then
                         ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectEntityName];
                         if type(ObjectName) == "table" then
-                            local lang = Network.GetDesiredLanguage();
-                            lang = (lang == "de" and "de") or "en";
-                            ObjectName = ObjectName[lang];
+                            ObjectName = ObjectName[QSB.Language];
                         end
                     end
                     if ObjectName == nil then
@@ -989,7 +984,7 @@ end
 --
 function BundleInteractiveObjects.Local:OnObjectClicked_IsConditionFulfulled(_IO)
     local PlayerID = GUI.GetPlayerID();
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Language = QSB.Language;
     if not _IO.ConditionFullfilled then
         if _IO.ConditionUnfulfilled then
             local MessageText = _IO.ConditionUnfulfilled;

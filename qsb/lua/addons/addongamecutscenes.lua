@@ -479,7 +479,7 @@ end
 -- @local
 --
 function AddOnGameCutscenes.Local:Install()
-    self.Data.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    self.Data.Language = QSB.Language;
     local _, screenY = GUI.GetScreenSize()
     local xp, yp = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text")
     self.Data.Positions.Text = {X = xp, Y = yp}

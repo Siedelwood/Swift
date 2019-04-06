@@ -520,17 +520,16 @@ end
 function BundleEntitySelection.Local:OverwriteGetStringTableText()
     GetStringTableText_Orig_BundleEntitySelection = XGUIEng.GetStringTableText;
     XGUIEng.GetStringTableText = function(_key)
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         if _key == "UI_ObjectDescription/Attack" then
             local EntityID = GUI.GetSelectedEntity();
             if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
-                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Text[Language];
+                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Text[QSB.Language];
             end
         end
         if _key == "UI_ObjectNames/Attack" then
             local EntityID = GUI.GetSelectedEntity();
             if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
-                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Title[Language];
+                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Title[QSB.Language];
             end
         end
 
@@ -754,7 +753,7 @@ function BundleEntitySelection.Local:OverwriteMultiselectIcon()
             return;
         end
 
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         if EntityType == Entities.U_SiegeEngineCart then
             local TooltipData = BundleEntitySelection.Local.Data.Tooltips.TrebuchetCart;
             BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
@@ -856,7 +855,7 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
             return;
         end
 
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         BundleEntitySelection.Local:SetTooltip(
             BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
             BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang]
@@ -892,7 +891,7 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
     GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection = GUI_Tooltip.SetNameAndDescription;
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
 
         if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(

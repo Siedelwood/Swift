@@ -325,9 +325,8 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
     };
 
     -- Lokalisierung
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Text) == "table" then
-        _Text = _Text[Language];
+        _Text = _Text[QSB.Language];
     end
 
     -- Quest erzeugen
@@ -360,7 +359,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         return;
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
 
     -- Questdaten erzeugen
     local QuestData = {

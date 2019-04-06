@@ -97,13 +97,12 @@ function API.CutsceneStart(_Cutscene)
     end
 
     -- Lokalisierung Texte
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     for i= 1, #_Cutscene, 1 do
         if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
-            _Cutscene[i].Title = _Cutscene[i].Title[Language];
+            _Cutscene[i].Title = _Cutscene[i].Title[QSB.Language];
         end
         if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
-            _Cutscene[i].Text = _Cutscene[i].Text[Language];
+            _Cutscene[i].Text = _Cutscene[i].Text[QSB.Language];
         end
     end
 
@@ -476,11 +475,10 @@ end
 --
 function AddOnCutsceneSystem.Local:ThroneRoomCameraControl()
     if self:IsCutsceneActive() then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         if self.Data.FastForward.Active == false then
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardActivate[Language]);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardActivate[QSB.Language]);
         else 
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardDeactivate[Language]);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardDeactivate[QSB.Language]);
         end
     end
 end
@@ -822,8 +820,7 @@ function AddOnCutsceneSystem.Local.DisplayFastForwardMessage()
                 AddOnCutsceneSystem.Local.Data.FastForward.RealTime = RealTime;
             end
             -- Message anzeigen
-            local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-            local Text = "{cr}{cr}" ..AddOnCutsceneSystem.Text.FastFormardMessage[Language];
+            local Text = "{cr}{cr}" ..AddOnCutsceneSystem.Text.FastFormardMessage[QSB.Language];
             local Indent = string.rep("  ", AddOnCutsceneSystem.Local.Data.FastForward.Indent);
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", Text..Indent.. ". . .");
         else

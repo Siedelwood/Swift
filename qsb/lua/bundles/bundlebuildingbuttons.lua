@@ -378,7 +378,7 @@ BundleBuildingButtons = {
                     en = "Downgrade",
                 },
                 Text = {
-                    de = "- Reißt eine Stufe des Geb?udes ein {cr}- Der überschüssige Arbeiter wird entlassen",
+                    de = "- Reißt eine Stufe des Gebäudes ein {cr}- Der überschüssige Arbeiter wird entlassen",
                     en = "- Destroy one level of this building {cr}- The surplus worker will be dismissed",
                 },
                 Disabled = {
@@ -691,7 +691,7 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.TrapToggleMouseOver = function()
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         BundleBuildingButtons.Local:TextNormal(
             BundleBuildingButtons.Local.Description.Downgrade.Title[lang],
             BundleBuildingButtons.Local.Description.Downgrade.Text[lang],
@@ -778,7 +778,7 @@ end
 --
 function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
     GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType,_TechnologyType)
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local BarrackID = GUI.GetSelectedEntity();
         local BuildingEntityType = Logic.GetEntityType(BarrackID);
@@ -1087,7 +1087,7 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     BundleBuildingButtons.Local:TextNormal(
         BundleBuildingButtons.Local.Description.SingleStop.Title[lang],
         BundleBuildingButtons.Local.Description.SingleStop.Text[lang]
