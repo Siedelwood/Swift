@@ -776,26 +776,20 @@ function BundleEntitySelection.Local:OverwriteMilitaryDismount()
     GUI_Military.DismountClicked = function()
         local Selected = GUI.GetSelectedEntity(Selected);
         local Type = Logic.GetEntityType(Selected);
-        local PlayerID = GUI.GetPlayerID();
-        if Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false then
-            if (Type == Entities.U_SiegeEngineCart or Type == Entities.U_MilitarySiegeTower or
-                Type == Entities.U_MilitaryCatapult or Type == Entities.U_MilitaryBatteringRam or
-                Type == Entities.U_SiegeTowerCart or Type == Entities.U_CatapultCart or
-                Type == Entities.U_BatteringRamCart or Type == Entities.U_AmmunitionCart)
-            and BundleEntitySelection.Local.Data.SiegeEngineRelease then
-                Sound.FXPlay2DSound( "ui\\menu_click");
-                GUI.SendScriptCommand([[DestroyEntity(]]..Selected..[[)]]);
-                return;
-            end
-            if (Logic.IsLeader(Selected) == 1 and BundleEntitySelection.Local.Data.MilitaryRelease) then
+        if Logic.GetGuardianEntityID(Selected) == 0 or Logic.IsKnight(Selected) == false then
+            if BundleEntitySelection.Local.Data.MilitaryRelease and Logic.IsLeader(Selected) == 1 then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
                 GUI.SendScriptCommand([[DestroyEntity(]]..Soldiers[#Soldiers]..[[)]]);
                 return;
             end
-        else
-            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+            if BundleEntitySelection.Local.Data.SiegeEngineRelease and Logic.IsEntityInCategory(Selected, EntityCategories.SiegeEngine) == 0 then
+                Sound.FXPlay2DSound( "ui\\menu_click");
+                GUI.SendScriptCommand([[DestroyEntity(]]..Selected..[[)]]);
+                return;
+            end
         end
+        GUI_Military.DismountClicked_Orig_BundleEntitySelection();
     end
 
     GUI_Military.DismountUpdate_Orig_BundleEntitySelection = GUI_Military.DismountUpdate;
@@ -803,25 +797,19 @@ function BundleEntitySelection.Local:OverwriteMilitaryDismount()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Selected = GUI.GetSelectedEntity();
         local Type = Logic.GetEntityType(Selected);
-        if (Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false and Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 0) then
-            if Logic.IsLeader(Selected) == 1 and not BundleEntitySelection.Local.Data.MilitaryRelease then
-                XGUIEng.DisableButton(CurrentWidgetID, 1);
-            elseif  Logic.IsLeader(Selected) == 0 then
-                if not BundleEntitySelection.Local.Data.SiegeEngineRelease then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                end
-                if Type == Entities.U_Trebuchet then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                end
-            else
+        if Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false then
+            XGUIEng.DisableButton(CurrentWidgetID, 1);
+            if BundleEntitySelection.Local.Data.MilitaryRelease and Logic.IsLeader(Selected) == 1 then
                 SetIcon(CurrentWidgetID, {12, 1});
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
+            elseif BundleEntitySelection.Local.Data.SiegeEngineRelease and Logic.IsEntityInCategory(Selected, EntityCategories.SiegeEngine) == 1 then
                 XGUIEng.DisableButton(CurrentWidgetID, 0);
             end
             SetIcon(CurrentWidgetID, {14, 12});
-        else
-            SetIcon(CurrentWidgetID, {12, 1});
-            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+            return;
         end
+        SetIcon(CurrentWidgetID, {12, 1});
+        GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
     end
 end
 
