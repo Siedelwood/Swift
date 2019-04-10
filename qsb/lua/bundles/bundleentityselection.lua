@@ -776,25 +776,37 @@ function BundleEntitySelection.Local:OverwriteMilitaryDismount()
     GUI_Military.DismountClicked = function()
         local Selected = GUI.GetSelectedEntity(Selected);
         local Type = Logic.GetEntityType(Selected);
-        local PlayerID = GUI.GetPlayerID();
-        if Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false then
-            if (Type == Entities.U_SiegeEngineCart or Type == Entities.U_MilitarySiegeTower or
-                Type == Entities.U_MilitaryCatapult or Type == Entities.U_MilitaryBatteringRam or
-                Type == Entities.U_SiegeTowerCart or Type == Entities.U_CatapultCart or
-                Type == Entities.U_BatteringRamCart or Type == Entities.U_AmmunitionCart)
-            and BundleEntitySelection.Local.Data.SiegeEngineRelease then
-                Sound.FXPlay2DSound( "ui\\menu_click");
-                GUI.SendScriptCommand([[DestroyEntity(]]..Selected..[[)]]);
-                return;
-            end
-            if (Logic.IsLeader(Selected) == 1 and BundleEntitySelection.Local.Data.MilitaryRelease) then
+        local Guarded = Logic.GetGuardedEntityID(Selected);
+        local Guardian = Logic.GetGuardianEntityID(Selected);
+        
+        if Guarded ~= 0 and Logic.EntityGetPlayer(Guarded) ~= GUI.GetPlayerID() then
+            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+            return;
+        end
+        if Logic.IsKnight(Selected) or Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 1 then
+            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+            return;
+        end
+
+        if Logic.IsLeader(Selected) == 1 and Guarded == 0 then
+            if BundleEntitySelection.Local.Data.MilitaryRelease then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
                 GUI.SendScriptCommand([[DestroyEntity(]]..Soldiers[#Soldiers]..[[)]]);
                 return;
             end
-        else
-            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+        end
+
+        if Type == Entities.U_AmmunitionCart or Type == Entities.U_BatteringRamCart
+        or Type == Entities.U_CatapultCart or Type == Entities.U_SiegeTowerCart
+        or Type == Entities.U_MilitaryBatteringRam or Entities.U_MilitaryCatapult
+        or Type == Entities.U_MilitarySiegeTower then
+            if BundleEntitySelection.Local.Data.SiegeEngineRelease and Guardian == 0 then
+                Sound.FXPlay2DSound( "ui\\menu_click");
+                GUI.SendScriptCommand([[DestroyEntity(]]..Selected..[[)]]);
+            else
+                GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+            end
         end
     end
 
@@ -803,24 +815,45 @@ function BundleEntitySelection.Local:OverwriteMilitaryDismount()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Selected = GUI.GetSelectedEntity();
         local Type = Logic.GetEntityType(Selected);
-        if (Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false and Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 0) then
-            if Logic.IsLeader(Selected) == 1 and not BundleEntitySelection.Local.Data.MilitaryRelease then
+        local Guarded = Logic.GetGuardedEntityID(Selected);
+        local Guardian = Logic.GetGuardianEntityID(Selected);
+        
+        SetIcon(CurrentWidgetID, {12, 1});
+        if Guarded ~= 0 and Logic.EntityGetPlayer(Guarded) ~= GUI.GetPlayerID() then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+            return;
+        end
+        if Logic.IsKnight(Selected) or Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 1 then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+            return;
+        end
+        SetIcon(CurrentWidgetID, {14, 12});
+
+        if Type == Entities.U_MilitaryLeader then
+            if not BundleEntitySelection.Local.Data.MilitaryRelease then
                 XGUIEng.DisableButton(CurrentWidgetID, 1);
-            elseif  Logic.IsLeader(Selected) == 0 then
-                if not BundleEntitySelection.Local.Data.SiegeEngineRelease then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                end
-                if Type == Entities.U_Trebuchet then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                end
             else
-                SetIcon(CurrentWidgetID, {12, 1});
                 XGUIEng.DisableButton(CurrentWidgetID, 0);
             end
-            SetIcon(CurrentWidgetID, {14, 12});
-        else
-            SetIcon(CurrentWidgetID, {12, 1});
-            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+            return;
+        end
+
+        if Type == Entities.U_AmmunitionCart or Type == Entities.U_BatteringRamCart
+        or Type == Entities.U_CatapultCart or Type == Entities.U_SiegeTowerCart
+        or Type == Entities.U_MilitaryBatteringRam or Entities.U_MilitaryCatapult
+        or Type == Entities.U_MilitarySiegeTower then
+            if Guardian ~= 0 then
+                SetIcon(CurrentWidgetID, {12, 1});
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
+            else
+                if not BundleEntitySelection.Local.Data.SiegeEngineRelease then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                else
+                    XGUIEng.DisableButton(CurrentWidgetID, 0);
+                end
+            end
         end
     end
 end
@@ -855,10 +888,10 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
             return;
         end
 
-        local lang = QSB.Language;
         BundleEntitySelection.Local:SetTooltip(
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang]
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[QSB.Language],
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[QSB.Language],
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[QSB.Language]
         );
     end
 
@@ -890,40 +923,39 @@ end
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
     GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection = GUI_Tooltip.SetNameAndDescription;
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
+        local MotherWidget = "/InGame/Root/Normal/AlignBottomRight";
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        local lang = QSB.Language;
 
-        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButton") == CurrentWidgetID then
+        if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/KnightButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[lang],
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[lang]
+                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[QSB.Language],
+                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[QSB.Language]
             );
             return;
         end
 
-        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/BattalionButton") == CurrentWidgetID then
+        if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/BattalionButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[lang],
-                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[lang]
+                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[QSB.Language],
+                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[QSB.Language]
             );
             return;
         end
 
-        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngineCart/Dismount") == CurrentWidgetID 
-        or XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/AmmunitionCart/Dismount") == CurrentWidgetID 
-        or XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Dismount") == CurrentWidgetID 
+        if XGUIEng.GetWidgetID(MotherWidget.. "/DialogButtons/SiegeEngineCart/Dismount") == CurrentWidgetID 
+        or XGUIEng.GetWidgetID(MotherWidget.. "/DialogButtons/AmmunitionCart/Dismount") == CurrentWidgetID 
+        or XGUIEng.GetWidgetID(MotherWidget.. "/DialogButtons/Military/Dismount") == CurrentWidgetID 
         then
             local SelectedEntity = GUI.GetSelectedEntity();
             if SelectedEntity ~= 0 then
-                if Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Military) == 1
-                and Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Hero) == 0
-                then
-                    local GuardianEntity = Logic.GetGuardianEntityID(SelectedEntity)
-                    if GuardianEntity == nil or GuardianEntity == 0 then
+                if Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Military) == 1 then
+                    local GuardianEntity = Logic.GetGuardianEntityID(SelectedEntity);
+                    local GuardedEntity = Logic.GetGuardedEntityID(SelectedEntity);
+                    if GuardianEntity == 0 and GuardedEntity == 0 then
                         BundleEntitySelection.Local:SetTooltip(
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang],
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[lang]
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[QSB.Language],
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[QSB.Language],
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[QSB.Language]
                         );
                         return;
                     end
