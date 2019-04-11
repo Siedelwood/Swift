@@ -508,7 +508,6 @@ function AddOnInteractiveObjectTemplates.Global:TrebuchetActivate()
         GameCallback_QSB_OnDisambleTrebuchet = AddOnInteractiveObjectTemplates.Global.OnTrebuchetDisambled;
         GameCallback_QSB_OnErectTrebuchet = function() end;
         StartSimpleJobEx(self.WatchTrebuchetsAndCarts);
-        API.DisableRefillTrebuchet(true);
         self.Data.Trebuchet.IsActive = true;
     end
 end

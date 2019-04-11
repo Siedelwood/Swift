@@ -26,23 +26,6 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
--- @within Anwenderfunktionen
---
--- @usage
--- API.DisableRefillTrebuchet(true);
---
-function API.DisableRefillTrebuchet(_Flag)
-    if not GUI then
-        API.Bridge("API.DisableRefillTrebuchet(" ..tostring(_Flag).. ")");
-        return;
-    end
-    API.Bridge("BundleEntitySelection.Local.Data.RefillTrebuchet = " ..tostring(not _Flag));
-    BundleEntitySelection.Local.Data.RefillTrebuchet = not _Flag;
-end
-
----
 -- Deaktiviert oder aktiviert das Entlassen von Dieben.
 -- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
 -- @within Anwenderfunktionen
@@ -165,15 +148,12 @@ GetSelectedEntities = API.GetSelectedEntities;
 BundleEntitySelection = {
     Global = {
         Data = {
-            RefillTrebuchet = true,
-            AmmunitionUnderway = {},
             TrebuchetIDToCart = {},
             SelectedEntities = {};
         },
     },
     Local = {
         Data = {
-            RefillTrebuchet = true,
             ThiefRelease = false,
             SiegeEngineRelease = true,
             MilitaryRelease = true,
@@ -233,19 +213,8 @@ BundleEntitySelection = {
                         en = "Trebuchet",
                     },
                     Text = {
-                        de = "- Kann über weite Strecken Gebäude angreifen {cr}- Kann Gebäude in Brand stecken {cr}- Kann nur durch Munitionsanforderung befüllt werden {cr}- Trebuchet kann manuell zurückgeschickt werden",
-                        en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- Can only be filled by ammunition request {cr}- The trebuchet can be manually send back to the city",
-                    },
-                },
-
-                TrebuchetRefiller = {
-                    Title = {
-                        de = "Aufladen",
-                        en = "Refill",
-                    },
-                    Text = {
-                        de = "- Läd das Trebuchet mit Karren aus dem Lagerhaus nach {cr}- Benötigt die Differenz an Steinen {cr}- Kann jeweils nur einen Wagen zu selben Zeit senden",
-                        en = "- Refill the Trebuchet with a cart from the storehouse {cr}- Stones for missing ammunition required {cr}- Only one cart at the time allowed",
+                        de = "- Kann über weite Strecken Gebäude angreifen {cr}- Kann Gebäude in Brand stecken {cr}- Trebuchet kann manuell zurückgeschickt werden",
+                        en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- The trebuchet can be manually send back to the city",
                     },
                 },
             },
@@ -265,19 +234,6 @@ function BundleEntitySelection.Global:Install()
 end
 
 ---
--- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param[type=boolean] _Boolean Nachfüllen deaktiviert
--- @within Internal
--- @local
---
-function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
-    self.Data.RefillTrebuchet = not _Boolean;
-    Logic.ExecuteInLuaLocalState([[
-        BundleEntitySelection.Local:DeactivateRefillTrebuchet(]]..tostring(_Boolean)..[[)
-    ]]);
-end
-
----
 -- Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
 -- @param[type=number] _EntityID EntityID of Trebuchet
 -- @within Internal
@@ -291,14 +247,6 @@ function BundleEntitySelection.Global:MilitaryDisambleTrebuchet(_EntityID)
     -- Bricht die Ausführung dieser Funktion ab!
     if GameCallback_QSB_OnDisambleTrebuchet then
         GameCallback_QSB_OnDisambleTrebuchet(_EntityID, PlayerID, x, y, z);
-        return;
-    end
-
-    if self.Data.AmmunitionUnderway[_EntityID] then
-        API.Message {
-            de = "Eine Munitionslieferung ist auf dem Weg!",
-            en = "A ammunition card is on the way!",
-        };
         return;
     end
 
@@ -366,71 +314,6 @@ function BundleEntitySelection.Global:MilitaryErectTrebuchet(_EntityID)
     ]]);
 end
 
----
--- Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
--- @param[type=number] _EntityID EntityID of Trebuchet
--- @within Internal
--- @local
---
-function BundleEntitySelection.Global:MilitaryCallForRefiller(_EntityID)
-    local PlayerID = Logic.EntityGetPlayer(_EntityID);
-    local StoreID = Logic.GetStoreHouse(PlayerID);
-    local HaveAmount = Logic.GetAmmunitionAmount(_EntityID);
-    local Stones = GetPlayerResources(Goods.G_Stone, PlayerID)
-
-    -- Externes Callback für das Kartenskript
-    -- Bricht die Ausführung dieser Funktion ab!
-    if GameCallback_tHEA_OnRefillerCartCalled then
-        GameCallback_tHEA_OnRefillerCartCalled(_EntityID, PlayerID, StoreID, HaveAmount, Stones);
-        return;
-    end
-
-    if self.Data.AmmunitionUnderway[_EntityID] or StoreID == 0 then
-        API.Message {
-            de = "Eine Munitionslieferung ist auf dem Weg!",
-            en = "A ammunition card is on the way!",
-        };
-        return;
-    end
-
-    if HaveAmount == 10 or Stones < 10-HaveAmount then
-        API.Message {
-            de = "Nicht genug Steine oder das Trebuchet ist voll!",
-            en = "Not enough stones or the trebuchet is full!",
-        };
-        return;
-    end
-
-    local x,y = Logic.GetBuildingApproachPosition(StoreID);
-    local CartID = Logic.CreateEntity(Entities.U_AmmunitionCart, x, y, 0, PlayerID);
-    self.Data.AmmunitionUnderway[_EntityID] = {CartID, 10-HaveAmount};
-    Logic.SetEntityInvulnerabilityFlag(CartID, 1);
-    Logic.SetEntitySelectableFlag(CartID, 0);
-    AddGood(Goods.G_Stone, (10-HaveAmount)*(-1), PlayerID);
-
-    StartSimpleJobEx( function(_Trebuchet)
-        local CartID = self.Data.AmmunitionUnderway[_EntityID][1];
-        local Amount = self.Data.AmmunitionUnderway[_EntityID][2];
-
-        if not IsExisting(CartID) or not IsExisting(_Trebuchet) then
-            self.Data.AmmunitionUnderway[_EntityID] = nil;
-            return true;
-        end
-
-        if not Logic.IsEntityMoving(CartID) then
-            local x,y,z = Logic.EntityGetPos(_Trebuchet);
-            Logic.MoveSettler(CartID, x, y);
-        end
-
-        if IsNear(CartID, _Trebuchet, 500) then
-            for i=1, Amount, 1 do
-                Logic.RefillAmmunitions(_Trebuchet);
-            end
-            DestroyEntity(CartID);
-        end
-    end, _EntityID);
-end
-
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -448,22 +331,11 @@ function BundleEntitySelection.Local:Install()
     self:OverwriteMilitaryDisamble();
     self:OverwriteMilitaryErect();
     self:OverwriteMilitaryCommands();
-    self:OverwriteGetStringTableText();
 
     Core:AppendFunction(
         "GameCallback_GUI_SelectionChanged",
         self.OnSelectionCanged
     );
-end
-
----
--- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param[type=boolean] _Boolean Nachfüllen deaktiviert
--- @within Internal
--- @local
---
-function BundleEntitySelection.Local:DeactivateRefillTrebuchet(_Boolean)
-    self.Data.RefillTrebuchet = not _Boolean;
 end
 
 ---
@@ -499,41 +371,10 @@ function BundleEntitySelection.Local.OnSelectionCanged(_Source)
             XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 0);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military", 1);
             XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military", 1);
-            if BundleEntitySelection.Local.Data.RefillTrebuchet then
-                XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 1);
-            else
-                XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 0);
-            end
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 0);
             GUI_Military.StrengthUpdate();
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngine", 1);
         end
-    end
-end
-
----
--- Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
--- sodass eigene Texte für Keys angezeigt werden.
---
--- @within Internal
--- @local
---
-function BundleEntitySelection.Local:OverwriteGetStringTableText()
-    GetStringTableText_Orig_BundleEntitySelection = XGUIEng.GetStringTableText;
-    XGUIEng.GetStringTableText = function(_key)
-        if _key == "UI_ObjectDescription/Attack" then
-            local EntityID = GUI.GetSelectedEntity();
-            if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
-                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Text[QSB.Language];
-            end
-        end
-        if _key == "UI_ObjectNames/Attack" then
-            local EntityID = GUI.GetSelectedEntity();
-            if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
-                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Title[QSB.Language];
-            end
-        end
-
-        return GetStringTableText_Orig_BundleEntitySelection(_key);
     end
 end
 
@@ -544,25 +385,6 @@ end
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryCommands()
-    GUI_Military.AttackClicked = function()
-        Sound.FXPlay2DSound( "ui\\menu_click");
-        local SelectedEntities = {GUI.GetSelectedEntities()};
-        local EntityType = Logic.GetEntityType(SelectedEntities[1]);
-
-        if EntityType == Entities.U_Trebuchet then
-            for i=1, #SelectedEntities, 1 do
-                EntityType = Logic.GetEntityType(SelectedEntities[i]);
-                if EntityType == Entities.U_Trebuchet then
-                    GUI.SendScriptCommand([[
-                        BundleEntitySelection.Global:MilitaryCallForRefiller(]]..SelectedEntities[i]..[[)
-                    ]]);
-                end
-            end
-        else
-            GUI.ActivateExplicitAttackCommandState();
-        end
-    end
-
     GUI_Military.StandGroundClicked = function()
         Sound.FXPlay2DSound( "ui\\menu_click");
         local SelectedEntities = {GUI.GetSelectedEntities()};
