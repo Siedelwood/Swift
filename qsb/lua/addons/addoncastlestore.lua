@@ -1513,6 +1513,7 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:RestoreStorehouseMenu()
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtonsgit ", 1);
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InCity/Goods", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InCity", 0);
     SetIcon("/InGame/Root/Normal/AlignBottomRight/DialogButtons/PlayerButtons/DestroyGoods", {16, 8});
@@ -1581,6 +1582,7 @@ function AddOnCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse", 1);
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/AmountContainer", 0);
     XGUIEng.ShowAllSubWidgets(MotherPath.. "Selection/Storehouse/TabButtons", 1);
+    XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/TabButtons", 0);
 
     GUI_Trade.StorehouseSelected()
     local AnchorInfoForBigX, AnchorInfoForBigY = XGUIEng.GetWidgetLocalPosition(MotherPath.. "Selection/AnchorInfoForBig")
