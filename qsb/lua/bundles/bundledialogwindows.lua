@@ -258,6 +258,7 @@ BundleDialogWindows = {
 
 QSB.SimpleTypewriter = {
     m_Tokens     = {},
+    m_Delay      = 15,
     m_Waittime   = 80,
     m_Speed      = 1,
     m_Index      = 0,
@@ -326,6 +327,7 @@ function QSB.SimpleTypewriter:Play()
     if BundleBriefingSystem then
         BundleBriefingSystem.Global.Data.BriefingActive = true;
     end
+    self.m_InitialWaittime = self.m_Delay;
     self:TokenizeText();
     API.Bridge([[
         if BundleBriefingSystem then
@@ -482,29 +484,34 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter.ControllerJob(_Data)
-    _Data.m_Index = _Data.m_Index + _Data.m_Speed;
-    if _Data.m_Index > #_Data.m_Tokens then
-        _Data.m_Index = #_Data.m_Tokens;
+    if _Data.m_InitialWaittime > 0 then
+        _Data.m_InitialWaittime = _Data.m_InitialWaittime -1;
     end
-    local Index = math.ceil(_Data.m_Index);
+    if _Data.m_InitialWaittime == 0 then
+        _Data.m_Index = _Data.m_Index + _Data.m_Speed;
+        if _Data.m_Index > #_Data.m_Tokens then
+            _Data.m_Index = #_Data.m_Tokens;
+        end
+        local Index = math.ceil(_Data.m_Index);
 
-    local Text = "";
-    for i= 1, Index, 1 do
-        Text = Text .. _Data.m_Tokens[i];
-    end
-    API.Bridge([[
-        GUI.ClearNotes()
-        GUI.AddNote("]] ..Text.. [[");
-    ]])
-    
-    if Index == #_Data.m_Tokens then
-        _Data.m_Waittime = _Data.m_Waittime -1;
-        if _Data.m_Waittime <= 0 then
-            _Data:Stop();
-            if _Data.m_Callback then
-                _Data.m_Callback(_Data);
+        local Text = "";
+        for i= 1, Index, 1 do
+            Text = Text .. _Data.m_Tokens[i];
+        end
+        API.Bridge([[
+            GUI.ClearNotes()
+            GUI.AddNote("]] ..Text.. [[");
+        ]])
+        
+        if Index == #_Data.m_Tokens then
+            _Data.m_Waittime = _Data.m_Waittime -1;
+            if _Data.m_Waittime <= 0 then
+                _Data:Stop();
+                if _Data.m_Callback then
+                    _Data.m_Callback(_Data);
+                end
+                return true;
             end
-            return true;
         end
     end
 end

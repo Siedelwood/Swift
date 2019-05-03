@@ -298,6 +298,7 @@ function AddOnCutsceneSystem.Local:Install()
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.WaitForLoadScreenHidden);
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.DisplayFastForwardMessage);
 
+    self:OverrideGameCallbackEscape();
     self:OverrideUpdateFader();
 end
 
@@ -607,6 +608,21 @@ end
 --
 function AddOnCutsceneSystem.Local:LERP(_A, _B, _T)
     return _A + ((_B - _A) * _T);
+end
+
+---
+-- Überschreibt das Game Callback Escape, sodass während einer Cutscene nicht
+-- abgebrochen werden kann..
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:OverrideGameCallbackEscape()
+    AddOnCutsceneSystem.Local.GameCallback_Escape = GameCallback_Escape;
+    GameCallback_Escape = function()
+        if not AddOnCutsceneSystem.Local:IsCutsceneActive() then
+            AddOnCutsceneSystem.Local.GameCallback_Escape();
+        end
+    end
 end
 
 ---
