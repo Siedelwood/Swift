@@ -16,6 +16,8 @@ BundleSymfoniaBehaviors = {};
 API = API or {};
 QSB = QSB or {};
 
+QSB.VictoryWithPartyEntities = {};
+
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -1288,8 +1290,8 @@ end
 b_Reward_VictoryWithParty = {
     Name = "Reward_VictoryWithParty",
     Description = {
-        en = "Reward: The player wins the game with an animated festival on the market.",
-        de = "Lohn: Der Spieler gewinnt das Spiel mit einer animierten Siegesfeier.",
+        en = "Reward: The player wins the game with an animated festival on the market. Continue playing deleates the festival.",
+        de = "Lohn: Der Spieler gewinnt das Spiel mit einer animierten Siegesfeier. Bei weiterspielen wird das Fest gelöscht.",
     },
     Parameter =    {}
 };
@@ -1330,7 +1332,8 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
             Entities.U_SpouseF02,
             Entities.U_SpouseF03,
         };
-        VictoryGenerateFestivalAtPlayer(pID, PossibleSettlerTypes);
+        local Generated = VictoryWithParty_GenerateParty(pID, PossibleSettlerTypes);
+        QSB.VictoryWithPartyEntities[pID] = Generated;
 
         Logic.ExecuteInLuaLocalState([[
             if IsExisting(]]..market..[[) then
@@ -1339,16 +1342,66 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
                 CameraAnimation.QueueAnimation(CameraAnimation.StartCameraRotation, 5)
                 CameraAnimation.QueueAnimation(CameraAnimation.Stay ,9999)
             end
-            XGUIEng.ShowWidget("/InGame/InGame/MissionEndScreen/ContinuePlaying", 0);
+
+            GUI_Window.ContinuePlayingClicked_Orig_Reward_VictoryWithParty = GUI_Window.ContinuePlayingClicked
+            GUI_Window.ContinuePlayingClicked = function()
+                GUI_Window.ContinuePlayingClicked_Orig_Reward_VictoryWithParty()
+                
+                local PlayerID = GUI.GetPlayerID()
+                API.Bridge("VictoryWithParty_ClearParty(" ..PlayerID.. ")")
+
+                CameraAnimation.AllowAbort = true
+                CameraAnimation.Abort()
+            end
         ]]);
     end
+end
+
+-- Diese Funktion ist statisch und wird von GUI_Window.ContinuePlayingClicked
+-- aufgerufen! Rufe sie niemals manuell auf!
+function VictoryWithParty_ClearParty(_PlayerID)
+    if QSB.VictoryWithPartyEntities[_PlayerID] then
+        for k, v in pairs(QSB.VictoryWithPartyEntities[_PlayerID]) do
+            DestroyEntity(v);
+        end
+        QSB.VictoryWithPartyEntities[_PlayerID] = nil;
+    end
+end
+
+-- Dies ist eine Hilfsfunktion zur Erzeugung eines löschbaren Festes. Wird
+-- im Code aufgerufen. Nicht manuell aufrufen!
+function VictoryWithParty_GenerateParty(_PlayerID, _PossibleSettlersTypesList)
+    local GeneratedEntities = {};
+    local Marketplace = Logic.GetMarketplace(_PlayerID);
+    if Marketplace ~= nil and Marketplace ~= 0 then
+        local MarketX, MarketY = Logic.GetEntityPosition(Marketplace);
+        local ID = Logic.CreateEntity(Entities.D_X_Garland, MarketX, MarketY, 0, _PlayerID)
+        table.insert(GeneratedEntities, ID);
+        for j=1, 10 do
+            for k=1,10 do
+                local SettlersX = MarketX -700+ (j*150);
+                local SettlersY = MarketY -700+ (k*150);
+                
+                local rand = Logic.GetRandom(100);
+                
+                if rand > 70 then
+                    local SettlerType = _PossibleSettlersTypesList[1 + Logic.GetRandom(#_PossibleSettlersTypesList)];
+                    local Orientation = Logic.GetRandom(360);
+                    local WorkerID = Logic.CreateEntityOnUnblockedLand(SettlerType, SettlersX, SettlersY, Orientation, _PlayerID);
+                    Logic.SetTaskList(WorkerID, TaskLists.TL_WORKER_FESTIVAL_APPLAUD_SPEECH);
+                    table.insert(GeneratedEntities, WorkerID);
+                end
+            end
+        end
+    end
+    return GeneratedEntities;
 end
 
 function b_Reward_VictoryWithParty:Debug(_Quest)
     return false;
 end
 
-Core:RegisterBehavior(b_Reward_VictoryWithParty)
+Core:RegisterBehavior(b_Reward_VictoryWithParty);
 
 -- -------------------------------------------------------------------------- --
 
