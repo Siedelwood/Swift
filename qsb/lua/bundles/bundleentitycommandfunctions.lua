@@ -391,7 +391,7 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     end
 
     StartSimpleJobEx( function(_EntityID, _TargetID)
-        if not IsExisting(_EntityID) or not IsExisting(_EntityID) then
+        if not IsExisting(_EntityID) or not IsExisting(_TargetID) then
             return true;
         end
         if not Logic.IsEntityMoving(_EntityID) then
