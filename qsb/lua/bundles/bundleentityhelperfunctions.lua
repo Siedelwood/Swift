@@ -190,7 +190,7 @@ GetEntityName = API.EntityGetName;
 --
 function API.EntitySetName(_entity, _name)
     if GUI then
-        API.Bridge("API.EntitySetName(" ..GetID(_EntityID).. ", '" .._name.. "')")
+        API.Bridge("API.EntitySetName(" ..GetID(_entity).. ", '" .._name.. "')")
         return;
     end
     if IsExisting(_name) then
