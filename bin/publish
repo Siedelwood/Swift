@@ -44,7 +44,7 @@ echo "Fertig!"
 
 echo "Archiv zusammenstellen..."
 zip -r Release/doc Release/guide Release/* &>/dev/null
-mv Release/doc.zip Release.zip &>/dev/null
+mv Release/doc.zip var/Release.zip &>/dev/null
 echo "Fertig!"
 
 echo "Aufräumen..."

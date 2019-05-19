@@ -39,6 +39,7 @@
 <li><a href="#Reward">Reward</a></li>
 <li><a href="#Briefing">Briefing</a></li>
 <li><a href="#Reprisal">Reprisal</a></li>
+<li><a href="#Trigger">Trigger</a></li>
 </ul>
 
 
@@ -94,7 +95,7 @@
 <p>
 <p> Briefings dienen zur Darstellung von Dialogen oder zur näheren Erleuterung
  der aktuellen Spielsituation. Mit Multiple Choice können dem Spieler mehrere
- Auswahlmöglichkeiten gegeben werden, multiple Handlungsstränge gestartet
+ Auswahlmöglichkeiten gegeben, multiple Handlungsstränge gestartet
  oder Menüstrukturen abgebildet werden. Mittels Sprüngen und Leerseiten
  kann innerhalb des Multiple Choice Briefings navigiert werden.
 <p> <p>Das wichtigste auf einen Blick:
@@ -109,7 +110,7 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#API.AddPages">API.AddPages (_Briefing)</a></td>
-	<td class="summary">Erzeugt die Funktionen zum erzeugen von Seiten in einem Briefing und bindet
+	<td class="summary">Erzeugt die Funktionen zur Erstellung von Seiten in einem Briefing und bindet
  sie an das Briefing.</td>
 	</tr>
 	<tr>
@@ -148,6 +149,10 @@
 	<td class="summary">Konvertiert eine Briefing-Table des alten Formats in das neue.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:DisableMCAnswers">BundleBriefingSystem.Global:DisableMCAnswers ()</a></td>
+	<td class="summary">Aktualisiert, ob eine Option sichtbar ist oder nicht.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:FinishBriefing">BundleBriefingSystem.Global:FinishBriefing ()</a></td>
 	<td class="summary">Beendet ein Briefing.</td>
 	</tr>
@@ -176,6 +181,10 @@
 	<td class="summary">Startet die aktuelle Briefing-Seite.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:PushBriefingNote">BundleBriefingSystem.Global:PushBriefingNote (_Text)</a></td>
+	<td class="summary">Fügt den Briefing Messages einen neuen Eintrag hinzu.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Global:StartBriefing">BundleBriefingSystem.Global:StartBriefing (_Briefing)</a></td>
 	<td class="summary">Startet ein Briefing.</td>
 	</tr>
@@ -186,6 +195,11 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:ActivateCinematicMode">BundleBriefingSystem.Local:ActivateCinematicMode ()</a></td>
 	<td class="summary">Aktiviert den Cinematic Mode.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:ConvertBriefingNotes">BundleBriefingSystem.Local:ConvertBriefingNotes ()</a></td>
+	<td class="summary">Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+ die Table.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:ConvertPosition">BundleBriefingSystem.Local:ConvertPosition (_Table)</a></td>
@@ -249,6 +263,10 @@
 	<td class="summary">Reagiert auch Klick auf den Back-Button während des Throneroom Mode.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:PushBriefingNote">BundleBriefingSystem.Local:PushBriefingNote (_Text)</a></td>
+	<td class="summary">Fügt den Briefing Messages einen neuen Eintrag hinzu.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:SetBarStyle">BundleBriefingSystem.Local:SetBarStyle (_Transparend)</a></td>
 	<td class="summary">Setzt den Stil der Briefing-Bars.</td>
 	</tr>
@@ -280,6 +298,16 @@
 	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:ThroneRoomLeftClick">BundleBriefingSystem.Local:ThroneRoomLeftClick ()</a></td>
 	<td class="summary">Reagiert auf einen beliebigen Linksklick im Throneroom.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem.Local:UpdateBriefingNotes">BundleBriefingSystem.Local:UpdateBriefingNotes ()</a></td>
+	<td class="summary">Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+ die Table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleBriefingSystem:OverrideApiNote">BundleBriefingSystem:OverrideApiNote ()</a></td>
+	<td class="summary">Überschreibt API.Note, damit Nachrichten auch während Briefings angezeigt
+ werden können.</td>
+	</tr>
 </table>
 <h2><a href="#Reward">Reward</a></h2>
 <table class="function_list">
@@ -308,6 +336,14 @@
  in ihr ab.</td>
 	</tr>
 </table>
+<h2><a href="#Trigger">Trigger</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Trigger_Briefing">Trigger_Briefing (_QuestName, _Type, _Waittime)</a></td>
+	<td class="summary">Startet einen Quest, nachdem das Briefing eines Quests gestartet und
+ durchlaufen wurde.</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
@@ -321,9 +357,9 @@
     <strong>API.AddPages (_Briefing)</strong>
     </dt>
     <dd>
-    Erzeugt die Funktionen zum erzeugen von Seiten in einem Briefing und bindet
+    Erzeugt die Funktionen zur Erstellung von Seiten in einem Briefing und bindet
  sie an das Briefing.  Diese Funktion muss vor dem Start eines Briefing
- aufgerufen werden.
+ aufgerufen werden um Seiten hinzuzufügen.
 <p> <b>Alias</b>: AddPages
 
 
@@ -441,7 +477,7 @@
     </dt>
     <dd>
     Startet ein Briefing.
-<p> Für ein Briefing könn verschiedene spezielle Einstellungen vorgenommen
+<p> Für ein Briefing können verschiedene spezielle Einstellungen vorgenommen
  werden. Jede dieser Einstellungen wird mit true aktiviert.
  <table border="1">
  <tr>
@@ -451,6 +487,11 @@
  <tr>
  <td>HideBorderPins</td>
  <td>Die Grenzsteine werden während des Briefing ausgeblendet</td>
+ </tr>
+ </tr>
+ <tr>
+ <td>TransparentBars</td>
+ <td>Die Bars werden transparent dargestellt. (Opacity = 39%)</td>
  </tr>
  <tr>
  <td>ShowSky</td>
@@ -565,6 +606,22 @@
            <span class="types"><span class="type">number</span></span>
         ID des Briefing
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Global:DisableMCAnswers"></a>
+    <strong>BundleBriefingSystem.Global:DisableMCAnswers ()</strong>
+    </dt>
+    <dd>
+    Aktualisiert, ob eine Option sichtbar ist oder nicht.  Eine Option
+ braucht eine Update-Funktion "Display". Die Update-Funktion
+ erhält Daten der Seite und Daten der Antwort.
+
+
+
 
 
 
@@ -698,6 +755,32 @@
 
 </dd>
     <dt>
+    <a name = "BundleBriefingSystem.Global:PushBriefingNote"></a>
+    <strong>BundleBriefingSystem.Global:PushBriefingNote (_Text)</strong>
+    </dt>
+    <dd>
+    Fügt den Briefing Messages einen neuen Eintrag hinzu.  Jede Nachricht ist
+ 120 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
+ Briefing beendet ist, werden sie zu normalen Notes.
+<p> Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
+ Eintrag auf 0 reduziert.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Text der Nachricht
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "BundleBriefingSystem.Global:StartBriefing"></a>
     <strong>BundleBriefingSystem.Global:StartBriefing (_Briefing)</strong>
     </dt>
@@ -744,6 +827,22 @@
     </dt>
     <dd>
     Aktiviert den Cinematic Mode.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Local:ConvertBriefingNotes"></a>
+    <strong>BundleBriefingSystem.Local:ConvertBriefingNotes ()</strong>
+    </dt>
+    <dd>
+    Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+ die Table.  Diese Funktion wird automatisch vom Briefing System aufgerufen.
+
 
 
 
@@ -1051,6 +1150,32 @@
 
 </dd>
     <dt>
+    <a name = "BundleBriefingSystem.Local:PushBriefingNote"></a>
+    <strong>BundleBriefingSystem.Local:PushBriefingNote (_Text)</strong>
+    </dt>
+    <dd>
+    Fügt den Briefing Messages einen neuen Eintrag hinzu.  Jede Nachricht ist
+ 12 Sekunden lang zu sehen. Sollten Nachrichten zu sehen sein, wenn ein
+ Briefing beendet ist, werden sie zu normalen Notes.
+<p> Werden 8 aktive Einträge überschritten, wird die Anzeigezeit des ersten
+ Eintrag auf 0 reduziert.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Text der Nachricht
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "BundleBriefingSystem.Local:SetBarStyle"></a>
     <strong>BundleBriefingSystem.Local:SetBarStyle (_Transparend)</strong>
     </dt>
@@ -1176,6 +1301,37 @@
 
 
 </dd>
+    <dt>
+    <a name = "BundleBriefingSystem.Local:UpdateBriefingNotes"></a>
+    <strong>BundleBriefingSystem.Local:UpdateBriefingNotes ()</strong>
+    </dt>
+    <dd>
+    Konvertiert alle angezeigten Briefing Notes zu normalen Notes und leert
+ die Table.  Diese Funktion wird automatisch vom Briefing System aufgerufen.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleBriefingSystem:OverrideApiNote"></a>
+    <strong>BundleBriefingSystem:OverrideApiNote ()</strong>
+    </dt>
+    <dd>
+    Überschreibt API.Note, damit Nachrichten auch während Briefings angezeigt
+ werden können.
+
+
+
+
+
+
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="Reward"></a>Reward</h2>
 
@@ -1218,6 +1374,7 @@
 <p> <b>Achtung</b>: Diese Funktion wird von
  <a href="#API.AddPages">API.AddPages</a> erzeugt und an
  das Briefing gebunden.
+<p> <h5>Normale Briefings</h5>
 <p> Eine einfache Seite lässt sich unter Nutzung von DialogCamera erstellen.
  Dadurch wird entweder Nahsicht oder Fernsicht verwendet. Werte für Angle,
  Rotation oder Zoom werden automatisch gesetzt, wenn sie fehlen.
@@ -1242,18 +1399,20 @@
     }
 }</pre>
  Die Dauer der Animation (FlyTo.Duration) wird automatisch zur Dauer der
- Seite, wenn nicht gesetzt oder geringer als die Dauer der Animation ist.
-<p> Jede Seite kann eine Grafik am linken Rand anzeigen. Diese Grafik wird
- als Portrait betrachtet.
- <pre>Portrait = "Path/to/Portrait.ong",</pre>
- Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
- heißt Splashscreen.
+ Seite, wenn diese nicht gesetzt ist oder die Animation länger ist.
+<p> <pre>Portrait = "Path/to/Portrait.ong",</pre>
+ Jede Seite kann eine Grafik am linken oberen Rand anzeigen. Diese Grafik wird
+ als Portrait betrachtet und sollte 400x600 Pixel groß sein.
+
  <pre>Splashscreen = "Path/to/Graphic.ong",</pre>
-<p> AP unterstützt ebenso die Angabe von XYZ-Koordinaten. Positionen können auch
+ Jede Seite kann ebenso eine bildschirmfüllende Grafik anzeigen. Diese Grafik
+ heißt Splashscreen. Splashscreens sollten immer das Format 16:9 haben.
+<p><pre>Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
+LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
+ AP unterstützt ebenso die Angabe von XYZ-Koordinaten. Positionen können auch
  als Vektoren angegeben werden. Dann hat die Kamera eine Position und eine
  Blickrichtung.
- <pre>Position = {X= 12000.0, Y= 36000.0, Z= 6000.0},
-LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
+<p> <h5>Multiple Choice</h5>
 <p> In einem Dialog kann der Spieler auch zur Auswahl einer Option gebeten
  werden. Dies wird als Multiple Choice bezeichnet. Schreibe die Optionen
  in eine Subtable MC.
@@ -1264,6 +1423,9 @@ LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
         {"Antwort 2", "SomePageName"},
     },
 }</pre>
+ Eine Antwort kann auch markiert werden, dass sie auch bei einem Rücksprung,
+ nicht mehrfach gewählt werden kann.
+ <pre>{"Antwort 3", "AnotherPage", Remove = true},</pre>
  Nachdem der Spieler eine Antwort gewählt hat, wird er auf die Seite mit
  der angegebenen ID oder dem Namen geleitet. Um das Briefing zu beenden,
  nachdem ein Pfad beendet ist, wird eine leere AP-Seite genutzt. Auf diese
@@ -1273,15 +1435,16 @@ LookAt   = {X= 10000.0, Y= 35000.0, Z= 2345.0},</pre>
  ID der Seite angeben werden, zu der gesprungen werden soll.
  <pre>AP(8)</pre>
  Pages können auch einen Namen erhalten. Der Name kann anstelle der ID für
- Sprünge und Multiple Choice genutzt werden.
+ Sprünge genutzt werden.
  <pre>AP("SomePageName")</pre>
 <p> Um später zu einem beliebigen Zeitpunkt die gewählte Antwort einer Seite zu
  erfahren, muss der Name der Seite oder die ID genutzt werden.
  <pre>Briefing.Finished(_Data)
-local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
+    local Choosen = _Data:GetPage("Choice"):GetSelectedAnswer();
 end</pre>
- Die zurückgegebene Zahl ist die Position der Antwort, angefangen von oben.
- Wird 0 zurückgegeben, wurde noch nicht geantwortet.
+ Die zurückgegebene Zahl ist der Index der Antwort, angefangen von oben.
+ Wird 0 zurückgegeben, wurde noch nicht geantwortet. Wenn Anworten nicht
+ aktiv sind, verändert sich der Index anderer Antworten nicht.
 <p> Wenn man zurückblättern erlaubt, aber nicht will, dass die Entscheidung
  erneut getroffen werden kann, kann man dies mit NoRethink unterbinden.
  <pre>AP {
@@ -1289,7 +1452,7 @@ end</pre>
     NoRethink = true,
 }</pre>
  Auf diese Weise hat der Spieler die Möglichkeit die Texte nach der letzten
- Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändert.
+ Entscheidung noch einmal zu lesen, ohne dass er seine Meinung ändern kann.
 
 
 
@@ -1338,7 +1501,7 @@ end</pre>
         </li>
         <li><span class="parameter">_title</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        	      Titel der Seite
+        	       Titel der Seite
         </li>
         <li><span class="parameter">_text</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
@@ -1350,7 +1513,7 @@ end</pre>
         </li>
         <li><span class="parameter">_action</span>
             <span class="types"><span class="type">function</span></span>
-              Callback-Funktion
+               Callback-Funktion
         </li>
     </ul>
 
@@ -1365,7 +1528,10 @@ end</pre>
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">ASP(<span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>);</pre>
+        <pre class="example"><span class="comment">-- Beispiel ohne Page Name
+</span>ASP(<span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>);
+<span class="comment">-- Beispiel mit Page Name
+</span>ASP(<span class="string">"B1P1"</span>, <span class="string">"hans"</span>, <span class="string">"Hänschen-Klein"</span>, <span class="string">"Ich gehe in die weitel Welt hinein."</span>, <span class="keyword">true</span>);</pre>
     </ul>
 
 </dd>
@@ -1400,13 +1566,50 @@ end</pre>
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Trigger"></a>Trigger</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Trigger_Briefing"></a>
+    <strong>Trigger_Briefing (_QuestName, _Type, _Waittime)</strong>
+    </dt>
+    <dd>
+    Startet einen Quest, nachdem das Briefing eines Quests gestartet und
+ durchlaufen wurde.
+<p> Der Trigger wird sowohl Erfolgs- als auch Niederlage-Briefings prüfen.
+ Über den Typ-Parameter kann auf eine spezielle Art eingeschränt werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_QuestName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name des Quest
+        </li>
+        <li><span class="parameter">_Type</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             (Optional) Briefing-Typ
+        </li>
+        <li><span class="parameter">_Waittime</span>
+            <span class="types"><span class="type">number</span></span>
+         (optional) Wartezeit in Sekunden
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-20 19:28:34 </i>
+<i style="float:right;">Last updated 2019-05-19 12:12:03 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

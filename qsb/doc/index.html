@@ -65,7 +65,8 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Early Access 3";
+QSB.Version = "Version 2.0.0 1/6/2019";
+QSB.Language = "de";
 QSB.HistoryEdition = false;
 
 QSB.RealTime_SecondsSinceGameStart = 0;
@@ -630,9 +631,8 @@ GUI_NoteDown = API.Message;
 -- @local
 --
 function API.EnsureMessage(_Message)
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Message) == "table" then
-        _Message = _Message[Language];
+        _Message = _Message[QSB.Language];
     end
     return tostring(_Message);
 end
@@ -1253,6 +1253,8 @@ Core = {
 --
 function Core:InitalizeBundles()
     if not GUI then
+        QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
         self:IdentifyHistoryEdition();
@@ -1264,6 +1266,8 @@ function Core:InitalizeBundles()
         StartSimpleHiResJob("CoreEventJob_OnEveryTurn");
         StartSimpleJob("CoreEventJob_OnEverySecond");
     else
+        QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+
         self:SetupLocal_HackRegisterHotkey();
 
         StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
@@ -1412,7 +1416,7 @@ end
 --
 function Core:SetupLocal_HackRegisterHotkey()
     function g_KeyBindingsOptions:OnShow()
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         if Game ~= nil then
             XGUIEng.ShowWidget("/InGame/KeyBindingsMain/Backdrop", 1);
         else
@@ -1460,8 +1464,8 @@ function Core:SetupLocal_HackRegisterHotkey()
 
             for k,v in pairs(Core.Data.HotkeyDescriptions) do
                 if v then
-                    v[1] = (type(v[1]) == "table" and v[1][lang]) or v[1];
-                    v[2] = (type(v[2]) == "table" and v[2][lang]) or v[2];
+                    v[1] = (type(v[1]) == "table" and v[1][QSB.Language]) or v[1];
+                    v[2] = (type(v[2]) == "table" and v[2][QSB.Language]) or v[2];
                     table.insert(g_KeyBindingsOptions.Descriptions, 1, v);
                 end
             end
@@ -1997,12 +2001,11 @@ function API.AddPages(_Briefing)
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
             -- Sprache anpassen
-            local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
             if type(_Page.Title) == "table" then
-                _Page.Title = _Page.Title[Language];
+                _Page.Title = _Page.Title[QSB.Language];
             end
             if type(_Page.Text) == "table" then
-                _Page.Text = _Page.Text[Language];
+                _Page.Text = _Page.Text[QSB.Language];
             end
             -- Lookat mappen
             if type(_Page.LookAt) == "string" or type(_Page.LookAt) == "number" then
@@ -2811,7 +2814,7 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             end
 
             -- Button Texte
-            local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+            local Language = QSB.Language;
             XGUIEng.SetText("/InGame/ThroneRoom/Main/StartButton", "{center}" ..BundleBriefingSystem.Text.PrevButton[Language]);
             local SkipText = BundleBriefingSystem.Text.NextButton[Language];
             local PageID = self.Data.CurrentBriefing.Page;
@@ -4095,7 +4098,7 @@ BundleBuildingButtons = {
                     en = "Downgrade",
                 },
                 Text = {
-                    de = "- Reißt eine Stufe des Geb?udes ein {cr}- Der überschüssige Arbeiter wird entlassen",
+                    de = "- Reißt eine Stufe des Gebäudes ein {cr}- Der überschüssige Arbeiter wird entlassen",
                     en = "- Destroy one level of this building {cr}- The surplus worker will be dismissed",
                 },
                 Disabled = {
@@ -4408,7 +4411,7 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.TrapToggleMouseOver = function()
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         BundleBuildingButtons.Local:TextNormal(
             BundleBuildingButtons.Local.Description.Downgrade.Title[lang],
             BundleBuildingButtons.Local.Description.Downgrade.Text[lang],
@@ -4495,7 +4498,7 @@ end
 --
 function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
     GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType,_TechnologyType)
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local BarrackID = GUI.GetSelectedEntity();
         local BuildingEntityType = Logic.GetEntityType(BarrackID);
@@ -4804,7 +4807,7 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     BundleBuildingButtons.Local:TextNormal(
         BundleBuildingButtons.Local.Description.SingleStop.Title[lang],
         BundleBuildingButtons.Local.Description.SingleStop.Text[lang]
@@ -5118,8 +5121,7 @@ end
 
 function b_Goal_Diplomacy:ChangeCaption(_Quest)
     local PlayerName = GetPlayerName(self.PlayerID) or "";
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-    local Text = string.format(self.TextPattern[lang], self.DiploNameMap[self.DiplState][lang], PlayerName);
+    local Text = string.format(self.TextPattern[lang], self.DiploNameMap[self.DiplState][QSB.Language], PlayerName);
     Core:ChangeCustomQuestCaptionText(Text, _Quest);
 end
 
@@ -5658,7 +5660,7 @@ end
 
 function b_Goal_DestroySoldiers:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local lang = QSB.Language
         local caption = (lang == "de" and "SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: ") or
                          "DESTROY SOLDIERS {cr}{cr}from faction: "
         local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
@@ -5989,7 +5991,7 @@ end
 
 function b_Goal_ActivateBuff:CustomFunction(_Quest)
    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local lang = QSB.Language
         local caption = (lang == "de" and "BONUS AKTIVIEREN{cr}{cr}") or "ACTIVATE BUFF{cr}{cr}"
 
         local tMapping = {
@@ -6713,7 +6715,7 @@ end
 
 function b_Goal_SoldierCount:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local lang = QSB.Language
         local caption = (lang == "de" and "SOLDATENANZAHL {cr}Partei: ") or
                             "SOLDIERS {cr}faction: "
         local relation = tostring(self.bRelSmallerThan);
@@ -6897,7 +6899,7 @@ end
 
 function b_Goal_Festivals:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en"
+        local lang = QSB.Language
         local caption = (lang == "de" and "FESTE FEIERN {cr}{cr}Partei: ") or
                             "HOLD PARTIES {cr}{cr}faction: "
         local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
@@ -7717,7 +7719,7 @@ end
 
 function b_Goal_TributeDiplomacy:GetTributeQuest(_Quest)
     if not self.InternTributeQuest then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local Language = QSB.Language;
         local StartMsg = self.StartMsg;
         if type(StartMsg) == "table" then
             StartMsg = StartMsg[Language];
@@ -7942,7 +7944,7 @@ end
 
 function b_Goal_TributeClaim:CreateTributeQuest(_Quest)
     if not self.InternTributeQuest then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local Language = QSB.Language;
         local StartMsg = self.StartMsg;
         if type(StartMsg) == "table" then
             StartMsg = StartMsg[Language];
@@ -13329,7 +13331,7 @@ function b_Goal_InputDialog:AddParameter(_Index, _Parameter)
         self.Trials = (_Parameter or 0) * 1;
     elseif (_Index == 2) then
         self.Message = _Parameter;
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         if type(self.Message) == "table" then
             self.Message = self.Message[lang];
         end
@@ -13381,7 +13383,7 @@ end
 
 function b_Goal_InputDialog:OnWrongInput(_Quest)
     if self.Trials &#x3E; 0 and not self.Message then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         Logic.DEBUG_AddNote(self.DefaultMessage .. self.TrialCounter);
         return;
     end
@@ -14369,12 +14371,11 @@ function API.DialogInfoBox(_Title, _Text, _Action)
         return;
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Title) == "table" then
-       _Title = _Title[lang];
+       _Title = _Title[QSB.Language];
     end
     if type(_Text) == "table" then
-       _Text = _Text[lang];
+       _Text = _Text[QSB.Language];
     end
     return BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action);
 end
@@ -14408,7 +14409,7 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
         return;
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if type(_Title) == "table" then
        _Title = _Title[lang];
     end
@@ -14447,7 +14448,7 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
         return;
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if type(_Title) == "table" then
        _Title = _Title[lang];
     end
@@ -14484,7 +14485,7 @@ UserOpenSelectionDialog = API.DialogSelectBox;
 -- API.SimpleTextWindow("Überschrift", Text);
 --
 function API.SimpleTextWindow(_Caption, _Content)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if type(_Caption) == "table" then
        _Caption = _Caption[lang];
     end
@@ -14535,7 +14536,7 @@ end
 -- @within Anwenderfunktionen
 --
 function API.SimpleTypewriter(_Text, _Callback)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if GUI then
         API.Fatal("API.SimpleTypewriter: Can only be used from global script!");
         return;
@@ -14571,6 +14572,7 @@ BundleDialogWindows = {
 
 QSB.SimpleTypewriter = {
     m_Tokens     = {},
+    m_Delay      = 15,
     m_Waittime   = 80,
     m_Speed      = 1,
     m_Index      = 0,
@@ -14639,6 +14641,7 @@ function QSB.SimpleTypewriter:Play()
     if BundleBriefingSystem then
         BundleBriefingSystem.Global.Data.BriefingActive = true;
     end
+    self.m_InitialWaittime = self.m_Delay;
     self:TokenizeText();
     API.Bridge([[
         if BundleBriefingSystem then
@@ -14795,29 +14798,34 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter.ControllerJob(_Data)
-    _Data.m_Index = _Data.m_Index + _Data.m_Speed;
-    if _Data.m_Index &#x3E; #_Data.m_Tokens then
-        _Data.m_Index = #_Data.m_Tokens;
+    if _Data.m_InitialWaittime &#x3E; 0 then
+        _Data.m_InitialWaittime = _Data.m_InitialWaittime -1;
     end
-    local Index = math.ceil(_Data.m_Index);
+    if _Data.m_InitialWaittime == 0 then
+        _Data.m_Index = _Data.m_Index + _Data.m_Speed;
+        if _Data.m_Index &#x3E; #_Data.m_Tokens then
+            _Data.m_Index = #_Data.m_Tokens;
+        end
+        local Index = math.ceil(_Data.m_Index);
 
-    local Text = "";
-    for i= 1, Index, 1 do
-        Text = Text .. _Data.m_Tokens[i];
-    end
-    API.Bridge([[
-        GUI.ClearNotes()
-        GUI.AddNote("]] ..Text.. [[");
-    ]])
-    
-    if Index == #_Data.m_Tokens then
-        _Data.m_Waittime = _Data.m_Waittime -1;
-        if _Data.m_Waittime &#x3C;= 0 then
-            _Data:Stop();
-            if _Data.m_Callback then
-                _Data.m_Callback(_Data);
+        local Text = "";
+        for i= 1, Index, 1 do
+            Text = Text .. _Data.m_Tokens[i];
+        end
+        API.Bridge([[
+            GUI.ClearNotes()
+            GUI.AddNote("]] ..Text.. [[");
+        ]])
+        
+        if Index == #_Data.m_Tokens then
+            _Data.m_Waittime = _Data.m_Waittime -1;
+            if _Data.m_Waittime &#x3C;= 0 then
+                _Data:Stop();
+                if _Data.m_Callback then
+                    _Data.m_Callback(_Data);
+                end
+                return true;
             end
-            return true;
         end
     end
 end
@@ -14928,7 +14936,7 @@ end
 --
 function QSB.TextWindow:SetCaption(_Text)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Language = QSB.Language;
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
@@ -14952,7 +14960,7 @@ end
 --
 function QSB.TextWindow:SetContent(_Text)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Language = QSB.Language;
     if type(_Text) == "table" then
         _Text = _Text[Language];
     end
@@ -15008,7 +15016,7 @@ end
 function QSB.TextWindow:SetButton(_Text, _Callback)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
     if _Text then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local Language = QSB.Language;
         if type(_Text) == "table" then
             _Text = _Text[Language];
         end
@@ -15116,7 +15124,7 @@ function QSB.TextWindow:Prepare()
         XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", ChatlogMessage)
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     if type(self.Data.Caption) == "table" then
         self.Data.Caption = self.Data.Caption[lang];
     end
@@ -15866,7 +15874,7 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     end
 
     StartSimpleJobEx( function(_EntityID, _TargetID)
-        if not IsExisting(_EntityID) or not IsExisting(_EntityID) then
+        if not IsExisting(_EntityID) or not IsExisting(_TargetID) then
             return true;
         end
         if not Logic.IsEntityMoving(_EntityID) then
@@ -16126,7 +16134,7 @@ GetEntityName = API.EntityGetName;
 --
 function API.EntitySetName(_entity, _name)
     if GUI then
-        API.Bridge("API.EntitySetName(" ..GetID(_EntityID).. ", '" .._name.. "')")
+        API.Bridge("API.EntitySetName(" ..GetID(_entity).. ", '" .._name.. "')")
         return;
     end
     if IsExisting(_name) then
@@ -17126,23 +17134,6 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
--- @within Anwenderfunktionen
---
--- @usage
--- API.DisableRefillTrebuchet(true);
---
-function API.DisableRefillTrebuchet(_Flag)
-    if not GUI then
-        API.Bridge("API.DisableRefillTrebuchet(" ..tostring(_Flag).. ")");
-        return;
-    end
-    API.Bridge("BundleEntitySelection.Local.Data.RefillTrebuchet = " ..tostring(not _Flag));
-    BundleEntitySelection.Local.Data.RefillTrebuchet = not _Flag;
-end
-
----
 -- Deaktiviert oder aktiviert das Entlassen von Dieben.
 -- @param[type=boolean] _Flag Deaktiviert (false) / Aktiviert (true)
 -- @within Anwenderfunktionen
@@ -17265,15 +17256,12 @@ GetSelectedEntities = API.GetSelectedEntities;
 BundleEntitySelection = {
     Global = {
         Data = {
-            RefillTrebuchet = true,
-            AmmunitionUnderway = {},
             TrebuchetIDToCart = {},
             SelectedEntities = {};
         },
     },
     Local = {
         Data = {
-            RefillTrebuchet = true,
             ThiefRelease = false,
             SiegeEngineRelease = true,
             MilitaryRelease = true,
@@ -17333,19 +17321,8 @@ BundleEntitySelection = {
                         en = "Trebuchet",
                     },
                     Text = {
-                        de = "- Kann über weite Strecken Gebäude angreifen {cr}- Kann Gebäude in Brand stecken {cr}- Kann nur durch Munitionsanforderung befüllt werden {cr}- Trebuchet kann manuell zurückgeschickt werden",
-                        en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- Can only be filled by ammunition request {cr}- The trebuchet can be manually send back to the city",
-                    },
-                },
-
-                TrebuchetRefiller = {
-                    Title = {
-                        de = "Aufladen",
-                        en = "Refill",
-                    },
-                    Text = {
-                        de = "- Läd das Trebuchet mit Karren aus dem Lagerhaus nach {cr}- Benötigt die Differenz an Steinen {cr}- Kann jeweils nur einen Wagen zu selben Zeit senden",
-                        en = "- Refill the Trebuchet with a cart from the storehouse {cr}- Stones for missing ammunition required {cr}- Only one cart at the time allowed",
+                        de = "- Kann über weite Strecken Gebäude angreifen {cr}- Kann Gebäude in Brand stecken {cr}- Trebuchet kann manuell zurückgeschickt werden",
+                        en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- The trebuchet can be manually send back to the city",
                     },
                 },
             },
@@ -17365,19 +17342,6 @@ function BundleEntitySelection.Global:Install()
 end
 
 ---
--- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param[type=boolean] _Boolean Nachfüllen deaktiviert
--- @within Internal
--- @local
---
-function BundleEntitySelection.Global:DeactivateRefillTrebuchet(_Boolean)
-    self.Data.RefillTrebuchet = not _Boolean;
-    Logic.ExecuteInLuaLocalState([[
-        BundleEntitySelection.Local:DeactivateRefillTrebuchet(]]..tostring(_Boolean)..[[)
-    ]]);
-end
-
----
 -- Baut ein Trebuchet zu einem Trebuchet-Wagen ab.
 -- @param[type=number] _EntityID EntityID of Trebuchet
 -- @within Internal
@@ -17391,14 +17355,6 @@ function BundleEntitySelection.Global:MilitaryDisambleTrebuchet(_EntityID)
     -- Bricht die Ausführung dieser Funktion ab!
     if GameCallback_QSB_OnDisambleTrebuchet then
         GameCallback_QSB_OnDisambleTrebuchet(_EntityID, PlayerID, x, y, z);
-        return;
-    end
-
-    if self.Data.AmmunitionUnderway[_EntityID] then
-        API.Message {
-            de = "Eine Munitionslieferung ist auf dem Weg!",
-            en = "A ammunition card is on the way!",
-        };
         return;
     end
 
@@ -17466,71 +17422,6 @@ function BundleEntitySelection.Global:MilitaryErectTrebuchet(_EntityID)
     ]]);
 end
 
----
--- Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
--- @param[type=number] _EntityID EntityID of Trebuchet
--- @within Internal
--- @local
---
-function BundleEntitySelection.Global:MilitaryCallForRefiller(_EntityID)
-    local PlayerID = Logic.EntityGetPlayer(_EntityID);
-    local StoreID = Logic.GetStoreHouse(PlayerID);
-    local HaveAmount = Logic.GetAmmunitionAmount(_EntityID);
-    local Stones = GetPlayerResources(Goods.G_Stone, PlayerID)
-
-    -- Externes Callback für das Kartenskript
-    -- Bricht die Ausführung dieser Funktion ab!
-    if GameCallback_tHEA_OnRefillerCartCalled then
-        GameCallback_tHEA_OnRefillerCartCalled(_EntityID, PlayerID, StoreID, HaveAmount, Stones);
-        return;
-    end
-
-    if self.Data.AmmunitionUnderway[_EntityID] or StoreID == 0 then
-        API.Message {
-            de = "Eine Munitionslieferung ist auf dem Weg!",
-            en = "A ammunition card is on the way!",
-        };
-        return;
-    end
-
-    if HaveAmount == 10 or Stones &#x3C; 10-HaveAmount then
-        API.Message {
-            de = "Nicht genug Steine oder das Trebuchet ist voll!",
-            en = "Not enough stones or the trebuchet is full!",
-        };
-        return;
-    end
-
-    local x,y = Logic.GetBuildingApproachPosition(StoreID);
-    local CartID = Logic.CreateEntity(Entities.U_AmmunitionCart, x, y, 0, PlayerID);
-    self.Data.AmmunitionUnderway[_EntityID] = {CartID, 10-HaveAmount};
-    Logic.SetEntityInvulnerabilityFlag(CartID, 1);
-    Logic.SetEntitySelectableFlag(CartID, 0);
-    AddGood(Goods.G_Stone, (10-HaveAmount)*(-1), PlayerID);
-
-    StartSimpleJobEx( function(_Trebuchet)
-        local CartID = self.Data.AmmunitionUnderway[_EntityID][1];
-        local Amount = self.Data.AmmunitionUnderway[_EntityID][2];
-
-        if not IsExisting(CartID) or not IsExisting(_Trebuchet) then
-            self.Data.AmmunitionUnderway[_EntityID] = nil;
-            return true;
-        end
-
-        if not Logic.IsEntityMoving(CartID) then
-            local x,y,z = Logic.EntityGetPos(_Trebuchet);
-            Logic.MoveSettler(CartID, x, y);
-        end
-
-        if IsNear(CartID, _Trebuchet, 500) then
-            for i=1, Amount, 1 do
-                Logic.RefillAmmunitions(_Trebuchet);
-            end
-            DestroyEntity(CartID);
-        end
-    end, _EntityID);
-end
-
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -17548,22 +17439,11 @@ function BundleEntitySelection.Local:Install()
     self:OverwriteMilitaryDisamble();
     self:OverwriteMilitaryErect();
     self:OverwriteMilitaryCommands();
-    self:OverwriteGetStringTableText();
 
     Core:AppendFunction(
         "GameCallback_GUI_SelectionChanged",
         self.OnSelectionCanged
     );
-end
-
----
--- Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
--- @param[type=boolean] _Boolean Nachfüllen deaktiviert
--- @within Internal
--- @local
---
-function BundleEntitySelection.Local:DeactivateRefillTrebuchet(_Boolean)
-    self.Data.RefillTrebuchet = not _Boolean;
 end
 
 ---
@@ -17599,42 +17479,10 @@ function BundleEntitySelection.Local.OnSelectionCanged(_Source)
             XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons", 0);
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military", 1);
             XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military", 1);
-            if BundleEntitySelection.Local.Data.RefillTrebuchet then
-                XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 1);
-            else
-                XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 0);
-            end
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Attack", 0);
             GUI_Military.StrengthUpdate();
             XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngine", 1);
         end
-    end
-end
-
----
--- Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
--- sodass eigene Texte für Keys angezeigt werden.
---
--- @within Internal
--- @local
---
-function BundleEntitySelection.Local:OverwriteGetStringTableText()
-    GetStringTableText_Orig_BundleEntitySelection = XGUIEng.GetStringTableText;
-    XGUIEng.GetStringTableText = function(_key)
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-        if _key == "UI_ObjectDescription/Attack" then
-            local EntityID = GUI.GetSelectedEntity();
-            if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
-                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Text[Language];
-            end
-        end
-        if _key == "UI_ObjectNames/Attack" then
-            local EntityID = GUI.GetSelectedEntity();
-            if Logic.GetEntityType(EntityID) == Entities.U_Trebuchet then
-                return BundleEntitySelection.Local.Data.Tooltips.TrebuchetRefiller.Title[Language];
-            end
-        end
-
-        return GetStringTableText_Orig_BundleEntitySelection(_key);
     end
 end
 
@@ -17645,25 +17493,6 @@ end
 -- @local
 --
 function BundleEntitySelection.Local:OverwriteMilitaryCommands()
-    GUI_Military.AttackClicked = function()
-        Sound.FXPlay2DSound( "ui\\menu_click");
-        local SelectedEntities = {GUI.GetSelectedEntities()};
-        local EntityType = Logic.GetEntityType(SelectedEntities[1]);
-
-        if EntityType == Entities.U_Trebuchet then
-            for i=1, #SelectedEntities, 1 do
-                EntityType = Logic.GetEntityType(SelectedEntities[i]);
-                if EntityType == Entities.U_Trebuchet then
-                    GUI.SendScriptCommand([[
-                        BundleEntitySelection.Global:MilitaryCallForRefiller(]]..SelectedEntities[i]..[[)
-                    ]]);
-                end
-            end
-        else
-            GUI.ActivateExplicitAttackCommandState();
-        end
-    end
-
     GUI_Military.StandGroundClicked = function()
         Sound.FXPlay2DSound( "ui\\menu_click");
         local SelectedEntities = {GUI.GetSelectedEntities()};
@@ -17854,7 +17683,7 @@ function BundleEntitySelection.Local:OverwriteMultiselectIcon()
             return;
         end
 
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         if EntityType == Entities.U_SiegeEngineCart then
             local TooltipData = BundleEntitySelection.Local.Data.Tooltips.TrebuchetCart;
             BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
@@ -17877,25 +17706,37 @@ function BundleEntitySelection.Local:OverwriteMilitaryDismount()
     GUI_Military.DismountClicked = function()
         local Selected = GUI.GetSelectedEntity(Selected);
         local Type = Logic.GetEntityType(Selected);
-        local PlayerID = GUI.GetPlayerID();
-        if Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false then
-            if (Type == Entities.U_SiegeEngineCart or Type == Entities.U_MilitarySiegeTower or
-                Type == Entities.U_MilitaryCatapult or Type == Entities.U_MilitaryBatteringRam or
-                Type == Entities.U_SiegeTowerCart or Type == Entities.U_CatapultCart or
-                Type == Entities.U_BatteringRamCart or Type == Entities.U_AmmunitionCart)
-            and BundleEntitySelection.Local.Data.SiegeEngineRelease then
-                Sound.FXPlay2DSound( "ui\\menu_click");
-                GUI.SendScriptCommand([[DestroyEntity(]]..Selected..[[)]]);
-                return;
-            end
-            if (Logic.IsLeader(Selected) == 1 and BundleEntitySelection.Local.Data.MilitaryRelease) then
+        local Guarded = Logic.GetGuardedEntityID(Selected);
+        local Guardian = Logic.GetGuardianEntityID(Selected);
+        
+        if Guarded ~= 0 and Logic.EntityGetPlayer(Guarded) ~= GUI.GetPlayerID() then
+            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+            return;
+        end
+        if Logic.IsKnight(Selected) or Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 1 then
+            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+            return;
+        end
+
+        if Logic.IsLeader(Selected) == 1 and Guarded == 0 then
+            if BundleEntitySelection.Local.Data.MilitaryRelease then
                 Sound.FXPlay2DSound( "ui\\menu_click");
                 local Soldiers = {Logic.GetSoldiersAttachedToLeader(Selected)};
                 GUI.SendScriptCommand([[DestroyEntity(]]..Soldiers[#Soldiers]..[[)]]);
                 return;
             end
-        else
-            GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+        end
+
+        if Type == Entities.U_AmmunitionCart or Type == Entities.U_BatteringRamCart
+        or Type == Entities.U_CatapultCart or Type == Entities.U_SiegeTowerCart
+        or Type == Entities.U_MilitaryBatteringRam or Entities.U_MilitaryCatapult
+        or Type == Entities.U_MilitarySiegeTower then
+            if BundleEntitySelection.Local.Data.SiegeEngineRelease and Guardian == 0 then
+                Sound.FXPlay2DSound( "ui\\menu_click");
+                GUI.SendScriptCommand([[DestroyEntity(]]..Selected..[[)]]);
+            else
+                GUI_Military.DismountClicked_Orig_BundleEntitySelection();
+            end
         end
     end
 
@@ -17904,24 +17745,45 @@ function BundleEntitySelection.Local:OverwriteMilitaryDismount()
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local Selected = GUI.GetSelectedEntity();
         local Type = Logic.GetEntityType(Selected);
-        if (Logic.GetGuardianEntityID(Selected) == 0 and Logic.IsKnight(Selected) == false and Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 0) then
-            if Logic.IsLeader(Selected) == 1 and not BundleEntitySelection.Local.Data.MilitaryRelease then
+        local Guarded = Logic.GetGuardedEntityID(Selected);
+        local Guardian = Logic.GetGuardianEntityID(Selected);
+        
+        SetIcon(CurrentWidgetID, {12, 1});
+        if Guarded ~= 0 and Logic.EntityGetPlayer(Guarded) ~= GUI.GetPlayerID() then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+            return;
+        end
+        if Logic.IsKnight(Selected) or Logic.IsEntityInCategory(Selected, EntityCategories.AttackableMerchant) == 1 then
+            XGUIEng.DisableButton(CurrentWidgetID, 0);
+            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+            return;
+        end
+        SetIcon(CurrentWidgetID, {14, 12});
+
+        if Type == Entities.U_MilitaryLeader then
+            if not BundleEntitySelection.Local.Data.MilitaryRelease then
                 XGUIEng.DisableButton(CurrentWidgetID, 1);
-            elseif  Logic.IsLeader(Selected) == 0 then
-                if not BundleEntitySelection.Local.Data.SiegeEngineRelease then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                end
-                if Type == Entities.U_Trebuchet then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                end
             else
-                SetIcon(CurrentWidgetID, {12, 1});
                 XGUIEng.DisableButton(CurrentWidgetID, 0);
             end
-            SetIcon(CurrentWidgetID, {14, 12});
-        else
-            SetIcon(CurrentWidgetID, {12, 1});
-            GUI_Military.DismountUpdate_Orig_BundleEntitySelection();
+            return;
+        end
+
+        if Type == Entities.U_AmmunitionCart or Type == Entities.U_BatteringRamCart
+        or Type == Entities.U_CatapultCart or Type == Entities.U_SiegeTowerCart
+        or Type == Entities.U_MilitaryBatteringRam or Entities.U_MilitaryCatapult
+        or Type == Entities.U_MilitarySiegeTower then
+            if Guardian ~= 0 then
+                SetIcon(CurrentWidgetID, {12, 1});
+                XGUIEng.DisableButton(CurrentWidgetID, 0);
+            else
+                if not BundleEntitySelection.Local.Data.SiegeEngineRelease then
+                    XGUIEng.DisableButton(CurrentWidgetID, 1);
+                else
+                    XGUIEng.DisableButton(CurrentWidgetID, 0);
+                end
+            end
         end
     end
 end
@@ -17956,10 +17818,10 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
             return;
         end
 
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         BundleEntitySelection.Local:SetTooltip(
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang]
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[QSB.Language],
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[QSB.Language],
+            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[QSB.Language]
         );
     end
 
@@ -17991,40 +17853,39 @@ end
 function BundleEntitySelection.Local:OverwriteNamesAndDescription()
     GUI_Tooltip.SetNameAndDescription_Orig_QSB_EntitySelection = GUI_Tooltip.SetNameAndDescription;
     GUI_Tooltip.SetNameAndDescription = function(_TooltipNameWidget, _TooltipDescriptionWidget, _OptionalTextKeyName, _OptionalDisabledTextKeyName, _OptionalMissionTextFileBoolean)
+        local MotherWidget = "/InGame/Root/Normal/AlignBottomRight";
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
-        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/KnightButton") == CurrentWidgetID then
+        if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/KnightButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[lang],
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[lang]
+                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[QSB.Language],
+                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[QSB.Language]
             );
             return;
         end
 
-        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/MapFrame/BattalionButton") == CurrentWidgetID then
+        if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/BattalionButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[lang],
-                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[lang]
+                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[QSB.Language],
+                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[QSB.Language]
             );
             return;
         end
 
-        if XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/SiegeEngineCart/Dismount") == CurrentWidgetID 
-        or XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/AmmunitionCart/Dismount") == CurrentWidgetID 
-        or XGUIEng.GetWidgetID("/InGame/Root/Normal/AlignBottomRight/DialogButtons/Military/Dismount") == CurrentWidgetID 
+        if XGUIEng.GetWidgetID(MotherWidget.. "/DialogButtons/SiegeEngineCart/Dismount") == CurrentWidgetID 
+        or XGUIEng.GetWidgetID(MotherWidget.. "/DialogButtons/AmmunitionCart/Dismount") == CurrentWidgetID 
+        or XGUIEng.GetWidgetID(MotherWidget.. "/DialogButtons/Military/Dismount") == CurrentWidgetID 
         then
             local SelectedEntity = GUI.GetSelectedEntity();
             if SelectedEntity ~= 0 then
-                if Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Military) == 1
-                and Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Hero) == 0
-                then
-                    local GuardianEntity = Logic.GetGuardianEntityID(SelectedEntity)
-                    if GuardianEntity == nil or GuardianEntity == 0 then
+                if Logic.IsEntityInCategory(SelectedEntity, EntityCategories.Military) == 1 then
+                    local GuardianEntity = Logic.GetGuardianEntityID(SelectedEntity);
+                    local GuardedEntity = Logic.GetGuardedEntityID(SelectedEntity);
+                    if GuardianEntity == 0 and GuardedEntity == 0 then
                         BundleEntitySelection.Local:SetTooltip(
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[lang],
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[lang],
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[lang]
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[QSB.Language],
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[QSB.Language],
+                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[QSB.Language]
                         );
                         return;
                     end
@@ -19525,8 +19386,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 --
 function API.AddCustomIOName(_Key, _Text)
     if type(_Text) == "table" then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-        _Text = _Text[lang];
+        _Text = _Text[QSB.Language];
     end
     if GUI then
         API.Bridge("API.AddCustomIOName('" .._Key.. "', '" .._Text.. "')");
@@ -20158,17 +20018,13 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                     if ObjectName == "" then
                         ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectTypeName];
                         if type(ObjectName) == "table" then
-                            local lang = Network.GetDesiredLanguage();
-                            lang = (lang == "de" and "de") or "en";
-                            ObjectName = ObjectName[lang];
+                            ObjectName = ObjectName[QSB.Language];
                         end
                     end
                     if ObjectName == nil then
                         ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectEntityName];
                         if type(ObjectName) == "table" then
-                            local lang = Network.GetDesiredLanguage();
-                            lang = (lang == "de" and "de") or "en";
-                            ObjectName = ObjectName[lang];
+                            ObjectName = ObjectName[QSB.Language];
                         end
                     end
                     if ObjectName == nil then
@@ -20245,7 +20101,7 @@ end
 --
 function BundleInteractiveObjects.Local:OnObjectClicked_IsConditionFulfulled(_IO)
     local PlayerID = GUI.GetPlayerID();
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Language = QSB.Language;
     if not _IO.ConditionFullfilled then
         if _IO.ConditionUnfulfilled then
             local MessageText = _IO.ConditionUnfulfilled;
@@ -22273,7 +22129,7 @@ end
 -- @local
 --
 function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     local PlayerID = GUI.GetPlayerID();
     local KnightTitle = Logic.GetKnightTitle(PlayerID);
     local Title = ""
@@ -25259,44 +25115,6 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
--- der entdeckten Territorien.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; UndiscoverTerritory&#x3C;/p&#x3E;
---
--- @param[type=number] _PlayerID    Spieler-ID
--- @param[type=number] _TerritoryID Territorium-ID
--- @within Anwenderfunktionen
---
-function API.UndiscoverTerritory(_PlayerID, _TerritoryID)
-    if GUI then
-        API.Bridge("API.UndiscoverTerritory(" .._PlayerID.. ", ".._TerritoryID.. ")")
-        return;
-    end
-    return BundlePlayerHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID);
-end
-UndiscoverTerritory = API.UndiscoverTerritory;
-
----
--- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
--- Territorien. Als Nebeneffekt gild die Partei als unentdeckt.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; UndiscoverTerritories&#x3C;/p&#x3E;
---
--- @param[type=number] _PlayerID    Spieler-ID
--- @param[type=number] _TargetPlayerID Anderer Spieler
--- @within Anwenderfunktionen
---
-function API.UndiscoverTerritories(_PlayerID, _TargetPlayerID)
-    if GUI then
-        API.Bridge("API.UndiscoverTerritories(" .._PlayerID.. ", ".._TargetPlayerID.. ")")
-        return;
-    end
-    return BundlePlayerHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID);
-end
-UndiscoverTerritories = API.UndiscoverTerritories;
-
----
 -- Setzt die Einnahmen für alle Stadtgebäude eines Spielers. Stadtgebäude
 -- können nur Einnahmen zwischen 0 und 100 Talern haben.
 --
@@ -25548,51 +25366,6 @@ function BundlePlayerHelperFunctions.Global:InitFestival()
         end
         Logic.StartFestival_Orig_NothingToCelebrate(_PlayerID, _Index);
     end
-end
-
----
--- Entfernt ein Territorium für den angegebenen Spieler aus der Liste
--- der entdeckten Territorien.
---
--- @param[type=number] _PlayerID    Spieler-ID
--- @param[type=number] _TerritoryID Territorium-ID
--- @within Internal
--- @local
---
-function BundlePlayerHelperFunctions.Global:UndiscoverTerritory(_PlayerID, _TerritoryID)
-    if self.Data.DiscoveredTerritories[_PlayerID] == nil then
-        self.Data.DiscoveredTerritories[_PlayerID] = {};
-    end
-    for i=1, #self.Data.DiscoveredTerritories[_PlayerID], 1 do
-        if self.Data.DiscoveredTerritories[_PlayerID][i] == _TerritoryID then
-            table.remove(self.Data.DiscoveredTerritories[_PlayerID], i);
-            break;
-        end
-    end
-end
-
----
--- Entfernt alle Territorien einer Partei aus der Liste der entdeckten
--- Territorien. Als Nebeneffekt gild die Partei als unentdeckt-
---
--- @param[type=number] _PlayerID    Spieler-ID
--- @param[type=number] _TargetPlayerID Anderer Spieler
--- @within Internal
--- @local
---
-function BundlePlayerHelperFunctions.Global:UndiscoverTerritories(_PlayerID, _TargetPlayerID)
-    if self.Data.DiscoveredTerritories[_PlayerID] == nil then
-        self.Data.DiscoveredTerritories[_PlayerID] = {};
-    end
-    local Discovered = {};
-    for k, v in pairs(self.Data.DiscoveredTerritories[_PlayerID]) do
-        local OwnerPlayerID = Logic.GetTerritoryPlayerID(v);
-        if OwnerPlayerID ~= _TargetPlayerID then
-            table.insert(Discovered, v);
-            break;
-        end
-    end
-    self.Data.DiscoveredTerritories[_PlayerID][i] = Discovered;
 end
 
 ---
@@ -26257,9 +26030,8 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
     };
 
     -- Lokalisierung
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     if type(_Text) == "table" then
-        _Text = _Text[Language];
+        _Text = _Text[QSB.Language];
     end
 
     -- Quest erzeugen
@@ -26292,7 +26064,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         return;
     end
 
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
 
     -- Questdaten erzeugen
     local QuestData = {
@@ -26417,6 +26189,8 @@ BundleSymfoniaBehaviors = {};
 
 API = API or {};
 QSB = QSB or {};
+
+QSB.VictoryWithPartyEntities = {};
 
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
@@ -26601,7 +26375,7 @@ function b_Goal_StealGold:GetCustomData(_Index)
 end
 
 function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     local TargetPlayerName = (lang == "de" and " anderen Spielern ") or " different parties";
     if self.Target ~= -1 then
         TargetPlayerName = GetPlayerName(self.Target);
@@ -26713,7 +26487,7 @@ end
 function b_Goal_StealBuilding:SetDescriptionOverwrite(_Quest)
     local isCathedral = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Cathedrals) == 1;
     local isWarehouse = Logic.GetEntityType(GetID(self.Building)) == Entities.B_StoreHouse;
-    local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local lang = QSB.Language;
     local text;
 
     if isCathedral then
@@ -26855,7 +26629,7 @@ end
 
 function b_Goal_SpyBuilding:SetDescriptionOverwrite(_Quest)
     if not _Quest.QuestDescription then
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         local text = {
             de = "Gebäude infriltrieren {cr}{cr}Spioniere das markierte Gebäude mit einem Dieb aus!",
             en = "Infiltrate building {cr}{cr}Spy on the highlighted buildings with a thief!",
@@ -27094,7 +26868,7 @@ end
 
 function b_Goal_CityReputation:SetCaption(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+    local Language = QSB.Language;
         local Text = string.format(self.Text[Language], self.Reputation);
         Core:ChangeCustomQuestCaptionText(Text, _Quest);
     end
@@ -27690,8 +27464,8 @@ end
 b_Reward_VictoryWithParty = {
     Name = "Reward_VictoryWithParty",
     Description = {
-        en = "Reward: The player wins the game with an animated festival on the market.",
-        de = "Lohn: Der Spieler gewinnt das Spiel mit einer animierten Siegesfeier.",
+        en = "Reward: The player wins the game with an animated festival on the market. Continue playing deleates the festival.",
+        de = "Lohn: Der Spieler gewinnt das Spiel mit einer animierten Siegesfeier. Bei weiterspielen wird das Fest gelöscht.",
     },
     Parameter =    {}
 };
@@ -27732,7 +27506,8 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
             Entities.U_SpouseF02,
             Entities.U_SpouseF03,
         };
-        VictoryGenerateFestivalAtPlayer(pID, PossibleSettlerTypes);
+        local Generated = VictoryWithParty_GenerateParty(pID, PossibleSettlerTypes);
+        QSB.VictoryWithPartyEntities[pID] = Generated;
 
         Logic.ExecuteInLuaLocalState([[
             if IsExisting(]]..market..[[) then
@@ -27741,16 +27516,66 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
                 CameraAnimation.QueueAnimation(CameraAnimation.StartCameraRotation, 5)
                 CameraAnimation.QueueAnimation(CameraAnimation.Stay ,9999)
             end
-            XGUIEng.ShowWidget("/InGame/InGame/MissionEndScreen/ContinuePlaying", 0);
+
+            GUI_Window.ContinuePlayingClicked_Orig_Reward_VictoryWithParty = GUI_Window.ContinuePlayingClicked
+            GUI_Window.ContinuePlayingClicked = function()
+                GUI_Window.ContinuePlayingClicked_Orig_Reward_VictoryWithParty()
+                
+                local PlayerID = GUI.GetPlayerID()
+                API.Bridge("VictoryWithParty_ClearParty(" ..PlayerID.. ")")
+
+                CameraAnimation.AllowAbort = true
+                CameraAnimation.Abort()
+            end
         ]]);
     end
+end
+
+-- Diese Funktion ist statisch und wird von GUI_Window.ContinuePlayingClicked
+-- aufgerufen! Rufe sie niemals manuell auf!
+function VictoryWithParty_ClearParty(_PlayerID)
+    if QSB.VictoryWithPartyEntities[_PlayerID] then
+        for k, v in pairs(QSB.VictoryWithPartyEntities[_PlayerID]) do
+            DestroyEntity(v);
+        end
+        QSB.VictoryWithPartyEntities[_PlayerID] = nil;
+    end
+end
+
+-- Dies ist eine Hilfsfunktion zur Erzeugung eines löschbaren Festes. Wird
+-- im Code aufgerufen. Nicht manuell aufrufen!
+function VictoryWithParty_GenerateParty(_PlayerID, _PossibleSettlersTypesList)
+    local GeneratedEntities = {};
+    local Marketplace = Logic.GetMarketplace(_PlayerID);
+    if Marketplace ~= nil and Marketplace ~= 0 then
+        local MarketX, MarketY = Logic.GetEntityPosition(Marketplace);
+        local ID = Logic.CreateEntity(Entities.D_X_Garland, MarketX, MarketY, 0, _PlayerID)
+        table.insert(GeneratedEntities, ID);
+        for j=1, 10 do
+            for k=1,10 do
+                local SettlersX = MarketX -700+ (j*150);
+                local SettlersY = MarketY -700+ (k*150);
+                
+                local rand = Logic.GetRandom(100);
+                
+                if rand &#x3E; 70 then
+                    local SettlerType = _PossibleSettlersTypesList[1 + Logic.GetRandom(#_PossibleSettlersTypesList)];
+                    local Orientation = Logic.GetRandom(360);
+                    local WorkerID = Logic.CreateEntityOnUnblockedLand(SettlerType, SettlersX, SettlersY, Orientation, _PlayerID);
+                    Logic.SetTaskList(WorkerID, TaskLists.TL_WORKER_FESTIVAL_APPLAUD_SPEECH);
+                    table.insert(GeneratedEntities, WorkerID);
+                end
+            end
+        end
+    end
+    return GeneratedEntities;
 end
 
 function b_Reward_VictoryWithParty:Debug(_Quest)
     return false;
 end
 
-Core:RegisterBehavior(b_Reward_VictoryWithParty)
+Core:RegisterBehavior(b_Reward_VictoryWithParty);
 
 -- -------------------------------------------------------------------------- --
 
@@ -28323,7 +28148,7 @@ function BundleSymfoniaBehaviors.Global:Install()
                             end
                             Quests[i].Objectives[j].Data[1].StohlenGold = Quests[i].Objectives[j].Data[1].StohlenGold + _GoodAmount;
                             if CurrentObjective.Printout then
-                                local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+                                local lang = QSB.Language;
                                 local msg  = {de = "Talern gestohlen",en = "gold stolen",};
                                 local curr = CurrentObjective.StohlenGold;
                                 local need = CurrentObjective.Amount;
@@ -30215,19 +30040,18 @@ function QSB.TravelingSalesman:DisplayInfoMessage()
             return self;
         end
 
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         local Text = { de = "Ein Schiff hat angelegt. Es bringt Güter von weit her.",
                        en = "A ship is at the pier. It delivers goods from far away."};
         QuestTemplate:New(
             "TravelingSalesman_Info_P" ..self.m_PlayerID,
             self.m_PlayerID,
             self:GetHumanPlayer(),
-            {{ Objective.Dummy,}},
-            {{ Triggers.Time, 0 }},
+            {{Objective.Dummy,}},
+            {{Triggers.Time, 0}},
             0,
             nil, nil, nil, nil, false, true,
             nil, nil,
-            Text[lang],
+            Text[QSB.Language],
             nil
         );
     end
@@ -32308,6 +32132,7 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:RestoreStorehouseMenu()
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtons", 1);
+    XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/TabButtonsgit ", 1);
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InCity/Goods", 1);
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/Selection/Storehouse/InCity", 0);
     SetIcon("/InGame/Root/Normal/AlignBottomRight/DialogButtons/PlayerButtons/DestroyGoods", {16, 8});
@@ -32376,6 +32201,7 @@ function AddOnCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse", 1);
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/AmountContainer", 0);
     XGUIEng.ShowAllSubWidgets(MotherPath.. "Selection/Storehouse/TabButtons", 1);
+    XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/TabButtons", 0);
 
     GUI_Trade.StorehouseSelected()
     local AnchorInfoForBigX, AnchorInfoForBigY = XGUIEng.GetWidgetLocalPosition(MotherPath.. "Selection/AnchorInfoForBig")
@@ -32579,7 +32405,7 @@ end
 function AddOnCastleStore.Local:OverwriteGetStringTableText()
     GetStringTableText_Orig_QSB_CatsleStore = XGUIEng.GetStringTableText;
     XGUIEng.GetStringTableText = function(_key)
-        local lang = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+        local lang = QSB.Language;
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID = GUI.GetPlayerID();
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
@@ -33378,7 +33204,6 @@ function AddOnInteractiveObjectTemplates.Global:TrebuchetActivate()
         GameCallback_QSB_OnDisambleTrebuchet = AddOnInteractiveObjectTemplates.Global.OnTrebuchetDisambled;
         GameCallback_QSB_OnErectTrebuchet = function() end;
         StartSimpleJobEx(self.WatchTrebuchetsAndCarts);
-        API.DisableRefillTrebuchet(true);
         self.Data.Trebuchet.IsActive = true;
     end
 end
@@ -35680,13 +35505,12 @@ function API.CutsceneStart(_Cutscene)
     end
 
     -- Lokalisierung Texte
-    local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     for i= 1, #_Cutscene, 1 do
         if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
-            _Cutscene[i].Title = _Cutscene[i].Title[Language];
+            _Cutscene[i].Title = _Cutscene[i].Title[QSB.Language];
         end
         if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
-            _Cutscene[i].Text = _Cutscene[i].Text[Language];
+            _Cutscene[i].Text = _Cutscene[i].Text[QSB.Language];
         end
     end
 
@@ -35882,6 +35706,7 @@ function AddOnCutsceneSystem.Local:Install()
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.WaitForLoadScreenHidden);
     StartSimpleHiResJobEx(AddOnCutsceneSystem.Local.DisplayFastForwardMessage);
 
+    self:OverrideGameCallbackEscape();
     self:OverrideUpdateFader();
 end
 
@@ -36059,11 +35884,10 @@ end
 --
 function AddOnCutsceneSystem.Local:ThroneRoomCameraControl()
     if self:IsCutsceneActive() then
-        local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
         if self.Data.FastForward.Active == false then
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardActivate[Language]);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardActivate[QSB.Language]);
         else 
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardDeactivate[Language]);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardDeactivate[QSB.Language]);
         end
     end
 end
@@ -36192,6 +36016,21 @@ end
 --
 function AddOnCutsceneSystem.Local:LERP(_A, _B, _T)
     return _A + ((_B - _A) * _T);
+end
+
+---
+-- Überschreibt das Game Callback Escape, sodass während einer Cutscene nicht
+-- abgebrochen werden kann..
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:OverrideGameCallbackEscape()
+    AddOnCutsceneSystem.Local.GameCallback_Escape = GameCallback_Escape;
+    GameCallback_Escape = function()
+        if not AddOnCutsceneSystem.Local:IsCutsceneActive() then
+            AddOnCutsceneSystem.Local.GameCallback_Escape();
+        end
+    end
 end
 
 ---
@@ -36405,8 +36244,7 @@ function AddOnCutsceneSystem.Local.DisplayFastForwardMessage()
                 AddOnCutsceneSystem.Local.Data.FastForward.RealTime = RealTime;
             end
             -- Message anzeigen
-            local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-            local Text = "{cr}{cr}" ..AddOnCutsceneSystem.Text.FastFormardMessage[Language];
+            local Text = "{cr}{cr}" ..AddOnCutsceneSystem.Text.FastFormardMessage[QSB.Language];
             local Indent = string.rep("  ", AddOnCutsceneSystem.Local.Data.FastForward.Indent);
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", Text..Indent.. ". . .");
         else

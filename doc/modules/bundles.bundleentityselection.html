@@ -100,10 +100,6 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.DisableRefillTrebuchet">API.DisableRefillTrebuchet (_Flag)</a></td>
-	<td class="summary">Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.DisableReleaseSiegeEngines">API.DisableReleaseSiegeEngines (_Flag)</a></td>
 	<td class="summary">Deaktiviert oder aktiviert das Entlassen von Kriegsmaschinen.</td>
 	</tr>
@@ -131,16 +127,8 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleEntitySelection.Global:DeactivateRefillTrebuchet">BundleEntitySelection.Global:DeactivateRefillTrebuchet (_Boolean)</a></td>
-	<td class="summary">Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleEntitySelection.Global:Install">BundleEntitySelection.Global:Install ()</a></td>
 	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleEntitySelection.Global:MilitaryCallForRefiller">BundleEntitySelection.Global:MilitaryCallForRefiller (_EntityID)</a></td>
-	<td class="summary">Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleEntitySelection.Global:MilitaryDisambleTrebuchet">BundleEntitySelection.Global:MilitaryDisambleTrebuchet (_EntityID)</a></td>
@@ -155,10 +143,6 @@
 	<td class="summary">Callback-Funktion, die aufgerufen wird, wenn sich die Selektion ändert.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleEntitySelection.Local:DeactivateRefillTrebuchet">BundleEntitySelection.Local:DeactivateRefillTrebuchet (_Boolean)</a></td>
-	<td class="summary">Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleEntitySelection.Local:ExtendedLeaderSortOrder">BundleEntitySelection.Local:ExtendedLeaderSortOrder ()</a></td>
 	<td class="summary">Erzeugt die erweiterte Selektion mit Munitionswagen und Trebuchets.</td>
 	</tr>
@@ -169,11 +153,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#BundleEntitySelection.Local:NormalLeaderSortOrder">BundleEntitySelection.Local:NormalLeaderSortOrder ()</a></td>
 	<td class="summary">Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteGetStringTableText">BundleEntitySelection.Local:OverwriteGetStringTableText ()</a></td>
-	<td class="summary">Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
- sodass eigene Texte für Keys angezeigt werden.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleEntitySelection.Local:OverwriteMilitaryCommands">BundleEntitySelection.Local:OverwriteMilitaryCommands ()</a></td>
@@ -229,31 +208,6 @@
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
-    <dt>
-    <a name = "API.DisableRefillTrebuchet"></a>
-    <strong>API.DisableRefillTrebuchet (_Flag)</strong>
-    </dt>
-    <dd>
-    Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Deaktiviert (false) / Aktiviert (true)
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.DisableRefillTrebuchet(<span class="keyword">true</span>);</pre>
-    </ul>
-
-</dd>
     <dt>
     <a name = "API.DisableReleaseSiegeEngines"></a>
     <strong>API.DisableReleaseSiegeEngines (_Flag)</strong>
@@ -417,27 +371,6 @@
 
     <dl class="function">
     <dt>
-    <a name = "BundleEntitySelection.Global:DeactivateRefillTrebuchet"></a>
-    <strong>BundleEntitySelection.Global:DeactivateRefillTrebuchet (_Boolean)</strong>
-    </dt>
-    <dd>
-    Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Boolean</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Nachfüllen deaktiviert
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleEntitySelection.Global:Install"></a>
     <strong>BundleEntitySelection.Global:Install ()</strong>
     </dt>
@@ -445,27 +378,6 @@
     Initialisiert das Bundle im globalen Skript.
 
 
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleEntitySelection.Global:MilitaryCallForRefiller"></a>
-    <strong>BundleEntitySelection.Global:MilitaryCallForRefiller (_EntityID)</strong>
-    </dt>
-    <dd>
-    Erzeugt einen Wagen, der zu dem Trebuchet fährt und es auffüll.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_EntityID</span>
-            <span class="types"><span class="type">number</span></span>
-         EntityID of Trebuchet
-        </li>
-    </ul>
 
 
 
@@ -536,27 +448,6 @@
 
 </dd>
     <dt>
-    <a name = "BundleEntitySelection.Local:DeactivateRefillTrebuchet"></a>
-    <strong>BundleEntitySelection.Local:DeactivateRefillTrebuchet (_Boolean)</strong>
-    </dt>
-    <dd>
-    Deaktiviert oder aktiviert das Nachfüllen von Trebuchets.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Boolean</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Nachfüllen deaktiviert
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundleEntitySelection.Local:ExtendedLeaderSortOrder"></a>
     <strong>BundleEntitySelection.Local:ExtendedLeaderSortOrder ()</strong>
     </dt>
@@ -590,21 +481,6 @@
     </dt>
     <dd>
     Erzeugt die normale Sortierung ohne Munitionswagen und Trebuchets.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleEntitySelection.Local:OverwriteGetStringTableText"></a>
-    <strong>BundleEntitySelection.Local:OverwriteGetStringTableText ()</strong>
-    </dt>
-    <dd>
-    Überscheibt die Funktion, die die Ingame-Texte aus den Quellen ausließt,
- sodass eigene Texte für Keys angezeigt werden.
 
 
 
@@ -782,7 +658,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-20 19:28:34 </i>
+<i style="float:right;">Last updated 2019-05-19 12:12:03 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

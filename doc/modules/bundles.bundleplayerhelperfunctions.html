@@ -128,16 +128,6 @@
 	<td class="summary">Startet ein Fest für den Spieler.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UndiscoverTerritories">API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</a></td>
-	<td class="summary">Entfernt alle Territorien einer Partei aus der Liste der entdeckten
- Territorien.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UndiscoverTerritory">API.UndiscoverTerritory (_PlayerID, _TerritoryID)</a></td>
-	<td class="summary">Entfernt ein Territorium für den angegebenen Spieler aus der Liste
- der entdeckten Territorien.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.UnlockTitleForPlayer">API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</a></td>
 	<td class="summary">Diese Funktion ermöglicht das sichere Entsperren eines gesperrten Titels.</td>
 	</tr>
@@ -177,16 +167,6 @@
 	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:SetNeedSatisfactionLevel">BundlePlayerHelperFunctions.Global:SetNeedSatisfactionLevel (_Need, _State, _PlayerID)</a></td>
 	<td class="summary">Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
  des angegebenen Spielers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:UndiscoverTerritories">BundlePlayerHelperFunctions.Global:UndiscoverTerritories (_PlayerID, _TargetPlayerID)</a></td>
-	<td class="summary">Entfernt alle Territorien einer Partei aus der Liste der entdeckten
- Territorien.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:UndiscoverTerritory">BundlePlayerHelperFunctions.Global:UndiscoverTerritory (_PlayerID, _TerritoryID)</a></td>
-	<td class="summary">Entfernt ein Territorium für den angegebenen Spieler aus der Liste
- der entdeckten Territorien.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer">BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer (_PlayerID, _KnightTitle)</a></td>
@@ -430,62 +410,6 @@
 
 </dd>
     <dt>
-    <a name = "API.UndiscoverTerritories"></a>
-    <strong>API.UndiscoverTerritories (_PlayerID, _TargetPlayerID)</strong>
-    </dt>
-    <dd>
-    Entfernt alle Territorien einer Partei aus der Liste der entdeckten
- Territorien.  Als Nebeneffekt gild die Partei als unentdeckt.
-<p> <p><b>Alias:</b> UndiscoverTerritories</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-            Spieler-ID
-        </li>
-        <li><span class="parameter">_TargetPlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-         Anderer Spieler
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.UndiscoverTerritory"></a>
-    <strong>API.UndiscoverTerritory (_PlayerID, _TerritoryID)</strong>
-    </dt>
-    <dd>
-    Entfernt ein Territorium für den angegebenen Spieler aus der Liste
- der entdeckten Territorien.
-<p> <p><b>Alias:</b> UndiscoverTerritory</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-            Spieler-ID
-        </li>
-        <li><span class="parameter">_TerritoryID</span>
-            <span class="types"><span class="type">number</span></span>
-         Territorium-ID
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "API.UnlockTitleForPlayer"></a>
     <strong>API.UnlockTitleForPlayer (_PlayerID, _KnightTitle)</strong>
     </dt>
@@ -707,59 +631,6 @@
 
 </dd>
     <dt>
-    <a name = "BundlePlayerHelperFunctions.Global:UndiscoverTerritories"></a>
-    <strong>BundlePlayerHelperFunctions.Global:UndiscoverTerritories (_PlayerID, _TargetPlayerID)</strong>
-    </dt>
-    <dd>
-    Entfernt alle Territorien einer Partei aus der Liste der entdeckten
- Territorien.  Als Nebeneffekt gild die Partei als unentdeckt-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-            Spieler-ID
-        </li>
-        <li><span class="parameter">_TargetPlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-         Anderer Spieler
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundlePlayerHelperFunctions.Global:UndiscoverTerritory"></a>
-    <strong>BundlePlayerHelperFunctions.Global:UndiscoverTerritory (_PlayerID, _TerritoryID)</strong>
-    </dt>
-    <dd>
-    Entfernt ein Territorium für den angegebenen Spieler aus der Liste
- der entdeckten Territorien.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-            Spieler-ID
-        </li>
-        <li><span class="parameter">_TerritoryID</span>
-            <span class="types"><span class="type">number</span></span>
-         Territorium-ID
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer"></a>
     <strong>BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer (_PlayerID, _KnightTitle)</strong>
     </dt>
@@ -834,7 +705,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-20 19:28:34 </i>
+<i style="float:right;">Last updated 2019-05-19 12:12:03 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

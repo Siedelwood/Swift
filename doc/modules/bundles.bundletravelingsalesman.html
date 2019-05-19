@@ -99,17 +99,20 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)</a></td>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_PlayerID)</a></td>
+	<td class="summary">Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanCreate">API.TravelingSalesmanCreate (_Description)</a></td>
 	<td class="summary">Erstellt einen fahrender Händler mit zufälligen Angeboten.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TravelingSalesmanDeactivate">API.TravelingSalesmanDeactivate (_PlayerID)</a></td>
-	<td class="summary">Entfernt den fahrenden Händler von dem Spieler.</td>
+	<td class="summary">Deaktiviert einen fahrenden Händler.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.TravelingSalesmanDiplomacyOverride">API.TravelingSalesmanDiplomacyOverride (_PlayerID, _Flag)</a></td>
-	<td class="summary">Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
- Hafen überschrieben werden.</td>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanDispose">API.TravelingSalesmanDispose (_PlayerID)</a></td>
+	<td class="summary">Entfernt den fahrenden Händler von dem Spieler.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TravelingSalesmanRotationMode">API.TravelingSalesmanRotationMode (_PlayerID, _Flag)</a></td>
@@ -131,6 +134,10 @@
 <h2><a href="#QSB_TravelingSalesman">QSB.TravelingSalesman</a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#QSB.TravelingSalesman:Activate">QSB.TravelingSalesman:Activate ()</a></td>
+	<td class="summary">Startet einen initialisierten Händler.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#QSB.TravelingSalesman:AddApperance">QSB.TravelingSalesman:AddApperance (_Start, _End)</a></td>
 	<td class="summary">Fügt einen Zeitraum zur Aufenthalt des Fliegenden Händlers hinzu.</td>
 	</tr>
@@ -145,6 +152,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#QSB.TravelingSalesman:ClearOffers">QSB.TravelingSalesman:ClearOffers ()</a></td>
 	<td class="summary">Entfernt alle Angebotsblöcke des Fahrenden Händlers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.TravelingSalesman:Deactivate">QSB.TravelingSalesman:Deactivate ()</a></td>
+	<td class="summary">Stoppt einen aktiven Händler, sodass der nächste Zyklus nicht mehr startet.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#QSB.TravelingSalesman:DisplayInfoMessage">QSB.TravelingSalesman:DisplayInfoMessage ()</a></td>
@@ -195,10 +206,6 @@
 	<td class="summary">Setzt die Wegpunkte für die Abfahrt des Fliegenden Händlers.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:UseChangeDiplomacy">QSB.TravelingSalesman:UseChangeDiplomacy (_Flag)</a></td>
-	<td class="summary">Aktiviert oder deaktiviert die automatische Anpasung der Diplomatie.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#QSB.TravelingSalesman:UseOfferRotation">QSB.TravelingSalesman:UseOfferRotation (_Flag)</a></td>
 	<td class="summary">Aktiviert oder deaktiviert die sequentielle Abarbeitung der Angebote dieses
  Fliegenden Händlers.</td>
@@ -214,14 +221,11 @@
     <dl class="function">
     <dt>
     <a name = "API.TravelingSalesmanActivate"></a>
-    <strong>API.TravelingSalesmanActivate (_PlayerID, _Offers, _Waypoints, _Reversed, _Appearance, _RotationMode)</strong>
+    <strong>API.TravelingSalesmanActivate (_PlayerID)</strong>
     </dt>
     <dd>
-    Erstellt einen fahrender Händler mit zufälligen Angeboten.
-<p> Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
- definiert werden.
- Es kann mehr als einen fahrender Händler auf der Map geben.
-<p> <b>Alias</b>: ActivateTravelingSalesman
+    Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.
+<p> <b>Alias</b>: TravelingSalesmanResume
 
 
 
@@ -231,25 +235,43 @@
             <span class="types"><span class="type">number</span></span>
          Spieler-ID des Händlers
         </li>
-        <li><span class="parameter">_Offers</span>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TravelingSalesmanActivate(<span class="number">2</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanCreate"></a>
+    <strong>API.TravelingSalesmanCreate (_Description)</strong>
+    </dt>
+    <dd>
+    Erstellt einen fahrender Händler mit zufälligen Angeboten.
+<p> Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
+ definiert werden.
+ Es kann mehr als einen fahrender Händler auf der Map geben.
+<p> <h5>Angebote</h5>
+ Es sind maximal 4 Angebote pro Angebotsblock erlaubt. Es können Waren,
+ Soldaten oder Entertainer angeboten werden. Es wird immer automatisch 1
+ Block selektiert und die Angebote gesetzt.
+<p> <h5>Routen</h5>
+ Über Waypoints wird der Weg bestimmt, den das Handelsschiff nehmen wird.
+ Die Umkehrung der Route ist standardmäßig als Rückweg festgelegt. Will
+ man einen anderen Rückweg, muss dieser als Reversed angegeben werden.
+<p> <b>Alias</b>: TravelingSalesmanActivate
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Description</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Liste an Angeboten
-        </li>
-        <li><span class="parameter">_Waypoints</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Wegpunktliste Anfahrt
-        </li>
-        <li><span class="parameter">_Reversed</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         (optional) Wegpunktliste Abfahrt
-        </li>
-        <li><span class="parameter">_Appearance</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         (optional) Ankunft und Abfahrt
-        </li>
-        <li><span class="parameter">_RotationMode</span>
-            <span class="types"><span class="type">boolean</span></span>
-         (optional) Angebote werden der Reihe nach durchgegangen
+         Definition des Händlers
         </li>
     </ul>
 
@@ -258,55 +280,34 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Angebote deklarieren
-</span><span class="keyword">local</span> Offers = {
-    {
-        {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
-    },
-    {
-        {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
-        {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
-        {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
-    },
-    {
-        {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
-        {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
-        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
-    },
-    {
-        {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
-        {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
-        {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,},
+        <pre class="example"><span class="keyword">local</span> TraderDescription = {
+    PlayerID = <span class="number">2</span>,
+    Waypoints = {<span class="string">"WP1"</span>, <span class="string">"WP2"</span>, <span class="string">"WP3"</span>, <span class="string">"WP4"</span>},
+    Offers = {
+        {
+            {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
+            {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
+            {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
+        },
+        {
+            {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
+            {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+            {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
+            {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
+        },
+        {
+            {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
+            {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
+            {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+        },
+        {
+            {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
+            {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
+            {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,},
+        },
     },
 };
-<span class="comment">-- Es sind maximal 4 Angebote pro Block erlaubt. Es können Waren, Soldaten
-</span><span class="comment">-- oder Entertainer angeboten werden. Es wird immer automatisch 1 Block
-</span><span class="comment">-- selektiert und die Angebote gesetzt.
-</span>
-<span class="comment">-- Wegpunkte deklarieren
-</span><span class="keyword">local</span> Waypoints = {<span class="string">"WP1"</span>, <span class="string">"WP2"</span>, <span class="string">"WP3"</span>, <span class="string">"WP4"</span>};
-<span class="comment">-- Es gibt nun zwei Möglichkeiten:
-</span><span class="comment">-- 1. Durch weglassen des Reversed Path werden die Wegpunkte durch das
-</span><span class="comment">-- Schiff bei der Abfahrt automatisch rückwärts abgefahren.
-</span><span class="comment">-- 2. Es wird ein anderer Pfad für die Abfahrt deklariert.
-</span>
-<span class="comment">-- An- und Abfanrtsmonate deklarieren
-</span><span class="keyword">local</span> Appearance = {{<span class="number">4</span>, <span class="number">6</span>}, {<span class="number">8</span>, <span class="number">10</span>}};
-<span class="comment">-- Auch hier gibt es 2 Möglichkeiten:
-</span><span class="comment">-- 1. Neue Anfahrts- und Abfahrtszeiten setzen.
-</span><span class="comment">-- 2. _Apperance weglassen / nil setzen und den Standard verwenden
-</span><span class="comment">-- (März bis Mai und August bis Oktober)
-</span>
-<span class="comment">-- Jetzt kann ein fahrender Händler erzeugt werden
-</span>API.TravelingSalesmanActivate(<span class="number">2</span>, Offers, Waypoints, <span class="keyword">nil</span>, Appearance);
-<span class="comment">-- Hier ist der Rückweg automatisch die Umkehr des Hinwegs (_Reversed = nil).
-</span>
-<span class="comment">-- _Reversed und _Apperance können in den meisten Fällen immer weggelassen
-</span><span class="comment">-- bzw. nil sein!
-</span>API.TravelingSalesmanActivate(<span class="number">2</span>, Offers, Waypoints);</pre>
+API.TravelingSalesmanCreate(TraderDescription);</pre>
     </ul>
 
 </dd>
@@ -315,9 +316,9 @@
     <strong>API.TravelingSalesmanDeactivate (_PlayerID)</strong>
     </dt>
     <dd>
-    Entfernt den fahrenden Händler von dem Spieler.  Der Spieler bleibt
- erhalten wird aber nicht mal als fahrender Händler fungieren.
-<p> <b>Alias</b>: DeactivateTravelingSalesman
+    Deaktiviert einen fahrenden Händler.  Der aktuelle Zyklus wird noch beendet,
+ aber danach kommt der Händler nicht mehr wieder.
+<p> <b>Alias</b>: TravelingSalesmanYield
 
 
 
@@ -334,27 +335,18 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Fahrenden Händler von Spieler 2 löschen
-</span>API.TravelingSalesmanDeactivate(<span class="number">2</span>)</pre>
+        <pre class="example">API.TravelingSalesmanDeactivate(<span class="number">2</span>);</pre>
     </ul>
 
 </dd>
     <dt>
-    <a name = "API.TravelingSalesmanDiplomacyOverride"></a>
-    <strong>API.TravelingSalesmanDiplomacyOverride (_PlayerID, _Flag)</strong>
+    <a name = "API.TravelingSalesmanDispose"></a>
+    <strong>API.TravelingSalesmanDispose (_PlayerID)</strong>
     </dt>
     <dd>
-    Legt fest, ob die diplomatischen Beziehungen zwischen dem Spieler und dem
- Hafen überschrieben werden.
-<p> Die diplomatischen Beziehungen werden überschrieben, wenn sich ein Schiff
- im Hafen befindet und wenn es abreist. Der Hafen ist "Handelspartner", wenn
- ein Schiff angelegt hat, sonst "Bekannt".
-<p> Bei diplomatischen Beziehungen geringer als "Bekannt", kann es zu Fehlern
- kommen. Dann werden Handelsangebote angezeigt, konnen aber nicht durch
- den Spieler erworben werden.
-<p> <b>Hinweis</b>: Überschreiben der Beziehungen ist Standardmäßig als aktiv
- voreingestellt.
-<p> <b>Alias</b>: TravelingSalesmanDiplomacyOverride
+    Entfernt den fahrenden Händler von dem Spieler.  Der Spieler bleibt
+ erhalten wird aber nicht mal als fahrender Händler fungieren.
+<p> <b>Alias</b>: TravelingSalesmanDeactivate
 
 
 
@@ -364,10 +356,6 @@
             <span class="types"><span class="type">number</span></span>
          Spieler-ID des Händlers
         </li>
-        <li><span class="parameter">_Flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Diplomatie überschreiben
-        </li>
     </ul>
 
 
@@ -375,8 +363,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Spieler 2 überschreibt nicht mehr die Diplomatie
-</span>API.TravelingSalesmanDiplomacyOverride(<span class="number">2</span>, <span class="keyword">false</span>)</pre>
+        <pre class="example">API.TravelingSalesmanDispose(<span class="number">2</span>);</pre>
     </ul>
 
 </dd>
@@ -408,8 +395,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Spieler 2 geht Angebote der Reihe nach durch.
-</span>API.TravelingSalesmanRotationMode(<span class="number">2</span>, <span class="keyword">true</span>)</pre>
+        <pre class="example">API.TravelingSalesmanRotationMode(<span class="number">2</span>, <span class="keyword">true</span>);</pre>
     </ul>
 
 </dd>
@@ -449,6 +435,26 @@
     <h2 class="section-header "><a name="QSB_TravelingSalesman"></a>QSB.TravelingSalesman</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "QSB.TravelingSalesman:Activate"></a>
+    <strong>QSB.TravelingSalesman:Activate ()</strong>
+    </dt>
+    <dd>
+    Startet einen initialisierten Händler.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Instanz
+    </ol>
+
+
+
+
+</dd>
     <dt>
     <a name = "QSB.TravelingSalesman:AddApperance"></a>
     <strong>QSB.TravelingSalesman:AddApperance (_Start, _End)</strong>
@@ -547,6 +553,26 @@
 
 </dd>
     <dt>
+    <a name = "QSB.TravelingSalesman:Deactivate"></a>
+    <strong>QSB.TravelingSalesman:Deactivate ()</strong>
+    </dt>
+    <dd>
+    Stoppt einen aktiven Händler, sodass der nächste Zyklus nicht mehr startet.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Instanz
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "QSB.TravelingSalesman:DisplayInfoMessage"></a>
     <strong>QSB.TravelingSalesman:DisplayInfoMessage ()</strong>
     </dt>
@@ -606,9 +632,6 @@
     </dt>
     <dd>
     Gibt die Instanz des Fahrenden Händlers für die Player-ID zurück.
-<p> Sollte keine Instanz für den Spieler existieren, wird eine Null-Instanz
- erzeugt und zurückgegeben.
-
 
 
     <h3>Parameters:</h3>
@@ -821,33 +844,6 @@
 
 </dd>
     <dt>
-    <a name = "QSB.TravelingSalesman:UseChangeDiplomacy"></a>
-    <strong>QSB.TravelingSalesman:UseChangeDiplomacy (_Flag)</strong>
-    </dt>
-    <dd>
-    Aktiviert oder deaktiviert die automatische Anpasung der Diplomatie.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Diplomatie wird überschrieben
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
     <a name = "QSB.TravelingSalesman:UseOfferRotation"></a>
     <strong>QSB.TravelingSalesman:UseOfferRotation (_Flag)</strong>
     </dt>
@@ -882,7 +878,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-03-20 19:28:34 </i>
+<i style="float:right;">Last updated 2019-05-19 12:12:03 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
