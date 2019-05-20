@@ -5,11 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- In diesem Bundle wird eine Klasse bereitgestellt, die alle wichtigen
--- Abfragen an ein Entity in sich vereint. Mit diesem Properties Wrapper
--- kannst Du bequem die Eigenschaften von Entities abfragen und ändern.
---
--- 
+-- In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation
+-- von Entities bereitgestellt.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -23,56 +20,160 @@ QSB = QSB or {};
 -- Backwards compability                                                      --
 -- -------------------------------------------------------------------------- --
 
+---
+-- Gibt den Größenfaktor des Entity zurück.
+--
+-- Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+-- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+--
+-- <b>Alias</b>: GetScale
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=number] Größenfaktor des Entity
+--
 function API.GetEntityScale(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):EntitySize();
 end
 GetScale = API.GetEntityScale;
 
+---
+-- Gibt den Besitzer des Entity zurück.
+--
+-- <b>Alias</b>: GetPlayer
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=number] Besitzer des Entity
+--
 function API.GetEntityPlayer(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):PlayerID();
 end
 GetPlayer = API.GetEntityPlayer;
 
+---
+-- Gibt die Position zurück, zu der sich ein Entity bewegt. Die Position wird
+-- als XY-Table zurückgegeben.
+--
+-- <b>Alias</b>: GetMovingTarget
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=table] Zielposition des Entity
+--
 function API.GetMovementTarget(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):GetDestination();
 end
 GetMovingTarget = API.GetMovementTarget;
 
+---
+-- Prüft, ob das NPC-FLag für das Entity gesetzt ist.
+--
+-- <b>Alias</b>: IsNpc
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=boolean] NPC-Flag ist gesetzt
+--
 function API.IsActiveNpc(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):OnScreenInfo();
 end
 IsNpc = API.IsActiveNpc;
 
+---
+-- Prüft, ob das Entity sichtbar ist.
+--
+-- <b>Alias</b>: IsVisible
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=boolean] Entity ist sichtbar
+--
 function API.IsEntityVisible(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):Visible();
 end
 IsVisible = API.IsEntityVisible;
 
+---
+-- Gibt den Größenfaktor des Entity zurück.
+--
+-- Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+-- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+--
+-- <b>Alias</b>: SetScale
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _Scale Größenfaktor des Entity
+--
 function API.SetEntityScale(_Entity, _Scale)
     return QSB.EntityProperty:GetInstance(_Entity):EntitySize(_Scale);
 end
 SetScale = API.SetEntityScale;
 
+---
+-- Weist dem Entity einen neuen Besitzer zu.
+--
+-- <b>Alias</b>: ChangePlayer
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _PlayerID Besitzer des Entity
+--
 function API.SetEntityPlayer(_Entity, _PlayerID)
     return QSB.EntityProperty:GetInstance(_Entity):PlayerID(_PlayerID);
 end
 ChangePlayer = API.SetEntityPlayer;
 
+---
+-- Gibt die relative Gesundheit des Entity zurück.
+--
+-- <b>Hinweis</b>: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
+--
+-- <b>Alias</b>: GetHealth
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=number] Relative Gesundheit des Entity
+--
 function API.GetEntityHealth(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):Health();
 end
 GetHealth = API.GetEntityHealth;
 
+---
+-- Ändert die relative Gesundheit eines Entity.
+--
+-- <b>Hinweis</b>: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
+--
+-- <b>Alias</b>: SetHealth
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _Percentage Relative Gesundheit des Entity
+--
 function API.ChangeEntityHealth(_Entity, _Percentage)
     return QSB.EntityProperty:GetInstance(_Entity):Health(_Percentage, true);
 end
 SetHealth = API.ChangeEntityHealth;
 
+---
+-- Setzt ein Gebäude in Brand. Die Feuerstärke bestimmt, wie häftig es brennt.
+--
+-- <b>Hinweis</b>: Im Allgemeinen reicht eine Feuerstärke zwischen 1 und 50.
+--
+-- <b>Alias</b>: SetOnFire
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _FireSize Relative Gesundheit des Entity
+--
 function API.SetBuildingOnFire(_Entity, _FireSize)
     QSB.EntityProperty:GetInstance(_Entity):Burning(_FireSize)
 end
 SetOnFire = API.SetBuildingOnFire;
 
+---
+-- Verwundet ein Entity um einen absoluten Wert Gesundheit.
+--
+-- <b>Hinweis</b>: Die Anzahl an Gesundheitspunkten richtet sich nach dem
+-- jeweiligen Entity und ist immer ganzzahlig!
+--
+-- <b>Alias</b>: HurtEntityEx
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _Damage Menge an abgezogener Gesundheit
+--
 function API.HurtEntity(_Entity, _Damage, _Attacker)
     QSB.EntityProperty:GetInstance(_Entity):Hurt(_Damage);
 end
@@ -91,6 +192,7 @@ QSB.EntityProperty = {};
 -- @param[type=string] _Entity Skriptname des Entity
 -- @return[type=table] Neue Instanz
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:New(_Entity)
     assert(self == QSB.EntityProperty, "Can not be used from instance!");
@@ -109,6 +211,7 @@ end
 -- @param[type=string] _Entity Skriptname des Entity
 -- @return[type=table] Instanz
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetInstance(_Entity)
     assert(self == QSB.EntityProperty, "Can not be used from instance!");
@@ -126,6 +229,7 @@ end
 -- @param[type=number] _Scale (Optional) Neuer Größenfaktor
 -- @return[type=number] Größenfaktor
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:EntitySize(_Scale)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -150,6 +254,7 @@ end
 -- @param[type=number] _Orientation (Optional) Neue Ausrichtung
 -- @return[type=number] Ausrichtung in Grad
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Orientation(_Orientation)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -171,6 +276,7 @@ end
 -- @param[type=number] _Amount (Optional) Menge an Rohstoffen
 -- @return[type=number] Menge an Rohstoffen
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Resource(_Amount)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -195,6 +301,7 @@ end
 -- @param[type=number] _PlayerID (Optional) Neuer Besitzer des Entity
 -- @return[type=number] Besitzer
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:PlayerID(_PlayerID)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -221,6 +328,7 @@ end
 -- @param[type=boolean] _Relative (Optional) Relativ zur maximalen Gesundheit
 -- @return[type=number] Aktuelle Gesundheit
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Health(_Health, _Relative)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -249,6 +357,7 @@ end
 --
 -- @param[type=number]  _Amount   Geheilte Gesundheit
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Heal(_Amount)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -266,6 +375,7 @@ end
 --
 -- @param[type=number] _Damage   Schaden
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Hurt(_Damage)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -309,6 +419,7 @@ end
 -- @param[type=number]  _FireSize (Optional) Neue aktuelle Gesundheit
 -- @return[type=boolean] Gebäude steht in Flammen
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Burning(_FireSize)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -331,6 +442,7 @@ end
 -- @param[type=boolean] _Visible (Optional) Sichtbarkeit ändern
 -- @return[type=boolean] Ist sichtbar
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Visible(_Visble)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -353,6 +465,7 @@ end
 -- @param[type=boolean] _SetIll (Optional) Entity krank machen
 -- @return[type=boolean] Entity ist krank
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Ill(_SetIll)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -383,6 +496,7 @@ end
 --
 -- @return[type=boolean] Ist NPC
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:OnScreenInfo()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -399,6 +513,7 @@ end
 --
 -- @return[type=table] Positionstabelle
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetDestination()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -417,6 +532,7 @@ end
 --
 -- @return[type=number] Menge an Soldaten
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:CountSoldiers()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -434,6 +550,7 @@ end
 --
 -- @return[type=table] Liste aller Soldaten
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetSoldiers()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -452,6 +569,7 @@ end
 --
 -- @return[type=number] Menge an Soldaten
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetLeader()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -470,6 +588,7 @@ end
 -- @param[type=number] _NewType (optional) Typ neues Entity
 -- @return[type=number] Typ des Entity
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Type(_NewType)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -489,6 +608,7 @@ end
 --
 -- @return[type=string] Typname des Entity
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetTypeName()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -505,6 +625,7 @@ end
 --
 -- @return[type=table] Kategorien des Entity
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetGategories()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -528,6 +649,7 @@ end
 -- @param[type=number] _Category Kategorie
 -- @return[type=boolean] Entity hat Kategorie
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:InGategory(_Category)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -540,6 +662,7 @@ end
 -- @param[type=number] _index  Index im RAM
 -- @return[type=number] Ganzzahl
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetValueAsInteger(_index)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -557,6 +680,7 @@ end
 -- @param[type=number] _index  Index im RAM
 -- @return[type=number] Dezimalzahl
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetValueAsFloat(_index)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
