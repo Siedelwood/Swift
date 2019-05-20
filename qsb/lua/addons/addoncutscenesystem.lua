@@ -55,7 +55,8 @@ API = API or {};
 -- <pre>local Cutscene = {
 --    CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
 --    RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
---    TransperentBars = false, -- Durchsichtige Bars verwenden (Opacity = 39%)
+--    BarOpacity = 0.39,       -- Durchsichtige Bars verwenden (Opacity = 39%)
+--    BigBars = false,         -- Breite Bars verwenden (Default false)
 --    HideBorderPins = true,   -- Grenzsteine ausblenden
 --    FastForward = false,     -- Beschleunigt abspielen erlauben
 --
@@ -226,6 +227,10 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene)
     BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.CurrentCutscene.ID = BundleBriefingSystem.Global.Data.BriefingID;
+    self.Data.CurrentCutscene.BarOpacity = self.Data.CurrentCutscene.BarOpacity or 1;
+    if self.Data.CurrentCutscene.BigBars == nil then
+        self.Data.CurrentCutscene.BigBars = false;
+    end
     local Cutscene = API.ConvertTableToString(self.Data.CurrentCutscene);
     API.Bridge("AddOnCutsceneSystem.Local:StartCutscene(" ..Cutscene.. ")");
     self.Data.CutsceneActive = true;
@@ -420,7 +425,10 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         if string.sub(Text, 1, 1) ~= "{" then
             Text = "{center}" .. Text;
         end
-        XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", "{cr}{cr}{cr}" .. Text);
+        if not self.Data.CurrentCutscene.BigBars then
+            Text = "{cr}{cr}{cr}" .. Text;
+        end
+        XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", Text);
         -- Führe Action aus
         if Action then
             API.Bridge("AddOnCutsceneSystem.Global.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
@@ -668,25 +676,6 @@ function AddOnCutsceneSystem.Local:UpdateFader()
 end
 
 ---
--- Setzt den Bar-Style für die aktuelle Cutscene.
--- @within Internal
--- @local
---
-function AddOnCutsceneSystem.Local:SetBarStyle(_Transparend)
-    local Alpha = (_Transparend and 100) or 255;
-
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 1);
-
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, Alpha);
-end
-
----
 -- Aktiviert den Cinematic Mode. Alle selektierten Entities werden gespeichert
 -- und anschließend deselektiert. Optional wird die Kameraposition und die
 -- Spielgeschwindigkeit ebenfalls gespeichert.
@@ -743,7 +732,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    AddOnCutsceneSystem.Local:SetBarStyle(self.Data.CurrentCutscene.TransperentBars == true);
+    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentCutscene.BarOpacity, self.Data.CurrentCutscene.BigBars);
 
     if not self.Data.SkipButtonTextBackup then
         self.Data.SkipButtonTextBackup = XGUIEng.GetText("/InGame/ThroneRoom/Main/Skip");

@@ -45,10 +45,13 @@ QSB = QSB or {};
 -- <td>HideBorderPins</td>
 -- <td>Die Grenzsteine werden während des Briefing ausgeblendet</td>
 -- </tr>
+-- <tr>
+-- <td>BarOpacity</td>
+-- <td>Bestimmt die Opacity der Bars [0.0 - 1.0]</td>
 -- </tr>
 -- <tr>
--- <td>TransparentBars</td>
--- <td>Die Bars werden transparent dargestellt. (Opacity = 39%)</td>
+-- <td>BigBars</td>
+-- <td>Breite Bars in Briefings verwenden (Default true)</td>
 -- </tr>
 -- <tr>
 -- <td>ShowSky</td>
@@ -513,6 +516,10 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing.PageHistory = {};
     self.Data.CurrentBriefing.ID = self.Data.BriefingID;
+    self.Data.CurrentBriefing.BarOpacity = self.Data.CurrentBriefing.BarOpacity or 1;
+    if self.Data.CurrentBriefing.BigBars == nil then
+        self.Data.CurrentBriefing.BigBars = true;
+    end
     self:DisableMCAnswers();
     if self.Data.CurrentBriefing.DisableGlobalInvulnerability ~= false then
         Logic.SetGlobalInvulnerability(1);
@@ -882,6 +889,9 @@ function BundleBriefingSystem.Local:PageStarted()
             if Text:sub(1, 1) ~= "{" then
                 Text = "{center}" ..Text;
             end
+            if not self.Data.CurrentBriefing.BigBars then
+                Text = "{cr}{cr}{cr}" .. Text;
+            end
             XGUIEng.SetText(TextWidget, Text);
         end
 
@@ -1233,22 +1243,33 @@ end
 
 ---
 -- Setzt den Stil der Briefing-Bars.
--- @param[type=boolean] _Transparend Transparente Bars benutzen
+-- @param[type=number] _Opacity Opacity der Bars
 -- @within Internal
 -- @local
 --
-function BundleBriefingSystem.Local:SetBarStyle(_Transparend)
-    local Alpha = (_Transparend and 100) or 255;
+function BundleBriefingSystem.Local:SetBarStyle(_Opacity, _BigBars)
+    local OpacityBig = (255 * _Opacity);
+    local OpacitySmall = (255 * _Opacity);
+    if _BigBars then
+        OpacitySmall = 0;
+    end
+    
+    local BigVisibility = (_BigBars and 1 or 0);
+    local SmallVisibility = (_BigBars and 0 or 1);
+    if _Opacity == 0 then
+        BigVisibility = 0;
+        SmallVisibility = 0;
+    end
 
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", BigVisibility);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", SmallVisibility);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", BigVisibility);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", SmallVisibility);
 
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, Alpha);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, OpacityBig);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, OpacityBig);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, OpacitySmall);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, OpacitySmall);
 end
 
 ---
@@ -1351,7 +1372,7 @@ function BundleBriefingSystem.Local:SetSplashscreen()
             XGUIEng.SetWidgetSize(BG, Position[1], Position[2]);
             self.Data.CurrentBriefing.BriefingBarSizeBackup = nil;
         end
-        self:SetBarStyle(self.Data.CurrentBriefing.TransparentBars == true);
+        self:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
         return;
     end
 
@@ -1363,7 +1384,7 @@ function BundleBriefingSystem.Local:SetSplashscreen()
         if is4To3 or is5To4 then
             u0 = u0 + (u0 * 0.125); u1 = u1 - (u1 * 0.125);
         end
-        self:SetBarStyle(false);
+        self:SetBarStyle(1, true);
         XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
         XGUIEng.SetMaterialTexture(BG, 1, self.Data.CurrentPage.Splashscreen);
         XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
@@ -1440,7 +1461,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.TransparentBars == true);
+    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
 
     GUI.ClearSelection();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
