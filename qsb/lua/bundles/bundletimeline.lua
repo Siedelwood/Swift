@@ -36,6 +36,94 @@ QSB.TimeLine = {
 };
 
 -- -------------------------------------------------------------------------- --
+-- User Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet einen Zeitstrahl. Ein Zeitstrahl hat Stationen,
+-- an denen eine Aktion ausgeführt wird. Jede Station muss mindestens eine
+-- Sekunde nach der vorherigen liegen.
+--
+-- Jede Aktion eines Zeitstrahls erhält die Table des aktuellen Ereignisses
+-- als Argument. So können Parameter an die Funktion übergeben werden.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
+--
+-- @param[type=table] _Description Beschreibung
+-- @return[type=number] ID des Zeitstrahls
+-- @within Anwenderfunktionen
+--
+-- @usage MyTimeLine = API.TimeLineStart {
+--     {Time = 1, Action = MyFirstAction},
+--     -- MySecondAction erhält "BOCKWURST" als Parameter
+--     {Time = 3, Action = MySecondAction, "BOCKWURST"},
+--     -- Inline-Funktion
+--     {Time = 9, Action = function() end},
+-- }
+--
+function API.TimeLineStart(_Description)
+    return BundleTimeLine.Shared.TimeLine:Start(_Description);
+end
+
+---
+-- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
+-- beendet, beginnt er dennoch von vorn.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
+--
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+-- @usage API.TimeLineRestart(MyTimeLine);
+--
+function API.TimeLineRestart(_ID)
+    return BundleTimeLine.Shared.TimeLine:Restart(_ID)
+end
+
+---
+-- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
+--
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @return[type=boolean] Zeitstrahl ist aktiv
+-- @within Anwenderfunktionen
+--
+-- @usage local IsRunning = API.TimeLineIsRunning(MyTimeLine);
+--
+function API.TimeLineIsRunning(_ID)
+    return BundleTimeLine.Shared.TimeLine:IsRunning(_ID);
+end
+
+---
+-- Hält einen Zeitstrahl an.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
+--
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+-- @usage API.TimeLineYield(MyTimeLine);
+--
+function API.TimeLineYield(_ID)
+    return BundleTimeLine.Shared.TimeLine:Yield(_ID);
+end
+
+---
+-- Stößt einen angehaltenen Zeitstrahl wieder an.
+--
+-- <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
+--
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+-- @usage API.TimeLineResume(MyTimeLine);
+--
+function API.TimeLineResume(_ID)
+    return BundleTimeLine.Shared.TimeLine:Resume(_ID);
+end
+
+-- -------------------------------------------------------------------------- --
 -- TimeLine Klasse                                                            --
 -- -------------------------------------------------------------------------- --
 
@@ -50,6 +138,7 @@ QSB.TimeLine = {
 -- @param[type=table] _Description Beschreibung
 -- @return[type=number] ID des Zeitstrahls
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage MyTimeLine = QSB.TimeLine:Start {
 --     {Time = 5, Action = MyFirstAction},
@@ -93,6 +182,7 @@ end
 --
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage QSB.TimeLine:Restart(MyTimeLine);
 --
@@ -114,6 +204,7 @@ end
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @return[type=boolean] Zeitstrahl ist aktiv
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage local IsRunning = QSB.TimeLine:IsRunning(MyTimeLine);
 --
@@ -132,6 +223,7 @@ end
 --
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage QSB.TimeLine:Yield(MyTimeLine);
 --
@@ -151,6 +243,7 @@ end
 --
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage QSB.TimeLine:Resume(MyTimeLine);
 --
