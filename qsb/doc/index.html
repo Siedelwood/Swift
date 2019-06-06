@@ -1883,10 +1883,13 @@ QSB = QSB or {};
 -- &#x3C;td&#x3E;HideBorderPins&#x3C;/td&#x3E;
 -- &#x3C;td&#x3E;Die Grenzsteine werden während des Briefing ausgeblendet&#x3C;/td&#x3E;
 -- &#x3C;/tr&#x3E;
+-- &#x3C;tr&#x3E;
+-- &#x3C;td&#x3E;BarOpacity&#x3C;/td&#x3E;
+-- &#x3C;td&#x3E;Bestimmt die Opacity der Bars [0.0 - 1.0]&#x3C;/td&#x3E;
 -- &#x3C;/tr&#x3E;
 -- &#x3C;tr&#x3E;
--- &#x3C;td&#x3E;TransparentBars&#x3C;/td&#x3E;
--- &#x3C;td&#x3E;Die Bars werden transparent dargestellt. (Opacity = 39)&#x3C;/td&#x3E;
+-- &#x3C;td&#x3E;BigBars&#x3C;/td&#x3E;
+-- &#x3C;td&#x3E;Breite Bars in Briefings verwenden (Default true)&#x3C;/td&#x3E;
 -- &#x3C;/tr&#x3E;
 -- &#x3C;tr&#x3E;
 -- &#x3C;td&#x3E;ShowSky&#x3C;/td&#x3E;
@@ -2351,6 +2354,10 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing.PageHistory = {};
     self.Data.CurrentBriefing.ID = self.Data.BriefingID;
+    self.Data.CurrentBriefing.BarOpacity = self.Data.CurrentBriefing.BarOpacity or 1;
+    if self.Data.CurrentBriefing.BigBars == nil then
+        self.Data.CurrentBriefing.BigBars = true;
+    end
     self:DisableMCAnswers();
     if self.Data.CurrentBriefing.DisableGlobalInvulnerability ~= false then
         Logic.SetGlobalInvulnerability(1);
@@ -2720,6 +2727,9 @@ function BundleBriefingSystem.Local:PageStarted()
             if Text:sub(1, 1) ~= "{" then
                 Text = "{center}" ..Text;
             end
+            if not self.Data.CurrentBriefing.BigBars then
+                Text = "{cr}{cr}{cr}" .. Text;
+            end
             XGUIEng.SetText(TextWidget, Text);
         end
 
@@ -3071,22 +3081,33 @@ end
 
 ---
 -- Setzt den Stil der Briefing-Bars.
--- @param[type=boolean] _Transparend Transparente Bars benutzen
+-- @param[type=number] _Opacity Opacity der Bars
 -- @within Internal
 -- @local
 --
-function BundleBriefingSystem.Local:SetBarStyle(_Transparend)
-    local Alpha = (_Transparend and 100) or 255;
+function BundleBriefingSystem.Local:SetBarStyle(_Opacity, _BigBars)
+    local OpacityBig = (255 * _Opacity);
+    local OpacitySmall = (255 * _Opacity);
+    if _BigBars then
+        OpacitySmall = 0;
+    end
+    
+    local BigVisibility = (_BigBars and 1 or 0);
+    local SmallVisibility = (_BigBars and 0 or 1);
+    if _Opacity == 0 then
+        BigVisibility = 0;
+        SmallVisibility = 0;
+    end
 
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", BigVisibility);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", SmallVisibility);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", BigVisibility);
+    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", SmallVisibility);
 
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, Alpha);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, OpacityBig);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, OpacityBig);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, OpacitySmall);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, OpacitySmall);
 end
 
 ---
@@ -3189,7 +3210,7 @@ function BundleBriefingSystem.Local:SetSplashscreen()
             XGUIEng.SetWidgetSize(BG, Position[1], Position[2]);
             self.Data.CurrentBriefing.BriefingBarSizeBackup = nil;
         end
-        self:SetBarStyle(self.Data.CurrentBriefing.TransparentBars == true);
+        self:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
         return;
     end
 
@@ -3201,7 +3222,7 @@ function BundleBriefingSystem.Local:SetSplashscreen()
         if is4To3 or is5To4 then
             u0 = u0 + (u0 * 0.125); u1 = u1 - (u1 * 0.125);
         end
-        self:SetBarStyle(false);
+        self:SetBarStyle(1, true);
         XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
         XGUIEng.SetMaterialTexture(BG, 1, self.Data.CurrentPage.Splashscreen);
         XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
@@ -3278,7 +3299,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.TransparentBars == true);
+    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
 
     GUI.ClearSelection();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
@@ -6584,7 +6605,7 @@ Core:RegisterBehavior(b_Goal_SatisfyNeed);
 -- Der angegebene Spieler muss eine Menge an Siedlern in der Stadt haben.
 --
 -- @param _Amount   Menge an Siedlern
--- @param _PlayerID ID des Spielers
+-- @param _PlayerID ID des Spielers (Default: 1)
 --
 -- @within Goal
 --
@@ -6605,14 +6626,14 @@ b_Goal_SettlersNumber = {
 }
 
 function b_Goal_SettlersNumber:GetGoalTable()
-    return {Objective.SettlersNumber, self.PlayerID, self.SettlersAmount };
+    return {Objective.SettlersNumber, self.PlayerID or 1, self.SettlersAmount };
 end
 
 function b_Goal_SettlersNumber:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.SettlersAmount = _Parameter * 1;
     elseif (_Index == 1) then
-        self.PlayerID = (_Parameter or 1) * 1;
+        self.PlayerID = _Parameter * 1;
     end
 end
 
@@ -16416,11 +16437,8 @@ Core:RegisterBundle("BundleEntityHelperFunctions");
 -- -------------------------------------------------------------------------- --
 
 ---
--- In diesem Bundle wird eine Klasse bereitgestellt, die alle wichtigen
--- Abfragen an ein Entity in sich vereint. Mit diesem Properties Wrapper
--- kannst Du bequem die Eigenschaften von Entities abfragen und ändern.
---
--- 
+-- In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation
+-- von Entities bereitgestellt.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -16434,56 +16452,160 @@ QSB = QSB or {};
 -- Backwards compability                                                      --
 -- -------------------------------------------------------------------------- --
 
+---
+-- Gibt den Größenfaktor des Entity zurück.
+--
+-- Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+-- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetScale
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=number] Größenfaktor des Entity
+--
 function API.GetEntityScale(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):EntitySize();
 end
 GetScale = API.GetEntityScale;
 
+---
+-- Gibt den Besitzer des Entity zurück.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetPlayer
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=number] Besitzer des Entity
+--
 function API.GetEntityPlayer(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):PlayerID();
 end
 GetPlayer = API.GetEntityPlayer;
 
+---
+-- Gibt die Position zurück, zu der sich ein Entity bewegt. Die Position wird
+-- als XY-Table zurückgegeben.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetMovingTarget
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=table] Zielposition des Entity
+--
 function API.GetMovementTarget(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):GetDestination();
 end
 GetMovingTarget = API.GetMovementTarget;
 
+---
+-- Prüft, ob das NPC-FLag für das Entity gesetzt ist.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsNpc
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=boolean] NPC-Flag ist gesetzt
+--
 function API.IsActiveNpc(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):OnScreenInfo();
 end
 IsNpc = API.IsActiveNpc;
 
+---
+-- Prüft, ob das Entity sichtbar ist.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsVisible
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=boolean] Entity ist sichtbar
+--
 function API.IsEntityVisible(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):Visible();
 end
 IsVisible = API.IsEntityVisible;
 
+---
+-- Gibt den Größenfaktor des Entity zurück.
+--
+-- Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+-- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetScale
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _Scale Größenfaktor des Entity
+--
 function API.SetEntityScale(_Entity, _Scale)
     return QSB.EntityProperty:GetInstance(_Entity):EntitySize(_Scale);
 end
 SetScale = API.SetEntityScale;
 
+---
+-- Weist dem Entity einen neuen Besitzer zu.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: ChangePlayer
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _PlayerID Besitzer des Entity
+--
 function API.SetEntityPlayer(_Entity, _PlayerID)
     return QSB.EntityProperty:GetInstance(_Entity):PlayerID(_PlayerID);
 end
 ChangePlayer = API.SetEntityPlayer;
 
+---
+-- Gibt die relative Gesundheit des Entity zurück.
+--
+-- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetHealth
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @return[type=number] Relative Gesundheit des Entity
+--
 function API.GetEntityHealth(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):Health();
 end
 GetHealth = API.GetEntityHealth;
 
+---
+-- Ändert die relative Gesundheit eines Entity.
+--
+-- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetHealth
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _Percentage Relative Gesundheit des Entity
+--
 function API.ChangeEntityHealth(_Entity, _Percentage)
     return QSB.EntityProperty:GetInstance(_Entity):Health(_Percentage, true);
 end
 SetHealth = API.ChangeEntityHealth;
 
+---
+-- Setzt ein Gebäude in Brand. Die Feuerstärke bestimmt, wie häftig es brennt.
+--
+-- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Im Allgemeinen reicht eine Feuerstärke zwischen 1 und 50.
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetOnFire
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _FireSize Relative Gesundheit des Entity
+--
 function API.SetBuildingOnFire(_Entity, _FireSize)
     QSB.EntityProperty:GetInstance(_Entity):Burning(_FireSize)
 end
 SetOnFire = API.SetBuildingOnFire;
 
+---
+-- Verwundet ein Entity um einen absoluten Wert Gesundheit.
+--
+-- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Die Anzahl an Gesundheitspunkten richtet sich nach dem
+-- jeweiligen Entity und ist immer ganzzahlig!
+--
+-- &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: HurtEntityEx
+--
+-- @param[type=string] _Entity Scriptname des Entity
+-- @param[type=number] _Damage Menge an abgezogener Gesundheit
+--
 function API.HurtEntity(_Entity, _Damage, _Attacker)
     QSB.EntityProperty:GetInstance(_Entity):Hurt(_Damage);
 end
@@ -16502,6 +16624,7 @@ QSB.EntityProperty = {};
 -- @param[type=string] _Entity Skriptname des Entity
 -- @return[type=table] Neue Instanz
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:New(_Entity)
     assert(self == QSB.EntityProperty, "Can not be used from instance!");
@@ -16520,6 +16643,7 @@ end
 -- @param[type=string] _Entity Skriptname des Entity
 -- @return[type=table] Instanz
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetInstance(_Entity)
     assert(self == QSB.EntityProperty, "Can not be used from instance!");
@@ -16537,6 +16661,7 @@ end
 -- @param[type=number] _Scale (Optional) Neuer Größenfaktor
 -- @return[type=number] Größenfaktor
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:EntitySize(_Scale)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16561,6 +16686,7 @@ end
 -- @param[type=number] _Orientation (Optional) Neue Ausrichtung
 -- @return[type=number] Ausrichtung in Grad
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Orientation(_Orientation)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16582,6 +16708,7 @@ end
 -- @param[type=number] _Amount (Optional) Menge an Rohstoffen
 -- @return[type=number] Menge an Rohstoffen
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Resource(_Amount)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16606,6 +16733,7 @@ end
 -- @param[type=number] _PlayerID (Optional) Neuer Besitzer des Entity
 -- @return[type=number] Besitzer
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:PlayerID(_PlayerID)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16632,6 +16760,7 @@ end
 -- @param[type=boolean] _Relative (Optional) Relativ zur maximalen Gesundheit
 -- @return[type=number] Aktuelle Gesundheit
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Health(_Health, _Relative)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16660,6 +16789,7 @@ end
 --
 -- @param[type=number]  _Amount   Geheilte Gesundheit
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Heal(_Amount)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16677,6 +16807,7 @@ end
 --
 -- @param[type=number] _Damage   Schaden
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Hurt(_Damage)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16720,6 +16851,7 @@ end
 -- @param[type=number]  _FireSize (Optional) Neue aktuelle Gesundheit
 -- @return[type=boolean] Gebäude steht in Flammen
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Burning(_FireSize)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16742,6 +16874,7 @@ end
 -- @param[type=boolean] _Visible (Optional) Sichtbarkeit ändern
 -- @return[type=boolean] Ist sichtbar
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Visible(_Visble)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16764,6 +16897,7 @@ end
 -- @param[type=boolean] _SetIll (Optional) Entity krank machen
 -- @return[type=boolean] Entity ist krank
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Ill(_SetIll)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16794,6 +16928,7 @@ end
 --
 -- @return[type=boolean] Ist NPC
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:OnScreenInfo()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16810,6 +16945,7 @@ end
 --
 -- @return[type=table] Positionstabelle
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetDestination()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16828,6 +16964,7 @@ end
 --
 -- @return[type=number] Menge an Soldaten
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:CountSoldiers()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16845,6 +16982,7 @@ end
 --
 -- @return[type=table] Liste aller Soldaten
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetSoldiers()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16863,6 +17001,7 @@ end
 --
 -- @return[type=number] Menge an Soldaten
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetLeader()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16881,6 +17020,7 @@ end
 -- @param[type=number] _NewType (optional) Typ neues Entity
 -- @return[type=number] Typ des Entity
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:Type(_NewType)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16900,6 +17040,7 @@ end
 --
 -- @return[type=string] Typname des Entity
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetTypeName()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16916,6 +17057,7 @@ end
 --
 -- @return[type=table] Kategorien des Entity
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetGategories()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16939,6 +17081,7 @@ end
 -- @param[type=number] _Category Kategorie
 -- @return[type=boolean] Entity hat Kategorie
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:InGategory(_Category)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16951,6 +17094,7 @@ end
 -- @param[type=number] _index  Index im RAM
 -- @return[type=number] Ganzzahl
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetValueAsInteger(_index)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -16968,6 +17112,7 @@ end
 -- @param[type=number] _index  Index im RAM
 -- @return[type=number] Dezimalzahl
 -- @within QSB.EntityProperty
+-- @local
 --
 function QSB.EntityProperty:GetValueAsFloat(_index)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
@@ -28817,6 +28962,94 @@ QSB.TimeLine = {
 };
 
 -- -------------------------------------------------------------------------- --
+-- User Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Startet einen Zeitstrahl. Ein Zeitstrahl hat Stationen,
+-- an denen eine Aktion ausgeführt wird. Jede Station muss mindestens eine
+-- Sekunde nach der vorherigen liegen.
+--
+-- Jede Aktion eines Zeitstrahls erhält die Table des aktuellen Ereignisses
+-- als Argument. So können Parameter an die Funktion übergeben werden.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; QSB.TimeLine:Start&#x3C;br&#x3E;&#x3C;/p&#x3E;
+--
+-- @param[type=table] _Description Beschreibung
+-- @return[type=number] ID des Zeitstrahls
+-- @within Anwenderfunktionen
+--
+-- @usage MyTimeLine = API.TimeLineStart {
+--     {Time = 1, Action = MyFirstAction},
+--     -- MySecondAction erhält "BOCKWURST" als Parameter
+--     {Time = 3, Action = MySecondAction, "BOCKWURST"},
+--     -- Inline-Funktion
+--     {Time = 9, Action = function() end},
+-- }
+--
+function API.TimeLineStart(_Description)
+    return BundleTimeLine.Shared.TimeLine:Start(_Description);
+end
+
+---
+-- Startet einen Zeitstrahl erneut. Ist der Zeitstrahl noch nicht
+-- beendet, beginnt er dennoch von vorn.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; QSB.TimeLine:Restart&#x3C;br&#x3E;&#x3C;/p&#x3E;
+--
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+-- @usage API.TimeLineRestart(MyTimeLine);
+--
+function API.TimeLineRestart(_ID)
+    return BundleTimeLine.Shared.TimeLine:Restart(_ID)
+end
+
+---
+-- Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; QSB.TimeLine:IsRunning&#x3C;br&#x3E;&#x3C;/p&#x3E;
+--
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @return[type=boolean] Zeitstrahl ist aktiv
+-- @within Anwenderfunktionen
+--
+-- @usage local IsRunning = API.TimeLineIsRunning(MyTimeLine);
+--
+function API.TimeLineIsRunning(_ID)
+    return BundleTimeLine.Shared.TimeLine:IsRunning(_ID);
+end
+
+---
+-- Hält einen Zeitstrahl an.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; QSB.TimeLine:Yield&#x3C;br&#x3E;&#x3C;/p&#x3E;
+--
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+-- @usage API.TimeLineYield(MyTimeLine);
+--
+function API.TimeLineYield(_ID)
+    return BundleTimeLine.Shared.TimeLine:Yield(_ID);
+end
+
+---
+-- Stößt einen angehaltenen Zeitstrahl wieder an.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; QSB.TimeLine:Resume&#x3C;br&#x3E;&#x3C;/p&#x3E;
+--
+-- @param[type=number] _ID ID des Zeitstrahl
+-- @within Anwenderfunktionen
+--
+-- @usage API.TimeLineResume(MyTimeLine);
+--
+function API.TimeLineResume(_ID)
+    return BundleTimeLine.Shared.TimeLine:Resume(_ID);
+end
+
+-- -------------------------------------------------------------------------- --
 -- TimeLine Klasse                                                            --
 -- -------------------------------------------------------------------------- --
 
@@ -28831,6 +29064,7 @@ QSB.TimeLine = {
 -- @param[type=table] _Description Beschreibung
 -- @return[type=number] ID des Zeitstrahls
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage MyTimeLine = QSB.TimeLine:Start {
 --     {Time = 5, Action = MyFirstAction},
@@ -28874,6 +29108,7 @@ end
 --
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage QSB.TimeLine:Restart(MyTimeLine);
 --
@@ -28895,6 +29130,7 @@ end
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @return[type=boolean] Zeitstrahl ist aktiv
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage local IsRunning = QSB.TimeLine:IsRunning(MyTimeLine);
 --
@@ -28913,6 +29149,7 @@ end
 --
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage QSB.TimeLine:Yield(MyTimeLine);
 --
@@ -28932,6 +29169,7 @@ end
 --
 -- @param[type=number] _ID ID des Zeitstrahl
 -- @within Anwenderfunktionen
+-- @local
 --
 -- @usage QSB.TimeLine:Resume(MyTimeLine);
 --
@@ -35463,7 +35701,8 @@ API = API or {};
 -- &#x3C;pre&#x3E;local Cutscene = {
 --    CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
 --    RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
---    TransperentBars = false, -- Durchsichtige Bars verwenden (Opacity = 39)
+--    BarOpacity = 0.39,       -- Durchsichtige Bars verwenden (Opacity = 39)
+--    BigBars = false,         -- Breite Bars verwenden (Default false)
 --    HideBorderPins = true,   -- Grenzsteine ausblenden
 --    FastForward = false,     -- Beschleunigt abspielen erlauben
 --
@@ -35634,6 +35873,10 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene)
     BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.CurrentCutscene.ID = BundleBriefingSystem.Global.Data.BriefingID;
+    self.Data.CurrentCutscene.BarOpacity = self.Data.CurrentCutscene.BarOpacity or 1;
+    if self.Data.CurrentCutscene.BigBars == nil then
+        self.Data.CurrentCutscene.BigBars = false;
+    end
     local Cutscene = API.ConvertTableToString(self.Data.CurrentCutscene);
     API.Bridge("AddOnCutsceneSystem.Local:StartCutscene(" ..Cutscene.. ")");
     self.Data.CutsceneActive = true;
@@ -35828,7 +36071,10 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         if string.sub(Text, 1, 1) ~= "{" then
             Text = "{center}" .. Text;
         end
-        XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", "{cr}{cr}{cr}" .. Text);
+        if not self.Data.CurrentCutscene.BigBars then
+            Text = "{cr}{cr}{cr}" .. Text;
+        end
+        XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", Text);
         -- Führe Action aus
         if Action then
             API.Bridge("AddOnCutsceneSystem.Global.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
@@ -36076,25 +36322,6 @@ function AddOnCutsceneSystem.Local:UpdateFader()
 end
 
 ---
--- Setzt den Bar-Style für die aktuelle Cutscene.
--- @within Internal
--- @local
---
-function AddOnCutsceneSystem.Local:SetBarStyle(_Transparend)
-    local Alpha = (_Transparend and 100) or 255;
-
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 1);
-
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarBottom", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars/BarTop", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarBottom", 1, Alpha);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoomBars_2/BarTop", 1, Alpha);
-end
-
----
 -- Aktiviert den Cinematic Mode. Alle selektierten Entities werden gespeichert
 -- und anschließend deselektiert. Optional wird die Kameraposition und die
 -- Spielgeschwindigkeit ebenfalls gespeichert.
@@ -36151,7 +36378,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 6000, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
 
-    AddOnCutsceneSystem.Local:SetBarStyle(self.Data.CurrentCutscene.TransperentBars == true);
+    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentCutscene.BarOpacity, self.Data.CurrentCutscene.BigBars);
 
     if not self.Data.SkipButtonTextBackup then
         self.Data.SkipButtonTextBackup = XGUIEng.GetText("/InGame/ThroneRoom/Main/Skip");
