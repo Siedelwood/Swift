@@ -1715,7 +1715,7 @@ Core:RegisterBehavior(b_Goal_SatisfyNeed);
 -- Der angegebene Spieler muss eine Menge an Siedlern in der Stadt haben.
 --
 -- @param _Amount   Menge an Siedlern
--- @param _PlayerID ID des Spielers
+-- @param _PlayerID ID des Spielers (Default: 1)
 --
 -- @within Goal
 --
@@ -1736,14 +1736,14 @@ b_Goal_SettlersNumber = {
 }
 
 function b_Goal_SettlersNumber:GetGoalTable()
-    return {Objective.SettlersNumber, self.PlayerID, self.SettlersAmount };
+    return {Objective.SettlersNumber, self.PlayerID or 1, self.SettlersAmount };
 end
 
 function b_Goal_SettlersNumber:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.SettlersAmount = _Parameter * 1;
     elseif (_Index == 1) then
-        self.PlayerID = (_Parameter or 1) * 1;
+        self.PlayerID = _Parameter * 1;
     end
 end
 
