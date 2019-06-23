@@ -6287,8 +6287,8 @@ function b_Reward_AI_SetEnemy:CustomFunction()
 end
 
 function b_Reward_AI_SetEnemy:Debug(_Quest)
-    if self.AIPlayer <= 1 or self.AIPlayer >= 8 or Logic.PlayerGetIsHumanFlag(self.AIPlayer) then
-        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong")
+    if self.AIPlayer < 1 or self.AIPlayer > 8 or Logic.PlayerGetIsHumanFlag(self.AIPlayer) then
+        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong");
         return true;
     end
     return false;
