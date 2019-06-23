@@ -33,6 +33,7 @@ AddOnRandomRequests = {
     Global = {
         Data = {
             RandomQuestNameCounter = 0;
+            PredatorQuests = {},
             Claim = {},
             Deliver = {},
             Reputation = {},
@@ -118,11 +119,15 @@ end
 -- sind. Es wird eines der Behavior ausgewählt.
 -- @param[type=table] _Behavior Behavior Data
 -- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior List
 -- @within Internal
 -- @local
 --
 function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     local QuestGoals = {};
+    if _Behavior.TypeHuntPredators then
+        QuestGoals[#QuestGoals+1] = self:GetHuntPredatorBehavior(_Behavior, _Quest);
+    end
     if _Behavior.TypeDeliverGoods then
         QuestGoals[#QuestGoals+1] = self:GetDeliverGoodsBehavior(_Behavior, _Quest);
     end
@@ -152,9 +157,67 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
 end
 
 ---
+-- Erstellt ein Custom Goal das den Spieler fordert Raubtiere zu erledigen.
+-- @param[type=table] _Behavior Behavior Data
+-- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetHuntPredatorBehavior(_Behavior, _Quest)
+    local SpawnPoint = self:GetClosestPredatorSpawnByQuest(_Behavior, _Quest);
+    if SpawnPoint == nil or self.Data.PredatorQuests[SpawnPoint] ~= nil then
+        return;
+    end
+    local MaxCapacity = Logic.RespawnResourceGetMaxCapacity(SpawnPoint);
+    local SpawnedEntities = {Logic.GetSpawnedEntities(SpawnPoint)};
+    for i=1, (MaxCapacity - #SpawnedEntities), 1 do
+        Logic.RespawnResourceEntity_Spawn(SpawnPoint);
+    end
+    self.Data.PredatorQuests[SpawnPoint] = true;
+    return {"Goal_DestroySpawnedEntities", SpawnPoint, MaxCapacity};
+end
+
+---
+-- Ermittelt den nächsten Spawnpoint für Raubtiere zum Auftraggeber.
+-- @param[type=table] _Behavior Behavior Data
+-- @param[type=table] _Quest    Quest Data
+-- @return[type=number] ID des Spawnpoint
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetClosestPredatorSpawnByQuest(_Behavior, _Quest)
+    local FoundSpawnPoints = {};
+    local PredatorSpawnPointTypes = {
+        "S_Bear", "S_Bear_Black", "S_BearBlack", "S_LionPack_NA", 
+        "S_PolarBear_NE", "S_TigerPack_AS", "S_WolfPack",
+    };
+    -- Select all
+    for i= 1, #PredatorSpawnPointTypes, 1 do
+        if Entities[PredatorSpawnPointTypes[i]] then
+            local Result = {Logic.GetEntities(Entities[PredatorSpawnPointTypes[i]], 48)};
+            if table.remove(Result, 1) > 0 then
+                FoundSpawnPoints = Array_Append(FoundSpawnPoints, Result);
+            end
+        end
+    end
+    -- Remove already used
+    for i= #FoundSpawnPoints, 1, -1 do
+        if self.Data.PredatorQuests[FoundSpawnPoints[i]] then
+            table.remove(FoundSpawnPoints, i);
+        end
+    end
+    -- Find nearest
+    if #FoundSpawnPoints > 0 then
+        return API.GetEntitiesNearby(Logic.GetStoreHouse(_Quest.SendingPlayer), FoundSpawnPoints);
+    end
+end
+
+---
 -- Erstellt Goal_KnightTitle für den Random Quest.
 -- @param[type=table] _Behavior Behavior Data
 -- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior
 -- @within Internal
 -- @local
 --
@@ -175,6 +238,7 @@ end
 -- Erstellt Goal_BuildWall für den Random Quest.
 -- @param[type=table] _Behavior Behavior Data
 -- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior
 -- @within Internal
 -- @local
 --
@@ -197,6 +261,7 @@ end
 -- Erstellt Goal_Claim für den Random Quest.
 -- @param[type=table] _Behavior Behavior Data
 -- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior
 -- @within Internal
 -- @local
 --
@@ -223,6 +288,7 @@ end
 -- Erstellt Goal_Deliver (Rohstoffe) für den Random Quest.
 -- @param[type=table] _Behavior Behavior Data
 -- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior
 -- @within Internal
 -- @local
 --
@@ -279,14 +345,21 @@ end
 -- Tribute und Warenanforderungen steigen in der Menge mit höherem Titel
 -- des Auftragnehmers.
 --
+-- Es kann vorkommen, das bestimmte Auftragsarten unter gewissen Voraussetzungen
+-- fälschlich sofort als erfolgreich abgeschlossen gelten. (z.B. Monsun während
+-- Build Wall)
+--
 -- <b>Hinweis</b>: Das Behavior erzeugt einen weiteren Quest mit dem zufällig
--- gewählten Ziel. Somit ist es mit den Tribut-Quests vergleichbar.
+-- gewählten Ziel. Somit ist es mit den Tribut-Quests vergleichbar. Wird
+-- Random Requests neu gestartet wird ein neuer Zufalls-Quest erstellt.
 --
 -- @param[type=boolean] _DeliverGoods   Ziel: Waren liefern
 -- @param[type=boolean] _DeliverGold    Ziel: Tribut bezahlen
 -- @param[type=boolean] _ClaimTerritory Ziel: Territorium erobern
 -- @param[type=boolean] _KnightTitle    Ziel: Nächst höherer Titel
 -- @param[type=boolean] _CityReputation Ziel: Ruf der Stadt
+-- @param[type=boolean] _BuildRampart   Ziel: Stadt mit einer Mauer schützen
+-- @param[type=boolean] _HuntPredator   Ziel: Raubtiere vernichten
 -- @param[type=number]  _Time           Zeit bis zur Niederlage (0 = aus)
 -- @param[type=string]  _Suggestion     (optional) Startnachricht
 -- @param[type=string]  _Success        (optional) Erfolgsnachricht
@@ -311,6 +384,7 @@ b_Goal_RandomRequest = {
         { ParameterType.Custom,  en = "Knight title",            de = "Titel erreichen" },
         { ParameterType.Custom,  en = "City reputation",         de = "Ruf der Stadt" },
         { ParameterType.Custom,  en = "Build rampart",           de = "Festung bauen" },
+        { ParameterType.Custom,  en = "Hunt Predators",          de = "Raubtiere vertreiben" },
         { ParameterType.Number,  en = "Time limit (0 = off)",    de = "Leitlimit (0 = aus)" },
         { ParameterType.Default, en = "(optional) Mission text", de = "(optional) Auftragsnachricht" },
         { ParameterType.Default, en = "(optional) Success text", de = "(optional) Erfolgsnachricht" },
@@ -336,16 +410,18 @@ function b_Goal_RandomRequest:AddParameter(_Index, _Parameter)
     elseif (_Index == 5) then
         self.TypeBuildWall = API.ToBoolean(_Parameter);
     elseif (_Index == 6) then
-        self.TimeLimit = _Parameter * 1;
+        self.TypeHuntPredators = API.ToBoolean(_Parameter);
     elseif (_Index == 7) then
+        self.TimeLimit = _Parameter * 1;
+    elseif (_Index == 8) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuggestion = _Parameter;
         end
-    elseif (_Index == 8) then
+    elseif (_Index == 9) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuccess = _Parameter;
         end
-    elseif (_Index == 9) then
+    elseif (_Index == 10) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalFailure = _Parameter;
         end
@@ -368,14 +444,16 @@ end
 
 function b_Goal_RandomRequest:Reset(_Quest)
     self:Interrupt(_Quest);
-    if self.SlaveQuest then
-        API.RestartQuest(self.SlaveQuest.Identifier, false);
-    end
+    self.SlaveQuest = nil;
 end
 
 function b_Goal_RandomRequest:Interrupt(_Quest)
     if self.SlaveQuest and self.SlaveQuest.State == QuestState.Active then
         API.StopQuest(self.SlaveQuest.Identifier, false);
+    end
+    if _Quest.PredatorMarker and Logic.IsEffectRegistered(_Quest.PredatorMarker) then
+        Logic.DestroyEffect(_Quest.PredatorMarker);
+        _Quest.PredatorMarker = nil;
     end
 end
 
