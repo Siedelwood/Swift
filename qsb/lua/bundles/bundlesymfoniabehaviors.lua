@@ -1955,6 +1955,8 @@ BundleSymfoniaBehaviors = {
 -- @local
 --
 function BundleSymfoniaBehaviors.Global:Install()
+    Core:StackFunction("QuestTemplate.Trigger", self.OnQuestTriggered);
+
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     -- Theif observation
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2146,12 +2148,31 @@ end
 --
 function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objective)
     if _Objective.Data[1] == 3 then
-        -- Initial wird die Anzahl an Entities sichergestellt.
-        if not _Objective.Data[4] then
+        local AllSpawnedEntities = {};
+        for i=1, _Objective.Data[2][0], 1 do
+            local ID = GetID(_Objective.Data[2][i]);
+            AllSpawnedEntities = Array_Append(AllSpawnedEntities, {Logic.GetSpawnedEntities(ID)});
+        end
+        if #AllSpawnedEntities == 0 then
+            return true;
+        end
+    end
+end
+
+---
+-- Überschreibt die :Trigger() Methode um sicherzustellen, dass immer genug
+-- gespawnte Entities vorhanden sind.
+-- @within Internal
+-- @local
+--
+function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
+    if self.Objectives[1] and self.Objectives[1].Data[1] == 3 then
+        if self.Objectives[1].Data[4] ~= true then
+            -- Entities respawnen
             local FirstEntityID;
-            local SpawnAmount = _Objective.Data[3];
-            for i=1, _Objective.Data[2][0], 1 do
-                local ID = GetID(_Objective.Data[2][i]);
+            local SpawnAmount = self.Objectives[1].Data[3];
+            for i=1, self.Objectives[1].Data[2][0], 1 do
+                local ID = GetID(self.Objectives[1].Data[2][i]);
                 local SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
                 if #SpawnedEntities < SpawnAmount then
                     for i= 1, SpawnAmount - #SpawnedEntities, 1 do
@@ -2168,23 +2189,13 @@ function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objec
                 end
             end
             -- Icon setzen
-            if not _Objective.Data[5] then
-                _Objective.Data[5] = {7, 12};
+            if not self.Objectives[1].Data[5] then
+                self.Objectives[1].Data[5] = {7, 12};
                 if Logic.IsEntityInCategory(FirstEntityID, EntityCategories.AttackableAnimal) == 1 then
-                    _Objective.Data[5] = {13, 8};
+                    self.Objectives[1].Data[5] = {13, 8};
                 end
             end
-            _Objective.Data[4] = true;
-        end
-
-        -- Gibt es keine gespawnten Entities mehr, ist das Ziel erreicht.
-        local AllSpawnedEntities = {};
-        for i=1, _Objective.Data[2][0], 1 do
-            local ID = GetID(_Objective.Data[2][i]);
-            AllSpawnedEntities = Array_Append(AllSpawnedEntities, {Logic.GetSpawnedEntities(ID)});
-        end
-        if #AllSpawnedEntities == 0 then
-            return true;
+            self.Objectives[1].Data[4] = true;
         end
     end
 end

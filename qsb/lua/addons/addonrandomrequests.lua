@@ -170,10 +170,6 @@ function AddOnRandomRequests.Global:GetHuntPredatorBehavior(_Behavior, _Quest)
         return;
     end
     local MaxCapacity = Logic.RespawnResourceGetMaxCapacity(SpawnPoint);
-    local SpawnedEntities = {Logic.GetSpawnedEntities(SpawnPoint)};
-    for i=1, (MaxCapacity - #SpawnedEntities), 1 do
-        Logic.RespawnResourceEntity_Spawn(SpawnPoint);
-    end
     self.Data.PredatorQuests[SpawnPoint] = true;
     return {"Goal_DestroySpawnedEntities", SpawnPoint, MaxCapacity};
 end
