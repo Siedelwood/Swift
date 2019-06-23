@@ -643,6 +643,21 @@ function b_Goal_DestroySpawnedEntities:GetMsgKey()
     return "Quest_DestroyEntities";
 end
 
+function b_Goal_DestroyType:GetMsgKey()
+    local ID = GetID(self.SpawnPoint);
+    if ID ~= 0 then
+        local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(ID));
+        if Logic.IsEntityTypeInCategory( ID, EntityCategories.AttackableBuilding ) == 1 then
+            return "Quest_Destroy_Leader";
+        elseif TypeName:find("Bear") or TypeName:find("Lion") or TypeName:find("Tiger") or TypeName:find("Wolf") then
+            return "Quest_DestroyEntities_Predators";
+        elseif TypeName:find("Military") or TypeName:find("Cart") then
+            return "Quest_DestroyEntities_Unit";
+        end
+    end
+    return "Quest_DestroyEntities";
+end
+
 Core:RegisterBehavior(b_Goal_DestroySpawnedEntities);
 
 -- -------------------------------------------------------------------------- --
@@ -2036,6 +2051,9 @@ function BundleSymfoniaBehaviors.Global:Install()
     QuestTemplate.IsObjectiveCompleted = function(self, objective)
         local objectiveType = objective.Type;
         if objective.Completed ~= nil then
+            if objective.Data[1] == 3 then
+                objective.Data[4] = nil;
+            end
             return objective.Completed;
         end
 
@@ -2132,19 +2150,18 @@ function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objec
         if not _Objective.Data[4] then
             local FirstEntityID;
             local SpawnAmount = _Objective.Data[3];
-            for k, v in pairs(_Objective.Data[2]) do
-                local EntityID        = GetID(v);
-                local SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
+            for i=1, _Objective.Data[2][0], 1 do
+                local ID = GetID(_Objective.Data[2][i]);
+                local SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
                 if #SpawnedEntities < SpawnAmount then
-                    repeat
-                        Logic.RespawnResourceEntity_Spawn(EntityID);
-                        SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
-                    until (#SpawnedEntities == SpawnAmount);
+                    for i= 1, SpawnAmount - #SpawnedEntities, 1 do
+                        Logic.RespawnResourceEntity_Spawn(ID);
+                    end
                 elseif #SpawnedEntities > SpawnAmount then
-                    repeat
+                    for i= 1, #SpawnedEntities - SpawnAmount, 1 do
                         DestroyEntity(SpawnedEntities[1]);
-                        SpawnedEntities = {Logic.GetSpawnedEntities(EntityID)};
-                    until (#SpawnedEntities == SpawnAmount);
+                        SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
+                    end
                 end
                 if not FirstEntityID then
                     FirstEntityID = SpawnedEntities[1];
@@ -2162,8 +2179,9 @@ function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objec
 
         -- Gibt es keine gespawnten Entities mehr, ist das Ziel erreicht.
         local AllSpawnedEntities = {};
-        for k, v in pairs(_Objective.Data[2]) do
-            AllSpawnedEntities = Array_Append(AllSpawnedEntities, {Logic.GetSpawnedEntities(v)});
+        for i=1, _Objective.Data[2][0], 1 do
+            local ID = GetID(_Objective.Data[2][i]);
+            AllSpawnedEntities = Array_Append(AllSpawnedEntities, {Logic.GetSpawnedEntities(ID)});
         end
         if #AllSpawnedEntities == 0 then
             return true;
@@ -2204,7 +2222,7 @@ function BundleSymfoniaBehaviors.Local.DisplayQuestObjective(_QuestIndex, _Messa
         local EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest( Quest, QuestType );
         local EntitiesAmount = #EntitiesList;
         if not Quest.Objectives[1].Data[4] and #EntitiesList == 0 then
-            EntitiesAmount = #Quest.Objectives[1].Data[2] * Quest.Objectives[1].Data[3];
+            EntitiesAmount = #Quest.Objectives[1].Data[2][0] * Quest.Objectives[1].Data[3];
         end
 
         XGUIEng.ShowWidget(QuestObjectiveContainer .. "/AdditionalCaption", 0);
@@ -2244,8 +2262,9 @@ function BundleSymfoniaBehaviors.Local.GetEntitiesOrTerritoryList(_Quest, _Quest
     local EntityOrTerritoryList = {};
     if _QuestType == Objective.DestroyEntities then
         if _Quest.Objectives[1].Data and _Quest.Objectives[1].Data[1] == 3 then
-            for k, v in pairs(_Quest.Objectives[1].Data[2]) do
-                EntityOrTerritoryList = Array_Append(EntityOrTerritoryList, {Logic.GetSpawnedEntities(GetID(v))});
+            for i=1, _Quest.Objectives[1].Data[2][0], 1 do
+                local ID = GetID(_Quest.Objectives[1].Data[2][i]);
+                EntityOrTerritoryList = Array_Append(EntityOrTerritoryList, {Logic.GetSpawnedEntities(ID)});
             end
             return EntityOrTerritoryList, IsEntity;
         end
@@ -2265,7 +2284,7 @@ function BundleSymfoniaBehaviors.Local.SaveQuestEntityTypes(_QuestIndex)
     end
     local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
     local EntitiesList;
-    if QuestType ~= Objective.DestroyEntities or Quest.Objectives[1].Data[1] == 2 then
+    if QuestType ~= Objective.DestroyEntities or Quest.Objectives[1].Data[1] ~= 3 then
         return;
     end
     EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest(Quest, QuestType);

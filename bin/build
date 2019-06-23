@@ -23,9 +23,9 @@ if [ $# -gt 0 ]; then
 fi
 
 # Rufe das Skript compile auf
-./compile "${scriptArguments[@]/#/}"
+bin/compile "${scriptArguments[@]/#/}"
 # Zurück ins QSB-Verzeichnis
-cd ../qsb
+cd qsb
 
 # Erzeuge Entwicklerdokumentation
 if [ $createDevDoc -gt 0 ]; then

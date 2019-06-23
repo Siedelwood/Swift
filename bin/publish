@@ -6,7 +6,6 @@ echo "==== QSB zusammenbauen ===="
 echo "==== Release erzeugen ===="
 
 echo "Erzeuge Release-Verzeichnis..."
-cd ..
 rm -rf Release &>/dev/null
 mkdir -p Release/src
 mkdir -p Release/bin
