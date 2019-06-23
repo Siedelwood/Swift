@@ -6218,7 +6218,7 @@ function b_Reward_AI_Aggressiveness:CustomFunction()
 end
 
 function b_Reward_AI_Aggressiveness:Debug(_Quest)
-    if self.AIPlayer < 2 or Logic.GetStoreHouse(self.AIPlayer) == 0 then
+    if self.AIPlayer < 1 or Logic.GetStoreHouse(self.AIPlayer) == 0 then
         fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong");
         return true;
     end
