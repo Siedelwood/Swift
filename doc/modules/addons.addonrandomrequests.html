@@ -115,8 +115,16 @@
 	<td class="summary">Erstellt Goal_Claim für den Random Quest.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetClosestPredatorSpawnByQuest">AddOnRandomRequests.Global:GetClosestPredatorSpawnByQuest (_Behavior, _Quest)</a></td>
+	<td class="summary">Ermittelt den nächsten Spawnpoint für Raubtiere zum Auftraggeber.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetDeliverGoodsBehavior">AddOnRandomRequests.Global:GetDeliverGoodsBehavior (_Behavior, _Quest)</a></td>
 	<td class="summary">Erstellt Goal_Deliver (Rohstoffe) für den Random Quest.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetHuntPredatorBehavior">AddOnRandomRequests.Global:GetHuntPredatorBehavior (_Behavior, _Quest)</a></td>
+	<td class="summary">Erstellt ein Custom Goal das den Spieler fordert Raubtiere zu erledigen.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddOnRandomRequests.Global:GetKnightTitleBehavior">AddOnRandomRequests.Global:GetKnightTitleBehavior (_Behavior, _Quest)</a></td>
@@ -135,7 +143,7 @@
 <h2><a href="#Goal">Goal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Goal_RandomRequest">Goal_RandomRequest (_DeliverGoods, _DeliverGold, _ClaimTerritory, _KnightTitle, _CityReputation, _Time, _Suggestion, _Success, _Failure)</a></td>
+	<td class="name" nowrap><a href="#Goal_RandomRequest">Goal_RandomRequest (_DeliverGoods, _DeliverGold, _ClaimTerritory, _KnightTitle, _CityReputation, _BuildRampart, _HuntPredator, _Time, _Suggestion, _Success, _Failure)</a></td>
 	<td class="summary">Wählt einen zufälligen Auftrag für den Spieler aus.</td>
 	</tr>
 </table>
@@ -227,6 +235,12 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Behavior
+    </ol>
 
 
 
@@ -252,6 +266,43 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:GetClosestPredatorSpawnByQuest"></a>
+    <strong>AddOnRandomRequests.Global:GetClosestPredatorSpawnByQuest (_Behavior, _Quest)</strong>
+    </dt>
+    <dd>
+    Ermittelt den nächsten Spawnpoint für Raubtiere zum Auftraggeber.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Quest Data
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des Spawnpoint
+    </ol>
 
 
 
@@ -277,6 +328,43 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Behavior
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnRandomRequests.Global:GetHuntPredatorBehavior"></a>
+    <strong>AddOnRandomRequests.Global:GetHuntPredatorBehavior (_Behavior, _Quest)</strong>
+    </dt>
+    <dd>
+    Erstellt ein Custom Goal das den Spieler fordert Raubtiere zu erledigen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Behavior</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+            Quest Data
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Behavior
+    </ol>
 
 
 
@@ -302,6 +390,12 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Behavior
+    </ol>
 
 
 
@@ -328,6 +422,12 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Behavior List
+    </ol>
 
 
 
@@ -353,7 +453,7 @@
     <dl class="function">
     <dt>
     <a name = "Goal_RandomRequest"></a>
-    <strong>Goal_RandomRequest (_DeliverGoods, _DeliverGold, _ClaimTerritory, _KnightTitle, _CityReputation, _Time, _Suggestion, _Success, _Failure)</strong>
+    <strong>Goal_RandomRequest (_DeliverGoods, _DeliverGold, _ClaimTerritory, _KnightTitle, _CityReputation, _BuildRampart, _HuntPredator, _Time, _Suggestion, _Success, _Failure)</strong>
     </dt>
     <dd>
     Wählt einen zufälligen Auftrag für den Spieler aus.  Über die Parameter kann
@@ -361,8 +461,12 @@
  Behavior sollte in versteckten Quests benutzt werden.
 <p> Tribute und Warenanforderungen steigen in der Menge mit höherem Titel
  des Auftragnehmers.
+<p> Es kann vorkommen, das bestimmte Auftragsarten unter gewissen Voraussetzungen
+ fälschlich sofort als erfolgreich abgeschlossen gelten. (z.B. Monsun während
+ Build Wall)
 <p> <b>Hinweis</b>: Das Behavior erzeugt einen weiteren Quest mit dem zufällig
- gewählten Ziel. Somit ist es mit den Tribut-Quests vergleichbar.
+ gewählten Ziel. Somit ist es mit den Tribut-Quests vergleichbar. Wird
+ Random Requests neu gestartet wird ein neuer Zufalls-Quest erstellt.
 
 
 
@@ -387,6 +491,14 @@
         <li><span class="parameter">_CityReputation</span>
             <span class="types"><span class="type">boolean</span></span>
          Ziel: Ruf der Stadt
+        </li>
+        <li><span class="parameter">_BuildRampart</span>
+            <span class="types"><span class="type">boolean</span></span>
+           Ziel: Stadt mit einer Mauer schützen
+        </li>
+        <li><span class="parameter">_HuntPredator</span>
+            <span class="types"><span class="type">boolean</span></span>
+           Ziel: Raubtiere vernichten
         </li>
         <li><span class="parameter">_Time</span>
             <span class="types"><span class="type">number</span></span>
@@ -418,7 +530,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-05-19 12:12:03 </i>
+<i style="float:right;">Last updated 2019-06-23 13:41:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

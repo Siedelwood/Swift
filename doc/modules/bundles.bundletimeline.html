@@ -106,6 +106,26 @@
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineIsRunning">API.TimeLineIsRunning (_ID)</a></td>
+	<td class="summary">Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineRestart">API.TimeLineRestart (_ID)</a></td>
+	<td class="summary">Startet einen Zeitstrahl erneut.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineResume">API.TimeLineResume (_ID)</a></td>
+	<td class="summary">Stößt einen angehaltenen Zeitstrahl wieder an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineStart">API.TimeLineStart (_Description)</a></td>
+	<td class="summary">Startet einen Zeitstrahl.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TimeLineYield">API.TimeLineYield (_ID)</a></td>
+	<td class="summary">Hält einen Zeitstrahl an.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#QSB.TimeLine:IsRunning">QSB.TimeLine:IsRunning (_ID)</a></td>
 	<td class="summary">Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.</td>
 	</tr>
@@ -152,6 +172,164 @@
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "API.TimeLineIsRunning"></a>
+    <strong>API.TimeLineIsRunning (_ID)</strong>
+    </dt>
+    <dd>
+    Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
+<p> <p><b>Alias:</b> QSB.TimeLine:IsRunning<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Zeitstrahl ist aktiv
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> IsRunning = API.TimeLineIsRunning(MyTimeLine);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TimeLineRestart"></a>
+    <strong>API.TimeLineRestart (_ID)</strong>
+    </dt>
+    <dd>
+    Startet einen Zeitstrahl erneut.  Ist der Zeitstrahl noch nicht
+ beendet, beginnt er dennoch von vorn.
+<p> <p><b>Alias:</b> QSB.TimeLine:Restart<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TimeLineRestart(MyTimeLine);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TimeLineResume"></a>
+    <strong>API.TimeLineResume (_ID)</strong>
+    </dt>
+    <dd>
+    Stößt einen angehaltenen Zeitstrahl wieder an.
+<p> <p><b>Alias:</b> QSB.TimeLine:Resume<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TimeLineResume(MyTimeLine);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TimeLineStart"></a>
+    <strong>API.TimeLineStart (_Description)</strong>
+    </dt>
+    <dd>
+    Startet einen Zeitstrahl.  Ein Zeitstrahl hat Stationen,
+ an denen eine Aktion ausgeführt wird. Jede Station muss mindestens eine
+ Sekunde nach der vorherigen liegen.
+<p> Jede Aktion eines Zeitstrahls erhält die Table des aktuellen Ereignisses
+ als Argument. So können Parameter an die Funktion übergeben werden.
+<p> <p><b>Alias:</b> QSB.TimeLine:Start<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Description</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Beschreibung
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des Zeitstrahls
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">MyTimeLine = API.TimeLineStart {
+    {Time = <span class="number">1</span>, Action = MyFirstAction},
+    <span class="comment">-- MySecondAction erhält "BOCKWURST" als Parameter
+</span>    {Time = <span class="number">3</span>, Action = MySecondAction, <span class="string">"BOCKWURST"</span>},
+    <span class="comment">-- Inline-Funktion
+</span>    {Time = <span class="number">9</span>, Action = <span class="keyword">function</span>() <span class="keyword">end</span>},
+}</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TimeLineYield"></a>
+    <strong>API.TimeLineYield (_ID)</strong>
+    </dt>
+    <dd>
+    Hält einen Zeitstrahl an.
+<p> <p><b>Alias:</b> QSB.TimeLine:Yield<br></p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Zeitstrahl
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TimeLineYield(MyTimeLine);</pre>
+    </ul>
+
+</dd>
     <dt>
     <a name = "QSB.TimeLine:IsRunning"></a>
     <strong>QSB.TimeLine:IsRunning (_ID)</strong>
@@ -359,7 +537,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-05-19 12:12:03 </i>
+<i style="float:right;">Last updated 2019-06-23 13:41:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -34,6 +34,7 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Functions">Functions</a></li>
 <li><a href="#QSB_EntityProperty">QSB.EntityProperty</a></li>
 </ul>
 
@@ -86,14 +87,58 @@
 <div id="content">
 
 <h1>Module <code>bundles.bundleentityproperties</code></h1>
-<p>In diesem Bundle wird eine Klasse bereitgestellt, die alle wichtigen
- Abfragen an ein Entity in sich vereint.</p>
-<p> Mit diesem Properties Wrapper
- kannst Du bequem die Eigenschaften von Entities abfragen und ändern.
-<p>
-</p>
+<p>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation
+ von Entities bereitgestellt.</p>
+<p></p>
 
 
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.ChangeEntityHealth">API.ChangeEntityHealth (_Entity, _Percentage)</a></td>
+	<td class="summary">Ändert die relative Gesundheit eines Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityHealth">API.GetEntityHealth (_Entity)</a></td>
+	<td class="summary">Gibt die relative Gesundheit des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityPlayer">API.GetEntityPlayer (_Entity)</a></td>
+	<td class="summary">Gibt den Besitzer des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetEntityScale">API.GetEntityScale (_Entity)</a></td>
+	<td class="summary">Gibt den Größenfaktor des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetMovementTarget">API.GetMovementTarget (_Entity)</a></td>
+	<td class="summary">Gibt die Position zurück, zu der sich ein Entity bewegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.HurtEntity">API.HurtEntity (_Entity, _Damage)</a></td>
+	<td class="summary">Verwundet ein Entity um einen absoluten Wert Gesundheit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsActiveNpc">API.IsActiveNpc (_Entity)</a></td>
+	<td class="summary">Prüft, ob das NPC-FLag für das Entity gesetzt ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.IsEntityVisible">API.IsEntityVisible (_Entity)</a></td>
+	<td class="summary">Prüft, ob das Entity sichtbar ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetBuildingOnFire">API.SetBuildingOnFire (_Entity, _FireSize)</a></td>
+	<td class="summary">Setzt ein Gebäude in Brand.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEntityPlayer">API.SetEntityPlayer (_Entity, _PlayerID)</a></td>
+	<td class="summary">Weist dem Entity einen neuen Besitzer zu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SetEntityScale">API.SetEntityScale (_Entity, _Scale)</a></td>
+	<td class="summary">Gibt den Größenfaktor des Entity zurück.</td>
+	</tr>
+</table>
 <h2><a href="#QSB_EntityProperty">QSB.EntityProperty</a></h2>
 <table class="function_list">
 	<tr>
@@ -215,6 +260,329 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ChangeEntityHealth"></a>
+    <strong>API.ChangeEntityHealth (_Entity, _Percentage)</strong>
+    </dt>
+    <dd>
+    Ändert die relative Gesundheit eines Entity.
+<p> <b>Hinweis</b>: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
+<p> <b>Alias</b>: SetHealth
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+        <li><span class="parameter">_Percentage</span>
+            <span class="types"><span class="type">number</span></span>
+         Relative Gesundheit des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityHealth"></a>
+    <strong>API.GetEntityHealth (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die relative Gesundheit des Entity zurück.
+<p> <b>Hinweis</b>: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
+<p> <b>Alias</b>: GetHealth
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Relative Gesundheit des Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityPlayer"></a>
+    <strong>API.GetEntityPlayer (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Besitzer des Entity zurück.
+<p> <b>Alias</b>: GetPlayer
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Besitzer des Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetEntityScale"></a>
+    <strong>API.GetEntityScale (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt den Größenfaktor des Entity zurück.
+<p> Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+ Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+<p> <b>Alias</b>: GetScale
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Größenfaktor des Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.GetMovementTarget"></a>
+    <strong>API.GetMovementTarget (_Entity)</strong>
+    </dt>
+    <dd>
+    Gibt die Position zurück, zu der sich ein Entity bewegt.  Die Position wird
+ als XY-Table zurückgegeben.
+<p> <b>Alias</b>: GetMovingTarget
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Zielposition des Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.HurtEntity"></a>
+    <strong>API.HurtEntity (_Entity, _Damage)</strong>
+    </dt>
+    <dd>
+    Verwundet ein Entity um einen absoluten Wert Gesundheit.
+<p> <b>Hinweis</b>: Die Anzahl an Gesundheitspunkten richtet sich nach dem
+ jeweiligen Entity und ist immer ganzzahlig!
+<p> <b>Alias</b>: HurtEntityEx
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+        <li><span class="parameter">_Damage</span>
+            <span class="types"><span class="type">number</span></span>
+         Menge an abgezogener Gesundheit
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsActiveNpc"></a>
+    <strong>API.IsActiveNpc (_Entity)</strong>
+    </dt>
+    <dd>
+    Prüft, ob das NPC-FLag für das Entity gesetzt ist.
+<p> <b>Alias</b>: IsNpc
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        NPC-Flag ist gesetzt
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.IsEntityVisible"></a>
+    <strong>API.IsEntityVisible (_Entity)</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Entity sichtbar ist.
+<p> <b>Alias</b>: IsVisible
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Entity ist sichtbar
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetBuildingOnFire"></a>
+    <strong>API.SetBuildingOnFire (_Entity, _FireSize)</strong>
+    </dt>
+    <dd>
+    Setzt ein Gebäude in Brand.  Die Feuerstärke bestimmt, wie häftig es brennt.
+<p> <b>Hinweis</b>: Im Allgemeinen reicht eine Feuerstärke zwischen 1 und 50.
+<p> <b>Alias</b>: SetOnFire
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+        <li><span class="parameter">_FireSize</span>
+            <span class="types"><span class="type">number</span></span>
+         Relative Gesundheit des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityPlayer"></a>
+    <strong>API.SetEntityPlayer (_Entity, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Weist dem Entity einen neuen Besitzer zu.
+<p> <b>Alias</b>: ChangePlayer
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Besitzer des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SetEntityScale"></a>
+    <strong>API.SetEntityScale (_Entity, _Scale)</strong>
+    </dt>
+    <dd>
+    Gibt den Größenfaktor des Entity zurück.
+<p> Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+ Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+<p> <b>Alias</b>: SetScale
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+        <li><span class="parameter">_Scale</span>
+            <span class="types"><span class="type">number</span></span>
+         Größenfaktor des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="QSB_EntityProperty"></a>QSB.EntityProperty</h2>
 
     <dl class="function">
@@ -956,7 +1324,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-05-19 12:12:03 </i>
+<i style="float:right;">Last updated 2019-06-23 13:41:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
