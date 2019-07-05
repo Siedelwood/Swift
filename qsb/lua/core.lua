@@ -1490,9 +1490,12 @@ function Core:RegisterBehavior(_Behavior)
     else
         if not _G["b_" .. _Behavior.Name].new then
             _G["b_" .. _Behavior.Name].new = function(self, ...)
+                local arg = {...}; -- Notwendiger Fix für LuaJ
                 local behavior = API.InstanceTable(self);
                 behavior.i47ya_6aghw_frxil = {};
+                behavior.v12ya_gg56h_al125 = {};
                 for i= 1, #arg, 1 do
+                    table.insert(behavior.v12ya_gg56h_al125, arg[i]);
                     if self.Parameter and self.Parameter[i] ~= nil then
                         behavior:AddParameter(i-1, arg[i]);
                     else
