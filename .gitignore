@@ -1,5 +1,6 @@
 .metadata
 doctest/
+app/
 tmp/
 var/
 target/
