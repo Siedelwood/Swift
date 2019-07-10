@@ -30,7 +30,8 @@ cp -r qsb/example Release/example &>/dev/null
 echo "Fertig!"
 
 echo "Kopiere Map Iconator..."
-cp -r bin/MapIconator.jar Release/bin/MapIconator.jar &>/dev/null
+mkdir Release/bin/MapIconator &>/dev/null
+cp -r bin/MapIconator.jar Release/bin/MapIconator/MapIconator.jar &>/dev/null
 echo "Fertig!"
 
 #echo "Siedelwood Cutscene Assistant kopieren..."
@@ -38,7 +39,15 @@ echo "Fertig!"
 #echo "Fertig!"
 
 echo "Cutscene Maker kopieren..."
-cp -r "bin/CutsceneMaker.jar" Release/bin/CutsceneMaker.jar &>/dev/null
+mkdir Release/bin/CutsceneMaker &>/dev/null
+cp -r "bin/CutsceneMaker.jar" Release/bin/CutsceneMaker/CutsceneMaker.jar &>/dev/null
+echo "Fertig!"
+
+echo "Cutscene Maker kopieren..."
+mkdir Release/bin/QuestToGraphViz &>/dev/null
+cp -r "app/QuestToGraphVizConverter/bin/QuestToGraphVizConverter.jar" Release/bin/QuestToGraphViz/QuestToGraphVizConverter.jar &>/dev/null
+cp -r "app/QuestToGraphVizConverter/bin/QuestToGraphVizStarter.exe" Release/bin/QuestToGraphViz/QuestToGraphVizStarter.exe &>/dev/null
+cp -r "app/QuestToGraphVizConverter/lua" Release/bin/QuestToGraphViz/lua &>/dev/null
 echo "Fertig!"
 
 echo "Archiv zusammenstellen..."
