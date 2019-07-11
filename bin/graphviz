@@ -1,0 +1,25 @@
+#!/bin/bash
+
+rm -rf var/QuestToGraphViz &>/dev/null
+mkdir -p var/QuestToGraphViz
+
+echo "Beginne Veröffentlichung!"
+
+echo "Graph Viz kopieren..."
+cp -r "app/QuestToGraphVizConverter/bin/QuestToGraphVizConverter.jar" var/QuestToGraphViz/QuestToGraphVizConverter.jar &>/dev/null
+cp -r "app/QuestToGraphVizConverter/bin/QuestToGraphVizStarter.exe" var/QuestToGraphViz/QuestToGraphVizStarter.exe &>/dev/null
+cp -r "app/QuestToGraphVizConverter/lua" var/QuestToGraphViz/lua &>/dev/null
+echo "Fertig!"
+
+echo "Archiv zusammenstellen..."
+cd var
+zip -r QuestToGraphViz/* QuestToGraphViz #&>/dev/null
+cp QuestToGraphViz/lua.zip QuestToGraphViz.zip
+cd ..
+echo "Fertig!"
+
+echo "Aufräumen..."
+rm -rf var/QuestToGraphViz
+echo "Fertig!"
+
+echo "Veröffentlichung abgeschlossen!"

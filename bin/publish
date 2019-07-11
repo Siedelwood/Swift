@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "==== QSB zusammenbauen ===="
-./build -userdoc
+bin/build -userdoc
 
 echo "==== Release erzeugen ===="
 
@@ -43,12 +43,12 @@ mkdir Release/bin/CutsceneMaker &>/dev/null
 cp -r "bin/CutsceneMaker.jar" Release/bin/CutsceneMaker/CutsceneMaker.jar &>/dev/null
 echo "Fertig!"
 
-echo "Cutscene Maker kopieren..."
-mkdir Release/bin/QuestToGraphViz &>/dev/null
-cp -r "app/QuestToGraphVizConverter/bin/QuestToGraphVizConverter.jar" Release/bin/QuestToGraphViz/QuestToGraphVizConverter.jar &>/dev/null
-cp -r "app/QuestToGraphVizConverter/bin/QuestToGraphVizStarter.exe" Release/bin/QuestToGraphViz/QuestToGraphVizStarter.exe &>/dev/null
-cp -r "app/QuestToGraphVizConverter/lua" Release/bin/QuestToGraphViz/lua &>/dev/null
-echo "Fertig!"
+# echo "Graph Viz kopieren..."
+# mkdir Release/bin/QuestToGraphViz &>/dev/null
+# cp -r "app/QuestToGraphVizConverter/bin/QuestToGraphVizConverter.jar" Release/bin/QuestToGraphViz/QuestToGraphVizConverter.jar &>/dev/null
+# cp -r "app/QuestToGraphVizConverter/bin/QuestToGraphVizStarter.exe" Release/bin/QuestToGraphViz/QuestToGraphVizStarter.exe &>/dev/null
+# cp -r "app/QuestToGraphVizConverter/lua" Release/bin/QuestToGraphViz/lua &>/dev/null
+# echo "Fertig!"
 
 echo "Archiv zusammenstellen..."
 zip -r Release/doc Release/guide Release/* &>/dev/null
