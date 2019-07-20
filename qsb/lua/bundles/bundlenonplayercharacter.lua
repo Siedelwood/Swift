@@ -206,6 +206,7 @@ QSB.NonPlayerCharacter = {};
 -- Konstruktor
 -- @param[type=string] _ScriptName Skriptname des NPC
 -- @within QSB.NonPlayerCharacter
+-- @local
 -- @usage
 -- -- Einen normalen NPC erzeugen:
 -- QSB.NonPlayerCharacter:New("npc")
@@ -235,6 +236,7 @@ end
 -- @param[type=string] _ScriptName Skriptname des NPC
 -- @return[type=table] Interaktives Objekt
 -- @within QSB.NonPlayerCharacter
+-- @local
 -- @usage -- NPC ermitteln
 -- local NPC = QSB.NonPlayerCharacter:GetInstance("horst");
 -- -- Etwas mit dem NPC tun
@@ -258,6 +260,7 @@ end
 --
 -- @return[type=number] ID des letzten NPC
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:GetNpcId()
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
@@ -270,6 +273,7 @@ end
 --
 -- @return[type=number] ID des letzten Heden
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:GetHeroId()
     assert(self == QSB.NonPlayerCharacter, 'Can not be used from instance!');
@@ -282,6 +286,7 @@ end
 --
 -- @return[type=number] ID des NPC
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:GetID()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
@@ -299,6 +304,7 @@ end
 -- Löscht einen NPC.
 --
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 -- @usage -- NPC löschen
 -- NPC:Dispose();
@@ -316,6 +322,7 @@ end
 -- @param[type=number] _Type NPC-Typ [1-4]
 -- @return[type=table] self
 -- @within QSB.NonPlayerCharacter
+-- @local
 -- @usage -- NPC aktivieren:
 -- NPC:Activate();
 --
@@ -333,6 +340,7 @@ end
 --
 -- @return[type=table] self
 -- @within QSB.NonPlayerCharacter
+-- @local
 -- @usage -- NPC deaktivieren:
 -- NPC:Deactivate();
 --
@@ -350,6 +358,7 @@ end
 --
 -- @return[type=boolean] NPC ist aktiv
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:IsActive()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
@@ -361,6 +370,7 @@ end
 --
 -- @return[type=table] self
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:Reset()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
@@ -379,6 +389,7 @@ end
 --
 -- @return[type=boolean] NPC wurde angesprochen
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:HasTalkedTo()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
@@ -394,6 +405,7 @@ end
 -- @param[type=number] _Type Typ des Npc
 -- @return[type=number] ID des letzten NPC
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:SetType(_Type)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
@@ -410,6 +422,7 @@ end
 --
 -- @param[type=number] _Distance Aktivierungsdistanz
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:SetTalkDistance(_Distance)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
@@ -423,6 +436,7 @@ end
 -- @param[type=string] _HeroName Skriptname des Helden
 -- @return[type=table] self
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:SetDialogPartner(_HeroName)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
@@ -437,6 +451,7 @@ end
 -- @param[type=function] _Callback Callback
 -- @return[type=table] self
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:SetWrongPartnerCallback(_Callback)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
@@ -450,6 +465,7 @@ end
 -- @param[type=function] _Callback Callback
 -- @return[type=table] self
 -- @within QSB.NonPlayerCharacter
+-- @local
 --
 function QSB.NonPlayerCharacter:SetCallback(_Callback)
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');

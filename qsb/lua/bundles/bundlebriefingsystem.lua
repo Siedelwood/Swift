@@ -91,7 +91,7 @@ end
 StartBriefing = API.StartBriefing;
 
 ---
--- Prüft, ob ein Briefing abgeschlossen wurde.
+-- Prüft, ob ein Briefing einmal gestartet wurde und bis zum Ende kam.
 --
 -- <b>Alias</b>: IsBriefingFinished
 --
@@ -109,7 +109,7 @@ end
 IsBriefingFinished = API.IsBriefingFinished;
 
 ---
--- Prüft, ob ein Briefing abgeschlossen wurde.
+-- Prüft, ob aktuell ein Briefing aktiv ist.
 --
 -- <b>Alias</b>: IsBriefingActive
 --
@@ -142,6 +142,10 @@ PauseQuestsDuringBriefings = API.BriefingPauseQuests;
 -- Erzeugt die Funktionen zur Erstellung von Seiten in einem Briefing und bindet
 -- sie an das Briefing. Diese Funktion muss vor dem Start eines Briefing
 -- aufgerufen werden um Seiten hinzuzufügen.
+-- <ul>
+-- <li><a href="#AP">AP</a></li>
+-- <li><a href="#ASP">ASP</a></li>
+-- </ul>
 --
 -- <b>Alias</b>: AddPages
 --

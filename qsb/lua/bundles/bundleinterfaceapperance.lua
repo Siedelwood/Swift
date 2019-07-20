@@ -24,6 +24,7 @@ QSB.PlayerNames = {};
 -- -------------------------------------------------------------------------- --
 
 ---
+-- <b>VERALTET</b><br/>
 -- Setzt eine Grafik als Bild für einen Icon oder einen Button.
 --
 -- Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem

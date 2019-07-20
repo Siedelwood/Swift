@@ -220,10 +220,10 @@ GetQuestID = API.GetQuestID;
 -- @return[type=boolean] Quest existiert
 -- @within Anwenderfunktionen
 --
-function API.IsValidateQuest(_QuestID)
+function API.IsValidQuest(_QuestID)
     return Quests[_QuestID] ~= nil or Quests[API.GetQuestID(_QuestID)] ~= nil;
 end
-IsValidQuest = API.IsValidateQuest;
+IsValidQuest = API.IsValidQuest;
 
 ---
 -- Lässt eine Liste von Quests fehlschlagen.
@@ -290,7 +290,7 @@ RestartQuestsByName = API.RestartAllQuests;
 -- der Quest wird manuell getriggert.
 --
 -- Alle Änderungen an Standardbehavior müssen hier berücksichtigt werden. Wird
--- ein Standardbehavior in einem Bundle verändern, muss auch diese Funktion
+-- ein Standardbehavior in einem Bundle verändert, muss auch diese Funktion
 -- angepasst oder überschrieben werden.
 --
 -- <p><b>Alias:</b> RestartQuestByName</p>
@@ -1059,12 +1059,22 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 -- Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
 -- wird. Die Argumente werden an die Funktion übergeben.
 --
+-- Die Funktion kann als Referenz oder als Inline übergeben werden.
+--
 -- <b>Alias</b>: StartSimpleJobEx
 --
 -- @param[type=number] _Function Funktion, die ausgeführt wird
 -- @param              ...       Liste von Argumenten
 -- @return[type=number] Job ID
 -- @within Anwenderfunktionen
+--
+-- @usage -- Führt eine Funktion nach 15 Sekunden aus.
+-- API.StartJob(function(_Time, _EntityType)
+--     if Logic.GetTime() > _Time + 15 then
+--         MachWas(_EntityType);
+--         return true;
+--     end
+-- end, Logic.GetTime(), Entities.U_KnightHealing)
 --
 function API.StartJob(_Function, ...)
     Core.Data.Events.JobIDCounter = Core.Data.Events.JobIDCounter +1;
@@ -1080,6 +1090,8 @@ StartSimpleJobEx = API.StartJob;
 ---
 -- Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
 -- wird. Die Argumente werden an die Funktion übergeben.
+--
+-- Die Funktion kann als Referenz oder als Inline übergeben werden.
 --
 -- <b>Alias</b>: StartSimpleHiResJobEx
 --
@@ -1107,6 +1119,10 @@ StartSimpleHiResJobEx = API.StartHiResJob;
 -- @param[type=number] _JobID ID des Jobs
 -- @within Anwenderfunktionen
 --
+-- @usage if API.JobIsRunning(JobID) then
+--     -- Aktion hier
+-- end
+--
 function API.JobIsRunning(_JobID)
     if Core.Data.Events.EveryTurn[_JobID] then
         return true;
@@ -1125,6 +1141,8 @@ JobIsRunningEx = API.JobIsRunning;
 --
 -- @param[type=number] _JobID ID des Jobs
 -- @within Anwenderfunktionen
+--
+-- @usage API.EndJob(JobID);
 --
 function API.EndJob(_JobID)
     if Core.Data.Events.EveryTurn[_JobID] then
@@ -1149,7 +1167,8 @@ end
 
 ---
 -- Wartet die angebene Zeit in realen Sekunden und führt anschließend das
--- Callback aus.
+-- Callback aus. Die Ausführung erfolgt asynchron. Das bedeutet, dass das
+-- Skript weiterläuft.
 --
 -- Hinweis: Einmal gestartet, kann wait nicht beendet werden.
 --
@@ -1721,6 +1740,9 @@ end
 -- Identifiziert anhand der um +3 Verschobenen PlayerID bei den Scripting
 -- Values die infamous History Edition. Ob es sich um die History Edition
 -- hält, wird in der Variable QSB.HistoryEdition gespeichert.
+--
+-- TODO: Es sollten mehr Kritieren als nur die PlayerID geprüft werden!
+--
 -- @within Internal
 -- @local
 --

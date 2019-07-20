@@ -90,7 +90,7 @@ end
 IsVisible = API.IsEntityVisible;
 
 ---
--- Gibt den Größenfaktor des Entity zurück.
+-- Setzt den Größenfaktor des Entity.
 --
 -- Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
 -- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
