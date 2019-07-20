@@ -30,8 +30,8 @@ cp -r qsb/example Release/example &>/dev/null
 echo "Fertig!"
 
 echo "Kopiere Map Iconator..."
-mkdir Release/bin/MapIconator &>/dev/null
-cp -r bin/MapIconator.jar Release/bin/MapIconator/MapIconator.jar &>/dev/null
+#mkdir Release/bin/MapIconator &>/dev/null
+cp -r cnf/MapIconator/MapIconatorInstaller.exe Release/bin/MapIconatorInstaller.exe &>/dev/null
 echo "Fertig!"
 
 #echo "Siedelwood Cutscene Assistant kopieren..."
@@ -39,8 +39,8 @@ echo "Fertig!"
 #echo "Fertig!"
 
 echo "Cutscene Maker kopieren..."
-mkdir Release/bin/CutsceneMaker &>/dev/null
-cp -r "bin/CutsceneMaker.jar" Release/bin/CutsceneMaker/CutsceneMaker.jar &>/dev/null
+#mkdir Release/bin/CutsceneMaker &>/dev/null
+cp -r "cnf/CutsceneMaker/CutsceneMakerInstaller.exe" Release/bin/CutsceneMakerInstaller.exe &>/dev/null
 echo "Fertig!"
 
 # echo "Graph Viz kopieren..."

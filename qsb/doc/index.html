@@ -65,7 +65,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.0.0 1/7/2019";
+QSB.Version = "Version 2.0.0 10/7/2019";
 QSB.Language = "de";
 QSB.HistoryEdition = false;
 
@@ -1541,9 +1541,12 @@ function Core:RegisterBehavior(_Behavior)
     else
         if not _G["b_" .. _Behavior.Name].new then
             _G["b_" .. _Behavior.Name].new = function(self, ...)
+                local arg = {...}; -- Notwendiger Fix für LuaJ
                 local behavior = API.InstanceTable(self);
                 behavior.i47ya_6aghw_frxil = {};
+                behavior.v12ya_gg56h_al125 = {};
                 for i= 1, #arg, 1 do
+                    table.insert(behavior.v12ya_gg56h_al125, arg[i]);
                     if self.Parameter and self.Parameter[i] ~= nil then
                         behavior:AddParameter(i-1, arg[i]);
                     else
@@ -11177,8 +11180,8 @@ function b_Reward_AI_SetEnemy:CustomFunction()
 end
 
 function b_Reward_AI_SetEnemy:Debug(_Quest)
-    if self.AIPlayer &#x3C;= 1 or self.AIPlayer &#x3E;= 8 or Logic.PlayerGetIsHumanFlag(self.AIPlayer) then
-        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong")
+    if self.AIPlayer &#x3C; 1 or self.AIPlayer &#x3E; 8 or Logic.PlayerGetIsHumanFlag(self.AIPlayer) then
+        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Player " .. self.AIPlayer .. " is wrong");
         return true;
     end
     return false;
@@ -28274,6 +28277,8 @@ BundleSymfoniaBehaviors = {
 -- @local
 --
 function BundleSymfoniaBehaviors.Global:Install()
+    Core:StackFunction("QuestTemplate.Trigger", self.OnQuestTriggered);
+
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     -- Theif observation
     --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28465,12 +28470,31 @@ end
 --
 function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objective)
     if _Objective.Data[1] == 3 then
-        -- Initial wird die Anzahl an Entities sichergestellt.
-        if not _Objective.Data[4] then
+        local AllSpawnedEntities = {};
+        for i=1, _Objective.Data[2][0], 1 do
+            local ID = GetID(_Objective.Data[2][i]);
+            AllSpawnedEntities = Array_Append(AllSpawnedEntities, {Logic.GetSpawnedEntities(ID)});
+        end
+        if #AllSpawnedEntities == 0 then
+            return true;
+        end
+    end
+end
+
+---
+-- Überschreibt die :Trigger() Methode um sicherzustellen, dass immer genug
+-- gespawnte Entities vorhanden sind.
+-- @within Internal
+-- @local
+--
+function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
+    if self.Objectives[1] and self.Objectives[1].Data[1] == 3 then
+        if self.Objectives[1].Data[4] ~= true then
+            -- Entities respawnen
             local FirstEntityID;
-            local SpawnAmount = _Objective.Data[3];
-            for i=1, _Objective.Data[2][0], 1 do
-                local ID = GetID(_Objective.Data[2][i]);
+            local SpawnAmount = self.Objectives[1].Data[3];
+            for i=1, self.Objectives[1].Data[2][0], 1 do
+                local ID = GetID(self.Objectives[1].Data[2][i]);
                 local SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
                 if #SpawnedEntities &#x3C; SpawnAmount then
                     for i= 1, SpawnAmount - #SpawnedEntities, 1 do
@@ -28487,23 +28511,13 @@ function BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(_Quest, _Objec
                 end
             end
             -- Icon setzen
-            if not _Objective.Data[5] then
-                _Objective.Data[5] = {7, 12};
+            if not self.Objectives[1].Data[5] then
+                self.Objectives[1].Data[5] = {7, 12};
                 if Logic.IsEntityInCategory(FirstEntityID, EntityCategories.AttackableAnimal) == 1 then
-                    _Objective.Data[5] = {13, 8};
+                    self.Objectives[1].Data[5] = {13, 8};
                 end
             end
-            _Objective.Data[4] = true;
-        end
-
-        -- Gibt es keine gespawnten Entities mehr, ist das Ziel erreicht.
-        local AllSpawnedEntities = {};
-        for i=1, _Objective.Data[2][0], 1 do
-            local ID = GetID(_Objective.Data[2][i]);
-            AllSpawnedEntities = Array_Append(AllSpawnedEntities, {Logic.GetSpawnedEntities(ID)});
-        end
-        if #AllSpawnedEntities == 0 then
-            return true;
+            self.Objectives[1].Data[4] = true;
         end
     end
 end
@@ -35429,10 +35443,6 @@ function AddOnRandomRequests.Global:GetHuntPredatorBehavior(_Behavior, _Quest)
         return;
     end
     local MaxCapacity = Logic.RespawnResourceGetMaxCapacity(SpawnPoint);
-    local SpawnedEntities = {Logic.GetSpawnedEntities(SpawnPoint)};
-    for i=1, (MaxCapacity - #SpawnedEntities), 1 do
-        Logic.RespawnResourceEntity_Spawn(SpawnPoint);
-    end
     self.Data.PredatorQuests[SpawnPoint] = true;
     return {"Goal_DestroySpawnedEntities", SpawnPoint, MaxCapacity};
 end
