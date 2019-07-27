@@ -106,16 +106,20 @@ SymfoniaLoader = {
             {"BundleClassicBehaviors",              true},
             {"BundleQuestGeneration",               true},
 
-            -- Erweiterte Bibliothek
-            -- Zusätzliche Funktionalität und weitere Behavior.
+            -- NEP Feature Emulation
+            -- Funktionen, die das NEP nachbilden.
             {"BundleConstructionControl",           true},
             {"BundleDestructionControl",            true},
+            {"BundleEntitySelection",               true},
+            {"BundleKnightTitleRequirements",       true},
+
+            -- Erweiterte Bibliothek
+            -- Zusätzliche Funktionalität und weitere Behavior.
             {"BundleDialogWindows",                 true},
             {"BundleEntityCommandFunctions",        true},
             {"BundleEntityHelperFunctions",         true},
             {"BundleExtendedZoom",                  true},
             {"BundleInterfaceFeatureVisibility",    true},
-            {"BundleKnightTitleRequirements",       true},
             {"BundleMinimapMarker",                 true},
             {"BundleSymfoniaBehaviors",             true},
             {"BundleThirdPersonCamera",             true},
@@ -126,7 +130,6 @@ SymfoniaLoader = {
             -- Neue Funktionen für fortgeschrittene Anwender.
             {"BundleBuildingButtons",               true},
             {"BundleEntityProperties",              true},
-            {"BundleEntitySelection",               true},
             {"BundleGameHelperFunctions",           true},
             {"BundleInteractiveObjects",            true},
             {"BundleInterfaceApperance",            true},
