@@ -252,6 +252,7 @@ function BundleKnightTitleRequirements.Local:InitTexturePositions()
     g_TexturePositions.EntityCategories[EntityCategories.SheepPasture]              = { 4, 1};
     g_TexturePositions.EntityCategories[EntityCategories.Soldier]                   = { 7,12};
     g_TexturePositions.EntityCategories[EntityCategories.GrainField]                = {14, 2};
+    g_TexturePositions.EntityCategories[EntityCategories.BeeHive]                   = { 2, 1};
     g_TexturePositions.EntityCategories[EntityCategories.OuterRimBuilding]          = { 3, 4};
     g_TexturePositions.EntityCategories[EntityCategories.CityBuilding]              = { 8, 1};
     g_TexturePositions.EntityCategories[EntityCategories.Leader]                    = { 7, 11};
@@ -259,16 +260,26 @@ function BundleKnightTitleRequirements.Local:InitTexturePositions()
     g_TexturePositions.EntityCategories[EntityCategories.Melee]                     = { 9, 7};
     g_TexturePositions.EntityCategories[EntityCategories.SiegeEngine]               = { 2,15};
 
+    g_TexturePositions.Entities[Entities.B_Beehive]                                 = { 2, 1};
+    g_TexturePositions.Entities[Entities.B_Cathedral_Big]                           = { 3,12};
+    g_TexturePositions.Entities[Entities.B_CattlePasture]                           = { 3,16};
+    g_TexturePositions.Entities[Entities.B_GrainField_ME]                           = { 1,13};
+    g_TexturePositions.Entities[Entities.B_GrainField_NA]                           = { 1,13};
+    g_TexturePositions.Entities[Entities.B_GrainField_NE]                           = { 1,13};
+    g_TexturePositions.Entities[Entities.B_GrainField_SE]                           = { 1,13};
+    g_TexturePositions.Entities[Entities.U_MilitaryBallista]                        = {10, 5};
     g_TexturePositions.Entities[Entities.B_Outpost]                                 = {12, 3};
-    g_TexturePositions.Entities[Entities.B_Outpost_AS]                              = {12, 3};
     g_TexturePositions.Entities[Entities.B_Outpost_ME]                              = {12, 3};
     g_TexturePositions.Entities[Entities.B_Outpost_NA]                              = {12, 3};
     g_TexturePositions.Entities[Entities.B_Outpost_NE]                              = {12, 3};
     g_TexturePositions.Entities[Entities.B_Outpost_SE]                              = {12, 3};
-    g_TexturePositions.Entities[Entities.B_Cathedral_Big]                           = { 3,12};
-    g_TexturePositions.Entities[Entities.U_MilitaryBallista]                        = {10, 5};
-    g_TexturePositions.Entities[Entities.U_Trebuchet]                               = { 9, 1};
+    g_TexturePositions.Entities[Entities.B_SheepPasture]                            = { 4, 1};
     g_TexturePositions.Entities[Entities.U_SiegeEngineCart]                         = { 9, 4};
+    g_TexturePositions.Entities[Entities.U_Trebuchet]                               = { 9, 1};
+    if Framework.GetGameExtraNo() ~= 0 then
+        g_TexturePositions.Entities[Entities.B_GrainField_AS]                       = { 1,13};
+        g_TexturePositions.Entities[Entities.B_Outpost_AS]                          = {12, 3};
+    end
 
     g_TexturePositions.Needs[Needs.Medicine]                                        = { 2,10};
 
@@ -517,6 +528,10 @@ function BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements()
                     QSB.RequirementTooltipTypes[RequirementsIndex] = "CityBuilding" .. i;
                 elseif Logic.IsEntityTypeInCategory(EntitiesInCategory[1], EntityCategories.OuterRimBuilding) == 1 then
                     QSB.RequirementTooltipTypes[RequirementsIndex] = "OuterRimBuilding" .. i;
+                elseif Logic.IsEntityTypeInCategory(EntitiesInCategory[1], EntityCategories.GrainField) == 1 then
+                    QSB.RequirementTooltipTypes[RequirementsIndex] = "FarmerBuilding" .. i;
+                elseif Logic.IsEntityTypeInCategory(EntitiesInCategory[1], EntityCategories.BeeHive) == 1 then
+                    QSB.RequirementTooltipTypes[RequirementsIndex] = "FarmerBuilding" .. i;
                 elseif Logic.IsEntityTypeInCategory(EntitiesInCategory[1], EntityCategories.AttackableBuilding) == 1 then
                     QSB.RequirementTooltipTypes[RequirementsIndex] = "Buildings" .. i;
                 else
@@ -530,6 +545,7 @@ function BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements()
         if KnightTitleRequirements[NextTitle].Entities ~= nil then
             for i=1, #KnightTitleRequirements[NextTitle].Entities do
                 local EntityType = KnightTitleRequirements[NextTitle].Entities[i][1];
+                local EntityTypeName = Logic.GetEntityTypeName(EntityType);
                 SetIcon(WidgetPos[RequirementsIndex] .. "/Icon", g_TexturePositions.Entities[EntityType]);
                 local IsFulfilled, CurrentAmount, NeededAmount = DoesNeededNumberOfEntitiesOfTypeForKnightTitleExist(PlayerID, NextTitle, i);
                 XGUIEng.SetText(WidgetPos[RequirementsIndex] .. "/Amount", "{center}" .. CurrentAmount .. "/" .. NeededAmount);
@@ -540,7 +556,11 @@ function BundleKnightTitleRequirements.Local:OverwriteUpdateRequirements()
                 end
                 XGUIEng.ShowWidget(WidgetPos[RequirementsIndex], 1);
 
-                QSB.RequirementTooltipTypes[RequirementsIndex] = "Entities" .. i;
+                local TopltipType = "Entities" .. i;
+                if EntityTypeName == "B_Beehive" or EntityTypeName:find("GrainField") or EntityTypeName:find("Pasture") then
+                    TopltipType = "FarmerBuilding" .. i;
+                end
+                QSB.RequirementTooltipTypes[RequirementsIndex] = TopltipType;
                 RequirementsIndex = RequirementsIndex +1;
             end
         end
@@ -1110,6 +1130,17 @@ BundleKnightTitleRequirements.Local.Data.Description = {
         Text = {
             de = "- Menge benötigter Rohstoffgebäude",
             en = "- Needed amount of gatherer",
+        },
+    },
+
+    FarmerBuilding = {
+        Title = {
+            de = "Farmeinrichtungen",
+            en = "Farming structure",
+        },
+        Text = {
+            de = "- Menge benötigter Nutzfläche",
+            en = "- Needed amount of farming structure",
         },
     },
 
