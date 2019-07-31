@@ -759,16 +759,18 @@ end
 --
 function AddOnCastleStore.Global.CastleStore:Add(_Good, _Amount)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
-    for i= 1, _Amount, 1 do
-        if self:GetLimit() > self:GetTotalAmount() then
-            self.Data.Goods[_Good][1] = self.Data.Goods[_Good][1] + 1;
+    if self.Data.Goods[_Good] then
+        for i= 1, _Amount, 1 do
+            if self:GetLimit() > self:GetTotalAmount() then
+                self.Data.Goods[_Good][1] = self.Data.Goods[_Good][1] + 1;
+            end
         end
+        Logic.ExecuteInLuaLocalState([[
+            QSB.CastleStore:SetAmount(
+                ]] ..self.Data.PlayerID.. [[, ]] .._Good.. [[, ]] ..self.Data.Goods[_Good][1].. [[
+            )
+        ]]);
     end
-    Logic.ExecuteInLuaLocalState([[
-        QSB.CastleStore:SetAmount(
-            ]] ..self.Data.PlayerID.. [[, ]] .._Good.. [[, ]] ..self.Data.Goods[_Good][1].. [[
-        )
-    ]]);
     return self;
 end
 
@@ -786,14 +788,16 @@ end
 --
 function AddOnCastleStore.Global.CastleStore:Remove(_Good, _Amount)
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
-    if self:GetAmount(_Good) > 0 then
-        local ToRemove = (_Amount <= self:GetAmount(_Good) and _Amount) or self:GetAmount(_Good);
-        self.Data.Goods[_Good][1] = self.Data.Goods[_Good][1] - ToRemove;
-        Logic.ExecuteInLuaLocalState([[
-            QSB.CastleStore:SetAmount(
-                ]] ..self.Data.PlayerID.. [[, ]] .._Good.. [[, ]] ..self.Data.Goods[_Good][1].. [[
-            )
-        ]]);
+    if self.Data.Goods[_Good] then
+        if self:GetAmount(_Good) > 0 then
+            local ToRemove = (_Amount <= self:GetAmount(_Good) and _Amount) or self:GetAmount(_Good);
+            self.Data.Goods[_Good][1] = self.Data.Goods[_Good][1] - ToRemove;
+            Logic.ExecuteInLuaLocalState([[
+                QSB.CastleStore:SetAmount(
+                    ]] ..self.Data.PlayerID.. [[, ]] .._Good.. [[, ]] ..self.Data.Goods[_Good][1].. [[
+                )
+            ]]);
+        end
     end
     return self;
 end
