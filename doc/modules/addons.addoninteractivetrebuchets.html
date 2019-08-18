@@ -1,0 +1,623 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+<li><a href="#Internal">Internal</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
+  <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
+  <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
+  <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
+  <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
+  <li><strong>addons.addoninteractivetrebuchets</strong></li>
+  <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
+  <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
+  <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
+  <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
+  <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
+  <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
+  <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
+  <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
+  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
+  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
+  <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
+  <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
+  <li><a href="../modules/bundles.bundleknighttitlerequirements.html">bundles.bundleknighttitlerequirements</a></li>
+  <li><a href="../modules/bundles.bundleminimapmarker.html">bundles.bundleminimapmarker</a></li>
+  <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
+  <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
+  <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
+  <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
+  <li><a href="../modules/core.html">core</a></li>
+  <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
+  <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalinteractiveobjecttemplates.html">external.externalinteractiveobjecttemplates</a></li>
+  <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
+  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
+  <li><a href="../modules/loader.html">loader</a></li>
+  <li><a href="../modules/writer.html">writer</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>addons.addoninteractivetrebuchets</code></h1>
+<p>Der Spieler kann ein Trebuchet mieten.</p>
+<p> Das Trebuchet fährt als Karren vor,
+ wird "aufgebaut" und kann anschließend benutzt werden.<br> Das Trebuchet
+ fährt ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.
+ <br>Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
+ ankommt, wird die Baustelle wieder freigegeben.
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateTrebuchetConstructionSite">API.CreateTrebuchetConstructionSite (_Name, _GoldCost, _WoodCost)</a></td>
+	<td class="summary">Erstellt eine Trebuchet-Baustelle an der Position mit den
+ angegebenen Baukosten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.DestroyTrebuchetConstructionSite">API.DestroyTrebuchetConstructionSite (_Name)</a></td>
+	<td class="summary">Zerstört eine Trebuchet-Baustelle, aber nicht die Skript Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetConstructionCartByTrebuchetConstructionSite">API.GetConstructionCartByTrebuchetConstructionSite (_Name)</a></td>
+	<td class="summary">Gibt die EntityID des Abreisewagens der Trebuchet-Baustelle zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetReturningCartByTrebuchetConstructionSite">API.GetReturningCartByTrebuchetConstructionSite (_Name)</a></td>
+	<td class="summary">Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.GetTrebuchetByTrebuchetConstructionSite">API.GetTrebuchetByTrebuchetConstructionSite (_Name)</a></td>
+	<td class="summary">Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global.OnTrebuchetDisambled">AddOnInteractiveTrebuchets.Global.OnTrebuchetDisambled (_EntityID, _PlayerID, _x, _y, _z)</a></td>
+	<td class="summary">Callback: Ein Trebuchet wird manuell zurückgebaut.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global.TrebuchetHasSufficentTitle">AddOnInteractiveTrebuchets.Global.TrebuchetHasSufficentTitle ()</a></td>
+	<td class="summary">Prüft, ob der menschliche Spieler einen ausreichenden Titel
+ hat um Trebuchets zu bauen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global.WatchTrebuchetsAndCarts">AddOnInteractiveTrebuchets.Global.WatchTrebuchetsAndCarts ()</a></td>
+	<td class="summary">Steuert die Trebuchet-Mechanik.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite">AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite (_Name, _GoldCost, _WoodCost)</a></td>
+	<td class="summary">Erstellt eine Trebuchet-Baustelle an der Position mit den
+ angegebenen Baukosten.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global:DestroyTrebuchetConstructionSite">AddOnInteractiveTrebuchets.Global:DestroyTrebuchetConstructionSite (_Name)</a></td>
+	<td class="summary">Zerstört eine Trebuchet-Baustelle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global:Install">AddOnInteractiveTrebuchets.Global:Install ()</a></td>
+	<td class="summary">Initalisiert das AddOn.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global:ReturnTrebuchetToStorehouse">AddOnInteractiveTrebuchets.Global:ReturnTrebuchetToStorehouse (_PlayerID, _Trebuchet)</a></td>
+	<td class="summary">Baut das Trebuchet zum Wagen zurück und lässt es wieder ins
+ Lagerhaus des Besitzers fahren.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global:SpawnTrebuchet">AddOnInteractiveTrebuchets.Global:SpawnTrebuchet (_PlayerID, _Site)</a></td>
+	<td class="summary">Erzeugt das Trebuchet an der Baustelle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global:SpawnTrebuchetCart">AddOnInteractiveTrebuchets.Global:SpawnTrebuchetCart (_PlayerID, _Site)</a></td>
+	<td class="summary">Erzeugt einen Trebuchetwagen für die Baustelle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global:TrebuchetActivate">AddOnInteractiveTrebuchets.Global:TrebuchetActivate ()</a></td>
+	<td class="summary">Initialisiert die interaktiven Trebuchet-Baustellen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddOnInteractiveTrebuchets.Global:TrebuchetSetNeededKnightTitle">AddOnInteractiveTrebuchets.Global:TrebuchetSetNeededKnightTitle (_KnightTitle)</a></td>
+	<td class="summary">Setzt den mindestens benötigten Titel um Trebuchets zu bauen.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.CreateTrebuchetConstructionSite"></a>
+    <strong>API.CreateTrebuchetConstructionSite (_Name, _GoldCost, _WoodCost)</strong>
+    </dt>
+    <dd>
+    Erstellt eine Trebuchet-Baustelle an der Position mit den
+ angegebenen Baukosten.
+<p> Das Trebuchet kann von einem Helden aufgebaut werden. Es wird ein Karren
+ aus dem Lagerhaus zur Baustelle fahren. Erreicht der Karren die Baustelle,
+ wird er durch ein Trebuchet ersetzt.
+<p> Das Trebuchet hat dann 10 Schuss. Sind diese aufgebraucht wird das Trebuchet
+ abgebaut und fährt in das Lagerhaus zurück. Sobald der Karren angekommen
+ ist, kann die Baustelle erneut aktiviert werden.
+<p> <b>Achtung:</b>Das Auffüllen von Trebuchets wird deaktiviert, sobald eine
+ Baustelle erzeugt wird. Es wird NICHT empfohlen dem Spieler beides, normale
+ Trebuchets und Trebuchetbaustellen, zur gleichen Zeit zu geben!
+<p> <p><b>Alias</b>: CreateTrebuchetConstructionSite</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname Position
+        </li>
+        <li><span class="parameter">_GoldCost</span>
+            <span class="types"><span class="type">number</span></span>
+         Goldkosten
+        </li>
+        <li><span class="parameter">_WoodCost</span>
+            <span class="types"><span class="type">number</span></span>
+         Holzkosten
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateTrebuchetConstructionSite(<span class="string">"trebuchetSite1"</span>, <span class="number">250</span>, <span class="number">10</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.DestroyTrebuchetConstructionSite"></a>
+    <strong>API.DestroyTrebuchetConstructionSite (_Name)</strong>
+    </dt>
+    <dd>
+    Zerstört eine Trebuchet-Baustelle, aber nicht die Skript Entity.
+<p> Die Baustelle wird in jedem möglichen Status zerstört. Es ist egal, ob das
+ Trebuchet aufgebaut ist, gerade ein Karren unterwegs ist, oder die Baustelle
+ noch nie berührt wurde.
+<p> <p><b>Alias</b>: DestroyTrebuchetConstructionSite</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname Position
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.DestroyTrebuchetConstructionSite(<span class="string">"trebuchetSite1"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetConstructionCartByTrebuchetConstructionSite"></a>
+    <strong>API.GetConstructionCartByTrebuchetConstructionSite (_Name)</strong>
+    </dt>
+    <dd>
+    Gibt die EntityID des Abreisewagens der Trebuchet-Baustelle zurück.  Sollte
+ kein Abreisewagens unterwegs sein, wird 0 zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname der Trebuchet-Baustelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        EntityID des angeforderten Wagens
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> ID = API.GetConstructionCartByTrebuchetConstructionSite(<span class="string">"trebuchetSite1"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetReturningCartByTrebuchetConstructionSite"></a>
+    <strong>API.GetReturningCartByTrebuchetConstructionSite (_Name)</strong>
+    </dt>
+    <dd>
+    Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.
+ Sollte kein Anforderungswagen unterwegs sein, wird 0 zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname der Trebuchet-Baustelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        EntityID des angeforderten Wagens
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> ID = API.GetReturningCartByTrebuchetConstructionSite(<span class="string">"trebuchetSite1"</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.GetTrebuchetByTrebuchetConstructionSite"></a>
+    <strong>API.GetTrebuchetByTrebuchetConstructionSite (_Name)</strong>
+    </dt>
+    <dd>
+    Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.
+ Sollte kein Trebuchet aufgebaut sein, wird 0 zurückgegeben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname der Trebuchet-Baustelle
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        EntityID des Trebuchet
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> ID = API.GetTrebuchetByTrebuchetConstructionSite(<span class="string">"trebuchetSite1"</span>);</pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global.OnTrebuchetDisambled"></a>
+    <strong>AddOnInteractiveTrebuchets.Global.OnTrebuchetDisambled (_EntityID, _PlayerID, _x, _y, _z)</strong>
+    </dt>
+    <dd>
+    Callback: Ein Trebuchet wird manuell zurückgebaut.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EntityID</span>
+         Entity-ID des Trebuchet
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         Besitzer
+        </li>
+        <li><span class="parameter">_x</span>
+                X-Position
+        </li>
+        <li><span class="parameter">_y</span>
+                Y-Position
+        </li>
+        <li><span class="parameter">_z</span>
+                Z-Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global.TrebuchetHasSufficentTitle"></a>
+    <strong>AddOnInteractiveTrebuchets.Global.TrebuchetHasSufficentTitle ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob der menschliche Spieler einen ausreichenden Titel
+ hat um Trebuchets zu bauen.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean: Titel hoch genug
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global.WatchTrebuchetsAndCarts"></a>
+    <strong>AddOnInteractiveTrebuchets.Global.WatchTrebuchetsAndCarts ()</strong>
+    </dt>
+    <dd>
+    Steuert die Trebuchet-Mechanik.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite"></a>
+    <strong>AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite (_Name, _GoldCost, _WoodCost)</strong>
+    </dt>
+    <dd>
+    Erstellt eine Trebuchet-Baustelle an der Position mit den
+ angegebenen Baukosten.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+         [string] Skriptname Position
+        </li>
+        <li><span class="parameter">_GoldCost</span>
+         Goldkosten
+        </li>
+        <li><span class="parameter">_WoodCost</span>
+         Holzkosten
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global:DestroyTrebuchetConstructionSite"></a>
+    <strong>AddOnInteractiveTrebuchets.Global:DestroyTrebuchetConstructionSite (_Name)</strong>
+    </dt>
+    <dd>
+    Zerstört eine Trebuchet-Baustelle.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+         [string] Skriptname Position
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global:Install"></a>
+    <strong>AddOnInteractiveTrebuchets.Global:Install ()</strong>
+    </dt>
+    <dd>
+    Initalisiert das AddOn.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global:ReturnTrebuchetToStorehouse"></a>
+    <strong>AddOnInteractiveTrebuchets.Global:ReturnTrebuchetToStorehouse (_PlayerID, _Trebuchet)</strong>
+    </dt>
+    <dd>
+    Baut das Trebuchet zum Wagen zurück und lässt es wieder ins
+ Lagerhaus des Besitzers fahren.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+          Besitzer
+        </li>
+        <li><span class="parameter">_Trebuchet</span>
+         Baustelle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global:SpawnTrebuchet"></a>
+    <strong>AddOnInteractiveTrebuchets.Global:SpawnTrebuchet (_PlayerID, _Site)</strong>
+    </dt>
+    <dd>
+    Erzeugt das Trebuchet an der Baustelle.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Besitzer
+        </li>
+        <li><span class="parameter">_Site</span>
+             Baustelle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global:SpawnTrebuchetCart"></a>
+    <strong>AddOnInteractiveTrebuchets.Global:SpawnTrebuchetCart (_PlayerID, _Site)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen Trebuchetwagen für die Baustelle.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+         Besitzer
+        </li>
+        <li><span class="parameter">_Site</span>
+             Baustelle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global:TrebuchetActivate"></a>
+    <strong>AddOnInteractiveTrebuchets.Global:TrebuchetActivate ()</strong>
+    </dt>
+    <dd>
+    Initialisiert die interaktiven Trebuchet-Baustellen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddOnInteractiveTrebuchets.Global:TrebuchetSetNeededKnightTitle"></a>
+    <strong>AddOnInteractiveTrebuchets.Global:TrebuchetSetNeededKnightTitle (_KnightTitle)</strong>
+    </dt>
+    <dd>
+    Setzt den mindestens benötigten Titel um Trebuchets zu bauen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_KnightTitle</span>
+         Titel
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-08-18 11:25:37 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

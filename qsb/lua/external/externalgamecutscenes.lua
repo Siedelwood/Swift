@@ -1,10 +1,12 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia AddOnGameCutscenes                                           # --
+-- #  Symfonia ExternalGameCutscenes                                        # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
+-- DEPRECATED
+--
 -- Dieses Bundle verwaltet den Aufruf der mit dem SCA-Tool erstellten
 -- Cutscenes. Ausserdem ermöglicht es das direkte Erfassen der
 -- Kamerapositionen aus der Map heraus.
@@ -14,7 +16,7 @@
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-AddOnGameCutscenes = {};
+ExternalGameCutscenes = {};
 
 API = API or {};
 CS = CS or {};
@@ -40,8 +42,8 @@ function CS.StartCutscene(_cutscene)
         if BriefingSystem then
             BriefingSystem.isActive = true
         end
-        AddOnGameCutscenes.Local.Data.Active = true
-        AddOnGameCutscenes.Local:StartCutscene(_cutscene)
+        ExternalGameCutscenes.Local.Data.Active = true
+        ExternalGameCutscenes.Local:StartCutscene(_cutscene)
         return true
     else
         if BriefingSystem then
@@ -49,7 +51,7 @@ function CS.StartCutscene(_cutscene)
                 return false
             end
         else
-            AddOnGameCutscenes.Local:AddToWaitList(_cutscene)
+            ExternalGameCutscenes.Local:AddToWaitList(_cutscene)
         end
     end
 end
@@ -66,7 +68,7 @@ function CS.IsCutsceneActive()
         assert(false, "CS.IsCutsceneActive : is local function.")
         return
     end
-    return AddOnGameCutscenes.Local:IsCutsceneActive()
+    return ExternalGameCutscenes.Local:IsCutsceneActive()
 end
 
 ---
@@ -79,7 +81,7 @@ function CS.CreateCutscene_DEV_ONLY()
         API.Bridge("CS.CreateCutscene_DEV_ONLY()")
         return
     end
-    AddOnGameCutscenes.Global:StartCutsceneMaker()
+    ExternalGameCutscenes.Global:StartCutsceneMaker()
 end
 
 ---
@@ -92,16 +94,16 @@ function CS.CreateCutsceneRealtime_DEV_ONLY()
         API.Bridge("CS.CreateCutsceneRealtime_DEV_ONLY()")
         return
     end
-    AddOnGameCutscenes.Global.Data.csMaker.realtime = true
-    API.Bridge("AddOnGameCutscenes.Local.Data.csMakerRealtime = true")
-    AddOnGameCutscenes.Global:StartCutsceneMaker()
+    ExternalGameCutscenes.Global.Data.csMaker.realtime = true
+    API.Bridge("ExternalGameCutscenes.Local.Data.csMakerRealtime = true")
+    ExternalGameCutscenes.Global:StartCutsceneMaker()
 end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-AddOnGameCutscenes = {
+ExternalGameCutscenes = {
     Global = {
         Data = {
             csMaker = {
@@ -128,7 +130,7 @@ AddOnGameCutscenes = {
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Global:Install()
+function ExternalGameCutscenes.Global:Install()
     self.Data.csMaker.coord = {
     	xLook = 0, -- x position of the camera look at
     	yLook = 0, -- y position of the camera look at
@@ -159,18 +161,18 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Global:StartCutsceneMaker()
+function ExternalGameCutscenes.Global:StartCutsceneMaker()
     self.Data.csMaker.pages = {}
 	self.Data.csMaker.oldDuration = 5
     self:CurrentMousePosition()
 	self.Data.csMaker.mouse.savedX = self.Data.csMaker.mouse.currentX
 	self.Data.csMaker.mouse.savedY = self.Data.csMaker.mouse.currentY
 	self.Data.csMaker.duration = {}
-    if AddOnGameCutscenes.Global.Data.csMaker.realtime then
+    if ExternalGameCutscenes.Global.Data.csMaker.realtime then
         self.Data.csMaker.lastTime = Logic.GetTime()
     end
-	self.Data.csMaker.job = StartSimpleHiResJob("AddOnGameCutscenes_Global_CutsceneMaker_MouseJob")
-    API.Bridge("AddOnGameCutscenes.Local:StartCutsceneMaker()")
+	self.Data.csMaker.job = StartSimpleHiResJob("ExternalGameCutscenes_Global_CutsceneMaker_MouseJob")
+    API.Bridge("ExternalGameCutscenes.Local:StartCutsceneMaker()")
 end
 
 ---
@@ -179,57 +181,57 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Global:EndCutsceneMaker()
+function ExternalGameCutscenes.Global:EndCutsceneMaker()
     EndJob(self.Data.csMaker.job)
 end
 
-function AddOnGameCutscenes.Global:CurrentMousePosition()
-    API.Bridge("AddOnGameCutscenes.Local:CurrentMousePosition()")
+function ExternalGameCutscenes.Global:CurrentMousePosition()
+    API.Bridge("ExternalGameCutscenes.Local:CurrentMousePosition()")
 end
 
 -- checks the change in the mouse position to put it on display
-function AddOnGameCutscenes_Global_CutsceneMaker_MouseJob()
-    AddOnGameCutscenes.Global:CurrentMousePosition()
-    local savedX = AddOnGameCutscenes.Global.Data.csMaker.mouse.savedX
-    local savedY = AddOnGameCutscenes.Global.Data.csMaker.mouse.savedY
-    local currentX = AddOnGameCutscenes.Global.Data.csMaker.mouse.currentX
-    local currentY = AddOnGameCutscenes.Global.Data.csMaker.mouse.currentY
+function ExternalGameCutscenes_Global_CutsceneMaker_MouseJob()
+    ExternalGameCutscenes.Global:CurrentMousePosition()
+    local savedX = ExternalGameCutscenes.Global.Data.csMaker.mouse.savedX
+    local savedY = ExternalGameCutscenes.Global.Data.csMaker.mouse.savedY
+    local currentX = ExternalGameCutscenes.Global.Data.csMaker.mouse.currentX
+    local currentY = ExternalGameCutscenes.Global.Data.csMaker.mouse.currentY
 
 	local deltaX = (savedX - currentX) / 2
 	local deltaY = (savedY - currentY) / 2
 	local updated = false
 
 	if deltaX ~= 0 then
-		updated = AddOnGameCutscenes.Global:AddDeltaRotation(deltaX)
+		updated = ExternalGameCutscenes.Global:AddDeltaRotation(deltaX)
 	elseif savedX == 0 then
-		updated = AddOnGameCutscenes.Global:AddDeltaRotation(2)
-	elseif savedX > AddOnGameCutscenes.Global.Data.csMaker.mouse.maxX then
-		updated = AddOnGameCutscenes.Global:AddDeltaRotation(-2)
+		updated = ExternalGameCutscenes.Global:AddDeltaRotation(2)
+	elseif savedX > ExternalGameCutscenes.Global.Data.csMaker.mouse.maxX then
+		updated = ExternalGameCutscenes.Global:AddDeltaRotation(-2)
 	end
 	if deltaY ~= 0 then
-		updated = AddOnGameCutscenes.Global:AddDeltaAngle(deltaY)
+		updated = ExternalGameCutscenes.Global:AddDeltaAngle(deltaY)
 	elseif savedY == 0 then
-		updated = AddOnGameCutscenes.Global:AddDeltaAngle(2)
-	elseif savedY > AddOnGameCutscenes.Global.Data.csMaker.mouse.maxY then
-		updated = AddOnGameCutscenes.Global:AddDeltaAngle(-2)
+		updated = ExternalGameCutscenes.Global:AddDeltaAngle(2)
+	elseif savedY > ExternalGameCutscenes.Global.Data.csMaker.mouse.maxY then
+		updated = ExternalGameCutscenes.Global:AddDeltaAngle(-2)
 	end
 
 	if updated then
-		AddOnGameCutscenes.Global:Refresh()
+		ExternalGameCutscenes.Global:Refresh()
 	end
 
-	AddOnGameCutscenes.Global.Data.csMaker.mouse.savedX = currentX
-	AddOnGameCutscenes.Global.Data.csMaker.mouse.savedY = currentY
+	ExternalGameCutscenes.Global.Data.csMaker.mouse.savedX = currentX
+	ExternalGameCutscenes.Global.Data.csMaker.mouse.savedY = currentY
 end
 
 -- transforms the mouse displacement into a rotation value
-function AddOnGameCutscenes.Global:AddDeltaRotation(delta)
+function ExternalGameCutscenes.Global:AddDeltaRotation(delta)
 	self.Data.csMaker.coord.r = (self.Data.csMaker.coord.r + delta) % 360
 	return true
 end
 
 -- transforms the mouse displacement into an angle value
-function AddOnGameCutscenes.Global:AddDeltaAngle(delta)
+function ExternalGameCutscenes.Global:AddDeltaAngle(delta)
 	if self.Data.csMaker.coord.a == 89 and delta < 0 then
 		return false
 	end
@@ -247,7 +249,7 @@ function AddOnGameCutscenes.Global:AddDeltaAngle(delta)
 end
 
 -- sets a new position for the camera depending on an angle that represents forward/backward/left/right
-function AddOnGameCutscenes.Global:SetNewCameraPosition(addedRotation)
+function ExternalGameCutscenes.Global:SetNewCameraPosition(addedRotation)
 	local addedRotation = addedRotation or 0
 	local x = self.Data.csMaker.coord.xLook
 	local y = self.Data.csMaker.coord.yLook
@@ -269,38 +271,38 @@ function AddOnGameCutscenes.Global:SetNewCameraPosition(addedRotation)
 	end
 end
 
-function AddOnGameCutscenes.Global:PressedUp()
+function ExternalGameCutscenes.Global:PressedUp()
 	self:SetNewCameraPosition(180)
 	self:Refresh()
 end
 
-function AddOnGameCutscenes.Global:PressedDown()
+function ExternalGameCutscenes.Global:PressedDown()
 	self:SetNewCameraPosition(0)
 	self:Refresh()
 end
 
-function AddOnGameCutscenes.Global:PressedLeft()
+function ExternalGameCutscenes.Global:PressedLeft()
 	self:SetNewCameraPosition(270)
 	self:Refresh()
 end
 
-function AddOnGameCutscenes.Global:PressedRight()
+function ExternalGameCutscenes.Global:PressedRight()
 	self:SetNewCameraPosition(90)
 	self:Refresh()
 end
 
-function AddOnGameCutscenes.Global:PressedSpace()
+function ExternalGameCutscenes.Global:PressedSpace()
 	self.Data.csMaker.coord.zLook = self.Data.csMaker.coord.zLook + self.Data.csMaker.coord.s
 	self:Refresh()
 end
 
-function AddOnGameCutscenes.Global:PressedGoDown()
+function ExternalGameCutscenes.Global:PressedGoDown()
 	self.Data.csMaker.coord.zLook = self.Data.csMaker.coord.zLook - self.Data.csMaker.coord.s
 	self:Refresh()
 end
 
 -- sets the camera position
-function AddOnGameCutscenes.Global:Refresh()
+function ExternalGameCutscenes.Global:Refresh()
 	local x = self.Data.csMaker.coord.xLook
 	local y = self.Data.csMaker.coord.yLook
 	local z = self.Data.csMaker.coord.zLook
@@ -321,7 +323,7 @@ function AddOnGameCutscenes.Global:Refresh()
 end
 
 -- makes the movement speed bigger
-function AddOnGameCutscenes.Global:PressedAdd()
+function ExternalGameCutscenes.Global:PressedAdd()
 	self.Data.csMaker.coord.s = self.Data.csMaker.coord.s + 10
 	if self.Data.csMaker.coord.s > 100 then
 		self.Data.csMaker.coord.s = 100
@@ -329,7 +331,7 @@ function AddOnGameCutscenes.Global:PressedAdd()
 end
 
 -- makes the movement speed smaller
-function AddOnGameCutscenes.Global:PressedSubtract()
+function ExternalGameCutscenes.Global:PressedSubtract()
 	self.Data.csMaker.coord.s = self.Data.csMaker.coord.s - 10
 	if self.Data.csMaker.coord.s < 10 then
 		self.Data.csMaker.coord.s = 10
@@ -337,14 +339,14 @@ function AddOnGameCutscenes.Global:PressedSubtract()
 end
 
 -- add a new duration to the duration table
-function AddOnGameCutscenes.Global:PressedAddDuration(_number)
+function ExternalGameCutscenes.Global:PressedAddDuration(_number)
 	table.insert(self.Data.csMaker.duration, _number)
 	local duration = self:GetDurationPassive()
 	Logic.DEBUG_AddNote("Zeit der folgenden Pages : "..duration)
 end
 
 -- emtpy the values in the duration table, to be able to refill it from beginning
-function AddOnGameCutscenes.Global:PressedEmptyDuration()
+function ExternalGameCutscenes.Global:PressedEmptyDuration()
 	self.Data.csMaker.duration = {}
 	local duration = self:GetDurationPassive()
 	Logic.DEBUG_AddNote("Duration Speicher geleert.")
@@ -352,7 +354,7 @@ function AddOnGameCutscenes.Global:PressedEmptyDuration()
 end
 
 -- gives the current duration
-function AddOnGameCutscenes.Global:GetDurationPassive()
+function ExternalGameCutscenes.Global:GetDurationPassive()
 	local length = #self.Data.csMaker.duration
 	local duration
 	if length == 0 then
@@ -366,7 +368,7 @@ function AddOnGameCutscenes.Global:GetDurationPassive()
 end
 
 -- gives the current duration while deleting the content of the duration table
-function AddOnGameCutscenes.Global:GetDurationDestructive()
+function ExternalGameCutscenes.Global:GetDurationDestructive()
 	local length = #self.Data.csMaker.duration
 	local duration
 	if length == 0 then
@@ -382,7 +384,7 @@ function AddOnGameCutscenes.Global:GetDurationDestructive()
 end
 
 -- This creates a new JumpTo page
-function AddOnGameCutscenes.Global:PressedJump()
+function ExternalGameCutscenes.Global:PressedJump()
 	local xCam = self.Data.csMaker.coord.xCam
 	local yCam = self.Data.csMaker.coord.yCam
 	local zCam = self.Data.csMaker.coord.zCam
@@ -390,7 +392,7 @@ function AddOnGameCutscenes.Global:PressedJump()
 	local yLook = (self.Data.csMaker.coord.yLook - self.Data.csMaker.coord.yCam) * 10 + self.Data.csMaker.coord.yCam
 	local zLook = (self.Data.csMaker.coord.zLook - self.Data.csMaker.coord.zCam) * 10 + self.Data.csMaker.coord.zCam
 	local duration
-    if AddOnGameCutscenes.Global.Data.csMaker.realtime then
+    if ExternalGameCutscenes.Global.Data.csMaker.realtime then
         local time = Logic.GetTime()
         duration = time - self.Data.csMaker.lastTime
         self.Data.csMaker.lastTime = time
@@ -410,7 +412,7 @@ function AddOnGameCutscenes.Global:PressedJump()
 end
 
 --This creates a new FlyTo page
-function AddOnGameCutscenes.Global:PressedFly()
+function ExternalGameCutscenes.Global:PressedFly()
 	local xCam = self.Data.csMaker.coord.xCam
 	local yCam = self.Data.csMaker.coord.yCam
 	local zCam = self.Data.csMaker.coord.zCam
@@ -418,7 +420,7 @@ function AddOnGameCutscenes.Global:PressedFly()
 	local yLook = (self.Data.csMaker.coord.yLook - self.Data.csMaker.coord.yCam) * 10 + self.Data.csMaker.coord.yCam
 	local zLook = (self.Data.csMaker.coord.zLook - self.Data.csMaker.coord.zCam) * 10 + self.Data.csMaker.coord.zCam
 	local duration
-    if AddOnGameCutscenes.Global.Data.csMaker.realtime then
+    if ExternalGameCutscenes.Global.Data.csMaker.realtime then
         local time = Logic.GetTime()
         duration = time - self.Data.csMaker.lastTime
         self.Data.csMaker.lastTime = time
@@ -438,14 +440,14 @@ function AddOnGameCutscenes.Global:PressedFly()
 	Logic.DEBUG_AddNote("Zeit des folgenden Pages : "..duration)
 end
 
-function AddOnGameCutscenes.Global:SavePageToProfile(_pageData)
-	API.Bridge("AddOnGameCutscenes.Local:SavePageToProfile('".._pageData.."')")
+function ExternalGameCutscenes.Global:SavePageToProfile(_pageData)
+	API.Bridge("ExternalGameCutscenes.Local:SavePageToProfile('".._pageData.."')")
 end
 
 --creates a preview of the created cutscene
-function AddOnGameCutscenes.Global:PressedPreview()
+function ExternalGameCutscenes.Global:PressedPreview()
 	self:EndCutsceneMaker()
-    API.Bridge("AddOnGameCutscenes.Local:EndCutsceneMaker()")
+    API.Bridge("ExternalGameCutscenes.Local:EndCutsceneMaker()")
 	local cutscene = {
         barStyle = "small",
         restoreCamera = true,
@@ -478,7 +480,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:Install()
+function ExternalGameCutscenes.Local:Install()
     self.Data.Language = QSB.Language;
     local _, screenY = GUI.GetScreenSize()
     local xp, yp = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/MissionBriefing/Text")
@@ -504,7 +506,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:IsCutsceneActive()
+function ExternalGameCutscenes.Local:IsCutsceneActive()
     if BriefingSystem then
         if BriefingSystem.IsBriefingActive() then
             return true
@@ -520,7 +522,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:AddToWaitList(_cutscene)
+function ExternalGameCutscenes.Local:AddToWaitList(_cutscene)
     table.insert(self.Data.WaitList, _cutscene)
 end
 
@@ -530,13 +532,13 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:CheckWaitList()
+function ExternalGameCutscenes.Local:CheckWaitList()
     self.Data.Name = nil
     if #self.Data.WaitList > 0 then
-        AddOnGameCutscenes.Local:StartCutscene(table.remove(self.Data.WaitList))
+        ExternalGameCutscenes.Local:StartCutscene(table.remove(self.Data.WaitList))
     else
         self.Data.Active = false
-        AddOnGameCutscenes.Local:UndoCutsceneOptic()
+        ExternalGameCutscenes.Local:UndoCutsceneOptic()
         if BriefingSystem then
             BriefingSystem.isActive = false
         end
@@ -550,8 +552,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:StartCutscene(_cutscene)
-    AddOnGameCutscenes.Local:StartCutsceneOptic()
+function ExternalGameCutscenes.Local:StartCutscene(_cutscene)
+    ExternalGameCutscenes.Local:StartCutsceneOptic()
     Camera.StartCutscene(_cutscene)
 end
 
@@ -561,7 +563,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:StartCutsceneOptic()
+function ExternalGameCutscenes.Local:StartCutsceneOptic()
     Display.SetRenderBorderPins(0)
     Display.SetRenderSky(1)
     Display.SetUserOptionOcclusionEffect(0)
@@ -621,7 +623,7 @@ function AddOnGameCutscenes.Local:StartCutsceneOptic()
     if isLoadScreenVisible then
         XGUIEng.PushPage("/LoadScreen/LoadScreen", false);
     end
-    AddOnGameCutscenes.Local:ShowText()
+    ExternalGameCutscenes.Local:ShowText()
 end
 
 ---
@@ -630,7 +632,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:UndoCutsceneOptic()
+function ExternalGameCutscenes.Local:UndoCutsceneOptic()
     Display.SetRenderBorderPins(1)
     Display.SetRenderSky(0)
     if Options.GetIntValue("Display", "Occlusion", 0) > 0 then
@@ -685,7 +687,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:ShowText(_text, _title, _centered, _showBars, _big, _black)
+function ExternalGameCutscenes.Local:ShowText(_text, _title, _centered, _showBars, _big, _black)
     local text = _text or ""
     local title = _title or ""
     local centered = _centered or false
@@ -745,14 +747,14 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:StartCutsceneMaker()
+function ExternalGameCutscenes.Local:StartCutsceneMaker()
     Profile.SetString("CutsceneAssistent", "pages", "")
 
     local x, y = Camera.RTS_GetLookAtPosition()
     local z = Display.GetTerrainHeight(x, y) + 1000
-    API.Bridge("AddOnGameCutscenes.Global.Data.csMaker.coord.xLook = "..x)
-    API.Bridge("AddOnGameCutscenes.Global.Data.csMaker.coord.yLook = "..y)
-    API.Bridge("AddOnGameCutscenes.Global.Data.csMaker.coord.zLook = "..z)
+    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.coord.xLook = "..x)
+    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.coord.yLook = "..y)
+    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.coord.zLook = "..z)
 
     Display.SetUserOptionOcclusionEffect(0)
     Display.SetRenderSky(1)
@@ -763,37 +765,37 @@ function AddOnGameCutscenes.Local:StartCutsceneMaker()
     GUI.ActivateCutSceneState()
 
     local width, height = GUI.GetScreenSize()
-    API.Bridge("AddOnGameCutscenes.Global.Data.csMaker.mouse.maxX = "..width.." - 5")
-    API.Bridge("AddOnGameCutscenes.Global.Data.csMaker.mouse.maxY = "..height.." - 5")
+    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.mouse.maxX = "..width.." - 5")
+    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.mouse.maxY = "..height.." - 5")
 
-    Input.KeyBindDown( Keys.Up,       'API.Bridge("AddOnGameCutscenes.Global:PressedUp()")',       2, true)
-    Input.KeyBindDown( Keys.Down,     'API.Bridge("AddOnGameCutscenes.Global:PressedDown()")',     2, true)
-    Input.KeyBindDown( Keys.Left,     'API.Bridge("AddOnGameCutscenes.Global:PressedLeft()")',     2, true)
-    Input.KeyBindDown( Keys.Right,    'API.Bridge("AddOnGameCutscenes.Global:PressedRight()")',    2, true)
-    Input.KeyBindDown( Keys.W,        'API.Bridge("AddOnGameCutscenes.Global:PressedUp()")',       2, true)
-    Input.KeyBindDown( Keys.S,        'API.Bridge("AddOnGameCutscenes.Global:PressedDown()")',     2, true)
-    Input.KeyBindDown( Keys.A,        'API.Bridge("AddOnGameCutscenes.Global:PressedLeft()")',     2, true)
-    Input.KeyBindDown( Keys.D,        'API.Bridge("AddOnGameCutscenes.Global:PressedRight()")',    2, true)
-    Input.KeyBindDown( Keys.Add,      'API.Bridge("AddOnGameCutscenes.Global:PressedAdd()")',      2, true)
-    Input.KeyBindDown( Keys.Subtract, 'API.Bridge("AddOnGameCutscenes.Global:PressedSubtract()")', 2, true)
-    Input.KeyBindDown( Keys.Space,    'API.Bridge("AddOnGameCutscenes.Global:PressedSpace()")',    2, true)
-    Input.KeyBindDown( Keys.Y,        'API.Bridge("AddOnGameCutscenes.Global:PressedGoDown()")',   2, true)
-    Input.KeyBindDown( Keys.J,        'API.Bridge("AddOnGameCutscenes.Global:PressedJump()")',     2, true)
-    Input.KeyBindDown( Keys.F,        'API.Bridge("AddOnGameCutscenes.Global:PressedFly()")',      2, true)
-    Input.KeyBindDown( Keys.P,        'API.Bridge("AddOnGameCutscenes.Global:PressedPreview()")',  2, true)
+    Input.KeyBindDown( Keys.Up,       'API.Bridge("ExternalGameCutscenes.Global:PressedUp()")',       2, true)
+    Input.KeyBindDown( Keys.Down,     'API.Bridge("ExternalGameCutscenes.Global:PressedDown()")',     2, true)
+    Input.KeyBindDown( Keys.Left,     'API.Bridge("ExternalGameCutscenes.Global:PressedLeft()")',     2, true)
+    Input.KeyBindDown( Keys.Right,    'API.Bridge("ExternalGameCutscenes.Global:PressedRight()")',    2, true)
+    Input.KeyBindDown( Keys.W,        'API.Bridge("ExternalGameCutscenes.Global:PressedUp()")',       2, true)
+    Input.KeyBindDown( Keys.S,        'API.Bridge("ExternalGameCutscenes.Global:PressedDown()")',     2, true)
+    Input.KeyBindDown( Keys.A,        'API.Bridge("ExternalGameCutscenes.Global:PressedLeft()")',     2, true)
+    Input.KeyBindDown( Keys.D,        'API.Bridge("ExternalGameCutscenes.Global:PressedRight()")',    2, true)
+    Input.KeyBindDown( Keys.Add,      'API.Bridge("ExternalGameCutscenes.Global:PressedAdd()")',      2, true)
+    Input.KeyBindDown( Keys.Subtract, 'API.Bridge("ExternalGameCutscenes.Global:PressedSubtract()")', 2, true)
+    Input.KeyBindDown( Keys.Space,    'API.Bridge("ExternalGameCutscenes.Global:PressedSpace()")',    2, true)
+    Input.KeyBindDown( Keys.Y,        'API.Bridge("ExternalGameCutscenes.Global:PressedGoDown()")',   2, true)
+    Input.KeyBindDown( Keys.J,        'API.Bridge("ExternalGameCutscenes.Global:PressedJump()")',     2, true)
+    Input.KeyBindDown( Keys.F,        'API.Bridge("ExternalGameCutscenes.Global:PressedFly()")',      2, true)
+    Input.KeyBindDown( Keys.P,        'API.Bridge("ExternalGameCutscenes.Global:PressedPreview()")',  2, true)
 
-    if not AddOnGameCutscenes.Local.Data.csMakerRealtime then
-        Input.KeyBindDown( Keys.Back,    'API.Bridge("AddOnGameCutscenes.Global:PressedEmptyDuration()")', 2, true)
-        Input.KeyBindDown( Keys.NumPad0, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(0)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad1, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(1)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad2, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(2)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad3, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(3)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad4, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(4)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad5, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(5)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad6, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(6)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad7, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(7)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad8, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(8)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad9, 'API.Bridge("AddOnGameCutscenes.Global:PressedAddDuration(9)")',  2, true)
+    if not ExternalGameCutscenes.Local.Data.csMakerRealtime then
+        Input.KeyBindDown( Keys.Back,    'API.Bridge("ExternalGameCutscenes.Global:PressedEmptyDuration()")', 2, true)
+        Input.KeyBindDown( Keys.NumPad0, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(0)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad1, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(1)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad2, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(2)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad3, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(3)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad4, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(4)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad5, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(5)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad6, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(6)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad7, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(7)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad8, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(8)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad9, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(9)")',  2, true)
     end
 
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame/Minimap/MinimapOverlay", 0)
@@ -805,7 +807,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnGameCutscenes.Local:EndCutsceneMaker()
+function ExternalGameCutscenes.Local:EndCutsceneMaker()
     Display.SetRenderSky(0)
     Game.GameTimeSetFactor(GUI.GetPlayerID(), 1)
     Camera.SwitchCameraBehaviour(0)
@@ -845,18 +847,18 @@ function AddOnGameCutscenes.Local:EndCutsceneMaker()
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame/Minimap/MinimapOverlay", 1)
 end
 
-function AddOnGameCutscenes.Local:CurrentMousePosition()
+function ExternalGameCutscenes.Local:CurrentMousePosition()
     local x, y = GUI.GetMousePosition()
-    API.Bridge("AddOnGameCutscenes.Global.Data.csMaker.mouse.currentX = "..x)
-    API.Bridge("AddOnGameCutscenes.Global.Data.csMaker.mouse.currentY = "..y)
+    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.mouse.currentX = "..x)
+    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.mouse.currentY = "..y)
 end
 
-function AddOnGameCutscenes.Local:SavePageToProfile(_pageData)
+function ExternalGameCutscenes.Local:SavePageToProfile(_pageData)
     local previous = Profile.GetString("CutsceneAssistent", "pages")
 	Profile.SetString("CutsceneAssistent", "pages", ""..previous.."".._pageData.."")
 end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("AddOnGameCutscenes");
+Core:RegisterBundle("ExternalGameCutscenes");
  
