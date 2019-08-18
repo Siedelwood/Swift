@@ -5,12 +5,11 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Der Spieler kann Trebuchet mieten. Das Trebuchet fährt als Karren vor,
--- wird aufgebaut und kann anschließend benutzt werden.<br> Das Trebuchet fährt
--- ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.<br>
--- Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
+-- Der Spieler kann ein Trebuchet mieten. Das Trebuchet fährt als Karren vor,
+-- wird "aufgebaut" und kann anschließend benutzt werden.<br> Das Trebuchet
+-- fährt ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.
+-- <br>Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
 -- ankommt, wird die Baustelle wieder freigegeben.
--- <br><a href="#API.CreateTrebuchetConstructionSite">Eine Baustelle anlegen</a>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -47,6 +46,8 @@ QSB = QSB or {};
 -- @param[type=number] _WoodCost Holzkosten
 -- @within Anwenderfunktionen
 --
+-- @usage API.CreateTrebuchetConstructionSite("trebuchetSite1", 250, 10);
+--
 function API.CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
     if GUI then
         API.Bridge("API.CreateTrebuchetConstructionSite('" .._Name.. "', " .._GoldCost.. ", " .._WoodCost.. ")");
@@ -68,6 +69,8 @@ CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
 -- @param[type=string] _Name Skriptname Position
 -- @within Anwenderfunktionen
 --
+-- @usage API.DestroyTrebuchetConstructionSite("trebuchetSite1");
+--
 function API.DestroyTrebuchetConstructionSite(_Name)
     if GUI then
         API.Bridge("API.DestroyTrebuchetConstructionSite('" .._Name.. "')");
@@ -84,6 +87,8 @@ DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
 -- @param[type=string] _Name Skriptname der Trebuchet-Baustelle
 -- @return[type=number] EntityID des Trebuchet
 -- @within Anwenderfunktionen
+--
+-- @usage local ID = API.GetTrebuchetByTrebuchetConstructionSite("trebuchetSite1");
 --
 function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
     if GUI then
@@ -106,6 +111,8 @@ GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
 -- @return[type=number] EntityID des angeforderten Wagens
 -- @within Anwenderfunktionen
 --
+-- @usage local ID = API.GetReturningCartByTrebuchetConstructionSite("trebuchetSite1");
+--
 function API.GetReturningCartByTrebuchetConstructionSite(_Name)
     if GUI then
         API.Fatal("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
@@ -126,6 +133,8 @@ GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
 -- @param[type=string] _Name Skriptname der Trebuchet-Baustelle
 -- @return[type=number] EntityID des angeforderten Wagens
 -- @within Anwenderfunktionen
+--
+-- @usage local ID = API.GetConstructionCartByTrebuchetConstructionSite("trebuchetSite1");
 --
 function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
     if GUI then

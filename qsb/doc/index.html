@@ -1807,6 +1807,118 @@ function Core:IdentifyHistoryEdition()
     DestroyEntity(EntityID);
 end
 
+-- Scripting Values ------------------------------------------------------------
+
+---
+-- Bestimmt das Modul b der Zahl a.
+--
+-- @param[type=number] a Zahl
+-- @param[type=number] b Modul
+-- @return[type=number] qmod der Zahl
+-- @within Internal
+-- @local
+--
+function Core:qmod(a, b)
+    return a - math.floor(a/b)*b
+end
+
+---
+-- Gibt den Integer als Bits zurück.
+--
+-- @param[type=number] num Bits
+-- @return[type=table] Table mit Bits
+-- @within Internal
+-- @local
+--
+function Core:ScriptingValueBitsInteger(num)
+    local t={}
+    while num&#x3E;0 do
+        rest=self:qmod(num, 2) table.insert(t,1,rest) num=(num-rest)/2
+    end
+    table.remove(t, 1)
+    return t
+end
+
+---
+-- Stellt eine Zahl als eine Folge von Bits in einer Table dar.
+--
+-- @param[type=number] num Integer
+-- @param[type=table]  t   Table
+-- @return[type=table] Table mit Bits
+-- @within Internal
+-- @local
+--
+function Core:ScriptingValueBitsFraction(num, t)
+    for i = 1, 48 do
+        num = num * 2
+        if(num &#x3E;= 1) then table.insert(t, 1); num = num - 1 else table.insert(t, 0) end
+        if(num == 0) then return t end
+    end
+    return t
+end
+
+---
+-- Konvertiert eine Ganzzahl in eine Dezimalzahl.
+--
+-- @param[type=number] num Integer
+-- @return[type=number] Integer als Float
+-- @within Internal
+-- @local
+--
+function Core:ScriptingValueIntegerToFloat(num)
+    if(num == 0) then return 0 end
+    local sign = 1
+    if(num &#x3C; 0) then num = 2147483648 + num; sign = -1 end
+    local frac = self:qmod(num, 8388608)
+    local headPart = (num-frac)/8388608
+    local expNoSign = self:qmod(headPart, 256)
+    local exp = expNoSign-127
+    local fraction = 1
+    local fp = 0.5
+    local check = 4194304
+    for i = 23, 0, -1 do
+        if(frac - check) &#x3E; 0 then fraction = fraction + fp; frac = frac - check end
+        check = check / 2; fp = fp / 2
+    end
+    return fraction * math.pow(2, exp) * sign
+end
+
+---
+-- Konvertiert eine Dezimalzahl in eine Ganzzahl.
+--
+-- @param[type=number] fval Float
+-- @return[type=number] Float als Integer
+-- @within Internal
+-- @local
+--
+function Core:ScriptingValueFloatToInteger(fval)
+    if(fval == 0) then return 0 end
+    local signed = false
+    if(fval &#x3C; 0) then signed = true; fval = fval * -1 end
+    local outval = 0;
+    local bits
+    local exp = 0
+    if fval &#x3E;= 1 then
+        local intPart = math.floor(fval); local fracPart = fval - intPart;
+        bits = self:ScriptingValueBitsInteger(intPart); exp = table.getn(bits); self:ScriptingValueBitsFraction(fracPart, bits)
+    else
+        bits = {}; self:ScriptingValueBitsFraction(fval, bits)
+        while(bits[1] == 0) do exp = exp - 1; table.remove(bits, 1) end
+        exp = exp - 1
+        table.remove(bits, 1)
+    end
+    local bitVal = 4194304; local start = 1
+    for bpos = start, 23 do
+        local bit = bits[bpos]
+        if(not bit) then break; end
+        if(bit == 1) then outval = outval + bitVal end
+        bitVal = bitVal / 2
+    end
+    outval = outval + (exp+127)*8388608
+    if(signed) then outval = outval - 2147483648 end
+    return outval;
+end
+
 -- Jobs ------------------------------------------------------------------------
 
 -- Dieser Job ermittelt automatisch, ob eine Sekunde reale Zeit vergangen ist
@@ -16699,7 +16811,7 @@ function QSB.EntityProperty:EntitySize(_Scale)
     if _Scale then
         local EntityID = GetID(self.m_EntityName);
         if EntityID &#x3E; 0 then
-            Logic.SetEntityScriptingValue(EntityID, SV, self:Float2Int(_Scale));
+            Logic.SetEntityScriptingValue(EntityID, SV, Core:ScriptingValueFloatToInteger(_Scale));
             if Logic.IsSettler(EntityID) == 1 then
                 Logic.SetSpeedFactor(EntityID, _Scale);
             end
@@ -17150,119 +17262,7 @@ function QSB.EntityProperty:GetValueAsFloat(_index)
     if EntityID == 0 then
         return 0.0;
     end
-    return self:Int2Float(Logic.GetEntityScriptingValue(EntityID,_index));
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Bestimmt das Modul b der Zahl a.
---
--- @param[type=number] a Zahl
--- @param[type=number] b Modul
--- @return[type=number] qmod der Zahl
--- @within QSB.EntityProperty
--- @local
---
-function QSB.EntityProperty:qmod(a, b)
-    return a - math.floor(a/b)*b
-end
-
----
--- Konvertiert eine Ganzzahl in eine Dezimalzahl.
---
--- @param[type=number] num Integer
--- @return[type=number] Integer als Float
--- @within QSB.EntityProperty
--- @local
---
-function QSB.EntityProperty:Int2Float(num)
-    if(num == 0) then return 0 end
-    local sign = 1
-    if(num &#x3C; 0) then num = 2147483648 + num; sign = -1 end
-    local frac = self:qmod(num, 8388608)
-    local headPart = (num-frac)/8388608
-    local expNoSign = self:qmod(headPart, 256)
-    local exp = expNoSign-127
-    local fraction = 1
-    local fp = 0.5
-    local check = 4194304
-    for i = 23, 0, -1 do
-        if(frac - check) &#x3E; 0 then fraction = fraction + fp; frac = frac - check end
-        check = check / 2; fp = fp / 2
-    end
-    return fraction * math.pow(2, exp) * sign
-end
-
----
--- Gibt den Integer als Bits zurück.
---
--- @param[type=number] num Bits
--- @return[type=table] Table mit Bits
--- @within QSB.EntityProperty
--- @local
---
-function QSB.EntityProperty:bitsInt(num)
-    local t={}
-    while num&#x3E;0 do
-        rest=self:qmod(num, 2) table.insert(t,1,rest) num=(num-rest)/2
-    end
-    table.remove(t, 1)
-    return t
-end
-
----
--- Stellt eine Zahl als eine Folge von Bits in einer Table dar.
---
--- @param[type=number] num Integer
--- @param[type=table]  t   Table
--- @return[type=table] Table mit Bits
--- @within QSB.EntityProperty
--- @local
---
-function QSB.EntityProperty:bitsFrac(num, t)
-    for i = 1, 48 do
-        num = num * 2
-        if(num &#x3E;= 1) then table.insert(t, 1); num = num - 1 else table.insert(t, 0) end
-        if(num == 0) then return t end
-    end
-    return t
-end
-
----
--- Konvertiert eine Dezimalzahl in eine Ganzzahl.
---
--- @param[type=number] fval Float
--- @return[type=number] Float als Integer
--- @within QSB.EntityProperty
--- @local
---
-function QSB.EntityProperty:Float2Int(fval)
-    if(fval == 0) then return 0 end
-    local signed = false
-    if(fval &#x3C; 0) then signed = true; fval = fval * -1 end
-    local outval = 0;
-    local bits
-    local exp = 0
-    if fval &#x3E;= 1 then
-        local intPart = math.floor(fval); local fracPart = fval - intPart;
-        bits = self:bitsInt(intPart); exp = table.getn(bits); self:bitsFrac(fracPart, bits)
-    else
-        bits = {}; self:bitsFrac(fval, bits)
-        while(bits[1] == 0) do exp = exp - 1; table.remove(bits, 1) end
-        exp = exp - 1
-        table.remove(bits, 1)
-    end
-    local bitVal = 4194304; local start = 1
-    for bpos = start, 23 do
-        local bit = bits[bpos]
-        if(not bit) then break; end
-        if(bit == 1) then outval = outval + bitVal end
-        bitVal = bitVal / 2
-    end
-    outval = outval + (exp+127)*8388608
-    if(signed) then outval = outval - 2147483648 end
-    return outval;
+    return Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(EntityID,_index));
 end
 
 -- -------------------------------------------------------------------------- --
@@ -24765,9 +24765,9 @@ function QSB.NonPlayerCharacter:RotateActors()
     for k, v in pairs(PlayerKnights) do
         -- Alle Helden stoppen, die sich zu NPC bewegen
         local SV = (QSB.HistoryEdition and 17) or 19;
-        local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
+        local x1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
         local SV = (QSB.HistoryEdition and 18) or 20;
-        local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
+        local y1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
         local x2, y2 = Logic.EntityGetPos(GetID(self.m_NpcName));
         if x1 == math.floor(x2) and y1 == math.floor(y2) then
             local x, y, z = Logic.EntityGetPos(v);
@@ -25010,7 +25010,7 @@ function BundleNonPlayerCharacter.Global:Install()
         else
             if data[1] == -65565 then
                 if not IsExisting(data[3]) then
-                    API.Fatal(data[3].. " is dead! :(");
+                    API.Fatal(tostring(data[3]).. " is dead! :(");
                     objective.Completed = false;
                 else
                     if not data[4].NpcInstance then
@@ -25063,37 +25063,6 @@ function BundleNonPlayerCharacter.Global:GetControllingPlayer()
 end
 
 ---
--- Konvertiert eine Ganzzahl in eine Gleitkommazahl.
--- @param[type=number] num Zahl zum Konvertieren
--- @return[type=number] Ganzzahl
--- @within Internal
--- @local
---
-function BundleNonPlayerCharacter.Global:IntegerToFloat(num)
-    if(num == 0) then 
-        return 0;
-    end
-    local sign = 1
-    if(num &#x3C; 0) then 
-        num = 2147483648 + num; sign = -1;
-    end
-    local frac = (num - math.floor(num/8388608)*8388608);
-    local headPart = (num-frac)/8388608
-    local expNoSign = (headPart - math.floor(headPart/256)*256);
-    local exp = expNoSign-127
-    local fraction = 1
-    local fp = 0.5
-    local check = 4194304
-    for i = 23, 0, -1 do
-        if(frac - check) &#x3E; 0 then
-            fraction = fraction + fp; frac = frac - check;
-        end
-        check = check / 2; fp = fp / 2
-    end
-    return fraction * math.pow(2, exp) * sign
-end
-
----
 -- Kontrolliert die "Glitter Marker" der NPCs.
 --
 -- @within Internal
@@ -25127,9 +25096,9 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
                 if v and v.m_TalkedTo == nil and v.m_Distance &#x3E;= 350 then
                     local SV = (QSB.HistoryEdition and 17) or 19;
-                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
+                    local x1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
                     local SV = (QSB.HistoryEdition and 18) or 20;
-                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
+                    local y1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
                     local x2, y2 = Logic.EntityGetPos(GetID(k));
                     if x1 == math.floor(x2) and y1 == math.floor(y2) then
                         if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then
@@ -28715,316 +28684,6 @@ Core:RegisterBundle("BundleSymfoniaBehaviors");
 </div><div class='docContainer'>
     <div class='docLinkContainer'>
         <div>
-            <a class='docLinkExpander' href="html/bundlethirdpersoncamera.lua.html">
-            <div class='doclink'>
-                <div>BundleThirdPersonCamera</div>
-            </div>
-            </a>
-        </div>
-        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
--- ########################################################################## --
--- #  Symfonia BundleThirdPersonCamera                                      # --
--- ########################################################################## --
--- -------------------------------------------------------------------------- --
-
----
--- Dieses Bundle bietet einen Kameramodus an, mit dem ein Entity aus der
--- Schulterperspektive verfolgt werden kann.
---
--- &#x3C;a href="#API.ThirdPersonActivate"&#x3E;Schulterblick aktivieren&#x3C;/a&#x3E;&#x3C;br&#x3E;
---
--- @within Modulbeschreibung
--- @set sort=true
---
-BundleThirdPersonCamera = {};
-
-API = API or {};
-QSB = QSB or {};
-
--- -------------------------------------------------------------------------- --
--- User-Space                                                                 --
--- -------------------------------------------------------------------------- --
-
----
--- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
--- Held kann 0 sein, dann wird entweder der letzte Held verwendet
--- oder über den GUI-Spieler ermittelt.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; HeroCameraActivate&#x3C;/p&#x3E;
---
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
--- @within Anwenderfunktionen
---
-function API.ThirdPersonActivate(_Hero, _MaxZoom)
-    if GUI then
-        local Target = (type(_Hero) == "string" and "'".._Hero.."'") or _Hero;
-        API.Bridge("API.ThirdPersonActivate(".. Target ..", ".. _MaxZoom ..")");
-        return;
-    end
-    return BundleThirdPersonCamera.Global:ThirdPersonActivate(_Hero, _MaxZoom);
-end
-HeroCameraActivate = API.ThirdPersonActivate;
-
----
--- Deaktiviert die Heldenkamera.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; HeroCameraDeactivate&#x3C;/p&#x3E;
---
--- @within Anwenderfunktionen
---
-function API.ThirdPersonDeactivate()
-    if GUI then
-        API.Bridge("API.ThirdPersonDeactivate()");
-        return;
-    end
-    return BundleThirdPersonCamera.Global:ThirdPersonDeactivate();
-end
-HeroCameraDeactivate = API.ThirdPersonDeactivate;
-
----
--- Prüft, ob die Heldenkamera aktiv ist.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; HeroCameraIsRuning&#x3C;/p&#x3E;
---
--- @return [boolean] Kamera aktiv
--- @within Anwenderfunktionen
---
-function API.ThirdPersonIsRuning()
-    if not GUI then
-        return BundleThirdPersonCamera.Global:ThirdPersonIsRuning();
-    else
-        return BundleThirdPersonCamera.Local:ThirdPersonIsRuning();
-    end
-end
-HeroCameraIsRuning = API.ThirdPersonIsRuning;
-
--- -------------------------------------------------------------------------- --
--- Application-Space                                                          --
--- -------------------------------------------------------------------------- --
-
-BundleThirdPersonCamera = {
-    Global = {
-        Data = {
-            ThirdPersonIsActive = false,
-        }
-    },
-    Local = {
-        Data = {
-            ThirdPersonIsActive = false,
-            ThirdPersonLastHero = nil,
-            ThirdPersonLastZoom = nil,
-        }
-    },
-}
-
--- Global Script ---------------------------------------------------------------
-
----
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Global:Install()
-    API.AddSaveGameAction(BundleThirdPersonCamera.Global.OnSaveGameLoaded);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
--- Held kann 0 sein, dann wird entweder der letzte Held verwendet
--- oder über den GUI-Spieler ermittelt.
---
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Global:ThirdPersonActivate(_Hero, _MaxZoom)
-    if BriefingSystem then
-        BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing();
-    end
-
-    local Hero = GetID(_Hero);
-    BundleThirdPersonCamera.Global.Data.ThirdPersonIsActive = true;
-    Logic.ExecuteInLuaLocalState([[
-        BundleThirdPersonCamera.Local:ThirdPersonActivate(]]..tostring(Hero)..[[, ]].. tostring(_MaxZoom) ..[[);
-    ]]);
-end
-
----
--- Deaktiviert die Heldenkamera.
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Global:ThirdPersonDeactivate()
-    BundleThirdPersonCamera.Global.Data.ThirdPersonIsActive = false;
-    Logic.ExecuteInLuaLocalState([[
-        BundleThirdPersonCamera.Local:ThirdPersonDeactivate();
-    ]]);
-end
-
----
--- Prüft, ob die Heldenkamera aktiv ist.
---
--- @return [boolean] Kamera aktiv
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Global:ThirdPersonIsRuning()
-    return self.Data.ThirdPersonIsActive;
-end
-
----
--- Überschreibt StartBriefing und EndBriefing des Briefing System,
--- wenn es vorhanden ist.
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing()
-    if BriefingSystem then
-        if not BriefingSystem.StartBriefing_Orig_HeroCamera then
-            BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
-            BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
-                if BundleThirdPersonCamera.Global:ThirdPersonIsRuning() then
-                    BundleThirdPersonCamera.Global:ThirdPersonDeactivate();
-                    BundleThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode = true;
-                end
-                BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
-            end
-            StartBriefing = BriefingSystem.StartBriefing;
-        end
-
-        if not BriefingSystem.EndBriefing_Orig_HeroCamera then
-            BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
-            BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
-                BriefingSystem.EndBriefing_Orig_HeroCamera();
-                if BundleThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode then
-                    BundleThirdPersonCamera.Global:ThirdPersonActivate(0);
-                    BundleThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode = false;
-                end
-            end
-        end
-    end
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Stellt nicht-persistente Änderungen nach dem laden wieder her.
---
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Global.OnSaveGameLoaded()
-    
-end
-
--- Local Script ----------------------------------------------------------------
-
----
--- Aktiviert die Heldenkamera und setzt den verfolgten Helden. Der
--- Held kann 0 sein, dann wird entweder der letzte Held verwendet
--- oder über den GUI-Spieler ermittelt.
---
--- @param _Hero [string|number] Skriptname/Entity-ID des Helden
--- @param _MaxZoom [number] Maximaler Zoomfaktor
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Local:ThirdPersonActivate(_Hero, _MaxZoom)
-    _Hero = (_Hero ~= 0 and _Hero) or self.Data.ThirdPersonLastHero or Logic.GetKnightID(GUI.GetPlayerID());
-    _MaxZoom = _MaxZoom or self.Data.ThirdPersonLastZoom or 0.5;
-    if not _Hero then
-        return;
-    end
-
-    if not GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera then
-        self:ThirdPersonOverwriteGetBorderScrollFactor();
-    end
-
-    self.Data.ThirdPersonLastHero = _Hero;
-    self.Data.ThirdPersonLastZoom = _MaxZoom;
-    self.Data.ThirdPersonIsActive = true;
-
-    local Orientation = Logic.GetEntityOrientation(_Hero);
-    Camera.RTS_FollowEntity(_Hero);
-    Camera.RTS_SetRotationAngle(Orientation-90);
-    Camera.RTS_SetZoomFactor(_MaxZoom);
-    Camera.RTS_SetZoomFactorMax(_MaxZoom + 0.0001);
-end
-
----
--- Deaktiviert die Heldenkamera.
---
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Local:ThirdPersonDeactivate()
-    self.Data.ThirdPersonIsActive = false;
-    Camera.RTS_SetZoomFactorMax(0.5);
-    Camera.RTS_SetZoomFactor(0.5);
-    Camera.RTS_FollowEntity(0);
-end
-
----
--- Prüft, ob die Heldenkamera aktiv ist.
---
--- @return [boolean] Kamera aktiv
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Local:ThirdPersonIsRuning()
-    return self.Data.ThirdPersonIsActive;
-end
-
----
--- Überschreibt GameCallback_GetBorderScrollFactor und wandelt den
--- Bildlauf am Bildschirmrand in Bildrotation um. Dabei wird die
--- Kamera um links oder rechts gedreht, abhänig von der Position
--- der Mouse.
---
--- @within Internal
--- @local
---
-function BundleThirdPersonCamera.Local:ThirdPersonOverwriteGetBorderScrollFactor()
-    GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera = GameCallback_Camera_GetBorderscrollFactor
-    GameCallback_Camera_GetBorderscrollFactor = function()
-        if not BundleThirdPersonCamera.Local.Data.ThirdPersonIsActive then
-            return GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera();
-        end
-
-        local CameraRotation = Camera.RTS_GetRotationAngle();
-        local xS, yS = GUI.GetScreenSize();
-        local xM, yM = GUI.GetMousePosition();
-        local xR = xM / xS;
-
-        if xR &#x3C;= 0.02 then
-            CameraRotation = CameraRotation + 0.3;
-        elseif xR &#x3E;= 0.98 then
-            CameraRotation = CameraRotation - 0.3;
-        else
-            return 0;
-        end
-        if CameraRotation &#x3E;= 360 then
-            CameraRotation = 0;
-        end
-        Camera.RTS_SetRotationAngle(CameraRotation);
-        return 0;
-    end
-end
-
--- -------------------------------------------------------------------------- --
-
-Core:RegisterBundle("BundleThirdPersonCamera");
-
-</code></div>
-    </div>
-</div><div class='docContainer'>
-    <div class='docLinkContainer'>
-        <div>
             <a class='docLinkExpander' href="html/bundletimeline.lua.html">
             <div class='doclink'>
                 <div>BundleTimeLine</div>
@@ -29356,559 +29015,6 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleTimeLine");
-
-</code></div>
-    </div>
-</div><div class='docContainer'>
-    <div class='docLinkContainer'>
-        <div>
-            <a class='docLinkExpander' href="html/bundletradinganalysis.lua.html">
-            <div class='doclink'>
-                <div>BundleTradingAnalysis</div>
-            </div>
-            </a>
-        </div>
-        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
--- ########################################################################## --
--- #  Symfonia BundleTradingAnalysis                                        # --
--- ########################################################################## --
--- -------------------------------------------------------------------------- --
-
----
--- Dieses Bundle bietet einige Funktionen zum untersuchen und
--- zur Manipulation von Handelsangeboten. Die bekannten Funktionen, wie z.B.
--- AddOffer, werden erweitert, sodass sie Angebote für einen Spieler mit einer
--- anderen ID als 1 erstellen können. Ein kann Händler nicht mehr
--- mehrere Angebote des gleichen Typs anbieten. Außerdem werden einige
--- Preise und Erneuerungsraten hinzugefügt.
---
--- Das wichtigste auf einen Blick:
--- &#x3C;ul&#x3E;
--- &#x3C;li&#x3E;&#x3C;a href="#API.GetOfferCount"&#x3E;Angebote zählen&#x3C;/a&#x3E;&#x3C;/li&#x3E;
--- &#x3C;li&#x3E;&#x3C;a href="#API.IsGoodOrUnitOffered"&#x3E;Angebote prüfen&#x3C;/a&#x3E;&#x3C;/li&#x3E;
--- &#x3C;li&#x3E;&#x3C;a href="#API.RemoveTradeOffer"&#x3E;Angebote einzeln löschen&#x3C;/a&#x3E;&#x3C;/li&#x3E;
--- &#x3C;li&#x3E;&#x3C;a href="#API.ModifyTradeOffer"&#x3E;Angebote modifizieren&#x3C;/a&#x3E;&#x3C;/li&#x3E;
--- &#x3C;/ul&#x3E;
---
--- @within Modulbeschreibung
--- @set sort=true
---
-BundleTradingAnalysis = {};
-
-API = API or {};
-QSB = QSB or {};
-
-QSB.TraderTypes = {
-    GoodTrader        = 0,
-    MercenaryTrader   = 1,
-    EntertainerTrader = 2,
-    Unknown           = 3,
-};
-
--- -------------------------------------------------------------------------- --
--- User-Space                                                                 --
--- -------------------------------------------------------------------------- --
-
----
--- Gibt die Handelsinformationen des Spielers aus. In dem Objekt stehen
--- ID des Spielers, ID des Lagerhaus, Menge an Angeboten insgesamt und
--- alle Angebote der Händlertypen.
---
--- @param[type=number] _PlayerID Player ID
--- @return[type=table] Angebotsinformationen
--- @within Anwenderfunktionen
---
--- @usage local Info = API.GetOfferInformation(2);
---
--- -- Info enthält:
--- -- Info = {
--- --      Player = 2,
--- --      Storehouse = 26796.
--- --      OfferCount = 2,
--- --      {
--- --          Händler-ID, Angebots-ID, Angebotstyp, Wagenladung, Angebotsmenge
--- --          {0, 0, Goods.G_Gems, 9, 2},
--- --          {0, 1, Goods.G_Milk, 9, 4},
--- --      },
--- -- };
---
-function API.GetOfferInformation(_PlayerID)
-    if GUI then
-        API.Fatal("Can not execute API.GetOfferInformation in local script!");
-        return;
-    end
-    return BundleTradingAnalysis.Global:GetStorehouseInformation(_PlayerID);
-end
-
----
--- Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück. Wenn
--- der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
---
--- @param[type=number] _PlayerID Player ID
--- @return[type=number] Anzahl angebote
--- @within Anwenderfunktionen
---
--- @usage -- Angebote von Spieler 5 zählen
--- local Count = API.GetOfferCount(5);
---
-function API.GetOfferCount(_PlayerID)
-    if GUI then
-        API.Fatal("Can not execute API.GetOfferCount in local script!");
-        return;
-    end
-    return BundleTradingAnalysis.Global:GetOfferCount(_PlayerID);
-end
-
----
--- Gibt zurück, ob das Angebot vom angegebenen Spieler im Lagerhaus zum
--- Verkauf angeboten wird.
---
--- @param[type=number] _PlayerID Player ID
--- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
--- @return[type=boolean] Ware wird angeboten
--- @within Anwenderfunktionen
---
--- @usage -- Wird die Ware angeboten?
--- if API.IsGoodOrUnitOffered(4, Goods.G_Bread) then
---     API.Note("Brot wird von Spieler 4 angeboten.");
--- end
---
-function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
-    if GUI then
-        API.Fatal("Can not execute API.IsGoodOrUnitOffered in local script!");
-        return;
-    end
-    local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
-    return OfferID ~= 1 and TraderID ~= 1;
-end
-
----
--- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden
--- ist. Es wird immer nur das erste Angebot des Typs entfernt.
---
--- @param[type=number] _PlayerID Player ID
--- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
--- @within Anwenderfunktionen
---
--- @usage -- Keinen Käse mehr verkaufen
--- API.RemoveTradeOffer(7, Goods.G_Cheese);
---
-function API.RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
-    if GUI then
-        API.Bridge("API.RemoveTradeOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ")");
-        return;
-    end
-    return BundleTradingAnalysis.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType);
-end
-
----
--- Ändert die aktuelle Menge des Angebots im Händelrgebäude.
---
--- Es kann ein beliebiger positiver Wert gesetzt werden. Es gibt keine
--- Beschränkungen.
---
--- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Wird eine höherer Wert gesetzt, als das ursprüngliche
--- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
---
--- @param[type=number] _PlayerID Player ID
--- @param[type=number] _GoodOrEntityType ID des Händlers im Gebäude
--- @param[type=number] _NewAmount Neue Menge an Angeboten
--- @within Anwenderfunktionen
---
--- @usage -- Angebote voll auffüllen
--- API.ModifyTradeOffer(7, Goods.G_Cheese, -1);
--- API.ModifyTradeOffer(7, Goods.U_MilitarySword);
--- -- 2 Angebote auffüllen
--- API.ModifyTradeOffer(7, Goods.G_Dye, 2);
---
-function API.ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
-    if GUI then
-        API.Bridge("API.ModifyTradeOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ", " .._NewAmount.. ")");
-        return;
-    end
-    return BundleTradingAnalysis.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount);
-end
-
--- -------------------------------------------------------------------------- --
--- Application-Space                                                          --
--- -------------------------------------------------------------------------- --
-
-BundleTradingAnalysis = {
-    Global = {
-        Data = {
-            PlayerOffersAmount = {
-                [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {}, [6] = {}, [7] = {}, [8] = {},
-            };
-        },
-    },
-};
-
--- Global Script ---------------------------------------------------------------
-
----
--- Initialisiert das Bundle im globalen Skript.
--- @within Internal
--- @local
---
-function BundleTradingAnalysis.Global:Install()
-    self.OverwriteOfferFunctions();
-    self.OverwriteBasePricesAndRefreshRates();
-end
-
----
--- Überschreibt die Funktionen für Standardangebote.
---
--- @within Internal
--- @local
---
-function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
-    ---
-    -- Erzeugt ein Handelsangebot für Waren und gibt die ID zurück.
-    --
-    -- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
-    -- angeboten werden.
-    --
-    -- @param[type=number] _Merchant  Handelsgebäude
-    -- @param[type=number] _NumberOfOffers Anzahl an Angeboten
-    -- @param[type=number] _GoodType Warentyp
-    -- @param[type=number] _RefreshRate Erneuerungsrate
-    -- @param[type=number] _optionalPlayersPlayerID Optionale Spieler-ID
-    -- @return[type=number] Offer ID
-    -- @within Originalfunktionen
-    --
-    AddOffer = function(_Merchant, _NumberOfOffers, _GoodType, _RefreshRate, _optionalPlayersPlayerID)
-        local MerchantID = GetID(_Merchant);
-        if type(_GoodType) == "string" then
-            _GoodType = Goods[_GoodType];
-        else
-            _GoodType = _GoodType;
-        end
-
-        local PlayerID = Logic.EntityGetPlayer(MerchantID);
-        local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _GoodType);
-        if OfferID ~= -1 and TraderID ~= -1 then
-            API.Warn("Good offer for good type " .._GoodType.. " already exists for player " ..PlayerID.. "!");
-            return;
-        end
-
-
-        AddGoodToTradeBlackList(PlayerID, _GoodType);
-        local MarketerType = Entities.U_Marketer;
-        if _GoodType == Goods.G_Medicine then
-            MarketerType = Entities.U_Medicus;
-        end
-        if _RefreshRate == nil then
-            _RefreshRate = MerchantSystem.RefreshRates[_GoodType];
-            if _RefreshRate == nil then
-                _RefreshRate = 0;
-            end
-        end
-        if _optionalPlayersPlayerID == nil then
-            _optionalPlayersPlayerID = 1;
-        end
-        local offerAmount = 9;
-
-        BundleTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_GoodType] = _NumberOfOffers;
-        return Logic.AddGoodTraderOffer(MerchantID,_NumberOfOffers,Goods.G_Gold,0,_GoodType,offerAmount,_optionalPlayersPlayerID,_RefreshRate,MarketerType,Entities.U_ResourceMerchant);
-    end
-
-    ---
-    -- Erzeugt ein Handelsangebot für Söldner und gibt die ID zurück.
-    --
-    -- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
-    -- angeboten werden.
-    --
-    -- @param[type=number] _Mercenary Handelsgebäude
-    -- @param[type=number] _Amount Anzahl an Angeboten
-    -- @param[type=number] _Type Soldatentyp
-    -- @param[type=number] _RefreshRate Erneuerungsrate
-    -- @param[type=number] _optionalPlayersPlayerID Optionale Spieler-ID
-    -- @return[type=number] Offer ID
-    -- @within Originalfunktionen
-    --
-    AddMercenaryOffer = function(_Mercenary, _Amount, _Type, _RefreshRate, _optionalPlayersPlayerID)
-        local MercenaryID = GetID(_Mercenary);
-        if _Type == nil then
-            _Type = Entities.U_MilitaryBandit_Melee_ME;
-        end
-        if _RefreshRate == nil then
-            _RefreshRate = MerchantSystem.RefreshRates[_Type];
-            if _RefreshRate == nil then
-                _RefreshRate = 0;
-            end
-        end
-
-        local PlayerID = Logic.EntityGetPlayer(MercenaryID);
-        local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _Type);
-        if OfferID ~= -1 and TraderID ~= -1 then
-            API.Warn("Mercenary offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
-            return;
-        end
-
-        local amount = 3;
-        local typeName = Logic.GetEntityTypeName(_Type);
-        if string.find(typeName,"MilitaryBow") or string.find(typeName,"MilitarySword") then
-            amount = 6;
-        elseif string.find(typeName,"Cart") then
-            amount = 0;
-        end
-        if _optionalPlayersPlayerID == nil then
-            _optionalPlayersPlayerID = 1;
-        end
-
-        BundleTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_Type] = _Amount;
-        return Logic.AddMercenaryTraderOffer(MercenaryID, _Amount, Goods.G_Gold, 3, _Type ,amount,_optionalPlayersPlayerID,_RefreshRate);
-    end
-
-    ---
-    -- Erzeugt ein Handelsangebot für Entertainer und gibt die
-    -- ID zurück.
-    --
-    -- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Jeder Angebotstyp kann nur 1 Mal pro Lagerhaus
-    -- angeboten werden.
-    --
-    -- @param[type=number] _Merchant Handelsgebäude
-    -- @param[type=number] _EntertainerType Typ des Entertainer
-    -- @param[type=number] _optionalPlayersPlayerID Optionale Spieler-ID
-    -- @return[type=number] Offer ID
-    -- @within Originalfunktionen
-    --
-    AddEntertainerOffer = function(_Merchant, _EntertainerType, _optionalPlayersPlayerID)
-        local MerchantID = GetID(_Merchant);
-        local NumberOfOffers = 1;
-
-        local PlayerID = Logic.EntityGetPlayer(MerchantID);
-        local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _EntertainerType);
-        if OfferID ~= -1 and TraderID ~= -1 then
-            API.Warn("Entertainer offer for type " .._EntertainerType.. " already exists for player " ..PlayerID.. "!");
-            return;
-        end
-
-        if _EntertainerType == nil then
-            _EntertainerType = Entities.U_Entertainer_NA_FireEater;
-        end
-        if _optionalPlayersPlayerID == nil then
-            _optionalPlayersPlayerID = 1;
-        end
-
-        BundleTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_EntertainerType] = 1;
-        return Logic.AddEntertainerTraderOffer(MerchantID,NumberOfOffers,Goods.G_Gold,0,_EntertainerType, _optionalPlayersPlayerID,0);
-    end
-end
-
----
--- Fügt fehlende Einträge für Militäreinheiten bei den Basispreisen
--- und Erneuerungsraten hinzu, damit diese gehandelt werden können.
--- @within Internal
--- @local
---
-function BundleTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates()
-    MerchantSystem.BasePrices[Entities.U_CatapultCart] = MerchantSystem.BasePrices[Entities.U_CatapultCart] or 1000;
-    MerchantSystem.BasePrices[Entities.U_BatteringRamCart] = MerchantSystem.BasePrices[Entities.U_BatteringRamCart] or 450;
-    MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] = MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] or 600;
-    MerchantSystem.BasePrices[Entities.U_AmmunitionCart] = MerchantSystem.BasePrices[Entities.U_AmmunitionCart] or 180;
-    MerchantSystem.BasePrices[Entities.U_MilitarySword_RedPrince] = MerchantSystem.BasePrices[Entities.U_MilitarySword_RedPrince] or 150;
-    MerchantSystem.BasePrices[Entities.U_MilitarySword] = MerchantSystem.BasePrices[Entities.U_MilitarySword] or 150;
-    MerchantSystem.BasePrices[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.BasePrices[Entities.U_MilitaryBow_RedPrince] or 220;
-    MerchantSystem.BasePrices[Entities.U_MilitaryBow] = MerchantSystem.BasePrices[Entities.U_MilitaryBow] or 220;
-
-    MerchantSystem.RefreshRates[Entities.U_CatapultCart] = MerchantSystem.RefreshRates[Entities.U_CatapultCart] or 270;
-    MerchantSystem.RefreshRates[Entities.U_BatteringRamCart] = MerchantSystem.RefreshRates[Entities.U_BatteringRamCart] or 190;
-    MerchantSystem.RefreshRates[Entities.U_SiegeTowerCart] = MerchantSystem.RefreshRates[Entities.U_SiegeTowerCart] or 220;
-    MerchantSystem.RefreshRates[Entities.U_AmmunitionCart] = MerchantSystem.RefreshRates[Entities.U_AmmunitionCart] or 150;
-    MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.RefreshRates[Entities.U_MilitarySword_RedPrince] or 150;
-    MerchantSystem.RefreshRates[Entities.U_MilitarySword] = MerchantSystem.RefreshRates[Entities.U_MilitarySword] or 150;
-    MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow_RedPrince] or 150;
-    MerchantSystem.RefreshRates[Entities.U_MilitaryBow] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow] or 150;
-
-    if g_GameExtraNo &#x3E;= 1 then
-        MerchantSystem.BasePrices[Entities.U_MilitaryBow_Khana] = MerchantSystem.BasePrices[Entities.U_MilitaryBow_Khana] or 220;
-        MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] = MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] or 150;
-        MerchantSystem.BasePrices[Entities.U_MilitarySword_Khana] = MerchantSystem.BasePrices[Entities.U_MilitarySword_Khana] or 150;
-        MerchantSystem.RefreshRates[Entities.U_MilitaryBow_Khana] = MerchantSystem.RefreshRates[Entities.U_MilitarySword_Khana] or 150;
-    end
-end
-
----
--- Gibt die Handelsinformationen des Spielers aus. In dem Objekt stehen
--- ID des Spielers, ID des Lagerhaus, Menge an Angeboten insgesamt und
--- alle Angebote der Händlertypen.
---
--- @param[type=number] _PlayerID Player ID
--- @return[type=table] Angebotsinformationen
--- @within Internal
--- @local
---
--- @usage BundleTradingAnalysis.Global:GetStorehouseInformation(2);
---
--- -- Ausgabe:
--- -- Info = {
--- --      Player = 2,
--- --      Storehouse = 26796.
--- --      OfferCount = 2,
--- --      {
--- --          Händler-ID, Angebots-ID, Angebotstyp, Wagenladung, Angebotsmenge
--- --          {0, 0, Goods.G_Gems, 9, 2},
--- --          {0, 1, Goods.G_Milk, 9, 4},
--- --      },
--- -- }
---
-function BundleTradingAnalysis.Global:GetStorehouseInformation(_PlayerID)
-    local BuildingID = Logic.GetStoreHouse(_PlayerID);
-
-    local StorehouseData = {
-        Player      = _PlayerID,
-        Storehouse  = BuildingID,
-        OfferCount  = 0,
-        {},
-    };
-
-    local NumberOfMerchants = Logic.GetNumberOfMerchants(Logic.GetStoreHouse(2));
-    local AmountOfOffers = 0;
-
-    if BuildingID ~= 0 then
-        for Index = 0, NumberOfMerchants, 1 do
-            local Offers = {Logic.GetMerchantOfferIDs(BuildingID, Index, _PlayerID)};
-            for i= 1, #Offers, 1 do
-                local type, goodAmount, offerAmount, prices = 0, 0, 0, 0;
-                if Logic.IsGoodTrader(BuildingID, Index) then
-                    type, goodAmount, offerAmount, prices = Logic.GetGoodTraderOffer(BuildingID, Offers[i], _PlayerID);
-                    if type == Goods.G_Sheep or type == Goods.G_Cow then
-                        goodAmount = 5;
-                    end
-                elseif Logic.IsMercenaryTrader(BuildingID, Index) then
-                    type, goodAmount, offerAmount, prices = Logic.GetMercenaryOffer(BuildingID, Offers[i], _PlayerID);
-                elseif Logic.IsEntertainerTrader(BuildingID, Index) then
-                    type, goodAmount, offerAmount, prices = Logic.GetEntertainerTraderOffer(BuildingID, Offers[i], _PlayerID);
-                end
-
-                AmountOfOffers = AmountOfOffers +1;
-                local OfferData = {Index, Offers[i], type, goodAmount, offerAmount};
-                table.insert(StorehouseData[1], OfferData);
-            end
-        end
-    end
-
-    StorehouseData.OfferCount = AmountOfOffers;
-    return StorehouseData;
-end
-
----
--- Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück. Wenn
--- der Spieler kein Lagerhaus hat, wird 0 zurückgegeben.
---
--- @param[type=number] _PlayerID ID des Spielers
--- @return[type=number] Menge an Angeboten
--- @within Internal
--- @local
---
-function BundleTradingAnalysis.Global:GetOfferCount(_PlayerID)
-    local Offers = self:GetStorehouseInformation(_PlayerID);
-    if Info then
-        return Offers.OfferCount;
-    end
-    return 0;
-end
-
----
--- Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
--- den Spieler zurück. Es wird immer das erste Angebot zurückgegeben.
---
--- @param[type=number] _PlayerID Player ID
--- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
--- @return[type=number] Offer ID
--- @return[type=number] Trader ID
--- @return[type=number] Storehouse ID
--- @within Internal
--- @local
---
-function BundleTradingAnalysis.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType)
-    local Info = self:GetStorehouseInformation(_PlayerID);
-    if Info then
-        for j=1, #Info[1], 1 do
-            if Info[1][j][3] == _GoodOrEntityType then
-                return Info[1][j][2], Info[1][j][1], Info.Storehouse;
-            end
-        end
-    end
-    return -1, -1, -1;
-end
-
----
--- Gibt den Typ des Händlers mit der ID im Gebäude zurück.
---
--- @param[type=number] _BuildingID Building ID
--- @param[type=number] _TraderID Trader ID
--- @return[type=number] Händlertyp
--- @within Internal
--- @local
---
-function BundleTradingAnalysis.Global:GetTraderType(_BuildingID, _TraderID)
-    if Logic.IsGoodTrader(BuildingID, _TraderID) == true then
-        return QSB.TraderTypes.GoodTrader;
-    elseif Logic.IsMercenaryTrader(BuildingID, _TraderID) == true then
-        return QSB.TraderTypes.MercenaryTrader;
-    elseif Logic.IsEntertainerTrader(BuildingID, _TraderID) == true then
-        return QSB.TraderTypes.EntertainerTrader;
-    else
-        return QSB.TraderTypes.Unknown;
-    end
-end
-
----
--- Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden ist.
--- Es wird immer nur das erste Angebot des Typs entfernt.
---
--- @param[type=number] _PlayerID Player ID
--- @param[type=number] _GoodOrEntityType Warentyp oder Entitytyp
--- @within Internal
--- @local
---
-function BundleTradingAnalysis.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
-    local OfferID, TraderID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
-    if not IsExisting(BuildingID) then
-        return;
-    end
-    -- Wird benötigt, weil bei RemoveOffer die Trader-IDs vertauscht sind.
-    local MappedTraderID = (TraderID == 1 and 2) or (TraderID == 2 and 1) or 0;
-    Logic.RemoveOffer(BuildingID, MappedTraderID, OfferID);
-end
-
----
--- Ändert die aktuelle Menge des Angebots im Händelrgebäude.
---
--- Der eingetragene Wert darf die maximale Menge an Angeboten des Typs im
--- Lagerhaus nicht überschreiten.
---
--- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Wird eine höherer Wert gesetzt, als das ursprüngliche
--- Maximum, regenerieren sich die zusätzlichen Angebote nicht.
---
--- @param[type=number] _PlayerID	     Händlergebäude
--- @param[type=number] _GoodOrEntityType ID des Händlers im Gebäude
--- @param[type=number] _NewAmount        Neue Menge an Angeboten
--- @within Internal
--- @local
---
-function BundleTradingAnalysis.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
-    local OfferID, TraderID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
-    if not IsExisting(BuildingID) then
-        return;
-    end
-
-    -- Menge == -1 oder Menge == nil bedeutet Maximum
-    if _NewAmount == nil or _NewAmount == -1 then
-        _NewAmount = self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType];
-    end
-    -- Werte größer als das Maximum werden nicht erneuert!
-    if self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType] and self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType] &#x3C; _NewAmount then
-        _NewAmount = self.Data.PlayerOffersAmount[_PlayerID][_GoodOrEntityType];
-    end
-    Logic.ModifyTraderOffer(BuildingID, OfferID, _NewAmount, TraderID);
-end
-
--- -------------------------------------------------------------------------- --
-
-Core:RegisterBundle("BundleTradingAnalysis");
 
 </code></div>
     </div>
@@ -33037,58 +32143,288 @@ Core:RegisterBundle("AddOnCastleStore");
 </div><div class='docContainer'>
     <div class='docLinkContainer'>
         <div>
-            <a class='docLinkExpander' href="html/addoninteractiveobjecttemplates.lua.html">
+            <a class='docLinkExpander' href="html/addoninteractivechests.lua.html">
             <div class='doclink'>
-                <div>AddOnInteractiveObjectTemplates</div>
+                <div>AddOnInteractiveChests</div>
             </div>
             </a>
         </div>
         <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia AddOnInteractiveObjectTemplates                              # --
+-- #  Symfonia AddOnInteractiveChests                                       # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle bietet fertige Schablonen für interaktive Objekte. Mit diesen
--- Schablonen können komplexere interaktive Objekte einfach erstellt und durch
--- den Mapper genutzt werden.
---
--- &#x3C;p&#x3E;
--- &#x3C;b&#x3E;Interaktive Baustellen:&#x3C;/b&#x3E;&#x3C;br&#x3E;
--- Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei
--- ein Gebäude bauen zu lassen.
--- &#x3C;br&#x3E;Die Baustelle muss durch den Helden aktiviert
--- werden. Ein Siedler wird aus dem Lagerhaus kommen und das Gebäude bauen.
--- &#x3C;br&#x3E;&#x3C;a href="#API.CreateIOBuildingSite"&#x3E;Eine Baustelle anlegen&#x3C;/a&#x3E;
--- &#x3C;/p&#x3E;
--- &#x3C;p&#x3E;
--- &#x3C;b&#x3E;Interaktive Schatztruhen:&#x3C;/b&#x3E;&#x3C;br&#x3E;
 -- Es werden Schatztruhen mit zufälligem Inhalt erzeugt. Diese Truhen werden
 -- aktiviert und der Inhalt wird in einem Karren abtransportiert.
--- &#x3C;br&#x3E;&#x3C;a href="#API.CreateRandomChest"&#x3E;Eine Schatztruhe anlegen&#x3C;/a&#x3E;
--- &#x3C;/p&#x3E;
--- &#x3C;p&#x3E;
--- &#x3C;b&#x3E;Interaktive Minen:&#x3C;/b&#x3E;&#x3C;br&#x3E;
--- Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch
--- Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.
--- &#x3C;br&#x3E;Optional kann die Mine einstürzen, wenn sie erschöpft wurde.
--- &#x3C;br&#x3E;&#x3C;a href="#API.CreateIOMine"&#x3E;Eine Mine anlegen&#x3C;/a&#x3E;
--- &#x3C;/p&#x3E;
--- &#x3C;p&#x3E;
--- &#x3C;b&#x3E;Trebuchet-Baustellen:&#x3C;/b&#x3E;&#x3C;br&#x3E;
--- Der Spieler kann Trebuchet mieten. Das Trebuchet fährt als Karren vor,
--- wird aufgebaut und kann anschließend benutzt werden.&#x3C;br&#x3E; Das Trebuchet fährt
--- ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.&#x3C;br&#x3E;
--- Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
--- ankommt, wird die Baustelle wieder freigegeben.
--- &#x3C;br&#x3E;&#x3C;a href="#API.CreateTrebuchetConstructionSite"&#x3E;Eine Baustelle anlegen&#x3C;/a&#x3E;
--- &#x3C;/p&#x3E;
 --
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-AddOnInteractiveObjectTemplates = {};
+AddOnInteractiveChests = {};
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
+-- des angegebenen Typs.
+--
+-- Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
+-- und dem Maximalwert. Optional kann eine Funktion angegeben werden, die
+-- ausgeführt wird, wenn die Truhe geöffnet wird. Diese Funktion verhält sich
+-- wie das Callback eines interaktiven Objektes.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomChest&#x3C;/p&#x3E;
+--
+-- @param[type=string]   _Name Name der zu ersetzenden Script Entity
+-- @param[type=number]   _Good Warentyp
+-- @param[type=number]   _Min Mindestmenge
+-- @param[type=number]   _Max Maximalmenge
+-- @param[type=function] _Callback Callback-Funktion
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.CreateRandomChest("chest", Goods.G_Gems, 100, 300, OnChestOpened)
+--
+function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
+    if GUI then
+        API.Fatal("API.CreateRandomChest: Can not be used from local script!");
+        return;
+    end
+    AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
+end
+CreateRandomChest = API.CreateRandomChest;
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomGoldChest&#x3C;/p&#x3E;
+--
+-- @param[type=string] _Name Name der zu ersetzenden Script Entity
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.CreateRandomGoldChest("chest")
+--
+function API.CreateRandomGoldChest(_Name)
+    if GUI then
+        API.Fatal("API.CreateRandomGoldChest('" .._Name.. "')");
+        return;
+    end
+    AddOnInteractiveChests.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
+end
+CreateRandomGoldChest = API.CreateRandomGoldChest;
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+-- an Gütern.
+--
+-- Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
+-- Honig, Kräuter, Milch, Stein, Wolle.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomResourceChest&#x3C;/p&#x3E;
+--
+-- @param[type=string] _Name Name der zu ersetzenden Script Entity
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.CreateRandomResourceChest("chest")
+--
+function API.CreateRandomResourceChest(_Name)
+    if GUI then
+        API.Bridge("API.CreateRandomResourceChest('" .._Name.. "')");
+        return;
+    end
+    AddOnInteractiveChests.Global:CreateRandomResourceChest(_Name);
+end
+CreateRandomResourceChest = API.CreateRandomResourceChest;
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+-- an Luxusgütern.
+--
+-- Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
+-- Salz oder Weihrauch.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomLuxuryChest&#x3C;/p&#x3E;
+--
+-- @param[type=string] _Name Name der zu ersetzenden Script Entity
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.CreateRandomLuxuryChest("chest")
+--
+function API.CreateRandomLuxuryChest(_Name)
+    if GUI then
+        API.Bridge("API.CreateRandomLuxuryChest('" .._Name.. "')");
+        return;
+    end
+    AddOnInteractiveChests.Global:CreateRandomLuxuryChest(_Name);
+end
+CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+AddOnInteractiveChests = {
+    Global = {
+        Data = {
+            Chests = {
+                Description = {
+                    Title = {
+                        de = "Schatztruhe",
+                        en = "Treasure Chest",
+                    },
+                    Text = {
+                        de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie um den Schatz zu bergen.",
+                        en = "This chest contains a secred treasure. Open it to salvage the treasure.",
+                    },
+                },
+            },
+        }
+    },
+}
+
+-- Global ----------------------------------------------------------------------
+
+---
+-- Initalisiert das AddOn.
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveChests.Global:Install()
+end
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
+-- des angegebenen Typs.
+-- @param _Name [string] Name der zu ersetzenden Script Entity
+-- @param _Good [number] Warentyp
+-- @param _Min [number] Mindestmenge
+-- @param _Max [number] Maximalmenge
+-- @param _Callback [function] Callback-Funktion
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
+    _Min = (_Min ~= nil and _Min &#x3E; 0 and _Min) or 1;
+    _Max = (_Max ~= nil and _Max &#x3E; 1 and _Max) or 2;
+    if not _Callback then
+        _Callback = function(t) end
+    end
+    assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
+    assert(_Min &#x3C; _Max, "CreateRandomChest: min amount must be smaller than max amount!");
+
+    local eID = ReplaceEntity(_Name, Entities.XD_ScriptEntity, 0);
+    Logic.SetModel(eID, Models.Doodads_D_X_ChestClose);
+    Logic.SetVisible(eID, true);
+
+    CreateObject {
+        Name                    = _Name,
+        Title                   = self.Data.Chests.Description.Title,
+        Text                    = self.Data.Chests.Description.Text,
+        Reward                  = {_Good, math.random(_Min, _Max)},
+        Texture                 = {1, 6},
+        Distance                = 650,
+        State                   = 0,
+        CallbackOpened          = _Callback,
+        Callback                = function(_Data)
+            ReplaceEntity(_Data.Name, Entities.D_X_ChestOpenEmpty);
+            _Data.CallbackOpened(_Data);
+        end,
+    }
+end
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gold
+-- des angegebenen Typs.
+--
+-- @param _Name [string] Name der zu ersetzenden Script Entity
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveChests.Global:CreateRandomGoldChest(_Name)
+    AddOnInteractiveChests.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
+end
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+-- an Gütern.
+-- Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
+-- Honig, Kräuter, Milch, Stein, Wolle.
+--
+-- @param _Name [string] Name der zu ersetzenden Script Entity
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveChests.Global:CreateRandomResourceChest(_Name)
+    local PossibleGoods = {
+        Goods.G_Iron, Goods.G_Stone, Goods.G_Wood, Goods.G_Wool,
+        Goods.G_Carcass, Goods.G_Herb, Goods.G_Honeycomb,
+        Goods.G_Milk, Goods.G_RawFish, Goods.G_Grain
+    };
+    local Good = PossibleGoods[math.random(1, #PossibleGoods)];
+    AddOnInteractiveChests.Global:CreateRandomChest(_Name, Good, 30, 60);
+end
+
+---
+-- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+-- an Luxusgütern.
+-- Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
+-- Salz oder Weihrauch.
+--
+-- @param _Name [string] Name der zu ersetzenden Script Entity
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveChests.Global:CreateRandomLuxuryChest(_Name)
+    local Luxury = {Goods.G_Salt, Goods.G_Dye};
+    if g_GameExtraNo &#x3E;= 1 then
+        table.insert(Luxury, Goods.G_Gems);
+        table.insert(Luxury, Goods.G_MusicalInstrument);
+        table.insert(Luxury, Goods.G_Olibanum);
+    end
+    local Good = Luxury[math.random(1, #Luxury)];
+    AddOnInteractiveChests.Global:CreateRandomChest(_Name, Good, 50, 100);
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterAddOn("AddOnInteractiveChests");
+
+</code></div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
+            <a class='docLinkExpander' href="html/addoninteractivemines.lua.html">
+            <div class='doclink'>
+                <div>AddOnInteractiveMines</div>
+            </div>
+            </a>
+        </div>
+        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia AddOnInteractiveMines                                        # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch
+-- Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.
+-- &#x3C;br&#x3E;Optional kann die Mine einstürzen, wenn sie erschöpft wurde.
+--
+-- @within Modulbeschreibung
+-- @set sort=true
+--
+AddOnInteractiveMines = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -33141,7 +32477,7 @@ function API.CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, 
         API.Fatal("API.CreateIOMine: Can not be used from local script!");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
+    AddOnInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
 end
 CreateIOMine = API.CreateIOMine;
 
@@ -33168,7 +32504,7 @@ function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _
         API.Fatal("API.CreateIOIronMine: Can not be used from local script!");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
+    AddOnInteractiveMines.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
 end
 CreateIOIronMine = API.CreateIOIronMine;
 
@@ -33195,287 +32531,17 @@ function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, 
         API.Fatal("API.CreateIOStoneMine: Can not be used from local script!");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
+    AddOnInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
 end
 CreateIOStoneMine = API.CreateIOStoneMine;
-
----
--- Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.
---
--- Diese Baustelle kann durch einen Helden aktiviert werden. Dann wird ein
--- Siedler zur Baustelle eilen und das Gebäude aufbauen. Es ist egal, ob es
--- sich um ein Territorium des Spielers oder einer KI handelt.
---
--- Es ist dabei zu beachten, dass der Spieler, dem die Baustelle zugeordnet
--- wird, das Territorium besitzt, auf dem er bauen soll. Des weiteren muss
--- er über ein Lagerhaus/Hauptzelt verfügen.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Es kann vorkommen, dass das Model der Baustelle nicht
--- geladen wird. Dann ist der Boden der Baustelle schwarz. Sobald wenigstens
--- ein reguläres Gebäude gebaut wurde, sollte die Textur jedoch vorhanden sein.
--- &#x3C;/p&#x3E;
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateIOBuildingSite&#x3C;/p&#x3E;
---
--- @param[type=string]   _Position Zielpunkt
--- @param[type=number]   _PlayerID Besitzer des Gebäudes
--- @param[type=number]   _Type Typ des Gebäudes
--- @param[type=table]    _Costs (optional) Eigene Gebäudekosten
--- @param[type=number]   _Distance (optional) Aktivierungsentfernung
--- @param[type=table]    _Icon (optional) Icon des Schalters
--- @param[type=string]   _Title (optional) Titel der Beschreibung
--- @param[type=string]   _Text(optional) Text der Beschreibung
--- @param[type=function] _Callback (optional) Funktion nach Fertigstellung
--- @within Anwenderfunktionen
---
--- @usage
--- -- Erzeugt eine Baustelle ohne besondere Einstellungen
--- API.CreateIOBuildingSite("haus", 1, Entities.B_Bakery)
--- -- Baustelle mit Kosten und Aktivierungsdistanz
--- API.CreateIOBuildingSite("haus", 1, Entities.B_Bakery, {Goods.G_Wood, 4}, 1000)
---
-function API.CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
-    if GUI then
-        API.Fatal("API.CreateIOBuildingSite: Can not be used from local script!");
-        return;
-    end
-    AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback);
-end
-CreateIOBuildingSite = API.CreateIOBuildingSite;
-
----
--- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
--- des angegebenen Typs.
---
--- Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
--- und dem Maximalwert. Optional kann eine Funktion angegeben werden, die
--- ausgeführt wird, wenn die Truhe geöffnet wird. Diese Funktion verhält sich
--- wie das Callback eines interaktiven Objektes.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomChest&#x3C;/p&#x3E;
---
--- @param[type=string]   _Name Name der zu ersetzenden Script Entity
--- @param[type=number]   _Good Warentyp
--- @param[type=number]   _Min Mindestmenge
--- @param[type=number]   _Max Maximalmenge
--- @param[type=function] _Callback Callback-Funktion
--- @within Anwenderfunktionen
---
--- @usage
--- API.CreateRandomChest("chest", Goods.G_Gems, 100, 300, OnChestOpened)
---
-function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
-    if GUI then
-        API.Fatal("API.CreateRandomChest: Can not be used from local script!");
-        return;
-    end
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
-end
-CreateRandomChest = API.CreateRandomChest;
-
----
--- Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomGoldChest&#x3C;/p&#x3E;
---
--- @param[type=string] _Name Name der zu ersetzenden Script Entity
--- @within Anwenderfunktionen
---
-function API.CreateRandomGoldChest(_Name)
-    if GUI then
-        API.Fatal("API.CreateRandomGoldChest('" .._Name.. "')");
-        return;
-    end
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
-end
-CreateRandomGoldChest = API.CreateRandomGoldChest;
-
----
--- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
--- an Gütern.
---
--- Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
--- Honig, Kräuter, Milch, Stein, Wolle.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomResourceChest&#x3C;/p&#x3E;
---
--- @param[type=string] _Name Name der zu ersetzenden Script Entity
--- @within Anwenderfunktionen
---
-function API.CreateRandomResourceChest(_Name)
-    if GUI then
-        API.Bridge("API.CreateRandomResourceChest('" .._Name.. "')");
-        return;
-    end
-    AddOnInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name);
-end
-CreateRandomResourceChest = API.CreateRandomResourceChest;
-
----
--- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
--- an Luxusgütern.
---
--- Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
--- Salz oder Weihrauch.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomLuxuryChest&#x3C;/p&#x3E;
---
--- @param[type=string] _Name Name der zu ersetzenden Script Entity
--- @within Anwenderfunktionen
---
-function API.CreateRandomLuxuryChest(_Name)
-    if GUI then
-        API.Bridge("API.CreateRandomLuxuryChest('" .._Name.. "')");
-        return;
-    end
-    AddOnInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name);
-end
-CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
-
----
--- Erstellt eine Trebuchet-Baustelle an der Position mit den
--- angegebenen Baukosten.
---
--- Das Trebuchet kann von einem Helden aufgebaut werden. Es wird ein Karren
--- aus dem Lagerhaus zur Baustelle fahren. Erreicht der Karren die Baustelle,
--- wird er durch ein Trebuchet ersetzt.
---
--- Das Trebuchet hat dann 10 Schuss. Sind diese aufgebraucht wird das Trebuchet
--- abgebaut und fährt in das Lagerhaus zurück. Sobald der Karren angekommen
--- ist, kann die Baustelle erneut aktiviert werden.
---
--- &#x3C;b&#x3E;Achtung:&#x3C;/b&#x3E;Das Auffüllen von Trebuchets wird deaktiviert, sobald eine
--- Baustelle erzeugt wird. Es wird NICHT empfohlen dem Spieler beides, normale
--- Trebuchets und Trebuchetbaustellen, zur gleichen Zeit zu geben!
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateTrebuchetConstructionSite&#x3C;/p&#x3E;
---
--- @param[type=string] _Name Skriptname Position
--- @param[type=number] _GoldCost Goldkosten
--- @param[type=number] _WoodCost Holzkosten
--- @within Anwenderfunktionen
---
-function API.CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
-    if GUI then
-        API.Bridge("API.CreateTrebuchetConstructionSite('" .._Name.. "', " .._GoldCost.. ", " .._WoodCost.. ")");
-        return;
-    end
-    AddOnInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost);
-end
-CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
-
----
--- Zerstört eine Trebuchet-Baustelle, aber nicht die Skript Entity.
---
--- Die Baustelle wird in jedem möglichen Status zerstört. Es ist egal, ob das
--- Trebuchet aufgebaut ist, gerade ein Karren unterwegs ist, oder die Baustelle
--- noch nie berührt wurde.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: DestroyTrebuchetConstructionSite&#x3C;/p&#x3E;
---
--- @param[type=string] _Name Skriptname Position
--- @within Anwenderfunktionen
---
-function API.DestroyTrebuchetConstructionSite(_Name)
-    if GUI then
-        API.Bridge("API.DestroyTrebuchetConstructionSite('" .._Name.. "')");
-        return;
-    end
-    AddOnInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name);
-end
-DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
-
----
--- Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.
--- Sollte kein Trebuchet aufgebaut sein, wird 0 zurückgegeben.
---
--- @param[type=string] _Name Skriptname der Trebuchet-Baustelle
--- @return[type=number] EntityID des Trebuchet
--- @within Anwenderfunktionen
---
-function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
-    if GUI then
-        API.Fatal("API.GetTrebuchetByTrebuchetConstructionSite: Can only be used in global script!");
-        return;
-    end
-    if not self.Data.Trebuchet.Sites[_Name] then
-        API.Warn("API.GetTrebuchetByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
-        return 0;
-    end
-    return self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
-end
-GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
-
----
--- Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.
--- Sollte kein Anforderungswagen unterwegs sein, wird 0 zurückgegeben.
---
--- @param[type=string] _Name Skriptname der Trebuchet-Baustelle
--- @return[type=number] EntityID des angeforderten Wagens
--- @within Anwenderfunktionen
---
-function API.GetReturningCartByTrebuchetConstructionSite(_Name)
-    if GUI then
-        API.Fatal("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
-        return;
-    end
-    if not self.Data.Trebuchet.Sites[_Name] then
-        API.Warn("API.GetReturningCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
-        return 0;
-    end
-    return self.Data.Trebuchet.Sites[_Name].ReturningCart;
-end
-GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
-
----
--- Gibt die EntityID des Abreisewagens der Trebuchet-Baustelle zurück. Sollte
--- kein Abreisewagens unterwegs sein, wird 0 zurückgegeben.
---
--- @param[type=string] _Name Skriptname der Trebuchet-Baustelle
--- @return[type=number] EntityID des angeforderten Wagens
--- @within Anwenderfunktionen
---
-function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
-    if GUI then
-        API.Fatal("API.GetConstructionCartByTrebuchetConstructionSite: Can only be used in global script!");
-        return;
-    end
-    if not self.Data.Trebuchet.Sites[_Name] then
-        API.Warn("API.GetConstructionCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
-        return 0;
-    end
-    return self.Data.Trebuchet.Sites[_Name].ConstructionCart;
-end
-GetConstructionCart = API.GetConstructionCartByTrebuchetConstructionSite;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-AddOnInteractiveObjectTemplates = {
+AddOnInteractiveMines = {
     Global = {
         Data = {
-            ConstructionSite = {
-                Sites = {},
-
-                Description = {
-                    Title = {
-                        de = "Gebäude bauen",
-                        en = "Create building",
-                    },
-                    Text = {
-                        de = "Beauftragt den Bau eines Gebäudes. Ein Siedler wird aus"..
-                             " dem Lagerhaus kommen und mit dem Bau beginnen.",
-                        en = "Order a building. A worker will come out of the"..
-                             " storehouse and erect it.",
-                    },
-                    Unfulfilled = {
-                        de = "Das Gebäude kann derzeit nicht gebaut werden.",
-                        en = "The building can not be built at the moment.",
-                    },
-                }
-            },
-
             Mines = {
                 Description = {
                     Title = {
@@ -33492,40 +32558,6 @@ AddOnInteractiveObjectTemplates = {
                     },
                 },
             },
-
-            Chests = {
-                Description = {
-                    Title = {
-                        de = "Schatztruhe",
-                        en = "Treasure Chest",
-                    },
-                    Text = {
-                        de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie um den Schatz zu bergen.",
-                        en = "This chest contains a secred treasure. Open it to salvage the treasure.",
-                    },
-                },
-            },
-
-            Trebuchet = {
-                Error = {
-                    de = "Euer Ritter benötigt einen höheren Titel!",
-                    en = "Your knight need a higher title to use this site!",
-                },
-                Description = {
-                    Title = {
-                        de = "Trebuchet anfordern",
-                        en = "Order trebuchet",
-                    },
-                    Text = {
-                        de = "- Fordert ein Trebuchet aus der Stadt an {cr}- Trebuchet wird gebaut, wenn Wagen Baustelle erreicht {cr}- Fährt zurück, wenn Munition aufgebraucht {cr}- Trebuchet kann manuell zurückgeschickt werden",
-                        en = "- Order a trebuchet from your city {cr}- The trebuchet is build after the cart has arrived {cr}- Returns after ammunition is depleted {cr}- The trebuchet can be manually send back to the city",
-                    },
-                },
-
-                Sites = {},
-                NeededKnightTitle = 0,
-                IsActive = false,
-            },
         }
     },
     Local = {
@@ -33540,353 +32572,7 @@ AddOnInteractiveObjectTemplates = {
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:Install()
-end
-
----
--- Initialisiert die interaktiven Trebuchet-Baustellen.
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:TrebuchetActivate()
-    if not self.Data.Trebuchet.IsActive then
-        GameCallback_QSB_OnDisambleTrebuchet = AddOnInteractiveObjectTemplates.Global.OnTrebuchetDisambled;
-        GameCallback_QSB_OnErectTrebuchet = function() end;
-        StartSimpleJobEx(self.WatchTrebuchetsAndCarts);
-        self.Data.Trebuchet.IsActive = true;
-    end
-end
-
----
--- Prüft, ob der menschliche Spieler einen ausreichenden Titel
--- hat um Trebuchets zu bauen.
---
--- @return boolean: Titel hoch genug
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global.TrebuchetHasSufficentTitle()
-    local pID = 1;
-    for i=1,8 do
-        if Logic.PlayerGetIsHumanFlag(i) == 1 then
-            pID = i;
-            break;
-        end
-    end
-    return Logic.GetKnightTitle(pID) &#x3E;= AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.NeededKnightTitle;
-end
-
----
--- Setzt den mindestens benötigten Titel um Trebuchets zu bauen.
---
--- @param _KnightTitle Titel
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:TrebuchetSetNeededKnightTitle(_KnightTitle)
-    self.Data.Trebuchet.NeededKnightTitle = _KnightTitle;
-end
-
----
--- Erstellt eine Trebuchet-Baustelle an der Position mit den
--- angegebenen Baukosten.
---
--- @param _Name [string] Skriptname Position
--- @param _GoldCost Goldkosten
--- @param _WoodCost Holzkosten
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
-    self:TrebuchetActivate();
-
-    _GoldCost = _GoldCost or 4500;
-    _WoodCost = _WoodCost or 35;
-    local eID = GetID(_Name);
-    Logic.SetModel(eID, Models.Buildings_B_BuildingPlot_8x8);
-    Logic.SetVisible(eID, true);
-
-    self.Data.Trebuchet.Sites[_Name] = {
-        ConstructedTrebuchet = 0,
-        ConstructionCart = 0,
-        ReturningCart = 0,
-    }
-
-    CreateObject {
-        Name                    = _Name,
-        Title                   = self.Data.Trebuchet.Description.Title,
-        Text                    = self.Data.Trebuchet.Description.Text,
-        Costs                   = {Goods.G_Gold, _GoldCost, Goods.G_Wood, _WoodCost},
-        Distance                = 1000,
-        State                   = 0,
-        Condition               = self.TrebuchetHasSufficentTitle,
-        ConditionUnfulfilled    = self.Data.Trebuchet.Error,
-        Callback                = function(t, PlayerID)
-            AddOnInteractiveObjectTemplates.Global:SpawnTrebuchetCart(PlayerID, t.Name);
-        end,
-    }
-end
-
----
--- Zerstört eine Trebuchet-Baustelle.
---
--- @param _Name [string] Skriptname Position
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name)
-    local ConstructionCart = self.Data.Trebuchet.Sites[_Name].ConstructionCart;
-    DestroyEntity(ConstructionCart);
-    local ConstructedTrebuchet = self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
-    DestroyEntity(ConstructedTrebuchet);
-    local ReturningCart = self.Data.Trebuchet.Sites[_Name].ReturningCart;
-    DestroyEntity(ReturningCart);
-
-    self.Data.Trebuchet.Sites[_Name] = nil;
-    Logic.SetVisible(GetID(_Name), false);
-    RemoveInteractiveObject(_Name);
-end
-
----
--- Erzeugt einen Trebuchetwagen für die Baustelle.
---
--- @param _PlayerID Besitzer
--- @param _Site     Baustelle
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:SpawnTrebuchetCart(_PlayerID, _Site)
-    local StoreID = Logic.GetStoreHouse(_PlayerID);
-    local x,y = Logic.GetBuildingApproachPosition(StoreID);
-    local CartID = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, _PlayerID);
-    Logic.SetEntitySelectableFlag(CartID, 0);
-    self.Data.Trebuchet.Sites[_Site].ConstructionCart = CartID;
-end
-
----
--- Erzeugt das Trebuchet an der Baustelle.
---
--- @param _PlayerID Besitzer
--- @param _Site     Baustelle
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:SpawnTrebuchet(_PlayerID, _Site)
-    local pos = GetPosition(_Site);
-    local TrebuchetID = Logic.CreateEntity(Entities.U_Trebuchet, pos.X, pos.Y, 0, _PlayerID);
-    self.Data.Trebuchet.Sites[_Site].ConstructedTrebuchet = TrebuchetID;
-end
-
----
--- Baut das Trebuchet zum Wagen zurück und lässt es wieder ins
--- Lagerhaus des Besitzers fahren.
---
--- @param _PlayerID  Besitzer
--- @param _Trebuchet Baustelle
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(_PlayerID, _Trebuchet)
-    local x,y,z = Logic.EntityGetPos(_Trebuchet);
-    local CartID = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, _PlayerID);
-    Logic.SetEntitySelectableFlag(CartID, 0);
-
-    local SiteName;
-    for k,v in pairs(self.Data.Trebuchet.Sites) do
-        if v.ConstructedTrebuchet == _Trebuchet then
-            SiteName = k;
-        end
-    end
-    if SiteName then
-        self.Data.Trebuchet.Sites[SiteName].ReturningCart = CartID;
-        self.Data.Trebuchet.Sites[SiteName].ConstructedTrebuchet = 0;
-        Logic.SetVisible(GetID(SiteName), true);
-        DestroyEntity(_Trebuchet);
-    else
-        DestroyEntity(CartID);
-    end
-end
-
----
--- Callback: Ein Trebuchet wird manuell zurückgebaut.
---
--- @param _EntityID Entity-ID des Trebuchet
--- @param _PlayerID Besitzer
--- @param _x        X-Position
--- @param _y        Y-Position
--- @param _z        Z-Position
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global.OnTrebuchetDisambled(_EntityID, _PlayerID, _x, _y, _z)
-    AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(_PlayerID, _EntityID);
-end
-
----
--- Steuert die Trebuchet-Mechanik.
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
-    for k,v in pairs(AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites) do
-        local SiteID = GetID(k);
-
-        -- Stufe 1: Karren kommt
-        if v.ConstructionCart ~= 0 then
-            -- Bauwagen wurde zerstört
-            if not IsExisting(v.ConstructionCart) then
-                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
-                API.InteractiveObjectActivate(k);
-            end
-            -- Bauwagen bewegt sich nicht zum Ziel
-            if not Logic.IsEntityMoving(v.ConstructionCart) then
-                local SiteID = GetID(k);
-                local x,y,z = Logic.EntityGetPos(SiteID);
-                Logic.MoveSettler(v.ConstructionCart, x, y);
-            end
-            -- Bauwagen ist angekommen
-            if IsNear(v.ConstructionCart, k, 500) then
-                local x,y,z = Logic.EntityGetPos(SiteID);
-                local PlayerID = Logic.EntityGetPlayer(v.ConstructionCart);
-                AddOnInteractiveObjectTemplates.Global:SpawnTrebuchet(PlayerID, k);
-                DestroyEntity(v.ConstructionCart);
-                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
-                Logic.SetVisible(SiteID, false);
-                Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
-            end
-        end
-
-        -- Stufe 2: Trebuchet steht
-        if v.ConstructedTrebuchet ~= 0 then
-            -- Trebuchet wurde zerstört
-            if not IsExisting(v.ConstructedTrebuchet) then
-                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructedTrebuchet = 0;
-                Logic.SetVisible(SiteID, true);
-                API.InteractiveObjectActivate(k);
-            end
-            -- Trebuchet hat keine Munition
-            if Logic.GetAmmunitionAmount(v.ConstructedTrebuchet) == 0 and BundleEntitySelection.Local.Data.RefillTrebuchet == false then
-                local PlayerID = Logic.EntityGetPlayer(v.ConstructedTrebuchet);
-                AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(PlayerID, v.ConstructedTrebuchet);
-            end
-        end
-
-        -- Stufe 3: Rückweg
-        if v.ReturningCart ~= 0 then
-            -- Rückkehrwagen wurde zerstört
-            if not IsExisting(v.ReturningCart) then
-                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ReturningCart = 0;
-                API.InteractiveObjectActivate(k);
-            end
-
-            local PlayerID = Logic.EntityGetPlayer(v.ReturningCart);
-            local StoreID = Logic.GetStoreHouse(PlayerID);
-
-            -- Rückkehrwagen muss sich zum Ziel bewegen
-            if not Logic.IsEntityMoving(v.ReturningCart) then
-                local x,y = Logic.GetBuildingApproachPosition(StoreID);
-                Logic.MoveSettler(v.ReturningCart, x, y);
-            end
-            -- Rückkehrwagen kommt an
-            if IsNear(v.ReturningCart, StoreID, 1100) then
-                local PlayerID = Logic.EntityGetPlayer(v.ConstructionCart);
-                DestroyEntity(v.ReturningCart);
-            end
-        end
-    end
-end
-
----
--- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
--- des angegebenen Typs.
--- @param _Name [string] Name der zu ersetzenden Script Entity
--- @param _Good [number] Warentyp
--- @param _Min [number] Mindestmenge
--- @param _Max [number] Maximalmenge
--- @param _Callback [function] Callback-Funktion
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
-    _Min = (_Min ~= nil and _Min &#x3E; 0 and _Min) or 1;
-    _Max = (_Max ~= nil and _Max &#x3E; 1 and _Max) or 2;
-    if not _Callback then
-        _Callback = function(t) end
-    end
-    assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
-    assert(_Min &#x3C; _Max, "CreateRandomChest: min amount must be smaller than max amount!");
-
-    local eID = ReplaceEntity(_Name, Entities.XD_ScriptEntity, 0);
-    Logic.SetModel(eID, Models.Doodads_D_X_ChestClose);
-    Logic.SetVisible(eID, true);
-
-    CreateObject {
-        Name                    = _Name,
-        Title                   = self.Data.Chests.Description.Title,
-        Text                    = self.Data.Chests.Description.Text,
-        Reward                  = {_Good, math.random(_Min, _Max)},
-        Texture                 = {1, 6},
-        Distance                = 650,
-        State                   = 0,
-        CallbackOpened          = _Callback,
-        Callback                = function(_Data)
-            ReplaceEntity(_Data.Name, Entities.D_X_ChestOpenEmpty);
-            _Data.CallbackOpened(_Data);
-        end,
-    }
-end
-
----
--- Erstellt eine Schatztruhe mit einer zufälligen Menge an Gold
--- des angegebenen Typs.
---
--- @param _Name [string] Name der zu ersetzenden Script Entity
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:CreateRandomGoldChest(_Name)
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
-end
-
----
--- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
--- an Gütern.
--- Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
--- Honig, Kräuter, Milch, Stein, Wolle.
---
--- @param _Name [string] Name der zu ersetzenden Script Entity
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name)
-    local PossibleGoods = {
-        Goods.G_Iron, Goods.G_Stone, Goods.G_Wood, Goods.G_Wool,
-        Goods.G_Carcass, Goods.G_Herb, Goods.G_Honeycomb,
-        Goods.G_Milk, Goods.G_RawFish, Goods.G_Grain
-    };
-    local Good = PossibleGoods[math.random(1, #PossibleGoods)];
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Good, 30, 60);
-end
-
----
--- Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
--- an Luxusgütern.
--- Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
--- Salz oder Weihrauch.
---
--- @param _Name [string] Name der zu ersetzenden Script Entity
--- @within Internal
--- @local
---
-function AddOnInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name)
-    local Luxury = {Goods.G_Salt, Goods.G_Dye};
-    if g_GameExtraNo &#x3E;= 1 then
-        table.insert(Luxury, Goods.G_Gems);
-        table.insert(Luxury, Goods.G_MusicalInstrument);
-        table.insert(Luxury, Goods.G_Olibanum);
-    end
-    local Good = Luxury[math.random(1, #Luxury)];
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Good, 50, 100);
+function AddOnInteractiveMines.Global:Install()
 end
 
 ---
@@ -33903,7 +32589,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
+function AddOnInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
     -- Objekt austauschen und Model anpassen
     local eID = ReplaceEntity(_Position, Entities.XD_ScriptEntity);
     local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
@@ -33946,7 +32632,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+function AddOnInteractiveMines.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     assert(IsExisting(_Position));
     if _Cost1Type then
         assert(API.TraverseTable(_Cost1Type, Goods));
@@ -33976,7 +32662,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+function AddOnInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     assert(IsExisting(_Position));
     if _Cost1Type then
         assert(API.TraverseTable(_Cost1Type, Goods));
@@ -34001,7 +32687,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.ConditionBuildIOMine(_Data)
+function AddOnInteractiveMines.Global.ConditionBuildIOMine(_Data)
     if _Data.CustomCondition then
         return _Data.CustomCondition(_Data) == true;
     end
@@ -34009,13 +32695,13 @@ function AddOnInteractiveObjectTemplates.Global.ConditionBuildIOMine(_Data)
 end
 
 
-function AddOnInteractiveObjectTemplates.Global.ActionBuildIOMine(_Data)
+function AddOnInteractiveMines.Global.ActionBuildIOMine(_Data)
     ReplaceEntity(_Data.Name, _Data.Type);
     DestroyEntity(_Data.InvisibleBlocker);
     if type(_Data.CallbackCreate) == "function" then
         _Data.CallbackCreate(_Data);
     end
-    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "AddOnInteractiveObjectTemplates_JobControlIOMine", 1, {}, {_Data.Name});
+    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "AddOnInteractiveMines_JobControlIOMine", 1, {}, {_Data.Name});
 end
 
 ---
@@ -34026,7 +32712,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
+function AddOnInteractiveMines.Global.ControlIOMine(_Mine)
     if not IO[_Mine] then
         return true;
     end
@@ -34053,23 +32739,133 @@ function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
         return true;
     end
 end
-AddOnInteractiveObjectTemplates_JobControlIOMine = AddOnInteractiveObjectTemplates.Global.ControlIOMine;
+AddOnInteractiveMines_JobControlIOMine = AddOnInteractiveMines.Global.ControlIOMine;
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterAddOn("AddOnInteractiveMines");
+
+</code></div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
+            <a class='docLinkExpander' href="html/addoninteractivesites.lua.html">
+            <div class='doclink'>
+                <div>AddOnInteractiveSites</div>
+            </div>
+            </a>
+        </div>
+        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia AddOnInteractiveSites                                        # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
 
 ---
--- Initialisiert die interaktiven Baustellen.
+-- Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei
+-- ein Gebäude bauen zu lassen.
+-- &#x3C;br&#x3E;Die Baustelle muss durch den Helden aktiviert
+-- werden. Ein Siedler wird aus dem Lagerhaus kommen und das Gebäude bauen.
+-- 
+-- @within Modulbeschreibung
+-- @set sort=true
+--
+AddOnInteractiveSites = {};
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.
+--
+-- Diese Baustelle kann durch einen Helden aktiviert werden. Dann wird ein
+-- Siedler zur Baustelle eilen und das Gebäude aufbauen. Es ist egal, ob es
+-- sich um ein Territorium des Spielers oder einer KI handelt.
+--
+-- Es ist dabei zu beachten, dass der Spieler, dem die Baustelle zugeordnet
+-- wird, das Territorium besitzt, auf dem er bauen soll. Des weiteren muss
+-- er über ein Lagerhaus/Hauptzelt verfügen.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Es kann vorkommen, dass das Model der Baustelle nicht
+-- geladen wird. Dann ist der Boden der Baustelle schwarz. Sobald wenigstens
+-- ein reguläres Gebäude gebaut wurde, sollte die Textur jedoch vorhanden sein.
+-- &#x3C;/p&#x3E;
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateIOBuildingSite&#x3C;/p&#x3E;
+--
+-- @param[type=string]   _Position Zielpunkt
+-- @param[type=number]   _PlayerID Besitzer des Gebäudes
+-- @param[type=number]   _Type Typ des Gebäudes
+-- @param[type=table]    _Costs (optional) Eigene Gebäudekosten
+-- @param[type=number]   _Distance (optional) Aktivierungsentfernung
+-- @param[type=table]    _Icon (optional) Icon des Schalters
+-- @param[type=string]   _Title (optional) Titel der Beschreibung
+-- @param[type=string]   _Text(optional) Text der Beschreibung
+-- @param[type=function] _Callback (optional) Funktion nach Fertigstellung
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Erzeugt eine Baustelle ohne besondere Einstellungen
+-- API.CreateIOBuildingSite("haus", 1, Entities.B_Bakery)
+-- -- Baustelle mit Kosten und Aktivierungsdistanz
+-- API.CreateIOBuildingSite("haus", 1, Entities.B_Bakery, {Goods.G_Wood, 4}, 1000)
+--
+function API.CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
+    if GUI then
+        API.Fatal("API.CreateIOBuildingSite: Can not be used from local script!");
+        return;
+    end
+    AddOnInteractiveSites.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback);
+end
+CreateIOBuildingSite = API.CreateIOBuildingSite;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+AddOnInteractiveSites = {
+    Global = {
+        Data = {
+            ConstructionSite = {
+                Sites = {},
+
+                Description = {
+                    Title = {
+                        de = "Gebäude bauen",
+                        en = "Create building",
+                    },
+                    Text = {
+                        de = "Beauftragt den Bau eines Gebäudes. Ein Siedler wird aus"..
+                             " dem Lagerhaus kommen und mit dem Bau beginnen.",
+                        en = "Order a building. A worker will come out of the"..
+                             " storehouse and erect it.",
+                    },
+                    Unfulfilled = {
+                        de = "Das Gebäude kann derzeit nicht gebaut werden.",
+                        en = "The building can not be built at the moment.",
+                    },
+                }
+            },
+        }
+    },
+    Local = {
+        Data = {},
+    },
+}
+
+-- Global ----------------------------------------------------------------------
+
+---
+-- Initalisiert das AddOn.
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:ConstructionSiteActivate()
-    if self.Data.ConstructionSiteActivated then
-        return;
-    end
-    self.Data.ConstructionSiteActivated = true;
-
-    Core:AppendFunction(
-        "GameCallback_OnBuildingConstructionComplete",
-        self.OnConstructionComplete
-    );
+function AddOnInteractiveSites.Global:Install()
 end
 
 ---
@@ -34079,8 +32875,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.OnConstructionComplete(_PlayerID, _EntityID)
-    local IO = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_EntityID];
+function AddOnInteractiveSites.Global.OnConstructionComplete(_PlayerID, _EntityID)
+    local IO = AddOnInteractiveSites.Global.Data.ConstructionSite.Sites[_EntityID];
     if IO ~= nil and IO.CompletedCallback then
         IO.CompletedCallback(IO, _EntityID);
     end
@@ -34102,8 +32898,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
-    AddOnInteractiveObjectTemplates.Global:ConstructionSiteActivate();
+function AddOnInteractiveSites.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
+    AddOnInteractiveSites.Global:ConstructionSiteActivate();
     local Costs = _Costs or {Logic.GetEntityTypeFullCost(_Type)};
     local Title = _Title or self.Data.ConstructionSite.Description.Title;
     local Text  = Text or self.Data.ConstructionSite.Description.Text;
@@ -34119,11 +32915,11 @@ function AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, 
         Distance             = _Distance or 1500,
         Type                 = _Type,
         Costs                = Costs,
-        Condition            = AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite,
-        ConditionUnfulfilled = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Description.Unfulfilled,
+        Condition            = AddOnInteractiveSites.Global.ConditionConstructionSite,
+        ConditionUnfulfilled = AddOnInteractiveSites.Global.Data.ConstructionSite.Description.Unfulfilled,
         PlayerID             = _PlayerID,
         CompletedCallback    = _Callback,
-        Callback             = AddOnInteractiveObjectTemplates.Global.CallbackIOConstructionSite;
+        Callback             = AddOnInteractiveSites.Global.CallbackIOConstructionSite;
     };
 end
 
@@ -34133,18 +32929,18 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.CallbackIOConstructionSite(_Data)
+function AddOnInteractiveSites.Global.CallbackIOConstructionSite(_Data)
     local pos  = GetPosition(_Data.Name);
     local eID  = GetID(_Data.Name);
     local ori  = Logic.GetEntityOrientation(eID);
     local site = Logic.CreateConstructionSite(pos.X, pos.Y, ori, _Data.Type, _Data.PlayerID);
     Logic.SetVisible(eID, false);
     if (site == nil) then
-        API.Fatal('AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite: Failed to place construction site!');
+        API.Fatal('AddOnInteractiveSites.Global:CreateIOBuildingSite: Failed to place construction site!');
         return;
     end
-    AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[site] = _Data;
-    StartSimpleJobEx(AddOnInteractiveObjectTemplates.Global.ControlConstructionSite, site);
+    AddOnInteractiveSites.Global.Data.ConstructionSite.Sites[site] = _Data;
+    StartSimpleJobEx(AddOnInteractiveSites.Global.ControlConstructionSite, site);
 end
 
 ---
@@ -34154,7 +32950,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite(_Data)
+function AddOnInteractiveSites.Global.ConditionConstructionSite(_Data)
     local eID = GetID(_Data.Name);
     local tID = GetTerritoryUnderEntity(eID);
     local pID = Logic.GetTerritoryPlayerID(tID);
@@ -34175,29 +32971,481 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.ControlConstructionSite(_eID)
-    if AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID] == nil then
+function AddOnInteractiveSites.Global.ControlConstructionSite(_eID)
+    if AddOnInteractiveSites.Global.Data.ConstructionSite.Sites[_eID] == nil then
         return true;
     end
     if not IsExisting(_eID) then
-        local Name = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID].Name;
+        local Name = AddOnInteractiveSites.Global.Data.ConstructionSite.Sites[_eID].Name;
         Logic.SetVisible(GetID(Name), true);
         API.InteractiveObjectActivate(Name);
         return true;
     end
 end
 
--- Local -----------------------------------------------------------------------
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterAddOn("AddOnInteractiveSites");
+
+</code></div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
+            <a class='docLinkExpander' href="html/addoninteractivetrebuchets.lua.html">
+            <div class='doclink'>
+                <div>AddOnInteractiveTrebuchets</div>
+            </div>
+            </a>
+        </div>
+        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia AddOnInteractiveTrebuchets                                   # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler kann ein Trebuchet mieten. Das Trebuchet fährt als Karren vor,
+-- wird "aufgebaut" und kann anschließend benutzt werden.&#x3C;br&#x3E; Das Trebuchet
+-- fährt ab, wenn die Munition alle ist oder der Spieler das Trebuchet abbaut.
+-- &#x3C;br&#x3E;Sobald ein Trebuchet zerstört wird oder sein Karren wieder am Lagerhaus
+-- ankommt, wird die Baustelle wieder freigegeben.
+--
+-- @within Modulbeschreibung
+-- @set sort=true
+--
+AddOnInteractiveTrebuchets = {};
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Erstellt eine Trebuchet-Baustelle an der Position mit den
+-- angegebenen Baukosten.
+--
+-- Das Trebuchet kann von einem Helden aufgebaut werden. Es wird ein Karren
+-- aus dem Lagerhaus zur Baustelle fahren. Erreicht der Karren die Baustelle,
+-- wird er durch ein Trebuchet ersetzt.
+--
+-- Das Trebuchet hat dann 10 Schuss. Sind diese aufgebraucht wird das Trebuchet
+-- abgebaut und fährt in das Lagerhaus zurück. Sobald der Karren angekommen
+-- ist, kann die Baustelle erneut aktiviert werden.
+--
+-- &#x3C;b&#x3E;Achtung:&#x3C;/b&#x3E;Das Auffüllen von Trebuchets wird deaktiviert, sobald eine
+-- Baustelle erzeugt wird. Es wird NICHT empfohlen dem Spieler beides, normale
+-- Trebuchets und Trebuchetbaustellen, zur gleichen Zeit zu geben!
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateTrebuchetConstructionSite&#x3C;/p&#x3E;
+--
+-- @param[type=string] _Name Skriptname Position
+-- @param[type=number] _GoldCost Goldkosten
+-- @param[type=number] _WoodCost Holzkosten
+-- @within Anwenderfunktionen
+--
+-- @usage API.CreateTrebuchetConstructionSite("trebuchetSite1", 250, 10);
+--
+function API.CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
+    if GUI then
+        API.Bridge("API.CreateTrebuchetConstructionSite('" .._Name.. "', " .._GoldCost.. ", " .._WoodCost.. ")");
+        return;
+    end
+    AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost);
+end
+CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
+
+---
+-- Zerstört eine Trebuchet-Baustelle, aber nicht die Skript Entity.
+--
+-- Die Baustelle wird in jedem möglichen Status zerstört. Es ist egal, ob das
+-- Trebuchet aufgebaut ist, gerade ein Karren unterwegs ist, oder die Baustelle
+-- noch nie berührt wurde.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: DestroyTrebuchetConstructionSite&#x3C;/p&#x3E;
+--
+-- @param[type=string] _Name Skriptname Position
+-- @within Anwenderfunktionen
+--
+-- @usage API.DestroyTrebuchetConstructionSite("trebuchetSite1");
+--
+function API.DestroyTrebuchetConstructionSite(_Name)
+    if GUI then
+        API.Bridge("API.DestroyTrebuchetConstructionSite('" .._Name.. "')");
+        return;
+    end
+    AddOnInteractiveTrebuchets.Global:DestroyTrebuchetConstructionSite(_Name);
+end
+DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
+
+---
+-- Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.
+-- Sollte kein Trebuchet aufgebaut sein, wird 0 zurückgegeben.
+--
+-- @param[type=string] _Name Skriptname der Trebuchet-Baustelle
+-- @return[type=number] EntityID des Trebuchet
+-- @within Anwenderfunktionen
+--
+-- @usage local ID = API.GetTrebuchetByTrebuchetConstructionSite("trebuchetSite1");
+--
+function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
+    if GUI then
+        API.Fatal("API.GetTrebuchetByTrebuchetConstructionSite: Can only be used in global script!");
+        return;
+    end
+    if not self.Data.Trebuchet.Sites[_Name] then
+        API.Warn("API.GetTrebuchetByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        return 0;
+    end
+    return self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
+end
+GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
+
+---
+-- Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.
+-- Sollte kein Anforderungswagen unterwegs sein, wird 0 zurückgegeben.
+--
+-- @param[type=string] _Name Skriptname der Trebuchet-Baustelle
+-- @return[type=number] EntityID des angeforderten Wagens
+-- @within Anwenderfunktionen
+--
+-- @usage local ID = API.GetReturningCartByTrebuchetConstructionSite("trebuchetSite1");
+--
+function API.GetReturningCartByTrebuchetConstructionSite(_Name)
+    if GUI then
+        API.Fatal("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
+        return;
+    end
+    if not self.Data.Trebuchet.Sites[_Name] then
+        API.Warn("API.GetReturningCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        return 0;
+    end
+    return self.Data.Trebuchet.Sites[_Name].ReturningCart;
+end
+GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
+
+---
+-- Gibt die EntityID des Abreisewagens der Trebuchet-Baustelle zurück. Sollte
+-- kein Abreisewagens unterwegs sein, wird 0 zurückgegeben.
+--
+-- @param[type=string] _Name Skriptname der Trebuchet-Baustelle
+-- @return[type=number] EntityID des angeforderten Wagens
+-- @within Anwenderfunktionen
+--
+-- @usage local ID = API.GetConstructionCartByTrebuchetConstructionSite("trebuchetSite1");
+--
+function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
+    if GUI then
+        API.Fatal("API.GetConstructionCartByTrebuchetConstructionSite: Can only be used in global script!");
+        return;
+    end
+    if not self.Data.Trebuchet.Sites[_Name] then
+        API.Warn("API.GetConstructionCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        return 0;
+    end
+    return self.Data.Trebuchet.Sites[_Name].ConstructionCart;
+end
+GetConstructionCart = API.GetConstructionCartByTrebuchetConstructionSite;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+AddOnInteractiveTrebuchets = {
+    Global = {
+        Data = {
+            Trebuchet = {
+                Error = {
+                    de = "Euer Ritter benötigt einen höheren Titel!",
+                    en = "Your knight need a higher title to use this site!",
+                },
+                Description = {
+                    Title = {
+                        de = "Trebuchet anfordern",
+                        en = "Order trebuchet",
+                    },
+                    Text = {
+                        de = "- Fordert ein Trebuchet aus der Stadt an {cr}- Trebuchet wird gebaut, wenn Wagen Baustelle erreicht {cr}- Fährt zurück, wenn Munition aufgebraucht {cr}- Trebuchet kann manuell zurückgeschickt werden",
+                        en = "- Order a trebuchet from your city {cr}- The trebuchet is build after the cart has arrived {cr}- Returns after ammunition is depleted {cr}- The trebuchet can be manually send back to the city",
+                    },
+                },
+
+                Sites = {},
+                NeededKnightTitle = 0,
+                IsActive = false,
+            },
+        }
+    },
+}
+
+-- Global ----------------------------------------------------------------------
 
 ---
 -- Initalisiert das AddOn.
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Local:Install()
+function AddOnInteractiveTrebuchets.Global:Install()
 end
 
-Core:RegisterAddOn("AddOnInteractiveObjectTemplates");
+---
+-- Initialisiert die interaktiven Trebuchet-Baustellen.
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global:TrebuchetActivate()
+    if not self.Data.Trebuchet.IsActive then
+        GameCallback_QSB_OnDisambleTrebuchet = AddOnInteractiveTrebuchets.Global.OnTrebuchetDisambled;
+        GameCallback_QSB_OnErectTrebuchet = function() end;
+        StartSimpleJobEx(self.WatchTrebuchetsAndCarts);
+        self.Data.Trebuchet.IsActive = true;
+    end
+end
+
+---
+-- Prüft, ob der menschliche Spieler einen ausreichenden Titel
+-- hat um Trebuchets zu bauen.
+--
+-- @return boolean: Titel hoch genug
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global.TrebuchetHasSufficentTitle()
+    local pID = 1;
+    for i=1,8 do
+        if Logic.PlayerGetIsHumanFlag(i) == 1 then
+            pID = i;
+            break;
+        end
+    end
+    return Logic.GetKnightTitle(pID) &#x3E;= AddOnInteractiveTrebuchets.Global.Data.Trebuchet.NeededKnightTitle;
+end
+
+---
+-- Setzt den mindestens benötigten Titel um Trebuchets zu bauen.
+--
+-- @param _KnightTitle Titel
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global:TrebuchetSetNeededKnightTitle(_KnightTitle)
+    self.Data.Trebuchet.NeededKnightTitle = _KnightTitle;
+end
+
+---
+-- Erstellt eine Trebuchet-Baustelle an der Position mit den
+-- angegebenen Baukosten.
+--
+-- @param _Name [string] Skriptname Position
+-- @param _GoldCost Goldkosten
+-- @param _WoodCost Holzkosten
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
+    self:TrebuchetActivate();
+
+    _GoldCost = _GoldCost or 4500;
+    _WoodCost = _WoodCost or 35;
+    local eID = GetID(_Name);
+    Logic.SetModel(eID, Models.Buildings_B_BuildingPlot_8x8);
+    Logic.SetVisible(eID, true);
+
+    self.Data.Trebuchet.Sites[_Name] = {
+        ConstructedTrebuchet = 0,
+        ConstructionCart = 0,
+        ReturningCart = 0,
+    }
+
+    CreateObject {
+        Name                    = _Name,
+        Title                   = self.Data.Trebuchet.Description.Title,
+        Text                    = self.Data.Trebuchet.Description.Text,
+        Costs                   = {Goods.G_Gold, _GoldCost, Goods.G_Wood, _WoodCost},
+        Distance                = 1000,
+        State                   = 0,
+        Condition               = self.TrebuchetHasSufficentTitle,
+        ConditionUnfulfilled    = self.Data.Trebuchet.Error,
+        Callback                = function(t, PlayerID)
+            AddOnInteractiveTrebuchets.Global:SpawnTrebuchetCart(PlayerID, t.Name);
+        end,
+    }
+end
+
+---
+-- Zerstört eine Trebuchet-Baustelle.
+--
+-- @param _Name [string] Skriptname Position
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global:DestroyTrebuchetConstructionSite(_Name)
+    local ConstructionCart = self.Data.Trebuchet.Sites[_Name].ConstructionCart;
+    DestroyEntity(ConstructionCart);
+    local ConstructedTrebuchet = self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
+    DestroyEntity(ConstructedTrebuchet);
+    local ReturningCart = self.Data.Trebuchet.Sites[_Name].ReturningCart;
+    DestroyEntity(ReturningCart);
+
+    self.Data.Trebuchet.Sites[_Name] = nil;
+    Logic.SetVisible(GetID(_Name), false);
+    RemoveInteractiveObject(_Name);
+end
+
+---
+-- Erzeugt einen Trebuchetwagen für die Baustelle.
+--
+-- @param _PlayerID Besitzer
+-- @param _Site     Baustelle
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global:SpawnTrebuchetCart(_PlayerID, _Site)
+    local StoreID = Logic.GetStoreHouse(_PlayerID);
+    local x,y = Logic.GetBuildingApproachPosition(StoreID);
+    local CartID = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, _PlayerID);
+    Logic.SetEntitySelectableFlag(CartID, 0);
+    self.Data.Trebuchet.Sites[_Site].ConstructionCart = CartID;
+end
+
+---
+-- Erzeugt das Trebuchet an der Baustelle.
+--
+-- @param _PlayerID Besitzer
+-- @param _Site     Baustelle
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global:SpawnTrebuchet(_PlayerID, _Site)
+    local pos = GetPosition(_Site);
+    local TrebuchetID = Logic.CreateEntity(Entities.U_Trebuchet, pos.X, pos.Y, 0, _PlayerID);
+    self.Data.Trebuchet.Sites[_Site].ConstructedTrebuchet = TrebuchetID;
+end
+
+---
+-- Baut das Trebuchet zum Wagen zurück und lässt es wieder ins
+-- Lagerhaus des Besitzers fahren.
+--
+-- @param _PlayerID  Besitzer
+-- @param _Trebuchet Baustelle
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global:ReturnTrebuchetToStorehouse(_PlayerID, _Trebuchet)
+    local x,y,z = Logic.EntityGetPos(_Trebuchet);
+    local CartID = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, _PlayerID);
+    Logic.SetEntitySelectableFlag(CartID, 0);
+
+    local SiteName;
+    for k,v in pairs(self.Data.Trebuchet.Sites) do
+        if v.ConstructedTrebuchet == _Trebuchet then
+            SiteName = k;
+        end
+    end
+    if SiteName then
+        self.Data.Trebuchet.Sites[SiteName].ReturningCart = CartID;
+        self.Data.Trebuchet.Sites[SiteName].ConstructedTrebuchet = 0;
+        Logic.SetVisible(GetID(SiteName), true);
+        DestroyEntity(_Trebuchet);
+    else
+        DestroyEntity(CartID);
+    end
+end
+
+---
+-- Callback: Ein Trebuchet wird manuell zurückgebaut.
+--
+-- @param _EntityID Entity-ID des Trebuchet
+-- @param _PlayerID Besitzer
+-- @param _x        X-Position
+-- @param _y        Y-Position
+-- @param _z        Z-Position
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global.OnTrebuchetDisambled(_EntityID, _PlayerID, _x, _y, _z)
+    AddOnInteractiveTrebuchets.Global:ReturnTrebuchetToStorehouse(_PlayerID, _EntityID);
+end
+
+---
+-- Steuert die Trebuchet-Mechanik.
+-- @within Internal
+-- @local
+--
+function AddOnInteractiveTrebuchets.Global.WatchTrebuchetsAndCarts()
+    for k,v in pairs(AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites) do
+        local SiteID = GetID(k);
+
+        -- Stufe 1: Karren kommt
+        if v.ConstructionCart ~= 0 then
+            -- Bauwagen wurde zerstört
+            if not IsExisting(v.ConstructionCart) then
+                AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
+                API.InteractiveObjectActivate(k);
+            end
+            -- Bauwagen bewegt sich nicht zum Ziel
+            if not Logic.IsEntityMoving(v.ConstructionCart) then
+                local SiteID = GetID(k);
+                local x,y,z = Logic.EntityGetPos(SiteID);
+                Logic.MoveSettler(v.ConstructionCart, x, y);
+            end
+            -- Bauwagen ist angekommen
+            if IsNear(v.ConstructionCart, k, 500) then
+                local x,y,z = Logic.EntityGetPos(SiteID);
+                local PlayerID = Logic.EntityGetPlayer(v.ConstructionCart);
+                AddOnInteractiveTrebuchets.Global:SpawnTrebuchet(PlayerID, k);
+                DestroyEntity(v.ConstructionCart);
+                AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
+                Logic.SetVisible(SiteID, false);
+                Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
+            end
+        end
+
+        -- Stufe 2: Trebuchet steht
+        if v.ConstructedTrebuchet ~= 0 then
+            -- Trebuchet wurde zerstört
+            if not IsExisting(v.ConstructedTrebuchet) then
+                AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[k].ConstructedTrebuchet = 0;
+                Logic.SetVisible(SiteID, true);
+                API.InteractiveObjectActivate(k);
+            end
+            -- Trebuchet hat keine Munition
+            if Logic.GetAmmunitionAmount(v.ConstructedTrebuchet) == 0 and BundleEntitySelection.Local.Data.RefillTrebuchet == false then
+                local PlayerID = Logic.EntityGetPlayer(v.ConstructedTrebuchet);
+                AddOnInteractiveTrebuchets.Global:ReturnTrebuchetToStorehouse(PlayerID, v.ConstructedTrebuchet);
+            end
+        end
+
+        -- Stufe 3: Rückweg
+        if v.ReturningCart ~= 0 then
+            -- Rückkehrwagen wurde zerstört
+            if not IsExisting(v.ReturningCart) then
+                AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[k].ReturningCart = 0;
+                API.InteractiveObjectActivate(k);
+            end
+
+            local PlayerID = Logic.EntityGetPlayer(v.ReturningCart);
+            local StoreID = Logic.GetStoreHouse(PlayerID);
+
+            -- Rückkehrwagen muss sich zum Ziel bewegen
+            if not Logic.IsEntityMoving(v.ReturningCart) then
+                local x,y = Logic.GetBuildingApproachPosition(StoreID);
+                Logic.MoveSettler(v.ReturningCart, x, y);
+            end
+            -- Rückkehrwagen kommt an
+            if IsNear(v.ReturningCart, StoreID, 1100) then
+                local PlayerID = Logic.EntityGetPlayer(v.ConstructionCart);
+                DestroyEntity(v.ReturningCart);
+            end
+        end
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterAddOn("AddOnInteractiveTrebuchets");
 
 </code></div>
     </div>

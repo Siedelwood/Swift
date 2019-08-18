@@ -5,11 +5,9 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- <b>Interaktive Minen:</b><br>
 -- Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch
 -- Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.
 -- <br>Optional kann die Mine einstürzen, wenn sie erschöpft wurde.
--- <br><a href="#API.CreateIOMine">Eine Mine anlegen</a>
 --
 -- @within Modulbeschreibung
 -- @set sort=true

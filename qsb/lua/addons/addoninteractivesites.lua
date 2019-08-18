@@ -5,12 +5,10 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- <b>Interaktive Baustellen:</b><br>
 -- Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei
 -- ein Gebäude bauen zu lassen.
 -- <br>Die Baustelle muss durch den Helden aktiviert
 -- werden. Ein Siedler wird aus dem Lagerhaus kommen und das Gebäude bauen.
--- <br><a href="#API.CreateIOBuildingSite">Eine Baustelle anlegen</a>
 -- 
 -- @within Modulbeschreibung
 -- @set sort=true

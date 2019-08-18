@@ -44,8 +44,10 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
-  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
-  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
+  <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
+  <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
+  <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
@@ -70,15 +72,17 @@
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
-  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><strong>core</strong></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
+  <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalinteractiveobjecttemplates.html">external.externalinteractiveobjecttemplates</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
 </ul>
@@ -344,6 +348,22 @@
 	<td class="summary">Überschreibt eine Funktion mit einer anderen.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Core:ScriptingValueBitsFraction">Core:ScriptingValueBitsFraction (num, t)</a></td>
+	<td class="summary">Stellt eine Zahl als eine Folge von Bits in einer Table dar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ScriptingValueBitsInteger">Core:ScriptingValueBitsInteger (num)</a></td>
+	<td class="summary">Gibt den Integer als Bits zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ScriptingValueFloatToInteger">Core:ScriptingValueFloatToInteger (fval)</a></td>
+	<td class="summary">Konvertiert eine Dezimalzahl in eine Ganzzahl.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:ScriptingValueIntegerToFloat">Core:ScriptingValueIntegerToFloat (num)</a></td>
+	<td class="summary">Konvertiert eine Ganzzahl in eine Dezimalzahl.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Core:SetupGlobal_HackQuestSystem">Core:SetupGlobal_HackQuestSystem ()</a></td>
 	<td class="summary">Implementiert die vordefinierten Texte für Custom Behavior und den Aufruf
  der :Interrupt Methode.</td>
@@ -364,6 +384,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#Core:ToBoolean">Core:ToBoolean (_Input)</a></td>
 	<td class="summary">Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:qmod">Core:qmod (a, b)</a></td>
+	<td class="summary">Bestimmt das Modul b der Zahl a.</td>
 	</tr>
 </table>
 
@@ -2059,6 +2083,118 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 
 </dd>
     <dt>
+    <a name = "Core:ScriptingValueBitsFraction"></a>
+    <strong>Core:ScriptingValueBitsFraction (num, t)</strong>
+    </dt>
+    <dd>
+    Stellt eine Zahl als eine Folge von Bits in einer Table dar.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+            <span class="types"><span class="type">number</span></span>
+         Integer
+        </li>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+           Table
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Table mit Bits
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ScriptingValueBitsInteger"></a>
+    <strong>Core:ScriptingValueBitsInteger (num)</strong>
+    </dt>
+    <dd>
+    Gibt den Integer als Bits zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+            <span class="types"><span class="type">number</span></span>
+         Bits
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Table mit Bits
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ScriptingValueFloatToInteger"></a>
+    <strong>Core:ScriptingValueFloatToInteger (fval)</strong>
+    </dt>
+    <dd>
+    Konvertiert eine Dezimalzahl in eine Ganzzahl.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fval</span>
+            <span class="types"><span class="type">number</span></span>
+         Float
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Float als Integer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:ScriptingValueIntegerToFloat"></a>
+    <strong>Core:ScriptingValueIntegerToFloat (num)</strong>
+    </dt>
+    <dd>
+    Konvertiert eine Ganzzahl in eine Dezimalzahl.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+            <span class="types"><span class="type">number</span></span>
+         Integer
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Integer als Float
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "Core:SetupGlobal_HackQuestSystem"></a>
     <strong>Core:SetupGlobal_HackQuestSystem ()</strong>
     </dt>
@@ -2170,6 +2306,37 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 
 
 </dd>
+    <dt>
+    <a name = "Core:qmod"></a>
+    <strong>Core:qmod (a, b)</strong>
+    </dt>
+    <dd>
+    Bestimmt das Modul b der Zahl a.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">number</span></span>
+         Zahl
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">number</span></span>
+         Modul
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        qmod der Zahl
+    </ol>
+
+
+
+
+</dd>
 </dl>
 
 
@@ -2177,7 +2344,7 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-07-31 23:49:47 </i>
+<i style="float:right;">Last updated 2019-08-18 11:25:37 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -7,7 +7,6 @@
 ---
 -- Es werden Schatztruhen mit zufälligem Inhalt erzeugt. Diese Truhen werden
 -- aktiviert und der Inhalt wird in einem Karren abtransportiert.
--- <br><a href="#API.CreateRandomChest">Eine Schatztruhe anlegen</a>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -59,6 +58,9 @@ CreateRandomChest = API.CreateRandomChest;
 -- @param[type=string] _Name Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
 --
+-- @usage
+-- API.CreateRandomGoldChest("chest")
+--
 function API.CreateRandomGoldChest(_Name)
     if GUI then
         API.Fatal("API.CreateRandomGoldChest('" .._Name.. "')");
@@ -80,6 +82,9 @@ CreateRandomGoldChest = API.CreateRandomGoldChest;
 -- @param[type=string] _Name Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
 --
+-- @usage
+-- API.CreateRandomResourceChest("chest")
+--
 function API.CreateRandomResourceChest(_Name)
     if GUI then
         API.Bridge("API.CreateRandomResourceChest('" .._Name.. "')");
@@ -100,6 +105,9 @@ CreateRandomResourceChest = API.CreateRandomResourceChest;
 --
 -- @param[type=string] _Name Name der zu ersetzenden Script Entity
 -- @within Anwenderfunktionen
+--
+-- @usage
+-- API.CreateRandomLuxuryChest("chest")
 --
 function API.CreateRandomLuxuryChest(_Name)
     if GUI then
