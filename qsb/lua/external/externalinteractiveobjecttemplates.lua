@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia AddOnInteractiveObjectTemplates                              # --
+-- #  Symfonia ExternalInteractiveObjectTemplates                           # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
@@ -43,7 +43,7 @@
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-AddOnInteractiveObjectTemplates = {};
+ExternalInteractiveObjectTemplates = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -96,7 +96,7 @@ function API.CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, 
         API.Fatal("API.CreateIOMine: Can not be used from local script!");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
+    ExternalInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
 end
 CreateIOMine = API.CreateIOMine;
 
@@ -123,7 +123,7 @@ function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _
         API.Fatal("API.CreateIOIronMine: Can not be used from local script!");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
+    ExternalInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
 end
 CreateIOIronMine = API.CreateIOIronMine;
 
@@ -150,7 +150,7 @@ function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, 
         API.Fatal("API.CreateIOStoneMine: Can not be used from local script!");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
+    ExternalInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
 end
 CreateIOStoneMine = API.CreateIOStoneMine;
 
@@ -194,7 +194,7 @@ function API.CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance
         API.Fatal("API.CreateIOBuildingSite: Can not be used from local script!");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback);
+    ExternalInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback);
 end
 CreateIOBuildingSite = API.CreateIOBuildingSite;
 
@@ -224,7 +224,7 @@ function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
         API.Fatal("API.CreateRandomChest: Can not be used from local script!");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
+    ExternalInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
 end
 CreateRandomChest = API.CreateRandomChest;
 
@@ -241,7 +241,7 @@ function API.CreateRandomGoldChest(_Name)
         API.Fatal("API.CreateRandomGoldChest('" .._Name.. "')");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
+    ExternalInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
 end
 CreateRandomGoldChest = API.CreateRandomGoldChest;
 
@@ -262,7 +262,7 @@ function API.CreateRandomResourceChest(_Name)
         API.Bridge("API.CreateRandomResourceChest('" .._Name.. "')");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name);
+    ExternalInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name);
 end
 CreateRandomResourceChest = API.CreateRandomResourceChest;
 
@@ -283,7 +283,7 @@ function API.CreateRandomLuxuryChest(_Name)
         API.Bridge("API.CreateRandomLuxuryChest('" .._Name.. "')");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name);
+    ExternalInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name);
 end
 CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
 
@@ -315,7 +315,7 @@ function API.CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
         API.Bridge("API.CreateTrebuchetConstructionSite('" .._Name.. "', " .._GoldCost.. ", " .._WoodCost.. ")");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost);
+    ExternalInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost);
 end
 CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
 
@@ -336,7 +336,7 @@ function API.DestroyTrebuchetConstructionSite(_Name)
         API.Bridge("API.DestroyTrebuchetConstructionSite('" .._Name.. "')");
         return;
     end
-    AddOnInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name);
+    ExternalInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name);
 end
 DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
 
@@ -407,7 +407,7 @@ GetConstructionCart = API.GetConstructionCartByTrebuchetConstructionSite;
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-AddOnInteractiveObjectTemplates = {
+ExternalInteractiveObjectTemplates = {
     Global = {
         Data = {
             ConstructionSite = {
@@ -495,7 +495,7 @@ AddOnInteractiveObjectTemplates = {
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:Install()
+function ExternalInteractiveObjectTemplates.Global:Install()
 end
 
 ---
@@ -503,9 +503,9 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:TrebuchetActivate()
+function ExternalInteractiveObjectTemplates.Global:TrebuchetActivate()
     if not self.Data.Trebuchet.IsActive then
-        GameCallback_QSB_OnDisambleTrebuchet = AddOnInteractiveObjectTemplates.Global.OnTrebuchetDisambled;
+        GameCallback_QSB_OnDisambleTrebuchet = ExternalInteractiveObjectTemplates.Global.OnTrebuchetDisambled;
         GameCallback_QSB_OnErectTrebuchet = function() end;
         StartSimpleJobEx(self.WatchTrebuchetsAndCarts);
         self.Data.Trebuchet.IsActive = true;
@@ -520,7 +520,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.TrebuchetHasSufficentTitle()
+function ExternalInteractiveObjectTemplates.Global.TrebuchetHasSufficentTitle()
     local pID = 1;
     for i=1,8 do
         if Logic.PlayerGetIsHumanFlag(i) == 1 then
@@ -528,7 +528,7 @@ function AddOnInteractiveObjectTemplates.Global.TrebuchetHasSufficentTitle()
             break;
         end
     end
-    return Logic.GetKnightTitle(pID) >= AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.NeededKnightTitle;
+    return Logic.GetKnightTitle(pID) >= ExternalInteractiveObjectTemplates.Global.Data.Trebuchet.NeededKnightTitle;
 end
 
 ---
@@ -538,7 +538,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:TrebuchetSetNeededKnightTitle(_KnightTitle)
+function ExternalInteractiveObjectTemplates.Global:TrebuchetSetNeededKnightTitle(_KnightTitle)
     self.Data.Trebuchet.NeededKnightTitle = _KnightTitle;
 end
 
@@ -552,7 +552,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
+function ExternalInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
     self:TrebuchetActivate();
 
     _GoldCost = _GoldCost or 4500;
@@ -577,7 +577,7 @@ function AddOnInteractiveObjectTemplates.Global:CreateTrebuchetConstructionSite(
         Condition               = self.TrebuchetHasSufficentTitle,
         ConditionUnfulfilled    = self.Data.Trebuchet.Error,
         Callback                = function(t, PlayerID)
-            AddOnInteractiveObjectTemplates.Global:SpawnTrebuchetCart(PlayerID, t.Name);
+            ExternalInteractiveObjectTemplates.Global:SpawnTrebuchetCart(PlayerID, t.Name);
         end,
     }
 end
@@ -589,7 +589,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name)
+function ExternalInteractiveObjectTemplates.Global:DestroyTrebuchetConstructionSite(_Name)
     local ConstructionCart = self.Data.Trebuchet.Sites[_Name].ConstructionCart;
     DestroyEntity(ConstructionCart);
     local ConstructedTrebuchet = self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
@@ -610,7 +610,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:SpawnTrebuchetCart(_PlayerID, _Site)
+function ExternalInteractiveObjectTemplates.Global:SpawnTrebuchetCart(_PlayerID, _Site)
     local StoreID = Logic.GetStoreHouse(_PlayerID);
     local x,y = Logic.GetBuildingApproachPosition(StoreID);
     local CartID = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, _PlayerID);
@@ -626,7 +626,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:SpawnTrebuchet(_PlayerID, _Site)
+function ExternalInteractiveObjectTemplates.Global:SpawnTrebuchet(_PlayerID, _Site)
     local pos = GetPosition(_Site);
     local TrebuchetID = Logic.CreateEntity(Entities.U_Trebuchet, pos.X, pos.Y, 0, _PlayerID);
     self.Data.Trebuchet.Sites[_Site].ConstructedTrebuchet = TrebuchetID;
@@ -641,7 +641,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(_PlayerID, _Trebuchet)
+function ExternalInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(_PlayerID, _Trebuchet)
     local x,y,z = Logic.EntityGetPos(_Trebuchet);
     local CartID = Logic.CreateEntity(Entities.U_SiegeEngineCart, x, y, 0, _PlayerID);
     Logic.SetEntitySelectableFlag(CartID, 0);
@@ -673,8 +673,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.OnTrebuchetDisambled(_EntityID, _PlayerID, _x, _y, _z)
-    AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(_PlayerID, _EntityID);
+function ExternalInteractiveObjectTemplates.Global.OnTrebuchetDisambled(_EntityID, _PlayerID, _x, _y, _z)
+    ExternalInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(_PlayerID, _EntityID);
 end
 
 ---
@@ -682,15 +682,15 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
-    for k,v in pairs(AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites) do
+function ExternalInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
+    for k,v in pairs(ExternalInteractiveObjectTemplates.Global.Data.Trebuchet.Sites) do
         local SiteID = GetID(k);
 
         -- Stufe 1: Karren kommt
         if v.ConstructionCart ~= 0 then
             -- Bauwagen wurde zerstört
             if not IsExisting(v.ConstructionCart) then
-                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
+                ExternalInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
                 API.InteractiveObjectActivate(k);
             end
             -- Bauwagen bewegt sich nicht zum Ziel
@@ -703,9 +703,9 @@ function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
             if IsNear(v.ConstructionCart, k, 500) then
                 local x,y,z = Logic.EntityGetPos(SiteID);
                 local PlayerID = Logic.EntityGetPlayer(v.ConstructionCart);
-                AddOnInteractiveObjectTemplates.Global:SpawnTrebuchet(PlayerID, k);
+                ExternalInteractiveObjectTemplates.Global:SpawnTrebuchet(PlayerID, k);
                 DestroyEntity(v.ConstructionCart);
-                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
+                ExternalInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructionCart = 0;
                 Logic.SetVisible(SiteID, false);
                 Logic.CreateEffect(EGL_Effects.E_Shockwave01, x, y, 0);
             end
@@ -715,14 +715,14 @@ function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
         if v.ConstructedTrebuchet ~= 0 then
             -- Trebuchet wurde zerstört
             if not IsExisting(v.ConstructedTrebuchet) then
-                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructedTrebuchet = 0;
+                ExternalInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ConstructedTrebuchet = 0;
                 Logic.SetVisible(SiteID, true);
                 API.InteractiveObjectActivate(k);
             end
             -- Trebuchet hat keine Munition
             if Logic.GetAmmunitionAmount(v.ConstructedTrebuchet) == 0 and BundleEntitySelection.Local.Data.RefillTrebuchet == false then
                 local PlayerID = Logic.EntityGetPlayer(v.ConstructedTrebuchet);
-                AddOnInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(PlayerID, v.ConstructedTrebuchet);
+                ExternalInteractiveObjectTemplates.Global:ReturnTrebuchetToStorehouse(PlayerID, v.ConstructedTrebuchet);
             end
         end
 
@@ -730,7 +730,7 @@ function AddOnInteractiveObjectTemplates.Global.WatchTrebuchetsAndCarts()
         if v.ReturningCart ~= 0 then
             -- Rückkehrwagen wurde zerstört
             if not IsExisting(v.ReturningCart) then
-                AddOnInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ReturningCart = 0;
+                ExternalInteractiveObjectTemplates.Global.Data.Trebuchet.Sites[k].ReturningCart = 0;
                 API.InteractiveObjectActivate(k);
             end
 
@@ -762,7 +762,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
+function ExternalInteractiveObjectTemplates.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
     _Min = (_Min ~= nil and _Min > 0 and _Min) or 1;
     _Max = (_Max ~= nil and _Max > 1 and _Max) or 2;
     if not _Callback then
@@ -799,8 +799,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateRandomGoldChest(_Name)
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
+function ExternalInteractiveObjectTemplates.Global:CreateRandomGoldChest(_Name)
+    ExternalInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
 end
 
 ---
@@ -813,14 +813,14 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name)
+function ExternalInteractiveObjectTemplates.Global:CreateRandomResourceChest(_Name)
     local PossibleGoods = {
         Goods.G_Iron, Goods.G_Stone, Goods.G_Wood, Goods.G_Wool,
         Goods.G_Carcass, Goods.G_Herb, Goods.G_Honeycomb,
         Goods.G_Milk, Goods.G_RawFish, Goods.G_Grain
     };
     local Good = PossibleGoods[math.random(1, #PossibleGoods)];
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Good, 30, 60);
+    ExternalInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Good, 30, 60);
 end
 
 ---
@@ -833,7 +833,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name)
+function ExternalInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name)
     local Luxury = {Goods.G_Salt, Goods.G_Dye};
     if g_GameExtraNo >= 1 then
         table.insert(Luxury, Goods.G_Gems);
@@ -841,7 +841,7 @@ function AddOnInteractiveObjectTemplates.Global:CreateRandomLuxuryChest(_Name)
         table.insert(Luxury, Goods.G_Olibanum);
     end
     local Good = Luxury[math.random(1, #Luxury)];
-    AddOnInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Good, 50, 100);
+    ExternalInteractiveObjectTemplates.Global:CreateRandomChest(_Name, Good, 50, 100);
 end
 
 ---
@@ -858,7 +858,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
+function ExternalInteractiveObjectTemplates.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
     -- Objekt austauschen und Model anpassen
     local eID = ReplaceEntity(_Position, Entities.XD_ScriptEntity);
     local Model = Models.Doodads_D_SE_ResourceIron_Wrecked;
@@ -901,7 +901,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+function ExternalInteractiveObjectTemplates.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     assert(IsExisting(_Position));
     if _Cost1Type then
         assert(API.TraverseTable(_Cost1Type, Goods));
@@ -931,7 +931,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
+function ExternalInteractiveObjectTemplates.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     assert(IsExisting(_Position));
     if _Cost1Type then
         assert(API.TraverseTable(_Cost1Type, Goods));
@@ -956,7 +956,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.ConditionBuildIOMine(_Data)
+function ExternalInteractiveObjectTemplates.Global.ConditionBuildIOMine(_Data)
     if _Data.CustomCondition then
         return _Data.CustomCondition(_Data) == true;
     end
@@ -964,13 +964,13 @@ function AddOnInteractiveObjectTemplates.Global.ConditionBuildIOMine(_Data)
 end
 
 
-function AddOnInteractiveObjectTemplates.Global.ActionBuildIOMine(_Data)
+function ExternalInteractiveObjectTemplates.Global.ActionBuildIOMine(_Data)
     ReplaceEntity(_Data.Name, _Data.Type);
     DestroyEntity(_Data.InvisibleBlocker);
     if type(_Data.CallbackCreate) == "function" then
         _Data.CallbackCreate(_Data);
     end
-    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "AddOnInteractiveObjectTemplates_JobControlIOMine", 1, {}, {_Data.Name});
+    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "ExternalInteractiveObjectTemplates_JobControlIOMine", 1, {}, {_Data.Name});
 end
 
 ---
@@ -981,7 +981,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
+function ExternalInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
     if not IO[_Mine] then
         return true;
     end
@@ -1008,14 +1008,14 @@ function AddOnInteractiveObjectTemplates.Global.ControlIOMine(_Mine)
         return true;
     end
 end
-AddOnInteractiveObjectTemplates_JobControlIOMine = AddOnInteractiveObjectTemplates.Global.ControlIOMine;
+ExternalInteractiveObjectTemplates_JobControlIOMine = ExternalInteractiveObjectTemplates.Global.ControlIOMine;
 
 ---
 -- Initialisiert die interaktiven Baustellen.
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:ConstructionSiteActivate()
+function ExternalInteractiveObjectTemplates.Global:ConstructionSiteActivate()
     if self.Data.ConstructionSiteActivated then
         return;
     end
@@ -1034,8 +1034,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.OnConstructionComplete(_PlayerID, _EntityID)
-    local IO = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_EntityID];
+function ExternalInteractiveObjectTemplates.Global.OnConstructionComplete(_PlayerID, _EntityID)
+    local IO = ExternalInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_EntityID];
     if IO ~= nil and IO.CompletedCallback then
         IO.CompletedCallback(IO, _EntityID);
     end
@@ -1057,8 +1057,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
-    AddOnInteractiveObjectTemplates.Global:ConstructionSiteActivate();
+function ExternalInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
+    ExternalInteractiveObjectTemplates.Global:ConstructionSiteActivate();
     local Costs = _Costs or {Logic.GetEntityTypeFullCost(_Type)};
     local Title = _Title or self.Data.ConstructionSite.Description.Title;
     local Text  = Text or self.Data.ConstructionSite.Description.Text;
@@ -1074,11 +1074,11 @@ function AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite(_Position, 
         Distance             = _Distance or 1500,
         Type                 = _Type,
         Costs                = Costs,
-        Condition            = AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite,
-        ConditionUnfulfilled = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Description.Unfulfilled,
+        Condition            = ExternalInteractiveObjectTemplates.Global.ConditionConstructionSite,
+        ConditionUnfulfilled = ExternalInteractiveObjectTemplates.Global.Data.ConstructionSite.Description.Unfulfilled,
         PlayerID             = _PlayerID,
         CompletedCallback    = _Callback,
-        Callback             = AddOnInteractiveObjectTemplates.Global.CallbackIOConstructionSite;
+        Callback             = ExternalInteractiveObjectTemplates.Global.CallbackIOConstructionSite;
     };
 end
 
@@ -1088,18 +1088,18 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.CallbackIOConstructionSite(_Data)
+function ExternalInteractiveObjectTemplates.Global.CallbackIOConstructionSite(_Data)
     local pos  = GetPosition(_Data.Name);
     local eID  = GetID(_Data.Name);
     local ori  = Logic.GetEntityOrientation(eID);
     local site = Logic.CreateConstructionSite(pos.X, pos.Y, ori, _Data.Type, _Data.PlayerID);
     Logic.SetVisible(eID, false);
     if (site == nil) then
-        API.Fatal('AddOnInteractiveObjectTemplates.Global:CreateIOBuildingSite: Failed to place construction site!');
+        API.Fatal('ExternalInteractiveObjectTemplates.Global:CreateIOBuildingSite: Failed to place construction site!');
         return;
     end
-    AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[site] = _Data;
-    StartSimpleJobEx(AddOnInteractiveObjectTemplates.Global.ControlConstructionSite, site);
+    ExternalInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[site] = _Data;
+    StartSimpleJobEx(ExternalInteractiveObjectTemplates.Global.ControlConstructionSite, site);
 end
 
 ---
@@ -1109,7 +1109,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.ConditionConstructionSite(_Data)
+function ExternalInteractiveObjectTemplates.Global.ConditionConstructionSite(_Data)
     local eID = GetID(_Data.Name);
     local tID = GetTerritoryUnderEntity(eID);
     local pID = Logic.GetTerritoryPlayerID(tID);
@@ -1130,12 +1130,12 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Global.ControlConstructionSite(_eID)
-    if AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID] == nil then
+function ExternalInteractiveObjectTemplates.Global.ControlConstructionSite(_eID)
+    if ExternalInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID] == nil then
         return true;
     end
     if not IsExisting(_eID) then
-        local Name = AddOnInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID].Name;
+        local Name = ExternalInteractiveObjectTemplates.Global.Data.ConstructionSite.Sites[_eID].Name;
         Logic.SetVisible(GetID(Name), true);
         API.InteractiveObjectActivate(Name);
         return true;
@@ -1149,8 +1149,8 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveObjectTemplates.Local:Install()
+function ExternalInteractiveObjectTemplates.Local:Install()
 end
 
-Core:RegisterAddOn("AddOnInteractiveObjectTemplates");
+Core:RegisterAddOn("ExternalInteractiveObjectTemplates");
 

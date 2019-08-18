@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia BundleTradingAnalysis                                        # --
+-- #  Symfonia ExternalTradingAnalysis                                      # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
@@ -23,7 +23,7 @@
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-BundleTradingAnalysis = {};
+ExternalTradingAnalysis = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -67,7 +67,7 @@ function API.GetOfferInformation(_PlayerID)
         API.Fatal("Can not execute API.GetOfferInformation in local script!");
         return;
     end
-    return BundleTradingAnalysis.Global:GetStorehouseInformation(_PlayerID);
+    return ExternalTradingAnalysis.Global:GetStorehouseInformation(_PlayerID);
 end
 
 ---
@@ -86,7 +86,7 @@ function API.GetOfferCount(_PlayerID)
         API.Fatal("Can not execute API.GetOfferCount in local script!");
         return;
     end
-    return BundleTradingAnalysis.Global:GetOfferCount(_PlayerID);
+    return ExternalTradingAnalysis.Global:GetOfferCount(_PlayerID);
 end
 
 ---
@@ -108,7 +108,7 @@ function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
         API.Fatal("Can not execute API.IsGoodOrUnitOffered in local script!");
         return;
     end
-    local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
+    local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
     return OfferID ~= 1 and TraderID ~= 1;
 end
 
@@ -128,7 +128,7 @@ function API.RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
         API.Bridge("API.RemoveTradeOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ")");
         return;
     end
-    return BundleTradingAnalysis.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType);
+    return ExternalTradingAnalysis.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType);
 end
 
 ---
@@ -156,14 +156,14 @@ function API.ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
         API.Bridge("API.ModifyTradeOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ", " .._NewAmount.. ")");
         return;
     end
-    return BundleTradingAnalysis.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount);
+    return ExternalTradingAnalysis.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount);
 end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleTradingAnalysis = {
+ExternalTradingAnalysis = {
     Global = {
         Data = {
             PlayerOffersAmount = {
@@ -180,7 +180,7 @@ BundleTradingAnalysis = {
 -- @within Internal
 -- @local
 --
-function BundleTradingAnalysis.Global:Install()
+function ExternalTradingAnalysis.Global:Install()
     self.OverwriteOfferFunctions();
     self.OverwriteBasePricesAndRefreshRates();
 end
@@ -191,7 +191,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
+function ExternalTradingAnalysis.Global:OverwriteOfferFunctions()
     ---
     -- Erzeugt ein Handelsangebot für Waren und gibt die ID zurück.
     --
@@ -215,7 +215,7 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
         end
 
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
-        local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _GoodType);
+        local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _GoodType);
         if OfferID ~= -1 and TraderID ~= -1 then
             API.Warn("Good offer for good type " .._GoodType.. " already exists for player " ..PlayerID.. "!");
             return;
@@ -238,7 +238,7 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
         end
         local offerAmount = 9;
 
-        BundleTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_GoodType] = _NumberOfOffers;
+        ExternalTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_GoodType] = _NumberOfOffers;
         return Logic.AddGoodTraderOffer(MerchantID,_NumberOfOffers,Goods.G_Gold,0,_GoodType,offerAmount,_optionalPlayersPlayerID,_RefreshRate,MarketerType,Entities.U_ResourceMerchant);
     end
 
@@ -269,7 +269,7 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
         end
 
         local PlayerID = Logic.EntityGetPlayer(MercenaryID);
-        local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _Type);
+        local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _Type);
         if OfferID ~= -1 and TraderID ~= -1 then
             API.Warn("Mercenary offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
             return;
@@ -286,7 +286,7 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
             _optionalPlayersPlayerID = 1;
         end
 
-        BundleTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_Type] = _Amount;
+        ExternalTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_Type] = _Amount;
         return Logic.AddMercenaryTraderOffer(MercenaryID, _Amount, Goods.G_Gold, 3, _Type ,amount,_optionalPlayersPlayerID,_RefreshRate);
     end
 
@@ -308,7 +308,7 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
         local NumberOfOffers = 1;
 
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
-        local OfferID, TraderID = BundleTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _EntertainerType);
+        local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _EntertainerType);
         if OfferID ~= -1 and TraderID ~= -1 then
             API.Warn("Entertainer offer for type " .._EntertainerType.. " already exists for player " ..PlayerID.. "!");
             return;
@@ -321,7 +321,7 @@ function BundleTradingAnalysis.Global:OverwriteOfferFunctions()
             _optionalPlayersPlayerID = 1;
         end
 
-        BundleTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_EntertainerType] = 1;
+        ExternalTradingAnalysis.Global.Data.PlayerOffersAmount[PlayerID][_EntertainerType] = 1;
         return Logic.AddEntertainerTraderOffer(MerchantID,NumberOfOffers,Goods.G_Gold,0,_EntertainerType, _optionalPlayersPlayerID,0);
     end
 end
@@ -332,7 +332,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates()
+function ExternalTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates()
     MerchantSystem.BasePrices[Entities.U_CatapultCart] = MerchantSystem.BasePrices[Entities.U_CatapultCart] or 1000;
     MerchantSystem.BasePrices[Entities.U_BatteringRamCart] = MerchantSystem.BasePrices[Entities.U_BatteringRamCart] or 450;
     MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] = MerchantSystem.BasePrices[Entities.U_SiegeTowerCart] or 600;
@@ -369,7 +369,7 @@ end
 -- @within Internal
 -- @local
 --
--- @usage BundleTradingAnalysis.Global:GetStorehouseInformation(2);
+-- @usage ExternalTradingAnalysis.Global:GetStorehouseInformation(2);
 --
 -- -- Ausgabe:
 -- -- Info = {
@@ -383,7 +383,7 @@ end
 -- --      },
 -- -- }
 --
-function BundleTradingAnalysis.Global:GetStorehouseInformation(_PlayerID)
+function ExternalTradingAnalysis.Global:GetStorehouseInformation(_PlayerID)
     local BuildingID = Logic.GetStoreHouse(_PlayerID);
 
     local StorehouseData = {
@@ -432,7 +432,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleTradingAnalysis.Global:GetOfferCount(_PlayerID)
+function ExternalTradingAnalysis.Global:GetOfferCount(_PlayerID)
     local Offers = self:GetStorehouseInformation(_PlayerID);
     if Info then
         return Offers.OfferCount;
@@ -452,7 +452,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleTradingAnalysis.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType)
+function ExternalTradingAnalysis.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType)
     local Info = self:GetStorehouseInformation(_PlayerID);
     if Info then
         for j=1, #Info[1], 1 do
@@ -473,7 +473,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleTradingAnalysis.Global:GetTraderType(_BuildingID, _TraderID)
+function ExternalTradingAnalysis.Global:GetTraderType(_BuildingID, _TraderID)
     if Logic.IsGoodTrader(BuildingID, _TraderID) == true then
         return QSB.TraderTypes.GoodTrader;
     elseif Logic.IsMercenaryTrader(BuildingID, _TraderID) == true then
@@ -494,7 +494,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleTradingAnalysis.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
+function ExternalTradingAnalysis.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
     local OfferID, TraderID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
     if not IsExisting(BuildingID) then
         return;
@@ -519,7 +519,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleTradingAnalysis.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
+function ExternalTradingAnalysis.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
     local OfferID, TraderID, BuildingID = self:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
     if not IsExisting(BuildingID) then
         return;
@@ -538,5 +538,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleTradingAnalysis");
+Core:RegisterBundle("ExternalTradingAnalysis");
 

@@ -122,7 +122,6 @@ SymfoniaLoader = {
             {"BundleInterfaceFeatureVisibility",    true},
             {"BundleMinimapMarker",                 true},
             {"BundleSymfoniaBehaviors",             true},
-            {"BundleThirdPersonCamera",             true},
             {"BundleTimeLine",                      true},
             {"BundleTravelingSalesman",             true},
 
@@ -136,7 +135,6 @@ SymfoniaLoader = {
             {"BundlePlayerHelperFunctions",         true},
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
-            {"BundleTradingAnalysis",               true},
             {"BundleWeatherManipulation",           true},
         },
 
@@ -166,7 +164,22 @@ SymfoniaLoader = {
             },
 
             {
-            "AddOnInteractiveObjectTemplates",      true,
+            "AddOnInteractiveChests",               true,
+            "BundleEntitySelection",
+            },
+
+            {
+            "AddOnInteractiveMines",                true,
+            "BundleEntitySelection",
+            },
+
+            {
+            "AddOnInteractiveSites",                true,
+            "BundleEntitySelection",
+            },
+
+            {
+            "AddOnInteractiveTrebuchets",           true,
             "BundleInteractiveObjects",
             "BundleEntitySelection",
             },
