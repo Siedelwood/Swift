@@ -215,7 +215,7 @@ StopFollowKnightSave = API.FollowKnightSaveStop;
 -- <p><b>Hinweis:</b> Für weitere Informationen zu Terraintexturen siehe
 -- https://siedelwood-neu.de/23879-2/</p>
 --
--- <p><b>Alias:</b> TerrainType</p>
+-- <p><b>Alias:</b> TerrainTypeSquare</p>
 --
 -- @param              _Center Zentralpunkt (Skriptname oder ID)
 -- @param[type=number] _Offset Entfernung der Ecken zum Zentrum
@@ -240,7 +240,7 @@ function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
     end
     return BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType);
 end
-TerrainType = API.ChangeTerrainTypeInSquare;
+TerrainTypeSquare = API.ChangeTerrainTypeInSquare;
 
 ---
 -- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
@@ -249,7 +249,7 @@ TerrainType = API.ChangeTerrainTypeInSquare;
 -- Wird die relative Höhe verwendet, wird die Wasserhöhe nicht absolut
 -- gesetzt sondern von der aktuellen Wasserhöhe ausgegangen.
 --
--- <p><b>Alias:</b> WaterHeight</p>
+-- <p><b>Alias:</b> WaterHeightSquare</p>
 --
 -- @param               _Center Zentralpunkt (Skriptname oder ID)
 -- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
@@ -275,7 +275,7 @@ function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
     end
     return BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative);
 end
-WaterHeight = API.ChangeWaterHeightInSquare;
+WaterHeightSquare = API.ChangeWaterHeightInSquare;
 
 ---
 -- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
@@ -285,7 +285,7 @@ WaterHeight = API.ChangeWaterHeightInSquare;
 -- gesetzt sondern von der aktuellen Landhöhe ausgegangen. Das Land muss nicht
 -- eben sein. Auf diese Weise können Strukturen unverändert angehoben werden.
 --
--- <p><b>Alias:</b> TerrainHeight</p>
+-- <p><b>Alias:</b> TerrainHeightSquare</p>
 --
 -- @param               _Center Zentralpunkt (Skriptname oder ID)
 -- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
@@ -311,7 +311,7 @@ function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
     end
     return BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative);
 end
-TerrainHeight = API.ChangeTerrainHeightInSquare;
+TerrainHeightSquare = API.ChangeTerrainHeightInSquare;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
