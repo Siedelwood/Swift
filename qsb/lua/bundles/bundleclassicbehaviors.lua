@@ -916,10 +916,11 @@ Core:RegisterBehavior(b_Goal_EntityDistance);
 ---
 -- Der Primary Knight des angegebenen Spielers muss sich dem Ziel nähern.
 --
--- Die Distanz ist auf 2500 festgelegt. Es wird immer ein Marker genutzt.
+-- Die Distanz, die unterschritten werden muss, kann frei bestimmt werden.
+-- Wird die Distanz 0 belassen, wird sie automatisch 2500.
 --
--- @param _PlayerID   PlayerID des Helden
 -- @param _ScriptName Skriptname des Ziels
+-- @param _Disctande  (optional) Entfernung zum Ziel
 --
 -- @within Goal
 --
@@ -930,24 +931,30 @@ end
 b_Goal_KnightDistance = {
     Name = "Goal_KnightDistance",
     Description = {
-        en = "Goal: Bring the knight close to a given entity",
-        de = "Ziel: Bringe den Ritter nah an eine bestimmte Entität",
+        en = "Goal: Bring the knight close to a given entity. If the distance is left at 0 it will automatically set to 2500.",
+        de = "Ziel: Bringe den Ritter nah an eine bestimmte Entität. Wird die Entfernung 0 gelassen, ist sie automatisch 2500.",
     },
     Parameter = {
-        { ParameterType.PlayerID,     en = "Player", de = "Spieler" },
         { ParameterType.ScriptName, en = "Target", de = "Ziel" },
+        { ParameterType.Number, en = "Distance", de = "Entfernung" },
     },
 }
 
 function b_Goal_KnightDistance:GetGoalTable()
-    return {Objective.Distance, Logic.GetKnightID(self.PlayerID), self.Target, 2500, true}
+    return {Objective.Distance, -65566, self.Target, self.Distance, true}
 end
 
 function b_Goal_KnightDistance:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
-        self.PlayerID = _Parameter * 1
-    elseif (_Index == 1) then
-        self.Target = _Parameter
+        self.Target = _Parameter;
+    elseif (_Index == 0) then
+        if _Parameter == nil or _Parameter == "" then
+            _Parameter = 0;
+        end
+        self.Distance = _Parameter * 1;
+        if self.Distance == 0 then
+            self.Distance = 2500;
+        end
     end
 end
 
@@ -8757,6 +8764,8 @@ function BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted()
         end
         local data = objective.Data;
 
+        -- Behebt den Fehler, dass Baustellen eines Spielers fälschlicher
+        -- Weise den Spieler als noch nicht besiegt ausweisen.
         if objectiveType == Objective.DestroyAllPlayerUnits then
             local PlayerEntities = GetPlayerEntities(data, 0);
             local IllegalEntities = {};
@@ -8777,9 +8786,68 @@ function BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted()
             if #PlayerEntities == 0 or #PlayerEntities - #IllegalEntities == 0 then
                 objective.Completed = true;
             end
+        elseif objectiveType == Objective.Distance then
+            objective.Completed = BundleClassicBehaviors.Global:IsQuestPositionReached(self, objective);
         else
             return self:IsObjectiveCompleted_Orig_QSB_ClassicBehaviors(objective);
         end
+    end
+end
+
+---
+-- Prüft, ob das Entity das Ziel erreicht hat.
+-- @param[type=table] _Quest     Quest Data
+-- @param[type=table] _Objective Behavior Data
+-- @return[type=boolean] Ziel wurde erreicht
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Global:IsQuestPositionReached(_Quest, _Objective)
+    local IDdata2 = GetID(_Objective.Data[1]);
+    if IDdata2 == -65566 then
+        _Objective.Data[1] = Logic.GetKnightID(_Quest.ReceivingPlayer);
+        IDdata2 = _Objective.Data[1];
+    end
+    local IDdata3 = GetID(_Objective.Data[2]);
+    _Objective.Data[3] = _Objective.Data[3] or 2500;
+    if not (Logic.IsEntityDestroyed(IDdata2) or Logic.IsEntityDestroyed(IDdata3)) then
+        if Logic.GetDistanceBetweenEntities(IDdata2,IDdata3) <= _Objective.Data[3] then
+            DestroyQuestMarker(IDdata3);
+            return true;
+        end
+    else
+        DestroyQuestMarker(IDdata3);
+        return false;
+    end
+end
+
+-- Local Script ----------------------------------------------------------------
+
+---
+-- Initialisiert das Bundle im lokalen Skript.
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Local:Install()
+    self:OverrideDisplayQuestObjective();
+end
+
+---
+-- Stellt sicher, dass für Objective.Distance immer ein Icon bereit steht,
+-- wenn das Moving Entity der Primary Knight ist.
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Local:OverrideDisplayQuestObjective()
+    GUI_Interaction.DisplayQuestObjective_Orig_BundleClasicBehaviors = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
+        local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
+        if QuestType == Objective.Distance then
+            if Quest.Objectives[1].Data[1] == -65566 then
+                Quest.Objectives[1].Data[1] = Logic.GetKnightID(Quest.ReceivingPlayer);
+            end
+        end
+        GUI_Interaction.DisplayQuestObjective_Orig_BundleClasicBehaviors(_QuestIndex, _MessageKey);
     end
 end
 
