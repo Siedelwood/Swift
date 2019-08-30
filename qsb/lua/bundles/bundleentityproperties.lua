@@ -310,7 +310,7 @@ function QSB.EntityProperty:PlayerID(_PlayerID)
     if _PlayerID then
         local EntityID = GetID(self.m_EntityName);
         if EntityID > 0 then
-            if Logic.IsLeader(EntityID) == 1 then
+            if self:InGategory(EntityCategories.Leader) or self:InGategory(EntityCategories.CattlePasture) or self:InGategory(EntityCategories.SheepPasture) then
                 Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
             else
                 Logic.SetEntityScriptingValue(EntityID, SV, _PlayerID);
