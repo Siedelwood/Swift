@@ -5023,6 +5023,309 @@ Core:RegisterBundle("BundleBuildingButtons");
 </div><div class='docContainer'>
     <div class='docLinkContainer'>
         <div>
+            <a class='docLinkExpander' href="html/bundlecamera.lua.html">
+            <div class='doclink'>
+                <div>BundleCamera</div>
+            </div>
+            </a>
+        </div>
+        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia BundleCamera                                                 # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die
+-- Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen
+-- Zoom zu nutzen.
+--
+-- Außerdem kannst du die Kamera auf ein bestimmtes Entity zentrieren. Du
+-- kannst Rotation und Zoomfaktor bestimmen.
+--
+-- @within Modulbeschreibung
+-- @set sort=true
+--
+BundleCamera = {};
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; AllowExtendedZoom&#x3C;/p&#x3E;
+--
+-- @param _Flag [boolean] Erweiterter Zoom gestattet
+-- @within Anwenderfunktionen
+--
+function API.AllowExtendedZoom(_Flag)
+    if GUI then
+        API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
+        return;
+    end
+    BundleCamera.Global.Data.ExtendedZoomAllowed = _Flag == true;
+    if _Flag == false then
+        BundleCamera.Global:DeactivateExtendedZoom();
+    end
+end
+AllowExtendedZoom = API.AllowExtendedZoom;
+
+---
+-- Fokusiert die Kamera auf dem Primärritter des Spielers.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetCameraToPlayerKnight&#x3C;/p&#x3E;
+--
+-- @param[type=number] _Player Partei
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
+-- @within Anwenderfunktionen
+--
+function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
+    API.FocusCameraOnEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor)
+end
+SetCameraToPlayerKnight = API.FocusCameraOnKnight;
+
+---
+-- Fokusiert die Kamera auf dem Entity.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetCameraToEntity&#x3C;/p&#x3E;
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
+-- @within Anwenderfunktionen
+--
+function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
+    if not GUI then
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        API.Bridge("API.FocusCameraOnEntity(" ..Subject.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
+        return;
+    end
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        API.Warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    return BundleCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
+end
+SetCameraToEntity = API.FocusCameraOnEntity;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+BundleCamera = {
+    Global = {
+        Data = {
+            ExtendedZoomAllowed = true,
+        }
+    },
+    Local = {},
+}
+
+-- Global Script ---------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im globalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Global:Install()
+    self:InitExtendedZoomHotkeyFunction();
+    self:InitExtendedZoomHotkeyDescription();
+    API.AddSaveGameAction(BundleCamera.Global.OnSaveGameLoaded);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Global:ToggleExtendedZoom()
+    if self.Data.ExtendedZoomAllowed then
+        if self.Data.ExtendedZoomActive then
+            self:DeactivateExtendedZoom();
+        else
+            self:ActivateExtendedZoom();
+        end
+    end
+end
+
+---
+-- Aktiviert den erweiterten Zoom.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Global:ActivateExtendedZoom()
+    self.Data.ExtendedZoomActive = true;
+    API.Bridge("BundleCamera.Local:ActivateExtendedZoom()");
+end
+
+---
+-- Deaktiviert den erweiterten Zoom.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Global:DeactivateExtendedZoom()
+    self.Data.ExtendedZoomActive = false;
+    API.Bridge("BundleCamera.Local:DeactivateExtendedZoom()");
+end
+
+---
+-- Initialisiert den erweiterten Zoom.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Global:InitExtendedZoomHotkeyFunction()
+    API.Bridge([[
+        BundleCamera.Local:ActivateExtendedZoomHotkey()
+    ]]);
+end
+
+---
+-- Initialisiert den erweiterten Zoom.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Global:InitExtendedZoomHotkeyDescription()
+    API.Bridge([[
+        BundleCamera.Local:RegisterExtendedZoomHotkey()
+    ]]);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Stellt nicht-persistente Änderungen nach dem laden wieder her.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Global.OnSaveGameLoaded()
+    -- Geänderter Zoom --
+    if BundleCamera.Global.Data.ExtendedZoomActive then
+        BundleCamera.Global:ActivateExtendedZoom();
+    end
+    BundleCamera.Global:InitExtendedZoomHotkeyFunction();
+end
+
+-- Local Script ----------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im lokalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Local:Install()
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Fokusiert die Kamera auf dem Entity.
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
+-- @within Internal
+-- @local
+--
+function BundleCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
+    local pos = GetPosition(_Entity);
+    local rotation = (_Rotation or -45);
+    local zoomFactor = (_ZoomFactor or 0.5);
+    Camera.RTS_SetLookAtPosition(pos.X, pos.Y);
+    Camera.RTS_SetRotationAngle(rotation);
+    Camera.RTS_SetZoomFactor(zoomFactor);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Local:RegisterExtendedZoomHotkey()
+    API.AddHotKey(
+        {de = "Strg + Umschalt + K",       en = "Ctrl + Shift + K"},
+        {de = "Alternativen Zoom ein/aus", en = "Alternative zoom on/off"}
+    )
+end
+
+---
+-- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Local:ActivateExtendedZoomHotkey()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.K,
+        "BundleCamera.Local:ToggleExtendedZoom()",
+        2,
+        false
+    );
+end
+
+---
+-- Wechselt zwischen erweitertem und normalen Zoom.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Local:ToggleExtendedZoom()
+    API.Bridge("BundleCamera.Global:ToggleExtendedZoom()");
+end
+
+---
+-- Erweitert die Zoomrestriktion auf das Maximum.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Local:ActivateExtendedZoom()
+    Camera.RTS_SetZoomFactorMax(0.8701);
+    Camera.RTS_SetZoomFactor(0.8700);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+---
+-- Stellt die normale Zoomrestriktion wieder her.
+--
+-- @within Internal
+-- @local
+--
+function BundleCamera.Local:DeactivateExtendedZoom()
+    Camera.RTS_SetZoomFactor(0.5000);
+    Camera.RTS_SetZoomFactorMax(0.5001);
+    Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleCamera");
+
+</code></div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
             <a class='docLinkExpander' href="html/bundleclassicbehaviors.lua.html">
             <div class='doclink'>
                 <div>BundleClassicBehaviors</div>
@@ -5947,10 +6250,11 @@ Core:RegisterBehavior(b_Goal_EntityDistance);
 ---
 -- Der Primary Knight des angegebenen Spielers muss sich dem Ziel nähern.
 --
--- Die Distanz ist auf 2500 festgelegt. Es wird immer ein Marker genutzt.
+-- Die Distanz, die unterschritten werden muss, kann frei bestimmt werden.
+-- Wird die Distanz 0 belassen, wird sie automatisch 2500.
 --
--- @param _PlayerID   PlayerID des Helden
 -- @param _ScriptName Skriptname des Ziels
+-- @param _Disctande  (optional) Entfernung zum Ziel
 --
 -- @within Goal
 --
@@ -5961,24 +6265,30 @@ end
 b_Goal_KnightDistance = {
     Name = "Goal_KnightDistance",
     Description = {
-        en = "Goal: Bring the knight close to a given entity",
-        de = "Ziel: Bringe den Ritter nah an eine bestimmte Entität",
+        en = "Goal: Bring the knight close to a given entity. If the distance is left at 0 it will automatically set to 2500.",
+        de = "Ziel: Bringe den Ritter nah an eine bestimmte Entität. Wird die Entfernung 0 gelassen, ist sie automatisch 2500.",
     },
     Parameter = {
-        { ParameterType.PlayerID,     en = "Player", de = "Spieler" },
         { ParameterType.ScriptName, en = "Target", de = "Ziel" },
+        { ParameterType.Number, en = "Distance", de = "Entfernung" },
     },
 }
 
 function b_Goal_KnightDistance:GetGoalTable()
-    return {Objective.Distance, Logic.GetKnightID(self.PlayerID), self.Target, 2500, true}
+    return {Objective.Distance, -65566, self.Target, self.Distance, true}
 end
 
 function b_Goal_KnightDistance:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
-        self.PlayerID = _Parameter * 1
-    elseif (_Index == 1) then
-        self.Target = _Parameter
+        self.Target = _Parameter;
+    elseif (_Index == 0) then
+        if _Parameter == nil or _Parameter == "" then
+            _Parameter = 0;
+        end
+        self.Distance = _Parameter * 1;
+        if self.Distance == 0 then
+            self.Distance = 2500;
+        end
     end
 end
 
@@ -13788,6 +14098,8 @@ function BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted()
         end
         local data = objective.Data;
 
+        -- Behebt den Fehler, dass Baustellen eines Spielers fälschlicher
+        -- Weise den Spieler als noch nicht besiegt ausweisen.
         if objectiveType == Objective.DestroyAllPlayerUnits then
             local PlayerEntities = GetPlayerEntities(data, 0);
             local IllegalEntities = {};
@@ -13808,9 +14120,68 @@ function BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted()
             if #PlayerEntities == 0 or #PlayerEntities - #IllegalEntities == 0 then
                 objective.Completed = true;
             end
+        elseif objectiveType == Objective.Distance then
+            objective.Completed = BundleClassicBehaviors.Global:IsQuestPositionReached(self, objective);
         else
             return self:IsObjectiveCompleted_Orig_QSB_ClassicBehaviors(objective);
         end
+    end
+end
+
+---
+-- Prüft, ob das Entity das Ziel erreicht hat.
+-- @param[type=table] _Quest     Quest Data
+-- @param[type=table] _Objective Behavior Data
+-- @return[type=boolean] Ziel wurde erreicht
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Global:IsQuestPositionReached(_Quest, _Objective)
+    local IDdata2 = GetID(_Objective.Data[1]);
+    if IDdata2 == -65566 then
+        _Objective.Data[1] = Logic.GetKnightID(_Quest.ReceivingPlayer);
+        IDdata2 = _Objective.Data[1];
+    end
+    local IDdata3 = GetID(_Objective.Data[2]);
+    _Objective.Data[3] = _Objective.Data[3] or 2500;
+    if not (Logic.IsEntityDestroyed(IDdata2) or Logic.IsEntityDestroyed(IDdata3)) then
+        if Logic.GetDistanceBetweenEntities(IDdata2,IDdata3) &#x3C;= _Objective.Data[3] then
+            DestroyQuestMarker(IDdata3);
+            return true;
+        end
+    else
+        DestroyQuestMarker(IDdata3);
+        return false;
+    end
+end
+
+-- Local Script ----------------------------------------------------------------
+
+---
+-- Initialisiert das Bundle im lokalen Skript.
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Local:Install()
+    self:OverrideDisplayQuestObjective();
+end
+
+---
+-- Stellt sicher, dass für Objective.Distance immer ein Icon bereit steht,
+-- wenn das Moving Entity der Primary Knight ist.
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Local:OverrideDisplayQuestObjective()
+    GUI_Interaction.DisplayQuestObjective_Orig_BundleClasicBehaviors = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
+        local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
+        if QuestType == Objective.Distance then
+            if Quest.Objectives[1].Data[1] == -65566 then
+                Quest.Objectives[1].Data[1] = Logic.GetKnightID(Quest.ReceivingPlayer);
+            end
+        end
+        GUI_Interaction.DisplayQuestObjective_Orig_BundleClasicBehaviors(_QuestIndex, _MessageKey);
     end
 end
 
@@ -16883,7 +17254,7 @@ function QSB.EntityProperty:PlayerID(_PlayerID)
     if _PlayerID then
         local EntityID = GetID(self.m_EntityName);
         if EntityID &#x3E; 0 then
-            if Logic.IsLeader(EntityID) == 1 then
+            if self:InGategory(EntityCategories.Leader) or self:InGategory(EntityCategories.CattlePasture) or self:InGategory(EntityCategories.SheepPasture) then
                 Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
             else
                 Logic.SetEntityScriptingValue(EntityID, SV, _PlayerID);
@@ -18266,29 +18637,26 @@ Core:RegisterBundle("BundleEntitySelection");
 </div><div class='docContainer'>
     <div class='docLinkContainer'>
         <div>
-            <a class='docLinkExpander' href="html/bundleextendedzoom.lua.html">
+            <a class='docLinkExpander' href="html/bundlefollowknight.lua.html">
             <div class='doclink'>
-                <div>BundleExtendedZoom</div>
+                <div>BundleFollowKnight</div>
             </div>
             </a>
         </div>
         <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia BundleExtendedZoom                                           # --
+-- #  Symfonia BundleFollowKnight                                           # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
--- Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die
--- Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen
--- Zoom zu nutzen.
---
--- &#x3C;p&#x3E;&#x3C;a href="#API.AllowExtendedZoom"&#x3E;Zoom entriegeln oder sperren&#x3C;/a&#x3E;&#x3C;/p&#x3E;
+-- Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden
+-- folgen zu lassen.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-BundleExtendedZoom = {};
+BundleFollowKnight = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -18296,388 +18664,6 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
-
----
--- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; AllowExtendedZoom&#x3C;/p&#x3E;
---
--- @param _Flag [boolean] Erweiterter Zoom gestattet
--- @within Anwenderfunktionen
---
-function API.AllowExtendedZoom(_Flag)
-    if GUI then
-        API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
-        return;
-    end
-    BundleExtendedZoom.Global.Data.ExtendedZoomAllowed = _Flag == true;
-    if _Flag == false then
-        BundleExtendedZoom.Global:DeactivateExtendedZoom();
-    end
-end
-AllowExtendedZoom = API.AllowExtendedZoom;
-
--- -------------------------------------------------------------------------- --
--- Application-Space                                                          --
--- -------------------------------------------------------------------------- --
-
-BundleExtendedZoom = {
-    Global = {
-        Data = {
-            ExtendedZoomAllowed = true,
-        }
-    },
-    Local = {},
-}
-
--- Global Script ---------------------------------------------------------------
-
----
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Global:Install()
-    self:InitExtendedZoomHotkeyFunction();
-    self:InitExtendedZoomHotkeyDescription();
-    API.AddSaveGameAction(BundleExtendedZoom.Global.OnSaveGameLoaded);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Schaltet zwischen dem normalen und dem erweiterten Zoom um.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Global:ToggleExtendedZoom()
-    if self.Data.ExtendedZoomAllowed then
-        if self.Data.ExtendedZoomActive then
-            self:DeactivateExtendedZoom();
-        else
-            self:ActivateExtendedZoom();
-        end
-    end
-end
-
----
--- Aktiviert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Global:ActivateExtendedZoom()
-    self.Data.ExtendedZoomActive = true;
-    API.Bridge("BundleExtendedZoom.Local:ActivateExtendedZoom()");
-end
-
----
--- Deaktiviert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Global:DeactivateExtendedZoom()
-    self.Data.ExtendedZoomActive = false;
-    API.Bridge("BundleExtendedZoom.Local:DeactivateExtendedZoom()");
-end
-
----
--- Initialisiert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Global:InitExtendedZoomHotkeyFunction()
-    API.Bridge([[
-        BundleExtendedZoom.Local:ActivateExtendedZoomHotkey()
-    ]]);
-end
-
----
--- Initialisiert den erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Global:InitExtendedZoomHotkeyDescription()
-    API.Bridge([[
-        BundleExtendedZoom.Local:RegisterExtendedZoomHotkey()
-    ]]);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Stellt nicht-persistente Änderungen nach dem laden wieder her.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Global.OnSaveGameLoaded()
-    -- Geänderter Zoom --
-    if BundleExtendedZoom.Global.Data.ExtendedZoomActive then
-        BundleExtendedZoom.Global:ActivateExtendedZoom();
-    end
-    BundleExtendedZoom.Global:InitExtendedZoomHotkeyFunction();
-end
-
--- Local Script ----------------------------------------------------------------
-
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Local:Install()
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Local:RegisterExtendedZoomHotkey()
-    API.AddHotKey(
-        {de = "Strg + Umschalt + K",       en = "Ctrl + Shift + K"},
-        {de = "Alternativen Zoom ein/aus", en = "Alternative zoom on/off"}
-    )
-end
-
----
--- Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Local:ActivateExtendedZoomHotkey()
-    Input.KeyBindDown(
-        Keys.ModifierControl + Keys.ModifierShift + Keys.K,
-        "BundleExtendedZoom.Local:ToggleExtendedZoom()",
-        2,
-        false
-    );
-end
-
----
--- Wechselt zwischen erweitertem und normalen Zoom.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Local:ToggleExtendedZoom()
-    API.Bridge("BundleExtendedZoom.Global:ToggleExtendedZoom()");
-end
-
----
--- Erweitert die Zoomrestriktion auf das Maximum.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Local:ActivateExtendedZoom()
-    Camera.RTS_SetZoomFactorMax(0.8701);
-    Camera.RTS_SetZoomFactor(0.8700);
-    Camera.RTS_SetZoomFactorMin(0.0999);
-end
-
----
--- Stellt die normale Zoomrestriktion wieder her.
---
--- @within Internal
--- @local
---
-function BundleExtendedZoom.Local:DeactivateExtendedZoom()
-    Camera.RTS_SetZoomFactor(0.5000);
-    Camera.RTS_SetZoomFactorMax(0.5001);
-    Camera.RTS_SetZoomFactorMin(0.0999);
-end
-
--- -------------------------------------------------------------------------- --
-
-Core:RegisterBundle("BundleExtendedZoom");
-
-</code></div>
-    </div>
-</div><div class='docContainer'>
-    <div class='docLinkContainer'>
-        <div>
-            <a class='docLinkExpander' href="html/bundlegamehelperfunctions.lua.html">
-            <div class='doclink'>
-                <div>BundleGameHelperFunctions</div>
-            </div>
-            </a>
-        </div>
-        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
--- ########################################################################## --
--- #  Symfonia BundleGameHelperFunctions                                    # --
--- ########################################################################## --
--- -------------------------------------------------------------------------- --
-
----
--- Dieses Bundle gibt dem Mapper Werkzeuge in die Hand, um einige Features zu
--- gewähren oder zu entziehen.
---
--- Das wichtigste Auf einen Blick:
--- &#x3C;ul&#x3E;
--- &#x3C;li&#x3E;
--- &#x3C;a href="#API.AllowCheats"&#x3E;Features aktivieren&#x3C;/a&#x3E;&#x3C;br&#x3E;Cheats, Erweiterter
--- Zoom, Feste feiern für KIs
--- &#x3C;/li&#x3E;
--- &#x3C;li&#x3E;
--- &#x3C;a href="#API.ForbidCheats"&#x3E;Features deaktivieren&#x3C;/a&#x3E;&#x3C;br&#x3E;Cheats, Erweiterter
--- Zoom, Feste feiern für KIs
--- &#x3C;/li&#x3E;
--- &#x3C;li&#x3E;
--- &#x3C;a href="#API.SpeedLimitActivate"&#x3E;Spielgeschwindigkeit steuern&#x3C;/a&#x3E;&#x3C;br&#x3E;
--- Maximale Spielgeschwindigkeit festlegen
--- &#x3C;/li&#x3E;
--- &#x3C;/ul&#x3E;
---
--- @within Modulbeschreibung
--- @set sort=true
---
-BundleGameHelperFunctions = {};
-
-API = API or {};
-QSB = QSB or {};
-
--- -------------------------------------------------------------------------- --
--- User-Space                                                                 --
--- -------------------------------------------------------------------------- --
-
----
--- Fokusiert die Kamera auf dem Primärritter des Spielers.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetCameraToPlayerKnight&#x3C;/p&#x3E;
---
--- @param[type=number] _Player Partei
--- @param[type=number] _Rotation Kamerawinkel
--- @param[type=number] _ZoomFactor Zoomfaktor
--- @within Anwenderfunktionen
---
-function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
-    API.FocusCameraOnEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor)
-end
-SetCameraToPlayerKnight = API.FocusCameraOnKnight;
-
----
--- Fokusiert die Kamera auf dem Entity.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetCameraToEntity&#x3C;/p&#x3E;
---
--- @param _Entity Entity (Skriptname oder ID)
--- @param[type=number] _Rotation Kamerawinkel
--- @param[type=number] _ZoomFactor Zoomfaktor
--- @within Anwenderfunktionen
---
-function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
-    if not GUI then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Bridge("API.FocusCameraOnEntity(" ..Subject.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
-        return;
-    end
-    if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
-        return;
-    end
-    return BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
-end
-SetCameraToEntity = API.FocusCameraOnEntity;
-
----
--- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetSpeedLimit&#x3C;/p&#x3E;
---
--- @param[type=number] _Limit Obergrenze
--- @within Anwenderfunktionen
---
-function API.SpeedLimitSet(_Limit)
-    if not GUI then
-        API.Bridge("API.SpeedLimitSet(" .._Limit.. ")");
-        return;
-    end
-    return BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit);
-end
-SetSpeedLimit = API.SpeedLimitSet
-
----
--- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
--- kann nicht mehr überschritten werden.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; ActivateSpeedLimit&#x3C;/p&#x3E;
---
--- @param[type=boolean] _Flag Speedbremse ist aktiv
--- @within Anwenderfunktionen
---
-function API.SpeedLimitActivate(_Flag)
-    if GUI then
-        API.Bridge("API.SpeedLimitActivate(" ..tostring(_Flag).. ")");
-        return;
-    end
-    return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
-end
-ActivateSpeedLimit = API.SpeedLimitActivate;
-
----
--- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; KillCheats&#x3C;/p&#x3E;
---
--- @within Anwenderfunktionen
---
-function API.ForbidCheats()
-    if GUI then
-        API.Bridge("API.ForbidCheats()");
-        return;
-    end
-    return BundleGameHelperFunctions.Global:KillCheats();
-end
-KillCheats = API.ForbidCheats;
-
----
--- Aktiviert die Tastenkombination zum Einschalten der Cheats.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; RessurectCheats&#x3C;/p&#x3E;
---
--- @within Anwenderfunktionen
---
-function API.AllowCheats()
-    if GUI then
-        API.Bridge("API.AllowCheats()");
-        return;
-    end
-    return BundleGameHelperFunctions.Global:RessurectCheats();
-end
-RessurectCheats = API.AllowCheats;
-
----
--- Sperrt das Speichern von Spielständen oder gibt es wieder frei.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; ForbidSaveGame&#x3C;/p&#x3E;
---
--- @param[type=boolean] _Flag Speichern gesperrt
--- @within Anwenderfunktionen
---
-function API.ForbidSaveGame(_Flag)
-    if GUI then
-        API.Bridge("API.ForbidSaveGame(".. tostring(_Flag) ..")");
-        return;
-    end
-    API.Bridge([[
-        BundleGameHelperFunctions.Local.Data.ForbidSave = ]].. tostring(_Flag) ..[[ == true
-        BundleGameHelperFunctions.Local:DisplaySaveButtons(]].. tostring(_Flag) ..[[)
-    ]]);
-end
-ForbidSaveGame = API.ForbidSaveGame;
 
 ---
 -- Lässt einen Siedler einem Helden folgen. Gibt die ID des Jobs
@@ -18702,7 +18688,7 @@ function API.FollowKnightSaveStart(_Entity, _Knight, _Distance, _Angle)
         API.Bridge("API.FollowKnightSaveStart(" ..Target.. ", " ..Knight.. ", " .._Distance.. "," .._Angle.. ")");
         return;
     end
-    return BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle);
+    return BundleFollowKnight.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle);
 end
 AddFollowKnightSave = API.FollowKnightSaveStart;
 
@@ -18719,132 +18705,19 @@ function API.FollowKnightSaveStop(_JobID)
         API.Bridge("API.FollowKnightSaveStop(" .._JobID.. ")");
         return;
     end
-    return BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
+    return BundleFollowKnight.Global:StopFollowKnightSave(_JobID)
 end
 
 StopFollowKnightSave = API.FollowKnightSaveStop;
-
----
--- &#x3C;p&#x3E;Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
--- Abstände der Eckpunkte zum Zentralpunkt.&#x3C;/p&#x3E;
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Für weitere Informationen zu Terraintexturen siehe
--- https://siedelwood-neu.de/23879-2/&#x3C;/p&#x3E;
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; TerrainType&#x3C;/p&#x3E;
---
--- @param              _Center Zentralpunkt (Skriptname oder ID)
--- @param[type=number] _Offset Entfernung der Ecken zum Zentrum
--- @param[type=number] _TerrainType Textur ID
--- @within Anwenderfunktionen
---
--- @usage
--- API.ChangeTerrainTypeInSquare("area", 500, 48)
---
-function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
-    if GUI then
-        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
-        API.Bridge("API.ChangeTerrainTypeInSquare(" ..Target.. ", " .._Offset.. ", " .._TerrainType.. ")");
-        return;
-    end
-    if not IsExisting(_Center) then
-        API.Fatal("API.ChangeTerrainTypeInSquare: Central point does not exist!");
-        return;
-    end
-    if _Offset &#x3C; 100 then
-        API.Warn("API.ChangeTerrainTypeInSquare: Check your offset! It seems to small!");
-    end
-    return BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType);
-end
-TerrainType = API.ChangeTerrainTypeInSquare;
-
----
--- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
--- der Eckpunkte zum Zentrum.
---
--- Wird die relative Höhe verwendet, wird die Wasserhöhe nicht absolut
--- gesetzt sondern von der aktuellen Wasserhöhe ausgegangen.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; WaterHeight&#x3C;/p&#x3E;
---
--- @param               _Center Zentralpunkt (Skriptname oder ID)
--- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
--- @param[type=number]  _Height Neue Höhe
--- @param[type=boolean] _Relative Relative Höhe benutzen
--- @within Anwenderfunktionen
---
--- @usage
--- API.ChangeWaterHeightInSquare("area", 500, 5555, true);
---
-function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
-    if GUI then
-        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
-        API.Bridge("API.ChangeWaterHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
-        return;
-    end
-    if not IsExisting(_Center) then
-        API.Fatal("API.ChangeWaterHeightInSquare: Central point does not exist!");
-        return;
-    end
-    if _Offset &#x3C; 100 then
-        API.Warn("API.ChangeWaterHeightInSquare: Check your offset! It seems to small!");
-    end
-    return BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative);
-end
-WaterHeight = API.ChangeWaterHeightInSquare;
-
----
--- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
--- der Eckpunkte zum Zentralpunkt.
---
--- Wird die relative Höhe verwendet, wird die Landhöhe nicht absolut
--- gesetzt sondern von der aktuellen Landhöhe ausgegangen. Das Land muss nicht
--- eben sein. Auf diese Weise können Strukturen unverändert angehoben werden.
---
--- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; TerrainHeight&#x3C;/p&#x3E;
---
--- @param               _Center Zentralpunkt (Skriptname oder ID)
--- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
--- @param[type=number]  _Height Neue Höhe
--- @param[type=boolean] _Relative Relative Höhe benutzen
--- @within Anwenderfunktionen
---
--- @usage
--- API.ChangeTerrainHeightInSquare("area", 500, 5555, true);
---
-function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
-    if GUI then
-        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
-        API.Bridge("API.ChangeTerrainHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
-        return;
-    end
-    if not IsExisting(_Center) then
-        API.Fatal("API.ChangeTerrainHeightInSquare: Central point does not exist!");
-        return;
-    end
-    if _Offset &#x3C; 100 then
-        API.Warn("API.ChangeTerrainHeightInSquare: Check your offset! It seems to small!");
-    end
-    return BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative);
-end
-TerrainHeight = API.ChangeTerrainHeightInSquare;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleGameHelperFunctions = {
+BundleFollowKnight = {
     Global = {
         Data = {
-            HumanPlayerChangedOnce = false,
-            HumanKnightType = 0,
-            HumanPlayerID = 1,
             FollowKnightSave = {},
-        }
-    },
-    Local = {
-        Data = {
-            SpeedLimit = 32,
         }
     },
 }
@@ -18857,32 +18730,7 @@ BundleGameHelperFunctions = {
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:Install()
-    API.AddSaveGameAction(BundleGameHelperFunctions.Global.OnSaveGameLoaded);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:KillCheats()
-    self.Data.CheatsForbidden = true;
-    API.Bridge("BundleGameHelperFunctions.Local:KillCheats()");
-end
-
----
--- Aktiviert die Tastenkombination zum Einschalten der Cheats.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:RessurectCheats()
-    self.Data.CheatsForbidden = false;
-    API.Bridge("BundleGameHelperFunctions.Local:RessurectCheats()");
+function BundleFollowKnight.Global:Install()
 end
 
 -- -------------------------------------------------------------------------- --
@@ -18899,7 +18747,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
+function BundleFollowKnight.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle)
     local EntityID = GetID(_Entity);
     local KnightID = GetID(_Knight);
     _Angle = _Angle or 0;
@@ -18922,7 +18770,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global:StopFollowKnightSave(_JobID)
+function BundleFollowKnight.Global:StopFollowKnightSave(_JobID)
     for k,v in pairs(self.Data.FollowKnightSave) do
         if _JobID == v then
             self.Data.FollowKnightSave[k] = nil;
@@ -18941,7 +18789,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
+function BundleFollowKnight.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
     -- Entity oder Held sind hinüber bzw. haben ihre ID verändert
     if not IsExisting(_KnightID) or not IsExisting(_EntityID) then
         return true;
@@ -18973,310 +18821,11 @@ function BundleGameHelperFunctions.Global.ControlFollowKnightSave(_EntityID, _Kn
         Logic.MoveSettler(_EntityID, x, y);
     end
 end
-ControlFollowKnightSave = BundleGameHelperFunctions.Global.ControlFollowKnightSave;
+ControlFollowKnightSave = BundleFollowKnight.Global.ControlFollowKnightSave;
 
 -- -------------------------------------------------------------------------- --
 
----
--- Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
--- Abstände der Eckpunkte zum Zentralpunkt.
--- @param              _Center Zentralpunkt (Skriptname oder ID)
--- @param[type=number] _Offset Entfernung der Ecken zum Zentrum
--- @param[type=number] _TerrainType Textur ID
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
-    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
-    if Xmin == -1 or Xmin == -2 then
-        return Xmin;
-    end
-    if type(_TerrainType) == "number" then
-        for x10 = Xmin, Xmax do
-            for y10 = Ymin, Ymax do
-                Logic.SetTerrainNodeType( x10, y10, _TerrainType );
-            end
-        end
-    end
-    Logic.UpdateBlocking( Xmin, Ymin, Xmax, Ymax);
-end
-
----
--- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
--- der Eckpunkte zum Zentralpunkt.
--- @param               _Center Zentralpunkt (Skriptname oder ID)
--- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
--- @param[type=number]  _Height Neue Höhe
--- @param[type=boolean] _Relative Relative Höhe benutzen
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
-    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
-    if Xmin == -1 or Xmin == -2 then
-        return Xmin;
-    end
-    if not _Relative then
-        if _Height &#x3C; 0 then
-            return -3;
-        end
-        Logic.WaterSetAbsoluteHeight(Xmin, Ymin, Xmax, Ymax, _Height);
-    else
-        if z+_Height &#x3C; 0 then
-            return -3;
-        end
-        Logic.WaterSetAbsoluteHeight(Xmin, Ymin, Xmax, Ymax, z+_Height);
-    end
-    Logic.UpdateBlocking(Xmin, Ymin, Xmax, Ymax);
-    return 0;
-end
-
----
--- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
--- der Eckpunkte zum Zentralpunkt.
--- @param               _Center Zentralpunkt (Skriptname oder ID)
--- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
--- @param[type=number]  _Height Neue Höhe
--- @param[type=boolean] _Relative Relative Höhe benutzen
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
-    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
-    if Xmin == -1 or Xmin == -2 then
-        return Xmin;
-    end
-    local Height;
-    if not _Relative then
-        if _Height &#x3C; 0 then
-            return -3;
-        end
-        Height = _Height;
-    else
-        if z+_Height &#x3C; 0 then
-            return -3;
-        end
-        Height = z+_Height;
-    end
-
-    for x10 = Xmin, Xmax do
-        for y10 = Ymin, Ymax do
-            Logic.SetTerrainNodeHeight(x10, y10, Height);
-        end
-    end
-    Logic.UpdateBlocking(Xmin, Ymin, Xmax, Ymax);
-    return 0;
-end
-
----
--- Gibt ein Quadrat für Land- und Wassermanipulation zurück.
---
--- Wird verwendet von: WaterHeight, TerrainHeight, TerrainType
---
--- @param              _Center Zentralpunkt des Quadrat (Skriptname oder ID)
--- @param[type=number] _Offset Abstand der Ecken zum Zentrum
--- @return[type=number] X-Koordinate von Punkt 1
--- @return[type=number] Y-Koordinate von Punkt 1
--- @return[type=number] X-Koordinate von Punkt 2
--- @return[type=number] Y-Koordinate von Punkt 2
--- @return[type=number] Bodenhöhe
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global:GetSquareForWaterAndTerrain(_Center, _Offset)
-    local Type = type(_Center);
-    if (Type ~= "string" and Type ~= "number") or not IsExisting(_Center) then
-        return -1;
-    end
-    local Xmin, Ymin, Xmax, Ymax;
-    local eID = GetID(_Center);
-    local x,y,z = Logic.EntityGetPos(eID);
-    Xmin = math.floor((x - _Offset)/100);
-    Ymin = math.floor((y - _Offset)/100);
-    Xmax = math.floor((x + _Offset)/100);
-    Ymax = math.floor((y + _Offset)/100);
-    if IsValidPosition({X= Xmin, Y= Ymin}) == false or IsValidPosition({X= Xmax, Y= Ymax}) == false then
-        return -2;
-    end
-    return Xmin, Ymin, Xmax, Ymax, z;
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Stellt nicht-persistente Änderungen nach dem laden wieder her.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Global.OnSaveGameLoaded()
-    -- Cheats sperren --
-    if BundleGameHelperFunctions.Global.Data.CheatsForbidden == true then
-        BundleGameHelperFunctions.Global:KillCheats();
-    end
-    -- Illegale Speicherstände
-    API.Bridge("BundleGameHelperFunctions.Local:CloseIllegalSaveGame()");
-end
-
--- Local Script ----------------------------------------------------------------
-
----
--- Initalisiert das Bundle im lokalen Skript.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:Install()
-    self:InitForbidSpeedUp()
-    self:InitForbidSaveGame();
-end
-
----
--- Fokusiert die Kamera auf dem Entity.
---
--- @param _Entity Entity (Skriptname oder ID)
--- @param[type=number] _Rotation Kamerawinkel
--- @param[type=number] _ZoomFactor Zoomfaktor
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
-    local pos = GetPosition(_Entity);
-    local rotation = (_Rotation or -45);
-    local zoomFactor = (_ZoomFactor or 0.5);
-    Camera.RTS_SetLookAtPosition(pos.X, pos.Y);
-    Camera.RTS_SetRotationAngle(rotation);
-    Camera.RTS_SetZoomFactor(zoomFactor);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
---
--- @param[type=number] _Limit Obergrenze
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
-    _Limit = (_Limit &#x3C; 1 and 1) or math.floor(_Limit);
-    self.Data.SpeedLimit = _Limit;
-end
-
----
--- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
--- kann nicht mehr überschritten werden.
---
--- @param[type=boolean] _Flag Speedbremse ist aktiv
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
-    self.Data.UseSpeedLimit = _Flag == true;
-    if _Flag and Game.GameTimeGetFactor(GUI.GetPlayerID()) &#x3E; self.Data.SpeedLimit then
-        Game.GameTimeSetFactor(GUI.GetPlayerID(), self.Data.SpeedLimit);
-    end
-end
-
----
--- Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
--- aufgerufen wird und installiert die Speedbremse.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
-    GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp = GameCallback_GameSpeedChanged;
-    GameCallback_GameSpeedChanged = function( _Speed )
-        GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp( _Speed );
-        if BundleGameHelperFunctions.Local.Data.UseSpeedLimit == true then
-            if _Speed &#x3E; BundleGameHelperFunctions.Local.Data.SpeedLimit then
-                Game.GameTimeSetFactor(GUI.GetPlayerID(), BundleGameHelperFunctions.Local.Data.SpeedLimit);
-            end
-        end
-    end
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:KillCheats()
-    Input.KeyBindDown(
-        Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
-        "KeyBindings_EnableDebugMode(0)",
-        2,
-        false
-    );
-end
-
----
--- Aktiviert die Tastenkombination zum Einschalten der Cheats.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:RessurectCheats()
-    Input.KeyBindDown(
-        Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
-        "KeyBindings_EnableDebugMode(2)",
-        2,
-        false
-    );
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:InitForbidSaveGame()
-    KeyBindings_SaveGame_Orig_Preferences_SaveGame = KeyBindings_SaveGame;
-    KeyBindings_SaveGame = function()
-        if BundleGameHelperFunctions.Local.Data.ForbidSave then
-            return;
-        end
-        KeyBindings_SaveGame_Orig_Preferences_SaveGame();
-    end
-end
-
----
--- Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
---
--- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Dies ist ein Fallback wegen dem automatischen Speichern
--- der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
---
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:CloseIllegalSaveGame()
-    if BundleGameHelperFunctions.Local.Data.ForbidSave then
-        Framework.CloseGame();
-    end
-end
-
----
--- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
---
--- @param[type=boolean] _Flag Speicherbuttons sichtbar
--- @within Internal
--- @local
---
-function BundleGameHelperFunctions.Local:DisplaySaveButtons(_Flag)
-    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame",  (_Flag and 0) or 1);
-    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", (_Flag and 0) or 1);
-end
-
--- -------------------------------------------------------------------------- --
-
-Core:RegisterBundle("BundleGameHelperFunctions");
+Core:RegisterBundle("BundleFollowKnight");
 
 </code></div>
     </div>
@@ -26357,6 +25906,152 @@ Core:RegisterBundle("BundleQuestGeneration");
 </div><div class='docContainer'>
     <div class='docLinkContainer'>
         <div>
+            <a class='docLinkExpander' href="html/bundlespeedlimit.lua.html">
+            <div class='doclink'>
+                <div>BundleSpeedLimit</div>
+            </div>
+            </a>
+        </div>
+        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia BundleGameHelperFunctions                                    # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Mit diesem Bundle erhälst du hilfreiche Funktionen zur Steuerung der
+-- Spielgeschwindigkeit.
+--
+-- @within Modulbeschreibung
+-- @set sort=true
+--
+BundleGameHelperFunctions = {};
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetSpeedLimit&#x3C;/p&#x3E;
+--
+-- @param[type=number] _Limit Obergrenze
+-- @within Anwenderfunktionen
+--
+function API.SpeedLimitSet(_Limit)
+    if not GUI then
+        API.Bridge("API.SpeedLimitSet(" .._Limit.. ")");
+        return;
+    end
+    return BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit);
+end
+SetSpeedLimit = API.SpeedLimitSet
+
+---
+-- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
+-- kann nicht mehr überschritten werden.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; ActivateSpeedLimit&#x3C;/p&#x3E;
+--
+-- @param[type=boolean] _Flag Speedbremse ist aktiv
+-- @within Anwenderfunktionen
+--
+function API.SpeedLimitActivate(_Flag)
+    if GUI then
+        API.Bridge("API.SpeedLimitActivate(" ..tostring(_Flag).. ")");
+        return;
+    end
+    return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
+end
+ActivateSpeedLimit = API.SpeedLimitActivate;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+BundleGameHelperFunctions = {
+    Local = {
+        Data = {
+            SpeedLimit = 32,
+        }
+    },
+}
+
+-- -------------------------------------------------------------------------- --
+
+-- Local Script ----------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im lokalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleGameHelperFunctions.Local:Install()
+    self:InitForbidSpeedUp()
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+--
+-- @param[type=number] _Limit Obergrenze
+-- @within Internal
+-- @local
+--
+function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
+    _Limit = (_Limit &#x3C; 1 and 1) or math.floor(_Limit);
+    self.Data.SpeedLimit = _Limit;
+end
+
+---
+-- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
+-- kann nicht mehr überschritten werden.
+--
+-- @param[type=boolean] _Flag Speedbremse ist aktiv
+-- @within Internal
+-- @local
+--
+function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
+    self.Data.UseSpeedLimit = _Flag == true;
+    if _Flag and Game.GameTimeGetFactor(GUI.GetPlayerID()) &#x3E; self.Data.SpeedLimit then
+        Game.GameTimeSetFactor(GUI.GetPlayerID(), self.Data.SpeedLimit);
+    end
+end
+
+---
+-- Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
+-- aufgerufen wird und installiert die Speedbremse.
+--
+-- @within Internal
+-- @local
+--
+function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
+    GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp = GameCallback_GameSpeedChanged;
+    GameCallback_GameSpeedChanged = function( _Speed )
+        GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp( _Speed );
+        if BundleGameHelperFunctions.Local.Data.UseSpeedLimit == true then
+            if _Speed &#x3E; BundleGameHelperFunctions.Local.Data.SpeedLimit then
+                Game.GameTimeSetFactor(GUI.GetPlayerID(), BundleGameHelperFunctions.Local.Data.SpeedLimit);
+            end
+        end
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleGameHelperFunctions");
+
+</code></div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
             <a class='docLinkExpander' href="html/bundlesymfoniabehaviors.lua.html">
             <div class='doclink'>
                 <div>BundleSymfoniaBehaviors</div>
@@ -28424,9 +28119,7 @@ function BundleSymfoniaBehaviors.Global:Install()
             return objective.Completed;
         end
 
-        if objectiveType == Objective.Distance then
-            objective.Completed = BundleSymfoniaBehaviors.Global:IsQuestPositionReached(self, objective);
-        elseif objectiveType == Objective.DestroyEntities then
+        if objectiveType == Objective.DestroyEntities then
             if objective.Data[1] == 3 then
                 objective.Completed = BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(self, objective);
             else
@@ -28477,29 +28170,6 @@ function BundleSymfoniaBehaviors.Global:Install()
             Logic.DestroyEffect(Questmarkers[eID]);
             Questmarkers[eID] = nil;
         end
-    end
-end
-
----
--- Prüft, ob das Entity das Ziel erreicht hat.
--- @param[type=table] _Quest     Quest Data
--- @param[type=table] _Objective Behavior Data
--- @return[type=boolean] Ziel wurde erreicht
--- @within Internal
--- @local
---
-function BundleSymfoniaBehaviors.Global:IsQuestPositionReached(_Quest, _Objective)
-    local IDdata2 = GetID(_Objective.Data[1]);
-    local IDdata3 = GetID(_Objective.Data[2]);
-    _Objective.Data[3] = _Objective.Data[3] or 2500;
-    if not (Logic.IsEntityDestroyed(IDdata2) or Logic.IsEntityDestroyed(IDdata3)) then
-        if Logic.GetDistanceBetweenEntities(IDdata2,IDdata3) &#x3C;= _Objective.Data[3] then
-            DestroyQuestMarker(IDdata3);
-            return true;
-        end
-    else
-        DestroyQuestMarker(IDdata3);
-        return false;
     end
 end
 
@@ -28678,6 +28348,295 @@ function BundleSymfoniaBehaviors.Local.SaveQuestEntityTypes(_QuestIndex)
 end
 
 Core:RegisterBundle("BundleSymfoniaBehaviors");
+
+</code></div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
+            <a class='docLinkExpander' href="html/bundleterrainandwater.lua.html">
+            <div class='doclink'>
+                <div>BundleTerrainAndWater</div>
+            </div>
+            </a>
+        </div>
+        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia BundleTerrainAndWater                                        # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und
+-- von Wasser.
+--
+-- @within Modulbeschreibung
+-- @set sort=true
+--
+BundleTerrainAndWater = {};
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- &#x3C;p&#x3E;Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
+-- Abstände der Eckpunkte zum Zentralpunkt.&#x3C;/p&#x3E;
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Für weitere Informationen zu Terraintexturen siehe
+-- https://siedelwood-neu.de/23879-2/&#x3C;/p&#x3E;
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; TerrainTypeSquare&#x3C;/p&#x3E;
+--
+-- @param              _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number] _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number] _TerrainType Textur ID
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.ChangeTerrainTypeInSquare("area", 500, 48)
+--
+function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
+    if GUI then
+        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
+        API.Bridge("API.ChangeTerrainTypeInSquare(" ..Target.. ", " .._Offset.. ", " .._TerrainType.. ")");
+        return;
+    end
+    if not IsExisting(_Center) then
+        API.Fatal("API.ChangeTerrainTypeInSquare: Central point does not exist!");
+        return;
+    end
+    if _Offset &#x3C; 100 then
+        API.Warn("API.ChangeTerrainTypeInSquare: Check your offset! It seems to small!");
+    end
+    return BundleTerrainAndWater.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType);
+end
+TerrainTypeSquare = API.ChangeTerrainTypeInSquare;
+
+---
+-- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
+-- der Eckpunkte zum Zentrum.
+--
+-- Wird die relative Höhe verwendet, wird die Wasserhöhe nicht absolut
+-- gesetzt sondern von der aktuellen Wasserhöhe ausgegangen.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; WaterHeightSquare&#x3C;/p&#x3E;
+--
+-- @param               _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number]  _Height Neue Höhe
+-- @param[type=boolean] _Relative Relative Höhe benutzen
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.ChangeWaterHeightInSquare("area", 500, 5555, true);
+--
+function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
+    if GUI then
+        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
+        API.Bridge("API.ChangeWaterHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
+        return;
+    end
+    if not IsExisting(_Center) then
+        API.Fatal("API.ChangeWaterHeightInSquare: Central point does not exist!");
+        return;
+    end
+    if _Offset &#x3C; 100 then
+        API.Warn("API.ChangeWaterHeightInSquare: Check your offset! It seems to small!");
+    end
+    return BundleTerrainAndWater.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative);
+end
+WaterHeightSquare = API.ChangeWaterHeightInSquare;
+
+---
+-- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
+-- der Eckpunkte zum Zentralpunkt.
+--
+-- Wird die relative Höhe verwendet, wird die Landhöhe nicht absolut
+-- gesetzt sondern von der aktuellen Landhöhe ausgegangen. Das Land muss nicht
+-- eben sein. Auf diese Weise können Strukturen unverändert angehoben werden.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; TerrainHeightSquare&#x3C;/p&#x3E;
+--
+-- @param               _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number]  _Height Neue Höhe
+-- @param[type=boolean] _Relative Relative Höhe benutzen
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.ChangeTerrainHeightInSquare("area", 500, 5555, true);
+--
+function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
+    if GUI then
+        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
+        API.Bridge("API.ChangeTerrainHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
+        return;
+    end
+    if not IsExisting(_Center) then
+        API.Fatal("API.ChangeTerrainHeightInSquare: Central point does not exist!");
+        return;
+    end
+    if _Offset &#x3C; 100 then
+        API.Warn("API.ChangeTerrainHeightInSquare: Check your offset! It seems to small!");
+    end
+    return BundleTerrainAndWater.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative);
+end
+TerrainHeightSquare = API.ChangeTerrainHeightInSquare;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+BundleTerrainAndWater = {
+    Global = {
+        Data = {}
+    },
+}
+
+-- Global Script ---------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im globalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleTerrainAndWater.Global:Install()
+end 
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Ändert die Bodentextur innerhalb des Quadrates. Offset bestimmt die
+-- Abstände der Eckpunkte zum Zentralpunkt.
+-- @param              _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number] _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number] _TerrainType Textur ID
+-- @within Internal
+-- @local
+--
+function BundleTerrainAndWater.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
+    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
+    if Xmin == -1 or Xmin == -2 then
+        return Xmin;
+    end
+    if type(_TerrainType) == "number" then
+        for x10 = Xmin, Xmax do
+            for y10 = Ymin, Ymax do
+                Logic.SetTerrainNodeType( x10, y10, _TerrainType );
+            end
+        end
+    end
+    Logic.UpdateBlocking( Xmin, Ymin, Xmax, Ymax);
+end
+
+---
+-- Ändert die Wasserhöhe in einem Quadrat. Offset bestimmt die Abstände
+-- der Eckpunkte zum Zentralpunkt.
+-- @param               _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number]  _Height Neue Höhe
+-- @param[type=boolean] _Relative Relative Höhe benutzen
+-- @within Internal
+-- @local
+--
+function BundleTerrainAndWater.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
+    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
+    if Xmin == -1 or Xmin == -2 then
+        return Xmin;
+    end
+    if not _Relative then
+        if _Height &#x3C; 0 then
+            return -3;
+        end
+        Logic.WaterSetAbsoluteHeight(Xmin, Ymin, Xmax, Ymax, _Height);
+    else
+        if z+_Height &#x3C; 0 then
+            return -3;
+        end
+        Logic.WaterSetAbsoluteHeight(Xmin, Ymin, Xmax, Ymax, z+_Height);
+    end
+    Logic.UpdateBlocking(Xmin, Ymin, Xmax, Ymax);
+    return 0;
+end
+
+---
+-- Ändert die Landhöhe in einem Quadrat. Offset bestimmt die Abstände
+-- der Eckpunkte zum Zentralpunkt.
+-- @param               _Center Zentralpunkt (Skriptname oder ID)
+-- @param[type=number]  _Offset Entfernung der Ecken zum Zentrum
+-- @param[type=number]  _Height Neue Höhe
+-- @param[type=boolean] _Relative Relative Höhe benutzen
+-- @within Internal
+-- @local
+--
+function BundleTerrainAndWater.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
+    local Xmin, Ymin, Xmax, Ymax, z = self:GetSquareForWaterAndTerrain(_Center, _Offset);
+    if Xmin == -1 or Xmin == -2 then
+        return Xmin;
+    end
+    local Height;
+    if not _Relative then
+        if _Height &#x3C; 0 then
+            return -3;
+        end
+        Height = _Height;
+    else
+        if z+_Height &#x3C; 0 then
+            return -3;
+        end
+        Height = z+_Height;
+    end
+
+    for x10 = Xmin, Xmax do
+        for y10 = Ymin, Ymax do
+            Logic.SetTerrainNodeHeight(x10, y10, Height);
+        end
+    end
+    Logic.UpdateBlocking(Xmin, Ymin, Xmax, Ymax);
+    return 0;
+end
+
+---
+-- Gibt ein Quadrat für Land- und Wassermanipulation zurück.
+--
+-- Wird verwendet von: WaterHeight, TerrainHeight, TerrainType
+--
+-- @param              _Center Zentralpunkt des Quadrat (Skriptname oder ID)
+-- @param[type=number] _Offset Abstand der Ecken zum Zentrum
+-- @return[type=number] X-Koordinate von Punkt 1
+-- @return[type=number] Y-Koordinate von Punkt 1
+-- @return[type=number] X-Koordinate von Punkt 2
+-- @return[type=number] Y-Koordinate von Punkt 2
+-- @return[type=number] Bodenhöhe
+-- @within Internal
+-- @local
+--
+function BundleTerrainAndWater.Global:GetSquareForWaterAndTerrain(_Center, _Offset)
+    local Type = type(_Center);
+    if (Type ~= "string" and Type ~= "number") or not IsExisting(_Center) then
+        return -1;
+    end
+    local Xmin, Ymin, Xmax, Ymax;
+    local eID = GetID(_Center);
+    local x,y,z = Logic.EntityGetPos(eID);
+    Xmin = math.floor((x - _Offset)/100);
+    Ymin = math.floor((y - _Offset)/100);
+    Xmax = math.floor((x + _Offset)/100);
+    Ymax = math.floor((y + _Offset)/100);
+    if IsValidPosition({X= Xmin, Y= Ymin}) == false or IsValidPosition({X= Xmax, Y= Ymax}) == false then
+        return -2;
+    end
+    return Xmin, Ymin, Xmax, Ymax, z;
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleTerrainAndWater");
 
 </code></div>
     </div>
@@ -29609,6 +29568,249 @@ end
 -- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleTravelingSalesman");
+
+</code></div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
+            <a class='docLinkExpander' href="html/bundleutilities.lua.html">
+            <div class='doclink'>
+                <div>BundleUtilities</div>
+            </div>
+            </a>
+        </div>
+        <div class='docInvisibleContent'><code>-- -------------------------------------------------------------------------- --
+-- ########################################################################## --
+-- #  Symfonia BundleUtilities                                              # --
+-- ########################################################################## --
+-- -------------------------------------------------------------------------- --
+
+---
+-- FIXME: Ein Sammelsorium von Funktionen, die noch nicht zugeordnet sind.
+--
+-- @within Modulbeschreibung
+-- @set sort=true
+--
+BundleUtilities = {};
+
+API = API or {};
+QSB = QSB or {};
+
+-- -------------------------------------------------------------------------- --
+-- User-Space                                                                 --
+-- -------------------------------------------------------------------------- --
+
+---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; KillCheats&#x3C;/p&#x3E;
+--
+-- @within Anwenderfunktionen
+--
+function API.ForbidCheats()
+    if GUI then
+        API.Bridge("API.ForbidCheats()");
+        return;
+    end
+    return BundleUtilities.Global:KillCheats();
+end
+KillCheats = API.ForbidCheats;
+
+---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; RessurectCheats&#x3C;/p&#x3E;
+--
+-- @within Anwenderfunktionen
+--
+function API.AllowCheats()
+    if GUI then
+        API.Bridge("API.AllowCheats()");
+        return;
+    end
+    return BundleUtilities.Global:RessurectCheats();
+end
+RessurectCheats = API.AllowCheats;
+
+---
+-- Sperrt das Speichern von Spielständen oder gibt es wieder frei.
+--
+-- &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; ForbidSaveGame&#x3C;/p&#x3E;
+--
+-- @param[type=boolean] _Flag Speichern gesperrt
+-- @within Anwenderfunktionen
+--
+function API.ForbidSaveGame(_Flag)
+    if GUI then
+        API.Bridge("API.ForbidSaveGame(".. tostring(_Flag) ..")");
+        return;
+    end
+    API.Bridge([[
+        BundleUtilities.Local.Data.ForbidSave = ]].. tostring(_Flag) ..[[ == true
+        BundleUtilities.Local:DisplaySaveButtons(]].. tostring(_Flag) ..[[)
+    ]]);
+end
+ForbidSaveGame = API.ForbidSaveGame;
+
+-- -------------------------------------------------------------------------- --
+-- Application-Space                                                          --
+-- -------------------------------------------------------------------------- --
+
+BundleUtilities = {
+    Global = {
+        Data = {}
+    },
+    Local = {
+        Data = {}
+    },
+}
+
+-- Global Script ---------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im globalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Global:Install()
+    API.AddSaveGameAction(BundleUtilities.Global.OnSaveGameLoaded);
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Global:KillCheats()
+    self.Data.CheatsForbidden = true;
+    API.Bridge("BundleUtilities.Local:KillCheats()");
+end
+
+---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Global:RessurectCheats()
+    self.Data.CheatsForbidden = false;
+    API.Bridge("BundleUtilities.Local:RessurectCheats()");
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Stellt nicht-persistente Änderungen nach dem laden wieder her.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Global.OnSaveGameLoaded()
+    -- Cheats sperren --
+    if BundleUtilities.Global.Data.CheatsForbidden == true then
+        BundleUtilities.Global:KillCheats();
+    end
+    -- Illegale Speicherstände
+    API.Bridge("BundleUtilities.Local:CloseIllegalSaveGame()");
+end
+
+-- Local Script ----------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im lokalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Local:Install()
+    self:InitForbidSaveGame();
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Local:KillCheats()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
+        "KeyBindings_EnableDebugMode(0)",
+        2,
+        false
+    );
+end
+
+---
+-- Aktiviert die Tastenkombination zum Einschalten der Cheats.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Local:RessurectCheats()
+    Input.KeyBindDown(
+        Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
+        "KeyBindings_EnableDebugMode(2)",
+        2,
+        false
+    );
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Local:InitForbidSaveGame()
+    KeyBindings_SaveGame_Orig_Preferences_SaveGame = KeyBindings_SaveGame;
+    KeyBindings_SaveGame = function()
+        if BundleUtilities.Local.Data.ForbidSave then
+            return;
+        end
+        KeyBindings_SaveGame_Orig_Preferences_SaveGame();
+    end
+end
+
+---
+-- Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
+--
+-- &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Dies ist ein Fallback wegen dem automatischen Speichern
+-- der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
+--
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Local:CloseIllegalSaveGame()
+    if BundleUtilities.Local.Data.ForbidSave then
+        Framework.CloseGame();
+    end
+end
+
+---
+-- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
+--
+-- @param[type=boolean] _Flag Speicherbuttons sichtbar
+-- @within Internal
+-- @local
+--
+function BundleUtilities.Local:DisplaySaveButtons(_Flag)
+    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame",  (_Flag and 0) or 1);
+    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", (_Flag and 0) or 1);
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleUtilities");
 
 </code></div>
     </div>

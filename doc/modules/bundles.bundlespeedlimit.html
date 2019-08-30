@@ -54,7 +54,7 @@
   <li><a href="../modules/bundles.bundlecamera.html">bundles.bundlecamera</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
   <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
-  <li><strong>bundles.bundledestructioncontrol</strong></li>
+  <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledialogwindows.html">bundles.bundledialogwindows</a></li>
   <li><a href="../modules/bundles.bundleentitycommandfunctions.html">bundles.bundleentitycommandfunctions</a></li>
   <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
@@ -70,7 +70,7 @@
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
-  <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
+  <li><strong>bundles.bundlespeedlimit</strong></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
   <li><a href="../modules/bundles.bundleterrainandwater.html">bundles.bundleterrainandwater</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
@@ -93,66 +93,41 @@
 
 <div id="content">
 
-<h1>Module <code>bundles.bundledestructioncontrol</code></h1>
-<p>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor
- dem Abriss zu schützen.</p>
-<p> Ebenso kann jeglicher Abriss von Gebäuden auf
- einem Territrium komplett unterbunden werden.
-<p> Das wichtigste Auf einen Blick:
- <ul>
- <li>
- Den Abriss für bestimmte Entities steuern.<br>
- <a href="#API.ProtectCategory">Entities beschützen</a>,
- <a href="#API.UnprotectCategory">Schutz aufheben</a>
- </li>
- </ul>
-</p>
+<h1>Module <code>bundles.bundlespeedlimit</code></h1>
+<p>Mit diesem Bundle erhälst du hilfreiche Funktionen zur Steuerung der
+ Spielgeschwindigkeit.</p>
+<p></p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectCategory">API.ProtectCategory (_entry)</a></td>
-	<td class="summary">Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.</td>
+	<td class="name" nowrap><a href="#API.SpeedLimitActivate">API.SpeedLimitActivate (_Flag)</a></td>
+	<td class="summary">Aktiviert die Speedbremse.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.ProtectEntity">API.ProtectEntity (_entry)</a></td>
-	<td class="summary">Fügt ein Entity hinzu, dass nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ProtectEntityType">API.ProtectEntityType (_entry)</a></td>
-	<td class="summary">Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.ProtectTerritory">API.ProtectTerritory (_entry)</a></td>
-	<td class="summary">Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectCategory">API.UnprotectCategory (_entry)</a></td>
-	<td class="summary">Entfernt eine Kategorie, die nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectEntity">API.UnprotectEntity (_entry)</a></td>
-	<td class="summary">Entfernt ein Entity, dass nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectEntityType">API.UnprotectEntityType (_entry)</a></td>
-	<td class="summary">Entfernt einen Entitytyp, der nicht abgerissen werden darf.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UnprotectTerritory">API.UnprotectTerritory (_entry)</a></td>
-	<td class="summary">Entfernt ein Territory, auf dem nichts abgerissen werden kann.</td>
+	<td class="name" nowrap><a href="#API.SpeedLimitSet">API.SpeedLimitSet (_Limit)</a></td>
+	<td class="summary">Setzt die Obergrenze für die Spielgeschwindigkeit fest.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleDestructionControl.Local.DeleteEntityStateBuilding">BundleDestructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</a></td>
-	<td class="summary">Verhindert den Abriss von Entities.</td>
+	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:ActivateSpeedLimit">BundleGameHelperFunctions.Local:ActivateSpeedLimit (_Flag)</a></td>
+	<td class="summary">Aktiviert die Speedbremse.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleDestructionControl.Local:Install">BundleDestructionControl.Local:Install ()</a></td>
+	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:InitForbidSpeedUp">BundleGameHelperFunctions.Local:InitForbidSpeedUp ()</a></td>
+	<td class="summary">Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
+ aufgerufen wird und installiert die Speedbremse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:Install">BundleGameHelperFunctions.Local:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleGameHelperFunctions.Local:SetSpeedLimit">BundleGameHelperFunctions.Local:SetSpeedLimit (_Limit)</a></td>
+	<td class="summary">Setzt die Obergrenze für die Spielgeschwindigkeit fest.</td>
 	</tr>
 </table>
 
@@ -164,203 +139,50 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.ProtectCategory"></a>
-    <strong>API.ProtectCategory (_entry)</strong>
+    <a name = "API.SpeedLimitActivate"></a>
+    <strong>API.SpeedLimitActivate (_Flag)</strong>
     </dt>
     <dd>
-    Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
+    Aktiviert die Speedbremse.  Die vorher eingestellte Maximalgeschwindigkeit
+ kann nicht mehr überschritten werden.
+<p> <p><b>Alias:</b> ActivateSpeedLimit</p>
+
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_entry</span>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Speedbremse ist aktiv
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.SpeedLimitSet"></a>
+    <strong>API.SpeedLimitSet (_Limit)</strong>
+    </dt>
+    <dd>
+    Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+<p> <p><b>Alias:</b> SetSpeedLimit</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Limit</span>
             <span class="types"><span class="type">number</span></span>
-         Nicht abreißbare Kategorie
+         Obergrenze
         </li>
     </ul>
 
 
 
 
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.ProtectCategory(EntityCategories.CityBuilding);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.ProtectEntity"></a>
-    <strong>API.ProtectEntity (_entry)</strong>
-    </dt>
-    <dd>
-    Fügt ein Entity hinzu, dass nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Nicht abreißbares Entity
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.ProtectEntity(<span class="string">"bakery"</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.ProtectEntityType"></a>
-    <strong>API.ProtectEntityType (_entry)</strong>
-    </dt>
-    <dd>
-    Fügt einen Entitytyp hinzu, der nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-            <span class="types"><span class="type">number</span></span>
-         Nicht abreißbarer Typ
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.ProtectEntityType(Entities.B_Bakery);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.ProtectTerritory"></a>
-    <strong>API.ProtectTerritory (_entry)</strong>
-    </dt>
-    <dd>
-    Fügt ein Territory hinzu, auf dem nichts abgerissen werden kann.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-            <span class="types"><span class="type">number</span></span>
-         Geschütztes Territorium
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.ProtectTerritory(<span class="number">1</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UnprotectCategory"></a>
-    <strong>API.UnprotectCategory (_entry)</strong>
-    </dt>
-    <dd>
-    Entfernt eine Kategorie, die nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-            <span class="types"><span class="type">number</span></span>
-         Nicht abreißbare Kategorie
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.UnprotectCategory(EntityCategories.CityBuilding);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UnprotectEntity"></a>
-    <strong>API.UnprotectEntity (_entry)</strong>
-    </dt>
-    <dd>
-    Entfernt ein Entity, dass nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Nicht abreißbares Entity
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.UnprotectEntity(<span class="string">"bakery"</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UnprotectEntityType"></a>
-    <strong>API.UnprotectEntityType (_entry)</strong>
-    </dt>
-    <dd>
-    Entfernt einen Entitytyp, der nicht abgerissen werden darf.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-            <span class="types"><span class="type">number</span></span>
-         Nicht abreißbarer Typ
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.UnprotectEntityType(Entities.B_Bakery);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UnprotectTerritory"></a>
-    <strong>API.UnprotectTerritory (_entry)</strong>
-    </dt>
-    <dd>
-    Entfernt ein Territory, auf dem nichts abgerissen werden kann.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_entry</span>
-            <span class="types"><span class="type">number</span></span>
-         Geschütztes Territorium
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.UnprotectTerritory(<span class="number">1</span>);</pre>
-    </ul>
 
 </dd>
 </dl>
@@ -368,18 +190,20 @@
 
     <dl class="function">
     <dt>
-    <a name = "BundleDestructionControl.Local.DeleteEntityStateBuilding"></a>
-    <strong>BundleDestructionControl.Local.DeleteEntityStateBuilding (_BuildingID)</strong>
+    <a name = "BundleGameHelperFunctions.Local:ActivateSpeedLimit"></a>
+    <strong>BundleGameHelperFunctions.Local:ActivateSpeedLimit (_Flag)</strong>
     </dt>
     <dd>
-    Verhindert den Abriss von Entities.
+    Aktiviert die Speedbremse.  Die vorher eingestellte Maximalgeschwindigkeit
+ kann nicht mehr überschritten werden.
+
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_BuildingID</span>
-            <span class="types"><span class="type">number</span></span>
-         EntityID des Gebäudes
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Speedbremse ist aktiv
         </li>
     </ul>
 
@@ -389,13 +213,49 @@
 
 </dd>
     <dt>
-    <a name = "BundleDestructionControl.Local:Install"></a>
-    <strong>BundleDestructionControl.Local:Install ()</strong>
+    <a name = "BundleGameHelperFunctions.Local:InitForbidSpeedUp"></a>
+    <strong>BundleGameHelperFunctions.Local:InitForbidSpeedUp ()</strong>
+    </dt>
+    <dd>
+    Überschreibt das Callback, das nach dem Ändern der Spielgeschwindigkeit
+ aufgerufen wird und installiert die Speedbremse.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleGameHelperFunctions.Local:Install"></a>
+    <strong>BundleGameHelperFunctions.Local:Install ()</strong>
     </dt>
     <dd>
     Initalisiert das Bundle im lokalen Skript.
 
 
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleGameHelperFunctions.Local:SetSpeedLimit"></a>
+    <strong>BundleGameHelperFunctions.Local:SetSpeedLimit (_Limit)</strong>
+    </dt>
+    <dd>
+    Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Limit</span>
+            <span class="types"><span class="type">number</span></span>
+         Obergrenze
+        </li>
+    </ul>
 
 
 

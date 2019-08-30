@@ -51,6 +51,7 @@
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundlecamera.html">bundles.bundlecamera</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
   <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
@@ -59,8 +60,7 @@
   <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
-  <li><strong>bundles.bundleextendedzoom</strong></li>
-  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlefollowknight.html">bundles.bundlefollowknight</a></li>
   <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
@@ -70,9 +70,12 @@
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
+  <li><a href="../modules/bundles.bundleterrainandwater.html">bundles.bundleterrainandwater</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
+  <li><strong>bundles.bundleutilities</strong></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
@@ -90,75 +93,67 @@
 
 <div id="content">
 
-<h1>Module <code>bundles.bundleextendedzoom</code></h1>
-<p>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die
- Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen
- Zoom zu nutzen.</p>
-<p>
-<p> <p><a href="#API.AllowExtendedZoom">Zoom entriegeln oder sperren</a></p>
-</p>
+<h1>Module <code>bundles.bundleutilities</code></h1>
+<p>FIXME: Ein Sammelsorium von Funktionen, die noch nicht zugeordnet sind.</p>
+<p></p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.AllowExtendedZoom">API.AllowExtendedZoom (_Flag)</a></td>
-	<td class="summary">Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.</td>
+	<td class="name" nowrap><a href="#API.AllowCheats">API.AllowCheats ()</a></td>
+	<td class="summary">Aktiviert die Tastenkombination zum Einschalten der Cheats.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ForbidCheats">API.ForbidCheats ()</a></td>
+	<td class="summary">Deaktiviert die Tastenkombination zum Einschalten der Cheats.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ForbidSaveGame">API.ForbidSaveGame (_Flag)</a></td>
+	<td class="summary">Sperrt das Speichern von Spielständen oder gibt es wieder frei.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Global.OnSaveGameLoaded">BundleExtendedZoom.Global.OnSaveGameLoaded ()</a></td>
+	<td class="name" nowrap><a href="#BundleUtilities.Global.OnSaveGameLoaded">BundleUtilities.Global.OnSaveGameLoaded ()</a></td>
 	<td class="summary">Stellt nicht-persistente Änderungen nach dem laden wieder her.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Global:ActivateExtendedZoom">BundleExtendedZoom.Global:ActivateExtendedZoom ()</a></td>
-	<td class="summary">Aktiviert den erweiterten Zoom.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Global:DeactivateExtendedZoom">BundleExtendedZoom.Global:DeactivateExtendedZoom ()</a></td>
-	<td class="summary">Deaktiviert den erweiterten Zoom.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Global:InitExtendedZoomHotkeyDescription">BundleExtendedZoom.Global:InitExtendedZoomHotkeyDescription ()</a></td>
-	<td class="summary">Initialisiert den erweiterten Zoom.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Global:InitExtendedZoomHotkeyFunction">BundleExtendedZoom.Global:InitExtendedZoomHotkeyFunction ()</a></td>
-	<td class="summary">Initialisiert den erweiterten Zoom.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Global:Install">BundleExtendedZoom.Global:Install ()</a></td>
+	<td class="name" nowrap><a href="#BundleUtilities.Global:Install">BundleUtilities.Global:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Global:ToggleExtendedZoom">BundleExtendedZoom.Global:ToggleExtendedZoom ()</a></td>
-	<td class="summary">Schaltet zwischen dem normalen und dem erweiterten Zoom um.</td>
+	<td class="name" nowrap><a href="#BundleUtilities.Global:KillCheats">BundleUtilities.Global:KillCheats ()</a></td>
+	<td class="summary">Deaktiviert die Tastenkombination zum Einschalten der Cheats.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Local:ActivateExtendedZoom">BundleExtendedZoom.Local:ActivateExtendedZoom ()</a></td>
-	<td class="summary">Erweitert die Zoomrestriktion auf das Maximum.</td>
+	<td class="name" nowrap><a href="#BundleUtilities.Global:RessurectCheats">BundleUtilities.Global:RessurectCheats ()</a></td>
+	<td class="summary">Aktiviert die Tastenkombination zum Einschalten der Cheats.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Local:ActivateExtendedZoomHotkey">BundleExtendedZoom.Local:ActivateExtendedZoomHotkey ()</a></td>
-	<td class="summary">Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.</td>
+	<td class="name" nowrap><a href="#BundleUtilities.Local:CloseIllegalSaveGame">BundleUtilities.Local:CloseIllegalSaveGame ()</a></td>
+	<td class="summary">Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Local:DeactivateExtendedZoom">BundleExtendedZoom.Local:DeactivateExtendedZoom ()</a></td>
-	<td class="summary">Stellt die normale Zoomrestriktion wieder her.</td>
+	<td class="name" nowrap><a href="#BundleUtilities.Local:DisplaySaveButtons">BundleUtilities.Local:DisplaySaveButtons (_Flag)</a></td>
+	<td class="summary">Zeigt oder versteckt die Speicherbuttons im Spielmenü.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Local:Install">BundleExtendedZoom.Local:Install ()</a></td>
+	<td class="name" nowrap><a href="#BundleUtilities.Local:InitForbidSaveGame">BundleUtilities.Local:InitForbidSaveGame ()</a></td>
+	<td class="summary">Überschreibt die Hotkey-Funktion, die das Spiel speichert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleUtilities.Local:Install">BundleUtilities.Local:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Local:RegisterExtendedZoomHotkey">BundleExtendedZoom.Local:RegisterExtendedZoomHotkey ()</a></td>
-	<td class="summary">Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.</td>
+	<td class="name" nowrap><a href="#BundleUtilities.Local:KillCheats">BundleUtilities.Local:KillCheats ()</a></td>
+	<td class="summary">Deaktiviert die Tastenkombination zum Einschalten der Cheats.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleExtendedZoom.Local:ToggleExtendedZoom">BundleExtendedZoom.Local:ToggleExtendedZoom ()</a></td>
-	<td class="summary">Wechselt zwischen erweitertem und normalen Zoom.</td>
+	<td class="name" nowrap><a href="#BundleUtilities.Local:RessurectCheats">BundleUtilities.Local:RessurectCheats ()</a></td>
+	<td class="summary">Aktiviert die Tastenkombination zum Einschalten der Cheats.</td>
 	</tr>
 </table>
 
@@ -170,19 +165,52 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.AllowExtendedZoom"></a>
-    <strong>API.AllowExtendedZoom (_Flag)</strong>
+    <a name = "API.AllowCheats"></a>
+    <strong>API.AllowCheats ()</strong>
     </dt>
     <dd>
-    Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
-<p> <p><b>Alias:</b> AllowExtendedZoom</p>
+    Aktiviert die Tastenkombination zum Einschalten der Cheats.
+<p> <p><b>Alias:</b> RessurectCheats</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ForbidCheats"></a>
+    <strong>API.ForbidCheats ()</strong>
+    </dt>
+    <dd>
+    Deaktiviert die Tastenkombination zum Einschalten der Cheats.
+<p> <p><b>Alias:</b> KillCheats</p>
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ForbidSaveGame"></a>
+    <strong>API.ForbidSaveGame (_Flag)</strong>
+    </dt>
+    <dd>
+    Sperrt das Speichern von Spielständen oder gibt es wieder frei.
+<p> <p><b>Alias:</b> ForbidSaveGame</p>
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Flag</span>
-         [boolean] Erweiterter Zoom gestattet
+            <span class="types"><span class="type">boolean</span></span>
+         Speichern gesperrt
         </li>
     </ul>
 
@@ -196,8 +224,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "BundleExtendedZoom.Global.OnSaveGameLoaded"></a>
-    <strong>BundleExtendedZoom.Global.OnSaveGameLoaded ()</strong>
+    <a name = "BundleUtilities.Global.OnSaveGameLoaded"></a>
+    <strong>BundleUtilities.Global.OnSaveGameLoaded ()</strong>
     </dt>
     <dd>
     Stellt nicht-persistente Änderungen nach dem laden wieder her.
@@ -210,64 +238,8 @@
 
 </dd>
     <dt>
-    <a name = "BundleExtendedZoom.Global:ActivateExtendedZoom"></a>
-    <strong>BundleExtendedZoom.Global:ActivateExtendedZoom ()</strong>
-    </dt>
-    <dd>
-    Aktiviert den erweiterten Zoom.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleExtendedZoom.Global:DeactivateExtendedZoom"></a>
-    <strong>BundleExtendedZoom.Global:DeactivateExtendedZoom ()</strong>
-    </dt>
-    <dd>
-    Deaktiviert den erweiterten Zoom.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleExtendedZoom.Global:InitExtendedZoomHotkeyDescription"></a>
-    <strong>BundleExtendedZoom.Global:InitExtendedZoomHotkeyDescription ()</strong>
-    </dt>
-    <dd>
-    Initialisiert den erweiterten Zoom.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleExtendedZoom.Global:InitExtendedZoomHotkeyFunction"></a>
-    <strong>BundleExtendedZoom.Global:InitExtendedZoomHotkeyFunction ()</strong>
-    </dt>
-    <dd>
-    Initialisiert den erweiterten Zoom.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BundleExtendedZoom.Global:Install"></a>
-    <strong>BundleExtendedZoom.Global:Install ()</strong>
+    <a name = "BundleUtilities.Global:Install"></a>
+    <strong>BundleUtilities.Global:Install ()</strong>
     </dt>
     <dd>
     Initalisiert das Bundle im globalen Skript.
@@ -280,11 +252,11 @@
 
 </dd>
     <dt>
-    <a name = "BundleExtendedZoom.Global:ToggleExtendedZoom"></a>
-    <strong>BundleExtendedZoom.Global:ToggleExtendedZoom ()</strong>
+    <a name = "BundleUtilities.Global:KillCheats"></a>
+    <strong>BundleUtilities.Global:KillCheats ()</strong>
     </dt>
     <dd>
-    Schaltet zwischen dem normalen und dem erweiterten Zoom um.
+    Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 
 
 
@@ -294,11 +266,11 @@
 
 </dd>
     <dt>
-    <a name = "BundleExtendedZoom.Local:ActivateExtendedZoom"></a>
-    <strong>BundleExtendedZoom.Local:ActivateExtendedZoom ()</strong>
+    <a name = "BundleUtilities.Global:RessurectCheats"></a>
+    <strong>BundleUtilities.Global:RessurectCheats ()</strong>
     </dt>
     <dd>
-    Erweitert die Zoomrestriktion auf das Maximum.
+    Aktiviert die Tastenkombination zum Einschalten der Cheats.
 
 
 
@@ -308,11 +280,14 @@
 
 </dd>
     <dt>
-    <a name = "BundleExtendedZoom.Local:ActivateExtendedZoomHotkey"></a>
-    <strong>BundleExtendedZoom.Local:ActivateExtendedZoomHotkey ()</strong>
+    <a name = "BundleUtilities.Local:CloseIllegalSaveGame"></a>
+    <strong>BundleUtilities.Local:CloseIllegalSaveGame ()</strong>
     </dt>
     <dd>
-    Aktiviert den Hotkey zum Wechsel zwischen normalen und erweiterten Zoom.
+    Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
+<p> <b>Hinweis</b>: Dies ist ein Fallback wegen dem automatischen Speichern
+ der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
+
 
 
 
@@ -322,11 +297,32 @@
 
 </dd>
     <dt>
-    <a name = "BundleExtendedZoom.Local:DeactivateExtendedZoom"></a>
-    <strong>BundleExtendedZoom.Local:DeactivateExtendedZoom ()</strong>
+    <a name = "BundleUtilities.Local:DisplaySaveButtons"></a>
+    <strong>BundleUtilities.Local:DisplaySaveButtons (_Flag)</strong>
     </dt>
     <dd>
-    Stellt die normale Zoomrestriktion wieder her.
+    Zeigt oder versteckt die Speicherbuttons im Spielmenü.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Speicherbuttons sichtbar
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleUtilities.Local:InitForbidSaveGame"></a>
+    <strong>BundleUtilities.Local:InitForbidSaveGame ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Hotkey-Funktion, die das Spiel speichert.
 
 
 
@@ -336,8 +332,8 @@
 
 </dd>
     <dt>
-    <a name = "BundleExtendedZoom.Local:Install"></a>
-    <strong>BundleExtendedZoom.Local:Install ()</strong>
+    <a name = "BundleUtilities.Local:Install"></a>
+    <strong>BundleUtilities.Local:Install ()</strong>
     </dt>
     <dd>
     Initalisiert das Bundle im lokalen Skript.
@@ -350,11 +346,11 @@
 
 </dd>
     <dt>
-    <a name = "BundleExtendedZoom.Local:RegisterExtendedZoomHotkey"></a>
-    <strong>BundleExtendedZoom.Local:RegisterExtendedZoomHotkey ()</strong>
+    <a name = "BundleUtilities.Local:KillCheats"></a>
+    <strong>BundleUtilities.Local:KillCheats ()</strong>
     </dt>
     <dd>
-    Schreibt den Hotkey für den erweiterten Zoom in das Hotkey-Register.
+    Deaktiviert die Tastenkombination zum Einschalten der Cheats.
 
 
 
@@ -364,11 +360,11 @@
 
 </dd>
     <dt>
-    <a name = "BundleExtendedZoom.Local:ToggleExtendedZoom"></a>
-    <strong>BundleExtendedZoom.Local:ToggleExtendedZoom ()</strong>
+    <a name = "BundleUtilities.Local:RessurectCheats"></a>
+    <strong>BundleUtilities.Local:RessurectCheats ()</strong>
     </dt>
     <dd>
-    Wechselt zwischen erweitertem und normalen Zoom.
+    Aktiviert die Tastenkombination zum Einschalten der Cheats.
 
 
 
@@ -384,7 +380,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-08-18 11:25:37 </i>
+<i style="float:right;">Last updated 2019-08-31 01:07:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
