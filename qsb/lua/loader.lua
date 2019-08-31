@@ -115,12 +115,14 @@ SymfoniaLoader = {
 
             -- Erweiterte Bibliothek
             -- Zusätzliche Funktionalität und weitere Behavior.
+            {"BundleCamera",                        true},
+            {"BundleCheats",                        true},
             {"BundleDialogWindows",                 true},
             {"BundleEntityCommandFunctions",        true},
             {"BundleEntityHelperFunctions",         true},
-            {"BundleCamera",                        true},
             {"BundleInterfaceFeatureVisibility",    true},
             {"BundleMinimapMarker",                 true},
+            {"BundleStockbreeding",                 true},
             {"BundleSymfoniaBehaviors",             true},
             {"BundleTimeLine",                      true},
             {"BundleTravelingSalesman",             true},
@@ -129,15 +131,15 @@ SymfoniaLoader = {
             -- Neue Funktionen für fortgeschrittene Anwender.
             {"BundleBuildingButtons",               true},
             {"BundleEntityProperties",              true},
-            {"BundleUtilities",                     true},
             {"BundleFollowKnight",                  true},
             {"BundleSpeedLimit",                    true},
-            {"BundleTerrainAndWater",               true},
             {"BundleInteractiveObjects",            true},
             {"BundleInterfaceApperance",            true},
             {"BundlePlayerHelperFunctions",         true},
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
+            {"BundleSaveGameTools",                 true},
+            {"BundleTerrainAndWater",               true},
             {"BundleWeatherManipulation",           true},
         },
 
@@ -154,11 +156,6 @@ SymfoniaLoader = {
             {
             "AddOnCastleStore",                     true,
             "BundleInteractiveObjects",
-            },
-
-            {
-            "AddOnGameCutscenes",                   false,
-            "BundleBriefingSystem",
             },
 
             {

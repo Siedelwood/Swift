@@ -52,6 +52,7 @@
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
   <li><a href="../modules/bundles.bundlecamera.html">bundles.bundlecamera</a></li>
+  <li><a href="../modules/bundles.bundlecheats.html">bundles.bundlecheats</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
   <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
@@ -70,12 +71,13 @@
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><strong>bundles.bundlesavegametools</strong></li>
   <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
+  <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
   <li><a href="../modules/bundles.bundleterrainandwater.html">bundles.bundleterrainandwater</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
-  <li><a href="../modules/bundles.bundleutilities.html">bundles.bundleutilities</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
@@ -83,7 +85,6 @@
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
   <li><a href="../modules/external.externalinteractiveobjecttemplates.html">external.externalinteractiveobjecttemplates</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
-  <li><strong>external.externalsavegametools</strong></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
@@ -93,9 +94,9 @@
 
 <div id="content">
 
-<h1>Module <code>external.externalsavegametools</code></h1>
-<p>Dieses Bundle bietet Funktionen an, mit denen Spielstände außerhalb des
- üblichen Ordners gespeichert und geladen werden können.</p>
+<h1>Module <code>bundles.bundlesavegametools</code></h1>
+<p>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von
+ Spielständen kontrolliert werden können.</p>
 <p></p>
 
 
@@ -105,6 +106,10 @@
 	<td class="name" nowrap><a href="#API.AutoSaveGame">API.AutoSaveGame (_name)</a></td>
 	<td class="summary">Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
  des Spielstandes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ForbidSaveGame">API.ForbidSaveGame (_Flag)</a></td>
+	<td class="summary">Sperrt das Speichern von Spielständen oder gibt es wieder frei.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.LoadGameFromFolder">API.LoadGameFromFolder (_path, _name, _needButton)</a></td>
@@ -122,32 +127,48 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#ExternalSaveGameTools.Global:Install">ExternalSaveGameTools.Global:Install ()</a></td>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Global.OnSaveGameLoaded">BundleSaveGameTools.Global.OnSaveGameLoaded ()</a></td>
+	<td class="summary">Stellt nicht-persistente Änderungen nach dem laden wieder her.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Global:Install">BundleSaveGameTools.Global:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ExternalSaveGameTools.Local:AutoSaveGame">ExternalSaveGameTools.Local:AutoSaveGame (_name)</a></td>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:AutoSaveGame">BundleSaveGameTools.Local:AutoSaveGame (_name)</a></td>
 	<td class="summary">Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
  des Spielstandes.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ExternalSaveGameTools.Local:CanGameBeSaved">ExternalSaveGameTools.Local:CanGameBeSaved ()</a></td>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:CanGameBeSaved">BundleSaveGameTools.Local:CanGameBeSaved ()</a></td>
 	<td class="summary">Prüft, ob das Spiel gerade gespeichert werden kann.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ExternalSaveGameTools.Local:Install">ExternalSaveGameTools.Local:Install ()</a></td>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:CloseIllegalSaveGame">BundleSaveGameTools.Local:CloseIllegalSaveGame ()</a></td>
+	<td class="summary">Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:DisplaySaveButtons">BundleSaveGameTools.Local:DisplaySaveButtons (_Flag)</a></td>
+	<td class="summary">Zeigt oder versteckt die Speicherbuttons im Spielmenü.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:InitForbidSaveGame">BundleSaveGameTools.Local:InitForbidSaveGame ()</a></td>
+	<td class="summary">Überschreibt die Hotkey-Funktion, die das Spiel speichert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:Install">BundleSaveGameTools.Local:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ExternalSaveGameTools.Local:LoadGameFromFolder">ExternalSaveGameTools.Local:LoadGameFromFolder (_path, _name, _needButton)</a></td>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:LoadGameFromFolder">BundleSaveGameTools.Local:LoadGameFromFolder (_path, _name, _needButton)</a></td>
 	<td class="summary">Läd einen Spielstand aus dem angegebenen Verzeichnis.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ExternalSaveGameTools.Local:SaveGameToFolder">ExternalSaveGameTools.Local:SaveGameToFolder (_path, _name)</a></td>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:SaveGameToFolder">BundleSaveGameTools.Local:SaveGameToFolder (_path, _name)</a></td>
 	<td class="summary">Speichert den Spielstand in das angegebene Verzeichnis.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ExternalSaveGameTools.Local:StartMap">ExternalSaveGameTools.Local:StartMap (_map, _knight, _folder, _needButton)</a></td>
+	<td class="name" nowrap><a href="#BundleSaveGameTools.Local:StartMap">BundleSaveGameTools.Local:StartMap (_map, _knight, _folder, _needButton)</a></td>
 	<td class="summary">Startet eine Map aus dem angegebenen Verzeichnis.</td>
 	</tr>
 </table>
@@ -174,6 +195,29 @@
     <ul>
         <li><span class="parameter">_name</span>
          [string] Name des Spielstandes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ForbidSaveGame"></a>
+    <strong>API.ForbidSaveGame (_Flag)</strong>
+    </dt>
+    <dd>
+    Sperrt das Speichern von Spielständen oder gibt es wieder frei.
+<p> <p><b>Alias:</b> ForbidSaveGame</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Speichern gesperrt
         </li>
     </ul>
 
@@ -281,8 +325,22 @@
 
     <dl class="function">
     <dt>
-    <a name = "ExternalSaveGameTools.Global:Install"></a>
-    <strong>ExternalSaveGameTools.Global:Install ()</strong>
+    <a name = "BundleSaveGameTools.Global.OnSaveGameLoaded"></a>
+    <strong>BundleSaveGameTools.Global.OnSaveGameLoaded ()</strong>
+    </dt>
+    <dd>
+    Stellt nicht-persistente Änderungen nach dem laden wieder her.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleSaveGameTools.Global:Install"></a>
+    <strong>BundleSaveGameTools.Global:Install ()</strong>
     </dt>
     <dd>
     Initalisiert das Bundle im globalen Skript.
@@ -295,8 +353,8 @@
 
 </dd>
     <dt>
-    <a name = "ExternalSaveGameTools.Local:AutoSaveGame"></a>
-    <strong>ExternalSaveGameTools.Local:AutoSaveGame (_name)</strong>
+    <a name = "BundleSaveGameTools.Local:AutoSaveGame"></a>
+    <strong>BundleSaveGameTools.Local:AutoSaveGame (_name)</strong>
     </dt>
     <dd>
     Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
@@ -318,8 +376,8 @@
 
 </dd>
     <dt>
-    <a name = "ExternalSaveGameTools.Local:CanGameBeSaved"></a>
-    <strong>ExternalSaveGameTools.Local:CanGameBeSaved ()</strong>
+    <a name = "BundleSaveGameTools.Local:CanGameBeSaved"></a>
+    <strong>BundleSaveGameTools.Local:CanGameBeSaved ()</strong>
     </dt>
     <dd>
     Prüft, ob das Spiel gerade gespeichert werden kann.
@@ -337,8 +395,60 @@
 
 </dd>
     <dt>
-    <a name = "ExternalSaveGameTools.Local:Install"></a>
-    <strong>ExternalSaveGameTools.Local:Install ()</strong>
+    <a name = "BundleSaveGameTools.Local:CloseIllegalSaveGame"></a>
+    <strong>BundleSaveGameTools.Local:CloseIllegalSaveGame ()</strong>
+    </dt>
+    <dd>
+    Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
+<p> <b>Hinweis</b>: Dies ist ein Fallback wegen dem automatischen Speichern
+ der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
+
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleSaveGameTools.Local:DisplaySaveButtons"></a>
+    <strong>BundleSaveGameTools.Local:DisplaySaveButtons (_Flag)</strong>
+    </dt>
+    <dd>
+    Zeigt oder versteckt die Speicherbuttons im Spielmenü.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Speicherbuttons sichtbar
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleSaveGameTools.Local:InitForbidSaveGame"></a>
+    <strong>BundleSaveGameTools.Local:InitForbidSaveGame ()</strong>
+    </dt>
+    <dd>
+    Überschreibt die Hotkey-Funktion, die das Spiel speichert.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleSaveGameTools.Local:Install"></a>
+    <strong>BundleSaveGameTools.Local:Install ()</strong>
     </dt>
     <dd>
     Initalisiert das Bundle im lokalen Skript.
@@ -351,8 +461,8 @@
 
 </dd>
     <dt>
-    <a name = "ExternalSaveGameTools.Local:LoadGameFromFolder"></a>
-    <strong>ExternalSaveGameTools.Local:LoadGameFromFolder (_path, _name, _needButton)</strong>
+    <a name = "BundleSaveGameTools.Local:LoadGameFromFolder"></a>
+    <strong>BundleSaveGameTools.Local:LoadGameFromFolder (_path, _name, _needButton)</strong>
     </dt>
     <dd>
     Läd einen Spielstand aus dem angegebenen Verzeichnis.  Der Pfad
@@ -381,8 +491,8 @@
 
 </dd>
     <dt>
-    <a name = "ExternalSaveGameTools.Local:SaveGameToFolder"></a>
-    <strong>ExternalSaveGameTools.Local:SaveGameToFolder (_path, _name)</strong>
+    <a name = "BundleSaveGameTools.Local:SaveGameToFolder"></a>
+    <strong>BundleSaveGameTools.Local:SaveGameToFolder (_path, _name)</strong>
     </dt>
     <dd>
     Speichert den Spielstand in das angegebene Verzeichnis.  Es kφnnen
@@ -407,8 +517,8 @@
 
 </dd>
     <dt>
-    <a name = "ExternalSaveGameTools.Local:StartMap"></a>
-    <strong>ExternalSaveGameTools.Local:StartMap (_map, _knight, _folder, _needButton)</strong>
+    <a name = "BundleSaveGameTools.Local:StartMap"></a>
+    <strong>BundleSaveGameTools.Local:StartMap (_map, _knight, _folder, _needButton)</strong>
     </dt>
     <dd>
     Startet eine Map aus dem angegebenen Verzeichnis.  Die Verzeichnisse
@@ -451,7 +561,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-08-31 01:07:31 </i>
+<i style="float:right;">Last updated 2019-08-31 11:49:48 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

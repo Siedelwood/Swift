@@ -1,17 +1,17 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia ExternalSaveGameTools                                        # --
+-- #  Symfonia BundleSaveGameTools                                          # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle bietet Funktionen an, mit denen Spielstände außerhalb des
--- üblichen Ordners gespeichert und geladen werden können.
+-- Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von
+-- Spielständen kontrolliert werden können.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-ExternalSaveGameTools = {};
+BundleSaveGameTools = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -34,7 +34,7 @@ function API.AutoSaveGame(_name)
         API.Bridge('API.AutoSaveGame("'.._name..'")');
         return;
     end
-    ExternalSaveGameTools.Local:AutoSaveGame(_name);
+    BundleSaveGameTools.Local:AutoSaveGame(_name);
 end
 
 ---
@@ -53,7 +53,7 @@ function API.SaveGameToFolder(_path, _name)
         API.Bridge('API.SaveGameToFolder("'.._path..'", "'.._name..'")');
         return;
     end
-    ExternalSaveGameTools.Local:SaveGameToFolder(_path, _name);
+    BundleSaveGameTools.Local:SaveGameToFolder(_path, _name);
 end
 
 ---
@@ -75,7 +75,7 @@ function API.LoadGameFromFolder(_path, _name, _needButton)
         API.Bridge('API.LoadGameFromFolder("'.._path..'", "'.._name..'", "'.._needButton..'")');
         return;
     end
-    ExternalSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton);
+    BundleSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton);
 end
 
 ---
@@ -104,20 +104,41 @@ function API.StartMap(_map, _knight, _folder, _needButton)
         API.Bridge('API.StartMap("'.._map..'", "'.._knight..'", "'.._needButton..'", "'.._needButton..'")');
         return;
     end
-    ExternalSaveGameTools.Local:StartMap(_map, _knight, _folder, _needButton);
+    BundleSaveGameTools.Local:StartMap(_map, _knight, _folder, _needButton);
 end
+
+---
+-- Sperrt das Speichern von Spielständen oder gibt es wieder frei.
+--
+-- <p><b>Alias:</b> ForbidSaveGame</p>
+--
+-- @param[type=boolean] _Flag Speichern gesperrt
+-- @within Anwenderfunktionen
+--
+function API.ForbidSaveGame(_Flag)
+    if GUI then
+        API.Bridge("API.ForbidSaveGame(".. tostring(_Flag) ..")");
+        return;
+    end
+    API.Bridge([[
+        BundleSaveGameTools.Local.Data.ForbidSave = ]].. tostring(_Flag) ..[[ == true
+        BundleSaveGameTools.Local:DisplaySaveButtons(]].. tostring(_Flag) ..[[)
+    ]]);
+end
+ForbidSaveGame = API.ForbidSaveGame;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-ExternalSaveGameTools = {
+BundleSaveGameTools = {
     Global = {
         Data = {}
     },
     Local = {
         Data = {
             AutoSaveCounter = 0,
+            ForbidSave = false,
         }
     },
 }
@@ -130,11 +151,22 @@ ExternalSaveGameTools = {
 -- @within Internal
 -- @local
 --
-function ExternalSaveGameTools.Global:Install()
-
+function BundleSaveGameTools.Global:Install()
+    API.AddSaveGameAction(BundleSaveGameTools.Global.OnSaveGameLoaded);
 end
 
+-- -------------------------------------------------------------------------- --
 
+---
+-- Stellt nicht-persistente Änderungen nach dem laden wieder her.
+--
+-- @within Internal
+-- @local
+--
+function BundleSaveGameTools.Global.OnSaveGameLoaded()
+    -- Illegale Speicherstände
+    API.Bridge("BundleSaveGameTools.Local:CloseIllegalSaveGame()");
+end
 
 -- Local Script ----------------------------------------------------------------
 
@@ -144,8 +176,8 @@ end
 -- @within Internal
 -- @local
 --
-function ExternalSaveGameTools.Local:Install()
-
+function BundleSaveGameTools.Local:Install()
+    self:InitForbidSaveGame();
 end
 
 ---
@@ -157,11 +189,11 @@ end
 -- @within Internal
 -- @local
 --
-function ExternalSaveGameTools.Local:AutoSaveGame(_name)
+function BundleSaveGameTools.Local:AutoSaveGame(_name)
     _name = _name or Framework.GetCurrentMapName();
 
-    local counter = ExternalSaveGameTools.Local.Data.AutoSaveCounter +1;
-    ExternalSaveGameTools.Local.Data.AutoSaveCounter = counter;
+    local counter = BundleSaveGameTools.Local.Data.AutoSaveCounter +1;
+    BundleSaveGameTools.Local.Data.AutoSaveCounter = counter;
     local lang = Network.GetDesiredLanguage();
     if lang ~= "de" then lang = "en" end
     local text = (lang == "de" and "Spiel wird gespeichert...") or
@@ -173,7 +205,7 @@ function ExternalSaveGameTools.Local:AutoSaveGame(_name)
         Framework.SaveGame("Autosave "..counter.." --- ".._name, "--");
     else
         StartSimpleJobEx( function()
-            if ExternalSaveGameTools.Local:CanGameBeSaved() then
+            if BundleSaveGameTools.Local:CanGameBeSaved() then
                 OpenDialog(text, XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
                 XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
                 Framework.SaveGame("Autosave - "..counter.." --- ".._name, "--");
@@ -190,8 +222,8 @@ end
 -- @within Internal
 -- @local
 --
-function ExternalSaveGameTools.Local:CanGameBeSaved()
-    if BundleGameHelperFunctions and BundleGameHelperFunctions.Local.Data.ForbidSave then
+function BundleSaveGameTools.Local:CanGameBeSaved()
+    if self.Data.ForbidSave then
         return false;
     end
     if IsBriefingActive and IsBriefingActive() then
@@ -213,7 +245,7 @@ end
 -- @within Internal
 -- @local
 --
-function ExternalSaveGameTools.Local:SaveGameToFolder(_path, _name)
+function BundleSaveGameTools.Local:SaveGameToFolder(_path, _name)
     _name = _name or Framework.GetCurrentMapName();
     Framework.SaveGame(_path .. "/" .. _name, "--");
 end
@@ -230,7 +262,7 @@ end
 -- @within Internal
 -- @local
 --
-function ExternalSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton)
+function BundleSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton)
     _needButton = _needButton or 0;
     assert( type(_name) == "string" );
     local SaveName = _path .. "/" .. _name .. GetSaveGameExtension();
@@ -259,7 +291,7 @@ end
 -- @within Internal
 -- @local
 --
-function ExternalSaveGameTools.Local:StartMap(_map, _knight, _folder, _needButton)
+function BundleSaveGameTools.Local:StartMap(_map, _knight, _folder, _needButton)
     _needButton = _needButton or 1;
     _knight = _knight or 0;
     _folder = _folder or 3;
@@ -277,5 +309,50 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("ExternalSaveGameTools");
+---
+-- Überschreibt die Hotkey-Funktion, die das Spiel speichert.
+--
+-- @within Internal
+-- @local
+--
+function BundleSaveGameTools.Local:InitForbidSaveGame()
+    KeyBindings_SaveGame_Orig_Preferences_SaveGame = KeyBindings_SaveGame;
+    KeyBindings_SaveGame = function()
+        if BundleSaveGameTools.Local.Data.ForbidSave then
+            return;
+        end
+        KeyBindings_SaveGame_Orig_Preferences_SaveGame();
+    end
+end
+
+---
+-- Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
+--
+-- <b>Hinweis</b>: Dies ist ein Fallback wegen dem automatischen Speichern
+-- der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
+--
+-- @within Internal
+-- @local
+--
+function BundleSaveGameTools.Local:CloseIllegalSaveGame()
+    if BundleSaveGameTools.Local.Data.ForbidSave then
+        Framework.CloseGame();
+    end
+end
+
+---
+-- Zeigt oder versteckt die Speicherbuttons im Spielmenü.
+--
+-- @param[type=boolean] _Flag Speicherbuttons sichtbar
+-- @within Internal
+-- @local
+--
+function BundleSaveGameTools.Local:DisplaySaveButtons(_Flag)
+    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/SaveGame",  (_Flag and 0) or 1);
+    XGUIEng.ShowWidget("/InGame/InGame/MainMenu/Container/QuickSave", (_Flag and 0) or 1);
+end
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleSaveGameTools");
 
