@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>addoninteractivesites</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>addoninteractivesites</code></h1>
+<p>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei
+ ein Gebäude bauen zu lassen.</p>
+<p>
+ <br>Die Baustelle muss durch den Helden aktiviert
+ werden. Ein Siedler wird aus dem Lagerhaus kommen und das Gebäude bauen.
+ </p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateIOBuildingSite">API.CreateIOBuildingSite (_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)</a></td>
+	<td class="summary">Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.CreateIOBuildingSite"></a>
+    <strong>API.CreateIOBuildingSite (_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)</strong>
+    </dt>
+    <dd>
+    Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.
+<p> Diese Baustelle kann durch einen Helden aktiviert werden. Dann wird ein
+ Siedler zur Baustelle eilen und das Gebäude aufbauen. Es ist egal, ob es
+ sich um ein Territorium des Spielers oder einer KI handelt.
+<p> Es ist dabei zu beachten, dass der Spieler, dem die Baustelle zugeordnet
+ wird, das Territorium besitzt, auf dem er bauen soll. Des weiteren muss
+ er über ein Lagerhaus/Hauptzelt verfügen.
+<p> <p><b>Hinweis:</b> Es kann vorkommen, dass das Model der Baustelle nicht
+ geladen wird. Dann ist der Boden der Baustelle schwarz. Sobald wenigstens
+ ein reguläres Gebäude gebaut wurde, sollte die Textur jedoch vorhanden sein.
+ </p>
+<p> <p><b>Alias</b>: CreateIOBuildingSite</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Position</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Zielpunkt
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Besitzer des Gebäudes
+        </li>
+        <li><span class="parameter">_Type</span>
+            <span class="types"><span class="type">number</span></span>
+         Typ des Gebäudes
+        </li>
+        <li><span class="parameter">_Costs</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         (optional) Eigene Gebäudekosten
+        </li>
+        <li><span class="parameter">_Distance</span>
+            <span class="types"><span class="type">number</span></span>
+         (optional) Aktivierungsentfernung
+        </li>
+        <li><span class="parameter">_Icon</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         (optional) Icon des Schalters
+        </li>
+        <li><span class="parameter">_Title</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         (optional) Titel der Beschreibung
+        </li>
+        <li><span class="parameter">_Text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        (optional) Text der Beschreibung
+        </li>
+        <li><span class="parameter">_Callback</span>
+            <span class="types"><span class="type">function</span></span>
+         (optional) Funktion nach Fertigstellung
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Erzeugt eine Baustelle ohne besondere Einstellungen
+</span>API.CreateIOBuildingSite(<span class="string">"haus"</span>, <span class="number">1</span>, Entities.B_Bakery)
+<span class="comment">-- Baustelle mit Kosten und Aktivierungsdistanz
+</span>API.CreateIOBuildingSite(<span class="string">"haus"</span>, <span class="number">1</span>, Entities.B_Bakery, {Goods.G_Wood, <span class="number">4</span>}, <span class="number">1000</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-08-31 23:42:02 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

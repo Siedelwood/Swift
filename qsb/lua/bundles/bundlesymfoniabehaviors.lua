@@ -2059,9 +2059,7 @@ function BundleSymfoniaBehaviors.Global:Install()
             return objective.Completed;
         end
 
-        if objectiveType == Objective.Distance then
-            objective.Completed = BundleSymfoniaBehaviors.Global:IsQuestPositionReached(self, objective);
-        elseif objectiveType == Objective.DestroyEntities then
+        if objectiveType == Objective.DestroyEntities then
             if objective.Data[1] == 3 then
                 objective.Completed = BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed(self, objective);
             else
@@ -2112,29 +2110,6 @@ function BundleSymfoniaBehaviors.Global:Install()
             Logic.DestroyEffect(Questmarkers[eID]);
             Questmarkers[eID] = nil;
         end
-    end
-end
-
----
--- Prüft, ob das Entity das Ziel erreicht hat.
--- @param[type=table] _Quest     Quest Data
--- @param[type=table] _Objective Behavior Data
--- @return[type=boolean] Ziel wurde erreicht
--- @within Internal
--- @local
---
-function BundleSymfoniaBehaviors.Global:IsQuestPositionReached(_Quest, _Objective)
-    local IDdata2 = GetID(_Objective.Data[1]);
-    local IDdata3 = GetID(_Objective.Data[2]);
-    _Objective.Data[3] = _Objective.Data[3] or 2500;
-    if not (Logic.IsEntityDestroyed(IDdata2) or Logic.IsEntityDestroyed(IDdata3)) then
-        if Logic.GetDistanceBetweenEntities(IDdata2,IDdata3) <= _Objective.Data[3] then
-            DestroyQuestMarker(IDdata3);
-            return true;
-        end
-    else
-        DestroyQuestMarker(IDdata3);
-        return false;
     end
 end
 

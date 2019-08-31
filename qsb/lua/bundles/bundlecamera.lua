@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia BundleExtendedZoom                                           # --
+-- #  Symfonia BundleCamera                                                 # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
@@ -9,12 +9,13 @@
 -- Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen
 -- Zoom zu nutzen.
 --
--- <p><a href="#API.AllowExtendedZoom">Zoom entriegeln oder sperren</a></p>
+-- Außerdem kannst du die Kamera auf ein bestimmtes Entity zentrieren. Du
+-- kannst Rotation und Zoomfaktor bestimmen.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-BundleExtendedZoom = {};
+BundleCamera = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -36,18 +37,58 @@ function API.AllowExtendedZoom(_Flag)
         API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
         return;
     end
-    BundleExtendedZoom.Global.Data.ExtendedZoomAllowed = _Flag == true;
+    BundleCamera.Global.Data.ExtendedZoomAllowed = _Flag == true;
     if _Flag == false then
-        BundleExtendedZoom.Global:DeactivateExtendedZoom();
+        BundleCamera.Global:DeactivateExtendedZoom();
     end
 end
 AllowExtendedZoom = API.AllowExtendedZoom;
+
+---
+-- Fokusiert die Kamera auf dem Primärritter des Spielers.
+--
+-- <p><b>Alias:</b> SetCameraToPlayerKnight</p>
+--
+-- @param[type=number] _Player Partei
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
+-- @within Anwenderfunktionen
+--
+function API.FocusCameraOnKnight(_Player, _Rotation, _ZoomFactor)
+    API.FocusCameraOnEntity(Logic.GetKnightID(_Player), _Rotation, _ZoomFactor)
+end
+SetCameraToPlayerKnight = API.FocusCameraOnKnight;
+
+---
+-- Fokusiert die Kamera auf dem Entity.
+--
+-- <p><b>Alias:</b> SetCameraToEntity</p>
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
+-- @within Anwenderfunktionen
+--
+function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
+    if not GUI then
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        API.Bridge("API.FocusCameraOnEntity(" ..Subject.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
+        return;
+    end
+    if not IsExisting(_Entity) then
+        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
+        API.Warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        return;
+    end
+    return BundleCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
+end
+SetCameraToEntity = API.FocusCameraOnEntity;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleExtendedZoom = {
+BundleCamera = {
     Global = {
         Data = {
             ExtendedZoomAllowed = true,
@@ -64,10 +105,10 @@ BundleExtendedZoom = {
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Global:Install()
+function BundleCamera.Global:Install()
     self:InitExtendedZoomHotkeyFunction();
     self:InitExtendedZoomHotkeyDescription();
-    API.AddSaveGameAction(BundleExtendedZoom.Global.OnSaveGameLoaded);
+    API.AddSaveGameAction(BundleCamera.Global.OnSaveGameLoaded);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -78,7 +119,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Global:ToggleExtendedZoom()
+function BundleCamera.Global:ToggleExtendedZoom()
     if self.Data.ExtendedZoomAllowed then
         if self.Data.ExtendedZoomActive then
             self:DeactivateExtendedZoom();
@@ -94,9 +135,9 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Global:ActivateExtendedZoom()
+function BundleCamera.Global:ActivateExtendedZoom()
     self.Data.ExtendedZoomActive = true;
-    API.Bridge("BundleExtendedZoom.Local:ActivateExtendedZoom()");
+    API.Bridge("BundleCamera.Local:ActivateExtendedZoom()");
 end
 
 ---
@@ -105,9 +146,9 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Global:DeactivateExtendedZoom()
+function BundleCamera.Global:DeactivateExtendedZoom()
     self.Data.ExtendedZoomActive = false;
-    API.Bridge("BundleExtendedZoom.Local:DeactivateExtendedZoom()");
+    API.Bridge("BundleCamera.Local:DeactivateExtendedZoom()");
 end
 
 ---
@@ -116,9 +157,9 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Global:InitExtendedZoomHotkeyFunction()
+function BundleCamera.Global:InitExtendedZoomHotkeyFunction()
     API.Bridge([[
-        BundleExtendedZoom.Local:ActivateExtendedZoomHotkey()
+        BundleCamera.Local:ActivateExtendedZoomHotkey()
     ]]);
 end
 
@@ -128,9 +169,9 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Global:InitExtendedZoomHotkeyDescription()
+function BundleCamera.Global:InitExtendedZoomHotkeyDescription()
     API.Bridge([[
-        BundleExtendedZoom.Local:RegisterExtendedZoomHotkey()
+        BundleCamera.Local:RegisterExtendedZoomHotkey()
     ]]);
 end
 
@@ -142,12 +183,12 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Global.OnSaveGameLoaded()
+function BundleCamera.Global.OnSaveGameLoaded()
     -- Geänderter Zoom --
-    if BundleExtendedZoom.Global.Data.ExtendedZoomActive then
-        BundleExtendedZoom.Global:ActivateExtendedZoom();
+    if BundleCamera.Global.Data.ExtendedZoomActive then
+        BundleCamera.Global:ActivateExtendedZoom();
     end
-    BundleExtendedZoom.Global:InitExtendedZoomHotkeyFunction();
+    BundleCamera.Global:InitExtendedZoomHotkeyFunction();
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -158,7 +199,27 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Local:Install()
+function BundleCamera.Local:Install()
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Fokusiert die Kamera auf dem Entity.
+--
+-- @param _Entity Entity (Skriptname oder ID)
+-- @param[type=number] _Rotation Kamerawinkel
+-- @param[type=number] _ZoomFactor Zoomfaktor
+-- @within Internal
+-- @local
+--
+function BundleCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor)
+    local pos = GetPosition(_Entity);
+    local rotation = (_Rotation or -45);
+    local zoomFactor = (_ZoomFactor or 0.5);
+    Camera.RTS_SetLookAtPosition(pos.X, pos.Y);
+    Camera.RTS_SetRotationAngle(rotation);
+    Camera.RTS_SetZoomFactor(zoomFactor);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -169,7 +230,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Local:RegisterExtendedZoomHotkey()
+function BundleCamera.Local:RegisterExtendedZoomHotkey()
     API.AddHotKey(
         {de = "Strg + Umschalt + K",       en = "Ctrl + Shift + K"},
         {de = "Alternativen Zoom ein/aus", en = "Alternative zoom on/off"}
@@ -182,10 +243,10 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Local:ActivateExtendedZoomHotkey()
+function BundleCamera.Local:ActivateExtendedZoomHotkey()
     Input.KeyBindDown(
         Keys.ModifierControl + Keys.ModifierShift + Keys.K,
-        "BundleExtendedZoom.Local:ToggleExtendedZoom()",
+        "BundleCamera.Local:ToggleExtendedZoom()",
         2,
         false
     );
@@ -197,8 +258,8 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Local:ToggleExtendedZoom()
-    API.Bridge("BundleExtendedZoom.Global:ToggleExtendedZoom()");
+function BundleCamera.Local:ToggleExtendedZoom()
+    API.Bridge("BundleCamera.Global:ToggleExtendedZoom()");
 end
 
 ---
@@ -207,7 +268,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Local:ActivateExtendedZoom()
+function BundleCamera.Local:ActivateExtendedZoom()
     Camera.RTS_SetZoomFactorMax(0.8701);
     Camera.RTS_SetZoomFactor(0.8700);
     Camera.RTS_SetZoomFactorMin(0.0999);
@@ -219,7 +280,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleExtendedZoom.Local:DeactivateExtendedZoom()
+function BundleCamera.Local:DeactivateExtendedZoom()
     Camera.RTS_SetZoomFactor(0.5000);
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.0999);
@@ -227,5 +288,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleExtendedZoom");
+Core:RegisterBundle("BundleCamera");
 

@@ -44,12 +44,16 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
-  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
-  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
+  <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
+  <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
+  <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundlecamera.html">bundles.bundlecamera</a></li>
+  <li><a href="../modules/bundles.bundlecheats.html">bundles.bundlecheats</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
   <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
@@ -58,8 +62,7 @@
   <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
-  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
-  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlefollowknight.html">bundles.bundlefollowknight</a></li>
   <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
@@ -69,16 +72,21 @@
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
+  <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
+  <li><a href="../modules/bundles.bundleterrainandwater.html">bundles.bundleterrainandwater</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
-  <li><strong>bundles.bundletradinganalysis</strong></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
+  <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalinteractiveobjecttemplates.html">external.externalinteractiveobjecttemplates</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
-  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><strong>external.externaltradinganalysis</strong></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
 </ul>
@@ -87,7 +95,7 @@
 
 <div id="content">
 
-<h1>Module <code>bundles.bundletradinganalysis</code></h1>
+<h1>Module <code>external.externaltradinganalysis</code></h1>
 <p>Dieses Bundle bietet einige Funktionen zum untersuchen und
  zur Manipulation von Handelsangeboten.</p>
 <p> Die bekannten Funktionen, wie z.B.
@@ -133,41 +141,41 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:GetOfferAndTrader">BundleTradingAnalysis.Global:GetOfferAndTrader (_PlayerID, _GoodOrEntityType)</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:GetOfferAndTrader">ExternalTradingAnalysis.Global:GetOfferAndTrader (_PlayerID, _GoodOrEntityType)</a></td>
 	<td class="summary">Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
  den Spieler zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:GetOfferCount">BundleTradingAnalysis.Global:GetOfferCount (_PlayerID)</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:GetOfferCount">ExternalTradingAnalysis.Global:GetOfferCount (_PlayerID)</a></td>
 	<td class="summary">Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:GetStorehouseInformation">BundleTradingAnalysis.Global:GetStorehouseInformation (_PlayerID)</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:GetStorehouseInformation">ExternalTradingAnalysis.Global:GetStorehouseInformation (_PlayerID)</a></td>
 	<td class="summary">Gibt die Handelsinformationen des Spielers aus.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:GetTraderType">BundleTradingAnalysis.Global:GetTraderType (_BuildingID, _TraderID)</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:GetTraderType">ExternalTradingAnalysis.Global:GetTraderType (_BuildingID, _TraderID)</a></td>
 	<td class="summary">Gibt den Typ des Händlers mit der ID im Gebäude zurück.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:Install">BundleTradingAnalysis.Global:Install ()</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:Install">ExternalTradingAnalysis.Global:Install ()</a></td>
 	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:ModifyTradeOffer">BundleTradingAnalysis.Global:ModifyTradeOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:ModifyTradeOffer">ExternalTradingAnalysis.Global:ModifyTradeOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</a></td>
 	<td class="summary">Ändert die aktuelle Menge des Angebots im Händelrgebäude.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates">BundleTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates ()</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates">ExternalTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates ()</a></td>
 	<td class="summary">Fügt fehlende Einträge für Militäreinheiten bei den Basispreisen
  und Erneuerungsraten hinzu, damit diese gehandelt werden können.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:OverwriteOfferFunctions">BundleTradingAnalysis.Global:OverwriteOfferFunctions ()</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:OverwriteOfferFunctions">ExternalTradingAnalysis.Global:OverwriteOfferFunctions ()</a></td>
 	<td class="summary">Überschreibt die Funktionen für Standardangebote.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BundleTradingAnalysis.Global:RemoveTradeOffer">BundleTradingAnalysis.Global:RemoveTradeOffer (_PlayerID, _GoodOrEntityType)</a></td>
+	<td class="name" nowrap><a href="#ExternalTradingAnalysis.Global:RemoveTradeOffer">ExternalTradingAnalysis.Global:RemoveTradeOffer (_PlayerID, _GoodOrEntityType)</a></td>
 	<td class="summary">Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden ist.</td>
 	</tr>
 </table>
@@ -393,8 +401,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
     <dl class="function">
     <dt>
-    <a name = "BundleTradingAnalysis.Global:GetOfferAndTrader"></a>
-    <strong>BundleTradingAnalysis.Global:GetOfferAndTrader (_PlayerID, _GoodOrEntityType)</strong>
+    <a name = "ExternalTradingAnalysis.Global:GetOfferAndTrader"></a>
+    <strong>ExternalTradingAnalysis.Global:GetOfferAndTrader (_PlayerID, _GoodOrEntityType)</strong>
     </dt>
     <dd>
     Gibt Offer ID und Trader ID und ID des Lagerhaus des Angebots für
@@ -432,8 +440,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
 </dd>
     <dt>
-    <a name = "BundleTradingAnalysis.Global:GetOfferCount"></a>
-    <strong>BundleTradingAnalysis.Global:GetOfferCount (_PlayerID)</strong>
+    <a name = "ExternalTradingAnalysis.Global:GetOfferCount"></a>
+    <strong>ExternalTradingAnalysis.Global:GetOfferCount (_PlayerID)</strong>
     </dt>
     <dd>
     Gibt die Menge an Angeboten im Lagerhaus des Spielers zurück.  Wenn
@@ -461,8 +469,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
 </dd>
     <dt>
-    <a name = "BundleTradingAnalysis.Global:GetStorehouseInformation"></a>
-    <strong>BundleTradingAnalysis.Global:GetStorehouseInformation (_PlayerID)</strong>
+    <a name = "ExternalTradingAnalysis.Global:GetStorehouseInformation"></a>
+    <strong>ExternalTradingAnalysis.Global:GetStorehouseInformation (_PlayerID)</strong>
     </dt>
     <dd>
     Gibt die Handelsinformationen des Spielers aus.  In dem Objekt stehen
@@ -490,7 +498,7 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">BundleTradingAnalysis.Global:GetStorehouseInformation(<span class="number">2</span>);
+        <pre class="example">ExternalTradingAnalysis.Global:GetStorehouseInformation(<span class="number">2</span>);
 
 <span class="comment">-- Ausgabe:
 </span><span class="comment">-- Info = {
@@ -507,8 +515,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
 </dd>
     <dt>
-    <a name = "BundleTradingAnalysis.Global:GetTraderType"></a>
-    <strong>BundleTradingAnalysis.Global:GetTraderType (_BuildingID, _TraderID)</strong>
+    <a name = "ExternalTradingAnalysis.Global:GetTraderType"></a>
+    <strong>ExternalTradingAnalysis.Global:GetTraderType (_BuildingID, _TraderID)</strong>
     </dt>
     <dd>
     Gibt den Typ des Händlers mit der ID im Gebäude zurück.
@@ -538,8 +546,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
 </dd>
     <dt>
-    <a name = "BundleTradingAnalysis.Global:Install"></a>
-    <strong>BundleTradingAnalysis.Global:Install ()</strong>
+    <a name = "ExternalTradingAnalysis.Global:Install"></a>
+    <strong>ExternalTradingAnalysis.Global:Install ()</strong>
     </dt>
     <dd>
     Initialisiert das Bundle im globalen Skript.
@@ -552,8 +560,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
 </dd>
     <dt>
-    <a name = "BundleTradingAnalysis.Global:ModifyTradeOffer"></a>
-    <strong>BundleTradingAnalysis.Global:ModifyTradeOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</strong>
+    <a name = "ExternalTradingAnalysis.Global:ModifyTradeOffer"></a>
+    <strong>ExternalTradingAnalysis.Global:ModifyTradeOffer (_PlayerID, _GoodOrEntityType, _NewAmount)</strong>
     </dt>
     <dd>
     Ändert die aktuelle Menge des Angebots im Händelrgebäude.
@@ -586,8 +594,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
 </dd>
     <dt>
-    <a name = "BundleTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates"></a>
-    <strong>BundleTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates ()</strong>
+    <a name = "ExternalTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates"></a>
+    <strong>ExternalTradingAnalysis.Global:OverwriteBasePricesAndRefreshRates ()</strong>
     </dt>
     <dd>
     Fügt fehlende Einträge für Militäreinheiten bei den Basispreisen
@@ -601,8 +609,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
 </dd>
     <dt>
-    <a name = "BundleTradingAnalysis.Global:OverwriteOfferFunctions"></a>
-    <strong>BundleTradingAnalysis.Global:OverwriteOfferFunctions ()</strong>
+    <a name = "ExternalTradingAnalysis.Global:OverwriteOfferFunctions"></a>
+    <strong>ExternalTradingAnalysis.Global:OverwriteOfferFunctions ()</strong>
     </dt>
     <dd>
     Überschreibt die Funktionen für Standardangebote.
@@ -615,8 +623,8 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 
 </dd>
     <dt>
-    <a name = "BundleTradingAnalysis.Global:RemoveTradeOffer"></a>
-    <strong>BundleTradingAnalysis.Global:RemoveTradeOffer (_PlayerID, _GoodOrEntityType)</strong>
+    <a name = "ExternalTradingAnalysis.Global:RemoveTradeOffer"></a>
+    <strong>ExternalTradingAnalysis.Global:RemoveTradeOffer (_PlayerID, _GoodOrEntityType)</strong>
     </dt>
     <dd>
     Entfernt das Angebot vom Lagerhaus des Spielers, wenn es vorhanden ist.
@@ -783,7 +791,7 @@ API.ModifyTradeOffer(<span class="number">7</span>, Goods.U_MilitarySword);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-07-31 23:49:47 </i>
+<i style="float:right;">Last updated 2019-08-31 23:41:08 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

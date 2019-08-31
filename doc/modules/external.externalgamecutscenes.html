@@ -43,12 +43,16 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
-  <li><strong>addons.addongamecutscenes</strong></li>
-  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
+  <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
+  <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
+  <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundlecamera.html">bundles.bundlecamera</a></li>
+  <li><a href="../modules/bundles.bundlecheats.html">bundles.bundlecheats</a></li>
   <li><a href="../modules/bundles.bundleclassicbehaviors.html">bundles.bundleclassicbehaviors</a></li>
   <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
@@ -57,8 +61,7 @@
   <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
-  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
-  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlefollowknight.html">bundles.bundlefollowknight</a></li>
   <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
@@ -68,16 +71,21 @@
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
+  <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
+  <li><a href="../modules/bundles.bundleterrainandwater.html">bundles.bundleterrainandwater</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
-  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><strong>external.externalgamecutscenes</strong></li>
+  <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalinteractiveobjecttemplates.html">external.externalinteractiveobjecttemplates</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
-  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
 </ul>
@@ -86,8 +94,9 @@
 
 <div id="content">
 
-<h1>Module <code>addons.addongamecutscenes</code></h1>
-<p>Dieses Bundle verwaltet den Aufruf der mit dem SCA-Tool erstellten
+<h1>Module <code>external.externalgamecutscenes</code></h1>
+<p>DEPRECATED
+<p> Dieses Bundle verwaltet den Aufruf der mit dem SCA-Tool erstellten
  Cutscenes.</p>
 <p> Ausserdem ermöglicht es das direkte Erfassen der
  Kamerapositionen aus der Map heraus.
@@ -117,55 +126,55 @@
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Global:EndCutsceneMaker">AddOnGameCutscenes.Global:EndCutsceneMaker ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Global:EndCutsceneMaker">ExternalGameCutscenes.Global:EndCutsceneMaker ()</a></td>
 	<td class="summary">Beendet den CutsceneMaker</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Global:Install">AddOnGameCutscenes.Global:Install ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Global:Install">ExternalGameCutscenes.Global:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Global:StartCutsceneMaker">AddOnGameCutscenes.Global:StartCutsceneMaker ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Global:StartCutsceneMaker">ExternalGameCutscenes.Global:StartCutsceneMaker ()</a></td>
 	<td class="summary">Startet den CutsceneMaker</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:AddToWaitList">AddOnGameCutscenes.Local:AddToWaitList (_cutscene)</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:AddToWaitList">ExternalGameCutscenes.Local:AddToWaitList (_cutscene)</a></td>
 	<td class="summary">Fügt eine Cutscene zur warteliste hinzu.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:CheckWaitList">AddOnGameCutscenes.Local:CheckWaitList ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:CheckWaitList">ExternalGameCutscenes.Local:CheckWaitList ()</a></td>
 	<td class="summary">Prüf, ob eine Cutscene in der Warteliste steht und führt diese gegebenenfalls aus.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:EndCutsceneMaker">AddOnGameCutscenes.Local:EndCutsceneMaker ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:EndCutsceneMaker">ExternalGameCutscenes.Local:EndCutsceneMaker ()</a></td>
 	<td class="summary">Beendet den CutsceneMaker</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:Install">AddOnGameCutscenes.Local:Install ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:Install">ExternalGameCutscenes.Local:Install ()</a></td>
 	<td class="summary">Initalisiert das Bundle im lokalen Skript.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:IsCutsceneActive">AddOnGameCutscenes.Local:IsCutsceneActive ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:IsCutsceneActive">ExternalGameCutscenes.Local:IsCutsceneActive ()</a></td>
 	<td class="summary">Prüft, ob eine Cutscene oder ein Briefing activ ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:ShowText">AddOnGameCutscenes.Local:ShowText (_text, _title, _centered, _show, _big, _black)</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:ShowText">ExternalGameCutscenes.Local:ShowText (_text, _title, _centered, _show, _big, _black)</a></td>
 	<td class="summary">Verwaltet die Anzeige der Texte.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:StartCutscene">AddOnGameCutscenes.Local:StartCutscene (_cutscene)</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:StartCutscene">ExternalGameCutscenes.Local:StartCutscene (_cutscene)</a></td>
 	<td class="summary">Bereitet die Daten für die kommende Cutscene vor und startet diese dann.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:StartCutsceneMaker">AddOnGameCutscenes.Local:StartCutsceneMaker ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:StartCutsceneMaker">ExternalGameCutscenes.Local:StartCutsceneMaker ()</a></td>
 	<td class="summary">Startet den Cutscene Maker</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:StartCutsceneOptic">AddOnGameCutscenes.Local:StartCutsceneOptic ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:StartCutsceneOptic">ExternalGameCutscenes.Local:StartCutsceneOptic ()</a></td>
 	<td class="summary">Bereitet die UI für die Cutscene vor.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddOnGameCutscenes.Local:UndoCutsceneOptic">AddOnGameCutscenes.Local:UndoCutsceneOptic ()</a></td>
+	<td class="name" nowrap><a href="#ExternalGameCutscenes.Local:UndoCutsceneOptic">ExternalGameCutscenes.Local:UndoCutsceneOptic ()</a></td>
 	<td class="summary">Stellt die UI für das Spiel wieder her.</td>
 	</tr>
 </table>
@@ -254,8 +263,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "AddOnGameCutscenes.Global:EndCutsceneMaker"></a>
-    <strong>AddOnGameCutscenes.Global:EndCutsceneMaker ()</strong>
+    <a name = "ExternalGameCutscenes.Global:EndCutsceneMaker"></a>
+    <strong>ExternalGameCutscenes.Global:EndCutsceneMaker ()</strong>
     </dt>
     <dd>
     Beendet den CutsceneMaker
@@ -268,8 +277,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Global:Install"></a>
-    <strong>AddOnGameCutscenes.Global:Install ()</strong>
+    <a name = "ExternalGameCutscenes.Global:Install"></a>
+    <strong>ExternalGameCutscenes.Global:Install ()</strong>
     </dt>
     <dd>
     Initalisiert das Bundle im globalen Skript.
@@ -282,8 +291,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Global:StartCutsceneMaker"></a>
-    <strong>AddOnGameCutscenes.Global:StartCutsceneMaker ()</strong>
+    <a name = "ExternalGameCutscenes.Global:StartCutsceneMaker"></a>
+    <strong>ExternalGameCutscenes.Global:StartCutsceneMaker ()</strong>
     </dt>
     <dd>
     Startet den CutsceneMaker
@@ -296,8 +305,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:AddToWaitList"></a>
-    <strong>AddOnGameCutscenes.Local:AddToWaitList (_cutscene)</strong>
+    <a name = "ExternalGameCutscenes.Local:AddToWaitList"></a>
+    <strong>ExternalGameCutscenes.Local:AddToWaitList (_cutscene)</strong>
     </dt>
     <dd>
     Fügt eine Cutscene zur warteliste hinzu.
@@ -316,8 +325,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:CheckWaitList"></a>
-    <strong>AddOnGameCutscenes.Local:CheckWaitList ()</strong>
+    <a name = "ExternalGameCutscenes.Local:CheckWaitList"></a>
+    <strong>ExternalGameCutscenes.Local:CheckWaitList ()</strong>
     </dt>
     <dd>
     Prüf, ob eine Cutscene in der Warteliste steht und führt diese gegebenenfalls aus.
@@ -330,8 +339,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:EndCutsceneMaker"></a>
-    <strong>AddOnGameCutscenes.Local:EndCutsceneMaker ()</strong>
+    <a name = "ExternalGameCutscenes.Local:EndCutsceneMaker"></a>
+    <strong>ExternalGameCutscenes.Local:EndCutsceneMaker ()</strong>
     </dt>
     <dd>
     Beendet den CutsceneMaker
@@ -344,8 +353,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:Install"></a>
-    <strong>AddOnGameCutscenes.Local:Install ()</strong>
+    <a name = "ExternalGameCutscenes.Local:Install"></a>
+    <strong>ExternalGameCutscenes.Local:Install ()</strong>
     </dt>
     <dd>
     Initalisiert das Bundle im lokalen Skript.
@@ -358,8 +367,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:IsCutsceneActive"></a>
-    <strong>AddOnGameCutscenes.Local:IsCutsceneActive ()</strong>
+    <a name = "ExternalGameCutscenes.Local:IsCutsceneActive"></a>
+    <strong>ExternalGameCutscenes.Local:IsCutsceneActive ()</strong>
     </dt>
     <dd>
     Prüft, ob eine Cutscene oder ein Briefing activ ist.
@@ -372,8 +381,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:ShowText"></a>
-    <strong>AddOnGameCutscenes.Local:ShowText (_text, _title, _centered, _show, _big, _black)</strong>
+    <a name = "ExternalGameCutscenes.Local:ShowText"></a>
+    <strong>ExternalGameCutscenes.Local:ShowText (_text, _title, _centered, _show, _big, _black)</strong>
     </dt>
     <dd>
     Verwaltet die Anzeige der Texte.
@@ -407,8 +416,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:StartCutscene"></a>
-    <strong>AddOnGameCutscenes.Local:StartCutscene (_cutscene)</strong>
+    <a name = "ExternalGameCutscenes.Local:StartCutscene"></a>
+    <strong>ExternalGameCutscenes.Local:StartCutscene (_cutscene)</strong>
     </dt>
     <dd>
     Bereitet die Daten für die kommende Cutscene vor und startet diese dann.
@@ -427,8 +436,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:StartCutsceneMaker"></a>
-    <strong>AddOnGameCutscenes.Local:StartCutsceneMaker ()</strong>
+    <a name = "ExternalGameCutscenes.Local:StartCutsceneMaker"></a>
+    <strong>ExternalGameCutscenes.Local:StartCutsceneMaker ()</strong>
     </dt>
     <dd>
     Startet den Cutscene Maker
@@ -441,8 +450,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:StartCutsceneOptic"></a>
-    <strong>AddOnGameCutscenes.Local:StartCutsceneOptic ()</strong>
+    <a name = "ExternalGameCutscenes.Local:StartCutsceneOptic"></a>
+    <strong>ExternalGameCutscenes.Local:StartCutsceneOptic ()</strong>
     </dt>
     <dd>
     Bereitet die UI für die Cutscene vor.
@@ -455,8 +464,8 @@
 
 </dd>
     <dt>
-    <a name = "AddOnGameCutscenes.Local:UndoCutsceneOptic"></a>
-    <strong>AddOnGameCutscenes.Local:UndoCutsceneOptic ()</strong>
+    <a name = "ExternalGameCutscenes.Local:UndoCutsceneOptic"></a>
+    <strong>ExternalGameCutscenes.Local:UndoCutsceneOptic ()</strong>
     </dt>
     <dd>
     Stellt die UI für das Spiel wieder her.
@@ -475,7 +484,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-07-31 23:49:47 </i>
+<i style="float:right;">Last updated 2019-08-31 23:41:08 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

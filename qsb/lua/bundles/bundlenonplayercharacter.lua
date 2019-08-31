@@ -489,9 +489,9 @@ function QSB.NonPlayerCharacter:RotateActors()
     for k, v in pairs(PlayerKnights) do
         -- Alle Helden stoppen, die sich zu NPC bewegen
         local SV = (QSB.HistoryEdition and 17) or 19;
-        local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
+        local x1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
         local SV = (QSB.HistoryEdition and 18) or 20;
-        local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
+        local y1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
         local x2, y2 = Logic.EntityGetPos(GetID(self.m_NpcName));
         if x1 == math.floor(x2) and y1 == math.floor(y2) then
             local x, y, z = Logic.EntityGetPos(v);
@@ -734,7 +734,7 @@ function BundleNonPlayerCharacter.Global:Install()
         else
             if data[1] == -65565 then
                 if not IsExisting(data[3]) then
-                    API.Fatal(data[3].. " is dead! :(");
+                    API.Fatal(tostring(data[3]).. " is dead! :(");
                     objective.Completed = false;
                 else
                     if not data[4].NpcInstance then
@@ -787,37 +787,6 @@ function BundleNonPlayerCharacter.Global:GetControllingPlayer()
 end
 
 ---
--- Konvertiert eine Ganzzahl in eine Gleitkommazahl.
--- @param[type=number] num Zahl zum Konvertieren
--- @return[type=number] Ganzzahl
--- @within Internal
--- @local
---
-function BundleNonPlayerCharacter.Global:IntegerToFloat(num)
-    if(num == 0) then 
-        return 0;
-    end
-    local sign = 1
-    if(num < 0) then 
-        num = 2147483648 + num; sign = -1;
-    end
-    local frac = (num - math.floor(num/8388608)*8388608);
-    local headPart = (num-frac)/8388608
-    local expNoSign = (headPart - math.floor(headPart/256)*256);
-    local exp = expNoSign-127
-    local fraction = 1
-    local fp = 0.5
-    local check = 4194304
-    for i = 23, 0, -1 do
-        if(frac - check) > 0 then
-            fraction = fraction + fp; frac = frac - check;
-        end
-        check = check / 2; fp = fp / 2
-    end
-    return fraction * math.pow(2, exp) * sign
-end
-
----
 -- Kontrolliert die "Glitter Marker" der NPCs.
 --
 -- @within Internal
@@ -851,9 +820,9 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
                 if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
                     local SV = (QSB.HistoryEdition and 17) or 19;
-                    local x1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
+                    local x1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
                     local SV = (QSB.HistoryEdition and 18) or 20;
-                    local y1 = math.floor(BundleNonPlayerCharacter.Global:IntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
+                    local y1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
                     local x2, y2 = Logic.EntityGetPos(GetID(k));
                     if x1 == math.floor(x2) and y1 == math.floor(y2) then
                         if IsExisting(k) and IsNear(PlayersKnights[i], k, v.m_Distance) then

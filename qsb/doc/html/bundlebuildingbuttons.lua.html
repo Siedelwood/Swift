@@ -48,17 +48,8 @@
 <p>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere
  Funktionen.</p>
 <p> Es ist bspw. möglich ungenutzte Schalter frei zu programmieren.
-<p> Bekannte Funktionen sind natürlich auch wieder mit dabei.
 <p> Das wichtigste auf einen Blick:
  <ul>
-<p> <li>Viehzucht: Hernzüchten von Kühen und Schafen in Gattern
- <br>Kühe züchten:<br><a href="#API.UseBreedCattle">Zucht aktivieren</a>,
- <a href="#API.SetCattleNeeded">Mindestanzahl Kühe festlegen</a>,
- <a href="#API.SetCattleGrainCost">Getreidekosten festlegen</a>
- <br>Schafe züchten:<br><a href="#API.UseBreedSheeps">Zucht aktivieren</a>,
- <a href="#API.SetSheepNeeded">Mindestanzahl Schafe festlegen</a>,
- <a href="#API.SetSheepGrainCost">Getreidekosten festlegen</a>
- </li>
 <p> <li>Single Stop: Anhalten der Produktion von einzelnen Gebäuden
  <br><a href="#API.ActivateSingleStop">aktivieren</a>,
  <a href="#API.DeactivateSingleStop">deaktivieren</a>
@@ -80,30 +71,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.RemoveCustomBuildingButton">API.RemoveCustomBuildingButton (_Index)</a></td>
 	<td class="summary">Entfernt den optionalen Gebäudeschalter mit dem angegebenen Index.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetCattleGrainCost">API.SetCattleGrainCost (_Amount)</a></td>
-	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetCattleNeeded">API.SetCattleNeeded (_Amount)</a></td>
-	<td class="summary">Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetSheepGrainCost">API.SetSheepGrainCost (_Amount)</a></td>
-	<td class="summary">Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.SetSheepNeeded">API.SetSheepNeeded (_Amount)</a></td>
-	<td class="summary">Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_flag)</a></td>
-	<td class="summary">Erlaube oder verbiete dem Spieler Kühe zu züchten.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_flag)</a></td>
-	<td class="summary">Erlaube oder verbiete dem Spieler Schafe zu züchten.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.UseDowngrade">API.UseDowngrade (_Flag)</a></td>
@@ -221,174 +188,6 @@
 
 </dd>
     <dt>
-    <a name = "API.SetCattleGrainCost"></a>
-    <strong>API.SetCattleGrainCost (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
-<p> <p><b>Alias:</b> SetCattleGrainCost</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Getreidekosten
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
-</span>API.SetCattleGrainCost(<span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetCattleNeeded"></a>
-    <strong>API.SetCattleNeeded (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
-<p> <p><b>Alias:</b> SetCattleNeeded</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Benötigte Menge
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es werden keine Kühe zur Zucht benötigt:
-</span>API.SetCattleNeeded(<span class="number">0</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetSheepGrainCost"></a>
-    <strong>API.SetSheepGrainCost (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
-<p> <p><b>Alias:</b> SetSheepGrainCost</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Getreidekosten
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
-</span>API.SetSheepGrainCost(<span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetSheepNeeded"></a>
-    <strong>API.SetSheepNeeded (_Amount)</strong>
-    </dt>
-    <dd>
-    Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
-<p> <p><b>Alias:</b> SetSheepNeeded</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Benötigte Menge
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es wird ein volles Gatter zur Zucht benötigt:
-</span>API.SetSheepNeeded(<span class="number">5</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UseBreedCattle"></a>
-    <strong>API.UseBreedCattle (_flag)</strong>
-    </dt>
-    <dd>
-    Erlaube oder verbiete dem Spieler Kühe zu züchten.
-<p> <p><b>Alias:</b> UseBreedCattle</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Kuhzucht aktiv/inaktiv
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es können keine Kühe gezüchtet werden
-</span>API.UseBreedCattle(<span class="keyword">false</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.UseBreedSheeps"></a>
-    <strong>API.UseBreedSheeps (_flag)</strong>
-    </dt>
-    <dd>
-    Erlaube oder verbiete dem Spieler Schafe zu züchten.
-<p> <p><b>Alias:</b> UseBreedSheeps</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Schafzucht aktiv/inaktiv
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Schafsaufzucht ist erlaubt
-</span>API.UseBreedSheeps(<span class="keyword">true</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "API.UseDowngrade"></a>
     <strong>API.UseDowngrade (_Flag)</strong>
     </dt>
@@ -451,7 +250,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-07-31 23:50:20 </i>
+<i style="float:right;">Last updated 2019-08-31 23:42:00 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

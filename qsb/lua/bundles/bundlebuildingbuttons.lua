@@ -8,19 +8,8 @@
 -- Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere
 -- Funktionen. Es ist bspw. möglich ungenutzte Schalter frei zu programmieren.
 --
--- Bekannte Funktionen sind natürlich auch wieder mit dabei.
---
 -- Das wichtigste auf einen Blick:
 -- <ul>
---
--- <li>Viehzucht: Hernzüchten von Kühen und Schafen in Gattern
--- <br>Kühe züchten:<br><a href="#API.UseBreedCattle">Zucht aktivieren</a>,
--- <a href="#API.SetCattleNeeded">Mindestanzahl Kühe festlegen</a>,
--- <a href="#API.SetCattleGrainCost">Getreidekosten festlegen</a>
--- <br>Schafe züchten:<br><a href="#API.UseBreedSheeps">Zucht aktivieren</a>,
--- <a href="#API.SetSheepNeeded">Mindestanzahl Schafe festlegen</a>,
--- <a href="#API.SetSheepGrainCost">Getreidekosten festlegen</a>
--- </li>
 --
 -- <li>Single Stop: Anhalten der Produktion von einzelnen Gebäuden
 -- <br><a href="#API.ActivateSingleStop">aktivieren</a>,
@@ -93,158 +82,6 @@ function API.UseDowngrade(_Flag)
     end
     BundleBuildingButtons.Local.Data.Downgrade = _Flag == true;
 end
-
----
--- Erlaube oder verbiete dem Spieler Schafe zu züchten.
---
--- <p><b>Alias:</b> UseBreedSheeps</p>
---
--- @param[type=boolean] _flag Schafzucht aktiv/inaktiv
--- @within Anwenderfunktionen
---
--- @usage
--- -- Schafsaufzucht ist erlaubt
--- API.UseBreedSheeps(true);
---
-function API.UseBreedSheeps(_flag)
-    if not GUI then
-        API.Bridge("API.UseBreedSheeps(" ..tostring(_flag).. ")");
-        return;
-    end
-
-    BundleBuildingButtons.Local.Data.BreedSheeps = _flag == true;
-    if _flag == true then
-        local Price = MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Sheep]
-        MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
-    else
-        local Price = BundleBuildingButtons.Local.Data.SheepMoneyCost;
-        MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
-    end
-end
-UseBreedSheeps = API.UseBreedSheeps;
-
----
--- Erlaube oder verbiete dem Spieler Kühe zu züchten.
---
--- <p><b>Alias:</b> UseBreedCattle</p>
---
--- @param[type=boolean] _flag Kuhzucht aktiv/inaktiv
--- @within Anwenderfunktionen
---
--- @usage
--- -- Es können keine Kühe gezüchtet werden
--- API.UseBreedCattle(false);
---
-function API.UseBreedCattle(_flag)
-    if not GUI then
-        API.Bridge("API.UseBreedCattle(" ..tostring(_flag).. ")");
-        return;
-    end
-
-    BundleBuildingButtons.Local.Data.BreedCattle = _flag == true;
-    if _flag == true then
-        local Price = MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Cow];
-        MerchantSystem.BasePrices[Goods.G_Cow] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
-    else
-        local Price = BundleBuildingButtons.Local.Data.CattleMoneyCost;
-        MerchantSystem.BasePrices[Goods.G_Cow] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
-    end
-end
-UseBreedCattle = API.UseBreedCattle;
-
----
--- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
---
--- <p><b>Alias:</b> SetSheepGrainCost</p>
---
--- @param[type=number] _Amount Getreidekosten
--- @within Anwenderfunktionen
---
--- @usage
--- -- Wucherpreise zum Züchten!
--- API.SetSheepGrainCost(50);
---
-function API.SetSheepGrainCost(_Amount)
-    if not GUI then
-        API.Bridge("API.SetSheepGrainCost(" .._Amount.. ")");
-        return;
-    end
-    BundleBuildingButtons.Local.Data.SheepCosts = _Amount;
-end
-SetSheepGrainCost = API.SetSheepGrainCost;
-
----
--- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
---
--- <p><b>Alias:</b> SetCattleGrainCost</p>
---
--- @param[type=number] _Amount Getreidekosten
--- @within Anwenderfunktionen
---
--- @usage
--- -- Wucherpreise zum Züchten!
--- API.SetCattleGrainCost(50);
---
-function API.SetCattleGrainCost(_Amount)
-    if not GUI then
-        API.Bridge("API.SetCattleGrainCost(" .._Amount.. ")");
-        return;
-    end
-    BundleBuildingButtons.Local.Data.CattleCosts = _Amount;
-end
-SetCattleGrainCost = API.SetCattleGrainCost;
-
----
--- Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
---
--- <p><b>Alias:</b> SetSheepNeeded</p>
---
--- @param[type=number] _Amount Benötigte Menge
--- @within Anwenderfunktionen
---
--- @usage
--- -- Es wird ein volles Gatter zur Zucht benötigt:
--- API.SetSheepNeeded(5);
---
-function API.SetSheepNeeded(_Amount)
-    if not GUI then
-        API.Bridge("API.SetSheepNeeded(" .._Amount.. ")");
-        return;
-    end
-    if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
-        API.Fatal("API.SetSheepNeeded: Needed amount is invalid!");
-    end
-    BundleBuildingButtons.Local.Data.SheepNeeded = _Amount;
-end
-SetSheepNeeded = API.SetSheepNeeded;
-
----
--- Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
---
--- <p><b>Alias:</b> SetCattleNeeded</p>
---
--- @param[type=number] _Amount Benötigte Menge
--- @within Anwenderfunktionen
---
--- @usage
--- -- Es werden keine Kühe zur Zucht benötigt:
--- API.SetCattleNeeded(0);
---
-function API.SetCattleNeeded(_Amount)
-    if not GUI then
-        API.Bridge("API.SetCattleNeeded(" .._Amount.. ")");
-        return;
-    end
-    if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
-        API.Fatal("API.SetCattleNeeded: Needed amount is invalid!");
-    end
-    BundleBuildingButtons.Local.Data.CattleNeeded = _Amount;
-end
-SetCattleNeeded = API.SetCattleNeeded;
 
 ---
 -- Fügt einen optionalen Gebäudeschalter hinzu. Der Index bestimmt, welcher
@@ -343,9 +180,6 @@ DeleteBuildingButton = API.RemoveCustomBuildingButton;
 -- -------------------------------------------------------------------------- --
 
 BundleBuildingButtons = {
-    Global = {
-        Data = {}
-    },
     Local = {
         Data = {
             OptionalButton1 = {
@@ -357,18 +191,6 @@ BundleBuildingButtons = {
 
             StoppedBuildings = {},
             Downgrade = true,
-
-            BreedCattle = true,
-            CattleCosts = 10,
-            CattleNeeded = 3,
-            CattleKnightTitle = 0,
-            CattleMoneyCost = 300,
-
-            BreedSheeps = true,
-            SheepCosts = 10,
-            SheepNeeded = 3,
-            SheepKnightTitle = 0,
-            SheepMoneyCost = 300,
         },
 
         Description = {
@@ -387,21 +209,6 @@ BundleBuildingButtons = {
                 },
             },
 
-            BuyCattle = {
-                Title = {
-                    de = "Nutztier kaufen",
-                    en = "Buy Farm animal",
-                },
-                Text = {
-                    de = "- Kauft ein Nutztier {cr}- Nutztiere produzieren Rohstoffe",
-                    en = "- Buy a farm animal {cr}- Farm animals produce resources",
-                },
-                Disabled = {
-                    de = "Kauf ist nicht möglich!",
-                    en = "Buy not possible!",
-                },
-            },
-
             SingleStop = {
                 Title = {
                     de = "Arbeit anhalten/aufnehmen",
@@ -416,19 +223,6 @@ BundleBuildingButtons = {
     },
 }
 
--- Global Script ---------------------------------------------------------------
-
----
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
--- @local
---
-function BundleBuildingButtons.Global:Install()
-end
-
-
-
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -438,50 +232,12 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local:Install()
-    MerchantSystem.BasePricesOrigBundleBuildingButtons                = {};
-
-    MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
-    MerchantSystem.BasePricesOrigBundleBuildingButtons[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
-
-    MerchantSystem.BasePrices[Goods.G_Sheep] = BundleBuildingButtons.Local.Data.SheepMoneyCost;
-    MerchantSystem.BasePrices[Goods.G_Cow]   = BundleBuildingButtons.Local.Data.CattleMoneyCost;
-
     self:OverwriteHouseMenuButtons();
-    self:OverwriteBuySiegeEngine();
     self:OverwriteToggleTrap();
     self:OverwriteGateOpenClose();
     self:OverwriteAutoToggle();
 
     Core:AppendFunction("GameCallback_GUI_SelectionChanged", self.OnSelectionChanged);
-end
-
----
--- Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
---
--- @within Internal
--- @local
---
-function BundleBuildingButtons.Local:BuyAnimal(_eID)
-    Sound.FXPlay2DSound("ui\\menu_click");
-    local eType = Logic.GetEntityType(_eID);
-
-    if eType == Entities.B_CattlePasture then
-        local Cost = BundleBuildingButtons.Local.Data.CattleCosts * (-1);
-        GUI.SendScriptCommand([[
-            local PlayerID = Logic.EntityGetPlayer(]].._eID..[[)
-            local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
-            Logic.CreateEntity(Entities.A_X_Cow01, x, y, 0, PlayerID)
-            AddGood(Goods.G_Grain, ]] ..Cost.. [[, PlayerID)
-        ]]);
-    elseif eType == Entities.B_SheepPasture then
-        local Cost = BundleBuildingButtons.Local.Data.SheepCosts * (-1);
-        GUI.SendScriptCommand([[
-            local PlayerID = Logic.EntityGetPlayer(]].._eID..[[)
-            local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
-            Logic.CreateEntity(Entities.A_X_Sheep01, x, y, 0, PlayerID)
-            AddGood(Goods.G_Grain, ]] ..Cost.. [[, PlayerID)
-        ]]);
-    end
 end
 
 ---
@@ -770,163 +526,6 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
 end
 
 ---
--- Diese Funktion überschreibt die Belagerungswaffenwerkstattsteuerung. Dabei
--- wird die Nutztierzucht implementiert.
---
--- @within Internal
--- @local
---
-function BundleBuildingButtons.Local:OverwriteBuySiegeEngine()
-    GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType,_TechnologyType)
-        local lang = QSB.Language;
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        local BarrackID = GUI.GetSelectedEntity();
-        local BuildingEntityType = Logic.GetEntityType(BarrackID);
-
-        if  BuildingEntityType ~= Entities.B_SiegeEngineWorkshop
-        and BuildingEntityType ~= Entities.B_CattlePasture
-        and BuildingEntityType ~= Entities.B_SheepPasture then
-            return;
-        end
-
-        local Costs = {Logic.GetUnitCost(BarrackID, _EntityType)}
-        if BuildingEntityType == Entities.B_CattlePasture then
-            BundleBuildingButtons.Local:TextCosts(
-                BundleBuildingButtons.Local.Description.BuyCattle.Title[lang],
-                BundleBuildingButtons.Local.Description.BuyCattle.Text[lang],
-                BundleBuildingButtons.Local.Description.BuyCattle.Disabled[lang],
-                {Goods.G_Grain, BundleBuildingButtons.Local.Data.CattleCosts},
-                false
-            );
-        elseif BuildingEntityType == Entities.B_SheepPasture then
-            BundleBuildingButtons.Local:TextCosts(
-                BundleBuildingButtons.Local.Description.BuyCattle.Title[lang],
-                BundleBuildingButtons.Local.Description.BuyCattle.Text[lang],
-                BundleBuildingButtons.Local.Description.BuyCattle.Disabled[lang],
-                {Goods.G_Grain, BundleBuildingButtons.Local.Data.SheepCosts},
-                false
-            );
-        else
-            GUI_Tooltip.TooltipBuy(Costs,nil,nil,_TechnologyType);
-        end
-    end
-
-    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    GUI_BuildingButtons.BuySiegeEngineCartClicked_OrigTHEA_Buildings = GUI_BuildingButtons.BuySiegeEngineCartClicked
-    GUI_BuildingButtons.BuySiegeEngineCartClicked = function(_EntityType)
-        local BarrackID = GUI.GetSelectedEntity()
-        local PlayerID = GUI.GetPlayerID()
-        local eType = Logic.GetEntityType(BarrackID)
-        if eType == Entities.B_CattlePasture or eType == Entities.B_SheepPasture then
-            BundleBuildingButtons.Local:BuyAnimal(BarrackID);
-        else
-            GUI_BuildingButtons.BuySiegeEngineCartClicked_OrigTHEA_Buildings(_EntityType)
-        end
-    end
-
-    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    GUI_BuildingButtons.BuySiegeEngineCartUpdate = function(_Technology)
-        local PlayerID = GUI.GetPlayerID();
-        local KnightTitle = Logic.GetKnightTitle(PlayerID);
-        local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
-        local EntityID = GUI.GetSelectedEntity();
-        local EntityType = Logic.GetEntityType(EntityID);
-        local grain = GetPlayerResources(Goods.G_Grain,PlayerID);
-        local pos = GetPosition(EntityID);
-
-        if EntityType == Entities.B_SiegeEngineWorkshop then
-            XGUIEng.ShowWidget(CurrentWidgetID,1);
-            if _Technology == Technologies.R_BatteringRam then
-                SetIcon(CurrentWidgetID, {9,5});
-            elseif _Technology == Technologies.R_SiegeTower then
-                SetIcon(CurrentWidgetID, {9,6});
-            elseif _Technology == Technologies.R_Catapult then
-                SetIcon(CurrentWidgetID, {9,4});
-            end
-        elseif EntityType == Entities.B_CattlePasture then
-            local CattlePasture = GetPlayerEntities(PlayerID,Entities.B_CattlePasture);
-            local cows          = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Cow01,pos.X,pos.Y,800,16)};
-            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.CattlePasture);
-            local maxAnimal     = #CattlePasture*5;
-
-            SetIcon(CurrentWidgetID, {3,16})
-
-            if _Technology == Technologies.R_Catapult and BundleBuildingButtons.Local.Data.BreedCattle then
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
-
-                if curAnimal >= maxAnimal then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif grain < BundleBuildingButtons.Local.Data.CattleCosts then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif KnightTitle < BundleBuildingButtons.Local.Data.CattleKnightTitle then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif cows[1] < BundleBuildingButtons.Local.Data.CattleNeeded then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                else
-                    XGUIEng.DisableButton(CurrentWidgetID, 0);
-                end
-            else
-                XGUIEng.ShowWidget(CurrentWidgetID,0);
-            end
-        elseif EntityType == Entities.B_SheepPasture then
-            local SheepPasture     = GetPlayerEntities(PlayerID,Entities.B_SheepPasture);
-            local sheeps        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep01,pos.X,pos.Y,800,16)};
-            table.remove(sheeps, 1);
-            local sheeps2        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep02,pos.X,pos.Y,800,16)};
-            table.remove(sheeps2, 1);
-            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.SheepPasture);
-            local maxAnimal     = #SheepPasture*5;
-
-            sheeps = Array_Append(sheeps,sheeps2)
-            SetIcon(CurrentWidgetID, {4,1})
-
-            if _Technology == Technologies.R_Catapult and BundleBuildingButtons.Local.Data.BreedSheeps then
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
-                XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
-
-                if curAnimal >= maxAnimal then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif grain < BundleBuildingButtons.Local.Data.SheepCosts then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif #sheeps < BundleBuildingButtons.Local.Data.SheepKnightTitle then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif #sheeps < BundleBuildingButtons.Local.Data.SheepNeeded then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                else
-                    XGUIEng.DisableButton(CurrentWidgetID, 0);
-                end
-            else
-                XGUIEng.ShowWidget(CurrentWidgetID,0);
-            end
-        else
-            XGUIEng.ShowWidget(CurrentWidgetID,0);
-            return;
-        end
-
-        if Logic.IsConstructionComplete(GUI.GetSelectedEntity()) == 0 then
-            XGUIEng.ShowWidget(CurrentWidgetID,0);
-            return;
-        end
-
-        if EntityType ~= Entities.B_SheepPasture and EntityType ~= Entities.B_CattlePasture then
-            local TechnologyState = Logic.TechnologyGetState(PlayerID, _Technology);
-            if EnableRights == nil or EnableRights == false then
-                XGUIEng.DisableButton(CurrentWidgetID,0);
-                return
-            end
-            if TechnologyState == TechnologyStates.Researched then
-                XGUIEng.DisableButton(CurrentWidgetID,0);
-            else
-                XGUIEng.DisableButton(CurrentWidgetID,1);
-            end
-        end
-    end
-end
-
----
 -- Diese Funktion überschreibt das House Menu, sodass Single stop fehlerfrei
 -- funktioniert.
 --
@@ -948,48 +547,6 @@ function BundleBuildingButtons.Local:OverwriteHouseMenuButtons()
                 GUI.SetStoppedState(Buildings[i], HouseMenu.StopProductionBool);
             end
         end
-    end
-end
-
----
--- Ändert die Textur eines Icons im House Menu.
---
--- @param[type=string] _Widget Icon Widget
--- @param[type=table]  _Icon   Icon Textur
--- @within BundleBuildingButtons
--- @local
---
-function BundleBuildingButtons.Local:HouseMenuIcon(_Widget, _Icon)
-    if type(_Icon) == "table" then
-        if type(_Icon[3]) == "string" then
-            local ButtonState = 1;
-            if XGUIEng.IsButton(_Widget) == 1 then
-                ButtonState = 7;
-            end
-
-            local u0, u1, v0, v1;
-            u0 = (_Coordinates[1] - 1) * 64;
-            v0 = (_Coordinates[2] - 1) * 64;
-            u1 = (_Coordinates[1]) * 64;
-            v1 = (_Coordinates[2]) * 64;
-            XGUIEng.SetMaterialAlpha(_Widget, ButtonState, 255);
-            XGUIEng.SetMaterialTexture(_Widget, ButtonState, _Icon[3].. "big.png");
-            XGUIEng.SetMaterialUV(_Widget, ButtonState, u0, v0, u1, v1);
-        else
-            SetIcon(_Widget, _Icon);
-        end
-    else
-        local screenSize = {GUI.GetScreenSize()};
-        local Scale = 330;
-        if screenSize[2] >= 800 then
-            Scale = 260;
-        end
-        if screenSize[2] >= 1000 then
-            Scale = 210;
-        end
-        XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
-        XGUIEng.SetMaterialTexture(_Widget, 1, _file);
-        XGUIEng.SetMaterialUV(_Widget, 1, 0, 0, Scale, Scale);
     end
 end
 
@@ -1026,46 +583,6 @@ function BundleBuildingButtons.Local:TextNormal(_Title, _Text, _DisabledText)
     local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
     local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
     XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
-end
-
----
--- Setzt den Kostentooltip des aktuellen Widgets.
---
--- @param[type=string]  _Title        Titel des Tooltip
--- @param[type=string]  _Text         Text des Tooltip
--- @param[type=string]  _DisabledText (optional) Textzusatz wenn inaktiv
--- @param[type=number]  _Costs        Kostentabelle
--- @param[type=boolean] _InSettlement Kosten in Siedlung suchen
--- @within Internal
--- @local
---
-function BundleBuildingButtons.Local:TextCosts(_Title, _Text, _DisabledText, _Costs, _InSettlement)
-    local TooltipContainerPath = "/InGame/Root/Normal/TooltipBuy"
-    local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
-    local TooltipNameWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Name")
-    local TooltipDescriptionWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/Text")
-    local TooltipBGWidget = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn/BG")
-    local TooltipFadeInContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/FadeIn")
-    local TooltipCostsContainer = XGUIEng.GetWidgetID(TooltipContainerPath .. "/Costs")
-    local PositionWidget = XGUIEng.GetCurrentWidgetID()
-    GUI_Tooltip.ResizeBG(TooltipBGWidget, TooltipDescriptionWidget)
-    GUI_Tooltip.SetCosts(TooltipCostsContainer, _Costs, _InSettlement)
-    local TooltipContainerSizeWidgets = {TooltipContainer, TooltipCostsContainer, TooltipBGWidget}
-    GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget, nil, true)
-    GUI_Tooltip.OrderTooltip(TooltipContainerSizeWidgets, TooltipFadeInContainer, TooltipCostsContainer, PositionWidget, TooltipBGWidget)
-    GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer)
-
-    _DisabledText = _DisabledText or "";
-    local disabled = ""
-    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _DisabledText ~= "" and _Text ~= "" then
-        disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _DisabledText
-    end
-
-    XGUIEng.SetText(TooltipNameWidget, "{center}" .. _Title)
-    XGUIEng.SetText(TooltipDescriptionWidget, _Text .. disabled)
-    local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
-    local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
-    XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
 end
 
 ---

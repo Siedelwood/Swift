@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>addoninteractivemines</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>addoninteractivemines</code></h1>
+<p>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch
+ Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</p>
+<p>
+ <br>Optional kann die Mine einstürzen, wenn sie erschöpft wurde.
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateIOIronMine">API.CreateIOIronMine (_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)</a></td>
+	<td class="summary">Erstelle eine verschüttete Eisenmine.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateIOMine">API.CreateIOMine (_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)</a></td>
+	<td class="summary">Erstelle eine verschüttete Mine eines bestimmten Typs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateIOStoneMine">API.CreateIOStoneMine (_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)</a></td>
+	<td class="summary">Erstelle eine verschüttete Steinmine.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.CreateIOIronMine"></a>
+    <strong>API.CreateIOIronMine (_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)</strong>
+    </dt>
+    <dd>
+    Erstelle eine verschüttete Eisenmine.
+<p> <p><b>Alias</b>: CreateIOIronMine</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Position</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+              Script Entity, die mit Mine ersetzt wird
+        </li>
+        <li><span class="parameter">_Cost1Type</span>
+            <span class="types"><span class="type">number</span></span>
+             (optional) Kostenware 1
+        </li>
+        <li><span class="parameter">_Cost1Amount</span>
+            <span class="types"><span class="type">number</span></span>
+           (optional) Kostenmenge 1
+        </li>
+        <li><span class="parameter">_Cost2Type</span>
+            <span class="types"><span class="type">number</span></span>
+             (optional) Kostenware 2
+        </li>
+        <li><span class="parameter">_Cost2Amount</span>
+            <span class="types"><span class="type">number</span></span>
+           (optional) Kostenmenge 2
+        </li>
+        <li><span class="parameter">_NotRefillable</span>
+            <span class="types"><span class="type">boolean</span></span>
+         (optional) Mine wird nach Ausbeutung zerstört
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="addoninteractivemines.lua.html#API.CreateIOMine">API.CreateIOMine</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Beispiel für eine Mine
+</span>API.CreateIOMine(<span class="string">"mine"</span>, Goods.G_Wood, <span class="number">20</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateIOMine"></a>
+    <strong>API.CreateIOMine (_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)</strong>
+    </dt>
+    <dd>
+    Erstelle eine verschüttete Mine eines bestimmten Typs.  Es können zudem eine
+ Bedingung und zwei verschiedene Callbacks vereinbart werden.
+<p> Minen können als "nicht auffüllbar" markiert werden. In diesem Fall werden
+ sie zusammenstützen, sobald die Rohstoffe verbraucht sind.
+<p> Verschüttete Minen können durch einen Helden in normale Minen umgewandelt
+ werden. FÜr diese Umwandlung können Kosten anfallen, müssen aber nicht. Es
+ dürfen immer maximal 2 Waren als Kosten verwendet werden.
+<p> Es können weitere Funktionen hinzugefügt werden, um die Mine anzupassen:
+ <ul>
+ <li><u>Bedingung:</u> Eine Funktion, die true oder false zurückgeben muss.
+ Mit dieser Funktion wird bestimmt, ob die Mine gebaut werden darf.</li>
+ <li><u>Callback Aktivierung:</u> Eine Funktion, die ausgeführt wird, wenn
+ die Mine erfolgreich aktiviert wurde (evtl. Kosten bezahlt und/oder
+ Bedingung erfüllt).</li>
+ <li><u>Callback Erschöpft:</u> Eine Funktion, die ausgeführt wird, sobald
+ die Rohstoffe der Mine erschöpft sind.</li>
+ </ul>
+<p> <p><b>Alias</b>: CreateIOMine</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Position</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                 Script Entity, die mit Mine ersetzt wird
+        </li>
+        <li><span class="parameter">_Type</span>
+            <span class="types"><span class="type">number</span></span>
+                     Typ der Mine
+        </li>
+        <li><span class="parameter">_Costs</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+                    (optional) Kostentabelle
+        </li>
+        <li><span class="parameter">_NotRefillable</span>
+            <span class="types"><span class="type">boolean</span></span>
+            (optional) Die Mine wird weiterhin überwacht
+        </li>
+        <li><span class="parameter">_Condition</span>
+            <span class="types"><span class="type">function</span></span>
+                (optional) Bedingungsfunktion
+        </li>
+        <li><span class="parameter">_CreationCallback</span>
+            <span class="types"><span class="type">function</span></span>
+         (optional) Funktion nach Kauf ausführen
+        </li>
+        <li><span class="parameter">_CallbackDepleted</span>
+            <span class="types"><span class="type">function</span></span>
+         (optional) Funktion nach Ausbeutung ausführen
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Beispiel für eine Mine
+</span>API.CreateIOMine(<span class="string">"mine"</span>, Entities.B_IronMine, {Goods.G_Wood, <span class="number">20</span>}, <span class="keyword">true</span>)
+<span class="comment">-- Die Mine kann für 20 Holz erschlossen werden. Sobald die Rohstoffe
+</span><span class="comment">-- erschöpft sind, stürzt die Mine zusammen.</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateIOStoneMine"></a>
+    <strong>API.CreateIOStoneMine (_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)</strong>
+    </dt>
+    <dd>
+    Erstelle eine verschüttete Steinmine.
+<p> <p><b>Alias</b>: CreateIOStoneMine</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Position</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+              Script Entity, die mit Mine ersetzt wird
+        </li>
+        <li><span class="parameter">_Cost1Type</span>
+            <span class="types"><span class="type">number</span></span>
+             (optional) Kostenware 1
+        </li>
+        <li><span class="parameter">_Cost1Amount</span>
+            <span class="types"><span class="type">number</span></span>
+           (optional) Kostenmenge 1
+        </li>
+        <li><span class="parameter">_Cost2Type</span>
+            <span class="types"><span class="type">number</span></span>
+             (optional) Kostenware 2
+        </li>
+        <li><span class="parameter">_Cost2Amount</span>
+            <span class="types"><span class="type">number</span></span>
+           (optional) Kostenmenge 2
+        </li>
+        <li><span class="parameter">_NotRefillable</span>
+            <span class="types"><span class="type">boolean</span></span>
+         (optional) Mine wird nach Ausbeutung zerstört
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="addoninteractivemines.lua.html#API.CreateIOMine">API.CreateIOMine</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Beispiel für eine Mine
+</span>API.CreateIOMine(<span class="string">"mine"</span>, Goods.G_Wood, <span class="number">20</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-08-31 23:42:02 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

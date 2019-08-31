@@ -47,12 +47,16 @@
 <ul class="nowrap">
   <li><a href="../modules/addons.addoncastlestore.html">addons.addoncastlestore</a></li>
   <li><a href="../modules/addons.addoncutscenesystem.html">addons.addoncutscenesystem</a></li>
-  <li><a href="../modules/addons.addongamecutscenes.html">addons.addongamecutscenes</a></li>
-  <li><a href="../modules/addons.addoninteractiveobjecttemplates.html">addons.addoninteractiveobjecttemplates</a></li>
+  <li><a href="../modules/addons.addoninteractivechests.html">addons.addoninteractivechests</a></li>
+  <li><a href="../modules/addons.addoninteractivemines.html">addons.addoninteractivemines</a></li>
+  <li><a href="../modules/addons.addoninteractivesites.html">addons.addoninteractivesites</a></li>
+  <li><a href="../modules/addons.addoninteractivetrebuchets.html">addons.addoninteractivetrebuchets</a></li>
   <li><a href="../modules/addons.addonquestdebug.html">addons.addonquestdebug</a></li>
   <li><a href="../modules/addons.addonrandomrequests.html">addons.addonrandomrequests</a></li>
   <li><a href="../modules/bundles.bundlebriefingsystem.html">bundles.bundlebriefingsystem</a></li>
   <li><a href="../modules/bundles.bundlebuildingbuttons.html">bundles.bundlebuildingbuttons</a></li>
+  <li><a href="../modules/bundles.bundlecamera.html">bundles.bundlecamera</a></li>
+  <li><a href="../modules/bundles.bundlecheats.html">bundles.bundlecheats</a></li>
   <li><strong>bundles.bundleclassicbehaviors</strong></li>
   <li><a href="../modules/bundles.bundleconstructioncontrol.html">bundles.bundleconstructioncontrol</a></li>
   <li><a href="../modules/bundles.bundledestructioncontrol.html">bundles.bundledestructioncontrol</a></li>
@@ -61,8 +65,7 @@
   <li><a href="../modules/bundles.bundleentityhelperfunctions.html">bundles.bundleentityhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundleentityproperties.html">bundles.bundleentityproperties</a></li>
   <li><a href="../modules/bundles.bundleentityselection.html">bundles.bundleentityselection</a></li>
-  <li><a href="../modules/bundles.bundleextendedzoom.html">bundles.bundleextendedzoom</a></li>
-  <li><a href="../modules/bundles.bundlegamehelperfunctions.html">bundles.bundlegamehelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundlefollowknight.html">bundles.bundlefollowknight</a></li>
   <li><a href="../modules/bundles.bundleinteractiveobjects.html">bundles.bundleinteractiveobjects</a></li>
   <li><a href="../modules/bundles.bundleinterfaceapperance.html">bundles.bundleinterfaceapperance</a></li>
   <li><a href="../modules/bundles.bundleinterfacefeaturevisibility.html">bundles.bundleinterfacefeaturevisibility</a></li>
@@ -72,16 +75,21 @@
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
+  <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
+  <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
+  <li><a href="../modules/bundles.bundlestockbreeding.html">bundles.bundlestockbreeding</a></li>
   <li><a href="../modules/bundles.bundlesymfoniabehaviors.html">bundles.bundlesymfoniabehaviors</a></li>
-  <li><a href="../modules/bundles.bundlethirdpersoncamera.html">bundles.bundlethirdpersoncamera</a></li>
+  <li><a href="../modules/bundles.bundleterrainandwater.html">bundles.bundleterrainandwater</a></li>
   <li><a href="../modules/bundles.bundletimeline.html">bundles.bundletimeline</a></li>
-  <li><a href="../modules/bundles.bundletradinganalysis.html">bundles.bundletradinganalysis</a></li>
   <li><a href="../modules/bundles.bundletravelingsalesman.html">bundles.bundletravelingsalesman</a></li>
   <li><a href="../modules/bundles.bundleweathermanipulation.html">bundles.bundleweathermanipulation</a></li>
   <li><a href="../modules/core.html">core</a></li>
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
+  <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
+  <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
+  <li><a href="../modules/external.externalinteractiveobjecttemplates.html">external.externalinteractiveobjecttemplates</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
-  <li><a href="../modules/external.externalsavegametools.html">external.externalsavegametools</a></li>
+  <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
   <li><a href="../modules/writer.html">writer</a></li>
 </ul>
@@ -120,9 +128,22 @@
 	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#BundleClassicBehaviors.Global:IsQuestPositionReached">BundleClassicBehaviors.Global:IsQuestPositionReached (_Quest, _Objective)</a></td>
+	<td class="summary">Prüft, ob das Entity das Ziel erreicht hat.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted">BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted ()</a></td>
 	<td class="summary">Überschreibt IsObjectiveCompleted und behebt einen Fehler in dem
  Objective "DestroyAllPlayerUnits", der Baustellen ignorierte.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleClassicBehaviors.Local:Install">BundleClassicBehaviors.Local:Install ()</a></td>
+	<td class="summary">Initialisiert das Bundle im lokalen Skript.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleClassicBehaviors.Local:OverrideDisplayQuestObjective">BundleClassicBehaviors.Local:OverrideDisplayQuestObjective ()</a></td>
+	<td class="summary">Stellt sicher, dass für Objective.Distance immer ein Icon bereit steht,
+ wenn das Moving Entity der Primary Knight ist.</td>
 	</tr>
 </table>
 <h2><a href="#Reward">Reward</a></h2>
@@ -407,7 +428,7 @@
 	<td class="summary">Der Quest wird sofort erfüllt.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Goal_KnightDistance">Goal_KnightDistance (_PlayerID, _ScriptName)</a></td>
+	<td class="name" nowrap><a href="#Goal_KnightDistance">Goal_KnightDistance (_ScriptName, _Disctande)</a></td>
 	<td class="summary">Der Primary Knight des angegebenen Spielers muss sich dem Ziel nähern.</td>
 	</tr>
 	<tr>
@@ -761,12 +782,72 @@
 
 </dd>
     <dt>
+    <a name = "BundleClassicBehaviors.Global:IsQuestPositionReached"></a>
+    <strong>BundleClassicBehaviors.Global:IsQuestPositionReached (_Quest, _Objective)</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Entity das Ziel erreicht hat.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Quest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+             Quest Data
+        </li>
+        <li><span class="parameter">_Objective</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Behavior Data
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Ziel wurde erreicht
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted"></a>
     <strong>BundleClassicBehaviors.Global:OverrideIsObjectiveCompleted ()</strong>
     </dt>
     <dd>
     Überschreibt IsObjectiveCompleted und behebt einen Fehler in dem
  Objective "DestroyAllPlayerUnits", der Baustellen ignorierte.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleClassicBehaviors.Local:Install"></a>
+    <strong>BundleClassicBehaviors.Local:Install ()</strong>
+    </dt>
+    <dd>
+    Initialisiert das Bundle im lokalen Skript.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleClassicBehaviors.Local:OverrideDisplayQuestObjective"></a>
+    <strong>BundleClassicBehaviors.Local:OverrideDisplayQuestObjective ()</strong>
+    </dt>
+    <dd>
+    Stellt sicher, dass für Objective.Distance immer ein Icon bereit steht,
+ wenn das Moving Entity der Primary Knight ist.
 
 
 
@@ -2702,21 +2783,22 @@
 </dd>
     <dt>
     <a name = "Goal_KnightDistance"></a>
-    <strong>Goal_KnightDistance (_PlayerID, _ScriptName)</strong>
+    <strong>Goal_KnightDistance (_ScriptName, _Disctande)</strong>
     </dt>
     <dd>
     Der Primary Knight des angegebenen Spielers muss sich dem Ziel nähern.
-<p> Die Distanz ist auf 2500 festgelegt. Es wird immer ein Marker genutzt.
+<p> Die Distanz, die unterschritten werden muss, kann frei bestimmt werden.
+ Wird die Distanz 0 belassen, wird sie automatisch 2500.
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_PlayerID</span>
-           PlayerID des Helden
-        </li>
         <li><span class="parameter">_ScriptName</span>
          Skriptname des Ziels
+        </li>
+        <li><span class="parameter">_Disctande</span>
+          (optional) Entfernung zum Ziel
         </li>
     </ul>
 
@@ -4159,7 +4241,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-07-31 23:49:47 </i>
+<i style="float:right;">Last updated 2019-08-31 23:41:08 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

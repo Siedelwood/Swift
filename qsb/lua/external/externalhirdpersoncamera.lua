@@ -1,6 +1,6 @@
 -- -------------------------------------------------------------------------- --
 -- ########################################################################## --
--- #  Symfonia BundleThirdPersonCamera                                      # --
+-- #  Symfonia ExternalThirdPersonCamera                                     # --
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
@@ -13,7 +13,7 @@
 -- @within Modulbeschreibung
 -- @set sort=true
 --
-BundleThirdPersonCamera = {};
+ExternalThirdPersonCamera = {};
 
 API = API or {};
 QSB = QSB or {};
@@ -39,7 +39,7 @@ function API.ThirdPersonActivate(_Hero, _MaxZoom)
         API.Bridge("API.ThirdPersonActivate(".. Target ..", ".. _MaxZoom ..")");
         return;
     end
-    return BundleThirdPersonCamera.Global:ThirdPersonActivate(_Hero, _MaxZoom);
+    return ExternalThirdPersonCamera.Global:ThirdPersonActivate(_Hero, _MaxZoom);
 end
 HeroCameraActivate = API.ThirdPersonActivate;
 
@@ -55,7 +55,7 @@ function API.ThirdPersonDeactivate()
         API.Bridge("API.ThirdPersonDeactivate()");
         return;
     end
-    return BundleThirdPersonCamera.Global:ThirdPersonDeactivate();
+    return ExternalThirdPersonCamera.Global:ThirdPersonDeactivate();
 end
 HeroCameraDeactivate = API.ThirdPersonDeactivate;
 
@@ -69,9 +69,9 @@ HeroCameraDeactivate = API.ThirdPersonDeactivate;
 --
 function API.ThirdPersonIsRuning()
     if not GUI then
-        return BundleThirdPersonCamera.Global:ThirdPersonIsRuning();
+        return ExternalThirdPersonCamera.Global:ThirdPersonIsRuning();
     else
-        return BundleThirdPersonCamera.Local:ThirdPersonIsRuning();
+        return ExternalThirdPersonCamera.Local:ThirdPersonIsRuning();
     end
 end
 HeroCameraIsRuning = API.ThirdPersonIsRuning;
@@ -80,7 +80,7 @@ HeroCameraIsRuning = API.ThirdPersonIsRuning;
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
-BundleThirdPersonCamera = {
+ExternalThirdPersonCamera = {
     Global = {
         Data = {
             ThirdPersonIsActive = false,
@@ -103,8 +103,8 @@ BundleThirdPersonCamera = {
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Global:Install()
-    API.AddSaveGameAction(BundleThirdPersonCamera.Global.OnSaveGameLoaded);
+function ExternalThirdPersonCamera.Global:Install()
+    API.AddSaveGameAction(ExternalThirdPersonCamera.Global.OnSaveGameLoaded);
 end
 
 -- -------------------------------------------------------------------------- --
@@ -119,15 +119,15 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Global:ThirdPersonActivate(_Hero, _MaxZoom)
+function ExternalThirdPersonCamera.Global:ThirdPersonActivate(_Hero, _MaxZoom)
     if BriefingSystem then
-        BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing();
+        ExternalThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing();
     end
 
     local Hero = GetID(_Hero);
-    BundleThirdPersonCamera.Global.Data.ThirdPersonIsActive = true;
+    ExternalThirdPersonCamera.Global.Data.ThirdPersonIsActive = true;
     Logic.ExecuteInLuaLocalState([[
-        BundleThirdPersonCamera.Local:ThirdPersonActivate(]]..tostring(Hero)..[[, ]].. tostring(_MaxZoom) ..[[);
+        ExternalThirdPersonCamera.Local:ThirdPersonActivate(]]..tostring(Hero)..[[, ]].. tostring(_MaxZoom) ..[[);
     ]]);
 end
 
@@ -136,10 +136,10 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Global:ThirdPersonDeactivate()
-    BundleThirdPersonCamera.Global.Data.ThirdPersonIsActive = false;
+function ExternalThirdPersonCamera.Global:ThirdPersonDeactivate()
+    ExternalThirdPersonCamera.Global.Data.ThirdPersonIsActive = false;
     Logic.ExecuteInLuaLocalState([[
-        BundleThirdPersonCamera.Local:ThirdPersonDeactivate();
+        ExternalThirdPersonCamera.Local:ThirdPersonDeactivate();
     ]]);
 end
 
@@ -150,7 +150,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Global:ThirdPersonIsRuning()
+function ExternalThirdPersonCamera.Global:ThirdPersonIsRuning()
     return self.Data.ThirdPersonIsActive;
 end
 
@@ -160,14 +160,14 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing()
+function ExternalThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing()
     if BriefingSystem then
         if not BriefingSystem.StartBriefing_Orig_HeroCamera then
             BriefingSystem.StartBriefing_Orig_HeroCamera = BriefingSystem.StartBriefing;
             BriefingSystem.StartBriefing = function(_Briefing, _CutsceneMode)
-                if BundleThirdPersonCamera.Global:ThirdPersonIsRuning() then
-                    BundleThirdPersonCamera.Global:ThirdPersonDeactivate();
-                    BundleThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode = true;
+                if ExternalThirdPersonCamera.Global:ThirdPersonIsRuning() then
+                    ExternalThirdPersonCamera.Global:ThirdPersonDeactivate();
+                    ExternalThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode = true;
                 end
                 BriefingSystem.StartBriefing_Orig_HeroCamera(_Briefing, _CutsceneMode);
             end
@@ -178,9 +178,9 @@ function BundleThirdPersonCamera.Global:ThirdPersonOverwriteStartAndEndBriefing(
             BriefingSystem.EndBriefing_Orig_HeroCamera = BriefingSystem.EndBriefing;
             BriefingSystem.EndBriefing = function(_Briefing, _CutsceneMode)
                 BriefingSystem.EndBriefing_Orig_HeroCamera();
-                if BundleThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode then
-                    BundleThirdPersonCamera.Global:ThirdPersonActivate(0);
-                    BundleThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode = false;
+                if ExternalThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode then
+                    ExternalThirdPersonCamera.Global:ThirdPersonActivate(0);
+                    ExternalThirdPersonCamera.Global.Data.ThirdPersonStoppedByCode = false;
                 end
             end
         end
@@ -195,7 +195,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Global.OnSaveGameLoaded()
+function ExternalThirdPersonCamera.Global.OnSaveGameLoaded()
     
 end
 
@@ -211,7 +211,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Local:ThirdPersonActivate(_Hero, _MaxZoom)
+function ExternalThirdPersonCamera.Local:ThirdPersonActivate(_Hero, _MaxZoom)
     _Hero = (_Hero ~= 0 and _Hero) or self.Data.ThirdPersonLastHero or Logic.GetKnightID(GUI.GetPlayerID());
     _MaxZoom = _MaxZoom or self.Data.ThirdPersonLastZoom or 0.5;
     if not _Hero then
@@ -239,7 +239,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Local:ThirdPersonDeactivate()
+function ExternalThirdPersonCamera.Local:ThirdPersonDeactivate()
     self.Data.ThirdPersonIsActive = false;
     Camera.RTS_SetZoomFactorMax(0.5);
     Camera.RTS_SetZoomFactor(0.5);
@@ -253,7 +253,7 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Local:ThirdPersonIsRuning()
+function ExternalThirdPersonCamera.Local:ThirdPersonIsRuning()
     return self.Data.ThirdPersonIsActive;
 end
 
@@ -266,10 +266,10 @@ end
 -- @within Internal
 -- @local
 --
-function BundleThirdPersonCamera.Local:ThirdPersonOverwriteGetBorderScrollFactor()
+function ExternalThirdPersonCamera.Local:ThirdPersonOverwriteGetBorderScrollFactor()
     GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera = GameCallback_Camera_GetBorderscrollFactor
     GameCallback_Camera_GetBorderscrollFactor = function()
-        if not BundleThirdPersonCamera.Local.Data.ThirdPersonIsActive then
+        if not ExternalThirdPersonCamera.Local.Data.ThirdPersonIsActive then
             return GameCallback_Camera_GetBorderscrollFactor_Orig_HeroCamera();
         end
 
@@ -295,5 +295,5 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleThirdPersonCamera");
+Core:RegisterBundle("ExternalThirdPersonCamera");
 

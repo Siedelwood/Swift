@@ -115,14 +115,15 @@ SymfoniaLoader = {
 
             -- Erweiterte Bibliothek
             -- Zusätzliche Funktionalität und weitere Behavior.
+            {"BundleCamera",                        true},
+            {"BundleCheats",                        true},
             {"BundleDialogWindows",                 true},
             {"BundleEntityCommandFunctions",        true},
             {"BundleEntityHelperFunctions",         true},
-            {"BundleExtendedZoom",                  true},
             {"BundleInterfaceFeatureVisibility",    true},
             {"BundleMinimapMarker",                 true},
+            {"BundleStockbreeding",                 true},
             {"BundleSymfoniaBehaviors",             true},
-            {"BundleThirdPersonCamera",             true},
             {"BundleTimeLine",                      true},
             {"BundleTravelingSalesman",             true},
 
@@ -130,13 +131,15 @@ SymfoniaLoader = {
             -- Neue Funktionen für fortgeschrittene Anwender.
             {"BundleBuildingButtons",               true},
             {"BundleEntityProperties",              true},
-            {"BundleGameHelperFunctions",           true},
+            {"BundleFollowKnight",                  true},
+            {"BundleSpeedLimit",                    true},
             {"BundleInteractiveObjects",            true},
             {"BundleInterfaceApperance",            true},
             {"BundlePlayerHelperFunctions",         true},
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
-            {"BundleTradingAnalysis",               true},
+            {"BundleSaveGameTools",                 true},
+            {"BundleTerrainAndWater",               true},
             {"BundleWeatherManipulation",           true},
         },
 
@@ -156,17 +159,27 @@ SymfoniaLoader = {
             },
 
             {
-            "AddOnGameCutscenes",                   false,
-            "BundleBriefingSystem",
-            },
-
-            {
             "AddonCutsceneSystem",                  true,
             "BundleBriefingSystem",
             },
 
             {
-            "AddOnInteractiveObjectTemplates",      true,
+            "AddOnInteractiveChests",               true,
+            "BundleEntitySelection",
+            },
+
+            {
+            "AddOnInteractiveMines",                true,
+            "BundleEntitySelection",
+            },
+
+            {
+            "AddOnInteractiveSites",                true,
+            "BundleEntitySelection",
+            },
+
+            {
+            "AddOnInteractiveTrebuchets",           true,
             "BundleInteractiveObjects",
             "BundleEntitySelection",
             },

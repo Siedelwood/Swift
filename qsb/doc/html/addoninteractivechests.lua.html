@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>addoninteractivechests</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>addoninteractivechests</code></h1>
+<p>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</p>
+<p> Diese Truhen werden
+ aktiviert und der Inhalt wird in einem Karren abtransportiert.
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateRandomChest">API.CreateRandomChest (_Name, _Good, _Min, _Max, _Callback)</a></td>
+	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
+ des angegebenen Typs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateRandomGoldChest">API.CreateRandomGoldChest (_Name)</a></td>
+	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateRandomLuxuryChest">API.CreateRandomLuxuryChest (_Name)</a></td>
+	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+ an Luxusgütern.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.CreateRandomResourceChest">API.CreateRandomResourceChest (_Name)</a></td>
+	<td class="summary">Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+ an Gütern.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.CreateRandomChest"></a>
+    <strong>API.CreateRandomChest (_Name, _Good, _Min, _Max, _Callback)</strong>
+    </dt>
+    <dd>
+    Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
+ des angegebenen Typs.
+<p> Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
+ und dem Maximalwert. Optional kann eine Funktion angegeben werden, die
+ ausgeführt wird, wenn die Truhe geöffnet wird. Diese Funktion verhält sich
+ wie das Callback eines interaktiven Objektes.
+<p> <p><b>Alias</b>: CreateRandomChest</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name der zu ersetzenden Script Entity
+        </li>
+        <li><span class="parameter">_Good</span>
+            <span class="types"><span class="type">number</span></span>
+         Warentyp
+        </li>
+        <li><span class="parameter">_Min</span>
+            <span class="types"><span class="type">number</span></span>
+         Mindestmenge
+        </li>
+        <li><span class="parameter">_Max</span>
+            <span class="types"><span class="type">number</span></span>
+         Maximalmenge
+        </li>
+        <li><span class="parameter">_Callback</span>
+            <span class="types"><span class="type">function</span></span>
+         Callback-Funktion
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateRandomChest(<span class="string">"chest"</span>, Goods.G_Gems, <span class="number">100</span>, <span class="number">300</span>, OnChestOpened)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateRandomGoldChest"></a>
+    <strong>API.CreateRandomGoldChest (_Name)</strong>
+    </dt>
+    <dd>
+    Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.
+<p> <p><b>Alias</b>: CreateRandomGoldChest</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name der zu ersetzenden Script Entity
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateRandomGoldChest(<span class="string">"chest"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateRandomLuxuryChest"></a>
+    <strong>API.CreateRandomLuxuryChest (_Name)</strong>
+    </dt>
+    <dd>
+    Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+ an Luxusgütern.
+<p> Luxusgüter können seien: Edelsteine, Farben, Musikinstrumente
+ Salz oder Weihrauch.
+<p> <p><b>Alias</b>: CreateRandomLuxuryChest</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name der zu ersetzenden Script Entity
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateRandomLuxuryChest(<span class="string">"chest"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.CreateRandomResourceChest"></a>
+    <strong>API.CreateRandomResourceChest (_Name)</strong>
+    </dt>
+    <dd>
+    Erstellt eine Schatztruhe mit einer zufälligen Art und Menge
+ an Gütern.
+<p> Güter können seien: Eisen, Fisch, Fleisch, Getreide, Holz,
+ Honig, Kräuter, Milch, Stein, Wolle.
+<p> <p><b>Alias</b>: CreateRandomResourceChest</p>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name der zu ersetzenden Script Entity
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.CreateRandomResourceChest(<span class="string">"chest"</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-08-31 23:42:02 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>
