@@ -81,3 +81,7 @@ body {
 .docInvisibleContent {
     display: none;
 }
+
+.result {
+    margin-bottom: 5px;
+}
