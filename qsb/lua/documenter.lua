@@ -205,6 +205,7 @@ end
 -- @local
 --
 function SymfoniaDocumenter:CreateSearchTagsFromSourceFile(_File)
+    --[[
     local fh = io.open(_File, "rt");
     assert(fh, "File not found: " .._File);
     fh:seek("set", 0);
@@ -218,6 +219,8 @@ function SymfoniaDocumenter:CreateSearchTagsFromSourceFile(_File)
         LUA = fh:read();
     end
     return TagString;
+    ]]
+    return "";
 end
 
 ---
@@ -242,7 +245,7 @@ function SymfoniaDocumenter:ReadBundleInfo(_Bundle)
         return false;
     end
 
-    local HTML = htmlparser.parse(fh:read("*all"));
+    local HTML = htmlparser.parse(fh:read("*all"), 999999);
 
     -- Description --
 
@@ -256,14 +259,19 @@ function SymfoniaDocumenter:ReadBundleInfo(_Bundle)
     -- API --
 
     local index = #self.Data.BundleInfo.API;
-    local anchors = HTML:select(".name > a");
+    local anchors = HTML:select("dt a");
     for i= 1, #anchors, 1 do
-        local href = anchors[i].attributes['href'];
+        local href = anchors[i]:gettext():gsub('<a name = "', ""):gsub('"></a>', "");
         self.Data.BundleInfo.API[index+i] = {_Bundle, href};
     end
     local summary = HTML:select(".summary");
     for i= 1, #summary, 1 do
         self.Data.BundleInfo.API[index+i][3] = summary[i]:getcontent():gsub("\n", "");
+    end
+    local info = HTML:select("dd");
+    for i= 1, #info, 1 do
+        local Content = info[i]:getcontent():gsub("<", "&#x3C;"):gsub(">", "&#x3E;");
+        self.Data.BundleInfo.API[index+i][4] = Content;
     end
 
     return true;
@@ -277,15 +285,15 @@ end
 -- @local
 --
 function SymfoniaDocumenter:GetDirectLinks()
-    local Template = '<div id="%s" class="result method"><a href="%s">%s</a><br>%s</div>';
+    local Template = '<div id="%s" class="result method"><a href="%s">%s</a><br>%s<span class="docInvisibleContent">%s</span></div>';
     local HTML = "";
 
     for i= 1, #self.Data.BundleInfo.API, 1 do
         local v = self.Data.BundleInfo.API[i];
-        local Link = "html/" ..v[1].. ".lua.html" ..v[2];
-        local Name = v[2]:sub(2);
+        local Link = "html/" ..v[1].. ".lua.html#" ..v[2];
+        local Name = v[2];
 
-        HTML = HTML .. string.format(Template, v[1].. "_" ..Name, Link, Name, v[3]);
+        HTML = HTML .. string.format(Template, v[1].. "_" ..Name, Link, Name, v[3], v[4] or "");
     end
     return HTML;
 end
