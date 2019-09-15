@@ -5,9 +5,7 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Mit diesem Modul können Cutscenes abgespielt werden.
--- 
--- <a href="#API.StartCutscene">Cutscene starten</a>
+-- Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.
 --
 -- Cutscenes sind als CS-Datei vordefinierte Kameraflüge. Mit diesem Modul
 -- können diese Kameraflüge gruppiert werden. Diese Gruppierung ist das, was
@@ -47,9 +45,9 @@ API = API or {};
 --
 -- Die einzelnen Flights einer Cutscene werden als CS-Dateien definiert.
 --
--- Eine Cutscene besteht aus den einzelnen Flights und speziellen Feldern, mit
--- denen weitere Einstellungen gemacht werden können. Siehe dazu auch das
--- Briefing System für einen Vergleich.
+-- Eine Cutscene besteht aus den einzelnen Kameraflügen, also Flights, und
+-- speziellen Feldern, mit denen weitere Einstellungen gemacht werden können.
+-- Siehe dazu auch das Briefing System für einen Vergleich.
 --
 -- Das Gerüst für eine Cutscene sieht wie folgt aus:
 -- <pre>local Cutscene = {
@@ -71,7 +69,7 @@ API = API or {};
 --};
 --return API.StartCutscene(Cutscene);</pre>
 --
--- Die einzelnen Flights werden nacheinander als Tables angegeben:
+-- Ein Kameraflug wird als Table angegeben:
 -- <pre>{
 --    Flight = "some_file", -- .cs wird nicht mit angegeben!
 --    Title  = "Angezeigter Titel",
@@ -116,7 +114,7 @@ StartCutscene = API.CutsceneStart;
 -- 
 -- <b>Alias</b>: IsCutsceneActive
 -- 
--- @return[type=boolean] Cutscene aktiv
+-- @return[type=boolean] Kameraflug ist aktiv
 -- @within Anwenderfunktionen
 --
 function API.CutsceneIsActive()
@@ -130,7 +128,8 @@ IsCutsceneActive = API.CutsceneIsActive;
 ---
 -- Setzt die Geschwindigkeit für den schnellen Vorlauf für alle Cutscenes.
 --
--- Beim schnellen Vorlauf wird eine Cutscene beschleunigt abgespielt.
+-- Beim schnellen Vorlauf wird der Kameraflug beschleunigt ausgeführt. Die
+-- Spielgeschwindigkeit wird dabei auch beschleunigt!
 --
 -- <b>Alias</b>: SetCutsceneFastForwardSpeed
 -- 

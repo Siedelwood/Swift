@@ -5,8 +5,10 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle stellt ein Burglager zur Verfügung, das sich ähnlich wie das
--- normale Lager verhält. Das Burglager ist von der Ausbaustufe der Burg
+-- Dieses Bundle stellt das Burglager, oder Kellerlager, zur Verfügung, das
+-- sich ähnlich wie das normale Lager verhält.
+--
+-- Das Burglager ist von der Ausbaustufe der Burg
 -- abhängig. Je weiter die Burg ausgebaut wird, desto höher ist das Limit.
 -- Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit
 -- der Ware im Lagerhaus erreicht wird.
@@ -21,22 +23,6 @@
 -- Menge an Waren erreichen oder die Kosten Zur aktivierung eines interaktien
 -- Objektes bezahlen, werden die Güter im Burglager automatisch mit einbezogen,
 -- wenn sie nicht gesperrt wurden.
---
--- Das wichtigste Auf einen Blick:
--- <ul>
--- <li>
--- <a href="#API.CastleStoreCreate">Burglager in der Burg anlegen</a>
--- </li>
--- <li>
--- <a href="#API.CastleStoreCountGood">Warenmenge in der Burg abfragen</a>
--- </li>
--- <li>
--- <a href="#API.CastleStoreAddGood">Waren dem Burglager hinzufügen</a>
--- </li>
--- <li>
--- <a href="#API.CastleStoreRemoveGood">Waren aus der Burg entfernen</a>
--- </li>
--- </ul>
 --
 -- @within Modulbeschreibung
 -- @set sort=true

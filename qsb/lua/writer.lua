@@ -34,6 +34,18 @@
 -- </li>
 -- </ul>
 --
+-- <h3>Zusätzliche Lua-Module instalieren</h3>
+-- Es werden folgende zusätzlichen Module benötigt, die nicht als Paket mit
+-- LuaDist mitkommen:
+-- <ul>
+-- <li><a href="https://github.com/msva/lua-htmlparser">htmlparser</a><br>
+-- Ein Parser für HTML. Wird benötigt um die Indexseite der Dokumentation
+-- zu bauen.<br>
+-- <b>Installation:</b><br>
+-- Archiv herunterlagen und inhalt von src in das lib-Verzeichnis kopieren.<br>
+-- (.../Lua/lib/lua/)</li>
+-- </ul>
+--
 -- <h3>Installation von Git</h3>
 -- <ul>
 -- <li>
@@ -89,6 +101,8 @@
 -- <pre>luarocks install luafilesystem</pre>
 -- Penlight installieren:
 -- <pre>luarocks install penlight</pre>
+-- HTML-Parser installieren:
+-- <pre>luarocks install htmlparser</pre>
 -- 
 -- <p>Anschließend kann man im Terminal lua -v ausführen und sollte die
 -- Version angezeigt bekommen.</p>

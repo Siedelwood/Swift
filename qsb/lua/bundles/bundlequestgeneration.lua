@@ -5,15 +5,14 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Mit diesem Bundle können Aufträge per Skript erstellt werden.
+-- Dieses Bundle ermöglicht es einen Quest, bzw. Auftrag, per Skript zu 
+-- erstellen.
 --
 -- Normaler Weise werden Aufträge im Questassistenten erzeugt. Dies ist aber
 -- statisch und das Kopieren von Aufträgen ist nicht möglich. Wenn Aufträge
 -- im Skript erzeugt werden, verschwinden alle diese Nachteile. Aufträge
 -- können im Skript kopiert und angepasst werden. Es ist ebenfalls machbar,
 -- die Aufträge in Sequenzen zu erzeugen.
---
--- <p><a href="#API.CreateQuest">Quests erzeugen</a></p>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -32,8 +31,9 @@ QSB.GeneratedQuestDialogs = {};
 ---
 -- Erstellt einen Quest.
 --
--- Ein Quest braucht immer wenigstens ein Goal und einen Trigger. Hat ein Quest
--- keinen Namen, erhält er automatisch einen mit fortlaufender Nummerierung.
+-- Ein Auftrag braucht immer wenigstens ein Goal und einen Trigger um ihn
+-- erstellen zu können. Hat ein Quest keinen Namen, erhält er automatisch
+-- einen mit fortlaufender Nummerierung.
 --
 -- Ein Quest besteht aus verschiedenen Eigenschaften und Behavior, die nicht
 -- alle zwingend gesetzt werden müssen. Behavior werden einfach nach den

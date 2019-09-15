@@ -5,8 +5,16 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Mit diesem Bundle erhälst du hilfreiche Funktionen zur Steuerung der
--- Spielgeschwindigkeit.
+-- Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur 
+-- Verfügung. Die maximale Beschleunigung des Spiels kann gesteuert werden.
+--
+-- Wenn die Geschwindigkeit festgelegt werden soll, muss zuerst bestimmt werden
+-- wo die Obergrenze liegt.
+-- <pre>API.SpeedLimitSet(1)</pre>
+-- Diese Festlegung gilt solange, bis sie irgend wann einmal geändert wird.
+--
+-- Danach kann die Sperre jederzeit aktiviert oder deaktiviert werden.
+-- <pre>API.SpeedLimitActivate(true)</pre>
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -21,12 +29,19 @@ QSB = QSB or {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Setzt die Obergrenze für die Spielgeschwindigkeit fest.
+-- Diese Funktion setzt die maximale Spielgeschwindigkeit bis zu der das Spiel
+-- beschleunigt werden kann.
 --
 -- <p><b>Alias:</b> SetSpeedLimit</p>
 --
--- @param[type=number] _Limit Obergrenze
+-- @param[type=number] _Limit Obergrenze für Spielgeschwindigkeit
 -- @within Anwenderfunktionen
+-- @see API.SpeedLimitActivate
+--
+-- @usage -- Legt die Speedbremse auf Stufe 1 fest.
+-- API.SpeedLimitSet(1)
+-- -- Legt die Speedbremse auf Stufe 2 fest.
+-- API.SpeedLimitSet(2)
 --
 function API.SpeedLimitSet(_Limit)
     if not GUI then
@@ -38,13 +53,13 @@ end
 SetSpeedLimit = API.SpeedLimitSet
 
 ---
--- Aktiviert die Speedbremse. Die vorher eingestellte Maximalgeschwindigkeit
--- kann nicht mehr überschritten werden.
+-- Aktiviert die zuvor eingestellte Maximalgeschwindigkeit.
 --
 -- <p><b>Alias:</b> ActivateSpeedLimit</p>
 --
 -- @param[type=boolean] _Flag Speedbremse ist aktiv
 -- @within Anwenderfunktionen
+-- @see API.SpeedLimitSet
 --
 function API.SpeedLimitActivate(_Flag)
     if GUI then

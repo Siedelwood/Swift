@@ -13,8 +13,6 @@
 --
 -- Ein NPC wird durch ein leichtes Glitzern auf der Spielwelt hervorgehoben.
 --
--- <a href="#API.NpcCompose">NPCs erzeugen und verwalten</a>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --

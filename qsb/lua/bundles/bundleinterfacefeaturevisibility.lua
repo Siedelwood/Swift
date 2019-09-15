@@ -9,8 +9,6 @@
 -- Widgets auszublenden oder einzublenden. Auf diese Weise können dem Spieler
 -- Funktionalitäten vorenthalten werden.
 --
--- <p><a href="#API.InterfaceHideBuildMenu">Interface-Steuerung</a></p>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --

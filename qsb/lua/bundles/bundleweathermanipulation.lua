@@ -5,7 +5,9 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Mit diesem Modul können Wetterevents und Wetteranimationen kombiniert
+-- Dieses Modul ermöglicht das Ändern des Wetters.
+--
+-- Es können nun relativ einfach Wetterevents und Wetteranimationen kombiniert
 -- gestartet werden.
 --
 -- @within Modulbeschreibung
@@ -19,15 +21,33 @@ BundleWeatherManipulation = {};
 
 ---
 -- Erzeugt ein neues Wetterevent und gibt es zurück.
--- @param[type=string]  _GFX Verwendetes Display Set
--- @param[type=boolean] _Rain Niederschlag aktivieren
--- @param[type=boolean] _Snow Niederschlag ist Schnee
--- @param[type=boolean] _Ice Wasser gefriert
--- @param[type=boolean] _Monsoon Blockendes Monsunwasser aktivieren
--- @param[type=number]  _Temp Temperatur während des Events
+--
+-- Ein Event alleine ändert noch nicht das Wetter! Hier wird ein Event
+-- definiert, welches an anderer Stelle benutzt werden kann. Das definierte
+-- Event kann jedoch in einer Variable gespeichert und immer wieder neu
+-- verwendet werden.
+--
+-- <b>Hinweis</b>: Es handelt sich um eine dynamische Wettersequenz. Dies muss
+-- beachtet werden! Eine statische Sequenz wird nicht funktionieren!
+--
+-- @param[type=string]  _GFX        Verwendetes Display Set
+-- @param[type=boolean] _Rain       Niederschlag aktivieren
+-- @param[type=boolean] _Snow       Niederschlag ist Schnee
+-- @param[type=boolean] _Ice        Wasser gefriert
+-- @param[type=boolean] _Monsoon    Blockendes Monsunwasser aktivieren
+-- @param[type=number]  _Temp       Temperatur während des Events
 -- @param[type=table]   _NotGrowing Liste der nicht nachwachsenden Güter
--- @return[type=table] Neues Wetterevent
+-- @return[type=table]              Neues Wetterevent
 -- @within WeatherEvent
+--
+-- @see API.WeatherEventRegister
+-- @see API.WeatherEventRegisterLoop
+--
+-- @usage -- Erzeugt ein Winterevent
+-- MyEvent = API.WeatherEventCreate(
+--     "ne_winter_sequence.xml", false, true, true, false, -15,
+--     {Goods.G_Grain, Goods.G_RawFish, Goods.G_Honeycomb}
+-- )
 --
 function API.WeatherEventCreate(_GFX, _Rain, _Snow, _Ice, _Monsoon, _Temp, _NotGrowing)
     if GUI then
@@ -49,10 +69,19 @@ end
 ---
 -- Registiert ein Event für eine bestimmte Dauer. Das Event wird auf der
 -- "Wartebank" eingereiht.
+--
+-- <b>Hinweis</b>: Ein wartendes Event wird gestartet, sobald kein anderes
+-- Event mehr aktiv ist.
+-- 
 -- @param[type=table]  _Event     Event-Instanz
 -- @param[type=string] _Name      Name des Events
 -- @param[type=number] _Duration  Name des Events
 -- @within WeatherEvent
+-- @see API.WeatherEventNext
+-- @see API.WeatherEventAbort
+-- @see API.WeatherEventRegisterLoop
+--
+-- @usage API.WeatherEventRegister(MyEvent, "Winter_ME_Event", 300);
 --
 function API.WeatherEventRegister(_Event, _Name, _Duration)
     if GUI then
@@ -73,6 +102,11 @@ end
 -- @param[type=table]  _Event Event-Instanz
 -- @param[type=string] _Name  Name des Events
 -- @within WeatherEvent
+-- @see API.WeatherEventNext
+-- @see API.WeatherEventAbort
+-- @see API.WeatherEventRegister
+--
+-- @usage API.WeatherEventRegister(MyEvent, "Winter_ME_Event_Loop");
 --
 function API.WeatherEventRegisterLoop(_Event, _Name)
     if GUI then
@@ -96,7 +130,9 @@ end
 
 ---
 -- Startet das nächste Wetterevent auf der "Wartebank". Wenn bereits ein Event
--- aktiv ist, wird dieses gestoppt. Allerdings bleibt die Animation erhalten.
+-- aktiv ist, wird dieses gestoppt. Es erfolgt ein Übergang zum nächsten Event,
+-- sofern möglich.
+--
 -- @within WeatherEvent
 --
 function API.WeatherEventNext()
@@ -115,6 +151,10 @@ end
 
 ---
 -- Bricht das aktuelle Event ab und löscht alle eingereihten Events.
+--
+-- Mit dieser Funktion wird die komplette Warteschlange für Wettervents geleert.
+-- Dies betrifft sowohl einzelne Events als auch sich wiederholende Events.
+--
 -- @within WeatherEvent
 --
 function API.WeatherEventPurge()
@@ -166,7 +206,6 @@ function BundleWeatherManipulation.Global:AddEvent(_Event, _Name, _Duration)
     Event.Duration = _Duration;
     Event.Name = _Name;
     table.insert(self.Data.EventQueue, Event);
-    -- self:NextEvent();
 end
 
 ---

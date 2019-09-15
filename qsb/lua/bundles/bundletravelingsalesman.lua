@@ -9,8 +9,6 @@
 -- Hafen mit einem Schiff anfährt. Dabei kann der Fahrtweg frei mit Wegpunkten
 -- bestimmt werden. Es können auch mehrere Spieler zu Händlern gemacht werden.
 --
--- <p><a href="#API.TravelingSalesmanActivate">Schiffshändler aktivieren</a></p>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --

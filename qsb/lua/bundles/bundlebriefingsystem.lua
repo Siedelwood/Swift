@@ -71,7 +71,8 @@ QSB = QSB or {};
 -- </tr>
 -- <tr>
 -- <td>ReturnForbidden</td>
--- <td>Das Zurückspringen zur Vorherigen Seite wird verboten</td>
+-- <td>Das Zurückspringen zur Vorherigen Seite wird deaktiviert. Wenn nicht
+-- angegeben, dann standardmäßig deaktiviert.</td>
 -- </tr>
 -- </table>
 --
@@ -506,6 +507,9 @@ end
 --
 function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     _Briefing = self:ConvertBriefingTable(_Briefing);
+    if _Briefing.ReturnForbidden == nil then
+        _Briefing.ReturnForbidden = true;
+    end
     
     if not self.Data.LoadScreenHidden or self:IsBriefingActive() then
         table.insert(self.Data.BriefingQueue, _Briefing);
