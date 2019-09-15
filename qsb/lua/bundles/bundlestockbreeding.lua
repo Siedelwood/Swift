@@ -5,7 +5,8 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Ermöglicht dem Spieler im Tausch gegen Getreide eigene Nutztiere zu züchten.
+-- Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.
+-- 
 -- Kosten für die Aufzucht oder die benötigte Menge an Tieren um mit der
 -- Zucht zu beginnen, sind frei konfigurierbar.
 --
@@ -23,6 +24,10 @@ QSB = QSB or {};
 
 ---
 -- Erlaube oder verbiete dem Spieler Schafe zu züchten.
+--
+-- Wenn der Spieler keine Schafe züchten soll, kann ihm dieses Recht durch
+-- diese Funktion genommen werden. Natürlich kann das Recht auf diesem Weg
+-- auch wieder zurückgegeben werden.
 --
 -- <p><b>Alias:</b> UseBreedSheeps</p>
 --
@@ -55,6 +60,10 @@ UseBreedSheeps = API.UseBreedSheeps;
 ---
 -- Erlaube oder verbiete dem Spieler Kühe zu züchten.
 --
+-- Wenn der Spieler keine Kühe züchten soll, kann ihm dieses Recht durch
+-- diese Funktion genommen werden. Natürlich kann das Recht auf diesem Weg
+-- auch wieder zurückgegeben werden.
+--
 -- <p><b>Alias:</b> UseBreedCattle</p>
 --
 -- @param[type=boolean] _flag Kuhzucht aktiv/inaktiv
@@ -84,7 +93,11 @@ end
 UseBreedCattle = API.UseBreedCattle;
 
 ---
--- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+-- Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Schafen
+-- festgelegt.
+--
+-- Will der Spieler nun ein Schaf züchten, muss er mindestens die angegebene
+-- Menge an Getreide besitzen. Das Getreide wird dann aus dem Lager entfernt.
 --
 -- <p><b>Alias:</b> SetSheepGrainCost</p>
 --
@@ -105,7 +118,11 @@ end
 SetSheepGrainCost = API.SetSheepGrainCost;
 
 ---
--- Setzt die Menge an Getreide, das zur Zucht eines Tieres benötigt wird.
+-- Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Kühen
+-- festgelegt.
+--
+-- Will der Spieler nun eine Kuh züchten, muss er mindestens die angegebene
+-- Menge an Getreide besitzen. Das Getreide wird dann aus dem Lager entfernt.
 --
 -- <p><b>Alias:</b> SetCattleGrainCost</p>
 --
@@ -126,7 +143,8 @@ end
 SetCattleGrainCost = API.SetCattleGrainCost;
 
 ---
--- Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
+-- Legt die Menge an Schafen fest, die zur Zucht eines neuen Trieres mindestens
+-- in einem Gatter vorhanden sein müssen.
 --
 -- <p><b>Alias:</b> SetSheepNeeded</p>
 --
@@ -150,7 +168,8 @@ end
 SetSheepNeeded = API.SetSheepNeeded;
 
 ---
--- Setzt die zur Zucht benötigte Menge an Tieren in einem Gatter.
+-- Legt die Menge an Kühen fest, die zur Zucht eines neuen Trieres mindestens
+-- in einem Gatter vorhanden sein müssen.
 --
 -- <p><b>Alias:</b> SetCattleNeeded</p>
 --
