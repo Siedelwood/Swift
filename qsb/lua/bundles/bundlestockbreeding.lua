@@ -143,8 +143,8 @@ end
 SetCattleGrainCost = API.SetCattleGrainCost;
 
 ---
--- Legt die Menge an Schafen fest, die zur Zucht eines neuen Trieres mindestens
--- in einem Gatter vorhanden sein müssen.
+-- Legt die Anzahlö an Schafen fest, die zur Zucht eines neuen Trieres
+-- mindestens in einem Gatter vorhanden sein müssen.
 --
 -- <p><b>Alias:</b> SetSheepNeeded</p>
 --
@@ -168,7 +168,7 @@ end
 SetSheepNeeded = API.SetSheepNeeded;
 
 ---
--- Legt die Menge an Kühen fest, die zur Zucht eines neuen Trieres mindestens
+-- Legt die Anzahl an Kühen fest, die zur Zucht eines neuen Trieres mindestens
 -- in einem Gatter vorhanden sein müssen.
 --
 -- <p><b>Alias:</b> SetCattleNeeded</p>
