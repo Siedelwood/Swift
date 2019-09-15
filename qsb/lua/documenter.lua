@@ -172,7 +172,6 @@ function SymfoniaDocumenter:CreateDocumentationIndexLink(_Name, _Folder)
     local HTML = fh:read("*all");
     HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_NAME###", _Name);
     HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_LINK###", "html/" .._Name:lower().. ".lua.html");
-    HTML = HTML:gsub("###PLACEHOLDER_BUNDLE_CONTENTS###", self:CreateSearchTagsFromSourceFile(_Folder .. _Name:lower() .. ".lua"));
     return HTML
 end
 
