@@ -12,8 +12,6 @@
 -- die Eingabe von Befehlen zu steuern, einzelne Lua-Funktionen im Spiel
 -- auszuführen und sogar komplette Skripte zu laden.
 --
--- <p><a href="#API.ActivateDebugMode">Debug starten</a></p>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --

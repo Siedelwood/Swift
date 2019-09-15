@@ -84,4 +84,8 @@ body {
 
 .result {
     margin-bottom: 5px;
+    padding: 5px;
+    border: 1px solid #bbbbbb;
+    background: #eeeeee;
+    color: #333333;
 }

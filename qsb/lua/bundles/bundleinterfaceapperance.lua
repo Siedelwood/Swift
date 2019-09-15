@@ -26,7 +26,7 @@ QSB.PlayerNames = {};
 ---
 -- Setzt eine Grafik als Bild für einen Icon oder einen Button.
 --
--- <b>VERALTET</b>
+-- <b>VERALTET! WIRD DEMNÄCHST GELÖSCHT!</b>
 --
 -- Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem
 -- beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
@@ -50,6 +50,9 @@ UserSetTexture = API.InterfaceSetTexture;
 
 ---
 -- Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
+--
+-- Es wird also die Grafik eines Button oder Icon mit einer neuen Grafik
+-- ausgetauscht.
 --
 -- Dabei müssen die Quellen nach gui_768, gui_920 und gui_1080 in der
 -- entsprechenden Größe gepackt werden. Die Ordner liegen in graphics/textures.
@@ -89,18 +92,17 @@ end
 UserSetIcon = API.InterfaceSetIcon;
 
 ---
--- Ändert den aktuellen Tooltip mit der Beschreibung.
+-- Ändert den Beschreibungstext eines Button oder eines Icon.
 --
--- <p><b>Alias:</b> UserSetTextNormal</p>
---
--- Die Funtion ermittelt das aktuelle GUI Widget und ändert den Text des
--- Tooltip. Dazu muss die Funktion innerhalb der Mouseover-Funktion eines
--- Buttons oder Widgets mit Tooltip aufgerufen werden.
+-- Wichtig ist zu beachten, dass diese Funktion in der Update-Funktion des
+-- Button oder Icon ausgeführt werden muss.
 --
 -- Die Funktion kann auch mit deutsch/english lokalisierten Tabellen als
 -- Text gefüttert werden. In diesem Fall wird der deutsche Text genommen,
 -- wenn es sich um eine deutsche Spielversion handelt. Andernfalls wird
 -- immer der englische Text verwendet.
+--
+-- <p><b>Alias:</b> UserSetTextNormal</p>
 --
 -- @param[type=string] _title        Titel des Tooltip
 -- @param[type=string] _text         Text des Tooltip
@@ -116,7 +118,10 @@ end
 UserSetTextNormal = API.InterfaceSetTooltipNormal;
 
 ---
--- Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.
+-- Ändert den Beschreibungstext und die Kosten eines Button.
+--
+-- Wichtig ist zu beachten, dass diese Funktion in der Update-Funktion des
+-- Button oder Icon ausgeführt werden muss.
 --
 -- <p><b>Alias:</b> UserSetTextBuy</p>
 --
@@ -247,7 +252,7 @@ function API.InterfaceSetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
 end
 
 ---
--- Setzt das Portrait des Spielers.
+-- Setzt das Portrait eines Spielers.
 --
 -- Dabei gibt es 3 verschiedene Varianten:
 -- <ul>
@@ -261,15 +266,18 @@ end
 --
 -- Wenn kein Portrait bestimmt werden kann, wird H_NPC_Generic_Trader verwendet.
 --
+-- <b>Trivia</b>: Diese Funktionalität wird Umgangssprachlich als "Köpfe
+-- tauschen" oder "Köpfe wechseln" bezeichnet.
+--
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=string] _Portrait Name des Models
 -- @within Anwenderfunktionen
 --
--- @usage -- Primary Knight
+-- @usage -- Kopf des Primary Knight
 -- API.InterfaceSetPlayerPortrait(2);
--- -- Durch Entity
+-- -- Kopf durch Entity bestimmen
 -- API.InterfaceSetPlayerPortrait(2, "amma");
--- -- Durch Modelname
+-- -- Kopf durch Modelname setzen
 -- API.InterfaceSetPlayerPortrait(2, "H_NPC_Monk_AS");
 --
 function API.InterfaceSetPlayerPortrait(_PlayerID, _Portrait)
