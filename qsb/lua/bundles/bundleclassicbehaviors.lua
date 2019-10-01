@@ -4058,7 +4058,7 @@ Core:RegisterBehavior(b_Reprisal_QuestForceInterrupt);
 -- dieses Behavior bevor die Variable in einem Goal oder Trigger abgefragt
 -- wird, um sie zu initialisieren!
 --
----- <p>Operatoren</p>
+-- <p>Operatoren</p>
 -- <ul>
 -- <li>= - Variablenwert wird auf den Wert gesetzt</li>
 -- <li>- - Variablenwert mit Wert Subtrahieren</li>
@@ -6778,7 +6778,7 @@ Core:RegisterBehavior(b_Reward_QuestForceInterrupt);
 -- dieses Behavior bevor die Variable in einem Goal oder Trigger abgefragt
 -- wird, um sie zu initialisieren!
 --
----- <p>Operatoren</p>
+-- <p>Operatoren</p>
 -- <ul>
 -- <li>= - Variablenwert wird auf den Wert gesetzt</li>
 -- <li>- - Variablenwert mit Wert Subtrahieren</li>
