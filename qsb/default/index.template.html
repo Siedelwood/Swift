@@ -25,10 +25,6 @@
                         <li>Worte mit , getrennt: Mindestens 1 Wort muss vorkommen (Beispiel: hakim,health)</li>
                     </ul>
                 </p>
-                <p>
-                    <b>Hinweis:</b> Es wird nicht die HTML-Datei durchsucht, sondern die LUA-Quelldatei. Es kann also sein, dass Dein Suchbegriff nicht im
-                    HTML-Dokument auftaucht, weil er nur im Quellcode steht.
-                </p>
                 <hr/>
                 <form id="searchForm">
                     <input type="text" id="pattern" />
@@ -38,6 +34,17 @@
                 </form>
             <div>
             <div id="searchResultsContainer">
+                <h3>Ergebnisse</h3>
+                <div id="directlinkContainer">
+                    <div style="margin-bottom: 10px;"><b>Funktionen</b></div>
+                    ###PLACEHOLDER_DIRECT_LINK###
+                </div>
+                <div id="bundlelinkContainer">
+                    <div style="margin-bottom: 10px;"><b>Pakete</b></div>
+                    ###PLACEHOLDER_BUNDLE_LINK###
+                </div>
+            </div>
+            <div id="indexEntriesContainer">
                 <h3>Index</h3>
                 <div id="modulesContainer">
                     ###PLACEHOLDER_LUA_BUNDLES###

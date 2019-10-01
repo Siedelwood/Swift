@@ -8,8 +8,6 @@
 -- Dieses Bundle bietet die Möglichkeit Musikstücke abzuspielen. Die
 -- Musik kann als einzelne Titel oder als Playlist wiedergegeben werden.
 --
--- <p><a href="#API.StartMusic">Musik abspielen</a></p>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --

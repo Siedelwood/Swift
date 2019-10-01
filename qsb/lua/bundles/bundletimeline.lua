@@ -17,9 +17,6 @@
 -- Zeitstrahl verfügt über eine ID, mit der er angesprochen werden kann. So
 -- kann er abgebrochen, pausiert, fortgesetzt und neu gestartet werden.
 --
--- <a href="#API.TimeLineStart">Zeitstrahl erstellen</a><br>Eine Abfolge von
--- Aktionen definieren, die zu gewissen Zeitpunkten ausgelöst werden.
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --

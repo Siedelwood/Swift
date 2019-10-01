@@ -8,8 +8,6 @@
 -- Dieses Bundle bietet einen Kameramodus an, mit dem ein Entity aus der
 -- Schulterperspektive verfolgt werden kann.
 --
--- <a href="#API.ThirdPersonActivate">Schulterblick aktivieren</a><br>
---
 -- @within Modulbeschreibung
 -- @set sort=true
 --
