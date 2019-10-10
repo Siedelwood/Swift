@@ -483,7 +483,7 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
 
             -- Prüfe auf Category
             for k,v in pairs(BundleDestructionControl.Local.Data.EntityCategories) do
-                if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
+                if Logic.IsEntityInCategory(EntityID, v) == 1 then
                     XGUIEng.ShowWidget(CurrentWidgetID, 0);
                     return;
                 end

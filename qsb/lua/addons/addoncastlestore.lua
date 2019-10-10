@@ -217,7 +217,7 @@ function API.CastleStoreSetOutsourceBoundary(_PlayerID, _Good, _Limit)
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
     if Store then
-        Stores:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
+        Store:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
     end
 end
 
@@ -1629,7 +1629,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
         if _IO.Reward[1] ~= nil then
             GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
         end
-        Play2DSound(pID, _IO.ActivationSound or "menu_left_prestige");
+        Play2DSound(PlayerID, _IO.ActivationSound or "menu_left_prestige");
         GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
     end
     

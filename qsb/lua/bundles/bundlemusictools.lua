@@ -285,7 +285,7 @@ end
 --
 function BundleMusicTools.Global:StartPlaylistTitle(_Title)
     local playlist = self.Data.StartSongPlaylist;
-    local length = #length;
+    local length = #playlist;
     if (length >= _Title) then
         self.Data.StartSongData.Running = false;
         self.Data.StartSongQueue = {};

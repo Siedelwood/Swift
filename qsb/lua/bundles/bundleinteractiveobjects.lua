@@ -949,7 +949,7 @@ function BundleInteractiveObjects.Local:OnObjectClicked(_IO)
         if _IO.Reward[1] ~= nil then
             GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
         end
-        Play2DSound(pID, _IO.ActivationSound or "menu_left_prestige");
+        Play2DSound(PlayerID, _IO.ActivationSound or "menu_left_prestige");
         GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
         return;
     end
@@ -1116,7 +1116,7 @@ function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)
             Scale = 210;
         end
         XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
-        XGUIEng.SetMaterialTexture(_Widget, 1, _file);
+        XGUIEng.SetMaterialTexture(_Widget, 1, _Icon);
         XGUIEng.SetMaterialUV(_Widget, 1, 0, 0, Scale, Scale);
     end
 end

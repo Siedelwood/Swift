@@ -1881,9 +1881,9 @@ function b_Trigger_Briefing:Reset(_Quest)
     self.WaitTimeTimer = nil
 end
 
-function b_Trigger_Briefing:Debug(__quest_)
+function b_Trigger_Briefing:Debug(_Quest)
     if self.WaitTime and self.WaitTime < 0 then
-        dbg(__quest_.Identifier.." "..self.Name..": waittime is below 0!");
+        dbg(_Quest.Identifier.." "..self.Name..": waittime is below 0!");
         return true;
     elseif not IsValidQuest(self.Quest) then
         fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");

@@ -263,6 +263,7 @@ end
 --
 function AddOnRandomRequests.Global:GetClaimTerritoryBehavior(_Behavior, _Quest)
     local AllTerritories = {Logic.GetTerritories()};
+    local NextTitle = Logic.GetKnightTitle(_Quest.ReceivingPlayer)+1;
     self.Data.Claim[_Quest.ReceivingPlayer] = self.Data.Claim[_Quest.ReceivingPlayer] or {};
     for i= #AllTerritories, 1, -1 do
         if self.Data.Claim[_Quest.ReceivingPlayer][NextTitle] then

@@ -62,7 +62,7 @@ function API.WeatherEventCreate(_GFX, _Rain, _Snow, _Ice, _Monsoon, _Temp, _NotG
     Event.Ice = _Ice or Event.Ice;
     Event.Monsoon = _Monsoon or Event.Monsoon;
     Event.Temperature = _Temp or Event.Temperature;
-    Event.NotGrowing = NotGrowing or Event.NotGrowing;
+    Event.NotGrowing = _NotGrowing or Event.NotGrowing;
     return Event;
 end
 

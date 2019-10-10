@@ -95,11 +95,11 @@ function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
         API.Fatal("API.GetTrebuchetByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
-    if not self.Data.Trebuchet.Sites[_Name] then
+    if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
         API.Warn("API.GetTrebuchetByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
-    return self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
+    return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
 end
 GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
 
@@ -118,11 +118,11 @@ function API.GetReturningCartByTrebuchetConstructionSite(_Name)
         API.Fatal("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
-    if not self.Data.Trebuchet.Sites[_Name] then
+    if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
         API.Warn("API.GetReturningCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
-    return self.Data.Trebuchet.Sites[_Name].ReturningCart;
+    return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ReturningCart;
 end
 GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
 
@@ -141,11 +141,11 @@ function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
         API.Fatal("API.GetConstructionCartByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
-    if not self.Data.Trebuchet.Sites[_Name] then
+    if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
         API.Warn("API.GetConstructionCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
-    return self.Data.Trebuchet.Sites[_Name].ConstructionCart;
+    return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ConstructionCart;
 end
 GetConstructionCart = API.GetConstructionCartByTrebuchetConstructionSite;
 

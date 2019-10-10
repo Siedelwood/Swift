@@ -32,7 +32,7 @@ QSB = QSB or {};
 --
 function API.BanTypeAtTerritory(_type, _territory)
     if GUI then
-        local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
+        local Territory = (type(_territory) == "string" and "'" .._territory.. "'") or _territory;
         GUI.SendScriptCommand("API.BanTypeAtTerritory(" .._type.. ", " ..Territory.. ")");
         return;
     end
@@ -57,7 +57,7 @@ end
 --
 function API.BanCategoryAtTerritory(_eCat, _territory)
     if GUI then
-        local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
+        local Territory = (type(_territory) == "string" and "'" .._territory.. "'") or _territory;
         GUI.SendScriptCommand("API.BanTypeAtTerritory(" .._eCat.. ", " ..Territory.. ")");
         return;
     end
@@ -128,7 +128,7 @@ end
 --
 function API.UnbanTypeAtTerritory(_type, _territory)
     if GUI then
-        local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
+        local Territory = (type(_territory) == "string" and "'" .._territory.. "'") or _territory;
         GUI.SendScriptCommand("API.UnbanTypeAtTerritory(" .._type.. ", " ..Territory.. ")");
         return;
     end
@@ -158,7 +158,7 @@ end
 --
 function API.UnbanCategoryAtTerritory(_eCat, _territory)
     if GUI then
-        local Territory = (type(_center) == "string" and "'" .._territory.. "'") or _territory;
+        local Territory = (type(_territory) == "string" and "'" .._territory.. "'") or _territory;
         GUI.SendScriptCommand("API.UnbanTypeAtTerritory(" .._eCat.. ", " ..Territory.. ")");
         return;
     end
@@ -189,7 +189,7 @@ end
 function API.UnbanTypeInArea(_type, _center)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.UnbanTypeInArea(" .._eCat.. ", " ..Center.. ")");
+        GUI.SendScriptCommand("API.UnbanTypeInArea(" .._type.. ", " ..Center.. ")");
         return;
     end
 
@@ -216,7 +216,7 @@ end
 function API.UnbanCategoryInArea(_eCat, _center)
     if GUI then
         local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.UnbanCategoryInArea(" .._type.. ", " ..Center.. ")");
+        GUI.SendScriptCommand("API.UnbanCategoryInArea(" .._eCat.. ", " ..Center.. ")");
         return;
     end
 

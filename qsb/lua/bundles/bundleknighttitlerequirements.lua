@@ -811,7 +811,7 @@ function BundleKnightTitleRequirements.Local:RequirementIcon(_Widget, _Icon)
             Scale = 210;
         end
         XGUIEng.SetMaterialAlpha(_Widget, 1, 255);
-        XGUIEng.SetMaterialTexture(_Widget, 1, _file);
+        XGUIEng.SetMaterialTexture(_Widget, 1, _Icon);
         XGUIEng.SetMaterialUV(_Widget, 1, 0, 0, Scale, Scale);
     end
 end

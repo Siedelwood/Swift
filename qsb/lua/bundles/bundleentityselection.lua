@@ -590,7 +590,7 @@ end
 function BundleEntitySelection.Local:OverwriteMilitaryDismount()
     GUI_Military.DismountClicked_Orig_BundleEntitySelection = GUI_Military.DismountClicked;
     GUI_Military.DismountClicked = function()
-        local Selected = GUI.GetSelectedEntity(Selected);
+        local Selected = GUI.GetSelectedEntity();
         local Type = Logic.GetEntityType(Selected);
         local Guarded = Logic.GetGuardedEntityID(Selected);
         local Guardian = Logic.GetGuardianEntityID(Selected);
@@ -801,7 +801,7 @@ function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText, _Disabled
 
     _DisabledText = _DisabledText or "";
     local DisabledText = "";
-    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText ~= "" and _text ~= "" then
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _DisabledText ~= "" and _DescText ~= "" then
         DisabledText = DisabledText .. "{cr}{@color:255,32,32,255}" .. _DisabledText;
     end
 

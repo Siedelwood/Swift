@@ -1336,7 +1336,7 @@ function Core:SetupGobal_HackCreateQuest()
             );
             g_QuestNameToID[_QuestName] = QuestID;
         else
-            fatal("Quest '"..tostring(questName).."': invalid questname! Contains forbidden characters!");
+            fatal("Quest '"..tostring(_QuestName).."': invalid questname! Contains forbidden characters!");
         end
     end
 end
@@ -1456,7 +1456,7 @@ end
 -- @local
 --
 function Core:IsBundleRegistered(_Bundle)
-    return self.Data.InitalizedBundles[Bundle] == true;
+    return self.Data.InitalizedBundles[_Bundle] == true;
 end
 
 ---

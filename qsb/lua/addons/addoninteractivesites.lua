@@ -144,7 +144,7 @@ function AddOnInteractiveSites.Global:CreateIOBuildingSite(_Position, _PlayerID,
     AddOnInteractiveSites.Global:ConstructionSiteActivate();
     local Costs = _Costs or {Logic.GetEntityTypeFullCost(_Type)};
     local Title = _Title or self.Data.ConstructionSite.Description.Title;
-    local Text  = Text or self.Data.ConstructionSite.Description.Text;
+    local Text  = _Text or self.Data.ConstructionSite.Description.Text;
     local eID = GetID(_Position);
     Logic.SetModel(eID, Models.Buildings_B_BuildingPlot_10x10);
     Logic.SetVisible(eID, true);
