@@ -1776,7 +1776,6 @@ end
 function AddOnCastleStore.Local:OverwriteGetStringTableText()
     GetStringTableText_Orig_QSB_CatsleStore = XGUIEng.GetStringTableText;
     XGUIEng.GetStringTableText = function(_key)
-        local lang = QSB.Language;
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID = GUI.GetPlayerID();
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
@@ -1784,9 +1783,9 @@ function AddOnCastleStore.Local:OverwriteGetStringTableText()
         if _key == "UI_ObjectNames/DestroyGoods" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
                 if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignBottomRight/Selection/Castle") == 1 then
-                    return AddOnCastleStore.Local.Description.ShowCastleStore.Text[lang];
+                    return API.Localize(AddOnCastleStore.Local.Description.ShowCastleStore.Text);
                 else
-                    return AddOnCastleStore.Local.Description.ShowCastle.Text[lang];
+                    return API.Localize(AddOnCastleStore.Local.Description.ShowCastle.Text);
                 end
             end
         end
@@ -1796,23 +1795,23 @@ function AddOnCastleStore.Local:OverwriteGetStringTableText()
 
         if _key == "UI_ObjectNames/CityBuildingsNumber" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.CityTab.Title[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.CityTab.Title);
             end
         end
         if _key == "UI_ObjectDescription/CityBuildingsNumber" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.CityTab.Text[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.CityTab.Text);
             end
         end
 
         if _key == "UI_ObjectNames/B_StoreHouse" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.StorehouseTab.Title[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.StorehouseTab.Title);
             end
         end
         if _key == "UI_ObjectDescription/B_StoreHouse" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.StorehouseTab.Text[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.StorehouseTab.Text);
             end
         end
 
@@ -1822,19 +1821,19 @@ function AddOnCastleStore.Local:OverwriteGetStringTableText()
             local WidgetUpButton = WidgetMotherName.. "Tab03Up/up/B_Castle_ME";
             if XGUIEng.GetWidgetPathByID(CurrentWidgetID) == WidgetDownButton or XGUIEng.GetWidgetPathByID(CurrentWidgetID) == WidgetUpButton then
                 if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                    return AddOnCastleStore.Local.Description.MultiTab.Title[lang];
+                    return API.Localize(AddOnCastleStore.Local.Description.MultiTab.Title);
                 end
             end
         end
         if _key == "UI_ObjectDescription/B_Castle_ME" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.MultiTab.Text[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.MultiTab.Text);
             end
         end
 
         if _key == "UI_ButtonDisabled/NotEnoughGoods" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.GoodButtonDisabled.Text[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.GoodButtonDisabled.Text);
             end
         end
 

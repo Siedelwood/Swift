@@ -47,12 +47,8 @@ function API.DialogInfoBox(_Title, _Text, _Action)
         return;
     end
 
-    if type(_Title) == "table" then
-       _Title = _Title[QSB.Language];
-    end
-    if type(_Text) == "table" then
-       _Text = _Text[QSB.Language];
-    end
+    _Title = API.Localize(_Title);
+    _Text  = API.Localize(_Text);
     return BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action);
 end
 UserOpenDialog = API.DialogInfoBox;
@@ -84,14 +80,8 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
         API.Fatal("API.DialogRequestBox: Can only be used in the local script!");
         return;
     end
-
-    local lang = QSB.Language;
-    if type(_Title) == "table" then
-       _Title = _Title[lang];
-    end
-    if type(_Text) == "table" then
-       _Text = _Text[lang];
-    end
+    _Title = API.Localize(_Title);
+    _Text = API.Localize(_Text);
     return BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
 end
 UserOpenRequesterDialog = API.DialogRequestBox;
@@ -123,14 +113,8 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
         API.Fatal("API.DialogSelectBox: Can only be used in the local script!");
         return;
     end
-
-    local lang = QSB.Language;
-    if type(_Title) == "table" then
-       _Title = _Title[lang];
-    end
-    if type(_Text) == "table" then
-       _Text = _Text[lang];
-    end
+    _Title = API.Localize(_Title);
+    _Text = API.Localize(_Text);
     _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
@@ -161,13 +145,8 @@ UserOpenSelectionDialog = API.DialogSelectBox;
 -- API.SimpleTextWindow("Überschrift", Text);
 --
 function API.SimpleTextWindow(_Caption, _Content)
-    local lang = QSB.Language;
-    if type(_Caption) == "table" then
-       _Caption = _Caption[lang];
-    end
-    if type(_Content) == "table" then
-       _Content = _Content[lang];
-    end
+    _Caption = API.Localize(_Caption);
+    _Content = API.Localize(_Content);
     if not GUI then
         API.Bridge("API.SimpleTextWindow('" .._Caption.. "', '" .._Content.. "')");
         return;
@@ -212,16 +191,11 @@ end
 -- @within Anwenderfunktionen
 --
 function API.SimpleTypewriter(_Text, _Callback)
-    local lang = QSB.Language;
     if GUI then
         API.Fatal("API.SimpleTypewriter: Can only be used from global script!");
         return;
     end
-    local Text = _Text;
-    if type(Text) == "table" then
-        Text = Text[lang];
-    end
-    QSB.SimpleTypewriter:New(_Text, _Callback):Start();
+    QSB.SimpleTypewriter:New(API.Localize(_Text), _Callback):Start();
 end
 
 -- -------------------------------------------------------------------------- --
@@ -612,12 +586,8 @@ end
 --
 function QSB.TextWindow:SetCaption(_Text)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    local Language = QSB.Language;
-    if type(_Text) == "table" then
-        _Text = _Text[Language];
-    end
     assert(type(_Text) == "string");
-    self.Data.Caption = _Text;
+    self.Data.Caption = API.Localize(_Text);
     return self;
 end
 
@@ -636,12 +606,8 @@ end
 --
 function QSB.TextWindow:SetContent(_Text)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
-    local Language = QSB.Language;
-    if type(_Text) == "table" then
-        _Text = _Text[Language];
-    end
     assert(type(_Text) == "string");
-    self.Data.Text = _Text;
+    self.Data.Text = API.Localize(_Text);
     return self;
 end
 
@@ -692,10 +658,7 @@ end
 function QSB.TextWindow:SetButton(_Text, _Callback)
     assert(self ~= QSB.TextWindow, "Can not be used in static context!");
     if _Text then
-        local Language = QSB.Language;
-        if type(_Text) == "table" then
-            _Text = _Text[Language];
-        end
+        _Text = API.Localize(_Text);
         assert(type(_Text) == "string");
         assert(type(_Callback) == "function");
     end
@@ -800,15 +763,14 @@ function QSB.TextWindow:Prepare()
         XGUIEng.SetText("/InGame/Root/Normal/ChatOptions/ChatLog", ChatlogMessage)
     end
 
-    local lang = QSB.Language;
     if type(self.Data.Caption) == "table" then
-        self.Data.Caption = self.Data.Caption[lang];
+        self.Data.Caption = API.Localize(self.Data.Caption);
     end
     if type(self.Data.ButtonText) == "table" then
-        self.Data.ButtonText = self.Data.ButtonText[lang];
+        self.Data.ButtonText = API.Localize(self.Data.ButtonText);
     end
     if type(self.Data.Text) == "table" then
-        self.Data.Text = self.Data.Text[lang];
+        self.Data.Text = API.Localize(self.Data.Text);
     end
 
     XGUIEng.ShowWidget("/InGame/Root/Normal/ChatOptions/ChatModeAllPlayers",0);

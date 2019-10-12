@@ -569,13 +569,12 @@ function BundleEntitySelection.Local:OverwriteMultiselectIcon()
             return;
         end
 
-        local lang = QSB.Language;
         if EntityType == Entities.U_SiegeEngineCart then
             local TooltipData = BundleEntitySelection.Local.Data.Tooltips.TrebuchetCart;
-            BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
+            BundleEntitySelection.Local:SetTooltip(API.Localize(TooltipData.Title), API.Localize(TooltipData.Text));
         elseif EntityType == Entities.U_Trebuchet then
             local TooltipData = BundleEntitySelection.Local.Data.Tooltips.Trebuchet;
-            BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
+            BundleEntitySelection.Local:SetTooltip(API.Localize(TooltipData.Title), API.Localize(TooltipData.Text));
         end
     end
 end
@@ -705,9 +704,9 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
         end
 
         BundleEntitySelection.Local:SetTooltip(
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[QSB.Language],
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[QSB.Language],
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[QSB.Language]
+            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title),
+            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text),
+            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled)
         );
     end
 
@@ -744,16 +743,16 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/KnightButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[QSB.Language],
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[QSB.Language]
+                API.Localize(BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title),
+                API.Localize(BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text)
             );
             return;
         end
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/BattalionButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[QSB.Language],
-                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[QSB.Language]
+                API.Localize(BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title),
+                API.Localize(BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text)
             );
             return;
         end
@@ -769,9 +768,9 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
                     local GuardedEntity = Logic.GetGuardedEntityID(SelectedEntity);
                     if GuardianEntity == 0 and GuardedEntity == 0 then
                         BundleEntitySelection.Local:SetTooltip(
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[QSB.Language],
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[QSB.Language],
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[QSB.Language]
+                            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title),
+                            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text),
+                            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled)
                         );
                         return;
                     end

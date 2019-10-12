@@ -252,7 +252,7 @@ end
 
 function b_Goal_Diplomacy:ChangeCaption(_Quest)
     local PlayerName = GetPlayerName(self.PlayerID) or "";
-    local Text = string.format(self.TextPattern[lang], self.DiploNameMap[self.DiplState][QSB.Language], PlayerName);
+    local Text = string.format(API.Localize(self.TextPattern), API.Localize(self.DiploNameMap[self.DiplState]), PlayerName);
     Core:ChangeCustomQuestCaptionText(Text, _Quest);
 end
 
@@ -796,7 +796,7 @@ function b_Goal_DestroySoldiers:CustomFunction(_Quest)
                          "DESTROY SOLDIERS {cr}{cr}from faction: "
         local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
         local party = GetPlayerName(self.AttackedPlayer) or "";
-        local text = "{center}" .. caption .. party .. "{cr}{cr}" .. amount .. " "..self.KillsNeeded;
+        local text = "{center}" .. caption .. party .. "{cr}{cr}" ..amount.. " " ..self.KillsNeeded;
         Core:ChangeCustomQuestCaptionText(text, _Quest);
     end
 
@@ -1133,25 +1133,25 @@ function b_Goal_ActivateBuff:CustomFunction(_Quest)
         local caption = (lang == "de" and "BONUS AKTIVIEREN{cr}{cr}") or "ACTIVATE BUFF{cr}{cr}"
 
         local tMapping = {
-            ["Buff_Spice"]                        = {de = "Salz", en = "Salt"},
-            ["Buff_Colour"]                        = {de = "Farben", en = "Color"},
-            ["Buff_Entertainers"]                = {de = "Entertainer", en = "Entertainer"},
-            ["Buff_FoodDiversity"]                = {de = "Vielfältige Nahrung", en = "Food diversity"},
-            ["Buff_ClothesDiversity"]            = {de = "Vielfältige Kleidung", en = "Clothes diversity"},
-            ["Buff_HygieneDiversity"]            = {de = "Vielfältige Reinigung", en = "Hygiene diversity"},
-            ["Buff_EntertainmentDiversity"]        = {de = "Vielfältige Unterhaltung", en = "Entertainment diversity"},
-            ["Buff_Sermon"]                        = {de = "Predigt", en = "Sermon"},
-            ["Buff_Festival"]                    = {de = "Fest", en = "Festival"},
-            ["Buff_ExtraPayment"]                = {de = "Sonderzahlung", en = "Extra payment"},
-            ["Buff_HighTaxes"]                    = {de = "Hohe Steuern", en = "High taxes"},
-            ["Buff_NoPayment"]                    = {de = "Kein Sold", en = "No payment"},
-            ["Buff_NoTaxes"]                    = {de = "Keine Steuern", en = "No taxes"},
+            ["Buff_Spice"]                  = {de = "Salz", en = "Salt"},
+            ["Buff_Colour"]                 = {de = "Farben", en = "Color"},
+            ["Buff_Entertainers"]           = {de = "Entertainer", en = "Entertainer"},
+            ["Buff_FoodDiversity"]          = {de = "Vielfältige Nahrung", en = "Food diversity"},
+            ["Buff_ClothesDiversity"]       = {de = "Vielfältige Kleidung", en = "Clothes diversity"},
+            ["Buff_HygieneDiversity"]       = {de = "Vielfältige Reinigung", en = "Hygiene diversity"},
+            ["Buff_EntertainmentDiversity"] = {de = "Vielfältige Unterhaltung", en = "Entertainment diversity"},
+            ["Buff_Sermon"]                 = {de = "Predigt", en = "Sermon"},
+            ["Buff_Festival"]               = {de = "Fest", en = "Festival"},
+            ["Buff_ExtraPayment"]           = {de = "Sonderzahlung", en = "Extra payment"},
+            ["Buff_HighTaxes"]              = {de = "Hohe Steuern", en = "High taxes"},
+            ["Buff_NoPayment"]              = {de = "Kein Sold", en = "No payment"},
+            ["Buff_NoTaxes"]                = {de = "Keine Steuern", en = "No taxes"},
         }
 
         if g_GameExtraNo >= 1 then
-            tMapping["Buff_Gems"]                = {de = "Edelsteine", en = "Gems"}
-            tMapping["Buff_MusicalInstrument"]  = {de = "Musikinstrumente", en = "Musical instruments"}
-            tMapping["Buff_Olibanum"]            = {de = "Weihrauch", en = "Olibanum"}
+            tMapping["Buff_Gems"]              = {de = "Edelsteine", en = "Gems"}
+            tMapping["Buff_MusicalInstrument"] = {de = "Musikinstrumente", en = "Musical instruments"}
+            tMapping["Buff_Olibanum"]          = {de = "Weihrauch", en = "Olibanum"}
         end
 
         local text = "{center}" .. caption .. tMapping[self.BuffName][lang]

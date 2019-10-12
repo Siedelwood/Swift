@@ -194,19 +194,19 @@ function BundleSaveGameTools.Local:AutoSaveGame(_name)
 
     local counter = BundleSaveGameTools.Local.Data.AutoSaveCounter +1;
     BundleSaveGameTools.Local.Data.AutoSaveCounter = counter;
-    local lang = Network.GetDesiredLanguage();
-    if lang ~= "de" then lang = "en" end
-    local text = (lang == "de" and "Spiel wird gespeichert...") or
-                  "Saving game...";
+    local Text = {
+        de = "Spiel wird gespeichert...",
+        en = "Saving game..."
+    };
 
     if self:CanGameBeSaved() then
-        OpenDialog(text, XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
+        OpenDialog(API.Localize(Text), XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
         XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
         Framework.SaveGame("Autosave "..counter.." --- ".._name, "--");
     else
         StartSimpleJobEx( function()
             if BundleSaveGameTools.Local:CanGameBeSaved() then
-                OpenDialog(text, XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
+                OpenDialog(API.Localize(Text), XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
                 XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
                 Framework.SaveGame("Autosave - "..counter.." --- ".._name, "--");
                 return true;
