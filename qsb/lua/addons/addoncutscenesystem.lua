@@ -98,10 +98,10 @@ function API.CutsceneStart(_Cutscene)
     -- Lokalisierung Texte
     for i= 1, #_Cutscene, 1 do
         if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
-            _Cutscene[i].Title = _Cutscene[i].Title[QSB.Language];
+            _Cutscene[i].Title = API.Localize(_Cutscene[i].Title);
         end
         if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
-            _Cutscene[i].Text = _Cutscene[i].Text[QSB.Language];
+            _Cutscene[i].Text = API.Localize(_Cutscene[i].Text);
         end
     end
 
@@ -182,9 +182,9 @@ AddOnCutsceneSystem = {
     },
 
     Text = {
-        FastForwardActivate   = {de = "Beschleunigen", en = "Fast Forward"},
-        FastForwardDeactivate = {de = "Zurücksetzen",  en = "Normal Speed"},
-        FastFormardMessage    = {de = "SCHNELLER VORLAUF",  en = "FAST FORWARD"},
+        FastForwardActivate   = {de = "Beschleunigen", en = "Fast Forward", fr = "Accélérer"},
+        FastForwardDeactivate = {de = "Zurücksetzen",  en = "Normal Speed", fr = "Retour"},
+        FastFormardMessage    = {de = "SCHNELLER VORLAUF",  en = "FAST FORWARD", fr = "AVANCE RAPIDE"},
     }
 }
 
@@ -484,9 +484,9 @@ end
 function AddOnCutsceneSystem.Local:ThroneRoomCameraControl()
     if self:IsCutsceneActive() then
         if self.Data.FastForward.Active == false then
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardActivate[QSB.Language]);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..API.Localize(AddOnCutsceneSystem.Text.FastForwardActivate));
         else 
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..AddOnCutsceneSystem.Text.FastForwardDeactivate[QSB.Language]);
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..API.Localize(AddOnCutsceneSystem.Text.FastForwardDeactivate));
         end
     end
 end
@@ -824,7 +824,7 @@ function AddOnCutsceneSystem.Local.DisplayFastForwardMessage()
                 AddOnCutsceneSystem.Local.Data.FastForward.RealTime = RealTime;
             end
             -- Message anzeigen
-            local Text = "{cr}{cr}" ..AddOnCutsceneSystem.Text.FastFormardMessage[QSB.Language];
+            local Text = "{cr}{cr}" ..API.Localize(AddOnCutsceneSystem.Text.FastFormardMessage);
             local Indent = string.rep("  ", AddOnCutsceneSystem.Local.Data.FastForward.Indent);
             XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", Text..Indent.. ". . .");
         else

@@ -432,11 +432,10 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.TrapToggleMouseOver = function()
-        local lang = QSB.Language;
         BundleBuildingButtons.Local:TextNormal(
-            BundleBuildingButtons.Local.Description.Downgrade.Title[lang],
-            BundleBuildingButtons.Local.Description.Downgrade.Text[lang],
-            BundleBuildingButtons.Local.Description.Downgrade.Disabled[lang]
+            API.Localize(BundleBuildingButtons.Local.Description.Downgrade.Title),
+            API.Localize(BundleBuildingButtons.Local.Description.Downgrade.Text),
+            API.Localize(BundleBuildingButtons.Local.Description.Downgrade.Disabled)
         );
     end
 
@@ -589,10 +588,9 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
-    local lang = QSB.Language;
     BundleBuildingButtons.Local:TextNormal(
-        BundleBuildingButtons.Local.Description.SingleStop.Title[lang],
-        BundleBuildingButtons.Local.Description.SingleStop.Text[lang]
+        API.Localize(BundleBuildingButtons.Local.Description.SingleStop.Title),
+        API.Localize(BundleBuildingButtons.Local.Description.SingleStop.Text)
     );
 end
 

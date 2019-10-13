@@ -853,7 +853,6 @@ end
 -- @local
 --
 function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
-    local lang = QSB.Language;
     local PlayerID = GUI.GetPlayerID();
     local KnightTitle = Logic.GetKnightTitle(PlayerID);
     local Title = ""
@@ -873,7 +872,7 @@ function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
     elseif _key == "Products" then
         local GoodCategoryNames = BundleKnightTitleRequirements.Local.Data.GoodCategoryNames;
         local Category = KnightTitleRequirements[KnightTitle+1][_key][_i][1];
-        local CategoryName = GoodCategoryNames[Category][lang];
+        local CategoryName = API.Localize(GoodCategoryNames[Category]);
 
         if CategoryName == nil then
             CategoryName = "ERROR: Name missng!";
@@ -901,7 +900,7 @@ function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
     elseif _key == "Buff" then
         local BuffTypeNames = BundleKnightTitleRequirements.Local.Data.BuffTypeNames;
         local BuffType = KnightTitleRequirements[KnightTitle+1][_key][_i];
-        local BuffTitle = BuffTypeNames[BuffType][lang];
+        local BuffTitle = API.Localize(BuffTypeNames[BuffType]);
 
         if BuffTitle == nil then
             BuffTitle = "ERROR: Name missng!";
@@ -913,10 +912,7 @@ function BundleKnightTitleRequirements.Local:RequirementTooltipWrapped(_key, _i)
         Title = BundleKnightTitleRequirements.Local.Data.Description[_key].Title;
         Text  = BundleKnightTitleRequirements.Local.Data.Description[_key].Text;
     end
-
-    Title = (type(Title) == "table" and Title[lang]) or Title;
-    Text  = (type(Text) == "table" and Text[lang]) or Text;
-    self:RequirementTooltip(Title, Text);
+    self:RequirementTooltip(API.Localize(Title), API.Localize(Text));
 end
 
 BundleKnightTitleRequirements.Local.Data.RequirementWidgets = {

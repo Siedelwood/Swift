@@ -515,19 +515,9 @@ end
 -- @local
 --
 function BundleInterfaceApperance.Local:TextNormal(_title, _text, _disabledText)
-    local lang = Network.GetDesiredLanguage()
-    if lang ~= "de" then lang = "en" end
-
-    if type(_title) == "table" then
-        _title = _title[lang];
-    end
-    if type(_text) == "table" then
-        _text = _text[lang];
-    end
-    _text = _text or "";
-    if type(_disabledText) == "table" then
-        _disabledText = _disabledText[lang];
-    end
+    _title = API.Localize(_title or "");
+    _text = API.Localize(_text or "");
+    _disabledText = API.Localize(_disabledText or "");
 
     local TooltipContainerPath = "/InGame/Root/Normal/TooltipNormal"
     local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)
@@ -541,7 +531,6 @@ function BundleInterfaceApperance.Local:TextNormal(_title, _text, _disabledText)
     GUI_Tooltip.SetPosition(TooltipContainer, TooltipContainerSizeWidgets, PositionWidget)
     GUI_Tooltip.FadeInTooltip(TooltipFadeInContainer)
 
-    _disabledText = _disabledText or "";
     local disabled = "";
     if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText ~= "" and _text ~= "" then
         disabled = disabled .. "{cr}{@color:255,32,32,255}" .. _disabledText
@@ -566,20 +555,10 @@ end
 -- @local
 --
 function BundleInterfaceApperance.Local:TextCosts(_title,_text,_disabledText,_costs,_inSettlement)
-    local lang = Network.GetDesiredLanguage()
-    if lang ~= "de" then lang = "en" end
     _costs = _costs or {};
-
-    if type(_title) == "table" then
-        _title = _title[lang];
-    end
-    if type(_text) == "table" then
-        _text = _text[lang];
-    end
-    _text = _text or "";
-    if type(_disabledText) == "table" then
-        _disabledText = _disabledText[lang];
-    end
+    _title = API.Localize(_title or "");
+    _text = API.Localize(_text or "");
+    _disabledText = API.Localize(_disabledText or "");
 
     local TooltipContainerPath = "/InGame/Root/Normal/TooltipBuy"
     local TooltipContainer = XGUIEng.GetWidgetID(TooltipContainerPath)

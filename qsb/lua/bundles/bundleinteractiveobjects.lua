@@ -104,17 +104,6 @@ QSB.IOList = {};
 -- <td>ja</td>
 -- </tr>
 -- <tr>
--- <td>Opener</td>
--- <td>Ein spezieller Held, der als einziger das Objekt aktivieren kann.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
--- <td>WrongKnight</td>
--- <td>Nachricht, die angezeigt wird, wenn der falsche Held das Objekt
--- aktivieren will.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
 -- <td>State</td>
 -- <td>Bestimmt, wie sich der Button des interaktiven Objektes verhält.</td>
 -- <td>ja</td>
@@ -254,9 +243,7 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 -- API.AddCustomIOName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
 function API.AddCustomIOName(_Key, _Text)
-    if type(_Text) == "table" then
-        _Text = _Text[QSB.Language];
-    end
+    _Text = API.Localize(_Text);
     if GUI then
         API.Bridge("API.AddCustomIOName('" .._Key.. "', '" .._Text.. "')");
         return;
@@ -279,6 +266,13 @@ BundleInteractiveObjects = {
             IOCustomNamesByEntityName = {},
         },
     },
+    Text = {
+        InteractionTitle = {
+            de = "Interaktion",
+            en = "Interaction",
+            fr = "Interagir",
+        }
+    }
 }
 
 -- Global Script ---------------------------------------------------------------
@@ -348,34 +342,12 @@ end
 -- @local
 --
 function BundleInteractiveObjects.Global:CreateObject(_Description)
-    local lang = Network.GetDesiredLanguage();
-
     self:HackOnInteractionEvent();
     self:RemoveInteractiveObject(_Description.Name);
 
-    if type(_Description.Title) == "table" then
-        _Description.Title = _Description.Title[lang];
-    end
-    if not _Description.Title or _Description.Title == "" then
-        _Description.Title = (lang == "de" and "Interaktion") or "Interaction";
-    end
-
-    if type(_Description.Text) == "table" then
-        _Description.Text = _Description.Text[lang];
-    end
-    if not _Description.Text then
-        _Description.Text = "";
-    end
-
-    if type(_Description.WrongKnight) == "table" then
-        _Description.WrongKnight = _Description.WrongKnight[lang];
-    end
-    _Description.WrongKnight = _Description.WrongKnight or "";
-
-    if type(_Description.ConditionUnfulfilled) == "table" then
-        _Description.ConditionUnfulfilled = _Description.ConditionUnfulfilled[lang];
-    end
-    _Description.ConditionUnfulfilled = _Description.ConditionUnfulfilled or "";
+    _Description.Title = API.Localize(_Description.Title or BundleInteractiveObjects.Text.InteractionTitle);
+    _Description.Text = API.Localize(_Description.Text or "");
+    _Description.ConditionUnfulfilled = API.Localize(_Description.ConditionUnfulfilled or "");
 
     _Description.Condition = _Description.Condition or function() return true end
     _Description.Callback = _Description.Callback or function() end
@@ -813,8 +785,6 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         local eID = g_Interaction.ActiveObjectsOnScreen[i];
         local pID = GUI.GetPlayerID();
         local EntityType = Logic.GetEntityType(eID);
-        local lang = Network.GetDesiredLanguage();
-        lang = (lang == "de" and lang) or "en";
 
         -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
@@ -840,9 +810,6 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
 
     GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects = GUI_Interaction.DisplayQuestObjective
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
-        local lang = Network.GetDesiredLanguage();
-        if lang ~= "de" then lang = "en" end
-
         local QuestIndexTemp = tonumber(_QuestIndex);
         if QuestIndexTemp then
             _QuestIndex = QuestIndexTemp;
@@ -885,16 +852,11 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                         ObjectName = Wrapped_GetStringTableText(_QuestIndex, "UI_ObjectNames/" .. ObjectTypeName)
                     end
                     if ObjectName == "" then
-                        ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectTypeName];
-                        if type(ObjectName) == "table" then
-                            ObjectName = ObjectName[QSB.Language];
-                        end
+                        ObjectName = API.Localize(BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectTypeName]);
+
                     end
                     if ObjectName == nil then
-                        ObjectName = BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectEntityName];
-                        if type(ObjectName) == "table" then
-                            ObjectName = ObjectName[QSB.Language];
-                        end
+                        ObjectName = API.Localize(BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectEntityName]);
                     end
                     if ObjectName == nil then
                         ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName
@@ -970,13 +932,8 @@ end
 --
 function BundleInteractiveObjects.Local:OnObjectClicked_IsConditionFulfulled(_IO)
     local PlayerID = GUI.GetPlayerID();
-    local Language = QSB.Language;
     if not _IO.ConditionFullfilled then
-        if _IO.ConditionUnfulfilled then
-            local MessageText = _IO.ConditionUnfulfilled;
-            if type(MessageText) == "table" then
-                MessageText = MessageText[Language];
-            end
+        if _IO.ConditionUnfulfilled  and _IO.ConditionUnfulfilled ~= "" then
             Message(MessageText);
         end
         return false;

@@ -171,12 +171,8 @@ function API.AddPages(_Briefing)
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
             -- Sprache anpassen
-            if type(_Page.Title) == "table" then
-                _Page.Title = _Page.Title[QSB.Language];
-            end
-            if type(_Page.Text) == "table" then
-                _Page.Text = _Page.Text[QSB.Language];
-            end
+            _Page.Title = API.Localize(_Page.Title);
+            _Page.Text = API.Localize(_Page.Text);
             -- Lookat mappen
             if type(_Page.LookAt) == "string" or type(_Page.LookAt) == "number" then
                 _Page.LookAt = {_Page.LookAt, 0}
@@ -997,12 +993,11 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             end
 
             -- Button Texte
-            local Language = QSB.Language;
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/StartButton", "{center}" ..BundleBriefingSystem.Text.PrevButton[Language]);
-            local SkipText = BundleBriefingSystem.Text.NextButton[Language];
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/StartButton", "{center}" ..API.Localize(BundleBriefingSystem.Text.PrevButton));
+            local SkipText = API.Localize(BundleBriefingSystem.Text.NextButton);
             local PageID = self.Data.CurrentBriefing.Page;
             if PageID == #self.Data.CurrentBriefing or self.Data.CurrentBriefing[PageID+1] == -1 then
-                SkipText = BundleBriefingSystem.Text.EndButton[Language];
+                SkipText = API.Localize(BundleBriefingSystem.Text.EndButton);
             end
             XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..SkipText);
 
@@ -1720,7 +1715,7 @@ function BundleBriefingSystem:OverrideApiNote()
     API.Note_Orig_BriefingSystem = API.Note;
     API.Note = function(_Text)
         if IsBriefingActive() then
-            local Text = API.EnsureMessage(_Text);
+            local Text = API.Localize(_Text);
             if not GUI then
                 BundleBriefingSystem.Global:PushBriefingNote(Text);
             else
