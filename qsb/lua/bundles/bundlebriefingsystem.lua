@@ -984,6 +984,9 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
             Camera.ThroneRoom_SetFOV(PageFOV);
 
+            -- Splashscreen
+            self:ScrollSplashscreen();
+
             -- Multiple Choice
             if self.Data.MCSelectionIsShown then
                 local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
@@ -1131,7 +1134,7 @@ end
 function BundleBriefingSystem.Local:GetLERP()
     local Current = Logic.GetTime();
     local Started = self.Data.CurrentPage.Started;
-    local FlyTime;
+    local FlyTime = self.Data.CurrentPage.Duration;
     if self.Data.CurrentPage.FlyTo then
         FlyTime = self.Data.CurrentPage.FlyTo.Duration;
     end
@@ -1367,9 +1370,6 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:SetSplashscreen()
-    local BG = "/InGame/ThroneRoomBars_2/BarTop";
-    local BB = "/InGame/ThroneRoomBars_2/BarBottom";
-
     local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
     if self.Data.CurrentPage.Splashscreen then
         local size   = {GUI.GetScreenSize()};
@@ -1377,14 +1377,66 @@ function BundleBriefingSystem.Local:SetSplashscreen()
         local is5To4 = math.floor((size[1]/size[2]) * 100) == 125;
         local u0, v0, u1, v1 = 0, 0, 1, 1;
         if is4To3 or is5To4 then
-            u0 = u0 + (u0 * 0.125); u1 = u1 - (u1 * 0.125);
+            u0 = u0 + (u0 * 0.125);
+            u1 = u1 - (u1 * 0.125);
+        end
+        local Image = self.Data.CurrentPage.Splashscreen;
+        if type(Image) == "table" then
+            Image = self.Data.CurrentPage.Splashscreen.Image;
         end
         XGUIEng.SetMaterialAlpha(SSW, 0, 255);
-        XGUIEng.SetMaterialTexture(SSW, 0, self.Data.CurrentPage.Splashscreen);
+        XGUIEng.SetMaterialTexture(SSW, 0, Image);
         XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
     else
         XGUIEng.SetMaterialAlpha(SSW, 0, 0);
     end
+end
+
+---
+-- Wendet die Animation auf den Splashscreen der aktuellen Seite an.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:ScrollSplashscreen()
+    local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
+    if type(self.Data.CurrentPage.Splashscreen) == "table" and self.Data.CurrentPage.Duration > 0 then
+        local SSData = self.Data.CurrentPage.Splashscreen;
+        if (not SSData.Animation[1] or #SSData.Animation[1] ~= 4) or (not SSData.Animation[2] or #SSData.Animation[2] ~= 4) then
+            return;
+        end
+
+        local size   = {GUI.GetScreenSize()};
+        local is4To3 = math.floor((size[1]/size[2]) * 100) == 133;
+        local is5To4 = math.floor((size[1]/size[2]) * 100) == 125;
+        local factor = self:GetSplashscreenLERP();
+
+        local u0 = SSData.Animation[1][1] + (SSData.Animation[2][1] - SSData.Animation[1][1]) * factor;
+        local u1 = SSData.Animation[1][3] + (SSData.Animation[2][3] - SSData.Animation[1][3]) * factor;
+        local v0 = SSData.Animation[1][2] + (SSData.Animation[2][2] - SSData.Animation[1][2]) * factor;
+        local v1 = SSData.Animation[1][4] + (SSData.Animation[2][4] - SSData.Animation[1][4]) * factor;
+        if is4To3 or is5To4 then
+            u0 = u0 + (u0 * 0.125);
+            u1 = u1 - (u1 * 0.125);
+        end
+        XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
+    end
+end
+
+---
+-- Gibt die lineare Interpolation des Splashscreens zurück.
+-- @param[type=number] LERP
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:GetSplashscreenLERP()
+    local Factor = 1.0;
+    if type(self.Data.CurrentPage.Splashscreen) == "table" then
+        local Current = Logic.GetTime();
+        local Started = self.Data.CurrentPage.Started;
+        local FlyTime = self.Data.CurrentPage.Splashscreen.Animation[3];
+        Factor = (Current - Started) / FlyTime;
+    end
+    return Factor;
 end
 
 ---

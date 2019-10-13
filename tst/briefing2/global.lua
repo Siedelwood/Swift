@@ -105,6 +105,7 @@ function Briefing02()
         ShowSky = true,
         RestoreGameSpeed = true,
         RestoreCamera = true,
+        BigBars = false,
     }
     local AP, ASP = API.AddPages(Briefing);
 
@@ -121,7 +122,14 @@ function Briefing02()
         Text     = "Text 2",
         Position = "pos4",
         DialogCamera = false,
-        Splashscreen = "C:/Users/angermanager/Downloads/shio.png",
+        Splashscreen = {
+            Image     = "C:/Users/angermanager/Downloads/alisa.png",
+            Animation = {
+                {0, 0, 1, 0.7},
+                {0, 0.3, 1, 1},
+                20,
+            }
+        },
         Action   = function(_Data)
         end
     }
