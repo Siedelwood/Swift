@@ -80,16 +80,20 @@ AddOnInteractiveSites = {
                     Title = {
                         de = "Gebäude bauen",
                         en = "Create building",
+                        fr = "Construire des bâtiments",
                     },
                     Text = {
                         de = "Beauftragt den Bau eines Gebäudes. Ein Siedler wird aus"..
                              " dem Lagerhaus kommen und mit dem Bau beginnen.",
                         en = "Order a building. A worker will come out of the"..
                              " storehouse and erect it.",
+                        fr = "Commandé la construction d'un bâtiment. Un colon"..
+                             " va sortir de l'entrepôt et commencer à construire."
                     },
                     Unfulfilled = {
                         de = "Das Gebäude kann derzeit nicht gebaut werden.",
                         en = "The building can not be built at the moment.",
+                        fr = "Le bâtiment ne peut pas être construit pour le moment."
                     },
                 }
             },

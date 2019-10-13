@@ -160,15 +160,18 @@ AddOnInteractiveTrebuchets = {
                 Error = {
                     de = "Euer Ritter benötigt einen höheren Titel!",
                     en = "Your knight need a higher title to use this site!",
+                    fr = "Votre chevalier a besoin d'un titre plus élevé!"
                 },
                 Description = {
                     Title = {
                         de = "Trebuchet anfordern",
                         en = "Order trebuchet",
+                        fr = "Demande de trébuchet"
                     },
                     Text = {
                         de = "- Fordert ein Trebuchet aus der Stadt an {cr}- Trebuchet wird gebaut, wenn Wagen Baustelle erreicht {cr}- Fährt zurück, wenn Munition aufgebraucht {cr}- Trebuchet kann manuell zurückgeschickt werden",
                         en = "- Order a trebuchet from your city {cr}- The trebuchet is build after the cart has arrived {cr}- Returns after ammunition is depleted {cr}- The trebuchet can be manually send back to the city",
+                        fr = "- Demander un trébuchet à votre ville {cr}- Le trébuchet est construit lorsque le chariot atteint le site de construction {cr}- Retour quand les munitions sont épuisées {cr}- Le trébuchet peut être renvoyé manuellement"
                     },
                 },
 

@@ -262,6 +262,7 @@ AddOnCastleStore = {
                 Text = {
                     de = "Finanzansicht",
                     en = "Financial view",
+                    fr = "Vue financier"
                 },
             },
 
@@ -269,6 +270,7 @@ AddOnCastleStore = {
                 Text = {
                     de = "Lageransicht",
                     en = "Storeage view",
+                    fr = "Inventaire"
                 },
             },
 
@@ -276,6 +278,7 @@ AddOnCastleStore = {
                 Text = {
                     de = "Diese Ware wird nicht angenommen.",
                     en = "This good will not be stored.",
+                    fr = "Cet article ne sera pas accepté",
                 },
             },
 
@@ -283,10 +286,12 @@ AddOnCastleStore = {
                 Title = {
                     de = "Güter verwaren",
                     en = "Keep goods",
+                    fr = "Retenir des marchandises",
                 },
                 Text = {
                     de = "[UMSCHALT + N]{cr}- Lagert Waren im Burglager ein {cr}- Waren verbleiben auch im Lager, wenn Platz vorhanden ist",
                     en = "[SHIFT + N]{cr}- Stores goods inside the vault {cr}- Goods also remain in the warehouse when space is available",
+                    fr = "[SHIFT + N]{cr}- Stocker les marchandises dans le bunker {cr}- Les marchandises restent également dans l'entrepôt lorsqu'il y a de la place",
                 },
             },
 
@@ -294,10 +299,12 @@ AddOnCastleStore = {
                 Title = {
                     de = "Güter zwischenlagern",
                     en = "Store in vault",
+                    fr = "Stockage intermédiaire"
                 },
                 Text = {
                     de = "[UMSCHALT + B]{cr}- Lagert Waren im Burglager ein {cr}- Lagert waren wieder aus, sobald Platz frei wird",
                     en = "[SHIFT + B]{cr}- Stores goods inside the vault {cr}- Allows to extrac goods as soon as space becomes available",
+                    fr = "[SHIFT + B]{cr}- Stocker les marchandises dans le bunker {cr}- Les marchandises sont libérées dès que l'espace est disponible",
                 },
             },
 
@@ -305,10 +312,12 @@ AddOnCastleStore = {
                 Title = {
                     de = "Lager räumen",
                     en = "Clear store",
+                    fr = "Effacer le stockage"
                 },
                 Text = {
                     de = "[UMSCHALT + M]{cr}- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
                     en = "[Shift + M]{cr}- Removes all goods {cr}- Requires space in the storehouse",
+                    en = "[Shift + M]{cr}- Tous les biens sont externalisés {cr}- Nécessite de l'espace dans l'entrepôt",
                 },
             },
         },
@@ -1759,9 +1768,21 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:DescribeHotkeys()
     if not self.HotkeysAddToList then
-        API.AddHotKey("Umschalt + B", {de = "Burglager: Waren einlagern", en = "Vault: Store goods"});
-        API.AddHotKey("Umschalt + N", {de = "Burglager: Waren sperren", en = "Vault: Lock goods"});
-        API.AddHotKey("Umschalt + M", {de = "Burglager: Lager räumen", en = "Vault: Empty store"});
+        API.AddHotKey(
+            {de = "Umschalt + B", en = "Shift + B"},
+            {de = "Burglager: Waren einlagern", en = "Vault: Store goods",
+             fr = "Bunker: Produits de magasin"}
+        );
+        API.AddHotKey(
+            {de = "Umschalt + N", en = "Shift + N"},
+            {de = "Burglager: Waren sperren", en = "Vault: Lock goods",
+             fr = "Bunker: Verrouiller les marchandises"}
+        );
+        API.AddHotKey(
+            {de = "Umschalt + M", en = "Shift + M"},
+            {de = "Burglager: Lager räumen", en = "Vault: Empty store",
+             fr = "Bunker: Enlever les marchandises"}
+        );
         AddOnCastleStore.Local:OverwriteInteractiveObject();
         self.HotkeysAddToList = true;
     end
