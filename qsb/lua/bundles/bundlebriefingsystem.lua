@@ -1285,8 +1285,7 @@ end
 --
 function BundleBriefingSystem.Local:SetFader()
     -- Alpha der Fader-Maske
-    g_Fade.To = 0;
-    SetFaderAlpha(self.Data.CurrentPage.FaderAlpha or 0);
+    g_Fade.To = self.Data.CurrentPage.FaderAlpha or 0;
 
     -- Fadein starten
     local PageFadeIn = self.Data.CurrentPage.FadeIn;
