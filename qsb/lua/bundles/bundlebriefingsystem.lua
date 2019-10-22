@@ -535,6 +535,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     if self.Data.CurrentBriefing.Starting then
         self.Data.CurrentBriefing:Starting();
     end
+    self.Data.CurrentPage = {};
     self:PageStarted();
     return self.Data.BriefingID;
 end
