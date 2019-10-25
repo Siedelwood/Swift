@@ -955,8 +955,8 @@ function BundleInteractiveObjects.Local:OnObjectClicked_DoesRewardFitInStorehous
     if not _IO.Reward or type(_IO.Reward[1]) ~= "number" then
         return true;
     end
-    if  _IO.Reward[1] ~= Goods.G_Gold 
-    and Logic.GetGoodCategoryForGoodType(_IO.Reward[1]) ~= GoodCategories.GC_Resource then
+    if _IO.Reward[1] == Goods.G_Gold 
+    or Logic.GetGoodCategoryForGoodType(_IO.Reward[1]) ~= GoodCategories.GC_Resource then
         return true;
     end
     if Logic.GetPlayerUnreservedStorehouseSpace(PlayerID) >= _IO.Reward[2] then
