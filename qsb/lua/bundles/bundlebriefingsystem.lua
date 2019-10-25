@@ -1394,7 +1394,7 @@ end
 --
 function BundleBriefingSystem.Local:ScrollSplashscreen()
     local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
-    if type(self.Data.CurrentPage.Splashscreen) == "table" and self.Data.CurrentPage.Duration > 0 then
+    if type(self.Data.CurrentPage.Splashscreen) == "table" then
         local SSData = self.Data.CurrentPage.Splashscreen;
         if (not SSData.Animation[1] or #SSData.Animation[1] ~= 4) or (not SSData.Animation[2] or #SSData.Animation[2] ~= 4) then
             return;
@@ -1430,6 +1430,7 @@ function BundleBriefingSystem.Local:GetSplashscreenLERP()
         local Started = self.Data.CurrentPage.Started;
         local FlyTime = self.Data.CurrentPage.Splashscreen.Animation[3];
         Factor = (Current - Started) / FlyTime;
+        Factor = (Factor > 1 and 1) or Factor;
     end
     return Factor;
 end
