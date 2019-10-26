@@ -462,7 +462,8 @@ function QSB.TravelingSalesman:DisplayInfoMessage()
 
         local Text = {
             de = "Ein Schiff hat angelegt. Es bringt Güter von weit her.",
-            en = "A ship is at the pier. It delivers goods from far away."
+            en = "A ship is at the pier. It delivers goods from far away.",
+            fr = "Un navire a accosté. Il apporte des marchandises de loin."
         };
         QuestTemplate:New(
             "TravelingSalesman_Info_P" ..self.m_PlayerID,
