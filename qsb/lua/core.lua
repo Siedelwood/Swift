@@ -1231,6 +1231,7 @@ function Core:InitalizeBundles()
     if not GUI then
         QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
+        self:CreateRandomSeedBySystemTime();
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
         self:IdentifyHistoryEdition();
@@ -1244,6 +1245,7 @@ function Core:InitalizeBundles()
     else
         QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
+        self:CreateRandomSeedBySystemTime();
         self:SetupLocal_HackRegisterHotkey();
 
         StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
@@ -1761,6 +1763,26 @@ function Core:IdentifyHistoryEdition()
         QSB.HistoryEdition = true;
     end
     DestroyEntity(EntityID);
+end
+
+---
+-- Setzt den Random Seed für die Erzeugung von Zufallszahlen anhand der
+-- aktuellen Systemzeit.
+--
+-- @return[type=number] Random Seed
+-- @within Internal
+-- @local
+--
+function Core:CreateRandomSeedBySystemTime()
+    local DateTimeString = Framework.GetSystemTimeDateString();
+
+    local s, e = DateTimeString:find(" ");
+    local TimeString = DateTimeString:sub(e+2, DateTimeString:len()-1):gsub("'", "");
+    TimeString = "1" ..TimeString;
+
+    local RandomSeed = tonumber(TimeString);
+    math.randomseed(RandomSeed);
+    return RandomSeed;
 end
 
 -- Scripting Values ------------------------------------------------------------
