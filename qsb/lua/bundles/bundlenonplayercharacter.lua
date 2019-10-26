@@ -900,7 +900,11 @@ function BundleNonPlayerCharacter.Local:Install()
                 XGUIEng.SetMaterialColor(ColorWidget, 0, 255, 255, 255, 0);
 
                 SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{16,12});
-                local caption = {de = "Gespräch beginnen", en = "Start conversation"};
+                local caption = {
+                    de = "Gespräch beginnen",
+                    en = "Start conversation",
+                    fr = "Commencer la conversation",
+                };
                 QuestTypeCaption = API.Localize(caption);
 
                 XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);

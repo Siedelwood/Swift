@@ -184,6 +184,7 @@ end
 -- Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
 -- des Spielstandes. Wenn nicht gespeichert werden kann, wird bis
 -- zum nächsten mφglichen Zeitpunkt gewartet.
+-- 
 --
 -- @param _name [string] Name des Spielstandes
 -- @within Internal
@@ -196,7 +197,8 @@ function BundleSaveGameTools.Local:AutoSaveGame(_name)
     BundleSaveGameTools.Local.Data.AutoSaveCounter = counter;
     local Text = {
         de = "Spiel wird gespeichert...",
-        en = "Saving game..."
+        en = "Saving game...",
+        fr = "Le jeu est enregistré ..."
     };
 
     if self:CanGameBeSaved() then

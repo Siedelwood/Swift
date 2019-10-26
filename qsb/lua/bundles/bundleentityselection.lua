@@ -157,10 +157,12 @@ BundleEntitySelection = {
                     Title = {
                         de = "Ritter selektieren",
                         en = "Select Knight",
+                        fr = "Sélectionner chevalier",
                     },
                     Text = {
                         de = "- Klick selektiert den Ritter {cr}- Doppelklick springt zum Ritter{cr}- STRG halten selektiert alle Ritter",
                         en = "- Click selects the knight {cr}- Double click jumps to knight{cr}- Press CTRL to select all knights",
+                        fr = "- Cliquez sélectionne le chevalier {cr}- Double-cliquez pour aller au chevalier {cr}- Tenir CTRL sélectionne tous les chevaliers",
                     },
                 },
 
@@ -168,10 +170,12 @@ BundleEntitySelection = {
                     Title = {
                         de = "Militär selektieren",
                         en = "Select Units",
+                        fr = "Sélectionner militaire",
                     },
                     Text = {
                         de = "- Selektiert alle Militäreinheiten {cr}- SHIFT halten um auch Munitionswagen und Trebuchets auszuwählen",
                         en = "- Selects all military units {cr}- Press SHIFT to additionally select ammunition carts and trebuchets",
+                        fr = "- Sélectionne toutes les unités militaires {cr}- SHIFT sélectionne les wagons à munitions et les trébuchets",
                     },
                 },
 
@@ -179,25 +183,30 @@ BundleEntitySelection = {
                     Title = {
                         de = "Militär entlassen",
                         en = "Release military unit",
+                        fr = "Disposer militaire",
                     },
                     Text = {
                         de = "- Eine Militäreinheit entlassen {cr}- Soldaten werden nacheinander entlassen",
                         en = "- Dismiss a military unit {cr}- Soldiers will be dismissed each after another",
+                        fr = "- Éliminer l'unité militaire {CR} - Des soldats sont renvoyés les uns après les autres",
                     },
                     Disabled = {
                         de = "Kann nicht entlassen werden!",
                         en = "Releasing is impossible!",
+                        fr = "Ne peut pas être éliminé!",
                     },
                 },
 
                 TrebuchetCart = {
                     Title = {
                         de = "Trebuchetwagen",
+                        fr = "Voiture trébuchet",
                         en = "Trebuchet cart",
                     },
                     Text = {
                         de = "- Kann einmalig zum Trebuchet ausgebaut werden",
                         en = "- Can uniquely be transmuted into a trebuchet",
+                        fr = "- Peut être étendu au trébuchet",
                     },
                 },
 
@@ -205,10 +214,12 @@ BundleEntitySelection = {
                     Title = {
                         de = "Trebuchet",
                         en = "Trebuchet",
+                        fr = "Trebuchet",
                     },
                     Text = {
                         de = "- Kann über weite Strecken Gebäude angreifen {cr}- Kann Gebäude in Brand stecken {cr}- Trebuchet kann manuell zurückgeschickt werden",
                         en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- The trebuchet can be manually send back to the city",
+                        fr = "- Peut attaquer des bâtiments sur de longues distances {cr}- Peut incendier des bâtiments {cr}- Le trébuchet peut être renvoyé manuellement",
                     },
                 },
             },
