@@ -201,8 +201,11 @@ function b_Goal_StealGold:GetCustomData(_Index)
 end
 
 function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
-    local lang = QSB.Language;
-    local TargetPlayerName = (lang == "de" and " anderen Spielern ") or " different parties";
+    local TargetPlayerName = API.Localize({
+        de = " anderen Spielern ",
+        en = " different parties"
+    });
+
     if self.Target ~= -1 then
         TargetPlayerName = GetPlayerName(self.Target);
         if TargetPlayerName == nil or TargetPlayerName == "" then
@@ -233,7 +236,7 @@ function b_Goal_StealGold:SetDescriptionOverwrite(_Quest)
         de = "Gold von %s stehlen {cr}{cr}Aus Stadtgebäuden zu stehlende Goldmenge: %d",
         en = "Steal gold from %s {cr}{cr}Amount on gold to steal from city buildings: %d",
     };
-    return "{center}" ..string.format(text[lang], TargetPlayerName, amount);
+    return "{center}" ..string.format(API.Localize(text), TargetPlayerName, amount);
 end
 
 function b_Goal_StealGold:CustomFunction(_Quest)
@@ -313,7 +316,6 @@ end
 function b_Goal_StealBuilding:SetDescriptionOverwrite(_Quest)
     local isCathedral = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Cathedrals) == 1;
     local isWarehouse = Logic.GetEntityType(GetID(self.Building)) == Entities.B_StoreHouse;
-    local lang = QSB.Language;
     local text;
 
     if isCathedral then
@@ -332,7 +334,7 @@ function b_Goal_StealBuilding:SetDescriptionOverwrite(_Quest)
             en = "Steal from building {cr}{cr} Steal from the building marked by an arrow.",
         };
     end
-    return "{center}" .. text[lang];
+    return "{center}" .. API.Localize(text);
 end
 
 function b_Goal_StealBuilding:CustomFunction(_Quest)
@@ -455,12 +457,11 @@ end
 
 function b_Goal_SpyBuilding:SetDescriptionOverwrite(_Quest)
     if not _Quest.QuestDescription then
-        local lang = QSB.Language;
         local text = {
             de = "Gebäude infriltrieren {cr}{cr}Spioniere das markierte Gebäude mit einem Dieb aus!",
             en = "Infiltrate building {cr}{cr}Spy on the highlighted buildings with a thief!",
         };
-        return text[lang];
+        return API.Localize(text);
     else
         return _Quest.QuestDescription;
     end
@@ -709,8 +710,7 @@ end
 
 function b_Goal_CityReputation:SetCaption(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-    local Language = QSB.Language;
-        local Text = string.format(self.Text[Language], self.Reputation);
+        local Text = string.format(API.Localize(self.Text), self.Reputation);
         Core:ChangeCustomQuestCaptionText(Text, _Quest);
     end
 end
@@ -1991,11 +1991,10 @@ function BundleSymfoniaBehaviors.Global:Install()
                             end
                             Quests[i].Objectives[j].Data[1].StohlenGold = Quests[i].Objectives[j].Data[1].StohlenGold + _GoodAmount;
                             if CurrentObjective.Printout then
-                                local lang = QSB.Language;
                                 local msg  = {de = "Talern gestohlen",en = "gold stolen",};
                                 local curr = CurrentObjective.StohlenGold;
                                 local need = CurrentObjective.Amount;
-                                API.Note(string.format("%d/%d %s", curr, need, msg[lang]));
+                                API.Note(string.format("%d/%d %s", curr, need, API.Localize(msg)));
                             end
                         end
                     end

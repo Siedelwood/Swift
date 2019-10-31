@@ -157,10 +157,12 @@ BundleEntitySelection = {
                     Title = {
                         de = "Ritter selektieren",
                         en = "Select Knight",
+                        fr = "Sélectionner chevalier",
                     },
                     Text = {
                         de = "- Klick selektiert den Ritter {cr}- Doppelklick springt zum Ritter{cr}- STRG halten selektiert alle Ritter",
                         en = "- Click selects the knight {cr}- Double click jumps to knight{cr}- Press CTRL to select all knights",
+                        fr = "- Cliquez sélectionne le chevalier {cr}- Double-cliquez pour aller au chevalier {cr}- Tenir CTRL sélectionne tous les chevaliers",
                     },
                 },
 
@@ -168,10 +170,12 @@ BundleEntitySelection = {
                     Title = {
                         de = "Militär selektieren",
                         en = "Select Units",
+                        fr = "Sélectionner militaire",
                     },
                     Text = {
                         de = "- Selektiert alle Militäreinheiten {cr}- SHIFT halten um auch Munitionswagen und Trebuchets auszuwählen",
                         en = "- Selects all military units {cr}- Press SHIFT to additionally select ammunition carts and trebuchets",
+                        fr = "- Sélectionne toutes les unités militaires {cr}- SHIFT sélectionne les wagons à munitions et les trébuchets",
                     },
                 },
 
@@ -179,25 +183,30 @@ BundleEntitySelection = {
                     Title = {
                         de = "Militär entlassen",
                         en = "Release military unit",
+                        fr = "Disposer militaire",
                     },
                     Text = {
                         de = "- Eine Militäreinheit entlassen {cr}- Soldaten werden nacheinander entlassen",
                         en = "- Dismiss a military unit {cr}- Soldiers will be dismissed each after another",
+                        fr = "- Éliminer l'unité militaire {CR} - Des soldats sont renvoyés les uns après les autres",
                     },
                     Disabled = {
                         de = "Kann nicht entlassen werden!",
                         en = "Releasing is impossible!",
+                        fr = "Ne peut pas être éliminé!",
                     },
                 },
 
                 TrebuchetCart = {
                     Title = {
                         de = "Trebuchetwagen",
+                        fr = "Voiture trébuchet",
                         en = "Trebuchet cart",
                     },
                     Text = {
                         de = "- Kann einmalig zum Trebuchet ausgebaut werden",
                         en = "- Can uniquely be transmuted into a trebuchet",
+                        fr = "- Peut être étendu au trébuchet",
                     },
                 },
 
@@ -205,10 +214,12 @@ BundleEntitySelection = {
                     Title = {
                         de = "Trebuchet",
                         en = "Trebuchet",
+                        fr = "Trebuchet",
                     },
                     Text = {
                         de = "- Kann über weite Strecken Gebäude angreifen {cr}- Kann Gebäude in Brand stecken {cr}- Trebuchet kann manuell zurückgeschickt werden",
                         en = "- Can perform long range attacks on buildings {cr}- Can set buildings on fire {cr}- The trebuchet can be manually send back to the city",
+                        fr = "- Peut attaquer des bâtiments sur de longues distances {cr}- Peut incendier des bâtiments {cr}- Le trébuchet peut être renvoyé manuellement",
                     },
                 },
             },
@@ -569,13 +580,12 @@ function BundleEntitySelection.Local:OverwriteMultiselectIcon()
             return;
         end
 
-        local lang = QSB.Language;
         if EntityType == Entities.U_SiegeEngineCart then
             local TooltipData = BundleEntitySelection.Local.Data.Tooltips.TrebuchetCart;
-            BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
+            BundleEntitySelection.Local:SetTooltip(API.Localize(TooltipData.Title), API.Localize(TooltipData.Text));
         elseif EntityType == Entities.U_Trebuchet then
             local TooltipData = BundleEntitySelection.Local.Data.Tooltips.Trebuchet;
-            BundleEntitySelection.Local:SetTooltip(TooltipData.Title[lang], TooltipData.Text[lang]);
+            BundleEntitySelection.Local:SetTooltip(API.Localize(TooltipData.Title), API.Localize(TooltipData.Text));
         end
     end
 end
@@ -590,7 +600,7 @@ end
 function BundleEntitySelection.Local:OverwriteMilitaryDismount()
     GUI_Military.DismountClicked_Orig_BundleEntitySelection = GUI_Military.DismountClicked;
     GUI_Military.DismountClicked = function()
-        local Selected = GUI.GetSelectedEntity(Selected);
+        local Selected = GUI.GetSelectedEntity();
         local Type = Logic.GetEntityType(Selected);
         local Guarded = Logic.GetGuardedEntityID(Selected);
         local Guardian = Logic.GetGuardianEntityID(Selected);
@@ -705,9 +715,9 @@ function BundleEntitySelection.Local:OverwriteThiefDeliver()
         end
 
         BundleEntitySelection.Local:SetTooltip(
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[QSB.Language],
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[QSB.Language],
-            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[QSB.Language]
+            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title),
+            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text),
+            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled)
         );
     end
 
@@ -744,16 +754,16 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/KnightButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title[QSB.Language],
-                BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text[QSB.Language]
+                API.Localize(BundleEntitySelection.Local.Data.Tooltips.KnightButton.Title),
+                API.Localize(BundleEntitySelection.Local.Data.Tooltips.KnightButton.Text)
             );
             return;
         end
 
         if XGUIEng.GetWidgetID(MotherWidget.. "/MapFrame/BattalionButton") == CurrentWidgetID then
             BundleEntitySelection.Local:SetTooltip(
-                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title[QSB.Language],
-                BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text[QSB.Language]
+                API.Localize(BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Title),
+                API.Localize(BundleEntitySelection.Local.Data.Tooltips.BattalionButton.Text)
             );
             return;
         end
@@ -769,9 +779,9 @@ function BundleEntitySelection.Local:OverwriteNamesAndDescription()
                     local GuardedEntity = Logic.GetGuardedEntityID(SelectedEntity);
                     if GuardianEntity == 0 and GuardedEntity == 0 then
                         BundleEntitySelection.Local:SetTooltip(
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title[QSB.Language],
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text[QSB.Language],
-                            BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled[QSB.Language]
+                            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Title),
+                            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Text),
+                            API.Localize(BundleEntitySelection.Local.Data.Tooltips.ReleaseSoldiers.Disabled)
                         );
                         return;
                     end
@@ -801,7 +811,7 @@ function BundleEntitySelection.Local:SetTooltip(_TitleText, _DescText, _Disabled
 
     _DisabledText = _DisabledText or "";
     local DisabledText = "";
-    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _disabledText ~= "" and _text ~= "" then
+    if XGUIEng.IsButtonDisabled(PositionWidget) == 1 and _DisabledText ~= "" and _DescText ~= "" then
         DisabledText = DisabledText .. "{cr}{@color:255,32,32,255}" .. _DisabledText;
     end
 

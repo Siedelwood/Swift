@@ -35,7 +35,7 @@ function API.ProtectEntity(_entry)
             API.ProtectEntity("]].._entry..[[")
         ]]);
     else
-        if not Inside(_enitry, BundleDestructionControl.Local.Data.Entities) then
+        if not Inside(_entry, BundleDestructionControl.Local.Data.Entities) then
             table.insert(BundleDestructionControl.Local.Data.Entities, _entry);
         end
     end
@@ -55,7 +55,7 @@ function API.ProtectEntityType(_entry)
             API.ProtectEntityType(]].._entry..[[)
         ]]);
     else
-        if not Inside(_enitry, BundleDestructionControl.Local.Data.EntityTypes) then
+        if not Inside(_entry, BundleDestructionControl.Local.Data.EntityTypes) then
             table.insert(BundleDestructionControl.Local.Data.EntityTypes, _entry);
         end
     end
@@ -75,7 +75,7 @@ function API.ProtectCategory(_entry)
             API.ProtectCategory(]].._entry..[[)
         ]]);
     else
-        if not Inside(_enitry, BundleDestructionControl.Local.Data.EntityCategories) then
+        if not Inside(_entry, BundleDestructionControl.Local.Data.EntityCategories) then
             table.insert(BundleDestructionControl.Local.Data.EntityCategories, _entry);
         end
     end

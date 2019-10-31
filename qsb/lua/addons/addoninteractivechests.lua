@@ -51,6 +51,36 @@ end
 CreateRandomChest = API.CreateRandomChest;
 
 ---
+-- Erstellt ein beliebiges IO mit einer zufälligen Menge an Waren
+-- des angegebenen Typs.
+--
+-- Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
+-- und dem Maximalwert. Optional kann eine Funktion angegeben werden, die
+-- ausgeführt wird, wenn der Schatz gefunden wird. Diese Funktion verhält sich
+-- wie das Callback eines interaktiven Objektes.
+--
+-- <p><b>Alias</b>: CreateRandomTreasure</p>
+--
+-- @param[type=string]   _Name Name des Script Entity
+-- @param[type=number]   _Good Warentyp
+-- @param[type=number]   _Min Mindestmenge
+-- @param[type=number]   _Max Maximalmenge
+-- @param[type=function] _Callback Callback-Funktion
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.CreateRandomTreasure("well1", Goods.G_Gems, 100, 300, OnTreasureDiscovered)
+--
+function API.CreateRandomTreasure(_Name, _Good, _Min, _Max, _Callback)
+    if GUI then
+        API.Fatal("API.CreateRandomTreasure: Can not be used from local script!");
+        return;
+    end
+    AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, true);
+end
+CreateRandomTreasure = API.CreateRandomTreasure;
+
+---
 -- Erstellt eine Schatztruhe mit einer zufälligen Menge Gold.
 --
 -- <p><b>Alias</b>: CreateRandomGoldChest</p>
@@ -125,20 +155,36 @@ CreateRandomLuxuryChest = API.CreateRandomLuxuryChest;
 AddOnInteractiveChests = {
     Global = {
         Data = {
-            Chests = {
-                Description = {
-                    Title = {
-                        de = "Schatztruhe",
-                        en = "Treasure Chest",
-                    },
-                    Text = {
-                        de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie um den Schatz zu bergen.",
-                        en = "This chest contains a secred treasure. Open it to salvage the treasure.",
-                    },
-                },
-            },
+            Chests = {},
         }
     },
+
+    Text = {
+        Chest = {
+            Title = {
+                de = "Schatztruhe",
+                en = "Treasure Chest",
+                fr = "Trésor box",
+            },
+            Text = {
+                de = "Diese Truhe enthält einen geheimen Schatz. Öffnet sie um den Schatz zu bergen.",
+                en = "This chest contains a secred treasure. Open it to salvage the treasure.",
+                fr = "Ce coffre contient un trésor secret. Ouvrez-les pour récupérer le trésor.",
+            },
+        },
+        Treasure = {
+            Title = {
+                de = "Versteckter Schatz",
+                en = "Hidden treasure",
+                fr = "Trésor caché",
+            },
+            Text = {
+                de = "Ihr habt einen geheimen Schatz entdeckt. Beeilt Euch und beansprucht ihn für Euch!",
+                en = "You have discovered a secred treasure. Be quick to claim it, before it is to late!",
+                fr = "Vous avez découvert un trésor secret. Dépêchez-vous et réclamez-le pour vous!",
+            },
+        }
+    }
 }
 
 -- Global ----------------------------------------------------------------------
@@ -154,15 +200,20 @@ end
 ---
 -- Erstellt eine Schatztruhe mit einer zufälligen Menge an Waren
 -- des angegebenen Typs.
+--
+-- Optional kann die automatische Umwandlung in eine Schatztruhe abgeschaltet
+-- werden. Vorsichtig mit überbaubaren Entities!
+--
 -- @param _Name [string] Name der zu ersetzenden Script Entity
 -- @param _Good [number] Warentyp
 -- @param _Min [number] Mindestmenge
 -- @param _Max [number] Maximalmenge
 -- @param _Callback [function] Callback-Funktion
+-- @param _NoModelChange [boolean] Kein Truhenmodel setzen
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
+function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, _NoModelChange)
     _Min = (_Min ~= nil and _Min > 0 and _Min) or 1;
     _Max = (_Max ~= nil and _Max > 1 and _Max) or 2;
     if not _Callback then
@@ -171,21 +222,31 @@ function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Ma
     assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
     assert(_Min < _Max, "CreateRandomChest: min amount must be smaller than max amount!");
 
-    local eID = ReplaceEntity(_Name, Entities.XD_ScriptEntity, 0);
-    Logic.SetModel(eID, Models.Doodads_D_X_ChestClose);
-    Logic.SetVisible(eID, true);
+    local Title = AddOnInteractiveChests.Text.Treasure.Title;
+    local Text  = AddOnInteractiveChests.Text.Treasure.Text;
+    if not _NoModelChange then
+        Title = AddOnInteractiveChests.Text.Chest.Title;
+        Text  = AddOnInteractiveChests.Text.Chest.Text;
+
+        local eID = ReplaceEntity(_Name, Entities.XD_ScriptEntity, 0);
+        Logic.SetModel(eID, Models.Doodads_D_X_ChestClose);
+        Logic.SetVisible(eID, true);
+    end
 
     CreateObject {
         Name                    = _Name,
-        Title                   = self.Data.Chests.Description.Title,
-        Text                    = self.Data.Chests.Description.Text,
+        Title                   = Title,
+        Text                    = Text,
         Reward                  = {_Good, math.random(_Min, _Max)},
         Texture                 = {1, 6},
         Distance                = 650,
         State                   = 0,
+        DoNotChangeModel        = _NoModelChange == true,
         CallbackOpened          = _Callback,
         Callback                = function(_Data)
-            ReplaceEntity(_Data.Name, Entities.D_X_ChestOpenEmpty);
+            if not _Data.DoNotChangeModel then
+                ReplaceEntity(_Data.Name, Entities.D_X_ChestOpenEmpty);
+            end
             _Data.CallbackOpened(_Data);
         end,
     }

@@ -252,7 +252,7 @@ end
 
 function b_Goal_Diplomacy:ChangeCaption(_Quest)
     local PlayerName = GetPlayerName(self.PlayerID) or "";
-    local Text = string.format(self.TextPattern[lang], self.DiploNameMap[self.DiplState][QSB.Language], PlayerName);
+    local Text = string.format(API.Localize(self.TextPattern), API.Localize(self.DiploNameMap[self.DiplState]), PlayerName);
     Core:ChangeCustomQuestCaptionText(Text, _Quest);
 end
 
@@ -791,13 +791,14 @@ end
 
 function b_Goal_DestroySoldiers:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = QSB.Language
-        local caption = (lang == "de" and "SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: ") or
-                         "DESTROY SOLDIERS {cr}{cr}from faction: "
-        local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
-        local party = GetPlayerName(self.AttackedPlayer) or "";
-        local text = "{center}" .. caption .. party .. "{cr}{cr}" .. amount .. " "..self.KillsNeeded;
-        Core:ChangeCustomQuestCaptionText(text, _Quest);
+        local PlayerName = GetPlayerName(self.AttackedPlayer) or "";
+        Core:ChangeCustomQuestCaptionText(
+            string.format(
+                API.Localize(BundleClassicBehaviors.Text.DestroySoldiers),
+                PlayerName, self.KillsNeeded
+            ),
+            _Quest
+        );
     end
 
     local currentKills = 0;
@@ -1129,33 +1130,17 @@ end
 
 function b_Goal_ActivateBuff:CustomFunction(_Quest)
    if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = QSB.Language
-        local caption = (lang == "de" and "BONUS AKTIVIEREN{cr}{cr}") or "ACTIVATE BUFF{cr}{cr}"
-
-        local tMapping = {
-            ["Buff_Spice"]                        = {de = "Salz", en = "Salt"},
-            ["Buff_Colour"]                        = {de = "Farben", en = "Color"},
-            ["Buff_Entertainers"]                = {de = "Entertainer", en = "Entertainer"},
-            ["Buff_FoodDiversity"]                = {de = "Vielfältige Nahrung", en = "Food diversity"},
-            ["Buff_ClothesDiversity"]            = {de = "Vielfältige Kleidung", en = "Clothes diversity"},
-            ["Buff_HygieneDiversity"]            = {de = "Vielfältige Reinigung", en = "Hygiene diversity"},
-            ["Buff_EntertainmentDiversity"]        = {de = "Vielfältige Unterhaltung", en = "Entertainment diversity"},
-            ["Buff_Sermon"]                        = {de = "Predigt", en = "Sermon"},
-            ["Buff_Festival"]                    = {de = "Fest", en = "Festival"},
-            ["Buff_ExtraPayment"]                = {de = "Sonderzahlung", en = "Extra payment"},
-            ["Buff_HighTaxes"]                    = {de = "Hohe Steuern", en = "High taxes"},
-            ["Buff_NoPayment"]                    = {de = "Kein Sold", en = "No payment"},
-            ["Buff_NoTaxes"]                    = {de = "Keine Steuern", en = "No taxes"},
-        }
-
+        local tMapping = API.InstanceTable(BundleClassicBehaviors.Text.ActivateBuff.BuffsVanilla);
         if g_GameExtraNo >= 1 then
-            tMapping["Buff_Gems"]                = {de = "Edelsteine", en = "Gems"}
-            tMapping["Buff_MusicalInstrument"]  = {de = "Musikinstrumente", en = "Musical instruments"}
-            tMapping["Buff_Olibanum"]            = {de = "Weihrauch", en = "Olibanum"}
+            tMapping = API.InstanceTable(BundleClassicBehaviors.Text.ActivateBuff.BuffsEx1, tMapping);
         end
-
-        local text = "{center}" .. caption .. tMapping[self.BuffName][lang]
-        Core:ChangeCustomQuestCaptionText(text, _Quest)
+        Core:ChangeCustomQuestCaptionText(
+            string.format(
+                API.Localize(BundleClassicBehaviors.Text.ActivateBuff.Pattern),
+                API.Localize(tMapping[self.BuffName])
+            ),
+            _Quest
+        );
     end
 
     local Buff = Logic.GetBuff( self.PlayerID, self.Buff )
@@ -1853,17 +1838,17 @@ end
 
 function b_Goal_SoldierCount:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = QSB.Language
-        local caption = (lang == "de" and "SOLDATENANZAHL {cr}Partei: ") or
-                            "SOLDIERS {cr}faction: "
-        local relation = tostring(self.bRelSmallerThan);
-        local relationText = {
-            ["true"]  = {de = "Weniger als", en = "Less than"},
-            ["false"] = {de = "Mindestens", en = "At least"},
-        };
-        local party = GetPlayerName(self.PlayerID) or "";
-        local text = "{center}" .. caption .. party .. "{cr}{cr}" .. relationText[relation][lang] .. " "..self.NumberOfUnits;
-        Core:ChangeCustomQuestCaptionText(text, _Quest);
+        local Relation = tostring(self.bRelSmallerThan);
+        local PlayerName = GetPlayerName(self.PlayerID) or "";
+        Core:ChangeCustomQuestCaptionText(
+            string.format(
+                API.Localize(BundleClassicBehaviors.Text.SoldierCount.Pattern),
+                PlayerName,
+                API.Localize(BundleClassicBehaviors.Text.SoldierCount.Relation[Relation]),
+                self.NumberOfUnits
+            ),
+            _Quest
+        );
     end
 
     local NumSoldiers = Logic.GetCurrentSoldierCount( self.PlayerID )
@@ -2037,13 +2022,14 @@ end
 
 function b_Goal_Festivals:CustomFunction(_Quest)
     if not _Quest.QuestDescription or _Quest.QuestDescription == "" then
-        local lang = QSB.Language
-        local caption = (lang == "de" and "FESTE FEIERN {cr}{cr}Partei: ") or
-                            "HOLD PARTIES {cr}{cr}faction: "
-        local amount  = (lang == "de" and "Anzahl: ") or "Amount: "
-        local party = GetPlayerName(self.PlayerID) or "";
-        local text = "{center}" .. caption .. party .. "{cr}{cr}" .. amount .. " "..self.NeededFestivals;
-        Core:ChangeCustomQuestCaptionText(text, _Quest);
+        local PlayerName = GetPlayerName(self.PlayerID) or "";
+        Core:ChangeCustomQuestCaptionText(
+            string.format(
+                API.Localize(BundleClassicBehaviors.Text.Festivals.Pattern),
+                PlayerName, self.NeededFestivals
+            ), 
+            _Quest
+        );
     end
 
     if Logic.GetStoreHouse( self.PlayerID ) == 0  then
@@ -8717,7 +8703,57 @@ Core:RegisterBehavior(b_Reward_SetBuildingUpgradeLevel)
 
 BundleClassicBehaviors = {
     Global = {},
-    Local = {}
+    Local = {},
+    
+    Text = {
+        DestroySoldiers = {
+            de = "{center}SOLDATEN ZERSTÖREN {cr}{cr}von der Partei: %s{cr}{cr}Anzahl: %d",
+            en = "{center}DESTROY SOLDIERS {cr}{cr}from faction: %s{cr}{cr}Amount: %d",
+        },
+        ActivateBuff = {
+            Pattern = {
+                de = "BONUS AKTIVIEREN{cr}{cr}%s",
+                en = "ACTIVATE BUFF{cr}{cr}%s",
+            },
+
+            BuffsVanilla = {
+                ["Buff_Spice"]                  = {de = "Salz", en = "Salt"},
+                ["Buff_Colour"]                 = {de = "Farben", en = "Color"},
+                ["Buff_Entertainers"]           = {de = "Entertainer", en = "Entertainer"},
+                ["Buff_FoodDiversity"]          = {de = "Vielfältige Nahrung", en = "Food diversity"},
+                ["Buff_ClothesDiversity"]       = {de = "Vielfältige Kleidung", en = "Clothes diversity"},
+                ["Buff_HygieneDiversity"]       = {de = "Vielfältige Reinigung", en = "Hygiene diversity"},
+                ["Buff_EntertainmentDiversity"] = {de = "Vielfältige Unterhaltung", en = "Entertainment diversity"},
+                ["Buff_Sermon"]                 = {de = "Predigt", en = "Sermon"},
+                ["Buff_Festival"]               = {de = "Fest", en = "Festival"},
+                ["Buff_ExtraPayment"]           = {de = "Sonderzahlung", en = "Extra payment"},
+                ["Buff_HighTaxes"]              = {de = "Hohe Steuern", en = "High taxes"},
+                ["Buff_NoPayment"]              = {de = "Kein Sold", en = "No payment"},
+                ["Buff_NoTaxes"]                = {de = "Keine Steuern", en = "No taxes"},
+            },
+            BuffsEx1 = {
+                ["Buff_Gems"]              = {de = "Edelsteine", en = "Gems"},
+                ["Buff_MusicalInstrument"] = {de = "Musikinstrumente", en = "Musical instruments"},
+                ["Buff_Olibanum"]          = {de = "Weihrauch", en = "Olibanum"},
+            }
+        },
+        SoldierCount = {
+            Pattern = {
+                de = "SOLDATENANZAHL {cr}Partei: %s{cr}{cr}%s %d",
+                en = "SOLDIER COUNT {cr}Faction: %s{cr}{cr}%s %d",
+            },
+            Relation = {
+                ["true"]  = {de = "Weniger als ", en = "Less than "},
+                ["false"] = {de = "Mindestens ", en = "At least "},
+            }
+        },
+        Festivals = {
+            Pattern = {
+                de = "FESTE FEIERN {cr}{cr}Partei: %s{cr}{cr}Anzahl: %d",
+                en = "HOLD PARTIES {cr}{cr}Faction: %s{cr}{cr}Amount: %d",
+            },
+        }
+    }
 };
 
 -- Global Script ---------------------------------------------------------------

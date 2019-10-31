@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.2.0 1/9/2019";
+QSB.Version = "Version 2.3.0 1/10/2019";
 QSB.Language = "de";
 QSB.HistoryEdition = false;
 
@@ -511,7 +511,7 @@ WinQuestByName = API.WinQuest;
 -- @local
 --
 function API.Note(_Message)
-    _Message = API.EnsureMessage(_Message);
+    _Message = API.Localize(_Message);
     local MessageFunc = Logic.DEBUG_AddNote;
     if GUI then
         MessageFunc = GUI.AddNote;
@@ -530,7 +530,7 @@ GUI_Note = API.Note;
 -- @within Anwenderfunktionen
 --
 function API.StaticNote(_Message)
-    _Message = API.EnsureMessage(_Message);
+    _Message = API.Localize(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('GUI.AddStaticNote("' .._Message.. '")');
         return;
@@ -561,7 +561,7 @@ end
 -- @within Anwenderfunktionen
 --
 function API.Message(_Message)
-    _Message = API.EnsureMessage(_Message);
+    _Message = API.Localize(_Message);
     if not GUI then
         Logic.ExecuteInLuaLocalState('Message("' .._Message.. '")');
         return;
@@ -571,17 +571,25 @@ end
 GUI_NoteDown = API.Message;
 
 ---
--- Ermittelt automatisch den Nachrichtentext, falls eine lokalisierte Table
--- übergeben wird.
+-- Ermittelt den lokalisierten Text anhand der eingestellten Sprache der QSB.
 --
--- @param[type=string] _Message Anzeigetext
+-- Wird ein normaler String übergeben, wird dieser sofort zurückgegeben.
+--
+-- @param _Message Anzeigetext (String oder Table)
 -- @return[type=string] Message
 -- @within Anwenderfunktionen
 -- @local
 --
-function API.EnsureMessage(_Message)
+function API.Localize(_Message)
     if type(_Message) == "table" then
-        _Message = _Message[QSB.Language];
+        local MessageText = _Message[QSB.Language];
+        if MessageText then
+            return MessageText;
+        end
+        if _Message.en then
+            return _Message.en;
+        end
+        return tostring(_Message);
     end
     return tostring(_Message);
 end
@@ -1223,6 +1231,7 @@ function Core:InitalizeBundles()
     if not GUI then
         QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
+        self:CreateRandomSeedBySystemTime();
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
         self:IdentifyHistoryEdition();
@@ -1236,6 +1245,7 @@ function Core:InitalizeBundles()
     else
         QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
+        self:CreateRandomSeedBySystemTime();
         self:SetupLocal_HackRegisterHotkey();
 
         StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
@@ -1336,7 +1346,7 @@ function Core:SetupGobal_HackCreateQuest()
             );
             g_QuestNameToID[_QuestName] = QuestID;
         else
-            fatal("Quest '"..tostring(questName).."': invalid questname! Contains forbidden characters!");
+            fatal("Quest '"..tostring(_QuestName).."': invalid questname! Contains forbidden characters!");
         end
     end
 end
@@ -1384,7 +1394,6 @@ end
 --
 function Core:SetupLocal_HackRegisterHotkey()
     function g_KeyBindingsOptions:OnShow()
-        local lang = QSB.Language;
         if Game ~= nil then
             XGUIEng.ShowWidget("/InGame/KeyBindingsMain/Backdrop", 1);
         else
@@ -1432,8 +1441,8 @@ function Core:SetupLocal_HackRegisterHotkey()
 
             for k,v in pairs(Core.Data.HotkeyDescriptions) do
                 if v then
-                    v[1] = (type(v[1]) == "table" and v[1][QSB.Language]) or v[1];
-                    v[2] = (type(v[2]) == "table" and v[2][QSB.Language]) or v[2];
+                    v[1] = (type(v[1]) == "table" and API.Localize(v[1])) or v[1];
+                    v[2] = (type(v[2]) == "table" and API.Localize(v[2])) or v[2];
                     table.insert(g_KeyBindingsOptions.Descriptions, 1, v);
                 end
             end
@@ -1456,7 +1465,7 @@ end
 -- @local
 --
 function Core:IsBundleRegistered(_Bundle)
-    return self.Data.InitalizedBundles[Bundle] == true;
+    return self.Data.InitalizedBundles[_Bundle] == true;
 end
 
 ---
@@ -1754,6 +1763,26 @@ function Core:IdentifyHistoryEdition()
         QSB.HistoryEdition = true;
     end
     DestroyEntity(EntityID);
+end
+
+---
+-- Setzt den Random Seed für die Erzeugung von Zufallszahlen anhand der
+-- aktuellen Systemzeit.
+--
+-- @return[type=number] Random Seed
+-- @within Internal
+-- @local
+--
+function Core:CreateRandomSeedBySystemTime()
+    local DateTimeString = Framework.GetSystemTimeDateString();
+
+    local s, e = DateTimeString:find(" ");
+    local TimeString = DateTimeString:sub(e+2, DateTimeString:len()-1):gsub("'", "");
+    TimeString = "1" ..TimeString;
+
+    local RandomSeed = tonumber(TimeString);
+    math.randomseed(RandomSeed);
+    return RandomSeed;
 end
 
 -- Scripting Values ------------------------------------------------------------

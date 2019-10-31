@@ -847,9 +847,6 @@ function BundleNonPlayerCharacter.Local:Install()
 
     GUI_Interaction.DisplayQuestObjective_Orig_BundleNonPlayerCharacter = GUI_Interaction.DisplayQuestObjective
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
-        local lang = Network.GetDesiredLanguage();
-        if lang ~= "de" then lang = "en" end
-
         local QuestIndexTemp = tonumber(_QuestIndex);
         if QuestIndexTemp then
             _QuestIndex = QuestIndexTemp;
@@ -903,8 +900,12 @@ function BundleNonPlayerCharacter.Local:Install()
                 XGUIEng.SetMaterialColor(ColorWidget, 0, 255, 255, 255, 0);
 
                 SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{16,12});
-                local caption = {de = "Gespräch beginnen", en = "Start conversation"};
-                QuestTypeCaption = caption[lang];
+                local caption = {
+                    de = "Gespräch beginnen",
+                    en = "Start conversation",
+                    fr = "Commencer la conversation",
+                };
+                QuestTypeCaption = API.Localize(caption);
 
                 XGUIEng.SetText(QuestObjectiveContainer.."/Caption","{center}"..QuestTypeCaption);
                 XGUIEng.ShowWidget(QuestObjectiveContainer, 1);

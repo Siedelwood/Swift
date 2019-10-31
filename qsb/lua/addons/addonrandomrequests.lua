@@ -42,27 +42,36 @@ AddOnRandomRequests = {
             Text = {
                 Suggestion = {
                     {de = "Ihr müsst Euer Können unter Beweis stellen!",
-                     en = "Please show us what you are capable of!"},
+                     en = "Please show us what you are capable of!",
+                     fr = "Vous devez prouver vos compétences!"},
                     {de = "Bei diesem Problem benötigen wir Eure Unterstützung!",
-                     en = "This problem is driving us nuts! Please help us!"},
+                     en = "This problem is driving us nuts! Please help us!",
+                     fr = "Nous avons besoin de votre soutien pour résoudre ce problème!"},
                     {de = "Euer Volk braucht Eure Hilfe! Werdet Ihr uns helfen?",
-                     en = "Your pepole demand your attantion. Will you help them?"},
+                     en = "Your pepole demand your attantion. Will you help them?",
+                     fr = "Votre peuple a besoin de votre aide! Voulez-vous nous aider?"},
                 },
                 Success = {
                     {de = "Wir möchten Euch von Herzen für Eure Hilfe danken!",
-                     en = "Let us thank you from the bottem of out hearts!"},
+                     en = "Let us thank you from the bottem of out hearts!",
+                     fr = "Nous tenons à vous remercier du fond du cœur pour votre aide!"},
                     {de = "Ihr habt bewiesen, dass man Euch vertrauen kann!",
-                     en = "You have proven the trust we have in your, Milord!"},
+                     en = "You have proven the trust we have in your, Milord!",
+                     fr = "Vous nous avez prouvé qu'on pouvait vous faire confiance!"},
                     {de = "Gott segne Euch! Wir sind gerettet!",
-                     en = "God be praised! You saved us all!"},
+                     en = "God be praised! You saved us all!",
+                     fr = "Que Dieu vous bénisse! Nous sommes sauvés!"},
                 },
                 Failure = {
                     {de = "Wir haben Euch vertraut! Mich deucht Euer Wort ist nichts wert!",
-                     en = "We trusted you! So that is what your words are worth! Nothing!"},
+                     en = "We trusted you! So that is what your words are worth! Nothing!",
+                     fr = "Nous vous avons fait confiance! Votre mot ne vaut rien!"},
                     {de = "Anführer! Es sind viele an der Zahl doch taugen alle wenig!",
-                     en = "Leaders! They are many but they can't even tie their shoes!"},
+                     en = "Leaders! They are many but they can't even tie their shoes!",
+                     fr = "Généraux! Il y en a beaucoup, mais ils sont tous inutiles!"},
                     {de = "Ein Herrscher wollt Ihr sein? Lernt das Volk zu schätzen!",
-                     en = "You call yourself a ruler? Go and remember the needs of the pepole!"},
+                     en = "You call yourself a ruler? Go and remember the needs of the pepole!",
+                     fr = "Vous voulez être un dirigeant? Apprenez à apprécier les gens!"},
                 },
             }
         },
@@ -263,6 +272,7 @@ end
 --
 function AddOnRandomRequests.Global:GetClaimTerritoryBehavior(_Behavior, _Quest)
     local AllTerritories = {Logic.GetTerritories()};
+    local NextTitle = Logic.GetKnightTitle(_Quest.ReceivingPlayer)+1;
     self.Data.Claim[_Quest.ReceivingPlayer] = self.Data.Claim[_Quest.ReceivingPlayer] or {};
     for i= #AllTerritories, 1, -1 do
         if self.Data.Claim[_Quest.ReceivingPlayer][NextTitle] then

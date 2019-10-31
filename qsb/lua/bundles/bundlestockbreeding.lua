@@ -217,13 +217,16 @@ BundleStockbreeding = {
                 Title = {
                     de = "Nutztier kaufen",
                     en = "Buy Farm animal",
+                    fr = "acheter du bétail"
                 },
                 Text = {
                     de = "- Kauft ein Nutztier {cr}- Nutztiere produzieren Rohstoffe",
+                    fr = "- Achète un animal de la ferme {cr} - les animaux de la ferme produisent des matières premières",
                     en = "- Buy a farm animal {cr}- Farm animals produce resources",
                 },
                 Disabled = {
                     de = "Kauf ist nicht möglich!",
+                    fr = "L'achat n'est pas possible!",
                     en = "Buy not possible!",
                 },
             },
@@ -288,7 +291,6 @@ end
 --
 function BundleStockbreeding.Local:OverwriteBuySiegeEngine()
     GUI_BuildingButtons.BuySiegeEngineCartMouseOver = function(_EntityType,_TechnologyType)
-        local lang = QSB.Language;
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
         local BarrackID = GUI.GetSelectedEntity();
         local BuildingEntityType = Logic.GetEntityType(BarrackID);
@@ -302,17 +304,17 @@ function BundleStockbreeding.Local:OverwriteBuySiegeEngine()
         local Costs = {Logic.GetUnitCost(BarrackID, _EntityType)}
         if BuildingEntityType == Entities.B_CattlePasture then
             BundleStockbreeding.Local:TextCosts(
-                BundleStockbreeding.Local.Description.BuyCattle.Title[lang],
-                BundleStockbreeding.Local.Description.BuyCattle.Text[lang],
-                BundleStockbreeding.Local.Description.BuyCattle.Disabled[lang],
+                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Title),
+                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Text),
+                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Disabled),
                 {Goods.G_Grain, BundleStockbreeding.Local.Data.CattleCosts},
                 false
             );
         elseif BuildingEntityType == Entities.B_SheepPasture then
             BundleStockbreeding.Local:TextCosts(
-                BundleStockbreeding.Local.Description.BuyCattle.Title[lang],
-                BundleStockbreeding.Local.Description.BuyCattle.Text[lang],
-                BundleStockbreeding.Local.Description.BuyCattle.Disabled[lang],
+                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Title),
+                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Text),
+                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Disabled),
                 {Goods.G_Grain, BundleStockbreeding.Local.Data.SheepCosts},
                 false
             );

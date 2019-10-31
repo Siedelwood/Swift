@@ -183,14 +183,17 @@ BundleBuildingButtons = {
                 Title = {
                     de = "Rückbau",
                     en = "Downgrade",
+                    fr = "démontage",
                 },
                 Text = {
                     de = "- Reißt eine Stufe des Gebäudes ein {cr}- Der überschüssige Arbeiter wird entlassen",
                     en = "- Destroy one level of this building {cr}- The surplus worker will be dismissed",
+                    fr = "- Décompose un étage de l'immeuble {cr} - Le travailleur excédentaire sera licencié",
                 },
                 Disabled = {
                     de = "Kann nicht zurückgebaut werden!",
                     en = "Can not be downgraded yet!",
+                    fr = "Ne peut pas être démonté!",
                 },
             },
 
@@ -198,10 +201,12 @@ BundleBuildingButtons = {
                 Title = {
                     de = "Arbeit anhalten/aufnehmen",
                     en = "Start/Stop Work",
+                    fr = "Arrêter / continuer le travail",
                 },
                 Text = {
                     de = "- Startet oder stoppe die Arbeit in diesem Betrieb",
                     en = "- Continue or stop work for this building",
+                    fr = "- Démarrer / arrêter le travail dans l'atelier",
                 },
             },
         },
@@ -432,11 +437,10 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
     -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     GUI_BuildingButtons.TrapToggleMouseOver = function()
-        local lang = QSB.Language;
         BundleBuildingButtons.Local:TextNormal(
-            BundleBuildingButtons.Local.Description.Downgrade.Title[lang],
-            BundleBuildingButtons.Local.Description.Downgrade.Text[lang],
-            BundleBuildingButtons.Local.Description.Downgrade.Disabled[lang]
+            API.Localize(BundleBuildingButtons.Local.Description.Downgrade.Title),
+            API.Localize(BundleBuildingButtons.Local.Description.Downgrade.Text),
+            API.Localize(BundleBuildingButtons.Local.Description.Downgrade.Disabled)
         );
     end
 
@@ -483,7 +487,7 @@ function BundleBuildingButtons.Local:OverwriteToggleTrap()
 
             -- Prüfe auf Category
             for k,v in pairs(BundleDestructionControl.Local.Data.EntityCategories) do
-                if Logic.IsEntityInCategory(_BuildingID, v) == 1 then
+                if Logic.IsEntityInCategory(EntityID, v) == 1 then
                     XGUIEng.ShowWidget(CurrentWidgetID, 0);
                     return;
                 end
@@ -589,10 +593,9 @@ end
 -- @local
 --
 function BundleBuildingButtons.Local.ButtonDefaultSingleStop_Tooltip(WidgetID, EntityID)
-    local lang = QSB.Language;
     BundleBuildingButtons.Local:TextNormal(
-        BundleBuildingButtons.Local.Description.SingleStop.Title[lang],
-        BundleBuildingButtons.Local.Description.SingleStop.Text[lang]
+        API.Localize(BundleBuildingButtons.Local.Description.SingleStop.Title),
+        API.Localize(BundleBuildingButtons.Local.Description.SingleStop.Text)
     );
 end
 

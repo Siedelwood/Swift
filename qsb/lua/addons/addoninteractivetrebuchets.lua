@@ -95,11 +95,11 @@ function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
         API.Fatal("API.GetTrebuchetByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
-    if not self.Data.Trebuchet.Sites[_Name] then
+    if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
         API.Warn("API.GetTrebuchetByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
-    return self.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
+    return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
 end
 GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
 
@@ -118,11 +118,11 @@ function API.GetReturningCartByTrebuchetConstructionSite(_Name)
         API.Fatal("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
-    if not self.Data.Trebuchet.Sites[_Name] then
+    if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
         API.Warn("API.GetReturningCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
-    return self.Data.Trebuchet.Sites[_Name].ReturningCart;
+    return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ReturningCart;
 end
 GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
 
@@ -141,11 +141,11 @@ function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
         API.Fatal("API.GetConstructionCartByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
-    if not self.Data.Trebuchet.Sites[_Name] then
+    if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
         API.Warn("API.GetConstructionCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
-    return self.Data.Trebuchet.Sites[_Name].ConstructionCart;
+    return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ConstructionCart;
 end
 GetConstructionCart = API.GetConstructionCartByTrebuchetConstructionSite;
 
@@ -160,15 +160,18 @@ AddOnInteractiveTrebuchets = {
                 Error = {
                     de = "Euer Ritter benötigt einen höheren Titel!",
                     en = "Your knight need a higher title to use this site!",
+                    fr = "Votre chevalier a besoin d'un titre plus élevé!"
                 },
                 Description = {
                     Title = {
                         de = "Trebuchet anfordern",
                         en = "Order trebuchet",
+                        fr = "Demande de trébuchet"
                     },
                     Text = {
                         de = "- Fordert ein Trebuchet aus der Stadt an {cr}- Trebuchet wird gebaut, wenn Wagen Baustelle erreicht {cr}- Fährt zurück, wenn Munition aufgebraucht {cr}- Trebuchet kann manuell zurückgeschickt werden",
                         en = "- Order a trebuchet from your city {cr}- The trebuchet is build after the cart has arrived {cr}- Returns after ammunition is depleted {cr}- The trebuchet can be manually send back to the city",
+                        fr = "- Demander un trébuchet à votre ville {cr}- Le trébuchet est construit lorsque le chariot atteint le site de construction {cr}- Retour quand les munitions sont épuisées {cr}- Le trébuchet peut être renvoyé manuellement"
                     },
                 },
 

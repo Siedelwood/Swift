@@ -173,9 +173,10 @@ SetOnFire = API.SetBuildingOnFire;
 --
 -- @param[type=string] _Entity Scriptname des Entity
 -- @param[type=number] _Damage Menge an abgezogener Gesundheit
+-- @param[type=number] _Attacker (optional) Skriptname des Angreifers
 --
 function API.HurtEntity(_Entity, _Damage, _Attacker)
-    QSB.EntityProperty:GetInstance(_Entity):Hurt(_Damage);
+    QSB.EntityProperty:GetInstance(_Entity):Hurt(_Damage, _Attacker);
 end
 HurtEntityEx = API.HurtEntity;
 
@@ -374,10 +375,11 @@ end
 -- auf Soldaten aufgeteilt, bis er komplett verrechnet wurde.
 --
 -- @param[type=number] _Damage   Schaden
+-- @param[type=string] _Attacker Angreifer
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:Hurt(_Damage)
+function QSB.EntityProperty:Hurt(_Damage, _Attacker)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
@@ -403,13 +405,44 @@ function QSB.EntityProperty:Hurt(_Damage)
             _Damage = _Damage - Health;
             EntityKilled = true;
             Logic.HurtEntity(EntityToHurt, Health);
+            self:TriggerEntityKilledCallbacks(Health, _Attacker);
             if IsLeader and _Damage > 0 then
                 self:Hurt(_Damage);
             end
         else
             Logic.HurtEntity(EntityToHurt, _Damage);
+            self:TriggerEntityKilledCallbacks(_Damage, _Attacker);
         end
     end
+end
+
+---
+-- Löst die entsprechenden Callbacks aus, sollte das Entity durch den Schaden
+-- durch :Hurt sterben. Callbacks werden nur ausgelöst, wenn der Angreifer
+-- angegeben wurde.
+--
+-- @param[type=number] _Damage   Schaden
+-- @param[type=string] _Attacker Angreifer
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:TriggerEntityKilledCallbacks(_Damage, _Attacker)
+    local DefenderID = GetID(self.m_EntityName);
+    local AttackerID = GetID(_Attacker or 0);
+    if AttackerID == 0 or DefenderID == 0 or Logic.GetEntityHealth(DefenderID) > 0 then
+        return;
+    end
+    local x, y, z     = Loigic.EntityGetPos(DefenderID);
+    local DefPlayerID = Logic.EntityGetPlayer(DefenderID);
+    local DefType     = Logic.GetEntityType(DefenderID);
+    local AttPlayerID = Logic.EntityGetPlayer(AttackerID);
+    local AttType     = Logic.GetEntityType(AttackerID);
+
+    GameCallback_EntityKilled(DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType);
+    API.Bridge(string.format(
+        "GameCallback_Feedback_EntityKilled(%d, %d, %d, %d,%d, %d, %f, %f)",
+        DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType, x, y
+    ));
 end
 
 ---

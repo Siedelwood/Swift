@@ -135,14 +135,17 @@ AddOnInteractiveMines = {
                     Title = {
                         de = "Mine errichten",
                         en = "Build pit",
+                        fr = "Construction de la mine",
                     },
                     Text = {
                         de = "An diesem Ort könnt Ihr eine Mine errichten!",
                         en = "You're able to create a pit at this location!",
+                        fr = "Dans cet endroit, vous pouvez construire une mine!",
                     },
                     Unfulfilled = {
                         de = "Die Mine kann nicht umgewandelt werden!",
                         en = "The mine can not be transformed!",
+                        fr = "La mine ne peut pas être convertie!",
                     },
                 },
             },

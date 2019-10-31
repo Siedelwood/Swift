@@ -217,7 +217,7 @@ function API.CastleStoreSetOutsourceBoundary(_PlayerID, _Good, _Limit)
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
     if Store then
-        Stores:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
+        Store:SetUperLimitInStorehouseForGoodType(_Good, _Limit)
     end
 end
 
@@ -262,6 +262,7 @@ AddOnCastleStore = {
                 Text = {
                     de = "Finanzansicht",
                     en = "Financial view",
+                    fr = "Vue financier"
                 },
             },
 
@@ -269,6 +270,7 @@ AddOnCastleStore = {
                 Text = {
                     de = "Lageransicht",
                     en = "Storeage view",
+                    fr = "Inventaire"
                 },
             },
 
@@ -276,6 +278,7 @@ AddOnCastleStore = {
                 Text = {
                     de = "Diese Ware wird nicht angenommen.",
                     en = "This good will not be stored.",
+                    fr = "Cet article ne sera pas accepté",
                 },
             },
 
@@ -283,10 +286,12 @@ AddOnCastleStore = {
                 Title = {
                     de = "Güter verwaren",
                     en = "Keep goods",
+                    fr = "Retenir des marchandises",
                 },
                 Text = {
                     de = "[UMSCHALT + N]{cr}- Lagert Waren im Burglager ein {cr}- Waren verbleiben auch im Lager, wenn Platz vorhanden ist",
                     en = "[SHIFT + N]{cr}- Stores goods inside the vault {cr}- Goods also remain in the warehouse when space is available",
+                    fr = "[SHIFT + N]{cr}- Stocker les marchandises dans le bunker {cr}- Les marchandises restent également dans l'entrepôt lorsqu'il y a de la place",
                 },
             },
 
@@ -294,10 +299,12 @@ AddOnCastleStore = {
                 Title = {
                     de = "Güter zwischenlagern",
                     en = "Store in vault",
+                    fr = "Stockage intermédiaire"
                 },
                 Text = {
                     de = "[UMSCHALT + B]{cr}- Lagert Waren im Burglager ein {cr}- Lagert waren wieder aus, sobald Platz frei wird",
                     en = "[SHIFT + B]{cr}- Stores goods inside the vault {cr}- Allows to extrac goods as soon as space becomes available",
+                    fr = "[SHIFT + B]{cr}- Stocker les marchandises dans le bunker {cr}- Les marchandises sont libérées dès que l'espace est disponible",
                 },
             },
 
@@ -305,10 +312,12 @@ AddOnCastleStore = {
                 Title = {
                     de = "Lager räumen",
                     en = "Clear store",
+                    fr = "Effacer le stockage"
                 },
                 Text = {
                     de = "[UMSCHALT + M]{cr}- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
                     en = "[Shift + M]{cr}- Removes all goods {cr}- Requires space in the storehouse",
+                    en = "[Shift + M]{cr}- Tous les biens sont externalisés {cr}- Nécessite de l'espace dans l'entrepôt",
                 },
             },
         },
@@ -1629,7 +1638,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
         if _IO.Reward[1] ~= nil then
             GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
         end
-        Play2DSound(pID, _IO.ActivationSound or "menu_left_prestige");
+        Play2DSound(PlayerID, _IO.ActivationSound or "menu_left_prestige");
         GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
     end
     
@@ -1759,9 +1768,21 @@ end
 --
 function AddOnCastleStore.Local.CastleStore:DescribeHotkeys()
     if not self.HotkeysAddToList then
-        API.AddHotKey("Umschalt + B", {de = "Burglager: Waren einlagern", en = "Vault: Store goods"});
-        API.AddHotKey("Umschalt + N", {de = "Burglager: Waren sperren", en = "Vault: Lock goods"});
-        API.AddHotKey("Umschalt + M", {de = "Burglager: Lager räumen", en = "Vault: Empty store"});
+        API.AddHotKey(
+            {de = "Umschalt + B", en = "Shift + B"},
+            {de = "Burglager: Waren einlagern", en = "Vault: Store goods",
+             fr = "Bunker: Produits de magasin"}
+        );
+        API.AddHotKey(
+            {de = "Umschalt + N", en = "Shift + N"},
+            {de = "Burglager: Waren sperren", en = "Vault: Lock goods",
+             fr = "Bunker: Verrouiller les marchandises"}
+        );
+        API.AddHotKey(
+            {de = "Umschalt + M", en = "Shift + M"},
+            {de = "Burglager: Lager räumen", en = "Vault: Empty store",
+             fr = "Bunker: Enlever les marchandises"}
+        );
         AddOnCastleStore.Local:OverwriteInteractiveObject();
         self.HotkeysAddToList = true;
     end
@@ -1776,7 +1797,6 @@ end
 function AddOnCastleStore.Local:OverwriteGetStringTableText()
     GetStringTableText_Orig_QSB_CatsleStore = XGUIEng.GetStringTableText;
     XGUIEng.GetStringTableText = function(_key)
-        local lang = QSB.Language;
         local SelectedID = GUI.GetSelectedEntity();
         local PlayerID = GUI.GetPlayerID();
         local CurrentWidgetID = XGUIEng.GetCurrentWidgetID();
@@ -1784,9 +1804,9 @@ function AddOnCastleStore.Local:OverwriteGetStringTableText()
         if _key == "UI_ObjectNames/DestroyGoods" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
                 if XGUIEng.IsWidgetShown("/InGame/Root/Normal/AlignBottomRight/Selection/Castle") == 1 then
-                    return AddOnCastleStore.Local.Description.ShowCastleStore.Text[lang];
+                    return API.Localize(AddOnCastleStore.Local.Description.ShowCastleStore.Text);
                 else
-                    return AddOnCastleStore.Local.Description.ShowCastle.Text[lang];
+                    return API.Localize(AddOnCastleStore.Local.Description.ShowCastle.Text);
                 end
             end
         end
@@ -1796,23 +1816,23 @@ function AddOnCastleStore.Local:OverwriteGetStringTableText()
 
         if _key == "UI_ObjectNames/CityBuildingsNumber" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.CityTab.Title[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.CityTab.Title);
             end
         end
         if _key == "UI_ObjectDescription/CityBuildingsNumber" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.CityTab.Text[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.CityTab.Text);
             end
         end
 
         if _key == "UI_ObjectNames/B_StoreHouse" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.StorehouseTab.Title[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.StorehouseTab.Title);
             end
         end
         if _key == "UI_ObjectDescription/B_StoreHouse" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.StorehouseTab.Text[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.StorehouseTab.Text);
             end
         end
 
@@ -1822,19 +1842,19 @@ function AddOnCastleStore.Local:OverwriteGetStringTableText()
             local WidgetUpButton = WidgetMotherName.. "Tab03Up/up/B_Castle_ME";
             if XGUIEng.GetWidgetPathByID(CurrentWidgetID) == WidgetDownButton or XGUIEng.GetWidgetPathByID(CurrentWidgetID) == WidgetUpButton then
                 if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                    return AddOnCastleStore.Local.Description.MultiTab.Title[lang];
+                    return API.Localize(AddOnCastleStore.Local.Description.MultiTab.Title);
                 end
             end
         end
         if _key == "UI_ObjectDescription/B_Castle_ME" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.MultiTab.Text[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.MultiTab.Text);
             end
         end
 
         if _key == "UI_ButtonDisabled/NotEnoughGoods" then
             if Logic.GetHeadquarters(PlayerID) == SelectedID then
-                return AddOnCastleStore.Local.Description.GoodButtonDisabled.Text[lang];
+                return API.Localize(AddOnCastleStore.Local.Description.GoodButtonDisabled.Text);
             end
         end
 

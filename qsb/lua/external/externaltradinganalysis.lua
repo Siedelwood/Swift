@@ -466,11 +466,11 @@ end
 -- @local
 --
 function ExternalTradingAnalysis.Global:GetTraderType(_BuildingID, _TraderID)
-    if Logic.IsGoodTrader(BuildingID, _TraderID) == true then
+    if Logic.IsGoodTrader(_BuildingID, _TraderID) == true then
         return QSB.TraderTypes.GoodTrader;
-    elseif Logic.IsMercenaryTrader(BuildingID, _TraderID) == true then
+    elseif Logic.IsMercenaryTrader(_BuildingID, _TraderID) == true then
         return QSB.TraderTypes.MercenaryTrader;
-    elseif Logic.IsEntertainerTrader(BuildingID, _TraderID) == true then
+    elseif Logic.IsEntertainerTrader(_BuildingID, _TraderID) == true then
         return QSB.TraderTypes.EntertainerTrader;
     else
         return QSB.TraderTypes.Unknown;

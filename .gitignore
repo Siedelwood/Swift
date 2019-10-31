@@ -53,3 +53,4 @@ local.properties
 .worksheet
 /con/
 *.synw-proj
+*.vscode

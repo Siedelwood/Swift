@@ -171,12 +171,8 @@ function API.AddPages(_Briefing)
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
             -- Sprache anpassen
-            if type(_Page.Title) == "table" then
-                _Page.Title = _Page.Title[QSB.Language];
-            end
-            if type(_Page.Text) == "table" then
-                _Page.Text = _Page.Text[QSB.Language];
-            end
+            _Page.Title = API.Localize(_Page.Title);
+            _Page.Text = API.Localize(_Page.Text);
             -- Lookat mappen
             if type(_Page.LookAt) == "string" or type(_Page.LookAt) == "number" then
                 _Page.LookAt = {_Page.LookAt, 0}
@@ -425,9 +421,9 @@ BundleBriefingSystem = {
     },
 
     Text = {
-        NextButton = {de = "Weiter",  en = "Forward"},
-        PrevButton = {de = "Zurück",  en = "Previous"},
-        EndButton  = {de = "Beenden", en = "Close"},
+        NextButton = {de = "Weiter",  en = "Forward", fr = "Suivant"},
+        PrevButton = {de = "Zurück",  en = "Previous", fr = "Retour"},
+        EndButton  = {de = "Beenden", en = "Close", fr = "Exit"},
     },
 }
 
@@ -539,6 +535,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     if self.Data.CurrentBriefing.Starting then
         self.Data.CurrentBriefing:Starting();
     end
+    self.Data.CurrentPage = {};
     self:PageStarted();
     return self.Data.BriefingID;
 end
@@ -984,6 +981,9 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
             Camera.ThroneRoom_SetFOV(PageFOV);
 
+            -- Splashscreen
+            self:ScrollSplashscreen();
+
             -- Multiple Choice
             if self.Data.MCSelectionIsShown then
                 local Widget = "/InGame/SoundOptionsMain/RightContainer/SoundProviderComboBoxContainer";
@@ -994,12 +994,11 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             end
 
             -- Button Texte
-            local Language = QSB.Language;
-            XGUIEng.SetText("/InGame/ThroneRoom/Main/StartButton", "{center}" ..BundleBriefingSystem.Text.PrevButton[Language]);
-            local SkipText = BundleBriefingSystem.Text.NextButton[Language];
+            XGUIEng.SetText("/InGame/ThroneRoom/Main/StartButton", "{center}" ..API.Localize(BundleBriefingSystem.Text.PrevButton));
+            local SkipText = API.Localize(BundleBriefingSystem.Text.NextButton);
             local PageID = self.Data.CurrentBriefing.Page;
             if PageID == #self.Data.CurrentBriefing or self.Data.CurrentBriefing[PageID+1] == -1 then
-                SkipText = BundleBriefingSystem.Text.EndButton[Language];
+                SkipText = API.Localize(BundleBriefingSystem.Text.EndButton);
             end
             XGUIEng.SetText("/InGame/ThroneRoom/Main/Skip", "{center}" ..SkipText);
 
@@ -1131,7 +1130,7 @@ end
 function BundleBriefingSystem.Local:GetLERP()
     local Current = Logic.GetTime();
     local Started = self.Data.CurrentPage.Started;
-    local FlyTime;
+    local FlyTime = self.Data.CurrentPage.Duration;
     if self.Data.CurrentPage.FlyTo then
         FlyTime = self.Data.CurrentPage.FlyTo.Duration;
     end
@@ -1287,8 +1286,7 @@ end
 --
 function BundleBriefingSystem.Local:SetFader()
     -- Alpha der Fader-Maske
-    g_Fade.To = 0;
-    SetFaderAlpha(self.Data.CurrentPage.FaderAlpha or 0);
+    g_Fade.To = self.Data.CurrentPage.FaderAlpha or 0;
 
     -- Fadein starten
     local PageFadeIn = self.Data.CurrentPage.FadeIn;
@@ -1352,12 +1350,12 @@ end
 --
 function BundleBriefingSystem.Local:SetPortrait()
     if self.Data.CurrentPage.Portrait then
-        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 255);
-        XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, self.Data.CurrentPage.Portrait);
-        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0, 400, 600);
-        XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0, 0, 1, 1);
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 255);
+        XGUIEng.SetMaterialTexture("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, self.Data.CurrentPage.Portrait);
+        XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
+        XGUIEng.SetMaterialUV("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 0, 0, 1, 1);
     else
-        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 1, 0);
+        XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1, 0);
     end
 end
 
@@ -1367,49 +1365,74 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:SetSplashscreen()
-    local BG = "/InGame/ThroneRoomBars_2/BarTop";
-    local BB = "/InGame/ThroneRoomBars_2/BarBottom";
-
-    if self.Data.CurrentPage.Splashscreen == nil then
-        XGUIEng.SetMaterialTexture(BG, 1, "");
-        XGUIEng.SetMaterialTexture(BB, 1, "");
-        XGUIEng.SetMaterialColor(BG, 1, 0, 0, 0, 255);
-        XGUIEng.SetMaterialColor(BB, 1, 0, 0, 0, 255);
-        if self.Data.CurrentBriefing.BriefingBarSizeBackup then
-            local Position = self.Data.CurrentBriefing.BriefingBarSizeBackup;
-            XGUIEng.SetWidgetSize(BG, Position[1], Position[2]);
-            self.Data.CurrentBriefing.BriefingBarSizeBackup = nil;
-        end
-        self:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
-        return;
-    end
-
+    local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
     if self.Data.CurrentPage.Splashscreen then
         local size   = {GUI.GetScreenSize()};
         local is4To3 = math.floor((size[1]/size[2]) * 100) == 133;
         local is5To4 = math.floor((size[1]/size[2]) * 100) == 125;
         local u0, v0, u1, v1 = 0, 0, 1, 1;
         if is4To3 or is5To4 then
-            u0 = u0 + (u0 * 0.125); u1 = u1 - (u1 * 0.125);
+            u0 = u0 + (u0 * 0.125);
+            u1 = u1 - (u1 * 0.125);
         end
-        self:SetBarStyle(1, true);
-        XGUIEng.SetMaterialColor(BG, 1, 255, 255, 255, 255);
-        XGUIEng.SetMaterialTexture(BG, 1, self.Data.CurrentPage.Splashscreen);
-        XGUIEng.SetMaterialUV(BG, 1, u0, v0, u1, v1);
+        local Image = self.Data.CurrentPage.Splashscreen;
+        if type(Image) == "table" then
+            Image = self.Data.CurrentPage.Splashscreen.Image;
+        end
+        XGUIEng.SetMaterialAlpha(SSW, 0, 255);
+        XGUIEng.SetMaterialTexture(SSW, 0, Image);
+        XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
+    else
+        XGUIEng.SetMaterialAlpha(SSW, 0, 0);
     end
-    if not self.Data.CurrentBriefing.BriefingBarSizeBackup then
-        local x, y = XGUIEng.GetWidgetSize(BG);
-        self.Data.CurrentBriefing.BriefingBarSizeBackup = {x, y};
-    end
+end
 
-    local BarX    = self.Data.CurrentBriefing.BriefingBarSizeBackup[1];
-    local _, BarY = XGUIEng.GetWidgetSize("/InGame/ThroneRoomBars");
-    XGUIEng.SetWidgetSize(BG, BarX, BarY);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2", 1);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_Dodge", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoomBars_2_Dodge", 0);
-    XGUIEng.ShowWidget(BG, 1);
+---
+-- Wendet die Animation auf den Splashscreen der aktuellen Seite an.
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:ScrollSplashscreen()
+    local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
+    if type(self.Data.CurrentPage.Splashscreen) == "table" then
+        local SSData = self.Data.CurrentPage.Splashscreen;
+        if (not SSData.Animation[1] or #SSData.Animation[1] ~= 4) or (not SSData.Animation[2] or #SSData.Animation[2] ~= 4) then
+            return;
+        end
+
+        local size   = {GUI.GetScreenSize()};
+        local is4To3 = math.floor((size[1]/size[2]) * 100) == 133;
+        local is5To4 = math.floor((size[1]/size[2]) * 100) == 125;
+        local factor = self:GetSplashscreenLERP();
+
+        local u0 = SSData.Animation[1][1] + (SSData.Animation[2][1] - SSData.Animation[1][1]) * factor;
+        local u1 = SSData.Animation[1][3] + (SSData.Animation[2][3] - SSData.Animation[1][3]) * factor;
+        local v0 = SSData.Animation[1][2] + (SSData.Animation[2][2] - SSData.Animation[1][2]) * factor;
+        local v1 = SSData.Animation[1][4] + (SSData.Animation[2][4] - SSData.Animation[1][4]) * factor;
+        if is4To3 or is5To4 then
+            u0 = u0 + (u0 * 0.125);
+            u1 = u1 - (u1 * 0.125);
+        end
+        XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
+    end
+end
+
+---
+-- Gibt die lineare Interpolation des Splashscreens zurück.
+-- @param[type=number] LERP
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:GetSplashscreenLERP()
+    local Factor = 1.0;
+    if type(self.Data.CurrentPage.Splashscreen) == "table" then
+        local Current = Logic.GetTime();
+        local Started = self.Data.CurrentPage.Started;
+        local FlyTime = self.Data.CurrentPage.Splashscreen.Animation[3];
+        Factor = (Current - Started) / FlyTime;
+        Factor = (Factor > 1 and 1) or Factor;
+    end
+    return Factor;
 end
 
 ---
@@ -1425,14 +1448,17 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
         XGUIEng.PopPage();
     end
 
+    -- Widgets
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
+    XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_2", false);
     XGUIEng.PushPage("/InGame/ThroneRoom/Main", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_Dodge", false);
     XGUIEng.PushPage("/InGame/ThroneRoomBars_2_Dodge", false);
+    XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo/LeftFrame", false);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/DialogTopChooseKnight", 1);
@@ -1448,26 +1474,37 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Title", 1);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", 1);
 
+    -- Text
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Title", " ");
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 
+    -- Title and back button
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/Skip");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/StartButton", 20, y);
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
 
-    XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);
+    -- Briefing messages
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/Text", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 1);
     XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", " ");
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Text", 200, 300, 1000, 10);
+
+    -- Splashscreen
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/BG", 1);
+    XGUIEng.SetMaterialColor("/InGame/ThroneRoom/KnightInfo/BG", 0, 255, 255, 255, 0);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/BG", 0, 0);
+    
+    -- Portrait
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame", 1);
     XGUIEng.ShowAllSubWidgets("/InGame/ThroneRoom/KnightInfo/LeftFrame", 0);
-    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/KnightBG", 1);
-    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0, 400, 600);
-    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/KnightBG", 0, 0);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1);
+    XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1);
+    XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
+    XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0);
 
     BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
 
@@ -1513,6 +1550,7 @@ function BundleBriefingSystem.Local:DeactivateCinematicMode()
         Display.SetUserOptionOcclusionEffect(1);
     end
 
+    XGUIEng.PopPage();
     XGUIEng.PopPage();
     XGUIEng.PopPage();
     XGUIEng.PopPage();
@@ -1678,7 +1716,7 @@ function BundleBriefingSystem:OverrideApiNote()
     API.Note_Orig_BriefingSystem = API.Note;
     API.Note = function(_Text)
         if IsBriefingActive() then
-            local Text = API.EnsureMessage(_Text);
+            local Text = API.Localize(_Text);
             if not GUI then
                 BundleBriefingSystem.Global:PushBriefingNote(Text);
             else
@@ -1881,9 +1919,9 @@ function b_Trigger_Briefing:Reset(_Quest)
     self.WaitTimeTimer = nil
 end
 
-function b_Trigger_Briefing:Debug(__quest_)
+function b_Trigger_Briefing:Debug(_Quest)
     if self.WaitTime and self.WaitTime < 0 then
-        dbg(__quest_.Identifier.." "..self.Name..": waittime is below 0!");
+        dbg(_Quest.Identifier.." "..self.Name..": waittime is below 0!");
         return true;
     elseif not IsValidQuest(self.Quest) then
         fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
