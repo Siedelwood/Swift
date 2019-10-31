@@ -83,7 +83,6 @@
   <li><a href="../modules/external.externalcampaigntools.html">external.externalcampaigntools</a></li>
   <li><a href="../modules/external.externalgamecutscenes.html">external.externalgamecutscenes</a></li>
   <li><a href="../modules/external.externalhirdpersoncamera.html">external.externalhirdpersoncamera</a></li>
-  <li><a href="../modules/external.externalinteractiveobjecttemplates.html">external.externalinteractiveobjecttemplates</a></li>
   <li><a href="../modules/external.externalroleplayinggame.html">external.externalroleplayinggame</a></li>
   <li><a href="../modules/external.externaltradinganalysis.html">external.externaltradinganalysis</a></li>
   <li><a href="../modules/loader.html">loader</a></li>
@@ -126,20 +125,19 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterfaceSetPlayerPortrait">API.InterfaceSetPlayerPortrait (_PlayerID, _Portrait)</a></td>
-	<td class="summary">Setzt das Portrait des Spielers.</td>
+	<td class="summary">Setzt das Portrait eines Spielers.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterfaceSetTexture">API.InterfaceSetTexture (_widget, _file)</a></td>
-	<td class="summary"><b>VERALTET</b><br/>
- Setzt eine Grafik als Bild für einen Icon oder einen Button.</td>
+	<td class="summary">Setzt eine Grafik als Bild für einen Icon oder einen Button.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterfaceSetTooltipCosts">API.InterfaceSetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</a></td>
-	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.</td>
+	<td class="summary">Ändert den Beschreibungstext und die Kosten eines Button.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.InterfaceSetTooltipNormal">API.InterfaceSetTooltipNormal (_title, _text, _disabledText)</a></td>
-	<td class="summary">Ändert den aktuellen Tooltip mit der Beschreibung.</td>
+	<td class="summary">Ändert den Beschreibungstext eines Button oder eines Icon.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
@@ -249,6 +247,8 @@
     </dt>
     <dd>
     Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
+<p> Es wird also die Grafik eines Button oder Icon mit einer neuen Grafik
+ ausgetauscht.
 <p> Dabei müssen die Quellen nach gui_768, gui_920 und gui_1080 in der
  entsprechenden Größe gepackt werden. Die Ordner liegen in graphics/textures.
  Jede Map muss einen eigenen eindeutigen Namen für jede Grafik verwenden.
@@ -362,7 +362,7 @@
     <strong>API.InterfaceSetPlayerPortrait (_PlayerID, _Portrait)</strong>
     </dt>
     <dd>
-    Setzt das Portrait des Spielers.
+    Setzt das Portrait eines Spielers.
 <p> Dabei gibt es 3 verschiedene Varianten:
  <ul>
  <li>Wenn _Portrait nicht gesetzt wird, wird das Portrait des Primary
@@ -373,6 +373,8 @@
  als Portrait gesetzt.</li>
  </ul>
 <p> Wenn kein Portrait bestimmt werden kann, wird H_NPC_Generic_Trader verwendet.
+<p> <b>Trivia</b>: Diese Funktionalität wird Umgangssprachlich als "Köpfe
+ tauschen" oder "Köpfe wechseln" bezeichnet.
 
 
 
@@ -393,11 +395,11 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Primary Knight
+        <pre class="example"><span class="comment">-- Kopf des Primary Knight
 </span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>);
-<span class="comment">-- Durch Entity
+<span class="comment">-- Kopf durch Entity bestimmen
 </span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>, <span class="string">"amma"</span>);
-<span class="comment">-- Durch Modelname
+<span class="comment">-- Kopf durch Modelname setzen
 </span>API.InterfaceSetPlayerPortrait(<span class="number">2</span>, <span class="string">"H_NPC_Monk_AS"</span>);</pre>
     </ul>
 
@@ -407,8 +409,8 @@
     <strong>API.InterfaceSetTexture (_widget, _file)</strong>
     </dt>
     <dd>
-    <b>VERALTET</b><br/>
- Setzt eine Grafik als Bild für einen Icon oder einen Button.
+    Setzt eine Grafik als Bild für einen Icon oder einen Button.
+<p> <b>VERALTET! WIRD DEMNÄCHST GELÖSCHT!</b>
 <p> Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem
  beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
  muss jedoch immer der korrekte Pfad angegeben werden.
@@ -440,7 +442,9 @@
     <strong>API.InterfaceSetTooltipCosts (_title, _text, _disabledText, _costs, _inSettlement)</strong>
     </dt>
     <dd>
-    Ändert den aktuellen Tooltip mit der Beschreibung und den Kosten.
+    Ändert den Beschreibungstext und die Kosten eines Button.
+<p> Wichtig ist zu beachten, dass diese Funktion in der Update-Funktion des
+ Button oder Icon ausgeführt werden muss.
 <p> <p><b>Alias:</b> UserSetTextBuy</p>
 
 
@@ -483,15 +487,14 @@
     <strong>API.InterfaceSetTooltipNormal (_title, _text, _disabledText)</strong>
     </dt>
     <dd>
-    Ändert den aktuellen Tooltip mit der Beschreibung.
-<p> <p><b>Alias:</b> UserSetTextNormal</p>
-<p> Die Funtion ermittelt das aktuelle GUI Widget und ändert den Text des
- Tooltip. Dazu muss die Funktion innerhalb der Mouseover-Funktion eines
- Buttons oder Widgets mit Tooltip aufgerufen werden.
+    Ändert den Beschreibungstext eines Button oder eines Icon.
+<p> Wichtig ist zu beachten, dass diese Funktion in der Update-Funktion des
+ Button oder Icon ausgeführt werden muss.
 <p> Die Funktion kann auch mit deutsch/english lokalisierten Tabellen als
  Text gefüttert werden. In diesem Fall wird der deutsche Text genommen,
  wenn es sich um eine deutsche Spielversion handelt. Andernfalls wird
  immer der englische Text verwendet.
+<p> <p><b>Alias:</b> UserSetTextNormal</p>
 
 
 
@@ -736,7 +739,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-08-31 23:41:08 </i>
+<i style="float:right;">Last updated 2019-10-31 21:46:03 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

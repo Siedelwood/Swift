@@ -1803,17 +1803,6 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
  &#x3C;td&#x3E;ja&#x3C;/td&#x3E;
  &#x3C;/tr&#x3E;
  &#x3C;tr&#x3E;
- &#x3C;td&#x3E;Opener&#x3C;/td&#x3E;
- &#x3C;td&#x3E;Ein spezieller Held, der als einziger das Objekt aktivieren kann.&#x3C;/td&#x3E;
- &#x3C;td&#x3E;ja&#x3C;/td&#x3E;
- &#x3C;/tr&#x3E;
- &#x3C;tr&#x3E;
- &#x3C;td&#x3E;WrongKnight&#x3C;/td&#x3E;
- &#x3C;td&#x3E;Nachricht, die angezeigt wird, wenn der falsche Held das Objekt
- aktivieren will.&#x3C;/td&#x3E;
- &#x3C;td&#x3E;ja&#x3C;/td&#x3E;
- &#x3C;/tr&#x3E;
- &#x3C;tr&#x3E;
  &#x3C;td&#x3E;State&#x3C;/td&#x3E;
  &#x3C;td&#x3E;Bestimmt, wie sich der Button des interaktiven Objektes verhält.&#x3C;/td&#x3E;
  &#x3C;td&#x3E;ja&#x3C;/td&#x3E;
@@ -2130,6 +2119,49 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
     &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.CreateRandomResourceChest(&#x3C;span class="string"&#x3E;"chest"&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="addoninteractivechests_API.CreateRandomTreasure" class="result method"><a href="html/addoninteractivechests.lua.html#API.CreateRandomTreasure">API.CreateRandomTreasure</a><br>Erstellt ein beliebiges IO mit einer zufälligen Menge an Waren des angegebenen Typs.<span class="docInvisibleContent">
+    Erstellt ein beliebiges IO mit einer zufälligen Menge an Waren
+ des angegebenen Typs.
+&#x3C;p&#x3E; Die Menge der Ware ist dabei zufällig und liegt zwischen dem Minimalwert
+ und dem Maximalwert. Optional kann eine Funktion angegeben werden, die
+ ausgeführt wird, wenn der Schatz gefunden wird. Diese Funktion verhält sich
+ wie das Callback eines interaktiven Objektes.
+&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CreateRandomTreasure&#x3C;/p&#x3E;
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Name&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Name des Script Entity
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Good&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Warentyp
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Min&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Mindestmenge
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Max&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Maximalmenge
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Callback&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;function&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Callback-Funktion
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.CreateRandomTreasure(&#x3C;span class="string"&#x3E;"well1"&#x3C;/span&#x3E;, Goods.G_Gems, &#x3C;span class="number"&#x3E;100&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;300&#x3C;/span&#x3E;, OnTreasureDiscovered)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
 </span></div><div id="addoninteractivetrebuchets_API.CreateTrebuchetConstructionSite" class="result method"><a href="html/addoninteractivetrebuchets.lua.html#API.CreateTrebuchetConstructionSite">API.CreateTrebuchetConstructionSite</a><br>Erstellt eine Trebuchet-Baustelle an der Position mit den angegebenen Baukosten.<span class="docInvisibleContent">
@@ -3420,6 +3452,10 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Damage&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
          Menge an abgezogener Gesundheit
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Attacker&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (optional) Skriptname des Angreifers
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
