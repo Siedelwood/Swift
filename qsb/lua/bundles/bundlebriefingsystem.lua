@@ -497,29 +497,34 @@ end
 ---
 -- Startet ein Briefing.
 -- @param[type=table] _Briefing Briefing Definition
+-- @param[type=number] _ID      ID aus Queue
 -- @return[type=number] ID des Briefing
 -- @within Internal
 -- @local
 --
-function BundleBriefingSystem.Global:StartBriefing(_Briefing)
+function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
     _Briefing = self:ConvertBriefingTable(_Briefing);
     if _Briefing.ReturnForbidden == nil then
         _Briefing.ReturnForbidden = true;
     end
-    
+
+    if not _ID then
+        self.Data.BriefingID = self.Data.BriefingID +1;
+        _ID = self.Data.BriefingID;
+    end
+
     if not self.Data.LoadScreenHidden or self:IsBriefingActive() then
-        table.insert(self.Data.BriefingQueue, _Briefing);
+        table.insert(self.Data.BriefingQueue, {_Briefing, _ID});
         if not self.Data.BriefingQueueJobID then
             self.Data.BriefingQueueJobID = StartSimpleHiResJobEx(self.BriefingQueueController);
         end
-        return;
+        return _ID;
     end
 
-    self.Data.BriefingID = self.Data.BriefingID +1;
     self.Data.CurrentBriefing = API.InstanceTable(_Briefing);
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing.PageHistory = {};
-    self.Data.CurrentBriefing.ID = self.Data.BriefingID;
+    self.Data.CurrentBriefing.ID = _ID;
     self.Data.CurrentBriefing.BarOpacity = self.Data.CurrentBriefing.BarOpacity or 1;
     if self.Data.CurrentBriefing.BigBars == nil then
         self.Data.CurrentBriefing.BigBars = true;
@@ -537,7 +542,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing)
     end
     self.Data.CurrentPage = {};
     self:PageStarted();
-    return self.Data.BriefingID;
+    return _ID;
 end
 
 ---
@@ -744,7 +749,7 @@ function BundleBriefingSystem.Global.BriefingQueueController()
     
     if BundleBriefingSystem.Global.Data.LoadScreenHidden and not BundleBriefingSystem.Global:IsBriefingActive() then
         local Next = table.remove(BundleBriefingSystem.Global.Data.BriefingQueue, 1);
-        BundleBriefingSystem.Global:StartBriefing(Next);
+        BundleBriefingSystem.Global:StartBriefing(Next[1], Next[2]);
     end
 end
 
