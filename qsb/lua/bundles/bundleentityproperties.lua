@@ -432,7 +432,7 @@ function QSB.EntityProperty:TriggerEntityKilledCallbacks(_Damage, _Attacker)
     if AttackerID == 0 or DefenderID == 0 or Logic.GetEntityHealth(DefenderID) > 0 then
         return;
     end
-    local x, y, z     = Loigic.EntityGetPos(DefenderID);
+    local x, y, z     = Logic.EntityGetPos(DefenderID);
     local DefPlayerID = Logic.EntityGetPlayer(DefenderID);
     local DefType     = Logic.GetEntityType(DefenderID);
     local AttPlayerID = Logic.EntityGetPlayer(AttackerID);
