@@ -37,15 +37,12 @@ public class CutsceneMaker {
 
         // Some checking and output
         if (flightFiles.size() == 0) {
-            System.err.println("Flight files missing! Exiting!");
+            System.err.println("Flight directory missing! Exiting!");
             System.exit(1);
         }
 
         if ((new File(flightFiles.get(0))).isDirectory()) {
             buildCutscene(cutsceneName, flightFiles.get(0));
-        }
-        else {
-            buildCutsceneWithDefaults(cutsceneName, flightFiles);
         }
     }
 
@@ -65,34 +62,11 @@ public class CutsceneMaker {
         }
 
         final String cutscene = createCutscene(cutsceneName, directory);
-        final File script = new File(cutsceneName + ".lua");
+        final File script = new File(directory + "/" + cutsceneName + ".lua");
         if (script.exists()) {
             script.delete();
         }
-        Files.write(Paths.get(cutsceneName + ".lua"), cutscene.getBytes());
-        System.out.println("Saved file as \"" + cutsceneName + ".lua\"!");
-    }
-
-    /**
-     * Builds the cutscene lua file with default values.
-     * @param cutsceneName Cutscene name
-     * @param flightFiles Flight files
-     * @throws Exception
-     */
-    private static void buildCutsceneWithDefaults(String cutsceneName, List<String> flightFiles) throws Exception {
-        System.out.println("Creating cutscene \"" + cutsceneName + "\".");
-        System.out.println("Including CS files:");
-        for (int i=0; i<flightFiles.size(); i++) {
-            System.out.println("  - " + flightFiles.get(i));
-        }
-
-        // Do the real work
-        final String cutscene = createCutsceneWithDefaults(cutsceneName, flightFiles);
-        final File script = new File(cutsceneName + ".lua");
-        if (script.exists()) {
-            script.delete();
-        }
-        Files.write(Paths.get(cutsceneName + ".lua"), cutscene.getBytes());
+        Files.write(Paths.get(directory + "/" + cutsceneName + ".lua"), cutscene.getBytes());
         System.out.println("Saved file as \"" + cutsceneName + ".lua\"!");
     }
 
