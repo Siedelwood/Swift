@@ -2140,7 +2140,7 @@ end
 -- @local
 --
 function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
-    if self.Objectives[1] and self.Objectives[1].Data and self.Objectives[1].Data[1] == 3 then
+    if self.Objectives[1] and self.Objectives[1].Type == Objective.DestroyEntities and self.Objectives[1].Data[1] == 3 then
         if self.Objectives[1].Data[4] ~= true then
             -- Entities respawnen
             local FirstEntityID;
