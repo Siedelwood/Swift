@@ -211,19 +211,23 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene)
+function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene, _ID)
+    if not _ID then
+        BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
+        _ID = BundleBriefingSystem.Global.Data.BriefingID;
+    end
+
     if not self.Data.LoadScreenHidden or self:IsCutsceneActive() then
-        table.insert(self.Data.CutsceneQueue, _Cutscene);
+        table.insert(self.Data.CutsceneQueue, {_Cutscene, _ID});
         if not self.Data.CutsceneQueueJobID then
             self.Data.CutsceneQueueJobID = StartSimpleHiResJobEx(AddOnCutsceneSystem.Global.CutsceneQueueController);
         end
-        return;
+        return _ID;
     end
     if _Cutscene.Starting then
         _Cutscene:Starting();
     end
 
-    BundleBriefingSystem.Global.Data.BriefingID = BundleBriefingSystem.Global.Data.BriefingID +1;
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.CurrentCutscene.ID = BundleBriefingSystem.Global.Data.BriefingID;
     self.Data.CurrentCutscene.BarOpacity = self.Data.CurrentCutscene.BarOpacity or 1;
@@ -287,7 +291,7 @@ function AddOnCutsceneSystem.Global.CutsceneQueueController()
     
     if AddOnCutsceneSystem.Global.Data.LoadScreenHidden and not AddOnCutsceneSystem.Global:IsCutsceneActive() then
         local Next = table.remove(AddOnCutsceneSystem.Global.Data.CutsceneQueue, 1);
-        AddOnCutsceneSystem.Global:StartCutscene(Next);
+        AddOnCutsceneSystem.Global:StartCutscene(Next[1], Next[2]);
     end
 end
 
