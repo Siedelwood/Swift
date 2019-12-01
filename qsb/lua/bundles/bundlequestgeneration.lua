@@ -304,26 +304,6 @@ end
 function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor, _QuestName)
     self.Data.QuestMessageID = self.Data.QuestMessageID +1;
 
-    -- Trigger-Nachbau
-    local OnQuestOver = {
-        Triggers.Custom2, {
-            {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
-                function(_Data)
-                local QuestID = GetQuestID(_Data.QuestName);
-                if not _Data.QuestName then
-                    return true;
-                end
-                if (Quests[QuestID] and Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
-                    _Data.WaitTimeTimer = _Data.WaitTimeTimer or API.RealTimeGetSecondsPassedSinceGameStart();
-                    if API.RealTimeGetSecondsPassedSinceGameStart() >= _Data.WaitTimeTimer + _Data.WaitTime then
-                        return true;
-                    end
-                end
-                return false;
-            end
-        }
-    };
-
     -- Lokalisierung
     if _Text then
         _Text = API.Localize(_Text);
@@ -335,7 +315,7 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
         (_Sender or 1),
         (_Receiver or 1),
         { {Objective.Dummy} },
-        { OnQuestOver },
+        { self:GetRealTimeWaitInlineTrigger(_Ancestor, _AncestorWt) },
         0, nil, nil, _Callback, nil, false, (_Text ~= nil), nil, nil, _Text, nil
     );
     return CreatedQuest.Identifier;
@@ -408,6 +388,11 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         end
     end
 
+    -- Genug Platz Behavior
+    if QuestData[11] then
+        table.insert(QuestData[5], self:GetFreeSpaceInlineTrigger());
+    end
+
     -- Quest erzeugen
     local QuestID, Quest = QuestTemplate:New(unpack(QuestData, 1, 16));
     Quest.MsgTableOverride = _Data.MSGKeyOverwrite;
@@ -450,6 +435,64 @@ end
 --
 function BundleQuestGeneration.Global:QuestValidateQuestName(_Name)
     return string.find(_Name, "^[A-Za-z0-9_]+$") ~= nil;
+end
+
+---
+-- Erzeugt einen Inline-Behavior welches In Echtzeit auf das Ende eines
+-- Quests wartet.
+--
+-- @param[type=string] _Ancestor   Name des Vorgängers
+-- @param[type=number] _AncestorWt Wartezeit in realen Sekunden
+-- @return[type=table] Trigger Behavior
+-- @within Internal
+-- @local
+--
+function BundleQuestGeneration.Global:GetRealTimeWaitInlineTrigger(_Ancestor, _AncestorWt)
+    return {
+        Triggers.Custom2, {
+            {QuestName = _Ancestor, WaitTime = _AncestorWt or 1,},
+            function(_Data, _Quest)
+                if not _Data.QuestName then
+                    return true;
+                end
+                local QuestID = GetQuestID(_Data.QuestName);
+                if (Quests[QuestID] and Quests[QuestID].State == QuestState.Over and Quests[QuestID].Result ~= QuestResult.Interrupted) then
+                    _Data.WaitTimeTimer = _Data.WaitTimeTimer or API.RealTimeGetSecondsPassedSinceGameStart();
+                    if API.RealTimeGetSecondsPassedSinceGameStart() >= _Data.WaitTimeTimer + _Data.WaitTime then
+                        return true;
+                    end
+                end
+                return false;
+            end
+        }
+    };
+end
+
+---
+-- Erzeugt einen Inline-Behavior welches den Quest solange warten lässt, bis
+-- wieder weniger als 6 sichtbare Quests aktiv sind.
+--
+-- @return[type=table] Trigger Behavior
+-- @within Internal
+-- @local
+--
+function BundleQuestGeneration.Global:GetFreeSpaceInlineTrigger()
+    return {
+        Triggers.Custom2, {
+            {},
+            function(_Data, _Quest)
+                local VisbleQuests = 0;
+                if Quests[0] > 0 then
+                    for i= 1, Quests[0], 1 do
+                        if Quests[i].State == QuestState.Active and Quests[i].Visible == true then
+                            VisbleQuests = VisbleQuests +1;
+                        end
+                    end
+                end
+                return VisbleQuests < 6;
+            end
+        }
+    };
 end
 
 Core:RegisterBundle("BundleQuestGeneration");

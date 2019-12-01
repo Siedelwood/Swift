@@ -813,6 +813,9 @@ end
 -- @local
 --
 function BundleDialogWindows.Global:Install()
+    API.AddSaveGameAction(function ()
+        API.Bridge("BundleDialogWindows.Local.DialogAltF4Hotkey()");
+    end);
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -825,6 +828,49 @@ end
 --
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
+    self:DialogAltF4Hotkey();
+end
+
+---
+-- Überschreibt den Alt + F4 Hotkey.
+--
+-- @within Internal
+-- @local
+--
+function BundleDialogWindows.Local:DialogAltF4Hotkey()
+    StartSimpleJobEx(function ()
+        if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+            Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "BundleDialogWindows.Local:DialogAltF4Action()", 30, false);
+            return true;
+        end
+    end);
+end
+
+---
+-- Öffnet den Dialog mit der Frage, ob das Spiel verlassen werden
+--
+-- @within Internal
+-- @local
+--
+function BundleDialogWindows.Local:DialogAltF4Action()
+    -- Muss leider sein, sonst werden mehr Elemente in die Queue geladen
+    Input.KeyBindDown(Keys.ModifierAlt + Keys.F4, "", 30, false);
+
+    -- Selbstgebauten Dialog öffnen
+    self:OpenRequesterDialog(
+        XGUIEng.GetStringTableText("UI_Texts/MainMenuExitGame_center"),
+        XGUIEng.GetStringTableText("UI_Texts/ConfirmQuitCurrentGame"),
+        function (_Yes) 
+            if _Yes then 
+                Framework.ExitGame(); 
+            end
+            BundleDialogWindows.Local:DialogAltF4Hotkey();
+            Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
+        end
+    );
+
+    -- Zeit anhelten
+    Game.GameTimeSetFactor(GUI.GetPlayerID(), 0);
 end
 
 ---
