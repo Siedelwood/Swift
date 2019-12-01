@@ -306,7 +306,7 @@ function BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _A
 
     -- Lokalisierung
     if _Text then
-        _Text = API.Localize(_Text);
+        _Text = API.ConvertPlaceholders(API.Localize(_Text));
     end
 
     -- Quest erzeugen
@@ -353,10 +353,10 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         _Data.Loop,
         _Data.Visible == true or _Data.Suggestion ~= nil,
         _Data.EndMessage == true or (_Data.Failure ~= nil or _Data.Success ~= nil),
-        (type(_Data.Description) == "table" and API.Localize(_Data.Description)) or _Data.Description,
-        (type(_Data.Suggestion) == "table" and API.Localize(_Data.Suggestion)) or _Data.Suggestion,
-        (type(_Data.Success) == "table" and API.Localize(_Data.Success)) or _Data.Success,
-        (type(_Data.Failure) == "table" and API.Localize(_Data.Failure)) or _Data.Failure
+        API.ConvertPlaceholders((type(_Data.Description) == "table" and API.Localize(_Data.Description)) or _Data.Description),
+        API.ConvertPlaceholders((type(_Data.Suggestion) == "table" and API.Localize(_Data.Suggestion)) or _Data.Suggestion),
+        API.ConvertPlaceholders((type(_Data.Success) == "table" and API.Localize(_Data.Success)) or _Data.Success),
+        API.ConvertPlaceholders((type(_Data.Failure) == "table" and API.Localize(_Data.Failure)) or _Data.Failure)
     };
 
     -- Daten validieren
