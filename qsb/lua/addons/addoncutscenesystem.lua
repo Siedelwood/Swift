@@ -100,9 +100,12 @@ function API.CutsceneStart(_Cutscene)
         if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
             _Cutscene[i].Title = API.Localize(_Cutscene[i].Title);
         end
+        _Cutscene[i].Title = API.ConvertPlaceholders(_Cutscene[i].Title);
+
         if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
             _Cutscene[i].Text = API.Localize(_Cutscene[i].Text);
         end
+        _Cutscene[i].Text = API.ConvertPlaceholders(_Cutscene[i].Text);
     end
 
     return AddOnCutsceneSystem.Global:StartCutscene(_Cutscene);
