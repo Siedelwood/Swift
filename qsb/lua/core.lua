@@ -30,34 +30,42 @@ QSB.Placeholders = {
 -- <pre>{YOUR_COLOR}</pre>
 -- Ersetze YOUR_COLOR mit einer der gelisteten Farben.
 --
--- @field red Rot
--- @field blue Blau
--- @field yellow Gelp
--- @field green Grün
--- @field white Weiß
--- @field black Schwarz
--- @field grey Grau
--- @field turquoise Türkies
--- @field orange Orange
--- @field amber Bernstein
--- @field violet Violett
--- @field pink Rosa
--- @field lucid Transparent
+-- @field red     Rot
+-- @field blue    Blau
+-- @field yellow  Gelp
+-- @field green   Grün
+-- @field white   Weiß
+-- @field black   Schwarz
+-- @field grey    Grau
+-- @field azure   Azurblau
+-- @field orange  Orange
+-- @field amber   Bernstein
+-- @field violet  Violett
+-- @field pink    Rosa
+-- @field scarlet Scharlachrot
+-- @field magenta Magenta
+-- @field olive   Olivgrün
+-- @field ocean   Ozeanblau
+-- @field lucid   Transparent
 --
 QSB.Placeholders.Colors = {
-    red       = "{@color:180,80,80,255}",
-    blue      = "{@color:80,80,180,255}",
-    yellow    = "{@color:255,255,80,255}",
-    green     = "{@color:80,180,0,255}",
-    white     = "{@color:255,255,255,255}",
-    black     = "{@color:0,0,0,255}",
-    grey      = "{@color:140,140,140,255}",
-    turquoise = "{@color:0,160,190,255}",
-    orange    = "{@color:255,190,70,255}",
-    amber     = "{@color:224,197,117,255}",
-    violet    = "{@color:180,100,190,255}",
-    pink      = "{@color:255,170,200,255}",
-    lucid     = "{@color:0,0,0,0}"
+    red     = "{@color:255,80,80,255}",
+    blue    = "{@color:104,104,232,255}",
+    yellow  = "{@color:255,255,80,255}",
+    green   = "{@color:80,180,0,255}",
+    white   = "{@color:255,255,255,255}",
+    black   = "{@color:0,0,0,255}",
+    grey    = "{@color:140,140,140,255}",
+    azure   = "{@color:0,160,190,255}",
+    orange  = "{@color:255,176,30,255}",
+    amber   = "{@color:224,197,117,255}",
+    violet  = "{@color:180,100,190,255}",
+    pink    = "{@color:255,170,200,255}",
+    scarlet = "{@color:190,0,0,255}",
+    magenta = "{@color:190,0,89,255}",
+    olive   = "{@color:74,120,0,255}",
+    sky     = "{@color:145,170,210,255}",
+    lucid   = "{@color:0,0,0,0}"
 };
 
 QSB.RealTime_SecondsSinceGameStart = 0;
