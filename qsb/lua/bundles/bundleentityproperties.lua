@@ -105,7 +105,7 @@ function API.MakeInvulnerable(_Entity)
     if type(_Entity) == "number" and IsExisting(_Entity) then
         QSB.EntityProperty:GetInstance(_Entity):Vulnerable(false);
     elseif type(_Entity) == "string" and IsExisting(_Entity) then
-        InvulnerableScriptNameToID[_Entity] = GetID(_Entity);
+        QSB.InvulnerableScriptNameToID[_Entity] = GetID(_Entity);
         QSB.EntityProperty:GetInstance(_Entity):Vulnerable(false);
     end
 end
@@ -122,7 +122,7 @@ function API.MakeVulnerable(_Entity)
     if type(_Entity) == "number" and IsExisting(_Entity) then
         QSB.EntityProperty:GetInstance(_Entity):Vulnerable(true);
     elseif type(_Entity) == "string" and IsExisting(_Entity) then
-        InvulnerableScriptNameToID[_Entity] = nil;
+        QSB.InvulnerableScriptNameToID[_Entity] = nil;
         QSB.EntityProperty:GetInstance(_Entity):Vulnerable(true);
 
     end
