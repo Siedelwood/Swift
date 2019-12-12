@@ -137,12 +137,12 @@ function API.PrintCutsceneHeadline(_Text)
     if not API.CutsceneIsActive() then
         return;
     end
+    if type(_Text) == "table" then
+        _Text = API.Localize(_Text);
+    end
     if not GUI then
         API.Bridge([[API.PrintCutsceneHeadline("]].._Text..[[")]]);
         return;
-    end
-    if type(_Text) == "table" then
-        _Text = API.Localize(_Text);
     end
     AddOnCutsceneSystem.Local:PrintCutsceneHeadline(_Text);
 end
@@ -157,12 +157,12 @@ function API.PrintCutsceneText(_Text)
     if not API.CutsceneIsActive() then
         return;
     end
+    if type(_Text) == "table" then
+        _Text = API.Localize(_Text);
+    end
     if not GUI then
         API.Bridge([[API.PrintCutsceneText("]].._Text..[[")]]);
         return;
-    end
-    if type(_Text) == "table" then
-        _Text = API.Localize(_Text);
     end
     AddOnCutsceneSystem.Local:PrintCutsceneText(_Text);
 end
