@@ -687,9 +687,6 @@ warn = API.Warn;
 -- <ul>
 -- <li>{name:xyz} - Ersetzt einen Skriptnamen mit dem zuvor gesetzten Wert.</li>
 -- <li>{type:xyz} - Ersetzt einen Typen mit dem zuvor gesetzten Wert.</li>
--- <li>{cval:xyz} - Ersetzt eine Custom Variable mit einem gesetzten Wert.</li>
--- <li>{npc} - Fügt den Namen des zuletzt angesprochenen NPC ein. (nur mit BundleNonPlacerCharacter)</li>
--- <li>{hero} - Fügt den Namen des Helden ein, der den NPC angesprochen hat. (nur mit BundleNonPlacerCharacter)</li>
 -- </ul>
 --
 -- Außerdem werden einige Standardfarben ersetzt.
