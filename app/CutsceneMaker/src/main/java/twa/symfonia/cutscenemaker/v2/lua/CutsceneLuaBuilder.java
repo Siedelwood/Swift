@@ -1,14 +1,15 @@
 package twa.symfonia.cutscenemaker.v2.lua;
 
-import org.apache.commons.io.IOUtils;
-import twa.symfonia.cutscenemaker.v2.CutsceneMaker;
-import twa.symfonia.cutscenemaker.v2.lua.models.Flight;
-import twa.symfonia.cutscenemaker.v2.lua.models.FlightEntry;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Locale;
+
+import org.apache.commons.io.IOUtils;
+
+import twa.symfonia.cutscenemaker.v2.CutsceneMaker;
+import twa.symfonia.cutscenemaker.v2.lua.models.Flight;
+import twa.symfonia.cutscenemaker.v2.lua.models.FlightEntry;
 
 /**
  * Creates a cutscene as lua string from the flights added to the service. The resulting string is valid lua and can
@@ -48,14 +49,15 @@ public class CutsceneLuaBuilder {
      * @param flight Cutscene to work on
      * @return Lua string with cutscene
      */
-    public String buildCutsceneString(String functionName, Flight flight) {
+    public String buildCutsceneString(final String functionName, final Flight flight) {
         return String.format(
             Locale.ENGLISH,
             cutsceneTemplate,
             functionName,
             flight.isRestoreGameSpeed(),
-            flight.isTransperentBars(),
             flight.isHideBorderPins(),
+            flight.isBigBars(),
+            flight.getOpacity(),
             flight.isFastForward(),
             buildFlightEntries(flight),
             flight.getStartingFunction(),

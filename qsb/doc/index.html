@@ -660,6 +660,31 @@ API.ActivateIO(&#x3C;span class="string"&#x3E;"Hut1"&#x3C;/span&#x3E;)&#x3C;/pre
 API.AddCustomIOName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Leere Schatztruhe"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="core_API.AddEntityTypePlaceholder" class="result method"><a href="html/core.lua.html#API.AddEntityTypePlaceholder">API.AddEntityTypePlaceholder</a><br>Fügt einen Platzhalter für einen Entity-Typ hinzu.<span class="docInvisibleContent">
+    Fügt einen Platzhalter für einen Entity-Typ hinzu.
+&#x3C;p&#x3E; Innerhalb des Textes wird der Plathalter wie folgt geschrieben:
+ &#x3C;pre&#x3E;{name:ENTITY_TYP}&#x3C;/pre&#x3E;
+ ENTITY_TYP muss mit einem Entity-Typ ersetzt werden. Der Typ wird ohne
+ Entities. davor geschrieben.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Name&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+                Scriptname, der ersetzt werden soll
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Replacement&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Wert, der ersetzt wird
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
 </span></div><div id="core_API.AddHotKey" class="result method"><a href="html/core.lua.html#API.AddHotKey">API.AddHotKey</a><br>Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.<span class="docInvisibleContent">
     Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.
 &#x3C;p&#x3E; Ist der Hotkey bereits vorhanden, wird -1 zurückgegeben.
@@ -684,6 +709,30 @@ API.AddCustomIOName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"&#x3C;/sp
            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
         Index oder Fehlercode
     &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="core_API.AddNamePlaceholder" class="result method"><a href="html/core.lua.html#API.AddNamePlaceholder">API.AddNamePlaceholder</a><br>Fügt einen Platzhalter für den angegebenen Namen hinzu.<span class="docInvisibleContent">
+    Fügt einen Platzhalter für den angegebenen Namen hinzu.
+&#x3C;p&#x3E; Innerhalb des Textes wird der Plathalter wie folgt geschrieben:
+ &#x3C;pre&#x3E;{name:YOUR_NAME}&#x3C;/pre&#x3E;
+ YOUR_NAME muss mit dem Namen ersetzt werden.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Name&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+                Name, der ersetzt werden soll
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Replacement&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Wert, der ersetzt wird
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
 
 
 
@@ -1411,6 +1460,39 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.Confront(&#x3C;span class="string"&#x3E;"Hakim"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Alandra"&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
+
+</span></div><div id="core_API.ConvertPlaceholders" class="result method"><a href="html/core.lua.html#API.ConvertPlaceholders">API.ConvertPlaceholders</a><br>Ersetzt alle Platzhalter im Text oder in der Table.<span class="docInvisibleContent">
+    Ersetzt alle Platzhalter im Text oder in der Table.
+&#x3C;p&#x3E; Mögliche Platzhalter:
+ &#x3C;ul&#x3E;
+ &#x3C;li&#x3E;{name:xyz} - Ersetzt einen Skriptnamen mit dem zuvor gesetzten Wert.&#x3C;/li&#x3E;
+ &#x3C;li&#x3E;{type:xyz} - Ersetzt einen Typen mit dem zuvor gesetzten Wert.&#x3C;/li&#x3E;
+ &#x3C;li&#x3E;{cval:xyz} - Ersetzt eine Custom Variable mit einem gesetzten Wert.&#x3C;/li&#x3E;
+ &#x3C;li&#x3E;{npc} - Fügt den Namen des zuletzt angesprochenen NPC ein. (nur mit BundleNonPlacerCharacter)&#x3C;/li&#x3E;
+ &#x3C;li&#x3E;{hero} - Fügt den Namen des Helden ein, der den NPC angesprochen hat. (nur mit BundleNonPlacerCharacter)&#x3C;/li&#x3E;
+ &#x3C;/ul&#x3E;
+&#x3C;p&#x3E; Außerdem werden einige Standardfarben ersetzt.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Message&#x3C;/span&#x3E;
+         Text oder Table mit Texten
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+        Ersetzter Text
+    &#x3C;/ol&#x3E;
+
+
+    &#x3C;h3&#x3E;See also:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+         &#x3C;a href="core.lua.html#QSB.Placeholders.Colors"&#x3E;QSB.Placeholders.Colors&#x3C;/a&#x3E;
+    &#x3C;/ul&#x3E;
+
 
 </span></div><div id="addoninteractivesites_API.CreateIOBuildingSite" class="result method"><a href="html/addoninteractivesites.lua.html#API.CreateIOBuildingSite">API.CreateIOBuildingSite</a><br>Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.<span class="docInvisibleContent">
     Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.
@@ -4313,6 +4395,44 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
         &#x3C;pre class="example"&#x3E;API.LookAt(&#x3C;span class="string"&#x3E;"Hakim"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Alandra"&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundleentityproperties_API.MakeInvulnerable" class="result method"><a href="html/bundleentityproperties.lua.html#API.MakeInvulnerable">API.MakeInvulnerable</a><br>Macht das Entity oder das Battalion unverwundbar.<span class="docInvisibleContent">
+    Macht das Entity oder das Battalion unverwundbar.
+&#x3C;p&#x3E; Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
+ ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: MakeInvulnerable
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Scriptname des Entity
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.MakeVulnerable" class="result method"><a href="html/bundleentityproperties.lua.html#API.MakeVulnerable">API.MakeVulnerable</a><br>Macht das Entity oder das Battalion verwundbar.<span class="docInvisibleContent">
+    Macht das Entity oder das Battalion verwundbar.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: MakeVulnerable
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Scriptname des Entity
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
 </span></div><div id="core_API.Message" class="result method"><a href="html/core.lua.html#API.Message">API.Message</a><br>Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.<span class="docInvisibleContent">
     Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
 &#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GUI_NoteDown&#x3C;/p&#x3E;
@@ -4639,6 +4759,46 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
     &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.PlaceToPosition(&#x3C;span class="string"&#x3E;"hakim"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"saraya"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;300&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;45&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="addoncutscenesystem_API.PrintCutsceneHeadline" class="result method"><a href="html/addoncutscenesystem.lua.html#API.PrintCutsceneHeadline">API.PrintCutsceneHeadline</a><br>Ändert den Titel des aktuellen Flight.<span class="docInvisibleContent">
+    Ändert den Titel des aktuellen Flight.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Text&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Anzeigetext
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.PrintCutsceneHeadline(&#x3C;span class="string"&#x3E;"Das ist der neue Titel"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="addoncutscenesystem_API.PrintCutsceneText" class="result method"><a href="html/addoncutscenesystem.lua.html#API.PrintCutsceneText">API.PrintCutsceneText</a><br>Ändert den Text des aktuellen Flight.<span class="docInvisibleContent">
+    Ändert den Text des aktuellen Flight.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Text&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Anzeigetext
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.PrintCutsceneText(&#x3C;span class="string"&#x3E;"Schaut mal, neuer Text! Wie wunderbar!"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
 </span></div><div id="bundledestructioncontrol_API.ProtectCategory" class="result method"><a href="html/bundledestructioncontrol.lua.html#API.ProtectCategory">API.ProtectCategory</a><br>Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.<span class="docInvisibleContent">
@@ -6745,6 +6905,15 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
 &#x3C;/span&#x3E;ASP(&#x3C;span class="string"&#x3E;"B1P1"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"hans"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Hänschen-Klein"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Ich gehe in die weitel Welt hinein."&#x3C;/span&#x3E;, &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundleentityproperties_BundleEntityProperties.Global:Install" class="result method"><a href="html/bundleentityproperties.lua.html#BundleEntityProperties.Global:Install">BundleEntityProperties.Global:Install</a><br>Installiert das Bundle.<span class="docInvisibleContent">
+    Installiert das Bundle.
+
+
+
+
+
+
+
 </span></div><div id="bundleclassicbehaviors_Goal_ActivateBuff" class="result method"><a href="html/bundleclassicbehaviors.lua.html#Goal_ActivateBuff">Goal_ActivateBuff</a><br>Der angegebene Spieler muss einen Buff aktivieren.<span class="docInvisibleContent">
     Der angegebene Spieler muss einen Buff aktivieren.
 &#x3C;p&#x3E; &#x3C;u&#x3E;Buffs "Aufstieg eines Königreich"&#x3C;/u&#x3E;
@@ -8084,6 +8253,73 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.CreateMinimapSignal(MarkerColor.Red, GetPosition(&#x3C;span class="string"&#x3E;"pos"&#x3C;/span&#x3E;));&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
+
+</span></div><div id="core_QSB.Placeholders.Colors" class="result method"><a href="html/core.lua.html#QSB.Placeholders.Colors">QSB.Placeholders.Colors</a><br>Farben, die als Platzhalter genutzt werden können.<span class="docInvisibleContent">
+    Farben, die als Platzhalter genutzt werden können.
+&#x3C;p&#x3E; Verwendung:
+ &#x3C;pre&#x3E;{YOUR_COLOR}&#x3C;/pre&#x3E;
+ Ersetze YOUR_COLOR mit einer der gelisteten Farben.
+
+
+
+    &#x3C;h3&#x3E;Fields:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;red&#x3C;/span&#x3E;
+             Rot
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;blue&#x3C;/span&#x3E;
+            Blau
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;yellow&#x3C;/span&#x3E;
+          Gelp
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;green&#x3C;/span&#x3E;
+           Grün
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;white&#x3C;/span&#x3E;
+           Weiß
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;black&#x3C;/span&#x3E;
+           Schwarz
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;grey&#x3C;/span&#x3E;
+            Grau
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;azure&#x3C;/span&#x3E;
+           Azurblau
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;orange&#x3C;/span&#x3E;
+          Orange
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;amber&#x3C;/span&#x3E;
+           Bernstein
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;violet&#x3C;/span&#x3E;
+          Violett
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;pink&#x3C;/span&#x3E;
+            Rosa
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;scarlet&#x3C;/span&#x3E;
+         Scharlachrot
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;magenta&#x3C;/span&#x3E;
+         Magenta
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;olive&#x3C;/span&#x3E;
+           Olivgrün
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;ocean&#x3C;/span&#x3E;
+           Ozeanblau
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;lucid&#x3C;/span&#x3E;
+           Transparent
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
 
 </span></div><div id="bundlebriefingsystem_Reprisal_Briefing" class="result method"><a href="html/bundlebriefingsystem.lua.html#Reprisal_Briefing">Reprisal_Briefing</a><br>Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing in ihr ab.<span class="docInvisibleContent">
     Ruft die Lua-Funktion mit dem angegebenen Namen auf und spielt das Briefing

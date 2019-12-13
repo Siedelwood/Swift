@@ -6,24 +6,26 @@ import java.util.List;
 public class FlightData {
     private String startingFunction;
     private String cutsceneName;
-    private boolean restoreGameTime;
-    private boolean hideBorderPins;
-    private boolean transparentBars;
+    private Boolean restoreGameTime;
+    private Boolean hideBorderPins;
+    private Boolean bigBars;
+    private Double opacity;
     private String finishedFunction;
-    private boolean fastForward;
+    private Boolean fastForward;
     private List<FlightEntryData> flightEntries;
 
     public FlightData() {
         flightEntries = new ArrayList<>();
     }
 
-    public FlightData(String cutsceneName, boolean restoreGameTime, boolean hideBorderPins, boolean transparentBars, boolean fastForward,
+    public FlightData(String cutsceneName, Boolean restoreGameTime, Boolean hideBorderPins, Boolean bigBars, Double opacity, Boolean fastForward,
                       String startingFunction, String finishedFunction) {
         flightEntries = new ArrayList<>();
         this.cutsceneName = cutsceneName;
         this.restoreGameTime = restoreGameTime;
         this.hideBorderPins = hideBorderPins;
-        this.transparentBars = transparentBars;
+        this.bigBars = bigBars;
+        this.opacity = opacity;
         this.startingFunction = startingFunction;
         this.finishedFunction = finishedFunction;
         this.fastForward = fastForward;
@@ -85,11 +87,19 @@ public class FlightData {
         this.hideBorderPins = hideBorderPins;
     }
 
-    public boolean isTransparentBars() {
-        return transparentBars;
+    public Boolean isBigBars() {
+        return bigBars;
     }
 
-    public void setTransparentBars(boolean transparentBars) {
-        this.transparentBars = transparentBars;
+    public void setBigBars(Boolean bigBars) {
+        this.bigBars = bigBars;
+    }
+
+    public Double getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(Double opacity) {
+        this.opacity = opacity;
     }
 }

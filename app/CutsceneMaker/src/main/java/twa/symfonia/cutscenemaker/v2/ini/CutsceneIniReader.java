@@ -1,14 +1,15 @@
 package twa.symfonia.cutscenemaker.v2.ini;
 
-import org.ini4j.Ini;
-import twa.symfonia.cutscenemaker.v2.ini.models.FlightData;
-import twa.symfonia.cutscenemaker.v2.ini.models.FlightEntryData;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ini4j.Ini;
+
+import twa.symfonia.cutscenemaker.v2.ini.models.FlightData;
+import twa.symfonia.cutscenemaker.v2.ini.models.FlightEntryData;
 
 /**
  * Simple reader for cutscene properties stored in INI files.
@@ -27,7 +28,7 @@ public class CutsceneIniReader {
      * @param ini INI file to load
      * @throws IOException
      */
-    public void loadFile(File ini) throws IOException {
+    public void loadFile(final File ini) throws IOException {
         iniFile = new Ini(ini);
     }
 
@@ -36,9 +37,9 @@ public class CutsceneIniReader {
      * @param cutsceneName Name of cutscene
      * @return Flight data
      */
-    public FlightData getFlightData(String cutsceneName) throws UnsupportedEncodingException {
-        FlightData data = readCutsceneProperties(cutsceneName);
-        List<FlightEntryData> flights = readFlightProperties();
+    public FlightData getFlightData(final String cutsceneName) throws UnsupportedEncodingException {
+        final FlightData data = readCutsceneProperties(cutsceneName);
+        final List<FlightEntryData> flights = readFlightProperties();
         data.setFlightEntries(flights);
         return data;
     }
@@ -48,7 +49,7 @@ public class CutsceneIniReader {
      * @param cutsceneName Name of cutscene
      * @return Cutscene data
      */
-    private FlightData readCutsceneProperties(String cutsceneName) {
+    private FlightData readCutsceneProperties(final String cutsceneName) {
         String restoreGameSpeed = iniFile.get("Cutscene", "RestoreGameSpeed");
         if (restoreGameSpeed == null) {
             restoreGameSpeed = "false";
@@ -59,9 +60,14 @@ public class CutsceneIniReader {
             hideBorderPins = "false";
         }
 
-        String transperentBars = iniFile.get("Cutscene", "TransparentBars");
-        if (transperentBars == null) {
-            transperentBars = "false";
+        String bigBars = iniFile.get("Cutscene", "BigBars");
+        if (bigBars == null) {
+            bigBars = "false";
+        }
+
+        String opacity = iniFile.get("Cutscene", "BarOpacity");
+        if (opacity == null) {
+            opacity = "1.0";
         }
 
         String fastForward = iniFile.get("Cutscene", "FastForward");
@@ -69,14 +75,15 @@ public class CutsceneIniReader {
             fastForward = "false";
         }
 
-        String startingFunction = iniFile.get("Cutscene", "StartingFunction");
-        String finishedFunction = iniFile.get("Cutscene", "FinishedFunction");
+        final String startingFunction = iniFile.get("Cutscene", "StartingFunction");
+        final String finishedFunction = iniFile.get("Cutscene", "FinishedFunction");
 
         return new FlightData(
                 cutsceneName,
                 Boolean.parseBoolean(restoreGameSpeed),
                 Boolean.parseBoolean(hideBorderPins),
-                Boolean.parseBoolean(transperentBars),
+                Boolean.parseBoolean(bigBars),
+                Double.parseDouble(opacity),
                 Boolean.parseBoolean(fastForward),
                 (startingFunction == null) ? "nil" : startingFunction,
                 (finishedFunction == null) ? "nil" : finishedFunction
@@ -88,9 +95,9 @@ public class CutsceneIniReader {
      * @return List of flight entry data
      */
     private List<FlightEntryData> readFlightProperties() throws UnsupportedEncodingException {
-        List<FlightEntryData> data = new ArrayList<>();
+        final List<FlightEntryData> data = new ArrayList<>();
 
-        for (String sectionName: iniFile.keySet()) {
+        for (final String sectionName: iniFile.keySet()) {
             if (!sectionName.equals("Cutscene")) {
                 String title = iniFile.get(sectionName, "Title");
                 if (title == null) {
@@ -116,7 +123,7 @@ public class CutsceneIniReader {
                 if (fadeOut == null) {
                     fadeOut = "nil";
                 }
-                FlightEntryData flight = new FlightEntryData(sectionName, title, text, action, fadeIn, fadeOut);
+                final FlightEntryData flight = new FlightEntryData(sectionName, title, text, action, fadeIn, fadeOut);
                 data.add(flight);
             }
         }
