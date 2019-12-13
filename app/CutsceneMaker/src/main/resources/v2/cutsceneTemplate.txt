@@ -2,7 +2,8 @@ function %s()
     local Cutscene = {
         RestoreGameSpeed = %b,
         HideBorderPins   = %b,
-        TransperentBars  = %b,
+        BigBars          = %b,
+        BarOpacity       = %f,
         FastForward      = %b,
 
 %s

@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Flight {
-    private String startingFunction;
     private List<FlightEntry> flightEntries;
-    private boolean restoreGameSpeed;
-    private boolean transperentBars;
-    private boolean hideBorderPins;
-    private boolean fastForward;
+    private Boolean restoreGameSpeed;
+    private Boolean bigBars;
+    private Boolean hideBorderPins;
+    private Boolean fastForward;
+    private Double opacity;
     private String finishedFunction;
+    private String startingFunction;
 
-    public Flight(List<FlightEntry> flightEntries, boolean restoreGameSpeed, boolean transperentBars, boolean hideBorderPins, boolean fastForward,
+    public Flight(List<FlightEntry> flightEntries, Boolean restoreGameSpeed, Boolean hideBorderPins, Boolean bigBars, Double opacity, Boolean fastForward,
                   String startingFunction, String finishedFunction) {
         this.flightEntries = flightEntries;
         this.restoreGameSpeed = restoreGameSpeed;
-        this.transperentBars = transperentBars;
+        this.bigBars = bigBars;
+        this.opacity = opacity;
         this.hideBorderPins = hideBorderPins;
         this.startingFunction = startingFunction;
         this.finishedFunction = finishedFunction;
@@ -71,19 +73,27 @@ public class Flight {
         this.restoreGameSpeed = restoreGameSpeed;
     }
 
-    public boolean isTransperentBars() {
-        return transperentBars;
-    }
-
-    public void setTransperentBars(boolean transperentBars) {
-        this.transperentBars = transperentBars;
-    }
-
     public boolean isHideBorderPins() {
         return hideBorderPins;
     }
 
     public void setHideBorderPins(boolean hideBorderPins) {
         this.hideBorderPins = hideBorderPins;
+    }
+
+    public Boolean isBigBars() {
+        return bigBars;
+    }
+
+    public void setBigBars(Boolean bigBars) {
+        this.bigBars = bigBars;
+    }
+
+    public Double getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(Double opacity) {
+        this.opacity = opacity;
     }
 }

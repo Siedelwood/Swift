@@ -31,6 +31,7 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Tables">Tables</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 </ul>
 
@@ -52,6 +53,13 @@
 </p>
 
 
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#QSB.Placeholders.Colors">QSB.Placeholders.Colors</a></td>
+	<td class="summary">Farben, die als Platzhalter genutzt werden können.</td>
+	</tr>
+</table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
@@ -59,8 +67,16 @@
 	<td class="summary">Aktiviert ein interaktives Objekt, sodass es benutzt werden kann.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.AddEntityTypePlaceholder">API.AddEntityTypePlaceholder (_Name, _Replacement)</a></td>
+	<td class="summary">Fügt einen Platzhalter für einen Entity-Typ hinzu.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.AddHotKey">API.AddHotKey (_Key, _Description)</a></td>
 	<td class="summary">Fügt eine Beschreibung zu einem selbst gewählten Hotkey hinzu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.AddNamePlaceholder">API.AddNamePlaceholder (_Name, _Replacement)</a></td>
+	<td class="summary">Fügt einen Platzhalter für den angegebenen Namen hinzu.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.AddSaveGameAction">API.AddSaveGameAction (_Function)</a></td>
@@ -73,6 +89,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#API.Confront">API.Confront (_entity, _entityToLookAt)</a></td>
 	<td class="summary">Lässt zwei Entities sich gegenseitig anschauen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ConvertPlaceholders">API.ConvertPlaceholders (_Message)</a></td>
+	<td class="summary">Ersetzt alle Platzhalter im Text oder in der Table.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.DeactivateIO">API.DeactivateIO (_ScriptName)</a></td>
@@ -197,6 +217,82 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "QSB.Placeholders.Colors"></a>
+    <strong>QSB.Placeholders.Colors</strong>
+    </dt>
+    <dd>
+    Farben, die als Platzhalter genutzt werden können.
+<p> Verwendung:
+ <pre>{YOUR_COLOR}</pre>
+ Ersetze YOUR_COLOR mit einer der gelisteten Farben.
+
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">red</span>
+             Rot
+        </li>
+        <li><span class="parameter">blue</span>
+            Blau
+        </li>
+        <li><span class="parameter">yellow</span>
+          Gelp
+        </li>
+        <li><span class="parameter">green</span>
+           Grün
+        </li>
+        <li><span class="parameter">white</span>
+           Weiß
+        </li>
+        <li><span class="parameter">black</span>
+           Schwarz
+        </li>
+        <li><span class="parameter">grey</span>
+            Grau
+        </li>
+        <li><span class="parameter">azure</span>
+           Azurblau
+        </li>
+        <li><span class="parameter">orange</span>
+          Orange
+        </li>
+        <li><span class="parameter">amber</span>
+           Bernstein
+        </li>
+        <li><span class="parameter">violet</span>
+          Violett
+        </li>
+        <li><span class="parameter">pink</span>
+            Rosa
+        </li>
+        <li><span class="parameter">scarlet</span>
+         Scharlachrot
+        </li>
+        <li><span class="parameter">magenta</span>
+         Magenta
+        </li>
+        <li><span class="parameter">olive</span>
+           Olivgrün
+        </li>
+        <li><span class="parameter">ocean</span>
+           Ozeanblau
+        </li>
+        <li><span class="parameter">lucid</span>
+           Transparent
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
 
     <dl class="function">
@@ -236,6 +332,36 @@ API.ActivateIO(<span class="string">"Hut1"</span>)</pre>
 
 </dd>
     <dt>
+    <a name = "API.AddEntityTypePlaceholder"></a>
+    <strong>API.AddEntityTypePlaceholder (_Name, _Replacement)</strong>
+    </dt>
+    <dd>
+    Fügt einen Platzhalter für einen Entity-Typ hinzu.
+<p> Innerhalb des Textes wird der Plathalter wie folgt geschrieben:
+ <pre>{name:ENTITY_TYP}</pre>
+ ENTITY_TYP muss mit einem Entity-Typ ersetzt werden. Der Typ wird ohne
+ Entities. davor geschrieben.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Scriptname, der ersetzt werden soll
+        </li>
+        <li><span class="parameter">_Replacement</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Wert, der ersetzt wird
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.AddHotKey"></a>
     <strong>API.AddHotKey (_Key, _Description)</strong>
     </dt>
@@ -263,6 +389,35 @@ API.ActivateIO(<span class="string">"Hut1"</span>)</pre>
            <span class="types"><span class="type">number</span></span>
         Index oder Fehlercode
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.AddNamePlaceholder"></a>
+    <strong>API.AddNamePlaceholder (_Name, _Replacement)</strong>
+    </dt>
+    <dd>
+    Fügt einen Platzhalter für den angegebenen Namen hinzu.
+<p> Innerhalb des Textes wird der Plathalter wie folgt geschrieben:
+ <pre>{name:YOUR_NAME}</pre>
+ YOUR_NAME muss mit dem Namen ersetzt werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+                Name, der ersetzt werden soll
+        </li>
+        <li><span class="parameter">_Replacement</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Wert, der ersetzt wird
+        </li>
+    </ul>
+
 
 
 
@@ -337,6 +492,44 @@ API.AddSaveGameAction(SaveGame)</pre>
     <ul>
         <pre class="example">API.Confront(<span class="string">"Hakim"</span>, <span class="string">"Alandra"</span>)</pre>
     </ul>
+
+</dd>
+    <dt>
+    <a name = "API.ConvertPlaceholders"></a>
+    <strong>API.ConvertPlaceholders (_Message)</strong>
+    </dt>
+    <dd>
+    Ersetzt alle Platzhalter im Text oder in der Table.
+<p> Mögliche Platzhalter:
+ <ul>
+ <li>{name:xyz} - Ersetzt einen Skriptnamen mit dem zuvor gesetzten Wert.</li>
+ <li>{type:xyz} - Ersetzt einen Typen mit dem zuvor gesetzten Wert.</li>
+ <li>{cval:xyz} - Ersetzt eine Custom Variable mit einem gesetzten Wert.</li>
+ <li>{npc} - Fügt den Namen des zuletzt angesprochenen NPC ein. (nur mit BundleNonPlacerCharacter)</li>
+ <li>{hero} - Fügt den Namen des Helden ein, der den NPC angesprochen hat. (nur mit BundleNonPlacerCharacter)</li>
+ </ul>
+<p> Außerdem werden einige Standardfarben ersetzt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Message</span>
+         Text oder Table mit Texten
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Ersetzter Text
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="core.lua.html#QSB.Placeholders.Colors">QSB.Placeholders.Colors</a>
+    </ul>
+
 
 </dd>
     <dt>
@@ -1240,7 +1433,7 @@ Copy = API.InstanceTable(Table)</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-12-01 12:56:04 </i>
+<i style="float:right;">Last updated 2019-12-13 21:05:45 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
