@@ -100,9 +100,11 @@ function API.CutsceneStart(_Cutscene)
         if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
             _Cutscene[i].Title = API.Localize(_Cutscene[i].Title);
         end
+
         if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
             _Cutscene[i].Text = API.Localize(_Cutscene[i].Text);
         end
+        _Cutscene[i].Text = API.ConvertPlaceholders(_Cutscene[i].Text);
     end
 
     return AddOnCutsceneSystem.Global:StartCutscene(_Cutscene);
@@ -124,6 +126,46 @@ function API.CutsceneIsActive()
     return AddOnCutsceneSystem.Global:IsCutsceneActive();
 end
 IsCutsceneActive = API.CutsceneIsActive;
+
+---
+-- Ändert den Titel des aktuellen Flight.
+-- @param[type=string] _Text Anzeigetext
+-- @within Anwenderfunktionen
+-- @usage API.PrintCutsceneHeadline("Das ist der neue Titel");
+--
+function API.PrintCutsceneHeadline(_Text)
+    if not API.CutsceneIsActive() then
+        return;
+    end
+    if type(_Text) == "table" then
+        _Text = API.Localize(_Text);
+    end
+    if not GUI then
+        API.Bridge([[API.PrintCutsceneHeadline("]].._Text..[[")]]);
+        return;
+    end
+    AddOnCutsceneSystem.Local:PrintCutsceneHeadline(_Text);
+end
+
+---
+-- Ändert den Text des aktuellen Flight.
+-- @param[type=string] _Text Anzeigetext
+-- @within Anwenderfunktionen
+-- @usage API.PrintCutsceneText("Schaut mal, neuer Text! Wie wunderbar!");
+--
+function API.PrintCutsceneText(_Text)
+    if not API.CutsceneIsActive() then
+        return;
+    end
+    if type(_Text) == "table" then
+        _Text = API.Localize(_Text);
+    end
+    if not GUI then
+        API.Bridge([[API.PrintCutsceneText("]].._Text..[[")]]);
+        return;
+    end
+    AddOnCutsceneSystem.Local:PrintCutsceneText(_Text);
+end
 
 ---
 -- Setzt die Geschwindigkeit für den schnellen Vorlauf für alle Cutscenes.
@@ -420,18 +462,9 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         local Action  = CurrentFlight.Action;
 
         -- Setze Title
-        if string.sub(Title, 1, 1) ~= "{" then
-            Title = "{@color:255,250,0,255}{center}{darkshadow}" .. Title;
-        end
-        XGUIEng.SetText("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", Title);
+        self:PrintCutsceneHeadline(Title);
         -- Setze Text
-        if string.sub(Text, 1, 1) ~= "{" then
-            Text = "{center}" .. Text;
-        end
-        if not self.Data.CurrentCutscene.BigBars then
-            Text = "{cr}{cr}{cr}" .. Text;
-        end
-        XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", Text);
+        self:PrintCutsceneText(Text);
         -- Führe Action aus
         if Action then
             API.Bridge("AddOnCutsceneSystem.Global.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
@@ -478,6 +511,37 @@ function AddOnCutsceneSystem.Local:FlightFinished()
 end
 CutsceneFlightFinished = function()
     AddOnCutsceneSystem.Local:FlightFinished();
+end
+
+---
+-- Setzt den Titel des aktuellen Flight.
+-- @param[type=string] _Text Anzeigetext
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:PrintCutsceneHeadline(_Text)
+    _Text = API.ConvertPlaceholders(_Text);
+    if string.sub(_Text, 1, 1) ~= "{" then
+        _Text = "{@color:255,250,0,255}{center}{darkshadow}" .. _Text;
+    end
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", _Text);
+end
+
+---
+-- Setzt den Text des aktuellen Flight.
+-- @param[type=string] _Text Anzeigetext
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Local:PrintCutsceneText(_Text)
+    _Text = API.ConvertPlaceholders(_Text);
+    if string.sub(_Text, 1, 1) ~= "{" then
+        _Text = "{center}" .. _Text;
+    end
+    if not self.Data.CurrentCutscene.BigBars then
+        _Text = "{cr}{cr}{cr}" .. _Text;
+    end
+    XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Text", _Text);
 end
 
 ---

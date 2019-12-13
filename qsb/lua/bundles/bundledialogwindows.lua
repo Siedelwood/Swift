@@ -47,8 +47,8 @@ function API.DialogInfoBox(_Title, _Text, _Action)
         return;
     end
 
-    _Title = API.Localize(_Title);
-    _Text  = API.Localize(_Text);
+    _Title = API.ConvertPlaceholders(API.Localize(_Title));
+    _Text  = API.ConvertPlaceholders(API.Localize(_Text));
     return BundleDialogWindows.Local:OpenDialog(_Title, _Text, _Action);
 end
 UserOpenDialog = API.DialogInfoBox;
@@ -80,8 +80,8 @@ function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
         API.Fatal("API.DialogRequestBox: Can only be used in the local script!");
         return;
     end
-    _Title = API.Localize(_Title);
-    _Text = API.Localize(_Text);
+    _Title = API.ConvertPlaceholders(API.Localize(_Title));
+    _Text = API.ConvertPlaceholders(API.Localize(_Text));
     return BundleDialogWindows.Local:OpenRequesterDialog(_Title, _Text, _Action, _OkCancel);
 end
 UserOpenRequesterDialog = API.DialogRequestBox;
@@ -113,8 +113,8 @@ function API.DialogSelectBox(_Title, _Text, _Action, _List)
         API.Fatal("API.DialogSelectBox: Can only be used in the local script!");
         return;
     end
-    _Title = API.Localize(_Title);
-    _Text = API.Localize(_Text);
+    _Title = API.ConvertPlaceholders(API.Localize(_Title));
+    _Text = API.ConvertPlaceholders(API.Localize(_Text));
     _Text = _Text .. "{cr}";
     return BundleDialogWindows.Local:OpenSelectionDialog(_Title, _Text, _Action, _List);
 end
@@ -145,8 +145,8 @@ UserOpenSelectionDialog = API.DialogSelectBox;
 -- API.SimpleTextWindow("Überschrift", Text);
 --
 function API.SimpleTextWindow(_Caption, _Content)
-    _Caption = API.Localize(_Caption);
-    _Content = API.Localize(_Content);
+    _Caption = API.ConvertPlaceholders(API.Localize(_Caption));
+    _Content = API.ConvertPlaceholders(API.Localize(_Content));
     if not GUI then
         API.Bridge("API.SimpleTextWindow('" .._Caption.. "', '" .._Content.. "')");
         return;
@@ -195,7 +195,7 @@ function API.SimpleTypewriter(_Text, _Callback)
         API.Fatal("API.SimpleTypewriter: Can only be used from global script!");
         return;
     end
-    QSB.SimpleTypewriter:New(API.Localize(_Text), _Callback):Start();
+    QSB.SimpleTypewriter:New(API.ConvertPlaceholders(API.Localize(_Text)), _Callback):Start();
 end
 
 -- -------------------------------------------------------------------------- --

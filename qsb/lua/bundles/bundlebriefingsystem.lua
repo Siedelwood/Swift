@@ -171,8 +171,8 @@ function API.AddPages(_Briefing)
         _Briefing.Length = (_Briefing.Length or 0) +1;
         if type(_Page) == "table" then
             -- Sprache anpassen
-            _Page.Title = API.Localize(_Page.Title);
-            _Page.Text = API.Localize(_Page.Text);
+            _Page.Title = API.ConvertPlaceholders(API.Localize(_Page.Title));
+            _Page.Text = API.ConvertPlaceholders(API.Localize(_Page.Text));
             -- Lookat mappen
             if type(_Page.LookAt) == "string" or type(_Page.LookAt) == "number" then
                 _Page.LookAt = {_Page.LookAt, 0}

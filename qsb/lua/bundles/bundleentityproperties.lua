@@ -16,6 +16,8 @@ BundleEntityProperties = {};
 API = API or {};
 QSB = QSB or {};
 
+QSB.InvulnerableScriptNameToID = {};
+
 -- -------------------------------------------------------------------------- --
 -- Backwards compability                                                      --
 -- -------------------------------------------------------------------------- --
@@ -88,6 +90,44 @@ function API.IsEntityVisible(_Entity)
     return QSB.EntityProperty:GetInstance(_Entity):Visible();
 end
 IsVisible = API.IsEntityVisible;
+
+---
+-- Macht das Entity oder das Battalion unverwundbar.
+--
+-- Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
+-- ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
+--
+-- <b>Alias</b>: MakeInvulnerable
+--
+-- @param[type=string] _Entity Scriptname des Entity
+--
+function API.MakeInvulnerable(_Entity)
+    if type(_Entity) == "number" and IsExisting(_Entity) then
+        QSB.EntityProperty:GetInstance(_Entity):Vulnerable(false);
+    elseif type(_Entity) == "string" and IsExisting(_Entity) then
+        QSB.InvulnerableScriptNameToID[_Entity] = GetID(_Entity);
+        QSB.EntityProperty:GetInstance(_Entity):Vulnerable(false);
+    end
+end
+MakeInvulnerable = API.MakeInvulnerable;
+
+---
+-- Macht das Entity oder das Battalion verwundbar.
+--
+-- <b>Alias</b>: MakeVulnerable
+--
+-- @param[type=string] _Entity Scriptname des Entity
+--
+function API.MakeVulnerable(_Entity)
+    if type(_Entity) == "number" and IsExisting(_Entity) then
+        QSB.EntityProperty:GetInstance(_Entity):Vulnerable(true);
+    elseif type(_Entity) == "string" and IsExisting(_Entity) then
+        QSB.InvulnerableScriptNameToID[_Entity] = nil;
+        QSB.EntityProperty:GetInstance(_Entity):Vulnerable(true);
+
+    end
+end
+MakeVulnerable = API.MakeVulnerable;
 
 ---
 -- Setzt den Größenfaktor des Entity.
@@ -179,6 +219,38 @@ function API.HurtEntity(_Entity, _Damage, _Attacker)
     QSB.EntityProperty:GetInstance(_Entity):Hurt(_Damage, _Attacker);
 end
 HurtEntityEx = API.HurtEntity;
+
+-- -------------------------------------------------------------------------- --
+-- Internal                                                                   --
+-- -------------------------------------------------------------------------- --
+
+BundleEntityProperties = {
+    Global = {
+        Data = {};
+    }
+}
+
+---
+-- Installiert das Bundle.
+--
+function BundleEntityProperties.Global:Install()
+    StartSimpleHiResJobEx(self.InvulnerabilityJob);
+end
+
+---
+-- Setzt ein unverwundbares Entity wieder unverwundbar, wenn sich die ID
+-- geändert hat.
+-- @within Internal
+-- @local
+--
+function BundleEntityProperties.Global.InvulnerabilityJob()
+    for k, v in pairs(QSB.InvulnerableScriptNameToID) do
+        local ID = GetID(k);
+        if v and ID ~= v then
+            API.MakeInvulnerable(k);
+        end
+    end
+end
 
 -- -------------------------------------------------------------------------- --
 -- Scripting Values Class                                                     --
@@ -576,6 +648,25 @@ function QSB.EntityProperty:CountSoldiers()
         return #SoldierTable;
     end
     return 0;
+end
+
+---
+-- Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
+-- 
+-- @param[type=boolean] _Flag Verwundbar
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:Vulnerable(_Flag)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    local EntityID = GetID(self.m_EntityName);
+    local VulnerabilityFlag = (_Flag and 0) or 1;
+    if self:CountSoldiers() > 0 then
+        for k, v in pairs(self:GetSoldiers()) do
+            Logic.SetEntityInvulnerabilityFlag(v, VulnerabilityFlag);
+        end
+    end
+    Logic.SetEntityInvulnerabilityFlag(EntityID, VulnerabilityFlag);
 end
 
 ---
