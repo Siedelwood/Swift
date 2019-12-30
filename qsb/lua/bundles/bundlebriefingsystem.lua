@@ -209,6 +209,7 @@ function API.AddPages(_Briefing)
             -- Multiple Choice
             if _Page.MC then
                 for i= 1, #_Page.MC do
+                    _Page.MC[i][1] = API.Localize(_Page.MC[i][1]);
                     _Page.MC[i].ID = i;
                 end
                 _Page.Text = "";
@@ -232,7 +233,7 @@ function API.AddPages(_Briefing)
 
     local ASP = function(...)
         local PageName;
-        if #arg > 5 then
+        if #arg > 5 or (type(arg[4]) == "string" or type(arg[4]) == "table") then
             PageName = table.remove(arg, 1);
         end
         local Position = {arg[1], 70};
@@ -685,7 +686,7 @@ end
 --
 function BundleBriefingSystem.Global:DisableMCAnswers()
     for i= 1, #self.Data.CurrentBriefing, 1 do
-        if self.Data.CurrentBriefing[i].MC then
+        if type(self.Data.CurrentBriefing[i]) == "table" and self.Data.CurrentBriefing[i].MC then
             for k, v in pairs(self.Data.CurrentBriefing[i].MC) do 
                 if type(v) == "table" and type(v.Disable) == "function" then
                     local Invisible = v.Disable(self.Data.CurrentBriefing[i], v) == true;
