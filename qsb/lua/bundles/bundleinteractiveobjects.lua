@@ -182,7 +182,6 @@ function API.InteractiveObjectActivate(_EntityName, _State)
         return;
     end
     if not IsExisting(_EntityName) then
-        API.Warn("API.InteractiveObjectActivate: Entity \"" .._EntityName.. "\" is invalid!");
         return;
     end
 
@@ -212,7 +211,6 @@ function API.InteractiveObjectDeactivate(_EntityName)
         return;
     end
     if not IsExisting(_EntityName) then
-        API.Warn("API.InteractiveObjectDeactivate: Entity \"" .._EntityName.. "\" is invalid!");
         return;
     end
 
