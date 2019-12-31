@@ -676,23 +676,23 @@ function BundleNonPlayerCharacter.Global:Install()
 
     -- Quest stuff --
 
-    function QuestTemplate:RemoveQuestMarkers()
+    QuestTemplate.RemoveQuestMarkers_Orig_BundleNonPlayerCharacter = QuestTemplate.RemoveQuestMarkers
+    QuestTemplate.RemoveQuestMarkers = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
-                if ((type(self.Objectives[i].Data[1]) == "number" and self.Objectives[i].Data[1] > 0)
-                or (type(self.Objectives[i].Data[1]) ~= "number")) and self.Objectives[i].Data[4] then
-                    DestroyQuestMarker(self.Objectives[i].Data[2]);
+                if self.Objectives[i].Data[1] ~= -65565 then
+                    QuestTemplate.RemoveQuestMarkers_Orig_BundleNonPlayerCharacter(self);
                 end
             end
         end
     end
 
-    function QuestTemplate:ShowQuestMarkers()
+    QuestTemplate.ShowQuestMarkers_Orig_BundleNonPlayerCharacter = QuestTemplate.ShowQuestMarkers
+    QuestTemplate.ShowQuestMarkers = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
-                if ((type(self.Objectives[i].Data[1]) == "number" and self.Objectives[i].Data[1] > 0)
-                or (type(self.Objectives[i].Data[1]) ~= "number")) and self.Objectives[i].Data[4] then
-                    ShowQuestMarker(self.Objectives[i].Data[2]);
+                if self.Objectives[i].Data[1] ~= -65565 then
+                    QuestTemplate.ShowQuestMarkers_Orig_BundleNonPlayerCharacter(self);
                 end
             end
         end

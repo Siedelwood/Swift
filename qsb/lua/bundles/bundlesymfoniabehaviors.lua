@@ -2068,48 +2068,6 @@ function BundleSymfoniaBehaviors.Global:Install()
             return self:IsObjectiveCompleted_Orig_QSB_SymfoniaBehaviors(objective);
         end
     end
-
-    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    -- Questmarkers
-    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    function QuestTemplate:RemoveQuestMarkers()
-        for i=1, self.Objectives[0] do
-            if self.Objectives[i].Type == Objective.Distance then
-                if self.Objectives[i].Data[4] then
-                    DestroyQuestMarker(self.Objectives[i].Data[2]);
-                end
-            end
-        end
-    end
-
-    function QuestTemplate:ShowQuestMarkers()
-        for i=1, self.Objectives[0] do
-            if self.Objectives[i].Type == Objective.Distance then
-                if self.Objectives[i].Data[4] then
-                    ShowQuestMarker(self.Objectives[i].Data[2]);
-                end
-            end
-        end
-    end
-
-    function ShowQuestMarker(_Entity)
-        local eID = GetID(_Entity);
-        local x,y = Logic.GetEntityPosition(eID);
-        local Marker = EGL_Effects.E_Questmarker_low;
-        if Logic.IsBuilding(eID) == 1 then
-            Marker = EGL_Effects.E_Questmarker;
-        end
-        Questmarkers[eID] = Logic.CreateEffect(Marker, x,y,0);
-    end
-
-    function DestroyQuestMarker(_Entity)
-        local eID = GetID(_Entity);
-        if Questmarkers[eID] ~= nil then
-            Logic.DestroyEffect(Questmarkers[eID]);
-            Questmarkers[eID] = nil;
-        end
-    end
 end
 
 ---

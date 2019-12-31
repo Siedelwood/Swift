@@ -948,7 +948,7 @@ end
 function b_Goal_KnightDistance:AddParameter(_Index, _Parameter)
     if (_Index == 0) then
         self.Target = _Parameter;
-    elseif (_Index == 0) then
+    elseif (_Index == 1) then
         if _Parameter == nil or _Parameter == "" then
             _Parameter = 0;
         end
@@ -1183,19 +1183,19 @@ end
 
 function b_Goal_ActivateBuff:GetIcon()
     local tMapping = {
-        [Buffs.Buff_Spice] = "Goods.G_Salt",
-        [Buffs.Buff_Colour] = "Goods.G_Dye",
-        [Buffs.Buff_Entertainers] = "Entities.U_Entertainer_NA_FireEater", --{5, 12},
-        [Buffs.Buff_FoodDiversity] = "Needs.Nutrition", --{1, 1},
-        [Buffs.Buff_ClothesDiversity] = "Needs.Clothes", --{1, 2},
-        [Buffs.Buff_HygieneDiversity] = "Needs.Hygiene", --{16, 1},
+        [Buffs.Buff_Spice]                  = "Goods.G_Salt",
+        [Buffs.Buff_Colour]                 = "Goods.G_Dye",
+        [Buffs.Buff_Entertainers]           = "Entities.U_Entertainer_NA_FireEater", --{5, 12},
+        [Buffs.Buff_FoodDiversity]          = "Needs.Nutrition", --{1, 1},
+        [Buffs.Buff_ClothesDiversity]       = "Needs.Clothes", --{1, 2},
+        [Buffs.Buff_HygieneDiversity]       = "Needs.Hygiene", --{16, 1},
         [Buffs.Buff_EntertainmentDiversity] = "Needs.Entertainment", --{1, 4},
-        [Buffs.Buff_Sermon] = "Technologies.R_Sermon", --{4, 14},
-        [Buffs.Buff_Festival] = "Technologies.R_Festival", --{4, 15},
-        [Buffs.Buff_ExtraPayment]    = {1,8},
-        [Buffs.Buff_HighTaxes] = {1,6},
-        [Buffs.Buff_NoPayment] = {1,8},
-        [Buffs.Buff_NoTaxes]    = {1,6},
+        [Buffs.Buff_Sermon]                 = "Technologies.R_Sermon", --{4, 14},
+        [Buffs.Buff_Festival]               = "Technologies.R_Festival", --{4, 15},
+        [Buffs.Buff_ExtraPayment]           = {1,8},
+        [Buffs.Buff_HighTaxes]              = {1,6},
+        [Buffs.Buff_NoPayment]              = {1,8},
+        [Buffs.Buff_NoTaxes]                = {1,6},
     }
     if g_GameExtraNo and g_GameExtraNo >= 1 then
         tMapping[Buffs.Buff_Gems] = "Goods.G_Gems"
@@ -8765,6 +8765,7 @@ BundleClassicBehaviors = {
 --
 function BundleClassicBehaviors.Global:Install()
     self:OverrideIsObjectiveCompleted();
+    self:OverrideQuestMarkers();
 end
 
 ---
@@ -8783,6 +8784,52 @@ function BundleClassicBehaviors.Global:GetInputFromQuest(_QuestName)
         return;
     end
     return Quest.InputDialogResult;
+end
+
+---
+-- Überschreibt die Funktionen zur Steuerung der Questmarker.
+-- @within Internal
+-- @local
+--
+function BundleClassicBehaviors.Global:OverrideQuestMarkers()
+    function QuestTemplate:RemoveQuestMarkers()
+        for i=1, self.Objectives[0] do
+            if self.Objectives[i].Type == Objective.Distance then
+                if self.Objectives[i].Data[4] then
+                    DestroyQuestMarker(self.Objectives[i].Data[2]);
+                end
+            end
+        end
+    end
+
+    function QuestTemplate:ShowQuestMarkers()
+        for i=1, self.Objectives[0] do
+            if self.Objectives[i].Type == Objective.Distance then
+                if self.Objectives[i].Data[4] then
+                    ShowQuestMarker(self.Objectives[i].Data[2]);
+                end
+            end
+        end
+    end
+
+    function ShowQuestMarker(_Entity)
+        local eID = GetID(_Entity);
+        local x,y = Logic.GetEntityPosition(eID);
+        local Marker = EGL_Effects.E_Questmarker_low;
+        if Logic.IsBuilding(eID) == 1 then
+            Marker = EGL_Effects.E_Questmarker;
+        end
+        DestroyQuestMarker(_Entity);
+        Questmarkers[eID] = Logic.CreateEffect(Marker, x, y, 0);
+    end
+
+    function DestroyQuestMarker(_Entity)
+        local eID = GetID(_Entity);
+        if Questmarkers[eID] ~= nil then
+            Logic.DestroyEffect(Questmarkers[eID]);
+            Questmarkers[eID] = nil;
+        end
+    end
 end
 
 ---
