@@ -8,15 +8,15 @@
 -- Trage hier den Pfad ein, wo Deine Inhalte liegen.
 g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
 
+-- Globaler Namespace für Deine Variablen
+gvMission = {};
+
 -- Lade Inhalte aus dem Testpfad. Auf true setzen zum aktivieren.
 if false then
     -- Trage hier den Pfad zu Deinem Mapverzeichnis ein. Achte darauf / statt \
     -- zu verwenden. Der Pfad muss mit einem / enden.
     g_ContentPath = "C:/Maps/MapName/";
 end
-
--- Globaler Namespace für Deine Variablen
-gvMission = {};
 
 -- -------------------------------------------------------------------------- --
 -- Basisfunktionen                                                            --
@@ -37,8 +37,10 @@ function Mission_LoadFiles()
 end
 
 -- Setzt Voreinstellungen für KI-Spieler.
--- (Spielerfarbe, AI-Blacklist, etc)
 function Mission_InitPlayers()
+    -- Beispiel: KI-Skripte für Spieler 2 deaktivieren (nicht im Editor möglich)
+    --
+    -- DoNotStartAIForPlayer(2);
 end
 
 -- Setzt den Monat, mit dem das Spiel beginnt.
@@ -48,6 +50,22 @@ end
 
 -- Setzt Handelsangebote der Nichtspielerparteien.
 function Mission_InitMerchants()
+    -- Beispiel: Setzt Handelsangebote für Spieler 3
+    --
+    -- local SHID = Logic.GetStoreHouse(3);
+    -- AddMercenaryOffer(SHID, 2, Entities.U_MilitaryBandit_Melee_NA);
+    -- AddMercenaryOffer(SHID, 2, Entities.U_MilitaryBandit_Ranged_NA);
+    -- AddOffer(SHID, 1, Goods.G_Beer);
+    -- AddOffer(SHID, 1, Goods.G_Cow);
+
+    -- Beispiel: Setzt Tauschangebote für den Handelsposten von Spieler 3
+    --
+    -- local TPID = GetID("Tradepost_Player3");
+    -- Logic.TradePost_SetTradePartnerGenerateGoodsFlag(TPID, true);
+    -- Logic.TradePost_SetTradePartnerPlayerID(TPID, 3);
+    -- Logic.TradePost_SetTradeDefinition(TPID, 0, Goods.G_Carcass, 18, Goods.G_Milk, 18);
+	-- Logic.TradePost_SetTradeDefinition(TPID, 1, Goods.G_Grain, 18, Goods.G_Honeycomb, 18);
+    -- Logic.TradePost_SetTradeDefinition(TPID, 2, Goods.G_RawFish, 24, Goods.G_Salt, 12);
 end
 
 -- Wird aufgerufen, wenn das Spiel gestartet wird.
@@ -63,85 +81,28 @@ function Mission_FirstMapAction()
         Startup_Diplomacy();
     end
 
+    -- Testmodus aktivieren
+    -- API.ActivateDebugMode(true, false, true, true);
+
+    -- Erzeugt im Assistenten erstellte Quests
+    CreateQuests();
+
     -- Startet Quests, die im Skript erzeugt werden
-    StartAllChapters();
+    -- (Falls nicht gebraucht, löschen)
+    Mission_StartQuests();
 
-    -- Oder, alternativ, startet die Mapeditor-Quests
-    -- CreateQuests();
-
-    -- Hier kannst Du Deine Funktionen aufrufen:
+    -- Hier kannst Du Deine Funktionen aufrufen
 
 end
 
 -- -------------------------------------------------------------------------- --
 -- Quests                                                                     --
 -- -------------------------------------------------------------------------- --
---      Hier kannst Du Quests erzeugen
---      Reichen die vorgegebenen 3 Kapitel nicht aus, kannst Du weitere in
---      fortlaufender Nummerierung hinzufügen. Achte darauf zu jedem Aufruf
---      auch eine Funktion zu haben.
---
---      Hinweis: Du kannst die Kapitel auch in eigenen Skripten erstellen und
---      dann über Mission_LoadFiles laden lassen.
+--      Hier kannst Du Quests erzeugen. Füge Deine Quests hinzu, wenn Du Quests
+--      im Skript erstellen willst. Arbeitest Du mit dem Assistenten, Aktiviere
+--      stattdessen CreateQuests() (siehe oben).
 
-function StartAllChapters()
-    CreateQuestsChapter1();
-    CreateQuestsChapter2();
-    CreateQuestsChapter3();
-
-    -- Füge hier weitere Kapitel hinzu.
+function Mission_StartQuests()
+    -- Füge hier die Aufrufe Deiner Quests hinzu.
 end
 
--- Kapitel 1 -------------------------------------------------------------------
-
-function CreateQuestsChapter1()
-end
-
--- Kapitel 2 -------------------------------------------------------------------
-
-function CreateQuestsChapter2()
-end
-
--- Kapitel 3 -------------------------------------------------------------------
-
-function CreateQuestsChapter3()
-end
-
--- -------------------------------------------------------------------------- --
--- Briefings                                                                  --
--- -------------------------------------------------------------------------- --
---      Dies ist ein Beispiel für ein Dialog-Briefing
---      Das folgende Beispiel zeigt ein einfaches Briefing mit ein paar Seiten.
---      Dies ist ein Dialog, dessen Seiten bestätigt werden müssen, damit es
---      weiter geht. Der Spieler kann auch zurück springen, wenn er etwas noch
---      einmal lesen will.
---
---      Hinweis: Du kannst die Briefings auch in eigenen Skripten erstellen und
---      dann über Mission_LoadFiles laden lassen.
-
-function ExampleBriefing1()
-    -- Definition der globalen Einstellungen.
-    local Briefing = {
-        HideBorderPins = true,
-        ShowSky = true,
-        RestoreGameSpeed = true,
-        RestoreCamera = true,
-        SkippingAllowed = true,
-        ReturnForbidden = false,
-    }
-    local AP = API.AddPages(Briefing);
-
-    -- Erzeugung der Pages
-    ASP("hans", "Hans", "Hallo Anton! Wie geht es dir?", true);
-    ASP("anton", "Anton", "Mir geht es schlecht. Ich brauche Medizin!", true);
-    ASP("hans", "Hans", "Wirklich? Dann werden wir dir welche besorgen!", true);
-
-    -- Funktion, die vor dem Start aufgerufen wird
-    Briefing.Starting = function(_Data)
-    end
-    -- Funktion, die beim Abschluss aufgerufen wird
-    Briefing.Finished = function(_Data)
-    end
-    -- Startet das Briefing und gibt die Briefing ID zurück.
-    return API.StartBriefing(Briefing);
-end

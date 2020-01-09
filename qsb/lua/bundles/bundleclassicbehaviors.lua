@@ -4382,7 +4382,7 @@ b_Reward_ObjectInit = {
         { ParameterType.Number,     en = "Cost amount 1",         de = "Anzahl 1" },
         { ParameterType.Custom,     en = "Cost good 2",         de = "Kostenware 2" },
         { ParameterType.Number,     en = "Cost amount 2",         de = "Anzahl 2" },
-        { ParameterType.Custom,     en = "Availability",         de = "Verfï¿½gbarkeit" },
+        { ParameterType.Custom,     en = "Availability",         de = "Verfügbarkeit" },
     },
 }
 
