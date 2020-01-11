@@ -42,18 +42,18 @@ QSB = QSB or {};
 -- API.UseBreedSheeps(true);
 --
 function API.UseBreedSheeps(_Flag)
-    if not GUI then
-        API.Bridge(string.format("API.UseBreedSheeps(%b)", _Flag));
+    if GUI then
         return;
     end
 
-    BundleStockbreeding.Local.Data.BreedSheeps = _Flag == true;
+    BundleStockbreeding.Global.Data.AllowBreedSheeps = _Flag == true;
+    API.Bridge("BundleStockbreeding.Global.Data.AllowBreedSheeps = " ..tostring(_Flag == true));
     if _Flag == true then
         local Price = MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Sheep]
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
     else
-        local Price = BundleStockbreeding.Local.Data.SheepMoneyCost;
+        local Price = BundleStockbreeding.Global.Data.SheepMoneyCost;
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
     end
@@ -77,18 +77,18 @@ UseBreedSheeps = API.UseBreedSheeps;
 -- API.UseBreedCattle(false);
 --
 function API.UseBreedCattle(_Flag)
-    if not GUI then
-        API.Bridge(string.format("API.UseBreedCattle(%b)", _Flag));
+    if GUI then
         return;
     end
 
-    BundleStockbreeding.Local.Data.BreedCattle = _Flag == true;
+    BundleStockbreeding.Global.Data.AllowBreedCattle = _Flag == true;
+    API.Bridge("BundleStockbreeding.Global.Data.AllowBreedCattle = " ..tostring(_Flag == true));
     if _Flag == true then
         local Price = MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Cow];
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     else
-        local Price = BundleStockbreeding.Local.Data.CattleMoneyCost;
+        local Price = BundleStockbreeding.Global.Data.CattleMoneyCost;
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     end
@@ -112,11 +112,11 @@ UseBreedCattle = API.UseBreedCattle;
 -- API.SetSheepGrainCost(50);
 --
 function API.SetSheepGrainCost(_Amount)
-    if not GUI then
-        API.Bridge(string.format("API.SetSheepGrainCost(%d)", _Amount));
+    if GUI then
         return;
     end
-    BundleStockbreeding.Local.Data.SheepCosts = _Amount;
+    BundleStockbreeding.Global.Data.SheepCost = _Amount;
+    API.Bridge("BundleStockbreeding.Local.Data.SheepCost = " .._Amount);
 end
 SetSheepGrainCost = API.SetSheepGrainCost;
 
@@ -137,63 +137,13 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 -- API.SetCattleGrainCost(50);
 --
 function API.SetCattleGrainCost(_Amount)
-    if not GUI then
-        API.Bridge(string.format("API.SetCattleGrainCost(%d)", _Amount));
+    if GUI then
         return;
     end
-    BundleStockbreeding.Local.Data.CattleCosts = _Amount;
+    BundleStockbreeding.Global.Data.CattleCost = _Amount;
+    API.Bridge("BundleStockbreeding.Local.Data.CattleCost = " .._Amount);
 end
 SetCattleGrainCost = API.SetCattleGrainCost;
-
----
--- Legt die Anzahlö an Schafen fest, die zur Zucht eines neuen Trieres
--- mindestens in einem Gatter vorhanden sein müssen.
---
--- <p><b>Alias:</b> SetSheepNeeded</p>
---
--- @param[type=number] _Amount Benötigte Menge
--- @within Anwenderfunktionen
---
--- @usage
--- -- Es wird ein volles Gatter zur Zucht benötigt:
--- API.SetSheepNeeded(5);
---
-function API.SetSheepNeeded(_Amount)
-    if not GUI then
-        API.Bridge(string.format("API.SetSheepNeeded(%d)", _Amount));
-        return;
-    end
-    if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
-        API.Fatal("API.SetSheepNeeded: Needed amount is invalid!");
-    end
-    BundleStockbreeding.Local.Data.SheepNeeded = _Amount;
-end
-SetSheepNeeded = API.SetSheepNeeded;
-
----
--- Legt die Anzahl an Kühen fest, die zur Zucht eines neuen Trieres mindestens
--- in einem Gatter vorhanden sein müssen.
---
--- <p><b>Alias:</b> SetCattleNeeded</p>
---
--- @param[type=number] _Amount Benötigte Menge
--- @within Anwenderfunktionen
---
--- @usage
--- -- Es werden keine Kühe zur Zucht benötigt:
--- API.SetCattleNeeded(0);
---
-function API.SetCattleNeeded(_Amount)
-    if not GUI then
-        API.Bridge(string.format("API.SetCattleNeeded(%d)", _Amount));
-        return;
-    end
-    if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
-        API.Fatal("API.SetCattleNeeded: Needed amount is invalid!");
-    end
-    BundleStockbreeding.Local.Data.CattleNeeded = _Amount;
-end
-SetCattleNeeded = API.SetCattleNeeded;
 
 ---
 -- Setzt den Typen des verwendeten Schafes.
@@ -201,8 +151,8 @@ SetCattleNeeded = API.SetCattleNeeded;
 -- Der EntityTyp muss nicht angegeben werden. Folgende Werte sind möglich:
 -- <ul>
 -- <li>0: Zufällig bei Zucht gewählt</li>
--- <li>1: X_A_Sheep01 (weiß)</li>
--- <li>2: X_A_Sheep02 (grau)</li>
+-- <li>1: A_X_Sheep01 (weiß)</li>
+-- <li>2: A_X_Sheep02 (grau)</li>
 -- </ul>
 --
 -- <b>Alias</b>: SetSheepType
@@ -217,14 +167,13 @@ SetCattleNeeded = API.SetCattleNeeded;
 -- API.SetSheepType(2);
 --
 function API.SetSheepType(_Type)
-    if not GUI then
-        API.Bridge(string.format("API.SetSheepType(%d)", _Type));
+    if GUI then
         return;
     end
     if type(_Type) ~= "number" or _Type > 2 or _Type < 0 then
         API.Fatal("API.SetCattleNeeded: Needed amount is invalid!");
     end
-    BundleStockbreeding.Local.Data.SheepType = _Type * (-1);
+    BundleStockbreeding.Global.Data.SheepType = _Type * (-1);
 end
 SetSheepType = API.SetSheepType;
 
@@ -245,11 +194,10 @@ SetSheepType = API.SetSheepType;
 -- API.SetSheepBabyMode(true);
 --
 function API.SetSheepBabyMode(_Flag)
-    if not GUI then
-        API.Bridge(string.format("API.SetSheepBabyMode(%b)", _Flag == true));
+    if GUI then
         return;
     end
-    BundleStockbreeding.Local.Data.SheepBaby = _Flag == true;
+    BundleStockbreeding.Global.Data.SheepBaby = _Flag == true;
 end
 SetSheepBabyMode = API.SetSheepBabyMode;
 
@@ -270,11 +218,10 @@ SetSheepBabyMode = API.SetSheepBabyMode;
 -- API.SetCattleBabyMode(true);
 --
 function API.SetCattleBabyMode(_Flag)
-    if not GUI then
-        API.Bridge(string.format("API.SetCattleBabyMode(%b)", _Flag == true));
+    if GUI then
         return;
     end
-    BundleStockbreeding.Local.Data.CattleBaby = _Flag == true;
+    BundleStockbreeding.Global.Data.CattleBaby = _Flag == true;
 end
 SetCattleBaby = API.SetCattleBaby;
 
@@ -288,42 +235,63 @@ BundleStockbreeding = {
             AnimalChildren = {},
             GrothTime = 45,
             ShrinkedSize = 0.4,
+
+            AllowBreedCattle = true,
+            CattlePastures = {},
+            CattleBaby = false,
+            CattleCost = 10,
+            CattleMoneyCost = 300,
+
+            AllowBreedSheeps = true,
+            SheepPastures = {},
+            SheepBaby = false,
+            SheepCost = 10,
+            SheepMoneyCost = 300,
+            SheepType = -1,
         }
     },
     Local = {
         Data = {
-            BreedCattle = true,
-            CattleBaby = false,
-            CattleCosts = 10,
-            CattleNeeded = 3,
-            CattleKnightTitle = 0,
-            CattleMoneyCost = 300,
+            AllowBreedCattle = true,
+            CattleCost = 10,
 
-            BreedSheeps = true,
-            SheepBaby = false,
-            SheepType = -1,
-            SheepCosts = 10,
-            SheepNeeded = 3,
-            SheepKnightTitle = 0,
-            SheepMoneyCost = 300,
+            AllowBreedSheeps = true,
+            SheepCost = 10,
         },
 
         Description = {
-            BuyCattle = {
+            BreedingActive = {
                 Title = {
-                    de = "Nutztier kaufen",
-                    en = "Buy Farm animal",
-                    fr = "acheter du bétail"
+                    de = "Zucht aktiv",
+                    en = "Breeding active",
+                    fr = "Elevage actif"
                 },
                 Text = {
-                    de = "- Kauft ein Nutztier {cr}- Nutztiere produzieren Rohstoffe",
-                    fr = "- Achète un animal de la ferme {cr} - les animaux de la ferme produisent des matières premières",
-                    en = "- Buy a farm animal {cr}- Farm animals produce resources",
+                    de = "- Klicken um Zucht zu stoppen",
+                    en = "- Click to stop breeding",
+                    fr = "- Cliquez pour arrêter la reproduction",
                 },
                 Disabled = {
-                    de = "Kauf ist nicht möglich!",
-                    fr = "L'achat n'est pas possible!",
-                    en = "Buy not possible!",
+                    de = "Zucht ist gesperrt!",
+                    en = "Breeding is locked!",
+                    fr = "L'élevage est verrouillé!",
+                },
+            },
+            BreedingInactive = {
+                Title = {
+                    de = "Zucht gestoppt",
+                    en = "Breeding stopped",
+                    fr = "Elevage arrêté"
+                },
+                Text = {
+                    de = "- Klicken um Zucht zu starten {cr}- Benötigt Platz {cr}- Benötigt Getreide",
+                    en = "- Click to allow breeding {cr}- Requires space {cr}- Requires grain",
+                    fr = "- Cliquez pour permettre la reproduction {cr}- Nécessite de l'espace {cr}- Nécessite des céréales",
+                },
+                Disabled = {
+                    de = "Zucht ist gesperrt!",
+                    en = "Breeding is locked!",
+                    fr = "L'élevage est verrouillé!",
                 },
             },
         },
@@ -339,6 +307,7 @@ BundleStockbreeding = {
 -- @local
 --
 function BundleStockbreeding.Global:Install()
+    StartSimpleJobEx(self.AnimalBreedJob);
     StartSimpleJobEx(self.AnimalGrouthJob);
 end
 
@@ -388,10 +357,149 @@ function BundleStockbreeding.Global:CreateAnimal(_PastureID, _Type, _GrainCost, 
     local x, y = Logic.GetBuildingApproachPosition(_PastureID);
     local Type = (_Type > 0 and _Type) or (_Type == 0 and Entities["A_X_Sheep0" ..math.random(1, 2)]) or Entities["A_X_Sheep0" ..(_Type * (-1))];
     local ID = Logic.CreateEntity(Type, x, y, 0, PlayerID);
-    AddGood(Goods.G_Grain, _GrainCost, PlayerID);
+    AddGood(Goods.G_Grain, _GrainCost * (-1), PlayerID);
     if _Shrink == true then
         self:SetScale(ID, self.Data.ShrinkedSize);
         table.insert(self.Data.AnimalChildren, {ID, self.Data.GrothTime});
+    end
+end
+
+---
+-- Gibt die ID des menschlichen Spielers zurück.
+-- @return[type=number] ID des menschlichen Spielers
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:GetControllingPlayer()
+    local pID = 1;
+    for i=1,8 do
+        if Logic.PlayerGetIsHumanFlag(i) == true then
+            pID = i;
+            break;
+        end
+    end
+    return pID;
+end
+
+---
+-- Gibt zurück, nach wie viel Zeit ein neues Tier erzeugt werden kann.
+-- @param[type=number] _Animals Anzahl Tiere im Gatter
+-- @return[type=number] Benötigte Zeit in Sekunden
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:BreedingTimeTillNext(_Animals)
+    return 240 - (_Animals * 20);
+end
+
+---
+-- Gibt zurück, ob der Spieler noch freie Plätze für Kühe hat.
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=boolean] Platz vorhanden
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:IsCattleNeeded(_PlayerID)
+    local AmountOfCattle = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.CattlePasture)};
+    local AmountPfPasture = Logic.GetNumberOfEntitiesOfTypeOfPlayer(_PlayerID, Entities.B_CattlePasture);
+    return #AmountOfCattle < AmountPfPasture * 5;
+end
+
+---
+-- Gibt zurück, ob der Spieler noch freie Plätze für Schafe hat.
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=boolean] Platz vorhanden
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:IsSheepNeeded(_PlayerID)
+    local AmountOfSheep = {Logic.GetPlayerEntitiesInCategory(_PlayerID, EntityCategories.SheepPasture)};
+    local AmountPfPasture = Logic.GetNumberOfEntitiesOfTypeOfPlayer(_PlayerID, Entities.B_SheepPasture);
+    return #AmountOfSheep < AmountPfPasture * 5;
+end
+
+---
+-- Gibt die Menge der Kühe zurück, die sich im Gatter befinden.
+-- @param[type=_PastureID] ID des Gatter
+-- @return[type=number] Kühe im Gatter
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:CountCattleNearby(_PastureID)
+    local PlayerID = Logic.EntityGetPlayer(_PastureID);
+    local x, y, z = Logic.EntityGetPos(_PastureID);
+    local Cattle = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Cow01, x, y, 800, 16)};
+    table.remove(Cattle, 1);
+    return #Cattle;
+end
+
+---
+-- Gibt die Menge der Schafe zurück, die sich im Gatter befinden.
+-- @param[type=_PastureID] ID des Gatter
+-- @return[type=number] Schafe im Gatter
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:CountSheepsNearby(_PastureID)
+    local PlayerID = Logic.EntityGetPlayer(_PastureID);
+    local x, y, z = Logic.EntityGetPos(_PastureID);
+    local Sheeps1 = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep01, x, y, 800, 16)};
+    table.remove(Sheeps1, 1);
+    local Sheeps2 = {Logic.GetPlayerEntitiesInArea(PlayerID, Entities.A_X_Sheep02, x, y, 800, 16)};
+    table.remove(Sheeps1, 1);
+    return #Sheeps1 + #Sheeps2;
+end
+
+---
+-- Steuert die Produktion neuer Tiere der einzelnen Gatter.
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:AnimalBreedController()
+    local PlayerID = self:GetControllingPlayer();
+
+    -- Kühe
+    if self.Data.AllowBreedCattle then
+        local Pastures = GetPlayerEntities(PlayerID, Entities.B_CattlePasture);
+        for k, v  in pairs(Pastures) do
+            -- Tiere zählen
+            local AmountNearby = self:CountCattleNearby(v);
+            -- Zuchtzähler
+            self.Data.CattlePastures[v] = self.Data.CattlePastures[v] or 0;
+            if self:IsCattleNeeded(PlayerID) and Logic.IsBuildingStopped(v) == false then
+                self.Data.CattlePastures[v] = self.Data.CattlePastures[v] +1;
+            end
+            -- Schaf spawnen
+            if self.Data.CattlePastures[v] > self:BreedingTimeTillNext(AmountNearby) then
+                local x, y, z = Logic.EntityGetPos(v);
+                if  GetPlayerResources(Goods.G_Grain, PlayerID) >= self.Data.CattleCost and self:IsCattleNeeded(PlayerID) then
+                    self:CreateAnimal(v, Entities.A_X_Cow01, self.Data.CattleCost, self.Data.CattleBaby);
+                    self.Data.CattlePastures[v] = 0;
+                end
+            end
+        end
+    end
+
+    -- Schafe
+    if self.Data.AllowBreedSheeps then
+        local Pastures = GetPlayerEntities(PlayerID, Entities.B_SheepPasture);
+        for k, v  in pairs(Pastures) do
+            -- Tier zählen
+            local AmountNearby = self:CountSheepsNearby(v);
+            -- Zuchtzähler
+            self.Data.SheepPastures[v] = self.Data.SheepPastures[v] or 0;
+            if self:IsSheepNeeded(PlayerID) and Logic.IsBuildingStopped(v) == false then
+                self.Data.SheepPastures[v] = self.Data.SheepPastures[v] +1;
+            end
+            -- Schaf spawnen
+            if self.Data.SheepPastures[v] > self:BreedingTimeTillNext(AmountNearby) then
+                local x, y, z = Logic.EntityGetPos(v);
+                if  GetPlayerResources(Goods.G_Grain, PlayerID) >= self.Data.SheepCost and self:IsSheepNeeded(PlayerID) then
+                    self:CreateAnimal(v, self.Data.SheepType, self.Data.SheepCost, self.Data.SheepBaby);
+                    self.Data.SheepPastures[v] = 0;
+                end
+            end
+        end
     end
 end
 
@@ -422,6 +530,11 @@ function BundleStockbreeding.Global:AnimalGrouthController()
 end
 
 -- Controller Job ruft nur eigentlichen Controller auf.
+function BundleStockbreeding.Global.AnimalBreedJob()
+    BundleStockbreeding.Global:AnimalBreedController();
+end
+
+-- Controller Job ruft nur eigentlichen Controller auf.
 function BundleStockbreeding.Global.AnimalGrouthJob()
     BundleStockbreeding.Global:AnimalGrouthController();
 end
@@ -446,30 +559,17 @@ function BundleStockbreeding.Local:Install()
 end
 
 ---
--- Diese Funktion löst den Kauf eines Nutztieres aus. Erzeugung des Tieres und
--- Abzug der Kosten erfolg im globalen Skript.
---
+-- Schaltet den Zuchtstatus des Gatters um.
+-- @param[type=number] _BarrackID ID des Gatter
 -- @within Internal
 -- @local
 --
-function BundleStockbreeding.Local:BuyAnimal(_eID)
-    Sound.FXPlay2DSound("ui\\menu_click");
-    local eType = Logic.GetEntityType(_eID);
-
-    if eType == Entities.B_CattlePasture then
-        local Cost = BundleStockbreeding.Local.Data.CattleCosts * (-1);
-        GUI.SendScriptCommand([[
-            BundleStockbreeding.Global:CreateAnimal(
-                ]].._eID..[[, Entities.A_X_Cow01, ]] ..Cost.. [[, ]] ..tostring(self.Data.CattleBaby == true).. [[
-            )
-        ]]);
-    elseif eType == Entities.B_SheepPasture then
-        local Cost = BundleStockbreeding.Local.Data.SheepCosts * (-1);
-        GUI.SendScriptCommand([[
-            BundleStockbreeding.Global:CreateAnimal(
-                ]].._eID..[[, ]]..self.Data.SheepType..[[, ]] ..Cost.. [[, ]] ..tostring(self.Data.SheepBaby == true).. [[
-            )
-        ]]);
+function BundleStockbreeding.Local:ToggleBreedingState(_BarrackID)
+    local BuildingEntityType = Logic.GetEntityType(_BarrackID);
+    if BuildingEntityType == Entities.B_CattlePasture then
+        GUI.SetStoppedState(_BarrackID, not Logic.IsBuildingStopped(_BarrackID));
+    elseif BuildingEntityType == Entities.B_SheepPasture then
+        GUI.SetStoppedState(_BarrackID, not Logic.IsBuildingStopped(_BarrackID));
     end
 end
 
@@ -493,20 +593,25 @@ function BundleStockbreeding.Local:OverwriteBuySiegeEngine()
         end
 
         local Costs = {Logic.GetUnitCost(BarrackID, _EntityType)}
+
         if BuildingEntityType == Entities.B_CattlePasture then
+            local Description = BundleStockbreeding.Local.Description.BreedingActive;
+            if Logic.IsBuildingStopped(BarrackID) then
+                Description = BundleStockbreeding.Local.Description.BreedingInactive;
+            end
             BundleStockbreeding.Local:TextCosts(
-                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Title),
-                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Text),
-                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Disabled),
-                {Goods.G_Grain, BundleStockbreeding.Local.Data.CattleCosts},
+                API.Localize(Description.Title), API.Localize(Description.Text), API.Localize(Description.Disabled),
+                {Goods.G_Grain, BundleStockbreeding.Local.Data.CattleCost},
                 false
             );
         elseif BuildingEntityType == Entities.B_SheepPasture then
+            local Description = BundleStockbreeding.Local.Description.BreedingActive;
+            if Logic.IsBuildingStopped(BarrackID) then
+                Description = BundleStockbreeding.Local.Description.BreedingInactive;
+            end
             BundleStockbreeding.Local:TextCosts(
-                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Title),
-                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Text),
-                API.Localize(BundleStockbreeding.Local.Description.BuyCattle.Disabled),
-                {Goods.G_Grain, BundleStockbreeding.Local.Data.SheepCosts},
+                API.Localize(Description.Title), API.Localize(Description.Text), API.Localize(Description.Disabled),
+                {Goods.G_Grain, BundleStockbreeding.Local.Data.SheepCost},
                 false
             );
         else
@@ -519,10 +624,9 @@ function BundleStockbreeding.Local:OverwriteBuySiegeEngine()
     GUI_BuildingButtons.BuySiegeEngineCartClicked_Orig_Stockbreeding = GUI_BuildingButtons.BuySiegeEngineCartClicked
     GUI_BuildingButtons.BuySiegeEngineCartClicked = function(_EntityType)
         local BarrackID = GUI.GetSelectedEntity()
-        local PlayerID = GUI.GetPlayerID()
         local eType = Logic.GetEntityType(BarrackID)
         if eType == Entities.B_CattlePasture or eType == Entities.B_SheepPasture then
-            BundleStockbreeding.Local:BuyAnimal(BarrackID);
+            BundleStockbreeding.Local:ToggleBreedingState(BarrackID);
         else
             GUI_BuildingButtons.BuySiegeEngineCartClicked_Orig_Stockbreeding(_EntityType)
         end
@@ -549,60 +653,38 @@ function BundleStockbreeding.Local:OverwriteBuySiegeEngine()
                 SetIcon(CurrentWidgetID, {9,4});
             end
         elseif EntityType == Entities.B_CattlePasture then
-            local CattlePasture = GetPlayerEntities(PlayerID,Entities.B_CattlePasture);
-            local cows          = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Cow01,pos.X,pos.Y,800,16)};
-            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.CattlePasture);
-            local maxAnimal     = #CattlePasture*5;
+            local Icon = {4, 13};
+            if Logic.IsBuildingStopped(EntityID) then
+                Icon = {4, 12};
+            end
+            SetIcon(CurrentWidgetID, Icon);
 
-            SetIcon(CurrentWidgetID, {3,16})
-
-            if _Technology == Technologies.R_Catapult and BundleStockbreeding.Local.Data.BreedCattle then
+            if _Technology == Technologies.R_Catapult and BundleStockbreeding.Local.Data.AllowBreedCattle then
                 XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
                 XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
 
-                if curAnimal >= maxAnimal then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif grain < BundleStockbreeding.Local.Data.CattleCosts then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif KnightTitle < BundleStockbreeding.Local.Data.CattleKnightTitle then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif cows[1] < BundleStockbreeding.Local.Data.CattleNeeded then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                else
-                    XGUIEng.DisableButton(CurrentWidgetID, 0);
-                end
+                local DisableState = (BundleStockbreeding.Local.Data.AllowBreedCattle and 0) or 1;
+                XGUIEng.DisableButton(CurrentWidgetID, DisableState);
+                XGUIEng.ShowWidget(CurrentWidgetID, 1);
             else
-                XGUIEng.ShowWidget(CurrentWidgetID,0);
+                XGUIEng.ShowWidget(CurrentWidgetID, 0);
             end
         elseif EntityType == Entities.B_SheepPasture then
-            local SheepPasture     = GetPlayerEntities(PlayerID,Entities.B_SheepPasture);
-            local sheeps        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep01,pos.X,pos.Y,800,16)};
-            table.remove(sheeps, 1);
-            local sheeps2        = {Logic.GetPlayerEntitiesInArea(PlayerID,Entities.A_X_Sheep02,pos.X,pos.Y,800,16)};
-            table.remove(sheeps2, 1);
-            local curAnimal     = Logic.GetNumberOfPlayerEntitiesInCategory(PlayerID,EntityCategories.SheepPasture);
-            local maxAnimal     = #SheepPasture*5;
+            local Icon = {4, 13};
+            if Logic.IsBuildingStopped(EntityID) then
+                Icon = {4, 12};
+            end
+            SetIcon(CurrentWidgetID, Icon)
 
-            sheeps = Array_Append(sheeps,sheeps2)
-            SetIcon(CurrentWidgetID, {4,1})
-
-            if _Technology == Technologies.R_Catapult and BundleStockbreeding.Local.Data.BreedSheeps then
+            if _Technology == Technologies.R_Catapult and BundleStockbreeding.Local.Data.AllowBreedSheeps then
                 XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons",1);
                 XGUIEng.ShowWidget("/InGame/Root/Normal/BuildingButtons/BuyCatapultCart",1);
 
-                if curAnimal >= maxAnimal then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif grain < BundleStockbreeding.Local.Data.SheepCosts then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif #sheeps < BundleStockbreeding.Local.Data.SheepKnightTitle then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                elseif #sheeps < BundleStockbreeding.Local.Data.SheepNeeded then
-                    XGUIEng.DisableButton(CurrentWidgetID, 1);
-                else
-                    XGUIEng.DisableButton(CurrentWidgetID, 0);
-                end
+                local DisableState = (BundleStockbreeding.Local.Data.AllowBreedSheeps and 0) or 1;
+                XGUIEng.DisableButton(CurrentWidgetID, DisableState);
+                XGUIEng.ShowWidget(CurrentWidgetID, 1);
             else
-                XGUIEng.ShowWidget(CurrentWidgetID,0);
+                XGUIEng.ShowWidget(CurrentWidgetID, 0);
             end
         else
             XGUIEng.ShowWidget(CurrentWidgetID,0);
@@ -624,6 +706,29 @@ function BundleStockbreeding.Local:OverwriteBuySiegeEngine()
                 XGUIEng.DisableButton(CurrentWidgetID,0);
             else
                 XGUIEng.DisableButton(CurrentWidgetID,1);
+            end
+        end
+    end
+
+    -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    HouseMenuStopProductionClicked_Orig_Stockbreeding = HouseMenuStopProductionClicked;
+    HouseMenuStopProductionClicked = function()
+        HouseMenuStopProductionClicked_Orig_Stockbreeding();
+        local WidgetName = HouseMenu.Widget.CurrentBuilding;
+        local EntityType = Entities[WidgetName];
+        local PlayerID = GUI.GetPlayerID();
+        local Bool = HouseMenu.StopProductionBool;
+
+        if EntityType == Entities.B_CattleFarm then
+            local Buildings = GetPlayerEntities(PlayerID, Entities.B_CattlePasture);
+            for i=1, #Buildings, 1 do
+                GUI.SetStoppedState(Buildings[i], Bool);
+            end
+        elseif EntityType == Entities.B_SheepFarm then
+            local Buildings = GetPlayerEntities(PlayerID, Entities.B_SheepPasture);
+            for i=1, #Buildings, 1 do
+                GUI.SetStoppedState(Buildings[i], Bool);
             end
         end
     end
