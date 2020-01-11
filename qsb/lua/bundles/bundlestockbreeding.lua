@@ -34,21 +34,21 @@ QSB = QSB or {};
 --
 -- <p><b>Alias:</b> UseBreedSheeps</p>
 --
--- @param[type=boolean] _flag Schafzucht aktiv/inaktiv
+-- @param[type=boolean] _Flag Schafzucht aktiv/inaktiv
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Schafsaufzucht ist erlaubt
 -- API.UseBreedSheeps(true);
 --
-function API.UseBreedSheeps(_flag)
+function API.UseBreedSheeps(_Flag)
     if not GUI then
-        API.Bridge("API.UseBreedSheeps(" ..tostring(_flag).. ")");
+        API.Bridge(string.format("API.UseBreedSheeps(%b)", _Flag));
         return;
     end
 
-    BundleStockbreeding.Local.Data.BreedSheeps = _flag == true;
-    if _flag == true then
+    BundleStockbreeding.Local.Data.BreedSheeps = _Flag == true;
+    if _Flag == true then
         local Price = MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Sheep]
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
@@ -69,21 +69,21 @@ UseBreedSheeps = API.UseBreedSheeps;
 --
 -- <p><b>Alias:</b> UseBreedCattle</p>
 --
--- @param[type=boolean] _flag Kuhzucht aktiv/inaktiv
+-- @param[type=boolean] _Flag Kuhzucht aktiv/inaktiv
 -- @within Anwenderfunktionen
 --
 -- @usage
 -- -- Es können keine Kühe gezüchtet werden
 -- API.UseBreedCattle(false);
 --
-function API.UseBreedCattle(_flag)
+function API.UseBreedCattle(_Flag)
     if not GUI then
-        API.Bridge("API.UseBreedCattle(" ..tostring(_flag).. ")");
+        API.Bridge(string.format("API.UseBreedCattle(%b)", _Flag));
         return;
     end
 
-    BundleStockbreeding.Local.Data.BreedCattle = _flag == true;
-    if _flag == true then
+    BundleStockbreeding.Local.Data.BreedCattle = _Flag == true;
+    if _Flag == true then
         local Price = MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Cow];
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
@@ -113,7 +113,7 @@ UseBreedCattle = API.UseBreedCattle;
 --
 function API.SetSheepGrainCost(_Amount)
     if not GUI then
-        API.Bridge("API.SetSheepGrainCost(" .._Amount.. ")");
+        API.Bridge(string.format("API.SetSheepGrainCost(%d)", _Amount));
         return;
     end
     BundleStockbreeding.Local.Data.SheepCosts = _Amount;
@@ -138,7 +138,7 @@ SetSheepGrainCost = API.SetSheepGrainCost;
 --
 function API.SetCattleGrainCost(_Amount)
     if not GUI then
-        API.Bridge("API.SetCattleGrainCost(" .._Amount.. ")");
+        API.Bridge(string.format("API.SetCattleGrainCost(%d)", _Amount));
         return;
     end
     BundleStockbreeding.Local.Data.CattleCosts = _Amount;
@@ -160,7 +160,7 @@ SetCattleGrainCost = API.SetCattleGrainCost;
 --
 function API.SetSheepNeeded(_Amount)
     if not GUI then
-        API.Bridge("API.SetSheepNeeded(" .._Amount.. ")");
+        API.Bridge(string.format("API.SetSheepNeeded(%d)", _Amount));
         return;
     end
     if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
@@ -185,7 +185,7 @@ SetSheepNeeded = API.SetSheepNeeded;
 --
 function API.SetCattleNeeded(_Amount)
     if not GUI then
-        API.Bridge("API.SetCattleNeeded(" .._Amount.. ")");
+        API.Bridge(string.format("API.SetCattleNeeded(%d)", _Amount));
         return;
     end
     if type(_Amount) ~= "number" or _Amount < 0 or _Amount > 5 then
@@ -196,17 +196,57 @@ end
 SetCattleNeeded = API.SetCattleNeeded;
 
 ---
+-- Setzt den Typen des verwendeten Schafes.
+--
+-- Der EntityTyp muss nicht angegeben werden. Folgende Werte sind möglich:
+-- <ul>
+-- <li>0: Zufällig bei Zucht gewählt</li>
+-- <li>1: X_A_Sheep01 (weiß)</li>
+-- <li>2: X_A_Sheep02 (grau)</li>
+-- </ul>
+--
+-- <b>Alias</b>: SetSheepType
+--
+-- @param[type=boolean] _Flag Baby Mode aktivieren/deaktivieren
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Es wird jedes mal zufällig ausgewählt
+-- API.SetSheepType(0);
+-- -- Es werden nur graue Schafe erzeugt
+-- API.SetSheepType(2);
+--
+function API.SetSheepType(_Type)
+    if not GUI then
+        API.Bridge(string.format("API.SetSheepType(%d)", _Type));
+        return;
+    end
+    if type(_Type) ~= "number" or _Type > 2 or _Type < 0 then
+        API.Fatal("API.SetCattleNeeded: Needed amount is invalid!");
+    end
+    BundleStockbreeding.Local.Data.SheepType = _Type * (-1);
+end
+SetSheepType = API.SetSheepType;
+
+---
 -- Aktiviert oder deaktiviert den "Baby Mode" für Schafe.
 --
 -- Ist der Modus aktiv, werden neu gekaufte Tiere mit 40% ihrer Große erzeugt
 -- und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
 -- Einfluss auf ihre Funktion.
 --
+-- <b>Alias</b>: SetSheepBabyMode
+--
 -- @param[type=boolean] _Flag Baby Mode aktivieren/deaktivieren
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Schafe werden verkleinert erzeugt und wachsen mit der Zeit
+-- API.SetSheepBabyMode(true);
 --
 function API.SetSheepBabyMode(_Flag)
     if not GUI then
-        API.Bridge("API.SetSheepBabyMode(" ..tostring(_Flag == true).. ")");
+        API.Bridge(string.format("API.SetSheepBabyMode(%b)", _Flag == true));
         return;
     end
     BundleStockbreeding.Local.Data.SheepBaby = _Flag == true;
@@ -220,11 +260,18 @@ SetSheepBabyMode = API.SetSheepBabyMode;
 -- und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
 -- Einfluss auf ihre Funktion.
 --
+-- <b>Alias</b>: SetCattleBaby
+--
 -- @param[type=boolean] _Flag Baby Mode aktivieren/deaktivieren
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- -- Kühe werden verkleinert erzeugt und wachsen mit der Zeit
+-- API.SetCattleBabyMode(true);
 --
 function API.SetCattleBabyMode(_Flag)
     if not GUI then
-        API.Bridge("API.SetCattleBabyMode(" ..tostring(_Flag == true).. ")");
+        API.Bridge(string.format("API.SetCattleBabyMode(%b)", _Flag == true));
         return;
     end
     BundleStockbreeding.Local.Data.CattleBaby = _Flag == true;
@@ -254,6 +301,7 @@ BundleStockbreeding = {
 
             BreedSheeps = true,
             SheepBaby = false,
+            SheepType = -1,
             SheepCosts = 10,
             SheepNeeded = 3,
             SheepKnightTitle = 0,
@@ -338,7 +386,8 @@ end
 function BundleStockbreeding.Global:CreateAnimal(_PastureID, _Type, _GrainCost, _Shrink)
     local PlayerID = Logic.EntityGetPlayer(_PastureID);
     local x, y = Logic.GetBuildingApproachPosition(_PastureID);
-    local ID = Logic.CreateEntity(_Type, x, y, 0, PlayerID);
+    local Type = (_Type > 0 and _Type) or (_Type == 0 and Entities["A_X_Sheep0" ..math.random(1, 2)]) or Entities["A_X_Sheep0" ..(_Type * (-1))];
+    local ID = Logic.CreateEntity(Type, x, y, 0, PlayerID);
     AddGood(Goods.G_Grain, _GrainCost, PlayerID);
     if _Shrink == true then
         self:SetScale(ID, self.Data.ShrinkedSize);
@@ -417,9 +466,8 @@ function BundleStockbreeding.Local:BuyAnimal(_eID)
     elseif eType == Entities.B_SheepPasture then
         local Cost = BundleStockbreeding.Local.Data.SheepCosts * (-1);
         GUI.SendScriptCommand([[
-            local Type = math.random(1, 2)
             BundleStockbreeding.Global:CreateAnimal(
-                ]].._eID..[[, Entities["A_X_Sheep0" ..Type], ]] ..Cost.. [[, ]] ..tostring(self.Data.SheepBaby == true).. [[
+                ]].._eID..[[, ]]..self.Data.SheepType..[[, ]] ..Cost.. [[, ]] ..tostring(self.Data.SheepBaby == true).. [[
             )
         ]]);
     end
