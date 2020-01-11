@@ -10,6 +10,9 @@
 -- Kosten für die Aufzucht oder die benötigte Menge an Tieren um mit der
 -- Zucht zu beginnen, sind frei konfigurierbar.
 --
+-- Zusätzlich können die Tiere kleiner gespawnt werden und wachsen dann mit
+-- der Zeit automatisch. Diese Funktionalität kann abgeschaltet werden.
+--
 -- @within Modulbeschreibung
 -- @set sort=true
 --
@@ -192,20 +195,65 @@ function API.SetCattleNeeded(_Amount)
 end
 SetCattleNeeded = API.SetCattleNeeded;
 
+---
+-- Aktiviert oder deaktiviert den "Baby Mode" für Schafe.
+--
+-- Ist der Modus aktiv, werden neu gekaufte Tiere mit 40% ihrer Große erzeugt
+-- und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
+-- Einfluss auf ihre Funktion.
+--
+-- @param[type=boolean] _Flag Baby Mode aktivieren/deaktivieren
+--
+function API.SetSheepBabyMode(_Flag)
+    if not GUI then
+        API.Bridge("API.SetSheepBabyMode(" ..tostring(_Flag == true).. ")");
+        return;
+    end
+    BundleStockbreeding.Local.Data.SheepBaby = _Flag == true;
+end
+SetSheepBabyMode = API.SetSheepBabyMode;
+
+---
+-- Aktiviert oder deaktiviert den "Baby Mode" für Kühe.
+--
+-- Ist der Modus aktiv, werden neu gekaufte Tiere mit 40% ihrer Große erzeugt
+-- und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
+-- Einfluss auf ihre Funktion.
+--
+-- @param[type=boolean] _Flag Baby Mode aktivieren/deaktivieren
+--
+function API.SetCattleBabyMode(_Flag)
+    if not GUI then
+        API.Bridge("API.SetCattleBabyMode(" ..tostring(_Flag == true).. ")");
+        return;
+    end
+    BundleStockbreeding.Local.Data.CattleBaby = _Flag == true;
+end
+SetCattleBaby = API.SetCattleBaby;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
 
 BundleStockbreeding = {
+    Global = {
+        Data = {
+            AnimalChildren = {},
+            GrothTime = 45,
+            ShrinkedSize = 0.4,
+        }
+    },
     Local = {
         Data = {
             BreedCattle = true,
+            CattleBaby = false,
             CattleCosts = 10,
             CattleNeeded = 3,
             CattleKnightTitle = 0,
             CattleMoneyCost = 300,
 
             BreedSheeps = true,
+            SheepBaby = false,
             SheepCosts = 10,
             SheepNeeded = 3,
             SheepKnightTitle = 0,
@@ -234,6 +282,101 @@ BundleStockbreeding = {
     },
 }
 
+-- Global Script ---------------------------------------------------------------
+
+---
+-- Initalisiert das Bundle im globalen Skript.
+--
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:Install()
+    StartSimpleJobEx(self.AnimalGrouthJob);
+end
+
+---
+-- Gibt die Skalierung (Größe) eines Entity zurück.
+-- @param              _Entity Skriptname oder EntityID des Entity
+-- @return[type=number] Skalierung des Entity
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:GetScale(_Entity)
+    local ID = GetID(_Entity);
+    local SV = (QSB.HistoryEdition and -42) or -45;
+    local IntVal = Logic.GetEntityScriptingValue(ID, SV);
+    return Core:ScriptingValueIntegerToFloat(IntVal);
+end
+
+---
+-- Setzt die Skalierung (Größe) eines Entity.
+-- @param              _Entity Skriptname oder EntityID des Entity
+-- @param[type=number] _Scale  Zu setzende Größe
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:SetScale(_Entity, _Scale)
+    local ID = GetID(_Entity);
+    local SV = (QSB.HistoryEdition and -42) or -45;
+    local IntVal = Core:ScriptingValueFloatToInteger(_Scale);
+    Logic.SetEntityScriptingValue(ID, SV, IntVal);
+end
+
+---
+-- Erzeugt ein Nutztier vor dem Gatter und zieht die Kosten ab.
+--
+-- Falls der "Baby Mode" für die Tierart aktiv ist, wird das Tier kleiner
+-- gemacht und zur Wachstumskontrolle hinzugefügt.
+--
+-- @param[type=number]  _PastureID Gatter ID
+-- @param[type=number]  _Type      Typ des Tieres
+-- @param[type=number]  _GrainCost Getreidekosten
+-- @param[type=boolean] _Shrink    Tier geschrumptf erzeugen
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:CreateAnimal(_PastureID, _Type, _GrainCost, _Shrink)
+    local PlayerID = Logic.EntityGetPlayer(_PastureID);
+    local x, y = Logic.GetBuildingApproachPosition(_PastureID);
+    local ID = Logic.CreateEntity(_Type, x, y, 0, PlayerID);
+    AddGood(Goods.G_Grain, _GrainCost, PlayerID);
+    if _Shrink == true then
+        self:SetScale(ID, self.Data.ShrinkedSize);
+        table.insert(self.Data.AnimalChildren, {ID, self.Data.GrothTime});
+    end
+end
+
+---
+-- Steuert das Wachstum aller registrierten Tiere.
+-- @within Internal
+-- @local
+--
+function BundleStockbreeding.Global:AnimalGrouthController()
+    for k, v in pairs(self.Data.AnimalChildren) do
+        if v then
+            if not IsExisting(v[1]) then
+                self.Data.AnimalChildren[k] = nil;
+            else
+                self.Data.AnimalChildren[k][2] = v[2] -1;
+                if v[2] < 0 then
+                    self.Data.AnimalChildren[k][2] = self.Data.GrothTime;
+                    local Scale = self:GetScale(v[1]);
+                    if Scale < 1 then
+                        self:SetScale(v[1], Scale + 0.1);
+                    else
+                        self.Data.AnimalChildren[k] = nil;
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Controller Job ruft nur eigentlichen Controller auf.
+function BundleStockbreeding.Global.AnimalGrouthJob()
+    BundleStockbreeding.Global:AnimalGrouthController();
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -254,7 +397,8 @@ function BundleStockbreeding.Local:Install()
 end
 
 ---
--- Diese Funktion erzeugt ein Nutztier und entfernt das Getreide vom Spieler.
+-- Diese Funktion löst den Kauf eines Nutztieres aus. Erzeugung des Tieres und
+-- Abzug der Kosten erfolg im globalen Skript.
 --
 -- @within Internal
 -- @local
@@ -266,18 +410,17 @@ function BundleStockbreeding.Local:BuyAnimal(_eID)
     if eType == Entities.B_CattlePasture then
         local Cost = BundleStockbreeding.Local.Data.CattleCosts * (-1);
         GUI.SendScriptCommand([[
-            local PlayerID = Logic.EntityGetPlayer(]].._eID..[[)
-            local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
-            Logic.CreateEntity(Entities.A_X_Cow01, x, y, 0, PlayerID)
-            AddGood(Goods.G_Grain, ]] ..Cost.. [[, PlayerID)
+            BundleStockbreeding.Global:CreateAnimal(
+                ]].._eID..[[, Entities.A_X_Cow01, ]] ..Cost.. [[, ]] ..tostring(self.Data.CattleBaby == true).. [[
+            )
         ]]);
     elseif eType == Entities.B_SheepPasture then
         local Cost = BundleStockbreeding.Local.Data.SheepCosts * (-1);
         GUI.SendScriptCommand([[
-            local PlayerID = Logic.EntityGetPlayer(]].._eID..[[)
-            local x, y = Logic.GetBuildingApproachPosition(]].._eID..[[)
-            Logic.CreateEntity(Entities.A_X_Sheep01, x, y, 0, PlayerID)
-            AddGood(Goods.G_Grain, ]] ..Cost.. [[, PlayerID)
+            local Type = math.random(1, 2)
+            BundleStockbreeding.Global:CreateAnimal(
+                ]].._eID..[[, Entities["A_X_Sheep0" ..Type], ]] ..Cost.. [[, ]] ..tostring(self.Data.SheepBaby == true).. [[
+            )
         ]]);
     end
 end
