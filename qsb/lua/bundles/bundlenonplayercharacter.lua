@@ -82,6 +82,7 @@ function API.NpcCompose(_Data)
     NPC:SetDialogPartner(_Data.Hero);
     NPC:SetWrongPartnerCallback(WronHeroCallback);
     NPC:SetCallback(_Data.Callback);
+    NPC:SetType(_Data.Type or 1);
     return NPC:Activate();
 end
 CreateNPC = API.NpcCompose;
@@ -501,38 +502,6 @@ function QSB.NonPlayerCharacter:RotateActors()
 end
 
 ---
--- Setzt den Helden, der den NPC angesprochen hat, auf eine Position, die
--- in der richtigen Entfernung zum NPC ist.
---
--- <b>Hinweis</b>: Dies ist ein temporärer Fix für das Kollisionsproblem.
--- Sobald eine bessere Lösung zur Verfügung steht, sollte diese Methode
--- wieder entfernt werden!
---
--- @within QSB.NonPlayerCharacter
--- @local
---
-function QSB.NonPlayerCharacter:RepositionHero()
-    assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
-    local HeroID = BundleNonPlayerCharacter.Global.LastHeroEntityID;
-    local NPCID  = GetID(self.m_NpcName);
-    if GetDistance(HeroID, NPCID) < self.m_Distance -50 then
-        -- Position des NPC bestimmen
-        local Orientation = Logic.GetEntityOrientation(NPCID);
-        local x1, y1, z1 = Logic.EntityGetPos(NPCID);
-        -- Relative Position bestimmen
-        local x2 = x1 + (self.m_Distance * math.cos(math.rad(Orientation)));
-        local y2 = y1 + (self.m_Distance * math.sin(math.rad(Orientation)));
-        -- Nächste erreichbare Position bei Punkt bestimmen
-        local ID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, x2, y2, 0, 0);
-        local x3, y3, z3 = Logic.EntityGetPos(ID);
-        -- Position setzen
-        Logic.DEBUG_SetSettlerPosition(HeroID, x3, y3);
-        LookAt(NPCID, HeroID);
-        LookAt(HeroID, NPCID);
-    end
-end
-
----
 -- Erzeugt das Entity des NPC-Markers.
 --
 -- @within QSB.NonPlayerCharacter
@@ -692,7 +661,6 @@ function BundleNonPlayerCharacter.Global:Install()
 
         if NPC then
             NPC:RotateActors();
-            NPC:RepositionHero();
             NPC.m_TalkedTo = ClosestKnightID;
             if NPC:HasTalkedTo() then
                 NPC:Deactivate();
