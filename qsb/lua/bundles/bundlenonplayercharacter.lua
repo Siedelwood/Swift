@@ -526,10 +526,17 @@ function QSB.NonPlayerCharacter:RepositionHero()
         -- Nächste erreichbare Position bei Punkt bestimmen
         local ID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, x2, y2, 0, 0);
         local x3, y3, z3 = Logic.EntityGetPos(ID);
-        -- Held ersetzen
+        -- Held ersetzen und neu positionieren
+        API.Bridge(string.format([[
+            BundleNonPlayerCharacter.Local.WasSelected = GUI.GetSelectedEntity() == %d
+        ]], HeroID));
         local HeroID = ReplaceEntity(HeroID, Logic.GetEntityType(HeroID));
         BundleNonPlayerCharacter.Global.LastHeroEntityID = HeroID;
-        API.Bridge(string.format("GUI.SelectEntity(%d)", HeroID));
+        API.Bridge(string.format([[
+            if BundleNonPlayerCharacter.Local.WasSelected then
+                GUI.SelectEntity(%d)
+            end,
+        ]], HeroID));
         Logic.DEBUG_SetSettlerPosition(HeroID, x3, y3);
         LookAt(NPCID, HeroID);
         LookAt(HeroID, NPCID);
