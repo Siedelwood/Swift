@@ -240,6 +240,7 @@ function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Ma
         Reward                  = {_Good, math.random(_Min, _Max)},
         Texture                 = {1, 6},
         Distance                = 650,
+        Waittime                = 5,
         State                   = 0,
         DoNotChangeModel        = _NoModelChange == true,
         CallbackOpened          = _Callback,
