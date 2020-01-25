@@ -34,7 +34,7 @@ QSB.InvulnerableScriptNameToID = {};
 -- @return[type=number] Größenfaktor des Entity
 --
 function API.GetEntityScale(_Entity)
-    return QSB.EntityProperty:GetInstance(_Entity):EntitySize();
+    return QSB.EntityProperty:GetInstance(_Entity):GetEntitySize();
 end
 GetScale = API.GetEntityScale;
 
@@ -87,7 +87,7 @@ IsNpc = API.IsActiveNpc;
 -- @return[type=boolean] Entity ist sichtbar
 --
 function API.IsEntityVisible(_Entity)
-    return QSB.EntityProperty:GetInstance(_Entity):Visible();
+    return QSB.EntityProperty:GetInstance(_Entity):IsVisible();
 end
 IsVisible = API.IsEntityVisible;
 
@@ -141,7 +141,7 @@ MakeVulnerable = API.MakeVulnerable;
 -- @param[type=number] _Scale Größenfaktor des Entity
 --
 function API.SetEntityScale(_Entity, _Scale)
-    return QSB.EntityProperty:GetInstance(_Entity):EntitySize(_Scale);
+    return QSB.EntityProperty:GetInstance(_Entity):SetEntitySize(_Scale);
 end
 SetScale = API.SetEntityScale;
 
@@ -154,7 +154,7 @@ SetScale = API.SetEntityScale;
 -- @param[type=number] _PlayerID Besitzer des Entity
 --
 function API.SetEntityPlayer(_Entity, _PlayerID)
-    return QSB.EntityProperty:GetInstance(_Entity):PlayerID(_PlayerID);
+    return QSB.EntityProperty:GetInstance(_Entity):SetPlayerID(_PlayerID);
 end
 ChangePlayer = API.SetEntityPlayer;
 
@@ -169,7 +169,7 @@ ChangePlayer = API.SetEntityPlayer;
 -- @return[type=number] Relative Gesundheit des Entity
 --
 function API.GetEntityHealth(_Entity)
-    return QSB.EntityProperty:GetInstance(_Entity):Health();
+    return QSB.EntityProperty:GetInstance(_Entity):GetHealth();
 end
 GetHealth = API.GetEntityHealth;
 
@@ -184,7 +184,7 @@ GetHealth = API.GetEntityHealth;
 -- @param[type=number] _Percentage Relative Gesundheit des Entity
 --
 function API.ChangeEntityHealth(_Entity, _Percentage)
-    return QSB.EntityProperty:GetInstance(_Entity):Health(_Percentage, true);
+    return QSB.EntityProperty:GetInstance(_Entity):SetHealth(_Percentage, true);
 end
 SetHealth = API.ChangeEntityHealth;
 
@@ -199,7 +199,7 @@ SetHealth = API.ChangeEntityHealth;
 -- @param[type=number] _FireSize Relative Gesundheit des Entity
 --
 function API.SetBuildingOnFire(_Entity, _FireSize)
-    QSB.EntityProperty:GetInstance(_Entity):Burning(_FireSize)
+    QSB.EntityProperty:GetInstance(_Entity):SetBurning(_FireSize)
 end
 SetOnFire = API.SetBuildingOnFire;
 
@@ -296,124 +296,175 @@ function QSB.EntityProperty:GetInstance(_Entity)
 end
 
 ---
--- Gibt die Größe des Entity zurück. Optional kann der
--- Größenfaktor geändert werden.
+-- Prüft, ob das Entity existiert.
 --
--- @param[type=number] _Scale (Optional) Neuer Größenfaktor
+-- @return[type=boolean] Entity existiert
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:IsExisting()
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    return IsExisting(self.m_EntityName) == true;
+end
+
+---
+-- Gibt die Größe des Entity zurück.
+--
 -- @return[type=number] Größenfaktor
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:EntitySize(_Scale)
+function QSB.EntityProperty:GetEntitySize()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
     local SV = (QSB.HistoryEdition and -42) or -45;
-    if _Scale then
-        local EntityID = GetID(self.m_EntityName);
-        if EntityID > 0 then
-            Logic.SetEntityScriptingValue(EntityID, SV, Core:ScriptingValueFloatToInteger(_Scale));
-            if Logic.IsSettler(EntityID) == 1 then
-                Logic.SetSpeedFactor(EntityID, _Scale);
-            end
-        end
-    end
     return self:GetValueAsFloat(SV);
 end
 
 ---
--- Gibt die Ausrichtung des Entity zurück. Optional kann die
--- Ausrichtung geändert werden.
+-- Setzt die Größe des Entity. Wenn es sich um einen Siedler handelt, wird
+-- versucht einen neuen Speed Factor zu setzen.
 --
--- @param[type=number] _Orientation (Optional) Neue Ausrichtung
+-- @param[type=number] _Scale Neuer Größenfaktor
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetEntitySize(_Scale)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+
+    local SV = (QSB.HistoryEdition and -42) or -45;
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 then
+        Logic.SetEntityScriptingValue(EntityID, SV, Core:ScriptingValueFloatToInteger(_Scale));
+        if Logic.IsSettler(EntityID) == 1 then
+            Logic.SetSpeedFactor(EntityID, _Scale);
+        end
+    end
+    return self;
+end
+
+---
+-- Gibt die Ausrichtung des Entity zurück.
+--
 -- @return[type=number] Ausrichtung in Grad
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:Orientation(_Orientation)
+function QSB.EntityProperty:GetOrientation()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    return Logic.GetEntityOrientation(GetID(self.m_EntityName));
+end
 
-    local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 then
-        return 0;
-    end
-    if _Orientation then
-        Logic.SetOrientation(EntityID, _Orientation);
-    end
-    return Logic.GetEntityOrientation(EntityID);
+---
+-- Setzt die Ausrichtung des Entity.
+--
+-- @param[type=number] _Orientation Neue Ausrichtung
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetOrientation(_Orientation)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    Logic.SetOrientation(GetID(self.m_EntityName), _Orientation);
+    return self;
 end
 
 ---
 -- Gibt die Menge an Rohstoffen des Entity zurück. Optional kann
 -- eine neue Menge gesetzt werden.
 --
--- @param[type=number] _Amount (Optional) Menge an Rohstoffen
 -- @return[type=number] Menge an Rohstoffen
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:Resource(_Amount)
+function QSB.EntityProperty:GetResource()
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    return Logic.GetResourceDoodadGoodAmount(GetID(self.m_EntityName));
+end
+
+---
+-- Setzt die Menge an Rohstoffen des Entity.
+--
+-- @param[type=number] _Amount Menge an Rohstoffen
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetResource(_Amount)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 or Logic.GetResourceDoodadGoodType(EntityID) == 0 then
-        return 0;
-    end
-    if _Amount then
+    if EntityID > 0 or Logic.GetResourceDoodadGoodType(EntityID) > 0 then
         if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
             EntityID = ReplaceEntity(EntityID, Logic.GetEntityType(EntityID));
         end
         Logic.SetResourceDoodadGoodAmount(EntityID, _Amount);
     end
-    return Logic.GetResourceDoodadGoodAmount(EntityID);
+    return self;
 end
 
 ---
--- Gibt den Besitzer des Entity zurück. Optional kann das
--- Entity einem neuen Besitzer zugeordnet werden.
+-- Gibt den Besitzer des Entity zurück.
 --
--- @param[type=number] _PlayerID (Optional) Neuer Besitzer des Entity
 -- @return[type=number] Besitzer
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:PlayerID(_PlayerID)
+function QSB.EntityProperty:GetPlayerID()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
     local SV = (QSB.HistoryEdition and -68) or -71;
-    if _PlayerID then
-        local EntityID = GetID(self.m_EntityName);
-        if EntityID > 0 then
-            if self:InGategory(EntityCategories.Leader) or self:InGategory(EntityCategories.CattlePasture) or self:InGategory(EntityCategories.SheepPasture) then
-                Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
-            else
-                Logic.SetEntityScriptingValue(EntityID, SV, _PlayerID);
-            end
-        end
-    end
     return self:GetValueAsInteger(SV);
 end
 
 ---
--- Gibt die Gesundheit des Entity zurück. Optional kann die
--- Gesundheit geändert werden.
+-- Setzt den Besitzer des Entity.
 --
--- @param[type=number]  _Health   (Optional) Neue aktuelle Gesundheit
--- @param[type=boolean] _Relative (Optional) Relativ zur maximalen Gesundheit
+-- @param[type=number] _PlayerID (Optional) Neuer Besitzer des Entity
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetPlayerID(_PlayerID)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+
+    local SV = (QSB.HistoryEdition and -68) or -71;
+    local EntityID = GetID(self.m_EntityName);
+    if EntityID > 0 then
+        if self:InGategory(EntityCategories.Leader) or self:InGategory(EntityCategories.CattlePasture) or self:InGategory(EntityCategories.SheepPasture) then
+            Logic.ChangeSettlerPlayerID(EntityID, _PlayerID);
+        else
+            Logic.SetEntityScriptingValue(EntityID, SV, _PlayerID);
+        end
+    end
+    return self;
+end
+
+---
+-- Gibt die Gesundheit des Entity zurück.
+--
 -- @return[type=number] Aktuelle Gesundheit
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:Health(_Health, _Relative)
+function QSB.EntityProperty:GetHealth()
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    local SV = (QSB.HistoryEdition and -38) or -41;
+    return self:GetValueAsInteger(GetID(self.m_EntityName));
+end
+
+---
+-- Setzt die Gesundheit des Entity. Optional kann die Gesundheit relativ zur
+-- maximalen Gesundheit geändert werden.
+--
+-- @param[type=number]  _Health   (Optional) Neue aktuelle Gesundheit
+-- @param[type=boolean] _Relative (Optional) Relativ zur maximalen Gesundheit
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetHealth(_Health, _Relative)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 or Logic.IsLeader(EntityID) == 1 then
-        return 0;
-    end
-    local SV = (QSB.HistoryEdition and -38) or -41;
-    if _Health then
+    if EntityID > 0 or Logic.IsLeader(EntityID) == 0 then
         local NewHealth = _Health;
-        -- Relative Gesundheit berechnen
         if _Relative then
             _Health = (_Health < 0 and 0) or _Health;
             _Health = (_Health > 100 and 100) or _Health;
@@ -422,7 +473,7 @@ function QSB.EntityProperty:Health(_Health, _Relative)
         end
         Logic.SetEntityScriptingValue(EntityID, SV, NewHealth);
     end
-    return self:GetValueAsInteger(SV);
+    return self;
 end
 
 ---
@@ -438,7 +489,7 @@ function QSB.EntityProperty:Heal(_Amount)
     if EntityID == 0 or Logic.IsLeader(EntityID) == 1 then
         return;
     end
-    self:Health(self:Health() + _Amount);
+    self:SetHealth(self:GetHealth() + _Amount);
 end
 
 ---
@@ -518,82 +569,94 @@ function QSB.EntityProperty:TriggerEntityKilledCallbacks(_Damage, _Attacker)
 end
 
 ---
--- Gibt zurück, ob das Gebäude brennt. Optional kann die Stärke
--- des Feuers verändert werden.
+-- Gibt zurück, ob das Gebäude brennt.
 --
--- @param[type=number]  _FireSize (Optional) Neue aktuelle Gesundheit
 -- @return[type=boolean] Gebäude steht in Flammen
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:Burning(_FireSize)
+function QSB.EntityProperty:IsBurning()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-
-    local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 or Logic.IsBuilding(EntityID) == 0 then
-        return false;
-    end
-    -- TODO: Gebäude per Skript löschen!
-    if _FireSize and _FireSize > 0 then
-        Logic.DEBUG_SetBuildingOnFire(EntityID, _FireSize);
-    end
-    return Logic.IsBurning(EntityID);
+    return Logic.IsBurning(GetID(self.m_EntityName));
 end
 
 ---
--- Gibt zurück, ob das Entity sichtbar ist. Optional
--- kann die Sichtbarkeit neu gesetzt werden.
+-- Steckt ein Gebäude in Brand.
 --
--- @param[type=boolean] _Visible (Optional) Sichtbarkeit ändern
+-- @param[type=number]  _FireSize (Optional) Neue aktuelle Gesundheit
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetBurning(_FireSize)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+
+    local EntityID = GetID(self.m_EntityName);
+    -- TODO: Gebäude per Skript löschen!
+    if _FireSize and _FireSize > 0 then
+        Logic.DEBUG_SetBuildingOnFire(GetID(self.m_EntityName), _FireSize);
+    end
+    return self;
+end
+
+---
+-- Gibt zurück, ob das Entity sichtbar ist.
+--
 -- @return[type=boolean] Ist sichtbar
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:Visible(_Visble)
+function QSB.EntityProperty:IsVisible()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-
-    local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 then
-        return false;
-    end
-    if _Visble ~= nil then
-        Logic.SetVisible(EntityID, _Visble);
-    end
     local SV = (QSB.HistoryEdition and -47) or -50;
     return self:GetValueAsInteger(SV) == 801280;
 end
 
 ---
--- Prüft, ob das Entity krank ist. Optional kann das Entity vorher
--- krank gemacht werden.
+-- Ändert die Sichtbarkeit des Entity
 --
--- @param[type=boolean] _SetIll (Optional) Entity krank machen
+-- @param[type=boolean] _Visible (Optional) Sichtbarkeit ändern
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetVisible(_Visble)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    Logic.SetVisible(GetID(self.m_EntityName), _Visble);
+    return self;
+end
+
+---
+-- Prüft, ob das Entity krank ist.
+--
 -- @return[type=boolean] Entity ist krank
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:Ill(_SetIll)
+function QSB.EntityProperty:IsIll()
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    local EntityID = GetID(self.m_EntityName);
+    if self:InGategory(EntityCategories.CattlePasture) or self:InGategory(EntityCategories.SheepPasture) then
+        return Logic.IsFarmAnimalIll(EntityID);
+    else
+        return Logic.IsIll(EntityID);
+    end
+end
+
+---
+-- Macht das Entity krank.
+--
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:MakeIll()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
     local EntityID = GetID(self.m_EntityName);
-    local FarmAnimal = false;
     if self:InGategory(EntityCategories.CattlePasture) or self:InGategory(EntityCategories.SheepPasture) then
-        FarmAnimal = true;
-    end
-    if EntityID == 0 or (Logic.IsSettler(EntityID) == 0 and FarmAnimal == false) then
-        return false;
-    end
-    if FarmAnimal then
-        if _SetIll == true then
-            Logic.MakeFarmAnimalIll(EntityID);
-        end
-        return Logic.IsFarmAnimalIll(EntityID);
+        Logic.MakeFarmAnimalIll(EntityID);
     else
-        if _SetIll == true then
-            Logic.MakeSettlerIll(EntityID);
-        end
-        return Logic.IsIll(EntityID);
+        Logic.MakeSettlerIll(EntityID);
     end
+    return self;
 end
 
 ---
@@ -605,11 +668,6 @@ end
 --
 function QSB.EntityProperty:OnScreenInfo()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-
-    local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 or Logic.IsSettler(EntityID) == 0 then
-        return false;
-    end
     return self:GetValueAsInteger(6) > 0;
 end
 
@@ -706,25 +764,68 @@ function QSB.EntityProperty:GetLeader()
 end
 
 ---
--- Gibt den Typen des Entity zurück. Optinal kann das Entity
--- mit einem neuen Entity anderen Typs ersetzt werden.
+-- Gibt den Typen des Entity zurück.
 --
 -- @param[type=number] _NewType (optional) Typ neues Entity
--- @return[type=number] Typ des Entity
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:Type(_NewType)
+function QSB.EntityProperty:GetType(_NewType)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    return Logic.GetEntityType(GetID(self.m_EntityName));
+end
 
+---
+-- Setzt den Typen des Entity.
+--
+-- @param[type=number] _NewType (optional) Typ neues Entity
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetType(_NewType)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    ReplaceEntity(self.m_EntityName, _NewType);
+    return self;
+end
+
+---
+-- Gibt die aktuelle Tasklist des Entity zurück.
+--
+-- @return[type=number] Tasklist
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:GetTask(_NewTask)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
     local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 then
-        return 0;
-    end
-    if _NewType then
-        EntityID = ReplaceEntity(EntityID, _NewType);
-    end
-    return Logic.GetEntityType(EntityID);
+    local CurrentTask = Logic.GetCurrentTaskList(EntityID);
+    return TaskLists[CurrentTask];
+end
+
+---
+-- Setzt die aktuelle Tasklist des Entity.
+--
+-- @param[type=number] _NewTask (optional) Neuer Task
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetTask(_NewTask)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    Logic.SetTaskList(GetID(self.m_EntityName), _NewTask);
+    return self;
+end
+
+---
+-- Weist dem Entity ein Neues Model zu.
+--
+-- @param[type=number] _NewModel (optional) Neues Model
+-- @within QSB.EntityProperty
+-- @local
+--
+function QSB.EntityProperty:SetModel(_NewModel)
+    assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
+    Logic.SetModel(GetID(self.m_EntityName), _NewModel);
+    return self;
 end
 
 ---
@@ -736,11 +837,6 @@ end
 --
 function QSB.EntityProperty:GetTypeName()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-
-    local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 then
-        return;
-    end
     return Logic.GetEntityTypeName(self:Type());
 end
 
@@ -768,16 +864,21 @@ function QSB.EntityProperty:GetGategories()
 end
 
 ---
--- Prüft, ob das Entity zur angegebenen Kategorie gehört.
+-- Prüft, ob das Entity mindestens eine der Kategorien hat
 --
--- @param[type=number] _Category Kategorie
+-- @param[type=number] ... Liste mit Kategorien
 -- @return[type=boolean] Entity hat Kategorie
 -- @within QSB.EntityProperty
 -- @local
 --
-function QSB.EntityProperty:InGategory(_Category)
+function QSB.EntityProperty:InGategory(...)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-    return Inside(_Category, self:GetGategories());
+    for k, v in pairs({...}) do
+        if Inside(v, self:GetGategories()) then
+            return true;
+        end
+    end
+    return false;    
 end
 
 ---
@@ -790,12 +891,7 @@ end
 --
 function QSB.EntityProperty:GetValueAsInteger(_index)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-
-    local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 then
-        return 0;
-    end
-    return math.floor(Logic.GetEntityScriptingValue(EntityID, _index) + 0.5);
+    return math.floor(Logic.GetEntityScriptingValue(GetID(self.m_EntityName), _index) + 0.5);
 end
 
 ---
@@ -808,12 +904,7 @@ end
 --
 function QSB.EntityProperty:GetValueAsFloat(_index)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-
-    local EntityID = GetID(self.m_EntityName);
-    if EntityID == 0 then
-        return 0.0;
-    end
-    return Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(EntityID,_index));
+    return Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(GetID(self.m_EntityName),_index));
 end
 
 -- -------------------------------------------------------------------------- --

@@ -528,14 +528,14 @@ function QSB.NonPlayerCharacter:RepositionHero()
         local x3, y3, z3 = Logic.EntityGetPos(ID);
         -- Held ersetzen und neu positionieren
         API.Bridge(string.format([[
-            BundleNonPlayerCharacter.Local.WasSelected = GUI.GetSelectedEntity() == %d
-        ]], HeroID));
+            BundleNonPlayerCharacter.Local.WasSelected = (GUI.GetSelectedEntity() == %d)
+        ]], HeroID or 0));
         local HeroID = ReplaceEntity(HeroID, Logic.GetEntityType(HeroID));
         BundleNonPlayerCharacter.Global.LastHeroEntityID = HeroID;
         API.Bridge(string.format([[
             if BundleNonPlayerCharacter.Local.WasSelected then
                 GUI.SelectEntity(%d)
-            end,
+            end
         ]], HeroID));
         Logic.DEBUG_SetSettlerPosition(HeroID, x3, y3);
         LookAt(NPCID, HeroID);
