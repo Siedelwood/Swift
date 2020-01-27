@@ -47,8 +47,8 @@ function API.UseBreedSheeps(_Flag)
     end
 
     BundleStockbreeding.Global.Data.AllowBreedSheeps = _Flag == true;
-    API.Bridge("BundleStockbreeding.Global.Data.AllowBreedSheeps = " ..tostring(_Flag == true));
-    if _Flag == true then
+    API.Bridge("BundleStockbreeding.Local.Data.AllowBreedSheeps = " ..tostring(_Flag == true));
+    if _Flag ~= true then
         local Price = MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Sheep]
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
@@ -82,8 +82,8 @@ function API.UseBreedCattle(_Flag)
     end
 
     BundleStockbreeding.Global.Data.AllowBreedCattle = _Flag == true;
-    API.Bridge("BundleStockbreeding.Global.Data.AllowBreedCattle = " ..tostring(_Flag == true));
-    if _Flag == true then
+    API.Bridge("BundleStockbreeding.Local.Data.AllowBreedCattle = " ..tostring(_Flag == true));
+    if _Flag ~= true then
         local Price = MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Cow];
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
         API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
@@ -94,56 +94,6 @@ function API.UseBreedCattle(_Flag)
     end
 end
 UseBreedCattle = API.UseBreedCattle;
-
----
--- Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Schafen
--- festgelegt.
---
--- Will der Spieler nun ein Schaf züchten, muss er mindestens die angegebene
--- Menge an Getreide besitzen. Das Getreide wird dann aus dem Lager entfernt.
---
--- <p><b>Alias:</b> SetSheepGrainCost</p>
---
--- @param[type=number] _Amount Getreidekosten
--- @within Anwenderfunktionen
---
--- @usage
--- -- Wucherpreise zum Züchten!
--- API.SetSheepGrainCost(50);
---
-function API.SetSheepGrainCost(_Amount)
-    if GUI then
-        return;
-    end
-    BundleStockbreeding.Global.Data.SheepCost = _Amount;
-    API.Bridge("BundleStockbreeding.Local.Data.SheepCost = " .._Amount);
-end
-SetSheepGrainCost = API.SetSheepGrainCost;
-
----
--- Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Kühen
--- festgelegt.
---
--- Will der Spieler nun eine Kuh züchten, muss er mindestens die angegebene
--- Menge an Getreide besitzen. Das Getreide wird dann aus dem Lager entfernt.
---
--- <p><b>Alias:</b> SetCattleGrainCost</p>
---
--- @param[type=number] _Amount Getreidekosten
--- @within Anwenderfunktionen
---
--- @usage
--- -- Wucherpreise zum Züchten!
--- API.SetCattleGrainCost(50);
---
-function API.SetCattleGrainCost(_Amount)
-    if GUI then
-        return;
-    end
-    BundleStockbreeding.Global.Data.CattleCost = _Amount;
-    API.Bridge("BundleStockbreeding.Local.Data.CattleCost = " .._Amount);
-end
-SetCattleGrainCost = API.SetCattleGrainCost;
 
 ---
 -- Setzt den Typen des verwendeten Schafes.
@@ -239,13 +189,13 @@ BundleStockbreeding = {
             AllowBreedCattle = true,
             CattlePastures = {},
             CattleBaby = false,
-            CattleCost = 10,
+            CattleFeedingTimer = 30,
             CattleMoneyCost = 300,
 
             AllowBreedSheeps = true,
             SheepPastures = {},
             SheepBaby = false,
-            SheepCost = 10,
+            SheepFeedingTimer = 30,
             SheepMoneyCost = 300,
             SheepType = -1,
         }
@@ -253,10 +203,7 @@ BundleStockbreeding = {
     Local = {
         Data = {
             AllowBreedCattle = true,
-            CattleCost = 10,
-
             AllowBreedSheeps = true,
-            SheepCost = 10,
         },
 
         Description = {
@@ -307,6 +254,13 @@ BundleStockbreeding = {
 -- @local
 --
 function BundleStockbreeding.Global:Install()
+    MerchantSystem.BasePricesOrigBundleStockbreeding                = {};
+    MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Sheep] = MerchantSystem.BasePrices[Goods.G_Sheep];
+    MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Cow]   = MerchantSystem.BasePrices[Goods.G_Cow];
+
+    MerchantSystem.BasePrices[Goods.G_Sheep] = BundleStockbreeding.Global.Data.SheepMoneyCost;
+    MerchantSystem.BasePrices[Goods.G_Cow]   = BundleStockbreeding.Global.Data.CattleMoneyCost;
+
     StartSimpleJobEx(self.AnimalBreedJob);
     StartSimpleJobEx(self.AnimalGrouthJob);
 end
@@ -352,12 +306,11 @@ end
 -- @within Internal
 -- @local
 --
-function BundleStockbreeding.Global:CreateAnimal(_PastureID, _Type, _GrainCost, _Shrink)
+function BundleStockbreeding.Global:CreateAnimal(_PastureID, _Type, _Shrink)
     local PlayerID = Logic.EntityGetPlayer(_PastureID);
     local x, y = Logic.GetBuildingApproachPosition(_PastureID);
     local Type = (_Type > 0 and _Type) or (_Type == 0 and Entities["A_X_Sheep0" ..math.random(1, 2)]) or Entities["A_X_Sheep0" ..(_Type * (-1))];
     local ID = Logic.CreateEntity(Type, x, y, 0, PlayerID);
-    AddGood(Goods.G_Grain, _GrainCost * (-1), PlayerID);
     if _Shrink == true then
         self:SetScale(ID, self.Data.ShrinkedSize);
         table.insert(self.Data.AnimalChildren, {ID, self.Data.GrothTime});
@@ -468,12 +421,21 @@ function BundleStockbreeding.Global:AnimalBreedController()
             self.Data.CattlePastures[v] = self.Data.CattlePastures[v] or 0;
             if self:IsCattleNeeded(PlayerID) and Logic.IsBuildingStopped(v) == false then
                 self.Data.CattlePastures[v] = self.Data.CattlePastures[v] +1;
+                -- Alle X Sekunden wird 1 Getreide verbraucht
+                local FeedingTime = self.Data.CattleFeedingTimer;
+                if self.Data.CattlePastures[v] > 0 and FeedingTime > 0 and self.Data.CattlePastures[v] % FeedingTime == 0 then
+                    if GetPlayerResources(Goods.G_Grain, PlayerID) > 0 then
+                        AddGood(PlayerID, Goods.G_Grain, -1);
+                    else
+                        self.Data.CattlePastures[v] = self.Data.CattlePastures[v] - FeedingTime;
+                    end
+                end
             end
-            -- Schaf spawnen
+            -- Kuh spawnen
             if self.Data.CattlePastures[v] > self:BreedingTimeTillNext(AmountNearby) then
                 local x, y, z = Logic.EntityGetPos(v);
-                if  GetPlayerResources(Goods.G_Grain, PlayerID) >= self.Data.CattleCost and self:IsCattleNeeded(PlayerID) then
-                    self:CreateAnimal(v, Entities.A_X_Cow01, self.Data.CattleCost, self.Data.CattleBaby);
+                if self:IsCattleNeeded(PlayerID) then
+                    self:CreateAnimal(v, Entities.A_X_Cow01, self.Data.CattleBaby);
                     self.Data.CattlePastures[v] = 0;
                 end
             end
@@ -490,12 +452,21 @@ function BundleStockbreeding.Global:AnimalBreedController()
             self.Data.SheepPastures[v] = self.Data.SheepPastures[v] or 0;
             if self:IsSheepNeeded(PlayerID) and Logic.IsBuildingStopped(v) == false then
                 self.Data.SheepPastures[v] = self.Data.SheepPastures[v] +1;
+                -- Alle X Sekunden wird 1 Getreide verbraucht
+                local FeedingTime = self.Data.SheepFeedingTimer;
+                if self.Data.SheepPastures[v] > 0 and FeedingTime > 0 and self.Data.SheepPastures[v] % FeedingTime == 0 then
+                    if GetPlayerResources(Goods.G_Grain, PlayerID) > 0 then
+                        AddGood(PlayerID, Goods.G_Grain, -1);
+                    else
+                        self.Data.SheepPastures[v] = self.Data.SheepPastures[v] - FeedingTime;
+                    end
+                end
             end
             -- Schaf spawnen
             if self.Data.SheepPastures[v] > self:BreedingTimeTillNext(AmountNearby) then
                 local x, y, z = Logic.EntityGetPos(v);
-                if  GetPlayerResources(Goods.G_Grain, PlayerID) >= self.Data.SheepCost and self:IsSheepNeeded(PlayerID) then
-                    self:CreateAnimal(v, self.Data.SheepType, self.Data.SheepCost, self.Data.SheepBaby);
+                if self:IsSheepNeeded(PlayerID) then
+                    self:CreateAnimal(v, self.Data.SheepType, self.Data.SheepBaby);
                     self.Data.SheepPastures[v] = 0;
                 end
             end
@@ -601,7 +572,7 @@ function BundleStockbreeding.Local:OverwriteBuySiegeEngine()
             end
             BundleStockbreeding.Local:TextCosts(
                 API.Localize(Description.Title), API.Localize(Description.Text), API.Localize(Description.Disabled),
-                {Goods.G_Grain, BundleStockbreeding.Local.Data.CattleCost},
+                {Goods.G_Grain, 1},
                 false
             );
         elseif BuildingEntityType == Entities.B_SheepPasture then
@@ -611,7 +582,7 @@ function BundleStockbreeding.Local:OverwriteBuySiegeEngine()
             end
             BundleStockbreeding.Local:TextCosts(
                 API.Localize(Description.Title), API.Localize(Description.Text), API.Localize(Description.Disabled),
-                {Goods.G_Grain, BundleStockbreeding.Local.Data.SheepCost},
+                {Goods.G_Grain, 1},
                 false
             );
         else
