@@ -425,7 +425,7 @@ function BundleStockbreeding.Global:AnimalBreedController()
                 local FeedingTime = self.Data.CattleFeedingTimer;
                 if self.Data.CattlePastures[v] > 0 and FeedingTime > 0 and self.Data.CattlePastures[v] % FeedingTime == 0 then
                     if GetPlayerResources(Goods.G_Grain, PlayerID) > 0 then
-                        AddGood(PlayerID, Goods.G_Grain, -1);
+                        AddGood(Goods.G_Grain, PlayerID, -1);
                     else
                         self.Data.CattlePastures[v] = self.Data.CattlePastures[v] - FeedingTime;
                     end
@@ -456,7 +456,7 @@ function BundleStockbreeding.Global:AnimalBreedController()
                 local FeedingTime = self.Data.SheepFeedingTimer;
                 if self.Data.SheepPastures[v] > 0 and FeedingTime > 0 and self.Data.SheepPastures[v] % FeedingTime == 0 then
                     if GetPlayerResources(Goods.G_Grain, PlayerID) > 0 then
-                        AddGood(PlayerID, Goods.G_Grain, -1);
+                        AddGood(Goods.G_Grain, PlayerID, -1);
                     else
                         self.Data.SheepPastures[v] = self.Data.SheepPastures[v] - FeedingTime;
                     end
