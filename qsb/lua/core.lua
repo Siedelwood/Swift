@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.5.2 14/12/2019";
+QSB.Version = "Version 2.6.0 14/12/2019";
 QSB.Language = "de";
 QSB.HistoryEdition = false;
 
