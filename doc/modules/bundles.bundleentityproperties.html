@@ -35,6 +35,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Internal">Internal</a></li>
 <li><a href="#QSB_EntityProperty">QSB.EntityProperty</a></li>
 </ul>
 
@@ -70,6 +71,7 @@
   <li><a href="../modules/bundles.bundlemusictools.html">bundles.bundlemusictools</a></li>
   <li><a href="../modules/bundles.bundlenonplayercharacter.html">bundles.bundlenonplayercharacter</a></li>
   <li><a href="../modules/bundles.bundleplayerhelperfunctions.html">bundles.bundleplayerhelperfunctions</a></li>
+  <li><a href="../modules/bundles.bundleprofileandoptions.html">bundles.bundleprofileandoptions</a></li>
   <li><a href="../modules/bundles.bundlequestgeneration.html">bundles.bundlequestgeneration</a></li>
   <li><a href="../modules/bundles.bundlesavegametools.html">bundles.bundlesavegametools</a></li>
   <li><a href="../modules/bundles.bundlespeedlimit.html">bundles.bundlespeedlimit</a></li>
@@ -134,6 +136,14 @@
 	<td class="summary">Prüft, ob das Entity sichtbar ist.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.MakeInvulnerable">API.MakeInvulnerable (_Entity)</a></td>
+	<td class="summary">Macht das Entity oder das Battalion unverwundbar.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.MakeVulnerable">API.MakeVulnerable (_Entity)</a></td>
+	<td class="summary">Macht das Entity oder das Battalion verwundbar.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.SetBuildingOnFire">API.SetBuildingOnFire (_Entity, _FireSize)</a></td>
 	<td class="summary">Setzt ein Gebäude in Brand.</td>
 	</tr>
@@ -145,28 +155,40 @@
 	<td class="name" nowrap><a href="#API.SetEntityScale">API.SetEntityScale (_Entity, _Scale)</a></td>
 	<td class="summary">Setzt den Größenfaktor des Entity.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityProperties.Global:Install">BundleEntityProperties.Global:Install ()</a></td>
+	<td class="summary">Installiert das Bundle.</td>
+	</tr>
+</table>
+<h2><a href="#Internal">Internal</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleEntityProperties.Global.InvulnerabilityJob">BundleEntityProperties.Global.InvulnerabilityJob ()</a></td>
+	<td class="summary">Setzt ein unverwundbares Entity wieder unverwundbar, wenn sich die ID
+ geändert hat.</td>
+	</tr>
 </table>
 <h2><a href="#QSB_EntityProperty">QSB.EntityProperty</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Burning">QSB.EntityProperty:Burning (_FireSize)</a></td>
-	<td class="summary">Gibt zurück, ob das Gebäude brennt.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:CountSoldiers">QSB.EntityProperty:CountSoldiers ()</a></td>
 	<td class="summary">Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:EntitySize">QSB.EntityProperty:EntitySize (_Scale)</a></td>
-	<td class="summary">Gibt die Größe des Entity zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:GetDestination">QSB.EntityProperty:GetDestination ()</a></td>
 	<td class="summary">Gibt das Bewegungsziel des Entity zurück.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:GetEntitySize">QSB.EntityProperty:GetEntitySize ()</a></td>
+	<td class="summary">Gibt die Größe des Entity zurück.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:GetGategories">QSB.EntityProperty:GetGategories ()</a></td>
 	<td class="summary">Gibt alle Kategorien zurück, zu denen das Entity gehört.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:GetHealth">QSB.EntityProperty:GetHealth ()</a></td>
+	<td class="summary">Gibt die Gesundheit des Entity zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:GetInstance">QSB.EntityProperty:GetInstance (_Entity)</a></td>
@@ -177,8 +199,28 @@
 	<td class="summary">Gibt den Leader des Soldaten zurück.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:GetOrientation">QSB.EntityProperty:GetOrientation ()</a></td>
+	<td class="summary">Gibt die Ausrichtung des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:GetPlayerID">QSB.EntityProperty:GetPlayerID ()</a></td>
+	<td class="summary">Gibt den Besitzer des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:GetResource">QSB.EntityProperty:GetResource ()</a></td>
+	<td class="summary">Gibt die Menge an Rohstoffen des Entity zurück.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:GetSoldiers">QSB.EntityProperty:GetSoldiers ()</a></td>
 	<td class="summary">Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:GetTask">QSB.EntityProperty:GetTask (_NewTask)</a></td>
+	<td class="summary">Gibt die aktuelle Tasklist des Entity zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:GetType">QSB.EntityProperty:GetType (_NewType)</a></td>
+	<td class="summary">Gibt den Typen des Entity zurück.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:GetTypeName">QSB.EntityProperty:GetTypeName ()</a></td>
@@ -197,21 +239,33 @@
 	<td class="summary">Heilt das Entity um die angegebene Menge an Gesundheit.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Health">QSB.EntityProperty:Health (_Health, _Relative)</a></td>
-	<td class="summary">Gibt die Gesundheit des Entity zurück.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:Hurt">QSB.EntityProperty:Hurt (_Damage, _Attacker)</a></td>
 	<td class="summary">Verwundet ein Entity oder ein Battallion um die angegebene
  Menge an Schaden.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Ill">QSB.EntityProperty:Ill (_SetIll)</a></td>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:InGategory">QSB.EntityProperty:InGategory (...)</a></td>
+	<td class="summary">Prüft, ob das Entity mindestens eine der Kategorien hat</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:IsBurning">QSB.EntityProperty:IsBurning ()</a></td>
+	<td class="summary">Gibt zurück, ob das Gebäude brennt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:IsExisting">QSB.EntityProperty:IsExisting ()</a></td>
+	<td class="summary">Prüft, ob das Entity existiert.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:IsIll">QSB.EntityProperty:IsIll ()</a></td>
 	<td class="summary">Prüft, ob das Entity krank ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:InGategory">QSB.EntityProperty:InGategory (_Category)</a></td>
-	<td class="summary">Prüft, ob das Entity zur angegebenen Kategorie gehört.</td>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:IsVisible">QSB.EntityProperty:IsVisible ()</a></td>
+	<td class="summary">Gibt zurück, ob das Entity sichtbar ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:MakeIll">QSB.EntityProperty:MakeIll ()</a></td>
+	<td class="summary">Macht das Entity krank.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:New">QSB.EntityProperty:New (_Entity)</a></td>
@@ -222,16 +276,44 @@
 	<td class="summary">Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Orientation">QSB.EntityProperty:Orientation (_Orientation)</a></td>
-	<td class="summary">Gibt die Ausrichtung des Entity zurück.</td>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetBurning">QSB.EntityProperty:SetBurning (_FireSize)</a></td>
+	<td class="summary">Steckt ein Gebäude in Brand.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:PlayerID">QSB.EntityProperty:PlayerID (_PlayerID)</a></td>
-	<td class="summary">Gibt den Besitzer des Entity zurück.</td>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetEntitySize">QSB.EntityProperty:SetEntitySize (_Scale)</a></td>
+	<td class="summary">Setzt die Größe des Entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Resource">QSB.EntityProperty:Resource (_Amount)</a></td>
-	<td class="summary">Gibt die Menge an Rohstoffen des Entity zurück.</td>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetHealth">QSB.EntityProperty:SetHealth (_Health, _Relative)</a></td>
+	<td class="summary">Setzt die Gesundheit des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetModel">QSB.EntityProperty:SetModel (_NewModel)</a></td>
+	<td class="summary">Weist dem Entity ein Neues Model zu.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetOrientation">QSB.EntityProperty:SetOrientation (_Orientation)</a></td>
+	<td class="summary">Setzt die Ausrichtung des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetPlayerID">QSB.EntityProperty:SetPlayerID (_PlayerID)</a></td>
+	<td class="summary">Setzt den Besitzer des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetResource">QSB.EntityProperty:SetResource (_Amount)</a></td>
+	<td class="summary">Setzt die Menge an Rohstoffen des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetTask">QSB.EntityProperty:SetTask (_NewTask)</a></td>
+	<td class="summary">Setzt die aktuelle Tasklist des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetType">QSB.EntityProperty:SetType (_NewType)</a></td>
+	<td class="summary">Setzt den Typen des Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:SetVisible">QSB.EntityProperty:SetVisible (_Visible)</a></td>
+	<td class="summary">Ändert die Sichtbarkeit des Entity</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#QSB.EntityProperty:TriggerEntityKilledCallbacks">QSB.EntityProperty:TriggerEntityKilledCallbacks (_Damage, _Attacker)</a></td>
@@ -239,12 +321,8 @@
  durch :Hurt sterben.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Type">QSB.EntityProperty:Type (_NewType)</a></td>
-	<td class="summary">Gibt den Typen des Entity zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.EntityProperty:Visible">QSB.EntityProperty:Visible (_Visible)</a></td>
-	<td class="summary">Gibt zurück, ob das Entity sichtbar ist.</td>
+	<td class="name" nowrap><a href="#QSB.EntityProperty:Vulnerable">QSB.EntityProperty:Vulnerable (_Flag)</a></td>
+	<td class="summary">Setzt das Entity oder das Battalion verwundbar oder unverwundbar.</td>
 	</tr>
 </table>
 
@@ -495,6 +573,54 @@
 
 </dd>
     <dt>
+    <a name = "API.MakeInvulnerable"></a>
+    <strong>API.MakeInvulnerable (_Entity)</strong>
+    </dt>
+    <dd>
+    Macht das Entity oder das Battalion unverwundbar.
+<p> Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
+ ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
+<p> <b>Alias</b>: MakeInvulnerable
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.MakeVulnerable"></a>
+    <strong>API.MakeVulnerable (_Entity)</strong>
+    </dt>
+    <dd>
+    Macht das Entity oder das Battalion verwundbar.
+<p> <b>Alias</b>: MakeVulnerable
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Entity</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Scriptname des Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.SetBuildingOnFire"></a>
     <strong>API.SetBuildingOnFire (_Entity, _FireSize)</strong>
     </dt>
@@ -578,39 +704,43 @@
 
 
 </dd>
-</dl>
-    <h2 class="section-header "><a name="QSB_EntityProperty"></a>QSB.EntityProperty</h2>
-
-    <dl class="function">
     <dt>
-    <a name = "QSB.EntityProperty:Burning"></a>
-    <strong>QSB.EntityProperty:Burning (_FireSize)</strong>
+    <a name = "BundleEntityProperties.Global:Install"></a>
+    <strong>BundleEntityProperties.Global:Install ()</strong>
     </dt>
     <dd>
-    Gibt zurück, ob das Gebäude brennt.  Optional kann die Stärke
- des Feuers verändert werden.
+    Installiert das Bundle.
 
 
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_FireSize</span>
-            <span class="types"><span class="type">number</span></span>
-         (Optional) Neue aktuelle Gesundheit
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Gebäude steht in Flammen
-    </ol>
 
 
 
 
 </dd>
+</dl>
+    <h2 class="section-header "><a name="Internal"></a>Internal</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BundleEntityProperties.Global.InvulnerabilityJob"></a>
+    <strong>BundleEntityProperties.Global.InvulnerabilityJob ()</strong>
+    </dt>
+    <dd>
+    Setzt ein unverwundbares Entity wieder unverwundbar, wenn sich die ID
+ geändert hat.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="QSB_EntityProperty"></a>QSB.EntityProperty</h2>
+
+    <dl class="function">
     <dt>
     <a name = "QSB.EntityProperty:CountSoldiers"></a>
     <strong>QSB.EntityProperty:CountSoldiers ()</strong>
@@ -625,35 +755,6 @@
 
            <span class="types"><span class="type">number</span></span>
         Menge an Soldaten
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:EntitySize"></a>
-    <strong>QSB.EntityProperty:EntitySize (_Scale)</strong>
-    </dt>
-    <dd>
-    Gibt die Größe des Entity zurück.  Optional kann der
- Größenfaktor geändert werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Scale</span>
-            <span class="types"><span class="type">number</span></span>
-         (Optional) Neuer Größenfaktor
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Größenfaktor
     </ol>
 
 
@@ -681,6 +782,26 @@
 
 </dd>
     <dt>
+    <a name = "QSB.EntityProperty:GetEntitySize"></a>
+    <strong>QSB.EntityProperty:GetEntitySize ()</strong>
+    </dt>
+    <dd>
+    Gibt die Größe des Entity zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Größenfaktor
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "QSB.EntityProperty:GetGategories"></a>
     <strong>QSB.EntityProperty:GetGategories ()</strong>
     </dt>
@@ -694,6 +815,26 @@
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
         Kategorien des Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:GetHealth"></a>
+    <strong>QSB.EntityProperty:GetHealth ()</strong>
+    </dt>
+    <dd>
+    Gibt die Gesundheit des Entity zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Aktuelle Gesundheit
     </ol>
 
 
@@ -751,6 +892,68 @@
 
 </dd>
     <dt>
+    <a name = "QSB.EntityProperty:GetOrientation"></a>
+    <strong>QSB.EntityProperty:GetOrientation ()</strong>
+    </dt>
+    <dd>
+    Gibt die Ausrichtung des Entity zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Ausrichtung in Grad
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:GetPlayerID"></a>
+    <strong>QSB.EntityProperty:GetPlayerID ()</strong>
+    </dt>
+    <dd>
+    Gibt den Besitzer des Entity zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Besitzer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:GetResource"></a>
+    <strong>QSB.EntityProperty:GetResource ()</strong>
+    </dt>
+    <dd>
+    Gibt die Menge an Rohstoffen des Entity zurück.  Optional kann
+ eine neue Menge gesetzt werden.
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Menge an Rohstoffen
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "QSB.EntityProperty:GetSoldiers"></a>
     <strong>QSB.EntityProperty:GetSoldiers ()</strong>
     </dt>
@@ -765,6 +968,53 @@
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
         Liste aller Soldaten
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:GetTask"></a>
+    <strong>QSB.EntityProperty:GetTask (_NewTask)</strong>
+    </dt>
+    <dd>
+    Gibt die aktuelle Tasklist des Entity zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_NewTask</span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Tasklist
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:GetType"></a>
+    <strong>QSB.EntityProperty:GetType (_NewType)</strong>
+    </dt>
+    <dd>
+    Gibt den Typen des Entity zurück.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_NewType</span>
+            <span class="types"><span class="type">number</span></span>
+         (optional) Typ neues Entity
+        </li>
+    </ul>
+
 
 
 
@@ -866,39 +1116,6 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:Health"></a>
-    <strong>QSB.EntityProperty:Health (_Health, _Relative)</strong>
-    </dt>
-    <dd>
-    Gibt die Gesundheit des Entity zurück.  Optional kann die
- Gesundheit geändert werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Health</span>
-            <span class="types"><span class="type">number</span></span>
-           (Optional) Neue aktuelle Gesundheit
-        </li>
-        <li><span class="parameter">_Relative</span>
-            <span class="types"><span class="type">boolean</span></span>
-         (Optional) Relativ zur maximalen Gesundheit
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Aktuelle Gesundheit
-    </ol>
-
-
-
-
-</dd>
-    <dt>
     <a name = "QSB.EntityProperty:Hurt"></a>
     <strong>QSB.EntityProperty:Hurt (_Damage, _Attacker)</strong>
     </dt>
@@ -927,22 +1144,80 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:Ill"></a>
-    <strong>QSB.EntityProperty:Ill (_SetIll)</strong>
+    <a name = "QSB.EntityProperty:InGategory"></a>
+    <strong>QSB.EntityProperty:InGategory (...)</strong>
     </dt>
     <dd>
-    Prüft, ob das Entity krank ist.  Optional kann das Entity vorher
- krank gemacht werden.
-
+    Prüft, ob das Entity mindestens eine der Kategorien hat
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_SetIll</span>
-            <span class="types"><span class="type">boolean</span></span>
-         (Optional) Entity krank machen
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">number</span></span>
+         Liste mit Kategorien
         </li>
     </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Entity hat Kategorie
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:IsBurning"></a>
+    <strong>QSB.EntityProperty:IsBurning ()</strong>
+    </dt>
+    <dd>
+    Gibt zurück, ob das Gebäude brennt.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Gebäude steht in Flammen
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:IsExisting"></a>
+    <strong>QSB.EntityProperty:IsExisting ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Entity existiert.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Entity existiert
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:IsIll"></a>
+    <strong>QSB.EntityProperty:IsIll ()</strong>
+    </dt>
+    <dd>
+    Prüft, ob das Entity krank ist.
+
+
 
     <h3>Returns:</h3>
     <ol>
@@ -956,27 +1231,34 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:InGategory"></a>
-    <strong>QSB.EntityProperty:InGategory (_Category)</strong>
+    <a name = "QSB.EntityProperty:IsVisible"></a>
+    <strong>QSB.EntityProperty:IsVisible ()</strong>
     </dt>
     <dd>
-    Prüft, ob das Entity zur angegebenen Kategorie gehört.
+    Gibt zurück, ob das Entity sichtbar ist.
 
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Category</span>
-            <span class="types"><span class="type">number</span></span>
-         Kategorie
-        </li>
-    </ul>
 
     <h3>Returns:</h3>
     <ol>
 
            <span class="types"><span class="type">boolean</span></span>
-        Entity hat Kategorie
+        Ist sichtbar
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:MakeIll"></a>
+    <strong>QSB.EntityProperty:MakeIll ()</strong>
+    </dt>
+    <dd>
+    Macht das Entity krank.
+
+
+
 
 
 
@@ -1030,42 +1312,124 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:Orientation"></a>
-    <strong>QSB.EntityProperty:Orientation (_Orientation)</strong>
+    <a name = "QSB.EntityProperty:SetBurning"></a>
+    <strong>QSB.EntityProperty:SetBurning (_FireSize)</strong>
     </dt>
     <dd>
-    Gibt die Ausrichtung des Entity zurück.  Optional kann die
- Ausrichtung geändert werden.
-
+    Steckt ein Gebäude in Brand.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Orientation</span>
+        <li><span class="parameter">_FireSize</span>
             <span class="types"><span class="type">number</span></span>
-         (Optional) Neue Ausrichtung
+         (Optional) Neue aktuelle Gesundheit
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Ausrichtung in Grad
-    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:PlayerID"></a>
-    <strong>QSB.EntityProperty:PlayerID (_PlayerID)</strong>
+    <a name = "QSB.EntityProperty:SetEntitySize"></a>
+    <strong>QSB.EntityProperty:SetEntitySize (_Scale)</strong>
     </dt>
     <dd>
-    Gibt den Besitzer des Entity zurück.  Optional kann das
- Entity einem neuen Besitzer zugeordnet werden.
+    Setzt die Größe des Entity.  Wenn es sich um einen Siedler handelt, wird
+ versucht einen neuen Speed Factor zu setzen.
 
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Scale</span>
+            <span class="types"><span class="type">number</span></span>
+         Neuer Größenfaktor
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:SetHealth"></a>
+    <strong>QSB.EntityProperty:SetHealth (_Health, _Relative)</strong>
+    </dt>
+    <dd>
+    Setzt die Gesundheit des Entity.  Optional kann die Gesundheit relativ zur
+ maximalen Gesundheit geändert werden.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Health</span>
+            <span class="types"><span class="type">number</span></span>
+           (Optional) Neue aktuelle Gesundheit
+        </li>
+        <li><span class="parameter">_Relative</span>
+            <span class="types"><span class="type">boolean</span></span>
+         (Optional) Relativ zur maximalen Gesundheit
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:SetModel"></a>
+    <strong>QSB.EntityProperty:SetModel (_NewModel)</strong>
+    </dt>
+    <dd>
+    Weist dem Entity ein Neues Model zu.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_NewModel</span>
+            <span class="types"><span class="type">number</span></span>
+         (optional) Neues Model
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:SetOrientation"></a>
+    <strong>QSB.EntityProperty:SetOrientation (_Orientation)</strong>
+    </dt>
+    <dd>
+    Setzt die Ausrichtung des Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Orientation</span>
+            <span class="types"><span class="type">number</span></span>
+         Neue Ausrichtung
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:SetPlayerID"></a>
+    <strong>QSB.EntityProperty:SetPlayerID (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Setzt den Besitzer des Entity.
 
 
     <h3>Parameters:</h3>
@@ -1076,41 +1440,90 @@
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Besitzer
-    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:Resource"></a>
-    <strong>QSB.EntityProperty:Resource (_Amount)</strong>
+    <a name = "QSB.EntityProperty:SetResource"></a>
+    <strong>QSB.EntityProperty:SetResource (_Amount)</strong>
     </dt>
     <dd>
-    Gibt die Menge an Rohstoffen des Entity zurück.  Optional kann
- eine neue Menge gesetzt werden.
-
+    Setzt die Menge an Rohstoffen des Entity.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Amount</span>
             <span class="types"><span class="type">number</span></span>
-         (Optional) Menge an Rohstoffen
+         Menge an Rohstoffen
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
 
-           <span class="types"><span class="type">number</span></span>
-        Menge an Rohstoffen
-    </ol>
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:SetTask"></a>
+    <strong>QSB.EntityProperty:SetTask (_NewTask)</strong>
+    </dt>
+    <dd>
+    Setzt die aktuelle Tasklist des Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_NewTask</span>
+            <span class="types"><span class="type">number</span></span>
+         (optional) Neuer Task
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:SetType"></a>
+    <strong>QSB.EntityProperty:SetType (_NewType)</strong>
+    </dt>
+    <dd>
+    Setzt den Typen des Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_NewType</span>
+            <span class="types"><span class="type">number</span></span>
+         (optional) Typ neues Entity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "QSB.EntityProperty:SetVisible"></a>
+    <strong>QSB.EntityProperty:SetVisible (_Visible)</strong>
+    </dt>
+    <dd>
+    Ändert die Sichtbarkeit des Entity
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Visible</span>
+            <span class="types"><span class="type">boolean</span></span>
+         (Optional) Sichtbarkeit ändern
+        </li>
+    </ul>
+
 
 
 
@@ -1145,58 +1558,22 @@
 
 </dd>
     <dt>
-    <a name = "QSB.EntityProperty:Type"></a>
-    <strong>QSB.EntityProperty:Type (_NewType)</strong>
+    <a name = "QSB.EntityProperty:Vulnerable"></a>
+    <strong>QSB.EntityProperty:Vulnerable (_Flag)</strong>
     </dt>
     <dd>
-    Gibt den Typen des Entity zurück.  Optinal kann das Entity
- mit einem neuen Entity anderen Typs ersetzt werden.
+    Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_NewType</span>
-            <span class="types"><span class="type">number</span></span>
-         (optional) Typ neues Entity
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Typ des Entity
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.EntityProperty:Visible"></a>
-    <strong>QSB.EntityProperty:Visible (_Visible)</strong>
-    </dt>
-    <dd>
-    Gibt zurück, ob das Entity sichtbar ist.  Optional
- kann die Sichtbarkeit neu gesetzt werden.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Visible</span>
+        <li><span class="parameter">_Flag</span>
             <span class="types"><span class="type">boolean</span></span>
-         (Optional) Sichtbarkeit ändern
+         Verwundbar
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        Ist sichtbar
-    </ol>
 
 
 
@@ -1209,7 +1586,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-12-01 12:56:03 </i>
+<i style="float:right;">Last updated 2020-01-31 21:48:45 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

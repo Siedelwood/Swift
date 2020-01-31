@@ -1467,9 +1467,6 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
  &#x3C;ul&#x3E;
  &#x3C;li&#x3E;{name:xyz} - Ersetzt einen Skriptnamen mit dem zuvor gesetzten Wert.&#x3C;/li&#x3E;
  &#x3C;li&#x3E;{type:xyz} - Ersetzt einen Typen mit dem zuvor gesetzten Wert.&#x3C;/li&#x3E;
- &#x3C;li&#x3E;{cval:xyz} - Ersetzt eine Custom Variable mit einem gesetzten Wert.&#x3C;/li&#x3E;
- &#x3C;li&#x3E;{npc} - Fügt den Namen des zuletzt angesprochenen NPC ein. (nur mit BundleNonPlacerCharacter)&#x3C;/li&#x3E;
- &#x3C;li&#x3E;{hero} - Fügt den Namen des Helden ein, der den NPC angesprochen hat. (nur mit BundleNonPlacerCharacter)&#x3C;/li&#x3E;
  &#x3C;/ul&#x3E;
 &#x3C;p&#x3E; Außerdem werden einige Standardfarben ersetzt.
 
@@ -3929,8 +3926,8 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
 
 
-</span></div><div id="bundleinterfaceapperance_API.InterfaceSetPlayerColor" class="result method"><a href="html/bundleinterfaceapperance.lua.html#API.InterfaceSetPlayerColor">API.InterfaceSetPlayerColor</a><br>Setzt zu Spielbeginn eine andere Spielerfarbe.<span class="docInvisibleContent">
-    Setzt zu Spielbeginn eine andere Spielerfarbe.
+</span></div><div id="bundleinterfaceapperance_API.InterfaceSetPlayerColor" class="result method"><a href="html/bundleinterfaceapperance.lua.html#API.InterfaceSetPlayerColor">API.InterfaceSetPlayerColor</a><br>Setzt eine andere Spielerfarbe.<span class="docInvisibleContent">
+    Setzt eine andere Spielerfarbe.
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
@@ -4696,6 +4693,103 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
         &#x3C;pre class="example"&#x3E;API.NpcReset(&#x3C;span class="string"&#x3E;"horst"&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundleprofileandoptions_API.OptionsAlterEntry" class="result method"><a href="html/bundleprofileandoptions.lua.html#API.OptionsAlterEntry">API.OptionsAlterEntry</a><br>Setzt einen Wert in den Optionen.<span class="docInvisibleContent">
+    Setzt einen Wert in den Optionen.
+&#x3C;p&#x3E; Nach dem Setzen des Wertes wird ein Full Sync ausgeführt. Der Full Sync
+ kann u.U. einen kurzen Moment (unter 100 MS) dauern.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Section&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Sektion
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Key&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+             Schlüssel
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Value&#x3C;/span&#x3E;
+           Wert
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleprofileandoptions_API.OptionsGetEntry" class="result method"><a href="html/bundleprofileandoptions.lua.html#API.OptionsGetEntry">API.OptionsGetEntry</a><br>Gibt einen Wert zu dem Schlüssel innerhalb der Sektion wieder.<span class="docInvisibleContent">
+    Gibt einen Wert zu dem Schlüssel innerhalb der Sektion wieder.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Section&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Sektion
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Key&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+             Schlüssel
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+        Wert (wird automatisch zur Number, falls möglich)
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleprofileandoptions_API.OptionsGetSection" class="result method"><a href="html/bundleprofileandoptions.lua.html#API.OptionsGetSection">API.OptionsGetSection</a><br>Gibt die komplette Sektion wieder.<span class="docInvisibleContent">
+    Gibt die komplette Sektion wieder.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Section&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Sektion
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Inhalt der Sektion
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleprofileandoptions_API.OptionsObserve" class="result method"><a href="html/bundleprofileandoptions.lua.html#API.OptionsObserve">API.OptionsObserve</a><br>Registiert einen Wert zur Optionenüberwachung.<span class="docInvisibleContent">
+    Registiert einen Wert zur Optionenüberwachung.
+&#x3C;p&#x3E; Um Werte aus dem Profil zu überwachen, müssen Sektion und der Schlüssel
+ zuerst registriert werden. Der jeweilige Wert wird danach sofort aus dem
+ Profil ermittelt.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Section&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Sektion
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;...&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+              Liste der Schlüssel
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
 </span></div><div id="bundleentitycommandfunctions_API.PlaceAndLookAt" class="result method"><a href="html/bundleentitycommandfunctions.lua.html#API.PlaceAndLookAt">API.PlaceAndLookAt</a><br>Das Entity wird zum Zielpunkt gesetzt und schaut das Ziel an.<span class="docInvisibleContent">
     Das Entity wird zum Zielpunkt gesetzt und schaut das Ziel an.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Beim Alias PlaceEntityFaceToFaceToAnotherOne sind die
@@ -4800,6 +4894,101 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.PrintCutsceneText(&#x3C;span class="string"&#x3E;"Schaut mal, neuer Text! Wie wunderbar!"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
+
+</span></div><div id="bundleprofileandoptions_API.ProfileAlterEntry" class="result method"><a href="html/bundleprofileandoptions.lua.html#API.ProfileAlterEntry">API.ProfileAlterEntry</a><br>Setzt einen Wert im Profil.<span class="docInvisibleContent">
+    Setzt einen Wert im Profil.
+&#x3C;p&#x3E; Nach dem Setzen des Wertes wird ein Full Sync ausgeführt. Der Full Sync
+ kann u.U. einen kurzen Moment (unter 100 MS) dauern.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Section&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Sektion
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Key&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+             Schlüssel
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Value&#x3C;/span&#x3E;
+           Wert
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleprofileandoptions_API.ProfileGetEntry" class="result method"><a href="html/bundleprofileandoptions.lua.html#API.ProfileGetEntry">API.ProfileGetEntry</a><br>Gibt einen Wert zu dem Schlüssel innerhalb der Sektion wieder.<span class="docInvisibleContent">
+    Gibt einen Wert zu dem Schlüssel innerhalb der Sektion wieder.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Section&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Sektion
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Key&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+             Schlüssel
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;Wert&#x3C;/span&#x3E;
+         (wird automatisch zur Number, falls möglich)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleprofileandoptions_API.ProfileGetSection" class="result method"><a href="html/bundleprofileandoptions.lua.html#API.ProfileGetSection">API.ProfileGetSection</a><br>Gibt die komplette Sektion wieder.<span class="docInvisibleContent">
+    Gibt die komplette Sektion wieder.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Section&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Sektion
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Inhalt der Sektion
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleprofileandoptions_API.ProfileObserve" class="result method"><a href="html/bundleprofileandoptions.lua.html#API.ProfileObserve">API.ProfileObserve</a><br>Registiert einen Wert zur Profilüberwachung.<span class="docInvisibleContent">
+    Registiert einen Wert zur Profilüberwachung.
+&#x3C;p&#x3E; Um Werte aus dem Profil zu überwachen, müssen Sektion und der Schlüssel
+ zuerst registriert werden. Der jeweilige Wert wird danach sofort aus dem
+ Profil ermittelt.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Section&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Sektion
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;...&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+              Liste von Schlüssel
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
 
 </span></div><div id="bundledestructioncontrol_API.ProtectCategory" class="result method"><a href="html/bundledestructioncontrol.lua.html#API.ProtectCategory">API.ProtectCategory</a><br>Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.<span class="docInvisibleContent">
     Fügt eine Kategorie hinzu, die nicht abgerissen werden darf.
@@ -5169,20 +5358,20 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
 
 
-</span></div><div id="bundlestockbreeding_API.SetCattleGrainCost" class="result method"><a href="html/bundlestockbreeding.lua.html#API.SetCattleGrainCost">API.SetCattleGrainCost</a><br>Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Kühen festgelegt.<span class="docInvisibleContent">
-    Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Kühen
- festgelegt.
-&#x3C;p&#x3E; Will der Spieler nun eine Kuh züchten, muss er mindestens die angegebene
- Menge an Getreide besitzen. Das Getreide wird dann aus dem Lager entfernt.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetCattleGrainCost&#x3C;/p&#x3E;
+</span></div><div id="bundlestockbreeding_API.SetCattleBabyMode" class="result method"><a href="html/bundlestockbreeding.lua.html#API.SetCattleBabyMode">API.SetCattleBabyMode</a><br>Aktiviert oder deaktiviert den "Baby Mode" für Kühe.<span class="docInvisibleContent">
+    Aktiviert oder deaktiviert den "Baby Mode" für Kühe.
+&#x3C;p&#x3E; Ist der Modus aktiv, werden neu gekaufte Tiere mit 40 ihrer Große erzeugt
+ und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
+ Einfluss auf ihre Funktion.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetCattleBaby
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Getreidekosten
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Baby Mode aktivieren/deaktivieren
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -5191,32 +5380,8 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
     &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Wucherpreise zum Züchten!
-&#x3C;/span&#x3E;API.SetCattleGrainCost(&#x3C;span class="number"&#x3E;50&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
-</span></div><div id="bundlestockbreeding_API.SetCattleNeeded" class="result method"><a href="html/bundlestockbreeding.lua.html#API.SetCattleNeeded">API.SetCattleNeeded</a><br>Legt die Anzahl an Kühen fest, die zur Zucht eines neuen Trieres mindestens in einem Gatter vorhanden sein müssen.<span class="docInvisibleContent">
-    Legt die Anzahl an Kühen fest, die zur Zucht eines neuen Trieres mindestens
- in einem Gatter vorhanden sein müssen.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetCattleNeeded&#x3C;/p&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Benötigte Menge
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Es werden keine Kühe zur Zucht benötigt:
-&#x3C;/span&#x3E;API.SetCattleNeeded(&#x3C;span class="number"&#x3E;0&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+        &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Kühe werden verkleinert erzeugt und wachsen mit der Zeit
+&#x3C;/span&#x3E;API.SetCattleBabyMode(&#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
 </span></div><div id="bundleplayerhelperfunctions_API.SetControllingPlayer" class="result method"><a href="html/bundleplayerhelperfunctions.lua.html#API.SetControllingPlayer">API.SetControllingPlayer</a><br>Wechselt die Spieler ID des menschlichen Spielers.<span class="docInvisibleContent">
@@ -5402,20 +5567,20 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
         &#x3C;pre class="example"&#x3E;API.SetResourceAmount(&#x3C;span class="string"&#x3E;"mine1"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;250&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;150&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundlestockbreeding_API.SetSheepGrainCost" class="result method"><a href="html/bundlestockbreeding.lua.html#API.SetSheepGrainCost">API.SetSheepGrainCost</a><br>Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Schafen festgelegt.<span class="docInvisibleContent">
-    Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Schafen
- festgelegt.
-&#x3C;p&#x3E; Will der Spieler nun ein Schaf züchten, muss er mindestens die angegebene
- Menge an Getreide besitzen. Das Getreide wird dann aus dem Lager entfernt.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetSheepGrainCost&#x3C;/p&#x3E;
+</span></div><div id="bundlestockbreeding_API.SetSheepBabyMode" class="result method"><a href="html/bundlestockbreeding.lua.html#API.SetSheepBabyMode">API.SetSheepBabyMode</a><br>Aktiviert oder deaktiviert den "Baby Mode" für Schafe.<span class="docInvisibleContent">
+    Aktiviert oder deaktiviert den "Baby Mode" für Schafe.
+&#x3C;p&#x3E; Ist der Modus aktiv, werden neu gekaufte Tiere mit 40 ihrer Große erzeugt
+ und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
+ Einfluss auf ihre Funktion.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetSheepBabyMode
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Getreidekosten
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Baby Mode aktivieren/deaktivieren
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -5424,22 +5589,27 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
     &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Wucherpreise zum Züchten!
-&#x3C;/span&#x3E;API.SetSheepGrainCost(&#x3C;span class="number"&#x3E;50&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+        &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Schafe werden verkleinert erzeugt und wachsen mit der Zeit
+&#x3C;/span&#x3E;API.SetSheepBabyMode(&#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundlestockbreeding_API.SetSheepNeeded" class="result method"><a href="html/bundlestockbreeding.lua.html#API.SetSheepNeeded">API.SetSheepNeeded</a><br>Legt die Anzahlö an Schafen fest, die zur Zucht eines neuen Trieres mindestens in einem Gatter vorhanden sein müssen.<span class="docInvisibleContent">
-    Legt die Anzahlö an Schafen fest, die zur Zucht eines neuen Trieres
- mindestens in einem Gatter vorhanden sein müssen.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetSheepNeeded&#x3C;/p&#x3E;
+</span></div><div id="bundlestockbreeding_API.SetSheepType" class="result method"><a href="html/bundlestockbreeding.lua.html#API.SetSheepType">API.SetSheepType</a><br>Setzt den Typen des verwendeten Schafes.<span class="docInvisibleContent">
+    Setzt den Typen des verwendeten Schafes.
+&#x3C;p&#x3E; Der EntityTyp muss nicht angegeben werden. Folgende Werte sind möglich:
+ &#x3C;ul&#x3E;
+ &#x3C;li&#x3E;0: Zufällig bei Zucht gewählt&#x3C;/li&#x3E;
+ &#x3C;li&#x3E;1: A_X_Sheep01 (weiß)&#x3C;/li&#x3E;
+ &#x3C;li&#x3E;2: A_X_Sheep02 (grau)&#x3C;/li&#x3E;
+ &#x3C;/ul&#x3E;
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetSheepType
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Benötigte Menge
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Baby Mode aktivieren/deaktivieren
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -5448,8 +5618,10 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
     &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Es wird ein volles Gatter zur Zucht benötigt:
-&#x3C;/span&#x3E;API.SetSheepNeeded(&#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+        &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Es wird jedes mal zufällig ausgewählt
+&#x3C;/span&#x3E;API.SetSheepType(&#x3C;span class="number"&#x3E;0&#x3C;/span&#x3E;);
+&#x3C;span class="comment"&#x3E;-- Es werden nur graue Schafe erzeugt
+&#x3C;/span&#x3E;API.SetSheepType(&#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
 </span></div><div id="bundledialogwindows_API.SimpleTextWindow" class="result method"><a href="html/bundledialogwindows.lua.html#API.SimpleTextWindow">API.SimpleTextWindow</a><br>Öffnet ein einfaches Textfenster mit dem angegebenen Text.<span class="docInvisibleContent">
@@ -6544,7 +6716,7 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_flag&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
          Kuhzucht aktiv/inaktiv
         &#x3C;/li&#x3E;
@@ -6570,7 +6742,7 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_flag&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
          Schafzucht aktiv/inaktiv
         &#x3C;/li&#x3E;
@@ -9998,7 +10170,7 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
 
 </span></div><div id="bundlesymfoniabehaviors_Reward_VictoryWithParty" class="result method"><a href="html/bundlesymfoniabehaviors.lua.html#Reward_VictoryWithParty">Reward_VictoryWithParty</a><br>Der Spieler gewinnt das Spiel mit einem animierten Siegesfest.<span class="docInvisibleContent">
     Der Spieler gewinnt das Spiel mit einem animierten Siegesfest.
-&#x3C;p&#x3E; Es ist nicht möglich weiterzuspielen!
+&#x3C;p&#x3E; Wenn nach dem Sieg weiter gespielt wird, wird das Fest gelöscht.
 
 
 
@@ -10540,7 +10712,7 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
                 </div>
                 <div id="bundlelinkContainer">
                     <div style="margin-bottom: 10px;"><b>Pakete</b></div>
-                    <div id="addoncastlestore" class="result module"><a href="html/addoncastlestore.lua.html">addoncastlestore</a><br>Dieses Bundle stellt das Burglager, oder Kellerlager, zur Verfügung, das sich ähnlich wie das normale Lager verhält.</div><div id="addoncutscenesystem" class="result module"><a href="html/addoncutscenesystem.lua.html">addoncutscenesystem</a><br>Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.</div><div id="addoninteractivechests" class="result module"><a href="html/addoninteractivechests.lua.html">addoninteractivechests</a><br>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</div><div id="addoninteractivemines" class="result module"><a href="html/addoninteractivemines.lua.html">addoninteractivemines</a><br>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</div><div id="addoninteractivesites" class="result module"><a href="html/addoninteractivesites.lua.html">addoninteractivesites</a><br>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei ein Gebäude bauen zu lassen.</div><div id="addoninteractivetrebuchets" class="result module"><a href="html/addoninteractivetrebuchets.lua.html">addoninteractivetrebuchets</a><br>Der Spieler kann ein Trebuchet mieten.</div><div id="addonquestdebug" class="result module"><a href="html/addonquestdebug.lua.html">addonquestdebug</a><br>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</div><div id="addonrandomrequests" class="result module"><a href="html/addonrandomrequests.lua.html">addonrandomrequests</a><br>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</div><div id="bundlebriefingsystem" class="result module"><a href="html/bundlebriefingsystem.lua.html">bundlebriefingsystem</a><br>Ermöglicht es Briefing zu verwenden.</div><div id="bundlebuildingbuttons" class="result module"><a href="html/bundlebuildingbuttons.lua.html">bundlebuildingbuttons</a><br>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere Funktionen.</div><div id="bundlecamera" class="result module"><a href="html/bundlecamera.lua.html">bundlecamera</a><br>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen Zoom zu nutzen.</div><div id="bundlecheats" class="result module"><a href="html/bundlecheats.lua.html">bundlecheats</a><br>Mit diesem Bundle kann die Nutzung der Cheats verboten oder erlaubt werden.</div><div id="bundleclassicbehaviors" class="result module"><a href="html/bundleclassicbehaviors.lua.html">bundleclassicbehaviors</a><br>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</div><div id="bundleconstructioncontrol" class="result module"><a href="html/bundleconstructioncontrol.lua.html">bundleconstructioncontrol</a><br>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien unterbunden werden.</div><div id="bundledestructioncontrol" class="result module"><a href="html/bundledestructioncontrol.lua.html">bundledestructioncontrol</a><br>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor dem Abriss zu schützen.</div><div id="bundledialogwindows" class="result module"><a href="html/bundledialogwindows.lua.html">bundledialogwindows</a><br>Mit diesem Bundle können Dialogfenster ernstellt werden.</div><div id="bundleentitycommandfunctions" class="result module"><a href="html/bundleentitycommandfunctions.lua.html">bundleentitycommandfunctions</a><br>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie von A nach B zu bewegen.</div><div id="bundleentityhelperfunctions" class="result module"><a href="html/bundleentityhelperfunctions.lua.html">bundleentityhelperfunctions</a><br>Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu ermitteln oder zu verändern.</div><div id="bundleentityproperties" class="result module"><a href="html/bundleentityproperties.lua.html">bundleentityproperties</a><br>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation von Entities bereitgestellt.</div><div id="bundleentityselection" class="result module"><a href="html/bundleentityselection.lua.html">bundleentityselection</a><br>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</div><div id="bundlefollowknight" class="result module"><a href="html/bundlefollowknight.lua.html">bundlefollowknight</a><br>Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden (bzw Ritter) folgen zu lassen.</div><div id="bundleinteractiveobjects" class="result module"><a href="html/bundleinteractiveobjects.lua.html">bundleinteractiveobjects</a><br>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert werden kann.</div><div id="bundleinterfaceapperance" class="result module"><a href="html/bundleinterfaceapperance.lua.html">bundleinterfaceapperance</a><br>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche des Spiels.</div><div id="bundleinterfacefeaturevisibility" class="result module"><a href="html/bundleinterfacefeaturevisibility.lua.html">bundleinterfacefeaturevisibility</a><br>Dieses Bundle bietet dem Nutzer Funktionen um ausgewählte Buttons und Widgets auszublenden oder einzublenden.</div><div id="bundleknighttitlerequirements" class="result module"><a href="html/bundleknighttitlerequirements.lua.html">bundleknighttitlerequirements</a><br>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell an die eigenen Vorstellungen anzupassen.</div><div id="bundleminimapmarker" class="result module"><a href="html/bundleminimapmarker.lua.html">bundleminimapmarker</a><br>Ermöglocht das Anlegen von Markierungen auf der Minimap.</div><div id="bundlemusictools" class="result module"><a href="html/bundlemusictools.lua.html">bundlemusictools</a><br>Dieses Bundle bietet die Möglichkeit Musikstücke abzuspielen.</div><div id="bundlenonplayercharacter" class="result module"><a href="html/bundlenonplayercharacter.lua.html">bundlenonplayercharacter</a><br>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere bereitgestellt.</div><div id="bundleplayerhelperfunctions" class="result module"><a href="html/bundleplayerhelperfunctions.lua.html">bundleplayerhelperfunctions</a><br>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von spielerbezogenen Features.</div><div id="bundlequestgeneration" class="result module"><a href="html/bundlequestgeneration.lua.html">bundlequestgeneration</a><br>Dieses Bundle ermöglicht es einen Quest, bzw.</div><div id="bundlesavegametools" class="result module"><a href="html/bundlesavegametools.lua.html">bundlesavegametools</a><br>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von Spielständen kontrolliert werden können.</div><div id="bundlespeedlimit" class="result module"><a href="html/bundlespeedlimit.lua.html">bundlespeedlimit</a><br>Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur Verfügung.</div><div id="bundlestockbreeding" class="result module"><a href="html/bundlestockbreeding.lua.html">bundlestockbreeding</a><br>Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.</div><div id="bundlesymfoniabehaviors" class="result module"><a href="html/bundlesymfoniabehaviors.lua.html">bundlesymfoniabehaviors</a><br>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht in der ursprünglichen QSB gab.</div><div id="bundleterrainandwater" class="result module"><a href="html/bundleterrainandwater.lua.html">bundleterrainandwater</a><br>Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und von Wasser.</div><div id="bundletimeline" class="result module"><a href="html/bundletimeline.lua.html">bundletimeline</a><br>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu gliedern.</div><div id="bundletravelingsalesman" class="result module"><a href="html/bundletravelingsalesman.lua.html">bundletravelingsalesman</a><br>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den Hafen mit einem Schiff anfährt.</div><div id="bundleweathermanipulation" class="result module"><a href="html/bundleweathermanipulation.lua.html">bundleweathermanipulation</a><br>Dieses Modul ermöglicht das Ändern des Wetters.</div><div id="core" class="result module"><a href="html/core.lua.html">core</a><br>Hier werden wichtige Basisfunktionen bereitgestellt.</div>
+                    <div id="addoncastlestore" class="result module"><a href="html/addoncastlestore.lua.html">addoncastlestore</a><br>Dieses Bundle stellt das Burglager, oder Kellerlager, zur Verfügung, das sich ähnlich wie das normale Lager verhält.</div><div id="addoncutscenesystem" class="result module"><a href="html/addoncutscenesystem.lua.html">addoncutscenesystem</a><br>Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.</div><div id="addoninteractivechests" class="result module"><a href="html/addoninteractivechests.lua.html">addoninteractivechests</a><br>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</div><div id="addoninteractivemines" class="result module"><a href="html/addoninteractivemines.lua.html">addoninteractivemines</a><br>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</div><div id="addoninteractivesites" class="result module"><a href="html/addoninteractivesites.lua.html">addoninteractivesites</a><br>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei ein Gebäude bauen zu lassen.</div><div id="addoninteractivetrebuchets" class="result module"><a href="html/addoninteractivetrebuchets.lua.html">addoninteractivetrebuchets</a><br>Der Spieler kann ein Trebuchet mieten.</div><div id="addonquestdebug" class="result module"><a href="html/addonquestdebug.lua.html">addonquestdebug</a><br>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</div><div id="addonrandomrequests" class="result module"><a href="html/addonrandomrequests.lua.html">addonrandomrequests</a><br>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</div><div id="bundlebriefingsystem" class="result module"><a href="html/bundlebriefingsystem.lua.html">bundlebriefingsystem</a><br>Ermöglicht es Briefing zu verwenden.</div><div id="bundlebuildingbuttons" class="result module"><a href="html/bundlebuildingbuttons.lua.html">bundlebuildingbuttons</a><br>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere Funktionen.</div><div id="bundlecamera" class="result module"><a href="html/bundlecamera.lua.html">bundlecamera</a><br>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen Zoom zu nutzen.</div><div id="bundlecheats" class="result module"><a href="html/bundlecheats.lua.html">bundlecheats</a><br>Mit diesem Bundle kann die Nutzung der Cheats verboten oder erlaubt werden.</div><div id="bundleclassicbehaviors" class="result module"><a href="html/bundleclassicbehaviors.lua.html">bundleclassicbehaviors</a><br>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</div><div id="bundleconstructioncontrol" class="result module"><a href="html/bundleconstructioncontrol.lua.html">bundleconstructioncontrol</a><br>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien unterbunden werden.</div><div id="bundledestructioncontrol" class="result module"><a href="html/bundledestructioncontrol.lua.html">bundledestructioncontrol</a><br>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor dem Abriss zu schützen.</div><div id="bundledialogwindows" class="result module"><a href="html/bundledialogwindows.lua.html">bundledialogwindows</a><br>Mit diesem Bundle können Dialogfenster ernstellt werden.</div><div id="bundleentitycommandfunctions" class="result module"><a href="html/bundleentitycommandfunctions.lua.html">bundleentitycommandfunctions</a><br>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie von A nach B zu bewegen.</div><div id="bundleentityhelperfunctions" class="result module"><a href="html/bundleentityhelperfunctions.lua.html">bundleentityhelperfunctions</a><br>Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu ermitteln oder zu verändern.</div><div id="bundleentityproperties" class="result module"><a href="html/bundleentityproperties.lua.html">bundleentityproperties</a><br>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation von Entities bereitgestellt.</div><div id="bundleentityselection" class="result module"><a href="html/bundleentityselection.lua.html">bundleentityselection</a><br>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</div><div id="bundlefollowknight" class="result module"><a href="html/bundlefollowknight.lua.html">bundlefollowknight</a><br>Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden (bzw Ritter) folgen zu lassen.</div><div id="bundleinteractiveobjects" class="result module"><a href="html/bundleinteractiveobjects.lua.html">bundleinteractiveobjects</a><br>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert werden kann.</div><div id="bundleinterfaceapperance" class="result module"><a href="html/bundleinterfaceapperance.lua.html">bundleinterfaceapperance</a><br>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche des Spiels.</div><div id="bundleinterfacefeaturevisibility" class="result module"><a href="html/bundleinterfacefeaturevisibility.lua.html">bundleinterfacefeaturevisibility</a><br>Dieses Bundle bietet dem Nutzer Funktionen um ausgewählte Buttons und Widgets auszublenden oder einzublenden.</div><div id="bundleknighttitlerequirements" class="result module"><a href="html/bundleknighttitlerequirements.lua.html">bundleknighttitlerequirements</a><br>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell an die eigenen Vorstellungen anzupassen.</div><div id="bundleminimapmarker" class="result module"><a href="html/bundleminimapmarker.lua.html">bundleminimapmarker</a><br>Ermöglocht das Anlegen von Markierungen auf der Minimap.</div><div id="bundlemusictools" class="result module"><a href="html/bundlemusictools.lua.html">bundlemusictools</a><br>Dieses Bundle bietet die Möglichkeit Musikstücke abzuspielen.</div><div id="bundlenonplayercharacter" class="result module"><a href="html/bundlenonplayercharacter.lua.html">bundlenonplayercharacter</a><br>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere bereitgestellt.</div><div id="bundleplayerhelperfunctions" class="result module"><a href="html/bundleplayerhelperfunctions.lua.html">bundleplayerhelperfunctions</a><br>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von spielerbezogenen Features.</div><div id="bundleprofileandoptions" class="result module"><a href="html/bundleprofileandoptions.lua.html">bundleprofileandoptions</a><br>Mit diesem Bundle können Profil und Options bequem aus globalen und lokalem Skript angefragt und verändert werden.</div><div id="bundlequestgeneration" class="result module"><a href="html/bundlequestgeneration.lua.html">bundlequestgeneration</a><br>Dieses Bundle ermöglicht es einen Quest, bzw.</div><div id="bundlesavegametools" class="result module"><a href="html/bundlesavegametools.lua.html">bundlesavegametools</a><br>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von Spielständen kontrolliert werden können.</div><div id="bundlespeedlimit" class="result module"><a href="html/bundlespeedlimit.lua.html">bundlespeedlimit</a><br>Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur Verfügung.</div><div id="bundlestockbreeding" class="result module"><a href="html/bundlestockbreeding.lua.html">bundlestockbreeding</a><br>Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.</div><div id="bundlesymfoniabehaviors" class="result module"><a href="html/bundlesymfoniabehaviors.lua.html">bundlesymfoniabehaviors</a><br>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht in der ursprünglichen QSB gab.</div><div id="bundleterrainandwater" class="result module"><a href="html/bundleterrainandwater.lua.html">bundleterrainandwater</a><br>Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und von Wasser.</div><div id="bundletimeline" class="result module"><a href="html/bundletimeline.lua.html">bundletimeline</a><br>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu gliedern.</div><div id="bundletravelingsalesman" class="result module"><a href="html/bundletravelingsalesman.lua.html">bundletravelingsalesman</a><br>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den Hafen mit einem Schiff anfährt.</div><div id="bundleweathermanipulation" class="result module"><a href="html/bundleweathermanipulation.lua.html">bundleweathermanipulation</a><br>Dieses Modul ermöglicht das Ändern des Wetters.</div><div id="core" class="result module"><a href="html/core.lua.html">core</a><br>Hier werden wichtige Basisfunktionen bereitgestellt.</div>
                 </div>
             </div>
             <div id="indexEntriesContainer">
@@ -10762,6 +10934,16 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
             <a class='docLinkExpander' href="html/bundleplayerhelperfunctions.lua.html">
             <div class='doclink'>
                 <div>BundlePlayerHelperFunctions</div>
+            </div>
+            </a>
+        </div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
+            <a class='docLinkExpander' href="html/bundleprofileandoptions.lua.html">
+            <div class='doclink'>
+                <div>BundleProfileAndOptions</div>
             </div>
             </a>
         </div>
