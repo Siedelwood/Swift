@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<button onclick="topFunction()" id="back2top" title="Nach oben scrollen">&#11014</button>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>bundleprofileandoptions</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>bundleprofileandoptions</code></h1>
+<p>Mit diesem Bundle können Profil und Options bequem aus globalen und lokalem
+ Skript angefragt und verändert werden.</p>
+<p>
+<p> Da das Profil nicht komplett ausgelesen werden kann, muss vorher jeder
+ Wert, der überwacht werden soll, registriert werden. Wenn du einen neuen
+ Eintrag schreibst, ist dieser automatisch registriert.
+<p> Es wird automatisch jede Sekunde ein Full Sync für Profil und Options
+ gemacht. Damit es nicht zu inkonsistenzen kommt, wird auch sofort und
+ nach jeder Änderung ein Full Sync ausgeführt.
+</p>
+
+
+<h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API.OptionsAlterEntry">API.OptionsAlterEntry (_Section, _Key, _Value)</a></td>
+	<td class="summary">Setzt einen Wert in den Optionen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.OptionsGetEntry">API.OptionsGetEntry (_Section, _Key)</a></td>
+	<td class="summary">Gibt einen Wert zu dem Schlüssel innerhalb der Sektion wieder.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.OptionsGetSection">API.OptionsGetSection (_Section)</a></td>
+	<td class="summary">Gibt die komplette Sektion wieder.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.OptionsObserve">API.OptionsObserve (_Section, ...)</a></td>
+	<td class="summary">Registiert einen Wert zur Optionenüberwachung.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ProfileAlterEntry">API.ProfileAlterEntry (_Section, _Key, _Value)</a></td>
+	<td class="summary">Setzt einen Wert im Profil.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ProfileGetEntry">API.ProfileGetEntry (_Section, _Key, Wert)</a></td>
+	<td class="summary">Gibt einen Wert zu dem Schlüssel innerhalb der Sektion wieder.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ProfileGetSection">API.ProfileGetSection (_Section)</a></td>
+	<td class="summary">Gibt die komplette Sektion wieder.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.ProfileObserve">API.ProfileObserve (_Section, ...)</a></td>
+	<td class="summary">Registiert einen Wert zur Profilüberwachung.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.OptionsAlterEntry"></a>
+    <strong>API.OptionsAlterEntry (_Section, _Key, _Value)</strong>
+    </dt>
+    <dd>
+    Setzt einen Wert in den Optionen.
+<p> Nach dem Setzen des Wertes wird ein Full Sync ausgeführt. Der Full Sync
+ kann u.U. einen kurzen Moment (unter 100 MS) dauern.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Section</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Sektion
+        </li>
+        <li><span class="parameter">_Key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Schlüssel
+        </li>
+        <li><span class="parameter">_Value</span>
+           Wert
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.OptionsGetEntry"></a>
+    <strong>API.OptionsGetEntry (_Section, _Key)</strong>
+    </dt>
+    <dd>
+    Gibt einen Wert zu dem Schlüssel innerhalb der Sektion wieder.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Section</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Sektion
+        </li>
+        <li><span class="parameter">_Key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Schlüssel
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Wert (wird automatisch zur Number, falls möglich)
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.OptionsGetSection"></a>
+    <strong>API.OptionsGetSection (_Section)</strong>
+    </dt>
+    <dd>
+    Gibt die komplette Sektion wieder.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Section</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Sektion
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Inhalt der Sektion
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.OptionsObserve"></a>
+    <strong>API.OptionsObserve (_Section, ...)</strong>
+    </dt>
+    <dd>
+    Registiert einen Wert zur Optionenüberwachung.
+<p> Um Werte aus dem Profil zu überwachen, müssen Sektion und der Schlüssel
+ zuerst registriert werden. Der jeweilige Wert wird danach sofort aus dem
+ Profil ermittelt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Section</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Sektion
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+              Liste der Schlüssel
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ProfileAlterEntry"></a>
+    <strong>API.ProfileAlterEntry (_Section, _Key, _Value)</strong>
+    </dt>
+    <dd>
+    Setzt einen Wert im Profil.
+<p> Nach dem Setzen des Wertes wird ein Full Sync ausgeführt. Der Full Sync
+ kann u.U. einen kurzen Moment (unter 100 MS) dauern.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Section</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Sektion
+        </li>
+        <li><span class="parameter">_Key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Schlüssel
+        </li>
+        <li><span class="parameter">_Value</span>
+           Wert
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ProfileGetEntry"></a>
+    <strong>API.ProfileGetEntry (_Section, _Key, Wert)</strong>
+    </dt>
+    <dd>
+    Gibt einen Wert zu dem Schlüssel innerhalb der Sektion wieder.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Section</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Sektion
+        </li>
+        <li><span class="parameter">_Key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+             Schlüssel
+        </li>
+        <li><span class="parameter">Wert</span>
+         (wird automatisch zur Number, falls möglich)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ProfileGetSection"></a>
+    <strong>API.ProfileGetSection (_Section)</strong>
+    </dt>
+    <dd>
+    Gibt die komplette Sektion wieder.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Section</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Sektion
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Inhalt der Sektion
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.ProfileObserve"></a>
+    <strong>API.ProfileObserve (_Section, ...)</strong>
+    </dt>
+    <dd>
+    Registiert einen Wert zur Profilüberwachung.
+<p> Um Werte aus dem Profil zu überwachen, müssen Sektion und der Schlüssel
+ zuerst registriert werden. Der jeweilige Wert wird danach sofort aus dem
+ Profil ermittelt.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Section</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Sektion
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+              Liste von Schlüssel
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2020-01-31 21:47:57 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<script>
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("back2top").style.display = "block";
+        } else {
+            document.getElementById("back2top").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+
+</body>
+</html>

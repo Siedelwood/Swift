@@ -50,37 +50,31 @@
 
  Kosten für die Aufzucht oder die benötigte Menge an Tieren um mit der
  Zucht zu beginnen, sind frei konfigurierbar.
+<p> Zusätzlich können die Tiere kleiner gespawnt werden und wachsen dann mit
+ der Zeit automatisch. Diese Funktionalität kann abgeschaltet werden.
 </p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.SetCattleGrainCost">API.SetCattleGrainCost (_Amount)</a></td>
-	<td class="summary">Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Kühen
- festgelegt.</td>
+	<td class="name" nowrap><a href="#API.SetCattleBabyMode">API.SetCattleBabyMode (_Flag)</a></td>
+	<td class="summary">Aktiviert oder deaktiviert den "Baby Mode" für Kühe.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetCattleNeeded">API.SetCattleNeeded (_Amount)</a></td>
-	<td class="summary">Legt die Anzahl an Kühen fest, die zur Zucht eines neuen Trieres mindestens
- in einem Gatter vorhanden sein müssen.</td>
+	<td class="name" nowrap><a href="#API.SetSheepBabyMode">API.SetSheepBabyMode (_Flag)</a></td>
+	<td class="summary">Aktiviert oder deaktiviert den "Baby Mode" für Schafe.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetSheepGrainCost">API.SetSheepGrainCost (_Amount)</a></td>
-	<td class="summary">Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Schafen
- festgelegt.</td>
+	<td class="name" nowrap><a href="#API.SetSheepType">API.SetSheepType (_Flag)</a></td>
+	<td class="summary">Setzt den Typen des verwendeten Schafes.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.SetSheepNeeded">API.SetSheepNeeded (_Amount)</a></td>
-	<td class="summary">Legt die Anzahlö an Schafen fest, die zur Zucht eines neuen Trieres
- mindestens in einem Gatter vorhanden sein müssen.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_flag)</a></td>
+	<td class="name" nowrap><a href="#API.UseBreedCattle">API.UseBreedCattle (_Flag)</a></td>
 	<td class="summary">Erlaube oder verbiete dem Spieler Kühe zu züchten.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_flag)</a></td>
+	<td class="name" nowrap><a href="#API.UseBreedSheeps">API.UseBreedSheeps (_Flag)</a></td>
 	<td class="summary">Erlaube oder verbiete dem Spieler Schafe zu züchten.</td>
 	</tr>
 </table>
@@ -93,23 +87,23 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.SetCattleGrainCost"></a>
-    <strong>API.SetCattleGrainCost (_Amount)</strong>
+    <a name = "API.SetCattleBabyMode"></a>
+    <strong>API.SetCattleBabyMode (_Flag)</strong>
     </dt>
     <dd>
-    Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Kühen
- festgelegt.
-<p> Will der Spieler nun eine Kuh züchten, muss er mindestens die angegebene
- Menge an Getreide besitzen. Das Getreide wird dann aus dem Lager entfernt.
-<p> <p><b>Alias:</b> SetCattleGrainCost</p>
+    Aktiviert oder deaktiviert den "Baby Mode" für Kühe.
+<p> Ist der Modus aktiv, werden neu gekaufte Tiere mit 40% ihrer Große erzeugt
+ und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
+ Einfluss auf ihre Funktion.
+<p> <b>Alias</b>: SetCattleBaby
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Getreidekosten
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Baby Mode aktivieren/deaktivieren
         </li>
     </ul>
 
@@ -118,27 +112,29 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
-</span>API.SetCattleGrainCost(<span class="number">50</span>);</pre>
+        <pre class="example"><span class="comment">-- Kühe werden verkleinert erzeugt und wachsen mit der Zeit
+</span>API.SetCattleBabyMode(<span class="keyword">true</span>);</pre>
     </ul>
 
 </dd>
     <dt>
-    <a name = "API.SetCattleNeeded"></a>
-    <strong>API.SetCattleNeeded (_Amount)</strong>
+    <a name = "API.SetSheepBabyMode"></a>
+    <strong>API.SetSheepBabyMode (_Flag)</strong>
     </dt>
     <dd>
-    Legt die Anzahl an Kühen fest, die zur Zucht eines neuen Trieres mindestens
- in einem Gatter vorhanden sein müssen.
-<p> <p><b>Alias:</b> SetCattleNeeded</p>
+    Aktiviert oder deaktiviert den "Baby Mode" für Schafe.
+<p> Ist der Modus aktiv, werden neu gekaufte Tiere mit 40% ihrer Große erzeugt
+ und wachseln allmählich heran. Dies ist nur kosmetisch und hat keinen
+ Einfluss auf ihre Funktion.
+<p> <b>Alias</b>: SetSheepBabyMode
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Benötigte Menge
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Baby Mode aktivieren/deaktivieren
         </li>
     </ul>
 
@@ -147,29 +143,32 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Es werden keine Kühe zur Zucht benötigt:
-</span>API.SetCattleNeeded(<span class="number">0</span>);</pre>
+        <pre class="example"><span class="comment">-- Schafe werden verkleinert erzeugt und wachsen mit der Zeit
+</span>API.SetSheepBabyMode(<span class="keyword">true</span>);</pre>
     </ul>
 
 </dd>
     <dt>
-    <a name = "API.SetSheepGrainCost"></a>
-    <strong>API.SetSheepGrainCost (_Amount)</strong>
+    <a name = "API.SetSheepType"></a>
+    <strong>API.SetSheepType (_Flag)</strong>
     </dt>
     <dd>
-    Mit dieser Funktion werden die Getreidekosten für die Aufzucht von Schafen
- festgelegt.
-<p> Will der Spieler nun ein Schaf züchten, muss er mindestens die angegebene
- Menge an Getreide besitzen. Das Getreide wird dann aus dem Lager entfernt.
-<p> <p><b>Alias:</b> SetSheepGrainCost</p>
+    Setzt den Typen des verwendeten Schafes.
+<p> Der EntityTyp muss nicht angegeben werden. Folgende Werte sind möglich:
+ <ul>
+ <li>0: Zufällig bei Zucht gewählt</li>
+ <li>1: A_X_Sheep01 (weiß)</li>
+ <li>2: A_X_Sheep02 (grau)</li>
+ </ul>
+<p> <b>Alias</b>: SetSheepType
 
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Getreidekosten
+        <li><span class="parameter">_Flag</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Baby Mode aktivieren/deaktivieren
         </li>
     </ul>
 
@@ -178,43 +177,16 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="comment">-- Wucherpreise zum Züchten!
-</span>API.SetSheepGrainCost(<span class="number">50</span>);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.SetSheepNeeded"></a>
-    <strong>API.SetSheepNeeded (_Amount)</strong>
-    </dt>
-    <dd>
-    Legt die Anzahlö an Schafen fest, die zur Zucht eines neuen Trieres
- mindestens in einem Gatter vorhanden sein müssen.
-<p> <p><b>Alias:</b> SetSheepNeeded</p>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Amount</span>
-            <span class="types"><span class="type">number</span></span>
-         Benötigte Menge
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="comment">-- Es wird ein volles Gatter zur Zucht benötigt:
-</span>API.SetSheepNeeded(<span class="number">5</span>);</pre>
+        <pre class="example"><span class="comment">-- Es wird jedes mal zufällig ausgewählt
+</span>API.SetSheepType(<span class="number">0</span>);
+<span class="comment">-- Es werden nur graue Schafe erzeugt
+</span>API.SetSheepType(<span class="number">2</span>);</pre>
     </ul>
 
 </dd>
     <dt>
     <a name = "API.UseBreedCattle"></a>
-    <strong>API.UseBreedCattle (_flag)</strong>
+    <strong>API.UseBreedCattle (_Flag)</strong>
     </dt>
     <dd>
     Erlaube oder verbiete dem Spieler Kühe zu züchten.
@@ -227,7 +199,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_flag</span>
+        <li><span class="parameter">_Flag</span>
             <span class="types"><span class="type">boolean</span></span>
          Kuhzucht aktiv/inaktiv
         </li>
@@ -245,7 +217,7 @@
 </dd>
     <dt>
     <a name = "API.UseBreedSheeps"></a>
-    <strong>API.UseBreedSheeps (_flag)</strong>
+    <strong>API.UseBreedSheeps (_Flag)</strong>
     </dt>
     <dd>
     Erlaube oder verbiete dem Spieler Schafe zu züchten.
@@ -258,7 +230,7 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_flag</span>
+        <li><span class="parameter">_Flag</span>
             <span class="types"><span class="type">boolean</span></span>
          Schafzucht aktiv/inaktiv
         </li>
@@ -281,7 +253,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-12-13 21:05:51 </i>
+<i style="float:right;">Last updated 2020-01-31 21:47:55 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
