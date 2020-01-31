@@ -1294,7 +1294,7 @@ Core:RegisterBehavior(b_Reward_MoveToPosition);
 ---
 -- Der Spieler gewinnt das Spiel mit einem animierten Siegesfest.
 --
--- Es ist nicht möglich weiterzuspielen!
+-- Wenn nach dem Sieg weiter gespielt wird, wird das Fest gelöscht.
 --
 -- @within Reward
 --
@@ -1308,7 +1308,7 @@ b_Reward_VictoryWithParty = {
         en = "Reward: The player wins the game with an animated festival on the market. Continue playing deleates the festival.",
         de = "Lohn: Der Spieler gewinnt das Spiel mit einer animierten Siegesfeier. Bei weiterspielen wird das Fest gelöscht.",
     },
-    Parameter =    {}
+    Parameter = {}
 };
 
 function b_Reward_VictoryWithParty:GetRewardTable()
@@ -1327,29 +1327,10 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
         local pos = GetPosition(market)
         Logic.CreateEffect(EGL_Effects.FXFireworks01,pos.X,pos.Y,0);
         Logic.CreateEffect(EGL_Effects.FXFireworks02,pos.X,pos.Y,0);
-
-        local PossibleSettlerTypes = {
-            Entities.U_SmokeHouseWorker,
-            Entities.U_Butcher,
-            Entities.U_Carpenter,
-            Entities.U_Tanner,
-            Entities.U_Blacksmith,
-            Entities.U_CandleMaker,
-            Entities.U_Baker,
-            Entities.U_DairyWorker,
-
-            Entities.U_SpouseS01,
-            Entities.U_SpouseS02,
-            Entities.U_SpouseS02,
-            Entities.U_SpouseS03,
-            Entities.U_SpouseF01,
-            Entities.U_SpouseF01,
-            Entities.U_SpouseF02,
-            Entities.U_SpouseF03,
-        };
-        local Generated = VictoryWithParty_GenerateParty(pID, PossibleSettlerTypes);
+        
+        local Generated = b_Reward_VictoryWithParty:GenerateParty(pID);
         QSB.VictoryWithPartyEntities[pID] = Generated;
-
+        
         Logic.ExecuteInLuaLocalState([[
             if IsExisting(]]..market..[[) then
                 CameraAnimation.AllowAbort = false
@@ -1363,7 +1344,7 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
                 GUI_Window.ContinuePlayingClicked_Orig_Reward_VictoryWithParty()
                 
                 local PlayerID = GUI.GetPlayerID()
-                API.Bridge("VictoryWithParty_ClearParty(" ..PlayerID.. ")")
+                API.Bridge("b_Reward_VictoryWithParty:ClearParty(" ..PlayerID.. ")")
 
                 CameraAnimation.AllowAbort = true
                 CameraAnimation.Abort()
@@ -1372,9 +1353,7 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
     end
 end
 
--- Diese Funktion ist statisch und wird von GUI_Window.ContinuePlayingClicked
--- aufgerufen! Rufe sie niemals manuell auf!
-function VictoryWithParty_ClearParty(_PlayerID)
+function b_Reward_VictoryWithParty:ClearParty(_PlayerID)
     if QSB.VictoryWithPartyEntities[_PlayerID] then
         for k, v in pairs(QSB.VictoryWithPartyEntities[_PlayerID]) do
             DestroyEntity(v);
@@ -1383,9 +1362,7 @@ function VictoryWithParty_ClearParty(_PlayerID)
     end
 end
 
--- Dies ist eine Hilfsfunktion zur Erzeugung eines löschbaren Festes. Wird
--- im Code aufgerufen. Nicht manuell aufrufen!
-function VictoryWithParty_GenerateParty(_PlayerID, _PossibleSettlersTypesList)
+function b_Reward_VictoryWithParty:GenerateParty(_PlayerID)
     local GeneratedEntities = {};
     local Marketplace = Logic.GetMarketplace(_PlayerID);
     if Marketplace ~= nil and Marketplace ~= 0 then
@@ -1400,7 +1377,7 @@ function VictoryWithParty_GenerateParty(_PlayerID, _PossibleSettlersTypesList)
                 local rand = Logic.GetRandom(100);
                 
                 if rand > 70 then
-                    local SettlerType = _PossibleSettlersTypesList[1 + Logic.GetRandom(#_PossibleSettlersTypesList)];
+                    local SettlerType = API.GetRandomSettlerType();
                     local Orientation = Logic.GetRandom(360);
                     local WorkerID = Logic.CreateEntityOnUnblockedLand(SettlerType, SettlersX, SettlersY, Orientation, _PlayerID);
                     Logic.SetTaskList(WorkerID, TaskLists.TL_WORKER_FESTIVAL_APPLAUD_SPEECH);
@@ -2066,48 +2043,6 @@ function BundleSymfoniaBehaviors.Global:Install()
             end
         else
             return self:IsObjectiveCompleted_Orig_QSB_SymfoniaBehaviors(objective);
-        end
-    end
-
-    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    -- Questmarkers
-    --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    function QuestTemplate:RemoveQuestMarkers()
-        for i=1, self.Objectives[0] do
-            if self.Objectives[i].Type == Objective.Distance then
-                if self.Objectives[i].Data[4] then
-                    DestroyQuestMarker(self.Objectives[i].Data[2]);
-                end
-            end
-        end
-    end
-
-    function QuestTemplate:ShowQuestMarkers()
-        for i=1, self.Objectives[0] do
-            if self.Objectives[i].Type == Objective.Distance then
-                if self.Objectives[i].Data[4] then
-                    ShowQuestMarker(self.Objectives[i].Data[2]);
-                end
-            end
-        end
-    end
-
-    function ShowQuestMarker(_Entity)
-        local eID = GetID(_Entity);
-        local x,y = Logic.GetEntityPosition(eID);
-        local Marker = EGL_Effects.E_Questmarker_low;
-        if Logic.IsBuilding(eID) == 1 then
-            Marker = EGL_Effects.E_Questmarker;
-        end
-        Questmarkers[eID] = Logic.CreateEffect(Marker, x,y,0);
-    end
-
-    function DestroyQuestMarker(_Entity)
-        local eID = GetID(_Entity);
-        if Questmarkers[eID] ~= nil then
-            Logic.DestroyEffect(Questmarkers[eID]);
-            Questmarkers[eID] = nil;
         end
     end
 end

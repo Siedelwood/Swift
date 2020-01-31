@@ -138,6 +138,7 @@ SymfoniaLoader = {
             {"BundlePlayerHelperFunctions",         true},
             {"BundleMusicTools",                    true},
             {"BundleNonPlayerCharacter",            true},
+            {"BundleProfileAndOptions",             true},
             {"BundleSaveGameTools",                 true},
             {"BundleTerrainAndWater",               true},
             {"BundleWeatherManipulation",           true},

@@ -225,7 +225,7 @@ end
 SetPlayerName = API.InterfaceSetPlayerName;
 
 ---
--- Setzt zu Spielbeginn eine andere Spielerfarbe.
+-- Setzt eine andere Spielerfarbe.
 --
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _Color Spielerfarbe
@@ -245,10 +245,8 @@ function API.InterfaceSetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     local Logo    = _Logo or -1;
     local Pattern = _Pattern or -1;
 
-    StartSimpleJobEx( function(Col, _PlayerID, _Logo, _Pattern)
-        Logic.PlayerSetPlayerColor(_PlayerID, Col, _Logo, _Pattern);
-        return true;
-    end, Col, _PlayerID, Logo, Pattern);
+    Logic.PlayerSetPlayerColor(_PlayerID, Col, _Logo, _Pattern);
+    API.Bridge("Display.UpdatePlayerColors()");
 end
 
 ---

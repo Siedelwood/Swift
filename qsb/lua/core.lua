@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.5.2 14/12/2019";
+QSB.Version = "Version 2.6.0 14/12/2019";
 QSB.Language = "de";
 QSB.HistoryEdition = false;
 
@@ -67,6 +67,37 @@ QSB.Placeholders.Colors = {
     sky     = "{@color:145,170,210,255}",
     lucid   = "{@color:0,0,0,0}"
 };
+
+-- Mögliche (zufällige) Siedler getrennt in männlich und weiblich.
+QSB.PossibleSettlerTypes = {
+    Male = {
+        Entities.U_BannerMaker,
+        Entities.U_Baker,
+        Entities.U_Barkeeper,
+        Entities.U_Blacksmith,
+        Entities.U_Butcher,
+        Entities.U_BowArmourer,
+        Entities.U_BowMaker,
+        Entities.U_CandleMaker,
+        Entities.U_Carpenter,
+        Entities.U_DairyWorker,
+        Entities.U_Pharmacist,
+        Entities.U_Tanner,
+        Entities.U_SmokeHouseWorker,
+        Entities.U_Soapmaker,
+        Entities.U_SwordSmith,
+        Entities.U_Weaver,
+    },
+    Female = {
+        Entities.U_BathWorker,
+        Entities.U_SpouseS01,
+        Entities.U_SpouseS02,
+        Entities.U_SpouseS03,
+        Entities.U_SpouseF01,
+        Entities.U_SpouseF02,
+        Entities.U_SpouseF03,
+    }
+}
 
 QSB.RealTime_SecondsSinceGameStart = 0;
 
@@ -1075,6 +1106,46 @@ function API.EnsureScriptName(_EntityID)
     end
 end
 GiveEntityName = API.EnsureScriptName;
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen Siedler-Typ aus. Es werden
+-- nur Stadtsiedler zurückgegeben. Sie können männlich oder weiblich sein.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomSettlerType()
+    local Gender = (math.random(1, 2) == 1 and "Male") or "Female";
+    local Type   = math.random(1, #QSB.PossibleSettlerTypes[Gender]);
+    return QSB.PossibleSettlerTypes[Gender][Type];
+end
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen männlichen Siedler aus. Es
+-- werden nur Stadtsiedler zurückgegeben.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomMaleSettlerType()
+    local Type = math.random(1, #QSB.PossibleSettlerTypes.Male);
+    return QSB.PossibleSettlerTypes.Male[Type];
+end
+
+---
+-- Wählt aus einer Liste von Typen einen zufälligen weiblichen Siedler aus. Es
+-- werden nur Stadtsiedler zurückgegeben.
+--
+-- @return[type=number] Zufälliger Typ
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.GetRandomFemaleSettlerType()
+    local Type = math.random(1, #QSB.PossibleSettlerTypes.Female);
+    return QSB.PossibleSettlerTypes.Female[Type];
+end
 
 -- Overwrite -------------------------------------------------------------------
 

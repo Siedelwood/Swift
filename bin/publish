@@ -25,9 +25,10 @@ cp hlp/*.pdf Release/guide &>/dev/null
 cp hlp/readme.txt Release/start.txt &>/dev/null
 echo "Fertig!"
 
-echo "Beispiele kopieren..."
-cp -r qsb/example Release/example &>/dev/null
-echo "Fertig!"
+# Bei den ganzen dummen Fragen schaut die sich eh keiner an!
+# echo "Beispiele kopieren..."
+# cp -r qsb/example Release/example &>/dev/null
+# echo "Fertig!"
 
 echo "Kopiere Map Iconator..."
 #mkdir Release/bin/MapIconator &>/dev/null

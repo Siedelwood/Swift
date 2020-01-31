@@ -8,19 +8,19 @@
 -- Trage hier den Pfad ein, wo Deine Inhalte liegen.
 g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
 
--- Lade Inhalte aus dem Testpfad. Auf true setzen zum aktivieren.
-if false then
-    -- Trage hier den Pfad zu Deinem Mapverzeichnis ein. Achte darauf / statt \
-    -- zu verwenden. Der Pfad muss mit einem / enden.
-    g_ContentPath = "C:/Maps/MapName/";
-end
-
 -- Globaler Namespace für Deine Variablen
 -- Variablen aus dem globalen Skript werden automatisch referenziert.
 -- (gvMission.Var --> gvMission.GlobalVariables.Var)
 gvMission = {
     GlobalVariables = Logic.CreateReferenceToTableInGlobaLuaState("gvMission"),
 };
+
+-- Lade Inhalte aus dem Testpfad. Auf true setzen zum aktivieren.
+if false then
+    -- Trage hier den Pfad zu Deinem Mapverzeichnis ein. Achte darauf / statt \
+    -- zu verwenden. Der Pfad muss mit einem / enden.
+    g_ContentPath = "C:/Maps/MapName/";
+end
 
 -- -------------------------------------------------------------------------- --
 -- Basisfunktionen                                                            --
@@ -50,7 +50,7 @@ function Mission_LocalOnMapStart()
     API.Install();
     InitKnightTitleTables();
 
-    -- Hier kannst Du Deine Funktionen aufrufen:
+    -- Hier kannst Du Deine Funktionen aufrufen
 
 end
 
