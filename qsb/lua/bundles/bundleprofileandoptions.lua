@@ -44,7 +44,7 @@ QSB.OptionsIni = {};
 --
 function API.ProfileObserve(_Section, ...)
     if not GUI then
-        API.Bridge(string.format("API.ProfileObserve('%s', unpack(%s))", _Section, API.ConvertTableToString({...})));
+        API.Bridge(string.format([[API.ProfileObserve('%s', unpack(%s))]], _Section, API.ConvertTableToString({...})));
         return;
     end
     QSB.ProfileIni[_Section] = QSB.ProfileIni[_Section] or {};
@@ -126,12 +126,12 @@ end
 --
 function API.OptionsObserve(_Section, ...)
     if not GUI then
-        API.Bridge(string.format("API.OptionsObserve('%s', '%s')", _Section, API.ConvertTableToString({...})));
+        API.Bridge(string.format([[API.OptionsObserve('%s', unpack(%s))]], _Section, API.ConvertTableToString({...})));
         return;
     end
     QSB.OptionsIni[_Section] = QSB.OptionsIni[_Section] or {};
     for k, v in pairs({...}) do
-        QSB.ProfileIni[_Section][v] = "";
+        QSB.OptionsIni[_Section][v] = "";
     end
     BundleProfileAndOptions.Local:FullOptionsSync();
 end
@@ -251,7 +251,7 @@ function BundleProfileAndOptions.Local:FullProfileSync()
         end
     end
     -- Ins globale Skript schreiben
-    API.Bridge(string.format("QSB.ProfileIni = %s", API.ConvertTableToString(QSB.ProfileIni)));
+    API.Bridge(string.format([[QSB.ProfileIni = %s]], API.ConvertTableToString(QSB.ProfileIni)));
 end
 
 ---
@@ -273,7 +273,7 @@ function BundleProfileAndOptions.Local:FullOptionsSync()
         end
     end
     -- Ins globale Skript schreiben
-    API.Bridge(string.format("QSB.OptionsIni = %s", API.ConvertTableToString(QSB.OptionsIni)));
+    API.Bridge(string.format([[QSB.OptionsIni = %s]], API.ConvertTableToString(QSB.OptionsIni)));
 end
 
 -- Führt alle Jobs einmal Sekunde aus.
