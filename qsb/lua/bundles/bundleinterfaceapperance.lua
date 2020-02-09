@@ -246,7 +246,11 @@ function API.InterfaceSetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     local Pattern = _Pattern or -1;
 
     Logic.PlayerSetPlayerColor(_PlayerID, Col, _Logo, _Pattern);
-    API.Bridge("Display.UpdatePlayerColors()");
+    API.Bridge([[
+        Display.UpdatePlayerColors()
+        GUI.RebuildMinimapTerrain()
+        GUI.RebuildMinimapTerritory()
+    ]]);
 end
 
 ---
