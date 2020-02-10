@@ -516,7 +516,7 @@ function QSB.NonPlayerCharacter:RepositionHero()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     local HeroID = BundleNonPlayerCharacter.Global.LastHeroEntityID;
     local NPCID  = GetID(self.m_NpcName);
-    if GetDistance(HeroID, NPCID) < self.m_Distance then
+    if GetDistance(HeroID, NPCID) < self.m_Distance -50 then
         -- Position des NPC bestimmen
         local Orientation = Logic.GetEntityOrientation(NPCID);
         local x1, y1, z1 = Logic.EntityGetPos(NPCID);
@@ -526,16 +526,14 @@ function QSB.NonPlayerCharacter:RepositionHero()
         -- Nächste erreichbare Position bei Punkt bestimmen
         local ID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, x2, y2, 0, 0);
         local x3, y3, z3 = Logic.EntityGetPos(ID);
-        -- Held ersetzen und neu positionieren
-        local HeroID = ReplaceEntity(HeroID, Logic.GetEntityType(HeroID));
-        BundleNonPlayerCharacter.Global.LastHeroEntityID = HeroID;
-        API.Bridge(string.format([[
-            GUI.ClearSelection()
-            GUI.SelectEntity(%d)
-        ]], HeroID));
-        Logic.DEBUG_SetSettlerPosition(HeroID, x3, y3);
-        LookAt(NPCID, HeroID);
-        LookAt(HeroID, NPCID);
+        -- Held neu positionieren
+        Logic.MoveSettler(HeroID, x3, y3);
+        StartSimpleHiResJobEx( function(_HeroID, _NPCID)
+            if Logic.IsEntityMoving(_HeroID) == false then
+                API.Confront(_HeroID, _NPCID);
+                return true;
+            end
+        end, HeroID, NPCID);
     end
 end
 
