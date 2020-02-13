@@ -140,6 +140,32 @@ end
 PauseQuestsDuringBriefings = API.BriefingPauseQuests;
 
 ---
+-- Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing.
+--
+-- <b>Hinweis</b>: Außerhalb von Briefings hat die Funktion keinen Effekt!
+--
+-- <b>Alias</b>: SetAnswerVisibility
+--
+-- @param[type=number] _Page ID der Page
+-- @param[type=number] _Answer ID der Antwort
+-- @param[type=boolean] _Visible Sichtbarkeit
+-- @within Internal
+-- @local
+--
+function API.SetAnswerAvailability(_Page, _Answer, _Visible)
+    if not GUI then
+        -- PageID kann nur im globalen Skript bestimmt werden
+        local PageID = BundleBriefingSystem.Global:GetPageIDByName(_Page);
+        if PageID > 0 then
+            API.Bridge(string.format("API.SetAnswerAvailability(%d, %d, %s)", PageID, _Answer, tostring(not _Visible)));
+        end
+        return;
+    end
+    BundleBriefingSystem.Local:SetMCAnswerState(_Page, _Answer, _Visible);
+ end
+ SetAnswerVisibility = API.SetAnswerAvailability;
+
+---
 -- Erzeugt die Funktionen zur Erstellung von Seiten in einem Briefing und bindet
 -- sie an das Briefing. Diese Funktion muss vor dem Start eines Briefing
 -- aufgerufen werden um Seiten hinzuzufügen.
@@ -210,7 +236,7 @@ function API.AddPages(_Briefing)
             if _Page.MC then
                 for i= 1, #_Page.MC do
                     _Page.MC[i][1] = API.Localize(_Page.MC[i][1]);
-                    _Page.MC[i].ID = i;
+                    _Page.MC[i].ID = _Page.MC[i].ID or i;
                 end
                 _Page.Text = "";
                 _Page.text = "";
@@ -956,11 +982,33 @@ function BundleBriefingSystem.Local:LocalOnMCConfirmed()
         local AnswerID = self.Data.CurrentPage.MC.Map[Selected];
         for i= #self.Data.CurrentPage.MC, 1, -1 do
             if self.Data.CurrentPage.MC[i].ID == AnswerID and self.Data.CurrentPage.MC[i].Remove then
-                table.remove(self.Data.CurrentPage.MC, Selected);
+                self.Data.CurrentPage.MC[i].Invisible = true;
             end
         end
         API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..AnswerID.. ")");
     end
+end
+
+---
+-- Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing
+-- @param[type=number] _Page ID der Page
+-- @param[type=number] _Answer ID der Antwort
+-- @param[type=boolean] _Visible Sichtbarkeit
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:SetMCAnswerState(_Page, _Answer, _Visible)
+   assert(type(_Page) == "number");
+   assert(type(_Answer) == "number");
+   if self.Data.BriefingActive then
+       if  self.Data.CurrentBriefing[_Page] and self.Data.CurrentBriefing[_Page].MC then
+           for k, v in pairs(self.Data.CurrentBriefing[_Page].MC) do
+               if v and v.ID == _Answer then
+                   self.Data.CurrentBriefing[_Page].MC[k].Invisible = _Visible == true;
+               end
+           end
+       end
+   end
 end
 
 ---

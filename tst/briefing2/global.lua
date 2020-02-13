@@ -184,10 +184,10 @@ function Briefing03()
         DialogCamera = false,
         NoRethink    = true,
         MC           = {
-            {"Zu Seite 4 springen", "ResultPage1"},
-            {"Remove me", "ResultPage1", Remove = true},
-            {"Do not show me", "ResultPage1", Disable = function() return true end},
-            {"Zu Seite 7 springen", "ResultPage2"}
+            {ID = 1, "Zu Seite 4 springen", "ResultPage1"},
+            {ID = 2, "Remove me", "ResultPage1", Remove = true},
+            {ID = 3, "Do not show me", "ResultPage1", Disable = function() return true end},
+            {ID = 4, "Zu Seite 7 springen", "ResultPage2"}
         }
     }
 
