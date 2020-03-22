@@ -189,6 +189,72 @@ function API.AbortMusic()
 end
 AbortSongOrPlaylist = API.AbortMusic;
 
+---
+-- Startet eine Playlist, welche als XML angegeben ist.
+--
+-- Eine als XML definierte Playlist wird nicht als Voice abgespielt sondern
+-- als Music. Als Musik werden MP3-Dateien verwendet. Diese können entweder
+-- im Spiel vorhanden sein oder im Ordner Music in der Map gespeichert
+-- werden.
+--
+-- Wenn du eigene Musik verwendest, achte darauf, einen möglichst eindeutigen
+-- Namen zu verwenden. Und natürlich auch auf Urheberrecht!
+--
+-- Beispiel für eine Playlist:
+-- <pre>
+--<?xml version="1.0" encoding="utf-8"?>
+--<PlayList>
+--  <PlayListEntry>
+--    <FileName>Music\some_music_file.mp3</FileName>
+--    <Type>Loop</Type>
+--  </PlayListEntry>
+--</PlayList>
+--<pre>
+-- Als Typ können "Loop" oder "Normal" gewählt werden. Normale Musik wird
+-- einmalig abgespielt. Ein Loop läuft endlos weiter.
+--
+-- Außerdem kann zusätzlich zum Typ eine Abspielwahrscheinlichkeit mit
+-- angegeben werden:
+-- <pre><Chance>10</Chance></pre>
+-- Es sind Zahlen von 1 bis 100 möglich.
+--
+-- <p><b>Alias:</b> StartEventPlaylist</p>
+--
+-- @param _Playlist Pfad zur Playlist
+-- @param _PlayerID (Optional) ID des menschlichen Spielers
+-- @within Anwenderfunktionen
+--
+function API.StartEventPlaylist(_Playlist, _PlayerID)
+    if not GUI then
+        API.Bridge(string.format("API.StartEventPlaylist('%s', %d)", _Playlist, _PlayerID or 1));
+        return;
+    end
+    if _PlayerID == GUI.GetPlayerID() then
+        Sound.MusicStartEventPlaylist(_Playlist)
+    end
+end
+StartEventPlaylist = API.StartEventPlaylist;
+
+---
+-- Beendet eine Event Playlist.
+--
+-- <p><b>Alias:</b> StopEventPlaylist</p>
+--
+-- @param _Playlist Pfad zur Playlist
+-- @param _PlayerID (Optional) ID des menschlichen Spielers
+-- @within Anwenderfunktionen
+--
+function API.StopEventPlaylist(_Playlist, _PlayerID)
+    if not GUI then
+        API.Bridge(string.format("API.StopEventPlaylist('%s', %d)", _Playlist, _PlayerID or 1));
+        return;
+    end
+    if _PlayerID == GUI.GetPlayerID() then
+        Sound.MusicStopEventPlaylist(_Playlist)
+    end
+end
+StopEventPlaylist = API.StopEventPlaylist;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
