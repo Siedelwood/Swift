@@ -24,31 +24,6 @@ QSB.PlayerNames = {};
 -- -------------------------------------------------------------------------- --
 
 ---
--- Setzt eine Grafik als Bild für einen Icon oder einen Button.
---
--- <b>VERALTET! WIRD DEMNÄCHST GELÖSCHT!</b>
---
--- Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem
--- beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
--- muss jedoch immer der korrekte Pfad angegeben werden.
---
--- <p><b>Hinweis:</b> Es kann vorkommen, dass das Bild nicht genau da ist, wo es
--- sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
--- unterschiedlich ist.</p>
---
--- @param[type=string] _widget Widgetpfad oder ID
--- @param[type=string] _file Pfad zur Datei
--- @within Anwenderfunktionen
---
-function API.InterfaceSetTexture(_widget, _file)
-    if not GUI then
-        return;
-    end
-    BundleInterfaceApperance.Local:SetTexture(_widget, _file)
-end
-UserSetTexture = API.InterfaceSetTexture;
-
----
 -- Setzt einen Icon aus einer benutzerdefinierten Icon Matrix.
 --
 -- Es wird also die Grafik eines Button oder Icon mit einer neuen Grafik
@@ -322,14 +297,10 @@ BundleInterfaceApperance = {
 --
 function BundleInterfaceApperance.Local:Install()
     StartMissionGoodOrEntityCounter = function(_Icon, _AmountToReach)
-        if type(_Icon) == "string" then
-            BundleInterfaceApperance.Local:SetTexture("/InGame/Root/Normal/MissionGoodOrEntityCounter/Icon", _Icon);
+        if type(_Icon[3]) == "string" then
+            BundleInterfaceApperance.Local:SetIcon("/InGame/Root/Normal/MissionGoodOrEntityCounter/Icon", _Icon, 64, _Icon[3]);
         else
-            if type(_Icon[3]) == "string" then
-                BundleInterfaceApperance.Local:SetIcon("/InGame/Root/Normal/MissionGoodOrEntityCounter/Icon", _Icon, 64, _Icon[3]);
-            else
-                SetIcon("/InGame/Root/Normal/MissionGoodOrEntityCounter/Icon", _Icon);
-            end
+            SetIcon("/InGame/Root/Normal/MissionGoodOrEntityCounter/Icon", _Icon);
         end
 
         g_MissionGoodOrEntityCounterAmountToReach = _AmountToReach;
@@ -432,36 +403,6 @@ function BundleInterfaceApperance.Local:SetPlayerPortraitByModelName(_PlayerID, 
         _Portrait = "H_NPC_Generic_Trader";
     end
     g_PlayerPortrait[_PlayerID] = _Portrait;
-end
-
----
--- Setzt einen Icon aus einer benutzerdefinerten Datei.
---
--- @param[type=string] _widget Widgetpfad oder ID
--- @param[type=string] _file Pfad zur Datei
--- @within Internal
--- @local
---
-function BundleInterfaceApperance.Local:SetTexture(_widget, _file)
-    assert((type(_widget) == "string" or type(_widget) == "number"));
-    local wID = (type(_widget) == "string" and XGUIEng.GetWidgetID(_widget)) or _widget;
-    local screenSize = {GUI.GetScreenSize()};
-
-    local state = 1;
-    if XGUIEng.IsButton(wID) == 1 then
-        state = 7;
-    end
-
-    local Scale = 330;
-    if screenSize[2] >= 800 then
-        Scale = 260;
-    end
-    if screenSize[2] >= 1000 then
-        Scale = 210;
-    end
-    XGUIEng.SetMaterialAlpha(wID, state, 255);
-    XGUIEng.SetMaterialTexture(wID, state, _file);
-    XGUIEng.SetMaterialUV(wID, state, 0, 0, Scale, Scale);
 end
 
 ---

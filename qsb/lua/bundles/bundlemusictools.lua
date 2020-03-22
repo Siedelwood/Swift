@@ -127,7 +127,7 @@ function API.SoundSetVolume(_Volume)
         API.Bridge(string.format("API.SoundSetVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0);
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(_Volume, nil, nil, nil, nil);
 end
 
@@ -147,7 +147,7 @@ function API.SoundSetMusicVolume(_Volume)
         API.Bridge(string.format("API.SoundSetMusicVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0);
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(nil, _Volume, nil, nil, nil);
 end
 
@@ -167,7 +167,7 @@ function API.SoundSetVoiceVolume(_Volume)
         API.Bridge(string.format("API.SoundSetVoiceVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0);
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(nil, nil, _Volume, nil, nil);
 end
 
@@ -187,7 +187,7 @@ function API.SoundSetAtmoVolume(_Volume)
         API.Bridge(string.format("API.SoundSetAtmoVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0);
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(nil, nil, nil, _Volume, nil);
 end
 
@@ -207,7 +207,7 @@ function API.SoundSetUIVolume(_Volume)
         API.Bridge(string.format("API.SoundSetUIVolume(%d)", _Volume));
         return;
     end
-    _Volume = (_Volume < 0 and 0);
+    _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
     BundleMusicTools.Local:AdjustSound(nil, nil, nil, nil, _Volume);
 end
 
