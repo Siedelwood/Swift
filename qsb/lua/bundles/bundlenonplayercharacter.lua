@@ -487,9 +487,9 @@ function QSB.NonPlayerCharacter:RotateActors()
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
         -- Alle Helden stoppen, die sich zu NPC bewegen
-        local SV = (QSB.HistoryEdition and 17) or 19;
+        local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.X;
         local x1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
-        local SV = (QSB.HistoryEdition and 18) or 20;
+        local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.Y;
         local y1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
         local x2, y2 = Logic.EntityGetPos(GetID(self.m_NpcName));
         if x1 == math.floor(x2) and y1 == math.floor(y2) then
@@ -577,7 +577,7 @@ end
 function QSB.NonPlayerCharacter:ShowMarker()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     if self.m_NpcType == 1 and IsExisting(self.m_MarkerID) then
-        local SV = (QSB.HistoryEdition and -42) or -45;
+        local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
         local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), SV);
         Logic.SetEntityScriptingValue(self.m_MarkerID, SV, EntityScale);
         Logic.SetModel(self.m_MarkerID, Models.Effects_E_Wealth);
@@ -855,9 +855,9 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
         if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
                 if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
-                    local SV = (QSB.HistoryEdition and 17) or 19;
+                    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.X;
                     local x1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
-                    local SV = (QSB.HistoryEdition and 18) or 20;
+                    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.Y;
                     local y1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
                     local x2, y2 = Logic.EntityGetPos(GetID(k));
                     if x1 == math.floor(x2) and y1 == math.floor(y2) then

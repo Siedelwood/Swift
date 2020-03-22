@@ -316,9 +316,7 @@ end
 --
 function QSB.EntityProperty:GetEntitySize()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-
-    local SV = (QSB.HistoryEdition and -42) or -45;
-    return self:GetValueAsFloat(SV);
+    return self:GetValueAsFloat(QSB.ScriptingValues[QSB.ScriptingValues.Game].Size);
 end
 
 ---
@@ -332,7 +330,7 @@ end
 function QSB.EntityProperty:SetEntitySize(_Scale)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
-    local SV = (QSB.HistoryEdition and -42) or -45;
+    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
         Logic.SetEntityScriptingValue(EntityID, SV, Core:ScriptingValueFloatToInteger(_Scale));
@@ -410,9 +408,7 @@ end
 --
 function QSB.EntityProperty:GetPlayerID()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-
-    local SV = (QSB.HistoryEdition and -68) or -71;
-    return self:GetValueAsInteger(SV);
+    return self:GetValueAsInteger(QSB.ScriptingValues[QSB.ScriptingValues.Game].Player);
 end
 
 ---
@@ -425,7 +421,7 @@ end
 function QSB.EntityProperty:SetPlayerID(_PlayerID)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
 
-    local SV = (QSB.HistoryEdition and -68) or -71;
+    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Player;
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
         if self:InGategory(EntityCategories.Leader) or self:InGategory(EntityCategories.CattlePasture) or self:InGategory(EntityCategories.SheepPasture) then
@@ -446,8 +442,8 @@ end
 --
 function QSB.EntityProperty:GetHealth()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-    local SV = (QSB.HistoryEdition and -38) or -41;
-    return self:GetValueAsInteger(GetID(self.m_EntityName));
+    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Health;
+    return self:GetValueAsInteger(GetID(self.m_EntityName), SV);
 end
 
 ---
@@ -607,8 +603,7 @@ end
 --
 function QSB.EntityProperty:IsVisible()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-    local SV = (QSB.HistoryEdition and -47) or -50;
-    return self:GetValueAsInteger(SV) == 801280;
+    return self:GetValueAsInteger(QSB.ScriptingValues[QSB.ScriptingValues.Game].Visible) == 801280;
 end
 
 ---
@@ -683,8 +678,8 @@ function QSB.EntityProperty:GetDestination()
 
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 then
-        local SVX = (QSB.HistoryEdition and 17) or 19;
-        local SVY = (QSB.HistoryEdition and 18) or 20;
+        local SVX = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.X
+        local SVY = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.Y;
         return {X= self:GetValueAsFloat(SVX), Y= self:GetValueAsFloat(SVY)};
     end
     return {X= 0, Y= 0};

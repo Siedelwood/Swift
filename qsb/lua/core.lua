@@ -14,9 +14,27 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.6.1 10/2/2020";
+QSB.Version = "Version 2.7.0 1/3/2020";
 QSB.Language = "de";
 QSB.HistoryEdition = false;
+
+QSB.ScriptingValues = {
+    Game = "Vanilla",
+    Vanilla = {
+        Destination = {X = 19, Y= 20},
+        Health      = -41,
+        Player      = -71,
+        Size        = -45,
+        Visible     = -50,
+    },
+    HistoryEdition = {
+        Destination = {X = 17, Y= 18},
+        Health      = -38,
+        Player      = -68,
+        Size        = -42,
+        Visible     = -47,
+    }
+}
 
 QSB.Placeholders = {
     Names = {},
@@ -1951,7 +1969,9 @@ function Core:IdentifyHistoryEdition()
     MakeInvulnerable(EntityID);
     if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
         API.Bridge("QSB.HistoryEdition = true");
+        API.Bridge("QSB.ScriptingValues.Game = 'HistoryEdition'");
         QSB.HistoryEdition = true;
+        QSB.ScriptingValues.Game = "HistoryEdition";
     end
     DestroyEntity(EntityID);
 end
