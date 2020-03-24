@@ -216,9 +216,52 @@ SetOnFire = API.SetBuildingOnFire;
 -- @param[type=number] _Attacker (optional) Skriptname des Angreifers
 --
 function API.HurtEntity(_Entity, _Damage, _Attacker)
+    if GUI then
+        return;
+    end
     QSB.EntityProperty:GetInstance(_Entity):Hurt(_Damage, _Attacker);
 end
 HurtEntityEx = API.HurtEntity;
+
+---
+-- Gibt die Orientierung des Entity zurück.
+--
+-- <p><b>Alias:</b> GetOrientation</p>
+--
+-- @param               _entity Betreffendes Entity (Skriptname oder ID)
+-- @return[type=number] Orientierung in Grad
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- local Orientation = API.EntityGetOrientation("marcus");
+--
+function API.EntityGetOrientation(_Entity)
+    if not IsExisting(_Entity) then
+        return 0;
+    end
+    return QSB.EntityProperty:GetInstance(_Entity):GetOrientation();
+end
+GetOrientation = API.EntityGetOrientation;
+
+---
+-- Setzt die Orientierung des Entity.
+--
+-- <p><b>Alias:</b> SetOrientation</p>
+--
+-- @param              _Entity      Betreffendes Entity (Skriptname oder ID)
+-- @param[type=number] _Orientation Ausrichtung in Grad
+-- @within Anwenderfunktionen
+--
+-- @usage
+-- API.EntitySetOrientation("marcus", 52);
+--
+function API.EntitySetOrientation(_Entity, _Orientation)
+    if GUI then
+        return;
+    end
+    QSB.EntityProperty:GetInstance(_Entity):SetOrientation(_Orientation);
+end
+SetOrientation = API.EntitySetOrientation;
 
 -- -------------------------------------------------------------------------- --
 -- Internal                                                                   --
@@ -350,7 +393,7 @@ end
 --
 function QSB.EntityProperty:GetOrientation()
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-    return Logic.GetEntityOrientation(GetID(self.m_EntityName));
+    return API.Round(Logic.GetEntityOrientation(GetID(self.m_EntityName)));
 end
 
 ---
@@ -362,7 +405,7 @@ end
 --
 function QSB.EntityProperty:SetOrientation(_Orientation)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-    Logic.SetOrientation(GetID(self.m_EntityName), _Orientation);
+    Logic.SetOrientation(GetID(self.m_EntityName), API.Round(_Orientation));
     return self;
 end
 
@@ -868,7 +911,7 @@ end
 --
 function QSB.EntityProperty:InGategory(...)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-    for k, v in pairs({...}) do
+    for k, v in pairs(arg) do
         if Inside(v, self:GetGategories()) then
             return true;
         end
@@ -899,7 +942,7 @@ end
 --
 function QSB.EntityProperty:GetValueAsFloat(_index)
     assert(self ~= QSB.EntityProperty, "Can not be used in static context!");
-    return Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(GetID(self.m_EntityName),_index));
+    return Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(GetID(self.m_EntityName), _index));
 end
 
 -- -------------------------------------------------------------------------- --

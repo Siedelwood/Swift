@@ -102,14 +102,7 @@ GetEntitiesNamedWith = API.GetEntitiesByPrefix;
 -- API.SetResourceAmount("mine1", 250, 150);
 --
 function API.SetResourceAmount(_Entity, _StartAmount, _RefillAmount)
-    if GUI then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Bridge("API.SetResourceAmount(" ..Subject..", " .._StartAmount.. ", " .._RefillAmount.. ")")
-        return;
-    end
-    if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Fatal("API.SetResourceAmount: Entity " ..Subject.. " does not exist!");
+    if GUI or not IsExisting(_Entity) then
         return;
     end
     return BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmount, _RefillAmount);
@@ -133,11 +126,8 @@ SetResourceAmount = API.SetResourceAmount;
 -- local RelativePostion = API.GetRelativePosition("pos1", 1000, 32);
 --
 function API.GetRelativePosition(_target, _distance, _angle, _buildingRealPos)
-    if not API.ValidatePosition(_target) then
-        if not IsExisting(_target) then
-            API.Fatal("API.GetRelativePosition: Target is invalid!");
-            return;
-        end
+    if not API.ValidatePosition(_target) or not IsExisting(_target) then
+        return;
     end
     return BundleEntityHelperFunctions.Shared:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
 end
@@ -157,8 +147,6 @@ GetRelativePos = API.GetRelativePosition;
 --
 function API.EntityGetName(_entity)
     if not IsExisting(_entity) then
-        local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
-        API.Warn("API.EntityGetName: Entity " ..Subject.. " does not exist!");
         return nil;
     end
     return Logic.GetEntityName(GetID(_entity));
@@ -179,12 +167,7 @@ GetEntityName = API.EntityGetName;
 -- API.EntitySetName(SomeEntityID, "myEntity");
 --
 function API.EntitySetName(_entity, _name)
-    if GUI then
-        API.Bridge("API.EntitySetName(" ..GetID(_entity).. ", '" .._name.. "')")
-        return;
-    end
-    if IsExisting(_name) then
-        API.Fatal("API.EntitySetName: Entity '" .._name.. "' already exists!");
+    if GUI or IsExisting(_name) then
         return;
     end
     return Logic.SetEntityName(GetID(_entity), _name);
@@ -192,60 +175,9 @@ end
 SetEntityName = API.EntitySetName;
 
 ---
--- Setzt die Orientierung des Entity.
---
--- <p><b>Alias:</b> SetOrientation</p>
---
--- @param              _entity Betreffendes Entity (Skriptname oder ID)
--- @param[type=number] _ori    Ausrichtung in Grad
--- @within Anwenderfunktionen
---
--- @usage
--- API.EntitySetOrientation("marcus", 52);
---
-function API.EntitySetOrientation(_entity, _ori)
-    if GUI then
-        API.Bridge("API.EntitySetOrientation(" ..GetID(_entity).. ", " .._ori.. ")")
-        return;
-    end
-    if not IsExisting(_entity) then
-        local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
-        API.Fatal("API.EntitySetOrientation: Entity " ..Subject.. " does not exist!");
-        return;
-    end
-    return Logic.SetOrientation(GetID(_entity), _ori);
-end
-SetOrientation = API.EntitySetOrientation;
-
----
--- Gibt die Orientierung des Entity zurück.
---
--- <p><b>Alias:</b> GetOrientation</p>
---
--- @param               _entity Betreffendes Entity (Skriptname oder ID)
--- @param[type=boolean] _Round  Wert wird kaufmännisch auf Ganzzahl gerundet
--- @return[type=number] Orientierung in Grad
--- @within Anwenderfunktionen
---
--- @usage
--- local Orientation = API.EntityGetOrientation("marcus");
---
-function API.EntityGetOrientation(_entity, _Round)
-    if not IsExisting(_entity) then
-        local Subject = (type(_entity) ~= "string" and _entity) or "'" .._entity.. "'";
-        API.Warn("API.EntityGetOrientation: Entity " ..Subject.. " does not exist!");
-        return 0;
-    end
-    local Orientation = Logic.GetEntityOrientation(GetID(_entity));
-    if _Round then
-        Orientation = math.floor(Orientation + 0.5);
-    end
-    return Logic.GetEntityOrientation(GetID(_entity));
-end
-GetOrientation = API.EntityGetOrientation;
-
----
 -- Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.
+--
+-- Im Fehlerfall wird 0 zurückgegeben.
 --
 -- <p><b>Alias:</b> GetClosestKnight</p>
 --
@@ -255,18 +187,20 @@ GetOrientation = API.EntityGetOrientation;
 -- @within Anwenderfunktionen
 --
 -- @usage
--- local Knight = API.GetKnightsNearby(GetID("IO1"), 1);
+-- local Knight = API.GetKnightNearby(GetID("IO1"), 1);
 --
-function API.GetKnightsNearby(_eID, _playerID)
+function API.GetKnightNearby(_eID, _playerID)
     local Knights = {};
     Logic.GetKnights(_playerID, Knights);
     return API.GetEntitiesNearby(_eID, Knights);
 end
-GetClosestKnight = API.GetKnightsNearby;
+GetClosestKnight = API.GetKnightNearby;
 
 ---
 -- Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
 -- am nächsten ist.
+--
+-- Im Fehlerfall wird 0 zurückgegeben.
 --
 -- <p><b>Alias:</b> GetClosestEntity</p>
 --
@@ -277,25 +211,15 @@ GetClosestKnight = API.GetKnightsNearby;
 --
 -- @usage
 -- local EntityList = API.GetEntitiesOfCategoriesInTerritories({1, 2, 3}, EntityCategories.Hero, {5, 12, 23, 24});
--- local Knight = API.GetEntitiesNearby(GetID("IO1"), EntityList);
+-- local Knight = API.GetEntityNearby(GetID("IO1"), EntityList);
 --
-function API.GetEntitiesNearby(_eID, _entities)
-    if not IsExisting(_eID) then
-        return;
-    end
-    if #_entities == 0 then
-        API.Fatal("API.GetEntitiesNearby: The target list is empty!");
-        return;
-    end
-    for i= 1, #_entities, 1 do
-        if not IsExisting(_entities[i]) then
-            API.Fatal("API.GetEntitiesNearby: At least one target entity is dead!");
-            return;
-        end
+function API.GetEntityNearby(_eID, _entities)
+    if not IsExisting(_eID) or #_entities == 0 then
+        return 0;
     end
     return BundleEntityHelperFunctions.Shared:GetNearestEntity(_eID,_entities);
 end
-GetClosestEntity = API.GetEntitiesNearby;
+GetClosestEntity = API.GetEntityNearby;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -429,12 +353,14 @@ end
 --
 function BundleEntityHelperFunctions.Shared:GetNearestEntity(_eID,_entities)
     local bestDistance = Logic.WorldGetSize();
-    local best = nil;
+    local best = 0;
     for i=1,#_entities do
-        local distanceBetween = Logic.GetDistanceBetweenEntities(_entities[i], _eID);
-        if distanceBetween < bestDistance and _entities[i] ~= _eID then
-            bestDistance = distanceBetween;
-            best = _entities[i];
+        if IsExisting(_entities[i]) then
+            local distanceBetween = Logic.GetDistanceBetweenEntities(_entities[i], _eID);
+            if distanceBetween < bestDistance and _entities[i] ~= _eID then
+                bestDistance = distanceBetween;
+                best = _entities[i];
+            end
         end
     end
     return best;
