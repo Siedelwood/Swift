@@ -298,6 +298,7 @@ end
 --
 function API.Round(_Value, _DecimalDigits)
     _DecimalDigits = _DecimalDigits or 2;
+    _DecimalDigits = (_DecimalDigits < 0 and 0) or _DecimalDigits;
     local Value = tostring(_Value);
     if tonumber(Value) == nil then
         return 0;
@@ -305,12 +306,18 @@ function API.Round(_Value, _DecimalDigits)
     local s,e = Value:find(".", 1, true);
     if e then
         if Value:len() > e + _DecimalDigits then
-            if _DecimalDigits > 0 and tonumber(Value:sub(e+_DecimalDigits+1, e+_DecimalDigits+1)) >= 5 then
-                local TmpNum = tonumber(Value:sub(e+1, e+_DecimalDigits)) +1;
-                if (tostring(TmpNum):len() == _DecimalDigits) then
-                    Value = Value:sub(1, e-1).. "." ..TmpNum;
+            local Overhead;
+            if _DecimalDigits > 0 then
+                local TmpNum;
+                if tonumber(Value:sub(e+_DecimalDigits+1, e+_DecimalDigits+1)) >= 5 then
+                    TmpNum = tonumber(Value:sub(e+1, e+_DecimalDigits)) +1;
+                    Overhead = (_DecimalDigits == 1 and TmpNum == 10);
                 else
-                    Value = Value:sub(1, e-1);
+                    TmpNum = tonumber(Value:sub(e+1, e+_DecimalDigits));
+                end
+                Value = Value:sub(1, e-1);
+                if (tostring(TmpNum):len() >= _DecimalDigits) then
+                    Value = Value .. "." ..TmpNum;
                 end
             else
                 local NewValue = tonumber(Value:sub(1, e-1));
@@ -320,12 +327,13 @@ function API.Round(_Value, _DecimalDigits)
                 Value = NewValue;
             end
         else
-            Value = Value .. string.rep("0", Value:len() - (e + _DecimalDigits));
+            Value = (Overhead and (tonumber(Value) or 0) +1) or
+                     Value .. string.rep("0", Value:len() - (e + _DecimalDigits))
         end
     end
-    return Round(Value);
+    return tonumber(Value);
 end
-Round = API.ConvertTableToString;
+Round = API.Round;
 
 -- Quests ----------------------------------------------------------------------
 
