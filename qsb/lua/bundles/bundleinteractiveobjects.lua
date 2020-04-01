@@ -131,7 +131,6 @@ QSB.IOList = {};
 --
 function API.CreateObject(_Description)
     if GUI then
-        API.Fatal("API.CreateObject: Can not be used from local enviorment!");
         return;
     end
     return BundleInteractiveObjects.Global:CreateObject(_Description);
@@ -150,12 +149,7 @@ CreateObject = API.CreateObject;
 -- @within Anwenderfunktionen
 --
 function API.RemoveInteractiveObject(_EntityName)
-    if GUI then
-        API.Bridge("API.RemoveInteractiveObject('" .._EntityName.. "')");
-        return;
-    end
-    if not IsExisting(_EntityName) then
-        API.Warn("API.RemoveInteractiveObject: Entity \"" .._EntityName.. "\" is invalid!");
+    if GUI or not IsExisting(_EntityName) then
         return;
     end
     return BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName);
@@ -177,11 +171,7 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 -- @within Anwenderfunktionen
 --
 function API.InteractiveObjectActivate(_EntityName, _State)
-    if GUI then
-        API.Bridge("API.InteractiveObjectActivate('" .._EntityName.. "', " ..tostring(_State).. ")");
-        return;
-    end
-    if not IsExisting(_EntityName) then
+    if GUI or not IsExisting(_EntityName) then
         return;
     end
 
@@ -206,11 +196,7 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 -- @within Anwenderfunktionen
 --
 function API.InteractiveObjectDeactivate(_EntityName)
-    if GUI then
-        API.Bridge("API.InteractiveObjectDeactivate('" .._EntityName.. "')");
-        return;
-    end
-    if not IsExisting(_EntityName) then
+    if GUI or not IsExisting(_EntityName) then
         return;
     end
 

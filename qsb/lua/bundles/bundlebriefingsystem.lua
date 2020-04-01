@@ -140,6 +140,32 @@ end
 PauseQuestsDuringBriefings = API.BriefingPauseQuests;
 
 ---
+-- Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing.
+--
+-- <b>Hinweis</b>: Außerhalb von Briefings hat die Funktion keinen Effekt!
+--
+-- <b>Alias</b>: SetAnswerVisibility
+--
+-- @param[type=number] _Page ID der Page
+-- @param[type=number] _Answer ID der Antwort
+-- @param[type=boolean] _Visible Sichtbarkeit
+-- @within Internal
+-- @local
+--
+function API.SetAnswerAvailability(_Page, _Answer, _Visible)
+    if not GUI then
+        -- PageID kann nur im globalen Skript bestimmt werden
+        local PageID = BundleBriefingSystem.Global:GetPageIDByName(_Page);
+        if PageID > 0 then
+            API.Bridge(string.format("API.SetAnswerAvailability(%d, %d, %s)", PageID, _Answer, tostring(not _Visible)));
+        end
+        return;
+    end
+    BundleBriefingSystem.Local:SetMCAnswerState(_Page, _Answer, _Visible);
+ end
+ SetAnswerVisibility = API.SetAnswerAvailability;
+
+---
 -- Erzeugt die Funktionen zur Erstellung von Seiten in einem Briefing und bindet
 -- sie an das Briefing. Diese Funktion muss vor dem Start eines Briefing
 -- aufgerufen werden um Seiten hinzuzufügen.
@@ -186,7 +212,8 @@ function API.AddPages(_Briefing)
                 _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
                 _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.DLGCAMERA_ZOOMDEFAULT;
                 _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.DLGCAMERA_FOVDEFAULT;
-                _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.DLGCAMERA_ROTATIONDEFAULT;
+                -- Wir später sowieso überschrieben!
+                -- _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.DLGCAMERA_ROTATIONDEFAULT;
             else
                 _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
                 _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
@@ -210,7 +237,7 @@ function API.AddPages(_Briefing)
             if _Page.MC then
                 for i= 1, #_Page.MC do
                     _Page.MC[i][1] = API.Localize(_Page.MC[i][1]);
-                    _Page.MC[i].ID = i;
+                    _Page.MC[i].ID = _Page.MC[i].ID or i;
                 end
                 _Page.Text = "";
                 _Page.text = "";
@@ -236,8 +263,11 @@ function API.AddPages(_Briefing)
         if #arg > 5 or (type(arg[4]) == "string" or type(arg[4]) == "table") then
             PageName = table.remove(arg, 1);
         end
-        local Position = {arg[1], 70};
-        if Logic.IsKnight(GetID(arg[1])) then
+        local TargetID = GetID(arg[1]);
+        local Position = {arg[1], 0};
+        if Logic.IsSettler(GetID(arg[1])) == 1 then
+            Position[2] = 70;
+        elseif Logic.IsKnight(GetID(arg[1])) then
             Position[2] = 120;
         end
         return AP {
@@ -246,8 +276,6 @@ function API.AddPages(_Briefing)
             Text         = arg[3],
             Position     = Position,
             Action       = arg[5],
-            Angle        = (arg[4] == true and 40) or 26,
-            Zoom         = (arg[4] == true and 2400) or 6250,
             DialogCamera = arg[4] == true,
         }
     end
@@ -393,11 +421,11 @@ BundleBriefingSystem = {
         Data = {
             CAMERA_ANGLEDEFAULT = 43,
             CAMERA_ROTATIONDEFAULT = -45,
-            CAMERA_ZOOMDEFAULT = 6250,
+            CAMERA_ZOOMDEFAULT = 6500,
             CAMERA_FOVDEFAULT = 42,
             DLGCAMERA_ANGLEDEFAULT = 26,
             DLGCAMERA_ROTATIONDEFAULT = -45,
-            DLGCAMERA_ZOOMDEFAULT = 3400,
+            DLGCAMERA_ZOOMDEFAULT = 2800,
             DLGCAMERA_FOVDEFAULT = 25,
 
             FinishedBriefings = {},
@@ -875,9 +903,11 @@ function BundleBriefingSystem.Local:PageStarted()
 
         -- Rotation an Rotation des Ziels anpassen
         if self.Data.CurrentPage.DialogCamera and IsExisting(self.Data.CurrentPage.Position[1]) then
-            self.Data.CurrentPage.Rotation = Logic.GetEntityOrientation(GetID(self.Data.CurrentPage.Position[1]));
-            if Logic.IsSettler(GetID(self.Data.CurrentPage.Position[1])) == 1 then
-                self.Data.CurrentPage.Rotation = self.Data.CurrentPage.Rotation + 90;
+            if self.Data.CurrentPage.Rotation == nil then
+                self.Data.CurrentPage.Rotation =  Logic.GetEntityOrientation(GetID(self.Data.CurrentPage.Position[1]));
+                if Logic.IsSettler(GetID(self.Data.CurrentPage.Position[1])) == 1 then
+                    self.Data.CurrentPage.Rotation = self.Data.CurrentPage.Rotation + 90;
+                end
             end
         end
 
@@ -956,11 +986,33 @@ function BundleBriefingSystem.Local:LocalOnMCConfirmed()
         local AnswerID = self.Data.CurrentPage.MC.Map[Selected];
         for i= #self.Data.CurrentPage.MC, 1, -1 do
             if self.Data.CurrentPage.MC[i].ID == AnswerID and self.Data.CurrentPage.MC[i].Remove then
-                table.remove(self.Data.CurrentPage.MC, Selected);
+                self.Data.CurrentPage.MC[i].Invisible = true;
             end
         end
         API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..AnswerID.. ")");
     end
+end
+
+---
+-- Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing
+-- @param[type=number] _Page ID der Page
+-- @param[type=number] _Answer ID der Antwort
+-- @param[type=boolean] _Visible Sichtbarkeit
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Local:SetMCAnswerState(_Page, _Answer, _Visible)
+   assert(type(_Page) == "number");
+   assert(type(_Answer) == "number");
+   if self.Data.BriefingActive then
+       if  self.Data.CurrentBriefing[_Page] and self.Data.CurrentBriefing[_Page].MC then
+           for k, v in pairs(self.Data.CurrentBriefing[_Page].MC) do
+               if v and v.ID == _Answer then
+                   self.Data.CurrentBriefing[_Page].MC[k].Invisible = _Visible == true;
+               end
+           end
+       end
+   end
 end
 
 ---
@@ -1032,16 +1084,16 @@ function BundleBriefingSystem.Local:GetCameraProperties()
 
     local startTime = CurrPage.Started;
     local flyTime = CurrPage.FlyTime;
-    local startPosition = (FlyTo and FlyTo.Position) or CurrPage.Position;
-    local endPosition = CurrPage.Position;
-    local startRotation = (FlyTo and FlyTo.Rotation) or CurrPage.Rotation;
-    local endRotation = CurrPage.Rotation;
-    local startZoomAngle = (FlyTo and FlyTo.Angle) or CurrPage.Angle;
-    local endZoomAngle = CurrPage.Angle;
-    local startZoomDistance = (FlyTo and FlyTo.Zoom) or CurrPage.Zoom;
-    local endZoomDistance = CurrPage.Zoom;
-    local startFOV = ((FlyTo and FlyTo.FOV) or CurrPage.FOV) or 42.0;
-    local endFOV = (CurrPage.FOV) or 42.0;
+    local startPosition = CurrPage.Position;
+    local endPosition = (FlyTo and FlyTo.Position) or CurrPage.Position;
+    local startRotation = CurrPage.Rotation;
+    local endRotation = (FlyTo and FlyTo.Rotation) or CurrPage.Rotation;
+    local startZoomAngle = CurrPage.Angle;
+    local endZoomAngle = (FlyTo and FlyTo.Angle) or CurrPage.Angle;
+    local startZoomDistance = CurrPage.Zoom;
+    local endZoomDistance = (FlyTo and FlyTo.Zoom) or CurrPage.Zoom;
+    local startFOV = (CurrPage.FOV) or 42.0;
+    local endFOV = ((FlyTo and FlyTo.FOV) or CurrPage.FOV) or 42.0;
 
     local factor = self:GetLERP();
     
@@ -1373,11 +1425,15 @@ end
 function BundleBriefingSystem.Local:SetSplashscreen()
     local SSW = "/InGame/ThroneRoom/KnightInfo/BG";
     if self.Data.CurrentPage.Splashscreen then
-        local size   = {GUI.GetScreenSize()};
-        local is4To3 = math.floor((size[1]/size[2]) * 100) == 133;
-        local is5To4 = math.floor((size[1]/size[2]) * 100) == 125;
+        local size = {GUI.GetScreenSize()};
         local u0, v0, u1, v1 = 0, 0, 1, 1;
-        if is4To3 or is5To4 then
+        -- Folgende Annahmen werden gemacht:
+        -- * Alle Bildverhältnisse >= 1.6 sind 16:9
+        -- * Alle Bildverhältnisse < 1.6 sind 4:3
+        -- * 5:4 wird behandelt wie 4:3
+        -- * 16:10 wird behandelt wie 4:3
+        -- Spieler mit anderen Bildverhältnissen haben Pech!
+        if size[1]/size[2] >= 1.6 then
             u0 = u0 + (u0 * 0.125);
             u1 = u1 - (u1 * 0.125);
         end
@@ -1407,15 +1463,19 @@ function BundleBriefingSystem.Local:ScrollSplashscreen()
         end
 
         local size   = {GUI.GetScreenSize()};
-        local is4To3 = math.floor((size[1]/size[2]) * 100) == 133;
-        local is5To4 = math.floor((size[1]/size[2]) * 100) == 125;
         local factor = self:GetSplashscreenLERP();
 
         local u0 = SSData.Animation[1][1] + (SSData.Animation[2][1] - SSData.Animation[1][1]) * factor;
         local u1 = SSData.Animation[1][3] + (SSData.Animation[2][3] - SSData.Animation[1][3]) * factor;
         local v0 = SSData.Animation[1][2] + (SSData.Animation[2][2] - SSData.Animation[1][2]) * factor;
         local v1 = SSData.Animation[1][4] + (SSData.Animation[2][4] - SSData.Animation[1][4]) * factor;
-        if is4To3 or is5To4 then
+        -- Folgende Annahmen werden gemacht:
+        -- * Alle Bildverhältnisse >= 1.6 sind 16:9
+        -- * Alle Bildverhältnisse < 1.6 sind 4:3
+        -- * 5:4 wird behandelt wie 4:3
+        -- * 16:10 wird behandelt wie 4:3
+        -- Spieler mit anderen Bildverhältnissen haben Pech!
+        if size[1]/size[2] >= 1.6 then
             u0 = u0 + (u0 * 0.125);
             u1 = u1 - (u1 * 0.125);
         end

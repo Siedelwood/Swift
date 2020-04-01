@@ -274,7 +274,7 @@ end
 --
 function BundleStockbreeding.Global:GetScale(_Entity)
     local ID = GetID(_Entity);
-    local SV = (QSB.HistoryEdition and -42) or -45;
+    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
     local IntVal = Logic.GetEntityScriptingValue(ID, SV);
     return Core:ScriptingValueIntegerToFloat(IntVal);
 end
@@ -288,7 +288,7 @@ end
 --
 function BundleStockbreeding.Global:SetScale(_Entity, _Scale)
     local ID = GetID(_Entity);
-    local SV = (QSB.HistoryEdition and -42) or -45;
+    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
     local IntVal = Core:ScriptingValueFloatToInteger(_Scale);
     Logic.SetEntityScriptingValue(ID, SV, IntVal);
 end

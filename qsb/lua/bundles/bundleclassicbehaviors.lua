@@ -5241,7 +5241,7 @@ function b_Reward_CreateEntity:CustomFunction(_Quest)
     if Logic.IsEntityTypeInCategory( self.UnitKey, EntityCategories.Soldier ) == 1 then
         NewID       = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, 1 )
         local l,s = {Logic.GetSoldiersAttachedToLeader(NewID)}
-        Logic.SetOrientation(s,self.Orientation)
+        Logic.SetOrientation(s, API.Round(self.Orientation))
     else
         NewID = Logic.CreateEntityOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID )
     end
@@ -5367,7 +5367,7 @@ function b_Reward_CreateSeveralEntities:CustomFunction(_Quest)
         if Logic.IsEntityTypeInCategory( self.UnitKey, EntityCategories.Soldier ) == 1 then
             NewID       = Logic.CreateBattalionOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID, 1 )
             local l,s = {Logic.GetSoldiersAttachedToLeader(NewID)}
-            Logic.SetOrientation(s,self.Orientation)
+            Logic.SetOrientation(s, API.Round(self.Orientation))
         else
             NewID = Logic.CreateEntityOnUnblockedLand( Entities[self.UnitKey], pos.X, pos.Y, self.Orientation, self.PlayerID )
         end

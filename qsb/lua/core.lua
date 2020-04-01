@@ -14,9 +14,27 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.6.1 10/2/2020";
+QSB.Version = "Version 2.7.0 1/3/2020";
 QSB.Language = "de";
 QSB.HistoryEdition = false;
+
+QSB.ScriptingValues = {
+    Game = "Vanilla",
+    Vanilla = {
+        Destination = {X = 19, Y= 20},
+        Health      = -41,
+        Player      = -71,
+        Size        = -45,
+        Visible     = -50,
+    },
+    HistoryEdition = {
+        Destination = {X = 17, Y= 18},
+        Health      = -38,
+        Player      = -68,
+        Size        = -42,
+        Visible     = -47,
+    }
+}
 
 QSB.Placeholders = {
     Names = {},
@@ -133,7 +151,7 @@ function API.Install()
     Core:InitalizeBundles();
 end
 
--- Tables --------------------------------------------------------------------
+-- General ---------------------------------------------------------------------
 
 ---
 -- Kopiert eine komplette Table und gibt die Kopie zurück. Tables können
@@ -264,6 +282,58 @@ function API.ConvertTableToString(_Table)
     TableString = TableString .. "}";
     return TableString
 end
+
+---
+-- Rundet eine Dezimalzahl kaufmännisch ab.
+--
+-- <b>Hinweis</b>: Es wird manuell gerundet um den Rundungsfehler in der
+-- History Edition zu umgehen.
+--
+-- <p><b>Alias:</b> Round</p>
+--
+-- @param[type=string] _Value         Zu rundender Wert
+-- @param[type=string] _DecimalDigits Maximale Dezimalstellen
+-- @return[type=number] Abgerundete Zahl
+-- @within Anwenderfunktionen
+--
+function API.Round(_Value, _DecimalDigits)
+    _DecimalDigits = _DecimalDigits or 2;
+    _DecimalDigits = (_DecimalDigits < 0 and 0) or _DecimalDigits;
+    local Value = tostring(_Value);
+    if tonumber(Value) == nil then
+        return 0;
+    end
+    local s,e = Value:find(".", 1, true);
+    if e then
+        if Value:len() > e + _DecimalDigits then
+            local Overhead;
+            if _DecimalDigits > 0 then
+                local TmpNum;
+                if tonumber(Value:sub(e+_DecimalDigits+1, e+_DecimalDigits+1)) >= 5 then
+                    TmpNum = tonumber(Value:sub(e+1, e+_DecimalDigits)) +1;
+                    Overhead = (_DecimalDigits == 1 and TmpNum == 10);
+                else
+                    TmpNum = tonumber(Value:sub(e+1, e+_DecimalDigits));
+                end
+                Value = Value:sub(1, e-1);
+                if (tostring(TmpNum):len() >= _DecimalDigits) then
+                    Value = Value .. "." ..TmpNum;
+                end
+            else
+                local NewValue = tonumber(Value:sub(1, e-1));
+                if tonumber(Value:sub(e+_DecimalDigits+1, e+_DecimalDigits+1)) >= 5 then
+                    NewValue = NewValue +1;
+                end
+                Value = NewValue;
+            end
+        else
+            Value = (Overhead and (tonumber(Value) or 0) +1) or
+                     Value .. string.rep("0", Value:len() - (e + _DecimalDigits))
+        end
+    end
+    return tonumber(Value);
+end
+Round = API.Round;
 
 -- Quests ----------------------------------------------------------------------
 
@@ -891,7 +961,7 @@ function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
         orientation = orientation - 90;
     end
     _offsetEntity = _offsetEntity or 0;
-    Logic.SetOrientation(entity, orientation + _offsetEntity);
+    Logic.SetOrientation(entity, API.Round(orientation + _offsetEntity));
 end
 LookAt = API.LookAt;
 
@@ -987,7 +1057,7 @@ function API.LocateEntity(_Entity)
         return {X= 0, Y= 0, Z= 0};
     end
     local x, y, z = Logic.EntityGetPos(GetID(_Entity));
-    return {X= x, Y= y, Z= z};
+    return {X= API.Round(x), Y= API.Round(y), Z= API.Round(y)};
 end
 GetPosition = API.LocateEntity;
 
@@ -1951,7 +2021,9 @@ function Core:IdentifyHistoryEdition()
     MakeInvulnerable(EntityID);
     if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
         API.Bridge("QSB.HistoryEdition = true");
+        API.Bridge("QSB.ScriptingValues.Game = 'HistoryEdition'");
         QSB.HistoryEdition = true;
+        QSB.ScriptingValues.Game = "HistoryEdition";
     end
     DestroyEntity(EntityID);
 end

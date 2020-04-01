@@ -487,9 +487,9 @@ function QSB.NonPlayerCharacter:RotateActors()
     Logic.GetKnights(PlayerID, PlayerKnights);
     for k, v in pairs(PlayerKnights) do
         -- Alle Helden stoppen, die sich zu NPC bewegen
-        local SV = (QSB.HistoryEdition and 17) or 19;
+        local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.X;
         local x1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
-        local SV = (QSB.HistoryEdition and 18) or 20;
+        local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.Y;
         local y1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(v, SV)));
         local x2, y2 = Logic.EntityGetPos(GetID(self.m_NpcName));
         if x1 == math.floor(x2) and y1 == math.floor(y2) then
@@ -516,7 +516,7 @@ function QSB.NonPlayerCharacter:RepositionHero()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     local HeroID = BundleNonPlayerCharacter.Global.LastHeroEntityID;
     local NPCID  = GetID(self.m_NpcName);
-    if GetDistance(HeroID, NPCID) < self.m_Distance then
+    if GetDistance(HeroID, NPCID) < self.m_Distance -50 then
         -- Position des NPC bestimmen
         local Orientation = Logic.GetEntityOrientation(NPCID);
         local x1, y1, z1 = Logic.EntityGetPos(NPCID);
@@ -526,16 +526,14 @@ function QSB.NonPlayerCharacter:RepositionHero()
         -- Nächste erreichbare Position bei Punkt bestimmen
         local ID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, x2, y2, 0, 0);
         local x3, y3, z3 = Logic.EntityGetPos(ID);
-        -- Held ersetzen und neu positionieren
-        local HeroID = ReplaceEntity(HeroID, Logic.GetEntityType(HeroID));
-        BundleNonPlayerCharacter.Global.LastHeroEntityID = HeroID;
-        API.Bridge(string.format([[
-            GUI.ClearSelection()
-            GUI.SelectEntity(%d)
-        ]], HeroID));
-        Logic.DEBUG_SetSettlerPosition(HeroID, x3, y3);
-        LookAt(NPCID, HeroID);
-        LookAt(HeroID, NPCID);
+        -- Held neu positionieren
+        Logic.MoveSettler(HeroID, x3, y3);
+        StartSimpleHiResJobEx( function(_HeroID, _NPCID)
+            if Logic.IsEntityMoving(_HeroID) == false then
+                API.Confront(_HeroID, _NPCID);
+                return true;
+            end
+        end, HeroID, NPCID);
     end
 end
 
@@ -579,7 +577,7 @@ end
 function QSB.NonPlayerCharacter:ShowMarker()
     assert(self ~= QSB.NonPlayerCharacter, 'Can not be used in static context!');
     if self.m_NpcType == 1 and IsExisting(self.m_MarkerID) then
-        local SV = (QSB.HistoryEdition and -42) or -45;
+        local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
         local EntityScale = Logic.GetEntityScriptingValue(self:GetID(), SV);
         Logic.SetEntityScriptingValue(self.m_MarkerID, SV, EntityScale);
         Logic.SetModel(self.m_MarkerID, Models.Effects_E_Wealth);
@@ -857,9 +855,9 @@ function BundleNonPlayerCharacter.Global.DialogTriggerController()
         if Logic.GetCurrentTaskList(PlayersKnights[i]) == "TL_NPC_INTERACTION" then
             for k, v in pairs(QSB.NonPlayerCharacterObjects) do
                 if v and v.m_TalkedTo == nil and v.m_Distance >= 350 then
-                    local SV = (QSB.HistoryEdition and 17) or 19;
+                    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.X;
                     local x1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
-                    local SV = (QSB.HistoryEdition and 18) or 20;
+                    local SV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Destination.Y;
                     local y1 = math.floor(Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(PlayersKnights[i], SV)));
                     local x2, y2 = Logic.EntityGetPos(GetID(k));
                     if x1 == math.floor(x2) and y1 == math.floor(y2) then
