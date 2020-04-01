@@ -241,6 +241,40 @@ function API.SoundRestore()
     BundleMusicTools.Local:RestoreSound();
 end
 
+---
+-- Gibt eine MP3-Datei als Stimme wieder. Diese Funktion kann auch benutzt
+-- werden um Geräusche abzuspielen.
+--
+-- @param[type=string] _File Abzuspielende Datei
+-- @within Anwenderfunktionen
+--
+-- @usage API.PlayVoice("music/puhdys_alt_wie_ein_baum.mpx");
+--
+function API.PlayVoice(_File)
+    if not GUI then
+        API.Bridge(string.format("API.PlayVoice('%s')", _File));
+        return;
+    end
+    Sound.PlayVoice("ImportantStuff", _File);
+end
+PlaySound = API.PlaySound;
+
+---
+-- Stoppt alle als Stimme abgespielten aktiven Sounds.
+--
+-- @within Anwenderfunktionen
+--
+-- @usage API.StopSound();
+--
+function API.StopVoice()
+    if not GUI then
+        API.Bridge("API.StopVoice()");
+        return;
+    end
+    Sound.StopVoice("ImportantStuff");
+end
+StopSound = API.StopVoice;
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
