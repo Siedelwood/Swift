@@ -142,18 +142,6 @@ end&#x3C;/pre&#x3E;
 
 
 
-</span></div><div id="bundlemusictools_API.AbortMusic" class="result method"><a href="html/bundlemusictools.lua.html#API.AbortMusic">API.AbortMusic</a><br>Stopt den gerade laufenden Song und leert sowohl die Songdaten als auch die Playlist.<span class="docInvisibleContent">
-    Stopt den gerade laufenden Song und leert sowohl die Songdaten
- als auch die Playlist.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; AbortSongOrPlaylist&#x3C;/p&#x3E;
-
-
-
-
-
-
-
-
 </span></div><div id="addonquestdebug_API.ActivateDebugMode" class="result method"><a href="html/addonquestdebug.lua.html#API.ActivateDebugMode">API.ActivateDebugMode</a><br>Aktiviert den Debug.<span class="docInvisibleContent">
     Aktiviert den Debug.
 &#x3C;p&#x3E; Der Developing Mode bietet viele Hotkeys und eine Konsole. Die Konsole ist
@@ -2700,7 +2688,7 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Name = API.EntityGetName(SomeEntityID);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityhelperfunctions_API.EntityGetOrientation" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.EntityGetOrientation">API.EntityGetOrientation</a><br>Gibt die Orientierung des Entity zurück.<span class="docInvisibleContent">
+</span></div><div id="bundleentityproperties_API.EntityGetOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetOrientation">API.EntityGetOrientation</a><br>Gibt die Orientierung des Entity zurück.<span class="docInvisibleContent">
     Gibt die Orientierung des Entity zurück.
 &#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GetOrientation&#x3C;/p&#x3E;
 
@@ -2710,10 +2698,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
     &#x3C;ul&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_entity&#x3C;/span&#x3E;
          Betreffendes Entity (Skriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Round&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-          Wert wird kaufmännisch auf Ganzzahl gerundet
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -2763,7 +2747,7 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;API.EntitySetName(SomeEntityID, &#x3C;span class="string"&#x3E;"myEntity"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityhelperfunctions_API.EntitySetOrientation" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.EntitySetOrientation">API.EntitySetOrientation</a><br>Setzt die Orientierung des Entity.<span class="docInvisibleContent">
+</span></div><div id="bundleentityproperties_API.EntitySetOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetOrientation">API.EntitySetOrientation</a><br>Setzt die Orientierung des Entity.<span class="docInvisibleContent">
     Setzt die Orientierung des Entity.
 &#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetOrientation&#x3C;/p&#x3E;
 
@@ -2771,12 +2755,12 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_entity&#x3C;/span&#x3E;
-         Betreffendes Entity (Skriptname oder ID)
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+              Betreffendes Entity (Skriptname oder ID)
         &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_ori&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Orientation&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-            Ausrichtung in Grad
+         Ausrichtung in Grad
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -3071,40 +3055,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
 &#x3C;/span&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Result = API.GetEntitiesByPrefix(&#x3C;span class="string"&#x3E;"entranceCave"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityhelperfunctions_API.GetEntitiesNearby" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.GetEntitiesNearby">API.GetEntitiesNearby</a><br>Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity am nächsten ist.<span class="docInvisibleContent">
-    Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
- am nächsten ist.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GetClosestEntity&#x3C;/p&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_eID&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-              Basis-Entity
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_entities&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Liste von Entities
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Nächstes Entity
-    &#x3C;/ol&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; EntityList = API.GetEntitiesOfCategoriesInTerritories({&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;}, EntityCategories.Hero, {&#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;12&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;23&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;24&#x3C;/span&#x3E;});
-&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Knight = API.GetEntitiesNearby(GetID(&#x3C;span class="string"&#x3E;"IO1"&#x3C;/span&#x3E;), EntityList);&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
 </span></div><div id="bundleentityhelperfunctions_API.GetEntitiesOfCategoriesInTerritories" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.GetEntitiesOfCategoriesInTerritories">API.GetEntitiesOfCategoriesInTerritories</a><br>Sucht auf den angegebenen Territorium nach Entities mit bestimmten Kategorien.<span class="docInvisibleContent">
     Sucht auf den angegebenen Territorium nach Entities mit bestimmten
  Kategorien.  Dabei kann für eine Partei oder für mehrere Parteien gesucht
@@ -3196,6 +3146,41 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
 
 
 
+
+</span></div><div id="bundleentityhelperfunctions_API.GetEntityNearby" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.GetEntityNearby">API.GetEntityNearby</a><br>Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity am nächsten ist.<span class="docInvisibleContent">
+    Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
+ am nächsten ist.
+&#x3C;p&#x3E; Im Fehlerfall wird 0 zurückgegeben.
+&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GetClosestEntity&#x3C;/p&#x3E;
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_eID&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+              Basis-Entity
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_entities&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Liste von Entities
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Nächstes Entity
+    &#x3C;/ol&#x3E;
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; EntityList = API.GetEntitiesOfCategoriesInTerritories({&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;}, EntityCategories.Hero, {&#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;12&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;23&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;24&#x3C;/span&#x3E;});
+&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Knight = API.GetEntityNearby(GetID(&#x3C;span class="string"&#x3E;"IO1"&#x3C;/span&#x3E;), EntityList);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
 
 </span></div><div id="bundleentityproperties_API.GetEntityPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityPlayer">API.GetEntityPlayer</a><br>Gibt den Besitzer des Entity zurück.<span class="docInvisibleContent">
     Gibt den Besitzer des Entity zurück.
@@ -3295,8 +3280,9 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
 
 
 
-</span></div><div id="bundleentityhelperfunctions_API.GetKnightsNearby" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.GetKnightsNearby">API.GetKnightsNearby</a><br>Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.<span class="docInvisibleContent">
+</span></div><div id="bundleentityhelperfunctions_API.GetKnightNearby" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.GetKnightNearby">API.GetKnightNearby</a><br>Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.<span class="docInvisibleContent">
     Ermittelt den Helden eines Spielers, ders dem Basis-Entity am nächsten ist.
+&#x3C;p&#x3E; Im Fehlerfall wird 0 zurückgegeben.
 &#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GetClosestKnight&#x3C;/p&#x3E;
 
 
@@ -3324,7 +3310,7 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
 
     &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Knight = API.GetKnightsNearby(GetID(&#x3C;span class="string"&#x3E;"IO1"&#x3C;/span&#x3E;), &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+        &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Knight = API.GetKnightNearby(GetID(&#x3C;span class="string"&#x3E;"IO1"&#x3C;/span&#x3E;), &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
 </span></div><div id="bundleentityproperties_API.GetMovementTarget" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetMovementTarget">API.GetMovementTarget</a><br>Gibt die Position zurück, zu der sich ein Entity bewegt.<span class="docInvisibleContent">
@@ -4017,34 +4003,6 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 &#x3C;span class="comment"&#x3E;-- Kopf durch Modelname setzen
 &#x3C;/span&#x3E;API.InterfaceSetPlayerPortrait(&#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"H_NPC_Monk_AS"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
-
-</span></div><div id="bundleinterfaceapperance_API.InterfaceSetTexture" class="result method"><a href="html/bundleinterfaceapperance.lua.html#API.InterfaceSetTexture">API.InterfaceSetTexture</a><br>Setzt eine Grafik als Bild für einen Icon oder einen Button.<span class="docInvisibleContent">
-    Setzt eine Grafik als Bild für einen Icon oder einen Button.
-&#x3C;p&#x3E; &#x3C;b&#x3E;VERALTET! WIRD DEMNÄCHST GELÖSCHT!&#x3C;/b&#x3E;
-&#x3C;p&#x3E; Die Größe des Bildes ist auf 200x200 Pixel festgelegt. Es kann an jedem
- beliebigen Ort im interen Verzeichnis oder auf der Festplatte liegen. Es
- muss jedoch immer der korrekte Pfad angegeben werden.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Es kann vorkommen, dass das Bild nicht genau da ist, wo es
- sein soll, sondern seine Position, je nach Auflösung, um ein paar Pixel
- unterschiedlich ist.&#x3C;/p&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_widget&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Widgetpfad oder ID
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_file&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Pfad zur Datei
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
 
 </span></div><div id="bundleinterfaceapperance_API.InterfaceSetTooltipCosts" class="result method"><a href="html/bundleinterfaceapperance.lua.html#API.InterfaceSetTooltipCosts">API.InterfaceSetTooltipCosts</a><br>Ändert den Beschreibungstext und die Kosten eines Button.<span class="docInvisibleContent">
     Ändert den Beschreibungstext und die Kosten eines Button.
@@ -4855,6 +4813,28 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
         &#x3C;pre class="example"&#x3E;API.PlaceToPosition(&#x3C;span class="string"&#x3E;"hakim"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"saraya"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;300&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;45&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundlemusictools_API.PlayVoice" class="result method"><a href="html/bundlemusictools.lua.html#API.PlayVoice">API.PlayVoice</a><br>Gibt eine MP3-Datei als Stimme wieder.<span class="docInvisibleContent">
+    Gibt eine MP3-Datei als Stimme wieder.  Diese Funktion kann auch benutzt
+ werden um Geräusche abzuspielen.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_File&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Abzuspielende Datei
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.PlayVoice(&#x3C;span class="string"&#x3E;"music/puhdys_alt_wie_ein_baum.mpx"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
 </span></div><div id="addoncutscenesystem_API.PrintCutsceneHeadline" class="result method"><a href="html/addoncutscenesystem.lua.html#API.PrintCutsceneHeadline">API.PrintCutsceneHeadline</a><br>Ändert den Titel des aktuellen Flight.<span class="docInvisibleContent">
     Ändert den Titel des aktuellen Flight.
 
@@ -5259,6 +5239,36 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
+
+
+
+
+</span></div><div id="core_API.Round" class="result method"><a href="html/core.lua.html#API.Round">API.Round</a><br>Rundet eine Dezimalzahl kaufmännisch ab.<span class="docInvisibleContent">
+    Rundet eine Dezimalzahl kaufmännisch ab.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Es wird manuell gerundet um den Rundungsfehler in der
+ History Edition zu umgehen.
+&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; Round&#x3C;/p&#x3E;
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Value&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+                 Zu rundender Wert
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_DecimalDigits&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Maximale Dezimalstellen
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Abgerundete Zahl
+    &#x3C;/ol&#x3E;
 
 
 
@@ -5710,6 +5720,143 @@ API.SimpleTextWindow(&#x3C;span class="string"&#x3E;"Überschrift"&#x3C;/span&#x
 API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundlemusictools_API.SoundRestore" class="result method"><a href="html/bundlemusictools.lua.html#API.SoundRestore">API.SoundRestore</a><br>Stellt den Sound wieder her, sofern ein Backup erstellt wurde.<span class="docInvisibleContent">
+    Stellt den Sound wieder her, sofern ein Backup erstellt wurde.
+
+
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.SoundRestore();&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="bundlemusictools_API.SoundSave" class="result method"><a href="html/bundlemusictools.lua.html#API.SoundSave">API.SoundSave</a><br>Erstellt ein Backup der Soundeinstellungen, wenn noch keins erstellt wurde.<span class="docInvisibleContent">
+    Erstellt ein Backup der Soundeinstellungen, wenn noch keins erstellt wurde.
+
+
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.SoundSave();&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="bundlemusictools_API.SoundSetAtmoVolume" class="result method"><a href="html/bundlemusictools.lua.html#API.SoundSetAtmoVolume">API.SoundSetAtmoVolume</a><br>Setzt die Lautstärke der Umgebung.<span class="docInvisibleContent">
+    Setzt die Lautstärke der Umgebung.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Volume&#x3C;/span&#x3E;
+         Lautstärke
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.SoundSetAtmoVolume(&#x3C;span class="number"&#x3E;100&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="bundlemusictools_API.SoundSetMusicVolume" class="result method"><a href="html/bundlemusictools.lua.html#API.SoundSetMusicVolume">API.SoundSetMusicVolume</a><br>Setzt die Lautstärke der Musik.<span class="docInvisibleContent">
+    Setzt die Lautstärke der Musik.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Volume&#x3C;/span&#x3E;
+         Lautstärke
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.SoundSetMusicVolume(&#x3C;span class="number"&#x3E;100&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="bundlemusictools_API.SoundSetUIVolume" class="result method"><a href="html/bundlemusictools.lua.html#API.SoundSetUIVolume">API.SoundSetUIVolume</a><br>Setzt die Lautstärke des Interface.<span class="docInvisibleContent">
+    Setzt die Lautstärke des Interface.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Volume&#x3C;/span&#x3E;
+         Lautstärke
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.SoundSetUIVolume(&#x3C;span class="number"&#x3E;100&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="bundlemusictools_API.SoundSetVoiceVolume" class="result method"><a href="html/bundlemusictools.lua.html#API.SoundSetVoiceVolume">API.SoundSetVoiceVolume</a><br>Setzt die Lautstärke der Stimmen.<span class="docInvisibleContent">
+    Setzt die Lautstärke der Stimmen.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Volume&#x3C;/span&#x3E;
+         Lautstärke
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.SoundSetVoiceVolume(&#x3C;span class="number"&#x3E;100&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="bundlemusictools_API.SoundSetVolume" class="result method"><a href="html/bundlemusictools.lua.html#API.SoundSetVolume">API.SoundSetVolume</a><br>Setzt die allgemeine Lautstärke.<span class="docInvisibleContent">
+    Setzt die allgemeine Lautstärke.  Die allgemeine Lautstärke beeinflusst alle
+ anderen Laufstärkeregler.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis:&#x3C;/b&#x3E; Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Volume&#x3C;/span&#x3E;
+         Lautstärke
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.SoundSetVolume(&#x3C;span class="number"&#x3E;100&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
 </span></div><div id="bundlespeedlimit_API.SpeedLimitActivate" class="result method"><a href="html/bundlespeedlimit.lua.html#API.SpeedLimitActivate">API.SpeedLimitActivate</a><br>Aktiviert die zuvor eingestellte Maximalgeschwindigkeit.<span class="docInvisibleContent">
     Aktiviert die zuvor eingestellte Maximalgeschwindigkeit.
 &#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; ActivateSpeedLimit&#x3C;/p&#x3E;
@@ -5846,6 +5993,52 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
 
 
 
+</span></div><div id="bundlemusictools_API.StartEventPlaylist" class="result method"><a href="html/bundlemusictools.lua.html#API.StartEventPlaylist">API.StartEventPlaylist</a><br>Startet eine Playlist, welche als XML angegeben ist.<span class="docInvisibleContent">
+    Startet eine Playlist, welche als XML angegeben ist.
+&#x3C;p&#x3E; Eine als XML definierte Playlist wird nicht als Voice abgespielt sondern
+ als Music. Als Musik werden MP3-Dateien verwendet. Diese können entweder
+ im Spiel vorhanden sein oder im Ordner &#x3C;i&#x3E;music/&#x3C;/i&#x3E; in der Map gespeichert
+ werden.
+&#x3C;p&#x3E; Wenn du eigene Musik verwendest, achte darauf, einen möglichst eindeutigen
+ Namen zu verwenden. Und natürlich auch auf Urheberrecht!
+&#x3C;p&#x3E; Beispiel für eine Playlist:
+ &#x3C;pre&#x3E;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;PlayList&gt;
+ &lt;PlayListEntry&gt;
+   &lt;FileName&gt;Music\some_music_file.mp3&lt;/FileName&gt;
+   &lt;Type&gt;Loop&lt;/Type&gt;
+ &lt;/PlayListEntry&gt;
+ &lt;!-- Hier können weitere Einträge folgen. --&gt;
+&lt;/PlayList&gt;
+&#x3C;/pre&#x3E;
+ Als Typ können "Loop" oder "Normal" gewählt werden. Normale Musik wird
+ einmalig abgespielt. Ein Loop läuft endlos weiter.
+&#x3C;p&#x3E; Außerdem kann zusätzlich zum Typ eine Abspielwahrscheinlichkeit mit
+ angegeben werden:
+ &#x3C;pre&#x3E;&lt;Chance&gt;10&lt;/Chance&gt;&#x3C;/pre&#x3E;
+ Es sind Zahlen von 1 bis 100 möglich.
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Playlist&#x3C;/span&#x3E;
+         Pfad zur Playlist
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
+         (Optional) ID des menschlichen Spielers
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.StartEventPlaylist(&#x3C;span class="string"&#x3E;"config/sound/my_playlist.xml"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
 </span></div><div id="core_API.StartHiResJob" class="result method"><a href="html/core.lua.html#API.StartHiResJob">API.StartHiResJob</a><br>Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt wird.<span class="docInvisibleContent">
     Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
  wird.  Die Argumente werden an die Funktion übergeben.
@@ -5947,82 +6140,6 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
 
 
 
-</span></div><div id="bundlemusictools_API.StartMusic" class="result method"><a href="html/bundlemusictools.lua.html#API.StartMusic">API.StartMusic</a><br>Startet ein Musikstück als Stimme.<span class="docInvisibleContent">
-    Startet ein Musikstück als Stimme.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; StartSong&#x3C;/p&#x3E;
-&#x3C;p&#x3E; Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
- sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
- gespielt werden kann! Alle als Sprache abgespielten Sounds werden die
- gleiche Lautstärke haben, wie die Musik.
-&#x3C;p&#x3E; _Description hat folgendes Format:
- &#x3C;ul&#x3E;
- &#x3C;li&#x3E;File     - Path + Dateiname&#x3C;/li&#x3E;
- &#x3C;li&#x3E;Volume   - Lautstärke&#x3C;/li&#x3E;
- &#x3C;li&#x3E;length   - abgespielte Länge in Sekunden (nicht zwingend |Musikstück|)&#x3C;/li&#x3E;
- &#x3C;li&#x3E;Fadeout  - Ausblendzeit in Zehntels. (&#x3E;= 5 oder 0 für sofort)&#x3C;/li&#x3E;
- &#x3C;li&#x3E;MuteAtmo - Hintergrundgeräusche aus&#x3C;/li&#x3E;
- &#x3C;li&#x3E;MuteUI   - GUI-Sounds aus&#x3C;/li&#x3E;
- &#x3C;/ul&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Description&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Definition des Musikstück
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;API.StartMusic({
-    File     = &#x3C;span class="string"&#x3E;"music/s6_10_antagonist.mp3"&#x3C;/span&#x3E;,
-    Volume   = &#x3C;span class="number"&#x3E;70&#x3C;/span&#x3E;,
-    Length   = &#x3C;span class="number"&#x3E;49&#x3C;/span&#x3E;,
-    Fadeout  = &#x3C;span class="number"&#x3E;20&#x3C;/span&#x3E;,
-    MuteAtmo = &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;;
-    MuteUI   = &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;,
-});&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
-</span></div><div id="bundlemusictools_API.StartMusicSimple" class="result method"><a href="html/bundlemusictools.lua.html#API.StartMusicSimple">API.StartMusicSimple</a><br>Vereinfachter einzeiliger Aufruf für StartSong.<span class="docInvisibleContent">
-    Vereinfachter einzeiliger Aufruf für StartSong.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; StartSongSimple&#x3C;/p&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_File&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Pfad zur Datei
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Volume&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Lautstärke
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Length&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Abspieldauer (&#x3C;= Dauer Musikstück)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_FadeOut&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Ausblenden in Sekunden
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;API.StartMusicSimple(&#x3C;span class="string"&#x3E;"music/s6_10_antagonist.mp3"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;70&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;49&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
 </span></div><div id="bundleplayerhelperfunctions_API.StartNormalFestival" class="result method"><a href="html/bundleplayerhelperfunctions.lua.html#API.StartNormalFestival">API.StartNormalFestival</a><br>Startet ein Fest für den Spieler.<span class="docInvisibleContent">
     Startet ein Fest für den Spieler.  Ist dieser Typ von Fest für
  den Spieler verboten, wird er automatisch erlaubt.
@@ -6035,71 +6152,6 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
          Spieler
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundlemusictools_API.StartPlaylist" class="result method"><a href="html/bundlemusictools.lua.html#API.StartPlaylist">API.StartPlaylist</a><br>Spielt eine Playlist ab.<span class="docInvisibleContent">
-    Spielt eine Playlist ab.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; StartPlaylist&#x3C;/p&#x3E;
-&#x3C;p&#x3E; Eine im Skript definierte Playlist, nicht
- eine XML! Die Playlist kann einmal abgearbeitet oder auf Wiederholung
- gestellt werden. Alle Einträge haben das Format von StartSong!
- Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
- sich die Playlist endlos wiederholt.
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Playlist&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Definition der Playlist
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Playlist = {
-    {
-        File     = &#x3C;span class="string"&#x3E;"music/s6_10_antagonist.mp3"&#x3C;/span&#x3E;,
-        Volume   = &#x3C;span class="number"&#x3E;70&#x3C;/span&#x3E;,
-        Length   = &#x3C;span class="number"&#x3E;49&#x3C;/span&#x3E;,
-        Fadeout  = &#x3C;span class="number"&#x3E;20&#x3C;/span&#x3E;,
-        MuteAtmo = &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;;
-        MuteUI   = &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;,
-    },
-    {
-        File     = &#x3C;span class="string"&#x3E;"music/s6_04_blaze.mp3"&#x3C;/span&#x3E;,
-        Volume   = &#x3C;span class="number"&#x3E;70&#x3C;/span&#x3E;,
-        Length   = &#x3C;span class="number"&#x3E;65&#x3C;/span&#x3E;,
-        Fadeout  = &#x3C;span class="number"&#x3E;20&#x3C;/span&#x3E;,
-        MuteAtmo = &#x3C;span class="keyword"&#x3E;false&#x3C;/span&#x3E;;
-        MuteUI   = &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;,
-    },
-}
-API.StartPlaylist(Playlist);&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
-</span></div><div id="bundlemusictools_API.StartPlaylistTitle" class="result method"><a href="html/bundlemusictools.lua.html#API.StartPlaylistTitle">API.StartPlaylistTitle</a><br>Stoppt gerade gespielte Musik und startet die Playlist mit dem angegebenen Titel.<span class="docInvisibleContent">
-    Stoppt gerade gespielte Musik und startet die Playlist mit dem
- angegebenen Titel.  Es muss eine Playlist existieren! Nachdem der
- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; StartPlaylistTitle&#x3C;/p&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Title&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Index des Titels
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -6149,6 +6201,28 @@ API.StartPlaylist(Playlist);&#x3C;/pre&#x3E;
 
 
 
+</span></div><div id="bundlemusictools_API.StopEventPlaylist" class="result method"><a href="html/bundlemusictools.lua.html#API.StopEventPlaylist">API.StopEventPlaylist</a><br>Beendet eine Event Playlist.<span class="docInvisibleContent">
+    Beendet eine Event Playlist.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Playlist&#x3C;/span&#x3E;
+         Pfad zur Playlist
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
+         (Optional) ID des menschlichen Spielers
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.StopEventPlaylist(&#x3C;span class="string"&#x3E;"config/sound/my_playlist.xml"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
 </span></div><div id="core_API.StopQuest" class="result method"><a href="html/core.lua.html#API.StopQuest">API.StopQuest</a><br>Unterbricht den Quest.<span class="docInvisibleContent">
     Unterbricht den Quest.
 &#x3C;p&#x3E; Der Status wird auf Over und das Resultat auf Interrupt gesetzt. Sind Marker
@@ -6173,16 +6247,18 @@ API.StartPlaylist(Playlist);&#x3C;/pre&#x3E;
 
 
 
-</span></div><div id="bundlemusictools_API.StopSong" class="result method"><a href="html/bundlemusictools.lua.html#API.StopSong">API.StopSong</a><br>Stopt Musik und stellt die alte Soundkonfiguration wieder her.<span class="docInvisibleContent">
-    Stopt Musik und stellt die alte Soundkonfiguration wieder her.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; StopSong&#x3C;/p&#x3E;
+</span></div><div id="bundlemusictools_API.StopVoice" class="result method"><a href="html/bundlemusictools.lua.html#API.StopVoice">API.StopVoice</a><br>Stoppt alle als Stimme abgespielten aktiven Sounds.<span class="docInvisibleContent">
+    Stoppt alle als Stimme abgespielten aktiven Sounds.
 
 
 
 
 
 
-
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.StopSound();&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
 
 </span></div><div id="bundletimeline_API.TimeLineIsRunning" class="result method"><a href="html/bundletimeline.lua.html#API.TimeLineIsRunning">API.TimeLineIsRunning</a><br>Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.<span class="docInvisibleContent">
     Prüft, ob der Zeitstrahl noch nicht durchgelaufen ist.
@@ -10712,7 +10788,7 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
                 </div>
                 <div id="bundlelinkContainer">
                     <div style="margin-bottom: 10px;"><b>Pakete</b></div>
-                    <div id="addoncastlestore" class="result module"><a href="html/addoncastlestore.lua.html">addoncastlestore</a><br>Dieses Bundle stellt das Burglager, oder Kellerlager, zur Verfügung, das sich ähnlich wie das normale Lager verhält.</div><div id="addoncutscenesystem" class="result module"><a href="html/addoncutscenesystem.lua.html">addoncutscenesystem</a><br>Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.</div><div id="addoninteractivechests" class="result module"><a href="html/addoninteractivechests.lua.html">addoninteractivechests</a><br>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</div><div id="addoninteractivemines" class="result module"><a href="html/addoninteractivemines.lua.html">addoninteractivemines</a><br>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</div><div id="addoninteractivesites" class="result module"><a href="html/addoninteractivesites.lua.html">addoninteractivesites</a><br>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei ein Gebäude bauen zu lassen.</div><div id="addoninteractivetrebuchets" class="result module"><a href="html/addoninteractivetrebuchets.lua.html">addoninteractivetrebuchets</a><br>Der Spieler kann ein Trebuchet mieten.</div><div id="addonquestdebug" class="result module"><a href="html/addonquestdebug.lua.html">addonquestdebug</a><br>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</div><div id="addonrandomrequests" class="result module"><a href="html/addonrandomrequests.lua.html">addonrandomrequests</a><br>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</div><div id="bundlebriefingsystem" class="result module"><a href="html/bundlebriefingsystem.lua.html">bundlebriefingsystem</a><br>Ermöglicht es Briefing zu verwenden.</div><div id="bundlebuildingbuttons" class="result module"><a href="html/bundlebuildingbuttons.lua.html">bundlebuildingbuttons</a><br>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere Funktionen.</div><div id="bundlecamera" class="result module"><a href="html/bundlecamera.lua.html">bundlecamera</a><br>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen Zoom zu nutzen.</div><div id="bundlecheats" class="result module"><a href="html/bundlecheats.lua.html">bundlecheats</a><br>Mit diesem Bundle kann die Nutzung der Cheats verboten oder erlaubt werden.</div><div id="bundleclassicbehaviors" class="result module"><a href="html/bundleclassicbehaviors.lua.html">bundleclassicbehaviors</a><br>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</div><div id="bundleconstructioncontrol" class="result module"><a href="html/bundleconstructioncontrol.lua.html">bundleconstructioncontrol</a><br>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien unterbunden werden.</div><div id="bundledestructioncontrol" class="result module"><a href="html/bundledestructioncontrol.lua.html">bundledestructioncontrol</a><br>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor dem Abriss zu schützen.</div><div id="bundledialogwindows" class="result module"><a href="html/bundledialogwindows.lua.html">bundledialogwindows</a><br>Mit diesem Bundle können Dialogfenster ernstellt werden.</div><div id="bundleentitycommandfunctions" class="result module"><a href="html/bundleentitycommandfunctions.lua.html">bundleentitycommandfunctions</a><br>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie von A nach B zu bewegen.</div><div id="bundleentityhelperfunctions" class="result module"><a href="html/bundleentityhelperfunctions.lua.html">bundleentityhelperfunctions</a><br>Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu ermitteln oder zu verändern.</div><div id="bundleentityproperties" class="result module"><a href="html/bundleentityproperties.lua.html">bundleentityproperties</a><br>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation von Entities bereitgestellt.</div><div id="bundleentityselection" class="result module"><a href="html/bundleentityselection.lua.html">bundleentityselection</a><br>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</div><div id="bundlefollowknight" class="result module"><a href="html/bundlefollowknight.lua.html">bundlefollowknight</a><br>Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden (bzw Ritter) folgen zu lassen.</div><div id="bundleinteractiveobjects" class="result module"><a href="html/bundleinteractiveobjects.lua.html">bundleinteractiveobjects</a><br>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert werden kann.</div><div id="bundleinterfaceapperance" class="result module"><a href="html/bundleinterfaceapperance.lua.html">bundleinterfaceapperance</a><br>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche des Spiels.</div><div id="bundleinterfacefeaturevisibility" class="result module"><a href="html/bundleinterfacefeaturevisibility.lua.html">bundleinterfacefeaturevisibility</a><br>Dieses Bundle bietet dem Nutzer Funktionen um ausgewählte Buttons und Widgets auszublenden oder einzublenden.</div><div id="bundleknighttitlerequirements" class="result module"><a href="html/bundleknighttitlerequirements.lua.html">bundleknighttitlerequirements</a><br>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell an die eigenen Vorstellungen anzupassen.</div><div id="bundleminimapmarker" class="result module"><a href="html/bundleminimapmarker.lua.html">bundleminimapmarker</a><br>Ermöglocht das Anlegen von Markierungen auf der Minimap.</div><div id="bundlemusictools" class="result module"><a href="html/bundlemusictools.lua.html">bundlemusictools</a><br>Dieses Bundle bietet die Möglichkeit Musikstücke abzuspielen.</div><div id="bundlenonplayercharacter" class="result module"><a href="html/bundlenonplayercharacter.lua.html">bundlenonplayercharacter</a><br>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere bereitgestellt.</div><div id="bundleplayerhelperfunctions" class="result module"><a href="html/bundleplayerhelperfunctions.lua.html">bundleplayerhelperfunctions</a><br>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von spielerbezogenen Features.</div><div id="bundleprofileandoptions" class="result module"><a href="html/bundleprofileandoptions.lua.html">bundleprofileandoptions</a><br>Mit diesem Bundle können Profil und Options bequem aus globalen und lokalem Skript angefragt und verändert werden.</div><div id="bundlequestgeneration" class="result module"><a href="html/bundlequestgeneration.lua.html">bundlequestgeneration</a><br>Dieses Bundle ermöglicht es einen Quest, bzw.</div><div id="bundlesavegametools" class="result module"><a href="html/bundlesavegametools.lua.html">bundlesavegametools</a><br>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von Spielständen kontrolliert werden können.</div><div id="bundlespeedlimit" class="result module"><a href="html/bundlespeedlimit.lua.html">bundlespeedlimit</a><br>Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur Verfügung.</div><div id="bundlestockbreeding" class="result module"><a href="html/bundlestockbreeding.lua.html">bundlestockbreeding</a><br>Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.</div><div id="bundlesymfoniabehaviors" class="result module"><a href="html/bundlesymfoniabehaviors.lua.html">bundlesymfoniabehaviors</a><br>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht in der ursprünglichen QSB gab.</div><div id="bundleterrainandwater" class="result module"><a href="html/bundleterrainandwater.lua.html">bundleterrainandwater</a><br>Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und von Wasser.</div><div id="bundletimeline" class="result module"><a href="html/bundletimeline.lua.html">bundletimeline</a><br>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu gliedern.</div><div id="bundletravelingsalesman" class="result module"><a href="html/bundletravelingsalesman.lua.html">bundletravelingsalesman</a><br>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den Hafen mit einem Schiff anfährt.</div><div id="bundleweathermanipulation" class="result module"><a href="html/bundleweathermanipulation.lua.html">bundleweathermanipulation</a><br>Dieses Modul ermöglicht das Ändern des Wetters.</div><div id="core" class="result module"><a href="html/core.lua.html">core</a><br>Hier werden wichtige Basisfunktionen bereitgestellt.</div>
+                    <div id="addoncastlestore" class="result module"><a href="html/addoncastlestore.lua.html">addoncastlestore</a><br>Dieses Bundle stellt das Burglager, oder Kellerlager, zur Verfügung, das sich ähnlich wie das normale Lager verhält.</div><div id="addoncutscenesystem" class="result module"><a href="html/addoncutscenesystem.lua.html">addoncutscenesystem</a><br>Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.</div><div id="addoninteractivechests" class="result module"><a href="html/addoninteractivechests.lua.html">addoninteractivechests</a><br>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</div><div id="addoninteractivemines" class="result module"><a href="html/addoninteractivemines.lua.html">addoninteractivemines</a><br>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</div><div id="addoninteractivesites" class="result module"><a href="html/addoninteractivesites.lua.html">addoninteractivesites</a><br>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei ein Gebäude bauen zu lassen.</div><div id="addoninteractivetrebuchets" class="result module"><a href="html/addoninteractivetrebuchets.lua.html">addoninteractivetrebuchets</a><br>Der Spieler kann ein Trebuchet mieten.</div><div id="addonquestdebug" class="result module"><a href="html/addonquestdebug.lua.html">addonquestdebug</a><br>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</div><div id="addonrandomrequests" class="result module"><a href="html/addonrandomrequests.lua.html">addonrandomrequests</a><br>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</div><div id="bundlebriefingsystem" class="result module"><a href="html/bundlebriefingsystem.lua.html">bundlebriefingsystem</a><br>Ermöglicht es Briefing zu verwenden.</div><div id="bundlebuildingbuttons" class="result module"><a href="html/bundlebuildingbuttons.lua.html">bundlebuildingbuttons</a><br>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere Funktionen.</div><div id="bundlecamera" class="result module"><a href="html/bundlecamera.lua.html">bundlecamera</a><br>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen Zoom zu nutzen.</div><div id="bundlecheats" class="result module"><a href="html/bundlecheats.lua.html">bundlecheats</a><br>Mit diesem Bundle kann die Nutzung der Cheats verboten oder erlaubt werden.</div><div id="bundleclassicbehaviors" class="result module"><a href="html/bundleclassicbehaviors.lua.html">bundleclassicbehaviors</a><br>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</div><div id="bundleconstructioncontrol" class="result module"><a href="html/bundleconstructioncontrol.lua.html">bundleconstructioncontrol</a><br>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien unterbunden werden.</div><div id="bundledestructioncontrol" class="result module"><a href="html/bundledestructioncontrol.lua.html">bundledestructioncontrol</a><br>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor dem Abriss zu schützen.</div><div id="bundledialogwindows" class="result module"><a href="html/bundledialogwindows.lua.html">bundledialogwindows</a><br>Mit diesem Bundle können Dialogfenster ernstellt werden.</div><div id="bundleentitycommandfunctions" class="result module"><a href="html/bundleentitycommandfunctions.lua.html">bundleentitycommandfunctions</a><br>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie von A nach B zu bewegen.</div><div id="bundleentityhelperfunctions" class="result module"><a href="html/bundleentityhelperfunctions.lua.html">bundleentityhelperfunctions</a><br>Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu ermitteln oder zu verändern.</div><div id="bundleentityproperties" class="result module"><a href="html/bundleentityproperties.lua.html">bundleentityproperties</a><br>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation von Entities bereitgestellt.</div><div id="bundleentityselection" class="result module"><a href="html/bundleentityselection.lua.html">bundleentityselection</a><br>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</div><div id="bundlefollowknight" class="result module"><a href="html/bundlefollowknight.lua.html">bundlefollowknight</a><br>Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden (bzw Ritter) folgen zu lassen.</div><div id="bundleinteractiveobjects" class="result module"><a href="html/bundleinteractiveobjects.lua.html">bundleinteractiveobjects</a><br>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert werden kann.</div><div id="bundleinterfaceapperance" class="result module"><a href="html/bundleinterfaceapperance.lua.html">bundleinterfaceapperance</a><br>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche des Spiels.</div><div id="bundleinterfacefeaturevisibility" class="result module"><a href="html/bundleinterfacefeaturevisibility.lua.html">bundleinterfacefeaturevisibility</a><br>Dieses Bundle bietet dem Nutzer Funktionen um ausgewählte Buttons und Widgets auszublenden oder einzublenden.</div><div id="bundleknighttitlerequirements" class="result module"><a href="html/bundleknighttitlerequirements.lua.html">bundleknighttitlerequirements</a><br>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell an die eigenen Vorstellungen anzupassen.</div><div id="bundleminimapmarker" class="result module"><a href="html/bundleminimapmarker.lua.html">bundleminimapmarker</a><br>Ermöglocht das Anlegen von Markierungen auf der Minimap.</div><div id="bundlemusictools" class="result module"><a href="html/bundlemusictools.lua.html">bundlemusictools</a><br>Dieses Bundle bietet die Möglichkeit Playlists im Spiel abzuspielen.</div><div id="bundlenonplayercharacter" class="result module"><a href="html/bundlenonplayercharacter.lua.html">bundlenonplayercharacter</a><br>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere bereitgestellt.</div><div id="bundleplayerhelperfunctions" class="result module"><a href="html/bundleplayerhelperfunctions.lua.html">bundleplayerhelperfunctions</a><br>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von spielerbezogenen Features.</div><div id="bundleprofileandoptions" class="result module"><a href="html/bundleprofileandoptions.lua.html">bundleprofileandoptions</a><br>Mit diesem Bundle können Profil und Options bequem aus globalen und lokalem Skript angefragt und verändert werden.</div><div id="bundlequestgeneration" class="result module"><a href="html/bundlequestgeneration.lua.html">bundlequestgeneration</a><br>Dieses Bundle ermöglicht es einen Quest, bzw.</div><div id="bundlesavegametools" class="result module"><a href="html/bundlesavegametools.lua.html">bundlesavegametools</a><br>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von Spielständen kontrolliert werden können.</div><div id="bundlespeedlimit" class="result module"><a href="html/bundlespeedlimit.lua.html">bundlespeedlimit</a><br>Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur Verfügung.</div><div id="bundlestockbreeding" class="result module"><a href="html/bundlestockbreeding.lua.html">bundlestockbreeding</a><br>Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.</div><div id="bundlesymfoniabehaviors" class="result module"><a href="html/bundlesymfoniabehaviors.lua.html">bundlesymfoniabehaviors</a><br>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht in der ursprünglichen QSB gab.</div><div id="bundleterrainandwater" class="result module"><a href="html/bundleterrainandwater.lua.html">bundleterrainandwater</a><br>Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und von Wasser.</div><div id="bundletimeline" class="result module"><a href="html/bundletimeline.lua.html">bundletimeline</a><br>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu gliedern.</div><div id="bundletravelingsalesman" class="result module"><a href="html/bundletravelingsalesman.lua.html">bundletravelingsalesman</a><br>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den Hafen mit einem Schiff anfährt.</div><div id="bundleweathermanipulation" class="result module"><a href="html/bundleweathermanipulation.lua.html">bundleweathermanipulation</a><br>Dieses Modul ermöglicht das Ändern des Wetters.</div><div id="core" class="result module"><a href="html/core.lua.html">core</a><br>Hier werden wichtige Basisfunktionen bereitgestellt.</div>
                 </div>
             </div>
             <div id="indexEntriesContainer">

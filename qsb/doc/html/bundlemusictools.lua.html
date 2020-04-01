@@ -45,39 +45,58 @@
 <div id="content">
 
 <h1>Module <code>bundlemusictools</code></h1>
-<p>Dieses Bundle bietet die Möglichkeit Musikstücke abzuspielen.</p>
-<p> Die
- Musik kann als einzelne Titel oder als Playlist wiedergegeben werden.
+<p>Dieses Bundle bietet die Möglichkeit Playlists im Spiel abzuspielen.</p>
+<p> Eine
+ Playlist kann sich endlos wiederholen oder nur einmal abgespielt werden.
+ Eine zufallsbasierte Wiedergabe ist ebenfalls möglich.
 </p>
 
 
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.AbortMusic">API.AbortMusic ()</a></td>
-	<td class="summary">Stopt den gerade laufenden Song und leert sowohl die Songdaten
- als auch die Playlist.</td>
+	<td class="name" nowrap><a href="#API.PlayVoice">API.PlayVoice (_File)</a></td>
+	<td class="summary">Gibt eine MP3-Datei als Stimme wieder.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StartMusic">API.StartMusic (_Description)</a></td>
-	<td class="summary">Startet ein Musikstück als Stimme.</td>
+	<td class="name" nowrap><a href="#API.SoundRestore">API.SoundRestore ()</a></td>
+	<td class="summary">Stellt den Sound wieder her, sofern ein Backup erstellt wurde.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StartMusicSimple">API.StartMusicSimple (_File, _Volume, _Length, _FadeOut)</a></td>
-	<td class="summary">Vereinfachter einzeiliger Aufruf für StartSong.</td>
+	<td class="name" nowrap><a href="#API.SoundSave">API.SoundSave ()</a></td>
+	<td class="summary">Erstellt ein Backup der Soundeinstellungen, wenn noch keins erstellt wurde.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StartPlaylist">API.StartPlaylist (_Playlist)</a></td>
-	<td class="summary">Spielt eine Playlist ab.</td>
+	<td class="name" nowrap><a href="#API.SoundSetAtmoVolume">API.SoundSetAtmoVolume (_Volume)</a></td>
+	<td class="summary">Setzt die Lautstärke der Umgebung.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StartPlaylistTitle">API.StartPlaylistTitle (_Title)</a></td>
-	<td class="summary">Stoppt gerade gespielte Musik und startet die Playlist mit dem
- angegebenen Titel.</td>
+	<td class="name" nowrap><a href="#API.SoundSetMusicVolume">API.SoundSetMusicVolume (_Volume)</a></td>
+	<td class="summary">Setzt die Lautstärke der Musik.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.StopSong">API.StopSong ()</a></td>
-	<td class="summary">Stopt Musik und stellt die alte Soundkonfiguration wieder her.</td>
+	<td class="name" nowrap><a href="#API.SoundSetUIVolume">API.SoundSetUIVolume (_Volume)</a></td>
+	<td class="summary">Setzt die Lautstärke des Interface.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SoundSetVoiceVolume">API.SoundSetVoiceVolume (_Volume)</a></td>
+	<td class="summary">Setzt die Lautstärke der Stimmen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.SoundSetVolume">API.SoundSetVolume (_Volume)</a></td>
+	<td class="summary">Setzt die allgemeine Lautstärke.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartEventPlaylist">API.StartEventPlaylist (_Playlist, _PlayerID)</a></td>
+	<td class="summary">Startet eine Playlist, welche als XML angegeben ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StopEventPlaylist">API.StopEventPlaylist (_Playlist, _PlayerID)</a></td>
+	<td class="summary">Beendet eine Event Playlist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StopVoice">API.StopVoice ()</a></td>
+	<td class="summary">Stoppt alle als Stimme abgespielten aktiven Sounds.</td>
 	</tr>
 </table>
 
@@ -89,76 +108,12 @@
 
     <dl class="function">
     <dt>
-    <a name = "API.AbortMusic"></a>
-    <strong>API.AbortMusic ()</strong>
+    <a name = "API.PlayVoice"></a>
+    <strong>API.PlayVoice (_File)</strong>
     </dt>
     <dd>
-    Stopt den gerade laufenden Song und leert sowohl die Songdaten
- als auch die Playlist.
-<p> <p><b>Alias:</b> AbortSongOrPlaylist</p>
-
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "API.StartMusic"></a>
-    <strong>API.StartMusic (_Description)</strong>
-    </dt>
-    <dd>
-    Startet ein Musikstück als Stimme.
-<p> <p><b>Alias:</b> StartSong</p>
-<p> Es wird nicht als Musik behandelt, sondern als Sprache! Die Lautstäkre
- sämtlicher Sprache wird beeinflusst, weshalb immer nur 1 Song gleichzeitig
- gespielt werden kann! Alle als Sprache abgespielten Sounds werden die
- gleiche Lautstärke haben, wie die Musik.
-<p> _Description hat folgendes Format:
- <ul>
- <li>File     - Path + Dateiname</li>
- <li>Volume   - Lautstärke</li>
- <li>length   - abgespielte Länge in Sekunden (nicht zwingend |Musikstück|)</li>
- <li>Fadeout  - Ausblendzeit in Zehntels. (>= 5 oder 0 für sofort)</li>
- <li>MuteAtmo - Hintergrundgeräusche aus</li>
- <li>MuteUI   - GUI-Sounds aus</li>
- </ul>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Description</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Definition des Musikstück
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.StartMusic({
-    File     = <span class="string">"music/s6_10_antagonist.mp3"</span>,
-    Volume   = <span class="number">70</span>,
-    Length   = <span class="number">49</span>,
-    Fadeout  = <span class="number">20</span>,
-    MuteAtmo = <span class="keyword">true</span>;
-    MuteUI   = <span class="keyword">true</span>,
-});</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.StartMusicSimple"></a>
-    <strong>API.StartMusicSimple (_File, _Volume, _Length, _FadeOut)</strong>
-    </dt>
-    <dd>
-    Vereinfachter einzeiliger Aufruf für StartSong.
-<p> <p><b>Alias:</b> StartSongSimple</p>
+    Gibt eine MP3-Datei als Stimme wieder.  Diese Funktion kann auch benutzt
+ werden um Geräusche abzuspielen.
 
 
 
@@ -166,19 +121,7 @@
     <ul>
         <li><span class="parameter">_File</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Pfad zur Datei
-        </li>
-        <li><span class="parameter">_Volume</span>
-            <span class="types"><span class="type">number</span></span>
-         Lautstärke
-        </li>
-        <li><span class="parameter">_Length</span>
-            <span class="types"><span class="type">number</span></span>
-         Abspieldauer (<= Dauer Musikstück)
-        </li>
-        <li><span class="parameter">_FadeOut</span>
-            <span class="types"><span class="type">number</span></span>
-         Ausblenden in Sekunden
+         Abzuspielende Datei
         </li>
     </ul>
 
@@ -187,30 +130,221 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.StartMusicSimple(<span class="string">"music/s6_10_antagonist.mp3"</span>, <span class="number">70</span>, <span class="number">49</span>, <span class="number">1</span>)</pre>
+        <pre class="example">API.PlayVoice(<span class="string">"music/puhdys_alt_wie_ein_baum.mpx"</span>);</pre>
     </ul>
 
 </dd>
     <dt>
-    <a name = "API.StartPlaylist"></a>
-    <strong>API.StartPlaylist (_Playlist)</strong>
+    <a name = "API.SoundRestore"></a>
+    <strong>API.SoundRestore ()</strong>
     </dt>
     <dd>
-    Spielt eine Playlist ab.
-<p> <p><b>Alias:</b> StartPlaylist</p>
-<p> Eine im Skript definierte Playlist, nicht
- eine XML! Die Playlist kann einmal abgearbeitet oder auf Wiederholung
- gestellt werden. Alle Einträge haben das Format von StartSong!
- Zusätzlich kann der Wahrheitswert Repeat gesetzt werden, damit
- sich die Playlist endlos wiederholt.
+    Stellt den Sound wieder her, sofern ein Backup erstellt wurde.
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SoundRestore();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SoundSave"></a>
+    <strong>API.SoundSave ()</strong>
+    </dt>
+    <dd>
+    Erstellt ein Backup der Soundeinstellungen, wenn noch keins erstellt wurde.
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SoundSave();</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SoundSetAtmoVolume"></a>
+    <strong>API.SoundSetAtmoVolume (_Volume)</strong>
+    </dt>
+    <dd>
+    Setzt die Lautstärke der Umgebung.
+<p> <b>Hinweis:</b> Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Volume</span>
+         Lautstärke
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SoundSetAtmoVolume(<span class="number">100</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SoundSetMusicVolume"></a>
+    <strong>API.SoundSetMusicVolume (_Volume)</strong>
+    </dt>
+    <dd>
+    Setzt die Lautstärke der Musik.
+<p> <b>Hinweis:</b> Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Volume</span>
+         Lautstärke
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SoundSetMusicVolume(<span class="number">100</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SoundSetUIVolume"></a>
+    <strong>API.SoundSetUIVolume (_Volume)</strong>
+    </dt>
+    <dd>
+    Setzt die Lautstärke des Interface.
+<p> <b>Hinweis:</b> Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Volume</span>
+         Lautstärke
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SoundSetUIVolume(<span class="number">100</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SoundSetVoiceVolume"></a>
+    <strong>API.SoundSetVoiceVolume (_Volume)</strong>
+    </dt>
+    <dd>
+    Setzt die Lautstärke der Stimmen.
+<p> <b>Hinweis:</b> Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Volume</span>
+         Lautstärke
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SoundSetVoiceVolume(<span class="number">100</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.SoundSetVolume"></a>
+    <strong>API.SoundSetVolume (_Volume)</strong>
+    </dt>
+    <dd>
+    Setzt die allgemeine Lautstärke.  Die allgemeine Lautstärke beeinflusst alle
+ anderen Laufstärkeregler.
+<p> <b>Hinweis:</b> Es wird automatisch ein Backup der Einstellungen angelegt
+ wenn noch keins angelegt wurde.
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Volume</span>
+         Lautstärke
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.SoundSetVolume(<span class="number">100</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.StartEventPlaylist"></a>
+    <strong>API.StartEventPlaylist (_Playlist, _PlayerID)</strong>
+    </dt>
+    <dd>
+    Startet eine Playlist, welche als XML angegeben ist.
+<p> Eine als XML definierte Playlist wird nicht als Voice abgespielt sondern
+ als Music. Als Musik werden MP3-Dateien verwendet. Diese können entweder
+ im Spiel vorhanden sein oder im Ordner <i>music/</i> in der Map gespeichert
+ werden.
+<p> Wenn du eigene Musik verwendest, achte darauf, einen möglichst eindeutigen
+ Namen zu verwenden. Und natürlich auch auf Urheberrecht!
+<p> Beispiel für eine Playlist:
+ <pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;PlayList&gt;
+ &lt;PlayListEntry&gt;
+   &lt;FileName&gt;Music\some_music_file.mp3&lt;/FileName&gt;
+   &lt;Type&gt;Loop&lt;/Type&gt;
+ &lt;/PlayListEntry&gt;
+ &lt;!-- Hier können weitere Einträge folgen. --&gt;
+&lt;/PlayList&gt;
+</pre>
+ Als Typ können "Loop" oder "Normal" gewählt werden. Normale Musik wird
+ einmalig abgespielt. Ein Loop läuft endlos weiter.
+<p> Außerdem kann zusätzlich zum Typ eine Abspielwahrscheinlichkeit mit
+ angegeben werden:
+ <pre>&lt;Chance&gt;10&lt;/Chance&gt;</pre>
+ Es sind Zahlen von 1 bis 100 möglich.
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_Playlist</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Definition der Playlist
+         Pfad zur Playlist
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         (Optional) ID des menschlichen Spielers
         </li>
     </ul>
 
@@ -219,67 +353,53 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="keyword">local</span> Playlist = {
-    {
-        File     = <span class="string">"music/s6_10_antagonist.mp3"</span>,
-        Volume   = <span class="number">70</span>,
-        Length   = <span class="number">49</span>,
-        Fadeout  = <span class="number">20</span>,
-        MuteAtmo = <span class="keyword">true</span>;
-        MuteUI   = <span class="keyword">true</span>,
-    },
-    {
-        File     = <span class="string">"music/s6_04_blaze.mp3"</span>,
-        Volume   = <span class="number">70</span>,
-        Length   = <span class="number">65</span>,
-        Fadeout  = <span class="number">20</span>,
-        MuteAtmo = <span class="keyword">false</span>;
-        MuteUI   = <span class="keyword">true</span>,
-    },
-}
-API.StartPlaylist(Playlist);</pre>
+        <pre class="example">API.StartEventPlaylist(<span class="string">"config/sound/my_playlist.xml"</span>);</pre>
     </ul>
 
 </dd>
     <dt>
-    <a name = "API.StartPlaylistTitle"></a>
-    <strong>API.StartPlaylistTitle (_Title)</strong>
+    <a name = "API.StopEventPlaylist"></a>
+    <strong>API.StopEventPlaylist (_Playlist, _PlayerID)</strong>
     </dt>
     <dd>
-    Stoppt gerade gespielte Musik und startet die Playlist mit dem
- angegebenen Titel.  Es muss eine Playlist existieren! Nachdem der
- Titel abgespielt ist, wird die Playlist normal weiter gespielt.
-<p> <p><b>Alias:</b> StartPlaylistTitle</p>
-
+    Beendet eine Event Playlist.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_Title</span>
-            <span class="types"><span class="type">number</span></span>
-         Index des Titels
+        <li><span class="parameter">_Playlist</span>
+         Pfad zur Playlist
+        </li>
+        <li><span class="parameter">_PlayerID</span>
+         (Optional) ID des menschlichen Spielers
         </li>
     </ul>
 
 
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.StopEventPlaylist(<span class="string">"config/sound/my_playlist.xml"</span>);</pre>
+    </ul>
 
 </dd>
     <dt>
-    <a name = "API.StopSong"></a>
-    <strong>API.StopSong ()</strong>
+    <a name = "API.StopVoice"></a>
+    <strong>API.StopVoice ()</strong>
     </dt>
     <dd>
-    Stopt Musik und stellt die alte Soundkonfiguration wieder her.
-<p> <p><b>Alias:</b> StopSong</p>
+    Stoppt alle als Stimme abgespielten aktiven Sounds.
 
 
 
 
 
 
-
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.StopSound();</pre>
+    </ul>
 
 </dd>
 </dl>
@@ -289,7 +409,7 @@ API.StartPlaylist(Playlist);</pre>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-01-31 21:47:57 </i>
+<i style="float:right;">Last updated 2020-04-01 18:40:00 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
