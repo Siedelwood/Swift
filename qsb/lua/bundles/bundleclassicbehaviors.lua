@@ -2551,7 +2551,7 @@ end
 
 function b_Goal_MapScriptFunction:CustomFunction(_Quest)
     if type(self.FuncName) == "function" then
-        return self.Function(unpack(self.i47ya_6aghw_frxil));
+        return self.FuncName(unpack(self.i47ya_6aghw_frxil));
     end
     return _G[self.FuncName](self, _Quest);
 end
@@ -4177,7 +4177,7 @@ end
 
 function b_Reprisal_MapScriptFunction:CustomFunction(_Quest)
     if type(self.FuncName) == "function" then
-        self.Function(unpack(self.i47ya_6aghw_frxil));
+        self.FuncName(unpack(self.i47ya_6aghw_frxil));
         return;
     end
     _G[self.FuncName](self, _Quest);
@@ -8379,7 +8379,7 @@ end
 
 function b_Trigger_MapScriptFunction:CustomFunction(_Quest)
     if type(self.FuncName) == "function" then
-        return self.Function(unpack(self.i47ya_6aghw_frxil));
+        return self.FuncName(unpack(self.i47ya_6aghw_frxil));
     end
     return _G[self.FuncName](self, _Quest);
 end

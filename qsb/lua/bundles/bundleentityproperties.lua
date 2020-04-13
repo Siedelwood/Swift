@@ -741,7 +741,7 @@ function QSB.EntityProperty:CountSoldiers()
     local EntityID = GetID(self.m_EntityName);
     if EntityID > 0 and Logic.IsLeader(EntityID) == 1 then
         local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
-        return #SoldierTable;
+        return SoldierTable[1];
     end
     return 0;
 end
