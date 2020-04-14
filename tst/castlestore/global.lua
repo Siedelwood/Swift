@@ -87,7 +87,6 @@ function Mission_FirstMapAction()
         Sender = 8,
 
         Goal_ActivateSeveralObjects("IO1", "IO2", "IO3", "IO4"),
-        Trigger_Time(5)
     }
 
     AddQuest {
