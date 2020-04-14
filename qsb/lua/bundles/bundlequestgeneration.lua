@@ -388,6 +388,14 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         end
     end
 
+    -- Default Goal
+    if #QuestData[4] == 0 then
+        table.insert(QuestData[4], {Objective.Dummy});
+    end
+    -- Default Trigger
+    if #QuestData[5] == 0 then
+        table.insert(QuestData[5], {Triggers.Time, 0 });
+    end
     -- Genug Platz Behavior
     if QuestData[11] then
         table.insert(QuestData[5], self:GetFreeSpaceInlineTrigger());
