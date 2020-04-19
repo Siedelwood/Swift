@@ -726,6 +726,59 @@ end
 Core:RegisterBehavior(b_Goal_CityReputation);
 
 -- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler muss X% der Gesamtmenge einer Ware an einen anderen Spieler
+-- liefern. Die tatsächlich zu versendende absulute Menge wird zum Start
+-- des Quests bestimmt.
+--
+-- Für die Warenmenge dürfen nur ganze Zahlen zwischen 1 und 100 angegeben
+-- werden. Aber sonst funktioniert das Behavior genauso wie Goal_Deliver.
+--
+-- Wenn die Gesamtmenge an Waren zum Startzeitpunkt des Quest zu gering ist,
+-- werden fest vorgegebene Basiswerte zur Berechnung herangezogen:
+-- <ul>
+-- <li><u>Gold:</u>
+-- Wenn weniger als 200 Gold vorhanden sind, dann muss der Prozentwert * 5
+-- als absolute Menge versendet werden.
+-- </li>
+-- <li><u>Rohstoff:</u>
+-- Wenn weniger als 18 Einheiten vorhanden sind, dann wird der Prozentwert
+-- als absolute Menge verwendet.
+-- </li>
+-- <li><u>Güter:</u>
+-- Wenn weniger als 9 Einheiten vorhanden sind, dann müssen X% von 18
+-- versendet werden.
+-- </li>
+-- <li>Sonstige:</u>
+-- analog zu Gütern
+-- </li>
+-- </ul>
+--
+-- @param _GoodType      Typ der Ware
+-- @param _GoodAmount    Menga der Ware in Prozent
+-- @param _OtherTarget   Anderes Ziel als Auftraggeber
+-- @param _IgnoreCapture Wagen kann zurückerobert werden
+--
+-- @within Goal
+--
+function Goal_LevyTax(...)
+    return b_Goal_LevyTax:new(...);
+end
+
+b_Goal_LevyTax = API.InstanceTable(b_Goal_Deliver);
+b_Goal_LevyTax.Name = "Goal_LevyTax";
+b_Goal_LevyTax.Description.en = "Goal: Deliver a relative amount of goods to the requesting player or another player";
+b_Goal_LevyTax.Description.de = "Ziel: Liefere eine relative Menge an Waren zum Auftraggeber oder zu einem anderen Spieler.";
+
+b_Goal_LevyTax.GetGoalTable = function(self, _Quest)
+    local GoodType = Logic.GetGoodTypeID(self.GoodTypeName);
+    return { Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture, {}, 0, 0, true}
+end
+
+Core:RegisterBehavior(b_Goal_LevyTax);
+
+-- -------------------------------------------------------------------------- --
 -- Reprisals                                                                  --
 -- -------------------------------------------------------------------------- --
 
@@ -2075,36 +2128,78 @@ end
 -- @local
 --
 function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
-    if self.Objectives[1] and self.Objectives[1].Type == Objective.DestroyEntities and self.Objectives[1].Data[1] == 3 then
-        if self.Objectives[1].Data[4] ~= true then
-            -- Entities respawnen
-            local FirstEntityID;
-            local SpawnAmount = self.Objectives[1].Data[3];
-            for i=1, self.Objectives[1].Data[2][0], 1 do
-                local ID = GetID(self.Objectives[1].Data[2][i]);
-                local SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
-                if #SpawnedEntities < SpawnAmount then
-                    for i= 1, SpawnAmount - #SpawnedEntities, 1 do
-                        Logic.RespawnResourceEntity_Spawn(ID);
+    if self.Objectives[1] then
+        -- Spezielles Objective.DestroyEntities für Raubtiere
+        if self.Objectives[1].Type == Objective.DestroyEntities and self.Objectives[1].Data[1] == 3 then
+            if self.Objectives[1].Data[4] ~= true then
+                -- Entities respawnen
+                local FirstEntityID;
+                local SpawnAmount = self.Objectives[1].Data[3];
+                for i=1, self.Objectives[1].Data[2][0], 1 do
+                    local ID = GetID(self.Objectives[1].Data[2][i]);
+                    local SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
+                    if #SpawnedEntities < SpawnAmount then
+                        for i= 1, SpawnAmount - #SpawnedEntities, 1 do
+                            Logic.RespawnResourceEntity_Spawn(ID);
+                        end
+                    elseif #SpawnedEntities > SpawnAmount then
+                        for i= 1, #SpawnedEntities - SpawnAmount, 1 do
+                            DestroyEntity(SpawnedEntities[1]);
+                            SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
+                        end
                     end
-                elseif #SpawnedEntities > SpawnAmount then
-                    for i= 1, #SpawnedEntities - SpawnAmount, 1 do
-                        DestroyEntity(SpawnedEntities[1]);
-                        SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
+                    if not FirstEntityID then
+                        FirstEntityID = SpawnedEntities[1];
                     end
                 end
-                if not FirstEntityID then
-                    FirstEntityID = SpawnedEntities[1];
+                -- Icon setzen
+                if not self.Objectives[1].Data[5] then
+                    self.Objectives[1].Data[5] = {7, 12};
+                    if Logic.IsEntityInCategory(FirstEntityID, EntityCategories.AttackableAnimal) == 1 then
+                        self.Objectives[1].Data[5] = {13, 8};
+                    end
                 end
+                self.Objectives[1].Data[4] = true;
             end
-            -- Icon setzen
-            if not self.Objectives[1].Data[5] then
-                self.Objectives[1].Data[5] = {7, 12};
-                if Logic.IsEntityInCategory(FirstEntityID, EntityCategories.AttackableAnimal) == 1 then
-                    self.Objectives[1].Data[5] = {13, 8};
+        
+        -- Spezielles Objective.Deliver für prozentual errechnete Liefermengen
+        elseif self.Objectives[1].Type == Objective.Deliver and self.Objectives[1].Data[8] == true then
+            local Data = self.Objectives[1].Data;
+            -- Sicherstellen, dass es niemals ungültige Werte gibt.
+            if Data[2] < 1 then
+                self.Objectives[1].Data[2] = 1;
+            end
+            if Data[2] > 100 then
+                self.Objectives[1].Data[2] = 100;
+            end
+            -- Einmalig zum Start die absolut geforderte Menge ermitteln.
+            if Data[9] == nil then
+                -- Sicherheitskopie des ursprünglichen Wertes anlegen
+                if self.Objectives[1].Data[9] == nil then
+                    self.Objectives[1].Data[9] = self.Objectives[1].Data[2];
                 end
+                -- Werte bestimmen
+                local TotalAmount = GetPlayerGoodsInSettlement(Data[1], self.ReceivingPlayer, false);
+                -- Burglager einbeziehen
+                if AddOnCastleStore then
+                    TotalAmount = TotalAmount + API.CastleStoreGetGoodAmount(self.ReceivingPlayer, Data[1])
+                end
+                local Amount = math.ceil((TotalAmount / 100) * Data[9]);
+                -- Wenn zu wenig Einheiten einer Ware da sind, soll ein fester
+                -- Wert verlangt werden, damit die Menge nicht lächerlich ist.
+                local IsResource = Logic.GetGoodCategoryForGoodType(Data[1]) == GoodCategories.GC_Resource;
+                local IsGold = Data[1] == Goods.G_Gold;
+                if (IsGold and TotalAmount < 200) then
+                    Amount = Data[9] * 5;
+                end
+                if (IsResource and not IsGold and TotalAmount < 18) then
+                    Amount = Data[9];
+                end
+                if (not IsResource and TotalAmount < 9) then
+                    Amount = math.ceil(0.18 * Data[9]);
+                end
+                self.Objectives[1].Data[2] = Amount;
             end
-            self.Objectives[1].Data[4] = true;
         end
     end
 end
@@ -2123,8 +2218,12 @@ function BundleSymfoniaBehaviors.Local:Install()
 end
 
 ---
--- Erweitert die Funktion, welche das Auftragsziel darstellt. Das richtige
--- Icon für Spawned Entities wird angezeigt.
+-- Erweitert die Funktion, welche das Auftragsziel darstellt.
+-- 
+-- Das richtige Icon für Spawned Entities wird angezeigt.
+--
+-- Das neue Ziel "LevyTax" wird wie "Deliver" angezeigt.
+--
 -- @within Internal
 -- @local
 --
@@ -2136,6 +2235,8 @@ function BundleSymfoniaBehaviors.Local.DisplayQuestObjective(_QuestIndex, _Messa
     local Quest, QuestType = GUI_Interaction.GetPotentialSubQuestAndType(_QuestIndex);
     local QuestObjectivesPath = "/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives";
     XGUIEng.ShowAllSubWidgets("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives", 0);
+    
+    -- 
     if QuestType == Objective.DestroyEntities and Quest.Objectives[1].Data[1] == 3 then
         local QuestObjectiveContainer = QuestObjectivesPath .. "/GroupEntityType";
         local QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestDestroy");
