@@ -1658,19 +1658,27 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
 
     BundleInteractiveObjects.Local.BuyObject = function(self, _PlayerID, _Good, _Amount)
         if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
-            local buildings = GetPlayerEntities(_PlayerID,0);
-            local goodAmount = _Amount;
+            API.Bridge(string.format([[
+            local PlayerID = %d
+            local GoodType = %d
+            local OrigAmount = %d
+
+            local buildings = GetPlayerEntities(PlayerID,0);
+            local goodAmount = OrigAmount;
             for i=1,#buildings do
                 if Logic.IsBuilding(buildings[i]) == 1 and goodAmount > 0 then
-                    if Logic.GetBuildingProduct(buildings[i]) == _Good then
+                    if Logic.GetBuildingProduct(buildings[i]) == GoodType then
                         local goodAmountInBuilding = Logic.GetAmountOnOutStockByIndex(buildings[i],0);
                         for j=1,goodAmountInBuilding do
-                            API.Bridge("Logic.RemoveGoodFromStock("..buildings[i]..",".._Good..",1)");
-                            goodAmount = goodAmount -1;
+                            if goodAmount > 0 then
+                                Logic.RemoveGoodFromStock(buildings[i], GoodType, 1);
+                                goodAmount = goodAmount -1;
+                            end
                         end
                     end
                 end
             end
+        ]], _PlayerID, _Good, _Amount));
         else
             local AmountInStore = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
             local GoodsToRemove = ((AmountInStore - _Amount) >= 0 and _Amount) or AmountInStore;
