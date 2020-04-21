@@ -22,7 +22,7 @@ BundleQuestGeneration = {};
 API = API or {};
 QSB = QSB or {};
 
----
+--
 -- Typen der Statusänderungsereignisse
 --
 -- @field BeforeTrigger Callback wird vor Auslösung ausgeführt.
@@ -40,10 +40,6 @@ QSB.QuestStateChange = {
     AfterSuccess    = 4,
     BeforeFailure   = 7,
     AfterFailure    = 8,
-
-    -- Unbenutzt, denn man weiß ja selbst, wenn man einen Quest abbricht.
-    -- BeforeInterrupt = 5,
-    -- AfterInterupt   = 6,
 }
 
 QSB.GeneratedQuestDialogs = {};

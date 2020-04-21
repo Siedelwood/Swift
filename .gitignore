@@ -3,6 +3,7 @@ doctest/
 app/
 tmp/
 var/
+qsb/doc/html/
 target/
 */target/
 *.tmp

@@ -2614,28 +2614,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;API.DisableReleaseThieves(&#x3C;span class="keyword"&#x3E;false&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="core_API.EndJob" class="result method"><a href="html/core.lua.html#API.EndJob">API.EndJob</a><br>Bendet einen QSB-Job.<span class="docInvisibleContent">
-    Bendet einen QSB-Job.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: EndJobEx
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_JobID&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         ID des Jobs
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;API.EndJob(JobID);&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
 </span></div><div id="core_API.EnsureScriptName" class="result method"><a href="html/core.lua.html#API.EnsureScriptName">API.EnsureScriptName</a><br>Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.<span class="docInvisibleContent">
     Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
  Hat das Entity einen Namen, bleibt dieser unverändert und wird
@@ -4244,30 +4222,6 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
 
 
-</span></div><div id="core_API.JobIsRunning" class="result method"><a href="html/core.lua.html#API.JobIsRunning">API.JobIsRunning</a><br>Prüft ob ein Job mit der ID existiert.<span class="docInvisibleContent">
-    Prüft ob ein Job mit der ID existiert.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: JobIsRunningEx
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_JobID&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         ID des Jobs
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;if&#x3C;/span&#x3E; API.JobIsRunning(JobID) &#x3C;span class="keyword"&#x3E;then&#x3C;/span&#x3E;
-    &#x3C;span class="comment"&#x3E;-- Aktion hier
-&#x3C;/span&#x3E;&#x3C;span class="keyword"&#x3E;end&#x3C;/span&#x3E;&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
 </span></div><div id="bundlesavegametools_API.LoadGameFromFolder" class="result method"><a href="html/bundlesavegametools.lua.html#API.LoadGameFromFolder">API.LoadGameFromFolder</a><br>Lδd einen Spielstand aus dem angegebenen Verzeichnis.<span class="docInvisibleContent">
     Lδd einen Spielstand aus dem angegebenen Verzeichnis.  Der Pfad
  beginnt relativ vom Spielstandverzeichnis. Optional kann der
@@ -5243,6 +5197,24 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
 
 
+</span></div><div id="core_API.ResumeJob" class="result method"><a href="html/core.lua.html#API.ResumeJob">API.ResumeJob</a><br>Aktiviert einen angehaltenen Job.<span class="docInvisibleContent">
+    Aktiviert einen angehaltenen Job.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: ResumeJob
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_JobID&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Job-ID
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
 </span></div><div id="core_API.Round" class="result method"><a href="html/core.lua.html#API.Round">API.Round</a><br>Rundet eine Dezimalzahl kaufmännisch ab.<span class="docInvisibleContent">
     Rundet eine Dezimalzahl kaufmännisch ab.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Es wird manuell gerundet um den Rundungsfehler in der
@@ -6063,6 +6035,40 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
 
            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
         Job ID
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="core_API.StartInlineJob" class="result method"><a href="html/core.lua.html#API.StartInlineJob">API.StartInlineJob</a><br>Erzeugt einen neuen Inline-Job.<span class="docInvisibleContent">
+    Erzeugt einen neuen Inline-Job.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Events.LOGIC_EVENT_ENTITY_CREATED funktioniert nicht!
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Wird ein Table als Argument an den Job übergeben, wird eine
+ Kopie angeleigt um Speicherprobleme zu verhindern. Es handelt sich also um
+ eine neue Table und keine Referenz!
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_EventType&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Event-Typ
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Function&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;function&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Funktionsreferenz
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;...&#x3C;/span&#x3E;
+                    Optionale Argumente des Job
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        ID des Jobs
     &#x3C;/ol&#x3E;
 
 
@@ -7098,6 +7104,24 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
 
 
 
+</span></div><div id="core_API.YieldJob" class="result method"><a href="html/core.lua.html#API.YieldJob">API.YieldJob</a><br>Pausiert einen laufenden Job.<span class="docInvisibleContent">
+    Pausiert einen laufenden Job.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: YieldJob
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_JobID&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Job-ID
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
 </span></div><div id="bundlebriefingsystem_ASP" class="result method"><a href="html/bundlebriefingsystem.lua.html#ASP">ASP</a><br>Erstellt eine Seite in vereinfachter Syntax.<span class="docInvisibleContent">
     Erstellt eine Seite in vereinfachter Syntax.  Es wird davon
  Ausgegangen, dass das Entity ein Siedler ist. Die Kamera
@@ -7609,20 +7633,29 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
 
 </span></div><div id="bundlesymfoniabehaviors_Goal_DestroySpawnedEntities" class="result method"><a href="html/bundlesymfoniabehaviors.lua.html#Goal_DestroySpawnedEntities">Goal_DestroySpawnedEntities</a><br>Eine Menge an Entities des angegebenen Spawnpoint muss zerstört werden.<span class="docInvisibleContent">
     Eine Menge an Entities des angegebenen Spawnpoint muss zerstört werden.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Eignet sich vor allem für Raubtiere!
 &#x3C;p&#x3E; Wenn die angegebene Anzahl zu Beginn des Quest nicht mit der Anzahl an
  bereits gespawnten Entities übereinstimmt, wird dies automatisch korrigiert.
  (Neue Entities gespawnt bzw. überschüssige gelöscht)
+&#x3C;p&#x3E; Wenn _Prefixed gesetzt ist, wird anstatt des Namen Entities mit einer
+ fortlaufenden Nummer gesucht, welche mit dem Namen beginnen. Bei der
+ ersten Nummer, zu der kein Entity existiert, wird abgebrochen.
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_SpawnPoint&#x3C;/span&#x3E;
-         Spawnpoint oder Liste von Spawnpoints
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Skriptname des Spawnpoint
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
              Menge zu zerstörender Entities
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Prefixed&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+           Skriptname ist Präfix
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -7897,6 +7930,54 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Title&#x3C;/span&#x3E;
          Titel, der erreicht werden muss
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundlesymfoniabehaviors_Goal_LevyTax" class="result method"><a href="html/bundlesymfoniabehaviors.lua.html#Goal_LevyTax">Goal_LevyTax</a><br>Der Spieler muss X der Gesamtmenge einer Ware an einen anderen Spieler liefern.<span class="docInvisibleContent">
+    Der Spieler muss X der Gesamtmenge einer Ware an einen anderen Spieler
+ liefern.  Die tatsächlich zu versendende absulute Menge wird zum Start
+ des Quests bestimmt.
+&#x3C;p&#x3E; Für die Warenmenge dürfen nur ganze Zahlen zwischen 1 und 100 angegeben
+ werden. Aber sonst funktioniert das Behavior genauso wie Goal_Deliver.
+&#x3C;p&#x3E; Wenn die Gesamtmenge an Waren zum Startzeitpunkt des Quest zu gering ist,
+ werden fest vorgegebene Basiswerte zur Berechnung herangezogen:
+ &#x3C;ul&#x3E;
+ &#x3C;li&#x3E;&#x3C;u&#x3E;Gold:&#x3C;/u&#x3E;
+ Wenn weniger als 200 Gold vorhanden sind, dann muss der Prozentwert * 5
+ als absolute Menge versendet werden.
+ &#x3C;/li&#x3E;
+ &#x3C;li&#x3E;&#x3C;u&#x3E;Rohstoff:&#x3C;/u&#x3E;
+ Wenn weniger als 18 Einheiten vorhanden sind, dann wird der Prozentwert
+ als absolute Menge verwendet.
+ &#x3C;/li&#x3E;
+ &#x3C;li&#x3E;&#x3C;u&#x3E;Güter:&#x3C;/u&#x3E;
+ Wenn weniger als 9 Einheiten vorhanden sind, dann müssen X von 18
+ versendet werden.
+ &#x3C;/li&#x3E;
+ &#x3C;li&#x3E;Sonstige:&#x3C;/u&#x3E;
+ analog zu Gütern
+ &#x3C;/li&#x3E;
+ &#x3C;/ul&#x3E;
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_GoodType&#x3C;/span&#x3E;
+              Typ der Ware
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_GoodAmount&#x3C;/span&#x3E;
+            Menga der Ware in Prozent
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_OtherTarget&#x3C;/span&#x3E;
+           Anderes Ziel als Auftraggeber
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_IgnoreCapture&#x3C;/span&#x3E;
+         Wagen kann zurückerobert werden
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 

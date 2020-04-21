@@ -311,7 +311,7 @@ function SymfoniaDocumenter:GetBundleLinks()
     for k, v in pairs(self.Data.BundleInfo) do
         if k ~= "API" then
             table.insert(
-                Bundles, string.format(Template, k, "html/" ..k.. ".lua.html", v.Name, v.Description)
+                Bundles, string.format(Template, k, "html/" ..k.. ".lua.html", v.Name or "", v.Description or "")
             )
         end
     end

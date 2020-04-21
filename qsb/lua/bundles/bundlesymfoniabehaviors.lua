@@ -600,6 +600,8 @@ Core:RegisterBehavior(b_Goal_AmmunitionAmount)
 ---
 -- Eine Menge an Entities des angegebenen Spawnpoint muss zerstört werden.
 --
+-- <b>Hinweis</b>: Eignet sich vor allem für Raubtiere!
+--
 -- Wenn die angegebene Anzahl zu Beginn des Quest nicht mit der Anzahl an
 -- bereits gespawnten Entities übereinstimmt, wird dies automatisch korrigiert.
 -- (Neue Entities gespawnt bzw. überschüssige gelöscht)
@@ -608,7 +610,7 @@ Core:RegisterBehavior(b_Goal_AmmunitionAmount)
 -- fortlaufenden Nummer gesucht, welche mit dem Namen beginnen. Bei der
 -- ersten Nummer, zu der kein Entity existiert, wird abgebrochen.
 --
--- @param              _SpawnPoint Spawnpoint oder Liste von Spawnpoints
+-- @param[type=string] _SpawnPoint Skriptname des Spawnpoint
 -- @param[type=number] _Amount     Menge zu zerstörender Entities
 -- @param[type=number] _Prefixed   Skriptname ist Präfix
 --
