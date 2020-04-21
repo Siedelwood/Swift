@@ -351,7 +351,7 @@ function QSB.SimpleTypewriter:Stop()
         XGUIEng.ShowWidget("/InGame/Root/Normal/ShowUi",1)
         XGUIEng.ShowWidget("/InGame/Root/3dWorldView",1)
     ]]);
-    API.EndJob(self.m_JobID);
+    EndJob(self.m_JobID);
 end
 
 ---
