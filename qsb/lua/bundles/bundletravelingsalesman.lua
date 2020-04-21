@@ -456,7 +456,13 @@ function QSB.TravelingSalesman:DisplayInfoMessage()
             API.RestartQuest("TravelingSalesman_Info_P" ..self.m_PlayerID, true);
             InfoQuest:SetMsgKeyOverride();
             InfoQuest:SetIconOverride();
+            if BundleQuestGeneration then
+                BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeTrigger, InfoQuest);
+            end
             InfoQuest:Trigger();
+            if BundleQuestGeneration then
+                BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.AfterTrigger, InfoQuest);
+            end
             return self;
         end
 

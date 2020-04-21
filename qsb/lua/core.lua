@@ -412,6 +412,9 @@ function API.FailQuest(_QuestName, _Verbose)
             API.Note("fail quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
+        if BundleQuestGeneration then
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeFailure, Quest);
+        end
         Quest:Fail();
     end
 end
@@ -563,7 +566,13 @@ function API.StartQuest(_QuestName, _Verbose)
         end
         Quest:SetMsgKeyOverride();
         Quest:SetIconOverride();
+        if BundleQuestGeneration then
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeTrigger, Quest);
+        end
         Quest:Trigger();
+        if BundleQuestGeneration then
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.AfterTrigger, Quest);
+        end
     end
 end
 StartQuestByName = API.StartQuest;
@@ -644,6 +653,9 @@ function API.WinQuest(_QuestName, _Verbose)
             API.Note("win quest " .._QuestName);
         end
         Quest:RemoveQuestMarkers();
+        if BundleQuestGeneration then
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeSuccess, InfoQuest);
+        end
         Quest:Success();
     end
 end
