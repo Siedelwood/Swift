@@ -82,8 +82,10 @@ end
 function API.IsEntityInSelection(_Entity)
     if IsExisting(_Entity) then
         local EntityID = GetID(_Entity);
-        local SelectedEntities = BundleEntitySelection.Global.Data.SelectedEntities;
-        if GUI then
+        local SelectedEntities;
+        if not GUI then
+            SelectedEntities = BundleEntitySelection.Global.Data.SelectedEntities;
+        else
             SelectedEntities = {GUI.GetSelectedEntities()};
         end
         for i= 1, #SelectedEntities, 1 do
@@ -109,8 +111,10 @@ IsEntitySelected = API.IsEntityInSelection;
 -- local SelectedEntity = API.GetSelectedEntity();
 --
 function API.GetSelectedEntity()
-    local SelectedEntity = BundleEntitySelection.Global.Data.SelectedEntities[1];
-    if GUI then
+    local SelectedEntity;
+    if not GUI then
+        SelectedEntity = BundleEntitySelection.Global.Data.SelectedEntities[1];
+    else
         SelectedEntity = GUI.GetSelectedEntity();
     end
     return SelectedEntity or 0;
@@ -127,8 +131,10 @@ GetSelectedEntity = API.GetSelectedEntity;
 -- local Selection = API.GetSelectedEntities();
 --
 function API.GetSelectedEntities()
-    local SelectedEntities = BundleEntitySelection.Global.Data.SelectedEntities;
-    if GUI then
+    local SelectedEntities;
+    if not GUI then
+        SelectedEntities = BundleEntitySelection.Global.Data.SelectedEntities;
+    else
         SelectedEntities = {GUI.GetSelectedEntities()};
     end
     return SelectedEntities;
