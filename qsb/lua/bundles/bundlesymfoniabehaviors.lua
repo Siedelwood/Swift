@@ -2105,7 +2105,7 @@ function BundleSymfoniaBehaviors.Global:Install()
         local objectiveType = objective.Type;
         if objective.Completed ~= nil then
             if objective.Data[1] == 3 then
-                objective.Data[4] = nil;
+                objective.Data[5] = nil;
             end
             return objective.Completed;
         end
@@ -2153,35 +2153,38 @@ function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
         if self.Objectives[b] then
             -- Spezielles Objective.DestroyEntities für Raubtiere
             if self.Objectives[b].Type == Objective.DestroyEntities and self.Objectives[b].Data[1] == 3 then
-                if self.Objectives[b].Data[4] ~= true then
-                    -- Entities respawnen
-                    local FirstEntityID;
+                if self.Objectives[b].Data[5] ~= true then
+                    local SpawnPoints = self.Objectives[b].Data[2][0];
                     local SpawnAmount = self.Objectives[b].Data[3];
-                    for i=1, self.Objectives[b].Data[2][0], 1 do
+                    -- Vorhandene Entities löschen
+                    for i=1, SpawnPoints, 1 do
                         local ID = GetID(self.Objectives[b].Data[2][i]);
                         local SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
-                        if #SpawnedEntities < SpawnAmount then
-                            for i= 1, SpawnAmount - #SpawnedEntities, 1 do
-                                Logic.RespawnResourceEntity_Spawn(ID);
-                            end
-                        elseif #SpawnedEntities > SpawnAmount then
-                            for i= 1, #SpawnedEntities - SpawnAmount, 1 do
-                                DestroyEntity(SpawnedEntities[1]);
-                                SpawnedEntities = {Logic.GetSpawnedEntities(ID)};
-                            end
+                        for j= 1, #SpawnedEntities, 1 do
+                            DestroyEntity(SpawnedEntities[j]);
                         end
-                        if not FirstEntityID then
-                            FirstEntityID = SpawnedEntities[1];
+                    end
+                    -- Entities neu spawnen und möglichst gerecht über alle
+                    -- Spawnpoints verteilen
+                    while (SpawnAmount > 0) do
+                        for i=1, SpawnPoints, 1 do
+                            if SpawnAmount < 1 then
+                                break;
+                            end
+                            local ID = GetID(self.Objectives[b].Data[2][i]);
+                            Logic.RespawnResourceEntity_Spawn(ID);
+                            SpawnAmount = SpawnAmount -1;
                         end
                     end
                     -- Icon setzen
-                    if not self.Objectives[b].Data[5] then
-                        self.Objectives[b].Data[5] = {7, 12};
-                        if Logic.IsEntityInCategory(FirstEntityID, EntityCategories.AttackableAnimal) == 1 then
-                            self.Objectives[b].Data[5] = {13, 8};
+                    local CategoryDefinigEntity = Logic.GetSpawnedEntities(self.Objectives[b].Data[2][1]);
+                    if not self.Objectives[b].Data[6] then
+                        self.Objectives[b].Data[6] = {7, 12};
+                        if Logic.IsEntityInCategory(CategoryDefinigEntity, EntityCategories.AttackableAnimal) == 1 then
+                            self.Objectives[b].Data[6] = {13, 8};
                         end
                     end
-                    self.Objectives[b].Data[4] = true;
+                    self.Objectives[b].Data[5] = true;
                 end
             
             -- Spezielles Objective.Deliver für prozentual errechnete Liefermengen
@@ -2265,13 +2268,13 @@ function BundleSymfoniaBehaviors.Local.DisplayQuestObjective(_QuestIndex, _Messa
         local QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestDestroy");
         local EntitiesList = GUI_Interaction.GetEntitiesOrTerritoryListForQuest( Quest, QuestType );
         local EntitiesAmount = #EntitiesList;
-        if not Quest.Objectives[1].Data[4] and #EntitiesList == 0 then
+        if not Quest.Objectives[1].Data[5] and #EntitiesList == 0 then
             EntitiesAmount = #Quest.Objectives[1].Data[2][0] * Quest.Objectives[1].Data[3];
         end
 
         XGUIEng.ShowWidget(QuestObjectiveContainer .. "/AdditionalCaption", 0);
         XGUIEng.ShowWidget(QuestObjectiveContainer .. "/AdditionalCondition", 0);
-        SetIcon(QuestObjectiveContainer .. "/Icon", Quest.Objectives[1].Data[5]);
+        SetIcon(QuestObjectiveContainer .. "/Icon", Quest.Objectives[1].Data[6]);
         XGUIEng.SetText(QuestObjectiveContainer .. "/Number", "{center}" .. EntitiesAmount);
 
         XGUIEng.SetText(QuestObjectiveContainer .. "/Caption", "{center}" .. QuestTypeCaption);
