@@ -12,8 +12,8 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\MapIconator
-DefaultGroupName=MapIconator
+DefaultDirName={pf}\Siedelwood\MapIconator
+DefaultGroupName=Siedelwood
 OutputDir=E:\Repositories\symfonia\cnf\MapIconator
 OutputBaseFilename=MapIconatorInstaller
 SetupIconFile=E:\Repositories\symfonia\bin\MapIconator.ico
@@ -23,10 +23,6 @@ ChangesEnvironment=yes
 
 [Languages]
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
-
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
 Source: "E:\Repositories\symfonia\bin\MapIconator.exe"; DestDir: "{app}"; Flags: ignoreversion
