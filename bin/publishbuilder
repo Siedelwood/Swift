@@ -1,0 +1,32 @@
+#!/bin/bash
+
+echo "==== Builder Dateien kopieren ===="
+
+echo "Erzeuge Release-Verzeichnis..."
+rm -rf release-sources &>/dev/null
+mkdir -p release-sources/sources
+echo "Fertig!"
+
+echo "Kopiere Dateien..."
+cp qsb/lua/core.lua release-sources/sources/core.lua &>/dev/null
+cp qsb/default/globalscript.lua release-sources/sources/mapscript.lua &>/dev/null
+cp qsb/default/localscript.lua release-sources/sources/localmapscript.lua &>/dev/null
+
+cp -r qsb/lua/bundles release-sources/sources/bundles &>/dev/null
+cp -r qsb/lua/addons release-sources/sources/addons &>/dev/null
+cp -r qsb/lua/external release-sources/sources/external &>/dev/null
+cp -r qsb/doc release-sources/sources/doc &>/dev/null
+echo "Fertig!"
+
+echo "==== Archiv zusammenstellen ===="
+
+zip -r release-sources/sources/doc release-sources/sources/bundles release-sources/sources/addons release-sources/sources/external release-sources/sources release-sources/* &>/dev/null
+mv release-sources/sources/doc.zip var/release-sources.zip &>/dev/null
+cp E:/Repositories/symfonia/app/qsb-s-builder/src/main/resources/config/version.json var/release-sources.json
+echo "Fertig!"
+
+echo "Aufräumen..."
+rm -rf release-sources
+echo "Fertig!"
+
+echo "Veröffentlichung abgeschlossen!"
