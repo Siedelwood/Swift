@@ -32,12 +32,11 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Source: "E:\Repositories\symfonia\bin\QSBSBuilder.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\bin\qsb-s-builder.jar"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\bin\QSBSBuilder.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\qsb-s-builder\config\bundles.json"; DestDir: "{app}\config"; Flags: ignoreversion   
-Source: "E:\Repositories\symfonia\app\qsb-s-builder\config\version.json"; DestDir: "{app}\config"; Flags: ignoreversion
+Source: "E:\Repositories\symfonia\app\qsb-s-builder\config\bundles.json"; DestDir: "{%USERPROFILE}\Siedelwood\QSBSBuilder\config"; Flags: ignoreversion   
+Source: "E:\Repositories\symfonia\app\qsb-s-builder\config\version.json"; DestDir: "{%USERPROFILE}\Siedelwood\QSBSBuilder\config"; Flags: ignoreversion
 
 [UninstallDelete]
-Type: filesandordirs; Name: "{app}\sources"
-Type: filesandordirs; Name: "{app}\var"
+Type: filesandordirs; Name: "{%USERPROFILE}\Siedelwood\QSBSBuilder"
 
 [Icons]
 Name: "{group}\QSBSBuilder"; Filename: "{app}\QSBSBuilder.exe"; WorkingDir: "{app}"

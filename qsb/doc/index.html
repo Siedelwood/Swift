@@ -6399,41 +6399,19 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
         &#x3C;pre class="example"&#x3E;API.TimeLineYield(MyTimeLine);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundletravelingsalesman_API.TravelingSalesmanActivate" class="result method"><a href="html/bundletravelingsalesman.lua.html#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate</a><br>Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.<span class="docInvisibleContent">
-    Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanResume
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Spieler-ID des Händlers
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;API.TravelingSalesmanActivate(&#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
 </span></div><div id="bundletravelingsalesman_API.TravelingSalesmanCreate" class="result method"><a href="html/bundletravelingsalesman.lua.html#API.TravelingSalesmanCreate">API.TravelingSalesmanCreate</a><br>Erstellt einen fahrender Händler mit zufälligen Angeboten.<span class="docInvisibleContent">
     Erstellt einen fahrender Händler mit zufälligen Angeboten.
-&#x3C;p&#x3E; Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
- definiert werden.
- Es kann mehr als einen fahrender Händler auf der Map geben.
+&#x3C;p&#x3E; Soll immer das selbe angeboten werden, darf es nur genauso viele Angebote
+ geben, wie als Maximum gesetzt wird.
+&#x3C;p&#x3E; Es kann mehr als einen fahrender Händler auf der Map geben.
 &#x3C;p&#x3E; &#x3C;h5&#x3E;Angebote&#x3C;/h5&#x3E;
- Es sind maximal 4 Angebote pro Angebotsblock erlaubt. Es können Waren,
- Soldaten oder Entertainer angeboten werden. Es wird immer automatisch 1
- Block selektiert und die Angebote gesetzt.
+ Es können Waren, Soldaten oder Entertainer angeboten werden. Aus allen
+ definierten Angeboten werden zufällig Angebote in der angegebenen Mange
+ ausgesucht und gesetzt.
 &#x3C;p&#x3E; &#x3C;h5&#x3E;Routen&#x3C;/h5&#x3E;
- Über Waypoints wird der Weg bestimmt, den das Handelsschiff nehmen wird.
- Die Umkehrung der Route ist standardmäßig als Rückweg festgelegt. Will
- man einen anderen Rückweg, muss dieser als Reversed angegeben werden.
+ Um die Route anzugeben, wird ein Name eingegeben. Es werden alle fortlaufend
+ nummerierte Punkte mit diesem Namen gesucht. Alternativ kann auch eine
+ Liste von Punkten angegeben werden. Es muss mindestens 2 Punkte geben.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanActivate
 
 
@@ -6452,61 +6430,35 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
     &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; TraderDescription = {
-    PlayerID = &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,
-    Waypoints = {&#x3C;span class="string"&#x3E;"WP1"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"WP2"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"WP3"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"WP4"&#x3C;/span&#x3E;},
-    Offers = {
-        {
-            {&#x3C;span class="string"&#x3E;"G_Gems"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"G_Iron"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"G_Beer"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
-        },
-        {
-            {&#x3C;span class="string"&#x3E;"G_Stone"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"G_Sheep"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"G_Cheese"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"G_Milk"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-        },
-        {
-            {&#x3C;span class="string"&#x3E;"G_Grain"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"G_Broom"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"G_Sheep"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;,},
-        },
-        {
-            {&#x3C;span class="string"&#x3E;"U_CatapultCart"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"U_MilitarySword"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;,},
-            {&#x3C;span class="string"&#x3E;"U_MilitaryBow"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;,},
-        },
+    PlayerID   = &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,       &#x3C;span class="comment"&#x3E;-- Partei des Hafen
+&#x3C;/span&#x3E;    Path       = &#x3C;span class="string"&#x3E;"SH2WP"&#x3C;/span&#x3E;, &#x3C;span class="comment"&#x3E;-- Pfad (auch als Table möglich)
+&#x3C;/span&#x3E;    Duration   = &#x3C;span class="number"&#x3E;150&#x3C;/span&#x3E;,     &#x3C;span class="comment"&#x3E;-- Ankerzeit in Sekunden
+&#x3C;/span&#x3E;    Interval   = &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,       &#x3C;span class="comment"&#x3E;-- Monate zwischen zwei Anfarten
+&#x3C;/span&#x3E;    OfferCount = &#x3C;span class="number"&#x3E;4&#x3C;/span&#x3E;,       &#x3C;span class="comment"&#x3E;-- Anzahl Angebote (1 bis 4)
+&#x3C;/span&#x3E;    Offers = {
+        &#x3C;span class="comment"&#x3E;-- Angebot, Menge
+&#x3C;/span&#x3E;        {&#x3C;span class="string"&#x3E;"G_Gems"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"G_Iron"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"G_Beer"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"G_Stone"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"G_Sheep"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"G_Cheese"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"G_Milk"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"G_Grain"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"G_Broom"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"U_CatapultCart"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"U_MilitarySword"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;,},
+        {&#x3C;span class="string"&#x3E;"U_MilitaryBow"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;,}
     },
 };
 API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundletravelingsalesman_API.TravelingSalesmanDeactivate" class="result method"><a href="html/bundletravelingsalesman.lua.html#API.TravelingSalesmanDeactivate">API.TravelingSalesmanDeactivate</a><br>Deaktiviert einen fahrenden Händler.<span class="docInvisibleContent">
-    Deaktiviert einen fahrenden Händler.  Der aktuelle Zyklus wird noch beendet,
- aber danach kommt der Händler nicht mehr wieder.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanYield
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Spieler-ID des Händlers
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;API.TravelingSalesmanDeactivate(&#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
 </span></div><div id="bundletravelingsalesman_API.TravelingSalesmanDispose" class="result method"><a href="html/bundletravelingsalesman.lua.html#API.TravelingSalesmanDispose">API.TravelingSalesmanDispose</a><br>Entfernt den fahrenden Händler von dem Spieler.<span class="docInvisibleContent">
     Entfernt den fahrenden Händler von dem Spieler.  Der Spieler bleibt
  erhalten wird aber nicht mal als fahrender Händler fungieren.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Wenn gerade ein Schiff unterwegs ist oder im Hafen liegt,
+ wird es sofort gelöscht!
 &#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanDeactivate
 
 
@@ -6527,10 +6479,9 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
         &#x3C;pre class="example"&#x3E;API.TravelingSalesmanDispose(&#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundletravelingsalesman_API.TravelingSalesmanRotationMode" class="result method"><a href="html/bundletravelingsalesman.lua.html#API.TravelingSalesmanRotationMode">API.TravelingSalesmanRotationMode</a><br>Legt fest, ob die Angebote der Reihe nach durchgegangen werden (beginnt von vorn, wenn am Ende angelangt) oder zufällig ausgesucht werden.<span class="docInvisibleContent">
-    Legt fest, ob die Angebote der Reihe nach durchgegangen werden (beginnt von
- vorn, wenn am Ende angelangt) oder zufällig ausgesucht werden.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanRotationMode
+</span></div><div id="bundletravelingsalesman_API.TravelingSalesmanResume" class="result method"><a href="html/bundletravelingsalesman.lua.html#API.TravelingSalesmanResume">API.TravelingSalesmanResume</a><br>Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.<span class="docInvisibleContent">
+    Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanResume
 
 
 
@@ -6540,9 +6491,28 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
          Spieler-ID des Händlers
         &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Angebotsrotation einschalten
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.TravelingSalesmanResume(&#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="bundletravelingsalesman_API.TravelingSalesmanYield" class="result method"><a href="html/bundletravelingsalesman.lua.html#API.TravelingSalesmanYield">API.TravelingSalesmanYield</a><br>Deaktiviert einen fahrenden Händler.<span class="docInvisibleContent">
+    Deaktiviert einen fahrenden Händler.  Der aktuelle Zyklus wird noch beendet,
+ aber danach kommt der Händler nicht mehr wieder.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: TravelingSalesmanYield
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Spieler-ID des Händlers
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -6551,7 +6521,7 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
 
     &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;API.TravelingSalesmanRotationMode(&#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;, &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+        &#x3C;pre class="example"&#x3E;API.TravelingSalesmanYield(&#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
 </span></div><div id="core_API.TraverseTable" class="result method"><a href="html/core.lua.html#API.TraverseTable">API.TraverseTable</a><br>Sucht in einer eindimensionalen Table nach einem Wert.<span class="docInvisibleContent">

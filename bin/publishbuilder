@@ -23,6 +23,7 @@ echo "==== Archiv zusammenstellen ===="
 zip -r release-sources/sources/doc release-sources/sources/bundles release-sources/sources/addons release-sources/sources/external release-sources/sources release-sources/* &>/dev/null
 mv release-sources/sources/doc.zip var/release-sources.zip &>/dev/null
 cp E:/Repositories/symfonia/app/qsb-s-builder/src/main/resources/config/version.json var/release-sources.json
+cp E:/Repositories/symfonia/app/qsb-s-builder/src/main/resources/config/bundles.json var/release-bundles.json
 echo "Fertig!"
 
 echo "Aufräumen..."
