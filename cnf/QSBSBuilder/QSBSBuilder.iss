@@ -32,18 +32,15 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Source: "E:\Repositories\symfonia\bin\QSBSBuilder.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\bin\qsb-s-builder.jar"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Repositories\symfonia\bin\QSBSBuilder.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Repositories\symfonia\app\qsb-s-builder\config\bundles.json"; DestDir: "{%USERPROFILE}\Siedelwood\QSBSBuilder\config"; Flags: ignoreversion   
-Source: "E:\Repositories\symfonia\app\qsb-s-builder\config\version.json"; DestDir: "{%USERPROFILE}\Siedelwood\QSBSBuilder\config"; Flags: ignoreversion
+Source: "E:\Repositories\symfonia\app\qsb-s-builder\src\main\resources\config\bundles.json"; DestDir: "{%USERPROFILE}\Siedelwood\QSBSBuilder\config"; Flags: ignoreversion   
+Source: "E:\Repositories\symfonia\app\qsb-s-builder\src\main\resources\config\version.json"; DestDir: "{%USERPROFILE}\Siedelwood\QSBSBuilder\config"; Flags: ignoreversion
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{%USERPROFILE}\Siedelwood\QSBSBuilder"
 
 [Icons]
 Name: "{group}\QSBSBuilder"; Filename: "{app}\QSBSBuilder.exe"; WorkingDir: "{app}"
-Name: "{group}\QSBSBuilder Deinstallieren"; Filename: "{uninstallexe}"
-
-[Icons]
-Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}" 
+Name: "{group}\QSBSBuilder Deinstallieren"; Filename: "{uninstallexe}" 
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

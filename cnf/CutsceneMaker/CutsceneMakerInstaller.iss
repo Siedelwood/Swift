@@ -22,8 +22,8 @@ OutputBaseFilename=CutsceneMakerInstaller
 SetupIconFile=E:\Repositories\symfonia\bin\CutsceneMaker.ico
 Compression=lzma
 SolidCompression=yes
-ChangesEnvironment=yes
-DisableProgramGroupPage=yes
+DisableProgramGroupPage=no
+DisableDirPage=no
 
 [Languages]
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
