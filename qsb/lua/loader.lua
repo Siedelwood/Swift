@@ -166,17 +166,17 @@ SymfoniaLoader = {
 
             {
             "AddOnInteractiveChests",               true,
-            "BundleEntitySelection",
+            "BundleInteractiveObjects",
             },
 
             {
             "AddOnInteractiveMines",                true,
-            "BundleEntitySelection",
+            "BundleInteractiveObjects",
             },
 
             {
             "AddOnInteractiveSites",                true,
-            "BundleEntitySelection",
+            "BundleInteractiveObjects",
             },
 
             {

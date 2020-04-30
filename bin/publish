@@ -31,17 +31,15 @@ echo "Fertig!"
 # echo "Fertig!"
 
 echo "Kopiere Map Iconator..."
-#mkdir Release/bin/MapIconator &>/dev/null
 cp -r cnf/MapIconator/MapIconatorInstaller.exe Release/bin/MapIconatorInstaller.exe &>/dev/null
 echo "Fertig!"
 
-#echo "Siedelwood Cutscene Assistant kopieren..."
-#cp -r "bin/Siedelwood Cutscene Assistant.jar" Release/bin/SiedelwoodCutsceneAssistant.jar &>/dev/null
-#echo "Fertig!"
-
 echo "Cutscene Maker kopieren..."
-#mkdir Release/bin/CutsceneMaker &>/dev/null
 cp -r "cnf/CutsceneMaker/CutsceneMakerInstaller.exe" Release/bin/CutsceneMakerInstaller.exe &>/dev/null
+echo "Fertig!"
+
+echo "QSB Builder kopieren..."
+cp -r "cnf/QSBSBuilder/QSBSBuilderInstaller.exe" Release/bin/QSBSBuilderInstaller.exe &>/dev/null
 echo "Fertig!"
 
 # echo "Graph Viz kopieren..."

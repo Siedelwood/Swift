@@ -171,10 +171,6 @@
 	<td class="summary">Schreibt ein genaues Abbild der Table ins Log.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.EndJob">API.EndJob (_JobID)</a></td>
-	<td class="summary">Bendet einen QSB-Job.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.EnsureScriptName">API.EnsureScriptName (_EntityID)</a></td>
 	<td class="summary">Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.</td>
 	</tr>
@@ -228,10 +224,6 @@
 	<td class="summary">Prüft, ob zu der angegebenen ID ein Quest existiert.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.JobIsRunning">API.JobIsRunning (_JobID)</a></td>
-	<td class="summary">Prüft ob ein Job mit der ID existiert.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.Localize">API.Localize (_Message)</a></td>
 	<td class="summary">Ermittelt den lokalisierten Text anhand der eingestellten Sprache der QSB.</td>
 	</tr>
@@ -277,6 +269,10 @@
 	<td class="summary">Startet den Quest neu.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#API.ResumeJob">API.ResumeJob (_JobID)</a></td>
+	<td class="summary">Aktiviert einen angehaltenen Job.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#API.Round">API.Round (_Value, _DecimalDigits)</a></td>
 	<td class="summary">Rundet eine Dezimalzahl kaufmännisch ab.</td>
 	</tr>
@@ -292,6 +288,10 @@
 	<td class="name" nowrap><a href="#API.StartHiResJob">API.StartHiResJob (_Function, ...)</a></td>
 	<td class="summary">Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
  wird.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.StartInlineJob">API.StartInlineJob (_EventType, _Function, ...)</a></td>
+	<td class="summary">Erzeugt einen neuen Inline-Job.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.StartJob">API.StartJob (_Function, ...)</a></td>
@@ -338,6 +338,10 @@
 	<td class="name" nowrap><a href="#API.WinQuest">API.WinQuest (_QuestName, _Verbose)</a></td>
 	<td class="summary">Gewinnt den Quest.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.YieldJob">API.YieldJob (_JobID)</a></td>
+	<td class="summary">Pausiert einen laufenden Job.</td>
+	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
@@ -378,6 +382,11 @@
 	<tr>
 	<td class="name" nowrap><a href="#Core:IsBundleRegistered">Core:IsBundleRegistered (_Bundle)</a></td>
 	<td class="summary">Prüft, ob das Bundle bereits initalisiert ist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Core:OverwriteBasePricesAndRefreshRates">Core:OverwriteBasePricesAndRefreshRates ()</a></td>
+	<td class="summary">Fügt fehlende Einträge für Militäreinheiten bei den Basispreisen
+ und Erneuerungsraten hinzu, damit diese gehandelt werden können.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Core:RegisterAddOn">Core:RegisterAddOn (_AddOn)</a></td>
@@ -903,33 +912,6 @@ API.DumpTable(Table)</pre>
 
 </dd>
     <dt>
-    <a name = "API.EndJob"></a>
-    <strong>API.EndJob (_JobID)</strong>
-    </dt>
-    <dd>
-    Bendet einen QSB-Job.
-<p> <b>Alias</b>: EndJobEx
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_JobID</span>
-            <span class="types"><span class="type">number</span></span>
-         ID des Jobs
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.EndJob(JobID);</pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "API.EnsureScriptName"></a>
     <strong>API.EnsureScriptName (_EntityID)</strong>
     </dt>
@@ -1295,35 +1277,6 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
-    <a name = "API.JobIsRunning"></a>
-    <strong>API.JobIsRunning (_JobID)</strong>
-    </dt>
-    <dd>
-    Prüft ob ein Job mit der ID existiert.
-<p> <b>Alias</b>: JobIsRunningEx
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_JobID</span>
-            <span class="types"><span class="type">number</span></span>
-         ID des Jobs
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">if</span> API.JobIsRunning(JobID) <span class="keyword">then</span>
-    <span class="comment">-- Aktion hier
-</span><span class="keyword">end</span></pre>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "API.Localize"></a>
     <strong>API.Localize (_Message)</strong>
     </dt>
@@ -1644,6 +1597,29 @@ Copy = API.InstanceTable(Table)</pre>
 
 </dd>
     <dt>
+    <a name = "API.ResumeJob"></a>
+    <strong>API.ResumeJob (_JobID)</strong>
+    </dt>
+    <dd>
+    Aktiviert einen angehaltenen Job.
+<p> <b>Alias</b>: ResumeJob
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_JobID</span>
+            <span class="types"><span class="type">number</span></span>
+         Job-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "API.Round"></a>
     <strong>API.Round (_Value, _DecimalDigits)</strong>
     </dt>
@@ -1785,6 +1761,45 @@ Copy = API.InstanceTable(Table)</pre>
 
            <span class="types"><span class="type">number</span></span>
         Job ID
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "API.StartInlineJob"></a>
+    <strong>API.StartInlineJob (_EventType, _Function, ...)</strong>
+    </dt>
+    <dd>
+    Erzeugt einen neuen Inline-Job.
+<p> <b>Hinweis</b>: Events.LOGIC_EVENT_ENTITY_CREATED funktioniert nicht!
+<p> <b>Hinweis</b>: Wird ein Table als Argument an den Job übergeben, wird eine
+ Kopie angeleigt um Speicherprobleme zu verhindern. Es handelt sich also um
+ eine neue Table und keine Referenz!
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_EventType</span>
+            <span class="types"><span class="type">number</span></span>
+         Event-Typ
+        </li>
+        <li><span class="parameter">_Function</span>
+            <span class="types"><span class="type">function</span></span>
+         Funktionsreferenz
+        </li>
+        <li><span class="parameter">...</span>
+                    Optionale Argumente des Job
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        ID des Jobs
     </ol>
 
 
@@ -2122,6 +2137,29 @@ Copy = API.InstanceTable(Table)</pre>
 
 
 </dd>
+    <dt>
+    <a name = "API.YieldJob"></a>
+    <strong>API.YieldJob (_JobID)</strong>
+    </dt>
+    <dd>
+    Pausiert einen laufenden Job.
+<p> <b>Alias</b>: YieldJob
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_JobID</span>
+            <span class="types"><span class="type">number</span></span>
+         Job-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
@@ -2349,6 +2387,21 @@ Copy = API.InstanceTable(Table)</pre>
            <span class="types"><span class="type">boolean</span></span>
         Bundle initalisiert
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Core:OverwriteBasePricesAndRefreshRates"></a>
+    <strong>Core:OverwriteBasePricesAndRefreshRates ()</strong>
+    </dt>
+    <dd>
+    Fügt fehlende Einträge für Militäreinheiten bei den Basispreisen
+ und Erneuerungsraten hinzu, damit diese gehandelt werden können.
+
+
+
 
 
 
@@ -2799,7 +2852,7 @@ Core:ReplaceFunction(<span class="string">"A.foo"</span>, B)
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-01 18:39:52 </i>
+<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

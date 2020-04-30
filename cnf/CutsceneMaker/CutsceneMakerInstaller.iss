@@ -15,15 +15,15 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\CutsceneMaker
-DefaultGroupName=CutsceneMaker
+DefaultDirName={pf}\Siedelwood\CutsceneMaker
+DefaultGroupName=Siedelwood
 OutputDir=E:\Repositories\symfonia\cnf\CutsceneMaker
 OutputBaseFilename=CutsceneMakerInstaller
 SetupIconFile=E:\Repositories\symfonia\bin\CutsceneMaker.ico
 Compression=lzma
 SolidCompression=yes
-ChangesEnvironment=yes
-DisableProgramGroupPage=yes
+DisableProgramGroupPage=no
+DisableDirPage=no
 
 [Languages]
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
