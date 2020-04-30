@@ -212,8 +212,7 @@ function API.AddPages(_Briefing)
                 _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
                 _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.DLGCAMERA_ZOOMDEFAULT;
                 _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.DLGCAMERA_FOVDEFAULT;
-                -- Wir später sowieso überschrieben!
-                -- _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.DLGCAMERA_ROTATIONDEFAULT;
+                _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.DLGCAMERA_ROTATIONDEFAULT;
             else
                 _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
                 _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
@@ -264,17 +263,27 @@ function API.AddPages(_Briefing)
             PageName = table.remove(arg, 1);
         end
         local TargetID = GetID(arg[1]);
+        -- Position angleichen
         local Position = {arg[1], 0};
         if Logic.IsSettler(GetID(arg[1])) == 1 then
             Position[2] = 70;
         elseif Logic.IsKnight(GetID(arg[1])) then
             Position[2] = 120;
         end
+        -- Rotation angleichen
+        local Rotation;
+        if IsExisting(Position[1]) then
+            Rotation =  Logic.GetEntityOrientation(GetID(Position[1]));
+            if Logic.IsSettler(GetID(Position[1])) == 1 then
+                Rotation = Rotation + 90;
+            end
+        end
         return AP {
             Name         = PageName,
             Title        = arg[2],
             Text         = arg[3],
             Position     = Position,
+            Rotation     = Rotation,
             Action       = arg[5],
             DialogCamera = arg[4] == true,
         }
@@ -902,7 +911,7 @@ function BundleBriefingSystem.Local:PageStarted()
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", BackFlag);
 
         -- Rotation an Rotation des Ziels anpassen
-        if self.Data.CurrentPage.DialogCamera and IsExisting(self.Data.CurrentPage.Position[1]) then
+        if IsExisting(self.Data.CurrentPage.Position[1]) then
             if self.Data.CurrentPage.Rotation == nil then
                 self.Data.CurrentPage.Rotation =  Logic.GetEntityOrientation(GetID(self.Data.CurrentPage.Position[1]));
                 if Logic.IsSettler(GetID(self.Data.CurrentPage.Position[1])) == 1 then
@@ -956,7 +965,7 @@ function BundleBriefingSystem.Local:PageFinished()
     -- TODO: Warum ist PageHistory hier u.U. nil?
     -- self.Data.CurrentBriefing.PageHistory = self.Data.CurrentBriefing.PageHistory or {};
     self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
-    EndJobEx(self.Data.CurrentBriefing.FaderJob);
+    EndJob(self.Data.CurrentBriefing.FaderJob);
 end
 
 ---
@@ -1038,6 +1047,12 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
             Camera.ThroneRoom_SetPosition(PX, PY, PZ);
             Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
             Camera.ThroneRoom_SetFOV(PageFOV);
+
+            -- Bar Style
+            BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
+            if self.Data.CurrentPage.BigBars ~= nil then
+                BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentPage.BigBars);
+            end
 
             -- Splashscreen
             self:ScrollSplashscreen();
@@ -1433,8 +1448,8 @@ function BundleBriefingSystem.Local:SetSplashscreen()
         -- * 5:4 wird behandelt wie 4:3
         -- * 16:10 wird behandelt wie 4:3
         -- Spieler mit anderen Bildverhältnissen haben Pech!
-        if size[1]/size[2] >= 1.6 then
-            u0 = u0 + (u0 * 0.125);
+        if size[1]/size[2] < 1.6 then
+            u0 = 0.125;
             u1 = u1 - (u1 * 0.125);
         end
         local Image = self.Data.CurrentPage.Splashscreen;
@@ -1473,10 +1488,10 @@ function BundleBriefingSystem.Local:ScrollSplashscreen()
         -- * Alle Bildverhältnisse >= 1.6 sind 16:9
         -- * Alle Bildverhältnisse < 1.6 sind 4:3
         -- * 5:4 wird behandelt wie 4:3
-        -- * 16:10 wird behandelt wie 4:3
+        -- * 16:10 wird behandelt wie 16:9
         -- Spieler mit anderen Bildverhältnissen haben Pech!
-        if size[1]/size[2] >= 1.6 then
-            u0 = u0 + (u0 * 0.125);
+        if size[1]/size[2] < 1.6 then
+            u0 = u0 + 0.125;
             u1 = u1 - (u1 * 0.125);
         end
         XGUIEng.SetMaterialUV(SSW, 0, u0, v0, u1, v1);
@@ -1571,8 +1586,6 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 1);
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0, 400, 600);
     XGUIEng.SetMaterialAlpha("/InGame/ThroneRoom/KnightInfo/LeftFrame/KnightBG", 0, 0);
-
-    BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
 
     GUI.ClearSelection();
     GUI.ForbidContextSensitiveCommandsInSelectionState();
