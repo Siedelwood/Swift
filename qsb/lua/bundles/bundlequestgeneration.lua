@@ -22,6 +22,26 @@ BundleQuestGeneration = {};
 API = API or {};
 QSB = QSB or {};
 
+--
+-- Typen der Statusänderungsereignisse
+--
+-- @field BeforeTrigger Callback wird vor Auslösung ausgeführt.
+-- @field AfterTrigger  Callback wird nach Auslösung ausgeführt.
+-- @field BeforeSuccess Callback wird vor erfolgreichem Abschluss ausgeführt.
+-- @field AfterSuccess  Callback wird nach den Rewards ausgeführt.
+-- @field BeforeFailure Callback wird vor dem Scheitern ausgeführt.
+-- @field AfterFailure  Callback wird nach den Reprisals ausgeführt.
+-- @local
+--
+QSB.QuestStateChange = {
+    BeforeTrigger   = 1,
+    AfterTrigger    = 2,
+    BeforeSuccess   = 3,
+    AfterSuccess    = 4,
+    BeforeFailure   = 7,
+    AfterFailure    = 8,
+}
+
 QSB.GeneratedQuestDialogs = {};
 
 -- -------------------------------------------------------------------------- --
@@ -72,7 +92,6 @@ QSB.GeneratedQuestDialogs = {};
 --
 function API.CreateQuest(_Data)
     if GUI then
-        API.Fatal("API.CreateQuest: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:QuestCreateNewQuest(_Data);
@@ -106,7 +125,6 @@ AddQuest = API.CreateQuest;
 --
 function API.CreateQuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor)
     if GUI then
-        API.Fatal("API.CreateQuestMessage: Could not execute in local script!");
         return;
     end
     return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
@@ -157,7 +175,6 @@ QuestMessage = API.CreateQuestMessage;
 --
 function API.CreateQuestDialog(_Messages)
     if GUI then
-        API.Fatal("API.CreateQuestDialog: Could not execute in local script!");
         return;
     end
 
@@ -202,7 +219,6 @@ QuestDialog = API.CreateQuestDialog;
 --
 function API.InterruptQuestDialog(_Dialog)
     if GUI then
-        API.Fatal("API.InterruptQuestDialog: Could not execute in local script!");
         return;
     end
 
@@ -234,7 +250,6 @@ QuestDialogInterrupt = API.InterruptQuestDialog;
 --
 function API.RestartQuestDialog(_Dialog)
     if GUI then
-        API.Fatal("API.ResetQuestDialog: Could not execute in local script!");
         return;
     end
 
@@ -250,9 +265,37 @@ function API.RestartQuestDialog(_Dialog)
         Quests[GetQuestID(QuestDialog[i])].Triggers[1][2][1].WaitTimeTimer = nil;
         API.RestartQuest(QuestDialog[i], true);
     end
-    Quests[GetQuestID(QuestDialog[1])]:Trigger();
+
+    local CurrentQuest = Quests[GetQuestID(QuestDialog[1])];
+    BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeTrigger, CurrentQuest);
+    CurrentQuest:Trigger();
+    BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.AfterTrigger, CurrentQuest);
 end
 QuestDialogRestart = API.RestartQuestDialog;
+
+---
+-- Fügt ein Callback für eine Statusänderung eines Quest hinzu.
+--
+-- Es wird mindestens die Angabe des Typ (Type) und der Funktion (Action)
+-- in der Übergabe benötigt.
+--
+-- <b>Hinweis</b>: Nur im globalen Skript verfügbar!
+--
+-- @param[type=table] _Data Daten des Callback
+-- @see QSB.QuestStateChange
+-- @within Internal
+-- @local
+--
+function API.AddQuestStateChangedCallback(_Data)
+    if GUI or type(_Data) ~= "table" then
+        return;
+    end
+    if type(_Data.Action) ~= "function" then
+        fatal("API.AddQuestStateChangedCallback: _Data.Action must be a function reference!");
+        return;
+    end
+    table.insert(BundleQuestGeneration.Global.Data.QuestStatusChangeCallbacks, _Data);
+end
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -262,6 +305,7 @@ BundleQuestGeneration = {
     Global = {
         Data = {
             QuestMessageID = 0,
+            QuestStatusChangeCallbacks = {},
         }
     },
 };
@@ -275,6 +319,7 @@ BundleQuestGeneration = {
 -- @local
 --
 function BundleQuestGeneration.Global:Install()
+    Quest_Loop = self.QuestLoop;
 end
 
 ---
@@ -502,6 +547,120 @@ function BundleQuestGeneration.Global:GetFreeSpaceInlineTrigger()
         }
     };
 end
+
+---
+-- Fürt für jeden Quest das entsprechende Callback aus, wenn sich der Zustand
+-- des Quests ändert.
+--
+-- Ein Callback erhält als Parameter seine eigenen Daten und den Quest.
+--
+-- <b>Hinweis</b>: Bei Verwendung von :Fail() , :Trigger() oder :Success() ,
+-- müssen diese Funktion aufgerufen werden.
+--
+-- @param[type=number] _State Statustyp
+-- @param[type=table]  _Quest Quest
+-- @within Internal
+-- @local
+--
+function BundleQuestGeneration.Global:OnQuestStateSupposedChanged(_State, _Quest)
+    for k, v in pairs(self.Data.QuestStatusChangeCallbacks) do
+        if v then
+            if v.Type == _State then
+                v.Action(v, _Quest);
+            end
+        end
+    end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Neue Implementierung des Quest Loop um Statuscallbacks auszulösen.
+-- @param[type=table] _arguments Argumente
+-- @within Internal
+-- @local
+--
+function BundleQuestGeneration.Global.QuestLoop(_arguments)
+    local self = JobQueue_GetParameter(_arguments);
+    if self.LoopCallback ~= nil then
+        self:LoopCallback();
+    end
+    if self.State == QuestState.NotTriggered then
+        local triggered = true;
+        for i = 1, self.Triggers[0] do
+            triggered = triggered and self:IsTriggerActive(self.Triggers[i]);
+        end
+        if triggered then
+            self:SetMsgKeyOverride();
+            self:SetIconOverride();
+            
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeTrigger, self);
+            self:Trigger();
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.AfterTrigger, self);
+        end
+    elseif self.State == QuestState.Active then
+        local allTrue = true;
+        local anyFalse = false;
+        for i = 1, self.Objectives[0] do
+            local completed = self:IsObjectiveCompleted(self.Objectives[i]);
+            if self.Objectives[i].Type == Objective.Deliver and completed == nil then
+                if self.Objectives[i].Data[4] == nil then
+                    self.Objectives[i].Data[4] = 0;
+                end
+                if self.Objectives[i].Data[3] ~= nil then
+                    self.Objectives[i].Data[4] = self.Objectives[i].Data[4] + 1;
+                end
+                
+                local st = self.StartTime;
+                local sd = self.Duration;
+                local dt = self.Objectives[i].Data[4];
+                local sum = self.StartTime + self.Duration - self.Objectives[i].Data[4];
+                if self.Duration > 0 and self.StartTime + self.Duration + self.Objectives[i].Data[4] < Logic.GetTime() then
+                    completed = false;
+                end
+            else
+                if self.Duration > 0 and self.StartTime + self.Duration < Logic.GetTime() then
+                    if completed == nil and
+                        (self.Objectives[i].Type == Objective.Protect or self.Objectives[i].Type == Objective.Dummy or self.Objectives[i].Type == Objective.NoChange) then
+                        completed = true;
+                    elseif completed == nil or self.Objectives[i].Type == Objective.DummyFail then
+                        completed = false;
+                   end
+                end
+            end
+            allTrue = (completed == true) and allTrue;
+            anyFalse = completed == false or anyFalse;
+        end
+        if allTrue then
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeSuccess, self);
+            self:Success();
+        elseif anyFalse then
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeFailure, self);
+            self:Fail();
+        end
+    else
+        if self.IsEventQuest == true then
+            Logic.ExecuteInLuaLocalState("StopEventMusic(nil, "..self.ReceivingPlayer..")");
+        end
+        if self.Result == QuestResult.Success then
+            for i = 1, self.Rewards[0] do
+                self:AddReward(self.Rewards[i]);
+            end
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.AfterSuccess, self);
+        elseif self.Result == QuestResult.Failure then
+            for i = 1, self.Reprisals[0] do
+                self:AddReprisal(self.Reprisals[i]);
+            end
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.AfterFailure, self);
+        end
+        if self.EndCallback ~= nil then
+            self:EndCallback();
+        end
+        return true;
+    end
+end
+
+-- -------------------------------------------------------------------------- --
 
 Core:RegisterBundle("BundleQuestGeneration");
 

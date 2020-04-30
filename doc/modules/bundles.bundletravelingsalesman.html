@@ -34,9 +34,9 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Local_Functions">Local Functions</a></li>
 <li><a href="#Anwenderfunktionen">Anwenderfunktionen</a></li>
 <li><a href="#Internal">Internal</a></li>
-<li><a href="#QSB_TravelingSalesman">QSB.TravelingSalesman</a></li>
 </ul>
 
 
@@ -103,154 +103,398 @@
 </p>
 
 
+<h2><a href="#Local_Functions">Local Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:CreateOffers">BundleTravelingSalesman.Global:CreateOffers (_Offers, _TraderID)</a></td>
+	<td class="summary">Erzeugt die Angebote für das angegebene Lagerhaus.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:DisplayQuestMessage">BundleTravelingSalesman.Global:DisplayQuestMessage (_PlayerID, _Text)</a></td>
+	<td class="summary">Zeigt eine Quest Message an.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:GetHarborByShipID">BundleTravelingSalesman.Global:GetHarborByShipID (_ShipID)</a></td>
+	<td class="summary">Ermitteld den Hafen des angegeben Schiffes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:GetHumanPlayer">BundleTravelingSalesman.Global:GetHumanPlayer ()</a></td>
+	<td class="summary">Gibt die ID des ersten menschlichen Spielers zurück.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:RegisterHarbor">BundleTravelingSalesman.Global:RegisterHarbor (_Harbor)</a></td>
+	<td class="summary">Registiert einen Hafen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:ShipAtDock">BundleTravelingSalesman.Global:ShipAtDock (_ShipID)</a></td>
+	<td class="summary">Erzeugt die Angebote sobald das Schiff im Hafen anlegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:ShipHasLeft">BundleTravelingSalesman.Global:ShipHasLeft (_ShipID)</a></td>
+	<td class="summary">Entfernt die Angebote und setzt die Werte zurück, sobald das Schiff abfährt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:ShipLeave">BundleTravelingSalesman.Global:ShipLeave (_Harbor)</a></td>
+	<td class="summary">Lässt das Schiff aus dem Hafen abfahren.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:SpawnShip">BundleTravelingSalesman.Global:SpawnShip (_Harbor)</a></td>
+	<td class="summary">Erzeugt das Schiff und lässt es zum Hafen fahren.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesmanController">BundleTravelingSalesman.Global:TravelingSalesmanController ()</a></td>
+	<td class="summary">Steuert die Abfahrt der Schiffe für alle Häfen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TravelingSalesmanEndOfMonth">BundleTravelingSalesman.Global:TravelingSalesmanEndOfMonth ()</a></td>
+	<td class="summary">Steuert die Anfahrt der Schiffe für alle Häfen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TriggerShipAtDockMessage">BundleTravelingSalesman.Global:TriggerShipAtDockMessage (_PlayerID)</a></td>
+	<td class="summary">Zeigt eine Quest Message an, dass das Schiff im Hafen vor Anker liegt.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:TriggerShipIsLeavingDockMessage">BundleTravelingSalesman.Global:TriggerShipIsLeavingDockMessage (_PlayerID)</a></td>
+	<td class="summary">Zeigt eine Quest Message an, dass das Schiff den Hafen verlassen hat.</td>
+	</tr>
+</table>
 <h2><a href="#Anwenderfunktionen">Anwenderfunktionen</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#API.TravelingSalesmanActivate">API.TravelingSalesmanActivate (_PlayerID)</a></td>
-	<td class="summary">Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.</td>
+	<td class="name" nowrap><a href="#API.ConvertOldOfferFormat">API.ConvertOldOfferFormat (_Offers)</a></td>
+	<td class="summary">Konvertiert die Angebote, falls sie im alten Format angegeben wurden.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#API.TravelingSalesmanCreate">API.TravelingSalesmanCreate (_Description)</a></td>
 	<td class="summary">Erstellt einen fahrender Händler mit zufälligen Angeboten.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.TravelingSalesmanDeactivate">API.TravelingSalesmanDeactivate (_PlayerID)</a></td>
-	<td class="summary">Deaktiviert einen fahrenden Händler.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#API.TravelingSalesmanDispose">API.TravelingSalesmanDispose (_PlayerID)</a></td>
 	<td class="summary">Entfernt den fahrenden Händler von dem Spieler.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API.TravelingSalesmanRotationMode">API.TravelingSalesmanRotationMode (_PlayerID, _Flag)</a></td>
-	<td class="summary">Legt fest, ob die Angebote der Reihe nach durchgegangen werden (beginnt von
- vorn, wenn am Ende angelangt) oder zufällig ausgesucht werden.</td>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanResume">API.TravelingSalesmanResume (_PlayerID)</a></td>
+	<td class="summary">Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API.TravelingSalesmanYield">API.TravelingSalesmanYield (_PlayerID)</a></td>
+	<td class="summary">Deaktiviert einen fahrenden Händler.</td>
 	</tr>
 </table>
 <h2><a href="#Internal">Internal</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global.TravelingSalesmanController">BundleTravelingSalesman.Global.TravelingSalesmanController ()</a></td>
-	<td class="summary">Ruft die Loop-Funktion aller Fahrenden Händler auf.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#BundleTravelingSalesman.Global:Install">BundleTravelingSalesman.Global:Install ()</a></td>
 	<td class="summary">Initialisiert das Bundle im globalen Skript.</td>
 	</tr>
 </table>
-<h2><a href="#QSB_TravelingSalesman">QSB.TravelingSalesman</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:Activate">QSB.TravelingSalesman:Activate ()</a></td>
-	<td class="summary">Startet einen initialisierten Händler.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:AddApperance">QSB.TravelingSalesman:AddApperance (_Start, _End)</a></td>
-	<td class="summary">Fügt einen Zeitraum zur Aufenthalt des Fliegenden Händlers hinzu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:AddOffer">QSB.TravelingSalesman:AddOffer (...)</a></td>
-	<td class="summary">Fügt dem Fahrenden Händler einen Angebotsblock hinzu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:ClearApperance">QSB.TravelingSalesman:ClearApperance ()</a></td>
-	<td class="summary">Löscht die Aufenthaltszeitspanne des Fahrenden Händlers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:ClearOffers">QSB.TravelingSalesman:ClearOffers ()</a></td>
-	<td class="summary">Entfernt alle Angebotsblöcke des Fahrenden Händlers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:Deactivate">QSB.TravelingSalesman:Deactivate ()</a></td>
-	<td class="summary">Stoppt einen aktiven Händler, sodass der nächste Zyklus nicht mehr startet.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:DisplayInfoMessage">QSB.TravelingSalesman:DisplayInfoMessage ()</a></td>
-	<td class="summary">Zeigt die Info-Nachricht an, wenn ein Schiff im Hafen anlegt.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:Dispose">QSB.TravelingSalesman:Dispose ()</a></td>
-	<td class="summary">Invalidiert die Instanz dieses Fliegenden Händlers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:GetHumanPlayer">QSB.TravelingSalesman:GetHumanPlayer ()</a></td>
-	<td class="summary">Gibt die ID des ersten aktiven menschlichen Spielers zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:GetInstance">QSB.TravelingSalesman:GetInstance (_PlayerID)</a></td>
-	<td class="summary">Gibt die Instanz des Fahrenden Händlers für die Player-ID zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:IntroduceNewOffer">QSB.TravelingSalesman:IntroduceNewOffer ()</a></td>
-	<td class="summary">Fügt dem Fahrenden Händler ein neues Angebot hinzu.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:Loop">QSB.TravelingSalesman:Loop ()</a></td>
-	<td class="summary">Steuert den Ablauf des fliegenden Händlers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:New">QSB.TravelingSalesman:New (_PlayerID)</a></td>
-	<td class="summary">Konstruktor</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:NextOffer">QSB.TravelingSalesman:NextOffer ()</a></td>
-	<td class="summary">Gibt einen Block Angebote für diesen Fahrenden Händler zurück.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:SetApperance">QSB.TravelingSalesman:SetApperance (_Apperance)</a></td>
-	<td class="summary">Setzt die Aufenthaltszeitspanne des Fliegenden Händlers</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:SetApproachRoute">QSB.TravelingSalesman:SetApproachRoute (_List)</a></td>
-	<td class="summary">Setzt die Route für die Ankunft des Fahrenden Händlers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:SetOffers">QSB.TravelingSalesman:SetOffers (_Offers)</a></td>
-	<td class="summary">Setzt eine Liste von Angebotsblöcken für den Fahrenden Händler.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:SetReturnRouteRoute">QSB.TravelingSalesman:SetReturnRouteRoute (_List)</a></td>
-	<td class="summary">Setzt die Wegpunkte für die Abfahrt des Fliegenden Händlers.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#QSB.TravelingSalesman:UseOfferRotation">QSB.TravelingSalesman:UseOfferRotation (_Flag)</a></td>
-	<td class="summary">Aktiviert oder deaktiviert die sequentielle Abarbeitung der Angebote dieses
- Fliegenden Händlers.</td>
-	</tr>
-</table>
 
 <br/>
 <br/>
 
 
-    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+    <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
 
     <dl class="function">
     <dt>
-    <a name = "API.TravelingSalesmanActivate"></a>
-    <strong>API.TravelingSalesmanActivate (_PlayerID)</strong>
+    <a name = "BundleTravelingSalesman.Global:CreateOffers"></a>
+    <strong>BundleTravelingSalesman.Global:CreateOffers (_Offers, _TraderID)</strong>
     </dt>
     <dd>
-    Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.
-<p> <b>Alias</b>: TravelingSalesmanResume
-
+    Erzeugt die Angebote für das angegebene Lagerhaus.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">_PlayerID</span>
+        <li><span class="parameter">_Offers</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+           Angebote
+        </li>
+        <li><span class="parameter">_TraderID</span>
             <span class="types"><span class="type">number</span></span>
-         Spieler-ID des Händlers
+         ID Lagerhaus
         </li>
     </ul>
 
 
 
 
-    <h3>Usage:</h3>
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:DisplayQuestMessage"></a>
+    <strong>BundleTravelingSalesman.Global:DisplayQuestMessage (_PlayerID, _Text)</strong>
+    </dt>
+    <dd>
+    Zeigt eine Quest Message an.
+
+
+    <h3>Parameters:</h3>
     <ul>
-        <pre class="example">API.TravelingSalesmanActivate(<span class="number">2</span>);</pre>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Player-ID
+        </li>
+        <li><span class="parameter">_Text</span>
+         (Table oder String)
+        </li>
     </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:GetHarborByShipID"></a>
+    <strong>BundleTravelingSalesman.Global:GetHarborByShipID (_ShipID)</strong>
+    </dt>
+    <dd>
+    Ermitteld den Hafen des angegeben Schiffes.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ShipID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Schiffes
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Hafen Model
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:GetHumanPlayer"></a>
+    <strong>BundleTravelingSalesman.Global:GetHumanPlayer ()</strong>
+    </dt>
+    <dd>
+    Gibt die ID des ersten menschlichen Spielers zurück.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        Menschlicher Spieler
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:RegisterHarbor"></a>
+    <strong>BundleTravelingSalesman.Global:RegisterHarbor (_Harbor)</strong>
+    </dt>
+    <dd>
+    Registiert einen Hafen.  Kann benutzt werden um Häfen zu überschreiben.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Harbor</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Harbor Model
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:ShipAtDock"></a>
+    <strong>BundleTravelingSalesman.Global:ShipAtDock (_ShipID)</strong>
+    </dt>
+    <dd>
+    Erzeugt die Angebote sobald das Schiff im Hafen anlegt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ShipID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Schiffes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:ShipHasLeft"></a>
+    <strong>BundleTravelingSalesman.Global:ShipHasLeft (_ShipID)</strong>
+    </dt>
+    <dd>
+    Entfernt die Angebote und setzt die Werte zurück, sobald das Schiff abfährt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_ShipID</span>
+            <span class="types"><span class="type">number</span></span>
+         ID des Schiffes
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:ShipLeave"></a>
+    <strong>BundleTravelingSalesman.Global:ShipLeave (_Harbor)</strong>
+    </dt>
+    <dd>
+    Lässt das Schiff aus dem Hafen abfahren.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Harbor</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Harbor Model
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:SpawnShip"></a>
+    <strong>BundleTravelingSalesman.Global:SpawnShip (_Harbor)</strong>
+    </dt>
+    <dd>
+    Erzeugt das Schiff und lässt es zum Hafen fahren.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Harbor</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Harbor Model
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesmanController"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesmanController ()</strong>
+    </dt>
+    <dd>
+    Steuert die Abfahrt der Schiffe für alle Häfen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TravelingSalesmanEndOfMonth"></a>
+    <strong>BundleTravelingSalesman.Global:TravelingSalesmanEndOfMonth ()</strong>
+    </dt>
+    <dd>
+    Steuert die Anfahrt der Schiffe für alle Häfen.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TriggerShipAtDockMessage"></a>
+    <strong>BundleTravelingSalesman.Global:TriggerShipAtDockMessage (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Zeigt eine Quest Message an, dass das Schiff im Hafen vor Anker liegt.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Player-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BundleTravelingSalesman.Global:TriggerShipIsLeavingDockMessage"></a>
+    <strong>BundleTravelingSalesman.Global:TriggerShipIsLeavingDockMessage (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Zeigt eine Quest Message an, dass das Schiff den Hafen verlassen hat.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Player-ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Anwenderfunktionen"></a>Anwenderfunktionen</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API.ConvertOldOfferFormat"></a>
+    <strong>API.ConvertOldOfferFormat (_Offers)</strong>
+    </dt>
+    <dd>
+    Konvertiert die Angebote, falls sie im alten Format angegeben wurden.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_Offers</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Angebotsliste
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Umgeformte Angebote
+    </ol>
+
+
+
 
 </dd>
     <dt>
@@ -259,17 +503,17 @@
     </dt>
     <dd>
     Erstellt einen fahrender Händler mit zufälligen Angeboten.
-<p> Soll immer das selbe angeboten werden, darf nur ein Angebotsblock
- definiert werden.
- Es kann mehr als einen fahrender Händler auf der Map geben.
+<p> Soll immer das selbe angeboten werden, darf es nur genauso viele Angebote
+ geben, wie als Maximum gesetzt wird.
+<p> Es kann mehr als einen fahrender Händler auf der Map geben.
 <p> <h5>Angebote</h5>
- Es sind maximal 4 Angebote pro Angebotsblock erlaubt. Es können Waren,
- Soldaten oder Entertainer angeboten werden. Es wird immer automatisch 1
- Block selektiert und die Angebote gesetzt.
+ Es können Waren, Soldaten oder Entertainer angeboten werden. Aus allen
+ definierten Angeboten werden zufällig Angebote in der angegebenen Mange
+ ausgesucht und gesetzt.
 <p> <h5>Routen</h5>
- Über Waypoints wird der Weg bestimmt, den das Handelsschiff nehmen wird.
- Die Umkehrung der Route ist standardmäßig als Rückweg festgelegt. Will
- man einen anderen Rückweg, muss dieser als Reversed angegeben werden.
+ Um die Route anzugeben, wird ein Name eingegeben. Es werden alle fortlaufend
+ nummerierte Punkte mit diesem Namen gesucht. Alternativ kann auch eine
+ Liste von Punkten angegeben werden. Es muss mindestens 2 Punkte geben.
 <p> <b>Alias</b>: TravelingSalesmanActivate
 
 
@@ -288,61 +532,28 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example"><span class="keyword">local</span> TraderDescription = {
-    PlayerID = <span class="number">2</span>,
-    Waypoints = {<span class="string">"WP1"</span>, <span class="string">"WP2"</span>, <span class="string">"WP3"</span>, <span class="string">"WP4"</span>},
-    Offers = {
-        {
-            {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
-            {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
-            {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
-        },
-        {
-            {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
-            {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
-            {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
-            {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
-        },
-        {
-            {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
-            {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
-            {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
-        },
-        {
-            {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
-            {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
-            {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,},
-        },
+    PlayerID   = <span class="number">2</span>,       <span class="comment">-- Partei des Hafen
+</span>    Path       = <span class="string">"SH2WP"</span>, <span class="comment">-- Pfad (auch als Table möglich)
+</span>    Duration   = <span class="number">150</span>,     <span class="comment">-- Ankerzeit in Sekunden
+</span>    Interval   = <span class="number">2</span>,       <span class="comment">-- Monate zwischen zwei Anfarten
+</span>    OfferCount = <span class="number">4</span>,       <span class="comment">-- Anzahl Angebote (1 bis 4)
+</span>    Offers = {
+        <span class="comment">-- Angebot, Menge
+</span>        {<span class="string">"G_Gems"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Iron"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Beer"</span>, <span class="number">2</span>,},
+        {<span class="string">"G_Stone"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Sheep"</span>, <span class="number">1</span>,},
+        {<span class="string">"G_Cheese"</span>, <span class="number">2</span>,},
+        {<span class="string">"G_Milk"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Grain"</span>, <span class="number">5</span>,},
+        {<span class="string">"G_Broom"</span>, <span class="number">2</span>,},
+        {<span class="string">"U_CatapultCart"</span>, <span class="number">1</span>,},
+        {<span class="string">"U_MilitarySword"</span>, <span class="number">3</span>,},
+        {<span class="string">"U_MilitaryBow"</span>, <span class="number">3</span>,}
     },
 };
 API.TravelingSalesmanCreate(TraderDescription);</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "API.TravelingSalesmanDeactivate"></a>
-    <strong>API.TravelingSalesmanDeactivate (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Deaktiviert einen fahrenden Händler.  Der aktuelle Zyklus wird noch beendet,
- aber danach kommt der Händler nicht mehr wieder.
-<p> <b>Alias</b>: TravelingSalesmanYield
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-         Spieler-ID des Händlers
-        </li>
-    </ul>
-
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">API.TravelingSalesmanDeactivate(<span class="number">2</span>);</pre>
     </ul>
 
 </dd>
@@ -353,6 +564,8 @@ API.TravelingSalesmanCreate(TraderDescription);</pre>
     <dd>
     Entfernt den fahrenden Händler von dem Spieler.  Der Spieler bleibt
  erhalten wird aber nicht mal als fahrender Händler fungieren.
+<p> <b>Hinweis</b>: Wenn gerade ein Schiff unterwegs ist oder im Hafen liegt,
+ wird es sofort gelöscht!
 <p> <b>Alias</b>: TravelingSalesmanDeactivate
 
 
@@ -375,13 +588,12 @@ API.TravelingSalesmanCreate(TraderDescription);</pre>
 
 </dd>
     <dt>
-    <a name = "API.TravelingSalesmanRotationMode"></a>
-    <strong>API.TravelingSalesmanRotationMode (_PlayerID, _Flag)</strong>
+    <a name = "API.TravelingSalesmanResume"></a>
+    <strong>API.TravelingSalesmanResume (_PlayerID)</strong>
     </dt>
     <dd>
-    Legt fest, ob die Angebote der Reihe nach durchgegangen werden (beginnt von
- vorn, wenn am Ende angelangt) oder zufällig ausgesucht werden.
-<p> <b>Alias</b>: TravelingSalesmanRotationMode
+    Aktiviert einen fahrenden Händler, der zuvor deaktiviert wurde.
+<p> <b>Alias</b>: TravelingSalesmanResume
 
 
 
@@ -391,9 +603,33 @@ API.TravelingSalesmanCreate(TraderDescription);</pre>
             <span class="types"><span class="type">number</span></span>
          Spieler-ID des Händlers
         </li>
-        <li><span class="parameter">_Flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Angebotsrotation einschalten
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">API.TravelingSalesmanResume(<span class="number">2</span>);</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API.TravelingSalesmanYield"></a>
+    <strong>API.TravelingSalesmanYield (_PlayerID)</strong>
+    </dt>
+    <dd>
+    Deaktiviert einen fahrenden Händler.  Der aktuelle Zyklus wird noch beendet,
+ aber danach kommt der Händler nicht mehr wieder.
+<p> <b>Alias</b>: TravelingSalesmanYield
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_PlayerID</span>
+            <span class="types"><span class="type">number</span></span>
+         Spieler-ID des Händlers
         </li>
     </ul>
 
@@ -402,7 +638,7 @@ API.TravelingSalesmanCreate(TraderDescription);</pre>
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">API.TravelingSalesmanRotationMode(<span class="number">2</span>, <span class="keyword">true</span>);</pre>
+        <pre class="example">API.TravelingSalesmanYield(<span class="number">2</span>);</pre>
     </ul>
 
 </dd>
@@ -410,20 +646,6 @@ API.TravelingSalesmanCreate(TraderDescription);</pre>
     <h2 class="section-header "><a name="Internal"></a>Internal</h2>
 
     <dl class="function">
-    <dt>
-    <a name = "BundleTravelingSalesman.Global.TravelingSalesmanController"></a>
-    <strong>BundleTravelingSalesman.Global.TravelingSalesmanController ()</strong>
-    </dt>
-    <dd>
-    Ruft die Loop-Funktion aller Fahrenden Händler auf.
-
-
-
-
-
-
-
-</dd>
     <dt>
     <a name = "BundleTravelingSalesman.Global:Install"></a>
     <strong>BundleTravelingSalesman.Global:Install ()</strong>
@@ -439,453 +661,13 @@ API.TravelingSalesmanCreate(TraderDescription);</pre>
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="QSB_TravelingSalesman"></a>QSB.TravelingSalesman</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "QSB.TravelingSalesman:Activate"></a>
-    <strong>QSB.TravelingSalesman:Activate ()</strong>
-    </dt>
-    <dd>
-    Startet einen initialisierten Händler.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Instanz
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:AddApperance"></a>
-    <strong>QSB.TravelingSalesman:AddApperance (_Start, _End)</strong>
-    </dt>
-    <dd>
-    Fügt einen Zeitraum zur Aufenthalt des Fliegenden Händlers hinzu.  Ein
- Zeitraum besteht aus Startmonat und Endmonat.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Start</span>
-
-        </li>
-        <li><span class="parameter">_End</span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:AddOffer"></a>
-    <strong>QSB.TravelingSalesman:AddOffer (...)</strong>
-    </dt>
-    <dd>
-    Fügt dem Fahrenden Händler einen Angebotsblock hinzu.  Es wird zuerst der
- Warentyp als String und danach die Anzahl angegeben.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">...</span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:ClearApperance"></a>
-    <strong>QSB.TravelingSalesman:ClearApperance ()</strong>
-    </dt>
-    <dd>
-    Löscht die Aufenthaltszeitspanne des Fahrenden Händlers.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:ClearOffers"></a>
-    <strong>QSB.TravelingSalesman:ClearOffers ()</strong>
-    </dt>
-    <dd>
-    Entfernt alle Angebotsblöcke des Fahrenden Händlers.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:Deactivate"></a>
-    <strong>QSB.TravelingSalesman:Deactivate ()</strong>
-    </dt>
-    <dd>
-    Stoppt einen aktiven Händler, sodass der nächste Zyklus nicht mehr startet.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Instanz
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:DisplayInfoMessage"></a>
-    <strong>QSB.TravelingSalesman:DisplayInfoMessage ()</strong>
-    </dt>
-    <dd>
-    Zeigt die Info-Nachricht an, wenn ein Schiff im Hafen anlegt.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:Dispose"></a>
-    <strong>QSB.TravelingSalesman:Dispose ()</strong>
-    </dt>
-    <dd>
-    Invalidiert die Instanz dieses Fliegenden Händlers.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:GetHumanPlayer"></a>
-    <strong>QSB.TravelingSalesman:GetHumanPlayer ()</strong>
-    </dt>
-    <dd>
-    Gibt die ID des ersten aktiven menschlichen Spielers zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-        Player-ID
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:GetInstance"></a>
-    <strong>QSB.TravelingSalesman:GetInstance (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Gibt die Instanz des Fahrenden Händlers für die Player-ID zurück.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-         Player-ID des Händlers
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Instanz
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:IntroduceNewOffer"></a>
-    <strong>QSB.TravelingSalesman:IntroduceNewOffer ()</strong>
-    </dt>
-    <dd>
-    Fügt dem Fahrenden Händler ein neues Angebot hinzu.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:Loop"></a>
-    <strong>QSB.TravelingSalesman:Loop ()</strong>
-    </dt>
-    <dd>
-    Steuert den Ablauf des fliegenden Händlers.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:New"></a>
-    <strong>QSB.TravelingSalesman:New (_PlayerID)</strong>
-    </dt>
-    <dd>
-    Konstruktor
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_PlayerID</span>
-            <span class="types"><span class="type">number</span></span>
-         Player-ID des Händlers
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:NextOffer"></a>
-    <strong>QSB.TravelingSalesman:NextOffer ()</strong>
-    </dt>
-    <dd>
-    Gibt einen Block Angebote für diesen Fahrenden Händler zurück.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        Angebote
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:SetApperance"></a>
-    <strong>QSB.TravelingSalesman:SetApperance (_Apperance)</strong>
-    </dt>
-    <dd>
-    Setzt die Aufenthaltszeitspanne des Fliegenden Händlers
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Apperance</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Aufenthaltszeitspanne
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:SetApproachRoute"></a>
-    <strong>QSB.TravelingSalesman:SetApproachRoute (_List)</strong>
-    </dt>
-    <dd>
-    Setzt die Route für die Ankunft des Fahrenden Händlers.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_List</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Liste der Wegpunkte
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:SetOffers"></a>
-    <strong>QSB.TravelingSalesman:SetOffers (_Offers)</strong>
-    </dt>
-    <dd>
-    Setzt eine Liste von Angebotsblöcken für den Fahrenden Händler.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Offers</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Definierte Angebotsblöcke
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:SetReturnRouteRoute"></a>
-    <strong>QSB.TravelingSalesman:SetReturnRouteRoute (_List)</strong>
-    </dt>
-    <dd>
-    Setzt die Wegpunkte für die Abfahrt des Fliegenden Händlers.  Ist die Liste
- nil, werden die Wegpunkte für die Anfahrt invertiert.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_List</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Liste der Wegpunkte
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "QSB.TravelingSalesman:UseOfferRotation"></a>
-    <strong>QSB.TravelingSalesman:UseOfferRotation (_Flag)</strong>
-    </dt>
-    <dd>
-    Aktiviert oder deaktiviert die sequentielle Abarbeitung der Angebote dieses
- Fliegenden Händlers.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">_Flag</span>
-            <span class="types"><span class="type">boolean</span></span>
-         Angebote sequenziell durchlaufen
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        self
-    </ol>
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-01 18:39:52 </i>
+<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

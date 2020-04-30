@@ -7002,9 +7002,15 @@ end
 function b_Reward_QuestRestartForceActive:CustomFunction(_Quest)
     local QuestID, Quest = self:ResetQuest(_Quest);
     if QuestID then
-        Quest:SetMsgKeyOverride()
-        Quest:SetIconOverride()
-        Quest:Trigger()
+        Quest:SetMsgKeyOverride();
+        Quest:SetIconOverride();
+        if BundleQuestGeneration then
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.BeforeTrigger, Quest);
+        end
+        Quest:Trigger();
+        if BundleQuestGeneration then
+            BundleQuestGeneration.Global:OnQuestStateSupposedChanged(QSB.QuestStateChange.AfterTrigger, Quest);
+        end
     end
 end
 

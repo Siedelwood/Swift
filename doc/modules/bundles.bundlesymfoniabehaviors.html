@@ -107,8 +107,7 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Global.OnQuestTriggered">BundleSymfoniaBehaviors.Global.OnQuestTriggered (self)</a></td>
-	<td class="summary">Überschreibt die :Trigger() Methode um sicherzustellen, dass immer genug
- gespawnte Entities vorhanden sind.</td>
+	<td class="summary">Überschreibt die :Trigger() Methode der Quests.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed">BundleSymfoniaBehaviors.Global:AreQuestEntitiesDestroyed (_Quest, _Objective)</a></td>
@@ -181,8 +180,13 @@
 	<td class="summary">Der Spieler muss mindestens den angegebenen Ruf erreichen.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Goal_DestroySpawnedEntities">Goal_DestroySpawnedEntities (_SpawnPoint, _Amount)</a></td>
+	<td class="name" nowrap><a href="#Goal_DestroySpawnedEntities">Goal_DestroySpawnedEntities (_SpawnPoint, _Amount, _Prefixed)</a></td>
 	<td class="summary">Eine Menge an Entities des angegebenen Spawnpoint muss zerstört werden.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goal_LevyTax">Goal_LevyTax (_GoodType, _GoodAmount, _OtherTarget, _IgnoreCapture)</a></td>
+	<td class="summary">Der Spieler muss X% der Gesamtmenge einer Ware an einen anderen Spieler
+ liefern.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Goal_MoveToPosition">Goal_MoveToPosition (_ScriptName, _Target, _Distance, _UseMarker)</a></td>
@@ -264,8 +268,7 @@
     <strong>BundleSymfoniaBehaviors.Global.OnQuestTriggered (self)</strong>
     </dt>
     <dd>
-    Überschreibt die :Trigger() Methode um sicherzustellen, dass immer genug
- gespawnte Entities vorhanden sind.
+    Überschreibt die :Trigger() Methode der Quests.
 
 
     <h3>Parameters:</h3>
@@ -330,8 +333,11 @@
     <strong>BundleSymfoniaBehaviors.Local.DisplayQuestObjective (_QuestIndex, _MessageKey)</strong>
     </dt>
     <dd>
-    Erweitert die Funktion, welche das Auftragsziel darstellt.  Das richtige
- Icon für Spawned Entities wird angezeigt.
+    Erweitert die Funktion, welche das Auftragsziel darstellt.
+
+ Das richtige Icon für Spawned Entities wird angezeigt.
+<p> Das neue Ziel "LevyTax" wird wie "Deliver" angezeigt.
+
 
 
     <h3>Parameters:</h3>
@@ -679,24 +685,86 @@
 </dd>
     <dt>
     <a name = "Goal_DestroySpawnedEntities"></a>
-    <strong>Goal_DestroySpawnedEntities (_SpawnPoint, _Amount)</strong>
+    <strong>Goal_DestroySpawnedEntities (_SpawnPoint, _Amount, _Prefixed)</strong>
     </dt>
     <dd>
     Eine Menge an Entities des angegebenen Spawnpoint muss zerstört werden.
+<p> <b>Hinweis</b>: Eignet sich vor allem für Raubtiere!
 <p> Wenn die angegebene Anzahl zu Beginn des Quest nicht mit der Anzahl an
  bereits gespawnten Entities übereinstimmt, wird dies automatisch korrigiert.
  (Neue Entities gespawnt bzw. überschüssige gelöscht)
+<p> Wenn _Prefixed gesetzt ist, wird anstatt des Namen Entities mit einer
+ fortlaufenden Nummer gesucht, welche mit dem Namen beginnen. Bei der
+ ersten Nummer, zu der kein Entity existiert, wird abgebrochen.
 
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">_SpawnPoint</span>
-         Spawnpoint oder Liste von Spawnpoints
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Skriptname des Spawnpoint
         </li>
         <li><span class="parameter">_Amount</span>
             <span class="types"><span class="type">number</span></span>
              Menge zu zerstörender Entities
+        </li>
+        <li><span class="parameter">_Prefixed</span>
+            <span class="types"><span class="type">number</span></span>
+           Skriptname ist Präfix
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goal_LevyTax"></a>
+    <strong>Goal_LevyTax (_GoodType, _GoodAmount, _OtherTarget, _IgnoreCapture)</strong>
+    </dt>
+    <dd>
+    Der Spieler muss X% der Gesamtmenge einer Ware an einen anderen Spieler
+ liefern.  Die tatsächlich zu versendende absulute Menge wird zum Start
+ des Quests bestimmt.
+<p> Für die Warenmenge dürfen nur ganze Zahlen zwischen 1 und 100 angegeben
+ werden. Aber sonst funktioniert das Behavior genauso wie Goal_Deliver.
+<p> Wenn die Gesamtmenge an Waren zum Startzeitpunkt des Quest zu gering ist,
+ werden fest vorgegebene Basiswerte zur Berechnung herangezogen:
+ <ul>
+ <li><u>Gold:</u>
+ Wenn weniger als 200 Gold vorhanden sind, dann muss der Prozentwert * 5
+ als absolute Menge versendet werden.
+ </li>
+ <li><u>Rohstoff:</u>
+ Wenn weniger als 18 Einheiten vorhanden sind, dann wird der Prozentwert
+ als absolute Menge verwendet.
+ </li>
+ <li><u>Güter:</u>
+ Wenn weniger als 9 Einheiten vorhanden sind, dann müssen X% von 18
+ versendet werden.
+ </li>
+ <li>Sonstige:</u>
+ analog zu Gütern
+ </li>
+ </ul>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">_GoodType</span>
+              Typ der Ware
+        </li>
+        <li><span class="parameter">_GoodAmount</span>
+            Menga der Ware in Prozent
+        </li>
+        <li><span class="parameter">_OtherTarget</span>
+           Anderes Ziel als Auftraggeber
+        </li>
+        <li><span class="parameter">_IgnoreCapture</span>
+         Wagen kann zurückerobert werden
         </li>
     </ul>
 
@@ -1116,7 +1184,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-04-01 18:39:52 </i>
+<i style="float:right;">Last updated 2020-04-30 10:17:38 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
