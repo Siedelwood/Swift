@@ -216,14 +216,7 @@ end
 -- @local
 --
 function AddOnInteractiveTrebuchets.Global.TrebuchetHasSufficentTitle()
-    local pID = 1;
-    for i=1,8 do
-        if Logic.PlayerGetIsHumanFlag(i) == 1 then
-            pID = i;
-            break;
-        end
-    end
-    return Logic.GetKnightTitle(pID) >= AddOnInteractiveTrebuchets.Global.Data.Trebuchet.NeededKnightTitle;
+    return Logic.GetKnightTitle(QSB.HumanPlayerID) >= AddOnInteractiveTrebuchets.Global.Data.Trebuchet.NeededKnightTitle;
 end
 
 ---

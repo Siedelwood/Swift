@@ -814,12 +814,7 @@ end
 -- @local
 --
 function BundleNonPlayerCharacter.Global:GetControllingPlayer()
-    for i= 1, 8, 1 do
-        if Logic.PlayerGetIsHumanFlag(i) == true then
-            return i;
-        end
-    end
-    return 0;
+    return QSB.HumanPlayerID;
 end
 
 ---

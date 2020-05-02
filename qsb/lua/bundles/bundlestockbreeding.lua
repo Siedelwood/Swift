@@ -318,23 +318,6 @@ function BundleStockbreeding.Global:CreateAnimal(_PastureID, _Type, _Shrink)
 end
 
 ---
--- Gibt die ID des menschlichen Spielers zurück.
--- @return[type=number] ID des menschlichen Spielers
--- @within Internal
--- @local
---
-function BundleStockbreeding.Global:GetControllingPlayer()
-    local pID = 1;
-    for i=1,8 do
-        if Logic.PlayerGetIsHumanFlag(i) == true then
-            pID = i;
-            break;
-        end
-    end
-    return pID;
-end
-
----
 -- Gibt zurück, nach wie viel Zeit ein neues Tier erzeugt werden kann.
 -- @param[type=number] _Animals Anzahl Tiere im Gatter
 -- @return[type=number] Benötigte Zeit in Sekunden
@@ -409,7 +392,7 @@ end
 -- @local
 --
 function BundleStockbreeding.Global:AnimalBreedController()
-    local PlayerID = self:GetControllingPlayer();
+    local PlayerID = QSB.HumanPlayerID;
 
     -- Kühe
     if self.Data.AllowBreedCattle then

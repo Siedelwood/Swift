@@ -268,6 +268,9 @@ function BundleTravelingSalesman.Global:ShipLeave(_Harbor)
     end
     local Instance = Path:new(_Harbor:GetShipID(), _Harbor:GetPath():Get(), nil, nil, OnArrival, nil, true, nil, nil, QSB.ShipWaypointDistance);
     _Harbor:SetJobID(Instance.Job);
+    if GameCallback_TravelingSalesmanLeave then
+        GameCallback_TravelingSalesmanLeave(PlayerID, _ShipID);
+    end
 end
 
 ---
@@ -302,6 +305,9 @@ function BundleTravelingSalesman.Global:ShipAtDock(_ShipID)
         MerchantSystem.TradeBlackList[PlayerID][0] = #MerchantSystem.TradeBlackList[3];
         self:CreateOffers(Harbor:GetRandomOffers(), Logic.GetStoreHouse(PlayerID))
         self:TriggerShipAtDockMessage(PlayerID);
+        if GameCallback_TravelingSalesmanArrive then
+            GameCallback_TravelingSalesmanArrive(PlayerID, _ShipID);
+        end
     end
 end
 
@@ -313,6 +319,7 @@ end
 -- @local
 --
 function BundleTravelingSalesman.Global:CreateOffers(_Offers, _TraderID)
+    DeActivateMerchantForPlayer(_TraderID, QSB.HumanPlayerID);
     Logic.RemoveAllOffers(_TraderID);
     if #_Offers > 0 then
         for i=1,#_Offers,1 do
@@ -327,6 +334,10 @@ function BundleTravelingSalesman.Global:CreateOffers(_Offers, _TraderID)
                     AddMercenaryOffer(_TraderID, amount, Entities[_Offers[i][1]], 9999);
                 end
             end
+        end
+        if GetDiplomacyState(QSB.HumanPlayerID, Logic.EntityGetPlayer(_TraderID)) > 0 then
+            ActivateMerchantPermanentlyForPlayer(_TraderID, QSB.HumanPlayerID);
+            API.Bridge("g_Merchant.ActiveMerchantBuilding = nil");
         end
     end
 end
@@ -370,7 +381,7 @@ function BundleTravelingSalesman.Global:DisplayQuestMessage(_PlayerID, _Text)
     QuestTemplate:New(
         "TravelingSalesman_Info_P" .._PlayerID,
         _PlayerID,
-        self:GetHumanPlayer(),
+        QSB.HumanPlayerID,
         {{Objective.Dummy,}},
         {{Triggers.Time, 0}},
         0,
@@ -397,21 +408,6 @@ function BundleTravelingSalesman.Global:GetHarborByShipID(_ShipID)
         end
     end
     return nil;
-end
-
----
--- Gibt die ID des ersten menschlichen Spielers zurück.
--- @return[type=number] Menschlicher Spieler
--- @Internal
--- @local
---
-function BundleTravelingSalesman.Global:GetHumanPlayer()
-    for i= 1, 8, 1 do
-        if Logic.PlayerGetIsHumanFlag(1) == true then
-            return i;
-        end
-    end
-    return 0;
 end
 
 ---
