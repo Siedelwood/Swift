@@ -54,18 +54,18 @@ QSB.ShipWaypointDistance = 300;
 --     OfferCount = 4,       -- Anzahl Angebote (1 bis 4)
 --     Offers = {
 --         -- Angebot, Menge
---         {"G_Gems", 5,},
---         {"G_Iron", 5,},
---         {"G_Beer", 2,},
---         {"G_Stone", 5,},
---         {"G_Sheep", 1,},
---         {"G_Cheese", 2,},
---         {"G_Milk", 5,},
---         {"G_Grain", 5,},
---         {"G_Broom", 2,},
---         {"U_CatapultCart", 1,},
---         {"U_MilitarySword", 3,},
---         {"U_MilitaryBow", 3,}
+--         {"G_Gems", 5},
+--         {"G_Iron", 5},
+--         {"G_Beer", 2},
+--         {"G_Stone", 5},
+--         {"G_Sheep", 1},
+--         {"G_Cheese", 2},
+--         {"G_Milk", 5},
+--         {"G_Grain", 5},
+--         {"G_Broom", 2},
+--         {"U_CatapultCart", 1},
+--         {"U_MilitarySword", 3},
+--         {"U_MilitaryBow", 3}
 --     },
 -- };
 -- API.TravelingSalesmanCreate(TraderDescription);
@@ -76,7 +76,7 @@ function API.TravelingSalesmanCreate(_TraderDescription)
     end
     API.TravelingSalesmanDispose(_TraderDescription.PlayerID);
     _TraderDescription.Offers = API.ConvertOldOfferFormat(_TraderDescription.Offers);
-    _TraderDescription.Duration = _TraderDescription.Duration or 180;
+    _TraderDescription.Duration = _TraderDescription.Duration or (6 * 60);
     _TraderDescription.Interval = _TraderDescription.Interval or 2;
     _TraderDescription.OfferCount = _TraderDescription.OfferCount or 4;
 
@@ -147,6 +147,7 @@ function API.TravelingSalesmanDispose(_PlayerID)
     if Harbor then
         Harbor:Dispose();
     end
+    BundleTravelingSalesman.Global.Data.Harbors[_PlayerID] = nil;
 end
 TravelingSalesmanDeactivate = API.TravelingSalesmanDispose;
 
@@ -456,12 +457,14 @@ QSB.TradeShipPath = {
 
 function QSB.TradeShipPath:New(...)
     local Path = API.InstanceTable(self);
-    if #arg == 1 then
+    if #arg == 1 and type(arg[1]) == "string" then
         local i = 1;
         while (IsExisting(arg[1] ..i)) do
             table.insert(Path.m_Waypoints, arg[1] ..i);
             i = i +1;
         end
+    elseif #arg == 1 and type(arg[1]) == "table" then
+        Path.m_Waypoints = API.InstanceTable(arg[1]);
     else
         Path.m_Waypoints = API.InstanceTable(arg);
     end

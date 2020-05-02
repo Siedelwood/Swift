@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.8.0 1/5/2020";
+QSB.Version = "Version 2.8.1 3/5/2020";
 QSB.Language = "de";
 QSB.HistoryEdition = false;
 
@@ -1339,14 +1339,19 @@ AddOnSaveGameLoadedAction = API.AddSaveGameAction;
 ---
 -- Pausiert einen laufenden Job.
 --
+-- <b>Hinweis</b>: Der Job darf nicht direkt mit Trigger.RequestTrigger
+-- gestartet worden sein.
+--
 -- <b>Alias</b>: YieldJob
 --
 -- @param[type=number] _JobID Job-ID
 -- @within Anwenderfunktionen
 --
 function API.YieldJob(_JobID)
-    if JobIsRunning(_JobID) then
-        Trigger.DisableTrigger(_JobID);
+    for k, v in pairs(Core.Data.EventJobs) do
+        if Core.Data.EventJobs[k][_JobID] then
+            Core.Data.EventJobs[k][_JobID].Enabled = false;
+        end
     end
 end
 YieldJob = API.YieldJob;
@@ -1354,20 +1359,69 @@ YieldJob = API.YieldJob;
 ---
 -- Aktiviert einen angehaltenen Job.
 --
+-- <b>Hinweis</b>: Der Job darf nicht direkt mit Trigger.RequestTrigger
+-- gestartet worden sein.
+--
 -- <b>Alias</b>: ResumeJob
 --
 -- @param[type=number] _JobID Job-ID
 -- @within Anwenderfunktionen
 --
 function API.ResumeJob(_JobID)
-    if not JobIsRunning(_JobID) then
-        Trigger.EnableTrigger(_JobID);
+    for k, v in pairs(Core.Data.EventJobs) do
+        if Core.Data.EventJobs[k][_JobID] then
+            Core.Data.EventJobs[k][_JobID].Enabled = true;
+        end
     end
 end
 ResumeJob = API.ResumeJob;
 
 ---
--- Erzeugt einen neuen Inline-Job.
+-- Prüft ob der angegebene Job aktiv und eingeschaltet ist.
+--
+-- <b>Alias</b>: JobIsRunning
+--
+-- @param[type=number] _JobID Job-ID
+-- @within Anwenderfunktionen
+--
+function API.JobIsRunning(_JobID)
+    for k, v in pairs(Core.Data.EventJobs) do
+        if Core.Data.EventJobs[k][_JobID] then
+            if Core.Data.EventJobs[k][_JobID].Active == true and Core.Data.EventJobs[k][_JobID].Enabled == true then
+                return true;
+            end
+        end
+    end
+    return JobIsRunning_OrigCore(_JobID);
+end
+JobIsRunning_OrigCore = JobIsRunning;
+JobIsRunning = API.JobIsRunning;
+
+---
+-- Beendet einen aktiven Job endgültig.
+--
+-- <b>Alias</b>: ResumeJob
+--
+-- @param[type=number] _JobID Job-ID
+-- @within Anwenderfunktionen
+--
+function API.EndJob(_JobID)
+    for k, v in pairs(Core.Data.EventJobs) do
+        if Core.Data.EventJobs[k][_JobID] then
+            Core.Data.EventJobs[k][_JobID].Active = false;
+            return;
+        end
+    end
+    EndJob_OrigCore(_JobID);
+end
+EndJob_OrigCore = EndJob;
+EndJob = API.EndJob;
+
+---
+-- Erzeugt einen neuen Event-Job.
+--
+-- <b>Hinweis</b>: Nur wenn ein Event Job mit dieser Funktion gestartet wird,
+-- können ResumeJob und YieldJob auf den Job angewendet werden.
 --
 -- <b>Hinweis</b>: Events.LOGIC_EVENT_ENTITY_CREATED funktioniert nicht!
 --
@@ -1381,36 +1435,34 @@ ResumeJob = API.ResumeJob;
 -- @return[type=number] ID des Jobs
 -- @within Anwenderfunktionen
 --
-function API.StartInlineJob(_EventType, _Function, ...)
-    Core.Data.Events.JobIDCounter = Core.Data.Events.JobIDCounter +1;
-
-    _G["QSBS_InlineJob_Data_" ..Core.Data.Events.JobIDCounter] = API.InstanceTable(arg);
-    _G["QSBS_InlineJob_Function_" ..Core.Data.Events.JobIDCounter] = _Function;
-    _G["QSBS_InlineJob_Executor_" ..Core.Data.Events.JobIDCounter] = function(i)
-        if _G["QSBS_InlineJob_Function_" ..i](unpack(_G["QSBS_InlineJob_Data_" ..i])) then
-            return true;
-        end
+function API.StartEventJob(_EventType, _Function, ...)
+    if type(_Function) == "string" then
+        _Function = _G[_Function];
     end
 
-    return Trigger.RequestTrigger(
-        _EventType, "",
-        "QSBS_InlineJob_Executor_" ..Core.Data.Events.JobIDCounter,
-        1,
-        {},
-        {Core.Data.Events.JobIDCounter}
-    );
+    Core.Data.EventJobID = Core.Data.EventJobID +1;
+    local ID = Core.Data.EventJobID
+    Core.Data.EventJobs[_EventType][ID] = {
+        Function = _Function,
+        Arguments = API.InstanceTable(arg);
+        Active = true,
+        Enabled = true,
+    }
+    return ID;
 end
 
 ---
 -- Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
 -- wird. Die Argumente werden an die Funktion übergeben.
 --
--- Die Funktion kann als Referenz oder als Inline übergeben werden.
+-- Die Funktion kann als Referenz, Inline oder als String übergeben werden.
 --
 -- <b>Alias</b>: StartSimpleJobEx
 --
--- @param[type=number] _Function Funktion, die ausgeführt wird
--- @param              ...       Liste von Argumenten
+-- <b>Alias</b>: StartSimpleJob
+--
+-- @param _Function Funktion (Funktionsreferenz oder String)
+-- @param ...       Liste von Argumenten
 -- @return[type=number] Job ID
 -- @within Anwenderfunktionen
 --
@@ -1422,27 +1474,34 @@ end
 --     end
 -- end, Logic.GetTime(), Entities.U_KnightHealing)
 --
+-- -- Startet einen Job
+-- StartSimpleJob("MeinJob");
+--
 function API.StartJob(_Function, ...)
-    return API.StartInlineJob(Events.LOGIC_EVENT_EVERY_SECOND, _Function, unpack(arg));
+    return API.StartEventJob(Events.LOGIC_EVENT_EVERY_SECOND, _Function, unpack(arg));
 end
+StartSimpleJob = API.StartJob;
 StartSimpleJobEx = API.StartJob;
 
 ---
 -- Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
 -- wird. Die Argumente werden an die Funktion übergeben.
 --
--- Die Funktion kann als Referenz oder als Inline übergeben werden.
+-- Die Funktion kann als Referenz, Inline oder als String übergeben werden.
 --
 -- <b>Alias</b>: StartSimpleHiResJobEx
 --
--- @param[type=number] _Function Funktion, die ausgeführt wird
--- @param              ...       Liste von Argumenten
+-- <b>Alias</b>: StartSimpleHiResJob
+--
+-- @param _Function Funktion (Funktionsreferenz oder String)
+-- @param ...       Liste von Argumenten
 -- @return[type=number] Job ID
 -- @within Anwenderfunktionen
 --
 function API.StartHiResJob(_Function, ...)
-    return API.StartInlineJob(Events.LOGIC_EVENT_EVERY_TURN, _Function, unpack(arg));
+    return API.StartEventJob(Events.LOGIC_EVENT_EVERY_TURN, _Function, unpack(arg));
 end
+StartSimpleHiResJob = API.StartHiResJob;
 StartSimpleHiResJobEx = API.StartHiResJob;
 
 -- Echtzeit --------------------------------------------------------------------
@@ -1488,6 +1547,21 @@ end
 
 Core = {
     Data = {
+        EventJobID = 0,
+        EventJobs = {
+            [Events.LOGIC_EVENT_DIPLOMACY_CHANGED]         = {},
+            [Events.LOGIC_EVENT_ENTITY_CREATED]            = {},
+            [Events.LOGIC_EVENT_ENTITY_DESTROYED]          = {},
+            [Events.LOGIC_EVENT_ENTITY_HURT_ENTITY]        = {},
+            [Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY] = {},
+            [Events.LOGIC_EVENT_EVERY_SECOND]              = {},
+            [Events.LOGIC_EVENT_EVERY_TURN]                = {},
+            [Events.LOGIC_EVENT_GOODS_TRADED]              = {},
+            [Events.LOGIC_EVENT_PLAYER_DIED]               = {},
+            [Events.LOGIC_EVENT_RESEARCH_DONE]             = {},
+            [Events.LOGIC_EVENT_TRIBUTE_PAID]              = {},
+            [Events.LOGIC_EVENT_WEATHER_STATE_CHANGED]     = {},
+        },
         Events = {
             EverySecond = {},
             EveryTurn = {},
@@ -1519,23 +1593,41 @@ function Core:InitalizeBundles()
         self:SetupGobal_HackCreateQuest();
         self:SetupGlobal_HackQuestSystem();
         self:IdentifyHistoryEdition();
-        
-        StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
 
-        -- FIXME: Implementieren!
-        -- API.StartInlineJob(Event.LOGIC_EVENT_ENTITY_DESTROYED, CoreEventJob_OnEntityDestroyed);
-        -- API.StartInlineJob(Event.LOGIC_EVENT_ENTITY_HURT_ENTITY, CoreEventJob_OnEntityHurtEntity);
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_DIPLOMACY_CHANGED, "", "CoreEventJob_OnDiplomacyChanged", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "CoreEventJob_OnEntityCreated", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY, "", "CoreEventJob_OnEntityInRangeOfEntity", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "CoreEventJob_OnEverySecond", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "CoreEventJob_OnEveryTurn", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_GOODS_TRADED, "", "CoreEventJob_OnGoodsTraded", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_PLAYER_DIED, "", "CoreEventJob_OnPlayerDied", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_RESEARCH_DONE, "", "CoreEventJob_OnResearchDone", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_TRIBUTE_PAID, "", "CoreEventJob_OnTributePaied", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
+        
+        StartSimpleJobEx(Core.EventJob_OnEveryRealTimeSecond);
     else
         QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
         self:CreateRandomSeedBySystemTime();
         self:SetupLocal_HackRegisterHotkey();
 
-        StartSimpleJob("CoreEventJob_OnEveryRealTimeSecond");
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_DIPLOMACY_CHANGED, "", "CoreEventJob_OnDiplomacyChanged", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "CoreEventJob_OnEntityCreated", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY, "", "CoreEventJob_OnEntityInRangeOfEntity", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "CoreEventJob_OnEverySecond", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "CoreEventJob_OnEveryTurn", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_GOODS_TRADED, "", "CoreEventJob_OnGoodsTraded", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_PLAYER_DIED, "", "CoreEventJob_OnPlayerDied", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_RESEARCH_DONE, "", "CoreEventJob_OnResearchDone", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_TRIBUTE_PAID, "", "CoreEventJob_OnTributePaied", 1); 
+        Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
 
-        -- FIXME: Implementieren!
-        -- API.StartInlineJob(Event.LOGIC_EVENT_ENTITY_DESTROYED, CoreEventJob_OnEntityDestroyed);
-        -- API.StartInlineJob(Event.LOGIC_EVENT_ENTITY_HURT_ENTITY, CoreEventJob_OnEntityHurtEntity);
+        StartSimpleJobEx(Core.EventJob_OnEveryRealTimeSecond);
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do
@@ -1553,6 +1645,32 @@ function Core:InitalizeBundles()
         end
         self.Data.InitalizedBundles[v] = true;
         collectgarbage();
+    end
+end
+
+---
+-- Führt alle Event Jobs des angegebenen Typen aus und prüft deren Status.
+--
+-- @param[type=number] _Type Typ des Jobs
+-- @within Internal
+-- @local
+--
+function Core:TriggerEventJobs(_Type)
+    for k, v in pairs(self.Data.EventJobs[_Type]) do
+        if type(v) == "table" then
+            if v.Active == false then
+                self.Data.EventJobs[_Type][k] = nil;
+            else
+                if v.Enabled then
+                    if v.Function then
+                        local Arguments = v.Arguments or {};
+                        if v.Function(unpack(Arguments)) == true then
+                            self.Data.EventJobs[_Type][k] = nil;
+                        end
+                    end
+                end
+            end
+        end
     end
 end
 
@@ -2285,6 +2403,81 @@ end
 
 -- Jobs ------------------------------------------------------------------------
 
+-- Folgende Jobs steuern den Trigger Fix. Prinzipiell wird für jede Art Trigger
+-- ein bestimmter Trigger erstellt, der dann die eigentlichen Trigger aufruft
+-- und ihren Zustand abfragt.
+
+function Core.EventJob_OnDiplomacyChanged()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_DIPLOMACY_CHANGED);
+end
+CoreEventJob_OnDiplomacyChanged = Core.EventJob_OnDiplomacyChanged;
+
+
+function Core.EventJob_OnEntityCreated()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_CREATED);
+end
+CoreEventJob_OnEntityCreated = Core.EventJob_OnEntityCreated
+
+
+function Core.EventJob_OnEntityDestroyed()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_DESTROYED);
+end
+CoreEventJob_OnEntityDestroyed = Core.EventJob_OnEntityDestroyed;
+
+
+function Core.EventJob_OnEntityHurtEntity()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY);
+end
+CoreEventJob_OnEntityHurtEntity = Core.EventJob_OnEntityHurtEntity;
+
+
+function Core.EventJob_OnEntityInRangeOfEntity()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY);
+end
+CoreEventJob_OnEntityInRangeOfEntity = Core.EventJob_OnEntityInRangeOfEntity;
+
+
+function Core.EventJob_OnEverySecond()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_SECOND);
+end
+CoreEventJob_OnEverySecond = Core.EventJob_OnEverySecond;
+
+
+function Core.EventJob_OnEveryTurn()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_EVERY_TURN);
+end
+CoreEventJob_OnEveryTurn = Core.EventJob_OnEveryTurn;
+
+
+function Core.EventJob_OnGoodsTraded()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_GOODS_TRADED);
+end
+CoreEventJob_OnGoodsTraded = Core.EventJob_OnGoodsTraded;
+
+
+function Core.EventJob_OnPlayerDied()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_PLAYER_DIED);
+end
+CoreEventJob_OnPlayerDied = Core.EventJob_OnPlayerDied;
+
+
+function Core.EventJob_OnResearchDone()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_RESEARCH_DONE);
+end
+CoreEventJob_OnResearchDone = Core.EventJob_OnResearchDone;
+
+
+function Core.EventJob_OnTributePaied()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_TRIBUTE_PAID);
+end
+CoreEventJob_OnTributePaied = Core.EventJob_OnTributePaied;
+
+
+function Core.EventJob_OnWatherChanged()
+    Core:TriggerEventJobs(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED);
+end
+CoreEventJob_OnWatherChanged = Core.EventJob_OnWatherChanged;
+
 -- Dieser Job ermittelt automatisch, ob eine Sekunde reale Zeit vergangen ist
 -- und zählt eine Variable hoch, die die gesamt verstrichene reale Zeit hält.
 
@@ -2300,5 +2493,4 @@ function Core.EventJob_EventOnEveryRealTimeSecond()
         QSB.RealTime_SecondsSinceGameStart = QSB.RealTime_SecondsSinceGameStart +1;
     end
 end
-CoreEventJob_OnEveryRealTimeSecond = Core.EventJob_EventOnEveryRealTimeSecond;
 
