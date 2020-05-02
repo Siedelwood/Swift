@@ -524,7 +524,7 @@ function API.RestartQuest(_QuestName, _Verbose)
         Quest.State = QuestState.NotTriggered;
         Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..Quest.Index..")");
         if OldQuestState == QuestState.Over then
-            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { Quest.QueueID });
+            StartSimpleJobEx(_G[QuestTemplate.Loop], Quest.QueueID);
         end
         return QuestID, Quest;
     end
@@ -1392,9 +1392,8 @@ function API.JobIsRunning(_JobID)
             end
         end
     end
-    return JobIsRunning_OrigCore(_JobID);
+    return false;
 end
-JobIsRunning_OrigCore = JobIsRunning;
 JobIsRunning = API.JobIsRunning;
 
 ---
@@ -1412,9 +1411,7 @@ function API.EndJob(_JobID)
             return;
         end
     end
-    EndJob_OrigCore(_JobID);
 end
-EndJob_OrigCore = EndJob;
 EndJob = API.EndJob;
 
 ---
