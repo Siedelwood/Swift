@@ -14,7 +14,8 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.8.1 3/5/2020";
+QSB.Version = "Version 2.8.3 3/5/2020";
+QSB.HumanPlayerID = 1;
 QSB.Language = "de";
 QSB.HistoryEdition = false;
 
@@ -1427,20 +1428,28 @@ EndJob = API.EndJob;
 -- eine neue Table und keine Referenz!
 --
 -- @param[type=number]   _EventType Event-Typ
--- @param[type=function] _Function Funktionsreferenz
+-- @param _Function      Funktion (Funktionsreferenz oder String)
 -- @param ...            Optionale Argumente des Job
 -- @return[type=number] ID des Jobs
 -- @within Anwenderfunktionen
 --
 function API.StartEventJob(_EventType, _Function, ...)
-    if type(_Function) == "string" then
-        _Function = _G[_Function];
+    local Function = _Function;
+    if type(Function) == "string" then
+        Function = _G[Function];
+    end
+    if type(Function) ~= "function" and type(_Function) == "string" then
+        fatal(string.format("API.StartEventJob: Can not find function for name '%s'!", _Function));
+        return;
+    elseif type(Function) ~= "function" and type(_Function) ~= "string" then
+        fatal("API.StartEventJob: Received illegal reference as function!");
+        return;
     end
 
     Core.Data.EventJobID = Core.Data.EventJobID +1;
     local ID = Core.Data.EventJobID
     Core.Data.EventJobs[_EventType][ID] = {
-        Function = _Function,
+        Function = Function,
         Arguments = API.InstanceTable(arg);
         Active = true,
         Enabled = true,
@@ -1604,7 +1613,7 @@ function Core:InitalizeBundles()
         Trigger.RequestTrigger(Events.LOGIC_EVENT_TRIBUTE_PAID, "", "CoreEventJob_OnTributePaied", 1); 
         Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
         
-        StartSimpleJobEx(Core.EventJob_OnEveryRealTimeSecond);
+        StartSimpleJobEx(Core.EventJob_EventOnEveryRealTimeSecond);
     else
         QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
@@ -1624,7 +1633,7 @@ function Core:InitalizeBundles()
         Trigger.RequestTrigger(Events.LOGIC_EVENT_TRIBUTE_PAID, "", "CoreEventJob_OnTributePaied", 1); 
         Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
 
-        StartSimpleJobEx(Core.EventJob_OnEveryRealTimeSecond);
+        StartSimpleJobEx(Core.EventJob_EventOnEveryRealTimeSecond);
     end
 
     for k,v in pairs(self.Data.BundleInitializerList) do

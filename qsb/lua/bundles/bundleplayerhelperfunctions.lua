@@ -217,7 +217,7 @@ PlayerSetPlayerID = API.SetControllingPlayer;
 --
 function API.GetControllingPlayer()
     if not GUI then
-        return BundlePlayerHelperFunctions.Global:GetControllingPlayer();
+        return QSB.HumanPlayerID;
     else
         return GUI.GetPlayerID();
     end
@@ -406,9 +406,10 @@ function BundlePlayerHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _
 
     self.Data.HumanKnightType = eType;
     self.Data.HumanPlayerID = _newPlayerID;
+    QSB.HumanPlayerID = _newPlayerID;
 
     GameCallback_PlayerLost = function( _PlayerID )
-        if _PlayerID == self:GetControllingPlayer() then
+        if _PlayerID == QSB.HumanPlayerID then
             QuestTemplate:TerminateEventsAndStuff()
             if MissionCallback_Player1Lost then
                 MissionCallback_Player1Lost()
@@ -419,6 +420,7 @@ function BundlePlayerHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _
     Logic.ExecuteInLuaLocalState([[
         GUI.ClearSelection()
         GUI.SetControlledPlayer(]].._newPlayerID..[[)
+        QSB.HumanPlayerID = ]].._newPlayerID..[[;
 
         for k,v in pairs(Buffs)do
             GUI_Buffs.UpdateBuffsInInterface(]].._newPlayerID..[[,v)
@@ -448,25 +450,6 @@ function BundlePlayerHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _
     ]]);
 
     self.Data.HumanPlayerChangedOnce = true;
-end
-
----
--- Gibt die ID des kontrollierenden Spielers zurück. Der erste als menschlich
--- definierte Spieler wird als kontrollierender Spieler angenommen.
---
--- @return[type=number] PlayerID
--- @within Internal
--- @local
---
-function BundlePlayerHelperFunctions.Global:GetControllingPlayer()
-    local pID = 1;
-    for i=1,8 do
-        if Logic.PlayerGetIsHumanFlag(i) == true then
-            pID = i;
-            break;
-        end
-    end
-    return pID;
 end
 
 ---
