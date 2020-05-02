@@ -107,13 +107,9 @@ function BundleFollowKnight.Global:AddFollowKnightSave(_Entity, _Knight, _Distan
     local KnightID = GetID(_Knight);
     _Angle = _Angle or 0;
 
-    local JobID = Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN,
-                                         nil,
-                                         "ControlFollowKnightSave",
-                                         1,
-                                         {},
-                                         {EntityID, KnightID, _Distance, _Angle});
-
+    local JobID = StartSimpleHiResJobEx(
+        BundleFollowKnight.Global.ControlFollowKnightSave, EntityID, KnightID, _Distance, _Angle
+    );
     table.insert(self.Data.FollowKnightSave, JobID);
     return JobID;
 end

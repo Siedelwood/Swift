@@ -292,7 +292,7 @@ function AddOnInteractiveMines.Global.ActionBuildIOMine(_Data)
     if type(_Data.CallbackCreate) == "function" then
         _Data.CallbackCreate(_Data);
     end
-    Trigger.RequestTrigger( Events.LOGIC_EVENT_EVERY_SECOND, "", "AddOnInteractiveMines_JobControlIOMine", 1, {}, {_Data.Name});
+    StartSimpleJobEx(AddOnInteractiveMines.Global.ControlIOMine, _Data.Name);
 end
 
 ---
@@ -330,7 +330,6 @@ function AddOnInteractiveMines.Global.ControlIOMine(_Mine)
         return true;
     end
 end
-AddOnInteractiveMines_JobControlIOMine = AddOnInteractiveMines.Global.ControlIOMine;
 
 -- -------------------------------------------------------------------------- --
 

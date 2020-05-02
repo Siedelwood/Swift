@@ -2904,7 +2904,7 @@ function b_Goal_TributeDiplomacy:TributQuestRestarter(_Quest)
         self.InternTributeQuest.Result = nil;
         self.InternTributeQuest.State = QuestState.NotTriggered;
         Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.InternTributeQuest.Index..")");
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.InternTributeQuest.QueueID });
+        StartSimpleJobEx(_G[QuestTemplate.Loop], self.InternTributeQuest.QueueID);
         self.RestartQuest = nil;
     end
 end
@@ -3062,7 +3062,7 @@ function b_Goal_TributeClaim:RestartTributeQuest(_Quest)
         self.InternTributeQuest.Result = nil;
         self.InternTributeQuest.State = QuestState.NotTriggered;
         Logic.ExecuteInLuaLocalState("LocalScriptCallback_OnQuestStatusChanged("..self.InternTributeQuest.Index..")");
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", QuestTemplate.Loop, 1, 0, { self.InternTributeQuest.QueueID });
+        StartSimpleJobEx(_G[QuestTemplate.Loop], self.InternTributeQuest.QueueID);
     end
 end
 
