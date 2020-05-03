@@ -134,6 +134,9 @@ end
 --
 function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     local QuestGoals = {};
+    if _Behavior.TypeRefill then
+        QuestGoals[#QuestGoals+1] = self:GetRefillBehavior(_Behavior, _Quest);
+    end
     if _Behavior.TypeHuntPredators then
         QuestGoals[#QuestGoals+1] = self:GetHuntPredatorBehavior(_Behavior, _Quest);
     end
@@ -153,16 +156,40 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     if _Behavior.TypeReputation then
         self.Data.KnightTitle[_Quest.ReceivingPlayer] = self.Data.KnightTitle[_Quest.ReceivingPlayer] or {};
         local Reputation = 25 + (10 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
-        if self.Data.KnightTitle[_Quest.ReceivingPlayer][Reputation] then
-            return QuestGoals;
+        if not self.Data.KnightTitle[_Quest.ReceivingPlayer][Reputation] then
+            self.Data.KnightTitle[_Quest.ReceivingPlayer][Reputation] = true;
+            QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", Reputation};
         end
-        self.Data.KnightTitle[_Quest.ReceivingPlayer][Reputation] = true;
-        QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", Reputation};
     end
     if _Behavior.TypeBuildWall then
         QuestGoals[#QuestGoals+1] = self:GetBuildWallBehavior(_Behavior, _Quest);
     end
     return QuestGoals;
+end
+
+-- Behaviors ---------------------------------------------------------------- --
+
+---
+-- Erstellt ein Goal_Refill das den Spieler eine Mine auffüllen lässt.
+-- @param[type=table] _Behavior Behavior Data
+-- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetRefillBehavior(_Behavior, _Quest)
+    self.Data.Refill[_Quest.SendingPlayer] = self.Data.Refill[_Quest.SendingPlayer] or {};
+    local AllMines = Array_Append(
+        self:GetWorldEntitiesOnPlayersTerritories(Entities.R_IronMine, _Quest.SendingPlayer),
+        self:GetWorldEntitiesOnPlayersTerritories(Entities.R_StoneMine, _Quest.SendingPlayer)
+    );
+    for i= 1, #AllMines, 1 do
+        if not self.Data.Refill[_Quest.SendingPlayer][AllMines[i]] then
+            self.Data.Refill[_Quest.SendingPlayer][AllMines[i]] = true;
+            API.SetResourceAmount(AllMines[i], 0, 250);
+            return {"Goal_Refill", AllMines[i]};
+        end
+    end
 end
 
 ---
@@ -180,42 +207,7 @@ function AddOnRandomRequests.Global:GetHuntPredatorBehavior(_Behavior, _Quest)
     end
     local MaxCapacity = Logic.RespawnResourceGetMaxCapacity(SpawnPoint);
     self.Data.PredatorQuests[SpawnPoint] = true;
-    return {"Goal_DestroySpawnedEntities", SpawnPoint, MaxCapacity};
-end
-
----
--- Ermittelt den nächsten Spawnpoint für Raubtiere zum Auftraggeber.
--- @param[type=table] _Behavior Behavior Data
--- @param[type=table] _Quest    Quest Data
--- @return[type=number] ID des Spawnpoint
--- @within Internal
--- @local
---
-function AddOnRandomRequests.Global:GetClosestPredatorSpawnByQuest(_Behavior, _Quest)
-    local FoundSpawnPoints = {};
-    local PredatorSpawnPointTypes = {
-        "S_Bear", "S_Bear_Black", "S_BearBlack", "S_LionPack_NA", 
-        "S_PolarBear_NE", "S_TigerPack_AS", "S_WolfPack",
-    };
-    -- Select all
-    for i= 1, #PredatorSpawnPointTypes, 1 do
-        if Entities[PredatorSpawnPointTypes[i]] then
-            local Result = {Logic.GetEntities(Entities[PredatorSpawnPointTypes[i]], 48)};
-            if table.remove(Result, 1) > 0 then
-                FoundSpawnPoints = Array_Append(FoundSpawnPoints, Result);
-            end
-        end
-    end
-    -- Remove already used
-    for i= #FoundSpawnPoints, 1, -1 do
-        if self.Data.PredatorQuests[FoundSpawnPoints[i]] then
-            table.remove(FoundSpawnPoints, i);
-        end
-    end
-    -- Find nearest
-    if #FoundSpawnPoints > 0 then
-        return API.GetEntitiesNearby(Logic.GetStoreHouse(_Quest.SendingPlayer), FoundSpawnPoints);
-    end
+    return {"Goal_DestroySpawnedEntities", SpawnPoint, MaxCapacity, false};
 end
 
 ---
@@ -263,7 +255,8 @@ function AddOnRandomRequests.Global:GetBuildWallBehavior(_Behavior, _Quest)
 end
 
 ---
--- Erstellt Goal_Claim für den Random Quest.
+-- Erstellt Goal_Claim für den Random Quest. Nur Territorien ohne Besitzer
+-- (Spieler 0) werden berücksichtigt.
 -- @param[type=table] _Behavior Behavior Data
 -- @param[type=table] _Quest    Quest Data
 -- @return[type=table] Behavior
@@ -271,21 +264,15 @@ end
 -- @local
 --
 function AddOnRandomRequests.Global:GetClaimTerritoryBehavior(_Behavior, _Quest)
-    local AllTerritories = {Logic.GetTerritories()};
-    local NextTitle = Logic.GetKnightTitle(_Quest.ReceivingPlayer)+1;
-    self.Data.Claim[_Quest.ReceivingPlayer] = self.Data.Claim[_Quest.ReceivingPlayer] or {};
+    local AllTerritories = self:GetTerritoryOfPlayer(0);
     for i= #AllTerritories, 1, -1 do
-        if self.Data.Claim[_Quest.ReceivingPlayer][NextTitle] then
-            return;
-        end
-        if AllTerritories[i] == 0 or Logic.GetTerritoryPlayerID(AllTerritories[i]) ~= 0 
-        or self.Data.Claim[_Quest.ReceivingPlayer][AllTerritories[i]] then
+        if self.Data.Claim[AllTerritories[i]] then
             table.remove(AllTerritories, i);
         end
     end
     if #AllTerritories > 0 then
         local Territory = AllTerritories[math.random(1, #AllTerritories)];
-        self.Data.Claim[_Quest.ReceivingPlayer][Territory] = true;
+        self.Data.Claim[Territory] = true;
         return {"Goal_Claim", AllTerritories[math.random(1, #AllTerritories)]};
     end
 end
@@ -318,6 +305,61 @@ function AddOnRandomRequests.Global:GetDeliverGoodsBehavior(_Behavior, _Quest)
     return {"Goal_Deliver", SelectedGood, Amount};
 end 
 
+-- Helper ------------------------------------------------------------------- --
+
+---
+-- Ermittelt den nächsten Spawnpoint für Raubtiere zum Auftraggeber.
+-- @param[type=table] _Behavior Behavior Data
+-- @param[type=table] _Quest    Quest Data
+-- @return[type=number] ID des Spawnpoint
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetClosestPredatorSpawnByQuest(_Behavior, _Quest)
+    local FoundSpawnPoints = {};
+    local PredatorSpawnPointTypes = {
+        "S_Bear", "S_Bear_Black", "S_BearBlack", "S_LionPack_NA", 
+        "S_PolarBear_NE", "S_TigerPack_AS", "S_WolfPack",
+    };
+    -- Select all
+    for i= 1, #PredatorSpawnPointTypes, 1 do
+        if Entities[PredatorSpawnPointTypes[i]] then
+            local Result = {Logic.GetEntities(Entities[PredatorSpawnPointTypes[i]], 48)};
+            if table.remove(Result, 1) > 0 then
+                FoundSpawnPoints = Array_Append(FoundSpawnPoints, Result);
+            end
+        end
+    end
+    -- Remove already used
+    for i= #FoundSpawnPoints, 1, -1 do
+        if self.Data.PredatorQuests[FoundSpawnPoints[i]] then
+            table.remove(FoundSpawnPoints, i);
+        end
+    end
+    -- Find nearest
+    if #FoundSpawnPoints > 0 then
+        return API.GetEntitiesNearby(Logic.GetStoreHouse(_Quest.SendingPlayer), FoundSpawnPoints);
+    end
+end
+
+---
+-- Gibt alle Territorien des Spielers zurück. Spieler 0 ist ebenfalls möglich.
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=table] Liste der Territorien
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetTerritoryOfPlayer(_PlayerID)
+    local FoundTerritories = {};
+    local AllTerritories = {Logic.GetTerritories()};
+    for i= 1, #AllTerritories, 1 do
+        if AllTerritories[i] ~= 0 and Logic.GetTerritoryPlayerID(AllTerritories[i]) == _PlayerID then
+            table.insert(FoundTerritories, AllTerritories[i]);
+        end
+    end
+    return FoundTerritories;
+end
+
 ---
 -- Prüft, ob eine Ware für ein Goal_Deliver verwendet werden kann.
 -- @param[type=number] _SenderID   Sendender Spieler
@@ -339,6 +381,29 @@ function AddOnRandomRequests.Global:CanGoodBeSetAsGoal(_SenderID, _ReceiverID, _
         end
     end
     return true;
+end
+
+---
+-- Gibt alle Entities des Typs in allen Territorien eines Spielers zurück.
+-- Spieler 0 ist ebenfalls möglich.
+-- @param[type=number] _Type     Entity Type
+-- @param[type=number] _PlayerID ID des Spielers
+-- @return[type=table] Liste der Entities
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetWorldEntitiesOnPlayersTerritories(_Type, _PlayerID)
+    local Result = {};
+    local AllEntitiesOfType = {Logic.GetEntities(_Type, 48)};
+    local AllTerritories = self:GetTerritoryOfPlayer(_PlayerID);
+    for i= 1, #AllEntitiesOfType, 1 do
+        for j= 1, #AllTerritories, 1 do
+            if  GetTerritoryUnderEntity(AllEntitiesOfType[i]) == AllTerritories[j] then
+                table.insert(Result, AllEntitiesOfType[i]);
+            end
+        end
+    end
+    return Result;
 end
 
 -- -------------------------------------------------------------------------- --
@@ -391,6 +456,7 @@ b_Goal_RandomRequest = {
         { ParameterType.Custom,  en = "City reputation",         de = "Ruf der Stadt" },
         { ParameterType.Custom,  en = "Build rampart",           de = "Festung bauen" },
         { ParameterType.Custom,  en = "Hunt Predators",          de = "Raubtiere vertreiben" },
+        { ParameterType.Custom,  en = "Refill Mines  ",          de = "Minen auffüllen" },
         { ParameterType.Number,  en = "Time limit (0 = off)",    de = "Leitlimit (0 = aus)" },
         { ParameterType.Default, en = "(optional) Mission text", de = "(optional) Auftragsnachricht" },
         { ParameterType.Default, en = "(optional) Success text", de = "(optional) Erfolgsnachricht" },
@@ -418,16 +484,18 @@ function b_Goal_RandomRequest:AddParameter(_Index, _Parameter)
     elseif (_Index == 6) then
         self.TypeHuntPredators = API.ToBoolean(_Parameter);
     elseif (_Index == 7) then
-        self.TimeLimit = _Parameter * 1;
+        self.TypeRefill = API.ToBoolean(_Parameter);
     elseif (_Index == 8) then
+        self.TimeLimit = _Parameter * 1;
+    elseif (_Index == 9) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuggestion = _Parameter;
         end
-    elseif (_Index == 9) then
+    elseif (_Index == 10) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuccess = _Parameter;
         end
-    elseif (_Index == 10) then
+    elseif (_Index == 11) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalFailure = _Parameter;
         end
