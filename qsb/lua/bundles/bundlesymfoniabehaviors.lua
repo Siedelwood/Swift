@@ -260,7 +260,7 @@ function b_Goal_StealGold:Debug(_Quest)
     return false;
 end
 
-function b_Goal_StealGold:Reset()
+function b_Goal_StealGold:Reset(_Quest)
     self.StohlenGold = 0;
 end
 
@@ -387,7 +387,7 @@ function b_Goal_StealBuilding:Debug(_Quest)
     return false;
 end
 
-function b_Goal_StealBuilding:Reset()
+function b_Goal_StealBuilding:Reset(_Quest)
     self.SuccessfullyStohlen = false;
     self.RobberList = {};
     self.Marker = nil;
@@ -509,7 +509,7 @@ function b_Goal_SpyBuilding:Debug(_Quest)
     return false;
 end
 
-function b_Goal_SpyBuilding:Reset()
+function b_Goal_SpyBuilding:Reset(_Quest)
     self.Infiltrated = false;
     self.Marker = nil;
 end
@@ -801,6 +801,173 @@ b_Goal_LevyTax.GetGoalTable = function(self, _Quest)
 end
 
 Core:RegisterBehavior(b_Goal_LevyTax);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler muss eine Anzahl an Gegenständen finden, die zufällig in der
+-- Nähe von Gebäuden einer anderen Partei platziert werden.
+--
+-- @param _PlayerID ID des Spielers
+-- @param _Amount   Menge an Gegenständen
+--
+-- @within Goal
+--
+function Goal_CollectValuables(...)
+    return b_Goal_CollectValuables:new(...);
+end
+
+b_Goal_CollectValuables = {
+    Name = "Goal_CollectValuables",
+    Description = {
+        en = "Goal: ",
+        de = "Ziel: ",
+    },
+    Parameter = {
+        { ParameterType.PlayerID, en = "ID of player",        de = "ID des Spielers" },
+        { ParameterType.Number,   en = "Amount of valuables", de = "Menge an Gegenständen" },
+    },
+
+    Text = {
+        {de = "%d/%d Gegenstände gefunden",
+         en = "%d/%d Items gefunden",
+         fr = "%d/%d Les objets ont été trouvés"},
+        {de = "GEGENSTÄNDE FINDEN {br}{br}Findet verlorene Gegenstände auf den Gebiet des Auftraggebers.",
+         en = "FIND VALUABLES {br}{br}Find the missing items on the territories of the client.",
+         fr = "RECHERCHER DES OBJECTS {br}{br}Trouvez les objets manquants sur le territoire du joueur."},
+    },
+
+    Tools = {
+        Models.Doodads_D_X_Sacks,
+        Models.Tools_T_BowNet01,
+        Models.Tools_T_Hammer02,
+        Models.Tools_T_Cushion01,
+        Models.Tools_T_Knife02,
+        Models.Tools_T_Scythe01,
+        Models.Tools_T_SiegeChest01,
+    },
+
+    Finished = false,
+    Positions = {},
+    Marker = {},
+}
+
+function b_Goal_CollectValuables:GetGoalTable()
+    return {Objective.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Goal_CollectValuables:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.PlayerID = _Parameter * 1;
+    elseif (_Index == 1) then
+        self.Amount = _Parameter * 1;
+    end
+end
+
+function b_Goal_CollectValuables:CustomFunction(_Quest)
+    Core:ChangeCustomQuestCaptionText("{center}" ..API.Localize(self.Text[2]), _Quest);
+    if not self.Finished then
+        self:CalculatePositions(_Quest);
+        self:CreateMarker(_Quest);
+        self:CheckPositions(_Quest);
+        if #self.Marker > 0 then
+            return;
+        end
+        self.Finished = true;
+    end
+    return true;
+end
+
+function b_Goal_CollectValuables:CalculatePositions(_Quest)
+    if #self.Positions == 0 then
+        local Buildings = self:GetRandomBuildingsForFindQuest();
+        for i= 1, #Buildings, 1 do
+            table.insert(self.Positions, self:GetPositionNearBuilding(Buildings[i]));
+        end
+    end
+end
+
+function b_Goal_CollectValuables:CreateMarker(_Quest)
+    if #self.Marker == 0 then
+        for i= 1, #self.Positions, 1 do
+            local ID = Logic.CreateEntity(Entities.XD_ScriptEntity, self.Positions[i].X, self.Positions[i].Y, 0, 0);
+            Logic.SetModel(ID, self.Tools[math.random(1, #self.Tools)]);
+            Logic.SetVisible(ID, true);
+            table.insert(self.Marker, ID);
+        end
+    end
+end
+
+function b_Goal_CollectValuables:CheckPositions(_Quest)
+    local Heroes = {};
+    Logic.GetKnights(_Quest.ReceivingPlayer, Heroes);
+    for i= #self.Marker, 1, -1 do
+        for j= 1, #Heroes, 1 do
+            if IsNear(self.Marker[i], Heroes[j], 300) then
+                DestroyEntity(table.remove(self.Marker, i));
+                local Max = #self.Positions;
+                local Now = Max - #self.Marker;
+                API.Note(string.format(API.Localize(self.Text[1]), Now, Max));
+                break;
+            end
+        end
+    end
+end
+
+function b_Goal_CollectValuables:GetPositionNearBuilding(_BuildingID)
+    local Position = {X= 0, Y= 0, Z= 0};
+    if IsExisting(_BuildingID) then
+        local RelPos = GetPosition(_BuildingID);
+        RelPos.X = RelPos.X + math.random(-200, 200);
+        RelPos.Y = RelPos.Y + math.random(-200, 200);
+
+        local ID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, RelPos.X, RelPos.Y, 0, 0);
+        local x, y, z = Logic.EntityGetPos(ID);
+        DestroyEntity(ID);
+
+        Position.X = x;
+        Position.Y = y;
+        Position.Z = z;
+    end
+    return Position;
+end
+
+function b_Goal_CollectValuables:GetRandomBuildingsForFindQuest()
+    local Buildings = {};
+    local AllBuildings = {Logic.GetPlayerEntitiesInCategory(self.PlayerID, EntityCategories.AttackableBuilding)};
+    if #AllBuildings >= self.Amount then
+        while #Buildings < self.Amount do
+            local ID = table.remove(AllBuildings, math.random(1, #AllBuildings));
+            if not API.TraverseTable(ID, Buildings) then
+                table.insert(Buildings, ID);
+            end
+        end
+    end
+    return Buildings;
+end
+
+function b_Goal_CollectValuables:Reset(_Quest)
+    self:Interrupt(_Quest);
+end
+
+function b_Goal_CollectValuables:Interrupt(_Quest)
+    self.Finished = false;
+    self.Positions = {};
+    for i= 1, #self.Marker, 1 do
+        DestroyEntity(self.Marker[i]);
+    end
+    self.Marker = {};
+end
+
+function b_Goal_CollectValuables:Debug(_Quest)
+    local Buildings = self:GetRandomBuildingsForFindQuest();
+    if (#Buildings < self.Amount) then
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Player has not enough buildings!")
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Goal_CollectValuables);
 
 -- -------------------------------------------------------------------------- --
 -- Reprisals                                                                  --

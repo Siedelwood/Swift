@@ -134,8 +134,12 @@ end
 --
 function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     local QuestGoals = {};
+
     if _Behavior.TypeRefill then
         QuestGoals[#QuestGoals+1] = self:GetRefillBehavior(_Behavior, _Quest);
+    end
+    if _Behavior.TypeFind then
+        QuestGoals[#QuestGoals+1] = self:GetFindBehavior(_Behavior, _Quest);
     end
     if _Behavior.TypeHuntPredators then
         QuestGoals[#QuestGoals+1] = self:GetHuntPredatorBehavior(_Behavior, _Quest);
@@ -168,6 +172,28 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
 end
 
 -- Behaviors ---------------------------------------------------------------- --
+
+---
+-- Erstellt ein Goal_CollectValuables das den Spieler verschwundene Gegenstände
+-- einer anderen Partei finden lässt.
+-- @param[type=table] _Behavior Behavior Data
+-- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetFindBehavior(_Behavior, _Quest)
+    local KnightTitle = Logic.GetTitle(_Quest.ReceivingPlayer);
+    self.Data.Find[_Quest.SendingPlayer] = self.Data.Find[_Quest.SendingPlayer] or {};
+    if not self.Data.Find[_Quest.SendingPlayer][KnightTitle] then
+        self.Data.Find[_Quest.SendingPlayer][KnightTitle] = true;
+        local FindAmount = 5;
+        local Buildings = {Logic.GetPlayerEntitiesInCategory(_Quest.SendingPlayer, EntityCategories.AttackableBuilding)};
+        if #Buildings >= FindAmount then
+            return {"Goal_CollectValuables", _Quest.SendingPlayer, FindAmount};
+        end
+    end
+end
 
 ---
 -- Erstellt ein Goal_Refill das den Spieler eine Mine auffüllen lässt.
@@ -455,8 +481,9 @@ b_Goal_RandomRequest = {
         { ParameterType.Custom,  en = "Knight title",            de = "Titel erreichen" },
         { ParameterType.Custom,  en = "City reputation",         de = "Ruf der Stadt" },
         { ParameterType.Custom,  en = "Build rampart",           de = "Festung bauen" },
-        { ParameterType.Custom,  en = "Hunt Predators",          de = "Raubtiere vertreiben" },
-        { ParameterType.Custom,  en = "Refill Mines  ",          de = "Minen auffüllen" },
+        { ParameterType.Custom,  en = "Hunt predators",          de = "Raubtiere vertreiben" },
+        { ParameterType.Custom,  en = "Refill mines",            de = "Minen auffüllen" },
+        { ParameterType.Custom,  en = "Find lost objects",       de = "Verlorene Gegenstände finden" },
         { ParameterType.Number,  en = "Time limit (0 = off)",    de = "Leitlimit (0 = aus)" },
         { ParameterType.Default, en = "(optional) Mission text", de = "(optional) Auftragsnachricht" },
         { ParameterType.Default, en = "(optional) Success text", de = "(optional) Erfolgsnachricht" },
@@ -486,16 +513,18 @@ function b_Goal_RandomRequest:AddParameter(_Index, _Parameter)
     elseif (_Index == 7) then
         self.TypeRefill = API.ToBoolean(_Parameter);
     elseif (_Index == 8) then
-        self.TimeLimit = _Parameter * 1;
+        self.TypeFind = API.ToBoolean(_Parameter);
     elseif (_Index == 9) then
+        self.TimeLimit = _Parameter * 1;
+    elseif (_Index == 10) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuggestion = _Parameter;
         end
-    elseif (_Index == 10) then
+    elseif (_Index == 11) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuccess = _Parameter;
         end
-    elseif (_Index == 11) then
+    elseif (_Index == 12) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalFailure = _Parameter;
         end
