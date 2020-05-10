@@ -53,51 +53,35 @@ function Mission_FirstMapAction()
     SetEntityName(Logic.GetHeadquarters(1), "HQ1");
     
     -----
-    
+
     API.CastleStoreCreate(1);
     
-    CreateObject {
-        Name = "IO1",
-        Costs = {Goods.G_Wood, 55, Goods.G_RawFish, 55},
-        Waittime = 5,
-    }
-
-    CreateObject {
-        Name = "IO2",
-        Costs = {Goods.G_Wool, 55, Goods.G_Milk, 55},
-        Waittime = 5,
-    }
-
-    CreateObject {
-        Name = "IO3",
-        Costs = {Goods.G_Carcass, 55, Goods.G_Herb, 55},
-        Waittime = 5,
-    }
-
-    CreateObject {
-        Name = "IO4",
-        Costs = {Goods.G_Stone, 55, Goods.G_Grain, 55},
-        Waittime = 5,
-    }
+    InteractiveObjectDeactivate("IORR1");
+    InteractiveObjectDeactivate("IORR2");
+    InteractiveObjectDeactivate("IORR3");
+    InteractiveObjectDeactivate("IORR4");
+    InteractiveObjectDeactivate("IORR5");
 
     AddQuest {
-        Name = "ObjectTestQuest",
-        Visible = true,
-        EndMessage = true,
-        Sender = 8,
-
-        Goal_ActivateSeveralObjects("IO1", "IO2", "IO3", "IO4"),
-    }
-
-    AddQuest {
-        Name = "TradeTestQuest",
-        Visible = true,
-        EndMessage = true,
+        Name = "RandomTestQuest1",
         Sender = 2,
 
-        Goal_Deliver("G_Wood", 100),
-        Reward_MapScriptFunction(SomeFunction, "Was ist lecker?", "Bockwurst"),
-        Trigger_Time(5)
+        Goal_RandomRequest(false, false, false, false, false, false, false, true, false, false, false, 0),
+        Trigger_Time(5),
+    }
+    AddQuest {
+        Name = "RandomTestQuest2",
+        Sender = 2,
+
+        Goal_RandomRequest(false, false, false, false, false, false, false, false, true, false, false, 0),
+        Trigger_Time(5),
+    }
+    AddQuest {
+        Name = "RandomTestQuest3",
+        Sender = 2,
+
+        Goal_RandomRequest(false, false, false, false, false, false, false, false, false, true, false, 0),
+        Trigger_Time(5),
     }
 end
 
