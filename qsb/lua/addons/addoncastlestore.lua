@@ -975,7 +975,7 @@ function AddOnCastleStore.Local:Install()
     QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions();
     self:OverwriteGetStringTableText();
-    -- self:OverwriteInteractiveObject();
+    self:OverwriteInteractiveObject();
 end
 
 ---
@@ -1616,7 +1616,14 @@ end
 -- @local
 --
 function AddOnCastleStore.Local:OverwriteInteractiveObject()
+    BundleInteractiveObjects.Local.OnObjectClicked_OrigCastleStore = BundleInteractiveObjects.Local.OnObjectClicked;
     BundleInteractiveObjects.Local.OnObjectClicked = function(self, _IO)
+        local PlayerID = GUI.GetPlayerID();
+        if not QSB.CastleStore:HasCastleStore(PlayerID) then
+            BundleInteractiveObjects.Local.OnObjectClicked_OrigCastleStore(self, _IO);
+            return;
+        end
+
         if not self:OnObjectClicked_DoesRewardFitInStorehouse(_IO) then
             return;
         end
@@ -1627,7 +1634,6 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
             return;
         end
     
-        local PlayerID = GUI.GetPlayerID();
         local EntityID = GetID(_IO.Name);
         if _IO.Costs[1] ~= nil then
             self:BuyObject(PlayerID, _IO.Costs[1], _IO.Costs[2]);
@@ -1791,7 +1797,6 @@ function AddOnCastleStore.Local.CastleStore:DescribeHotkeys()
             {de = "Burglager: Lager räumen", en = "Vault: Empty store",
              fr = "Bunker: Enlever les marchandises"}
         );
-        AddOnCastleStore.Local:OverwriteInteractiveObject();
         self.HotkeysAddToList = true;
     end
 end
