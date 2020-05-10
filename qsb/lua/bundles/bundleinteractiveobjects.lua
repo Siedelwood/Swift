@@ -838,7 +838,7 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
                 end
                 local ObjectEntityName = Logic.GetEntityName(Quest.Objectives[1].Data[i]);
                 local ObjectName = ""
-                if ObjectType ~= 0 then
+                if ObjectType ~= nil and ObjectType ~= 0 then
                     local ObjectTypeName = Logic.GetEntityTypeName(ObjectType)
                     ObjectName = Wrapped_GetStringTableText(_QuestIndex, "Names/" .. ObjectTypeName)
                     if ObjectName == "" then
