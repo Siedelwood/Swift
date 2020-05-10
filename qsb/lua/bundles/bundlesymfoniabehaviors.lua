@@ -892,7 +892,7 @@ function b_Goal_CollectValuables:GetPositions(_Quest)
     if #self.Positions == 0 then
         -- Position ist Table (script only feature)
         if type(self.SearchPositions) == "table" then
-            self.SearchPositions = self.Positions;
+            self.Positions = self.SearchPositions;
         -- Suche alle Positionen mit dem Namen
         else
             local Index = 1;

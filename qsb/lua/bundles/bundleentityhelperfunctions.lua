@@ -126,7 +126,7 @@ SetResourceAmount = API.SetResourceAmount;
 -- local RelativePostion = API.GetRelativePosition("pos1", 1000, 32);
 --
 function API.GetRelativePosition(_target, _distance, _angle, _buildingRealPos)
-    if not API.ValidatePosition(_target) or not IsExisting(_target) then
+    if not API.ValidatePosition(_target) and not IsExisting(_target) then
         return;
     end
     return BundleEntityHelperFunctions.Shared:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
@@ -264,6 +264,13 @@ function BundleEntityHelperFunctions.Global:OverwriteGeologistRefill()
                 local RefillAmount = BundleEntityHelperFunctions.Global.Data.RefillAmounts[_TargetID];
                 local RefillRandom = RefillAmount + math.random(1, math.floor((RefillAmount * 0.2) + 0.5));
                 Logic.SetResourceDoodadGoodAmount(_TargetID, RefillRandom);
+                if RefillRandom > 0 then
+                    if Logic.GetResourceDoodadGoodType(_TargetID) == Goods.G_Iron then
+                        Logic.SetModel(_TargetID, Models.Doodads_D_SE_ResourceIron);
+                    else
+                        Logic.SetModel(_TargetID, Models.R_ResorceStone_Scaffold);
+                    end
+                end
             end
         end
     end

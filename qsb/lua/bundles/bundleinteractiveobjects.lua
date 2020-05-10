@@ -371,6 +371,7 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
         Logic.InteractiveObjectSetRewardGoldCartType(eID, Entities.U_GoldCart);
         table.insert(HiddenTreasures,eID);
     end
+    API.InteractiveObjectActivate(_Description.Name, _Description.State);
 end
 
 ---
