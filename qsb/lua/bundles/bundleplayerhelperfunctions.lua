@@ -224,6 +224,32 @@ function API.GetControllingPlayer()
 end
 PlayerGetPlayerID = API.GetControllingPlayer;
 
+---
+-- Prüft, ob der Spieler die Ware prinzipiell herstellen kann.
+--
+-- Für alle gewöhnlichen Waren werden die benötigten Technologien transitiv
+-- abgefragt. Ein Bannermacher benötigt z.B. Wolle, also muss der Spieler
+-- nicht nur Banner, sondern ebenfalls Wolle herstellen können dürfen.
+--
+-- <b>Achtung:</b> Spezialwaren, wie z.B. G_MedicineLadyHealing werden nicht
+-- unterstützt. Luxusgüter können ebenfalls nicht hergestellt werden.
+--
+-- <b>Hinweis:</b> Über Skript ausgeblendete Buttons können nicht abgefangen
+-- werden. Ebenso ausgeblendetes Baumenü!
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _GoodType Warentyp
+-- @return[type=boolean] Ware kann produziert werden
+-- @within Internal
+-- @local
+--
+function API.CanPlayerProduceGood(_PlayerID, _GoodType)
+    if _GoodType == nil or _GoodType == 0 then
+        return false;
+    end
+    return BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood(_PlayerID, _GoodType);
+end
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -240,6 +266,11 @@ BundlePlayerHelperFunctions = {
             NormalFestivalLockedForPlayer = {},
         }
     },
+    Shared = {
+        Data = {
+            GoodsTechnologiesMap = {},
+        }
+    },
 }
 
 -- Global Script ---------------------------------------------------------------
@@ -251,6 +282,7 @@ BundlePlayerHelperFunctions = {
 -- @local
 --
 function BundlePlayerHelperFunctions.Global:Install()
+    BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap();
     self:InitFestival();
     API.AddSaveGameAction(BundlePlayerHelperFunctions.Global.OnSaveGameLoaded);
 end
@@ -483,6 +515,7 @@ end
 -- Local Script ------------------------------------------------------------- --
 
 function BundlePlayerHelperFunctions.Local:Install()
+    BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap();
     self:InitForbidFestival();
     self:OverrideQuestLogPlayerIcon();
     self:OverrideQuestPlayerIcon();
@@ -575,6 +608,148 @@ function BundlePlayerHelperFunctions.Local:OverrideQuestLogPlayerIcon()
         end
         XGUIEng.ListBoxPushItemEx(_widgetlist, "", Frame, nil, u0, v0, u1, v1);
     end
+end
+
+-- Shared ------------------------------------------------------------------- --
+
+---
+-- Prüft, ob der Spieler die Ware prinzipiell herstellen kann.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _GoodType Warentyp
+-- @return[type=boolean] Ware kann produziert werden
+-- @within Internal
+-- @local
+--
+function BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood(_PlayerID, _GoodType)
+    if not self.Data.GoodsTechnologiesMap[_GoodType] then
+        return false;
+    end
+    for k, v in pairs(self.Data.GoodsTechnologiesMap[_GoodType]) do
+        if Logic.TechnologyGetState(_PlayerID, v) == TechnologyStates.Prohibited 
+        or Logic.TechnologyGetState(_PlayerID, v) == TechnologyStates.Locked then
+            return false;
+        end
+    end
+    return true;
+end
+
+---
+-- Generiert die Map für Güter und deren benötigte Technologien.
+--
+-- Für alle gewöhnlichen Waren werden die benötigten Technologien transitiv
+-- gespeichert. Ein Bannermacher benötigt z.B. Wolle, also muss der Spieler
+-- nicht nur Banner, sondern ebenfalls Wolle herstellen können dürfen.
+--
+-- @within Internal
+-- @local
+--
+function BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap()
+    -- Evergreens
+    self.Data.GoodsTechnologiesMap = {
+        [Goods.G_Gold]        = {},
+        [Goods.G_Water]       = {},
+    }
+
+    -- Gathering
+    self.Data.GoodsTechnologiesMap[Goods.G_Stone]       = {Technologies.R_Gathering, Technologies.R_StoneQuarry};
+    self.Data.GoodsTechnologiesMap[Goods.G_Iron]        = {Technologies.R_Gathering, Technologies.R_IronMine};
+    self.Data.GoodsTechnologiesMap[Goods.G_Wood]        = {Technologies.R_Gathering, Technologies.R_Woodcutter};
+    self.Data.GoodsTechnologiesMap[Goods.G_Milk]        = {Technologies.R_Gathering, Technologies.R_CattleFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_Grain]       = {Technologies.R_Gathering, Technologies.R_GrainFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_RawFish]     = {Technologies.R_Gathering, Technologies.R_FishingHut};
+    self.Data.GoodsTechnologiesMap[Goods.G_Carcass]     = {Technologies.R_Gathering, Technologies.R_HuntersHut};
+    self.Data.GoodsTechnologiesMap[Goods.G_Honeycomb]   = {Technologies.R_Gathering, Technologies.R_Beekeeper};
+    self.Data.GoodsTechnologiesMap[Goods.G_Wool]        = {Technologies.R_Gathering, Technologies.R_SheepFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_Herb]        = {Technologies.R_Gathering, Technologies.R_HerbGatherer};
+
+    -- Food
+    self.Data.GoodsTechnologiesMap[Goods.G_Bread] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Grain]),
+        Technologies.R_Nutrition, Technologies.R_Bakery,
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Cheese] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Milk]),
+        Technologies.R_Nutrition, Technologies.R_Dairy
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Sausage] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Carcass]),
+        Technologies.R_Nutrition, Technologies.R_Butcher
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_SmokedFish] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_RawFish]),
+        Technologies.R_Nutrition, Technologies.R_SmokeHouse
+    };
+
+    -- Hygiene
+    self.Data.GoodsTechnologiesMap[Goods.G_Broom] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Wood]),
+        Technologies.R_Hygiene, Technologies.R_BroomMaker,
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Soap] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Carcass]),
+        Technologies.R_Hygiene, Technologies.R_Soapmaker
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Medicine] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Herb]),
+        Technologies.R_Hygiene, Technologies.R_Pharmacy
+    };
+
+    -- Entertainment
+    self.Data.GoodsTechnologiesMap[Goods.G_Beer] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Honeycomb]),
+        Technologies.R_Entertainment, Technologies.R_Tavern,
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_EntBaths] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Water]),
+        Technologies.R_Entertainment, Technologies.R_Baths
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_EntTheatre] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Wool]),
+        Technologies.R_Entertainment, Technologies.R_Theatre
+    };
+
+    -- Wealth
+    self.Data.GoodsTechnologiesMap[Goods.G_Banner] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Wool]),
+        Technologies.R_Wealth, Technologies.R_BannerMaker
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Sign] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Iron]),
+        Technologies.R_Wealth, Technologies.R_Blacksmith
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Candle] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Honeycomb]),
+        Technologies.R_Wealth, Technologies.R_CandleMaker,
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Ornament] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Wood]),
+        Technologies.R_Wealth, Technologies.R_Carpenter
+    };
+
+    -- Military Raw
+    self.Data.GoodsTechnologiesMap[Goods.G_PoorBow] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Iron]),
+        Technologies.R_Military, Technologies.R_BowMaker
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_PoorSword] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Iron]),
+        Technologies.R_Military, Technologies.R_SwordSmith
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_SiegeEnginePart] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Iron]),
+        Technologies.R_Military, Technologies.R_SiegeEngineWorkshop
+    };
+
+    -- Military Equipment
+    self.Data.GoodsTechnologiesMap[Goods.G_Bow] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_PoorBow]),
+        Technologies.R_Military, Technologies.R_BarracksArchers
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Sword] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_PoorSword]),
+        Technologies.R_Military, Technologies.R_Barracks
+    };
 end
 
 -- -------------------------------------------------------------------------- --
