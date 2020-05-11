@@ -723,6 +723,9 @@ function AddOnRandomRequests.Global:CanGoodBeSetAsGoal(_SenderID, _ReceiverID, _
     if self.Data.Deliver[_ReceiverID][_SenderID][_Good] then
         return false;
     end
+    if API.CanPlayerProduceGood(_ReceiverID, _Good) then
+        return false;
+    end
     if MerchantSystem.TradeBlackList[_SenderID] then
         for k, v in pairs(MerchantSystem.TradeBlackList[_SenderID]) do
             if v == _Good then
