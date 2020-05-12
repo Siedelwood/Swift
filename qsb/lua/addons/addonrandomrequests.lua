@@ -37,6 +37,12 @@ AddOnRandomRequests = {
             PredatorQuests = {},
             Claim = {},
             Deliver = {},
+            DeliverGoodTypes = {
+                "G_Wood", "G_Iron", "G_Stone", "G_Carcass", "G_Herb", "G_Wool",
+                "G_Honeycomb", "G_Grain", "G_Milk", "G_RawFish", "G_Bread",
+                "G_Cheese", "G_Sausage", "G_SmokedFish", "G_Broom", 
+                "G_Medicine", "G_Soap", "G_Beer", "G_Sword", "G_Bow"
+            },
             Reputation = {},
             KnightTitle = {},
             Object = {},
@@ -215,7 +221,7 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     end
     if _Behavior.TypeDeliverGold then
         self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Tribute;
-        local Amount = math.random(150, 225) * (Logic.GetKnightTitle(_Quest.ReceivingPlayer) +1);
+        local Amount = math.random(250, 500) + (75 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
         QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
     end
     if _Behavior.TypeClaim then
@@ -588,21 +594,39 @@ end
 -- @local
 --
 function AddOnRandomRequests.Global:GetDeliverGoodsBehavior(_Behavior, _Quest)
-    local GoodTypes = {
-        "G_Wood", "G_Iron", "G_Stone", "G_Carcass", "G_Herb", "G_Wool",
-        "G_Honeycomb", "G_Grain", "G_Milk", "G_RawFish"
-    };
-
     local Receiver = _Quest.ReceivingPlayer;
     local Sender   = _Quest.SendingPlayer;
+    -- Struktur erzeugen
     self.Data.Deliver[Receiver] = self.Data.Deliver[Receiver] or {};
-    self.Data.Deliver[Receiver][Sender] = self.Data.Deliver[Receiver][Sender] or {};
-
-    local SelectedGood;
-    repeat
-        SelectedGood = GoodTypes[math.random(1, #GoodTypes)];
-    until (self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[SelectedGood]));
-    local Amount = math.random(15, 25) * (Logic.GetKnightTitle(Receiver) +1);
+    if not self.Data.Deliver[Receiver][Sender] then
+        self.Data.Deliver[Receiver][Sender] = {};
+        for k, v in pairs(self.Data.DeliverGoodTypes) do 
+            self.Data.Deliver[Receiver][Sender][v] = false;
+        end
+    end
+    -- Freie Güter selektieren
+    local GoodTypes = {};
+    for k, v in pairs(self.Data.Deliver[Receiver][Sender]) do
+        if v == false and self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[k]) then
+            table.insert(GoodTypes, k);
+        end
+    end
+    -- Ware ermitteln
+    if #GoodTypes == 0 then
+        return;
+    end
+    local SelectedGood = GoodTypes[math.random(1, #GoodTypes)];
+    -- Menge ermitteln
+    local IsResource = Logic.GetGoodCategoryForGoodType(Goods[SelectedGood]) == GoodCategories.GC_Resource;
+    local IsGold = Goods[SelectedGood] == Goods.G_Gold;
+    local Amount = math.random(500, 1500);
+    if not IsGold then
+        Amount = math.random(30, 60);
+        if not IsResource then
+            Amount = math.random(12, 24);
+        end
+    end
+    -- Behavior erstellen
     self.Data.Deliver[Receiver][Sender][Goods[SelectedGood]] = true;
     return {"Goal_Deliver", SelectedGood, Amount};
 end 
@@ -723,7 +747,7 @@ function AddOnRandomRequests.Global:CanGoodBeSetAsGoal(_SenderID, _ReceiverID, _
     if self.Data.Deliver[_ReceiverID][_SenderID][_Good] then
         return false;
     end
-    if not API.CanPlayerProduceGood(_ReceiverID, _Good) then
+    if not API.CanPlayerCurrentlyProduceGood(_ReceiverID, _Good) then
         return false;
     end
     if MerchantSystem.TradeBlackList[_SenderID] then
