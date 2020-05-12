@@ -244,9 +244,19 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 -- @local
 --
 function API.CanPlayerProduceGood(_PlayerID, _GoodType)
-    if _GoodType == nil or _GoodType == 0 then
-        return false;
-    end
+    return BundlePlayerHelperFunctions.Shared:CanPlayerProduceGoodInPrinciple(_PlayerID, _GoodType);
+end
+
+---
+-- Prüft, ob der Spieler die Ware tatsächlich herstellen kann.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _GoodType Warentyp
+-- @return[type=boolean] Ware kann produziert werden
+-- @within Internal
+-- @local
+--
+function API.CanPlayerCurrentlyProduceGood(_PlayerID, _GoodType)
     return BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood(_PlayerID, _GoodType);
 end
 
@@ -613,7 +623,7 @@ end
 -- Shared ------------------------------------------------------------------- --
 
 ---
--- Prüft, ob der Spieler die Ware prinzipiell herstellen kann.
+-- Prüft, ob der Spieler die Ware aktuell tatsächlich hergestellt werden kann.
 --
 -- @param[type=number] _PlayerID ID des Spielers
 -- @param[type=number] _GoodType Warentyp
@@ -622,6 +632,27 @@ end
 -- @local
 --
 function BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood(_PlayerID, _GoodType)
+    if not self:CanPlayerProduceGoodInPrinciple(_PlayerID, _GoodType) then
+        return false;
+    end
+    local Length = #self.Data.GoodsTechnologiesMap[_GoodType];
+    if Length == 0 then
+        return true;
+    end
+    local Technology = self.Data.GoodsTechnologiesMap[_GoodType][Length];
+    return Logic.TechnologyGetState(_PlayerID, Technology) == TechnologyStates.Researched;
+end
+
+---
+-- Prüft, ob der Spieler die Ware prinzipiell herstellen kann.
+--
+-- @param[type=number] _PlayerID ID des Spielers
+-- @param[type=number] _GoodType Warentyp
+-- @return[type=boolean] Ware kann produziert werden
+-- @within Internal
+-- @local
+--
+function BundlePlayerHelperFunctions.Shared:CanPlayerProduceGoodInPrinciple(_PlayerID, _GoodType)
     if not self.Data.GoodsTechnologiesMap[_GoodType] then
         return false;
     end
@@ -637,9 +668,9 @@ end
 ---
 -- Generiert die Map für Güter und deren benötigte Technologien.
 --
--- Für alle gewöhnlichen Waren werden die benötigten Technologien transitiv
--- gespeichert. Ein Bannermacher benötigt z.B. Wolle, also muss der Spieler
--- nicht nur Banner, sondern ebenfalls Wolle herstellen können dürfen.
+-- Für alle gewöhnlichen Waren werden die benötigten Technologien gespeichert
+-- Ein Bannermacher benötigt z.B. Wolle, also muss der Spieler nicht nur Banner,
+-- sondern ebenfalls Wolle herstellen können.
 --
 -- @within Internal
 -- @local
@@ -652,16 +683,16 @@ function BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap()
     }
 
     -- Gathering
-    self.Data.GoodsTechnologiesMap[Goods.G_Stone]       = {Technologies.R_Gathering, Technologies.R_StoneQuarry};
-    self.Data.GoodsTechnologiesMap[Goods.G_Iron]        = {Technologies.R_Gathering, Technologies.R_IronMine};
-    self.Data.GoodsTechnologiesMap[Goods.G_Wood]        = {Technologies.R_Gathering, Technologies.R_Woodcutter};
-    self.Data.GoodsTechnologiesMap[Goods.G_Milk]        = {Technologies.R_Gathering, Technologies.R_CattleFarm};
-    self.Data.GoodsTechnologiesMap[Goods.G_Grain]       = {Technologies.R_Gathering, Technologies.R_GrainFarm};
-    self.Data.GoodsTechnologiesMap[Goods.G_RawFish]     = {Technologies.R_Gathering, Technologies.R_FishingHut};
-    self.Data.GoodsTechnologiesMap[Goods.G_Carcass]     = {Technologies.R_Gathering, Technologies.R_HuntersHut};
-    self.Data.GoodsTechnologiesMap[Goods.G_Honeycomb]   = {Technologies.R_Gathering, Technologies.R_Beekeeper};
-    self.Data.GoodsTechnologiesMap[Goods.G_Wool]        = {Technologies.R_Gathering, Technologies.R_SheepFarm};
-    self.Data.GoodsTechnologiesMap[Goods.G_Herb]        = {Technologies.R_Gathering, Technologies.R_HerbGatherer};
+    self.Data.GoodsTechnologiesMap[Goods.G_Stone]       = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_StoneQuarry};
+    self.Data.GoodsTechnologiesMap[Goods.G_Iron]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_IronMine};
+    self.Data.GoodsTechnologiesMap[Goods.G_Wood]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_Woodcutter};
+    self.Data.GoodsTechnologiesMap[Goods.G_Milk]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_CattleFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_Grain]       = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_GrainFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_RawFish]     = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_FishingHut};
+    self.Data.GoodsTechnologiesMap[Goods.G_Carcass]     = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_HuntersHut};
+    self.Data.GoodsTechnologiesMap[Goods.G_Honeycomb]   = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_Beekeeper};
+    self.Data.GoodsTechnologiesMap[Goods.G_Wool]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_SheepFarm};
+    self.Data.GoodsTechnologiesMap[Goods.G_Herb]        = {Technologies.R_Construction, Technologies.R_Gathering, Technologies.R_HerbGatherer};
 
     -- Food
     self.Data.GoodsTechnologiesMap[Goods.G_Bread] = {
@@ -702,7 +733,7 @@ function BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap()
     };
     self.Data.GoodsTechnologiesMap[Goods.G_EntBaths] = {
         unpack(self.Data.GoodsTechnologiesMap[Goods.G_Water]),
-        Technologies.R_Entertainment, Technologies.R_Baths
+        Technologies.R_Construction, Technologies.R_Entertainment, Technologies.R_Baths
     };
     self.Data.GoodsTechnologiesMap[Goods.G_EntTheatre] = {
         unpack(self.Data.GoodsTechnologiesMap[Goods.G_Wool]),
