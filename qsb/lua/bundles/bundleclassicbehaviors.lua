@@ -1502,7 +1502,7 @@ b_Goal_Create = {
 }
 
 function b_Goal_Create:GetGoalTable()
-    return { Objective.Create, assert( Entities[self.EntityName] ), self.Amount, self.TerritoryID  }
+    return { Objective.Create, assert( Entities[self.EntityName] ), self.Amount, self.TerritoryID }
 end
 
 function b_Goal_Create:AddParameter(_Index, _Parameter)

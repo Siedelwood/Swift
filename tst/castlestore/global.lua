@@ -66,21 +66,21 @@ function Mission_FirstMapAction()
         Name = "RandomTestQuest1",
         Sender = 2,
 
-        Goal_RandomRequest(false, false, false, false, false, false, false, true, false, false, false, 0),
+        Goal_RandomRequest(false, false, false, false, false, false, false, false, false, false, false, true, 0),
         Trigger_Time(5),
     }
     AddQuest {
         Name = "RandomTestQuest2",
         Sender = 2,
 
-        Goal_RandomRequest(false, false, false, false, false, false, false, false, true, false, false, 0),
+        Goal_RandomRequest(false, false, false, false, false, false, false, false, false, false, false, true, 0),
         Trigger_Time(5),
     }
     AddQuest {
         Name = "RandomTestQuest3",
         Sender = 2,
 
-        Goal_RandomRequest(false, false, false, false, false, false, false, false, false, true, false, 0),
+        Goal_RandomRequest(false, false, false, false, false, false, false, false, false, false, false, true, 0),
         Trigger_Time(5),
     }
 end
