@@ -76,6 +76,12 @@ AddOnRandomRequests = {
                      fr = "Votre peuple a besoin de votre aide! Voulez-vous nous aider?"},
 
                     -- Spezielle Texte
+                    Build = {
+                        de = "Uns ist daran gelegen, dass Ihr dieses Gebäude"..
+                             " in Euer Stadt errichtet.",
+                        en = "It is important to us that you build this"..
+                             " building in your city.",
+                    },
                     Fire = {
                         de = "Dieses Feuer muss entzündet werden. Bitte helft"..
                              " dabei und sendet uns die benötigten Waren.",
@@ -318,6 +324,7 @@ function AddOnRandomRequests.Global:GetConstructBehavior(_Behavior, _Quest)
     end
     Amount = #EntitiesOfType +1;
     -- Behavior erzeugen
+    self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Build;
     self.Data.Construct[_Quest.ReceivingPlayer][Type] = true;
     return {"Goal_Create", Type, Amount, TerritoryID};
 end
