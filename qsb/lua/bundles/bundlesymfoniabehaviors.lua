@@ -797,7 +797,7 @@ b_Goal_LevyTax.Description.de = "Ziel: Liefere eine relative Menge an Waren zum 
 
 b_Goal_LevyTax.GetGoalTable = function(self, _Quest)
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName);
-    return { Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture, {}, 0, 0, true}
+    return { Objective.Deliver, GoodType, math.floor(self.GoodAmount + 0.5), self.OverrideTarget, self.IgnoreCapture, {}, 0, 0, true};
 end
 
 Core:RegisterBehavior(b_Goal_LevyTax);
@@ -2499,16 +2499,15 @@ function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
                     self.Objectives[b].Data[5] = true;
                 end
             
-            -- Spezielles Objective.Deliver für prozentual errechnete Liefermengen
+            -- Spezielles Objective.Deliver für errechnete Liefermengen
+            -- Ermittelt die zu liefernde Menge prozentual zur aktuellen Menge
+            -- einer Ware. Ist die vorhandene Menge zu gering, wird eine
+            -- Standardmenge verlangt.
             elseif self.Objectives[b].Type == Objective.Deliver and self.Objectives[b].Data[8] == true then
                 local Data = self.Objectives[b].Data;
                 -- Sicherstellen, dass es niemals ungültige Werte gibt.
-                if Data[2] < 1 then
-                    self.Objectives[b].Data[2] = 1;
-                end
-                if Data[2] > 100 then
-                    self.Objectives[b].Data[2] = 100;
-                end
+                self.Objectives[b].Data[2] = (Data[2] > 100 and 100) or Data[2];
+                self.Objectives[b].Data[2] = (Data[2] < 1 and 1) or Data[2];
                 -- Einmalig zum Start die absolut geforderte Menge ermitteln.
                 if Data[9] == nil then
                     -- Sicherheitskopie des ursprünglichen Wertes anlegen
@@ -2516,25 +2515,24 @@ function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
                         self.Objectives[b].Data[9] = self.Objectives[b].Data[2];
                     end
                     -- Werte bestimmen
+                    local IsResource = Logic.GetGoodCategoryForGoodType(Data[1]) == GoodCategories.GC_Resource;
+                    local IsGold = Data[1] == Goods.G_Gold;
                     local TotalAmount = GetPlayerGoodsInSettlement(Data[1], self.ReceivingPlayer, false);
                     -- Burglager einbeziehen
                     if AddOnCastleStore then
                         TotalAmount = TotalAmount + API.CastleStoreGetGoodAmount(self.ReceivingPlayer, Data[1])
                     end
+                    TotalAmount = TotalAmount + math.ceil(TotalAmount * 0.2);
+                    -- Defaults, wenn zu wenig
+                    if IsGold and TotalAmount < 250 + Data[9] then
+                        TotalAmount = 250 + Data[9];
+                    elseif IsResource and TotalAmount < 36 then
+                        TotalAmount = 36 + math.floor(Data[9]/3);
+                    elseif not IsGold and not IsResource and TotalAmount < 18 then
+                        TotalAmount = 18 + math.floor(Data[9]/6);
+                    end
+                    -- Menge bestimmen
                     local Amount = math.ceil((TotalAmount / 100) * Data[9]);
-                    -- Wenn zu wenig Einheiten einer Ware da sind, soll ein fester
-                    -- Wert verlangt werden, damit die Menge nicht lächerlich ist.
-                    local IsResource = Logic.GetGoodCategoryForGoodType(Data[1]) == GoodCategories.GC_Resource;
-                    local IsGold = Data[1] == Goods.G_Gold;
-                    if (IsGold and TotalAmount < 200) then
-                        Amount = Data[9] * 5;
-                    end
-                    if (IsResource and not IsGold and TotalAmount < 18) then
-                        Amount = Data[9];
-                    end
-                    if (not IsResource and TotalAmount < 9) then
-                        Amount = math.ceil(0.18 * Data[9]);
-                    end
                     self.Objectives[b].Data[2] = Amount;
                 end
             end

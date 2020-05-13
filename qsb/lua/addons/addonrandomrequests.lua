@@ -37,12 +37,31 @@ AddOnRandomRequests = {
             PredatorQuests = {},
             Claim = {},
             Deliver = {},
+            DeliverGoodTypes = {
+                "G_Wood", "G_Iron", "G_Stone", "G_Carcass", "G_Herb", "G_Wool",
+                "G_Honeycomb", "G_Grain", "G_Milk", "G_RawFish", "G_Bread",
+                "G_Cheese", "G_Sausage", "G_SmokedFish", "G_Broom", 
+                "G_Medicine", "G_Soap", "G_Beer", "G_Sword", "G_Bow"
+            },
             Reputation = {},
             KnightTitle = {},
             Object = {},
             Refill = {},
             Find = {},
             CureSettlers = {},
+            Construct = {},
+            ConstructTypes = {
+                "B_BannerMaker", "B_Baths", "B_Blacksmith", "B_BroomMaker", 
+                "B_Butcher", "B_CandleMaker", "B_Carpenter", "B_Pharmacy",
+                "B_Soapmaker", "B_Tanner", "B_Tavern", "B_Theatre", "B_Weaver",
+            },
+            ConstructTypesRdO = {
+                "B_Beautification_Brazier", "B_Beautification_Pillar",
+                "B_Beautification_Shrine", "B_Beautification_StoneBench",
+                "B_Beautification_Sundial", "B_Beautification_TriumphalArch",
+                "B_Beautification_Vase", "B_Beautification_VictoryColumn",
+                "B_Cistern",
+            },
 
             Text = {
                 Suggestion = {
@@ -57,6 +76,12 @@ AddOnRandomRequests = {
                      fr = "Votre peuple a besoin de votre aide! Voulez-vous nous aider?"},
 
                     -- Spezielle Texte
+                    Build = {
+                        de = "Uns ist daran gelegen, dass Ihr dieses Gebäude"..
+                             " in Euer Stadt errichtet.",
+                        en = "It is important to us that you build this"..
+                             " building in your city.",
+                    },
                     Fire = {
                         de = "Dieses Feuer muss entzündet werden. Bitte helft"..
                              " dabei und sendet uns die benötigten Waren.",
@@ -195,6 +220,9 @@ end
 function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     local QuestGoals = {};
 
+    if _Behavior.TypeConstruct then
+        QuestGoals[#QuestGoals+1] = self:GetConstructBehavior(_Behavior, _Quest);
+    end
     if _Behavior.TypeRefill then
         QuestGoals[#QuestGoals+1] = self:GetRefillBehavior(_Behavior, _Quest);
     end
@@ -215,7 +243,7 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
     end
     if _Behavior.TypeDeliverGold then
         self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Tribute;
-        local Amount = math.random(150, 225) * (Logic.GetKnightTitle(_Quest.ReceivingPlayer) +1);
+        local Amount = math.random(250, 500) + (75 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
         QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
     end
     if _Behavior.TypeClaim then
@@ -239,6 +267,67 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
 end
 
 -- Behaviors ---------------------------------------------------------------- --
+
+---
+-- Erstellt ein Goal_Create, das den Spieler dazu bringt ein zufälliges
+-- Gebäude auf dem Heimatterritorium zu bauen.
+--
+-- <b>Hinweis</b>: Auswahl hängt vom aktuellen Titel ab. Jedes Gebäude wird
+-- nur einmal ausgewählt und ist für den Rest des Spiels gesperrt.
+--
+-- @param[type=table] _Behavior Behavior Data
+-- @param[type=table] _Quest    Quest Data
+-- @return[type=table] Behavior
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:GetConstructBehavior(_Behavior, _Quest)
+    local AllTerritories = self:GetTerritoriesOfPlayer(_Quest.ReceivingPlayer);
+    if #AllTerritories == 0 then
+        return;
+    end
+
+    local Type;
+    local TerritoryID;
+    local Amount;
+    self.Data.Construct[_Quest.ReceivingPlayer] = self.Data.Construct[_Quest.ReceivingPlayer] or {};
+
+    -- Gebäude ermitteln
+    local Buildings = {};
+    local PossibleBuildings = API.InstanceTable(self.Data.ConstructTypes);
+    if g_GameExtraNo > 0 then
+        PossibleBuildings = Array_Append(PossibleBuildings, API.InstanceTable(self.Data.ConstructTypesRdO));
+    end
+    for k, v in pairs(PossibleBuildings) do
+        if not self.Data.Construct[_Quest.ReceivingPlayer][v] then
+            if Logic.TechnologyGetState(_Quest.ReceivingPlayer, Technologies["R_" ..v:sub(3)]) == TechnologyStates.Researched then
+                table.insert(Buildings, v);
+            end
+        end
+    end
+    if #Buildings == 0 then
+        return;
+    end
+    Type = Buildings[math.random(1, #Buildings)];
+    -- Territorium ermitteln
+    TerritoryID = GetTerritoryUnderEntity(Logic.GetStoreHouse(_Quest.ReceivingPlayer));
+    if TerritoryID == 0 then
+        return;
+    end
+    -- Menge bestimmen
+    -- (Anzahl an vorhandenen Gebäuden + 1 neues)
+    local EntitiesOfType = GetPlayerEntities(_Quest.ReceivingPlayer, Entities[Type]);
+    for i= #EntitiesOfType, 1, -1 do
+        if GetTerritoryUnderEntity(EntitiesOfType[i]) ~= TerritoryID then
+            table.remove(EntitiesOfType, i);
+        end
+    end
+    Amount = #EntitiesOfType +1;
+    -- Behavior erzeugen
+    self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Build;
+    self.Data.Construct[_Quest.ReceivingPlayer][Type] = true;
+    return {"Goal_Create", Type, Amount, TerritoryID};
+end
 
 ---
 -- Erstellt ein Goal_ActivateObject für ein Objekt auf dem Gebiet des
@@ -588,21 +677,39 @@ end
 -- @local
 --
 function AddOnRandomRequests.Global:GetDeliverGoodsBehavior(_Behavior, _Quest)
-    local GoodTypes = {
-        "G_Wood", "G_Iron", "G_Stone", "G_Carcass", "G_Herb", "G_Wool",
-        "G_Honeycomb", "G_Grain", "G_Milk", "G_RawFish"
-    };
-
     local Receiver = _Quest.ReceivingPlayer;
     local Sender   = _Quest.SendingPlayer;
+    -- Struktur erzeugen
     self.Data.Deliver[Receiver] = self.Data.Deliver[Receiver] or {};
-    self.Data.Deliver[Receiver][Sender] = self.Data.Deliver[Receiver][Sender] or {};
-
-    local SelectedGood;
-    repeat
-        SelectedGood = GoodTypes[math.random(1, #GoodTypes)];
-    until (self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[SelectedGood]));
-    local Amount = math.random(15, 25) * (Logic.GetKnightTitle(Receiver) +1);
+    if not self.Data.Deliver[Receiver][Sender] then
+        self.Data.Deliver[Receiver][Sender] = {};
+        for k, v in pairs(self.Data.DeliverGoodTypes) do 
+            self.Data.Deliver[Receiver][Sender][v] = false;
+        end
+    end
+    -- Freie Güter selektieren
+    local GoodTypes = {};
+    for k, v in pairs(self.Data.Deliver[Receiver][Sender]) do
+        if v == false and self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[k]) then
+            table.insert(GoodTypes, k);
+        end
+    end
+    -- Ware ermitteln
+    if #GoodTypes == 0 then
+        return;
+    end
+    local SelectedGood = GoodTypes[math.random(1, #GoodTypes)];
+    -- Menge ermitteln
+    local IsResource = Logic.GetGoodCategoryForGoodType(Goods[SelectedGood]) == GoodCategories.GC_Resource;
+    local IsGold = Goods[SelectedGood] == Goods.G_Gold;
+    local Amount = math.random(500, 1500);
+    if not IsGold then
+        Amount = math.random(30, 60);
+        if not IsResource then
+            Amount = math.random(12, 24);
+        end
+    end
+    -- Behavior erstellen
     self.Data.Deliver[Receiver][Sender][Goods[SelectedGood]] = true;
     return {"Goal_Deliver", SelectedGood, Amount};
 end 
@@ -723,7 +830,7 @@ function AddOnRandomRequests.Global:CanGoodBeSetAsGoal(_SenderID, _ReceiverID, _
     if self.Data.Deliver[_ReceiverID][_SenderID][_Good] then
         return false;
     end
-    if not API.CanPlayerProduceGood(_ReceiverID, _Good) then
+    if not API.CanPlayerCurrentlyProduceGood(_ReceiverID, _Good) then
         return false;
     end
     if MerchantSystem.TradeBlackList[_SenderID] then
@@ -798,6 +905,7 @@ end
 -- @param[type=boolean] _Find       Ziel: Gegenstände suchen
 -- @param[type=boolean] _Cure       Ziel: Kranke Siedler heilen
 -- @param[type=boolean] _Object     Ziel: Zufällig gewähltes Objekt aktivieren
+-- @param[type=boolean] _Build      Ziel: Zufällig gewähltes Gebäude bauen
 -- @param[type=number]  _Time       Zeit bis zur Niederlage (0 = aus)
 -- @param[type=string]  _Suggestion (optional) Startnachricht
 -- @param[type=string]  _Success    (optional) Erfolgsnachricht
@@ -827,6 +935,7 @@ b_Goal_RandomRequest = {
         { ParameterType.Custom,  en = "Find lost objects",       de = "Verlorene Gegenstände finden" },
         { ParameterType.Custom,  en = "Cure sick settlers",      de = "Kranke Siedler heilen" },
         { ParameterType.Custom,  en = "Activate object",         de = "Interaktives Object benutzen" },
+        { ParameterType.Custom,  en = "Construct building",      de = "Gebäude bauen" },
         { ParameterType.Number,  en = "Time limit (0 = off)",    de = "Leitlimit (0 = aus)" },
         { ParameterType.Default, en = "(optional) Mission text", de = "(optional) Auftragsnachricht" },
         { ParameterType.Default, en = "(optional) Success text", de = "(optional) Erfolgsnachricht" },
@@ -862,16 +971,18 @@ function b_Goal_RandomRequest:AddParameter(_Index, _Parameter)
     elseif (_Index == 10) then
         self.TypeObject = API.ToBoolean(_Parameter);
     elseif (_Index == 11) then
-        self.TimeLimit = _Parameter * 1;
+        self.TypeConstruct = API.ToBoolean(_Parameter);
     elseif (_Index == 12) then
+        self.TimeLimit = _Parameter * 1;
+    elseif (_Index == 13) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuggestion = _Parameter;
         end
-    elseif (_Index == 13) then
+    elseif (_Index == 14) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuccess = _Parameter;
         end
-    elseif (_Index == 14) then
+    elseif (_Index == 15) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalFailure = _Parameter;
         end
