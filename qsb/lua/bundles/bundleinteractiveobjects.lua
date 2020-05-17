@@ -13,8 +13,7 @@
 -- Die Einsatzmöglichkeiten sind vielfältig. Wenn ein Gegenstand oder ein
 -- Objekt mit einer Funktion versehen ist, kann dies in verschiedenem Kontext
 -- an die Geschichte angepasst werden: z.B. Helbel öffnen eine Geheimtür,
--- ein Gegenstand wird vom Helden aufgehoben, ein Marktstand, der etwas
--- verkauft, ....
+-- ein Gegenstand wird vom Helden aufgehoben, eine Tür wird geöffnet, ...
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -23,8 +22,6 @@ BundleInteractiveObjects = {};
 
 API = API or {};
 QSB = QSB or {};
-
-QSB.IOList = {};
 
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
@@ -98,12 +95,6 @@ QSB.IOList = {};
 -- <td>ja</td>
 -- </tr>
 -- <tr>
--- <td>ConditionUnfulfilled</td>
--- <td>Eine Nachricht, die angezeigt wird, falls die Bedingung nicht
--- erfüllt ist.</td>
--- <td>ja</td>
--- </tr>
--- <tr>
 -- <td>State</td>
 -- <td>Bestimmt, wie sich der Button des interaktiven Objektes verhält.</td>
 -- <td>ja</td>
@@ -138,25 +129,6 @@ end
 CreateObject = API.CreateObject;
 
 ---
--- Löscht ein interaktives Objekt.
---
--- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
--- Konfiguration des Objektes entfernt.
---
--- <p><b>Alias:</b> RemoveInteractiveObject</p>
---
--- @param[type=string] _EntityName Skriptname des IO
--- @within Anwenderfunktionen
---
-function API.RemoveInteractiveObject(_EntityName)
-    if GUI or not IsExisting(_EntityName) then
-        return;
-    end
-    return BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName);
-end
-RemoveInteractiveObject = API.RemoveInteractiveObject;
-
----
 -- Aktiviert ein Interaktives Objekt, sodass es vom Spieler
 -- aktiviert werden kann.
 --
@@ -167,22 +139,17 @@ RemoveInteractiveObject = API.RemoveInteractiveObject;
 -- <p><b>Alias</b>: InteractiveObjectActivate</p>
 --
 -- @param[type=string] _EntityName Skriptname des Objektes
--- @param[type=number] _State  State des Objektes
+-- @param[type=number] _State      State des Objektes
 -- @within Anwenderfunktionen
 --
-function API.InteractiveObjectActivate(_EntityName, _State)
-    if GUI or not IsExisting(_EntityName) then
+function API.InteractiveObjectActivate(_ScriptName, _State)
+    if not IO[_ScriptName] then
+        API.ActivateIO(_ScriptName, _State);
         return;
     end
-
-    if not Logic.IsInteractiveObject(GetID(_EntityName)) then
-        if IO[_EntityName] then
-            IO[_EntityName].Inactive = false;
-            IO[_EntityName].Used = false;
-        end
-    else
-        API.ActivateIO(_EntityName, _State);
-    end
+    local ScriptName = (IO[_ScriptName].m_Slave or _ScriptName);
+    IO[_ScriptName]:SetActive(true);
+    API.ActivateIO(ScriptName, _State);
 end
 InteractiveObjectActivate = API.InteractiveObjectActivate;
 
@@ -195,18 +162,14 @@ InteractiveObjectActivate = API.InteractiveObjectActivate;
 -- @param[type=string] _EntityName Scriptname des Objektes
 -- @within Anwenderfunktionen
 --
-function API.InteractiveObjectDeactivate(_EntityName)
-    if GUI or not IsExisting(_EntityName) then
+API.InteractiveObjectDeactivate = function(_ScriptName)
+    if not IO[_ScriptName] then
+        API.DeactivateIO(_ScriptName);
         return;
     end
-
-    if not Logic.IsInteractiveObject(GetID(_EntityName)) then
-        if IO[_EntityName] then
-            IO[_EntityName].Inactive = true;
-        end
-    else
-        API.DeactivateIO(_EntityName);
-    end
+    local ScriptName = (IO[_ScriptName].m_Slave or _ScriptName);
+    IO[_ScriptName]:SetActive(false);
+    API.DeactivateIO(ScriptName);
 end
 InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 
@@ -218,23 +181,22 @@ InteractiveObjectDeactivate = API.InteractiveObjectDeactivate;
 --
 -- <p><b>Alias:</b> AddCustomIOName</p>
 --
--- @param[type=string] _Key Typname des Entity
+-- @param[type=string] _Key  Typname des Entity
 -- @param              _Text Text der Beschriftung
 -- @within Anwenderfunktionen
 --
 -- @usage
--- API.AddCustomIOName("D_X_ChestClosed", {de = "Schatztruhe", en = "Treasure");
--- API.AddCustomIOName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
+-- API.InteractiveObjectSetName("D_X_ChestClosed", {de = "Schatztruhe", en = "Treasure");
+-- API.InteractiveObjectSetName("D_X_ChestOpenEmpty", "Leere Schatztruhe");
 --
-function API.AddCustomIOName(_Key, _Text)
+function API.InteractiveObjectSetName(_Key, _Text)
     _Text = API.Localize(_Text);
     if GUI then
-        API.Bridge("API.AddCustomIOName('" .._Key.. "', '" .._Text.. "')");
         return;
     end
-    return BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text);
+    IO_UserDefindedNames[_Key] = _Text;
 end
-AddCustomIOName = API.AddCustomIOName;
+AddCustomIOName = API.InteractiveObjectSetName;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -242,21 +204,13 @@ AddCustomIOName = API.AddCustomIOName;
 
 BundleInteractiveObjects = {
     Global = {
-        Data = {}
+        Data = {
+            SlaveSequence = 0,
+        }
     },
     Local = {
-        Data = {
-            IOCustomNames = {},
-            IOCustomNamesByEntityName = {},
-        },
+        Data = {},
     },
-    Text = {
-        InteractionTitle = {
-            de = "Interaktion",
-            en = "Interaction",
-            fr = "Interagir",
-        }
-    }
 }
 
 -- Global Script ---------------------------------------------------------------
@@ -269,7 +223,107 @@ BundleInteractiveObjects = {
 --
 function BundleInteractiveObjects.Global:Install()
     IO = {};
+    IO_UserDefindedNames = {};
+    IO_SlaveToMaster = {};
+
     self:OverrideVanillaBehavior();
+    self:HackOnInteractionEvent();
+    self:StartObjectConditionController();
+end
+
+---
+-- Erzeugt ein interaktives Objekt. Dabei können sowohl interaktive
+-- Objekte (alle mit I_X_), eine Auswahl von normalen Entities und
+-- sogar (sichtbare) XD_ScriptEntities verwendet werden.
+--
+-- @param[type=table] _Description Beschreibung
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Global:CreateObject(_Description)
+    -- Objekt erstellen
+    local ID = GetID(_Description.Name);
+    if ID == 0 then
+        return;
+    end
+    local Object = InteractiveObject:New(_Description.Name)
+        :SetDistance(_Description.Distance)
+        :SetWaittime(_Description.Waittime)
+        :SetCaption(_Description.Title)
+        :SetDescription(_Description.Text)
+        :SetAction(_Description.Callback)
+        :SetCondition(_Description.Condition)
+        :SetState(_Description.State)
+        :SetIcon(_Description.Texture);
+    
+    -- Belohnung setzen
+    if _Description.Reward then
+        Object:SetReward(unpack(_Description.Reward))
+    end
+    -- Kosten setzen
+    if _Description.Costs then
+        Object:SetCosts(unpack(_Description.Costs))
+    end
+    
+    -- Slave Objekt erstellen
+    local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(ID));
+    if not TypeName:find("I_X_") then
+        self.Data.SlaveSequence = self.Data.SlaveSequence +1;
+        local Name    = "QSB_SlaveObject_" ..self.Data.SlaveSequence;
+        local x,y, z  = Logic.EntityGetPos(ID);
+        local SlaveID = Logic.CreateEntity(Entities.I_X_DragonBoatWreckage, x, y, 0, 0);
+        IO_SlaveToMaster[Name] = _Description.Name;
+        Logic.SetEntityName(SlaveID, Name);
+        Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
+        Object:SetSlave(Name);
+    end
+
+    -- Tatsächliches Objekt erstellen
+    ID = (Object.m_Slave and GetID(Object.m_Slave)) or ID;
+    Logic.InteractiveObjectClearCosts(ID);
+    Logic.InteractiveObjectClearRewards(ID);
+    Logic.InteractiveObjectSetInteractionDistance(ID,_Description.Distance);
+    Logic.InteractiveObjectSetTimeToOpen(ID,_Description.Waittime);
+    Logic.InteractiveObjectSetRewardResourceCartType(ID, Entities.U_ResourceMerchant);
+    Logic.InteractiveObjectSetRewardGoldCartType(ID, Entities.U_GoldCart);
+    Logic.InteractiveObjectSetCostResourceCartType(ID, Entities.U_ResourceMerchant);
+    Logic.InteractiveObjectSetCostGoldCartType(ID, Entities.U_GoldCart);
+    if _Description.Reward then
+        Logic.InteractiveObjectAddRewards(ID, _Description.Reward[1], _Description.Reward[2]);
+    end
+    if _Description.Costs and _Description.Costs[1] then
+        Logic.InteractiveObjectAddCosts(ID, _Description.Costs[1], _Description.Costs[2]);
+    end
+    if _Description.Costs and _Description.Costs[3] then
+        Logic.InteractiveObjectAddCosts(ID, _Description.Costs[3], _Description.Costs[4]);
+    end
+    Logic.InteractiveObjectSetAvailability(ID, true);
+    Logic.InteractiveObjectSetPlayerState(ID, QSB.HumanPlayerID, _Description.State or 0);
+    table.insert(HiddenTreasures, ID);
+
+    -- Aktivieren
+    IO[_Description.Name] = Object;
+    API.InteractiveObjectActivate(Logic.GetEntityName(ID), _Description.State or 0);
+    return Object;
+end
+
+---
+-- Überprüft die Bedingung aller nicht benutzten interaktiven Objekte.
+--
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Global:StartObjectConditionController()
+    StartSimpleJobEx(function()
+        for k, v in pairs(IO) do
+            if v and not v:IsUsed() and v:IsActive() then
+                v.m_Fullfilled = true;
+                if v.m_Condition then
+                    v.m_Fullfilled = v.m_Condition(v);
+                end
+            end
+        end
+    end);
 end
 
 ---
@@ -314,117 +368,6 @@ function BundleInteractiveObjects.Global:OverrideVanillaBehavior()
 end
 
 ---
--- Erzeugt ein interaktives Objekt. Dabei können sowohl interaktive
--- Objekte (alle mit I_X_), eine Auswahl von normalen Entities und
--- sogar (sichtbare) XD_ScriptEntities verwendet werden.
--- Name, Titel und Icon müssen immer angegeben werden. Die restlichen
--- Angaben hängen teilweise vom Typ der Entity, teilweise vom
--- Verwendungszweck ab.
---
--- @param[type=table] _Description Beschreibung
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Global:CreateObject(_Description)
-    self:HackOnInteractionEvent();
-    self:RemoveInteractiveObject(_Description.Name);
-
-    _Description.Title = API.Localize(_Description.Title or BundleInteractiveObjects.Text.InteractionTitle);
-    _Description.Text = API.Localize(_Description.Text or "");
-    _Description.ConditionUnfulfilled = API.Localize(_Description.ConditionUnfulfilled or "");
-
-    _Description.Condition = _Description.Condition or function() return true end
-    _Description.Callback = _Description.Callback or function() end
-    _Description.Distance = _Description.Distance or 1200;
-    _Description.Waittime = _Description.Waittime or 15;
-    _Description.Texture = _Description.Texture or {14,10};
-    _Description.Reward = _Description.Reward or {};
-    _Description.Costs = _Description.Costs or {};
-    _Description.State = _Description.State or 0;
-
-    Logic.ExecuteInLuaLocalState([[
-        QSB.IOList[#QSB.IOList+1] = "]].._Description.Name..[["
-        if not BundleInteractiveObjects.Local.Data.InteractionHackStarted then
-            BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
-            BundleInteractiveObjects.Local.Data.InteractionHackStarted = true;
-        end
-    ]]);
-    IO[_Description.Name] = API.InstanceTable(_Description);
-
-    local eID = GetID(_Description.Name);
-    if Logic.IsInteractiveObject(eID) == true then
-        Logic.InteractiveObjectClearCosts(eID);
-        Logic.InteractiveObjectClearRewards(eID);
-        Logic.InteractiveObjectSetInteractionDistance(eID,_Description.Distance);
-        Logic.InteractiveObjectSetTimeToOpen(eID,_Description.Waittime);
-        Logic.InteractiveObjectAddRewards(eID,_Description.Reward[1],_Description.Reward[2]);
-        if _Description.Costs[1] then
-            Logic.InteractiveObjectAddCosts(eID, _Description.Costs[1], _Description.Costs[2]);
-        end
-        if _Description.Costs[3] then
-            Logic.InteractiveObjectAddCosts(eID, _Description.Costs[3], _Description.Costs[4]);
-        end
-
-        Logic.InteractiveObjectSetAvailability(eID, true);
-        Logic.InteractiveObjectSetPlayerState(eID, _Description.PlayerID or 1, _Description.State);
-        Logic.InteractiveObjectSetRewardResourceCartType(eID, Entities.U_ResourceMerchant);
-        Logic.InteractiveObjectSetRewardGoldCartType(eID, Entities.U_GoldCart);
-        table.insert(HiddenTreasures,eID);
-    end
-    API.InteractiveObjectActivate(_Description.Name, _Description.State);
-end
-
----
--- Löscht ein interaktives Objekt.
---
--- Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
--- Konfiguration des Objektes entfernt.
---
--- @param[type=string] _EntityName Skriptname des IO
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Global:RemoveInteractiveObject(_EntityName)
-    for k,v in pairs(IO) do
-        if k == _EntityName then
-            Logic.ExecuteInLuaLocalState([[
-                IO["]].._EntityName..[["] = nil;
-            ]]);
-            IO[_EntityName] = nil;
-        end
-    end
-end
-
----
--- Erzeugt eine Beschriftung für Custom Objects.
---
--- Im Questfenster werden die Namen von Cusrom Objects als ungesetzt angezeigt.
--- Mit dieser Funktion kann ein Name angelegt werden.
---
--- @param[type=string] _Key Identifier der Beschriftung
--- @param[type=string] _Text Text der Beschriftung
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Global:AddCustomIOName(_Key, _Text)
-    if type(_Text) == "table" then
-        local GermanText  = _Text.de;
-        local EnglishText = _Text.en;
-
-        Logic.ExecuteInLuaLocalState([[
-            BundleInteractiveObjects.Local.Data.IOCustomNames["]].._Key..[["] = {
-                de = "]]..GermanText..[[",
-                en = "]]..EnglishText..[["
-            }
-        ]]);
-    else
-        Logic.ExecuteInLuaLocalState([[
-            BundleInteractiveObjects.Local.Data.IOCustomNames["]].._Key..[["] = "]].._Text..[["
-        ]]);
-    end
-end
-
----
 -- Überschreibt die Events, die ausgelöst werden, wenn interaktive Objekte
 -- benutzt werden.
 --
@@ -432,98 +375,44 @@ end
 -- @local
 --
 function BundleInteractiveObjects.Global:HackOnInteractionEvent()
-    if not BundleInteractiveObjects.Global.Data.InteractionEventHacked then
-        StartSimpleJobEx(BundleInteractiveObjects.Global.ControlInteractiveObjects);
-        BundleInteractiveObjects.Global.Data.InteractionEventHacked = true;
-
-        OnTreasureFound = function(_TreasureID, _PlayerID)
-            for i=1, #HiddenTreasures do
-                local HiddenTreasureID = HiddenTreasures[i]
-                if HiddenTreasureID == _TreasureID then
-                    Logic.InteractiveObjectSetAvailability(_TreasureID,false)
-                    for PlayerID = 1, 8 do
-                        Logic.InteractiveObjectSetPlayerState(_TreasureID,PlayerID, 2)
-                    end
-                    table.remove(HiddenTreasures,i)
-                    HiddenTreasures[0] = #HiddenTreasures
-
-                    local ActivationSound = "menu_left_prestige";
-                    local eName = Logic.GetEntityName(_TreasureID);
-                    if IO[eName] and IO[eName].ActivationSound then
-                        ActivationSound = IO[eName].ActivationSound;
-                    end
-                    Logic.ExecuteInLuaLocalState("Play2DSound(" .. _PlayerID ..",'" .. ActivationSound .. "')");
-                end
-            end
-        end
-
-        GameCallback_OnObjectInteraction = function(__entityID_, _PlayerID)
-            OnInteractiveObjectOpened(__entityID_, _PlayerID);
-            OnTreasureFound(__entityID_, _PlayerID);
-            local eName = Logic.GetEntityName(__entityID_);
-            for k,v in pairs(IO)do
-                if k == eName then
-                    if not v.Used then
-                        IO[k].Used = true;
-                        v.Callback(v, _PlayerID);
+    GameCallback_OnObjectInteraction = function(_EntityID, _PlayerID)
+        OnInteractiveObjectOpened(_EntityID, _PlayerID);
+        OnTreasureFound(_EntityID, _PlayerID);
+        local ScriptName = Logic.GetEntityName(_EntityID);
+        
+        for k,v in pairs(IO)do
+            if k == ScriptName or v.m_Slave == ScriptName then
+                if not v.m_Used then
+                    IO[k].m_Used = true;
+                    if v.m_Action then
+                        v.m_Action(v, _PlayerID);
                     end
                 end
             end
-        end
-
-        GameCallback_ExecuteCustomObjectReward = function(_PlayerID, _SpawnPos, _Type, _Amount)
-            local pos = GetPosition(_SpawnPos);
-            local resCat = Logic.GetGoodCategoryForGoodType(_Type);
-            local ID;
-            if resCat == GoodCategories.GC_Resource then
-                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, pos.X, pos.Y,0,_PlayerID);
-            elseif _Type == Goods.G_Medicine then
-                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Medicus, pos.X, pos.Y,0,_PlayerID);
-            elseif _Type == Goods.G_Gold then
-                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_GoldCart, pos.X, pos.Y,0,_PlayerID);
-            else
-                ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, pos.X, pos.Y,0,_PlayerID);
-            end
-            Logic.HireMerchant(ID,_PlayerID,_Type,_Amount,_PlayerID);
-        end
-
-        function QuestTemplate:AreObjectsActivated(objectList)
-            for i=1, objectList[0] do
-                if not objectList[-i] then
-                    objectList[-i] = GetEntityId(objectList[i]);
-                end
-                local EntityName = Logic.GetEntityName(objectList[-i]);
-
-                if Logic.IsInteractiveObject(objectList[-i]) then
-                    if not IsInteractiveObjectOpen(objectList[-i]) then
-                        return false;
-                    end
-                else
-                    if not IO[EntityName] then
-                        return;
-                    end
-                    if IO[EntityName].Used ~= true then
-                        return false;
-                    end
-                end
-            end
-            return true;
         end
     end
-end
 
----
--- Prüft für alle unbenutzten interaktiven Objekte, ob ihre Bedingung erfüllt
--- ist und erlaubt die Benutzung.
---
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Global.ControlInteractiveObjects()
-    for k,v in pairs(IO) do
-        if not v.Used == true then
-            v.ConditionFullfilled = v.Condition(v);
+    QuestTemplate.AreObjectsActivated = function(self, _ObjectList)
+        for i=1, _ObjectList[0] do
+            if not _ObjectList[-i] then
+                _ObjectList[-i] = GetEntityId(_ObjectList[i]);
+            end
+            local EntityName = Logic.GetEntityName(_ObjectList[-i]);
+            if IO_SlaveToMaster[EntityName] then
+                EntityName = IO_SlaveToMaster[EntityName];
+            end
+
+            if IO[EntityName] then
+                if IO[EntityName].m_Used ~= true then
+                    return false;
+                end
+            elseif Logic.IsInteractiveObject(_ObjectList[-i]) then
+                if not IsInteractiveObjectOpen(_ObjectList[-i]) then
+                    return false;
+                end
+            end
         end
+        return true;
     end
 end
 
@@ -537,60 +426,10 @@ end
 --
 function BundleInteractiveObjects.Local:Install()
     IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
-end
+    IO_UserDefindedNames = Logic.CreateReferenceToTableInGlobaLuaState("IO_UserDefindedNames");
+    IO_SlaveToMaster = Logic.CreateReferenceToTableInGlobaLuaState("IO_SlaveToMaster");
 
----
--- Prüft, ob die Kosten für ein interaktives Objekt beglichen werden können.
---
--- @param[type=number] _PlayerID Spieler, der zahlt
--- @param[type=number] _Good Typ der Ware
--- @param[type=number] _Amount Menge der Ware
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Local:CanBeBought(_PlayerID, _Good, _Amount)
-    local AmountOfGoods = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
-    if AmountOfGoods < _Amount then
-        return false;
-    end
-    return true;
-end
-
----
--- Zieht die Kosten des Objektes aus dem Lagerhaus des Spielers ab.
---
--- @param[type=number] _PlayerID Spieler, der zahlt
--- @param[type=number] _Good Typ der Ware
--- @param[type=number] _Amount Menge der Ware
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Local:BuyObject(_PlayerID, _Good, _Amount)
-    if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
-        API.Bridge(string.format([[
-            local PlayerID = %d
-            local GoodType = %d
-            local OrigAmount = %d
-
-            local buildings = GetPlayerEntities(PlayerID,0);
-            local goodAmount = OrigAmount;
-            for i=1,#buildings do
-                if Logic.IsBuilding(buildings[i]) == 1 and goodAmount > 0 then
-                    if Logic.GetBuildingProduct(buildings[i]) == GoodType then
-                        local goodAmountInBuilding = Logic.GetAmountOnOutStockByIndex(buildings[i],0);
-                        for j=1,goodAmountInBuilding do
-                            if goodAmount > 0 then
-                                Logic.RemoveGoodFromStock(buildings[i], GoodType, 1);
-                                goodAmount = goodAmount -1;
-                            end
-                        end
-                    end
-                end
-            end
-        ]], _PlayerID, _Good, _Amount));
-    else
-        API.Bridge("AddGood(".._Good..","..(_Amount*(-1))..",".._PlayerID..")");
-    end
+    self:ActivateInteractiveObjectControl();
 end
 
 ---
@@ -600,114 +439,53 @@ end
 -- @local
 --
 function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
-    g_Interaction.ActiveObjectsOnScreen = g_Interaction.ActiveObjectsOnScreen or {};
-    g_Interaction.ActiveObjects = g_Interaction.ActiveObjects or {};
-
+    GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectClicked
+    GUI_Interaction.InteractiveObjectClicked = function()
+        local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
+        local EntityID = g_Interaction.ActiveObjectsOnScreen[i];
+        if not EntityID then
+            return;
+        end
+        local ScriptName = Logic.GetEntityName(EntityID);
+        if IO_SlaveToMaster[ScriptName] then
+            ScriptName = IO_SlaveToMaster[ScriptName];
+        end
+        if not IO[ScriptName] then
+            GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+            return;
+        end
+        if not IO[ScriptName].m_Fullfilled then
+            Message(XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight"));
+            return;
+        end
+        GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+    end
+    
+    GUI_Interaction.InteractiveObjectUpdate_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectUpdate;
     GUI_Interaction.InteractiveObjectUpdate = function()
-        local PlayerID = GUI.GetPlayerID();
+        GUI_Interaction.InteractiveObjectUpdate_Orig_BundleInteractiveObjects();
         if g_Interaction.ActiveObjects == nil then
             return;
         end
-
-        for i = 1, #g_Interaction.ActiveObjects do
-            local ObjectID = g_Interaction.ActiveObjects[i];
-            local X, Y = GUI.GetEntityInfoScreenPosition(ObjectID);
-            local ScreenSizeX, ScreenSizeY = GUI.GetScreenSize();
-
-            if X ~= 0 and Y ~= 0 and X > -50 and Y > -50 and X < (ScreenSizeX + 50) and Y < (ScreenSizeY + 50) then
-                if Inside(ObjectID, g_Interaction.ActiveObjectsOnScreen) == false then
-                    table.insert(g_Interaction.ActiveObjectsOnScreen, ObjectID);
-                end
-            else
-                for i = 1, #g_Interaction.ActiveObjectsOnScreen do
-                    if g_Interaction.ActiveObjectsOnScreen[i] == ObjectID then
-                        table.remove(g_Interaction.ActiveObjectsOnScreen, i);
-                    end
-                end
-            end
-        end
-
         for i = 1, #g_Interaction.ActiveObjectsOnScreen do
-            local Widget = "/InGame/Root/Normal/InteractiveObjects/" .. i;
+            local Widget = "/InGame/Root/Normal/InteractiveObjects/" ..i;
             if XGUIEng.IsWidgetExisting(Widget) == 1 then
-                local ObjectID = g_Interaction.ActiveObjectsOnScreen[i];
-                local EntityType = Logic.GetEntityType(ObjectID);
-                local X, Y = GUI.GetEntityInfoScreenPosition(ObjectID);
+                local ObjectID       = g_Interaction.ActiveObjectsOnScreen[i];
+                local MasterObjectID = ObjectID;
+                local ScriptName     = Logic.GetEntityName(ObjectID);
+                if IO_SlaveToMaster[ScriptName] then
+                    ScriptName = IO_SlaveToMaster[ScriptName];
+                    MasterObjectID = GetID(ScriptName);
+                end
+                -- Position
+                local X, Y = GUI.GetEntityInfoScreenPosition(MasterObjectID);
                 local WidgetSize = {XGUIEng.GetWidgetScreenSize(Widget)};
-                local BaseCosts = {Logic.InteractiveObjectGetCosts(ObjectID)};
-                local EffectiveCosts = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
-                local IsAvailable = Logic.InteractiveObjectGetAvailability(ObjectID);
-                local eType = Logic.GetEntityType(ObjectID);
-                local entityName = Logic.GetEntityName(ObjectID);
-                local eTypeName = Logic.GetEntityTypeName(eType);
-                local Disable = false;
-
                 XGUIEng.SetWidgetScreenPosition(Widget, X - (WidgetSize[1]/2), Y - (WidgetSize[2]/2));
-
-                if BaseCosts[1] ~= nil and EffectiveCosts[1] == nil and IsAvailable == true then
-                    Disable = true;
-                end
-                local HasSpace = Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, PlayerID);
-                if HasSpace == false then
-                    Disable = true;
-                end
-                if Disable == true then
-                    XGUIEng.DisableButton(Widget, 1);
-                else
-                    XGUIEng.DisableButton(Widget, 0);
-                end
-
-                if GUI_Interaction.InteractiveObjectUpdateEx1 ~= nil then
-                    GUI_Interaction.InteractiveObjectUpdateEx1(Widget, EntityType);
-                end
-                if IO[entityName] then
-                    BundleInteractiveObjects.Local:SetIcon(Widget, IO[entityName].Texture);
-                end
-                XGUIEng.ShowWidget(Widget, 1);
-            end
-        end
-
-        for k,v in pairs(QSB.IOList) do
-            local pID = GUI.GetPlayerID();
-            local eType = Logic.GetEntityType(GetID(v));
-            local eTypeName = Logic.GetEntityTypeName(eType);
-            if eTypeName and v ~= "" then
-                if  not(string.find(eTypeName,"I_X_")) and not(string.find(eTypeName,"Mine"))
-                and not(string.find(eTypeName,"B_Wel")) and not(string.find(eTypeName,"B_Cis")) then
-                    if IO[v].State == 0 and IO[v].Distance ~= nil and IO[v].Distance > 0 then
-                        local knights = {};
-                        Logic.GetKnights(pID,knights);
-
-                        local found = false;
-                        for i=1,#knights do
-                            if IsNear(knights[i], v, IO[v].Distance) then
-                                found = true;
-                                break;
-                            end
-                        end
-                        if not IO[v].Used and not IO[v].Inactive then
-                            if found then
-                                ScriptCallback_ObjectInteraction(pID,GetID(v));
-                            else
-                                ScriptCallback_CloseObjectInteraction(pID,GetID(v));
-                            end
-                        else
-                            ScriptCallback_CloseObjectInteraction(pID,GetID(v));
-                        end
-                    else
-                        if not IO[v].Used and not IO[v].Inactive then
-                            ScriptCallback_ObjectInteraction(pID,GetID(v));
-                        else
-                            ScriptCallback_CloseObjectInteraction(pID,GetID(v));
-                        end
-                    end
+                -- Tooltip
+                if IO[ScriptName] then
+                    BundleInteractiveObjects.Local:SetIcon(Widget, IO[ScriptName].m_Icon);
                 end
             end
-        end
-
-        for i = #g_Interaction.ActiveObjectsOnScreen + 1, 2 do
-            local Widget = "/InGame/Root/Normal/InteractiveObjects/" .. i;
-            XGUIEng.ShowWidget(Widget, 0);
         end
     end
 
@@ -718,16 +496,13 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         local ObjectID = g_Interaction.ActiveObjectsOnScreen[ButtonNumber];
         local EntityType = Logic.GetEntityType(ObjectID);
 
-        -- Führe für Minen und Brunnen Originalfunction aus
         if g_GameExtraNo > 0 then
             local EntityTypeName = Logic.GetEntityTypeName(EntityType);
-            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "I_X_TradePostConstructionSite"}) then
+            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "B_Well", "I_X_TradePostConstructionSite"}) then
                 GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
                 return;
             end
         end
-
-        -- Führe für Ruinen Originalfunktion aus, wenn Skriptname Nummer ist
         local EntityTypeName = Logic.GetEntityTypeName(EntityType);
         if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(ObjectID)) ~= nil then
             GUI_Interaction.InteractiveObjectMouseOver_Orig_BundleInteractiveObjects();
@@ -738,70 +513,25 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)};
         local IsAvailable = Logic.InteractiveObjectGetAvailability(ObjectID);
 
-        local TooltipTextKey;
-        local TooltipDisabledTextKey;
-        local eName = Logic.GetEntityName(ObjectID);
-
-        if IsAvailable == true then
-           TooltipTextKey = "InteractiveObjectAvailable";
-        else
-           TooltipTextKey = "InteractiveObjectNotAvailable";
-        end
-        if Logic.InteractiveObjectHasPlayerEnoughSpaceForRewards(ObjectID, PlayerID) == false then
-           TooltipDisabledTextKey = "InteractiveObjectAvailableReward";
+        local ScriptName = Logic.GetEntityName(ObjectID);
+        if IO_SlaveToMaster[ScriptName] then
+            ScriptName = IO_SlaveToMaster[ScriptName];
         end
 
         local CheckSettlement;
-        if Costs and Costs[1] and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
-           CheckSettlement = true;
-        end
-
-        if IO[eName] and IO[eName].Used ~= true then
-            local title;
-            local text;
-            if IO[eName].Title or IO[eName].Text then
-                title = IO[eName].Title or "";
-                text  = IO[eName].Text or "";
-            end
-            Costs = IO[eName].Costs;
+        if IO[ScriptName] and IO[ScriptName].m_Used ~= true then
+            local Title = IO[ScriptName].m_Caption or XGUIEng.GetStringTableText("UI_ObjectNames/InteractiveObjectAvailable");
+            local Text  = IO[ScriptName].m_Description or XGUIEng.GetStringTableText("UI_ObjectDescription/InteractiveObjectAvailable");
+            Costs = IO[ScriptName].m_Costs;
             if Costs and Costs[1] and Logic.GetGoodCategoryForGoodType(Costs[1]) ~= GoodCategories.GC_Resource then
                 CheckSettlement = true;
             end
-            BundleInteractiveObjects.Local:TextCosts(title, text, nil, {Costs[1], Costs[2], Costs[3], Costs[4]}, CheckSettlement);
+            BundleInteractiveObjects.Local:TextCosts(Title, Text, nil, {Costs[1], Costs[2], Costs[3], Costs[4]}, CheckSettlement);
             return;
         end
     end
 
-    GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects = GUI_Interaction.InteractiveObjectClicked
-    GUI_Interaction.InteractiveObjectClicked = function()
-        local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
-        local eID = g_Interaction.ActiveObjectsOnScreen[i];
-        local pID = GUI.GetPlayerID();
-        local EntityType = Logic.GetEntityType(eID);
-
-        -- Führe für Minen und Brunnen Originalfunction aus
-        if g_GameExtraNo > 0 then
-            local EntityTypeName = Logic.GetEntityTypeName(EntityType);
-            if Inside (EntityTypeName, {"R_StoneMine", "R_IronMine", "B_Cistern", "I_X_TradePostConstructionSite"}) then
-                GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
-                return;
-            end
-        end
-        -- Führe für Ruinen Originalfunktion aus, wenn Skriptname Nummer ist
-        local EntityTypeName = Logic.GetEntityTypeName(EntityType);
-        if string.find(EntityTypeName, "^I_X_") and tonumber(Logic.GetEntityName(eID)) ~= nil then
-            GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
-            return;
-        end
-
-        for k,v in pairs(IO)do
-            if eID == GetID(k)then
-                BundleInteractiveObjects.Local:OnObjectClicked(v);
-            end
-        end
-    end
-
-    GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects = GUI_Interaction.DisplayQuestObjective
+    GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects = GUI_Interaction.DisplayQuestObjective;
     GUI_Interaction.DisplayQuestObjective = function(_QuestIndex, _MessageKey)
         local QuestIndexTemp = tonumber(_QuestIndex);
         if QuestIndexTemp then
@@ -825,44 +555,43 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
         g_CurrentDisplayedQuestID = _QuestIndex;
 
         if QuestType == Objective.Object then
-            QuestObjectiveContainer = QuestObjectivesPath .. "/List"
-            QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestInteraction")
-            local ObjectList = {}
+            QuestObjectiveContainer = QuestObjectivesPath .. "/List";
+            QuestTypeCaption = Wrapped_GetStringTableText(_QuestIndex, "UI_Texts/QuestInteraction");
+            local ObjectList = {};
 
             for i = 1, Quest.Objectives[1].Data[0] do
-                local ObjectType
+                local ObjectType;
                 if Logic.IsEntityDestroyed(Quest.Objectives[1].Data[i]) then
-                    ObjectType = g_Interaction.SavedQuestEntityTypes[_QuestIndex][i]
+                    ObjectType = g_Interaction.SavedQuestEntityTypes[_QuestIndex][i];
                 else
-                    ObjectType = Logic.GetEntityType(GetEntityId(Quest.Objectives[1].Data[i]))
+                    ObjectType = Logic.GetEntityType(GetEntityId(Quest.Objectives[1].Data[i]));
                 end
                 local ObjectEntityName = Logic.GetEntityName(Quest.Objectives[1].Data[i]);
-                local ObjectName = ""
+                local ObjectName = "";
                 if ObjectType ~= nil and ObjectType ~= 0 then
                     local ObjectTypeName = Logic.GetEntityTypeName(ObjectType)
-                    ObjectName = Wrapped_GetStringTableText(_QuestIndex, "Names/" .. ObjectTypeName)
+                    ObjectName = Wrapped_GetStringTableText(_QuestIndex, "Names/" .. ObjectTypeName);
                     if ObjectName == "" then
-                        ObjectName = Wrapped_GetStringTableText(_QuestIndex, "UI_ObjectNames/" .. ObjectTypeName)
+                        ObjectName = Wrapped_GetStringTableText(_QuestIndex, "UI_ObjectNames/" .. ObjectTypeName);
                     end
                     if ObjectName == "" then
-                        ObjectName = API.Localize(BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectTypeName]);
-
+                        ObjectName = API.Localize(IO_UserDefindedNames[ObjectTypeName]);
                     end
                     if ObjectName == nil then
-                        ObjectName = API.Localize(BundleInteractiveObjects.Local.Data.IOCustomNames[ObjectEntityName]);
+                        ObjectName = API.Localize(IO_UserDefindedNames[ObjectEntityName]);
                     end
                     if ObjectName == nil then
-                        ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName
+                        ObjectName = "Debug: ObjectName missing for " .. ObjectTypeName;
                     end
                 end
-                table.insert(ObjectList, ObjectName)
+                table.insert(ObjectList, ObjectName);
             end
             for i = 1, 4 do
-                local String = ObjectList[i]
+                local String = ObjectList[i];
                 if String == nil then
-                    String = ""
+                    String = "";
                 end
-                XGUIEng.SetText(QuestObjectiveContainer .. "/Entry" .. i, "{center}" .. String)
+                XGUIEng.SetText(QuestObjectiveContainer .. "/Entry" .. i, "{center}" .. String);
             end
 
             SetIcon(QuestObjectiveContainer .. "/QuestTypeIcon",{14, 10});
@@ -872,120 +601,6 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects(_QuestIndex, _MessageKey);
         end
     end
-end
-
----
--- Führt die Objektinteraktion aus.
---
--- @param[type=table]    _IO Table des IO
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Local:OnObjectClicked(_IO)
-    if not self:OnObjectClicked_DoesRewardFitInStorehouse(_IO) then
-        return;
-    end
-    if not self:OnObjectClicked_CanPlayerPayCosts(_IO) then
-        return;
-    end
-    if not self:OnObjectClicked_IsConditionFulfulled(_IO) then
-        return;
-    end
-
-    local PlayerID = GUI.GetPlayerID();
-    local EntityID = GetID(_IO.Name);
-    if Logic.IsInteractiveObject(EntityID) == false then
-        if _IO.Costs[1] ~= nil then
-            self:BuyObject(PlayerID, _IO.Costs[1], _IO.Costs[2]);
-        end
-        if _IO.Costs[3] ~= nil then
-            self:BuyObject(PlayerID, _IO.Costs[3], _IO.Costs[4]);
-        end
-        if _IO.Reward[1] ~= nil then
-            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
-        end
-        Play2DSound(PlayerID, _IO.ActivationSound or "menu_left_prestige");
-        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
-        return;
-    end
-
-    GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
-    Sound.FXPlay2DSound( "ui\\menu_click");
-    GUI.ExecuteObjectInteraction(EntityID, PlayerID);
-end
-
----
--- Prüft, ob die Aktivierungsbedinung erfüllt ist. Wenn das nicht der Fall
--- ist, wird eine optionale Nachricht angezeigt.
---
--- @param[type=table]    _IO Table des IO
--- @return[type=boolean] Bedingung ist erfüllt
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Local:OnObjectClicked_IsConditionFulfulled(_IO)
-    local PlayerID = GUI.GetPlayerID();
-    if not _IO.ConditionFullfilled then
-        if _IO.ConditionUnfulfilled  and _IO.ConditionUnfulfilled ~= "" then
-            Message(MessageText);
-        end
-        return false;
-    end
-    return true;
-end
-
----
--- Prüft, ob der Schatz in das Lagerhaus des Spielers passt und zeigt eine
--- Meldung an, sollte das nicht der Fall sein.
---
--- @param[type=table]    _IO Table des IO
--- @return[type=boolean] Schatz passt ins Lagerhaus
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Local:OnObjectClicked_DoesRewardFitInStorehouse(_IO)
-    local PlayerID = GUI.GetPlayerID();
-    if not _IO.Reward or type(_IO.Reward[1]) ~= "number" then
-        return true;
-    end
-    if _IO.Reward[1] == Goods.G_Gold 
-    or Logic.GetGoodCategoryForGoodType(_IO.Reward[1]) ~= GoodCategories.GC_Resource then
-        return true;
-    end
-    if Logic.GetPlayerUnreservedStorehouseSpace(PlayerID) >= _IO.Reward[2] then
-        return true;
-    end
-    local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace");
-    Message(MessageText);
-    return false;
-end
-
----
--- Prüft, ob der Spieler die Kosten des interaktiven Objektes begleichen kann
--- und zeigt eine Meldung an, wenn das nicht der Fall ist.
---
--- @param[type=table]    _IO Table des IO
--- @return[type=boolean] Kosten können bezahlt werden
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Local:OnObjectClicked_CanPlayerPayCosts(_IO)
-    local PlayerID = GUI.GetPlayerID();
-    local CanBuyBoolean = true;
-    if not _IO.Costs or type(_IO.Costs[1]) ~= "number" then
-        return true;
-    end
-    if _IO.Costs[2] then
-        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(PlayerID, _IO.Costs[1], _IO.Costs[2]);
-    end
-    if _IO.Costs[4] then
-        CanBuyBoolean = CanBuyBoolean and BundleInteractiveObjects.Local:CanBeBought(PlayerID, _IO.Costs[3], _IO.Costs[4]);
-    end
-    if not CanBuyBoolean then
-        local CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
-        Message(CanNotBuyString);
-    end
-    return CanBuyBoolean;
 end
 
 ---
@@ -1073,7 +688,106 @@ end
 
 -- -------------------------------------------------------------------------- --
 
-Core:RegisterBundle("BundleInteractiveObjects");
+InteractiveObject = {
+    m_Name        = nil,
+    m_State       = 0,
+    m_Distance    = 1000,
+    m_Waittime    = 5,
+    m_Used        = false,
+    m_Fullfilled  = true,
+    m_Active      = false,
+    m_Slave       = nil,
+    m_Caption     = nil,
+    m_Description = nil,
+    m_Condition   = nil,
+    m_Action      = nil,
+    m_Icon        = {14, 10},
+    m_Costs       = {},
+    m_Reward      = {},
+};
+
+function InteractiveObject:New(_Name)
+    local Object = API.InstanceTable(self);
+    Object.m_Name = _Name;
+    return Object;
+end
+
+function InteractiveObject:SetDistance(_Distance)
+    self.m_Distance = _Distance or 1000;
+    return self;
+end
+
+function InteractiveObject:SetWaittime(_Time)
+    self.m_Waittime = _Time or 5;
+    return self;
+end
+
+function InteractiveObject:SetState(_State)
+    self.m_State = _State or 0;
+    return self;
+end
+
+function InteractiveObject:SetCaption(_Text)
+    if _Text then
+        self.m_Caption = API.Localize(_Text);
+    end
+    return self;
+end
+
+function InteractiveObject:SetDescription(_Text)
+    if _Text then
+        self.m_Description = API.Localize(_Text);
+    end
+    return self;
+end
+
+function InteractiveObject:SetCosts(...)
+    self.m_Costs = {unpack(arg)};
+    return self;
+end
+
+function InteractiveObject:SetReward(...)
+    self.m_Reward = {unpack(arg)};
+    return self;
+end
+
+function InteractiveObject:SetCondition(_Function)
+    self.m_Condition = _Function;
+    return self;
+end
+
+function InteractiveObject:SetAction(_Function)
+    self.m_Action = _Function;
+    return self;
+end
+
+function InteractiveObject:SetIcon(_Icon)
+    self.m_Icon = _Icon;
+    return self;
+end
+
+function InteractiveObject:SetSlave(_ScriptName)
+    self.m_Slave = _ScriptName;
+    return self;
+end
+
+function InteractiveObject:SetActive(_Flag)
+    self.m_Active = _Flag == true;
+    return self;
+end
+
+function InteractiveObject:IsActive()
+    return self.m_Active == true;
+end
+
+function InteractiveObject:SetUsed(_Flag)
+    self.m_Used = _Flag == true;
+    return self;
+end
+
+function InteractiveObject:IsUsed()
+    return self.m_Used == true;
+end
 
 -- -------------------------------------------------------------------------- --
 
@@ -1124,4 +838,8 @@ function b_Goal_ActivateSeveralObjects:GetMsgKey()
 end
 
 Core:RegisterBehavior(b_Goal_ActivateSeveralObjects);
+
+-- -------------------------------------------------------------------------- --
+
+Core:RegisterBundle("BundleInteractiveObjects");
 
