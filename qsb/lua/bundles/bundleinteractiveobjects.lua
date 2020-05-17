@@ -267,8 +267,7 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
     
     -- Slave Objekt erstellen
     local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(ID));
-    -- Jedes Object bentuzt einen Slave für Einheitlichkeit
-    -- if not TypeName:find("I_X_") then
+    if not TypeName:find("I_X_") then
         self.Data.SlaveSequence = self.Data.SlaveSequence +1;
         local Name    = "QSB_SlaveObject_" ..self.Data.SlaveSequence;
         local x,y, z  = Logic.EntityGetPos(ID);
@@ -277,7 +276,7 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
         Logic.SetEntityName(SlaveID, Name);
         Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
         Object:SetSlave(Name);
-    -- end
+    end
 
     -- Tatsächliches Objekt erstellen
     ID = (Object.m_Slave and GetID(Object.m_Slave)) or ID;
@@ -602,32 +601,6 @@ function BundleInteractiveObjects.Local:ActivateInteractiveObjectControl()
             GUI_Interaction.DisplayQuestObjective_Orig_BundleInteractiveObjects(_QuestIndex, _MessageKey);
         end
     end
-end
-
----
--- Prüft, ob der Schatz in das Lagerhaus des Spielers passt und zeigt eine
--- Meldung an, sollte das nicht der Fall sein.
---
--- @param[type=table]    _IO Table des IO
--- @return[type=boolean] Schatz passt ins Lagerhaus
--- @within Internal
--- @local
---
-function BundleInteractiveObjects.Local:OnObjectClicked_DoesRewardFitInStorehouse(_IO)
-    local PlayerID = GUI.GetPlayerID();
-    if not _IO.Reward or type(_IO.Reward[1]) ~= "number" then
-        return true;
-    end
-    if _IO.Reward[1] == Goods.G_Gold 
-    or Logic.GetGoodCategoryForGoodType(_IO.Reward[1]) ~= GoodCategories.GC_Resource then
-        return true;
-    end
-    if Logic.GetPlayerUnreservedStorehouseSpace(PlayerID) >= _IO.Reward[2] then
-        return true;
-    end
-    local MessageText = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_MerchantStorehouseSpace");
-    Message(MessageText);
-    return false;
 end
 
 ---
