@@ -55,6 +55,8 @@ function Mission_FirstMapAction()
     -----
 
     API.CastleStoreCreate(1);
+
+    -- ReplaceEntity("IORR3", Entities.B_Cistern, 2);
     
     InteractiveObjectDeactivate("IORR1");
     InteractiveObjectDeactivate("IORR2");
@@ -62,26 +64,22 @@ function Mission_FirstMapAction()
     InteractiveObjectDeactivate("IORR4");
     InteractiveObjectDeactivate("IORR5");
 
-    AddQuest {
-        Name = "RandomTestQuest1",
-        Sender = 2,
-
-        Goal_RandomRequest(false, false, false, false, false, false, false, false, false, false, false, true, 0),
-        Trigger_Time(5),
+    API.CreateObject {
+        Name        = "IORR3",
+        Distance    = 1200,
+        Texture     = {1, 8},
+        Costs       = {Goods.G_Gold, 100, Goods.G_Stone, 10},
+        Callback    = function(_Data, _PlayerID)
+            API.Note(_PlayerID.. " has activated object " .._Data.m_Name);
+        end,
     }
-    AddQuest {
-        Name = "RandomTestQuest2",
-        Sender = 2,
 
-        Goal_RandomRequest(false, false, false, false, false, false, false, false, false, false, false, true, 0),
-        Trigger_Time(5),
-    }
-    AddQuest {
-        Name = "RandomTestQuest3",
-        Sender = 2,
-
-        Goal_RandomRequest(false, false, false, false, false, false, false, false, false, false, false, true, 0),
-        Trigger_Time(5),
+    API.CreateQuest {
+        Name = "TestQuest",
+        Visible = true,
+        EndMessage = true,
+        Goal_ActivateObject("IORR3"),
+        Trigger_Time(5)
     }
 end
 
