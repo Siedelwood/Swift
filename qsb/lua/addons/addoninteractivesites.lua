@@ -90,11 +90,6 @@ AddOnInteractiveSites = {
                         fr = "Commandé la construction d'un bâtiment. Un colon"..
                              " va sortir de l'entrepôt et commencer à construire."
                     },
-                    Unfulfilled = {
-                        de = "Das Gebäude kann derzeit nicht gebaut werden.",
-                        en = "The building can not be built at the moment.",
-                        fr = "Le bâtiment ne peut pas être construit pour le moment."
-                    },
                 }
             },
         }
@@ -162,7 +157,6 @@ function AddOnInteractiveSites.Global:CreateIOBuildingSite(_Position, _PlayerID,
         Type                 = _Type,
         Costs                = Costs,
         Condition            = AddOnInteractiveSites.Global.ConditionConstructionSite,
-        ConditionUnfulfilled = AddOnInteractiveSites.Global.Data.ConstructionSite.Description.Unfulfilled,
         PlayerID             = _PlayerID,
         CompletedCallback    = _Callback,
         Callback             = AddOnInteractiveSites.Global.CallbackIOConstructionSite;
@@ -175,7 +169,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveSites.Global.CallbackIOConstructionSite(_Data)
+function AddOnInteractiveSites.Global.CallbackIOConstructionSite(_IO, _PlayerID, _Data)
     local pos  = GetPosition(_Data.Name);
     local eID  = GetID(_Data.Name);
     local ori  = Logic.GetEntityOrientation(eID);
@@ -196,7 +190,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveSites.Global.ConditionConstructionSite(_Data)
+function AddOnInteractiveSites.Global.ConditionConstructionSite(_IO, _PlayerID, _Data)
     local eID = GetID(_Data.Name);
     local tID = GetTerritoryUnderEntity(eID);
     local pID = Logic.GetTerritoryPlayerID(tID);

@@ -262,13 +262,14 @@ function API.AddPages(_Briefing)
         if #arg > 5 or (type(arg[4]) == "string" or type(arg[4]) == "table") then
             PageName = table.remove(arg, 1);
         end
-        local TargetID = GetID(arg[1]);
         -- Position angleichen
+        local TargetID = GetID(arg[1]);
         local Position = {arg[1], 0};
-        if Logic.IsSettler(GetID(arg[1])) == 1 then
-            Position[2] = 70;
-        elseif Logic.IsKnight(GetID(arg[1])) then
+        if Logic.IsSettler(TargetID) == 1 then
             Position[2] = 120;
+            if Logic.IsKnight(TargetID) then
+                Position[2] = 160;
+            end
         end
         -- Rotation angleichen
         local Rotation;
@@ -432,9 +433,9 @@ BundleBriefingSystem = {
             CAMERA_ROTATIONDEFAULT = -45,
             CAMERA_ZOOMDEFAULT = 6500,
             CAMERA_FOVDEFAULT = 42,
-            DLGCAMERA_ANGLEDEFAULT = 26,
+            DLGCAMERA_ANGLEDEFAULT = 27,
             DLGCAMERA_ROTATIONDEFAULT = -45,
-            DLGCAMERA_ZOOMDEFAULT = 2800,
+            DLGCAMERA_ZOOMDEFAULT = 1750,
             DLGCAMERA_FOVDEFAULT = 25,
 
             FinishedBriefings = {},

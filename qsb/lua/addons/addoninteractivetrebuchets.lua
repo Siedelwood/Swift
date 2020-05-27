@@ -157,11 +157,6 @@ AddOnInteractiveTrebuchets = {
     Global = {
         Data = {
             Trebuchet = {
-                Error = {
-                    de = "Euer Ritter benötigt einen höheren Titel!",
-                    en = "Your knight need a higher title to use this site!",
-                    fr = "Votre chevalier a besoin d'un titre plus élevé!"
-                },
                 Description = {
                     Title = {
                         de = "Trebuchet anfordern",
@@ -263,9 +258,8 @@ function AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite(_Name
         Distance                = 1000,
         State                   = 0,
         Condition               = self.TrebuchetHasSufficentTitle,
-        ConditionUnfulfilled    = self.Data.Trebuchet.Error,
-        Callback                = function(t, PlayerID)
-            AddOnInteractiveTrebuchets.Global:SpawnTrebuchetCart(PlayerID, t.Name);
+        Callback                = function(_IO, _PlayerID, _Data)
+            AddOnInteractiveTrebuchets.Global:SpawnTrebuchetCart(_PlayerID, _Data.Name);
         end,
     }
 end

@@ -254,7 +254,8 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
         :SetAction(_Description.Callback)
         :SetCondition(_Description.Condition)
         :SetState(_Description.State)
-        :SetIcon(_Description.Texture);
+        :SetIcon(_Description.Texture)
+        :SetData(_Description);
     
     -- Belohnung setzen
     if _Description.Reward then
@@ -275,6 +276,7 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
         IO_SlaveToMaster[Name] = _Description.Name;
         Logic.SetEntityName(SlaveID, Name);
         Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
+        Object:SetWaittime(0);
         Object:SetSlave(Name);
     end
 
@@ -385,7 +387,7 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
                 if not v.m_Used then
                     IO[k].m_Used = true;
                     if v.m_Action then
-                        v.m_Action(v, _PlayerID);
+                        v.m_Action(v, _PlayerID, v.m_Data);
                     end
                 end
             end
@@ -763,6 +765,11 @@ end
 
 function InteractiveObject:SetIcon(_Icon)
     self.m_Icon = _Icon;
+    return self;
+end
+
+function InteractiveObject:SetData(_Data)
+    self.m_Data = _Data;
     return self;
 end
 
