@@ -309,10 +309,17 @@ function AddOnRandomRequests.Global:GetDeliverGoodsBehavior(_Behavior, _Quest)
     self.Data.Deliver[Receiver] = self.Data.Deliver[Receiver] or {};
     self.Data.Deliver[Receiver][Sender] = self.Data.Deliver[Receiver][Sender] or {};
 
-    local SelectedGood;
-    repeat
-        SelectedGood = GoodTypes[math.random(1, #GoodTypes)];
-    until (self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[SelectedGood]));
+    local PossibleGoods = {}
+    for k, v in pairs(GoodTypes) do
+        if self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[v]) then
+            table.insert(PossibleGoods, v);
+        end
+    end
+    if #PossibleGoods == 0 then
+        return;
+    end
+
+    local SelectedGood = PossibleGoods[math.random(1, #PossibleGoods)];
     local Amount = math.random(15, 25) * (Logic.GetKnightTitle(Receiver) +1);
     self.Data.Deliver[Receiver][Sender][Goods[SelectedGood]] = true;
     return {"Goal_Deliver", SelectedGood, Amount};
