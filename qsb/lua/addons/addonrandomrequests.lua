@@ -32,24 +32,25 @@ QSB = QSB or {};
 AddOnRandomRequests = {
     Global = {
         Data = {
-            SpecialSuggestion = nil,
-            RandomQuestNameCounter = 0;
-            PredatorQuests = {},
-            Claim = {},
-            Deliver = {},
+            BehaviorApperanceLimit = {
+                ["Goal_Create"]                 = 3,
+                ["Goal_Refill"]                 = 3,
+                ["Goal_ActivateObject"]         = 3,
+                ["Goal_SatisfyNeed"]            = 1,
+                ["Goal_CollectValuables"]       = 2,
+                ["Goal_DestroySpawnedEntities"] = 1,
+                ["Goal_Deliver"]                = 6,
+                ["Goal_Claim"]                  = 1,
+                ["Goal_KnightTitle"]            = 1,
+                ["Goal_CityReputation"]         = 1,
+                ["Goal_BuildWall"]              = 1,
+            },
             DeliverGoodTypes = {
                 "G_Wood", "G_Iron", "G_Stone", "G_Carcass", "G_Herb", "G_Wool",
                 "G_Honeycomb", "G_Grain", "G_Milk", "G_RawFish", "G_Bread",
                 "G_Cheese", "G_Sausage", "G_SmokedFish", "G_Broom", 
                 "G_Medicine", "G_Soap", "G_Beer", "G_Sword", "G_Bow"
             },
-            Reputation = {},
-            KnightTitle = {},
-            Object = {},
-            Refill = {},
-            Find = {},
-            CureSettlers = {},
-            Construct = {},
             ConstructTypes = {
                 "B_BannerMaker", "B_Baths", "B_Blacksmith", "B_BroomMaker", 
                 "B_Butcher", "B_CandleMaker", "B_Carpenter", "B_Pharmacy",
@@ -62,6 +63,10 @@ AddOnRandomRequests = {
                 "B_Beautification_Vase", "B_Beautification_VictoryColumn",
                 "B_Cistern",
             },
+            RandomQuestNameCounter = 0;
+            TerritoriesUsedForClaimQuest = {},
+            TerritoriesUsedForRefillQuests = {},
+            UsedBehaviorsPerTitle = {},
 
             Text = {
                 Suggestion = {
@@ -74,65 +79,6 @@ AddOnRandomRequests = {
                     {de = "Euer Volk braucht Eure Hilfe! Werdet Ihr uns helfen?",
                      en = "Your pepole demand your attantion. Will you help them?",
                      fr = "Votre peuple a besoin de votre aide! Voulez-vous nous aider?"},
-
-                    -- Spezielle Texte
-                    Build = {
-                        de = "Uns ist daran gelegen, dass Ihr dieses Gebäude"..
-                             " in Euer Stadt errichtet.",
-                        en = "It is important to us that you build this"..
-                             " building in your city.",
-                    },
-                    Fire = {
-                        de = "Dieses Feuer muss entzündet werden. Bitte helft"..
-                             " dabei und sendet uns die benötigten Waren.",
-                        en = "This fire needs to be ignited. Please send us"..
-                             " the required goods to do so.",
-                    },
-                    HolyCow = {
-                        de = "Zollt der heiligen Kuh ihren Tribut!",
-                        en = "Pay your tribute to the holy cow!",
-                    },
-                    Prison = {
-                        de = "Einer Eurer Siedler hat bei uns Ärger gemacht."..
-                             " Ihr könnt dieses Subjekt zurück haben, doch"..
-                             " Ihr müsst die Strafe zahlen.",
-                        en = "One of your settlers has behaved wrongly. You"..
-                             " can have this rude subject back if you want"..
-                             " but you must pay the bounty.",
-                    },
-                    Misc = {
-                        de = "Bitte untersucht diesen Ort für uns.",
-                        en = "Please investigate this location.",
-                    },
-                    Missing = {
-                        de = "Einer unserer Arbeiter ist verschwunden. Er hat"..
-                             " sich bestimmt irgend wo versteckt, weil er zu"..
-                             " faul zum arbeiten ist. Findet ihn!",
-                        en = "One of our own settler is missing. I am sure"..
-                             " they are just to lazy to work. Find them!",
-                    },
-                    Tiger = {
-                        de = "Auf unserem Gebiet befindet sich eine Höhle."..
-                              " Bisher hat sich noch keiner getraut sie zu"..
-                              " untersuchen. Tut dies für uns und ihr dürft"..
-                              " alles behalten, was ihr findet.",
-                        en = "There is a dark cave on our land. Nobody was"..
-                             " brave enough to take a look. If you this for"..
-                             " us you can keep your loot as your reward.",
-                    },
-                    Tribute = {
-                        de = "Zahlt uns einen Tribut und wir werden Euch"..
-                             " vielleicht akzeptieren!",
-                        en = "If you want us as your friends,, you have"..
-                             " to pay us a tribute!",
-                    },
-                    Well = {
-                        de = "Einer unserer Brungen ist versiegt. Wenn Ihr"..
-                             " ihn reparieren könntet, wären wir Euch sehr"..
-                             " verbunden.",
-                        en = "One of our wells has run dry. If you could"..
-                             " repair it for us, we would be grateful.",
-                    },
                 },
                 Success = {
                     {de = "Wir möchten Euch von Herzen für Eure Hilfe danken!",
@@ -184,16 +130,27 @@ function AddOnRandomRequests.Global:CreateSlaveQuest(_Behavior, _Quest)
         local QuestGoals = self:GetPossibleBehaviors(_Behavior, _Quest);
         -- Fallback
         if #QuestGoals == 0 then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Tribute;
-            QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", 2000};
+            local Amount = math.random(250, 400 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
+            QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
         end
+        -- Behavior speichern
         local SelectedGoal = QuestGoals[math.random(1, #QuestGoals)];
+        self:SaveBehaviorTableForTitle(SelectedGoal, _Quest);
+        -- Slave Quest vorbereiten
+        if SelectedGoal[1] == "Goal_ActivateObject" then
+            API.InteractiveObjectActivate(SelectedGoal[2]);
+        elseif SelectedGoal[1] == "Goal_SatisfyNeed" then
+            API.SetNeedSatisfaction(Needs.Medicine, 0.0, _Quest.SendingPlayer);
+        elseif SelectedGoal[1] == "Goal_Refill" then
+            self.Data.TerritoriesUsedForRefillQuests[SelectedGoal[2]] = true;
+            API.SetResourceAmount(SelectedGoal[2], 0, 250);
+        end
         local FunctionName = table.remove(SelectedGoal, 1);
 
         self.Data.RandomQuestNameCounter = self.Data.RandomQuestNameCounter +1;
         local QuestName = API.CreateQuest {
             Name        = "RandomRequest_Player" .._Quest.SendingPlayer.. "_" ..self.Data.RandomQuestNameCounter;
-            Suggestion  = _Behavior.OptionalSuggestion or self.Data.SpecialSuggestion or self.Data.Text.Suggestion[math.random(1, 3)],
+            Suggestion  = _Behavior.OptionalSuggestion or self.Data.Text.Suggestion[math.random(1, 3)],
             Success     = _Behavior.OptionalSuccess or self.Data.Text.Success[math.random(1, 3)],
             Failure     = _Behavior.OptionalFailure or self.Data.Text.Failure[math.random(1, 3)],
             Receiver    = _Quest.ReceivingPlayer,
@@ -201,11 +158,56 @@ function AddOnRandomRequests.Global:CreateSlaveQuest(_Behavior, _Quest)
             Time        = _Behavior.TimeLimit,
 
             _G[FunctionName](unpack(SelectedGoal)),
-            Trigger_Time(0),
+            Trigger_Time(Logic.GetTime() +5),
         };
         _Behavior.SlaveQuest = Quests[GetQuestID(QuestName)];
-        self.Data.SpecialSuggestion = nil;
     end
+end
+
+---
+-- Speichert die Verwendung eines Behavior nach Auftraggeber, Auftragnehmer
+-- und Titel des Auftragnehmer.
+-- @param[type=table] _GoalTable Behavior
+-- @param[type=table] _Quest     Quest
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:SaveBehaviorTableForTitle(_GoalTable, _Quest)
+    local Sender   = _Quest.SendingPlayer;
+    local Receiver = _Quest.ReceivingPlayer;
+    local Title    = Logic.GetKnightTitle(Receiver);
+
+    self.Data.UsedBehaviorsPerTitle[Sender]                  = self.Data.UsedBehaviorsPerTitle[Sender]                  or {};
+    self.Data.UsedBehaviorsPerTitle[Sender][Receiver]        = self.Data.UsedBehaviorsPerTitle[Sender][Receiver]        or {};
+    self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title] = self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title] or {};
+
+    table.insert(self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title], _GoalTable[1]);
+end
+
+---
+-- Gibt zurück, wie oft ein Behavior für Auftraggeber, Auftragnehmer und Titel
+-- des Auftragnehmer schon benutzt wurde.
+-- @param[type=string] _FunctionName Funktionsname Behavior
+-- @param[type=table] _Quest         Quest
+-- @within Internal
+-- @local
+--
+function AddOnRandomRequests.Global:CountBehaviorUsageForTitle(_FunctionName, _Quest)
+    local Sender   = _Quest.SendingPlayer;
+    local Receiver = _Quest.ReceivingPlayer;
+    local Title    = Logic.GetKnightTitle(Receiver);
+
+    self.Data.UsedBehaviorsPerTitle[Sender]                  = self.Data.UsedBehaviorsPerTitle[Sender]                  or {};
+    self.Data.UsedBehaviorsPerTitle[Sender][Receiver]        = self.Data.UsedBehaviorsPerTitle[Sender][Receiver]        or {};
+    self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title] = self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title] or {};
+
+    local Count = 0;
+    for k, v in pairs(self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title]) do
+        if _FunctionName == v then
+            Count = Count +1;
+        end
+    end
+    return Count;
 end
 
 ---
@@ -242,8 +244,7 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
         QuestGoals[#QuestGoals+1] = self:GetDeliverGoodsBehavior(_Behavior, _Quest);
     end
     if _Behavior.TypeDeliverGold then
-        self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Tribute;
-        local Amount = math.random(250, 500) + (75 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
+        local Amount = math.random(250, 400 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
         QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
     end
     if _Behavior.TypeClaim then
@@ -253,15 +254,21 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
         QuestGoals[#QuestGoals+1] = self:GetKnightTitleBehavior(_Behavior, _Quest);
     end
     if _Behavior.TypeReputation then
-        self.Data.KnightTitle[_Quest.ReceivingPlayer] = self.Data.KnightTitle[_Quest.ReceivingPlayer] or {};
         local Reputation = 25 + (10 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
-        if not self.Data.KnightTitle[_Quest.ReceivingPlayer][Reputation] then
-            self.Data.KnightTitle[_Quest.ReceivingPlayer][Reputation] = true;
-            QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", Reputation};
-        end
+        QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", Reputation};
     end
     if _Behavior.TypeBuildWall then
         QuestGoals[#QuestGoals+1] = self:GetBuildWallBehavior(_Behavior, _Quest);
+    end
+
+    for i= #QuestGoals, 1, -1 do
+        if self.Data.BehaviorApperanceLimit[QuestGoals[i]] then
+            if QuestGoals[i][1] ~= "Goal_Deliver" or (QuestGoals[i][1] == "Goal_Deliver" and QuestGoals[i][2] ~= "G_Gold") then
+                if (self:CountBehaviorUsageForTitle(QuestGoals[#QuestGoals][1], _Quest) > self.Data.BehaviorApperanceLimit[QuestGoals[i]]) then
+                    table.remove(QuestGoals, i);
+                end
+            end
+        end
     end
     return QuestGoals;
 end
@@ -290,7 +297,6 @@ function AddOnRandomRequests.Global:GetConstructBehavior(_Behavior, _Quest)
     local Type;
     local TerritoryID;
     local Amount;
-    self.Data.Construct[_Quest.ReceivingPlayer] = self.Data.Construct[_Quest.ReceivingPlayer] or {};
 
     -- Gebäude ermitteln
     local Buildings = {};
@@ -299,10 +305,8 @@ function AddOnRandomRequests.Global:GetConstructBehavior(_Behavior, _Quest)
         PossibleBuildings = Array_Append(PossibleBuildings, API.InstanceTable(self.Data.ConstructTypesRdO));
     end
     for k, v in pairs(PossibleBuildings) do
-        if not self.Data.Construct[_Quest.ReceivingPlayer][v] then
-            if Logic.TechnologyGetState(_Quest.ReceivingPlayer, Technologies["R_" ..v:sub(3)]) == TechnologyStates.Researched then
-                table.insert(Buildings, v);
-            end
+        if Logic.TechnologyGetState(_Quest.ReceivingPlayer, Technologies["R_" ..v:sub(3)]) == TechnologyStates.Researched then
+            table.insert(Buildings, v);
         end
     end
     if #Buildings == 0 then
@@ -324,8 +328,6 @@ function AddOnRandomRequests.Global:GetConstructBehavior(_Behavior, _Quest)
     end
     Amount = #EntitiesOfType +1;
     -- Behavior erzeugen
-    self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Build;
-    self.Data.Construct[_Quest.ReceivingPlayer][Type] = true;
     return {"Goal_Create", Type, Amount, TerritoryID};
 end
 
@@ -357,8 +359,7 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
             break;
         end
         if string.find(Logic.GetEntityTypeName(Logic.GetEntityType(GetID(Name))), "I_X_") 
-        and Logic.GetTerritoryPlayerID(GetTerritoryUnderEntity(GetID(Name))) == _Quest.SendingPlayer
-        and not self.Data.Object[Name] then
+        and Logic.GetTerritoryPlayerID(GetTerritoryUnderEntity(GetID(Name))) == _Quest.SendingPlayer then
             table.insert(Objects, Name);
         end
         Index = Index +1;
@@ -367,7 +368,6 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
     -- Behavior erzeugen
     if #Objects > 0 then
         local Name = Objects[math.random(1, #Objects)];
-        self.Data.Object[Name] = true;
         local Type = Logic.GetEntityType(GetID(Name));
         local TypeName = Logic.GetEntityTypeName(Type);
         local PlayerID = _Quest.SendingPlayer;
@@ -375,10 +375,8 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
         local Reward;
         local Action;
 
-        self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Misc;
         -- Signalfeuer entzünden
         if TypeName == "I_X_BigFire_Base" then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Fire;
             Costs = {Goods.G_Wood, 20 + (3*KnightTitle)};
             Action = function(_Data)
                 local Position = GetPosition(_Data.Name);
@@ -386,7 +384,6 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
                 Logic.SetVisible(GetID(_Data.Name), false);
             end
         elseif TypeName == "I_X_SignalFire_Base" then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Fire;
             Costs = {Goods.G_Wood, 30 + (3*KnightTitle)};
             Action = function(_Data)
                 local Position = GetPosition(_Data.Name);
@@ -394,11 +391,9 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
                 Logic.SetVisible(GetID(_Data.Name), false);
             end
         elseif TypeName == "I_X_Holy_Cow" then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.HolyCow;
             Costs = {Goods.G_Grain, 30 + (5*KnightTitle)};
         -- Gefangenen freikaufen
         elseif TypeName:find("Prison") then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Prison;
             PlayerID = _Quest.ReceivingPlayer;
             Costs = {Goods.G_Gold, 250 + (50*KnightTitle)};
             Action = function(_Data)
@@ -409,7 +404,6 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
             end
         -- Faulen Harzer finden
         elseif TypeName == "I_X_NPC_Decay_Hut" then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Missing;
             Action = function(_Data)
                 local Pos  = API.GetRelativePosition(_Data.Name, 200, -90);
                 local Type = API.GetRandomSettlerType();
@@ -418,7 +412,6 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
             end
         -- Khana-Tempel entzünden
         elseif TypeName == "I_X_KhanaTemple" then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Fire;
             Costs = {Goods.G_Honeycomb, 30 + (3*KnightTitle)};
             Action = function(_Data)
                 local Orientation = Logic.GetOrientation(GetID(_Data.Name));
@@ -428,7 +421,6 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
             end
         -- Ein Brunnen wird repariert
         elseif TypeName == "I_X_Well_Destroyed" then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Well;
             Costs = {Goods.G_Stone, 20 + (3*KnightTitle)};
             Action = function(_Data)
                 local Position = GetPosition(_Data.Name);
@@ -437,7 +429,6 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
             end
         -- Tigerhöle plündern, aber... ;)
         elseif TypeName == "I_X_TigerCave" then
-            self.Data.SpecialSuggestion = self.Data.Text.Suggestion.Tiger;
             Reward = {Goods.G_Gems, 20 + (5*KnightTitle)};
             Action = function(_Data)
                 local Pos  = API.GetRelativePosition(_Data.Name, 300, -90);
@@ -458,6 +449,7 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
             PlayerID    = PlayerID,
             Callback    = Action,
         };
+        API.InteractiveObjectDeactivate(Name);
         -- Behavior erzeugen
         return {"Goal_ActivateObject", Name};
     end
@@ -479,23 +471,14 @@ end
 --
 function AddOnRandomRequests.Global:GetCureSettlersBehavior(_Behavior, _Quest)
     local KnightTitle = Logic.GetKnightTitle(_Quest.ReceivingPlayer);
-    self.Data.CureSettlers[_Quest.SendingPlayer] = self.Data.CureSettlers[_Quest.SendingPlayer] or {};
-    if not self.Data.CureSettlers[_Quest.SendingPlayer][KnightTitle] then
-        local Pharmacies = GetPlayerEntities(_Quest.SendingPlayer, Entities.B_Pharmacy);
-        self.Data.Deliver[_Quest.ReceivingPlayer] = self.Data.Deliver[_Quest.ReceivingPlayer] or {};
-        self.Data.Deliver[_Quest.ReceivingPlayer][_Quest.SendingPlayer] = self.Data.Deliver[_Quest.ReceivingPlayer][_Quest.SendingPlayer] or {};
-        if self:CanGoodBeSetAsGoal(_Quest.SendingPlayer, _Quest.ReceivingPlayer, Goods.G_Medicine)
-        or #Pharmacies == 0 or GetDiplomacyState(_Quest.SendingPlayer, _Quest.ReceivingPlayer) > 0 then
-            local CityBuildings  = {Logic.GetPlayerEntitiesInCategory(_Quest.SendingPlayer, EntityCategories.CityBuilding)};
-            local OuterBuildings = {Logic.GetPlayerEntitiesInCategory(_Quest.SendingPlayer, EntityCategories.OuterRimBuilding)};
-            local AllBuildings = Array_Append(CityBuildings, OuterBuildings);
-            if #AllBuildings > 0 then
-                self.Data.CureSettlers[_Quest.SendingPlayer][KnightTitle] = true;
-                for k, v in pairs(AllBuildings) do
-                    Logic.MakeBuildingIll(v);
-                end
-                return {"Goal_SatisfyNeed", _Quest.SendingPlayer, "Medicine"};
-            end
+    local Pharmacies = GetPlayerEntities(_Quest.SendingPlayer, Entities.B_Pharmacy);
+    if self:CanGoodBeSetAsGoal(_Quest.SendingPlayer, _Quest.ReceivingPlayer, Goods.G_Medicine)
+    or #Pharmacies == 0 or GetDiplomacyState(_Quest.SendingPlayer, _Quest.ReceivingPlayer) > 0 then
+        local CityBuildings  = {Logic.GetPlayerEntitiesInCategory(_Quest.SendingPlayer, EntityCategories.CityBuilding)};
+        local OuterBuildings = {Logic.GetPlayerEntitiesInCategory(_Quest.SendingPlayer, EntityCategories.OuterRimBuilding)};
+        local AllBuildings = Array_Append(CityBuildings, OuterBuildings);
+        if #AllBuildings > 0 then
+            return {"Goal_SatisfyNeed", _Quest.SendingPlayer, "Medicine"};
         end
     end
 end
@@ -517,18 +500,14 @@ end
 --
 function AddOnRandomRequests.Global:GetFindBehavior(_Behavior, _Quest)
     local KnightTitle = Logic.GetKnightTitle(_Quest.ReceivingPlayer);
-    self.Data.Find[_Quest.SendingPlayer] = self.Data.Find[_Quest.SendingPlayer] or {};
-    if not self.Data.Find[_Quest.SendingPlayer][KnightTitle] then
-        local FindAmount = 5;
-        local EntitiesToFind = self:GetRandomBuildingsForFindQuest(_Quest.SendingPlayer, FindAmount);
-        if #EntitiesToFind >= FindAmount then
-            self.Data.Find[_Quest.SendingPlayer][KnightTitle] = true;
-            local Positions = {};
-            for i= 1, FindAmount, 1 do
-                table.insert(Positions, self:GetPositionNearBuilding(EntitiesToFind[i]));
-            end
-            return {"Goal_CollectValuables", Positions, "-", 0};
+    local FindAmount = 5;
+    local EntitiesToFind = self:GetRandomBuildingsForFindQuest(_Quest.SendingPlayer, FindAmount);
+    if #EntitiesToFind >= FindAmount then
+        local Positions = {};
+        for i= 1, FindAmount, 1 do
+            table.insert(Positions, self:GetPositionNearBuilding(EntitiesToFind[i]));
         end
+        return {"Goal_CollectValuables", Positions, "-", 0};
     end
 end
 
@@ -546,15 +525,12 @@ end
 -- @local
 --
 function AddOnRandomRequests.Global:GetRefillBehavior(_Behavior, _Quest)
-    self.Data.Refill[_Quest.SendingPlayer] = self.Data.Refill[_Quest.SendingPlayer] or {};
     local AllMines = Array_Append(
         self:GetWorldEntitiesOnPlayersTerritories(Entities.R_IronMine, _Quest.SendingPlayer),
         self:GetWorldEntitiesOnPlayersTerritories(Entities.R_StoneMine, _Quest.SendingPlayer)
     );
     for i= 1, #AllMines, 1 do
-        if not self.Data.Refill[_Quest.SendingPlayer][AllMines[i]] then
-            self.Data.Refill[_Quest.SendingPlayer][AllMines[i]] = true;
-            API.SetResourceAmount(AllMines[i], 0, 250);
+        if not self.Data.TerritoriesUsedForRefillQuests[AllMines[i]] then
             return {"Goal_Refill", AllMines[i]};
         end
     end
@@ -575,11 +551,10 @@ end
 --
 function AddOnRandomRequests.Global:GetHuntPredatorBehavior(_Behavior, _Quest)
     local SpawnPoint = self:GetClosestPredatorSpawnByQuest(_Behavior, _Quest);
-    if SpawnPoint == nil or self.Data.PredatorQuests[SpawnPoint] ~= nil then
+    if SpawnPoint == nil then
         return;
     end
     local MaxCapacity = Logic.RespawnResourceGetMaxCapacity(SpawnPoint);
-    self.Data.PredatorQuests[SpawnPoint] = true;
     return {"Goal_DestroySpawnedEntities", SpawnPoint, MaxCapacity, false};
 end
 
@@ -600,12 +575,9 @@ function AddOnRandomRequests.Global:GetKnightTitleBehavior(_Behavior, _Quest)
     if Logic.GetKnightTitle(_Quest.ReceivingPlayer) < KnightTitles.Archduke then
         local PossibleTitles = {"Mayor", "Baron", "Earl", "Marquees", "Duke", "Archduke"};
         local NextTitle = PossibleTitles[Logic.GetKnightTitle(_Quest.ReceivingPlayer)+1];
-        self.Data.KnightTitle[_Quest.ReceivingPlayer] = self.Data.KnightTitle[_Quest.ReceivingPlayer] or {};
-        if not NextTitle or IsKnightTitleLockedForPlayer(_Quest.ReceivingPlayer, NextTitle) 
-        or self.Data.KnightTitle[_Quest.ReceivingPlayer][NextTitle] then
+        if not NextTitle or IsKnightTitleLockedForPlayer(_Quest.ReceivingPlayer, NextTitle) then
             return;
         end
-        self.Data.KnightTitle[_Quest.ReceivingPlayer][NextTitle] = true;
         return {"Goal_KnightTitle", NextTitle};
     end 
 end
@@ -653,13 +625,13 @@ end
 function AddOnRandomRequests.Global:GetClaimTerritoryBehavior(_Behavior, _Quest)
     local AllTerritories = self:GetTerritoriesOfPlayer(0);
     for i= #AllTerritories, 1, -1 do
-        if self.Data.Claim[AllTerritories[i]] then
+        if self.Data.TerritoriesUsedForClaimQuest[AllTerritories[i]] then
             table.remove(AllTerritories, i);
         end
     end
     if #AllTerritories > 0 then
         local Territory = AllTerritories[math.random(1, #AllTerritories)];
-        self.Data.Claim[Territory] = true;
+        self.Data.TerritoriesUsedForClaimQuest[Territory] = true;
         return {"Goal_Claim", AllTerritories[math.random(1, #AllTerritories)]};
     end
 end
@@ -679,19 +651,11 @@ end
 function AddOnRandomRequests.Global:GetDeliverGoodsBehavior(_Behavior, _Quest)
     local Receiver = _Quest.ReceivingPlayer;
     local Sender   = _Quest.SendingPlayer;
-    -- Struktur erzeugen
-    self.Data.Deliver[Receiver] = self.Data.Deliver[Receiver] or {};
-    if not self.Data.Deliver[Receiver][Sender] then
-        self.Data.Deliver[Receiver][Sender] = {};
-        for k, v in pairs(self.Data.DeliverGoodTypes) do 
-            self.Data.Deliver[Receiver][Sender][v] = false;
-        end
-    end
     -- Freie Güter selektieren
     local GoodTypes = {};
-    for k, v in pairs(self.Data.Deliver[Receiver][Sender]) do
-        if v == false and self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[k]) then
-            table.insert(GoodTypes, k);
+    for k, v in pairs(self.Data.DeliverGoodTypes) do
+        if self:CanGoodBeSetAsGoal(Sender, Receiver, Goods[v]) then
+            table.insert(GoodTypes, v);
         end
     end
     -- Ware ermitteln
@@ -709,8 +673,6 @@ function AddOnRandomRequests.Global:GetDeliverGoodsBehavior(_Behavior, _Quest)
             Amount = math.random(12, 24);
         end
     end
-    -- Behavior erstellen
-    self.Data.Deliver[Receiver][Sender][Goods[SelectedGood]] = true;
     return {"Goal_Deliver", SelectedGood, Amount};
 end 
 
@@ -789,13 +751,11 @@ function AddOnRandomRequests.Global:GetClosestPredatorSpawnByQuest(_Behavior, _Q
     end
     -- Remove already used
     for i= #FoundSpawnPoints, 1, -1 do
-        if self.Data.PredatorQuests[FoundSpawnPoints[i]] then
-            table.remove(FoundSpawnPoints, i);
-        end
+        table.remove(FoundSpawnPoints, i);
     end
     -- Find nearest
     if #FoundSpawnPoints > 0 then
-        return API.GetEntitiesNearby(Logic.GetStoreHouse(_Quest.SendingPlayer), FoundSpawnPoints);
+        return API.GetEntityNearby(Logic.GetStoreHouse(_Quest.SendingPlayer), FoundSpawnPoints);
     end
 end
 
@@ -827,9 +787,6 @@ end
 -- @local
 --
 function AddOnRandomRequests.Global:CanGoodBeSetAsGoal(_SenderID, _ReceiverID, _Good)
-    if self.Data.Deliver[_ReceiverID][_SenderID][_Good] then
-        return false;
-    end
     if not API.CanPlayerCurrentlyProduceGood(_ReceiverID, _Good) then
         return false;
     end
@@ -876,10 +833,14 @@ end
 -- Tribute und Warenanforderungen steigen in der Menge mit höherem Titel
 -- des Auftragnehmers.
 --
+-- Dem Spieler können entweder keine Wiederholungen, eine feste Anzahl an
+-- Wiederholungen oder unendliche Wiederholungen gewährt werden. Das Behavior
+-- scheitert nur dann endgültig, wenn keine Versuche übrig sind.
+--
 -- <b>Wichtig</b>:
 -- <ul>
 -- <li>Die Option <i>_Goods</i> kann Rohstoffe wählen, die der Spieler wegen
--- einer gesperrten Technologie nicht erlangen kann! In diesem Fall muss die
+-- Ausgeblendetem Baumenü u.ä. nicht erlangen kann! In diesem Fall muss die
 -- Ware Auf die Blacklist des Auftraggebers gesetzt werden!</li>
 -- <li>Die Option _Object benötigt interaktive Objekte, die "IORR" heißen und
 -- von 1 bis n fortlaufend nummeriert sind.</li>
@@ -907,6 +868,7 @@ end
 -- @param[type=boolean] _Object     Ziel: Zufällig gewähltes Objekt aktivieren
 -- @param[type=boolean] _Build      Ziel: Zufällig gewähltes Gebäude bauen
 -- @param[type=number]  _Time       Zeit bis zur Niederlage (0 = aus)
+-- @param[type=number]  _Repeat     Wiederholungen (-1 = endlos, 0 = aus)
 -- @param[type=string]  _Suggestion (optional) Startnachricht
 -- @param[type=string]  _Success    (optional) Erfolgsnachricht
 -- @param[type=string]  _Failure    (optional) Fehlschlagnachricht
@@ -924,22 +886,23 @@ b_Goal_RandomRequest = {
         de = "Ziel: The player receives an randomly generated quest that he needs to complete. Define which types of quest possibly appear by setting the parameters. Tip: Use this quest as invisible quest!",
     },
     Parameter = {
-        { ParameterType.Custom,  en = "Deliver goods",           de = "Waren liefern" },
-        { ParameterType.Custom,  en = "Pay tribute",             de = "Tribut entrichten" },
-        { ParameterType.Custom,  en = "Claim territory",         de = "Territorium beanspruchen" },
-        { ParameterType.Custom,  en = "Knight title",            de = "Titel erreichen" },
-        { ParameterType.Custom,  en = "City reputation",         de = "Ruf der Stadt" },
-        { ParameterType.Custom,  en = "Build rampart",           de = "Festung bauen" },
-        { ParameterType.Custom,  en = "Hunt predators",          de = "Raubtiere vertreiben" },
-        { ParameterType.Custom,  en = "Refill mines",            de = "Minen auffüllen" },
-        { ParameterType.Custom,  en = "Find lost objects",       de = "Verlorene Gegenstände finden" },
-        { ParameterType.Custom,  en = "Cure sick settlers",      de = "Kranke Siedler heilen" },
-        { ParameterType.Custom,  en = "Activate object",         de = "Interaktives Object benutzen" },
-        { ParameterType.Custom,  en = "Construct building",      de = "Gebäude bauen" },
-        { ParameterType.Number,  en = "Time limit (0 = off)",    de = "Leitlimit (0 = aus)" },
-        { ParameterType.Default, en = "(optional) Mission text", de = "(optional) Auftragsnachricht" },
-        { ParameterType.Default, en = "(optional) Success text", de = "(optional) Erfolgsnachricht" },
-        { ParameterType.Default, en = "(optional) Failure text", de = "(optional) Fehlschlagsnachricht" },
+        { ParameterType.Custom,  en = "Deliver goods",                  de = "Waren liefern" },
+        { ParameterType.Custom,  en = "Pay tribute",                    de = "Tribut entrichten" },
+        { ParameterType.Custom,  en = "Claim territory",                de = "Territorium beanspruchen" },
+        { ParameterType.Custom,  en = "Knight title",                   de = "Titel erreichen" },
+        { ParameterType.Custom,  en = "City reputation",                de = "Ruf der Stadt" },
+        { ParameterType.Custom,  en = "Build rampart",                  de = "Festung bauen" },
+        { ParameterType.Custom,  en = "Hunt predators",                 de = "Raubtiere vertreiben" },
+        { ParameterType.Custom,  en = "Refill mines",                   de = "Minen auffüllen" },
+        { ParameterType.Custom,  en = "Find lost objects",              de = "Verlorene Gegenstände finden" },
+        { ParameterType.Custom,  en = "Cure sick settlers",             de = "Kranke Siedler heilen" },
+        { ParameterType.Custom,  en = "Activate object",                de = "Interaktives Object benutzen" },
+        { ParameterType.Custom,  en = "Construct building",             de = "Gebäude bauen" },
+        { ParameterType.Number,  en = "Time limit (0 = off)",           de = "Leitlimit (0 = aus)" },
+        { ParameterType.Number,  en = "Trials (-1 = endless, 0 = off)", de = "Wiederholungen (-1 = endlos, 0 = aus)" },
+        { ParameterType.Default, en = "(optional) Mission text",        de = "(optional) Auftragsnachricht" },
+        { ParameterType.Default, en = "(optional) Success text",        de = "(optional) Erfolgsnachricht" },
+        { ParameterType.Default, en = "(optional) Failure text",        de = "(optional) Fehlschlagsnachricht" },
     },
 }
 
@@ -975,14 +938,17 @@ function b_Goal_RandomRequest:AddParameter(_Index, _Parameter)
     elseif (_Index == 12) then
         self.TimeLimit = _Parameter * 1;
     elseif (_Index == 13) then
+        self.Trials = _Parameter * 1;
+        self.TrialsCounter = self.Trials;
+    elseif (_Index == 14) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuggestion = _Parameter;
         end
-    elseif (_Index == 14) then
+    elseif (_Index == 15) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalSuccess = _Parameter;
         end
-    elseif (_Index == 15) then
+    elseif (_Index == 16) then
         if _Parameter and _Parameter ~= "" then
             self.OptionalFailure = _Parameter;
         end
@@ -995,16 +961,55 @@ end
 
 function b_Goal_RandomRequest:CustomFunction(_Quest)
     AddOnRandomRequests.Global:CreateSlaveQuest(self, _Quest);
-    if self.SlaveQuest and self.SlaveQuest.Result == QuestResult.Success then
-        return true;
+    if self.SlaveQuest then
+        if self.SlaveQuest.State == QuestState.Over then
+            self:ResetSlave(_Quest);
+            if self.TrialsCounter == -1 then
+                if self.SlaveQuest.Result == QuestResult.Success then
+                    return true;
+                end
+                self.SlaveQuest = nil;
+            elseif self.TrialsCounter > 0 then
+                if self.SlaveQuest.Result == QuestResult.Success then
+                    return true;
+                end
+                self.TrialsCounter = self.TrialsCounter -1;
+                if self.TrialsCounter == 0 then
+                    if self.SlaveQuest.Result == QuestResult.Failure then
+                        return false;
+                    end
+                end
+                self.SlaveQuest = nil;
+            else
+                if self.SlaveQuest.Result == QuestResult.Success then
+                    return true;
+                end
+                if self.SlaveQuest.Result == QuestResult.Failure then
+                    return false;
+                end
+            end
+        end
     end
-    if self.SlaveQuest and self.SlaveQuest.Result == QuestResult.Failure then
-        return false;
+end
+
+function b_Goal_RandomRequest:ResetSlave(_Quest)
+    if self.SlaveQuest.Result == QuestResult.Failure then
+        local SlaveBehavior = self.SlaveQuest.Objectives[1];
+        if SlaveBehavior.Type == Objective.Object then
+            API.InteractiveObjectDeactivate(SlaveBehavior.Data[1][1]);
+        elseif SlaveBehavior.Type == Objective.SatisfyNeed then
+            API.SetNeedSatisfaction(Needs.Medicine, 1.0, _Quest.SendingPlayer);
+        elseif SlaveBehavior.Type == Objective.Refill then
+            API.SetResourceAmount(SlaveBehavior.Data[1], 250, 250);
+        elseif SlaveBehavior.Type == Objective.Custom2 then
+            API.StopQuest(self.SlaveQuest.Identifier, true);
+        end
     end
 end
 
 function b_Goal_RandomRequest:Reset(_Quest)
     self:Interrupt(_Quest);
+    self.TrialsCounter = self.Trials;
     self.SlaveQuest = nil;
 end
 
@@ -1021,6 +1026,10 @@ end
 function b_Goal_RandomRequest:Debug(_Quest)
     if (type(self.TimeLimit) ~= "number" or self.TimeLimit < 0) then 
         API.Fatal(_Quest.Identifier.. ": " ..self.Name.. ": Time limit must be a number and at least 0!");
+        return true;
+    end
+    if (type(self.Trials) ~= "number") then 
+        API.Fatal(_Quest.Identifier.. ": " ..self.Name.. ": Trials must be a numeric value!");
         return true;
     end
     return false;

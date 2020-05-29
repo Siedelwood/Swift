@@ -192,7 +192,7 @@ SetEntityName = API.EntitySetName;
 function API.GetKnightNearby(_eID, _playerID)
     local Knights = {};
     Logic.GetKnights(_playerID, Knights);
-    return API.GetEntitiesNearby(_eID, Knights);
+    return API.GetEntityNearby(_eID, Knights);
 end
 GetClosestKnight = API.GetKnightNearby;
 
