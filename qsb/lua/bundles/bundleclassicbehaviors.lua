@@ -3723,7 +3723,7 @@ Core:RegisterBehavior(b_Reprisal_ReplaceEntity);
 -- @within Reprisal
 --
 function Reprisal_QuestRestart(...)
-    return b_Reprisal_QuestRestart(...)
+    return b_Reprisal_QuestRestart:new(...)
 end
 
 b_Reprisal_QuestRestart = {
@@ -3771,7 +3771,7 @@ Core:RegisterBehavior(b_Reprisal_QuestRestart);
 -- @within Reprisal
 --
 function Reprisal_QuestFailure(...)
-    return b_Reprisal_QuestFailure(...)
+    return b_Reprisal_QuestFailure:new(...)
 end
 
 b_Reprisal_QuestFailure = {
@@ -3819,7 +3819,7 @@ Core:RegisterBehavior(b_Reprisal_QuestFailure);
 -- @within Reprisal
 --
 function Reprisal_QuestSuccess(...)
-    return b_Reprisal_QuestSuccess(...)
+    return b_Reprisal_QuestSuccess:new(...)
 end
 
 b_Reprisal_QuestSuccess = {
@@ -3867,7 +3867,7 @@ Core:RegisterBehavior(b_Reprisal_QuestSuccess);
 -- @within Reprisal
 --
 function Reprisal_QuestActivate(...)
-    return b_Reprisal_QuestActivate(...)
+    return b_Reprisal_QuestActivate:new(...)
 end
 
 b_Reprisal_QuestActivate = {
@@ -3917,7 +3917,7 @@ Core:RegisterBehavior(b_Reprisal_QuestActivate)
 -- @within Reprisal
 --
 function Reprisal_QuestInterrupt(...)
-    return b_Reprisal_QuestInterrupt(...)
+    return b_Reprisal_QuestInterrupt:new(...)
 end
 
 b_Reprisal_QuestInterrupt = {
@@ -3973,7 +3973,7 @@ Core:RegisterBehavior(b_Reprisal_QuestInterrupt);
 -- @within Reprisal
 --
 function Reprisal_QuestForceInterrupt(...)
-    return b_Reprisal_QuestForceInterrupt(...)
+    return b_Reprisal_QuestForceInterrupt:new(...)
 end
 
 b_Reprisal_QuestForceInterrupt = {
