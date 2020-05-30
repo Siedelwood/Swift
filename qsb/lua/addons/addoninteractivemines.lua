@@ -142,11 +142,6 @@ AddOnInteractiveMines = {
                         en = "You're able to create a pit at this location!",
                         fr = "Dans cet endroit, vous pouvez construire une mine!",
                     },
-                    Unfulfilled = {
-                        de = "Die Mine kann nicht umgewandelt werden!",
-                        en = "The mine can not be transformed!",
-                        fr = "La mine ne peut pas être convertie!",
-                    },
                 },
             },
         }
@@ -204,7 +199,6 @@ function AddOnInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _No
         Distance             = 1500,
         Condition            = self.ConditionBuildIOMine,
         CustomCondition      = _Condition,
-        ConditionUnfulfilled = self.Data.Mines.Description.Unfulfilled,
         CallbackCreate       = _CreationCallback,
         CallbackDepleted     = _CallbackDepleted,
         Callback             = self.ActionBuildIOMine,
@@ -278,7 +272,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnInteractiveMines.Global.ConditionBuildIOMine(_Data)
+function AddOnInteractiveMines.Global.ConditionBuildIOMine(_IO, _PlayerID, _Data)
     if _Data.CustomCondition then
         return _Data.CustomCondition(_Data) == true;
     end
@@ -286,7 +280,7 @@ function AddOnInteractiveMines.Global.ConditionBuildIOMine(_Data)
 end
 
 
-function AddOnInteractiveMines.Global.ActionBuildIOMine(_Data)
+function AddOnInteractiveMines.Global.ActionBuildIOMine(_IO, _PlayerID, _Data)
     ReplaceEntity(_Data.Name, _Data.Type);
     DestroyEntity(_Data.InvisibleBlocker);
     if type(_Data.CallbackCreate) == "function" then

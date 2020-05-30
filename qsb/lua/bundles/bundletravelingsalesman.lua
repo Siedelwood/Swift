@@ -48,10 +48,11 @@ QSB.ShipWaypointDistance = 300;
 --
 -- @usage local TraderDescription = {
 --     PlayerID   = 2,       -- Partei des Hafen
---     Path       = "SH2WP", -- Pfad (auch als Table möglich)
---     Duration   = 150,     -- Ankerzeit in Sekunden
---     Interval   = 2,       -- Monate zwischen zwei Anfarten
---     OfferCount = 4,       -- Anzahl Angebote (1 bis 4)
+--     Path       = "SH2WP", -- Pfad (auch als Table einzelner Punkte möglich)
+--     Duration   = 150,     -- Ankerzeit in Sekunden (Standard: 360)
+--     Interval   = 3,       -- Monate zwischen zwei Anfarten (Standard: 2)
+--     OfferCount = 4,       -- Anzahl Angebote (1 bis 4) (Standard: 4)
+--     NoIce      = true,    -- Schiff kommt nicht im Winter (Standard: false)
 --     Offers = {
 --         -- Angebot, Menge
 --         {"G_Gems", 5},
@@ -302,7 +303,7 @@ function BundleTravelingSalesman.Global:ShipAtDock(_ShipID)
         Harbor:SetJobID(0);
         local PlayerID = Harbor:GetPlayerID();
         MerchantSystem.TradeBlackList[PlayerID] = {};
-        MerchantSystem.TradeBlackList[PlayerID][0] = #MerchantSystem.TradeBlackList[3];
+        MerchantSystem.TradeBlackList[PlayerID][0] = 0;
         self:CreateOffers(Harbor:GetRandomOffers(), Logic.GetStoreHouse(PlayerID))
         self:TriggerShipAtDockMessage(PlayerID);
         if GameCallback_TravelingSalesmanArrive then

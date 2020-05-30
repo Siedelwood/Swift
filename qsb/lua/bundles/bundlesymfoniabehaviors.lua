@@ -260,7 +260,7 @@ function b_Goal_StealGold:Debug(_Quest)
     return false;
 end
 
-function b_Goal_StealGold:Reset()
+function b_Goal_StealGold:Reset(_Quest)
     self.StohlenGold = 0;
 end
 
@@ -387,7 +387,7 @@ function b_Goal_StealBuilding:Debug(_Quest)
     return false;
 end
 
-function b_Goal_StealBuilding:Reset()
+function b_Goal_StealBuilding:Reset(_Quest)
     self.SuccessfullyStohlen = false;
     self.RobberList = {};
     self.Marker = nil;
@@ -509,7 +509,7 @@ function b_Goal_SpyBuilding:Debug(_Quest)
     return false;
 end
 
-function b_Goal_SpyBuilding:Reset()
+function b_Goal_SpyBuilding:Reset(_Quest)
     self.Infiltrated = false;
     self.Marker = nil;
 end
@@ -797,10 +797,219 @@ b_Goal_LevyTax.Description.de = "Ziel: Liefere eine relative Menge an Waren zum 
 
 b_Goal_LevyTax.GetGoalTable = function(self, _Quest)
     local GoodType = Logic.GetGoodTypeID(self.GoodTypeName);
-    return { Objective.Deliver, GoodType, self.GoodAmount, self.OverrideTarget, self.IgnoreCapture, {}, 0, 0, true}
+    return { Objective.Deliver, GoodType, math.floor(self.GoodAmount + 0.5), self.OverrideTarget, self.IgnoreCapture, {}, 0, 0, true};
 end
 
 Core:RegisterBehavior(b_Goal_LevyTax);
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Der Spieler muss eine Anzahl an Gegenständen finden, die bei den angegebenen
+-- Positionen platziert werden.
+--
+-- @param _Positions Präfix aller durchnummerierten Enttities
+-- @param _Distance  Aktivierungsdistanz (0 = Default = 300)    
+--
+-- @within Goal
+--
+function Goal_CollectValuables(...)
+    return b_Goal_CollectValuables:new(...);
+end
+
+b_Goal_CollectValuables = {
+    Name = "Goal_CollectValuables",
+    Description = {
+        en = "Goal: ",
+        de = "Ziel: ",
+    },
+    Parameter = {
+        { ParameterType.Default, en = "Search points",          de = "Suchpunkte" },
+        { ParameterType.Custom,  en = "Shared model",           de = "Gemeinsames Modell" },
+        { ParameterType.Number,  en = "Distance (0 = Default)", de = "Enternung (0 = Default)" },
+    },
+
+    Text = {
+        {de = "%d/%d Gegenstände gefunden",
+         en = "%d/%d Items gefunden",
+         fr = "%d/%d Les objets ont été trouvés"},
+        {de = "GEGENSTÄNDE FINDEN {br}{br}Findet die verloren gegangenen Gegenstände.",
+         en = "FIND VALUABLES {br}{br}Find the missing items.",
+         fr = "RECHERCHER DES OBJECTS {br}{br}Trouvez les éléments manquants."},
+    },
+
+    Tools = {
+        Models.Doodads_D_X_Sacks,
+        Models.Tools_T_BowNet01,
+        Models.Tools_T_Hammer02,
+        Models.Tools_T_Cushion01,
+        Models.Tools_T_Knife02,
+        Models.Tools_T_Scythe01,
+        Models.Tools_T_SiegeChest01,
+    },
+
+    Distance = 300,
+    Finished = false,
+    Positions = {},
+    Marker = {},
+}
+
+function b_Goal_CollectValuables:GetGoalTable()
+    return {Objective.Custom2, {self, self.CustomFunction}};
+end
+
+function b_Goal_CollectValuables:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then
+        self.SearchPositions = _Parameter;
+    elseif (_Index == 0) then
+        self.Model = _Parameter;
+    elseif (_Index == 2) then
+        if _Parameter == nil then
+            _Parameter = self.Distance;
+        end
+        self.Distance = _Parameter * 1;
+        if self.Distance == 0 then
+            self.Distance = 300;
+        end
+    end
+end
+
+function b_Goal_CollectValuables:CustomFunction(_Quest)
+    Core:ChangeCustomQuestCaptionText("{center}" ..API.Localize(self.Text[2]), _Quest);
+    if not self.Finished then
+        self:GetPositions(_Quest);
+        self:CreateMarker(_Quest);
+        self:CheckPositions(_Quest);
+        if #self.Marker > 0 then
+            return;
+        end
+        self.Finished = true;
+    end
+    return true;
+end
+
+function b_Goal_CollectValuables:GetPositions(_Quest)
+    if #self.Positions == 0 then
+        -- Position ist Table (script only feature)
+        if type(self.SearchPositions) == "table" then
+            self.Positions = self.SearchPositions;
+        -- Suche alle Positionen mit dem Namen
+        else
+            local Index = 1;
+            while (IsExisting(self.SearchPositions .. Index)) do
+                table.insert(self.Positions, GetPosition(self.SearchPositions .. Index));
+                Index = Index +1;
+            end
+        end
+    end
+end
+
+function b_Goal_CollectValuables:CreateMarker(_Quest)
+    if #self.Marker == 0 then
+        for i= 1, #self.Positions, 1 do
+            local ID = Logic.CreateEntityOnUnblockedLand(Entities.XD_ScriptEntity, self.Positions[i].X, self.Positions[i].Y, 0, 0);
+            if self.Model ~= nil and self.Model ~= "-" then
+                Logic.SetModel(ID, Models[self.Model]);
+            else
+                Logic.SetModel(ID, self.Tools[math.random(1, #self.Tools)]);
+            end
+            Logic.SetVisible(ID, true);
+            table.insert(self.Marker, ID);
+        end
+    end
+end
+
+function b_Goal_CollectValuables:CheckPositions(_Quest)
+    local Heroes = {};
+    Logic.GetKnights(_Quest.ReceivingPlayer, Heroes);
+    for i= #self.Marker, 1, -1 do
+        for j= 1, #Heroes, 1 do
+            if IsNear(self.Marker[i], Heroes[j], self.Distance) then
+                DestroyEntity(table.remove(self.Marker, i));
+                local Max = #self.Positions;
+                local Now = Max - #self.Marker;
+                API.Note(string.format(API.Localize(self.Text[1]), Now, Max));
+                break;
+            end
+        end
+    end
+end
+
+function b_Goal_CollectValuables:Reset(_Quest)
+    self:Interrupt(_Quest);
+end
+
+function b_Goal_CollectValuables:Interrupt(_Quest)
+    self.Finished = false;
+    self.Positions = {};
+    for i= 1, #self.Marker, 1 do
+        DestroyEntity(self.Marker[i]);
+    end
+    self.Marker = {};
+end
+
+function b_Goal_CollectValuables:GetCustomData(_Index)
+    if _Index == 1 then
+        local Data = {};
+        -- Erst mal alles entfernen...
+        for k, v in pairs(Models) do
+            if  not string.find(k, "Animals_")
+            and not string.find(k, "MissionMap_")
+            and not string.find(k, "R_Fish")
+            and not string.find(k, "^[GEHUVXYZgt][ADSTfm]*")
+            and not string.find(string.lower(k), "goods|tools_") then
+                table.insert(Data, k);
+            end
+        end
+        -- Models hinzufügen
+        table.insert(Data, "Effects_Dust01");
+        table.insert(Data, "Effects_E_DestructionSmoke");
+        table.insert(Data, "Effects_E_DustLarge");
+        table.insert(Data, "Effects_E_DustSmall");
+        table.insert(Data, "Effects_E_Firebreath");
+        table.insert(Data, "Effects_E_Fireworks01");
+        table.insert(Data, "Effects_E_Flies01");
+        table.insert(Data, "Effects_E_Grasshopper03");
+        table.insert(Data, "Effects_E_HealingFX");
+        table.insert(Data, "Effects_E_Knight_Chivalry_Aura");
+        table.insert(Data, "Effects_E_Knight_Plunder_Aura");
+        table.insert(Data, "Effects_E_Knight_Song_Aura");
+        table.insert(Data, "Effects_E_Knight_Trader_Aura");
+        table.insert(Data, "Effects_E_Knight_Wisdom_Aura");
+        table.insert(Data, "Effects_E_KnightFight");
+        table.insert(Data, "Effects_E_NA_BlowingSand01");
+        table.insert(Data, "Effects_E_NE_BlowingSnow01");
+        table.insert(Data, "Effects_E_Oillamp");
+        table.insert(Data, "Effects_E_SickBuilding");
+        table.insert(Data, "Effects_E_Splash");
+        table.insert(Data, "Effects_E_Torch");
+        table.insert(Data, "Effects_Fire01");
+        table.insert(Data, "Effects_FX_Lantern");
+        table.insert(Data, "Effects_FX_SmokeBIG");
+        table.insert(Data, "Effects_XF_BuildingSmoke");
+        table.insert(Data, "Effects_XF_BuildingSmokeLarge");
+        table.insert(Data, "Effects_XF_BuildingSmokeMedium");
+        table.insert(Data, "Effects_XF_HouseFire");
+        table.insert(Data, "Effects_XF_HouseFireLo");
+        table.insert(Data, "Effects_XF_HouseFireMedium");
+        table.insert(Data, "Effects_XF_HouseFireSmall");
+        if g_GameExtraNo > 0 then
+            table.insert(Data, "Effects_E_KhanaTemple_Fire");
+            table.insert(Data, "Effects_E_Knight_Saraya_Aura");
+        end
+        -- Sortieren
+        table.sort(Data);
+        -- "-" Option
+        table.insert(Data, 1, "-");
+        return Data;
+    end
+end
+
+function b_Goal_CollectValuables:Debug(_Quest)
+    return false;
+end
+
+Core:RegisterBehavior(b_Goal_CollectValuables);
 
 -- -------------------------------------------------------------------------- --
 -- Reprisals                                                                  --
@@ -1192,16 +1401,59 @@ function b_Reprisal_SetModel:CustomFunction(_Quest)
     Logic.SetModel(eID, Models[self.Model]);
 end
 
+-- Hinweis: Kann nicht durch Aufruf der Methode von b_Goal_CollectValuables
+-- vereinfacht werden, weil man im Editor keine Methoden aufrufen kann!
 function b_Reprisal_SetModel:GetCustomData(_Index)
     if _Index == 1 then
         local Data = {};
-        for k,v in pairs(Models) do
-            if  not string.find(k,"Animals_") and not string.find(k,"Banners_") and not string.find(k,"Goods_") and not string.find(k,"goods_")
-            and not string.find(k,"Heads_") and not string.find(k,"MissionMap_") and not string.find(k,"R_Fish") and not string.find(k,"Units_")
-            and not string.find(k,"XD_") and not string.find(k,"XS_") and not string.find(k,"XT_") and not string.find(k,"Z_") then
-                table.insert(Data,k);
+        -- Erst mal alles entfernen...
+        for k, v in pairs(Models) do
+            if  not string.find(k, "Animals_")
+            and not string.find(k, "MissionMap_")
+            and not string.find(k, "R_Fish")
+            and not string.find(k, "^[GEHUVXYZgt][ADSTfm]*")
+            and not string.find(string.lower(k), "goods|tools_") then
+                table.insert(Data, k);
             end
         end
+        -- Models hinzufügen
+        table.insert(Data, "Effects_Dust01");
+        table.insert(Data, "Effects_E_DestructionSmoke");
+        table.insert(Data, "Effects_E_DustLarge");
+        table.insert(Data, "Effects_E_DustSmall");
+        table.insert(Data, "Effects_E_Firebreath");
+        table.insert(Data, "Effects_E_Fireworks01");
+        table.insert(Data, "Effects_E_Flies01");
+        table.insert(Data, "Effects_E_Grasshopper03");
+        table.insert(Data, "Effects_E_HealingFX");
+        table.insert(Data, "Effects_E_Knight_Chivalry_Aura");
+        table.insert(Data, "Effects_E_Knight_Plunder_Aura");
+        table.insert(Data, "Effects_E_Knight_Song_Aura");
+        table.insert(Data, "Effects_E_Knight_Trader_Aura");
+        table.insert(Data, "Effects_E_Knight_Wisdom_Aura");
+        table.insert(Data, "Effects_E_KnightFight");
+        table.insert(Data, "Effects_E_NA_BlowingSand01");
+        table.insert(Data, "Effects_E_NE_BlowingSnow01");
+        table.insert(Data, "Effects_E_Oillamp");
+        table.insert(Data, "Effects_E_SickBuilding");
+        table.insert(Data, "Effects_E_Splash");
+        table.insert(Data, "Effects_E_Torch");
+        table.insert(Data, "Effects_Fire01");
+        table.insert(Data, "Effects_FX_Lantern");
+        table.insert(Data, "Effects_FX_SmokeBIG");
+        table.insert(Data, "Effects_XF_BuildingSmoke");
+        table.insert(Data, "Effects_XF_BuildingSmokeLarge");
+        table.insert(Data, "Effects_XF_BuildingSmokeMedium");
+        table.insert(Data, "Effects_XF_HouseFire");
+        table.insert(Data, "Effects_XF_HouseFireLo");
+        table.insert(Data, "Effects_XF_HouseFireMedium");
+        table.insert(Data, "Effects_XF_HouseFireSmall");
+        if g_GameExtraNo > 0 then
+            table.insert(Data, "Effects_E_KhanaTemple_Fire");
+            table.insert(Data, "Effects_E_Knight_Saraya_Aura");
+        end
+        -- Sortieren
+        table.sort(Data);
         return Data;
     end
 end
@@ -2125,6 +2377,64 @@ function BundleSymfoniaBehaviors.Global:Install()
 end
 
 ---
+-- Gibt eine Liste von ohne Absturz nutzbaren statischen Modellen zurück.
+-- @return[type=table] Liste der Modelle
+-- @within Internal
+-- @local
+--
+function BundleSymfoniaBehaviors.Global:GetPossibleModels()
+    -- Erst mal alles entfernen...
+    for k, v in pairs(Models) do
+        if  not string.find(k, "Animals_")
+        and not string.find(k, "MissionMap_")
+        and not string.find(k, "R_Fish")
+        and not string.find(k, "^[GEHUVXYZgt][ADSTfm]*")
+        and not string.find(string.lower(k), "goods|tools_") then
+            table.insert(Data, k);
+        end
+    end
+    -- Models hinzufügen
+    table.insert(Data, "Effects_Dust01");
+    table.insert(Data, "Effects_E_DestructionSmoke");
+    table.insert(Data, "Effects_E_DustLarge");
+    table.insert(Data, "Effects_E_DustSmall");
+    table.insert(Data, "Effects_E_Firebreath");
+    table.insert(Data, "Effects_E_Fireworks01");
+    table.insert(Data, "Effects_E_Flies01");
+    table.insert(Data, "Effects_E_Grasshopper03");
+    table.insert(Data, "Effects_E_HealingFX");
+    table.insert(Data, "Effects_E_Knight_Chivalry_Aura");
+    table.insert(Data, "Effects_E_Knight_Plunder_Aura");
+    table.insert(Data, "Effects_E_Knight_Song_Aura");
+    table.insert(Data, "Effects_E_Knight_Trader_Aura");
+    table.insert(Data, "Effects_E_Knight_Wisdom_Aura");
+    table.insert(Data, "Effects_E_KnightFight");
+    table.insert(Data, "Effects_E_NA_BlowingSand01");
+    table.insert(Data, "Effects_E_NE_BlowingSnow01");
+    table.insert(Data, "Effects_E_Oillamp");
+    table.insert(Data, "Effects_E_SickBuilding");
+    table.insert(Data, "Effects_E_Splash");
+    table.insert(Data, "Effects_E_Torch");
+    table.insert(Data, "Effects_Fire01");
+    table.insert(Data, "Effects_FX_Lantern");
+    table.insert(Data, "Effects_FX_SmokeBIG");
+    table.insert(Data, "Effects_XF_BuildingSmoke");
+    table.insert(Data, "Effects_XF_BuildingSmokeLarge");
+    table.insert(Data, "Effects_XF_BuildingSmokeMedium");
+    table.insert(Data, "Effects_XF_HouseFire");
+    table.insert(Data, "Effects_XF_HouseFireLo");
+    table.insert(Data, "Effects_XF_HouseFireMedium");
+    table.insert(Data, "Effects_XF_HouseFireSmall");
+    if g_GameExtraNo > 0 then
+        table.insert(Data, "Effects_E_KhanaTemple_Fire");
+        table.insert(Data, "Effects_E_Knight_Saraya_Aura");
+    end
+    -- Sortieren
+    table.sort(Data);
+    return Data;
+end
+
+---
 -- Prüft, ob alle gespawnten Entities zerstört wurden.
 -- @param[type=table] _Quest     Quest Data
 -- @param[type=table] _Objective Behavior Data
@@ -2189,16 +2499,15 @@ function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
                     self.Objectives[b].Data[5] = true;
                 end
             
-            -- Spezielles Objective.Deliver für prozentual errechnete Liefermengen
+            -- Spezielles Objective.Deliver für errechnete Liefermengen
+            -- Ermittelt die zu liefernde Menge prozentual zur aktuellen Menge
+            -- einer Ware. Ist die vorhandene Menge zu gering, wird eine
+            -- Standardmenge verlangt.
             elseif self.Objectives[b].Type == Objective.Deliver and self.Objectives[b].Data[8] == true then
                 local Data = self.Objectives[b].Data;
                 -- Sicherstellen, dass es niemals ungültige Werte gibt.
-                if Data[2] < 1 then
-                    self.Objectives[b].Data[2] = 1;
-                end
-                if Data[2] > 100 then
-                    self.Objectives[b].Data[2] = 100;
-                end
+                self.Objectives[b].Data[2] = (Data[2] > 100 and 100) or Data[2];
+                self.Objectives[b].Data[2] = (Data[2] < 1 and 1) or Data[2];
                 -- Einmalig zum Start die absolut geforderte Menge ermitteln.
                 if Data[9] == nil then
                     -- Sicherheitskopie des ursprünglichen Wertes anlegen
@@ -2206,25 +2515,24 @@ function BundleSymfoniaBehaviors.Global.OnQuestTriggered(self)
                         self.Objectives[b].Data[9] = self.Objectives[b].Data[2];
                     end
                     -- Werte bestimmen
+                    local IsResource = Logic.GetGoodCategoryForGoodType(Data[1]) == GoodCategories.GC_Resource;
+                    local IsGold = Data[1] == Goods.G_Gold;
                     local TotalAmount = GetPlayerGoodsInSettlement(Data[1], self.ReceivingPlayer, false);
                     -- Burglager einbeziehen
                     if AddOnCastleStore then
                         TotalAmount = TotalAmount + API.CastleStoreGetGoodAmount(self.ReceivingPlayer, Data[1])
                     end
+                    TotalAmount = TotalAmount + math.ceil(TotalAmount * 0.2);
+                    -- Defaults, wenn zu wenig
+                    if IsGold and TotalAmount < 250 + Data[9] then
+                        TotalAmount = 250 + Data[9];
+                    elseif IsResource and TotalAmount < 36 then
+                        TotalAmount = 36 + math.floor(Data[9]/3);
+                    elseif not IsGold and not IsResource and TotalAmount < 18 then
+                        TotalAmount = 18 + math.floor(Data[9]/6);
+                    end
+                    -- Menge bestimmen
                     local Amount = math.ceil((TotalAmount / 100) * Data[9]);
-                    -- Wenn zu wenig Einheiten einer Ware da sind, soll ein fester
-                    -- Wert verlangt werden, damit die Menge nicht lächerlich ist.
-                    local IsResource = Logic.GetGoodCategoryForGoodType(Data[1]) == GoodCategories.GC_Resource;
-                    local IsGold = Data[1] == Goods.G_Gold;
-                    if (IsGold and TotalAmount < 200) then
-                        Amount = Data[9] * 5;
-                    end
-                    if (IsResource and not IsGold and TotalAmount < 18) then
-                        Amount = Data[9];
-                    end
-                    if (not IsResource and TotalAmount < 9) then
-                        Amount = math.ceil(0.18 * Data[9]);
-                    end
                     self.Objectives[b].Data[2] = Amount;
                 end
             end

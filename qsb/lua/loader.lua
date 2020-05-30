@@ -189,6 +189,7 @@ SymfoniaLoader = {
             "AddOnRandomRequests",                  true,
             "BundleClassicBehaviors",
             "BundleEntityHelperFunctions",
+            "BundleInteractiveObjects",
             "BundlePlayerHelperFunctions",
             "BundleSymfoniaBehaviors",
             },

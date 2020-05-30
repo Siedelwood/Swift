@@ -5,13 +5,12 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Dieses Bundle stellt das Burglager, oder Kellerlager, zur Verfügung, das
+-- Dieses Bundle stellt ein Burglager, oder Kellerlager, zur Verfügung, das
 -- sich ähnlich wie das normale Lager verhält.
 --
--- Das Burglager ist von der Ausbaustufe der Burg
--- abhängig. Je weiter die Burg ausgebaut wird, desto höher ist das Limit.
--- Eine Ware wird dann im Burglager eingelagert, wenn das eingestellte Limit
--- der Ware im Lagerhaus erreicht wird.
+-- Das Burglager ist von der Ausbaustufe der Burg abhängig. Je weiter die Burg
+-- ausgebaut wird, desto höher ist das Limit. Eine Ware wird dann im Burglager
+-- eingelagert, wenn das eingestellte Limit der Ware im Lagerhaus erreicht wird.
 --
 -- Der Spieler kann das allgemeine Verhalten des Lagers für alle Waren wählen
 -- und zusätzlich für einzelne Waren andere Verhalten bestimmen. Waren können
@@ -19,8 +18,8 @@
 -- gesperrt werden. Eine gesperrte Ware wird nicht wieder ausgelagert, auch
 -- wenn Platz im Lager frei wird.
 --
--- Muss ein Spieler einen Tribut aus dem lagerhaus begleichen, eine bestimmte
--- Menge an Waren erreichen oder die Kosten Zur aktivierung eines interaktien
+-- Muss ein Spieler einen Tribut aus dem Lagerhaus begleichen, eine bestimmte
+-- Menge an Waren erreichen oder die Kosten zur Aktivierung eines interaktien
 -- Objektes bezahlen, werden die Güter im Burglager automatisch mit einbezogen,
 -- wenn sie nicht gesperrt wurden.
 --
@@ -228,11 +227,13 @@ end
 AddOnCastleStore = {
     Global = {
         Data = {
-            UpdateCastleStore = false,
+            UpdateCastleStoreInitalized = false,
             CastleStoreObjects = {},
+            BackupGoods = {},
         },
         CastleStore = {
             Data = {
+                UpdateCastleStore = true,
                 CapacityBase = 75,
                 Goods = {
                     -- [Ware] = {Menge, Einlager-Flag, Gesperrt-Flag, Untergrenze}
@@ -358,8 +359,8 @@ function AddOnCastleStore.Global.CastleStore:New(_PlayerID)
     Store.Data.PlayerID = _PlayerID;
     AddOnCastleStore.Global.Data.CastleStoreObjects[_PlayerID] = Store;
 
-    if not self.Data.UpdateCastleStore then
-        self.Data.UpdateCastleStore = true;
+    if not self.Data.UpdateCastleStoreInitalized then
+        self.Data.UpdateCastleStoreInitalized = true;
         StartSimpleHiResJobEx(AddOnCastleStore.Global.CastleStore.UpdateStores);
     end
     Logic.ExecuteInLuaLocalState([[
@@ -798,6 +799,20 @@ function AddOnCastleStore.Global.CastleStore:Remove(_Good, _Amount)
 end
 
 ---
+-- Aktiviert oder deaktiviert das Lagermanagement des Castle Store.
+--
+-- <p><b>Alias</b>: QSB.CastleStore.EnableStore</p>
+--
+-- @param[type=boolean] _Flag Lagermengenaktualisierung einschalten
+-- @within QSB.CastleStore
+-- @local
+--
+function AddOnCastleStore.Global.CastleStore:EnableStore(_Flag)
+    assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
+    self.Data.UpdateCastleStore = _Flag == true;
+end
+
+---
 -- Aktualisiert die Waren im Lager und im Burglager.
 --
 -- <p><b>Alias</b>: QSB.CastleStore.UpdateStores</p>
@@ -808,7 +823,7 @@ end
 function AddOnCastleStore.Global.CastleStore.UpdateStores()
     assert(self == nil, "This method is only procedural!");
     for k, v in pairs(AddOnCastleStore.Global.Data.CastleStoreObjects) do
-        if v ~= nil and Logic.GetStoreHouse(k) ~= 0 then
+        if v ~= nil and v.Data.UpdateCastleStore and Logic.GetStoreHouse(k) ~= 0 then
             local Level = Logic.GetUpgradeLevel(Logic.GetHeadquarters(v.Data.PlayerID));
             for kk, vv in pairs(v.Data.Goods) do
                 if vv ~= nil then
@@ -960,6 +975,82 @@ function AddOnCastleStore.Global:OverwriteGameFunctions()
                 end
             end
         end
+    end
+end
+
+---
+-- Überschriebene Bezahlung von interaktiven Objekten - Step 2.
+--
+-- Speichert die aktuelle Warenmenge zwischen und leert dann das Lagerhaus.
+-- Dann werden die Kosten ins Lagerhaus gelegt. Anschließend wird Step 2 im 
+-- lokalenSkript aufgerufen.
+--
+-- @param[type=string] _ScriptName Scriptname des Objektes
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Global:InteractiveObjectPayStep1(_ScriptName)
+    if _ScriptName == nil then
+        return;
+    end
+    local ScriptName = _ScriptName;
+    if IO_SlaveToMaster[ScriptName] then
+        ScriptName = IO_SlaveToMaster[ScriptName];
+    end
+    -- Burglager abschalten
+    QSB.CastleStore:GetInstance(QSB.HumanPlayerID):EnableStore(false);
+    -- Alle Waren zwischenspeichern
+    for k, v in pairs(self.CastleStore.Data.Goods) do
+        local Amount = GetPlayerResources(k, QSB.HumanPlayerID);
+        self.Data.BackupGoods[k] = Amount;
+        AddGood(k, (-1) * Amount, QSB.HumanPlayerID);
+    end
+    -- Kosten ins Lagerhaus legen
+    if IO[ScriptName].m_Costs and IO[ScriptName].m_Costs[1] then
+        local Type = IO[ScriptName].m_Costs[1];
+        if self.Data.BackupGoods[Type] then
+            AddGood(Type, IO[ScriptName].m_Costs[2], QSB.HumanPlayerID);
+            self.Data.BackupGoods[Type] = self.Data.BackupGoods[Type] - IO[ScriptName].m_Costs[2];
+            if self.Data.BackupGoods[Type] < 0 then
+                QSB.CastleStore:GetInstance(QSB.HumanPlayerID):Remove(Type, (-1) * self.Data.BackupGoods[Type]);
+                self.Data.BackupGoods[Type] = 0;
+            end
+        end
+    end
+    if IO[ScriptName].m_Costs and IO[ScriptName].m_Costs[3] then
+        local Type = IO[ScriptName].m_Costs[3];
+        if self.Data.BackupGoods[Type] then
+            AddGood(Type, IO[ScriptName].m_Costs[4], QSB.HumanPlayerID);
+            self.Data.BackupGoods[Type] = self.Data.BackupGoods[Type] - IO[ScriptName].m_Costs[4];
+            if self.Data.BackupGoods[Type] < 0 then
+                QSB.CastleStore:GetInstance(QSB.HumanPlayerID):Remove(Type, (-1) * self.Data.BackupGoods[Type]);
+                self.Data.BackupGoods[Type] = 0;
+            end
+        end
+    end
+    -- Objektinteraktion ausführen
+    API.Bridge(string.format("AddOnCastleStore.Local:InteractiveObjectPayStep2('%s')", _ScriptName));
+end
+
+---
+-- Überschriebene Bezahlung von interaktiven Objekten - Step 3.
+--
+-- Die ursprunglichen Warenmengen werden wiederhergestellt.
+--
+-- @param[type=string] _ScriptName Scriptname des Objektes
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Global:InteractiveObjectPayStep3(_ScriptName)
+    if _ScriptName == nil then
+        return;
+    end
+    -- Burglager abschalten
+    QSB.CastleStore:GetInstance(QSB.HumanPlayerID):EnableStore(true);
+    -- Lagerhaus zurücksetzen
+    for k, v in pairs(self.CastleStore.Data.Goods) do
+        local Amount = self.Data.BackupGoods[k];
+        AddGood(k, Amount, QSB.HumanPlayerID);
     end
 end
 
@@ -1164,7 +1255,7 @@ end
 function AddOnCastleStore.Local.CastleStore:IsLocked(_PlayerID, _Good)
     assert(self == AddOnCastleStore.Local.CastleStore, "Can not be used from instance!");
     if not self:HasCastleStore(_PlayerID) or not self.Data[_PlayerID].Goods[_Good] then
-        return true;
+        return false;
     end
     return self.Data[_PlayerID].Goods[_Good][3] == true;
 end
@@ -1616,88 +1707,105 @@ end
 -- @local
 --
 function AddOnCastleStore.Local:OverwriteInteractiveObject()
-    BundleInteractiveObjects.Local.OnObjectClicked_OrigCastleStore = BundleInteractiveObjects.Local.OnObjectClicked;
-    BundleInteractiveObjects.Local.OnObjectClicked = function(self, _IO)
-        local PlayerID = GUI.GetPlayerID();
+    GUI_Interaction.InteractiveObjectClicked_Orig_CastleStore = GUI_Interaction.InteractiveObjectClicked;
+    GUI_Interaction.InteractiveObjectClicked = function()
+        local i = tonumber(XGUIEng.GetWidgetNameByID(XGUIEng.GetCurrentWidgetID()));
+        local EntityID = g_Interaction.ActiveObjectsOnScreen[i];
+        local PlayerID = GUI.GetPlayerID()
+        if not EntityID then
+            return;
+        end
         if not QSB.CastleStore:HasCastleStore(PlayerID) then
-            BundleInteractiveObjects.Local.OnObjectClicked_OrigCastleStore(self, _IO);
+            GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
             return;
         end
-
-        if not self:OnObjectClicked_DoesRewardFitInStorehouse(_IO) then
-            return;
+        local ScriptName = Logic.GetEntityName(EntityID);
+        if IO_SlaveToMaster[ScriptName] then
+            ScriptName = IO_SlaveToMaster[ScriptName];
         end
-        if not self:OnObjectClicked_CanPlayerPayCosts(_IO) then
-            return;
-        end
-        if not self:OnObjectClicked_IsConditionFulfulled(_IO) then
-            return;
-        end
-    
-        local EntityID = GetID(_IO.Name);
-        if _IO.Costs[1] ~= nil then
-            self:BuyObject(PlayerID, _IO.Costs[1], _IO.Costs[2]);
-        end
-        if _IO.Costs[3] ~= nil then
-            self:BuyObject(PlayerID, _IO.Costs[3], _IO.Costs[4]);
-        end
-        if _IO.Reward[1] ~= nil then
-            GUI.SendScriptCommand("GameCallback_ExecuteCustomObjectReward("..PlayerID..",'".._IO.Name.."',".._IO.Reward[1]..",".._IO.Reward[2]..")");
-        end
-        Play2DSound(PlayerID, _IO.ActivationSound or "menu_left_prestige");
-        GUI.SendScriptCommand("GameCallback_OnObjectInteraction("..EntityID..","..PlayerID..")");
-    end
-    
-    BundleInteractiveObjects.Local.CanBeBought = function(self, _PlayerID, _Good, _Amount)
-        local AmountOfGoods = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
-        if AddOnCastleStore.Local.CastleStore:HasCastleStore(_PlayerID) then
-            if Logic.GetGoodCategoryForGoodType(_Good) == GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
-                local AmountInCastle = AddOnCastleStore.Local.CastleStore:GetAmount(_PlayerID, _Good);
-                AmountOfGoods = AmountOfGoods + AmountInCastle;
+        -- Kosten
+        local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)}
+        local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs, CheckSettlement);
+        if IO[ScriptName] then
+            if not self:OnObjectClicked_CanPlayerPayCosts(IO[ScriptName]) then
+                return;
             end
         end
-        if AmountOfGoods < _Amount then
-            return false;
+        if not CanBuyBoolean then
+            Message(CanNotBuyString);
+            return;
         end
-        return true;
-    end
-
-    BundleInteractiveObjects.Local.BuyObject = function(self, _PlayerID, _Good, _Amount)
-        if Logic.GetGoodCategoryForGoodType(_Good) ~= GoodCategories.GC_Resource and _Good ~= Goods.G_Gold then
-            API.Bridge(string.format([[
-            local PlayerID = %d
-            local GoodType = %d
-            local OrigAmount = %d
-
-            local buildings = GetPlayerEntities(PlayerID,0);
-            local goodAmount = OrigAmount;
-            for i=1,#buildings do
-                if Logic.IsBuilding(buildings[i]) == 1 and goodAmount > 0 then
-                    if Logic.GetBuildingProduct(buildings[i]) == GoodType then
-                        local goodAmountInBuilding = Logic.GetAmountOnOutStockByIndex(buildings[i],0);
-                        for j=1,goodAmountInBuilding do
-                            if goodAmount > 0 then
-                                Logic.RemoveGoodFromStock(buildings[i], GoodType, 1);
-                                goodAmount = goodAmount -1;
-                            end
-                        end
-                    end
-                end
+        -- Bedingung
+        if IO[ScriptName] and not IO[ScriptName].m_Fullfilled then
+            Message(XGUIEng.GetStringTableText("UI_ButtonDisabled/PromoteKnight"));
+            return;
+        end
+        -- Normale Aktion wenn nicht IO oder kostenlos
+        if not IO[ScriptName] or (IO[ScriptName] and not IO[ScriptName].m_Costs) then
+            GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+            return;
+        end
+        -- Sound Aktivierung
+        if not GUI_Interaction.InteractionClickOverride  or not GUI_Interaction.InteractionClickOverride(EntityID) then
+            Sound.FXPlay2DSound( "ui\\menu_click");
+        end
+        if not GUI_Interaction.InteractionSpeechFeedbackOverride or not GUI_Interaction.InteractionSpeechFeedbackOverride(EntityID) then                
+            GUI_FeedbackSpeech.Add("SpeechOnly_CartsSent", g_FeedbackSpeech.Categories.CartsUnderway, nil, nil);
+        end
+        -- Aktion
+        Costs = IO[ScriptName].m_Costs;
+        if not Mission_Callback_OverrideObjectInteraction or not Mission_Callback_OverrideObjectInteraction(EntityID, PlayerID, Costs) then
+            local ScriptName = Logic.GetEntityName(EntityID);
+            -- Es muss geprüft werden, ob die Kosten wirklich bezahlt werden
+            -- können oder ob das Burglager mit einbezogen wird.
+            local CanBuyBoolean = true;
+            CanBuyBoolean = CanBuyBoolean and GetPlayerResources(Costs[1], PlayerID) >= Costs[2];
+            if Costs[3] then
+                CanBuyBoolean = CanBuyBoolean and GetPlayerResources(Costs[3], PlayerID) >= Costs[4];
             end
-        ]], _PlayerID, _Good, _Amount));
-        else
-            local AmountInStore = GetPlayerGoodsInSettlement(_Good, _PlayerID, true);
-            local GoodsToRemove = ((AmountInStore - _Amount) >= 0 and _Amount) or AmountInStore;
-            API.Bridge("AddGood(".._Good..", "..(GoodsToRemove*(-1))..", ".._PlayerID..")");
-
-            if AddOnCastleStore.Local.CastleStore:HasCastleStore(_PlayerID) then
-                _Amount = _Amount - GoodsToRemove;
-                if _Amount > 0 then
-                    API.Bridge("QSB.CastleStore:GetInstance(" .._PlayerID.. "):Remove(" .._Good.. ", " .._Amount.. ")");
-                end
+            if CanBuyBoolean then
+                GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
+            else
+                API.Bridge(string.format("AddOnCastleStore.Global:InteractiveObjectPayStep1('%s')", ScriptName));
             end
         end
     end
+end
+
+---
+-- Prüft, ob der Spieler die Kosten des interaktiven Objektes begleichen kann
+-- und zeigt eine Meldung an, wenn das nicht der Fall ist.
+--
+-- @param[type=table]    _IO Table des IO
+-- @return[type=boolean] Kosten können bezahlt werden
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Local:OnObjectClicked_CanPlayerPayCosts(_IO)
+    local PlayerID = GUI.GetPlayerID();
+    local CanBuyBoolean = true;
+    if not _IO.m_Costs or type(_IO.m_Costs[1]) ~= "number" then
+        return CanBuyBoolean;
+    end
+    if _IO.m_Costs[1] then
+        local Amount = GetPlayerResources(_IO.m_Costs[1], GUI.GetPlayerID());
+        if not QSB.CastleStore:IsLocked(PlayerID, _IO.m_Costs[1]) then
+            Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(_IO.m_Costs[1], GUI.GetPlayerID());
+        end
+        CanBuyBoolean = CanBuyBoolean and (Amount >= _IO.m_Costs[2]);
+    end
+    if _IO.m_Costs[3] then
+        local Amount = GetPlayerResources(_IO.m_Costs[3], GUI.GetPlayerID());
+        if not QSB.CastleStore:IsLocked(PlayerID, _IO.m_Costs[3]) then
+            Amount = QSB.CastleStore:GetGoodAmountWithCastleStore(_IO.m_Costs[3], GUI.GetPlayerID());
+        end
+        CanBuyBoolean = CanBuyBoolean and (Amount >= _IO.m_Costs[4]);
+    end
+    if not CanBuyBoolean then
+        local CanNotBuyString = XGUIEng.GetStringTableText("Feedback_TextLines/TextLine_NotEnough_Resources");
+        Message(CanNotBuyString);
+    end
+    return CanBuyBoolean;
 end
 
 ---
@@ -2081,6 +2189,23 @@ function AddOnCastleStore.Local:OverwriteGameFunctions()
             end
         end
     end
+end
+
+---
+-- Überschriebene Bezahlung von interaktiven Objekten - Step 2.
+--
+-- Führt die Interaktion aus und ruft danach Step 3 auf.
+--
+-- @param[type=string] _ScriptName Scriptname des Objektes
+-- @within Internal
+-- @local
+--
+function AddOnCastleStore.Local:InteractiveObjectPayStep2(_ScriptName)
+    if _ScriptName == nil then
+        return;
+    end
+    GUI.ExecuteObjectInteraction(GetID(_ScriptName), GUI.GetPlayerID())
+    API.Bridge(string.format("AddOnCastleStore.Global:InteractiveObjectPayStep3('%s')", _ScriptName));
 end
 
 -- -------------------------------------------------------------------------- --

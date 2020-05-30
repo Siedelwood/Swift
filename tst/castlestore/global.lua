@@ -53,50 +53,32 @@ function Mission_FirstMapAction()
     SetEntityName(Logic.GetHeadquarters(1), "HQ1");
     
     -----
-    
+
     API.CastleStoreCreate(1);
+
+    -- ReplaceEntity("IORR3", Entities.B_Cistern, 2);
     
-    CreateObject {
-        Name = "IO1",
-        Costs = {Goods.G_Wood, 55, Goods.G_RawFish, 55},
-        Waittime = 5,
+    InteractiveObjectDeactivate("IORR1");
+    InteractiveObjectDeactivate("IORR2");
+    InteractiveObjectDeactivate("IORR3");
+    InteractiveObjectDeactivate("IORR4");
+    InteractiveObjectDeactivate("IORR5");
+
+    API.CreateObject {
+        Name        = "IORR3",
+        Distance    = 1200,
+        Texture     = {1, 8},
+        Costs       = {Goods.G_Gold, 100, Goods.G_Stone, 10},
+        Callback    = function(_Data, _PlayerID)
+            API.Note(_PlayerID.. " has activated object " .._Data.m_Name);
+        end,
     }
 
-    CreateObject {
-        Name = "IO2",
-        Costs = {Goods.G_Wool, 55, Goods.G_Milk, 55},
-        Waittime = 5,
-    }
-
-    CreateObject {
-        Name = "IO3",
-        Costs = {Goods.G_Carcass, 55, Goods.G_Herb, 55},
-        Waittime = 5,
-    }
-
-    CreateObject {
-        Name = "IO4",
-        Costs = {Goods.G_Stone, 55, Goods.G_Grain, 55},
-        Waittime = 5,
-    }
-
-    AddQuest {
-        Name = "ObjectTestQuest",
+    API.CreateQuest {
+        Name = "TestQuest",
         Visible = true,
         EndMessage = true,
-        Sender = 8,
-
-        Goal_ActivateSeveralObjects("IO1", "IO2", "IO3", "IO4"),
-    }
-
-    AddQuest {
-        Name = "TradeTestQuest",
-        Visible = true,
-        EndMessage = true,
-        Sender = 2,
-
-        Goal_Deliver("G_Wood", 100),
-        Reward_MapScriptFunction(SomeFunction, "Was ist lecker?", "Bockwurst"),
+        Goal_ActivateObject("IORR3"),
         Trigger_Time(5)
     }
 end

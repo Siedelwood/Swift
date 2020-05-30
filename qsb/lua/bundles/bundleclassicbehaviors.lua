@@ -1502,7 +1502,7 @@ b_Goal_Create = {
 }
 
 function b_Goal_Create:GetGoalTable()
-    return { Objective.Create, assert( Entities[self.EntityName] ), self.Amount, self.TerritoryID  }
+    return { Objective.Create, assert( Entities[self.EntityName] ), self.Amount, self.TerritoryID }
 end
 
 function b_Goal_Create:AddParameter(_Index, _Parameter)
@@ -2935,7 +2935,7 @@ function b_Goal_TributeDiplomacy:Debug(_Quest)
     end
 end
 
-function b_Goal_TributeDiplomacy:Reset()
+function b_Goal_TributeDiplomacy:Reset(_Quest)
     self.Time = nil;
     self.InternTributeQuest = nil;
     self.RestartQuest = nil;
@@ -3209,7 +3209,7 @@ function b_Goal_TributeClaim:Debug(_Quest)
     end
 end
 
-function b_Goal_TributeClaim:Reset()
+function b_Goal_TributeClaim:Reset(_Quest)
     self.InternTributeQuest = nil;
     self.Time = nil;
     self.OtherOwner = nil;
@@ -3723,7 +3723,7 @@ Core:RegisterBehavior(b_Reprisal_ReplaceEntity);
 -- @within Reprisal
 --
 function Reprisal_QuestRestart(...)
-    return b_Reprisal_QuestRestart(...)
+    return b_Reprisal_QuestRestart:new(...)
 end
 
 b_Reprisal_QuestRestart = {
@@ -3771,7 +3771,7 @@ Core:RegisterBehavior(b_Reprisal_QuestRestart);
 -- @within Reprisal
 --
 function Reprisal_QuestFailure(...)
-    return b_Reprisal_QuestFailure(...)
+    return b_Reprisal_QuestFailure:new(...)
 end
 
 b_Reprisal_QuestFailure = {
@@ -3819,7 +3819,7 @@ Core:RegisterBehavior(b_Reprisal_QuestFailure);
 -- @within Reprisal
 --
 function Reprisal_QuestSuccess(...)
-    return b_Reprisal_QuestSuccess(...)
+    return b_Reprisal_QuestSuccess:new(...)
 end
 
 b_Reprisal_QuestSuccess = {
@@ -3867,7 +3867,7 @@ Core:RegisterBehavior(b_Reprisal_QuestSuccess);
 -- @within Reprisal
 --
 function Reprisal_QuestActivate(...)
-    return b_Reprisal_QuestActivate(...)
+    return b_Reprisal_QuestActivate:new(...)
 end
 
 b_Reprisal_QuestActivate = {
@@ -3917,7 +3917,7 @@ Core:RegisterBehavior(b_Reprisal_QuestActivate)
 -- @within Reprisal
 --
 function Reprisal_QuestInterrupt(...)
-    return b_Reprisal_QuestInterrupt(...)
+    return b_Reprisal_QuestInterrupt:new(...)
 end
 
 b_Reprisal_QuestInterrupt = {
@@ -3973,7 +3973,7 @@ Core:RegisterBehavior(b_Reprisal_QuestInterrupt);
 -- @within Reprisal
 --
 function Reprisal_QuestForceInterrupt(...)
-    return b_Reprisal_QuestForceInterrupt(...)
+    return b_Reprisal_QuestForceInterrupt:new(...)
 end
 
 b_Reprisal_QuestForceInterrupt = {
@@ -7424,13 +7424,13 @@ function b_Trigger_OnQuestActive:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestActive:Interrupt()
+function b_Trigger_OnQuestActive:Interrupt(_Quest)
     -- does this realy matter after interrupt?
     -- self.WaitTimeTimer = nil;
     -- self.WasActivated = nil;
 end
 
-function b_Trigger_OnQuestActive:Reset()
+function b_Trigger_OnQuestActive:Reset(_Quest)
     self.WaitTimeTimer = nil;
     self.WasActivated = nil;
 end
@@ -7503,11 +7503,11 @@ function b_Trigger_OnQuestFailure:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestFailure:Interrupt()
+function b_Trigger_OnQuestFailure:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestFailure:Reset()
+function b_Trigger_OnQuestFailure:Reset(_Quest)
     self.WaitTimeTimer = nil;
 end
 
@@ -7634,11 +7634,11 @@ function b_Trigger_OnQuestInterrupted:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestInterrupted:Interrupt()
+function b_Trigger_OnQuestInterrupted:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestInterrupted:Reset()
+function b_Trigger_OnQuestInterrupted:Reset(_Quest)
     self.WaitTimeTimer = nil;
 end
 
@@ -7713,11 +7713,11 @@ function b_Trigger_OnQuestOver:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestOver:Interrupt()
+function b_Trigger_OnQuestOver:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestOver:Reset()
+function b_Trigger_OnQuestOver:Reset(_Quest)
     self.WaitTimeTimer = nil;
 end
 
@@ -7789,11 +7789,11 @@ function b_Trigger_OnQuestSuccess:Debug(_Quest)
     return false;
 end
 
-function b_Trigger_OnQuestSuccess:Interrupt()
+function b_Trigger_OnQuestSuccess:Interrupt(_Quest)
     self.WaitTimeTimer = nil;
 end
 
-function b_Trigger_OnQuestSuccess:Reset()
+function b_Trigger_OnQuestSuccess:Reset(_Quest)
     self.WaitTimeTimer = nil;
 end
 
