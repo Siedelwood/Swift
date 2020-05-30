@@ -620,34 +620,6 @@ API.ActivateIO(&#x3C;span class="string"&#x3E;"Hut1"&#x3C;/span&#x3E;)&#x3C;/pre
 &#x3C;/span&#x3E;API.AddCustomBuildingButton(&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, ExampleButtonAction, ExampleButtonTooltip, ExampleButtonUpdate);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleinteractiveobjects_API.AddCustomIOName" class="result method"><a href="html/bundleinteractiveobjects.lua.html#API.AddCustomIOName">API.AddCustomIOName</a><br>Erzeugt eine Beschriftung für Custom Objects.<span class="docInvisibleContent">
-    Erzeugt eine Beschriftung für Custom Objects.
-&#x3C;p&#x3E; Im Questfenster werden die Namen von Custom Objects als ungesetzt angezeigt.
- Mit dieser Funktion kann ein Name angelegt werden.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; AddCustomIOName&#x3C;/p&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Key&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Typname des Entity
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Text&#x3C;/span&#x3E;
-         Text der Beschriftung
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;API.AddCustomIOName(&#x3C;span class="string"&#x3E;"D_X_ChestClosed"&#x3C;/span&#x3E;, {de = &#x3C;span class="string"&#x3E;"Schatztruhe"&#x3C;/span&#x3E;, en = &#x3C;span class="string"&#x3E;"Treasure"&#x3C;/span&#x3E;);
-API.AddCustomIOName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Leere Schatztruhe"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
-    &#x3C;/ul&#x3E;
-
 </span></div><div id="core_API.AddEntityTypePlaceholder" class="result method"><a href="html/core.lua.html#API.AddEntityTypePlaceholder">API.AddEntityTypePlaceholder</a><br>Fügt einen Platzhalter für einen Entity-Typ hinzu.<span class="docInvisibleContent">
     Fügt einen Platzhalter für einen Entity-Typ hinzu.
 &#x3C;p&#x3E; Innerhalb des Textes wird der Plathalter wie folgt geschrieben:
@@ -1864,12 +1836,6 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
  &#x3C;td&#x3E;ja&#x3C;/td&#x3E;
  &#x3C;/tr&#x3E;
  &#x3C;tr&#x3E;
- &#x3C;td&#x3E;ConditionUnfulfilled&#x3C;/td&#x3E;
- &#x3C;td&#x3E;Eine Nachricht, die angezeigt wird, falls die Bedingung nicht
- erfüllt ist.&#x3C;/td&#x3E;
- &#x3C;td&#x3E;ja&#x3C;/td&#x3E;
- &#x3C;/tr&#x3E;
- &#x3C;tr&#x3E;
  &#x3C;td&#x3E;State&#x3C;/td&#x3E;
  &#x3C;td&#x3E;Bestimmt, wie sich der Button des interaktiven Objektes verhält.&#x3C;/td&#x3E;
  &#x3C;td&#x3E;ja&#x3C;/td&#x3E;
@@ -2613,6 +2579,24 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.DisableReleaseThieves(&#x3C;span class="keyword"&#x3E;false&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
+
+</span></div><div id="core_API.EndJob" class="result method"><a href="html/core.lua.html#API.EndJob">API.EndJob</a><br>Beendet einen aktiven Job endgültig.<span class="docInvisibleContent">
+    Beendet einen aktiven Job endgültig.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: ResumeJob
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_JobID&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Job-ID
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
 
 </span></div><div id="core_API.EnsureScriptName" class="result method"><a href="html/core.lua.html#API.EnsureScriptName">API.EnsureScriptName</a><br>Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.<span class="docInvisibleContent">
     Gibt dem Entity einen eindeutigen Skriptnamen und gibt ihn zurück.
@@ -3574,7 +3558,7 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_State&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-          State des Objektes
+              State des Objektes
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -3600,6 +3584,34 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
 
 
+
+</span></div><div id="bundleinteractiveobjects_API.InteractiveObjectSetName" class="result method"><a href="html/bundleinteractiveobjects.lua.html#API.InteractiveObjectSetName">API.InteractiveObjectSetName</a><br>Erzeugt eine Beschriftung für Custom Objects.<span class="docInvisibleContent">
+    Erzeugt eine Beschriftung für Custom Objects.
+&#x3C;p&#x3E; Im Questfenster werden die Namen von Custom Objects als ungesetzt angezeigt.
+ Mit dieser Funktion kann ein Name angelegt werden.
+&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; AddCustomIOName&#x3C;/p&#x3E;
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Key&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+          Typname des Entity
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Text&#x3C;/span&#x3E;
+         Text der Beschriftung
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestClosed"&#x3C;/span&#x3E;, {de = &#x3C;span class="string"&#x3E;"Schatztruhe"&#x3C;/span&#x3E;, en = &#x3C;span class="string"&#x3E;"Treasure"&#x3C;/span&#x3E;);
+API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Leere Schatztruhe"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
 
 </span></div><div id="bundleinterfaceapperance_API.InterfaceGetPlayerName" class="result method"><a href="html/bundleinterfaceapperance.lua.html#API.InterfaceGetPlayerName">API.InterfaceGetPlayerName</a><br>Gibt den Namen des Spielers zurück.<span class="docInvisibleContent">
     Gibt den Namen des Spielers zurück.
@@ -4218,6 +4230,24 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
         Quest existiert
     &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="core_API.JobIsRunning" class="result method"><a href="html/core.lua.html#API.JobIsRunning">API.JobIsRunning</a><br>Prüft ob der angegebene Job aktiv und eingeschaltet ist.<span class="docInvisibleContent">
+    Prüft ob der angegebene Job aktiv und eingeschaltet ist.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: JobIsRunning
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_JobID&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Job-ID
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
 
 
 
@@ -5091,26 +5121,6 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
 
 
-</span></div><div id="bundleinteractiveobjects_API.RemoveInteractiveObject" class="result method"><a href="html/bundleinteractiveobjects.lua.html#API.RemoveInteractiveObject">API.RemoveInteractiveObject</a><br>Löscht ein interaktives Objekt.<span class="docInvisibleContent">
-    Löscht ein interaktives Objekt.
-&#x3C;p&#x3E; Das Entity wird dabei nicht gelöscht. Es wird ausschließlich die
- Konfiguration des Objektes entfernt.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; RemoveInteractiveObject&#x3C;/p&#x3E;
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_EntityName&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Skriptname des IO
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
 </span></div><div id="core_API.ReplaceEntity" class="result method"><a href="html/core.lua.html#API.ReplaceEntity">API.ReplaceEntity</a><br>Ersetzt ein Entity mit einem neuen eines anderen Typs.<span class="docInvisibleContent">
     Ersetzt ein Entity mit einem neuen eines anderen Typs.  Skriptname,
  Rotation, Position und Besitzer werden übernommen.
@@ -5199,6 +5209,8 @@ Copy = API.InstanceTable(Table)&#x3C;/pre&#x3E;
 
 </span></div><div id="core_API.ResumeJob" class="result method"><a href="html/core.lua.html#API.ResumeJob">API.ResumeJob</a><br>Aktiviert einen angehaltenen Job.<span class="docInvisibleContent">
     Aktiviert einen angehaltenen Job.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Der Job darf nicht direkt mit Trigger.RequestTrigger
+ gestartet worden sein.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: ResumeJob
 
 
@@ -5965,6 +5977,41 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
 
 
 
+</span></div><div id="core_API.StartEventJob" class="result method"><a href="html/core.lua.html#API.StartEventJob">API.StartEventJob</a><br>Erzeugt einen neuen Event-Job.<span class="docInvisibleContent">
+    Erzeugt einen neuen Event-Job.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Nur wenn ein Event Job mit dieser Funktion gestartet wird,
+ können ResumeJob und YieldJob auf den Job angewendet werden.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Events.LOGIC_EVENT_ENTITY_CREATED funktioniert nicht!
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Wird ein Table als Argument an den Job übergeben, wird eine
+ Kopie angeleigt um Speicherprobleme zu verhindern. Es handelt sich also um
+ eine neue Table und keine Referenz!
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_EventType&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Event-Typ
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Function&#x3C;/span&#x3E;
+              Funktion (Funktionsreferenz oder String)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;...&#x3C;/span&#x3E;
+                    Optionale Argumente des Job
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        ID des Jobs
+    &#x3C;/ol&#x3E;
+
+
+
+
 </span></div><div id="bundlemusictools_API.StartEventPlaylist" class="result method"><a href="html/bundlemusictools.lua.html#API.StartEventPlaylist">API.StartEventPlaylist</a><br>Startet eine Playlist, welche als XML angegeben ist.<span class="docInvisibleContent">
     Startet eine Playlist, welche als XML angegeben ist.
 &#x3C;p&#x3E; Eine als XML definierte Playlist wird nicht als Voice abgespielt sondern
@@ -6014,16 +6061,16 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
 </span></div><div id="core_API.StartHiResJob" class="result method"><a href="html/core.lua.html#API.StartHiResJob">API.StartHiResJob</a><br>Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt wird.<span class="docInvisibleContent">
     Fügt eine Funktion als Job hinzu, die zehn Mal pro Sekunde ausgeführt
  wird.  Die Argumente werden an die Funktion übergeben.
-&#x3C;p&#x3E; Die Funktion kann als Referenz oder als Inline übergeben werden.
+&#x3C;p&#x3E; Die Funktion kann als Referenz, Inline oder als String übergeben werden.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: StartSimpleHiResJobEx
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: StartSimpleHiResJob
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Function&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Funktion, die ausgeführt wird
+         Funktion (Funktionsreferenz oder String)
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;...&#x3C;/span&#x3E;
                Liste von Argumenten
@@ -6040,53 +6087,19 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
 
 
 
-</span></div><div id="core_API.StartInlineJob" class="result method"><a href="html/core.lua.html#API.StartInlineJob">API.StartInlineJob</a><br>Erzeugt einen neuen Inline-Job.<span class="docInvisibleContent">
-    Erzeugt einen neuen Inline-Job.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Events.LOGIC_EVENT_ENTITY_CREATED funktioniert nicht!
-&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Wird ein Table als Argument an den Job übergeben, wird eine
- Kopie angeleigt um Speicherprobleme zu verhindern. Es handelt sich also um
- eine neue Table und keine Referenz!
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_EventType&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Event-Typ
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Function&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;function&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Funktionsreferenz
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;...&#x3C;/span&#x3E;
-                    Optionale Argumente des Job
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        ID des Jobs
-    &#x3C;/ol&#x3E;
-
-
-
-
 </span></div><div id="core_API.StartJob" class="result method"><a href="html/core.lua.html#API.StartJob">API.StartJob</a><br>Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt wird.<span class="docInvisibleContent">
     Fügt eine Funktion als Job hinzu, die einmal pro Sekunde ausgeführt
  wird.  Die Argumente werden an die Funktion übergeben.
-&#x3C;p&#x3E; Die Funktion kann als Referenz oder als Inline übergeben werden.
+&#x3C;p&#x3E; Die Funktion kann als Referenz, Inline oder als String übergeben werden.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: StartSimpleJobEx
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: StartSimpleJob
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Function&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Funktion, die ausgeführt wird
+         Funktion (Funktionsreferenz oder String)
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;...&#x3C;/span&#x3E;
                Liste von Argumenten
@@ -6110,7 +6123,10 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
         MachWas(_EntityType);
         &#x3C;span class="keyword"&#x3E;return&#x3C;/span&#x3E; &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;;
     &#x3C;span class="keyword"&#x3E;end&#x3C;/span&#x3E;
-&#x3C;span class="keyword"&#x3E;end&#x3C;/span&#x3E;, Logic.GetTime(), Entities.U_KnightHealing)&#x3C;/pre&#x3E;
+&#x3C;span class="keyword"&#x3E;end&#x3C;/span&#x3E;, Logic.GetTime(), Entities.U_KnightHealing)
+
+&#x3C;span class="comment"&#x3E;-- Startet einen Job
+&#x3C;/span&#x3E;StartSimpleJob(&#x3C;span class="string"&#x3E;"MeinJob"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
 </span></div><div id="bundlesavegametools_API.StartMap" class="result method"><a href="html/bundlesavegametools.lua.html#API.StartMap">API.StartMap</a><br>Startet eine Map aus dem angegebenen Verzeichnis.<span class="docInvisibleContent">
@@ -6431,24 +6447,25 @@ API.SimpleTypewriter(Text, Callback);&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; TraderDescription = {
     PlayerID   = &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,       &#x3C;span class="comment"&#x3E;-- Partei des Hafen
-&#x3C;/span&#x3E;    Path       = &#x3C;span class="string"&#x3E;"SH2WP"&#x3C;/span&#x3E;, &#x3C;span class="comment"&#x3E;-- Pfad (auch als Table möglich)
-&#x3C;/span&#x3E;    Duration   = &#x3C;span class="number"&#x3E;150&#x3C;/span&#x3E;,     &#x3C;span class="comment"&#x3E;-- Ankerzeit in Sekunden
-&#x3C;/span&#x3E;    Interval   = &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,       &#x3C;span class="comment"&#x3E;-- Monate zwischen zwei Anfarten
-&#x3C;/span&#x3E;    OfferCount = &#x3C;span class="number"&#x3E;4&#x3C;/span&#x3E;,       &#x3C;span class="comment"&#x3E;-- Anzahl Angebote (1 bis 4)
+&#x3C;/span&#x3E;    Path       = &#x3C;span class="string"&#x3E;"SH2WP"&#x3C;/span&#x3E;, &#x3C;span class="comment"&#x3E;-- Pfad (auch als Table einzelner Punkte möglich)
+&#x3C;/span&#x3E;    Duration   = &#x3C;span class="number"&#x3E;150&#x3C;/span&#x3E;,     &#x3C;span class="comment"&#x3E;-- Ankerzeit in Sekunden (Standard: 360)
+&#x3C;/span&#x3E;    Interval   = &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;,       &#x3C;span class="comment"&#x3E;-- Monate zwischen zwei Anfarten (Standard: 2)
+&#x3C;/span&#x3E;    OfferCount = &#x3C;span class="number"&#x3E;4&#x3C;/span&#x3E;,       &#x3C;span class="comment"&#x3E;-- Anzahl Angebote (1 bis 4) (Standard: 4)
+&#x3C;/span&#x3E;    NoIce      = &#x3C;span class="keyword"&#x3E;true&#x3C;/span&#x3E;,    &#x3C;span class="comment"&#x3E;-- Schiff kommt nicht im Winter (Standard: false)
 &#x3C;/span&#x3E;    Offers = {
         &#x3C;span class="comment"&#x3E;-- Angebot, Menge
-&#x3C;/span&#x3E;        {&#x3C;span class="string"&#x3E;"G_Gems"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"G_Iron"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"G_Beer"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"G_Stone"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"G_Sheep"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"G_Cheese"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"G_Milk"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"G_Grain"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"G_Broom"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"U_CatapultCart"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"U_MilitarySword"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;,},
-        {&#x3C;span class="string"&#x3E;"U_MilitaryBow"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;,}
+&#x3C;/span&#x3E;        {&#x3C;span class="string"&#x3E;"G_Gems"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"G_Iron"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"G_Beer"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"G_Stone"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"G_Sheep"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"G_Cheese"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"G_Milk"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"G_Grain"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"G_Broom"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"U_CatapultCart"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"U_MilitarySword"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;},
+        {&#x3C;span class="string"&#x3E;"U_MilitaryBow"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;}
     },
 };
 API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
@@ -7076,6 +7093,8 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
 
 </span></div><div id="core_API.YieldJob" class="result method"><a href="html/core.lua.html#API.YieldJob">API.YieldJob</a><br>Pausiert einen laufenden Job.<span class="docInvisibleContent">
     Pausiert einen laufenden Job.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Der Job darf nicht direkt mit Trigger.RequestTrigger
+ gestartet worden sein.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: YieldJob
 
 
@@ -7396,6 +7415,25 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
          Anzahl Territorien
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundlesymfoniabehaviors_Goal_CollectValuables" class="result method"><a href="html/bundlesymfoniabehaviors.lua.html#Goal_CollectValuables">Goal_CollectValuables</a><br>Der Spieler muss eine Anzahl an Gegenständen finden, die bei den angegebenen Positionen platziert werden.<span class="docInvisibleContent">
+    Der Spieler muss eine Anzahl an Gegenständen finden, die bei den angegebenen
+ Positionen platziert werden.
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Positions&#x3C;/span&#x3E;
+         Präfix aller durchnummerierten Enttities
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Distance&#x3C;/span&#x3E;
+          Aktivierungsdistanz (0 = Default = 300)
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -8086,60 +8124,96 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
  Behavior sollte in versteckten Quests benutzt werden.
 &#x3C;p&#x3E; Tribute und Warenanforderungen steigen in der Menge mit höherem Titel
  des Auftragnehmers.
-&#x3C;p&#x3E; Es kann vorkommen, das bestimmte Auftragsarten unter gewissen Voraussetzungen
- fälschlich sofort als erfolgreich abgeschlossen gelten. (z.B. Monsun während
- Build Wall)
+&#x3C;p&#x3E; Dem Spieler können entweder keine Wiederholungen, eine feste Anzahl an
+ Wiederholungen oder unendliche Wiederholungen gewährt werden. Das Behavior
+ scheitert nur dann endgültig, wenn keine Versuche übrig sind.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Wichtig&#x3C;/b&#x3E;:
+ &#x3C;ul&#x3E;
+ &#x3C;li&#x3E;Die Option &#x3C;i&#x3E;_Goods&#x3C;/i&#x3E; kann Rohstoffe wählen, die der Spieler wegen
+ Ausgeblendetem Baumenü u.ä. nicht erlangen kann! In diesem Fall muss die
+ Ware Auf die Blacklist des Auftraggebers gesetzt werden!&#x3C;/li&#x3E;
+ &#x3C;li&#x3E;Die Option _Object benötigt interaktive Objekte, die "IORR" heißen und
+ von 1 bis n fortlaufend nummeriert sind.&#x3C;/li&#x3E;
+ &#x3C;li&#x3E;Die Option _Object erzeugt u.U. Raubtierspawnpoints (Tigerhöhle)!&#x3C;/li&#x3E;
+ &#x3C;/ul&#x3E;
 &#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Das Behavior erzeugt einen weiteren Quest mit dem zufällig
  gewählten Ziel. Somit ist es mit den Tribut-Quests vergleichbar. Wird
  Random Requests neu gestartet wird ein neuer Zufalls-Quest erstellt.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Es kann vorkommen, das bestimmte Auftragsarten unter gewissen
+ Voraussetzungen fälschlich sofort als erfolgreich abgeschlossen gelten. (z.B.
+ Monsun während Build Wall)
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_DeliverGoods&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Goods&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-           Ziel: Waren liefern
+              Ziel: Waren liefern
         &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_DeliverGold&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Gold&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-            Ziel: Tribut bezahlen
+               Ziel: Tribut bezahlen
         &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_ClaimTerritory&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Claim&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Ziel: Territorium erobern
+              Ziel: Territorium erobern
         &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_KnightTitle&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Title&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-            Ziel: Nächst höherer Titel
+              Ziel: Nächst höherer Titel
         &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_CityReputation&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Reputation&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
          Ziel: Ruf der Stadt
         &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_BuildRampart&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Walls&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-           Ziel: Stadt mit einer Mauer schützen
+              Ziel: Stadt mit einer Mauer schützen
         &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_HuntPredator&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Predator&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
            Ziel: Raubtiere vernichten
         &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Mine&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+               Ziel: Verschüttete Mine auffüllen
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Find&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+               Ziel: Gegenstände suchen
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Cure&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+               Ziel: Kranke Siedler heilen
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Object&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+             Ziel: Zufällig gewähltes Objekt aktivieren
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Build&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+              Ziel: Zufällig gewähltes Gebäude bauen
+        &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Time&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-                   Zeit bis zur Niederlage (0 = aus)
+               Zeit bis zur Niederlage (0 = aus)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Repeat&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+             Wiederholungen (-1 = endlos, 0 = aus)
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Suggestion&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-             (optional) Startnachricht
+         (optional) Startnachricht
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Success&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-                (optional) Erfolgsnachricht
+            (optional) Erfolgsnachricht
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Failure&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-                (optional) Fehlschlagnachricht
+            (optional) Fehlschlagnachricht
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -10839,7 +10913,7 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
                 </div>
                 <div id="bundlelinkContainer">
                     <div style="margin-bottom: 10px;"><b>Pakete</b></div>
-                    <div id="addoncastlestore" class="result module"><a href="html/addoncastlestore.lua.html">addoncastlestore</a><br>Dieses Bundle stellt das Burglager, oder Kellerlager, zur Verfügung, das sich ähnlich wie das normale Lager verhält.</div><div id="addoncutscenesystem" class="result module"><a href="html/addoncutscenesystem.lua.html">addoncutscenesystem</a><br>Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.</div><div id="addoninteractivechests" class="result module"><a href="html/addoninteractivechests.lua.html">addoninteractivechests</a><br>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</div><div id="addoninteractivemines" class="result module"><a href="html/addoninteractivemines.lua.html">addoninteractivemines</a><br>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</div><div id="addoninteractivesites" class="result module"><a href="html/addoninteractivesites.lua.html">addoninteractivesites</a><br>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei ein Gebäude bauen zu lassen.</div><div id="addoninteractivetrebuchets" class="result module"><a href="html/addoninteractivetrebuchets.lua.html">addoninteractivetrebuchets</a><br>Der Spieler kann ein Trebuchet mieten.</div><div id="addonquestdebug" class="result module"><a href="html/addonquestdebug.lua.html">addonquestdebug</a><br>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</div><div id="addonrandomrequests" class="result module"><a href="html/addonrandomrequests.lua.html">addonrandomrequests</a><br>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</div><div id="bundlebriefingsystem" class="result module"><a href="html/bundlebriefingsystem.lua.html">bundlebriefingsystem</a><br>Ermöglicht es Briefing zu verwenden.</div><div id="bundlebuildingbuttons" class="result module"><a href="html/bundlebuildingbuttons.lua.html">bundlebuildingbuttons</a><br>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere Funktionen.</div><div id="bundlecamera" class="result module"><a href="html/bundlecamera.lua.html">bundlecamera</a><br>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen Zoom zu nutzen.</div><div id="bundlecheats" class="result module"><a href="html/bundlecheats.lua.html">bundlecheats</a><br>Mit diesem Bundle kann die Nutzung der Cheats verboten oder erlaubt werden.</div><div id="bundleclassicbehaviors" class="result module"><a href="html/bundleclassicbehaviors.lua.html">bundleclassicbehaviors</a><br>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</div><div id="bundleconstructioncontrol" class="result module"><a href="html/bundleconstructioncontrol.lua.html">bundleconstructioncontrol</a><br>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien unterbunden werden.</div><div id="bundledestructioncontrol" class="result module"><a href="html/bundledestructioncontrol.lua.html">bundledestructioncontrol</a><br>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor dem Abriss zu schützen.</div><div id="bundledialogwindows" class="result module"><a href="html/bundledialogwindows.lua.html">bundledialogwindows</a><br>Mit diesem Bundle können Dialogfenster ernstellt werden.</div><div id="bundleentitycommandfunctions" class="result module"><a href="html/bundleentitycommandfunctions.lua.html">bundleentitycommandfunctions</a><br>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie von A nach B zu bewegen.</div><div id="bundleentityhelperfunctions" class="result module"><a href="html/bundleentityhelperfunctions.lua.html">bundleentityhelperfunctions</a><br>Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu ermitteln oder zu verändern.</div><div id="bundleentityproperties" class="result module"><a href="html/bundleentityproperties.lua.html">bundleentityproperties</a><br>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation von Entities bereitgestellt.</div><div id="bundleentityselection" class="result module"><a href="html/bundleentityselection.lua.html">bundleentityselection</a><br>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</div><div id="bundlefollowknight" class="result module"><a href="html/bundlefollowknight.lua.html">bundlefollowknight</a><br>Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden (bzw Ritter) folgen zu lassen.</div><div id="bundleinteractiveobjects" class="result module"><a href="html/bundleinteractiveobjects.lua.html">bundleinteractiveobjects</a><br>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert werden kann.</div><div id="bundleinterfaceapperance" class="result module"><a href="html/bundleinterfaceapperance.lua.html">bundleinterfaceapperance</a><br>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche des Spiels.</div><div id="bundleinterfacefeaturevisibility" class="result module"><a href="html/bundleinterfacefeaturevisibility.lua.html">bundleinterfacefeaturevisibility</a><br>Dieses Bundle bietet dem Nutzer Funktionen um ausgewählte Buttons und Widgets auszublenden oder einzublenden.</div><div id="bundleknighttitlerequirements" class="result module"><a href="html/bundleknighttitlerequirements.lua.html">bundleknighttitlerequirements</a><br>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell an die eigenen Vorstellungen anzupassen.</div><div id="bundleminimapmarker" class="result module"><a href="html/bundleminimapmarker.lua.html">bundleminimapmarker</a><br>Ermöglocht das Anlegen von Markierungen auf der Minimap.</div><div id="bundlemusictools" class="result module"><a href="html/bundlemusictools.lua.html">bundlemusictools</a><br>Dieses Bundle bietet die Möglichkeit Playlists im Spiel abzuspielen.</div><div id="bundlenonplayercharacter" class="result module"><a href="html/bundlenonplayercharacter.lua.html">bundlenonplayercharacter</a><br>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere bereitgestellt.</div><div id="bundleplayerhelperfunctions" class="result module"><a href="html/bundleplayerhelperfunctions.lua.html">bundleplayerhelperfunctions</a><br>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von spielerbezogenen Features.</div><div id="bundleprofileandoptions" class="result module"><a href="html/bundleprofileandoptions.lua.html">bundleprofileandoptions</a><br>Mit diesem Bundle können Profil und Options bequem aus globalen und lokalem Skript angefragt und verändert werden.</div><div id="bundlequestgeneration" class="result module"><a href="html/bundlequestgeneration.lua.html">bundlequestgeneration</a><br>Dieses Bundle ermöglicht es einen Quest, bzw.</div><div id="bundlesavegametools" class="result module"><a href="html/bundlesavegametools.lua.html">bundlesavegametools</a><br>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von Spielständen kontrolliert werden können.</div><div id="bundlespeedlimit" class="result module"><a href="html/bundlespeedlimit.lua.html">bundlespeedlimit</a><br>Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur Verfügung.</div><div id="bundlestockbreeding" class="result module"><a href="html/bundlestockbreeding.lua.html">bundlestockbreeding</a><br>Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.</div><div id="bundlesymfoniabehaviors" class="result module"><a href="html/bundlesymfoniabehaviors.lua.html">bundlesymfoniabehaviors</a><br>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht in der ursprünglichen QSB gab.</div><div id="bundleterrainandwater" class="result module"><a href="html/bundleterrainandwater.lua.html">bundleterrainandwater</a><br>Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und von Wasser.</div><div id="bundletimeline" class="result module"><a href="html/bundletimeline.lua.html">bundletimeline</a><br>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu gliedern.</div><div id="bundletravelingsalesman" class="result module"><a href="html/bundletravelingsalesman.lua.html">bundletravelingsalesman</a><br>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den Hafen mit einem Schiff anfährt.</div><div id="bundleweathermanipulation" class="result module"><a href="html/bundleweathermanipulation.lua.html">bundleweathermanipulation</a><br>Dieses Modul ermöglicht das Ändern des Wetters.</div><div id="core" class="result module"><a href="html/core.lua.html">core</a><br>Hier werden wichtige Basisfunktionen bereitgestellt.</div>
+                    <div id="addoncastlestore" class="result module"><a href="html/addoncastlestore.lua.html">addoncastlestore</a><br>Dieses Bundle stellt ein Burglager, oder Kellerlager, zur Verfügung, das sich ähnlich wie das normale Lager verhält.</div><div id="addoncutscenesystem" class="result module"><a href="html/addoncutscenesystem.lua.html">addoncutscenesystem</a><br>Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.</div><div id="addoninteractivechests" class="result module"><a href="html/addoninteractivechests.lua.html">addoninteractivechests</a><br>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</div><div id="addoninteractivemines" class="result module"><a href="html/addoninteractivemines.lua.html">addoninteractivemines</a><br>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</div><div id="addoninteractivesites" class="result module"><a href="html/addoninteractivesites.lua.html">addoninteractivesites</a><br>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei ein Gebäude bauen zu lassen.</div><div id="addoninteractivetrebuchets" class="result module"><a href="html/addoninteractivetrebuchets.lua.html">addoninteractivetrebuchets</a><br>Der Spieler kann ein Trebuchet mieten.</div><div id="addonquestdebug" class="result module"><a href="html/addonquestdebug.lua.html">addonquestdebug</a><br>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</div><div id="addonrandomrequests" class="result module"><a href="html/addonrandomrequests.lua.html">addonrandomrequests</a><br>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</div><div id="bundlebriefingsystem" class="result module"><a href="html/bundlebriefingsystem.lua.html">bundlebriefingsystem</a><br>Ermöglicht es Briefing zu verwenden.</div><div id="bundlebuildingbuttons" class="result module"><a href="html/bundlebuildingbuttons.lua.html">bundlebuildingbuttons</a><br>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere Funktionen.</div><div id="bundlecamera" class="result module"><a href="html/bundlecamera.lua.html">bundlecamera</a><br>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen Zoom zu nutzen.</div><div id="bundlecheats" class="result module"><a href="html/bundlecheats.lua.html">bundlecheats</a><br>Mit diesem Bundle kann die Nutzung der Cheats verboten oder erlaubt werden.</div><div id="bundleclassicbehaviors" class="result module"><a href="html/bundleclassicbehaviors.lua.html">bundleclassicbehaviors</a><br>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</div><div id="bundleconstructioncontrol" class="result module"><a href="html/bundleconstructioncontrol.lua.html">bundleconstructioncontrol</a><br>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien unterbunden werden.</div><div id="bundledestructioncontrol" class="result module"><a href="html/bundledestructioncontrol.lua.html">bundledestructioncontrol</a><br>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor dem Abriss zu schützen.</div><div id="bundledialogwindows" class="result module"><a href="html/bundledialogwindows.lua.html">bundledialogwindows</a><br>Mit diesem Bundle können Dialogfenster ernstellt werden.</div><div id="bundleentitycommandfunctions" class="result module"><a href="html/bundleentitycommandfunctions.lua.html">bundleentitycommandfunctions</a><br>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie von A nach B zu bewegen.</div><div id="bundleentityhelperfunctions" class="result module"><a href="html/bundleentityhelperfunctions.lua.html">bundleentityhelperfunctions</a><br>Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu ermitteln oder zu verändern.</div><div id="bundleentityproperties" class="result module"><a href="html/bundleentityproperties.lua.html">bundleentityproperties</a><br>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation von Entities bereitgestellt.</div><div id="bundleentityselection" class="result module"><a href="html/bundleentityselection.lua.html">bundleentityselection</a><br>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</div><div id="bundlefollowknight" class="result module"><a href="html/bundlefollowknight.lua.html">bundlefollowknight</a><br>Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden (bzw Ritter) folgen zu lassen.</div><div id="bundleinteractiveobjects" class="result module"><a href="html/bundleinteractiveobjects.lua.html">bundleinteractiveobjects</a><br>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert werden kann.</div><div id="bundleinterfaceapperance" class="result module"><a href="html/bundleinterfaceapperance.lua.html">bundleinterfaceapperance</a><br>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche des Spiels.</div><div id="bundleinterfacefeaturevisibility" class="result module"><a href="html/bundleinterfacefeaturevisibility.lua.html">bundleinterfacefeaturevisibility</a><br>Dieses Bundle bietet dem Nutzer Funktionen um ausgewählte Buttons und Widgets auszublenden oder einzublenden.</div><div id="bundleknighttitlerequirements" class="result module"><a href="html/bundleknighttitlerequirements.lua.html">bundleknighttitlerequirements</a><br>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell an die eigenen Vorstellungen anzupassen.</div><div id="bundleminimapmarker" class="result module"><a href="html/bundleminimapmarker.lua.html">bundleminimapmarker</a><br>Ermöglocht das Anlegen von Markierungen auf der Minimap.</div><div id="bundlemusictools" class="result module"><a href="html/bundlemusictools.lua.html">bundlemusictools</a><br>Dieses Bundle bietet die Möglichkeit Playlists im Spiel abzuspielen.</div><div id="bundlenonplayercharacter" class="result module"><a href="html/bundlenonplayercharacter.lua.html">bundlenonplayercharacter</a><br>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere bereitgestellt.</div><div id="bundleplayerhelperfunctions" class="result module"><a href="html/bundleplayerhelperfunctions.lua.html">bundleplayerhelperfunctions</a><br>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von spielerbezogenen Features.</div><div id="bundleprofileandoptions" class="result module"><a href="html/bundleprofileandoptions.lua.html">bundleprofileandoptions</a><br>Mit diesem Bundle können Profil und Options bequem aus globalen und lokalem Skript angefragt und verändert werden.</div><div id="bundlequestgeneration" class="result module"><a href="html/bundlequestgeneration.lua.html">bundlequestgeneration</a><br>Dieses Bundle ermöglicht es einen Quest, bzw.</div><div id="bundlesavegametools" class="result module"><a href="html/bundlesavegametools.lua.html">bundlesavegametools</a><br>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von Spielständen kontrolliert werden können.</div><div id="bundlespeedlimit" class="result module"><a href="html/bundlespeedlimit.lua.html">bundlespeedlimit</a><br>Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur Verfügung.</div><div id="bundlestockbreeding" class="result module"><a href="html/bundlestockbreeding.lua.html">bundlestockbreeding</a><br>Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.</div><div id="bundlesymfoniabehaviors" class="result module"><a href="html/bundlesymfoniabehaviors.lua.html">bundlesymfoniabehaviors</a><br>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht in der ursprünglichen QSB gab.</div><div id="bundleterrainandwater" class="result module"><a href="html/bundleterrainandwater.lua.html">bundleterrainandwater</a><br>Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und von Wasser.</div><div id="bundletimeline" class="result module"><a href="html/bundletimeline.lua.html">bundletimeline</a><br>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu gliedern.</div><div id="bundletravelingsalesman" class="result module"><a href="html/bundletravelingsalesman.lua.html">bundletravelingsalesman</a><br>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den Hafen mit einem Schiff anfährt.</div><div id="bundleweathermanipulation" class="result module"><a href="html/bundleweathermanipulation.lua.html">bundleweathermanipulation</a><br>Dieses Modul ermöglicht das Ändern des Wetters.</div><div id="core" class="result module"><a href="html/core.lua.html">core</a><br>Hier werden wichtige Basisfunktionen bereitgestellt.</div>
                 </div>
             </div>
             <div id="indexEntriesContainer">
