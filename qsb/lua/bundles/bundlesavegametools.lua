@@ -23,13 +23,13 @@ QSB = QSB or {};
 ---
 -- Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
 -- des Spielstandes. Wenn nicht gespeichert werden kann, wird bis
--- zum nδchsten mφglichen Zeitpunkt gewartet.
+-- zum nächsten mäglichen Zeitpunkt gewartet.
 --
 -- @param _name [string] Name des Spielstandes
 -- @within Anwenderfunktionen
 --
 function API.AutoSaveGame(_name)
-    assert(_name);
+    assert(_name == nil or type(_name) == "string");
     if not GUI then
         API.Bridge('API.AutoSaveGame("'.._name..'")');
         return;
@@ -38,7 +38,7 @@ function API.AutoSaveGame(_name)
 end
 
 ---
--- Speichert den Spielstand in das angegebene Verzeichnis. Es kφnnen
+-- Speichert den Spielstand in das angegebene Verzeichnis. Es können
 -- keine Verzeichnise erzeugt werden. Der Pfad beginnt relativ vom
 -- Spielstandverzeichnis.
 --
@@ -57,7 +57,7 @@ function API.SaveGameToFolder(_path, _name)
 end
 
 ---
--- Lδd einen Spielstand aus dem angegebenen Verzeichnis. Der Pfad
+-- Läd einen Spielstand aus dem angegebenen Verzeichnis. Der Pfad
 -- beginnt relativ vom Spielstandverzeichnis. Optional kann der
 -- Ladebildschirm gehalten werden, bis der Spieler das Spiel per
 -- Button startet.
@@ -132,9 +132,6 @@ ForbidSaveGame = API.ForbidSaveGame;
 -- -------------------------------------------------------------------------- --
 
 BundleSaveGameTools = {
-    Global = {
-        Data = {}
-    },
     Local = {
         Data = {
             AutoSaveCounter = 0,
@@ -142,31 +139,6 @@ BundleSaveGameTools = {
         }
     },
 }
-
--- Global Script ---------------------------------------------------------------
-
----
--- Initalisiert das Bundle im globalen Skript.
---
--- @within Internal
--- @local
---
-function BundleSaveGameTools.Global:Install()
-    API.AddSaveGameAction(BundleSaveGameTools.Global.OnSaveGameLoaded);
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Stellt nicht-persistente Änderungen nach dem laden wieder her.
---
--- @within Internal
--- @local
---
-function BundleSaveGameTools.Global.OnSaveGameLoaded()
-    -- Illegale Speicherstände
-    API.Bridge("BundleSaveGameTools.Local:CloseIllegalSaveGame()");
-end
 
 -- Local Script ----------------------------------------------------------------
 
@@ -183,34 +155,36 @@ end
 ---
 -- Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
 -- des Spielstandes. Wenn nicht gespeichert werden kann, wird bis
--- zum nächsten mφglichen Zeitpunkt gewartet.
--- 
+-- zum nächsten möglichen Zeitpunkt gewartet.
 --
 -- @param _name [string] Name des Spielstandes
 -- @within Internal
 -- @local
 --
-function BundleSaveGameTools.Local:AutoSaveGame(_name)
-    _name = _name or Framework.GetCurrentMapName();
+function BundleSaveGameTools.Local:AutoSaveGame(_Name)
+    _Name = _Name or Framework.GetCurrentMapName();
 
-    local counter = BundleSaveGameTools.Local.Data.AutoSaveCounter +1;
-    BundleSaveGameTools.Local.Data.AutoSaveCounter = counter;
-    local Text = {
-        de = "Spiel wird gespeichert...",
-        en = "Saving game...",
-        fr = "Le jeu est enregistré ..."
-    };
+    local MapName = Tool_GetLocalizedMapName(_Name);
+    local Counter = BundleSaveGameTools.Local.Data.AutoSaveCounter +1;
+    BundleSaveGameTools.Local.Data.AutoSaveCounter = Counter;
+
+    local Text
+	if string.len(MapName) > 15 then
+	    Text = XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}" .. MapName
+	else
+	    Text = "{cr}{cr}" .. XGUIEng.GetStringTableText("UI_Texts/Saving_center") .. "{cr}{cr}" .. MapName
+	end
 
     if self:CanGameBeSaved() then
         OpenDialog(API.Localize(Text), XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
         XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
-        Framework.SaveGame("Autosave "..counter.." --- ".._name, "--");
+        Framework.SaveGame("Autosave "..Counter.." --- ".._Name, "Saved by QSB");
     else
         StartSimpleJobEx( function()
             if BundleSaveGameTools.Local:CanGameBeSaved() then
                 OpenDialog(API.Localize(Text), XGUIEng.GetStringTableText("UI_Texts/MainMenuSaveGame_center"));
                 XGUIEng.ShowWidget("/InGame/Dialog/Ok", 0);
-                Framework.SaveGame("Autosave - "..counter.." --- ".._name, "--");
+                Framework.SaveGame("Autosave - "..Counter.." --- ".._Name, "Saved by QSB");
                 return true;
             end
         end);
@@ -228,10 +202,7 @@ function BundleSaveGameTools.Local:CanGameBeSaved()
     if self.Data.ForbidSave then
         return false;
     end
-    if IsBriefingActive and IsBriefingActive() then
-        return false;
-    end
-    if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") ~= 0 then
+    if not Core:CanGameBeSaved() then
         return false;
     end
     return true;
@@ -318,27 +289,15 @@ end
 -- @local
 --
 function BundleSaveGameTools.Local:InitForbidSaveGame()
-    KeyBindings_SaveGame_Orig_Preferences_SaveGame = KeyBindings_SaveGame;
     KeyBindings_SaveGame = function()
-        if BundleSaveGameTools.Local.Data.ForbidSave then
+        -- In der History Edition wird diese Funktion aufgerufen, wenn der
+        -- letzte Spielstand der Map älter als 15 Minuten ist. Wenn ein
+        -- Briefing oder eine Cutscene aktiv ist oder das Speichern generell
+        -- verboten wurde, sollen keine Quicksaves erstellt werden.
+        if not BundleSaveGameTools.Local:CanGameBeSaved() then
             return;
         end
-        KeyBindings_SaveGame_Orig_Preferences_SaveGame();
-    end
-end
-
----
--- Schließt einen Spielstand, der während des Speicherverbots erstellt wurde.
---
--- <b>Hinweis</b>: Dies ist ein Fallback wegen dem automatischen Speichern
--- der History Edition, dass nicht auf Lua-Ebene verhindert werden kann.
---
--- @within Internal
--- @local
---
-function BundleSaveGameTools.Local:CloseIllegalSaveGame()
-    if BundleSaveGameTools.Local.Data.ForbidSave then
-        Framework.CloseGame();
+        KeyBindings_SaveGame_Orig_Core_SaveGame();
     end
 end
 

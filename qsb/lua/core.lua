@@ -1619,6 +1619,7 @@ function Core:InitalizeBundles()
 
         self:CreateRandomSeedBySystemTime();
         self:SetupLocal_HackRegisterHotkey();
+        self:SetupLocal_HistoryEditionAutoSave();
 
         Trigger.RequestTrigger(Events.LOGIC_EVENT_DIPLOMACY_CHANGED, "", "CoreEventJob_OnDiplomacyChanged", 1); 
         Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "CoreEventJob_OnEntityCreated", 1); 
@@ -1893,6 +1894,51 @@ function Core:SetupLocal_HackRegisterHotkey()
             XGUIEng.ListBoxPushItem(g_KeyBindingsOptions.Widget.ActionList,   Desc[2]);
         end
     end
+end
+
+---
+-- Überschreibt die Hotkey-Funktion, die das Spiel speichert. Durch die
+-- Prüfung, ob Briefings oder Cutscenes aktiv sind, wird vermieden, dass
+-- die History Edition automatisch speichert.
+--
+-- @within Internal
+-- @local
+--
+function Core:SetupLocal_HistoryEditionAutoSave()
+    KeyBindings_SaveGame_Orig_Core_SaveGame = KeyBindings_SaveGame;
+    KeyBindings_SaveGame = function()
+        -- In der History Edition wird diese Funktion aufgerufen, wenn der
+        -- letzte Spielstand der Map älter als 15 Minuten ist. Wenn ein
+        -- Briefing oder eine Cutscene aktiv ist, sollen keine Quicksaves
+        -- erstellt werden.
+        if not Core:CanGameBeSaved() then
+            return;
+        end
+        KeyBindings_SaveGame_Orig_Core_SaveGame();
+    end
+end
+
+---
+-- Prüft, ob das Spiel gerade gespeichert werden kann.
+--
+-- @return [boolean]  Speichern ist möglich
+-- @within Internal
+-- @local
+--
+function Core:CanGameBeSaved()
+    -- Briefing ist aktiv
+    if IsBriefingActive and IsBriefingActive() then
+        return false;
+    end
+    -- Cutscene ist aktiv
+    if IsCutsceneActive and IsCutsceneActive() then
+        return false;
+    end
+    -- Die Map wird noch geladen
+    if GUI and XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") ~= 0 then
+        return false;
+    end
+    return true;
 end
 
 ---
