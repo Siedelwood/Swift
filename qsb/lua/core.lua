@@ -14,7 +14,7 @@
 
 API = API or {};
 QSB = QSB or {};
-QSB.Version = "Version 2.9.0 1/6/2020";
+QSB.Version = "Version 2.9.1 14/6/2020";
 QSB.HumanPlayerID = 1;
 QSB.Language = "de";
 QSB.HistoryEdition = false;
