@@ -148,6 +148,9 @@ function API.InteractiveObjectActivate(_ScriptName, _State)
         return;
     end
     local ScriptName = (IO[_ScriptName].m_Slave or _ScriptName);
+    if IO[_ScriptName].m_Slave then
+        IO_SlaveState[ScriptName] = 1;
+    end
     IO[_ScriptName]:SetActive(true);
     API.ActivateIO(ScriptName, _State);
 end
@@ -168,6 +171,9 @@ API.InteractiveObjectDeactivate = function(_ScriptName)
         return;
     end
     local ScriptName = (IO[_ScriptName].m_Slave or _ScriptName);
+    if IO[_ScriptName].m_Slave then
+        IO_SlaveState[ScriptName] = 0;
+    end
     IO[_ScriptName]:SetActive(false);
     API.DeactivateIO(ScriptName);
 end
@@ -225,10 +231,15 @@ function BundleInteractiveObjects.Global:Install()
     IO = {};
     IO_UserDefindedNames = {};
     IO_SlaveToMaster = {};
+    IO_SlaveState = {};
 
     self:OverrideVanillaBehavior();
     self:HackOnInteractionEvent();
     self:StartObjectConditionController();
+
+    API.StartEventJob(Events.LOGIC_EVENT_ENTITY_DESTROYED, function()
+        BundleInteractiveObjects.Global:OnEntityDestroyed();
+    end);
 end
 
 ---
@@ -269,44 +280,63 @@ function BundleInteractiveObjects.Global:CreateObject(_Description)
     -- Slave Objekt erstellen
     local TypeName = Logic.GetEntityTypeName(Logic.GetEntityType(ID));
     if not TypeName:find("I_X_") then
-        self.Data.SlaveSequence = self.Data.SlaveSequence +1;
-        local Name    = "QSB_SlaveObject_" ..self.Data.SlaveSequence;
-        local x,y, z  = Logic.EntityGetPos(ID);
-        local SlaveID = Logic.CreateEntity(Entities.I_X_DragonBoatWreckage, x, y, 0, 0);
-        IO_SlaveToMaster[Name] = _Description.Name;
-        Logic.SetEntityName(SlaveID, Name);
-        Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
-        Object:SetWaittime(0);
-        Object:SetSlave(Name);
+        self:CreateSlaveObject(Object);
     end
+    -- Aktivieren
+    self:SetupObject(Object);
+    IO[_Description.Name] = Object;
+    return Object;
+end
 
-    -- Tatsächliches Objekt erstellen
-    ID = (Object.m_Slave and GetID(Object.m_Slave)) or ID;
+---
+-- Erstellt einen Slave für das angegebene Objekt.
+-- @param[type=table] _Object Model des IO
+-- @return[type=number] ID des Slave
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Global:CreateSlaveObject(_Object)
+    self.Data.SlaveSequence = self.Data.SlaveSequence +1;
+    local Name    = "QSB_SlaveObject_" ..self.Data.SlaveSequence;
+    local x,y, z  = Logic.EntityGetPos(GetID(_Object.m_Name));
+    local SlaveID = Logic.CreateEntity(Entities.I_X_DragonBoatWreckage, x, y, 0, 0);
+    IO_SlaveToMaster[Name] = _Object.m_Name;
+    Logic.SetEntityName(SlaveID, Name);
+    Logic.SetModel(SlaveID, Models.Effects_E_Mosquitos);
+    _Object:SetWaittime(0);
+    _Object:SetSlave(Name);
+    IO_SlaveState[Name] = 1;
+    return SlaveID;
+end
+
+---
+-- Initialisiert das interaktive Objekt. Es wird automatisch auf den Slave
+-- zugegriffen, sofern vorhanden.
+-- @param[type=table] _Object Model des IO
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Global:SetupObject(_Object)
+    local ID = GetID((_Object.m_Slave and _Object.m_Slave) or _Object.m_Name);
     Logic.InteractiveObjectClearCosts(ID);
     Logic.InteractiveObjectClearRewards(ID);
-    Logic.InteractiveObjectSetInteractionDistance(ID,_Description.Distance);
-    Logic.InteractiveObjectSetTimeToOpen(ID,_Description.Waittime);
+    Logic.InteractiveObjectSetInteractionDistance(ID,_Object.m_Distance);
+    Logic.InteractiveObjectSetTimeToOpen(ID,_Object.m_Waittime);
     Logic.InteractiveObjectSetRewardResourceCartType(ID, Entities.U_ResourceMerchant);
     Logic.InteractiveObjectSetRewardGoldCartType(ID, Entities.U_GoldCart);
     Logic.InteractiveObjectSetCostResourceCartType(ID, Entities.U_ResourceMerchant);
     Logic.InteractiveObjectSetCostGoldCartType(ID, Entities.U_GoldCart);
-    if _Description.Reward then
-        Logic.InteractiveObjectAddRewards(ID, _Description.Reward[1], _Description.Reward[2]);
+    if _Object.m_Reward then
+        Logic.InteractiveObjectAddRewards(ID, _Object.m_Reward[1], _Object.m_Reward[2]);
     end
-    if _Description.Costs and _Description.Costs[1] then
-        Logic.InteractiveObjectAddCosts(ID, _Description.Costs[1], _Description.Costs[2]);
+    if _Object.m_Costs and _Object.m_Costs[1] then
+        Logic.InteractiveObjectAddCosts(ID, _Object.m_Costs[1], _Object.m_Costs[2]);
     end
-    if _Description.Costs and _Description.Costs[3] then
-        Logic.InteractiveObjectAddCosts(ID, _Description.Costs[3], _Description.Costs[4]);
+    if _Object.m_Costs and _Object.m_Costs[3] then
+        Logic.InteractiveObjectAddCosts(ID, _Object.m_Costs[3], _Object.m_Costs[4]);
     end
-    Logic.InteractiveObjectSetAvailability(ID, true);
-    Logic.InteractiveObjectSetPlayerState(ID, QSB.HumanPlayerID, _Description.State or 0);
     table.insert(HiddenTreasures, ID);
-
-    -- Aktivieren
-    IO[_Description.Name] = Object;
-    API.InteractiveObjectActivate(Logic.GetEntityName(ID), _Description.State or 0);
-    return Object;
+    API.InteractiveObjectActivate(Logic.GetEntityName(ID), _Object.m_State or 0);
 end
 
 ---
@@ -415,6 +445,38 @@ function BundleInteractiveObjects.Global:HackOnInteractionEvent()
             end
         end
         return true;
+    end
+end
+
+---
+-- Wenn der Slave eines Objektes zerstört wird, erstellt dieser Trigger sofort
+-- einen neuen Slave und konfiguriert ihn.
+--
+-- @within Internal
+-- @local
+--
+function BundleInteractiveObjects.Global:OnEntityDestroyed()
+    local DestryoedEntityID = Event.GetEntityID();
+    local SlaveName  = Logic.GetEntityName(DestryoedEntityID);
+    local MasterName = IO_SlaveToMaster[SlaveName];
+    if SlaveName and MasterName then
+        local Object = IO[MasterName];
+        if not Object then
+            return;
+        end
+        -- Framework.WriteToLog("BundleInteractiveObjects: slave '" ..SlaveName.. "' of master '" ..MasterName.. "' has been deleted!");
+        -- Framework.WriteToLog("BundleInteractiveObjects: try to create new slave...");
+        IO_SlaveToMaster[SlaveName] = nil;
+        local SlaveID = self:CreateSlaveObject(Object);
+        if not IsExisting(SlaveID) then
+            -- Framework.WriteToLog("BundleInteractiveObjects: failed to create slave!");
+            return;
+        end
+        BundleInteractiveObjects.Global:SetupObject(Object);
+        if Object.m_Used == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
+            API.InteractiveObjectDeactivate(Object.m_Slave);
+        end
+        -- Framework.WriteToLog("BundleInteractiveObjects: new slave created for master '" ..MasterName.. "'");
     end
 end
 
