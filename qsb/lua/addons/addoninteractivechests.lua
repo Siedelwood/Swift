@@ -246,7 +246,9 @@ function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Ma
         CallbackOpened          = _Callback,
         Callback                = function(_IO, _PlayerID, _Data)
             if not _Data.DoNotChangeModel then
-                ReplaceEntity(_Data.Name, Entities.D_X_ChestOpenEmpty);
+                -- Nur Modell ändern!
+                -- ReplaceEntity(_Data.Name, Entities.D_X_ChestOpenEmpty);
+                Logic.SetModel(GetID(_Data.Name), Models.Doodads_D_X_ChestOpenEmpty);
             end
             _Data.CallbackOpened(_Data);
         end,
