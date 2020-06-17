@@ -260,6 +260,18 @@ function API.CanPlayerCurrentlyProduceGood(_PlayerID, _GoodType)
     return BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood(_PlayerID, _GoodType);
 end
 
+---
+-- Gibt den Rohstoff zum Produkt am Anfang der Produktionskette zurück.
+--
+-- @param[type=number] _GoodType Warentyp
+-- @return[type=number] Rohstoff
+-- @within Internal
+-- @local
+--
+function API.GetResourceOfProduct(_GoodType)
+    return BundlePlayerHelperFunctions.Shared:ProductToResource(_GoodType);
+end
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -293,6 +305,7 @@ BundlePlayerHelperFunctions = {
 --
 function BundlePlayerHelperFunctions.Global:Install()
     BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap();
+    BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap();
     self:InitFestival();
     API.AddSaveGameAction(BundlePlayerHelperFunctions.Global.OnSaveGameLoaded);
 end
@@ -526,6 +539,7 @@ end
 
 function BundlePlayerHelperFunctions.Local:Install()
     BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap();
+    BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap();
     self:InitForbidFestival();
     self:OverrideQuestLogPlayerIcon();
     self:OverrideQuestPlayerIcon();
@@ -666,6 +680,62 @@ function BundlePlayerHelperFunctions.Shared:CanPlayerProduceGoodInPrinciple(_Pla
 end
 
 ---
+-- Gibt den Rohstoff zur angegebenen Ware zurück. Wird kein Rohstoff gefunden,
+-- wird Goods.G_Gold zurückgegeben.
+--
+-- @param[type=number] _GoodType Warentyp
+-- @return[type=boolean] Ware kann produziert werden
+-- @within Internal
+-- @local
+--
+function BundlePlayerHelperFunctions.Shared:ProductToResource(_GoodType)
+    if Logic.GetGoodCategoryForGoodType(_GoodType) == GoodCategories.GC_Resource then
+        return _GoodType;
+    end
+    local TypeName = Logic.GetGoodTypeName(_GoodType);
+    local Resource = self.Data.ProductResourceMap[TypeName];
+    if Resource == nil then
+        Resource = Goods.G_Gold;
+    end
+    return Resource;
+end
+
+---
+-- Generiert die Map für Die Zuordnung Produkt zu Rohstoff.
+--
+-- Produkte, die aus anderen Produkten hergestellt werden haben den Rohstoff
+-- des anderen Produktes als Rohstoff (transitive Beziezung).
+--
+-- @within Internal
+-- @local
+--
+function BundlePlayerHelperFunctions.Shared:CreateProductToResourceMap()
+    self.Data.ProductResourceMap = {
+        ["G_Banner"]            = Goods.G_Wool,
+        ["G_Beer"]              = Goods.G_Honeycomb,
+        ["G_Bow"]               = Goods.G_Iron,
+        ["G_Bread"]             = Goods.G_Grain,
+        ["G_Broom"]             = Goods.G_Wood,
+        ["G_Candle"]            = Goods.G_Honeycomb,
+        ["G_Cheese"]            = Goods.G_Milk,
+        ["G_Clothes"]           = Goods.G_Wool,
+        ["G_EntBaths"]          = Goods.G_Water,
+        ["G_Leather"]           = Goods.G_Carcass,
+        ["G_Medicine"]          = Goods.G_Herb,
+        ["G_Ornament"]          = Goods.G_Wood,
+        ["G_PlayMaterial"]      = Goods.G_Wool,
+        ["G_PoorBow"]           = Goods.G_Iron,
+        ["G_PoorSword"]         = Goods.G_Iron,
+        ["G_Sausage"]           = Goods.G_Carcass,
+        ["G_SiegeEnginePart"]   = Goods.G_Iron,
+        ["G_Sign"]              = Goods.G_Iron,
+        ["G_SmokedFish"]        = Goods.G_RawFish,
+        ["G_Soap"]              = Goods.G_Carcass,
+        ["G_Sword"]             = Goods.G_Iron,
+    }
+end
+
+---
 -- Generiert die Map für Güter und deren benötigte Technologien.
 --
 -- Für alle gewöhnlichen Waren werden die benötigten Technologien gespeichert
@@ -710,6 +780,16 @@ function BundlePlayerHelperFunctions.Shared:CreateGoodsTechnologiesMap()
     self.Data.GoodsTechnologiesMap[Goods.G_SmokedFish] = {
         unpack(self.Data.GoodsTechnologiesMap[Goods.G_RawFish]),
         Technologies.R_Nutrition, Technologies.R_SmokeHouse
+    };
+
+    -- Clothes
+    self.Data.GoodsTechnologiesMap[Goods.G_Clothes] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Wool]),
+        Technologies.R_Clothes, Technologies.R_Weaver,
+    };
+    self.Data.GoodsTechnologiesMap[Goods.G_Leather] = {
+        unpack(self.Data.GoodsTechnologiesMap[Goods.G_Carcass]),
+        Technologies.R_Clothes, Technologies.R_Tanner
     };
 
     -- Hygiene

@@ -52,9 +52,12 @@ AddOnRandomRequests = {
                 "G_Medicine", "G_Soap", "G_Beer", "G_Sword", "G_Bow"
             },
             ConstructTypes = {
-                "B_BannerMaker", "B_Baths", "B_Blacksmith", "B_BroomMaker", 
-                "B_Butcher", "B_CandleMaker", "B_Carpenter", "B_Pharmacy",
-                "B_Soapmaker", "B_Tanner", "B_Tavern", "B_Theatre", "B_Weaver",
+                "B_Bakery", "B_Dairy", "B_Butcher", "B_SmokeHouse", 
+                "B_Soapmaker", "B_Pharmacy", "B_BroomMaker", "B_Baths",
+                "B_Tavern", "B_Theatre", "B_Weaver", "B_Tanner",
+                "B_Blacksmith", "B_CandleMaker", "B_Carpenter",
+                "B_BannerMaker", "B_SwordSmith", "B_BowMaker", "B_Barracks",
+                "B_BarracksArchers", "B_SiegeEngineWorkshop",
             },
             ConstructTypesRdO = {
                 "B_Beautification_Brazier", "B_Beautification_Pillar",
@@ -305,7 +308,8 @@ function AddOnRandomRequests.Global:GetConstructBehavior(_Behavior, _Quest)
         PossibleBuildings = Array_Append(PossibleBuildings, API.InstanceTable(self.Data.ConstructTypesRdO));
     end
     for k, v in pairs(PossibleBuildings) do
-        if Logic.TechnologyGetState(_Quest.ReceivingPlayer, Technologies["R_" ..v:sub(3)]) == TechnologyStates.Researched then
+        local ProductType = Logic.GetProductOfBuildingType(Entities[v]);
+        if API.CanPlayerCurrentlyProduceGood(QSB.HumanPlayerID, ProductType) then
             table.insert(Buildings, v);
         end
     end
@@ -574,10 +578,60 @@ end
 function AddOnRandomRequests.Global:GetKnightTitleBehavior(_Behavior, _Quest)
     if Logic.GetKnightTitle(_Quest.ReceivingPlayer) < KnightTitles.Archduke then
         local PossibleTitles = {"Mayor", "Baron", "Earl", "Marquees", "Duke", "Archduke"};
-        local NextTitle = PossibleTitles[Logic.GetKnightTitle(_Quest.ReceivingPlayer)+1];
-        if not NextTitle or IsKnightTitleLockedForPlayer(_Quest.ReceivingPlayer, NextTitle) then
+        local NextTitleID = Logic.GetKnightTitle(_Quest.ReceivingPlayer)+1;
+        local NextTitle = PossibleTitles[NextTitleID];
+        local GoodsToCheck = {};
+
+        -- Check Titel
+        if not NextTitleID or IsKnightTitleLockedForPlayer(_Quest.ReceivingPlayer, NextTitleID) then
             return;
         end
+        -- Check Category durch Abbruch ... sonst zu komplex und mich
+        -- bezahlt ja niemand für den Scheiß. :P
+        if KnightTitleRequirements[NextTitleID].Category then
+            return;
+        end
+        -- Check Güter
+        if KnightTitleRequirements[NextTitleID].Goods then
+            for k, v in pairs(KnightTitleRequirements[NextTitleID].Goods) do
+                table.insert(GoodsToCheck, v[1]);
+            end
+        end
+        -- Check Consume Güter
+        if KnightTitleRequirements[NextTitleID].Consume then
+            for k, v in pairs(KnightTitleRequirements[NextTitleID].Consume) do
+                table.insert(GoodsToCheck, v[1]);
+            end
+        end
+        -- Check Gebäude
+        if KnightTitleRequirements[NextTitleID].Entities then
+            for k, v in pairs(KnightTitleRequirements[NextTitleID].Entities) do
+                local ProductType = Logic.GetProductOfBuildingType(v[1]);
+                table.insert(GoodsToCheck, API.GetResourceOfProduct(v[1]));
+            end
+        end
+
+        -- Nun ermittelte Rohstoffe auf Produzierbarkeit prüfen
+        for k, v in pairs(GoodsToCheck) do
+            if not API.CanPlayerCurrentlyProduceGood(QSB.HumanPlayerID, v) then
+                return;
+            end
+        end
+        -- Check Products seperat
+        if KnightTitleRequirements[NextTitleID].Products then
+            for k, v in pairs(KnightTitleRequirements[NextTitleID].Products) do
+                local AtLeastOneCanBeProduces = false;
+                for _,g in ipairs{Logic.GetGoodTypesInGoodCategory(v[1])} do
+                    if API.CanPlayerCurrentlyProduceGood(QSB.HumanPlayerID, g) then
+                        AtLeastOneCanBeProduces = true;
+                    end
+                end
+                if not AtLeastOneCanBeProduces then
+                    return;
+                end
+            end
+        end
+        -- Behavior erzeugen
         return {"Goal_KnightTitle", NextTitle};
     end 
 end
