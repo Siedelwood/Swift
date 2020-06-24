@@ -264,12 +264,16 @@ function API.AddPages(_Briefing)
         end
         -- Position angleichen
         local TargetID = GetID(arg[1]);
+        local TargetType = Logic.GetEntityType(TargetID);
         local Position = {arg[1], 0};
         if Logic.IsSettler(TargetID) == 1 then
             Position[2] = 120;
             if Logic.IsKnight(TargetID) then
                 Position[2] = 160;
             end
+        end
+        if TargetType == Entities.XD_ScriptEntity then
+            Position[2] = 160;
         end
         -- Rotation angleichen
         local Rotation;
@@ -279,6 +283,11 @@ function API.AddPages(_Briefing)
                 Rotation = Rotation + 90;
             end
         end
+        -- Größe abgleichen
+        local SizeSV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
+        local Size = Logic.GetEntityScriptingValue(TargetID, SizeSV);
+        Position[2] = Position[2] * Core:ScriptingValueIntegerToFloat(Size);
+        -- Page erstellen
         return AP {
             Name         = PageName,
             Title        = arg[2],
