@@ -193,6 +193,12 @@ SymfoniaLoader = {
             "BundlePlayerHelperFunctions",
             "BundleSymfoniaBehaviors",
             },
+
+            {
+            "AddOnQuestStages",                     true,
+            "AddOnQuestDebug",
+            "BundleQuestGeneration",
+            },
         },
     }
 }
