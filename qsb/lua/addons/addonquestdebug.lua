@@ -627,9 +627,9 @@ function AddOnQuestDebug.Global:Parser(_Input)
     local Commands = self:Tokenize(_Input);
     for k, v in pairs(Commands) do
         local Action = string.lower(v[1]);
-        for i= 1, #AddOnQuestDebug.Global.Data.DebugCommands, 1 do
-            if v[1] == AddOnQuestDebug.Global.Data.DebugCommands[i][1] then
-                local SelectedCommand = AddOnQuestDebug.Global.Data.DebugCommands[i];
+        for i= 1, #self.Data.DebugCommands, 1 do
+            if v[1] == self.Data.DebugCommands[i][1] then
+                local SelectedCommand = self.Data.DebugCommands[i];
                 for j=2, #v, 1 do
                     local Number = tonumber(v[j]);
                     if Number then
