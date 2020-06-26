@@ -2051,18 +2051,20 @@ end
 -- @local
 --
 function Core:ChangeCustomQuestCaptionText(_Text, _Quest)
-    _Quest.QuestDescription = _Text;
-    Logic.ExecuteInLuaLocalState([[
-        XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/BGDeco",0)
-        local identifier = "]].._Quest.Identifier..[["
-        for i=1, Quests[0] do
-            if Quests[i].Identifier == identifier then
-                local text = Quests[i].QuestDescription
-                XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/Text", "]].._Text..[[")
-                break
+    if _Quest and _Quest.Visible then
+        _Quest.QuestDescription = _Text;
+        Logic.ExecuteInLuaLocalState([[
+            XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/BGDeco",0)
+            local identifier = "]].._Quest.Identifier..[["
+            for i=1, Quests[0] do
+                if Quests[i].Identifier == identifier then
+                    local text = Quests[i].QuestDescription
+                    XGUIEng.SetText("/InGame/Root/Normal/AlignBottomLeft/Message/QuestObjectives/Custom/Text", "]].._Text..[[")
+                    break
+                end
             end
-        end
-    ]]);
+        ]]);
+    end
 end
 
 ---
