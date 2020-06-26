@@ -1056,7 +1056,13 @@ function b_Goal_RandomRequest:ResetSlave(_Quest)
         elseif SlaveBehavior.Type == Objective.Refill then
             API.SetResourceAmount(SlaveBehavior.Data[1], 250, 250);
         elseif SlaveBehavior.Type == Objective.Custom2 then
-            API.StopQuest(self.SlaveQuest.Identifier, true);
+            if SlaveBehavior.Reset then
+                SlaveBehavior:Reset(_Quest);
+            else
+                if SlaveBehavior.Interrupt then
+                    SlaveBehavior:Interrupt(_Quest);
+                end
+            end
         end
     end
 end
