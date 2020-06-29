@@ -1538,6 +1538,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     if LoadScreenVisible then
         XGUIEng.PopPage();
     end
+    local ScreenX, ScreenY = GUI.GetScreenSize();
 
     -- Widgets
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
@@ -1572,7 +1573,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
 
     -- Title and back button
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
-    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
+    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65 * (ScreenY/1080));
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/Skip");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/StartButton", 20, y);
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
