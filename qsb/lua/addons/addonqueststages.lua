@@ -5,12 +5,10 @@
 -- -------------------------------------------------------------------------- --
 
 ---
--- Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher
--- neuer Möglichkeiten.
+-- Ermöglicht das Zusammenfassen mehrerer Quests unter einem Main Quest.
 --
--- Die wichtigste Neuerung ist die Konsole, die es erlaubt Quests direkt über
--- die Eingabe von Befehlen zu steuern, einzelne Lua-Funktionen im Spiel
--- auszuführen und sogar komplette Skripte zu laden.
+-- Diese Funktionalität kann ausschließlich für im Skript erstellte Quests
+-- genutzt werden. Im Assistenten können Subquests nicht abgebildet werden.
 --
 -- @within Modulbeschreibung
 -- @set sort=true
@@ -56,7 +54,7 @@ QSB.StageNameToQuestName = {};
 -- <b>Alias</b>: AddMainQuest
 --
 -- @param[type=table] _Data Daten des Quest
--- @return[type=string] Name des Main Quest
+-- @return[type=string] Name des Main Quest oder nil bei Fehler
 -- @within Anwenderfunktionen
 --
 -- @usage API.CreateMainQuest {
@@ -570,6 +568,70 @@ function AddOnQuestStages.Global.SetQuestState(_Data, _Flag)
             return "reverted quest '" ..FoundQuests[1].. "'"
         end
     end
+end
+
+-- -------------------------------------------------------------------------- --
+
+---
+-- Vordefinierte Funktionen für MSF Behavior. Diese Funktionen können nur im
+-- Skript und nicht im Assistenten bentuzt werden!
+--
+-- Als Parameter werden immer Questname und Stage übergeben.
+--
+-- @field Goal_ReachStage        Prüft, ob die Phase erreicht wurde.
+-- @field Reprisal_PreviousStage Kehr zur vorherigen Phase zurück.
+-- @field Reprisal_NextStage     Springt zur nächsten Phase vor.
+-- @field Reward_PreviousStage   Kehr zur vorherigen Phase zurück.
+-- @field Reward_NextStage       Springt zur nächsten Phase vor.
+-- @field Trigger_OnStage        Prüft, ob die Phase erreicht wurde.
+--
+-- @usage -- Phase als Goal prüfen (schlägt nur bei Fehler fehl)
+-- Goal_MapScriptFunction(QSB.MainQuest.Goal_ReachStage, "MyQuest", 3)
+-- -- Phase zurück (Reprisal)
+-- Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_PreviousStage, "MyQuest")
+-- -- Phase vor (Reprisal)
+-- Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_NextStage, "MyQuest")
+-- -- Phase zurück (Reward)
+-- Reward_MapScriptFunction(QSB.MainQuest.Reward_PreviousStage, "MyQuest")
+-- -- Phase vor (Reward)
+-- Reward_MapScriptFunction(QSB.MainQuest.Reward_NextStage, "MyQuest")
+-- -- Phase als Trigger prüfen
+-- Trigger_MapScriptFunction(QSB.MainQuest.Trigger_OnStage, "MyQuest", 5)
+--
+QSB.MainQuest = {};
+
+function QSB.MainQuest.Goal_ReachStage(_QuestName, _Stage)
+    local D, C, M = API.GetMainQuestProgress(_QuestName);
+    if M == 0 and M < _Stage then
+        return false;
+    elseif C >= _Stage then
+        return true;
+    end
+    return nil;
+end
+
+function QSB.MainQuest.Reprisal_PreviousStage(_QuestName)
+    API.ForwardMainQuest(_QuestName);
+end
+
+function QSB.MainQuest.Reprisal_NextStage(_QuestName)
+    API.RevertMainQuest(_QuestName);
+end
+
+function QSB.MainQuest.Reward_PreviousStage(_QuestName)
+    API.ForwardMainQuest(_QuestName);
+end
+
+function QSB.MainQuest.Reward_NextStage(_QuestName)
+    API.RevertMainQuest(_QuestName);
+end
+
+function QSB.MainQuest.Trigger_OnStage(_QuestName, _Stage)
+    local D, C, M = API.GetMainQuestProgress(_QuestName);
+    if M > 0 and M >= _Stage and C == _Stage then
+        return true;
+    end
+    return false;
 end
 
 -- -------------------------------------------------------------------------- --
