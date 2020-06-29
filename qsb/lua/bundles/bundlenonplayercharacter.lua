@@ -720,7 +720,11 @@ function BundleNonPlayerCharacter.Global:Install()
             if self.Objectives[i].Type == Objective.Distance then
                 if self.Objectives[i].Data[1] ~= -65565 then
                     QuestTemplate.RemoveQuestMarkers_Orig_BundleNonPlayerCharacter(self);
+                else
+                    QuestTemplate.RemoveNPCMarkers(self);
                 end
+            else
+                QuestTemplate.RemoveQuestMarkers_Orig_BundleNonPlayerCharacter(self);
             end
         end
     end
@@ -738,23 +742,15 @@ function BundleNonPlayerCharacter.Global:Install()
 
     function QuestTemplate:RemoveNPCMarkers()
         for i=1, self.Objectives[0] do
-            if type(self.Objectives[i].Data) == "table" then
+            if self.Objectives[i].Type == Objective.Distance then
                 if self.Objectives[i].Data[1] == -65565 then
-                    if type(self.Objectives[i].Data[4]) == "table" then
-                        if self.Objectives[i].Data[4].NpcInstance then
-                            self.Objectives[i].Data[4].NpcInstance:Dispose();
-                            self.Objectives[i].Data[4].NpcInstance = nil;
-                        end
+                    if self.Objectives[i].Data[4] and self.Objectives[i].Data[4].NpcInstance then
+                        self.Objectives[i].Data[4].NpcInstance:Dispose();
+                        self.Objectives[i].Data[4].NpcInstance = nil;
                     end
                 end
             end
         end
-    end
-
-    QuestTemplate.Interrupt_Orig_BundleNonPlayerCharacter = QuestTemplate.Interrupt;
-    QuestTemplate.Interrupt = function(_quest, i)
-        QuestTemplate.Interrupt_Orig_BundleNonPlayerCharacter(_quest, i);
-        _quest:RemoveNPCMarkers();
     end
 
     QuestTemplate.IsObjectiveCompleted_Orig_BundleNonPlayerCharacter = QuestTemplate.IsObjectiveCompleted;
