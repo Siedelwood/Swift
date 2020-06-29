@@ -204,7 +204,9 @@ end
 
 BundleDialogWindows = {
     Global = {
-        Data = {}
+        Data = {
+            Loadscreen = true,
+        }
     },
     Local = {
         Data = {
@@ -229,7 +231,6 @@ QSB.SimpleTypewriter = {
     m_Text       = nil,
     m_JobID      = nil,
     m_Callback   = nil,
-    m_Loadscreen = true,
 };
 
 ---
@@ -411,12 +412,7 @@ end
 -- @local
 --
 function QSB.SimpleTypewriter:CanBePlayed()
-    if QSB.SimpleTypewriter.m_Loadscreen then
-        API.Bridge([[
-            if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-                API.Bridge("QSB.SimpleTypewriter.m_Loadscreen = false")
-            end
-        ]])
+    if BundleDialogWindows.Global.Data.Loadscreen then
         return false;
     end
     if BundleBriefingSystem and IsBriefingActive() then
@@ -829,6 +825,13 @@ end
 function BundleDialogWindows.Local:Install()
     self:DialogOverwriteOriginal();
     self:DialogAltF4Hotkey();
+
+    StartSimpleHiResJobEx(function()
+        if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
+            API.Bridge("BundleDialogWindows.Global.Data.Loadscreen = false");
+            return true;
+        end
+    end);
 end
 
 ---
