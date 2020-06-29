@@ -26,23 +26,145 @@ QSB.StageNameToQuestName = {};
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
 
-
-function API.CreateQuestSeries(_Data)
+---
+-- Erstellt eine Reihe aufeinanderfolgender Aufträge, zusammengefasst under
+-- einem übergeordneten Auftrag.
+--
+-- Die erzeugten Aufträge (Sub Quests) starten aufeinander folgend, sobald der
+-- übergeordnete Auftrag (Main Quest) aktiv ist. Der nachfolgende Sub Quests
+-- startet, sobald der Vorgänger erfolgreich abgeschlossen ist. Scheitert ein
+-- Sub Quests, dann scheitert auch der Main Quest. Der Main Quest ist dann
+-- erfolgreich, wenn der letzte Sub Quests erfolgreich ist.
+--
+-- <b>Hinweis</b>: Main Quests eignen sich nur für lineare Abläufe. Es kann
+-- keine Verzweigungen innerhalb des Ablaufes geben. Wenn verzweigt werden
+-- soll, müssen mehrere Main Quests paralel laufen!
+--
+-- Es ist nicht vorgesehen, dass Main Quests sichtbar sind oder Texte anzeigen.
+-- Es ist trotzdem möglich, sollte aber unterlassen werden. 
+--
+-- Es ist nicht notwendig einen Trigger für die Sub Quests zu setzen. Der
+-- Trigger wird automatisch generiert. Es können aber zusätzliche Trigger
+-- angegeben werden. Der erzeugte Trigger ist i.d.R Trigger_OnQuestSuccess.
+-- Wird ein Briefing im Vorgänger verwendet, wird stattdessen Trigger_Briefing
+-- verwendet.
+--
+-- <b>Hinweis</b>: Es ist ebenfalls möglich bereits erstellte Quests und
+-- sogar andere Main Quests anzugeben. Dazu wird statt der Definition nur
+-- der Name angegeben.
+--
+-- <b>Alias</b>: AddMainQuest
+--
+-- @param[type=table] _Data Daten des Quest
+-- @return[type=string] Name des Main Quest
+-- @within Anwenderfunktionen
+--
+-- @usage API.CreateMainQuest {
+--     Name        = "MainQuest",
+--     Suggestion  = "Das ist die Main Quest.",
+--     Success     = "Main Quest abgeschlossen!",
+--     Failure     = "Main Quest fehlgeschlagen!",
+--
+--     Stages      = {
+--         {
+--             Suggestion  = "Wir benötigen einen höheren Titel!",
+--             Goal_KnightTitle("Mayor"),
+--         },
+--         "ExternQuest1",
+--         "ExternQuest2",
+--         {
+--             Suggestion  = "Wir benötigen außerdem mehr Asche! Und das sofort...",
+--             Time        = 2 * 60,
+--             Goal_Produce("G_Gold", 5000),
+--         }
+--     }
+-- }
+--
+function API.CreateMainQuest(_Data)
     if GUI then
         return;
     end
-    return AddOnQuestStages.Global:CreateStagedQuest(_Data);
+    return AddOnQuestStages.Global:CreateMainQuest(_Data);
 end
-AddQuestSeries = API.CreateQuestSeries;
+AddMainQuest = API.CreateMainQuest;
 
-
-function API.GetQuestProgress(_QuestName)
+---
+-- Gibt den Fortschritt eines Main Quest zurück.
+--
+-- Kann der Fortschritt nicht bestimmt werden, wird 0, 0, 0 zurückgegeben.
+--
+-- <b>Alias</b>: GetQuestProgress
+--
+-- @param[type=string] _QuestName Name des Quest
+-- @return[type=number] Relativer Fortschritt (0 ... 1)
+-- @return[type=number] Index des aktiven Sub Quest
+-- @return[type=number] Maximalanzahl Sub Quests
+-- @within Anwenderfunktionen
+-- @usage local Progress, Current, Max = API.GetMainQuestProgress("MyQuest");
+--
+function API.GetMainQuestProgress(_QuestName)
     if GUI then
         return;
     end
-    return AddOnQuestStages.Global:GetQuestProgress(_QuestName);
+    return AddOnQuestStages.Global:GetMainQuestProgress(_QuestName);
 end
-GetQuestProgress = API.GetQuestProgress;
+GetQuestProgress = API.GetMainQuestProgress;
+
+---
+-- Spult einen Main Quest um einen Sub Quest vor.
+--
+-- <b>Alias</b>: ForwardMainQuest
+--
+-- @param[type=string] _QuestName  Name Main Quest
+-- @return[type=number] Index des Sub Quest
+-- @within Anwenderfunktionen
+--
+function API.ForwardMainQuest(_QuestName)
+    if GUI then
+        return;
+    end
+    return AddOnQuestStages.Global:ForwardMainQuest(_QuestName);
+end
+ForwardMainQuest = API.ForwardMainQuest;
+
+---
+-- Setzt einen Main Quest um einen Sub Quest zurück.
+--
+-- <b>Alias</b>: RevertMainQuest
+--
+-- @param[type=string] _QuestName  Name Main Quest
+-- @return[type=number] Index des Sub Quest
+-- @within Anwenderfunktionen
+--
+function API.RevertMainQuest(_QuestName)
+    if GUI then
+        return;
+    end
+    return AddOnQuestStages.Global:RevertMainQuest(_QuestName);
+end
+RevertMainQuest = API.RevertMainQuest;
+
+---
+-- Gibt den Skriptnamen des Sub Quest auf dem Index zurück.
+--
+-- <b>Alias</b>: GetSubQuestName
+--
+-- Wird kein Sub Quest gefunden, wird der name des Main Quest zurückgegeben
+--
+-- @param[type=string] _QuestName  Name Main Quest
+-- @return[type=string] Quest Name
+-- @within Anwenderfunktionen
+--
+function API.GetSubQuestName(_QuestName, _Index)
+    if GUI then
+        return;
+    end
+    if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] then
+        return AddOnQuestStages.Global.Data.StagesForQuest[_QuestName][_Index];
+    end
+    return _QuestName;
+end
+GetSubQuestName = API.GetSubQuestName;
 
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
@@ -69,7 +191,7 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestStages.Global:CreateStagedQuest(_Data)   
+function AddOnQuestStages.Global:CreateMainQuest(_Data)   
     if not _Data.Stages then
         return;
     end
@@ -94,6 +216,7 @@ function AddOnQuestStages.Global:CreateStagedQuest(_Data)
             self:CreateQuestStage(_Data.Stages[i], Name, i);
         end
     end
+    return Name;
 end
 
 ---
@@ -143,13 +266,54 @@ end
 -- @within Internal
 -- @local
 --
-function AddOnQuestStages.Global:GetQuestProgress(_QuestName)
+function AddOnQuestStages.Global:GetMainQuestProgress(_QuestName)
     local CurrentStage = self:GetCurrentQuestStage(_QuestName);
     local StageAmount  = self:GetAmountOfQuestStages(_QuestName);
     if StageAmount == 0 then
         return 0, 0, 0;
     end
     return CurrentStage / StageAmount, CurrentStage, StageAmount;
+end
+
+---
+-- Spult einen Main Quest um einen Sub Quest vor.
+--
+-- @param[type=string] _QuestName  Name Main Quest
+-- @return[type=number] Index des Sub Quest
+-- @within Internal
+-- @local
+--
+function AddOnQuestStages.Global:ForwardMainQuest(_QuestName)
+    local D, C, M = self:GetMainQuestProgress(_QuestName);
+    if M > 0 and C+1 <= M then
+        local Current = self.Data.StagesForQuest[_QuestName][C];
+        local Next    = self.Data.StagesForQuest[_QuestName][C+1];
+        API.StopQuest(Current, true);
+        API.StartQuest(Next, true);
+        return C+1;
+    end
+    return 0;
+end
+
+---
+-- Setzt einen Main Quest um einen Sub Quest zurück.
+--
+-- @param[type=string] _QuestName  Name Main Quest
+-- @return[type=number] Index des Sub Quest
+-- @within Internal
+-- @local
+--
+function AddOnQuestStages.Global:RevertMainQuest(_QuestName)
+    local D, C, M = self:GetMainQuestProgress(_QuestName);
+    if M > 0 and C-1 > 0 then
+        local Current  = self.Data.StagesForQuest[_QuestName][C];
+        local Previous = self.Data.StagesForQuest[_QuestName][C-1];
+        API.StopQuest(Current, true);
+        API.RestartQuest(Previous, true);
+        API.RestartQuest(Current, true);
+        return C-1;
+    end
+    return 0;
 end
 
 ---
@@ -163,14 +327,11 @@ end
 function AddOnQuestStages.Global:GetCheckStagesInlineGoal(_QuestName)
     return 
     function ()
-        local StageList = AddOnQuestStages.Global.Data.StagesForQuest[_QuestName];
+        local StageList = self.Data.StagesForQuest[_QuestName];
         for i= 1, #StageList, 1 do
             local StageQuest = Quests[GetQuestID(StageList[i])];
             -- Fehlschlag, wenn Stage fehlgeschlagen ist.
             if not StageQuest or StageQuest.Result == QuestResult.Failure then
-                return false;
-            -- Interrupted sollte eigentlich nicht vorkommen...
-            elseif StageQuest.Result == QuestResult.Interrupted then
                 return false;
             end
         end
@@ -240,6 +401,8 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
         Success     = _Data.Success,
         Failure     = _Data.Failure,
         Description = _Data.Description,
+        Loop        = _Data.Loop,
+        Callback    = _Data.Callback,
     };
     for i= 1, #_Data do
         table.insert(QuestDescription, _Data[i]);
@@ -294,6 +457,13 @@ end
 -- @local
 --
 function AddOnQuestStages.Global:OverrideMethods()
+    table.insert(AddOnQuestDebug.Global.Data.DebugCommands, {
+        "forward", self.SetQuestState, 1
+    });
+    table.insert(AddOnQuestDebug.Global.Data.DebugCommands, {
+        "revert",  self.SetQuestState, 2
+    });
+
     -- FailQuest überschreiben
     API.FailQuest_Orig_AddOnQuestStages = API.FailQuest;
     API.FailQuest = function(_QuestName, _Verbose)
@@ -373,6 +543,33 @@ function AddOnQuestStages.Global:OverrideMethods()
         API.WinQuest_Orig_AddOnQuestStages(_QuestName, _Verbose);
     end
     WinQuestByName = API.WinQuest;
+end
+
+---
+-- Überschreibt das Mapping der Konsolenbefehle des Debugs.
+--
+-- @param[type=table]   _Data Befehl
+-- @param[type=boolean] _Flag Index
+-- @within Internal
+-- @local
+--
+function AddOnQuestStages.Global.SetQuestState(_Data, _Flag)
+    local FoundQuests = AddOnQuestDebug.Global.FindQuestNames(_Data[2], true);
+    if #FoundQuests ~= 1 then
+        API.Note("Unable to find quest containing '" .._Data[2].. "'");
+        return "Unable to find quest containing '" .._Data[2].. "'";
+    end
+    if _Flag == 1 then
+        if API.ForwardMainQuest(FoundQuests[1]) > 0 then
+            API.Note("forwarded quest '" ..FoundQuests[1].. "'");
+            return "forwarded quest '" ..FoundQuests[1].. "'"
+        end
+    elseif _Flag == 2 then
+        if API.RevertMainQuest(FoundQuests[1]) > 0 then
+            API.Note("reverted quest '" ..FoundQuests[1].. "'");
+            return "reverted quest '" ..FoundQuests[1].. "'"
+        end
+    end
 end
 
 -- -------------------------------------------------------------------------- --
