@@ -5,14 +5,16 @@
 --------------------------------------------------------------------------------------------
 
 ---
--- <p>Mit diesem Bundle können eigene Kampagnen erstellt werden.</p>
+-- DEPRECATED
 --
--- <p>Es können bis zu 16 Maps einer Kampagne hinzugefügt werden. Die Weltkarte
+-- Mit diesem Bundle können eigene Kampagnen erstellt werden.
+--
+-- Es können bis zu 16 Maps einer Kampagne hinzugefügt werden. Die Weltkarte
 -- der Kampagne und die Position der Map-Buttons können frei bestimmt werden.
 -- Eine Kampagne schreibt ins Profil um die bereits gespielten Karten zu
--- vermerken.</p>
+-- vermerken.
 --
--- <p>Die Campaign Tools arbeiten hauptsächlich im lokalen Skript!</p>
+-- Die Campaign Tools arbeiten hauptsächlich im lokalen Skript!
 --
 -- @set sort=true
 --

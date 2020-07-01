@@ -25,7 +25,7 @@ QSB.CampaignMapValues = {};
 --
 function API.Map_AddValueToLoad(_Key)
 	if not GUI then
-		API.Bridge(string.format("API.Map_AddValueToLoad('%s')", tostring(_Key)));
+		Logic.ExecuteInLuaLocalState(string.format("API.Map_AddValueToLoad('%s')", tostring(_Key)));
 		return;
 	end
 	table.insert(QSB.CampaignMapValues, _Key);
@@ -40,14 +40,14 @@ end
 --
 function API.Map_LoadValues()
 	if not GUI then
-		API.Bridge("API.Map_LoadValues()");
+		Logic.ExecuteInLuaLocalState("API.Map_LoadValues()");
 		return;
 	end
 	local MapName = Framework.GetCurrentMapName();
-	API.Bridge("gvMission.Campaign = {}");
+	GUI.SendScriptCommand("gvMission.Campaign = {}");
 	for k, v in pairs(QSB.CampaignMapValues) do
 		local Value = Profile.GetString(MapName, v);
-		API.Bridge(string.format("gvMission.Campaign.%s = '%s'", v, Value));
+		GUI.SendScriptCommand(string.format("gvMission.Campaign.%s = '%s'", v, Value));
 	end
 end
 
@@ -61,7 +61,7 @@ end
 --
 function API.Map_ReplacePrimaryKnight()
 	if not GUI then
-		API.Bridge("API.Map_ReplacePrimaryKnight()");
+		Logic.ExecuteInLuaLocalState("API.Map_ReplacePrimaryKnight()");
 		return;
 	end
 	StartSimpleJobEx(function()
@@ -69,11 +69,11 @@ function API.Map_ReplacePrimaryKnight()
 		local PlayerID = GUI.GetPlayerID();
 		local KnightTypeName = Profile.GetString(MapName, "SelectedKnight") or "U_KnightChivalry";
 		if Logic.GetKnightID(PlayerID) ~= 0 then
-			API.Bridge(string.format([[
+			GUI.SendScriptCommand(string.format([[
 				ReplaceEntity(Logic.GetKnightID(%d), Entities["%s"])
 				API.InterfaceSetPlayerPortrait(%d)
-				API.Bridge("LocalSetKnightPicture()")
-				API.Bridge("if Mission_LocalMapReady then Mission_LocalMapReady() end")
+				Logic.ExecuteInLuaLocalState("LocalSetKnightPicture()")
+				Logic.ExecuteInLuaLocalState("if Mission_LocalMapReady then Mission_LocalMapReady() end")
 				if Mission_MapReady then
 					Mission_MapReady()
 				end
@@ -93,11 +93,11 @@ end
 --
 function API.Map_SetFinished()
 	if not GUI then
-		API.Bridge("Map_SetFinished()");
+		Logic.ExecuteInLuaLocalState("Map_SetFinished()");
 		return;
 	end
 	local MapName = Framework.GetCurrentMapName();
-	local MapCode = Profile.GetString(MapName, "MapCode") or "";
+	local MapCode = ExternalCampaignMap.Local.Data.MapData.MapCode or "";
 	API.Map_SaveValue("SuccessfullyFinished", MapCode);
 end
 
@@ -110,7 +110,7 @@ end
 --
 function API.Map_SaveValue(_Key, _Value)
 	if not GUI then
-		API.Bridge(string.format("API.Map_SaveValue('%s', '%s')", tostring(_Key), tostring(_Value)));
+		Logic.ExecuteInLuaLocalState(string.format("API.Map_SaveValue('%s', '%s')", tostring(_Key), tostring(_Value)));
 		return;
 	end
 	local MapName = Framework.GetCurrentMapName();
@@ -125,6 +125,7 @@ ExternalCampaignMap = {
     },
     Local = {
         Data = {
+            MapData = {},
 			CrimsonSabatt = {
 				ActionPoints = 450,
 				RechargeTime = 450,
@@ -218,7 +219,7 @@ function ExternalCampaignMap.Global:RedPrinceKnightAbility(_EntityID, _PlayerID)
     -- Get enemies
     local SettlersInArea = self:GetInfectableSettlers(_EntityID, 1500);
     if #SettlersInArea == 0 then
-        API.Bridge("ExternalCampaignMap.Local.Data.RedPrince.ActionPoints = ExternalCampaignMap.Local.Data.RedPrince.RechargeTime");
+        Logic.ExecuteInLuaLocalState("ExternalCampaignMap.Local.Data.RedPrince.ActionPoints = ExternalCampaignMap.Local.Data.RedPrince.RechargeTime");
         return;
     end
     -- Infect
@@ -226,8 +227,8 @@ function ExternalCampaignMap.Global:RedPrinceKnightAbility(_EntityID, _PlayerID)
     for i= 1, #SettlersInArea, 1 do
         Logic.MakeSettlerIll(SettlersInArea[i]);
     end
-    API.Bridge(string.format("HeroAbilityFeedback(%d)", _EntityID));
-	API.Bridge(string.format("GUI.SendCommandStationaryDefend(%d)", _EntityID));
+    Logic.ExecuteInLuaLocalState(string.format("HeroAbilityFeedback(%d)", _EntityID));
+	Logic.ExecuteInLuaLocalState(string.format("GUI.SendCommandStationaryDefend(%d)", _EntityID));
     self:SpawnAura(_EntityID, EGL_Effects.E_Knight_Wisdom_Aura);
 end
 
@@ -245,13 +246,13 @@ function ExternalCampaignMap.Global:CrimsonSabattKnightAbility(_EntityID, _Playe
     -- Get enemies
     local EnemiesInArea = self:GetEnemiesInArea(_EntityID, 1000);
     if #EnemiesInArea == 0 then
-        API.Bridge("ExternalCampaignMap.Local.Data.CrimsonSabatt.ActionPoints = ExternalCampaignMap.Local.Data.CrimsonSabatt.RechargeTime");
+        Logic.ExecuteInLuaLocalState("ExternalCampaignMap.Local.Data.CrimsonSabatt.ActionPoints = ExternalCampaignMap.Local.Data.CrimsonSabatt.RechargeTime");
         return;
     end
     -- Convert
     Logic.ChangeSettlerPlayerID(EnemiesInArea[1], _PlayerID);
-    API.Bridge(string.format("HeroAbilityFeedback(%d)", _EntityID));
-	API.Bridge(string.format("GUI.SendCommandStationaryDefend(%d)", _EntityID));
+    Logic.ExecuteInLuaLocalState(string.format("HeroAbilityFeedback(%d)", _EntityID));
+	Logic.ExecuteInLuaLocalState(string.format("GUI.SendCommandStationaryDefend(%d)", _EntityID));
     self:SpawnAura(_EntityID, EGL_Effects.E_Knight_Wisdom_Aura);
 end
 
@@ -335,9 +336,21 @@ end
 -- @local
 --
 function ExternalCampaignMap.Local:Install()
+    Script.Load("maps/development/" ..Framework.GetCurrentMapName().. "/maploader.lua");
+    self.Data.MapData = API.InstanceTable(LocalMapData or {});
+
     self:ShowRedPrinceAbilityExplaination();
 	self:OverrideMethods();
     self:OverwriteComputePrices();
+    self:OverrideLoadScreen();
+end
+
+function ExternalCampaignMap.Local:OverrideLoadScreen()
+    if self.Data.MapData then
+        if self.Data.MapData.Loadscreen then
+            
+        end
+    end
 end
 
 ---
@@ -652,13 +665,14 @@ function ExternalCampaignMap.Local:SetKnightAbilityTooltip()
         end
     end
 
-    if TooltipTextKey ~= nil and XGUIEng.IsButtonDisabled(CurrentWidgetID) == 1 then
-        GUI_Tooltip.TooltipNormal(TooltipTextKey, DisabledTooltipTextKey);
-        return true;
-    elseif TooltipTextKey ~= nil and XGUIEng.IsButtonDisabled(CurrentWidgetID) == 0 then
-        GUI_Tooltip.TooltipNormal(TooltipTextKey);
-        return true;
-    end
+    local TooltipTitle    = XGUIEng.GetStringTableText("UI_ObjectNames/" .. TooltipTextKey);
+    local TooltipText     = XGUIEng.GetStringTableText("UI_ObjectDescription/" .. TooltipTextKey);
+    local TooltipDisabled = XGUIEng.GetStringTableText("UI_ButtonDisabled/" .. DisabledTooltipTextKey);
+
+    -- Behebt einen Schreibfehler in den Spieldateien.
+    TooltipTitle = TooltipTitle:gsub("verison", "version");
+    API.InterfaceSetTooltipNormal(TooltipTitle, TooltipText, TooltipDisabled);
+    return true;
 end
 
 ---

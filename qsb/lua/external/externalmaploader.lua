@@ -277,7 +277,6 @@ function ExternalMapLoader.Local:StartMap()
 	-- Map starten
 	local Knight = CustomGame.Knight +1;
 	Profile.SetString(Name, "SelectedKnight", CustomGame.KnightTypes[Knight]);
-	Profile.SetString(Name, "MapCode", self.Data.Campaign.MapData[Name].MapCode or "");
 	Profile.SetString(Name, "MapLoader", MapName);
 	Profile.SetInteger(Name, "MapLoaderVersion", self.Data.Campaign.MapData[Name].LoaderVersion or 1);
 	Framework.SetLoadScreenNeedButton(1);
@@ -511,12 +510,12 @@ function ExternalMapLoader.Local:OverrideCustomGameMapSelectionDialog()
 
 		for i = 1 , #CustomGame.Maps do 
 			local MapEntry = CustomGame.Maps[i]
-			XGUIEng.ListBoxPushItem(CustomGame.Widget.MapList,Tool_GetLocalizedMapName(MapEntry.Name, MapEntry.MapType))
 			local LocalizedClimateZone = XGUIEng.GetStringTableText("UI_ObjectNames/ClimateZone_" .. Framework.GetMapClimateZone(MapEntry.Name, MapEntry.MapType))
-			XGUIEng.ListBoxPushItem(CustomGame.Widget.ClimateZoneList, LocalizedClimateZone)
 			local map,description,size,mode = Framework.GetMapNameAndDescription(MapEntry.Name, MapEntry.MapType)
-			XGUIEng.ListBoxPushItem(CustomGame.Widget.SizeList, Tool_GetLocalizedSizeString(size))
 			XGUIEng.ListBoxPushItem(CustomGame.Widget.ModeList, mode)
+			XGUIEng.ListBoxPushItem(CustomGame.Widget.SizeList, Tool_GetLocalizedSizeString(size))
+			XGUIEng.ListBoxPushItem(CustomGame.Widget.ClimateZoneList, LocalizedClimateZone)
+			XGUIEng.ListBoxPushItem(CustomGame.Widget.MapList,Tool_GetLocalizedMapName(MapEntry.Name, MapEntry.MapType))
 		end
 
 		if #ExternalMapLoader.Local.Data.Campaign.MapNames > 0 then
