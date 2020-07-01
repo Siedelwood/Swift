@@ -808,7 +808,7 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
 </span></div><div id="bundlesavegametools_API.AutoSaveGame" class="result method"><a href="html/bundlesavegametools.lua.html#API.AutoSaveGame">API.AutoSaveGame</a><br>Speichert das Spiel mit automatisch fortlaufender Nummer im Namen des Spielstandes.<span class="docInvisibleContent">
     Speichert das Spiel mit automatisch fortlaufender Nummer im Namen
  des Spielstandes.  Wenn nicht gespeichert werden kann, wird bis
- zum nδchsten mφglichen Zeitpunkt gewartet.
+ zum nächsten mäglichen Zeitpunkt gewartet.
 
 
 
@@ -1186,29 +1186,6 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.CastleStoreSetOutsourceBoundary(&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, Goods.G_Milk, &#x3C;span class="number"&#x3E;50&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
-
-</span></div><div id="bundleentityproperties_API.ChangeEntityHealth" class="result method"><a href="html/bundleentityproperties.lua.html#API.ChangeEntityHealth">API.ChangeEntityHealth</a><br>Ändert die relative Gesundheit eines Entity.<span class="docInvisibleContent">
-    Ändert die relative Gesundheit eines Entity.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetHealth
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Percentage&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Relative Gesundheit des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
 
 </span></div><div id="bundleterrainandwater_API.ChangeTerrainHeightInSquare" class="result method"><a href="html/bundleterrainandwater.lua.html#API.ChangeTerrainHeightInSquare">API.ChangeTerrainHeightInSquare</a><br>Ändert die Landhöhe in einem Quadrat.<span class="docInvisibleContent">
     Ändert die Landhöhe in einem Quadrat.  Offset bestimmt die Abstände
@@ -1675,6 +1652,72 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Beispiel für eine Mine
 &#x3C;/span&#x3E;API.CreateIOMine(&#x3C;span class="string"&#x3E;"mine"&#x3C;/span&#x3E;, Goods.G_Wood, &#x3C;span class="number"&#x3E;20&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
+</span></div><div id="addonqueststages_API.CreateMainQuest" class="result method"><a href="html/addonqueststages.lua.html#API.CreateMainQuest">API.CreateMainQuest</a><br>Erstellt eine Reihe aufeinanderfolgender Aufträge, zusammengefasst under einem übergeordneten Auftrag.<span class="docInvisibleContent">
+    Erstellt eine Reihe aufeinanderfolgender Aufträge, zusammengefasst under
+ einem übergeordneten Auftrag.
+&#x3C;p&#x3E; Die erzeugten Aufträge (Sub Quests) starten aufeinander folgend, sobald der
+ übergeordnete Auftrag (Main Quest) aktiv ist. Der nachfolgende Sub Quests
+ startet, sobald der Vorgänger erfolgreich abgeschlossen ist. Scheitert ein
+ Sub Quests, dann scheitert auch der Main Quest. Der Main Quest ist dann
+ erfolgreich, wenn der letzte Sub Quests erfolgreich ist.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Main Quests eignen sich nur für lineare Abläufe. Es kann
+ keine Verzweigungen innerhalb des Ablaufes geben. Wenn verzweigt werden
+ soll, müssen mehrere Main Quests paralel laufen!
+&#x3C;p&#x3E; Es ist nicht vorgesehen, dass Main Quests sichtbar sind oder Texte anzeigen.
+ Es ist trotzdem möglich, sollte aber unterlassen werden.
+&#x3C;p&#x3E; Es ist nicht notwendig einen Trigger für die Sub Quests zu setzen. Der
+ Trigger wird automatisch generiert. Es können aber zusätzliche Trigger
+ angegeben werden. Der erzeugte Trigger ist i.d.R Trigger_OnQuestSuccess.
+ Wird ein Briefing im Vorgänger verwendet, wird stattdessen Trigger_Briefing
+ verwendet.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Es ist ebenfalls möglich bereits erstellte Quests und
+ sogar andere Main Quests anzugeben. Dazu wird statt der Definition nur
+ der Name angegeben.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: AddMainQuest
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Data&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Daten des Quest
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Name des Main Quest oder nil bei Fehler
+    &#x3C;/ol&#x3E;
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;API.CreateMainQuest {
+    Name        = &#x3C;span class="string"&#x3E;"MainQuest"&#x3C;/span&#x3E;,
+    Suggestion  = &#x3C;span class="string"&#x3E;"Das ist die Main Quest."&#x3C;/span&#x3E;,
+    Success     = &#x3C;span class="string"&#x3E;"Main Quest abgeschlossen!"&#x3C;/span&#x3E;,
+    Failure     = &#x3C;span class="string"&#x3E;"Main Quest fehlgeschlagen!"&#x3C;/span&#x3E;,
+
+    Stages      = {
+        {
+            Suggestion  = &#x3C;span class="string"&#x3E;"Wir benötigen einen höheren Titel!"&#x3C;/span&#x3E;,
+            Goal_KnightTitle(&#x3C;span class="string"&#x3E;"Mayor"&#x3C;/span&#x3E;),
+        },
+        &#x3C;span class="string"&#x3E;"ExternQuest1"&#x3C;/span&#x3E;,
+        &#x3C;span class="string"&#x3E;"ExternQuest2"&#x3C;/span&#x3E;,
+        {
+            Suggestion  = &#x3C;span class="string"&#x3E;"Wir benötigen außerdem mehr Asche! Und das sofort..."&#x3C;/span&#x3E;,
+            Time        = &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E; * &#x3C;span class="number"&#x3E;60&#x3C;/span&#x3E;,
+            Goal_Produce(&#x3C;span class="string"&#x3E;"G_Gold"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5000&#x3C;/span&#x3E;),
+        }
+    }
+}&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
 </span></div><div id="bundleminimapmarker_API.CreateMinimapMarker" class="result method"><a href="html/bundleminimapmarker.lua.html#API.CreateMinimapMarker">API.CreateMinimapMarker</a><br>Erstellt eine statische Markierung auf der Minimap.<span class="docInvisibleContent">
@@ -2622,6 +2665,78 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
 
 
 
+</span></div><div id="bundleentityproperties_API.EntityChangeHealth" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityChangeHealth">API.EntityChangeHealth</a><br>Setzt die Gesundheit des Entity.<span class="docInvisibleContent">
+    Setzt die Gesundheit des Entity.  Optional kann die Gesundheit relativ zur
+ maximalen Gesundheit geändert werden.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetHealth
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+           Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Health&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+           Neue aktuelle Gesundheit
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Relative&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (Optional) Relativ zur maximalen Gesundheit
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityGetHealth" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetHealth">API.EntityGetHealth</a><br>Gibt die Gesundheit des Entity zurück.<span class="docInvisibleContent">
+    Gibt die Gesundheit des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetHealth
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Aktuelle Gesundheit
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityGetMovementTarget" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetMovementTarget">API.EntityGetMovementTarget</a><br>Gibt das Bewegungsziel des Entity zurück.<span class="docInvisibleContent">
+    Gibt das Bewegungsziel des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetDestination
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Positionstabelle
+    &#x3C;/ol&#x3E;
+
+
+
+
 </span></div><div id="bundleentityhelperfunctions_API.EntityGetName" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.EntityGetName">API.EntityGetName</a><br>Gibt den Skriptnamen des Entity zurück.<span class="docInvisibleContent">
     Gibt den Skriptnamen des Entity zurück.
 &#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GetEntityName&#x3C;/p&#x3E;
@@ -2650,16 +2765,16 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Name = API.EntityGetName(SomeEntityID);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityproperties_API.EntityGetOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetOrientation">API.EntityGetOrientation</a><br>Gibt die Orientierung des Entity zurück.<span class="docInvisibleContent">
-    Gibt die Orientierung des Entity zurück.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GetOrientation&#x3C;/p&#x3E;
+</span></div><div id="bundleentityproperties_API.EntityGetOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetOrientation">API.EntityGetOrientation</a><br>Gibt die Ausrichtung des Entity zurück.<span class="docInvisibleContent">
+    Gibt die Ausrichtung des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetOrientation
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_entity&#x3C;/span&#x3E;
-         Betreffendes Entity (Skriptname oder ID)
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -2667,15 +2782,284 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
     &#x3C;ol&#x3E;
 
            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Orientierung in Grad
+        Ausrichtung in Grad
     &#x3C;/ol&#x3E;
 
 
 
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+
+</span></div><div id="bundleentityproperties_API.EntityGetPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetPlayer">API.EntityGetPlayer</a><br>Gibt den Besitzer des Entity zurück.<span class="docInvisibleContent">
+    Gibt den Besitzer des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetPlayer
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Orientation = API.EntityGetOrientation(&#x3C;span class="string"&#x3E;"marcus"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Scriptname des Entity
+        &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Besitzer des Entity
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityGetScale" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetScale">API.EntityGetScale</a><br>Gibt den Größenfaktor des Entity zurück.<span class="docInvisibleContent">
+    Gibt den Größenfaktor des Entity zurück.
+&#x3C;p&#x3E; Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+ Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetScale
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Größenfaktor des Entity
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityGetTaskList" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetTaskList">API.EntityGetTaskList</a><br>Gibt die aktuelle Tasklist des Entity zurück.<span class="docInvisibleContent">
+    Gibt die aktuelle Tasklist des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetTask
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Tasklist
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityGetType" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetType">API.EntityGetType</a><br>Gibt den Typen des Entity zurück.<span class="docInvisibleContent">
+    Gibt den Typen des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetType
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Typ des Entity
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityGetTypeName" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetTypeName">API.EntityGetTypeName</a><br>Gibt den Typnamen des Entity zurück.<span class="docInvisibleContent">
+    Gibt den Typnamen des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetTypeName
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Typname des Entity
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityIsActiveNpc" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityIsActiveNpc">API.EntityIsActiveNpc</a><br>Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.<span class="docInvisibleContent">
+    Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsNpc
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Ist NPC
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityIsBuildingBurning" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityIsBuildingBurning">API.EntityIsBuildingBurning</a><br>Gibt zurück, ob das Gebäude brennt.<span class="docInvisibleContent">
+    Gibt zurück, ob das Gebäude brennt.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsBurning
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Gebäude steht in Flammen
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityIsIll" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityIsIll">API.EntityIsIll</a><br>Prüft, ob das Entity krank ist.<span class="docInvisibleContent">
+    Prüft, ob das Entity krank ist.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsIll
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Entity ist krank
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityIsVisible" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityIsVisible">API.EntityIsVisible</a><br>Gibt zurück, ob das Entity sichtbar ist.<span class="docInvisibleContent">
+    Gibt zurück, ob das Entity sichtbar ist.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsVisible
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Ist sichtbar
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntityMakeIll" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityMakeIll">API.EntityMakeIll</a><br>Macht das Entity krank.<span class="docInvisibleContent">
+    Macht das Entity krank.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: MakeIll
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntitySetBuildingBurning" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetBuildingBurning">API.EntitySetBuildingBurning</a><br>Steckt ein Gebäude in Brand.<span class="docInvisibleContent">
+    Steckt ein Gebäude in Brand.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetBurning
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+           Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_FireSize&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (Optional) Neue aktuelle Gesundheit
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntitySetModel" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetModel">API.EntitySetModel</a><br>Weist dem Entity ein Neues Model zu.<span class="docInvisibleContent">
+    Weist dem Entity ein Neues Model zu.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetModel
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewModel&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Neues Model
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_AnimSet&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+          (optional) Animation Set
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
 
 </span></div><div id="bundleentityhelperfunctions_API.EntitySetName" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.EntitySetName">API.EntitySetName</a><br>Setzt den Skriptnamen des Entity.<span class="docInvisibleContent">
     Setzt den Skriptnamen des Entity.
@@ -2709,30 +3093,155 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;API.EntitySetName(SomeEntityID, &#x3C;span class="string"&#x3E;"myEntity"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityproperties_API.EntitySetOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetOrientation">API.EntitySetOrientation</a><br>Setzt die Orientierung des Entity.<span class="docInvisibleContent">
-    Setzt die Orientierung des Entity.
-&#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; SetOrientation&#x3C;/p&#x3E;
+</span></div><div id="bundleentityproperties_API.EntitySetOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetOrientation">API.EntitySetOrientation</a><br>Setzt die Ausrichtung des Entity.<span class="docInvisibleContent">
+    Setzt die Ausrichtung des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetOrientation
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-              Betreffendes Entity (Skriptname oder ID)
+          Entity (Scriptname oder ID)
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Orientation&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Ausrichtung in Grad
+         Neue Ausrichtung
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
 
 
 
-    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+
+</span></div><div id="bundleentityproperties_API.EntitySetPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetPlayer">API.EntitySetPlayer</a><br>Setzt den Besitzer des Entity.<span class="docInvisibleContent">
+    Setzt den Besitzer des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetPlayer
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;pre class="example"&#x3E;API.EntitySetOrientation(&#x3C;span class="string"&#x3E;"marcus"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;52&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         ID des Besitzers
+        &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntitySetScale" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetScale">API.EntitySetScale</a><br>Setzt die Größe des Entity.<span class="docInvisibleContent">
+    Setzt die Größe des Entity.  Wenn es sich um einen Siedler handelt, wird
+ versucht einen neuen Speed Factor zu setzen.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetScale
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Scale&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Neuer Größenfaktor
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntitySetTaskList" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetTaskList">API.EntitySetTaskList</a><br>Setzt die aktuelle Tasklist des Entity.<span class="docInvisibleContent">
+    Setzt die aktuelle Tasklist des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetTask
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewTask&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (optional) Neuer Task
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntitySetType" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetType">API.EntitySetType</a><br>Setzt den Typen des Entity.<span class="docInvisibleContent">
+    Setzt den Typen des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetType
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewType&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Typ neues Entity
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntitySetVisible" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetVisible">API.EntitySetVisible</a><br>Ändert die Sichtbarkeit des Entity.<span class="docInvisibleContent">
+    Ändert die Sichtbarkeit des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetVisible
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+           Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Visible&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (Optional) Sichtbarkeit ändern
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.EntitySetVulnerablueFlag" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetVulnerablueFlag">API.EntitySetVulnerablueFlag</a><br>Setzt das Entity oder das Battalion verwundbar oder unverwundbar.<span class="docInvisibleContent">
+    Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
+&#x3C;p&#x3E; Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
+ ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetVulnerable
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Verwundbar
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
 
 </span></div><div id="core_API.FailQuest" class="result method"><a href="html/core.lua.html#API.FailQuest">API.FailQuest</a><br>Lässt den Quest fehlschlagen.<span class="docInvisibleContent">
     Lässt den Quest fehlschlagen.
@@ -2906,6 +3415,30 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
+
+
+
+
+</span></div><div id="addonqueststages_API.ForwardMainQuest" class="result method"><a href="html/addonqueststages.lua.html#API.ForwardMainQuest">API.ForwardMainQuest</a><br>Spult einen Main Quest um einen Sub Quest vor.<span class="docInvisibleContent">
+    Spult einen Main Quest um einen Sub Quest vor.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: ForwardMainQuest
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_QuestName&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+          Name Main Quest
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Index des Sub Quest
+    &#x3C;/ol&#x3E;
 
 
 
@@ -3084,31 +3617,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Found = API.GetEntitiesOfCategoryInTerritory(&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, EntityCategories.Hero, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityproperties_API.GetEntityHealth" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityHealth">API.GetEntityHealth</a><br>Gibt die relative Gesundheit des Entity zurück.<span class="docInvisibleContent">
-    Gibt die relative Gesundheit des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Die Gesundheit ist immer ganzzahlig zwischen 0 und 100.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetHealth
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Relative Gesundheit des Entity
-    &#x3C;/ol&#x3E;
-
-
-
-
 </span></div><div id="bundleentityhelperfunctions_API.GetEntityNearby" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.GetEntityNearby">API.GetEntityNearby</a><br>Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity am nächsten ist.<span class="docInvisibleContent">
     Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
  am nächsten ist.
@@ -3143,56 +3651,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; EntityList = API.GetEntitiesOfCategoriesInTerritories({&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;}, EntityCategories.Hero, {&#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;12&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;23&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;24&#x3C;/span&#x3E;});
 &#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Knight = API.GetEntityNearby(GetID(&#x3C;span class="string"&#x3E;"IO1"&#x3C;/span&#x3E;), EntityList);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
-
-</span></div><div id="bundleentityproperties_API.GetEntityPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityPlayer">API.GetEntityPlayer</a><br>Gibt den Besitzer des Entity zurück.<span class="docInvisibleContent">
-    Gibt den Besitzer des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetPlayer
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Besitzer des Entity
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.GetEntityScale" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityScale">API.GetEntityScale</a><br>Gibt den Größenfaktor des Entity zurück.<span class="docInvisibleContent">
-    Gibt den Größenfaktor des Entity zurück.
-&#x3C;p&#x3E; Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetScale
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Größenfaktor des Entity
-    &#x3C;/ol&#x3E;
-
-
-
 
 </span></div><div id="bundleclassicbehaviors_API.GetInputNumberFromQuest" class="result method"><a href="html/bundleclassicbehaviors.lua.html#API.GetInputNumberFromQuest">API.GetInputNumberFromQuest</a><br>Gibt das im Quest gespeicherte Resultat von Goal_InputDialog Als Zahl zurück.<span class="docInvisibleContent">
     Gibt das im Quest gespeicherte Resultat von Goal_InputDialog Als Zahl zurück.
@@ -3275,30 +3733,40 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Knight = API.GetKnightNearby(GetID(&#x3C;span class="string"&#x3E;"IO1"&#x3C;/span&#x3E;), &#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityproperties_API.GetMovementTarget" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetMovementTarget">API.GetMovementTarget</a><br>Gibt die Position zurück, zu der sich ein Entity bewegt.<span class="docInvisibleContent">
-    Gibt die Position zurück, zu der sich ein Entity bewegt.  Die Position wird
- als XY-Table zurückgegeben.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetMovingTarget
+</span></div><div id="addonqueststages_API.GetMainQuestProgress" class="result method"><a href="html/addonqueststages.lua.html#API.GetMainQuestProgress">API.GetMainQuestProgress</a><br>Gibt den Fortschritt eines Main Quest zurück.<span class="docInvisibleContent">
+    Gibt den Fortschritt eines Main Quest zurück.
+&#x3C;p&#x3E; Kann der Fortschritt nicht bestimmt werden, wird 0, 0, 0 zurückgegeben.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetQuestProgress
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_QuestName&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
+         Name des Quest
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
     &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
     &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-        Zielposition des Entity
+        &#x3C;li&#x3E;
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Relativer Fortschritt (0 ... 1)&#x3C;/li&#x3E;
+        &#x3C;li&#x3E;
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Index des aktiven Sub Quest&#x3C;/li&#x3E;
+        &#x3C;li&#x3E;
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Maximalanzahl Sub Quests&#x3C;/li&#x3E;
     &#x3C;/ol&#x3E;
 
 
 
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Progress, Current, Max = API.GetMainQuestProgress(&#x3C;span class="string"&#x3E;"MyQuest"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
 
 </span></div><div id="core_API.GetQuestID" class="result method"><a href="html/core.lua.html#API.GetQuestID">API.GetQuestID</a><br>Gibt die ID des Quests mit dem angegebenen Namen zurück.<span class="docInvisibleContent">
     Gibt die ID des Quests mit dem angegebenen Namen zurück.  Existiert der
@@ -3434,6 +3902,31 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; SelectedEntity = API.GetSelectedEntity();&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="addonqueststages_API.GetSubQuestName" class="result method"><a href="html/addonqueststages.lua.html#API.GetSubQuestName">API.GetSubQuestName</a><br>Gibt den Skriptnamen des Sub Quest auf dem Index zurück.<span class="docInvisibleContent">
+    Gibt den Skriptnamen des Sub Quest auf dem Index zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetSubQuestName
+&#x3C;p&#x3E; Wird kein Sub Quest gefunden, wird der name des Main Quest zurückgegeben
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_QuestName&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+          Name Main Quest
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Quest Name
+    &#x3C;/ol&#x3E;
+
+
+
+
 </span></div><div id="addoninteractivetrebuchets_API.GetTrebuchetByTrebuchetConstructionSite" class="result method"><a href="html/addoninteractivetrebuchets.lua.html#API.GetTrebuchetByTrebuchetConstructionSite">API.GetTrebuchetByTrebuchetConstructionSite</a><br>Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.<span class="docInvisibleContent">
     Gibt die EntityID aufgebaute Trebuchet der Trebuchet-Baustelle zurück.
  Sollte kein Trebuchet aufgebaut sein, wird 0 zurückgegeben.
@@ -3462,27 +3955,115 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; ID = API.GetTrebuchetByTrebuchetConstructionSite(&#x3C;span class="string"&#x3E;"trebuchetSite1"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityproperties_API.HurtEntity" class="result method"><a href="html/bundleentityproperties.lua.html#API.HurtEntity">API.HurtEntity</a><br>Verwundet ein Entity um einen absoluten Wert Gesundheit.<span class="docInvisibleContent">
-    Verwundet ein Entity um einen absoluten Wert Gesundheit.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Die Anzahl an Gesundheitspunkten richtet sich nach dem
- jeweiligen Entity und ist immer ganzzahlig!
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: HurtEntityEx
+</span></div><div id="bundleentityproperties_API.GroupCountSoldiers" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupCountSoldiers">API.GroupCountSoldiers</a><br>Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen<span class="docInvisibleContent">
+    Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen  &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CoundSoldiers
 
 
 
     &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
     &#x3C;ul&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
+         Entity (Skriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Menge an Soldaten
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GroupGetLeader" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupGetLeader">API.GroupGetLeader</a><br>Gibt den Leader des Soldaten zurück.<span class="docInvisibleContent">
+    Gibt den Leader des Soldaten zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetLeader
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Skriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Menge an Soldaten
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GroupGetSoldiers" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupGetSoldiers">API.GroupGetSoldiers</a><br>Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.<span class="docInvisibleContent">
+    Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetSoldiers
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Skriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Liste aller Soldaten
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GroupHeal" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupHeal">API.GroupHeal</a><br>Heilt das Entity um die angegebene Menge an Gesundheit.<span class="docInvisibleContent">
+    Heilt das Entity um die angegebene Menge an Gesundheit.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: HealEntity
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+           Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+           Geheilte Gesundheit
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GroupHurt" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupHurt">API.GroupHurt</a><br>Verwundet ein Entity oder ein Battallion um die angegebene Menge an Schaden.<span class="docInvisibleContent">
+    Verwundet ein Entity oder ein Battallion um die angegebene
+ Menge an Schaden.  Bei einem Battalion wird der Schaden solange
+ auf Soldaten aufgeteilt, bis er komplett verrechnet wurde.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: HurtEntity
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+           Entity (Scriptname oder ID)
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Damage&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Menge an abgezogener Gesundheit
+           Schaden
         &#x3C;/li&#x3E;
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Attacker&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         (optional) Skriptname des Angreifers
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Angreifer
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -4086,30 +4667,6 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
 
 
 
-</span></div><div id="bundleentityproperties_API.IsActiveNpc" class="result method"><a href="html/bundleentityproperties.lua.html#API.IsActiveNpc">API.IsActiveNpc</a><br>Prüft, ob das NPC-FLag für das Entity gesetzt ist.<span class="docInvisibleContent">
-    Prüft, ob das NPC-FLag für das Entity gesetzt ist.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsNpc
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        NPC-Flag ist gesetzt
-    &#x3C;/ol&#x3E;
-
-
-
-
 </span></div><div id="bundlebriefingsystem_API.IsBriefingActive" class="result method"><a href="html/bundlebriefingsystem.lua.html#API.IsBriefingActive">API.IsBriefingActive</a><br>Prüft, ob aktuell ein Briefing aktiv ist.<span class="docInvisibleContent">
     Prüft, ob aktuell ein Briefing aktiv ist.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsBriefingActive
@@ -4185,30 +4742,6 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
 &#x3C;/span&#x3E;&#x3C;span class="keyword"&#x3E;end&#x3C;/span&#x3E;&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityproperties_API.IsEntityVisible" class="result method"><a href="html/bundleentityproperties.lua.html#API.IsEntityVisible">API.IsEntityVisible</a><br>Prüft, ob das Entity sichtbar ist.<span class="docInvisibleContent">
-    Prüft, ob das Entity sichtbar ist.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsVisible
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Entity ist sichtbar
-    &#x3C;/ol&#x3E;
-
-
-
-
 </span></div><div id="core_API.IsValidQuest" class="result method"><a href="html/core.lua.html#API.IsValidQuest">API.IsValidQuest</a><br>Prüft, ob zu der angegebenen ID ein Quest existiert.<span class="docInvisibleContent">
     Prüft, ob zu der angegebenen ID ein Quest existiert.  Wird ein Questname
  angegeben wird dessen Quest-ID ermittelt und geprüft.
@@ -4252,8 +4785,8 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
 
 
 
-</span></div><div id="bundlesavegametools_API.LoadGameFromFolder" class="result method"><a href="html/bundlesavegametools.lua.html#API.LoadGameFromFolder">API.LoadGameFromFolder</a><br>Lδd einen Spielstand aus dem angegebenen Verzeichnis.<span class="docInvisibleContent">
-    Lδd einen Spielstand aus dem angegebenen Verzeichnis.  Der Pfad
+</span></div><div id="bundlesavegametools_API.LoadGameFromFolder" class="result method"><a href="html/bundlesavegametools.lua.html#API.LoadGameFromFolder">API.LoadGameFromFolder</a><br>Läd einen Spielstand aus dem angegebenen Verzeichnis.<span class="docInvisibleContent">
+    Läd einen Spielstand aus dem angegebenen Verzeichnis.  Der Pfad
  beginnt relativ vom Spielstandverzeichnis. Optional kann der
  Ladebildschirm gehalten werden, bis der Spieler das Spiel per
  Button startet.
@@ -4333,44 +4866,6 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.LookAt(&#x3C;span class="string"&#x3E;"Hakim"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Alandra"&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
-
-</span></div><div id="bundleentityproperties_API.MakeInvulnerable" class="result method"><a href="html/bundleentityproperties.lua.html#API.MakeInvulnerable">API.MakeInvulnerable</a><br>Macht das Entity oder das Battalion unverwundbar.<span class="docInvisibleContent">
-    Macht das Entity oder das Battalion unverwundbar.
-&#x3C;p&#x3E; Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
- ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: MakeInvulnerable
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.MakeVulnerable" class="result method"><a href="html/bundleentityproperties.lua.html#API.MakeVulnerable">API.MakeVulnerable</a><br>Macht das Entity oder das Battalion verwundbar.<span class="docInvisibleContent">
-    Macht das Entity oder das Battalion verwundbar.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: MakeVulnerable
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
 
 </span></div><div id="core_API.Message" class="result method"><a href="html/core.lua.html#API.Message">API.Message</a><br>Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.<span class="docInvisibleContent">
     Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
@@ -5159,6 +5654,51 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
         &#x3C;pre class="example"&#x3E;API.ReplaceEntity(&#x3C;span class="string"&#x3E;"Stein"&#x3C;/span&#x3E;, Entities.XD_ScriptEntity)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundleentityproperties_API.ResourceGetAmount" class="result method"><a href="html/bundleentityproperties.lua.html#API.ResourceGetAmount">API.ResourceGetAmount</a><br>Gibt die Menge an Rohstoffen des Entity zurück.<span class="docInvisibleContent">
+    Gibt die Menge an Rohstoffen des Entity zurück.  Optional kann
+ eine neue Menge gesetzt werden.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetResource
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Menge an Rohstoffen
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.ResourceSetAmount" class="result method"><a href="html/bundleentityproperties.lua.html#API.ResourceSetAmount">API.ResourceSetAmount</a><br>Setzt die Menge an Rohstoffen des Entity.<span class="docInvisibleContent">
+    Setzt die Menge an Rohstoffen des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetResource
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Menge an Rohstoffen
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
 </span></div><div id="core_API.RestartQuest" class="result method"><a href="html/core.lua.html#API.RestartQuest">API.RestartQuest</a><br>Startet den Quest neu.<span class="docInvisibleContent">
     Startet den Quest neu.
 &#x3C;p&#x3E; Der Quest muss beendet sein um ihn wieder neu zu starten. Wird ein Quest
@@ -5227,6 +5767,30 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
 
 
 
+</span></div><div id="addonqueststages_API.RevertMainQuest" class="result method"><a href="html/addonqueststages.lua.html#API.RevertMainQuest">API.RevertMainQuest</a><br>Setzt einen Main Quest um einen Sub Quest zurück.<span class="docInvisibleContent">
+    Setzt einen Main Quest um einen Sub Quest zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: RevertMainQuest
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_QuestName&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+          Name Main Quest
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Index des Sub Quest
+    &#x3C;/ol&#x3E;
+
+
+
+
 </span></div><div id="core_API.Round" class="result method"><a href="html/core.lua.html#API.Round">API.Round</a><br>Rundet eine Dezimalzahl kaufmännisch ab.<span class="docInvisibleContent">
     Rundet eine Dezimalzahl kaufmännisch ab.
 &#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Es wird manuell gerundet um den Rundungsfehler in der
@@ -5258,7 +5822,7 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
 
 
 </span></div><div id="bundlesavegametools_API.SaveGameToFolder" class="result method"><a href="html/bundlesavegametools.lua.html#API.SaveGameToFolder">API.SaveGameToFolder</a><br>Speichert den Spielstand in das angegebene Verzeichnis.<span class="docInvisibleContent">
-    Speichert den Spielstand in das angegebene Verzeichnis.  Es kφnnen
+    Speichert den Spielstand in das angegebene Verzeichnis.  Es können
  keine Verzeichnise erzeugt werden. Der Pfad beginnt relativ vom
  Spielstandverzeichnis.
 
@@ -5328,29 +5892,6 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
 &#x3C;span class="comment"&#x3E;-- Legacy-Call mit ID-Speicherung
 &#x3C;/span&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; ID = SendCart(&#x3C;span class="string"&#x3E;"Position_1"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;, Goods.G_Wool, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
-
-</span></div><div id="bundleentityproperties_API.SetBuildingOnFire" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetBuildingOnFire">API.SetBuildingOnFire</a><br>Setzt ein Gebäude in Brand.<span class="docInvisibleContent">
-    Setzt ein Gebäude in Brand.  Die Feuerstärke bestimmt, wie häftig es brennt.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Hinweis&#x3C;/b&#x3E;: Im Allgemeinen reicht eine Feuerstärke zwischen 1 und 50.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetOnFire
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_FireSize&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Relative Gesundheit des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
 
 </span></div><div id="bundlestockbreeding_API.SetCattleBabyMode" class="result method"><a href="html/bundlestockbreeding.lua.html#API.SetCattleBabyMode">API.SetCattleBabyMode</a><br>Aktiviert oder deaktiviert den "Baby Mode" für Kühe.<span class="docInvisibleContent">
     Aktiviert oder deaktiviert den "Baby Mode" für Kühe.
@@ -5426,52 +5967,6 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
         &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Earnings&#x3C;/span&#x3E;
             &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
          Einnahmen [0 | 100]
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.SetEntityPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityPlayer">API.SetEntityPlayer</a><br>Weist dem Entity einen neuen Besitzer zu.<span class="docInvisibleContent">
-    Weist dem Entity einen neuen Besitzer zu.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: ChangePlayer
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Besitzer des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.SetEntityScale" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityScale">API.SetEntityScale</a><br>Setzt den Größenfaktor des Entity.<span class="docInvisibleContent">
-    Setzt den Größenfaktor des Entity.
-&#x3C;p&#x3E; Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetScale
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Scale&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Größenfaktor des Entity
         &#x3C;/li&#x3E;
     &#x3C;/ul&#x3E;
 
@@ -8627,6 +9122,54 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
         &#x3C;pre class="example"&#x3E;API.CreateMinimapSignal(MarkerColor.Red, GetPosition(&#x3C;span class="string"&#x3E;"pos"&#x3C;/span&#x3E;));&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="addonqueststages_QSB.MainQuest" class="result method"><a href="html/addonqueststages.lua.html#QSB.MainQuest">QSB.MainQuest</a><br>Vordefinierte Funktionen für MSF Behavior.<span class="docInvisibleContent">
+    Vordefinierte Funktionen für MSF Behavior.  Diese Funktionen können nur im
+ Skript und nicht im Assistenten bentuzt werden!
+&#x3C;p&#x3E; Als Parameter werden immer Questname und Stage übergeben.
+
+
+
+    &#x3C;h3&#x3E;Fields:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;Goal_ReachStage&#x3C;/span&#x3E;
+                Prüft, ob die Phase erreicht wurde.
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;Reprisal_PreviousStage&#x3C;/span&#x3E;
+         Kehr zur vorherigen Phase zurück.
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;Reprisal_NextStage&#x3C;/span&#x3E;
+             Springt zur nächsten Phase vor.
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;Reward_PreviousStage&#x3C;/span&#x3E;
+           Kehr zur vorherigen Phase zurück.
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;Reward_NextStage&#x3C;/span&#x3E;
+               Springt zur nächsten Phase vor.
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;Trigger_OnStage&#x3C;/span&#x3E;
+                Prüft, ob die Phase erreicht wurde.
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+    &#x3C;h3&#x3E;Usage:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;pre class="example"&#x3E;&#x3C;span class="comment"&#x3E;-- Phase als Goal prüfen (schlägt nur bei Fehler fehl)
+&#x3C;/span&#x3E;Goal_MapScriptFunction(QSB.MainQuest.Goal_ReachStage, &#x3C;span class="string"&#x3E;"MyQuest"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;)
+&#x3C;span class="comment"&#x3E;-- Phase zurück (Reprisal)
+&#x3C;/span&#x3E;Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_PreviousStage, &#x3C;span class="string"&#x3E;"MyQuest"&#x3C;/span&#x3E;)
+&#x3C;span class="comment"&#x3E;-- Phase vor (Reprisal)
+&#x3C;/span&#x3E;Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_NextStage, &#x3C;span class="string"&#x3E;"MyQuest"&#x3C;/span&#x3E;)
+&#x3C;span class="comment"&#x3E;-- Phase zurück (Reward)
+&#x3C;/span&#x3E;Reward_MapScriptFunction(QSB.MainQuest.Reward_PreviousStage, &#x3C;span class="string"&#x3E;"MyQuest"&#x3C;/span&#x3E;)
+&#x3C;span class="comment"&#x3E;-- Phase vor (Reward)
+&#x3C;/span&#x3E;Reward_MapScriptFunction(QSB.MainQuest.Reward_NextStage, &#x3C;span class="string"&#x3E;"MyQuest"&#x3C;/span&#x3E;)
+&#x3C;span class="comment"&#x3E;-- Phase als Trigger prüfen
+&#x3C;/span&#x3E;Trigger_MapScriptFunction(QSB.MainQuest.Trigger_OnStage, &#x3C;span class="string"&#x3E;"MyQuest"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
+    &#x3C;/ul&#x3E;
+
 </span></div><div id="core_QSB.Placeholders.Colors" class="result method"><a href="html/core.lua.html#QSB.Placeholders.Colors">QSB.Placeholders.Colors</a><br>Farben, die als Platzhalter genutzt werden können.<span class="docInvisibleContent">
     Farben, die als Platzhalter genutzt werden können.
 &#x3C;p&#x3E; Verwendung:
@@ -10913,7 +11456,7 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
                 </div>
                 <div id="bundlelinkContainer">
                     <div style="margin-bottom: 10px;"><b>Pakete</b></div>
-                    <div id="addoncastlestore" class="result module"><a href="html/addoncastlestore.lua.html">addoncastlestore</a><br>Dieses Bundle stellt ein Burglager, oder Kellerlager, zur Verfügung, das sich ähnlich wie das normale Lager verhält.</div><div id="addoncutscenesystem" class="result module"><a href="html/addoncutscenesystem.lua.html">addoncutscenesystem</a><br>Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.</div><div id="addoninteractivechests" class="result module"><a href="html/addoninteractivechests.lua.html">addoninteractivechests</a><br>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</div><div id="addoninteractivemines" class="result module"><a href="html/addoninteractivemines.lua.html">addoninteractivemines</a><br>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</div><div id="addoninteractivesites" class="result module"><a href="html/addoninteractivesites.lua.html">addoninteractivesites</a><br>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei ein Gebäude bauen zu lassen.</div><div id="addoninteractivetrebuchets" class="result module"><a href="html/addoninteractivetrebuchets.lua.html">addoninteractivetrebuchets</a><br>Der Spieler kann ein Trebuchet mieten.</div><div id="addonquestdebug" class="result module"><a href="html/addonquestdebug.lua.html">addonquestdebug</a><br>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</div><div id="addonrandomrequests" class="result module"><a href="html/addonrandomrequests.lua.html">addonrandomrequests</a><br>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</div><div id="bundlebriefingsystem" class="result module"><a href="html/bundlebriefingsystem.lua.html">bundlebriefingsystem</a><br>Ermöglicht es Briefing zu verwenden.</div><div id="bundlebuildingbuttons" class="result module"><a href="html/bundlebuildingbuttons.lua.html">bundlebuildingbuttons</a><br>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere Funktionen.</div><div id="bundlecamera" class="result module"><a href="html/bundlecamera.lua.html">bundlecamera</a><br>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen Zoom zu nutzen.</div><div id="bundlecheats" class="result module"><a href="html/bundlecheats.lua.html">bundlecheats</a><br>Mit diesem Bundle kann die Nutzung der Cheats verboten oder erlaubt werden.</div><div id="bundleclassicbehaviors" class="result module"><a href="html/bundleclassicbehaviors.lua.html">bundleclassicbehaviors</a><br>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</div><div id="bundleconstructioncontrol" class="result module"><a href="html/bundleconstructioncontrol.lua.html">bundleconstructioncontrol</a><br>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien unterbunden werden.</div><div id="bundledestructioncontrol" class="result module"><a href="html/bundledestructioncontrol.lua.html">bundledestructioncontrol</a><br>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor dem Abriss zu schützen.</div><div id="bundledialogwindows" class="result module"><a href="html/bundledialogwindows.lua.html">bundledialogwindows</a><br>Mit diesem Bundle können Dialogfenster ernstellt werden.</div><div id="bundleentitycommandfunctions" class="result module"><a href="html/bundleentitycommandfunctions.lua.html">bundleentitycommandfunctions</a><br>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie von A nach B zu bewegen.</div><div id="bundleentityhelperfunctions" class="result module"><a href="html/bundleentityhelperfunctions.lua.html">bundleentityhelperfunctions</a><br>Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu ermitteln oder zu verändern.</div><div id="bundleentityproperties" class="result module"><a href="html/bundleentityproperties.lua.html">bundleentityproperties</a><br>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation von Entities bereitgestellt.</div><div id="bundleentityselection" class="result module"><a href="html/bundleentityselection.lua.html">bundleentityselection</a><br>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</div><div id="bundlefollowknight" class="result module"><a href="html/bundlefollowknight.lua.html">bundlefollowknight</a><br>Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden (bzw Ritter) folgen zu lassen.</div><div id="bundleinteractiveobjects" class="result module"><a href="html/bundleinteractiveobjects.lua.html">bundleinteractiveobjects</a><br>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert werden kann.</div><div id="bundleinterfaceapperance" class="result module"><a href="html/bundleinterfaceapperance.lua.html">bundleinterfaceapperance</a><br>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche des Spiels.</div><div id="bundleinterfacefeaturevisibility" class="result module"><a href="html/bundleinterfacefeaturevisibility.lua.html">bundleinterfacefeaturevisibility</a><br>Dieses Bundle bietet dem Nutzer Funktionen um ausgewählte Buttons und Widgets auszublenden oder einzublenden.</div><div id="bundleknighttitlerequirements" class="result module"><a href="html/bundleknighttitlerequirements.lua.html">bundleknighttitlerequirements</a><br>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell an die eigenen Vorstellungen anzupassen.</div><div id="bundleminimapmarker" class="result module"><a href="html/bundleminimapmarker.lua.html">bundleminimapmarker</a><br>Ermöglocht das Anlegen von Markierungen auf der Minimap.</div><div id="bundlemusictools" class="result module"><a href="html/bundlemusictools.lua.html">bundlemusictools</a><br>Dieses Bundle bietet die Möglichkeit Playlists im Spiel abzuspielen.</div><div id="bundlenonplayercharacter" class="result module"><a href="html/bundlenonplayercharacter.lua.html">bundlenonplayercharacter</a><br>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere bereitgestellt.</div><div id="bundleplayerhelperfunctions" class="result module"><a href="html/bundleplayerhelperfunctions.lua.html">bundleplayerhelperfunctions</a><br>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von spielerbezogenen Features.</div><div id="bundleprofileandoptions" class="result module"><a href="html/bundleprofileandoptions.lua.html">bundleprofileandoptions</a><br>Mit diesem Bundle können Profil und Options bequem aus globalen und lokalem Skript angefragt und verändert werden.</div><div id="bundlequestgeneration" class="result module"><a href="html/bundlequestgeneration.lua.html">bundlequestgeneration</a><br>Dieses Bundle ermöglicht es einen Quest, bzw.</div><div id="bundlesavegametools" class="result module"><a href="html/bundlesavegametools.lua.html">bundlesavegametools</a><br>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von Spielständen kontrolliert werden können.</div><div id="bundlespeedlimit" class="result module"><a href="html/bundlespeedlimit.lua.html">bundlespeedlimit</a><br>Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur Verfügung.</div><div id="bundlestockbreeding" class="result module"><a href="html/bundlestockbreeding.lua.html">bundlestockbreeding</a><br>Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.</div><div id="bundlesymfoniabehaviors" class="result module"><a href="html/bundlesymfoniabehaviors.lua.html">bundlesymfoniabehaviors</a><br>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht in der ursprünglichen QSB gab.</div><div id="bundleterrainandwater" class="result module"><a href="html/bundleterrainandwater.lua.html">bundleterrainandwater</a><br>Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und von Wasser.</div><div id="bundletimeline" class="result module"><a href="html/bundletimeline.lua.html">bundletimeline</a><br>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu gliedern.</div><div id="bundletravelingsalesman" class="result module"><a href="html/bundletravelingsalesman.lua.html">bundletravelingsalesman</a><br>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den Hafen mit einem Schiff anfährt.</div><div id="bundleweathermanipulation" class="result module"><a href="html/bundleweathermanipulation.lua.html">bundleweathermanipulation</a><br>Dieses Modul ermöglicht das Ändern des Wetters.</div><div id="core" class="result module"><a href="html/core.lua.html">core</a><br>Hier werden wichtige Basisfunktionen bereitgestellt.</div>
+                    <div id="addoncastlestore" class="result module"><a href="html/addoncastlestore.lua.html">addoncastlestore</a><br>Dieses Bundle stellt ein Burglager, oder Kellerlager, zur Verfügung, das sich ähnlich wie das normale Lager verhält.</div><div id="addoncutscenesystem" class="result module"><a href="html/addoncutscenesystem.lua.html">addoncutscenesystem</a><br>Ermöglicht es Kameraflüge, also Cutscenes, zu erstellen.</div><div id="addoninteractivechests" class="result module"><a href="html/addoninteractivechests.lua.html">addoninteractivechests</a><br>Es werden Schatztruhen mit zufälligem Inhalt erzeugt.</div><div id="addoninteractivemines" class="result module"><a href="html/addoninteractivemines.lua.html">addoninteractivemines</a><br>Der Spieler kann eine Stein- oder Eisenmine erzeugen, die zuerst durch Begleichen der Kosten aufgebaut werden muss, bevor sie genutzt werden kann.</div><div id="addoninteractivesites" class="result module"><a href="html/addoninteractivesites.lua.html">addoninteractivesites</a><br>Ermöglicht es den Spieler auf einem beliebigen Territorium einer Partei ein Gebäude bauen zu lassen.</div><div id="addoninteractivetrebuchets" class="result module"><a href="html/addoninteractivetrebuchets.lua.html">addoninteractivetrebuchets</a><br>Der Spieler kann ein Trebuchet mieten.</div><div id="addonquestdebug" class="result module"><a href="html/addonquestdebug.lua.html">addonquestdebug</a><br>Erweitert den mitgelieferten Debug des Spiels um eine Vielzahl nützlicher neuer Möglichkeiten.</div><div id="addonqueststages" class="result module"><a href="html/addonqueststages.lua.html">addonqueststages</a><br>Ermöglicht das Zusammenfassen mehrerer Quests unter einem Main Quest.</div><div id="addonrandomrequests" class="result module"><a href="html/addonrandomrequests.lua.html">addonrandomrequests</a><br>Dieses Bundle stellt zufällige Aufgaben durch NPC-Spieler bereit.</div><div id="bundlebriefingsystem" class="result module"><a href="html/bundlebriefingsystem.lua.html">bundlebriefingsystem</a><br>Ermöglicht es Briefing zu verwenden.</div><div id="bundlebuildingbuttons" class="result module"><a href="html/bundlebuildingbuttons.lua.html">bundlebuildingbuttons</a><br>Dieses Bundle erweitert das Gebäudemenü für verschiedene Gebäude um weitere Funktionen.</div><div id="bundlecamera" class="result module"><a href="html/bundlecamera.lua.html">bundlecamera</a><br>Manchmal ist der maximale Zoom nicht genug! Löse Dich von den Fesseln, die Dich einschränken! Dieses Bundle ermöglicht es den tatsächlichen maximalen Zoom zu nutzen.</div><div id="bundlecheats" class="result module"><a href="html/bundlecheats.lua.html">bundlecheats</a><br>Mit diesem Bundle kann die Nutzung der Cheats verboten oder erlaubt werden.</div><div id="bundleclassicbehaviors" class="result module"><a href="html/bundleclassicbehaviors.lua.html">bundleclassicbehaviors</a><br>Dieses Bundle enthält alle Behavior, die aus der QSB 3.9 PlusB bekannt sind.</div><div id="bundleconstructioncontrol" class="result module"><a href="html/bundleconstructioncontrol.lua.html">bundleconstructioncontrol</a><br>Mit diesem Bundle kann der Bau von Gebäudetypen oder Gebäudekategorien unterbunden werden.</div><div id="bundledestructioncontrol" class="result module"><a href="html/bundledestructioncontrol.lua.html">bundledestructioncontrol</a><br>Ermöglicht es einzelne Gebäude, Typen oder Kategorien von Gebäuden vor dem Abriss zu schützen.</div><div id="bundledialogwindows" class="result module"><a href="html/bundledialogwindows.lua.html">bundledialogwindows</a><br>Mit diesem Bundle können Dialogfenster ernstellt werden.</div><div id="bundleentitycommandfunctions" class="result module"><a href="html/bundleentitycommandfunctions.lua.html">bundleentitycommandfunctions</a><br>Stellt Hilfsfunktionen bereit um Entities Befehle zu erteilen oder sie von A nach B zu bewegen.</div><div id="bundleentityhelperfunctions" class="result module"><a href="html/bundleentityhelperfunctions.lua.html">bundleentityhelperfunctions</a><br>Stellt Hilfsfunktionen bereit um die Eigenschaften von Entities zu ermitteln oder zu verändern.</div><div id="bundleentityproperties" class="result module"><a href="html/bundleentityproperties.lua.html">bundleentityproperties</a><br>In diesem Bundle werden grundlegende Funktionen zur Abfrage und Manipulation von Entities bereitgestellt.</div><div id="bundleentityselection" class="result module"><a href="html/bundleentityselection.lua.html">bundleentityselection</a><br>Mit diesem Bundle kann die Selektion von Entities gesteuert werden.</div><div id="bundlefollowknight" class="result module"><a href="html/bundlefollowknight.lua.html">bundlefollowknight</a><br>Dieses Bundle bietet Funktionalität um Entities dauerhaft einem Helden (bzw Ritter) folgen zu lassen.</div><div id="bundleinteractiveobjects" class="result module"><a href="html/bundleinteractiveobjects.lua.html">bundleinteractiveobjects</a><br>Interaktive Objekte sind Gegenstände auf der Karte, mit denen interagiert werden kann.</div><div id="bundleinterfaceapperance" class="result module"><a href="html/bundleinterfaceapperance.lua.html">bundleinterfaceapperance</a><br>Dieses Bundle bietet dem Nutzer Funktionen zur Manipulation der Oberfläche des Spiels.</div><div id="bundleinterfacefeaturevisibility" class="result module"><a href="html/bundleinterfacefeaturevisibility.lua.html">bundleinterfacefeaturevisibility</a><br>Dieses Bundle bietet dem Nutzer Funktionen um ausgewählte Buttons und Widgets auszublenden oder einzublenden.</div><div id="bundleknighttitlerequirements" class="result module"><a href="html/bundleknighttitlerequirements.lua.html">bundleknighttitlerequirements</a><br>Erlaubt es dem Mapper die vorgegebenen Aufstiegsbedingungen idividuell an die eigenen Vorstellungen anzupassen.</div><div id="bundleminimapmarker" class="result module"><a href="html/bundleminimapmarker.lua.html">bundleminimapmarker</a><br>Ermöglocht das Anlegen von Markierungen auf der Minimap.</div><div id="bundlemusictools" class="result module"><a href="html/bundlemusictools.lua.html">bundlemusictools</a><br>Dieses Bundle bietet die Möglichkeit Playlists im Spiel abzuspielen.</div><div id="bundlenonplayercharacter" class="result module"><a href="html/bundlenonplayercharacter.lua.html">bundlenonplayercharacter</a><br>Mit diesem Bundle wird ein spezieller Modus für Nichtspieler-Charaktere bereitgestellt.</div><div id="bundleplayerhelperfunctions" class="result module"><a href="html/bundleplayerhelperfunctions.lua.html">bundleplayerhelperfunctions</a><br>Mit diesem Bundle kommen einige Funktionalitäten zur Steuerung von spielerbezogenen Features.</div><div id="bundleprofileandoptions" class="result module"><a href="html/bundleprofileandoptions.lua.html">bundleprofileandoptions</a><br>Mit diesem Bundle können Profil und Options bequem aus globalen und lokalem Skript angefragt und verändert werden.</div><div id="bundlequestgeneration" class="result module"><a href="html/bundlequestgeneration.lua.html">bundlequestgeneration</a><br>Dieses Bundle ermöglicht es einen Quest, bzw.</div><div id="bundlesavegametools" class="result module"><a href="html/bundlesavegametools.lua.html">bundlesavegametools</a><br>Dieses Bundle bietet Funktionen an, mit denen Anlegen und Laden von Spielständen kontrolliert werden können.</div><div id="bundlespeedlimit" class="result module"><a href="html/bundlespeedlimit.lua.html">bundlespeedlimit</a><br>Dieses Bundle stellt die als "Speedbremse" bekannte Funktionalität zur Verfügung.</div><div id="bundlestockbreeding" class="result module"><a href="html/bundlestockbreeding.lua.html">bundlestockbreeding</a><br>Ermöglicht die Aufzucht von Nutzrieren wie Schafe und Kühe durch den Spieler.</div><div id="bundlesymfoniabehaviors" class="result module"><a href="html/bundlesymfoniabehaviors.lua.html">bundlesymfoniabehaviors</a><br>Dieses Bundle enthält einige weitere nützliche Behavior, welche es so nicht in der ursprünglichen QSB gab.</div><div id="bundleterrainandwater" class="result module"><a href="html/bundleterrainandwater.lua.html">bundleterrainandwater</a><br>Dieses Bundle beinhaltet Funktionen zur Veränderung der Höhe von Land und von Wasser.</div><div id="bundletimeline" class="result module"><a href="html/bundletimeline.lua.html">bundletimeline</a><br>Dieses Bundle ermöglicht es Aktionen in einer zeitlichen Abfolge zu gliedern.</div><div id="bundletravelingsalesman" class="result module"><a href="html/bundletravelingsalesman.lua.html">bundletravelingsalesman</a><br>Mit diesem Bundle wird ein Fahrender Händler angeboten der periodisch den Hafen mit einem Schiff anfährt.</div><div id="bundleweathermanipulation" class="result module"><a href="html/bundleweathermanipulation.lua.html">bundleweathermanipulation</a><br>Dieses Modul ermöglicht das Ändern des Wetters.</div><div id="core" class="result module"><a href="html/core.lua.html">core</a><br>Hier werden wichtige Basisfunktionen bereitgestellt.</div>
                 </div>
             </div>
             <div id="indexEntriesContainer">
@@ -11295,6 +11838,16 @@ API.TravelingSalesmanCreate(TraderDescription);&#x3C;/pre&#x3E;
             <a class='docLinkExpander' href="html/addonquestdebug.lua.html">
             <div class='doclink'>
                 <div>AddOnQuestDebug</div>
+            </div>
+            </a>
+        </div>
+    </div>
+</div><div class='docContainer'>
+    <div class='docLinkContainer'>
+        <div>
+            <a class='docLinkExpander' href="html/addonqueststages.lua.html">
+            <div class='doclink'>
+                <div>AddOnQuestStages</div>
             </div>
             </a>
         </div>
