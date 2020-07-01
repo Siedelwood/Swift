@@ -264,12 +264,16 @@ function API.AddPages(_Briefing)
         end
         -- Position angleichen
         local TargetID = GetID(arg[1]);
+        local TargetType = Logic.GetEntityType(TargetID);
         local Position = {arg[1], 0};
         if Logic.IsSettler(TargetID) == 1 then
             Position[2] = 120;
             if Logic.IsKnight(TargetID) then
                 Position[2] = 160;
             end
+        end
+        if TargetType == Entities.XD_ScriptEntity then
+            Position[2] = 160;
         end
         -- Rotation angleichen
         local Rotation;
@@ -279,6 +283,11 @@ function API.AddPages(_Briefing)
                 Rotation = Rotation + 90;
             end
         end
+        -- Größe abgleichen
+        local SizeSV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
+        local Size = Logic.GetEntityScriptingValue(TargetID, SizeSV);
+        Position[2] = Position[2] * Core:ScriptingValueIntegerToFloat(Size);
+        -- Page erstellen
         return AP {
             Name         = PageName,
             Title        = arg[2],
@@ -1529,6 +1538,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
     if LoadScreenVisible then
         XGUIEng.PopPage();
     end
+    local ScreenX, ScreenY = GUI.GetScreenSize();
 
     -- Widgets
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
@@ -1563,7 +1573,7 @@ function BundleBriefingSystem.Local:ActivateCinematicMode()
 
     -- Title and back button
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
-    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
+    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65 * (ScreenY/1080));
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/Skip");
     XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/StartButton", 20, y);
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);

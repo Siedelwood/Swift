@@ -133,7 +133,7 @@ function AddOnRandomRequests.Global:CreateSlaveQuest(_Behavior, _Quest)
         local QuestGoals = self:GetPossibleBehaviors(_Behavior, _Quest);
         -- Fallback
         if #QuestGoals == 0 then
-            local Amount = math.random(250, 400 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
+            local Amount = math.random(250, 300 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
             QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
         end
         -- Behavior speichern
@@ -206,7 +206,7 @@ function AddOnRandomRequests.Global:CountBehaviorUsageForTitle(_FunctionName, _Q
 
     local Count = 0;
     for k, v in pairs(self.Data.UsedBehaviorsPerTitle[Sender][Receiver][Title]) do
-        if _FunctionName == v then
+        if _FunctionName == v[1] then
             Count = Count +1;
         end
     end
@@ -247,7 +247,7 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
         QuestGoals[#QuestGoals+1] = self:GetDeliverGoodsBehavior(_Behavior, _Quest);
     end
     if _Behavior.TypeDeliverGold then
-        local Amount = math.random(250, 400 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
+        local Amount = math.random(250, 300 + (100 * Logic.GetKnightTitle(_Quest.ReceivingPlayer)));
         QuestGoals[#QuestGoals+1] = {"Goal_Deliver", "G_Gold", Amount};
     end
     if _Behavior.TypeClaim then
@@ -257,7 +257,7 @@ function AddOnRandomRequests.Global:GetPossibleBehaviors(_Behavior, _Quest)
         QuestGoals[#QuestGoals+1] = self:GetKnightTitleBehavior(_Behavior, _Quest);
     end
     if _Behavior.TypeReputation then
-        local Reputation = 25 + (10 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
+        local Reputation = 15 + (13 * Logic.GetKnightTitle(_Quest.ReceivingPlayer));
         QuestGoals[#QuestGoals+1] = {"Goal_CityReputation", Reputation};
     end
     if _Behavior.TypeBuildWall then
@@ -720,11 +720,11 @@ function AddOnRandomRequests.Global:GetDeliverGoodsBehavior(_Behavior, _Quest)
     -- Menge ermitteln
     local IsResource = Logic.GetGoodCategoryForGoodType(Goods[SelectedGood]) == GoodCategories.GC_Resource;
     local IsGold = Goods[SelectedGood] == Goods.G_Gold;
-    local Amount = math.random(500, 1500);
+    local Amount = math.random(250, 300 + (100 * Logic.GetKnightTitle(Receiver)));
     if not IsGold then
-        Amount = math.random(30, 60);
+        Amount = math.random(25, 50);
         if not IsResource then
-            Amount = math.random(12, 24);
+            Amount = math.random(9, 18);
         end
     end
     return {"Goal_Deliver", SelectedGood, Amount};

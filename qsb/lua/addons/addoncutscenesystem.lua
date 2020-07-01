@@ -100,6 +100,7 @@ function API.CutsceneStart(_Cutscene)
         if _Cutscene[i].Title and type(_Cutscene[i].Title) == "table" then
             _Cutscene[i].Title = API.Localize(_Cutscene[i].Title);
         end
+        _Cutscene[i].Title = API.ConvertPlaceholders(_Cutscene[i].Title);
 
         if _Cutscene[i].Text and type(_Cutscene[i].Text) == "table" then
             _Cutscene[i].Text = API.Localize(_Cutscene[i].Text);
@@ -757,6 +758,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
         XGUIEng.PopPage();
     end
 
+    local ScreenX, ScreenY = GUI.GetScreenSize();
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 0);
     XGUIEng.ShowWidget("/InGame/Root/Normal", 0);
     XGUIEng.ShowWidget("/InGame/ThroneRoom", 1);
@@ -785,7 +787,7 @@ function AddOnCutsceneSystem.Local:ActivateCinematicMode()
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
 
     local x,y = XGUIEng.GetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight");
-    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65);
+    XGUIEng.SetWidgetScreenPosition("/InGame/ThroneRoom/Main/DialogTopChooseKnight/ChooseYourKnight", x, 65 * (ScreenY/1080));
 
     XGUIEng.SetWidgetPositionAndSize("/InGame/ThroneRoom/KnightInfo/Objectives", 2, 0, 2000, 20);
     XGUIEng.PushPage("/InGame/ThroneRoom/KnightInfo", false);

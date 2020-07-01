@@ -505,8 +505,8 @@ function AddOnQuestDebug.Global:Install()
         {"<<",          AddOnQuestDebug.Global.LoadScript,               true},
         {"<",           AddOnQuestDebug.Global.LoadScript,               false},
         -- execute short lua commands
-        {">>",          AddOnQuestDebug.Global.ExecuteCommand,           true},
-        {">",           AddOnQuestDebug.Global.ExecuteCommand,           false},
+        {">>",          AddOnQuestDebug.Global.ExecuteLuaCommand,        true},
+        {">",           AddOnQuestDebug.Global.ExecuteLuaCommand,        false},
         -- old shit -> "inoffical commands"
         {"shareview",   AddOnQuestDebug.Global.ShareView,                -1},
         {"printequal",  AddOnQuestDebug.Global.FindQuestsByState,        6},
@@ -615,8 +615,8 @@ end
 --
 -- Für die Zerlegung der Kommandizeile wird der Tokenizer benutzt.
 --
--- Für die Nutzung im LuaDebugger des Spiels, müssen Kommandos mit
--- eval() aufgerufen werden.
+-- Kommandos können auch im Skript oder im Lua Debugger genutzt werden. Dafür
+-- muss eval() mit dem Befehl als Argument aufgerufen werden.
 --
 -- @within Internal
 -- @local
@@ -627,9 +627,9 @@ function AddOnQuestDebug.Global:Parser(_Input)
     local Commands = self:Tokenize(_Input);
     for k, v in pairs(Commands) do
         local Action = string.lower(v[1]);
-        for i= 1, #AddOnQuestDebug.Global.Data.DebugCommands, 1 do
-            if v[1] == AddOnQuestDebug.Global.Data.DebugCommands[i][1] then
-                local SelectedCommand = AddOnQuestDebug.Global.Data.DebugCommands[i];
+        for i= 1, #self.Data.DebugCommands, 1 do
+            if v[1] == self.Data.DebugCommands[i][1] then
+                local SelectedCommand = self.Data.DebugCommands[i];
                 for j=2, #v, 1 do
                     local Number = tonumber(v[j]);
                     if Number then
