@@ -93,7 +93,7 @@ end
 --
 function API.Map_SetFinished()
 	if not GUI then
-		Logic.ExecuteInLuaLocalState("Map_SetFinished()");
+		Logic.ExecuteInLuaLocalState("API.Map_SetFinished()");
 		return;
 	end
 	local MapName = Framework.GetCurrentMapName();
