@@ -88,6 +88,17 @@ ExternalMapLoader = {
 					"jlmb[0-9]*_swm_",  -- jlmb
 					"twa[0-9]*_swm_"    -- totalwarANGEL
 				},
+				HeroToLoadscreen = {
+					["U_KnightTrading"]   = 1,
+					["U_KnightHealing"]   = 2,
+					["U_KnightChivalry"]  = 3,
+					["U_KnightWisdom"]    = 4,
+					["U_KnightPlunder"]   = 5,
+					["U_KnightSong"]      = 6,
+					["U_KnightSaraya"]    = 7,
+					["U_KnightSabatta"]   = 8,
+					["U_KnightRedPrince"] = 9,
+				},
 				Version  = 1,
 			},
 		},
@@ -228,7 +239,7 @@ function ExternalMapLoader.Local:SelectMap(_Selected)
 		XGUIEng.SetMaterialColor("/EndScreen/EndScreen/BG", 0, 255, 255, 255, 255);
 	else
 		-- Default Image
-		XGUIEng.SetMaterialTexture("/EndScreen/EndScreen/BG", 0, "graphics/textures/gui_1200/mainmenu/limitedbg.png");
+		XGUIEng.SetMaterialTexture("/EndScreen/EndScreen/BG", 0, "graphics/textures/gui_1200/loadscreens/throneroom.png");
 		XGUIEng.SetMaterialColor("/EndScreen/EndScreen/BG", 0, 255, 255, 255, 255);
 	end
 end
@@ -280,7 +291,7 @@ function ExternalMapLoader.Local:StartMap()
 	Profile.SetString(Name, "MapLoader", MapName);
 	Profile.SetInteger(Name, "MapLoaderVersion", self.Data.Campaign.MapData[Name].LoaderVersion or 1);
 	Framework.SetLoadScreenNeedButton(1);
-	InitLoadScreen(false, 1, Name, 0, 0);
+	InitLoadScreen(false, 1, Name, 0, Knight);
 	Framework.ResetProgressBar();
 	Framework.StartMap(Name, 1, Knight);
 end
@@ -536,7 +547,7 @@ function ExternalMapLoader.Local:OverrideCustomGameMapSelectionDialog()
 			CustomGame_FillHeroComboBox(true);
 		else
 			XGUIEng.ShowWidget("/LoadScreen/LoadScreen/ContainerDescription/LoadScreenReadMe", 0);
-			XGUIEng.SetMaterialTexture("/EndScreen/EndScreen/BG", 0, "graphics/textures/gui_1200/mainmenu/limitedbg.png");
+			XGUIEng.SetMaterialTexture("/EndScreen/EndScreen/BG", 0, "graphics/textures/gui_1200/loadscreens/throneroom.png");
 			XGUIEng.SetMaterialColor("/EndScreen/EndScreen/BG", 0, 255, 255, 255, 255);
 		end
 	end
