@@ -264,6 +264,14 @@ function BundleMinimapMarker.Global:ShowMinimapMarker(_ID)
     ]]);
 end
 
+--
+-- Logger
+--
+function BundleMinimapMarker.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleMinimapMarker");
+    Core:LogToFile(_Text, _Level, "BundleMinimapMarker");
+end
+
 ---
 -- Stellt Markierungen auf der Minimap wieder her, wenn ein Spielstand
 -- geladen wird.
@@ -310,6 +318,14 @@ function BundleMinimapMarker.Local:ShowMinimapMarker(_ID, _PlayerID, _X, _Y, _Ty
         B = _PlayerID[3];
     end
     GUI.CreateMinimapSignalRGBA(_ID, _X, _Y, R, G, B, 255, _Type);
+end
+
+--
+-- Logger
+--
+function BundleMinimapMarker.Local:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleMinimapMarker");
+    Core:LogToFile(_Text, _Level, "BundleMinimapMarker");
 end
 
 -- -------------------------------------------------------------------------- --

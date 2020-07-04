@@ -31,10 +31,9 @@ end
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    local Path = "E:/Repositories/symfonia/qsb/lua";
-    Script.Load(Path .. "/loader.lua");
-    SymfoniaLoader:Load(Path);
+    Script.Load("E:/Repositories/symfonia/var/qsb.lua");
     InitKnightTitleTables();
+    API.Install();
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()

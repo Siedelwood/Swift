@@ -207,7 +207,7 @@ function API.InterruptQuestDialog(_Dialog)
         QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
     end
     if QuestDialog == nil then
-        API.Fatal("API.InterruptQuestDialog: Dialog is invalid!");
+        fatal("API.InterruptQuestDialog: Dialog is invalid!");
         return;
     end
     for i= 1, #QuestDialog-1, 1 do
@@ -238,7 +238,7 @@ function API.RestartQuestDialog(_Dialog)
         QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
     end
     if QuestDialog == nil then
-        API.Fatal("API.ResetQuestDialog: Dialog is invalid!");
+        fatal("API.ResetQuestDialog: Dialog is invalid!");
         return;
     end
     for i= 1, #QuestDialog, 1 do
@@ -359,7 +359,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
 
     -- Daten validieren
     if not self:QuestValidateQuestData(QuestData) then
-        API.Fatal("AddQuest: Error while creating quest. Table has been copied to log.");
+        fatal("AddQuest: Error while creating quest. Table has been copied to log.");
         API.DumpTable(QuestData, "Quest");
         return;
     end
@@ -517,6 +517,12 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
     if self.State == QuestState.NotTriggered then
         local triggered = true;
         for i = 1, self.Triggers[0] do
+            -- Write Trigger to Log
+            local Text = BundleQuestGeneration.Global:SerializeBehavior(self.Triggers[i], Triggers.Custom2, 4);
+            if Text then
+                BundleQuestGeneration.Global:Log("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG, true);
+            end
+            -- Check Trigger
             triggered = triggered and self:IsTriggerActive(self.Triggers[i]);
         end
         if triggered then
@@ -528,7 +534,14 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
         local allTrue = true;
         local anyFalse = false;
         for i = 1, self.Objectives[0] do
+            -- Write Trigger to Log
+            local Text = BundleQuestGeneration.Global:SerializeBehavior(self.Objectives[i], Objective.Custom2, 1);
+            if Text then
+                BundleQuestGeneration.Global:Log("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG, true);
+            end
+            -- Check Goal
             local completed = self:IsObjectiveCompleted(self.Objectives[i]);
+            
             if self.Objectives[i].Type == Objective.Deliver and completed == nil then
                 if self.Objectives[i].Data[4] == nil then
                     self.Objectives[i].Data[4] = 0;
@@ -568,10 +581,22 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
         end
         if self.Result == QuestResult.Success then
             for i = 1, self.Rewards[0] do
+                -- Write Trigger to Log
+                local Text = BundleQuestGeneration.Global:SerializeBehavior(self.Rewards[i], Reward.Custom, 3);
+                if Text then
+                    BundleQuestGeneration.Global:Log("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG, true);
+                end
+                -- Add Reward
                 self:AddReward(self.Rewards[i]);
             end
         elseif self.Result == QuestResult.Failure then
             for i = 1, self.Reprisals[0] do
+                -- Write Trigger to Log
+                local Text = BundleQuestGeneration.Global:SerializeBehavior(self.Reprisals[i], Reprisal.Custom, 3);
+                if Text then
+                    BundleQuestGeneration.Global:Log("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG, true);
+                end
+                -- Add Reward
                 self:AddReprisal(self.Reprisals[i]);
             end
         end
@@ -580,6 +605,62 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
         end
         return true;
     end
+end
+
+function BundleQuestGeneration.Global:SerializeBehavior(_Data, _CustomType, _Typ)
+    local BehaviorType = "Objective";
+    local BehaTable = Objective;
+    if _Typ == 2 then
+        BehaviorType = "Reprisal";
+        BehaTable = Reprisal;
+    elseif _Typ == 3 then
+        BehaviorType = "Reward";
+        BehaTable = Reward;
+    elseif _Typ == 4 then
+        BehaviorType = "Trigger";
+        BehaTable = Triggers;
+    end
+
+    local Info = "Running {";
+    local Beha = GetNameOfKeyInTable(BehaTable, _Data.Type);
+
+    if _Data.Type == _CustomType then
+        local FunctionName = _Data.Data[1].FuncName;
+        Info = Info.. BehaviorType.. "." ..Beha.. "";
+        if FunctionName == nil then
+            return;
+        else
+            Info = Info.. ", " ..tostring(FunctionName);
+        end
+        if _Data.Data and _Data.Data[1].i47ya_6aghw_frxil and #_Data.Data[1].i47ya_6aghw_frxil > 0 then
+            for j= 1, #_Data.Data[1].i47ya_6aghw_frxil, 1 do
+                Info = Info.. ", (" ..type(_Data.Data[1].i47ya_6aghw_frxil[j]).. ") " ..tostring(Value);
+            end
+        end
+    else
+        Info = Info.. BehaviorType.. "." ..Beha.. "";
+        if _Data.Data then
+            if type(_Data.Data) == "table" then
+                for j= 1, #_Data.Data do
+                    Info = Info.. ", (" ..type(_Data.Data[j]).. ") " ..tostring(_Data.Data[j]);
+                end
+            else
+                Info = Info.. ", (" ..type(_Data.Data).. ") " ..tostring(_Data.Data);
+            end
+        end
+    end
+    Info = Info.. "}";
+    return Info;
+end
+
+--
+-- Logger
+--
+function BundleQuestGeneration.Global:Log(_Text, _Level, _JustLog)
+    if not _JustLog then
+        Core:LogToScreen(_Text, _Level, "BundleQuestGeneration");
+    end
+    Core:LogToFile(_Text, _Level, "BundleQuestGeneration");
 end
 
 -- -------------------------------------------------------------------------- --

@@ -118,15 +118,15 @@ end
 --
 function API.AddCustomBuildingButton(_Index, _Action, _Tooltip, _Update)
     if not GUI then
-        API.Fatal("API.AddCustomBuildingButton: Can not be used from global script!");
+        fatal("API.AddCustomBuildingButton: Can not be used from global script!");
         return;
     end
     if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) then
-        API.Fatal("API.AddCustomBuildingButton: Index must be 1 or 2!");
+        fatal("API.AddCustomBuildingButton: Index must be 1 or 2!");
         return;
     end
     if (type(_Action) ~= "function" or type(_Tooltip) ~= "function" or type(_Update) ~= "function") then
-        API.Fatal("API.AddCustomBuildingButton: Action, tooltip and update must be functions!");
+        fatal("API.AddCustomBuildingButton: Action, tooltip and update must be functions!");
         return;
     end
     return BundleBuildingButtons.Local:AddOptionalButton(
@@ -153,7 +153,7 @@ function API.RemoveCustomBuildingButton(_Index)
         return;
     end
     if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) then
-        API.Fatal("API.RemoveCustomBuildingButton: Index must be 1 or 2!");
+        fatal("API.RemoveCustomBuildingButton: Index must be 1 or 2!");
         return;
     end
     return BundleBuildingButtons.Local:DeleteOptionalButton(_Index);
@@ -572,6 +572,14 @@ function BundleBuildingButtons.Local:TextNormal(_Title, _Text, _DisabledText)
     local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true);
     local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget);
     XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height);
+end
+
+--
+-- Logger
+--
+function BundleBuildingButtons.Local:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleBuildingButtons");
+    Core:LogToFile(_Text, _Level, "BundleBuildingButtons");
 end
 
 ---

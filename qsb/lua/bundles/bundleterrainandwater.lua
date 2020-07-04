@@ -44,11 +44,11 @@ function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
         return;
     end
     if not IsExisting(_Center) then
-        API.Fatal("API.ChangeTerrainTypeInSquare: Central point does not exist!");
+        fatal("API.ChangeTerrainTypeInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then
-        API.Warn("API.ChangeTerrainTypeInSquare: Check your offset! It seems to small!");
+        warn("API.ChangeTerrainTypeInSquare: Check your offset! It seems to small!");
     end
     return BundleTerrainAndWater.Global:ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType);
 end
@@ -79,11 +79,11 @@ function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
         return;
     end
     if not IsExisting(_Center) then
-        API.Fatal("API.ChangeWaterHeightInSquare: Central point does not exist!");
+        fatal("API.ChangeWaterHeightInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then
-        API.Warn("API.ChangeWaterHeightInSquare: Check your offset! It seems to small!");
+        warn("API.ChangeWaterHeightInSquare: Check your offset! It seems to small!");
     end
     return BundleTerrainAndWater.Global:ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative);
 end
@@ -115,11 +115,11 @@ function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
         return;
     end
     if not IsExisting(_Center) then
-        API.Fatal("API.ChangeTerrainHeightInSquare: Central point does not exist!");
+        fatal("API.ChangeTerrainHeightInSquare: Central point does not exist!");
         return;
     end
     if _Offset < 100 then
-        API.Warn("API.ChangeTerrainHeightInSquare: Check your offset! It seems to small!");
+        warn("API.ChangeTerrainHeightInSquare: Check your offset! It seems to small!");
     end
     return BundleTerrainAndWater.Global:ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative);
 end
@@ -270,6 +270,14 @@ function BundleTerrainAndWater.Global:GetSquareForWaterAndTerrain(_Center, _Offs
         return -2;
     end
     return Xmin, Ymin, Xmax, Ymax, z;
+end
+
+--
+-- Logger
+--
+function BundleTerrainAndWater.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleTerrainAndWater");
+    Core:LogToFile(_Text, _Level, "BundleTerrainAndWater");
 end
 
 -- -------------------------------------------------------------------------- --

@@ -37,12 +37,12 @@ QSB.DestroyedSoldiers = QSB.DestroyedSoldiers or {};
 --
 function API.GetInputStringFromQuest(_QuestName)
     if GUI then
-        API.Fatal("API.GetInputStringFromQuest: Quests can not be checked from local script!");
+        fatal("API.GetInputStringFromQuest: Quests can not be checked from local script!");
         return;
     end
     local Quest = Quests[GetQuestID(_QuestName)];
     if not Quest then
-        API.Fatal("API.GetInputStringFromQuest: Quest '" ..tostring(_QuestName).. "' not found!");
+        fatal("API.GetInputStringFromQuest: Quest '" ..tostring(_QuestName).. "' not found!");
         return;
     end
     return BundleClassicBehaviors.Global:GetInputFromQuest(_QuestName);
@@ -7412,7 +7412,7 @@ function b_Trigger_OnQuestActive:Debug(_Quest)
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
-        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
+        fatal("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -7491,7 +7491,7 @@ function b_Trigger_OnQuestFailure:Debug(_Quest)
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
-        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
+        fatal("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -7622,7 +7622,7 @@ function b_Trigger_OnQuestInterrupted:Debug(_Quest)
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
-        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
+        fatal("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -7701,7 +7701,7 @@ function b_Trigger_OnQuestOver:Debug(_Quest)
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
-        dbg("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
+        fatal("".._Quest.Identifier.." "..self.Name..": waitTime must be a number!");
         return true;
     end
     return false;
@@ -7777,7 +7777,7 @@ function b_Trigger_OnQuestSuccess:Debug(_Quest)
         fatal("".._Quest.Identifier.." "..self.Name..": invalid quest name!");
         return true;
     elseif self.WaitTime and (type(self.WaitTime) ~= "number" or self.WaitTime < 0) then
-        dbg("".._Quest.Identifier.." "..self.Name..": waittime must be a number!");
+        fatal("".._Quest.Identifier.." "..self.Name..": waittime must be a number!");
         return true;
     end
     return false;
@@ -8904,6 +8904,14 @@ function BundleClassicBehaviors.Global:IsQuestPositionReached(_Quest, _Objective
     end
 end
 
+--
+-- Logger
+--
+function BundleClassicBehaviors.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleClassicBehaviors");
+    Core:LogToFile(_Text, _Level, "BundleClassicBehaviors");
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -8932,6 +8940,14 @@ function BundleClassicBehaviors.Local:OverrideDisplayQuestObjective()
         end
         GUI_Interaction.DisplayQuestObjective_Orig_BundleClasicBehaviors(_QuestIndex, _MessageKey);
     end
+end
+
+--
+-- Logger
+--
+function BundleClassicBehaviors.Local:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleClassicBehaviors");
+    Core:LogToFile(_Text, _Level, "BundleClassicBehaviors");
 end
 
 Core:RegisterBundle("BundleClassicBehaviors");

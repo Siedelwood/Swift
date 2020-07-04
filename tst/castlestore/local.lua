@@ -13,10 +13,9 @@ end
 -- Wird zum Spielstart einmalig aufgerufen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_LocalOnMapStart()
-    local Path = "E:/Repositories/symfonia/qsb/lua";
-    Script.Load(Path .. "/loader.lua");
-    SymfoniaLoader:Load(Path);
+    Script.Load("E:/Repositories/symfonia/var/qsb.lua");
     InitKnightTitleTables();
+    API.Install();
 end
 
 

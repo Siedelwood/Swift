@@ -402,7 +402,7 @@ AddPages = API.AddPages;
 -- @within Briefing
 --
 function AP(_Page)
-    API.Fatal("AP: Please use the function provides by AddPages!");
+    API.Note("AP: Please use the function provides by AddPages!");
 end
 
 ---
@@ -815,6 +815,14 @@ end
 --
 function BundleBriefingSystem.Global:PushBriefingNote(_Text)
     API.Bridge("BundleBriefingSystem.Local:PushBriefingNote('" .._Text.. "')");
+end
+
+--
+-- Logger
+--
+function BundleBriefingSystem.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleBriefingSystem");
+    Core:LogToFile(_Text, _Level, "BundleBriefingSystem");
 end
 
 -- Local Script ------------------------------------------------------------- --
@@ -1794,6 +1802,14 @@ function BundleBriefingSystem.Local:UpdateBriefingNotes()
     XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", Text);
 end
 
+--
+-- Logger
+--
+function BundleBriefingSystem.Local:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleBriefingSystem");
+    Core:LogToFile(_Text, _Level, "BundleBriefingSystem");
+end
+
 -- Shared ------------------------------------------------------------------- --
 
 ---
@@ -1864,7 +1880,7 @@ end
 
 function b_Reprisal_Briefing:Debug(_Quest)
     if not type(_G[self.Function]) == "function" then
-        fatal(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!");
+        fatal(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!", LEVEL_ERROR);
         return true;
     end
     return false;
@@ -2011,10 +2027,10 @@ end
 
 function b_Trigger_Briefing:Debug(_Quest)
     if self.WaitTime and self.WaitTime < 0 then
-        dbg(_Quest.Identifier.." "..self.Name..": waittime is below 0!");
+        fatal(_Quest.Identifier.." "..self.Name..": waittime is below 0!", LEVEL_ERROR);
         return true;
     elseif not IsValidQuest(self.Quest) then
-        fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!");
+        fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!", LEVEL_ERROR);
         return true;
     end
     return false;

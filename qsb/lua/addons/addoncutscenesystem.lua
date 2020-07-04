@@ -81,7 +81,7 @@ API = API or {};
 --
 function API.CutsceneStart(_Cutscene)
     if GUI then
-        fatal("API.CutsceneStart: Cannot start cutscene from local script!");
+        AddOnCutsceneSystem.Local:Log("API.CutsceneStart: Cannot start cutscene from local script!", LEVEL_WARNING);
         return;
     end
 
@@ -229,7 +229,7 @@ AddFlights = API.AddFlights;
 -- }
 --
 function AF(_Flight)
-    API.Fatal("AF: Please use the function provides by AddFlights!");
+    API.Note("Please use the method provided by API.AddFlights!");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -389,6 +389,14 @@ end
 --
 function AddOnCutsceneSystem.Global:IsCutsceneActive()
     return IsBriefingActive() == true or self.Data.CutsceneActive == true;
+end
+
+--
+-- Logger
+--
+function AddOnCutsceneSystem.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "AddOnCutsceneSystem");
+    Core:LogToFile(_Text, _Level, "AddOnCutsceneSystem");
 end
 
 ---
@@ -940,6 +948,14 @@ function AddOnCutsceneSystem.Local:DeactivateCinematicMode()
     XGUIEng.ShowWidget("/InGame/Root/Normal", 1);
     XGUIEng.ShowWidget("/InGame/Root/3dOnScreenDisplay", 1);
     XGUIEng.SetText("/InGame/ThroneRoom/Main/MissionBriefing/Objectives", " ");
+end
+
+--
+-- Logger
+--
+function AddOnCutsceneSystem.Local:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "AddOnCutsceneSystem");
+    Core:LogToFile(_Text, _Level, "AddOnCutsceneSystem");
 end
 
 ---

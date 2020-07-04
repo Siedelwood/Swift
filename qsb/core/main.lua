@@ -1,8 +1,6 @@
 -- Main ------------------------------------------------------------------------
 
--- -------------------------------------------------------------------------- --
--- User-Space                                                                 --
--- -------------------------------------------------------------------------- --
+-- API Stuff --
 
 ---
 -- Initialisiert alle verfügbaren Bundles und führt ihre Install-Methode aus.
@@ -17,9 +15,7 @@ function API.Install()
     Core:InitalizeBundles();
 end
 
--- -------------------------------------------------------------------------- --
--- Application-Space                                                          --
--- -------------------------------------------------------------------------- --
+-- Core Stuff --
 
 Core.Data.BundleInitializerList = {};
 Core.Data.InitalizedBundles = {};

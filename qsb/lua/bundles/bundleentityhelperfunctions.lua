@@ -292,7 +292,7 @@ function BundleEntityHelperFunctions.Global:SetResourceAmount(_Entity, _StartAmo
 
     local EntityID = GetID(_Entity);
     if not IsExisting(EntityID) or Logic.GetResourceDoodadGoodType(EntityID) == 0 then
-        API.Fatal("SetResourceAmount: Resource entity is invalid!");
+        fatal("SetResourceAmount: Resource entity is invalid!");
         return false;
     end
     if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then

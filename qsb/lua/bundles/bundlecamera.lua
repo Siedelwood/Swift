@@ -77,7 +77,7 @@ function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
         return;
     end
     return BundleCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);
@@ -173,6 +173,14 @@ function BundleCamera.Global:InitExtendedZoomHotkeyDescription()
     API.Bridge([[
         BundleCamera.Local:RegisterExtendedZoomHotkey()
     ]]);
+end
+
+--
+-- Logger
+--
+function BundleCamera.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleCamera");
+    Core:LogToFile(_Text, _Level, "BundleCamera");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -287,6 +295,14 @@ function BundleCamera.Local:DeactivateExtendedZoom()
     Camera.RTS_SetZoomFactor(0.5000);
     Camera.RTS_SetZoomFactorMax(0.5001);
     Camera.RTS_SetZoomFactorMin(0.0999);
+end
+
+--
+-- Logger
+--
+function BundleCamera.Local:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleCamera");
+    Core:LogToFile(_Text, _Level, "BundleCamera");
 end
 
 -- -------------------------------------------------------------------------- --

@@ -103,6 +103,14 @@ function BundleCheats.Global:RessurectCheats()
     API.Bridge("BundleCheats.Local:RessurectCheats()");
 end
 
+--
+-- Logger
+--
+function BundleCheats.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleCheats");
+    Core:LogToFile(_Text, _Level, "BundleCheats");
+end
+
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -148,6 +156,14 @@ function BundleCheats.Local:RessurectCheats()
         2,
         false
     );
+end
+
+--
+-- Logger
+--
+function BundleCheats.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleCheats");
+    Core:LogToFile(_Text, _Level, "BundleCheats");
 end
 
 -- -------------------------------------------------------------------------- --

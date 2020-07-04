@@ -360,6 +360,14 @@ function BundleWeatherManipulation.Global.EventController()
     end
 end
 
+--
+-- Logger
+--
+function BundleWeatherManipulation.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleWeatherManipulation");
+    Core:LogToFile(_Text, _Level, "BundleWeatherManipulation");
+end
+
 -- Local Script ------------------------------------------------------------- --
 
 ---

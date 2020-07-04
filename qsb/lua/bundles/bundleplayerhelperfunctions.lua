@@ -36,11 +36,11 @@ function API.SetEarningsOfPlayerCity(_PlayerID, _Earnings)
         return;
     end
     if _PlayerID ~= -1 and Logic.GetStoreHouse(_PlayerID) == 0 then
-        API.Fatal("API.SetEarningsOfPlayerCity: Player " .._PlayerID.. " is dead! :(");
+        fatal("API.SetEarningsOfPlayerCity: Player " .._PlayerID.. " is dead! :(");
         return;
     end
     if _Earnings == nil or (_Earnings < 0 or _Earnings > 100) then
-        API.Fatal("API.SetEarningsOfPlayerCity: _Earnings must be between 0 and 100!");
+        fatal("API.SetEarningsOfPlayerCity: _Earnings must be between 0 and 100!");
         return;
     end
     return BundlePlayerHelperFunctions.Global:SetEarningsOfPlayerCity(_PlayerID, _Earnings);
@@ -65,11 +65,11 @@ function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
         return;
     end
     if _PlayerID ~= -1 and Logic.GetStoreHouse(_PlayerID) == 0 then
-        API.Fatal("API.SetNeedSatisfaction: Player " .._PlayerID.. " is dead! :(");
+        fatal("API.SetNeedSatisfaction: Player " .._PlayerID.. " is dead! :(");
         return;
     end
     if _State < 0 or _State > 1 then
-        API.Fatal("API.SetNeedSatisfaction: _State must be between 0 and 1!");
+        fatal("API.SetNeedSatisfaction: _State must be between 0 and 1!");
         return;
     end
     return BundlePlayerHelperFunctions.Global:SetNeedSatisfactionLevel(_Need, _State, _PlayerID);
@@ -505,6 +505,14 @@ function BundlePlayerHelperFunctions.Global:SetControllingPlayer(_oldPlayerID, _
     ]]);
 
     self.Data.HumanPlayerChangedOnce = true;
+end
+
+--
+-- Logger
+--
+function BundlePlayerHelperFunctions.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundlePlayerHelperFunctions");
+    Core:LogToFile(_Text, _Level, "BundlePlayerHelperFunctions");
 end
 
 ---

@@ -877,6 +877,14 @@ function AddOnRandomRequests.Global:GetWorldEntitiesOnPlayersTerritories(_Type, 
     return Result;
 end
 
+--
+-- Logger
+--
+function AddOnRandomRequests.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "AddOnRandomRequests");
+    Core:LogToFile(_Text, _Level, "AddOnRandomRequests");
+end
+
 -- -------------------------------------------------------------------------- --
 
 ---
@@ -1085,11 +1093,11 @@ end
 
 function b_Goal_RandomRequest:Debug(_Quest)
     if (type(self.TimeLimit) ~= "number" or self.TimeLimit < 0) then 
-        API.Fatal(_Quest.Identifier.. ": " ..self.Name.. ": Time limit must be a number and at least 0!");
+        fatal(_Quest.Identifier.. ": " ..self.Name.. ": Time limit must be a number and at least 0!");
         return true;
     end
     if (type(self.Trials) ~= "number") then 
-        API.Fatal(_Quest.Identifier.. ": " ..self.Name.. ": Trials must be a numeric value!");
+        fatal(_Quest.Identifier.. ": " ..self.Name.. ": Trials must be a numeric value!");
         return true;
     end
     return false;

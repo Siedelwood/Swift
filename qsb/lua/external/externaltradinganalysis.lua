@@ -56,7 +56,7 @@ QSB.TraderTypes = {
 --
 function API.GetOfferInformation(_PlayerID)
     if GUI then
-        API.Fatal("Can not execute API.GetOfferInformation in local script!");
+        fatal("Can not execute API.GetOfferInformation in local script!");
         return;
     end
     return ExternalTradingAnalysis.Global:GetStorehouseInformation(_PlayerID);
@@ -75,7 +75,7 @@ end
 --
 function API.GetOfferCount(_PlayerID)
     if GUI then
-        API.Fatal("Can not execute API.GetOfferCount in local script!");
+        fatal("Can not execute API.GetOfferCount in local script!");
         return;
     end
     return ExternalTradingAnalysis.Global:GetOfferCount(_PlayerID);
@@ -97,7 +97,7 @@ end
 --
 function API.IsGoodOrUnitOffered(_PlayerID, _GoodOrEntityType)
     if GUI then
-        API.Fatal("Can not execute API.IsGoodOrUnitOffered in local script!");
+        fatal("Can not execute API.IsGoodOrUnitOffered in local script!");
         return;
     end
     local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(_PlayerID, _GoodOrEntityType);
@@ -209,7 +209,7 @@ function ExternalTradingAnalysis.Global:OverwriteOfferFunctions()
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
         local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _GoodType);
         if OfferID ~= -1 and TraderID ~= -1 then
-            API.Warn("Good offer for good type " .._GoodType.. " already exists for player " ..PlayerID.. "!");
+            warn("Good offer for good type " .._GoodType.. " already exists for player " ..PlayerID.. "!");
             return;
         end
 
@@ -263,7 +263,7 @@ function ExternalTradingAnalysis.Global:OverwriteOfferFunctions()
         local PlayerID = Logic.EntityGetPlayer(MercenaryID);
         local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _Type);
         if OfferID ~= -1 and TraderID ~= -1 then
-            API.Warn("Mercenary offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
+            warn("Mercenary offer for type " .._Type.. " already exists for player " ..PlayerID.. "!");
             return;
         end
 
@@ -302,7 +302,7 @@ function ExternalTradingAnalysis.Global:OverwriteOfferFunctions()
         local PlayerID = Logic.EntityGetPlayer(MerchantID);
         local OfferID, TraderID = ExternalTradingAnalysis.Global:GetOfferAndTrader(PlayerID, _EntertainerType);
         if OfferID ~= -1 and TraderID ~= -1 then
-            API.Warn("Entertainer offer for type " .._EntertainerType.. " already exists for player " ..PlayerID.. "!");
+            warn("Entertainer offer for type " .._EntertainerType.. " already exists for player " ..PlayerID.. "!");
             return;
         end
 

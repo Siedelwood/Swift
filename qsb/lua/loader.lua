@@ -253,11 +253,6 @@ function SymfoniaLoader:Load(_Path)
             local Name = self.Data.AddOnLoadOrder[i][1]:lower();
             if LoadAddon then
                 Script.Load(_Path.. "/addons/" ..Name.. ".lua");
-            else
-                -- Only show once
-                if not GUI then
-                    API.Fatal("SymfoniaLoader:Load: AddOn '" ..Name.. "' has unsatisfied dependencies and was not loaded!");
-                end
             end
         end
     end

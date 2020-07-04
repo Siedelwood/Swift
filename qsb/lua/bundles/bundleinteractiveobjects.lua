@@ -480,6 +480,14 @@ function BundleInteractiveObjects.Global:OnEntityDestroyed()
     end
 end
 
+--
+-- Logger
+--
+function BundleInteractiveObjects.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleInteractiveObjects");
+    Core:LogToFile(_Text, _Level, "BundleInteractiveObjects");
+end
+
 -- Local Script ----------------------------------------------------------------
 
 ---
@@ -748,6 +756,14 @@ function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)
         XGUIEng.SetMaterialTexture(_Widget, 1, _Icon);
         XGUIEng.SetMaterialUV(_Widget, 1, 0, 0, Scale, Scale);
     end
+end
+
+--
+-- Logger
+--
+function BundleInteractiveObjects.Local:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "BundleInteractiveObjects");
+    Core:LogToFile(_Text, _Level, "BundleInteractiveObjects");
 end
 
 -- -------------------------------------------------------------------------- --

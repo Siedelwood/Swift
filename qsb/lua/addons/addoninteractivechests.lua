@@ -43,7 +43,7 @@ QSB = QSB or {};
 --
 function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
     if GUI then
-        API.Fatal("API.CreateRandomChest: Can not be used from local script!");
+        fatal("API.CreateRandomChest: Can not be used from local script!");
         return;
     end
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
@@ -73,7 +73,7 @@ CreateRandomChest = API.CreateRandomChest;
 --
 function API.CreateRandomTreasure(_Name, _Good, _Min, _Max, _Callback)
     if GUI then
-        API.Fatal("API.CreateRandomTreasure: Can not be used from local script!");
+        fatal("API.CreateRandomTreasure: Can not be used from local script!");
         return;
     end
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, true);
@@ -93,7 +93,7 @@ CreateRandomTreasure = API.CreateRandomTreasure;
 --
 function API.CreateRandomGoldChest(_Name)
     if GUI then
-        API.Fatal("API.CreateRandomGoldChest('" .._Name.. "')");
+        fatal("API.CreateRandomGoldChest('" .._Name.. "')");
         return;
     end
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
@@ -306,6 +306,14 @@ function AddOnInteractiveChests.Global:CreateRandomLuxuryChest(_Name)
     end
     local Good = Luxury[math.random(1, #Luxury)];
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, Good, 50, 100);
+end
+
+--
+-- Logger
+--
+function AddOnInteractiveChests.Global:Log(_Text, _Level)
+    Core:LogToScreen(_Text, _Level, "AddOnInteractiveChests");
+    Core:LogToFile(_Text, _Level, "AddOnInteractiveChests");
 end
 
 -- -------------------------------------------------------------------------- --

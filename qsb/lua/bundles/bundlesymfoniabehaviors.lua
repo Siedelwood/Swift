@@ -741,7 +741,7 @@ end
 
 function b_Goal_CityReputation:Debug(_Quest)
     if type(self.Reputation) ~= "number" or self.Reputation < 0 or self.Reputation > 100 then
-        API.Fatal(_Quest.Identifier.. " " ..self.Name.. ": Reputation must be between 0 and 100!");
+        fatal(_Quest.Identifier.. " " ..self.Name.. ": Reputation must be between 0 and 100!");
         return true;
     end
     return false;

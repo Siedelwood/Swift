@@ -43,7 +43,7 @@ QSB = QSB or {};
 --
 function API.DialogInfoBox(_Title, _Text, _Action)
     if not GUI then
-        API.Fatal("API.DialogInfoBox: Can only be used in the local script!");
+        fatal("API.DialogInfoBox: Can only be used in the local script!");
         return;
     end
 
@@ -77,7 +77,7 @@ UserOpenDialog = API.DialogInfoBox;
 --
 function API.DialogRequestBox(_Title, _Text, _Action, _OkCancel)
     if not GUI then
-        API.Fatal("API.DialogRequestBox: Can only be used in the local script!");
+        fatal("API.DialogRequestBox: Can only be used in the local script!");
         return;
     end
     _Title = API.ConvertPlaceholders(API.Localize(_Title));
@@ -110,7 +110,7 @@ UserOpenRequesterDialog = API.DialogRequestBox;
 --
 function API.DialogSelectBox(_Title, _Text, _Action, _List)
     if not GUI then
-        API.Fatal("API.DialogSelectBox: Can only be used in the local script!");
+        fatal("API.DialogSelectBox: Can only be used in the local script!");
         return;
     end
     _Title = API.ConvertPlaceholders(API.Localize(_Title));
@@ -192,7 +192,7 @@ end
 --
 function API.SimpleTypewriter(_Text, _Callback)
     if GUI then
-        API.Fatal("API.SimpleTypewriter: Can only be used from global script!");
+        fatal("API.SimpleTypewriter: Can only be used from global script!");
         return;
     end
     QSB.SimpleTypewriter:New(API.ConvertPlaceholders(API.Localize(_Text)), _Callback):Start();

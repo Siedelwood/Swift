@@ -1,5 +1,23 @@
 -- Logging ---------------------------------------------------------------------
 
+QSB.Logging = {
+    DisplayLoggingLevel = 4,
+    FileLoggingLevel = 2,
+    Levels = {
+        Debug = 1;
+        Info = 2;
+        Warning = 3;
+        Error = 4;
+        Off = 5;
+    },
+}
+
+LEVEL_DEBUG = QSB.Logging.Levels.Debug;
+LEVEL_INFO = QSB.Logging.Levels.Info;
+LEVEL_WARNING = QSB.Logging.Levels.Warning;
+LEVEL_ERROR = QSB.Logging.Levels.Error;
+LEVEL_OFF = QSB.Logging.Levels.Off;
+
 -- API Stuff --
 
 ---
@@ -229,9 +247,7 @@ end
 ---
 -- Schreibt einen FATAL auf den Bildschirm und ins Log.
 --
--- <p><b>Alias:</b> API.Dbg</p>
 -- <p><b>Alias:</b> fatal</p>
--- <p><b>Alias:</b> dbg</p>
 --
 -- @param[type=string] _Message Anzeigetext
 -- @within Anwenderfunktionen
@@ -241,9 +257,7 @@ function API.Fatal(_Message)
     API.StaticNote("FATAL: " .._Message)
     Framework.WriteToLog("FATAL: " .._Message);
 end
-API.Dbg = API.Fatal;
 fatal = API.Fatal;
-dbg = API.Fatal;
 
 ---
 -- Schreibt eine WARNING auf den Bildschirm und ins Log.
@@ -259,4 +273,89 @@ function API.Warn(_Message)
     Framework.WriteToLog("WARNING: " .._Message);
 end
 warn = API.Warn;
+
+
+function API.SetLoggingLevel(_Screen, _File)
+    if GUI then
+        return;
+    end
+    QSB.Logging.DisplayLoggingLevel = _Screen;
+    QSB.Logging.FileLoggingLevel = _File;
+    Logic.ExecuteInLuaLocalState(string.format([[
+        QSB.Logging.DisplayLoggingLevel = %d
+        QSB.Logging.FileLoggingLevel = %d
+    ]], _Screen, _File));
+end
+
+-- Core Stuff --
+
+function Core:GetSystemTime()
+    local DateTimeString = Framework.GetSystemTimeDateString();
+    local Year = DateTimeString:sub(2, 5);
+    local Month = DateTimeString:sub(7, 8);
+    local Day = DateTimeString:sub(10, 11);
+    local Hour = DateTimeString:sub(15, 16);
+    local Minute = DateTimeString:sub(18, 19);
+    local Second = DateTimeString:sub(22, 23);
+    return Day.. "." ..Month.. "." ..Year.. " " ..Hour.. ":" ..Minute.. ":" ..Second;
+end
+
+function Core:FormatLoggingMessage(_Text, _Level, _Bundle, _IsFile)
+    local Date = self:GetSystemTime();
+    local Turn = Logic.GetTimeMs();
+    local LevelText = "DEBUG";
+    if _Level > 1 then
+        LevelText = "INFO";
+    elseif _Level > 2 then
+        LevelText = "WARN";
+    elseif _Level > 3 then
+        LevelText = "ERROR";
+    end
+
+    local Prefix = "[" ..Turn.. "] ";
+    if _IsFile then
+        Prefix = Prefix.. "[" ..Date.. "] ";
+    end
+    Prefix = Prefix.. " [" .._Bundle.. "] " ..LevelText.. ": ";
+    return Prefix .. _Text;
+end
+
+function Core:LogToFile(_Text, _Level, _Bundle)
+    _Level = tonumber(_Level) or 1;
+    _Bundle = _Bundle or "Core";
+
+    if QSB.Logging.FileLoggingLevel == QSB.Logging.Levels.Off then
+        return;
+    end
+    if not GUI then
+        API.Bridge(string.format([[Core:LogToFile("%s", "%d", "%s")]], _Text, _Level, _Bundle));
+        return;
+    end
+    if QSB.Logging.FileLoggingLevel <= _Level then
+        local Text = Core:FormatLoggingMessage(_Text, _Level, _Bundle, true);
+        Text = Text:gsub("{cr}", "\n");
+        Framework.WriteToLog(Text);
+    end
+end
+
+function Core:LogToScreen(_Text, _Level, _Bundle)
+    _Level = tonumber(_Level) or 1;
+    _Bundle = _Bundle or "Core";
+
+    if QSB.Logging.DisplayLoggingLevel == QSB.Logging.Levels.Off then
+        return;
+    end
+    if not GUI then
+        API.Bridge(string.format([[Core:LogToScreen("%s", "%d", "%s")]], _Text, _Level, _Bundle));
+        return;
+    end
+    if QSB.Logging.DisplayLoggingLevel <= _Level then
+        local Text = Core:FormatLoggingMessage(_Text, _Level, _Bundle, false);
+        if _Level == 4 then
+            GUI.AddStaticNote(Text);
+        else
+            GUI.AddNote(Text);
+        end
+    end
+end
 
