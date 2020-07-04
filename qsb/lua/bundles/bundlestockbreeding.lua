@@ -107,7 +107,7 @@ UseBreedCattle = API.UseBreedCattle;
 --
 -- <b>Alias</b>: SetSheepType
 --
--- @param[type=boolean] _Flag Baby Mode aktivieren/deaktivieren
+-- @param[type=boolean] _Type Schafstyp
 -- @within Anwenderfunktionen
 --
 -- @usage

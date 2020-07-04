@@ -18,7 +18,80 @@ AddOnQuestStages = {};
 API = API or {};
 QSB = QSB or {};
 
-QSB.StageNameToQuestName = {};
+---
+-- Die Abschlussarten eines Quest Stage.
+--
+-- @field Success Phase muss erfolgreich abgeschlossen werden.
+-- @field Failure Phase muss fehlschlagen.
+-- @field Both    Erfolg und Misserfolg werden geleichermaßen akzeptiert.
+--
+QSB.TerminationType = {
+    Success = 1,
+    Failure = 2,
+    Both    = 3,
+}
+
+---
+-- Vordefinierte Funktionen für MSF Behavior. Diese Funktionen können nur im
+-- Skript und nicht im Assistenten bentuzt werden!
+--
+-- Als Parameter werden immer Questname und, falls benötigt, Stage übergeben.
+--
+-- @field Goal_ReachStage        Prüft, ob die Phase erreicht wurde.
+-- @field Reprisal_PreviousStage Kehr zur vorherigen Phase zurück.
+-- @field Reprisal_NextStage     Springt zur nächsten Phase vor.
+-- @field Reward_PreviousStage   Kehr zur vorherigen Phase zurück.
+-- @field Reward_NextStage       Springt zur nächsten Phase vor.
+-- @field Trigger_OnStage        Prüft, ob die Phase erreicht wurde.
+--
+-- @usage -- Phase als Goal prüfen (schlägt nur bei Fehler fehl)
+-- Goal_MapScriptFunction(QSB.MainQuest.Goal_ReachStage, "MyQuest", 3)
+-- -- Phase zurück (Reprisal)
+-- Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_PreviousStage, "MyQuest")
+-- -- Phase vor (Reprisal)
+-- Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_NextStage, "MyQuest")
+-- -- Phase zurück (Reward)
+-- Reward_MapScriptFunction(QSB.MainQuest.Reward_PreviousStage, "MyQuest")
+-- -- Phase vor (Reward)
+-- Reward_MapScriptFunction(QSB.MainQuest.Reward_NextStage, "MyQuest")
+-- -- Phase als Trigger prüfen
+-- Trigger_MapScriptFunction(QSB.MainQuest.Trigger_OnStage, "MyQuest", 5)
+--
+QSB.MainQuest = {};
+
+function QSB.MainQuest.Goal_ReachStage(_QuestName, _Stage)
+    local D, C, M = API.GetMainQuestProgress(_QuestName);
+    if M == 0 and M < _Stage then
+        return false;
+    elseif C >= _Stage then
+        return true;
+    end
+    return nil;
+end
+
+function QSB.MainQuest.Reprisal_PreviousStage(_QuestName)
+    API.RevertMainQuest(_QuestName);
+end
+
+function QSB.MainQuest.Reprisal_NextStage(_QuestName)
+    API.ForwardMainQuest(_QuestName);
+end
+
+function QSB.MainQuest.Reward_PreviousStage(_QuestName)
+    API.RevertMainQuest(_QuestName);
+end
+
+function QSB.MainQuest.Reward_NextStage(_QuestName)
+    API.ForwardMainQuest(_QuestName);
+end
+
+function QSB.MainQuest.Trigger_OnStage(_QuestName, _Stage)
+    local D, C, M = API.GetMainQuestProgress(_QuestName);
+    if M > 0 and M >= _Stage and C == _Stage then
+        return true;
+    end
+    return false;
+end
 
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
@@ -30,26 +103,27 @@ QSB.StageNameToQuestName = {};
 --
 -- Die erzeugten Aufträge (Sub Quests) starten aufeinander folgend, sobald der
 -- übergeordnete Auftrag (Main Quest) aktiv ist. Der nachfolgende Sub Quests
--- startet, sobald der Vorgänger erfolgreich abgeschlossen ist. Scheitert ein
--- Sub Quests, dann scheitert auch der Main Quest. Der Main Quest ist dann
--- erfolgreich, wenn der letzte Sub Quests erfolgreich ist.
+-- startet, sobald der Vorgänger abgeschlossen ist. Das erwartete Ergebnis
+-- kann gesetzt werden und ist per Default auf Erfolg gesetzt. Wenn ein Sub
+-- Quest abgeschlossen wird und nicht das erwartete Ergebnis hat, dann schlägt
+-- der Mainquest fehl. Der Main Quest wird erfolgreich abgeschlossen, sobald
+-- der letzte Sub Quest beendet ist.
 --
 -- <b>Hinweis</b>: Main Quests eignen sich nur für lineare Abläufe. Es kann
 -- keine Verzweigungen innerhalb des Ablaufes geben. Wenn verzweigt werden
 -- soll, müssen mehrere Main Quests paralel laufen!
 --
 -- Es ist nicht vorgesehen, dass Main Quests sichtbar sind oder Texte anzeigen.
--- Es ist trotzdem möglich, sollte aber unterlassen werden. 
+-- Es ist trotzdem möglich, <u>sollte aber unterlassen werden</u>. 
 --
 -- Es ist nicht notwendig einen Trigger für die Sub Quests zu setzen. Der
 -- Trigger wird automatisch generiert. Es können aber zusätzliche Trigger
--- angegeben werden. Der erzeugte Trigger ist i.d.R Trigger_OnQuestSuccess.
--- Wird ein Briefing im Vorgänger verwendet, wird stattdessen Trigger_Briefing
--- verwendet.
+-- angegeben werden. Wird ein Briefing im Vorgänger verwendet, wird der
+-- Trigger Trigger_Briefing verwendet, sonst ein OnQuest Trigger. Je nach
+-- eingestellten Ergebnis wird entsprechend verknüpft.
 --
--- <b>Hinweis</b>: Es ist ebenfalls möglich bereits erstellte Quests und
--- sogar andere Main Quests anzugeben. Dazu wird statt der Definition nur
--- der Name angegeben.
+-- Main Quests können auch ineinander verschachtelt werden. Man kann also
+-- innerhalb einer Questreihe eine untergeordnete Questreige angeben.
 --
 -- <b>Alias</b>: AddMainQuest
 --
@@ -59,24 +133,43 @@ QSB.StageNameToQuestName = {};
 --
 -- @usage API.CreateMainQuest {
 --     Name        = "MainQuest",
---     Suggestion  = "Das ist die Main Quest.",
---     Success     = "Main Quest abgeschlossen!",
---     Failure     = "Main Quest fehlgeschlagen!",
---
 --     Stages      = {
 --         {
 --             Suggestion  = "Wir benötigen einen höheren Titel!",
+--
 --             Goal_KnightTitle("Mayor"),
 --         },
---         "ExternQuest1",
---         "ExternQuest2",
 --         {
+--             -- Mit dem Typ Both wird Fehlschlag ignoriert und der nächste
+--             -- Quest startet nach diesem Quest.
+--             Termination = QSB.TerminationType.Both,
+--
 --             Suggestion  = "Wir benötigen außerdem mehr Asche! Und das sofort...",
---             Time        = 2 * 60,
+--             Success     = "Geschafft!",
+--             Failure     = "Versagt!",
+--             Time        = 3 * 60,
+--
 --             Goal_Produce("G_Gold", 5000),
+--
+--             -- Main Quest wird gewonnen. Der Nachfolger startet nicht mehr.
+--             Reward_QuestSuccess("MainQuest"),
+--         },
+--         {
+--             Suggestion  = "Dann versuchen wir es mit Eisen...",
+--             Success     = "Geschafft!",
+--             Failure     = "Versagt!",
+--             Time        = 3 * 60,
+--
+--             Goal_Produce("G_Iron", 50),
 --         }
---     }
--- }
+--     },
+--
+--     -- Wenn ein Quest nicht das erwartete Ergebnis hat, Fehlschlag.
+--     Reprisal_Defeat(),
+--
+--     -- Wenn alles erfüllt wird, ist das Spiel gewonnen.
+--     Reward_VictoryWithParty(),
+-- };
 --
 function API.CreateMainQuest(_Data)
     if GUI then
@@ -158,7 +251,7 @@ function API.GetSubQuestName(_QuestName, _Index)
         return;
     end
     if AddOnQuestStages.Global.Data.StagesForQuest[_QuestName] then
-        return AddOnQuestStages.Global.Data.StagesForQuest[_QuestName][_Index];
+        return AddOnQuestStages.Global.Data.StagesForQuest[_QuestName][_Index].Name;
     end
     return _QuestName;
 end
@@ -208,11 +301,7 @@ function AddOnQuestStages.Global:CreateMainQuest(_Data)
     -- Subquests erstellen/verlinken
     self.Data.StagesForQuest[Name] = {};
     for i= 1, #_Data.Stages, 1 do
-        if type(_Data.Stages[i]) == "string" then
-            self:LinkExternQuestAsStage(_Data.Stages[i], Name, i);
-        elseif type(_Data.Stages[i]) == "table" then
-            self:CreateQuestStage(_Data.Stages[i], Name, i);
-        end
+        self:CreateQuestStage(_Data.Stages[i], Name, i);
     end
     return Name;
 end
@@ -229,7 +318,7 @@ function AddOnQuestStages.Global:GetCurrentQuestStage(_QuestName)
     local Quest = Quests[GetQuestID(_QuestName)];
     if Quest ~= nil and self.Data.StagesForQuest[_QuestName] ~= nil then
         for i= 1, #self.Data.StagesForQuest[_QuestName], 1 do
-            if Quests[GetQuestID(self.Data.StagesForQuest[_QuestName][i])].State == QuestState.Active then
+            if Quests[GetQuestID(self.Data.StagesForQuest[_QuestName][i].Name)].State == QuestState.Active then
                 return i;
             end
         end
@@ -284,8 +373,8 @@ end
 function AddOnQuestStages.Global:ForwardMainQuest(_QuestName)
     local D, C, M = self:GetMainQuestProgress(_QuestName);
     if M > 0 and C+1 <= M then
-        local Current = self.Data.StagesForQuest[_QuestName][C];
-        local Next    = self.Data.StagesForQuest[_QuestName][C+1];
+        local Current = self.Data.StagesForQuest[_QuestName][C].Name;
+        local Next    = self.Data.StagesForQuest[_QuestName][C+1].Name;
         API.StopQuest(Current, true);
         API.StartQuest(Next, true);
         return C+1;
@@ -304,8 +393,8 @@ end
 function AddOnQuestStages.Global:RevertMainQuest(_QuestName)
     local D, C, M = self:GetMainQuestProgress(_QuestName);
     if M > 0 and C-1 > 0 then
-        local Current  = self.Data.StagesForQuest[_QuestName][C];
-        local Previous = self.Data.StagesForQuest[_QuestName][C-1];
+        local Current  = self.Data.StagesForQuest[_QuestName][C].Name;
+        local Previous = self.Data.StagesForQuest[_QuestName][C-1].Name;
         API.StopQuest(Current, true);
         API.RestartQuest(Previous, true);
         API.RestartQuest(Current, true);
@@ -327,54 +416,27 @@ function AddOnQuestStages.Global:GetCheckStagesInlineGoal(_QuestName)
     function ()
         local StageList = self.Data.StagesForQuest[_QuestName];
         for i= 1, #StageList, 1 do
-            local StageQuest = Quests[GetQuestID(StageList[i])];
-            -- Fehlschlag, wenn Stage fehlgeschlagen ist.
-            if not StageQuest or StageQuest.Result == QuestResult.Failure then
+            local StageQuest = Quests[GetQuestID(StageList[i].Name)];
+            -- Nicht existierender Sub Quest bedeutet Fehlschlag
+            if not StageQuest then
                 return false;
             end
+            -- Nicht erwartetes Resultat eines Sub Quest bedeutet Fehlschlag,
+            if StageQuest.State == QuestState.Over and StageQuest.Result ~= QuestResult.Interrupted then
+                if StageList[i].Termination == QSB.TerminationType.Success and StageQuest.Result ~= QuestResult.Success then
+                    return false;
+                end
+                if StageList[i].Termination == QSB.TerminationType.Failure and StageQuest.Result ~= QuestResult.Failure then
+                    return false;
+                end
+            end
         end
-        -- Erfolg, wenn letzter Stage erfolgreich war.
-        local StageQuest = Quests[GetQuestID(StageList[#StageList])];
-        if StageQuest.Result == QuestResult.Success then
+        -- Erfolg, wenn letzter Stage beendet ist.
+        local StageQuest = Quests[GetQuestID(StageList[#StageList].Name)];
+        if StageQuest.State == QuestState.Over and StageQuest.Result ~= QuestResult.Interrupted then
             return true;
         end
     end;
-end
-
----
--- Integriert einen extern erzeugten Quest als Stage eines Main Quest.
---
--- @param[type=table]  _ExternName Name Sub Quest
--- @param[type=string] _QuestName  Name Main Quest
--- @param[type=number] _Index      Index des Stages
--- @within Internal
--- @local
---
-function AddOnQuestStages.Global:LinkExternQuestAsStage(_ExternName, _QuestName, _Index)
-    local Extern = Quests[GetQuestID(_ExternName)];
-    local Parent = Quests[GetQuestID(_QuestName)];
-
-    if not Extern or Extern.State ~= QuestState.Inactive then
-        return;
-    end
-
-    local LinkTrigger
-    local Waittime = 0 + ((Extern[14] ~= nil and 6) or 0);
-    if _Index == 1 then
-        LinkTrigger = Trigger_OnQuestActive(_QuestName, Waittime):GetTriggerTable();
-    else
-        local LastName = self.Data.StagesForQuest[_QuestName][_Index -1];
-        local LastQuest = Quests[GetQuestID(LastName)];
-        Waittime = Waittime + (((LastQuest[15] ~= nil or LastQuest[15] ~= nil) and 6) or 0);
-        if self:ContainsBriefing(LastQuest) then
-            LinkTrigger = Trigger_Briefing(LastName, Waittime):GetTriggerTable();
-        else
-            LinkTrigger = Trigger_OnQuestSuccess(LastName, Waittime):GetTriggerTable();
-        end
-    end
-
-    table.insert(Extern.Triggers, LinkTrigger);
-    table.insert(self.Data.StagesForQuest[_QuestName], _ExternName);
 end
 
 ---
@@ -392,6 +454,8 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
 
     local QuestDescription = {
         Name        = Name,
+        Stages      = _Data.Stages,
+        Termination = _Data.Termination or QSB.TerminationType.Success,
         Sender      = _Data.Sender or Parent.SendingPlayer,
         Receiver    = _Data.Receiver or Parent.ReceivingPlayer,
         Time        = _Data.Time,
@@ -410,42 +474,60 @@ function AddOnQuestStages.Global:CreateQuestStage(_Data, _QuestName, _Index)
     if _Index == 1 then
         table.insert(QuestDescription, Trigger_OnQuestActive(_QuestName, Waittime));
     else
-        local LastName = self.Data.StagesForQuest[_QuestName][_Index -1];
-        local LastQuest = Quests[GetQuestID(LastName)];
-        Waittime = Waittime + (((LastQuest[15] ~= nil or LastQuest[15] ~= nil) and 6) or 0);
-        if self:ContainsBriefing(LastQuest) then
-            table.insert(QuestDescription, Trigger_Briefing(LastName, Waittime));
+        local PrevStageData = self.Data.StagesForQuest[_QuestName][_Index -1];
+        local PrevQuestData = Quests[GetQuestID(PrevStageData.Name)];
+        Waittime = Waittime + (((PrevQuestData[15] ~= nil or PrevQuestData[15] ~= nil) and 6) or 0);
+        local QuestBriefingType = self:ContainsBriefing(PrevStageData);
+        if QuestBriefingType > 0 then
+            -- Einschränkung für Briefing Trigger bestimmen.
+            local BriefingTriggerType = "All";
+            if PrevStageData.Termination == QSB.TerminationType.Success and QuestBriefingType == 1 then
+                BriefingTriggerType = "Success";
+            elseif PrevStageData.Termination == QSB.TerminationType.Failure and QuestBriefingType ==  2 then
+                BriefingTriggerType = "Failure";
+            end
+            table.insert(QuestDescription, Trigger_Briefing(PrevStageData.Name, BriefingTriggerType, Waittime));
         else
-            table.insert(QuestDescription, Trigger_OnQuestSuccess(LastName, Waittime));
+            -- Bestimmen, welcher Trigger genutzt wird.
+            if PrevStageData.Termination == QSB.TerminationType.Success then
+                table.insert(QuestDescription, Trigger_OnQuestSuccess(PrevStageData.Name, Waittime));
+            elseif PrevStageData.Termination == QSB.TerminationType.Failure then
+                table.insert(QuestDescription, Trigger_OnQuestFailure(PrevStageData.Name, Waittime));
+            else
+                table.insert(QuestDescription, Trigger_OnQuestOver(PrevStageData.Name, Waittime));
+            end
         end
     end
 
-    API.CreateQuest(QuestDescription);
-    table.insert(self.Data.StagesForQuest[_QuestName], Name);
+    if QuestDescription.Stages then
+        self:CreateMainQuest(QuestDescription);
+    else
+        API.CreateQuest(QuestDescription);
+    end
+    table.insert(self.Data.StagesForQuest[_QuestName], QuestDescription);
 end
 
 ---
--- Pfüft, ob ein Briefing an den übergebenen Quest angehangen ist.
+-- Pfüft, ob ein Briefing in den übergebenen Questdaten vorhanden ist.
 --
--- @param[type=table]  _Quest Quest
--- @return[type=boolean] Briefing enthalten
+-- @param[type=table]  _Description Quest Daten
+-- @return[type=number] Briefing Typ
 -- @within Internal
 -- @local
 --
-function AddOnQuestStages.Global:ContainsBriefing(_Quest)
+function AddOnQuestStages.Global:ContainsBriefing(_Description)
     if BundleBriefingSystem then
-        for i= 1, _Quest.Rewards[0], 1 do
-            if _Quest.Reprisals[i][1] == Reward.Custom and _Quest.Reprisals[i][2][1].Name == "Reward_Briefing" then
-                return true;
-            end
-        end
-        for i= 1, _Quest.Reprisals[0], 1 do
-            if _Quest.Reprisals[i][1] == Reprisal.Custom and _Quest.Reprisals[i][2][1].Name == "Reprisal_Briefing" then
-                return true;
+        for i= 1, #_Description, 1 do
+            if _Description[i].Name then
+                if _Description[i].Name == "Reward_Briefing" then
+                    return 1;
+                elseif _Description[i].Name == "Reprisal_Briefing" then
+                    return 2;
+                end
             end
         end
     end
-    return false;
+    return 0;
 end
 
 ---
@@ -470,7 +552,7 @@ function AddOnQuestStages.Global:OverrideMethods()
         
         if StageAmount > 0 then
             for k, v in pairs(AddOnQuestStages.Global.Data.StagesForQuest[_QuestName]) do
-                API.StopQuest_Orig_AddOnQuestStages(v, true);
+                API.StopQuest_Orig_AddOnQuestStages(v.Name, true);
             end
         end
         API.FailQuest_Orig_AddOnQuestStages(_QuestName, _Verbose);
@@ -485,8 +567,8 @@ function AddOnQuestStages.Global:OverrideMethods()
         
         if StageAmount > 0 then
             for k, v in pairs(AddOnQuestStages.Global.Data.StagesForQuest[_QuestName]) do
-                API.StopQuest_Orig_AddOnQuestStages(v, true);
-                API.RestartQuest_Orig_AddOnQuestStages(v, true);
+                API.StopQuest_Orig_AddOnQuestStages(v.Name, true);
+                API.RestartQuest_Orig_AddOnQuestStages(v.Name, true);
             end
         end
         API.RestartQuest_Orig_AddOnQuestStages(_QuestName, _Verbose);
@@ -501,10 +583,10 @@ function AddOnQuestStages.Global:OverrideMethods()
         
         if StageAmount > 0 then
             for k, v in pairs(AddOnQuestStages.Global.Data.StagesForQuest[_QuestName]) do
-                API.StopQuest_Orig_AddOnQuestStages(v, true);
+                API.StopQuest_Orig_AddOnQuestStages(v.Name, true);
             end
             API.StartQuest_Orig_AddOnQuestStages(
-                AddOnQuestStages.Global.Data.StagesForQuest[_QuestName][1],
+                AddOnQuestStages.Global.Data.StagesForQuest[_QuestName][1].Name,
                 _Verbose
             );
         end
@@ -520,7 +602,7 @@ function AddOnQuestStages.Global:OverrideMethods()
         
         if StageAmount > 0 then
             for k, v in pairs(AddOnQuestStages.Global.Data.StagesForQuest[_QuestName]) do
-                API.StopQuest_Orig_AddOnQuestStages(v, true);
+                API.StopQuest_Orig_AddOnQuestStages(v.Name, true);
             end
         end
         API.StopQuest_Orig_AddOnQuestStages(_QuestName, _Verbose);
@@ -535,7 +617,7 @@ function AddOnQuestStages.Global:OverrideMethods()
         
         if StageAmount > 0 then
             for k, v in pairs(AddOnQuestStages.Global.Data.StagesForQuest[_QuestName]) do
-                API.StopQuest_Orig_AddOnQuestStages(v, true);
+                API.StopQuest_Orig_AddOnQuestStages(v.Name, true);
             end
         end
         API.WinQuest_Orig_AddOnQuestStages(_QuestName, _Verbose);
@@ -568,70 +650,6 @@ function AddOnQuestStages.Global.SetQuestState(_Data, _Flag)
             return "reverted quest '" ..FoundQuests[1].. "'"
         end
     end
-end
-
--- -------------------------------------------------------------------------- --
-
----
--- Vordefinierte Funktionen für MSF Behavior. Diese Funktionen können nur im
--- Skript und nicht im Assistenten bentuzt werden!
---
--- Als Parameter werden immer Questname und Stage übergeben.
---
--- @field Goal_ReachStage        Prüft, ob die Phase erreicht wurde.
--- @field Reprisal_PreviousStage Kehr zur vorherigen Phase zurück.
--- @field Reprisal_NextStage     Springt zur nächsten Phase vor.
--- @field Reward_PreviousStage   Kehr zur vorherigen Phase zurück.
--- @field Reward_NextStage       Springt zur nächsten Phase vor.
--- @field Trigger_OnStage        Prüft, ob die Phase erreicht wurde.
---
--- @usage -- Phase als Goal prüfen (schlägt nur bei Fehler fehl)
--- Goal_MapScriptFunction(QSB.MainQuest.Goal_ReachStage, "MyQuest", 3)
--- -- Phase zurück (Reprisal)
--- Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_PreviousStage, "MyQuest")
--- -- Phase vor (Reprisal)
--- Reprisal_MapScriptFunction(QSB.MainQuest.Reprisal_NextStage, "MyQuest")
--- -- Phase zurück (Reward)
--- Reward_MapScriptFunction(QSB.MainQuest.Reward_PreviousStage, "MyQuest")
--- -- Phase vor (Reward)
--- Reward_MapScriptFunction(QSB.MainQuest.Reward_NextStage, "MyQuest")
--- -- Phase als Trigger prüfen
--- Trigger_MapScriptFunction(QSB.MainQuest.Trigger_OnStage, "MyQuest", 5)
---
-QSB.MainQuest = {};
-
-function QSB.MainQuest.Goal_ReachStage(_QuestName, _Stage)
-    local D, C, M = API.GetMainQuestProgress(_QuestName);
-    if M == 0 and M < _Stage then
-        return false;
-    elseif C >= _Stage then
-        return true;
-    end
-    return nil;
-end
-
-function QSB.MainQuest.Reprisal_PreviousStage(_QuestName)
-    API.ForwardMainQuest(_QuestName);
-end
-
-function QSB.MainQuest.Reprisal_NextStage(_QuestName)
-    API.RevertMainQuest(_QuestName);
-end
-
-function QSB.MainQuest.Reward_PreviousStage(_QuestName)
-    API.ForwardMainQuest(_QuestName);
-end
-
-function QSB.MainQuest.Reward_NextStage(_QuestName)
-    API.RevertMainQuest(_QuestName);
-end
-
-function QSB.MainQuest.Trigger_OnStage(_QuestName, _Stage)
-    local D, C, M = API.GetMainQuestProgress(_QuestName);
-    if M > 0 and M >= _Stage and C == _Stage then
-        return true;
-    end
-    return false;
 end
 
 -- -------------------------------------------------------------------------- --
