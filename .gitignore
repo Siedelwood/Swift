@@ -3,6 +3,7 @@ doctest/
 app/
 tmp/
 qsb/doc/*
+qsb/lua/core.lua
 var/
 qsb/doc/html/
 target/

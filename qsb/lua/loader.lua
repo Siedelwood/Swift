@@ -219,7 +219,17 @@ SymfoniaLoader = {
 -- @usage SymfoniaLoader:Load("C:/My/Path/To/Symfonia")
 --
 function SymfoniaLoader:Load(_Path)
-    Script.Load(_Path.. "/core.lua");
+    Script.Load(_Path.. "../core/core.lua");
+    Script.Load(_Path.. "../core/module_logging.lua");
+    Script.Load(_Path.. "../core/module_override.lua");
+    Script.Load(_Path.. "../core/module_quest.lua");
+    Script.Load(_Path.. "../core/module_sv.lua");
+    Script.Load(_Path.. "../core/module_events.lua");
+    Script.Load(_Path.. "../core/module_hotkey.lua");
+    Script.Load(_Path.. "../core/module_realtime.lua");
+    Script.Load(_Path.. "../core/module_entity.lua");
+    Script.Load(_Path.. "../core/module_placeholder.lua");
+    Script.Load(_Path.. "../core/main.lua");
 
     -- Lade alle Bundles
     for i= 1, #self.Data.LoadOrder, 1 do
@@ -279,9 +289,38 @@ end
 -- @within SymfoniaLoader
 -- @local
 --
+function SymfoniaLoader:ConcatCoreSources()
+    local BasePath = "qsb/lua/";
+    local QsbContent = {
+        self:LoadSource(BasePath.. "../core/core.lua"),
+        self:LoadSource(BasePath.. "../core/module_logging.lua"),
+        self:LoadSource(BasePath.. "../core/module_override.lua"),
+        self:LoadSource(BasePath.. "../core/module_quest.lua"),
+        self:LoadSource(BasePath.. "../core/module_sv.lua"),
+        self:LoadSource(BasePath.. "../core/module_events.lua"),
+        self:LoadSource(BasePath.. "../core/module_hotkey.lua"),
+        self:LoadSource(BasePath.. "../core/module_realtime.lua"),
+        self:LoadSource(BasePath.. "../core/module_entity.lua"),
+        self:LoadSource(BasePath.. "../core/module_placeholder.lua"),
+        self:LoadSource(BasePath.. "../core/main.lua"),
+    };
+    return QsbContent;
+end
+
+---
+-- Läd alle Inhalte der QSB und gibt sie als Table zurück. Jeder Index des
+-- Tables enthält den Inhalt einer Quelldatei.
+-- @return[type=table] Table aller gelesenen Dateien
+-- @within SymfoniaLoader
+-- @local
+--
 function SymfoniaLoader:ConcatSources(_External)
     local BasePath = "qsb/lua/";
-    local QsbContent = {self:LoadSource(BasePath.. "core.lua")};
+    local QsbContent = {};
+    local CoreContent = self:ConcatCoreSources();
+    for i= 1, #CoreContent do
+        table.insert(QsbContent, CoreContent[i]);
+    end
 
     -- local fh = io.open("qsb/userconfig.ld", "wt");
     -- assert(fh, "Output file can not be created!");
@@ -359,7 +398,24 @@ end
 -- @local
 --
 function SymfoniaLoader:CreateQSB(_Externals)
+    -- Create qsb/lua/core.lua
+    local CoreContent = self:ConcatCoreSources();
+    
+    -- Delete old file
+    local fh = io.open("qsb/lua/core.lua", "r");
+    if fh ~= nil then
+        os.remove("qsb/lua/core.lua");
+        fh:close();
+    end
+    -- Write new file
+    local fh = io.open("qsb/lua/core.lua", "wt");
+    assert(fh, "Output file can not be created!");
+    fh:write(unpack(CoreContent));
+    fh:close();
+
+    -- Create var/qsb.lua
     local QsbContent = self:ConcatSources(_Externals);
+    
     -- Delete old file
     local fh = io.open("var/qsb.lua", "r");
     if fh ~= nil then
