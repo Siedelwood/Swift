@@ -49,37 +49,6 @@ API = API or {};
 -- speziellen Feldern, mit denen weitere Einstellungen gemacht werden können.
 -- Siehe dazu auch das Briefing System für einen Vergleich.
 --
--- Das Gerüst für eine Cutscene sieht wie folgt aus:
--- <pre>local Cutscene = {
---    CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
---    RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
---    BarOpacity = 0.39,       -- Durchsichtige Bars verwenden (Opacity = 39%)
---    BigBars = false,         -- Breite Bars verwenden (Default false)
---    HideBorderPins = true,   -- Grenzsteine ausblenden
---    FastForward = false,     -- Beschleunigt abspielen erlauben
---
---    ... -- Hier nacheinander die Flights auflisten
---
---    Starting = function(_Data)
---        -- Hier werden Aktionen vor dem Start ausgeführt.
---    end,
---    Finished = function(_Data)
---        -- Hier kann eine abschließende Aktion ausgeführt werden.
---    end
---};
---return API.StartCutscene(Cutscene);</pre>
---
--- Ein Kameraflug wird als Table angegeben:
--- <pre>{
---    Flight = "some_file", -- .cs wird nicht mit angegeben!
---    Title  = "Angezeigter Titel",
---    Text   = "Angezeigter Text",
---    Action = function(_Data)
---        -- Aktion für den Flight ausführen
---    end,
---},</pre>
--- Ersetze ... mit den Flights, die zur Cutscene gehören sollen.
---
 -- Die Funktion gibt die ID der Cutscene zurück, mit der geprüft werden kann,
 -- ob die Cutscene beendet ist.
 -- 
@@ -88,6 +57,27 @@ API = API or {};
 -- @param[type=table]   _Cutscene Cutscene table
 -- @return[type=number] ID der Cutscene
 -- @within Anwenderfunktionen
+-- @usage function MyCutscene()
+--     local Cutscene = {
+--        CameraLookAt = {X, Y},   -- Kameraposition am Ende setzen
+--        RestoreGameSpeed = true, -- Spielgeschwindigkeit wiederherstellen
+--        BarOpacity = 0.39,       -- Durchsichtige Bars verwenden (Opacity = 39%)
+--        BigBars = false,         -- Breite Bars verwenden (Default false)
+--        HideBorderPins = true,   -- Grenzsteine ausblenden
+--        FastForward = false,     -- Beschleunigt abspielen erlauben
+--     };
+--     local AF = API.AddFlights(Cutscene);
+--
+--     -- Hier erfolgt die Auflistung der Flights mit AF()
+--
+--     Cutscene.Starting = function(_Data)
+--        -- Hier werden Aktionen vor dem Start ausgeführt.
+--     end
+--     Cutscene.Finished = function(_Data)
+--        -- Hier kann eine abschließende Aktion ausgeführt werden.
+--     end
+--     return API.StartCutscene(Cutscene);
+-- end
 --
 function API.CutsceneStart(_Cutscene)
     if GUI then
@@ -189,6 +179,59 @@ function API.CutsceneSetFastForwardSpeed(_Speed)
 end
 SetCutsceneFastForwardSpeed = API.CutsceneSetFastForwardSpeed;
 
+---
+-- Erzeugt die Funktionen zur Erstellung von Flights in einer Cutsceme und
+-- bindet sie an die Cutscene. Diese Funktion muss vor dem Start einer
+-- Cutscene aufgerufen werden um Flights hinzuzufügen.
+-- <ul>
+-- <li><a href="#AF">AF</a></li>
+-- </ul>
+--
+-- <b>Alias</b>: AddFlights
+--
+-- @param[type=table] _Cutscene Cutscene Definition
+-- @return[type=function] <a href="#AF">AF</a>
+-- @within Anwenderfunktionen
+--
+-- @usage local AF = API.AddFlights(Briefing);
+--
+function API.AddFlights(_Cutscene)
+    if GUI then
+        return;
+    end
+    _Cutscene.GetFlight = function(self, _NameOrID)
+        local ID = AddOnCutsceneSystem.Global:GetPageIDByName(_NameOrID);
+        return BundleBriefingSystem.Global.Data.CurrentCutscene[ID];
+    end
+    
+    local AF = function(_Flight)
+        _Cutscene.Length = (_Cutscene.Length or 0) +1;
+        table.insert(_Cutscene, _Flight);
+        return _Flight;
+    end
+    return AF;
+end
+AddFlights = API.AddFlights;
+
+---
+-- Erstellt einen Flight für eine Cutscene.
+--
+-- @param[type=table] _Flight Spezifikation des Flight
+-- @return[type=table] Refernez auf den Flight
+-- @within Cutscene
+-- @usage AF {
+--     Flight = "some_file", -- .cs wird nicht mit angegeben!
+--     Title  = "Angezeigter Titel",
+--     Text   = "Angezeigter Text",
+--     Action = function(_Data)
+--         -- Aktion für den Flight ausführen
+--     end,
+-- }
+--
+function AF(_Flight)
+    API.Fatal("AF: Please use the function provides by AddFlights!");
+end
+
 -- -------------------------------------------------------------------------- --
 -- Application-Space                                                          --
 -- -------------------------------------------------------------------------- --
@@ -274,6 +317,7 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene, _ID)
     self.Data.CurrentCutscene = _Cutscene;
     self.Data.CurrentCutscene.ID = BundleBriefingSystem.Global.Data.BriefingID;
     self.Data.CurrentCutscene.BarOpacity = self.Data.CurrentCutscene.BarOpacity or 1;
+    self.Data.CurrentCutscene.Length = self.Data.CurrentCutscene.Length or #_Cutscene;
     if self.Data.CurrentCutscene.BigBars == nil then
         self.Data.CurrentCutscene.BigBars = false;
     end
@@ -309,6 +353,32 @@ function AddOnCutsceneSystem.Global:StopCutscene()
         self.Data.CurrentCutscene:Finished();
     end
     self.Data.CutsceneActive = false;
+end
+
+---
+-- Gibt die Flight-ID zum angegebenen Flight-Namen zurück.
+--
+-- Wenn kein Flight gefunden wird, der den angegebenen Namen hat, wird 0
+-- zurückgegeben. Wenn eine Flight-ID angegeben wird, wird diese zurückgegeben.
+--
+-- @param[type=string] _FlightName Name des Flight
+-- @return[type=number] ID des Flight
+-- @within Internal
+-- @local
+--
+function AddOnCutsceneSystem.Global:GetPageIDByName(_FlightName)
+    if self.Data.CurrentCutscene then
+        if type(_FlightName) == "number" then
+            return _FlightName;
+        end
+        for i= 1, self.Data.CurrentCutscene.Length, 1 do
+            local Flight = self.Data.CurrentCutscene[i];
+            if Flight and type(Flight) == "table" and Flight.Flight == _FlightName then
+                return i;
+            end
+        end
+    end
+    return 0;
 end
 
 ---
