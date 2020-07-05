@@ -464,28 +464,20 @@ function BundleInteractiveObjects.Global:OnEntityDestroyed()
         if not Object then
             return;
         end
-        -- Framework.WriteToLog("BundleInteractiveObjects: slave '" ..SlaveName.. "' of master '" ..MasterName.. "' has been deleted!");
-        -- Framework.WriteToLog("BundleInteractiveObjects: try to create new slave...");
+        info("slave '" ..SlaveName.. "' of master '" ..MasterName.. "' has been deleted!");
+        info("try to create new slave...");
         IO_SlaveToMaster[SlaveName] = nil;
         local SlaveID = self:CreateSlaveObject(Object);
         if not IsExisting(SlaveID) then
-            -- Framework.WriteToLog("BundleInteractiveObjects: failed to create slave!");
+            error("failed to create slave!");
             return;
         end
         BundleInteractiveObjects.Global:SetupObject(Object);
         if Object.m_Used == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
             API.InteractiveObjectDeactivate(Object.m_Slave);
         end
-        -- Framework.WriteToLog("BundleInteractiveObjects: new slave created for master '" ..MasterName.. "'");
+        info("new slave created for master '" ..MasterName.. "'");
     end
-end
-
---
--- Logger
---
-function BundleInteractiveObjects.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleInteractiveObjects");
-    Core:LogToFile(_Text, _Level, "BundleInteractiveObjects");
 end
 
 -- Local Script ----------------------------------------------------------------
@@ -756,14 +748,6 @@ function BundleInteractiveObjects.Local:SetIcon(_Widget, _Icon)
         XGUIEng.SetMaterialTexture(_Widget, 1, _Icon);
         XGUIEng.SetMaterialUV(_Widget, 1, 0, 0, Scale, Scale);
     end
-end
-
---
--- Logger
---
-function BundleInteractiveObjects.Local:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleInteractiveObjects");
-    Core:LogToFile(_Text, _Level, "BundleInteractiveObjects");
 end
 
 -- -------------------------------------------------------------------------- --

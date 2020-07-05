@@ -245,36 +245,88 @@ function API.Localize(_Message)
 end
 
 ---
--- Schreibt einen FATAL auf den Bildschirm und ins Log.
+-- Schreibt eine Nachricht mit dem angegebenen Level auf den Bildschirm
+-- und ins Log.
 --
--- <p><b>Alias:</b> fatal</p>
+-- <p><b>Alias:</b> error</p>
 --
 -- @param[type=string] _Message Anzeigetext
--- @within Anwenderfunktionen
--- @local
+-- @param[type=string] _Level   Fehlerlevel
+-- @within Logging
 --
-function API.Fatal(_Message)
-    API.StaticNote("FATAL: " .._Message)
-    Framework.WriteToLog("FATAL: " .._Message);
+function API.Log(_Message, _Level)
+    Core:LogToScreen(_Message, _Level);
+    Core:LogToFile(_Message, _Level);
 end
-fatal = API.Fatal;
+log = API.Error;
 
 ---
--- Schreibt eine WARNING auf den Bildschirm und ins Log.
+-- Schreibt eine Debug-Nachricht mit dem angegebenen Level auf den Bildschirm
+-- und ins Log.
+--
+-- <p><b>Alias:</b> error</p>
+--
+-- @param[type=string] _Message Anzeigetext
+-- @within Logging
+--
+function API.Debug(_Message)
+    Core:LogToScreen(_Message, LEVEL_DEBUG);
+    Core:LogToFile(_Message, LEVEL_DEBUG);
+end
+debug = API.Debug;
+
+---
+-- Schreibt eine Ifon-Nachricht mit dem angegebenen Level auf den Bildschirm
+-- und ins Log.
+--
+-- <p><b>Alias:</b> error</p>
+--
+-- @param[type=string] _Message Anzeigetext
+-- @within Logging
+--
+function API.Info(_Message)
+    Core:LogToScreen(_Message, LEVEL_INFO);
+    Core:LogToFile(_Message, LEVEL_INFO);
+end
+info = API.Info;
+
+---
+-- Schreibt eine Warnungsmeldung mit dem angegebenen Level auf den Bildschirm
+-- und ins Log.
+--
+-- <p><b>Alias:</b> error</p>
+--
+-- @param[type=string] _Message Anzeigetext
+-- @within Logging
+--
+function API.Error(_Message)
+    Core:LogToScreen(_Message, LEVEL_ERROR);
+    Core:LogToFile(_Message, LEVEL_ERROR);
+end
+error = API.Error;
+
+---
+-- Schreibt eine Fehlermeldung mit dem angegebenen Level auf den Bildschirm
+-- und ins Log.
 --
 -- <p><p><b>Alias:</b> warn</p></p>
 --
 -- @param[type=string] _Message Anzeigetext
--- @within Anwenderfunktionen
--- @local
+-- @within Logging
 --
 function API.Warn(_Message)
-    API.StaticNote("WARNING: " .._Message)
-    Framework.WriteToLog("WARNING: " .._Message);
+    Core:LogToScreen(_Message, LEVEL_WARNING);
+    Core:LogToFile(_Message, LEVEL_WARNING);
 end
 warn = API.Warn;
 
-
+---
+-- Setzt das Level fest ab dem auf den Bildschirm und ins Log geschrieben wird.
+--
+-- @param[type=string] _Screen Level Bildschirm
+-- @param[type=string] _File   Level Datei
+-- @within Logging
+--
 function API.SetLoggingLevel(_Screen, _File)
     if GUI then
         return;
@@ -289,6 +341,13 @@ end
 
 -- Core Stuff --
 
+---
+-- Gibt die Systemzeit und das Datum formatiert als String zurück.
+--
+-- @return[type=string] Datum und Uhrzeit
+-- @within Internal
+-- @local
+--
 function Core:GetSystemTime()
     local DateTimeString = Framework.GetSystemTimeDateString();
     local Year = DateTimeString:sub(2, 5);
@@ -300,57 +359,88 @@ function Core:GetSystemTime()
     return Day.. "." ..Month.. "." ..Year.. " " ..Hour.. ":" ..Minute.. ":" ..Second;
 end
 
-function Core:FormatLoggingMessage(_Text, _Level, _Bundle, _IsFile)
+---
+-- Formatiert die Nachricht für die Logger.
+--
+-- @param[type=string]  _Text    Nachricht 
+-- @param[type=number]  _Level   Scheregrad
+-- @param[type=boolean] _IsFile  Formatiere für Log File
+-- @param[type=string]  _Env     Umgebung
+-- @return[type=string] Nachricht
+-- @within Internal
+-- @local
+--
+function Core:FormatLoggingMessage(_Text, _Level, _IsFile, _Env)
     local Date = self:GetSystemTime();
-    local Turn = Logic.GetTimeMs();
     local LevelText = "DEBUG";
     if _Level > 1 then
         LevelText = "INFO";
-    elseif _Level > 2 then
+    end
+    if _Level > 2 then
         LevelText = "WARN";
-    elseif _Level > 3 then
+    end
+    if _Level > 3 then
         LevelText = "ERROR";
     end
 
-    local Prefix = "[" ..Turn.. "] ";
+    local Prefix = "[" .._Env.. "] ";
     if _IsFile then
         Prefix = Prefix.. "[" ..Date.. "] ";
     end
-    Prefix = Prefix.. " [" .._Bundle.. "] " ..LevelText.. ": ";
+    Prefix = Prefix ..LevelText.. ": ";
     return Prefix .. _Text;
 end
 
-function Core:LogToFile(_Text, _Level, _Bundle)
-    _Level = tonumber(_Level) or 1;
-    _Bundle = _Bundle or "Core";
+---
+-- Schreibt eine Log Meldung in die Logdatei.
+--
+-- @param[type=string]  _Text    Nachricht 
+-- @param[type=number]  _Level   Scheregrad
+-- @param[type=string]  _Env     Umgebung
+-- @within Internal
+-- @local
+--
+function Core:LogToFile(_Text, _Level, _Env)
+    _Level = (tonumber(_Level) ~= nul and tonumber(_Level)) or 1;
+    _Env = _Env or "Local";
 
     if QSB.Logging.FileLoggingLevel == QSB.Logging.Levels.Off then
         return;
     end
     if not GUI then
-        API.Bridge(string.format([[Core:LogToFile("%s", "%d", "%s")]], _Text, _Level, _Bundle));
+        _Env = "Global";
+        API.Bridge(string.format([[Core:LogToFile("%s", "%d", "%s")]], _Text, _Level, _Env));
         return;
     end
     if QSB.Logging.FileLoggingLevel <= _Level then
-        local Text = Core:FormatLoggingMessage(_Text, _Level, _Bundle, true);
+        local Text = Core:FormatLoggingMessage(_Text, _Level, true, _Env);
         Text = Text:gsub("{cr}", "\n");
         Framework.WriteToLog(Text);
     end
 end
-
-function Core:LogToScreen(_Text, _Level, _Bundle)
-    _Level = tonumber(_Level) or 1;
-    _Bundle = _Bundle or "Core";
+---
+-- Schreibt eine Log Meldung auf den Bildschirm.
+--
+-- @param[type=string]  _Text    Nachricht 
+-- @param[type=number]  _Level   Scheregrad
+-- @param[type=string]  _Env     Umgebung
+-- @within Internal
+-- @local
+--
+function Core:LogToScreen(_Text, _Level, _Env)
+    _Level = (tonumber(_Level) ~= nul and tonumber(_Level)) or 1;
+    _Env = _Env or "Local";
 
     if QSB.Logging.DisplayLoggingLevel == QSB.Logging.Levels.Off then
         return;
     end
     if not GUI then
-        API.Bridge(string.format([[Core:LogToScreen("%s", "%d", "%s")]], _Text, _Level, _Bundle));
+        _Env = "Global";
+        API.Bridge(string.format([[Core:LogToScreen("%s", "%d", "%s")]], _Text, _Level, _Env));
         return;
     end
     if QSB.Logging.DisplayLoggingLevel <= _Level then
-        local Text = Core:FormatLoggingMessage(_Text, _Level, _Bundle, false);
+        local Text = Core:FormatLoggingMessage(_Text, _Level, false, _Env);
         if _Level == 4 then
             GUI.AddStaticNote(Text);
         else

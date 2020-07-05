@@ -121,7 +121,7 @@ function API.SetSheepType(_Type)
         return;
     end
     if type(_Type) ~= "number" or _Type > 2 or _Type < 0 then
-        fatal("API.SetCattleNeeded: Needed amount is invalid!");
+        log("API.SetCattleNeeded: Needed amount is invalid!", LEVEL_ERROR);
     end
     BundleStockbreeding.Global.Data.SheepType = _Type * (-1);
 end
@@ -483,14 +483,6 @@ function BundleStockbreeding.Global:AnimalGrouthController()
     end
 end
 
---
--- Logger
---
-function BundleStockbreeding.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleStockbreeding");
-    Core:LogToFile(_Text, _Level, "BundleStockbreeding");
-end
-
 -- Controller Job ruft nur eigentlichen Controller auf.
 function BundleStockbreeding.Global.AnimalBreedJob()
     BundleStockbreeding.Global:AnimalBreedController();
@@ -734,14 +726,6 @@ function BundleStockbreeding.Local:TextCosts(_Title, _Text, _DisabledText, _Cost
     local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
     local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
     XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
-end
-
---
--- Logger
---
-function BundleStockbreeding.Local:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleStockbreeding");
-    Core:LogToFile(_Text, _Level, "BundleStockbreeding");
 end
 
 -- -------------------------------------------------------------------------- --

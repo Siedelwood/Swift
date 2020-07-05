@@ -92,11 +92,10 @@ DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
 --
 function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
     if GUI then
-        fatal("API.GetTrebuchetByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
     if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
-        warn("API.GetTrebuchetByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        error("API.GetTrebuchetByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
     return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
@@ -115,11 +114,10 @@ GetTrebuchet = API.GetTrebuchetByTrebuchetConstructionSite;
 --
 function API.GetReturningCartByTrebuchetConstructionSite(_Name)
     if GUI then
-        fatal("API.GetReturningCartByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
     if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
-        warn("API.GetReturningCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        error("API.GetReturningCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
     return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ReturningCart;
@@ -138,11 +136,10 @@ GetReturningCart = API.GetReturningCartByTrebuchetConstructionSite;
 --
 function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
     if GUI then
-        fatal("API.GetConstructionCartByTrebuchetConstructionSite: Can only be used in global script!");
         return;
     end
     if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
-        warn("API.GetConstructionCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        error("API.GetConstructionCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
         return 0;
     end
     return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ConstructionCart;
@@ -342,14 +339,6 @@ function AddOnInteractiveTrebuchets.Global:ReturnTrebuchetToStorehouse(_PlayerID
     else
         DestroyEntity(CartID);
     end
-end
-
---
--- Logger
---
-function AddOnInteractiveTrebuchets.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "AddOnInteractiveTrebuchets");
-    Core:LogToFile(_Text, _Level, "AddOnInteractiveTrebuchets");
 end
 
 ---

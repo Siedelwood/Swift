@@ -625,14 +625,6 @@ function AddOnQuestStages.Global:OverrideMethods()
     WinQuestByName = API.WinQuest;
 end
 
---
--- Logger
---
-function AddOnQuestStages.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "AddOnQuestStages");
-    Core:LogToFile(_Text, _Level, "AddOnQuestStages");
-end
-
 ---
 -- Überschreibt das Mapping der Konsolenbefehle des Debugs.
 --

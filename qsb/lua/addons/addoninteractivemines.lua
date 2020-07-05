@@ -62,7 +62,6 @@ QSB = QSB or {};
 --
 function API.CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted)
     if GUI then
-        fatal("API.CreateIOMine: Can not be used from local script!");
         return;
     end
     AddOnInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
@@ -89,7 +88,6 @@ CreateIOMine = API.CreateIOMine;
 --
 function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     if GUI then
-        fatal("API.CreateIOIronMine: Can not be used from local script!");
         return;
     end
     AddOnInteractiveMines.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
@@ -116,7 +114,6 @@ CreateIOIronMine = API.CreateIOIronMine;
 --
 function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     if GUI then
-        fatal("API.CreateIOStoneMine: Can not be used from local script!");
         return;
     end
     AddOnInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
@@ -263,14 +260,6 @@ function AddOnInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _
         {_Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount},
         _NotRefillable
     );
-end
-
---
--- Logger
---
-function AddOnInteractiveMines.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "AddOnInteractiveMines");
-    Core:LogToFile(_Text, _Level, "AddOnInteractiveMines");
 end
 
 ---

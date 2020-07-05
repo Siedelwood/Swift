@@ -60,7 +60,8 @@ AcceptAlternativeBoolean = API.ToBoolean;
 --
 function API.AddSaveGameAction(_Function)
     if GUI then
-        API.Fatal("API.AddSaveGameAction: Can not be used from the local script!");
+        Core:LogToFile("API.AddSaveGameAction: Can not be used from the local script!", LEVEL_ERROR);
+        Core:LogToScreen("API.AddSaveGameAction: Can not be used from the local script!", LEVEL_ERROR);
         return;
     end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)

@@ -104,10 +104,12 @@ function API.StartEventJob(_EventType, _Function, ...)
         Function = _G[Function];
     end
     if type(Function) ~= "function" and type(_Function) == "string" then
-        fatal(string.format("API.StartEventJob: Can not find function for name '%s'!", _Function));
+        Core:LogToFile(string.format("API.StartEventJob: Can not find function for name '%s'!", _Function), LEVEL_ERROR);
+        Core:LogToScreen(string.format("API.StartEventJob: Can not find function for name '%s'!", _Function), LEVEL_ERROR);
         return;
     elseif type(Function) ~= "function" and type(_Function) ~= "string" then
-        fatal("API.StartEventJob: Received illegal reference as function!");
+        Core:LogToFile("API.StartEventJob: Received illegal reference as function!", LEVEL_ERROR);
+        Core:LogToScreen("API.StartEventJob: Received illegal reference as function!", LEVEL_ERROR);
         return;
     end
 

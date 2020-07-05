@@ -196,7 +196,8 @@ function Core:SetupGobal_HackCreateQuest()
             );
             g_QuestNameToID[_QuestName] = QuestID;
         else
-            fatal("Quest '"..tostring(_QuestName).."': invalid questname! Contains forbidden characters!");
+            Core:LogToFile("Quest '"..tostring(_QuestName).."': invalid questname! Contains forbidden characters!", LEVEL_ERROR);
+            Core:LogToScreen("Quest '"..tostring(_QuestName).."': invalid questname! Contains forbidden characters!", LEVEL_ERROR);
         end
     end
 end
@@ -317,7 +318,8 @@ function Core:RegisterBehavior(_Behavior)
     end
 
     if not _G["b_" .. _Behavior.Name] then
-        fatal("AddQuestBehavior: can not find ".. _Behavior.Name .."!");
+        Core:LogToFile("AddQuestBehavior: can not find ".. _Behavior.Name .."!", LEVEL_ERROR);
+        Core:LogToScreen("AddQuestBehavior: can not find ".. _Behavior.Name .."!", LEVEL_ERROR);
     else
         if not _G["b_" .. _Behavior.Name].new then
             _G["b_" .. _Behavior.Name].new = function(self, ...)

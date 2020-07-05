@@ -259,7 +259,7 @@ end
 --
 function API.InterfaceSetPlayerPortrait(_PlayerID, _Portrait)
     if not _PlayerID or type(_PlayerID) ~= "number" or (_PlayerID < 1 or _PlayerID > 8) then
-        fatal("API.InterfaceSetPlayerPortrait: Invalid player ID!");
+        error("API.InterfaceSetPlayerPortrait: Invalid player ID!");
         return;
     end
     if not GUI then
@@ -529,14 +529,6 @@ function BundleInterfaceApperance.Local:TextCosts(_title,_text,_disabledText,_co
     local Height = XGUIEng.GetTextHeight(TooltipDescriptionWidget, true)
     local W, H = XGUIEng.GetWidgetSize(TooltipDescriptionWidget)
     XGUIEng.SetWidgetSize(TooltipDescriptionWidget, W, Height)
-end
-
---
--- Logger
---
-function BundleInterfaceApperance.Local:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleInterfaceApperance");
-    Core:LogToFile(_Text, _Level, "BundleInterfaceApperance");
 end
 
 -- -------------------------------------------------------------------------- --

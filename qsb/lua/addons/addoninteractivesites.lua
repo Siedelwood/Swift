@@ -59,7 +59,6 @@ QSB = QSB or {};
 --
 function API.CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback)
     if GUI then
-        fatal("API.CreateIOBuildingSite: Can not be used from local script!");
         return;
     end
     AddOnInteractiveSites.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback);
@@ -176,7 +175,7 @@ function AddOnInteractiveSites.Global.CallbackIOConstructionSite(_IO, _PlayerID,
     local site = Logic.CreateConstructionSite(pos.X, pos.Y, ori, _Data.Type, _Data.PlayerID);
     Logic.SetVisible(eID, false);
     if (site == nil) then
-        fatal('AddOnInteractiveSites.Global:CreateIOBuildingSite: Failed to place construction site!');
+        error("AddOnInteractiveSites.Global:CreateIOBuildingSite: Failed to place construction site!");
         return;
     end
     AddOnInteractiveSites.Global.Data.ConstructionSite.Sites[site] = _Data;

@@ -207,7 +207,7 @@ function API.InterruptQuestDialog(_Dialog)
         QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
     end
     if QuestDialog == nil then
-        fatal("API.InterruptQuestDialog: Dialog is invalid!");
+        error("API.InterruptQuestDialog: Dialog is invalid!");
         return;
     end
     for i= 1, #QuestDialog-1, 1 do
@@ -238,7 +238,7 @@ function API.RestartQuestDialog(_Dialog)
         QuestDialog = QSB.GeneratedQuestDialogs[QuestDialog];
     end
     if QuestDialog == nil then
-        fatal("API.ResetQuestDialog: Dialog is invalid!");
+        error("API.ResetQuestDialog: Dialog is invalid!");
         return;
     end
     for i= 1, #QuestDialog, 1 do
@@ -333,7 +333,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
         _Data.Name = string.format("AutoNamed_Quest_%d", QSB.AutomaticQuestNameCounter);
     end
     if not Core:CheckQuestName(_Data.Name) then
-        fatal("Quest '"..tostring(_Data.Name).."': invalid questname! Contains forbidden characters!");
+        error("Quest '"..tostring(_Data.Name).."': invalid questname! Contains forbidden characters!");
         return;
     end
 
@@ -359,7 +359,7 @@ function BundleQuestGeneration.Global:QuestCreateNewQuest(_Data)
 
     -- Daten validieren
     if not self:QuestValidateQuestData(QuestData) then
-        fatal("AddQuest: Error while creating quest. Table has been copied to log.");
+        error("AddQuest: Error while creating quest. Table has been copied to log.");
         API.DumpTable(QuestData, "Quest");
         return;
     end
@@ -520,7 +520,7 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
             -- Write Trigger to Log
             local Text = BundleQuestGeneration.Global:SerializeBehavior(self.Triggers[i], Triggers.Custom2, 4);
             if Text then
-                BundleQuestGeneration.Global:Log("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG, true);
+                Core:LogToFile("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG);
             end
             -- Check Trigger
             triggered = triggered and self:IsTriggerActive(self.Triggers[i]);
@@ -537,7 +537,7 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
             -- Write Trigger to Log
             local Text = BundleQuestGeneration.Global:SerializeBehavior(self.Objectives[i], Objective.Custom2, 1);
             if Text then
-                BundleQuestGeneration.Global:Log("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG, true);
+                Core:LogToFile("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG);
             end
             -- Check Goal
             local completed = self:IsObjectiveCompleted(self.Objectives[i]);
@@ -584,7 +584,7 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
                 -- Write Trigger to Log
                 local Text = BundleQuestGeneration.Global:SerializeBehavior(self.Rewards[i], Reward.Custom, 3);
                 if Text then
-                    BundleQuestGeneration.Global:Log("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG, true);
+                    Core:LogToFile("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG);
                 end
                 -- Add Reward
                 self:AddReward(self.Rewards[i]);
@@ -594,7 +594,7 @@ function BundleQuestGeneration.Global.QuestLoop(_arguments)
                 -- Write Trigger to Log
                 local Text = BundleQuestGeneration.Global:SerializeBehavior(self.Reprisals[i], Reprisal.Custom, 3);
                 if Text then
-                    BundleQuestGeneration.Global:Log("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG, true);
+                    Core:LogToFile("Quest '" ..self.Identifier.. "' " ..Text, LEVEL_DEBUG);
                 end
                 -- Add Reward
                 self:AddReprisal(self.Reprisals[i]);
@@ -651,16 +651,6 @@ function BundleQuestGeneration.Global:SerializeBehavior(_Data, _CustomType, _Typ
     end
     Info = Info.. "}";
     return Info;
-end
-
---
--- Logger
---
-function BundleQuestGeneration.Global:Log(_Text, _Level, _JustLog)
-    if not _JustLog then
-        Core:LogToScreen(_Text, _Level, "BundleQuestGeneration");
-    end
-    Core:LogToFile(_Text, _Level, "BundleQuestGeneration");
 end
 
 -- -------------------------------------------------------------------------- --

@@ -44,12 +44,12 @@ function API.SetPosition(_Entity, _Position)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        fatal("API.SetPosition: Entity " ..Subject.. " does not exist!");
+        error("API.SetPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
     local Position = API.LocateEntity(_Position)
     if not API.ValidatePosition(Position) then
-        fatal("API.SetPosition: Position is invalid!");
+        error("API.SetPosition: Position is invalid!");
         return;
     end
     return BundleEntityCommandFunctions.Global:SetPosition(_Entity, Position);
@@ -83,12 +83,12 @@ function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        fatal("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
+        error("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
     if not IsExisting(_Position) then
         local Subject = (type(_Position) ~= "string" and _Position) or "'" .._Position.. "'";
-        fatal("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
+        error("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
     return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
@@ -122,12 +122,12 @@ function API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        fatal("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
+        error("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
         return;
     end
     if not IsExisting(_Position) then
         local Subject = (type(_Position) ~= "string" and _Position) or "'" .._Position.. "'";
-        fatal("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
+        error("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
         return;
     end
     return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, 0, _moveAsEntity);
@@ -160,12 +160,12 @@ function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        fatal("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
+        error("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
     if not IsExisting(_Position) then
         local Subject = (type(_Position) ~= "string" and _Position) or "'" .._Position.. "'";
-        fatal("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
+        error("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
         return;
     end
     local Position = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance, _Angle, true);
@@ -224,12 +224,12 @@ function API.CommandAttack(_Entity, _Target)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        fatal("API.CommandAttack: Entity " ..Subject.. " does not exist!");
+        error("API.CommandAttack: Entity " ..Subject.. " does not exist!");
         return;
     end
     if not IsExisting(_Target) then
         local Subject = (type(_Target) == "string" and "'" .._Target.. "'") or _Target;
-        fatal("API.CommandAttack: Target " ..Subject.. " does not exist!");
+        error("API.CommandAttack: Target " ..Subject.. " does not exist!");
         return;
     end
     local EntityID = GetID(_Entity);
@@ -253,17 +253,16 @@ Attack = API.CommandAttack;
 --
 function API.CommandAttackMove(_Entity, _Position)
     if GUI then
-        fatal("API.CommandAttackMove: Cannot be used from local script!");
         return;
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        fatal("API.CommandAttackMove: Entity " ..Subject.. " does not exist!");
+        error("API.CommandAttackMove: Entity " ..Subject.. " does not exist!");
         return;
     end
     local Position = API.LocateEntity(_Position)
     if not API.ValidatePosition(Position) then
-        fatal("API.CommandAttackMove: Position is invalid!");
+        error("API.CommandAttackMove: Position is invalid!");
         return;
     end
     local EntityID = GetID(_Entity);
@@ -286,17 +285,16 @@ AttackMove = API.CommandAttackMove;
 --
 function API.CommandMove(_Entity, _Position)
     if GUI then
-        fatal("API.CommandMove: Cannot be used from local script!");
         return;
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        fatal("API.CommandMove: Entity " ..Subject.. " does not exist!");
+        error("API.CommandMove: Entity " ..Subject.. " does not exist!");
         return;
     end
     local Position = API.LocateEntity(_Position)
     if not API.ValidatePosition(Position) then
-        fatal("API.CommandMove: Position is invalid!");
+        error("API.CommandMove: Position is invalid!");
         return;
     end
     local EntityID = GetID(_Entity);
@@ -386,14 +384,6 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
             return true;
         end
     end, eID, tID);
-end
-
---
--- Logger
---
-function BundleEntityCommandFunctions.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleEntityCommandFunctions");
-    Core:LogToFile(_Text, _Level, "BundleEntityCommandFunctions");
 end
 
 -- Shared ----------------------------------------------------------------------

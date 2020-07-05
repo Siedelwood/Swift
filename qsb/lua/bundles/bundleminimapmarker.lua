@@ -73,7 +73,6 @@ MarkerColor = {
 --
 function API.CreateMinimapSignal(_PlayerID, _Position)
     if GUI then
-        fatal("API.CreateMinimapSignal: Can not be used in local script!");
         return;
     end
 
@@ -83,7 +82,7 @@ function API.CreateMinimapSignal(_PlayerID, _Position)
     end
 
     if type(Position) ~= "table" or (not Position.X or not Position.X) then
-        fatal("API.CreateMinimapSignal: Position is invalid!");
+        log("API.CreateMinimapSignal: Position is invalid!", LEVEL_ERROR);
         return;
     end
     return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 7);
@@ -106,7 +105,6 @@ CreateMinimapSignal = API.CreateMinimapSignal;
 --
 function API.CreateMinimapMarker(_PlayerID, _Position)
     if GUI then
-        fatal("API.CreateMinimapMarker: Can not be used in local script!");
         return;
     end
 
@@ -116,7 +114,7 @@ function API.CreateMinimapMarker(_PlayerID, _Position)
     end
 
     if type(Position) ~= "table" or (not Position.X or not Position.X) then
-        fatal("API.CreateMinimapMarker: Position is invalid!");
+        log("API.CreateMinimapMarker: Position is invalid!", LEVEL_ERROR);
         return;
     end
     return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 6);
@@ -139,7 +137,6 @@ CreateMinimapMarker = API.CreateMinimapMarker;
 --
 function API.CreateMinimapPulse(_PlayerID, _Position)
     if GUI then
-        fatal("API.CreateMinimapPulse: Can not be used in local script!");
         return;
     end
 
@@ -149,7 +146,7 @@ function API.CreateMinimapPulse(_PlayerID, _Position)
     end
     
     if type(Position) ~= "table" or (not Position.X or not Position.X) then
-        fatal("API.CreateMinimapPulse: Position is invalid!");
+        log("API.CreateMinimapPulse: Position is invalid!", LEVEL_ERROR);
         return;
     end
     return BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, Position.X, Position.Y, 1);
@@ -168,11 +165,10 @@ CreateMinimapPulse = API.CreateMinimapPulse;
 --
 function API.DestroyMinimapSignal(_ID)
     if GUI then
-        fatal("API.DestroyMinimapSignal: Can not be used in local script!");
         return;
     end
     if type(_ID) ~= "number" then
-        fatal("API.DestroyMinimapSignal: _ID must be a number!");
+        log("API.DestroyMinimapSignal: _ID must be a number!", LEVEL_ERROR);
         return;
     end
     BundleMinimapMarker.Global:DestroyMinimapMarker(_ID);
@@ -264,14 +260,6 @@ function BundleMinimapMarker.Global:ShowMinimapMarker(_ID)
     ]]);
 end
 
---
--- Logger
---
-function BundleMinimapMarker.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleMinimapMarker");
-    Core:LogToFile(_Text, _Level, "BundleMinimapMarker");
-end
-
 ---
 -- Stellt Markierungen auf der Minimap wieder her, wenn ein Spielstand
 -- geladen wird.
@@ -318,14 +306,6 @@ function BundleMinimapMarker.Local:ShowMinimapMarker(_ID, _PlayerID, _X, _Y, _Ty
         B = _PlayerID[3];
     end
     GUI.CreateMinimapSignalRGBA(_ID, _X, _Y, R, G, B, 255, _Type);
-end
-
---
--- Logger
---
-function BundleMinimapMarker.Local:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleMinimapMarker");
-    Core:LogToFile(_Text, _Level, "BundleMinimapMarker");
 end
 
 -- -------------------------------------------------------------------------- --

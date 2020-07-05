@@ -14,7 +14,6 @@
 --
 function API.AddHotKey(_Key, _Description)
     if not GUI then
-        API.Fatal("API.AddHotKey: Can not be used from the global script!");
         return;
     end
     g_KeyBindingsOptions.Descriptions = nil;
@@ -30,11 +29,11 @@ end
 --
 function API.RemoveHotKey(_Index)
     if not GUI then
-        API.Fatal("API.RemoveHotKey: Can not be used from the global script!");
         return;
     end
     if type(_Index) ~= "number" or _Index > #Core.Data.HotkeyDescriptions then
-        API.Fatal("API.RemoveHotKey: No candidate found or Index is nil!");
+        Core:LogToFile("API.RemoveHotKey: No candidate found or Index is nil!", LEVEL_ERROR);
+        Core:LogToScreen("API.RemoveHotKey: No candidate found or Index is nil!", LEVEL_ERROR);
         return;
     end
     Core.Data.HotkeyDescriptions[_Index] = nil;

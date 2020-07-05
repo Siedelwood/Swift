@@ -445,14 +445,6 @@ function BundleTravelingSalesman.Global:TravelingSalesmanController()
     end
 end
 
---
--- Logger
---
-function BundleTravelingSalesman.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleTravelingSalesman");
-    Core:LogToFile(_Text, _Level, "BundleTravelingSalesman");
-end
-
 -- Klassen ------------------------------------------------------------------ --
 
 QSB.TradeShipPath = {

@@ -133,7 +133,7 @@ end
 
 function b_Goal_WinQuest:Debug(_Quest)
     if Quests[GetQuestID(self.Quest)] == nil then
-        fatal(_Quest.Identifier .. ": " .. self.Name .. ": Quest '"..self.Quest.."' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Quest '"..self.Quest.."' does not exist!");
         return true;
     end
     return false;
@@ -254,7 +254,7 @@ end
 
 function b_Goal_StealGold:Debug(_Quest)
     if tonumber(self.Amount) == nil and self.Amount < 0 then
-        fatal(_Quest.Identifier .. ": " .. self.Name .. ": amount can not be negative!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": amount can not be negative!");
         return true;
     end
     return false;
@@ -372,16 +372,16 @@ function b_Goal_StealBuilding:Debug(_Quest)
     local eTypeName = Logic.GetEntityTypeName(Logic.GetEntityType(GetID(self.Building)));
     local IsHeadquarter = Logic.IsEntityInCategory(GetID(self.Building), EntityCategories.Headquarters) == 1;
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": target is destroyed :(");
         return true;
     elseif string.find(eTypeName, "B_NPC_BanditsHQ") or string.find(eTypeName, "B_NPC_Cloister") or string.find(eTypeName, "B_NPC_StoreHouse") then
-        fatal(_Quest.Identifier .. ": " .. self.Name .. ": village storehouses are not allowed!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": village storehouses are not allowed!");
         return true;
     elseif IsHeadquarter then
-        fatal(_Quest.Identifier .. ": " .. self.Name .. ": use Goal_StealInformation for headquarters!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": use Goal_StealInformation for headquarters!");
         return true;
     end
     return false;
@@ -500,10 +500,10 @@ end
 
 function b_Goal_SpyBuilding:Debug(_Quest)
     if Logic.IsBuilding(GetID(self.Building)) == 0 then
-        fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is not a building");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": target is not a building");
         return true;
     elseif not IsExisting(self.Building) then
-        fatal(_Quest.Identifier .. ": " .. self.Name .. ": target is destroyed :(");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": target is destroyed :(");
         return true;
     end
     return false;
@@ -582,7 +582,7 @@ end
 
 function b_Goal_AmmunitionAmount:Debug(_Quest)
     if self.Amount < 0 then
-        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Amount is negative");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Amount is negative");
         return true
     end
 end
@@ -741,7 +741,7 @@ end
 
 function b_Goal_CityReputation:Debug(_Quest)
     if type(self.Reputation) ~= "number" or self.Reputation < 0 or self.Reputation > 100 then
-        fatal(_Quest.Identifier.. " " ..self.Name.. ": Reputation must be between 0 and 100!");
+        error(_Quest.Identifier.. ": " ..self.Name.. ": Reputation must be between 0 and 100!");
         return true;
     end
     return false;
@@ -1098,12 +1098,12 @@ end
 function b_Reprisal_SetPosition:Debug(_Quest)
     if self.FaceToFace then
         if tonumber(self.Distance) == nil or self.Distance < 50 then
-            fatal(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
+            error(_Quest.Identifier.. ": " ..self.Name.. ": Distance is nil or to short!");
             return true;
         end
     end
     if not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        fatal(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -1169,7 +1169,7 @@ end
 
 function b_Reprisal_ChangePlayer:Debug(_Quest)
     if not IsExisting(self.Entity) then
-        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1258,7 +1258,7 @@ end
 
 function b_Reprisal_SetVisible:Debug(_Quest)
     if not IsExisting(self.Entity) then
-        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1343,7 +1343,7 @@ end
 
 function b_Reprisal_SetVulnerability:Debug(_Quest)
     if not IsExisting(self.Entity) then
-        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1460,7 +1460,7 @@ end
 
 function b_Reprisal_SetModel:Debug(_Quest)
     if not IsExisting(self.Entity) then
-        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1607,10 +1607,10 @@ end
 
 function b_Reward_MoveToPosition:Debug(_Quest)
     if tonumber(self.Distance) == nil or self.Distance < 50 then
-        fatal(_Quest.Identifier.. " " ..self.Name.. ": Distance is nil or to short!");
+        error(_Quest.Identifier.. ": " ..self.Name.. ": Distance is nil or to short!");
         return true;
     elseif not IsExisting(self.Entity) or not IsExisting(self.Target) then
-        fatal(_Quest.Identifier.. " " ..self.Name.. ": Mover entity or target entity does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name.. ": Mover entity or target entity does not exist!");
         return true;
     end
     return false;
@@ -1817,7 +1817,7 @@ end
 
 function b_Reward_AI_SetEntityControlled:Debug(_Quest)
     if not IsExisting(self.Entity) then
-        fatal(_Quest.Identifier .. " " .. self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": entity '"..  self.Entity .. "' does not exist!");
         return true;
     end
     return false;
@@ -1935,7 +1935,7 @@ end
 
 function b_Reward_RefillAmmunition:Debug(_Quest)
     if not IsExisting(self.Scriptname) then
-        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": '"..self.Scriptname.."' is destroyed!");
         return true
     end
     return false;
@@ -2023,18 +2023,18 @@ function b_Trigger_OnAtLeastXOfYQuestsFailed:Debug(_Quest)
     local leastAmount = self.LeastAmount
     local questAmount = self.QuestAmount
     if leastAmount <= 0 or leastAmount >5 then
-        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": LeastAmount is wrong")
+        error(_Quest.Identifier .. ":" .. self.Name .. ": LeastAmount is wrong")
         return true
     elseif questAmount <= 0 or questAmount > 5 then
-        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": QuestAmount is wrong")
+        error(_Quest.Identifier.. ": " ..self.Name .. ": QuestAmount is wrong")
         return true
     elseif leastAmount > questAmount then
-        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": LeastAmount is greater than QuestAmount")
+        error(_Quest.Identifier.. ": " ..self.Name .. ": LeastAmount is greater than QuestAmount")
         return true
     end
     for i = 1, questAmount do
         if not IsValidQuest(self["QuestName"..i]) then
-            fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": Quest ".. self["QuestName"..i] .. " not found")
+            error(_Quest.Identifier.. ": " ..self.Name .. ": Quest ".. self["QuestName"..i] .. " not found")
             return true
         end
     end
@@ -2098,7 +2098,7 @@ end
 
 function b_Trigger_AmmunitionDepleted:Debug(_Quest)
     if not IsExisting(self.Scriptname) then
-        fatal(_Quest.Identifier .. ": Error in " .. self.Name .. ": '"..self.Scriptname.."' is destroyed!");
+        error(_Quest.Identifier.. ": " ..self.Name .. ": '"..self.Scriptname.."' is destroyed!");
         return true
     end
     return false
@@ -2161,13 +2161,13 @@ end
 
 function b_Trigger_OnExactOneQuestIsWon:Debug(_Quest)
     if self.Quest1 == self.Quest2 then
-        fatal(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
+        error(_Quest.Identifier.. ": " ..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        fatal(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        fatal(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;
@@ -2230,13 +2230,13 @@ end
 
 function b_Trigger_OnExactOneQuestIsLost:Debug(_Quest)
     if self.Quest1 == self.Quest2 then
-        fatal(_Quest.Identifier..": "..self.Name..": Both quests are identical!");
+        error(_Quest.Identifier.. ": " ..self.Name..": Both quests are identical!");
         return true;
     elseif not IsValidQuest(self.Quest1) then
-        fatal(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest1.."' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name..": Quest '"..self.Quest1.."' does not exist!");
         return true;
     elseif not IsValidQuest(self.Quest2) then
-        fatal(_Quest.Identifier..": "..self.Name..": Quest '"..self.Quest2.."' does not exist!");
+        error(_Quest.Identifier.. ": " ..self.Name..": Quest '"..self.Quest2.."' does not exist!");
         return true;
     end
     return false;

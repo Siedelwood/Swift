@@ -84,7 +84,6 @@ QSB = QSB or {};
 --
 function API.StartBriefing(_Briefing)
     if GUI then
-        warn("API.StartBriefing: Cannot start briefing from local script!");
         return -1;
     end
     return BundleBriefingSystem.Global:StartBriefing(_Briefing);
@@ -102,7 +101,6 @@ StartBriefing = API.StartBriefing;
 --
 function API.IsBriefingFinished(_BriefingID)
     if GUI then
-        warn("API.IsBriefingFinished: Cannot check briefing state from local script!");
         return false;
     end
     return BundleBriefingSystem.Global.Data.FinishedBriefings[_BriefingID] == true;
@@ -185,7 +183,6 @@ function API.SetAnswerAvailability(_Page, _Answer, _Visible)
 --
 function API.AddPages(_Briefing)
     if GUI then
-        fatal("API.AddPages: Cannot be used from local script!");
         return;
     end
     _Briefing.GetPage = function(self, _NameOrID)
@@ -402,7 +399,7 @@ AddPages = API.AddPages;
 -- @within Briefing
 --
 function AP(_Page)
-    API.Note("AP: Please use the function provides by AddPages!");
+    error("AP: Please use the function provides by AddPages!");
 end
 
 ---
@@ -428,7 +425,7 @@ end
 -- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
 --
 function ASP(...)
-    fatal("ASP: Please use the function provided by AddPages!");
+    error("ASP: Please use the function provided by AddPages!");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -815,14 +812,6 @@ end
 --
 function BundleBriefingSystem.Global:PushBriefingNote(_Text)
     API.Bridge("BundleBriefingSystem.Local:PushBriefingNote('" .._Text.. "')");
-end
-
---
--- Logger
---
-function BundleBriefingSystem.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleBriefingSystem");
-    Core:LogToFile(_Text, _Level, "BundleBriefingSystem");
 end
 
 -- Local Script ------------------------------------------------------------- --
@@ -1802,14 +1791,6 @@ function BundleBriefingSystem.Local:UpdateBriefingNotes()
     XGUIEng.SetText("/InGame/ThroneRoom/KnightInfo/Text", Text);
 end
 
---
--- Logger
---
-function BundleBriefingSystem.Local:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleBriefingSystem");
-    Core:LogToFile(_Text, _Level, "BundleBriefingSystem");
-end
-
 -- Shared ------------------------------------------------------------------- --
 
 ---
@@ -1880,7 +1861,7 @@ end
 
 function b_Reprisal_Briefing:Debug(_Quest)
     if not type(_G[self.Function]) == "function" then
-        fatal(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!", LEVEL_ERROR);
+        error(_Quest.Identifier..": "..self.Name..": '"..self.Function.."' was not found!", LEVEL_ERROR);
         return true;
     end
     return false;
@@ -2027,10 +2008,10 @@ end
 
 function b_Trigger_Briefing:Debug(_Quest)
     if self.WaitTime and self.WaitTime < 0 then
-        fatal(_Quest.Identifier.." "..self.Name..": waittime is below 0!", LEVEL_ERROR);
+        error(_Quest.Identifier.." "..self.Name..": waittime is below 0!", LEVEL_ERROR);
         return true;
     elseif not IsValidQuest(self.Quest) then
-        fatal(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!", LEVEL_ERROR);
+        error(_Quest.Identifier.." "..self.Name..": '"..self.Quest.."' is not a valid quest!", LEVEL_ERROR);
         return true;
     end
     return false;

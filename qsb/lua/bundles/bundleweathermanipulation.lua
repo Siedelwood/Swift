@@ -51,7 +51,6 @@ BundleWeatherManipulation = {};
 --
 function API.WeatherEventCreate(_GFX, _Rain, _Snow, _Ice, _Monsoon, _Temp, _NotGrowing)
     if GUI then
-        fatal("API.WeatherEventCreate: Events must be created in the global script!");
         return;
     end
     
@@ -85,11 +84,10 @@ end
 --
 function API.WeatherEventRegister(_Event, _Name, _Duration)
     if GUI then
-        fatal("API.WeatherEventStart: Events must be started in the global script!");
         return;
     end
     if type(_Event) ~= "table" or not _Event.GFX then
-        fatal("API.WeatherEventStart: Invalid weather event!");
+        log("API.WeatherEventStart: Invalid weather event!", LEVEL_ERROR);
         return;
     end
     BundleWeatherManipulation.Global:AddEvent(_Event, _Name, _Duration);
@@ -110,11 +108,10 @@ end
 --
 function API.WeatherEventRegisterLoop(_Event, _Name)
     if GUI then
-        fatal("API.WeatherEventStartLoop: Events must be started in the global script!");
         return;
     end
     if type(_Event) ~= "table" or not _Event.GFX then
-        fatal("API.WeatherEventStartLoop: Invalid weather event!");
+        log("API.WeatherEventStartLoop: Invalid weather event!", LEVEL_ERROR);
         return;
     end
     
@@ -358,14 +355,6 @@ function BundleWeatherManipulation.Global.EventController()
             BundleWeatherManipulation.Global:NextEvent();
         end
     end
-end
-
---
--- Logger
---
-function BundleWeatherManipulation.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleWeatherManipulation");
-    Core:LogToFile(_Text, _Level, "BundleWeatherManipulation");
 end
 
 -- Local Script ------------------------------------------------------------- --

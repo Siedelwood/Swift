@@ -766,7 +766,7 @@ function BundleNonPlayerCharacter.Global:Install()
         else
             if data[1] == -65565 then
                 if not IsExisting(data[3]) then
-                    BundleNonPlayerCharacter.Global:Log(data[3].. " is dead! :(", LEVEL_ERROR);
+                    error(data[3].. " is dead! :(");
                     objective.Completed = false;
                 else
                     if not data[4].NpcInstance then
@@ -811,14 +811,6 @@ end
 --
 function BundleNonPlayerCharacter.Global:GetControllingPlayer()
     return QSB.HumanPlayerID;
-end
-
---
--- Logger
---
-function BundleNonPlayerCharacter.Global:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleNonPlayerCharacter");
-    Core:LogToFile(_Text, _Level, "BundleNonPlayerCharacter");
 end
 
 ---
@@ -972,14 +964,6 @@ function BundleNonPlayerCharacter.Local:Install()
         end
         return EntityOrTerritoryList, IsEntity
     end
-end
-
---
--- Logger
---
-function BundleNonPlayerCharacter.Local:Log(_Text, _Level)
-    Core:LogToScreen(_Text, _Level, "BundleNonPlayerCharacter");
-    Core:LogToFile(_Text, _Level, "BundleNonPlayerCharacter");
 end
 
 Core:RegisterBundle("BundleNonPlayerCharacter");
