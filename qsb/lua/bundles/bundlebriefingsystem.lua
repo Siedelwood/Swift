@@ -27,6 +27,29 @@ BundleBriefingSystem = {};
 API = API or {};
 QSB = QSB or {};
 
+---
+-- Animationstypen für ASP
+--
+-- @field Zoom     Kamera zoomt hinein oder hinaus (Offset)
+-- @field Pitch    Kamera kippt nach oben oder unten (Offset)
+-- @field Rotate   Kamera wird um das Ziel geschwenkt (Offset)
+-- @field Random   Kamera wird sich zufällig bewegen
+-- @field Move     XYZ-Koordinaten von Start und Ziel überschreiben (Offset)
+-- @field Override Frei einstellbare Parameter (Absolut)
+-- @field Height   Kamerahöhe ändern (Offset)
+-- @field Time     Animationsdauer (Absolut)
+--
+QSB.DialogAnimations = {
+    Height       = 1,
+    Zoom         = 2,
+    Pitch        = 3,
+    Rotate       = 4,
+    Random       = 5,
+    Move         = 6,
+    Override     = 7,
+    Time         = 8,
+}
+
 -- -------------------------------------------------------------------------- --
 -- User-Space                                                                 --
 -- -------------------------------------------------------------------------- --
@@ -256,13 +279,13 @@ function API.AddPages(_Briefing)
 
     local ASP = function(...)
         local PageName;
-        if #arg > 5 or (type(arg[4]) == "string" or type(arg[4]) == "table") then
+        if type(arg[4]) == "string" or type(arg[4]) == "table" then
             PageName = table.remove(arg, 1);
         end
         -- Position angleichen
         local TargetID = GetID(arg[1]);
         local TargetType = Logic.GetEntityType(TargetID);
-        local Position = {arg[1], 0};
+        local Position = {table.remove(arg, 1), 0};
         if Logic.IsSettler(TargetID) == 1 then
             Position[2] = 120;
             if Logic.IsKnight(TargetID) then
@@ -284,20 +307,180 @@ function API.AddPages(_Briefing)
         local SizeSV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
         local Size = Logic.GetEntityScriptingValue(TargetID, SizeSV);
         Position[2] = Position[2] * Core:ScriptingValueIntegerToFloat(Size);
-        -- Page erstellen
+
+        local Title  = table.remove(arg, 1);
+        local Text   = table.remove(arg, 1);
+        local DlgCam = table.remove(arg, 1);
+        local Action;
+        if type(arg[1]) == "function" then
+            Action = table.remove(arg, 1);
+        end
+
+        -- Animierte Page Basiswerte
+        local x1, y1, z1, x2, y2, z2, o1, o2, a1, a2, d1, d2, t = API.IncludePageAnimation(arg, DlgCam, Position, Rotation);
+
         return AP {
             Name         = PageName,
-            Title        = arg[2],
-            Text         = arg[3],
-            Position     = Position,
-            Rotation     = Rotation,
-            Action       = arg[5],
-            DialogCamera = arg[4] == true,
+            Title        = Title,
+            Text         = Text,
+            Position     = {X= x1, Y= y1, Z= z1},
+            Zoom         = d1,
+            Angle        = a1,
+            Rotation     = o1,
+            Duration     = 100 * 12 * 4 * 7 * 24 * 60 * 60, -- ~ 100 Jahre
+            Action       = Action,
+            FlyTo        = {
+                Position = {X= x2, Y= y2, Z= z2},
+                Zoom     = d2,
+                Rotation = o2,
+                Angle    = a2,
+                Duration = t,
+            }
         }
     end
     return AP, ASP;
 end
 AddPages = API.AddPages;
+
+---
+-- Berechnet die Kamerawerte für ASP.
+--
+-- @param[type=table]   _Data     Animationsdaten
+-- @param[type=boolean] _Dialog   Dialogkamera
+-- @param[type=table]   _Position Position
+-- @param[type=number]  _Rotation Ausrichtung
+-- @return[type=number] Kamerawerte (13 Numbers)
+-- @within Anwenderfunktionen
+-- @local
+--
+function API.IncludePageAnimation(_Data, _Dialog, _Position, _Rotation)
+    local x1, y1, z1, x2, y2, z2, o1, o2, a1, a2, d1, d2, t;
+    x1, y1, z1 = Logic.EntityGetPos(GetID(_Position[1]));
+    z1 = z1 + _Position[2];
+    x2, y2, z2 = x1, y1, z1;
+    o1, o2 = _Rotation, _Rotation;
+    d1 = BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
+    d2 = BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
+    a1 = BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
+    a2 = BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
+    if _Dialog == true then
+        d1 = 1000;
+        d2 = 1000;
+        a1 = BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
+        a2 = BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
+    end
+    t = 2 * 60;
+
+    while #_Data > 0 do
+        local Type = table.remove(_Data, 1);
+
+        if Type == QSB.DialogAnimations.Random then
+            if math.random(1, 2) == 1 then
+                x1 = x1 + (math.random(-12, 12) * 10);
+                y1 = y1 + (math.random(-12, 12) * 10);
+            end
+            if math.random(1, 2) == 1 then
+                z1 = z1 + math.random(-5, 15);
+            end
+            if math.random(1, 2) == 1 then
+                x2 = x2 + (math.random(-12, 12) * 10);
+                y2 = y2 + (math.random(-12, 12) * 10);
+            end
+            if math.random(1, 2) == 1 then
+                z2 = z2 + math.random(-5, 15);
+            end
+            if math.random(1, 2) == 1 then
+                if math.random(1, 2) == 1 then
+                    o1 = o1 - math.random(5, 10);
+                    o2 = o2 + math.random(5, 10);
+                else
+                    o1 = o1 + math.random(5, 10);
+                    o2 = o2 - math.random(5, 10);
+                end
+            end
+            if math.random(1, 2) == 1 then
+                if math.random(1, 2) == 1 then
+                    a1 = a1 - math.random(1, 3);
+                    a2 = a2 + math.random(1, 3);
+                else
+                    a1 = a1 + math.random(1, 3);
+                    a2 = a2 - math.random(1, 3);
+                end
+            end
+            if math.random(1, 2) == 1 then
+                if math.random(1, 2) == 1 then
+                    d1 = d1 - math.random(math.floor(d1 * (0.01)), math.floor(d1 * (0.05)));
+                    d2 = d2 + math.random(math.floor(d2 * (0.01)), math.floor(d2 * (0.05)));
+                else
+                    d1 = d1 + math.random(math.floor(d1 * (0.01)), math.floor(d1 * (0.05)));
+                    d2 = d2 - math.random(math.floor(d2 * (0.01)), math.floor(d2 * (0.05)));
+                end
+            end
+            if math.random(1, 2) == 1 then
+                t = t + math.random(-30, 30);
+            end
+            return x1, y1, z1, x2, y2, z2, o1, o2, a1, a2, d1, d2, t;
+
+        elseif Type == QSB.DialogAnimations.Override then
+            local Value = table.remove(_Data, 1);
+            x1 = (Value ~= false and Value) or x1;
+            local Value = table.remove(_Data, 1);
+            y1 = (Value ~= false and Value) or y1;
+            local Value = table.remove(_Data, 1);
+            z1 = (Value ~= false and Value) or z1;
+            local Value = table.remove(_Data, 1);
+            x2 = (Value ~= false and Value) or x2;
+            local Value = table.remove(_Data, 1);
+            y2 = (Value ~= false and Value) or y2;
+            local Value = table.remove(_Data, 1);
+            z2 = (Value ~= false and Value) or z2;
+            local Value = table.remove(_Data, 1);
+            o1 = (Value ~= false and Value) or o1;
+            local Value = table.remove(_Data, 1);
+            o2 = (Value ~= false and Value) or o2;
+            local Value = table.remove(_Data, 1);
+            a1 = (Value ~= false and Value) or a1;
+            local Value = table.remove(_Data, 1);
+            a2 = (Value ~= false and Value) or a2;
+            local Value = table.remove(_Data, 1);
+            d1 = (Value ~= false and Value) or d1;
+            local Value = table.remove(_Data, 1);
+            d2 = (Value ~= false and Value) or d2;
+
+        elseif Type == QSB.DialogAnimations.Time then
+            t = table.remove(_Data, 1);
+
+        elseif Type == QSB.DialogAnimations.Rotate then
+            o1 = o1 + table.remove(_Data, 1);
+            o2 = o2 + table.remove(_Data, 1);
+
+        elseif Type == QSB.DialogAnimations.Height then
+            z1 = z1 + table.remove(_Data, 1);
+            z2 = z2 + table.remove(_Data, 1);
+
+        elseif Type == QSB.DialogAnimations.Zoom then
+            d1 = d1 + table.remove(_Data, 1);
+            d2 = d2 + table.remove(_Data, 1);
+
+        elseif Type == QSB.DialogAnimations.Pitch then
+            a1 = a1 + table.remove(_Data, 1);
+            a2 = a2 + table.remove(_Data, 1);
+
+        elseif Type == QSB.DialogAnimations.Move then
+            local Distance1 = table.remove(_Data, 1);
+            local Angle1    = table.remove(_Data, 1);
+            local Distance2 = table.remove(_Data, 1);
+            local Angle2    = table.remove(_Data, 1);
+            local Pos1 = BundleBriefingSystem:GetRelativePos({X= x1, Y= y1, Z= z1}, Distance1, Angle1);
+            local Pos2 = BundleBriefingSystem:GetRelativePos({X= x2, Y= y2, Z= z2}, Distance2, Angle2);
+            x1 = Pos1.X;
+            y1 = Pos1.Y;
+            x2 = Pos2.X;
+            y2 = Pos2.Y;
+        end
+    end
+    return x1, y1, z1, x2, y2, z2, o1, o2, a1, a2, d1, d2, t;
+end
 
 ---
 -- Erstellt eine Seite für ein Dialog-Briefing.
@@ -416,13 +599,20 @@ end
 -- @param[type=string]   _title	       Titel der Seite
 -- @param[type=string]   _text         Text der Seite
 -- @param[type=boolean]  _dialogCamera Nahsicht an/aus
--- @param[type=function] _action       Callback-Funktion
+-- @param[type=function] _action       (Optional) Callback-Funktion
+-- @param                ...           (Optional) Animationsparameter
 -- @return[type=table] Referenz auf die Seite
 -- @within Briefing
 -- @usage -- Beispiel ohne Page Name
 -- ASP("hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
 -- -- Beispiel mit Page Name
 -- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true);
+-- -- Beispiel mit Aktion
+-- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true, SomeFunction);
+-- -- Beispiel mit Animation
+-- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true, QSB.DialogAnimations.Random);
+-- -- Beispiel mit Aktion und Animation
+-- ASP("B1P1", "hans", "Hänschen-Klein", "Ich gehe in die weitel Welt hinein.", true, SomeFunction, QSB.DialogAnimations.Random);
 --
 function ASP(...)
     error("ASP: Please use the function provided by AddPages!");
@@ -1813,6 +2003,47 @@ function BundleBriefingSystem:OverrideApiNote()
         end
         API.Note_Orig_BriefingSystem(_Text);
     end
+end
+
+---
+-- Errechnet eine Position relativ im angegebenen Winkel und Position zur
+-- Basisposition. Die Basis kann ein Entity oder eine Positionstabelle sein.
+--
+-- @param               _target          Basisposition (Skriptname, ID oder Position)
+-- @param[type=number]  _distance        Entfernung
+-- @param[type=number]  _angle           Winkel
+-- @param[type=boolean] _buildingRealPos Gebäudemitte statt Gebäudeeingang
+-- @return[type=table] Position
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
+    if not type(_target) == "table" and not IsExisting(_target)then
+        return
+    end
+    if _angle == nil then
+        _angle = 0;
+    end
+
+    local pos1;
+    if type(_target) == "table" then
+        local pos = _target;
+        local ori = 0+_angle;
+        pos1 = { X= pos.X+_distance * math.cos(math.rad(ori)),
+                 Y= pos.Y+_distance * math.sin(math.rad(ori))};
+    else
+        local eID = GetID(_target);
+        local pos = GetPosition(eID);
+        local ori = Logic.GetEntityOrientation(eID)+_angle;
+        if Logic.IsBuilding(eID) == 1 and not _buildingRealPos then
+            x, y = Logic.GetBuildingApproachPosition(eID);
+            pos = {X= x, Y= y};
+            ori = ori -90;
+        end
+        pos1 = { X= pos.X+_distance * math.cos(math.rad(ori)),
+                 Y= pos.Y+_distance * math.sin(math.rad(ori))};
+    end
+    return pos1;
 end
 
 -- Behavior ----------------------------------------------------------------- --
