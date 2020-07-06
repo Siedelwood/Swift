@@ -32,11 +32,10 @@ QSB = QSB or {};
 --
 function API.SetEarningsOfPlayerCity(_PlayerID, _Earnings)
     if GUI then
-        API.Bridge("API.SetEarningsOfPlayerCity(" .._PlayerID.. ", " .._Earnings.. ")");
         return;
     end
     if _PlayerID ~= -1 and Logic.GetStoreHouse(_PlayerID) == 0 then
-        log("API.SetEarningsOfPlayerCity: Player " .._PlayerID.. " is dead! :(", LEVEL_ERROR);
+        log("API.SetEarningsOfPlayerCity: Player " ..tostring(_PlayerID).. " is dead! :(", LEVEL_ERROR);
         return;
     end
     if _Earnings == nil or (_Earnings < 0 or _Earnings > 100) then
@@ -61,11 +60,10 @@ SetPlayerEarnings = API.SetEarningsOfPlayerCity;
 --
 function API.SetNeedSatisfaction(_Need, _State, _PlayerID)
     if GUI then
-        API.Bridge("API.SetNeedSatisfaction(" .._Need.. ", " .._State.. ", " .._PlayerID.. ")")
         return;
     end
     if _PlayerID ~= -1 and Logic.GetStoreHouse(_PlayerID) == 0 then
-        log("API.SetNeedSatisfaction: Player " .._PlayerID.. " is dead! :(", LEVEL_ERROR);
+        log("API.SetNeedSatisfaction: Player " ..tostring(_PlayerID).. " is dead! :(", LEVEL_ERROR);
         return;
     end
     if _State < 0 or _State > 1 then
@@ -87,7 +85,6 @@ SetNeedSatisfactionLevel = API.SetNeedSatisfaction;
 --
 function API.UnlockTitleForPlayer(_PlayerID, _KnightTitle)
     if GUI then
-        API.Bridge("API.UnlockTitleForPlayer(" .._PlayerID.. ", " .._KnightTitle.. ")")
         return;
     end
     return BundlePlayerHelperFunctions.Global:UnlockTitleForPlayer(_PlayerID, _KnightTitle);
@@ -105,7 +102,6 @@ UnlockTitleForPlayer = API.UnlockTitleForPlayer;
 --
 function API.StartNormalFestival(_PlayerID)
     if GUI then
-        API.Bridge("API.StartNormalFestival(".. _PlayerID ..")");
         return;
     end
     BundlePlayerHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, false);
@@ -124,7 +120,6 @@ StartNormalFestival = API.StartNormalFestival;
 --
 function API.StartCityUpgradeFestival(_PlayerID)
     if GUI then
-        API.Bridge("API.StartCityUpgradeFestival(".. _PlayerID ..")");
         return;
     end
     BundlePlayerHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 1, false);
@@ -142,7 +137,6 @@ StartCityUpgradeFestival = API.StartCityUpgradeFestival;
 --
 function API.ForbidFestival(_PlayerID)
     if GUI then
-        API.Bridge("API.ForbidFestival(".. _PlayerID ..")");
         return;
     end
 
@@ -168,7 +162,6 @@ ForbidFestival = API.ForbidFestival;
 --
 function API.AllowFestival(_PlayerID)
     if GUI then
-        API.Bridge("API.AllowFestival(".. _PlayerID ..")");
         return;
     end
 
@@ -199,7 +192,11 @@ AllowFestival = API.AllowFestival;
 --
 function API.SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight)
     if GUI then
-        API.Bridge("API.SetControllingPlayer(".. _OldID ..", ".. _NewID ..", '".. _NewName .."', ".. tostring(_RetainKnight) ..")");
+        return;
+    end
+    if type(_OldID) ~= "number" or type(_NewID) ~= "number" or _OldID == _NewID 
+    or _OldID < 1 or _OldID > 8 or _NewID < 1 or _NewID > 8 then
+        error("API.SetControllingPlayer: Trying to change player " ..tostring(_OldID).. " to " ..tostring(_NewID).. " which is not possible!");
         return;
     end
     return BundlePlayerHelperFunctions.Global:SetControllingPlayer(_OldID, _NewID, _NewName, _RetainKnight);
@@ -244,6 +241,15 @@ PlayerGetPlayerID = API.GetControllingPlayer;
 -- @local
 --
 function API.CanPlayerProduceGood(_PlayerID, _GoodType)
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CanPlayerProduceGood: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return false;
+    end
+    local TypeName = GetNameOfKeyInTable(Goods, _GoodType);
+    if TypeName == nil then
+        error("API.CanPlayerProduceGood: _GoodType (" ..tostring(_GoodType).. ") is wrong!");
+        return true;
+    end
     return BundlePlayerHelperFunctions.Shared:CanPlayerProduceGoodInPrinciple(_PlayerID, _GoodType);
 end
 
@@ -257,6 +263,15 @@ end
 -- @local
 --
 function API.CanPlayerCurrentlyProduceGood(_PlayerID, _GoodType)
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CanPlayerCurrentlyProduceGood: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return false;
+    end
+    local TypeName = GetNameOfKeyInTable(Goods, _GoodType);
+    if TypeName == nil then
+        error("API.CanPlayerCurrentlyProduceGood: _GoodType (" ..tostring(_GoodType).. ") is wrong!");
+        return true;
+    end
     return BundlePlayerHelperFunctions.Shared:CanPlayerProduceGood(_PlayerID, _GoodType);
 end
 
@@ -269,6 +284,11 @@ end
 -- @local
 --
 function API.GetResourceOfProduct(_GoodType)
+    local TypeName = GetNameOfKeyInTable(Goods, _GoodType);
+    if TypeName == nil then
+        error("API.GetResourceOfProduct: _GoodType (" ..tostring(_GoodType).. ") is wrong!");
+        return true;
+    end
     return BundlePlayerHelperFunctions.Shared:ProductToResource(_GoodType);
 end
 

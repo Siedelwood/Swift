@@ -50,7 +50,6 @@ QSB = QSB or {};
 --
 function API.CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
     if GUI then
-        API.Bridge("API.CreateTrebuchetConstructionSite('" .._Name.. "', " .._GoldCost.. ", " .._WoodCost.. ")");
         return;
     end
     AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost);
@@ -73,7 +72,6 @@ CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
 --
 function API.DestroyTrebuchetConstructionSite(_Name)
     if GUI then
-        API.Bridge("API.DestroyTrebuchetConstructionSite('" .._Name.. "')");
         return;
     end
     AddOnInteractiveTrebuchets.Global:DestroyTrebuchetConstructionSite(_Name);

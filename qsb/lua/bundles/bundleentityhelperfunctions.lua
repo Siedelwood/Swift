@@ -46,7 +46,7 @@ function API.GetEntitiesOfCategoriesInTerritories(_player, _category, _territory
     local PlayerEntities = {};
     for i=1, #p, 1 do
         for j=1, #c, 1 do
-            for k=1, #t, 1 do
+            for k=1, #t, 1 do  
                 local Units = API.GetEntitiesOfCategoryInTerritory(p[i], c[j], t[k]);
                 PlayerEntities = Array_Append(PlayerEntities, Units);
             end

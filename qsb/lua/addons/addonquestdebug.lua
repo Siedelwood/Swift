@@ -400,7 +400,6 @@ AddOnQuestDebug = {
 --
 function API.ActivateDebugMode(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell)
     if GUI then
-        API.Bridge("API.ActivateDebugMode(" ..tostring(_CheckAtRun).. ", " ..tostring(_TraceQuests).. ", " ..tostring(_DevelopingCheats).. ", " ..tostring(_DevelopingShell).. ")");
         return;
     end
     AddOnQuestDebug.Global:ActivateDebug(_CheckAtRun, _TraceQuests, _DevelopingCheats, _DevelopingShell);

@@ -34,12 +34,6 @@ QSB = QSB or {};
 --
 function API.SetPosition(_Entity, _Position)
     if GUI then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        local Position = _Position;
-        if type(Position) == "table" then
-            Position = "{X= " ..tostring(Position.X).. ", Y= " ..tostring(Position.Y).. "}";
-        end
-        API.Bridge("API.SetPosition(" ..Subject.. ", " ..Position.. ")")
         return;
     end
     if not IsExisting(_Entity) then
@@ -78,7 +72,6 @@ SetPosition = API.SetPosition;
 --
 function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity)
     if GUI then
-        API.Bridge("API.MoveToPosition(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ", " ..tostring(_moveAsEntity).. ")")
         return;
     end
     if not IsExisting(_Entity) then
@@ -117,7 +110,6 @@ MoveEx = API.MoveToPosition;
 --
 function API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
     if GUI then
-        API.Bridge("API.MoveAndLookAt(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " ..tostring(_moveAsEntity).. ")")
         return;
     end
     if not IsExisting(_Entity) then
@@ -155,7 +147,6 @@ end
 --
 function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
     if GUI then
-        API.Bridge("API.PlaceToPosition(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ", " .._Angle.. ")")
         return;
     end
     if not IsExisting(_Entity) then
@@ -194,7 +185,6 @@ end
 --
 function API.PlaceAndLookAt(_Entity, _Position, _Distance)
     if GUI then
-        API.Bridge("API.PlaceAndLookAt(" ..GetID(_Entity).. ", " ..GetID(_Position).. ", " .._Distance.. ")")
         return;
     end
     API.PlaceToPosition(_Entity, _Position, _Distance, 0);
@@ -219,7 +209,6 @@ SetPositionEx = API.PlaceAndLookAt;
 --
 function API.CommandAttack(_Entity, _Target)
     if GUI then
-        API.Bridge("API.CommandAttack(" ..GetID(_Entity).. ", " ..GetID(_Target).. ")")
         return;
     end
     if not IsExisting(_Entity) then

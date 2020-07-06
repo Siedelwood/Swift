@@ -34,7 +34,7 @@ QSB = QSB or {};
 --
 function API.AllowExtendedZoom(_Flag)
     if GUI then
-        API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag) ..")");
+        API.Bridge("API.AllowExtendedZoom(".. tostring(_Flag == true) ..")");
         return;
     end
     BundleCamera.Global.Data.ExtendedZoomAllowed = _Flag == true;
@@ -72,12 +72,19 @@ SetCameraToPlayerKnight = API.FocusCameraOnKnight;
 function API.FocusCameraOnEntity(_Entity, _Rotation, _ZoomFactor)
     if not GUI then
         local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        API.Bridge("API.FocusCameraOnEntity(" ..Subject.. ", " .._Rotation.. ", " .._ZoomFactor.. ")")
+        API.Bridge("API.FocusCameraOnEntity(" ..Subject.. ", " ..tostring(_Rotation).. ", " ..tostring(_ZoomFactor).. ")");
+        return;
+    end
+    if type(_Rotation) ~= "number" then
+        warn("API.FocusCameraOnEntity: Rotation is wrong!");
+        return;
+    end
+    if type(_ZoomFactor) ~= "number" then
+        warn("API.FocusCameraOnEntity: Zoom factor is wrong!");
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        warn("API.FocusCameraOnEntity: Entity " ..Subject.. " does not exist!");
+        warn("API.FocusCameraOnEntity: Entity " ..tostring(_Entity).." does not exist!");
         return;
     end
     return BundleCamera.Local:SetCameraToEntity(_Entity, _Rotation, _ZoomFactor);

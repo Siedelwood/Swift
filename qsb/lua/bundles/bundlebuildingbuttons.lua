@@ -62,7 +62,7 @@ end
 --
 function API.UseDowngrade(_Flag)
     if not GUI then
-        API.Bridge("API.UseDowngrade(" ..tostring(_Flag).. ")");
+        API.Bridge("API.UseDowngrade(" ..tostring(_Flag == true).. ")");
         return;
     end
     BundleBuildingButtons.Local.Data.Downgrade = _Flag == true;

@@ -32,17 +32,25 @@ QSB = QSB or {};
 --
 function API.BanTypeAtTerritory(_type, _territory)
     if GUI then
-        local Territory = (type(_territory) == "string" and "'" .._territory.. "'") or _territory;
-        GUI.SendScriptCommand("API.BanTypeAtTerritory(" .._type.. ", " ..Territory.. ")");
         return;
     end
+    local Territories = {Logic.GetTerritories()};
     if type(_territory) == "string" then
         _territory = GetTerritoryIDByName(_territory);
+    end
+    if _territory == 0 or #Territories-1 < _territory then
+        error("API.BanTypeAtTerritory: Territory does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(Entities, _type) == nil then
+        error("API.BanTypeAtTerritory: Entity type is invalid!");
+        return;
     end
 
     BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] = BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] or {};
     if not Inside(_territory, BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type]) then
         table.insert(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], _territory);
+        info("API.BanTypeAtTerritory: Banning type " ..Logic.GetEntityTypeName(_type).. " from territory " ..tostring(_territory)..".");
     end
 end
 
@@ -57,17 +65,25 @@ end
 --
 function API.BanCategoryAtTerritory(_eCat, _territory)
     if GUI then
-        local Territory = (type(_territory) == "string" and "'" .._territory.. "'") or _territory;
-        GUI.SendScriptCommand("API.BanTypeAtTerritory(" .._eCat.. ", " ..Territory.. ")");
         return;
     end
+    local Territories = {Logic.GetTerritories()};
     if type(_territory) == "string" then
         _territory = GetTerritoryIDByName(_territory);
+    end
+    if _territory == 0 or #Territories-1 < _territory then
+        error("API.BanCategoryAtTerritory: Territory does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
+        error("API.BanCategoryAtTerritory: Entity category is invalid!");
+        return;
     end
 
     BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] = BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] or {};
     if not Inside(_territory, BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat]) then
         table.insert(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], _territory);
+        info("API.BanTypeAtTerritory: Banning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_territory)..".");
     end
 end
 
@@ -83,14 +99,25 @@ end
 --
 function API.BanTypeInArea(_type, _center, _area)
     if GUI then
-        local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.BanTypeInArea(" .._type.. ", " ..Center.. ", " .._area.. ")");
+        return;
+    end
+    if type(_center) ~= "string" or not IsExisting(_center) then
+        error("API.BanTypeInArea: _center must be the name of an existing entity!");
+        return;
+    end
+    if type(_area) ~= "number" or _area < 1 then
+        error("API.BanTypeInArea: _area must be a positive number!");
+        return;
+    end
+    if GetNameOfKeyInTable(Entities, _type) == nil then
+        error("API.BanTypeInArea: Entity type is invalid!");
         return;
     end
 
     BundleConstructionControl.Global.Data.AreaBlockEntities[_center] = BundleConstructionControl.Global.Data.AreaBlockEntities[_center] or {};
     if not Inside(_type, BundleConstructionControl.Global.Data.AreaBlockEntities[_center], true) then
-        table.insert(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], {_type, _area});
+        table.insert(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], {_type, math.floor(_area)});
+        info("API.BanTypeAtTerritory: Banning type " ..Logic.GetEntityTypeName(_type).. " from area " ..tostring(_center).." (" ..tostring(_area)..").");
     end
 end
 
@@ -106,14 +133,25 @@ end
 --
 function API.BanCategoryInArea(_eCat, _center, _area)
     if GUI then
-        local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.BanCategoryInArea(" .._eCat.. ", " ..Center.. ", " .._area.. ")");
+        return;
+    end
+    if type(_center) ~= "string" or not IsExisting(_center) then
+        error("API.BanCategoryInArea: _center must be the name of an existing entity!");
+        return;
+    end
+    if type(_area) ~= "number" or _area < 1 then
+        error("API.BanCategoryInArea: _area must be a positive number!");
+        return;
+    end
+    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
+        error("API.BanCategoryInArea: Entity category is invalid!");
         return;
     end
 
     BundleConstructionControl.Global.Data.AreaBlockCategories[_center] = BundleConstructionControl.Global.Data.AreaBlockCategories[_center] or {};
     if not Inside(_eCat, BundleConstructionControl.Global.Data.AreaBlockCategories[_center], true) then
         table.insert(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], {_eCat, _area});
+        info("API.BanTypeAtTerritory: Banning category " ..Logic.GetEntityCategoryName(_eCat).. " from area " ..tostring(_center).." (" ..tostring(_area)..").");
     end
 end
 
@@ -128,12 +166,19 @@ end
 --
 function API.UnbanTypeAtTerritory(_type, _territory)
     if GUI then
-        local Territory = (type(_territory) == "string" and "'" .._territory.. "'") or _territory;
-        GUI.SendScriptCommand("API.UnbanTypeAtTerritory(" .._type.. ", " ..Territory.. ")");
         return;
     end
+    local Territories = {Logic.GetTerritories()};
     if type(_territory) == "string" then
         _territory = GetTerritoryIDByName(_territory);
+    end
+    if _territory == 0 or #Territories-1 < _territory then
+        error("API.UnbanTypeAtTerritory: Territory does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(Entities, _type) == nil then
+        error("API.UnbanTypeAtTerritory: Entity type is invalid!");
+        return;
     end
 
     if not BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] then
@@ -142,6 +187,7 @@ function API.UnbanTypeAtTerritory(_type, _territory)
     for i= #BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], 1, -1 do
         if BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type][i] == _territory then
             table.remove(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], i);
+            info("API.BanTypeAtTerritory: Unbanning type " ..Logic.GetEntityTypeName(_type).. " from territory " ..tostring(_territory)..".");
             break;
         end
     end
@@ -158,12 +204,19 @@ end
 --
 function API.UnbanCategoryAtTerritory(_eCat, _territory)
     if GUI then
-        local Territory = (type(_territory) == "string" and "'" .._territory.. "'") or _territory;
-        GUI.SendScriptCommand("API.UnbanTypeAtTerritory(" .._eCat.. ", " ..Territory.. ")");
         return;
     end
+    local Territories = {Logic.GetTerritories()};
     if type(_territory) == "string" then
         _territory = GetTerritoryIDByName(_territory);
+    end
+    if _territory == 0 or #Territories-1 < _territory then
+        error("API.UnbanCategoryAtTerritory: Territory does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
+        error("API.UnbanCategoryAtTerritory: Entity category is invalid!");
+        return;
     end
 
     if not BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] then
@@ -172,6 +225,7 @@ function API.UnbanCategoryAtTerritory(_eCat, _territory)
     for i= #BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], 1, -1 do
         if BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat][i] == _territory then
             table.remove(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], i);
+            info("API.BanTypeAtTerritory: Unbanning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_territory)..".");
             break;
         end
     end
@@ -188,8 +242,14 @@ end
 --
 function API.UnbanTypeInArea(_type, _center)
     if GUI then
-        local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.UnbanTypeInArea(" .._type.. ", " ..Center.. ")");
+        return;
+    end
+    if type(_center) ~= "string" or not IsExisting(_center) then
+        error("API.UnbanTypeInArea: _center must be the name of an existing entity!");
+        return;
+    end
+    if GetNameOfKeyInTable(Entities, _type) == nil then
+        error("API.UnbanTypeInArea: Entity type is invalid!");
         return;
     end
 
@@ -199,6 +259,7 @@ function API.UnbanTypeInArea(_type, _center)
     for i= #BundleConstructionControl.Global.Data.AreaBlockEntities[_center], 1, -1 do
         if BundleConstructionControl.Global.Data.AreaBlockEntities[_center][i][1] == _type then
             table.remove(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], i);
+            info("API.BanTypeAtTerritory: Unbanning type " ..Logic.GetEntityTypeName(_type).. " in area " ..tostring(_center)..".");
             break;
         end
     end
@@ -215,8 +276,14 @@ end
 --
 function API.UnbanCategoryInArea(_eCat, _center)
     if GUI then
-        local Center = (type(_center) == "string" and "'" .._center.. "'") or _center;
-        GUI.SendScriptCommand("API.UnbanCategoryInArea(" .._eCat.. ", " ..Center.. ")");
+        return;
+    end
+    if type(_center) ~= "string" or not IsExisting(_center) then
+        error("API.UnbanCategoryInArea: _center must be the name of an existing entity!");
+        return;
+    end
+    if GetNameOfKeyInTable(EntityCategories, _eCat) == nil then
+        error("API.UnbanCategoryInArea: Entity category is invalid!");
         return;
     end
 
@@ -226,6 +293,7 @@ function API.UnbanCategoryInArea(_eCat, _center)
     for i= #BundleConstructionControl.Global.Data.AreaBlockCategories[_center], 1, -1 do
         if BundleConstructionControl.Global.Data.AreaBlockCategories[_center][i][1] == _eCat then
             table.remove(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], i);
+            info("API.BanTypeAtTerritory: Unbanning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_center)..".");
             break;
         end
     end

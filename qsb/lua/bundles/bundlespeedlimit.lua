@@ -63,7 +63,6 @@ SetSpeedLimit = API.SpeedLimitSet
 --
 function API.SpeedLimitActivate(_Flag)
     if GUI then
-        API.Bridge("API.SpeedLimitActivate(" ..tostring(_Flag).. ")");
         return;
     end
     return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
@@ -93,7 +92,7 @@ BundleGameHelperFunctions = {
 -- @local
 --
 function BundleGameHelperFunctions.Local:Install()
-    self:InitForbidSpeedUp()
+    self:InitForbidSpeedUp();
 end
 
 -- -------------------------------------------------------------------------- --
@@ -137,7 +136,9 @@ function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
     GameCallback_GameSpeedChanged = function( _Speed )
         GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp( _Speed );
         if BundleGameHelperFunctions.Local.Data.UseSpeedLimit == true then
+            debug("BundleGameHelperFunctions: Checking speed limit.");
             if _Speed > BundleGameHelperFunctions.Local.Data.SpeedLimit then
+                debug("BundleGameHelperFunctions: Speed is capped at " ..tostring(_Speed).. ".");
                 Game.GameTimeSetFactor(GUI.GetPlayerID(), BundleGameHelperFunctions.Local.Data.SpeedLimit);
             end
         end

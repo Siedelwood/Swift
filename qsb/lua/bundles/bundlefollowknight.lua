@@ -38,9 +38,6 @@ QSB = QSB or {};
 --
 function API.FollowKnightSaveStart(_Entity, _Knight, _Distance, _Angle)
     if GUI then
-        local Target = (type(_Entity) == "string" and "'".._Entity.."'") or _Entity;
-        local Knight = (type(_Knight) == "string" and "'".._Knight.."'") or _Knight;
-        API.Bridge("API.FollowKnightSaveStart(" ..Target.. ", " ..Knight.. ", " .._Distance.. "," .._Angle.. ")");
         return;
     end
     return BundleFollowKnight.Global:AddFollowKnightSave(_Entity, _Knight, _Distance, _Angle);
@@ -57,7 +54,6 @@ AddFollowKnightSave = API.FollowKnightSaveStart;
 --
 function API.FollowKnightSaveStop(_JobID)
     if GUI then
-        API.Bridge("API.FollowKnightSaveStop(" .._JobID.. ")");
         return;
     end
     return BundleFollowKnight.Global:StopFollowKnightSave(_JobID)

@@ -109,6 +109,14 @@ function API.StartBriefing(_Briefing)
     if GUI then
         return -1;
     end
+    if type(_Briefing) ~= "table" then
+        error("_Briefing must be a table!");
+        return -1;
+    end
+    if #_Briefing == 0 then
+        error("_Briefing don't contains pages!");
+        return -1;
+    end
     return BundleBriefingSystem.Global:StartBriefing(_Briefing);
 end
 StartBriefing = API.StartBriefing;
@@ -177,9 +185,11 @@ function API.SetAnswerAvailability(_Page, _Answer, _Visible)
     if not GUI then
         -- PageID kann nur im globalen Skript bestimmt werden
         local PageID = BundleBriefingSystem.Global:GetPageIDByName(_Page);
-        if PageID > 0 then
-            API.Bridge(string.format("API.SetAnswerAvailability(%d, %d, %s)", PageID, _Answer, tostring(not _Visible)));
+        if PageID < 1 then
+            error("Page '" ..tostring(_Page).. "' does not exist!");
+            return;
         end
+        API.Bridge(string.format("API.SetAnswerAvailability(%d, %d, %s)", PageID, _Answer, tostring(not _Visible)));
         return;
     end
     BundleBriefingSystem.Local:SetMCAnswerState(_Page, _Answer, _Visible);
@@ -2085,9 +2095,18 @@ function b_Reprisal_Briefing:AddParameter(_Index, _Parameter)
 end
 
 function b_Reprisal_Briefing:CustomFunction(_Quest)
+    info(_Quest.Identifier..": "..self.Name..": Try starting briefing '" ..self.Function.. "'");
     local BriefingID = _G[self.Function](self, _Quest);
+    if BriefingID < 1 then
+        error(_Quest.Identifier..": "..self.Name..": Briefing '" ..self.Function.. "' was not started!");
+        return;
+    end
     local QuestID = GetQuestID(_Quest.Identifier);
+    if QuestID == nil then
+        warn("Briefing '" ..self.Function.. "' wasn't attached to a quest!");
+    end
     Quests[QuestID].zl97d_ukfs5_0dpm0 = BriefingID;
+    info(_Quest.Identifier..": "..self.Name..": Briefing '" ..self.Function.. "' started");
 end
 
 function b_Reprisal_Briefing:Debug(_Quest)

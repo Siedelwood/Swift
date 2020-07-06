@@ -57,6 +57,14 @@ end
 -- @within Anwenderfunktionen
 --
 function API.GetInputNumberFromQuest(_QuestName)
+    if GUI then
+        return 0;
+    end
+    local Quest = Quests[GetQuestID(_QuestName)];
+    if not Quest then
+        error("API.GetInputNumberFromQuest: Quest '" ..tostring(_QuestName).. "' not found!");
+        return 0;
+    end
     return tonumber(API.GetInputStringFromQuest(_QuestName));
 end
 

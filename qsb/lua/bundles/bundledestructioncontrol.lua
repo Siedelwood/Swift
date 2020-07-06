@@ -32,11 +32,12 @@ QSB = QSB or {};
 function API.ProtectEntity(_entry)
     if not GUI then
         API.Bridge([[
-            API.ProtectEntity("]].._entry..[[")
+            API.ProtectEntity("]]..tostring(_entry)..[[")
         ]]);
     else
         if not Inside(_entry, BundleDestructionControl.Local.Data.Entities) then
             table.insert(BundleDestructionControl.Local.Data.Entities, _entry);
+            info("API.ProtectEntity: Adding " ..tostring(_entry).. " to protected list.");
         end
     end
 end
@@ -52,11 +53,12 @@ end
 function API.ProtectEntityType(_entry)
     if not GUI then
         API.Bridge([[
-            API.ProtectEntityType(]].._entry..[[)
+            API.ProtectEntityType(]]..tostring(_entry)..[[)
         ]]);
     else
         if not Inside(_entry, BundleDestructionControl.Local.Data.EntityTypes) then
             table.insert(BundleDestructionControl.Local.Data.EntityTypes, _entry);
+            info("API.ProtectEntityType: Adding " ..tostring(_entry).. " to protected list.");
         end
     end
 end
@@ -72,11 +74,12 @@ end
 function API.ProtectCategory(_entry)
     if not GUI then
         API.Bridge([[
-            API.ProtectCategory(]].._entry..[[)
+            API.ProtectCategory(]]..tostring(_entry)..[[)
         ]]);
     else
         if not Inside(_entry, BundleDestructionControl.Local.Data.EntityCategories) then
             table.insert(BundleDestructionControl.Local.Data.EntityCategories, _entry);
+            info("API.ProtectCategory: Adding " ..tostring(_entry).. " to protected list.");
         end
     end
 end
@@ -92,11 +95,12 @@ end
 function API.ProtectTerritory(_entry)
     if not GUI then
         API.Bridge([[
-            API.ProtectTerritory(]].._entry..[[)
+            API.ProtectTerritory(]]..tostring(_entry)..[[)
         ]]);
     else
         if not Inside(_entry, BundleDestructionControl.Local.Data.OnTerritory) then
             table.insert(BundleDestructionControl.Local.Data.OnTerritory, _entry);
+            info("API.ProtectTerritory: Adding " ..tostring(_entry).. " to protected list.");
         end
     end
 end
@@ -112,12 +116,13 @@ end
 function API.UnprotectEntity(_entry)
     if not GUI then
         API.Bridge([[
-            API.UnprotectEntity("]].._entry..[[")
+            API.UnprotectEntity("]]..tostring(_entry)..[[")
         ]]);
     else
         for i=1,#BundleDestructionControl.Local.Data.Entities do
             if BundleDestructionControl.Local.Data.Entities[i] == _entry then
                 table.remove(BundleDestructionControl.Local.Data.Entities, i);
+                info("API.UnprotectEntity: Remove " ..tostring(_entry).. " from protected list.");
                 return;
             end
         end
@@ -135,12 +140,13 @@ end
 function API.UnprotectEntityType(_entry)
     if not GUI then
         API.Bridge([[
-            API.UnprotectEntityType(]].._entry..[[)
+            API.UnprotectEntityType(]]..tostring(_entry)..[[)
         ]]);
     else
         for i=1,#BundleDestructionControl.Local.Data.EntityTypes do
             if BundleDestructionControl.Local.Data.EntityTypes[i] == _entry then
                 table.remove(BundleDestructionControl.Local.Data.EntityTypes, i);
+                info("API.UnprotectEntityType: Remove " ..tostring(_entry).. " from protected list.");
                 return;
             end
         end
@@ -158,12 +164,13 @@ end
 function API.UnprotectCategory(_entry)
     if not GUI then
         API.Bridge([[
-            API.UnprotectCategory(]].._entry..[[)
+            API.UnprotectCategory(]]..tostring(_entry)..[[)
         ]]);
     else
         for i=1,#BundleDestructionControl.Local.Data.EntityCategories do
             if BundleDestructionControl.Local.Data.EntityCategories[i] == _entry then
                 table.remove(BundleDestructionControl.Local.Data.EntityCategories, i);
+                info("API.UnprotectCategory: Remove " ..tostring(_entry).. " from protected list.");
                 return;
             end
         end
@@ -181,12 +188,13 @@ end
 function API.UnprotectTerritory(_entry)
     if not GUI then
         API.Bridge([[
-            API.UnprotectTerritory(]].._entry..[[)
+            API.UnprotectTerritory(]]..tostring(_entry)..[[)
         ]]);
     else
         for i=1,#BundleDestructionControl.Local.Data.OnTerritory do
             if BundleDestructionControl.Local.Data.OnTerritory[i] == _entry then
                 table.remove(BundleDestructionControl.Local.Data.OnTerritory, i);
+                info("API.UnprotectTerritory: Remove " ..tostring(_entry).. " from protected list.");
                 return;
             end
         end

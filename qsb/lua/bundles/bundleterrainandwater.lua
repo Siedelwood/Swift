@@ -39,8 +39,6 @@ QSB = QSB or {};
 --
 function API.ChangeTerrainTypeInSquare(_Center, _Offset, _TerrainType)
     if GUI then
-        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
-        API.Bridge("API.ChangeTerrainTypeInSquare(" ..Target.. ", " .._Offset.. ", " .._TerrainType.. ")");
         return;
     end
     if not IsExisting(_Center) then
@@ -74,8 +72,6 @@ TerrainTypeSquare = API.ChangeTerrainTypeInSquare;
 --
 function API.ChangeWaterHeightInSquare(_Center, _Offset, _Height, _Relative)
     if GUI then
-        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
-        API.Bridge("API.ChangeWaterHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
         return;
     end
     if not IsExisting(_Center) then
@@ -110,8 +106,6 @@ WaterHeightSquare = API.ChangeWaterHeightInSquare;
 --
 function API.ChangeTerrainHeightInSquare(_Center, _Offset, _Height, _Relative)
     if GUI then
-        local Target = (type(_Center) == "string" and "'".._Center.."'") or _Center;
-        API.Bridge("API.ChangeTerrainHeightInSquare(" ..Target.. ", " .._Offset.. ", " .._Height.. ", " ..tostring(_Relative).. ")");
         return;
     end
     if not IsExisting(_Center) then

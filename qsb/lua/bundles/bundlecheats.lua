@@ -127,6 +127,7 @@ end
 -- @local
 --
 function BundleCheats.Local:KillCheats()
+    info("BundleCheats: Cheats deactivated");
     Input.KeyBindDown(
         Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
         "KeyBindings_EnableDebugMode(0)",
@@ -142,6 +143,7 @@ end
 -- @local
 --
 function BundleCheats.Local:RessurectCheats()
+    info("BundleCheats: Cheats activated");
     Input.KeyBindDown(
         Keys.ModifierControl + Keys.ModifierShift + Keys.Divide,
         "KeyBindings_EnableDebugMode(2)",

@@ -46,7 +46,6 @@ QSB = QSB or {};
 --
 function API.CastleStoreCreate(_PlayerID)
     if GUI then
-        API.Bridge("API.CastleStoreCreate(" .._PlayerID.. ")");
         return;
     end
     return QSB.CastleStore:New(_PlayerID);
@@ -64,7 +63,6 @@ end
 --
 function API.CastleStoreDestroy(_PlayerID)
     if GUI then
-        API.Bridge("API.CastleStoreCreate(" .._PlayerID.. ")");
         return;
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
@@ -85,7 +83,6 @@ end
 --
 function API.CastleStoreAddGood(_PlayerID, _Good, _Amount)
     if GUI then
-        API.Bridge("API.CastleStoreAddGood(" .._PlayerID.. "," .._Good.. "," .._Amount.. ")");
         return;
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
@@ -106,7 +103,6 @@ end
 --
 function API.CastleStoreRemoveGood(_PlayerID, _Good, _Amount)
     if GUI then
-        API.Bridge("API.CastleStoreRemoveGood(" .._PlayerID.. "," .._Good.. "," .._Amount.. ")");
         return;
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
@@ -190,7 +186,6 @@ end
 --
 function API.CastleStoreSetBaseCapacity(_PlayerID, _Capacity)
     if GUI then
-        API.Bridge("API.CastleStoreSetBaseCapacity(" .._PlayerID.. "," .._Capacity.. ")");
         return;
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
@@ -211,7 +206,6 @@ end
 --
 function API.CastleStoreSetOutsourceBoundary(_PlayerID, _Good, _Limit)
     if GUI then
-        API.Bridge("API.CastleStoreOutsourceBoundary(" .._PlayerID.. "," .._Good.. "," .._Limit.. ")");
         return;
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);

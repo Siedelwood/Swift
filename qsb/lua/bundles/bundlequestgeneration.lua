@@ -107,6 +107,14 @@ function API.CreateQuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callbac
     if GUI then
         return;
     end
+    if tonumber(_Sender) == nil or _Sender < 1 or _Sender > 8 then
+        error("API.GetResourceOfProduct: _Sender is wrong!");
+        return;
+    end
+    if tonumber(_Receiver) == nil or _Receiver < 1 or _Receiver > 8 then
+        error("API.GetResourceOfProduct: _Receiver is wrong!");
+        return;
+    end
     return BundleQuestGeneration.Global:QuestMessage(_Text, _Sender, _Receiver, _AncestorWt, _Callback, _Ancestor);
 end
 QuestMessage = API.CreateQuestMessage;

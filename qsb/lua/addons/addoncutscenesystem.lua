@@ -175,7 +175,7 @@ function API.CutsceneSetFastForwardSpeed(_Speed)
         API.Bridge("API.CutsceneSetFastForwardSpeed(" .._Speed.. ")");
         return;
     end
-    AddOnCutsceneSystem.LoadScreenVisible.Data.FastForward.Speed = _Speed;
+    AddOnCutsceneSystem.Data.FastForward.Speed = _Speed;
 end
 SetCutsceneFastForwardSpeed = API.CutsceneSetFastForwardSpeed;
 
