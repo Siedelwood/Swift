@@ -44,7 +44,7 @@ QSB.OptionsIni = {};
 --
 function API.ProfileObserve(_Section, ...)
     if not GUI then
-        API.Bridge(string.format([[API.ProfileObserve('%s', unpack(%s))]], _Section, API.ConvertTableToString({...})));
+        Logic.ExecuteInLuaLocalState(string.format([[API.ProfileObserve('%s', unpack(%s))]], _Section, API.ConvertTableToString({...})));
         return;
     end
     QSB.ProfileIni[_Section] = QSB.ProfileIni[_Section] or {};
@@ -67,7 +67,7 @@ end
 --
 function API.ProfileAlterEntry(_Section, _Key, _Value)
     if not GUI then
-        API.Bridge(string.format("API.ProfileAlterEntry('%s', '%s', '%s')", _Section, _Key, _Value));
+        Logic.ExecuteInLuaLocalState(string.format("API.ProfileAlterEntry('%s', '%s', '%s')", _Section, _Key, _Value));
         return;
     end
     QSB.ProfileIni[_Section]       = QSB.ProfileIni[_Section] or {};
@@ -86,7 +86,7 @@ end
 --
 function API.ProfileGetEntry(_Section, _Key)
     if not GUI then
-        API.Bridge("BundleProfileAndOptions.Local:FullProfileSync()");
+        Logic.ExecuteInLuaLocalState("BundleProfileAndOptions.Local:FullProfileSync()");
     else
         BundleProfileAndOptions.Local:FullProfileSync();
     end
@@ -106,7 +106,7 @@ end
 --
 function API.ProfileGetSection(_Section)
     if not GUI then
-        API.Bridge("BundleProfileAndOptions.Local:FullProfileSync()");
+        Logic.ExecuteInLuaLocalState("BundleProfileAndOptions.Local:FullProfileSync()");
     else
         BundleProfileAndOptions.Local:FullProfileSync();
     end
@@ -126,7 +126,7 @@ end
 --
 function API.OptionsObserve(_Section, ...)
     if not GUI then
-        API.Bridge(string.format([[API.OptionsObserve('%s', unpack(%s))]], _Section, API.ConvertTableToString({...})));
+        Logic.ExecuteInLuaLocalState(string.format([[API.OptionsObserve('%s', unpack(%s))]], _Section, API.ConvertTableToString({...})));
         return;
     end
     QSB.OptionsIni[_Section] = QSB.OptionsIni[_Section] or {};
@@ -149,7 +149,7 @@ end
 --
 function API.OptionsAlterEntry(_Section, _Key, _Value)
     if not GUI then
-        API.Bridge(string.format("API.OptionsAlterEntry('%s', '%s', '%s')", _Section, _Key, _Value));
+        Logic.ExecuteInLuaLocalState(string.format("API.OptionsAlterEntry('%s', '%s', '%s')", _Section, _Key, _Value));
         return;
     end
     QSB.OptionsIni[_Section]       = QSB.OptionsIni[_Section] or {};
@@ -168,7 +168,7 @@ end
 --
 function API.OptionsGetEntry(_Section, _Key)
     if not GUI then
-        API.Bridge("BundleProfileAndOptions.Local:FullProfileSync()");
+        Logic.ExecuteInLuaLocalState("BundleProfileAndOptions.Local:FullProfileSync()");
     else
         BundleProfileAndOptions.Local:FullProfileSync();
     end
@@ -188,7 +188,7 @@ end
 --
 function API.OptionsGetSection(_Section)
     if not GUI then
-        API.Bridge("BundleProfileAndOptions.Local:FullProfileSync()");
+        Logic.ExecuteInLuaLocalState("BundleProfileAndOptions.Local:FullProfileSync()");
     else
         BundleProfileAndOptions.Local:FullProfileSync();
     end

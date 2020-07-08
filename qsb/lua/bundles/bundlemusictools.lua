@@ -83,7 +83,7 @@ AbortSongOrPlaylist = API.AbortMusic;
 --
 function API.StartEventPlaylist(_Playlist, _PlayerID)
     if not GUI then
-        API.Bridge(string.format("API.StartEventPlaylist('%s', %d)", _Playlist, _PlayerID or 1));
+        Logic.ExecuteInLuaLocalState(string.format("API.StartEventPlaylist('%s', %d)", _Playlist, _PlayerID or 1));
         return;
     end
     if _PlayerID == GUI.GetPlayerID() then
@@ -102,7 +102,7 @@ end
 --
 function API.StopEventPlaylist(_Playlist, _PlayerID)
     if not GUI then
-        API.Bridge(string.format("API.StopEventPlaylist('%s', %d)", _Playlist, _PlayerID or 1));
+        Logic.ExecuteInLuaLocalState(string.format("API.StopEventPlaylist('%s', %d)", _Playlist, _PlayerID or 1));
         return;
     end
     if _PlayerID == GUI.GetPlayerID() then
@@ -124,7 +124,7 @@ end
 --
 function API.SoundSetVolume(_Volume)
     if not GUI then
-        API.Bridge(string.format("API.SoundSetVolume(%d)", _Volume));
+        Logic.ExecuteInLuaLocalState(string.format("API.SoundSetVolume(%d)", _Volume));
         return;
     end
     _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
@@ -144,7 +144,7 @@ end
 --
 function API.SoundSetMusicVolume(_Volume)
     if not GUI then
-        API.Bridge(string.format("API.SoundSetMusicVolume(%d)", _Volume));
+        Logic.ExecuteInLuaLocalState(string.format("API.SoundSetMusicVolume(%d)", _Volume));
         return;
     end
     _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
@@ -164,7 +164,7 @@ end
 --
 function API.SoundSetVoiceVolume(_Volume)
     if not GUI then
-        API.Bridge(string.format("API.SoundSetVoiceVolume(%d)", _Volume));
+        Logic.ExecuteInLuaLocalState(string.format("API.SoundSetVoiceVolume(%d)", _Volume));
         return;
     end
     _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
@@ -184,7 +184,7 @@ end
 --
 function API.SoundSetAtmoVolume(_Volume)
     if not GUI then
-        API.Bridge(string.format("API.SoundSetAtmoVolume(%d)", _Volume));
+        Logic.ExecuteInLuaLocalState(string.format("API.SoundSetAtmoVolume(%d)", _Volume));
         return;
     end
     _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
@@ -204,7 +204,7 @@ end
 --
 function API.SoundSetUIVolume(_Volume)
     if not GUI then
-        API.Bridge(string.format("API.SoundSetUIVolume(%d)", _Volume));
+        Logic.ExecuteInLuaLocalState(string.format("API.SoundSetUIVolume(%d)", _Volume));
         return;
     end
     _Volume = (_Volume < 0 and 0) or math.floor(_Volume);
@@ -220,7 +220,7 @@ end
 --
 function API.SoundSave()
     if not GUI then
-        API.Bridge("API.SoundSave()");
+        Logic.ExecuteInLuaLocalState("API.SoundSave()");
         return;
     end
     BundleMusicTools.Local:SaveSound();
@@ -235,7 +235,7 @@ end
 --
 function API.SoundRestore()
     if not GUI then
-        API.Bridge("API.SoundRestore()");
+        Logic.ExecuteInLuaLocalState("API.SoundRestore()");
         return;
     end
     BundleMusicTools.Local:RestoreSound();
@@ -252,7 +252,7 @@ end
 --
 function API.PlayVoice(_File)
     if not GUI then
-        API.Bridge(string.format("API.PlayVoice('%s')", _File));
+        Logic.ExecuteInLuaLocalState(string.format("API.PlayVoice('%s')", _File));
         return;
     end
     Sound.PlayVoice("ImportantStuff", _File);
@@ -268,7 +268,7 @@ PlaySound = API.PlaySound;
 --
 function API.StopVoice()
     if not GUI then
-        API.Bridge("API.StopVoice()");
+        Logic.ExecuteInLuaLocalState("API.StopVoice()");
         return;
     end
     Sound.StopVoice("ImportantStuff");

@@ -31,7 +31,7 @@ QSB = QSB or {};
 --
 function API.ProtectEntity(_entry)
     if not GUI then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             API.ProtectEntity("]]..tostring(_entry)..[[")
         ]]);
     else
@@ -52,7 +52,7 @@ end
 --
 function API.ProtectEntityType(_entry)
     if not GUI then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             API.ProtectEntityType(]]..tostring(_entry)..[[)
         ]]);
     else
@@ -73,7 +73,7 @@ end
 --
 function API.ProtectCategory(_entry)
     if not GUI then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             API.ProtectCategory(]]..tostring(_entry)..[[)
         ]]);
     else
@@ -94,7 +94,7 @@ end
 --
 function API.ProtectTerritory(_entry)
     if not GUI then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             API.ProtectTerritory(]]..tostring(_entry)..[[)
         ]]);
     else
@@ -115,7 +115,7 @@ end
 --
 function API.UnprotectEntity(_entry)
     if not GUI then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             API.UnprotectEntity("]]..tostring(_entry)..[[")
         ]]);
     else
@@ -139,7 +139,7 @@ end
 --
 function API.UnprotectEntityType(_entry)
     if not GUI then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             API.UnprotectEntityType(]]..tostring(_entry)..[[)
         ]]);
     else
@@ -163,7 +163,7 @@ end
 --
 function API.UnprotectCategory(_entry)
     if not GUI then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             API.UnprotectCategory(]]..tostring(_entry)..[[)
         ]]);
     else
@@ -187,7 +187,7 @@ end
 --
 function API.UnprotectTerritory(_entry)
     if not GUI then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             API.UnprotectTerritory(]]..tostring(_entry)..[[)
         ]]);
     else

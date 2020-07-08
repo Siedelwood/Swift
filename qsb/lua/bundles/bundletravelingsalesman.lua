@@ -75,6 +75,41 @@ function API.TravelingSalesmanCreate(_TraderDescription)
     if GUI then
         return;
     end
+    if type(_TraderDescription) ~= "table" then
+        error("API.TravelingSalesmanCreate: _TraderDescription must be a table!");
+        return;
+    end
+    if type(_TraderDescription.PlayerID) ~= "number" or _TraderDescription.PlayerID < 1 or _TraderDescription.PlayerID > 8 then
+        error("API.TravelingSalesmanCreate: _TraderDescription.PlayerID (" ..tostring(_TraderDescription.PlayerID).. ") is wrong!");
+        return;
+    end
+    if type(_TraderDescription.Duration) ~= "number" or _TraderDescription.Duration < 60 then
+        error("API.TravelingSalesmanCreate: _TraderDescription.Duration (" ..tostring(_TraderDescription.Duration).. ") must be at least 60 seconds!");
+        return;
+    end
+    if type(_TraderDescription.Interval) ~= "number" or _TraderDescription.Interval < 1 then
+        error("API.TravelingSalesmanCreate: _TraderDescription.Interval (" ..tostring(_TraderDescription.Interval).. ") must be at least 1 month!");
+        return;
+    end
+    if type(_TraderDescription.OfferCount) ~= "number" or _TraderDescription.OfferCount < 1 or _TraderDescription.OfferCount > 4 then
+        error("API.TravelingSalesmanCreate: _TraderDescription.Duration (" ..tostring(_TraderDescription.OfferCount).. ") is wrong!");
+        return;
+    end
+    if type(_TraderDescription.Offers) ~= "table" or #_TraderDescription.Offers < _TraderDescription.OfferCount then
+        error("API.TravelingSalesmanCreate: _TraderDescription.Offers must have at least " .._TraderDescription.OfferCount.." entries!");
+        return;
+    end
+    for i= 1, #_TraderDescription.Offers, 1 do
+        if Goods[_TraderDescription.Offers[i][1]] == nil then
+            error("API.TravelingSalesmanCreate: _TraderDescription.Offers[" ..i.. "][1] is invalid good type!");
+            return;
+        end
+        if type(_TraderDescription.Offers[i][2]) ~= "number" or _TraderDescription.Offers[i][2] < 1 then
+            error("API.TravelingSalesmanCreate: _TraderDescription.Offers[" ..i.. "][2] amount must be at least 1!");
+            return;
+        end
+    end
+
     API.TravelingSalesmanDispose(_TraderDescription.PlayerID);
     _TraderDescription.Offers = API.ConvertOldOfferFormat(_TraderDescription.Offers);
     _TraderDescription.Duration = _TraderDescription.Duration or (6 * 60);
@@ -88,11 +123,19 @@ function API.TravelingSalesmanCreate(_TraderDescription)
         :SetNoIce(_TraderDescription.NoIce == true)
         :SetOfferCount(_TraderDescription.OfferCount);
 
+    local OffersString = "";
     for i= 1, #_TraderDescription.Offers, 1 do
         Harbor:AddOffer(_TraderDescription.Offers[i][1], _TraderDescription.Offers[i][2]);
+        OffersString = "(" ..Logic.GetGoodTypeName(_TraderDescription.Offers[i][1]).. ", " .._TraderDescription.Offers[i][2].. "){cr}";
     end
     Harbor:SetActive(true);
     BundleTravelingSalesman.Global:RegisterHarbor(Harbor);
+
+    info("API.TravelingSalesmanCreate: creating habor for player " .._TraderDescription.PlayerID.. "{cr}"..
+         "Duration: " .._TraderDescription.Duration.. "{cr}"..
+         "Interval: " .._TraderDescription.Interval.. "{cr}"..
+         "Offers per period: " .._TraderDescription.OfferCount.. "{cr}"..
+         "Offer types:{cr}" ..OffersString);
 end
 TravelingSalesmanCreate = API.TravelingSalesmanCreate;
 
@@ -144,8 +187,13 @@ function API.TravelingSalesmanDispose(_PlayerID)
     if GUI then
         return;
     end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.TravelingSalesmanDispose: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
     local Harbor = BundleTravelingSalesman.Global.Data.Harbors[_PlayerID];
     if Harbor then
+        info("API.TravelingSalesmanDispose: Deleting habor of player " .._PlayerID);
         Harbor:Dispose();
     end
     BundleTravelingSalesman.Global.Data.Harbors[_PlayerID] = nil;
@@ -164,8 +212,16 @@ TravelingSalesmanDeactivate = API.TravelingSalesmanDispose;
 -- @usage API.TravelingSalesmanYield(2);
 --
 function API.TravelingSalesmanYield(_PlayerID)
+    if GUI then
+        return;
+    end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.TravelingSalesmanYield: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
     local Harbor = BundleTravelingSalesman.Global.Data.Harbors[_PlayerID];
     if Harbor then
+        info("API.TravelingSalesmanYield: Suspending habor of player " .._PlayerID);
         Harbor:SetActive(false);
     end
 end
@@ -183,8 +239,16 @@ TravelingSalesmanYield = API.TravelingSalesmanYield;
 -- @usage API.TravelingSalesmanResume(2);
 --
 function API.TravelingSalesmanResume(_PlayerID)
+    if GUI then
+        return;
+    end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.TravelingSalesmanResume: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
     local Harbor = BundleTravelingSalesman.Global.Data.Harbors[_PlayerID];
     if Harbor then
+        info("API.TravelingSalesmanResume: Resuming habor of player " .._PlayerID);
         Harbor:SetActive(true);
     end
 end

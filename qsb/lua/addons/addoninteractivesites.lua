@@ -61,6 +61,30 @@ function API.CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance
     if GUI then
         return;
     end
+    if not IsExisting(_Position) then
+        error("API.CreateIOBuildingSite: _Position (" ..tostring(_Position).. ") does not exist!");
+        return;
+    end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CreateIOBuildingSite: _PlayerID is wrong!");
+        return;
+    end
+    if GetNameOfKeyInTable(Entities, _Type) == nil then
+        error("API.CreateIOBuildingSite: _Type (" ..tostring(_Type).. ") is wrong!");
+        return;
+    end
+    if _Costs and (type(_Costs) ~= "table" or #_Costs %2 ~= 0) then
+        error("API.CreateIOBuildingSite: _Costs has the wrong format!");
+        return;
+    end
+    if type(_Distance) ~= "number" or _Distance < 100 then
+        error("API.CreateIOBuildingSite: _Distance (" ..tostring(_Distance).. ") is wrong or too small!");
+        return;
+    end
+    if _Callback and type(_Callback) == "function" then
+        error("API.CreateIOBuildingSite: _Callback must be a function!");
+        return;
+    end
     AddOnInteractiveSites.Global:CreateIOBuildingSite(_Position, _PlayerID, _Type, _Costs, _Distance, _Icon, _Title, _Text, _Callback);
 end
 CreateIOBuildingSite = API.CreateIOBuildingSite;

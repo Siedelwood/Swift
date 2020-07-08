@@ -48,6 +48,10 @@ function API.CastleStoreCreate(_PlayerID)
     if GUI then
         return;
     end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreCreate: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
     return QSB.CastleStore:New(_PlayerID);
 end
 
@@ -63,6 +67,10 @@ end
 --
 function API.CastleStoreDestroy(_PlayerID)
     if GUI then
+        return;
+    end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreDestroy: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
         return;
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
@@ -85,8 +93,20 @@ function API.CastleStoreAddGood(_PlayerID, _Good, _Amount)
     if GUI then
         return;
     end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreAddGood: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
     if Store then
+        if GetNameOfKeyInTable(Goods, _Good) == nil then
+            error("API.CastleStoreAddGood: _Good (" ..tostring(_Good).. ") is wrong!");
+            return;
+        end
+        if type(_Amount) ~= "number" or _Amount < 1 then
+            error("API.CastleStoreAddGood: _Amount (" ..tostring(_Amount).. ") is wrong!");
+            return;
+        end
         Store:Add(_Good, _Amount);
     end
 end
@@ -105,8 +125,20 @@ function API.CastleStoreRemoveGood(_PlayerID, _Good, _Amount)
     if GUI then
         return;
     end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreRemoveGood: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
     if Store then
+        if GetNameOfKeyInTable(Goods, _Good) == nil then
+            error("API.CastleStoreRemoveGood: _Good (" ..tostring(_Good).. ") is wrong!");
+            return;
+        end
+        if type(_Amount) ~= "number" or _Amount < 1 then
+            error("API.CastleStoreRemoveGood: _Amount (" ..tostring(_Amount).. ") is wrong!");
+            return;
+        end
         Store:Remove(_Good, _Amount);
     end
 end
@@ -122,6 +154,14 @@ end
 -- local Amount = API.CastleStoreCountGood(1, Goods.G_Milk);
 --
 function API.CastleStoreGetGoodAmount(_PlayerID, _Good)
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreGetGoodAmount: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
+    if GetNameOfKeyInTable(Goods, _Good) == nil then
+        error("API.CastleStoreGetGoodAmount: _Good (" ..tostring(_Good).. ") is wrong!");
+        return;
+    end
     if GUI then
         return QSB.CastleStore:GetAmount(_PlayerID, _Good);
     end
@@ -142,6 +182,10 @@ end
 -- local Amount = API.CastleStoreTotalAmount(1);
 --
 function API.CastleStoreGetTotalAmount(_PlayerID)
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreGetTotalAmount: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
     if GUI then
         return QSB.CastleStore:GetTotalAmount(_PlayerID);
     end
@@ -161,6 +205,10 @@ end
 -- local Size = API.CastleStoreGetSize(1);
 --
 function API.CastleStoreGetSize(_PlayerID)
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreGetSize: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
     if GUI then
         return QSB.CastleStore:GetLimit(_PlayerID);
     end
@@ -188,6 +236,14 @@ function API.CastleStoreSetBaseCapacity(_PlayerID, _Capacity)
     if GUI then
         return;
     end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreSetBaseCapacity: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
+    if type(_Capacity) ~= "number" or _Capacity < 1 then
+        error("API.CastleStoreSetBaseCapacity: _Capacity (" ..tostring(_Capacity).. ") is wrong!");
+        return;
+    end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
     if Store then
         Store:SetStorageLimit(_Capacity);
@@ -206,6 +262,18 @@ end
 --
 function API.CastleStoreSetOutsourceBoundary(_PlayerID, _Good, _Limit)
     if GUI then
+        return;
+    end
+    if type(_PlayerID) ~= "number" or _PlayerID < 1 or _PlayerID > 8 then
+        error("API.CastleStoreSetOutsourceBoundary: _PlayerID (" ..tostring(_PlayerID).. ") is wrong!");
+        return;
+    end
+    if GetNameOfKeyInTable(Goods, _Good) == nil then
+        error("API.CastleStoreSetOutsourceBoundary: _Good (" ..tostring(_Good).. ") is wrong!");
+        return;
+    end
+    if type(_Limit) ~= "number" or _Limit < 1 then
+        error("API.CastleStoreSetOutsourceBoundary: _Limit (" ..tostring(_Limit).. ") is wrong!");
         return;
     end
     local Store = QSB.CastleStore:GetInstance(_PlayerID);
@@ -1057,6 +1125,8 @@ end
 -- @local
 --
 function AddOnCastleStore.Local:Install()
+    IO = Logic.CreateReferenceToTableInGlobaLuaState("IO");
+
     QSB.CastleStore = self.CastleStore;
     self:OverwriteGameFunctions();
     self:OverwriteGetStringTableText();
@@ -1679,6 +1749,7 @@ function AddOnCastleStore.Local.CastleStore:ShowCastleStoreMenu()
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/InCity", 1)
     XGUIEng.ShowAllSubWidgets(MotherPath.. "Selection/Storehouse/InCity/Goods", 0);
     XGUIEng.ShowWidget(MotherPath.. "Selection/Storehouse/InCity/Goods/G_Beer", 1)
+
     XGUIEng.DisableButton(MotherPath.. "DialogButtons/PlayerButtons/DestroyGoods", 0)
 
     local MotherPathDialog = MotherPath.. "DialogButtons/PlayerButtons/";
@@ -1753,9 +1824,11 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
             -- Es muss geprüft werden, ob die Kosten wirklich bezahlt werden
             -- können oder ob das Burglager mit einbezogen wird.
             local CanBuyBoolean = true;
-            CanBuyBoolean = CanBuyBoolean and GetPlayerResources(Costs[1], PlayerID) >= Costs[2];
-            if Costs[3] then
-                CanBuyBoolean = CanBuyBoolean and GetPlayerResources(Costs[3], PlayerID) >= Costs[4];
+            if Costs and Costs[1] then
+                CanBuyBoolean = CanBuyBoolean and GetPlayerResources(Costs[1], PlayerID) >= Costs[2];
+                if Costs[3] then
+                    CanBuyBoolean = CanBuyBoolean and GetPlayerResources(Costs[3], PlayerID) >= Costs[4];
+                end
             end
             if CanBuyBoolean then
                 GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();

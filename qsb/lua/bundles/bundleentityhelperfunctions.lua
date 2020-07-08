@@ -333,6 +333,8 @@ function BundleEntityHelperFunctions.Shared:GetRelativePos(_target,_distance,_an
         local ori = 0+_angle;
         pos1 = { X= pos.X+_distance * math.cos(math.rad(ori)),
                  Y= pos.Y+_distance * math.sin(math.rad(ori))};
+
+        info("BundleEntityHelperFunctions: relative position for position {X= " ..pos.X.. ", Y= " ..pos.Y.."} is {X= " ..pos1.X..", Y= " ..pos1.Y.. "}");
     else
         local eID = GetID(_target);
         local pos = GetPosition(eID);
@@ -344,6 +346,8 @@ function BundleEntityHelperFunctions.Shared:GetRelativePos(_target,_distance,_an
         end
         pos1 = { X= pos.X+_distance * math.cos(math.rad(ori)),
                  Y= pos.Y+_distance * math.sin(math.rad(ori))};
+
+        info("BundleEntityHelperFunctions: relative position of entity " ..eID.." is {X= " ..pos1.X..", Y= " ..pos1.Y.. "}");
     end
     return pos1;
 end

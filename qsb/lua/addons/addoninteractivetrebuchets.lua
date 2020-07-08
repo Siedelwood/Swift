@@ -52,6 +52,18 @@ function API.CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost)
     if GUI then
         return;
     end
+    if not IsExisting(_Name) then
+        error("API.CreateTrebuchetConstructionSite: _Name (" ..tostring(_Name).. ") does not exist!");
+        return;
+    end
+    if type(_GoldCost) ~= "number" or _GoldCost < 1 then
+        error("API.CreateTrebuchetConstructionSite: _GoldCost (" ..tostring(_GoldCost).. ") is wrong!");
+        return;
+    end
+    if type(_WoodCost) ~= "number" or _WoodCost < 1 then
+        error("API.CreateTrebuchetConstructionSite: _WoodCost (" ..tostring(_WoodCost).. ") is wrong!");
+        return;
+    end
     AddOnInteractiveTrebuchets.Global:CreateTrebuchetConstructionSite(_Name, _GoldCost, _WoodCost);
 end
 CreateTrebuchetConstructionSite = API.CreateTrebuchetConstructionSite;
@@ -74,6 +86,10 @@ function API.DestroyTrebuchetConstructionSite(_Name)
     if GUI then
         return;
     end
+    if not IsExisting(_Name) then
+        error("API.CreateTrebuchetConstructionSite: _Name (" ..tostring(_Name).. ") does not exist!");
+        return;
+    end
     AddOnInteractiveTrebuchets.Global:DestroyTrebuchetConstructionSite(_Name);
 end
 DestroyTrebuchetConstructionSite = API.DestroyTrebuchetConstructionSite;
@@ -92,8 +108,12 @@ function API.GetTrebuchetByTrebuchetConstructionSite(_Name)
     if GUI then
         return;
     end
+    if not IsExisting(_Name) then
+        error("API.CreateTrebuchetConstructionSite: _Name (" ..tostring(_Name).. ") does not exist!");
+        return;
+    end
     if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
-        error("API.GetTrebuchetByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        error("API.GetTrebuchetByTrebuchetConstructionSite: Site (" ..tostring(_Name).. ") is not initalized!");
         return 0;
     end
     return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ConstructedTrebuchet;
@@ -114,8 +134,12 @@ function API.GetReturningCartByTrebuchetConstructionSite(_Name)
     if GUI then
         return;
     end
+    if not IsExisting(_Name) then
+        error("API.CreateTrebuchetConstructionSite: _Name (" ..tostring(_Name).. ") does not exist!");
+        return;
+    end
     if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
-        error("API.GetReturningCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        error("API.GetReturningCartByTrebuchetConstructionSite: Site (" ..tostring(_Name).. ") is not initalized!");
         return 0;
     end
     return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ReturningCart;
@@ -136,8 +160,12 @@ function API.GetConstructionCartByTrebuchetConstructionSite(_Name)
     if GUI then
         return;
     end
+    if not IsExisting(_Name) then
+        error("API.CreateTrebuchetConstructionSite: _Name (" ..tostring(_Name).. ") does not exist!");
+        return;
+    end
     if not AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name] then
-        error("API.GetConstructionCartByTrebuchetConstructionSite: Site '" ..tostring(_Name).. "' does not exist!");
+        error("API.GetConstructionCartByTrebuchetConstructionSite: Site (" ..tostring(_Name).. ") is not initalized!");
         return 0;
     end
     return AddOnInteractiveTrebuchets.Global.Data.Trebuchet.Sites[_Name].ConstructionCart;

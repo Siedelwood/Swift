@@ -173,7 +173,7 @@ function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
     local entity = GetEntityId(_entity);
     local entityTLA = GetEntityId(_entityToLookAt);
     if not IsExisting(entity) or not IsExisting(entityTLA) then
-        API.Warn("API.LookAt: One entity is invalid or dead!");
+        warn("API.LookAt: One entity is invalid or dead!");
         return;
     end
     local eX, eY = Logic.GetEntityPosition(entity);
@@ -183,6 +183,7 @@ function API.LookAt(_entity, _entityToLookAt, _offsetEntity)
         orientation = orientation - 90;
     end
     _offsetEntity = _offsetEntity or 0;
+    info("API.LookAt: Entity " ..entity.. " is looking at " ..entityTLA);
     Logic.SetOrientation(entity, API.Round(orientation + _offsetEntity));
 end
 LookAt = API.LookAt;

@@ -47,15 +47,15 @@ function API.UseBreedSheeps(_Flag)
     end
 
     BundleStockbreeding.Global.Data.AllowBreedSheeps = _Flag == true;
-    API.Bridge("BundleStockbreeding.Local.Data.AllowBreedSheeps = " ..tostring(_Flag == true));
+    Logic.ExecuteInLuaLocalState("BundleStockbreeding.Local.Data.AllowBreedSheeps = " ..tostring(_Flag == true));
     if _Flag ~= true then
         local Price = MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Sheep]
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
+        Logic.ExecuteInLuaLocalState("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
     else
         local Price = BundleStockbreeding.Global.Data.SheepMoneyCost;
         MerchantSystem.BasePrices[Goods.G_Sheep] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
+        Logic.ExecuteInLuaLocalState("MerchantSystem.BasePrices[Goods.G_Sheep] = " ..Price);
     end
 end
 UseBreedSheeps = API.UseBreedSheeps;
@@ -82,15 +82,15 @@ function API.UseBreedCattle(_Flag)
     end
 
     BundleStockbreeding.Global.Data.AllowBreedCattle = _Flag == true;
-    API.Bridge("BundleStockbreeding.Local.Data.AllowBreedCattle = " ..tostring(_Flag == true));
+    Logic.ExecuteInLuaLocalState("BundleStockbreeding.Local.Data.AllowBreedCattle = " ..tostring(_Flag == true));
     if _Flag ~= true then
         local Price = MerchantSystem.BasePricesOrigBundleStockbreeding[Goods.G_Cow];
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
+        Logic.ExecuteInLuaLocalState("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     else
         local Price = BundleStockbreeding.Global.Data.CattleMoneyCost;
         MerchantSystem.BasePrices[Goods.G_Cow] = Price;
-        API.Bridge("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
+        Logic.ExecuteInLuaLocalState("MerchantSystem.BasePrices[Goods.G_Cow] = " ..Price);
     end
 end
 UseBreedCattle = API.UseBreedCattle;

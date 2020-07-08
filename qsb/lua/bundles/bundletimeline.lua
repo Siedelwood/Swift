@@ -59,6 +59,20 @@ QSB.TimeLine = {
 -- }
 --
 function API.TimeLineStart(_Description)
+    if type(_Description) ~= "table" then
+        error("API.TimeLineStart: _Description must be a table!");
+        return;
+    end
+    for i= 1, #_Description, 1 do
+        if type(_Description.Time) ~= "number" or _Description.Time < 0 then
+            error("API.TimeLineStart: _Description[" ..i.. "].Time (".. tostring(_Description.Time).. ") must be a positive number!");
+            return;
+        end
+        if type(_Description.Action) ~= "function" then
+            error("API.TimeLineStart: _Description[" ..i.. "].Action must be a function!");
+            return;
+        end
+    end
     return BundleTimeLine.Shared.TimeLine:Start(_Description);
 end
 

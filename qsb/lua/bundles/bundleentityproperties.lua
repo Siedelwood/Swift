@@ -35,6 +35,7 @@ QSB = QSB or {};
 function API.EntityGetScale(_Entity)
     return BundleEntityProperties.Shared:GetValueAsFloat(_Entity, QSB.ScriptingValues[QSB.ScriptingValues.Game].Size);
 end
+API.GetEntityScale = API.EntityGetScale;
 GetScale = API.EntityGetScale;
 
 ---
@@ -59,6 +60,7 @@ function API.EntitySetScale(_Entity, _Scale)
         end
     end
 end
+API.SetEntityScale = API.EntitySetScale;
 SetScale = API.EntitySetScale;
 
 ---
@@ -73,6 +75,7 @@ SetScale = API.EntitySetScale;
 function API.EntityGetPlayer(_Entity)
     return BundleEntityProperties.Shared:GetValueAsInteger(_Entity, QSB.ScriptingValues[QSB.ScriptingValues.Game].Player);
 end
+API.GetEntityPlayer = API.EntityGetPlayer;
 GetPlayer = API.EntityGetPlayer;
 
 ---
@@ -102,6 +105,7 @@ function API.EntitySetPlayer(_Entity, _PlayerID)
         end
     end
 end
+API.SetEntityPlayer = API.EntitySetPlayer;
 SetPlayer = API.EntitySetPlayer;
 
 ---

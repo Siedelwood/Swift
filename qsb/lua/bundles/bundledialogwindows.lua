@@ -361,31 +361,29 @@ function QSB.SimpleTypewriter:TokenizeText()
     local TempTokens = {};
     local Text = self.m_Text;
     while (true) do
-        local s, e = Text:find(" ");
-        if not s then
+        local s1, e1 = Text:find("{");
+        local s2, e2 = Text:find("}");
+        if not s1 or not s2 then
             table.insert(TempTokens, Text);
             break;
         end
-        local NewToken = Text:sub(1, s-1);
-        if NewToken:find("}") then
-            for i= #NewToken, 1, -1 do
-                local Char = NewToken:sub(i, i);
-                if Char == "}" then
-                    table.insert(TempTokens, NewToken:sub(1, i));
-                    table.insert(TempTokens, NewToken:sub(i+1));
-                    break;
-                end
-            end
-        else
-            table.insert(TempTokens, NewToken);
+        if s1 > 1 then
+            table.insert(TempTokens, Text:sub(1, s1 -1));
         end
-        table.insert(TempTokens, " ");
-        Text = Text:sub(e+1);
+        table.insert(TempTokens, Text:sub(s1, e2));
+        Text = Text:sub(e2 +1);
     end
 
+    local LastWasPlaceholder = false;
     for i= 1, #TempTokens, 1 do
-        if TempTokens[i] == " " or TempTokens[i]:find("{") then
-            table.insert(self.m_Tokens, TempTokens[i]);
+        if TempTokens[i]:find("{") then
+            local Index = #self.m_Tokens;
+            if LastWasPlaceholder then
+                self.m_Tokens[Index] = self.m_Tokens[Index] .. TempTokens[i];
+            else
+                table.insert(self.m_Tokens, Index+1, TempTokens[i]);
+            end
+            LastWasPlaceholder = true;
         else
             local Index = 1;
             while (Index <= #TempTokens[i]) do
@@ -397,6 +395,7 @@ function QSB.SimpleTypewriter:TokenizeText()
                 end
                 Index = Index +1;
             end
+            LastWasPlaceholder = false;
         end
     end
 end

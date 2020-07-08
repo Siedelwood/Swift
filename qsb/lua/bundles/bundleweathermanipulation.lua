@@ -142,6 +142,9 @@ end
 -- @within WeatherEvent
 --
 function API.WeatherEventAbort()
+    if GUI then
+        return;
+    end
     API.Bridge("Display.StopAllEnvironmentSettingsSequences()");
     BundleWeatherManipulation.Global:StopEvent();
 end
@@ -155,6 +158,9 @@ end
 -- @within WeatherEvent
 --
 function API.WeatherEventPurge()
+    if GUI then
+        return;
+    end
     BundleWeatherManipulation.Global:PurgeAllEvents();
     API.Bridge("Display.StopAllEnvironmentSettingsSequences()");
     BundleWeatherManipulation.Global:StopEvent();

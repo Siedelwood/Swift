@@ -114,7 +114,7 @@ function API.StartBriefing(_Briefing)
         return -1;
     end
     if #_Briefing == 0 then
-        error("_Briefing don't contains pages!");
+        error("_Briefing does not contain pages!");
         return -1;
     end
     return BundleBriefingSystem.Global:StartBriefing(_Briefing);

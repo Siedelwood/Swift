@@ -346,7 +346,7 @@ end
 -- @local
 --
 function BundleInteractiveObjects.Global:StartObjectConditionController()
-    StartSimpleJobEx(function()
+    StartSimpleHiResJobEx(function()
         for k, v in pairs(IO) do
             if v and not v:IsUsed() and v:IsActive() then
                 v.m_Fullfilled = true;

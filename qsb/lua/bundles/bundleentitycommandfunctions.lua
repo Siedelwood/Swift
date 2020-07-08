@@ -46,6 +46,8 @@ function API.SetPosition(_Entity, _Position)
         error("API.SetPosition: Position is invalid!");
         return;
     end
+    local EntityID = GetID(_Entity);
+    info("API.SetPosition: Relocating entity " ..tostring(EntityID).. " to {X= " ..Position.X.. ", Y= " ..Position.Y.."}");
     return BundleEntityCommandFunctions.Global:SetPosition(_Entity, Position);
 end
 SetPosition = API.SetPosition;
@@ -223,6 +225,7 @@ function API.CommandAttack(_Entity, _Target)
     end
     local EntityID = GetID(_Entity);
     local TargetID = GetID(_Target);
+    info("API.CommandAttack: Entity " ..EntityID.. " is attacking entity " ..TargetID);
     Logic.GroupAttack(EntityID, TargetID);
 end
 Attack = API.CommandAttack;
@@ -255,7 +258,7 @@ function API.CommandAttackMove(_Entity, _Position)
         return;
     end
     local EntityID = GetID(_Entity);
-    local Position = GetPosition(_Position);
+    info("API.CommandAttackMove: Entity " ..EntityID.. " is attacking position {X= " ..Position.X..", Y= " ..Position.Y.. "}");
     Logic.GroupAttackMove(EntityID, Position.X, Position.Y);
 end
 AttackMove = API.CommandAttackMove;
@@ -287,7 +290,7 @@ function API.CommandMove(_Entity, _Position)
         return;
     end
     local EntityID = GetID(_Entity);
-    local Position = GetPosition(_Position);
+    info("API.CommandMove: Moving entity " ..EntityID.. " to position {X= " ..Position.X..", Y= " ..Position.Y.. "}");
     Logic.MoveSettler(EntityID, Position.X, Position.Y);
 end
 Move = API.CommandMove;
@@ -328,8 +331,10 @@ function BundleEntityCommandFunctions.Global:SetPosition(_Entity,_Position)
         return
     end
     local EntityID = GetEntityId(_Entity);
+    info("BundleEntityCommandFunctions: Moving entity " ..tostring(EntityID).. " to position {X= " .._Position.X..", Y= " .._Position.Y.. "}");
     Logic.DEBUG_SetSettlerPosition(EntityID, _Position.X, _Position.Y);
     if Logic.IsLeader(EntityID) == 1 then
+        info("BundleEntityCommandFunctions: " ..tostring(EntityID).. " is leader, so soldiers are dislocated as well.");
         local soldiers = {Logic.GetSoldiersAttachedToLeader(EntityID)};
         if soldiers[1] > 0 then
             for i=1,#soldiers do
@@ -358,6 +363,7 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     local tID = GetID(_Position);
     local pos = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance or 0, _Angle or 0);
 
+    info("BundleEntityCommandFunctions: Moving entity " ..tostring(eID).. " to position {X= " ..pos.X..", Y= " ..pos.Y.. "}");
     if _moveAsEntity then
         Logic.MoveEntity(eID, pos.X, pos.Y);
     else
@@ -403,6 +409,8 @@ function BundleEntityCommandFunctions.Shared:GetRelativePos(_target,_distance,_a
         local ori = 0+_angle;
         pos1 = { X= pos.X+_distance * math.cos(math.rad(ori)),
                  Y= pos.Y+_distance * math.sin(math.rad(ori))};
+
+        info("BundleEntityCommandFunctions: relative position for position {X= " ..pos.X.. ", Y= " ..pos.Y.."} is {X= " ..pos1.X..", Y= " ..pos1.Y.. "}");
     else
         local eID = GetID(_target);
         local pos = GetPosition(eID);
@@ -414,6 +422,8 @@ function BundleEntityCommandFunctions.Shared:GetRelativePos(_target,_distance,_a
         end
         pos1 = { X= pos.X+_distance * math.cos(math.rad(ori)),
                  Y= pos.Y+_distance * math.sin(math.rad(ori))};
+
+        info("BundleEntityCommandFunctions: relative position of entity " ..eID.." is {X= " ..pos1.X..", Y= " ..pos1.Y.. "}");
     end
     return pos1;
 end

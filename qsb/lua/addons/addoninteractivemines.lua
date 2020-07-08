@@ -64,6 +64,30 @@ function API.CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, 
     if GUI then
         return;
     end
+    if not IsExisting(_Position) then
+        error("API.CreateIOMine: _Position (" ..tostring(_Position).. ") does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(Entities, _Type) == nil then
+        error("API.CreateIOMine: _Type (" ..tostring(_Type).. ") is wrong!");
+        return;
+    end
+    if _Costs and (type(_Costs) ~= "table" or #_Costs %2 ~= 0) then
+        error("API.CreateIOMine: _Costs has the wrong format!");
+        return;
+    end
+    if _Condition and type(_Condition) ~= "function" then
+        error("API.CreateIOMine: _Condition must be a function!");
+        return;
+    end
+    if _CreationCallback and type(_CreationCallback) ~= "function" then
+        error("API.CreateIOMine: _CreationCallback must be a function!");
+        return;
+    end
+    if _CallbackDepleted and type(_CallbackDepleted) ~= "function" then
+        error("API.CreateIOMine: _CallbackDepleted must be a function!");
+        return;
+    end
     AddOnInteractiveMines.Global:CreateIOMine(_Position, _Type, _Costs, _NotRefillable, _Condition, _CreationCallback, _CallbackDepleted);
 end
 CreateIOMine = API.CreateIOMine;
@@ -90,6 +114,26 @@ function API.CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _
     if GUI then
         return;
     end
+    if not IsExisting(_Position) then
+        error("API.CreateIOIronMine: _Position (" ..tostring(_Position).. ") does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(Goods, _Cost1Type) == nil then
+        error("API.CreateIOIronMine: _Cost1Type (" ..tostring(_Cost1Type).. ") is wrong!");
+        return;
+    end
+    if _Cost1Amount and (type(_Cost1Amount) ~= "number" or _Cost1Amount < 1) then
+        error("API.CreateIOIronMine: _Cost1Amount must be above 0!");
+        return;
+    end
+    if GetNameOfKeyInTable(Goods, _Cost2Type) == nil then
+        error("API.CreateIOIronMine: _Cost2Type (" ..tostring(_Cost2Type).. ") is wrong!");
+        return;
+    end
+    if _Cost2Amount and (type(_Cost2Amount) ~= "number" or _Cost2Amount < 1) then
+        error("API.CreateIOIronMine: _Cost2Amount must be above 0!");
+        return;
+    end
     AddOnInteractiveMines.Global:CreateIOIronMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);
 end
 CreateIOIronMine = API.CreateIOIronMine;
@@ -114,6 +158,26 @@ CreateIOIronMine = API.CreateIOIronMine;
 --
 function API.CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable)
     if GUI then
+        return;
+    end
+    if not IsExisting(_Position) then
+        error("API.CreateIOStoneMine: _Position (" ..tostring(_Position).. ") does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(Goods, _Cost1Type) == nil then
+        error("API.CreateIOStoneMine: _Cost1Type (" ..tostring(_Cost1Type).. ") is wrong!");
+        return;
+    end
+    if _Cost1Amount and (type(_Cost1Amount) ~= "number" or _Cost1Amount < 1) then
+        error("API.CreateIOStoneMine: _Cost1Amount must be above 0!");
+        return;
+    end
+    if GetNameOfKeyInTable(Goods, _Cost2Type) == nil then
+        error("API.CreateIOStoneMine: _Cost2Type (" ..tostring(_Cost2Type).. ") is wrong!");
+        return;
+    end
+    if _Cost2Amount and (type(_Cost2Amount) ~= "number" or _Cost2Amount < 1) then
+        error("API.CreateIOStoneMine: _Cost2Amount must be above 0!");
         return;
     end
     AddOnInteractiveMines.Global:CreateIOStoneMine(_Position, _Cost1Type, _Cost1Amount, _Cost2Type, _Cost2Amount, _NotRefillable);

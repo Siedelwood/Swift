@@ -31,7 +31,7 @@ QSB = QSB or {};
 --
 function API.ForbidCheats()
     if GUI then
-        API.Bridge("API.ForbidCheats()");
+        GUI.SendScriptCommand("API.ForbidCheats()");
         return;
     end
     return BundleCheats.Global:KillCheats();
@@ -47,7 +47,7 @@ KillCheats = API.ForbidCheats;
 --
 function API.AllowCheats()
     if GUI then
-        API.Bridge("API.AllowCheats()");
+        GUI.SendScriptCommand("API.AllowCheats()");
         return;
     end
     return BundleCheats.Global:RessurectCheats();

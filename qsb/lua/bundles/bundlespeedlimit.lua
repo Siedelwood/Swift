@@ -45,7 +45,7 @@ QSB = QSB or {};
 --
 function API.SpeedLimitSet(_Limit)
     if not GUI then
-        API.Bridge("API.SpeedLimitSet(" .._Limit.. ")");
+        Logic.ExecuteInLuaLocalState("API.SpeedLimitSet(" ..tostring(_Limit).. ")");
         return;
     end
     return BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit);
@@ -65,7 +65,7 @@ function API.SpeedLimitActivate(_Flag)
     if GUI then
         return;
     end
-    return API.Bridge("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
+    return Logic.ExecuteInLuaLocalState("BundleGameHelperFunctions.Local:ActivateSpeedLimit(" ..tostring(_Flag).. ")");
 end
 ActivateSpeedLimit = API.SpeedLimitActivate;
 
@@ -106,6 +106,7 @@ end
 --
 function BundleGameHelperFunctions.Local:SetSpeedLimit(_Limit)
     _Limit = (_Limit < 1 and 1) or math.floor(_Limit);
+    info("BundleGameHelperFunctions: Setting speed limit to " .._Limit);
     self.Data.SpeedLimit = _Limit;
 end
 
@@ -120,6 +121,7 @@ end
 function BundleGameHelperFunctions.Local:ActivateSpeedLimit(_Flag)
     self.Data.UseSpeedLimit = _Flag == true;
     if _Flag and Game.GameTimeGetFactor(GUI.GetPlayerID()) > self.Data.SpeedLimit then
+        info("BundleGameHelperFunctions: Speed is capped at " ..self.Data.SpeedLimit);
         Game.GameTimeSetFactor(GUI.GetPlayerID(), self.Data.SpeedLimit);
     end
 end
@@ -136,9 +138,9 @@ function BundleGameHelperFunctions.Local:InitForbidSpeedUp()
     GameCallback_GameSpeedChanged = function( _Speed )
         GameCallback_GameSpeedChanged_Orig_Preferences_ForbidSpeedUp( _Speed );
         if BundleGameHelperFunctions.Local.Data.UseSpeedLimit == true then
-            debug("BundleGameHelperFunctions: Checking speed limit.");
+            info("BundleGameHelperFunctions: Checking speed limit.");
             if _Speed > BundleGameHelperFunctions.Local.Data.SpeedLimit then
-                debug("BundleGameHelperFunctions: Speed is capped at " ..tostring(_Speed).. ".");
+                info("BundleGameHelperFunctions: Speed is capped at " ..tostring(_Speed).. ".");
                 Game.GameTimeSetFactor(GUI.GetPlayerID(), BundleGameHelperFunctions.Local.Data.SpeedLimit);
             end
         end

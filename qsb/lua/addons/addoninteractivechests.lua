@@ -45,6 +45,26 @@ function API.CreateRandomChest(_Name, _Good, _Min, _Max, _Callback)
     if GUI then
         return;
     end
+    if not IsExisting(_Name) then
+        error("API.CreateRandomChest: _Name (" ..tostring(_Name).. ") does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(Goods, _Good) == nil then
+        error("API.CreateRandomChest: _Good (" ..tostring(_Good).. ") is wrong!");
+        return;
+    end
+    if type(_Min) ~= "number" or _Min < 1 then
+        error("API.CreateRandomChest: _Min (" ..tostring(_Min).. ") is wrong!");
+        return;
+    end
+    if type(_Max) ~= "number" or _Max < 1 then
+        error("API.CreateRandomChest: _Max (" ..tostring(_Max).. ") is wrong!");
+        return;
+    end
+    if _Max < _Min then
+        error("API.CreateRandomChest: _Max (" ..tostring(_Max).. ") must be greather then _Min (" ..tostring(_Min).. ")!");
+        return;
+    end
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback);
 end
 CreateRandomChest = API.CreateRandomChest;
@@ -74,6 +94,26 @@ function API.CreateRandomTreasure(_Name, _Good, _Min, _Max, _Callback)
     if GUI then
         return;
     end
+    if not IsExisting(_Name) then
+        error("API.CreateRandomTreasure: _Name (" ..tostring(_Name).. ") does not exist!");
+        return;
+    end
+    if GetNameOfKeyInTable(Goods, _Good) == nil then
+        error("API.CreateRandomTreasure: _Good (" ..tostring(_Good).. ") is wrong!");
+        return;
+    end
+    if type(_Min) ~= "number" or _Min < 1 then
+        error("API.CreateRandomTreasure: _Min (" ..tostring(_Min).. ") is wrong!");
+        return;
+    end
+    if type(_Max) ~= "number" or _Max < 1 then
+        error("API.CreateRandomTreasure: _Max (" ..tostring(_Max).. ") is wrong!");
+        return;
+    end
+    if _Max < _Min then
+        error("API.CreateRandomTreasure: _Max (" ..tostring(_Max).. ") must be greather then _Min (" ..tostring(_Min).. ")!");
+        return;
+    end
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, true);
 end
 CreateRandomTreasure = API.CreateRandomTreasure;
@@ -91,6 +131,10 @@ CreateRandomTreasure = API.CreateRandomTreasure;
 --
 function API.CreateRandomGoldChest(_Name)
     if GUI then
+        return;
+    end
+    if not IsExisting(_Name) then
+        error("API.CreateRandomGoldChest: _Name (" ..tostring(_Name).. ") does not exist!");
         return;
     end
     AddOnInteractiveChests.Global:CreateRandomChest(_Name, Goods.G_Gold, 300, 600);
@@ -116,6 +160,10 @@ function API.CreateRandomResourceChest(_Name)
     if GUI then
         return;
     end
+    if not IsExisting(_Name) then
+        error("API.CreateRandomResourceChest: _Name (" ..tostring(_Name).. ") does not exist!");
+        return;
+    end
     AddOnInteractiveChests.Global:CreateRandomResourceChest(_Name);
 end
 CreateRandomResourceChest = API.CreateRandomResourceChest;
@@ -137,6 +185,10 @@ CreateRandomResourceChest = API.CreateRandomResourceChest;
 --
 function API.CreateRandomLuxuryChest(_Name)
     if GUI then
+        return;
+    end
+    if not IsExisting(_Name) then
+        error("API.CreateRandomLuxuryChest: _Name (" ..tostring(_Name).. ") does not exist!");
         return;
     end
     AddOnInteractiveChests.Global:CreateRandomLuxuryChest(_Name);
@@ -209,13 +261,23 @@ end
 -- @local
 --
 function AddOnInteractiveChests.Global:CreateRandomChest(_Name, _Good, _Min, _Max, _Callback, _NoModelChange)
-    _Min = (_Min ~= nil and _Min > 0 and _Min) or 1;
-    _Max = (_Max ~= nil and _Max > 1 and _Max) or 2;
+    _Min = math.floor((_Min ~= nil and _Min > 0 and _Min) or 1);
+    _Max = math.floor((_Max ~= nil and _Max > 1 and _Max) or 2);
     if not _Callback then
         _Callback = function(t) end
     end
     assert(_Good ~= nil, "CreateRandomChest: Good does not exist!");
     assert(_Min < _Max, "CreateRandomChest: min amount must be smaller than max amount!");
+
+    debug(string.format(
+        "AddOnInteractiveChests: Creating chest (%s, %s, %d, %d, %s, %s)",
+        _Name,
+        Logic.GetGoodTypeName(_Good),
+        _Min,
+        _Max,
+        tostring(_Callback),
+        tostring(_NoModelChange)
+    ))
 
     local Title = AddOnInteractiveChests.Text.Treasure.Title;
     local Text  = AddOnInteractiveChests.Text.Treasure.Text;

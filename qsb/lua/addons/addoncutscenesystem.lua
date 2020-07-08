@@ -175,7 +175,11 @@ function API.CutsceneSetFastForwardSpeed(_Speed)
         API.Bridge("API.CutsceneSetFastForwardSpeed(" .._Speed.. ")");
         return;
     end
-    AddOnCutsceneSystem.Data.FastForward.Speed = _Speed;
+    if type(_Speed) ~= "number" or _Speed < 1 then
+        error("API.CutsceneSetFastForwardSpeed: _Speed (" ..tostring(_Speed).. ") is wrong!");
+        return;
+    end
+    AddOnCutsceneSystem.Local.Data.FastForward.Speed = _Speed;
 end
 SetCutsceneFastForwardSpeed = API.CutsceneSetFastForwardSpeed;
 

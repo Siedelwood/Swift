@@ -35,7 +35,7 @@ QSB = QSB or {};
 --
 function API.UseSingleStop(_Flag)
     if not GUI then
-        API.Bridge("API.UseSingleStop(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.UseSingleStop(" ..tostring(_Flag).. ")");
         return;
     end
 
@@ -62,7 +62,7 @@ end
 --
 function API.UseDowngrade(_Flag)
     if not GUI then
-        API.Bridge("API.UseDowngrade(" ..tostring(_Flag == true).. ")");
+        Logic.ExecuteInLuaLocalState("API.UseDowngrade(" ..tostring(_Flag == true).. ")");
         return;
     end
     BundleBuildingButtons.Local.Data.Downgrade = _Flag == true;
@@ -148,7 +148,7 @@ AddBuildingButton = API.AddCustomBuildingButton;
 --
 function API.RemoveCustomBuildingButton(_Index)
     if not GUI then
-        API.Bridge("API.RemoveCustomBuildingButton("..tostring(_Index)..")");
+        Logic.ExecuteInLuaLocalState("API.RemoveCustomBuildingButton("..tostring(_Index)..")");
         return;
     end
     if (type(_Index) ~= "number" or (_Index < 1 or _Index > 2)) then
