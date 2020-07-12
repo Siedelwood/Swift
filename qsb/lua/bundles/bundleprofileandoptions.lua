@@ -251,7 +251,7 @@ function BundleProfileAndOptions.Local:FullProfileSync()
         end
     end
     -- Ins globale Skript schreiben
-    API.Bridge(string.format([[QSB.ProfileIni = %s]], API.ConvertTableToString(QSB.ProfileIni)));
+    GUI.SendScriptCommand(string.format([[QSB.ProfileIni = %s]], API.ConvertTableToString(QSB.ProfileIni)));
 end
 
 ---
@@ -273,7 +273,7 @@ function BundleProfileAndOptions.Local:FullOptionsSync()
         end
     end
     -- Ins globale Skript schreiben
-    API.Bridge(string.format([[QSB.OptionsIni = %s]], API.ConvertTableToString(QSB.OptionsIni)));
+    GUI.SendScriptCommand(string.format([[QSB.OptionsIni = %s]], API.ConvertTableToString(QSB.OptionsIni)));
 end
 
 -- Führt alle Jobs einmal Sekunde aus.

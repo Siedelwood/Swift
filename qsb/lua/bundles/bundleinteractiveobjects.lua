@@ -464,7 +464,7 @@ function BundleInteractiveObjects.Global:OnEntityDestroyed()
         if not Object then
             return;
         end
-        info("slave '" ..SlaveName.. "' of master '" ..MasterName.. "' has been deleted!");
+        info("slave " ..SlaveName.. " of master " ..MasterName.. " has been deleted!");
         info("try to create new slave...");
         IO_SlaveToMaster[SlaveName] = nil;
         local SlaveID = self:CreateSlaveObject(Object);
@@ -476,7 +476,7 @@ function BundleInteractiveObjects.Global:OnEntityDestroyed()
         if Object.m_Used == true or (IO_SlaveState[SlaveName] and IO_SlaveState[SlaveName] == 0) then
             API.InteractiveObjectDeactivate(Object.m_Slave);
         end
-        info("new slave created for master '" ..MasterName.. "'");
+        info("new slave created for master " ..MasterName.. ".");
     end
 end
 

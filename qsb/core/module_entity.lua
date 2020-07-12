@@ -150,6 +150,7 @@ function API.ReplaceEntity(_Entity, _Type, _NewOwner)
     local orientation = Logic.GetEntityOrientation(eID);
     local name = Logic.GetEntityName(eID);
     DestroyEntity(eID);
+    info("API.ReplaceEntity: Replacing entity " ..tostring(_Entity).. " to type " ..Logic.GetEntityTypeName(_Type).. ".");
     if Logic.IsEntityTypeInCategory(_Type, EntityCategories.Soldier) == 1 then
         return CreateBattalion(player, _Type, pos.X, pos.Y, 1, name, orientation);
     else

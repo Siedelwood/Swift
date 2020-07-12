@@ -291,9 +291,9 @@ function ExternalMapLoader.Local:StartMap()
 	Profile.SetString(Name, "MapLoader", MapName);
 	Profile.SetInteger(Name, "MapLoaderVersion", self.Data.Campaign.MapData[Name].LoaderVersion or 1);
 	Framework.SetLoadScreenNeedButton(1);
-	InitLoadScreen(false, 1, Name, 0, Knight);
+	InitLoadScreen(false, 1, Name, 0, 0);
 	Framework.ResetProgressBar();
-	Framework.StartMap(Name, 1, Knight);
+	Framework.StartMap(Name, 1, 0);
 end
 
 ---

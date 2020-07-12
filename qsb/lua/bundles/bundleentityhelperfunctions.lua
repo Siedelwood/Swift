@@ -127,6 +127,7 @@ SetResourceAmount = API.SetResourceAmount;
 --
 function API.GetRelativePosition(_target, _distance, _angle, _buildingRealPos)
     if not API.ValidatePosition(_target) and not IsExisting(_target) then
+        error("API.EntityGetName: _target does not exist or is invalid position!");
         return;
     end
     return BundleEntityHelperFunctions.Shared:GetRelativePos(_target, _distance, _angle, _buildingRealPos);
@@ -147,6 +148,7 @@ GetRelativePos = API.GetRelativePosition;
 --
 function API.EntityGetName(_entity)
     if not IsExisting(_entity) then
+        error("API.EntityGetName: _entity (" ..tostring(_entity).. ") does not exist!");
         return nil;
     end
     return Logic.GetEntityName(GetID(_entity));
@@ -167,7 +169,11 @@ GetEntityName = API.EntityGetName;
 -- API.EntitySetName(SomeEntityID, "myEntity");
 --
 function API.EntitySetName(_entity, _name)
-    if GUI or IsExisting(_name) then
+    if GUI then
+        return;
+    end
+    if not IsExisting(_entity) then
+        error("API.EntitySetName: _entity (" ..tostring(_entity).. ") does not exist!");
         return;
     end
     return Logic.SetEntityName(GetID(_entity), _name);
@@ -320,8 +326,8 @@ end
 -- @local
 --
 function BundleEntityHelperFunctions.Shared:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
-    if not type(_target) == "table" and not IsExisting(_target)then
-        return
+    if not type(_target) == "table" and not IsExisting(_target) then
+        return;
     end
     if _angle == nil then
         _angle = 0;

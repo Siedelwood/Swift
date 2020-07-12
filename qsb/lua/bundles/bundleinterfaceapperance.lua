@@ -221,7 +221,7 @@ function API.InterfaceSetPlayerColor(_PlayerID, _Color, _Logo, _Pattern)
     local Pattern = _Pattern or -1;
 
     Logic.PlayerSetPlayerColor(_PlayerID, Col, _Logo, _Pattern);
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         Display.UpdatePlayerColors()
         GUI.RebuildMinimapTerrain()
         GUI.RebuildMinimapTerritory()
@@ -264,7 +264,7 @@ function API.InterfaceSetPlayerPortrait(_PlayerID, _Portrait)
     end
     if not GUI then
         local Portrait = (_Portrait ~= nil and "'" .._Portrait.. "'") or "nil";
-        API.Bridge("API.InterfaceSetPlayerPortrait(" .._PlayerID.. ", " ..Portrait.. ")")
+        Logic.ExecuteInLuaLocalState("API.InterfaceSetPlayerPortrait(" .._PlayerID.. ", " ..Portrait.. ")")
         return;
     end
     

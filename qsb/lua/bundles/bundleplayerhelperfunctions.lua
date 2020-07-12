@@ -148,7 +148,7 @@ function API.ForbidFestival(_PlayerID)
     end
     Logic.TechnologySetState(_PlayerID, Technology, State);
     BundlePlayerHelperFunctions.Global:RestrictFestivalForPlayer(_PlayerID, 0, true);
-    API.Bridge("BundlePlayerHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[" .._PlayerID.. "] = true");
+    Logic.ExecuteInLuaLocalState("BundlePlayerHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[" .._PlayerID.. "] = true");
 end
 ForbidFestival = API.ForbidFestival;
 
@@ -173,7 +173,7 @@ function API.AllowFestival(_PlayerID)
         State = TechnologyStates.Researched;
     end
     Logic.TechnologySetState(_PlayerID, Technology, State);
-    API.Bridge("BundlePlayerHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[" .._PlayerID.. "] = false");
+    Logic.ExecuteInLuaLocalState("BundlePlayerHelperFunctions.Local.Data.NormalFestivalLockedForPlayer[" .._PlayerID.. "] = false");
 end
 AllowFestival = API.AllowFestival;
 

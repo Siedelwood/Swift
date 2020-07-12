@@ -100,7 +100,7 @@ function API.TravelingSalesmanCreate(_TraderDescription)
         return;
     end
     for i= 1, #_TraderDescription.Offers, 1 do
-        if Goods[_TraderDescription.Offers[i][1]] == nil then
+        if Goods[_TraderDescription.Offers[i][1]] == nil and Entities[_TraderDescription.Offers[i][1]] == nil then
             error("API.TravelingSalesmanCreate: _TraderDescription.Offers[" ..i.. "][1] is invalid good type!");
             return;
         end
@@ -125,8 +125,8 @@ function API.TravelingSalesmanCreate(_TraderDescription)
 
     local OffersString = "";
     for i= 1, #_TraderDescription.Offers, 1 do
-        Harbor:AddOffer(_TraderDescription.Offers[i][1], _TraderDescription.Offers[i][2]);
-        OffersString = "(" ..Logic.GetGoodTypeName(_TraderDescription.Offers[i][1]).. ", " .._TraderDescription.Offers[i][2].. "){cr}";
+        Harbor:AddOffer(_TraderDescription.Offers[i][1], _TraderDescription.Offers[i][2]);       
+        OffersString = OffersString .. "(" ..tostring(_TraderDescription.Offers[i][1]).. ", " .._TraderDescription.Offers[i][2].. "){cr}";
     end
     Harbor:SetActive(true);
     BundleTravelingSalesman.Global:RegisterHarbor(Harbor);
@@ -263,6 +263,7 @@ BundleTravelingSalesman = {
     Global = {
         Data = {
             Harbors = {},
+            QuestInfoCounter = 0,
         },
     },
 };
@@ -293,8 +294,10 @@ end
 --
 function BundleTravelingSalesman.Global:RegisterHarbor(_Harbor)
     if self.Data.Harbors[_Harbor.m_PlayerID] then
+        info("BundleTravelingSalesman: harbor for player " .._Harbor.m_PlayerID.. " already exists and is purged.");
         self.Data.Harbors[_Harbor.m_PlayerID]:Dispose();
     end
+    info("BundleTravelingSalesman: creating harbor for player " .._Harbor.m_PlayerID.. ".");
     self.Data.Harbors[_Harbor.m_PlayerID] = _Harbor;
 end
 
@@ -314,6 +317,7 @@ function BundleTravelingSalesman.Global:SpawnShip(_Harbor)
     local OnArrival = function(_Data)
         BundleTravelingSalesman.Global:ShipAtDock(_Data.Entity);
     end
+    info("BundleTravelingSalesman: Ship of player " .._Harbor:GetPlayerID().. " has spawns.");
     local Instance = Path:new(ID, _Harbor:GetPath():Get(), nil, nil, OnArrival, nil, true, nil, nil, QSB.ShipWaypointDistance);
     _Harbor:SetJobID(Instance.Job);
 end
@@ -331,6 +335,7 @@ function BundleTravelingSalesman.Global:ShipLeave(_Harbor)
     local OnArrival = function(_Data)
         BundleTravelingSalesman.Global:ShipHasLeft(_Data.Entity);
     end
+    info("BundleTravelingSalesman: Ship of player " .._Harbor:GetPlayerID().. " is leaving the harbor.");
     local Instance = Path:new(_Harbor:GetShipID(), _Harbor:GetPath():Get(), nil, nil, OnArrival, nil, true, nil, nil, QSB.ShipWaypointDistance);
     _Harbor:SetJobID(Instance.Job);
     if GameCallback_TravelingSalesmanLeave then
@@ -347,6 +352,7 @@ end
 function BundleTravelingSalesman.Global:ShipHasLeft(_ShipID)
     local Harbor = self:GetHarborByShipID(_ShipID);
     if (Harbor) then
+        info("BundleTravelingSalesman: Ship of player " .._Harbor:GetPlayerID().. " has despawned.");
         Harbor:SetJobID(0);
         Harbor:SetShipID(0);
         Harbor:SetDuration(Harbor:GetDuration());
@@ -364,6 +370,7 @@ end
 function BundleTravelingSalesman.Global:ShipAtDock(_ShipID)
     local Harbor = self:GetHarborByShipID(_ShipID);
     if (Harbor) then
+        info("Ship of player " ..PlayerID.. " is arriving at the harbor.");
         Harbor:SetJobID(0);
         local PlayerID = Harbor:GetPlayerID();
         MerchantSystem.TradeBlackList[PlayerID] = {};
@@ -386,25 +393,29 @@ end
 function BundleTravelingSalesman.Global:CreateOffers(_Offers, _TraderID)
     DeActivateMerchantForPlayer(_TraderID, QSB.HumanPlayerID);
     Logic.RemoveAllOffers(_TraderID);
+    local LogInfo = "BundleTravelingSalesman: Creating offers for player " .._TraderID..":";
     if #_Offers > 0 then
+        LogInfo = LogInfo.. "{cr}Offers:";
+        local OfferString = "";
         for i=1,#_Offers,1 do
             if Goods[_Offers[i][1]] then
-                local amount = _Offers[i][2];
-                AddOffer(_TraderID, amount, Goods[_Offers[i][1]], 9999);
+                AddOffer(_TraderID, _Offers[i][2], Goods[_Offers[i][1]], 9999);
             else
                 if Logic.IsEntityTypeInCategory(Entities[_Offers[i][1]], EntityCategories.Military)== 0 then
                     AddEntertainerOffer(_TraderID, Entities[_Offers[i][1]]);
                 else
-                    local amount = _Offers[i][2];
-                    AddMercenaryOffer(_TraderID, amount, Entities[_Offers[i][1]], 9999);
+                    AddMercenaryOffer(_TraderID, _Offers[i][2], Entities[_Offers[i][1]], 9999);
                 end
             end
+            OfferString = OfferString .. "{cr}(" .._Offers[i][1].. ", " ..((_Offers[i][2] ~= nil and _Offers[i][2]) or 1).. ")";
         end
         if GetDiplomacyState(QSB.HumanPlayerID, Logic.EntityGetPlayer(_TraderID)) > 0 then
             ActivateMerchantPermanentlyForPlayer(_TraderID, QSB.HumanPlayerID);
-            API.Bridge("g_Merchant.ActiveMerchantBuilding = nil");
+            Logic.ExecuteInLuaLocalState("g_Merchant.ActiveMerchantBuilding = nil");
         end
+        LogInfo = LogInfo .. OfferString;
     end
+    info(LogInfo);
 end
 
 ---
@@ -443,8 +454,9 @@ end
 -- @local
 --
 function BundleTravelingSalesman.Global:DisplayQuestMessage(_PlayerID, _Text)
+    self.Data.QuestInfoCounter = self.Data.QuestInfoCounter +1;
     QuestTemplate:New(
-        "TravelingSalesman_Info_P" .._PlayerID,
+        "TravelingSalesman_Info_P" ..self.Data.QuestInfoCounter,
         _PlayerID,
         QSB.HumanPlayerID,
         {{Objective.Dummy,}},

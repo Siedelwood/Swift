@@ -31,7 +31,7 @@ QSB = QSB or {};
 function API.AutoSaveGame(_name)
     assert(_name == nil or type(_name) == "string");
     if not GUI then
-        API.Bridge('API.AutoSaveGame("'.._name..'")');
+        Logic.ExecuteInLuaLocalState('API.AutoSaveGame("'.._name..'")');
         return;
     end
     BundleSaveGameTools.Local:AutoSaveGame(_name);
@@ -50,7 +50,7 @@ function API.SaveGameToFolder(_path, _name)
     assert(_path);
     assert(_name);
     if not GUI then
-        API.Bridge('API.SaveGameToFolder("'.._path..'", "'.._name..'")');
+        Logic.ExecuteInLuaLocalState('API.SaveGameToFolder("'.._path..'", "'.._name..'")');
         return;
     end
     BundleSaveGameTools.Local:SaveGameToFolder(_path, _name);
@@ -72,7 +72,7 @@ function API.LoadGameFromFolder(_path, _name, _needButton)
     assert(_name);
     assert(_needButton);
     if not GUI then
-        API.Bridge('API.LoadGameFromFolder("'.._path..'", "'.._name..'", "'.._needButton..'")');
+        Logic.ExecuteInLuaLocalState('API.LoadGameFromFolder("'.._path..'", "'.._name..'", "'.._needButton..'")');
         return;
     end
     BundleSaveGameTools.Local:LoadGameFromFolder(_path, _name, _needButton);
@@ -101,7 +101,7 @@ function API.StartMap(_map, _knight, _folder, _needButton)
     assert(_folder);
     assert(_needButton);
     if not GUI then
-        API.Bridge('API.StartMap("'.._map..'", "'.._knight..'", "'.._needButton..'", "'.._needButton..'")');
+        Logic.ExecuteInLuaLocalState('API.StartMap("'.._map..'", "'.._knight..'", "'.._needButton..'", "'.._needButton..'")');
         return;
     end
     BundleSaveGameTools.Local:StartMap(_map, _knight, _folder, _needButton);
@@ -117,10 +117,10 @@ end
 --
 function API.ForbidSaveGame(_Flag)
     if GUI then
-        API.Bridge("API.ForbidSaveGame(".. tostring(_Flag) ..")");
+        GUI.SendScriptCommand("API.ForbidSaveGame(".. tostring(_Flag) ..")");
         return;
     end
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         BundleSaveGameTools.Local.Data.ForbidSave = ]].. tostring(_Flag) ..[[ == true
         BundleSaveGameTools.Local:DisplaySaveButtons(]].. tostring(_Flag) ..[[)
     ]]);

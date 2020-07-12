@@ -180,7 +180,7 @@ function Briefing03()
         Name         = "ChoicePage1",
         position     = CastleID,
         title        = "Auswahl",
-        text         = "Eine wichtige Entscheidung muss getroffen werden!",
+        Text         = "Eine wichtige Entscheidung muss getroffen werden!",
         DialogCamera = false,
         NoRethink    = true,
         MC           = {

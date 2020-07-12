@@ -33,6 +33,10 @@ QSB = QSB or {};
 -- @within Anwenderfunktionen
 --
 function API.EntityGetScale(_Entity)
+    if not IsExisting(_Entity) then
+        error("API.EntityGetScale: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
     return BundleEntityProperties.Shared:GetValueAsFloat(_Entity, QSB.ScriptingValues[QSB.ScriptingValues.Game].Size);
 end
 API.GetEntityScale = API.EntityGetScale;
@@ -50,6 +54,14 @@ GetScale = API.EntityGetScale;
 --
 function API.EntitySetScale(_Entity, _Scale)
     if GUI then
+        return;
+    end
+    if not IsExisting(_Entity) then
+        error("API.EntitySetScale: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if type(_Scale) ~= "number" or _Scale <= 0 then
+        error("API.EntitySetScale: _Scale (" ..tostring(_Scale).. ") must be a number above zero!");
         return;
     end
     local EntityID = GetID(_Entity);
@@ -73,6 +85,10 @@ SetScale = API.EntitySetScale;
 -- @within Anwenderfunktionen
 --
 function API.EntityGetPlayer(_Entity)
+    if not IsExisting(_Entity) then
+        error("API.EntityGetPlayer: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
     return BundleEntityProperties.Shared:GetValueAsInteger(_Entity, QSB.ScriptingValues[QSB.ScriptingValues.Game].Player);
 end
 API.GetEntityPlayer = API.EntityGetPlayer;
@@ -89,6 +105,14 @@ GetPlayer = API.EntityGetPlayer;
 --
 function API.EntitySetPlayer(_Entity, _PlayerID)
     if GUI then
+        return;
+    end
+    if not IsExisting(_Entity) then
+        error("API.EntitySetPlayer: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if type(_PlayerID) ~= "number" or _PlayerID < 0 or _PlayerID > 8 then
+        error("API.EntitySetPlayer: _PlayerID (" ..tostring(_PlayerID).. ") must be a number between 0 and 8!");
         return;
     end
     local EntityID = GetID(_Entity);
@@ -122,6 +146,7 @@ function API.EntityGetOrientation(_Entity)
     if EntityID > 0 then
         return API.Round(Logic.GetEntityOrientation(EntityID));
     end
+    error("API.EntityGetOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return 0;
 end
 GetOrientation = API.EntityGetOrientation;
@@ -141,7 +166,13 @@ function API.EntitySetOrientation(_Entity, _Orientation)
     end
     local EntityID = GetID(_Entity);
     if EntityID > 0 then
+        if type(_Orientation) ~= "number" then
+            error("API.EntitySetOrientation: _Orientation is wrong!");
+            return
+        end
         Logic.SetOrientation(EntityID, API.Round(_Orientation));
+    else
+        error("API.EntitySetOrientation: _Entity (" ..tostring(_Entity).. ") does not exist!");
     end
 end
 SetOrientation = API.EntitySetOrientation;
@@ -161,6 +192,7 @@ function API.ResourceGetAmount(_Entity)
     if EntityID > 0 then
         return Logic.GetResourceDoodadGoodAmount(EntityID);
     end
+    error("API.ResourceGetAmount: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return 0;
 end
 GetResource = API.ResourceGetAmount
@@ -180,10 +212,16 @@ function API.ResourceSetAmount(_Entity, _Amount)
     end
     local EntityID = GetID(_Entity);
     if EntityID > 0 or Logic.GetResourceDoodadGoodType(EntityID) > 0 then
+        if type(_Amount) ~= "number" or _Amount < 0 then
+            error("API.ResourceSetAmount: _Amount must be 0 or greater!");
+            return
+        end
         if Logic.GetResourceDoodadGoodAmount(EntityID) == 0 then
             EntityID = ReplaceEntity(EntityID, Logic.GetEntityType(EntityID));
         end
         Logic.SetResourceDoodadGoodAmount(EntityID, _Amount);
+    else
+        error("API.ResourceSetAmount: _Entity (" ..tostring(_Entity).. ") does not exist or is not a resource entity!");
     end
 end
 SetResource = API.ResourceSetAmount;
@@ -202,6 +240,7 @@ function API.EntityGetHealth(_Entity)
     if EntityID > 0 then
         return BundleEntityProperties.Shared:GetValueAsInteger(_Entity, QSB.ScriptingValues[QSB.ScriptingValues.Game].Health);
     end
+    error("API.EntityGetHealth: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return 0;
 end
 GetHealth = API.EntityGetHealth;
@@ -223,6 +262,12 @@ function API.EntityChangeHealth(_Entity, _Health, _Relative)
     end
     local EntityID = GetID(_Entity);
     if EntityID > 0 then
+        local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
+        if type(_Health) ~= "number" or _Health < 0 then
+            error("API.EntityChangeHealth: _Health " ..tostring(_Health).. "must be 0 or greater!");
+            return
+        end
+        _Health = (_Health > MaxHealth and MaxHealth) or _Health;
         if Logic.IsLeader(EntityID) == 1 then
             for k, v in pairs(API.GroupGetSoldiers(EntityToHurt)) do
                 API.EntityChangeHealth(v, _Health, _Relative)
@@ -232,12 +277,13 @@ function API.EntityChangeHealth(_Entity, _Health, _Relative)
             if _Relative then
                 _Health = (_Health < 0 and 0) or _Health;
                 _Health = (_Health > 100 and 100) or _Health;
-                local MaxHealth = Logic.GetEntityMaxHealth(EntityID);
                 NewHealth = math.ceil((MaxHealth) * (_Health/100));
             end
             Logic.SetEntityScriptingValue(EntityID, QSB.ScriptingValues[QSB.ScriptingValues.Game].Health, NewHealth);
         end
+        return;
     end
+    error("API.EntityChangeHealth: _Entity (" ..tostring(_Entity).. ") does not exist!");
 end
 SetHealth = API.EntityChangeHealth;
 
@@ -256,6 +302,11 @@ function API.GroupHeal(_Entity, _Amount)
     end
     local EntityID = GetID(_Entity);
     if EntityID == 0 or Logic.IsLeader(EntityID) == 1 then
+        error("API.GroupHeal: _Entity (" ..tostring(_Entity).. ") must be an existing leader!");
+        return;
+    end
+    if type(_Amount) ~= "number" or _Amount < 0 then
+        error("API.GroupHeal: _Amount (" ..tostring(_Amount).. ") must greatier than 0!");
         return;
     end
     API.EntityChangeHealth(EntityID, API.EntityGetHealth(EntityID) + _Amount);
@@ -280,6 +331,7 @@ function API.GroupHurt(_Entity, _Damage, _Attacker)
     end
     local EntityID = GetID(_Entity);
     if EntityID == 0 then
+        error("API.GroupHurt: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     if API.EntityIsInAtLeastOneCategory(EntityID, EntityCategories.Soldier) then
@@ -291,6 +343,10 @@ function API.GroupHurt(_Entity, _Damage, _Attacker)
     local IsLeader = Logic.IsLeader(EntityToHurt) == 1;
     if IsLeader then
         EntityToHurt = API.GroupGetSoldiers(EntityToHurt)[1];
+    end
+    if type(_Damage) ~= "number" or _Damage < 0 then
+        error("API.GroupHurt: _Damage (" ..tostring(_Damage).. ") must be greater than 0!");
+        return;
     end
 
     local EntityKilled = false;
@@ -324,6 +380,7 @@ HurtEntity = API.GroupHurt;
 function API.EntityIsBuildingBurning(_Entity)
     local EntityID = GetID(_Entity);
     if EntityID == 0 then
+        error("API.EntityIsBuildingBurning: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return 0;
     end
     return Logic.IsBurning(EntityID);
@@ -345,6 +402,7 @@ function API.EntitySetBuildingBurning(_Entity, _FireSize)
     end
     local EntityID = GetID(_Entity);
     if EntityID == 0 then
+        error("API.EntitySetBuildingBurning: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     -- TODO: Gebäude per Skript löschen!
@@ -364,6 +422,10 @@ SetBurning = API.EntitySetBuilding;
 -- @within Anwenderfunktionen
 --
 function API.EntityIsVisible(_Entity)
+    if not IsExisting(_Entity) then
+        error("API.EntityIsVisible: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return false;
+    end
     return BundleEntityProperties.Shared:GetValueAsInteger(_Entity, QSB.ScriptingValues[QSB.ScriptingValues.Game].Visible) == 801280;
 end
 IsVisible = API.EntityIsVisible;
@@ -383,9 +445,10 @@ function API.EntitySetVisible(_Entity, _Visble)
     end
     local EntityID = GetID(_Entity);
     if EntityID == 0 then
+        error("API.EntitySetVisible: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
-    Logic.SetVisible(EntityID, _Visble);
+    Logic.SetVisible(EntityID, _Visble == true);
 end
 SetVisible = API.EntitySetVisible;
 
@@ -401,6 +464,7 @@ SetVisible = API.EntitySetVisible;
 function API.EntityIsIll(_Entity)
     local EntityID = GetID(_Entity);
     if EntityID == 0 then
+        error("API.EntityIsIll: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return false;
     end
     if API.EntityIsInAtLeastOneCategory(
@@ -429,6 +493,7 @@ function API.EntityMakeIll(_Entity)
     end
     local EntityID = GetID(_Entity);
     if EntityID == 0 then
+        error("API.EntityMakeIll: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     if API.EntityIsInAtLeastOneCategory(
@@ -457,6 +522,7 @@ function API.EntityIsActiveNpc(_Entity)
     if EntityID > 0 then
         return BundleEntityProperties.Shared:GetValueAsInteger(EntityID, 6) > 0;
     end
+    error("API.EntityIsActiveNpc: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return false;
 end
 IsNpc = API.EntityIsActiveNpc;
@@ -484,6 +550,7 @@ function API.EntityGetMovementTarget(_Entity)
             Z= 0
         };
     end
+    error("API.EntityGetMovementTarget: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return {X= 0, Y= 0, Z= 0};
 end
 GetDestination = API.EntityGetMovementTarget;
@@ -505,21 +572,23 @@ function API.EntitySetVulnerablueFlag(_Entity, _Flag)
         return;
     end
     local EntityID = GetID(_Entity);
-    local VulnerabilityFlag = (_Flag and 0) or 1;
+    local VulnerabilityFlag = (_Flag == true and 1) or 0;
     if EntityID > 0 and API.GroupCountSoldiers(EntityID) > 0 then
         for k, v in pairs(API.GroupGetSoldiers(EntityID)) do
             Logic.SetEntityInvulnerabilityFlag(v, VulnerabilityFlag);
         end
-    end
-    Logic.SetEntityInvulnerabilityFlag(EntityID, VulnerabilityFlag);
-    -- Unverwundbarkeitsüberwachung
-    if type(_Entity) == "string" then
-        if VulnerabilityFlag == 0 then
-            BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = true;
-        else
-            BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = nil;
+        Logic.SetEntityInvulnerabilityFlag(EntityID, VulnerabilityFlag);
+        -- Unverwundbarkeitsüberwachung
+        if type(_Entity) == "string" then
+            if VulnerabilityFlag == 1 then
+                BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = EntityID;
+            else
+                BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = nil;
+            end
         end
+        return;
     end
+    error("API.EntitySetVulnerablueFlag: _Entity (" ..tostring(_Entity).. ") must be a leader with soldiers!");
 end
 SetVulnerable = API.EntitySetVulnerablueFlag;
 
@@ -544,6 +613,7 @@ function API.EntityGetType(_Entity)
     if EntityID > 0 then
         return Logic.GetEntityType(EntityID);
     end
+    error("API.EntityGetType: _Entity (" ..tostring(_Entity).. ") must be a leader with soldiers!");
     return 0;
 end
 GetType = API.EntityGetType
@@ -558,6 +628,10 @@ GetType = API.EntityGetType
 -- @within Anwenderfunktionen
 --
 function API.EntityGetTypeName(_Entity)
+    if not IsExisting(_Entity) then
+        error("API.EntityGetTypeName: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
     return Logic.GetEntityTypeName(API.EntityGetType(_Entity));
 end
 GetTypeName = API.EntityGetTypeName;
@@ -576,9 +650,11 @@ function API.EntitySetType(_Entity, _NewType)
         return;
     end
     local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        ReplaceEntity(EntityID, _NewType);
+    if EntityID == 0 then
+        error("API.EntitySetType: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
     end
+    ReplaceEntity(EntityID, _NewType);
 end
 SetType = API.EntitySetType;
 
@@ -593,11 +669,12 @@ SetType = API.EntitySetType;
 --
 function API.EntityGetTaskList(_Entity, _NewTask)
     local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        local CurrentTask = Logic.GetCurrentTaskList(EntityID);
-        return TaskLists[CurrentTask];
+    if EntityID == 0 then
+        error("API.EntityGetTaskList: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
     end
-    return 0;
+    local CurrentTask = Logic.GetCurrentTaskList(EntityID);
+    return TaskLists[CurrentTask];
 end
 GetTask = API.EntityGetTaskList;
 
@@ -607,7 +684,7 @@ GetTask = API.EntityGetTaskList;
 -- <b>Alias</b>: SetTask
 --
 -- @param              _Entity  Entity (Scriptname oder ID)
--- @param[type=number] _NewTask (optional) Neuer Task
+-- @param[type=number] _NewTask Neuer Task
 -- @within Anwenderfunktionen
 --
 function API.EntitySetTaskList(_Entity, _NewTask)
@@ -615,9 +692,15 @@ function API.EntitySetTaskList(_Entity, _NewTask)
         return;
     end
     local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        Logic.SetTaskList(EntityID, _NewTask);
+    if EntityID == 0 then
+        error("API.EntitySetTaskList: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
     end
+    if type(_NewTask) ~= "number" or _NewTask < 1 then
+        error("API.EntitySetTaskList: _NewTask (" ..tostring(_NewTask).. ") is wrong!");
+        return;
+    end
+    Logic.SetTaskList(EntityID, _NewTask);
 end
 SetTask = API.EntitySetTaskList;
 
@@ -636,12 +719,22 @@ function API.EntitySetModel(_Entity, _NewModel, _AnimSet)
         return;
     end
     local EntityID = GetID(_Entity);
-    if EntityID > 0 then
-        if not _AnimSet then
-            Logic.SetModel(EntityID, _NewModel);
-        else
-            Logic.SetModelAndAnimSet(EntityID, _NewModel, _AnimSet);
-        end
+    if EntityID == 0 then
+        error("API.EntitySetModel: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return;
+    end
+    if type(_NewModel) ~= "number" or _NewModel < 1 then
+        error("API.EntitySetModel: _NewModel (" ..tostring(_NewModel).. ") is wrong!");
+        return;
+    end
+    if _AnimSet and (type(_AnimSet) ~= "number" or _AnimSet < 1) then
+        error("API.EntitySetModel: _AnimSet (" ..tostring(_AnimSet).. ") is wrong!");
+        return;
+    end
+    if not _AnimSet then
+        Logic.SetModel(EntityID, _NewModel);
+    else
+        Logic.SetModelAndAnimSet(EntityID, _NewModel, _AnimSet);
     end
 end
 SetModel = API.EntitySetModel;
@@ -657,11 +750,12 @@ SetModel = API.EntitySetModel;
 --
 function API.GroupCountSoldiers(_Entity)
     local EntityID = GetID(_Entity);
-    if EntityID > 0 and Logic.IsLeader(EntityID) == 1 then
-        local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
-        return SoldierTable[1];
+    if EntityID == 0 and Logic.IsLeader(EntityID) == 0 then
+        error("API.GroupCountSoldiers: _Entity (" ..tostring(_Entity).. ") must be a leader!");
+        return 0;
     end
-    return 0;
+    local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+    return SoldierTable[1];
 end
 CoundSoldiers = API.GroupCountSoldiers;
 
@@ -676,12 +770,13 @@ CoundSoldiers = API.GroupCountSoldiers;
 --
 function API.GroupGetSoldiers(_Entity)
     local EntityID = GetID(_Entity);
-    if EntityID > 0 and Logic.IsLeader(EntityID) == 1 then
-        local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
-        table.remove(SoldierTable, 1);
-        return SoldierTable;
+    if EntityID == 0 or Logic.IsLeader(EntityID) == 0 then
+        error("API.GroupGetSoldiers: _Entity (" ..tostring(_Entity).. ") must be a leader!");
+        return {};
     end
-    return {};
+    local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
+    table.remove(SoldierTable, 1);
+    return SoldierTable;
 end
 GetSoldiers = API.GroupGetSoldiers;
 
@@ -696,10 +791,11 @@ GetSoldiers = API.GroupGetSoldiers;
 --
 function API.GroupGetLeader(_Entity)
     local EntityID = GetID(_Entity);
-    if EntityID > 0 and Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 1 then
-        return Logic.SoldierGetLeaderEntityID(EntityID);
+    if EntityID == 0 or Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then
+        error("API.GroupGetLeader: _Entity (" ..tostring(_Entity).. ") must be a soldier!");
+        return 0;
     end
-    return 0;
+    return Logic.SoldierGetLeaderEntityID(EntityID);
 end
 GetLeader = API.GroupGetLeader;
 
@@ -716,6 +812,7 @@ GetLeader = API.GroupGetLeader;
 function API.EntityGetCategoyList(_Entity)
     local EntityID = GetID(_Entity);
     if EntityID == 0 then
+        error("API.EntityGetCategoyList: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return {};
     end
     local Categories = {};
@@ -747,7 +844,9 @@ function API.EntityIsInAtLeastOneCategory(_Entity, ...)
                 return true;
             end
         end
+        return;
     end
+    error("API.EntityIsInAtLeastOneCategory: _Entity (" ..tostring(_Entity).. ") does not exist!");
     return false;
 end
 IsInCategory = API.EntityIsInAtLeastOneCategory;
@@ -786,7 +885,7 @@ function BundleEntityProperties.Global:InvulnerabilityJob()
     for k, v in pairs(self.Data.InvulnerableEntityNames) do
         local ID = GetID(k);
         if v and ID ~= v then
-            API.EntitySetVulnerablueFlag(k, not v);
+            API.EntitySetVulnerablueFlag(k, false);
         end
     end
 end

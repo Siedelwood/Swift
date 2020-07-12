@@ -103,6 +103,7 @@ function BundleFollowKnight.Global:AddFollowKnightSave(_Entity, _Knight, _Distan
     local KnightID = GetID(_Knight);
     _Angle = _Angle or 0;
 
+    info("BundleFollowKnight: Creating follow job for " ..EntityID.. " following " ..KnightID..".");
     local JobID = StartSimpleHiResJobEx(
         BundleFollowKnight.Global.ControlFollowKnightSave, EntityID, KnightID, _Distance, _Angle
     );
@@ -120,6 +121,7 @@ end
 function BundleFollowKnight.Global:StopFollowKnightSave(_JobID)
     for k,v in pairs(self.Data.FollowKnightSave) do
         if _JobID == v then
+            info("BundleFollowKnight: Job " .._JobID.. " was stopped.");
             self.Data.FollowKnightSave[k] = nil;
             EndJob(_JobID);
         end
@@ -139,15 +141,18 @@ end
 function BundleFollowKnight.Global.ControlFollowKnightSave(_EntityID, _KnightID, _Distance, _Angle)
     -- Entity oder Held sind hinüber bzw. haben ihre ID verändert
     if not IsExisting(_KnightID) or not IsExisting(_EntityID) then
+        warn("BundleFollowKnight: Job finishes because hero or follower does not exist!");
         return true;
     end
 
     -- Wenn Entity ein Held ist, dann nur, wenn Entity nicht komatös ist
     if Logic.IsKnight(_EntityID) and Logic.KnightGetResurrectionProgress(_EntityID) ~= 1 then
+        info("BundleFollowKnight: Job finishes because follower is comatose!");
         return false;
     end
     -- Wenn Knight ein Held ist, dann nur, wenn Knight nicht komatös ist
     if Logic.IsKnight(_KnightID) and Logic.KnightGetResurrectionProgress(_KnightID) ~= 1 then
+        info("BundleFollowKnight: Job finishes because hero is comatose!");
         return false;
     end
 

@@ -219,6 +219,7 @@ function BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, _X, _Y, _Type
     self.Data.CreatedMinimapMarkers[self.Data.MarkerCounter] = {
         _PlayerID, _X, _Y, _Type
     };
+    info("BundleMinimapMarker: Create minimap marker " .._ID.. " (X= " .._X.. ", Y= " .._Y.. ", " .._Type.. ")");
     self:ShowMinimapMarker(self.Data.MarkerCounter);
     return self.Data.MarkerCounter;
 end
@@ -232,7 +233,8 @@ end
 --
 function BundleMinimapMarker.Global:DestroyMinimapMarker(_ID)
     self.Data.CreatedMinimapMarkers[_ID] = nil;
-    API.Bridge([[GUI.DestroyMinimapSignal(]] .._ID.. [[)]]);
+    info("BundleMinimapMarker: Destroy minimap marker " .._ID);
+    Logic.ExecuteInLuaLocalState([[GUI.DestroyMinimapSignal(]] .._ID.. [[)]]);
 end
 
 ---
@@ -253,7 +255,8 @@ function BundleMinimapMarker.Global:ShowMinimapMarker(_ID)
         ColorOrPlayerID = API.ConvertTableToString(ColorOrPlayerID);
     end
 
-    API.Bridge([[
+    info("BundleMinimapMarker: Restoring minimap marker " .._ID);
+    Logic.ExecuteInLuaLocalState([[
         BundleMinimapMarker.Local:ShowMinimapMarker(
             ]] .._ID.. [[,]] ..ColorOrPlayerID.. [[,]] ..Marker[2].. [[,]] ..Marker[3].. [[, ]] ..Marker[4].. [[
         )

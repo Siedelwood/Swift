@@ -36,8 +36,8 @@ function API.ProtectEntity(_entry)
         ]]);
     else
         if not Inside(_entry, BundleDestructionControl.Local.Data.Entities) then
-            table.insert(BundleDestructionControl.Local.Data.Entities, _entry);
             info("API.ProtectEntity: Adding " ..tostring(_entry).. " to protected list.");
+            table.insert(BundleDestructionControl.Local.Data.Entities, _entry);
         end
     end
 end
@@ -57,8 +57,8 @@ function API.ProtectEntityType(_entry)
         ]]);
     else
         if not Inside(_entry, BundleDestructionControl.Local.Data.EntityTypes) then
-            table.insert(BundleDestructionControl.Local.Data.EntityTypes, _entry);
             info("API.ProtectEntityType: Adding " ..tostring(_entry).. " to protected list.");
+            table.insert(BundleDestructionControl.Local.Data.EntityTypes, _entry);
         end
     end
 end
@@ -78,8 +78,8 @@ function API.ProtectCategory(_entry)
         ]]);
     else
         if not Inside(_entry, BundleDestructionControl.Local.Data.EntityCategories) then
-            table.insert(BundleDestructionControl.Local.Data.EntityCategories, _entry);
             info("API.ProtectCategory: Adding " ..tostring(_entry).. " to protected list.");
+            table.insert(BundleDestructionControl.Local.Data.EntityCategories, _entry);
         end
     end
 end
@@ -99,8 +99,8 @@ function API.ProtectTerritory(_entry)
         ]]);
     else
         if not Inside(_entry, BundleDestructionControl.Local.Data.OnTerritory) then
-            table.insert(BundleDestructionControl.Local.Data.OnTerritory, _entry);
             info("API.ProtectTerritory: Adding " ..tostring(_entry).. " to protected list.");
+            table.insert(BundleDestructionControl.Local.Data.OnTerritory, _entry);
         end
     end
 end
@@ -121,8 +121,8 @@ function API.UnprotectEntity(_entry)
     else
         for i=1,#BundleDestructionControl.Local.Data.Entities do
             if BundleDestructionControl.Local.Data.Entities[i] == _entry then
-                table.remove(BundleDestructionControl.Local.Data.Entities, i);
                 info("API.UnprotectEntity: Remove " ..tostring(_entry).. " from protected list.");
+                table.remove(BundleDestructionControl.Local.Data.Entities, i);
                 return;
             end
         end
@@ -145,8 +145,8 @@ function API.UnprotectEntityType(_entry)
     else
         for i=1,#BundleDestructionControl.Local.Data.EntityTypes do
             if BundleDestructionControl.Local.Data.EntityTypes[i] == _entry then
-                table.remove(BundleDestructionControl.Local.Data.EntityTypes, i);
                 info("API.UnprotectEntityType: Remove " ..tostring(_entry).. " from protected list.");
+                table.remove(BundleDestructionControl.Local.Data.EntityTypes, i);
                 return;
             end
         end
@@ -169,8 +169,8 @@ function API.UnprotectCategory(_entry)
     else
         for i=1,#BundleDestructionControl.Local.Data.EntityCategories do
             if BundleDestructionControl.Local.Data.EntityCategories[i] == _entry then
-                table.remove(BundleDestructionControl.Local.Data.EntityCategories, i);
                 info("API.UnprotectCategory: Remove " ..tostring(_entry).. " from protected list.");
+                table.remove(BundleDestructionControl.Local.Data.EntityCategories, i);
                 return;
             end
         end
@@ -193,8 +193,8 @@ function API.UnprotectTerritory(_entry)
     else
         for i=1,#BundleDestructionControl.Local.Data.OnTerritory do
             if BundleDestructionControl.Local.Data.OnTerritory[i] == _entry then
-                table.remove(BundleDestructionControl.Local.Data.OnTerritory, i);
                 info("API.UnprotectTerritory: Remove " ..tostring(_entry).. " from protected list.");
+                table.remove(BundleDestructionControl.Local.Data.OnTerritory, i);
                 return;
             end
         end

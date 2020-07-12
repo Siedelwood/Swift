@@ -49,8 +49,8 @@ function API.BanTypeAtTerritory(_type, _territory)
 
     BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] = BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type] or {};
     if not Inside(_territory, BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type]) then
-        table.insert(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], _territory);
         info("API.BanTypeAtTerritory: Banning type " ..Logic.GetEntityTypeName(_type).. " from territory " ..tostring(_territory)..".");
+        table.insert(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], _territory);
     end
 end
 
@@ -82,8 +82,8 @@ function API.BanCategoryAtTerritory(_eCat, _territory)
 
     BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] = BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat] or {};
     if not Inside(_territory, BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat]) then
-        table.insert(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], _territory);
         info("API.BanTypeAtTerritory: Banning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_territory)..".");
+        table.insert(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], _territory);
     end
 end
 
@@ -116,8 +116,8 @@ function API.BanTypeInArea(_type, _center, _area)
 
     BundleConstructionControl.Global.Data.AreaBlockEntities[_center] = BundleConstructionControl.Global.Data.AreaBlockEntities[_center] or {};
     if not Inside(_type, BundleConstructionControl.Global.Data.AreaBlockEntities[_center], true) then
-        table.insert(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], {_type, math.floor(_area)});
         info("API.BanTypeAtTerritory: Banning type " ..Logic.GetEntityTypeName(_type).. " from area " ..tostring(_center).." (" ..tostring(_area)..").");
+        table.insert(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], {_type, math.floor(_area)});
     end
 end
 
@@ -150,8 +150,8 @@ function API.BanCategoryInArea(_eCat, _center, _area)
 
     BundleConstructionControl.Global.Data.AreaBlockCategories[_center] = BundleConstructionControl.Global.Data.AreaBlockCategories[_center] or {};
     if not Inside(_eCat, BundleConstructionControl.Global.Data.AreaBlockCategories[_center], true) then
-        table.insert(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], {_eCat, _area});
         info("API.BanTypeAtTerritory: Banning category " ..Logic.GetEntityCategoryName(_eCat).. " from area " ..tostring(_center).." (" ..tostring(_area)..").");
+        table.insert(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], {_eCat, _area});
     end
 end
 
@@ -186,8 +186,8 @@ function API.UnbanTypeAtTerritory(_type, _territory)
     end
     for i= #BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], 1, -1 do
         if BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type][i] == _territory then
-            table.remove(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], i);
             info("API.BanTypeAtTerritory: Unbanning type " ..Logic.GetEntityTypeName(_type).. " from territory " ..tostring(_territory)..".");
+            table.remove(BundleConstructionControl.Global.Data.TerritoryBlockEntities[_type], i);
             break;
         end
     end
@@ -224,8 +224,8 @@ function API.UnbanCategoryAtTerritory(_eCat, _territory)
     end
     for i= #BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], 1, -1 do
         if BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat][i] == _territory then
-            table.remove(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], i);
             info("API.BanTypeAtTerritory: Unbanning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_territory)..".");
+            table.remove(BundleConstructionControl.Global.Data.TerritoryBlockCategories[_eCat], i);
             break;
         end
     end
@@ -258,8 +258,8 @@ function API.UnbanTypeInArea(_type, _center)
     end
     for i= #BundleConstructionControl.Global.Data.AreaBlockEntities[_center], 1, -1 do
         if BundleConstructionControl.Global.Data.AreaBlockEntities[_center][i][1] == _type then
-            table.remove(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], i);
             info("API.BanTypeAtTerritory: Unbanning type " ..Logic.GetEntityTypeName(_type).. " in area " ..tostring(_center)..".");
+            table.remove(BundleConstructionControl.Global.Data.AreaBlockEntities[_center], i);
             break;
         end
     end
@@ -292,8 +292,8 @@ function API.UnbanCategoryInArea(_eCat, _center)
     end
     for i= #BundleConstructionControl.Global.Data.AreaBlockCategories[_center], 1, -1 do
         if BundleConstructionControl.Global.Data.AreaBlockCategories[_center][i][1] == _eCat then
-            table.remove(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], i);
             info("API.BanTypeAtTerritory: Unbanning category " ..Logic.GetEntityCategoryName(_eCat).. " from territory " ..tostring(_center)..".");
+            table.remove(BundleConstructionControl.Global.Data.AreaBlockCategories[_center], i);
             break;
         end
     end

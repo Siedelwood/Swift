@@ -37,8 +37,7 @@ function API.SetPosition(_Entity, _Position)
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        error("API.SetPosition: Entity " ..Subject.. " does not exist!");
+        error("API.SetPosition: Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     local Position = API.LocateEntity(_Position)
@@ -77,13 +76,11 @@ function API.MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        error("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
+        error("API.MoveToPosition: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     if not IsExisting(_Position) then
-        local Subject = (type(_Position) ~= "string" and _Position) or "'" .._Position.. "'";
-        error("API.MoveToPosition: Entity " ..Subject.. " does not exist!");
+        error("API.MoveToPosition: _Position (" ..tostring(_Position).. ") does not exist!");
         return;
     end
     return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, _Angle, _moveAsEntity);
@@ -115,13 +112,11 @@ function API.MoveAndLookAt(_Entity, _Position, _Distance, _moveAsEntity)
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        error("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
+        error("API.MoveAndLookAt: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     if not IsExisting(_Position) then
-        local Subject = (type(_Position) ~= "string" and _Position) or "'" .._Position.. "'";
-        error("API.MoveAndLookAt: Entity " ..Subject.. " does not exist!");
+        error("API.MoveAndLookAt: _Position (" ..tostring(_Position).. ") does not exist!");
         return;
     end
     return BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, _Distance, 0, _moveAsEntity);
@@ -152,13 +147,11 @@ function API.PlaceToPosition(_Entity, _Position, _Distance, _Angle)
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) ~= "string" and _Entity) or "'" .._Entity.. "'";
-        error("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
+        error("API.PlaceToPosition: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     if not IsExisting(_Position) then
-        local Subject = (type(_Position) ~= "string" and _Position) or "'" .._Position.. "'";
-        error("API.PlaceToPosition: Entity " ..Subject.. " does not exist!");
+        error("API.PlaceToPosition: _Position (" ..tostring(_Position).. ") does not exist!");
         return;
     end
     local Position = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance, _Angle, true);
@@ -214,13 +207,12 @@ function API.CommandAttack(_Entity, _Target)
         return;
     end
     if not IsExisting(_Entity) then
-        local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        error("API.CommandAttack: Entity " ..Subject.. " does not exist!");
+        error("API.CommandAttack: _Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     if not IsExisting(_Target) then
         local Subject = (type(_Target) == "string" and "'" .._Target.. "'") or _Target;
-        error("API.CommandAttack: Target " ..Subject.. " does not exist!");
+        error("API.CommandAttack: _Target (" ..tostring(_Target).. ") does not exist!");
         return;
     end
     local EntityID = GetID(_Entity);
@@ -249,7 +241,7 @@ function API.CommandAttackMove(_Entity, _Position)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        error("API.CommandAttackMove: Entity " ..Subject.. " does not exist!");
+        error("API.CommandAttackMove: Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     local Position = API.LocateEntity(_Position)
@@ -281,7 +273,7 @@ function API.CommandMove(_Entity, _Position)
     end
     if not IsExisting(_Entity) then
         local Subject = (type(_Entity) == "string" and "'" .._Entity.. "'") or _Entity;
-        error("API.CommandMove: Entity " ..Subject.. " does not exist!");
+        error("API.CommandMove: Entity (" ..tostring(_Entity).. ") does not exist!");
         return;
     end
     local Position = API.LocateEntity(_Position)
@@ -334,7 +326,7 @@ function BundleEntityCommandFunctions.Global:SetPosition(_Entity,_Position)
     info("BundleEntityCommandFunctions: Moving entity " ..tostring(EntityID).. " to position {X= " .._Position.X..", Y= " .._Position.Y.. "}");
     Logic.DEBUG_SetSettlerPosition(EntityID, _Position.X, _Position.Y);
     if Logic.IsLeader(EntityID) == 1 then
-        info("BundleEntityCommandFunctions: " ..tostring(EntityID).. " is leader, so soldiers are dislocated as well.");
+        info("BundleEntityCommandFunctions: Entity " ..tostring(EntityID).. " is leader, so soldiers are dislocated as well.");
         local soldiers = {Logic.GetSoldiersAttachedToLeader(EntityID)};
         if soldiers[1] > 0 then
             for i=1,#soldiers do
@@ -363,7 +355,7 @@ function BundleEntityCommandFunctions.Global:MoveToPosition(_Entity, _Position, 
     local tID = GetID(_Position);
     local pos = BundleEntityCommandFunctions.Shared:GetRelativePos(_Position, _Distance or 0, _Angle or 0);
 
-    info("BundleEntityCommandFunctions: Moving entity " ..tostring(eID).. " to position {X= " ..pos.X..", Y= " ..pos.Y.. "}");
+    info("BundleEntityCommandFunctions: Moving entity " ..eID.. " to position {X= " ..pos.X..", Y= " ..pos.Y.. "}");
     if _moveAsEntity then
         Logic.MoveEntity(eID, pos.X, pos.Y);
     else
@@ -397,7 +389,7 @@ end
 --
 function BundleEntityCommandFunctions.Shared:GetRelativePos(_target,_distance,_angle,_buildingRealPos)
     if not type(_target) == "table" and not IsExisting(_target)then
-        return
+        return;
     end
     if _angle == nil then
         _angle = 0;

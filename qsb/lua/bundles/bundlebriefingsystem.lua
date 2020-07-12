@@ -268,8 +268,6 @@ function API.AddPages(_Briefing)
                     _Page.MC[i][1] = API.Localize(_Page.MC[i][1]);
                     _Page.MC[i].ID = _Page.MC[i].ID or i;
                 end
-                _Page.Text = "";
-                _Page.text = "";
                 _Page.NoSkipping = true;
                 _Page.Duration = -1;
             end
@@ -1613,8 +1611,8 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
 
         local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
         local xFactor = (Screen[1]/1920);
-        local xFix = math.ceil((Screen[1]/2) - (wSize[1] /2));
-        local yFix = math.ceil(Screen[2] - (wSize[2]-20));
+        local xFix = math.ceil((Screen[1] /2) - (wSize[1] /2));
+        local yFix = math.ceil((Screen[2] /2) - ((wSize[2] /2)-20));
         XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
         XGUIEng.PushPage(Widget, false);
         XGUIEng.ShowWidget(Widget, 1);
