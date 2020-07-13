@@ -426,7 +426,7 @@ end
 --
 function ExternalTradingAnalysis.Global:GetOfferCount(_PlayerID)
     local Offers = self:GetStorehouseInformation(_PlayerID);
-    if Info then
+    if Offers then
         return Offers.OfferCount;
     end
     return 0;

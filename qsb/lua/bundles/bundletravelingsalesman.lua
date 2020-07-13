@@ -339,7 +339,7 @@ function BundleTravelingSalesman.Global:ShipLeave(_Harbor)
     local Instance = Path:new(_Harbor:GetShipID(), _Harbor:GetPath():Get(), nil, nil, OnArrival, nil, true, nil, nil, QSB.ShipWaypointDistance);
     _Harbor:SetJobID(Instance.Job);
     if GameCallback_TravelingSalesmanLeave then
-        GameCallback_TravelingSalesmanLeave(PlayerID, _ShipID);
+        GameCallback_TravelingSalesmanLeave(_Harbor:GetPlayerID(), _Harbor:GetShipID());
     end
 end
 
@@ -352,7 +352,7 @@ end
 function BundleTravelingSalesman.Global:ShipHasLeft(_ShipID)
     local Harbor = self:GetHarborByShipID(_ShipID);
     if (Harbor) then
-        info("BundleTravelingSalesman: Ship of player " .._Harbor:GetPlayerID().. " has despawned.");
+        info("BundleTravelingSalesman: Ship of player " ..Harbor:GetPlayerID().. " has despawned.");
         Harbor:SetJobID(0);
         Harbor:SetShipID(0);
         Harbor:SetDuration(Harbor:GetDuration());
@@ -370,7 +370,7 @@ end
 function BundleTravelingSalesman.Global:ShipAtDock(_ShipID)
     local Harbor = self:GetHarborByShipID(_ShipID);
     if (Harbor) then
-        info("Ship of player " ..PlayerID.. " is arriving at the harbor.");
+        info("Ship of player " ..Harbor:GetPlayerID().. " is arriving at the harbor.");
         Harbor:SetJobID(0);
         local PlayerID = Harbor:GetPlayerID();
         MerchantSystem.TradeBlackList[PlayerID] = {};

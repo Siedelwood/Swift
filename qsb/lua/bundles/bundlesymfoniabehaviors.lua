@@ -2383,6 +2383,7 @@ end
 -- @local
 --
 function BundleSymfoniaBehaviors.Global:GetPossibleModels()
+    local Data = {};
     -- Erst mal alles entfernen...
     for k, v in pairs(Models) do
         if  not string.find(k, "Animals_")

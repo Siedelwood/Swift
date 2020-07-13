@@ -380,7 +380,7 @@ AddOnCastleStore = {
                 Text = {
                     de = "[UMSCHALT + M]{cr}- Lagert alle Waren aus {cr}- Benötigt Platz im Lagerhaus",
                     en = "[Shift + M]{cr}- Removes all goods {cr}- Requires space in the storehouse",
-                    en = "[Shift + M]{cr}- Tous les biens sont externalisés {cr}- Nécessite de l'espace dans l'entrepôt",
+                    fr = "[Shift + M]{cr}- Tous les biens sont externalisés {cr}- Nécessite de l'espace dans l'entrepôt",
                 },
             },
         },
@@ -883,7 +883,6 @@ end
 -- @local
 --
 function AddOnCastleStore.Global.CastleStore.UpdateStores()
-    assert(self == nil, "This method is only procedural!");
     for k, v in pairs(AddOnCastleStore.Global.Data.CastleStoreObjects) do
         if v ~= nil and v.Data.UpdateCastleStore and Logic.GetStoreHouse(k) ~= 0 then
             local Level = Logic.GetUpgradeLevel(Logic.GetHeadquarters(v.Data.PlayerID));
@@ -1789,8 +1788,8 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
             ScriptName = IO_SlaveToMaster[ScriptName];
         end
         -- Kosten
-        local Costs = {Logic.InteractiveObjectGetEffectiveCosts(ObjectID, PlayerID)}
-        local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs, CheckSettlement);
+        local Costs = {Logic.InteractiveObjectGetEffectiveCosts(EntityID, PlayerID)}
+        local CanBuyBoolean, CanNotBuyString = AreCostsAffordable(Costs, false);
         if IO[ScriptName] then
             if not self:OnObjectClicked_CanPlayerPayCosts(IO[ScriptName]) then
                 return;

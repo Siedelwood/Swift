@@ -219,7 +219,7 @@ function BundleMinimapMarker.Global:CreateMinimapMarker(_PlayerID, _X, _Y, _Type
     self.Data.CreatedMinimapMarkers[self.Data.MarkerCounter] = {
         _PlayerID, _X, _Y, _Type
     };
-    info("BundleMinimapMarker: Create minimap marker " .._ID.. " (X= " .._X.. ", Y= " .._Y.. ", " .._Type.. ")");
+    info("BundleMinimapMarker: Create minimap marker (X= " .._X.. ", Y= " .._Y.. ", " .._Type.. ")");
     self:ShowMinimapMarker(self.Data.MarkerCounter);
     return self.Data.MarkerCounter;
 end
