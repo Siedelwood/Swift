@@ -383,6 +383,7 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
         if TypeName == "I_X_BigFire_Base" then
             Costs = {Goods.G_Wood, 20 + (3*KnightTitle)};
             Action = function(_Data)
+                local Orientation = Logic.GetEntityOrientation(GetID(_Data.Name));
                 local Position = GetPosition(_Data.Name);
                 Logic.CreateEntity(Entities.D_X_BigFire_Fire, Position.X, Position.Y, Orientation, 0);
                 Logic.SetVisible(GetID(_Data.Name), false);
@@ -390,6 +391,7 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
         elseif TypeName == "I_X_SignalFire_Base" then
             Costs = {Goods.G_Wood, 30 + (3*KnightTitle)};
             Action = function(_Data)
+                local Orientation = Logic.GetEntityOrientation(GetID(_Data.Name));
                 local Position = GetPosition(_Data.Name);
                 Logic.CreateEntity(Entities.D_X_SignalFire_Fire, Position.X, Position.Y, Orientation, 0);
                 Logic.SetVisible(GetID(_Data.Name), false);
@@ -428,6 +430,7 @@ function AddOnRandomRequests.Global:GetObjectBehavior(_Behavior, _Quest)
             Costs = {Goods.G_Stone, 20 + (3*KnightTitle)};
             Action = function(_Data)
                 local Position = GetPosition(_Data.Name);
+                local Orientation = Logic.GetEntityOrientation(GetID(_Data.Name));
                 Logic.CreateEntity(Entities.D_NA_Well_Repaired, Position.X, Position.Y, Orientation, 0);
                 Logic.SetVisible(GetID(_Data.Name), false);
             end

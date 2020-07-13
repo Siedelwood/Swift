@@ -642,7 +642,7 @@ function BundleQuestGeneration.Global:SerializeBehavior(_Data, _CustomType, _Typ
         end
         if _Data.Data and _Data.Data[1].i47ya_6aghw_frxil and #_Data.Data[1].i47ya_6aghw_frxil > 0 then
             for j= 1, #_Data.Data[1].i47ya_6aghw_frxil, 1 do
-                Info = Info.. ", (" ..type(_Data.Data[1].i47ya_6aghw_frxil[j]).. ") " ..tostring(Value);
+                Info = Info.. ", (" ..type(_Data.Data[1].i47ya_6aghw_frxil[j]).. ") " ..tostring(_Data.Data[1].i47ya_6aghw_frxil[j]);
             end
         end
     else

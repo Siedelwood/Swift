@@ -401,7 +401,7 @@ end
 -- @local
 --
 function Core:LogToFile(_Text, _Level, _Env)
-    _Level = (tonumber(_Level) ~= nul and tonumber(_Level)) or 1;
+    _Level = (tonumber(_Level) ~= nil and tonumber(_Level)) or 1;
     _Env = _Env or "Local";
 
     if QSB.Logging.FileLoggingLevel == QSB.Logging.Levels.Off then
@@ -428,7 +428,7 @@ end
 -- @local
 --
 function Core:LogToScreen(_Text, _Level, _Env)
-    _Level = (tonumber(_Level) ~= nul and tonumber(_Level)) or 1;
+    _Level = (tonumber(_Level) ~= nil and tonumber(_Level)) or 1;
     _Env = _Env or "Local";
 
     if QSB.Logging.DisplayLoggingLevel == QSB.Logging.Levels.Off then

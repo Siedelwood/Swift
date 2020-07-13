@@ -318,7 +318,7 @@ end
 -- @local
 --
 function ExternalCampaignMap.Global:SpawnAura(_Hero, _Aura)
-    local x,y,z = Logic.EntityGetPos(GetID(_Name));
+    local x,y,z = Logic.EntityGetPos(GetID(_Hero));
     local ID = Logic.CreateEffect(_Aura, x, y, 0);
     StartSimpleJobEx( function(_ID, _Hero, _Time)
         if Logic.GetTime() > _Time or Logic.IsEntityMoving(GetID(_Hero)) then
@@ -686,6 +686,7 @@ function ExternalCampaignMap.Local:OverwriteComputePrices()
         local PlayerID = GUI.GetPlayerID();
         local Hero = Logic.GetKnightID(PlayerID);
         local HeroName = Logic.GetEntityName(Hero);
+        local KnightType = Logic.GetEntityType(Hero);
         if KnightType ~= Entities.U_KnightSabatta then
             return ComputePrice_Orig_CrimsonSabatt(_BuildingID, _OfferID, _PlayerID, _TraderType);
         else
@@ -709,6 +710,7 @@ function ExternalCampaignMap.Local:OverwriteComputePrices()
         local PlayerID = GUI.GetPlayerID();
         local Hero = Logic.GetKnightID(PlayerID);
         local HeroName = Logic.GetEntityName(Hero);
+        local KnightType = Logic.GetEntityType(Hero);
         if KnightType ~= Entities.U_KnightSabatta then
             return ComputeSellingPrice_CrimsonSabatt(_TargetPlayerID, _GoodType, _GoodAmount);
         else

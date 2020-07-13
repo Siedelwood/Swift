@@ -24,8 +24,8 @@ function API.Round(_Value, _DecimalDigits)
     end
     local s,e = Value:find(".", 1, true);
     if e then
+        local Overhead = nil;
         if Value:len() > e + _DecimalDigits then
-            local Overhead;
             if _DecimalDigits > 0 then
                 local TmpNum;
                 if tonumber(Value:sub(e+_DecimalDigits+1, e+_DecimalDigits+1)) >= 5 then

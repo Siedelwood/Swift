@@ -269,7 +269,7 @@ function API.EntityChangeHealth(_Entity, _Health, _Relative)
         end
         _Health = (_Health > MaxHealth and MaxHealth) or _Health;
         if Logic.IsLeader(EntityID) == 1 then
-            for k, v in pairs(API.GroupGetSoldiers(EntityToHurt)) do
+            for k, v in pairs(API.GroupGetSoldiers(EntityID)) do
                 API.EntityChangeHealth(v, _Health, _Relative)
             end
         else
@@ -573,9 +573,11 @@ function API.EntitySetVulnerablueFlag(_Entity, _Flag)
     end
     local EntityID = GetID(_Entity);
     local VulnerabilityFlag = (_Flag == true and 1) or 0;
-    if EntityID > 0 and API.GroupCountSoldiers(EntityID) > 0 then
-        for k, v in pairs(API.GroupGetSoldiers(EntityID)) do
-            Logic.SetEntityInvulnerabilityFlag(v, VulnerabilityFlag);
+    if EntityID > 0 then
+        if API.GroupCountSoldiers(EntityID) > 0 then
+            for k, v in pairs(API.GroupGetSoldiers(EntityID)) do
+                Logic.SetEntityInvulnerabilityFlag(v, VulnerabilityFlag);
+            end
         end
         Logic.SetEntityInvulnerabilityFlag(EntityID, VulnerabilityFlag);
         -- Unverwundbarkeitsüberwachung
@@ -586,9 +588,7 @@ function API.EntitySetVulnerablueFlag(_Entity, _Flag)
                 BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = nil;
             end
         end
-        return;
     end
-    error("API.EntitySetVulnerablueFlag: _Entity (" ..tostring(_Entity).. ") must be a leader with soldiers!");
 end
 SetVulnerable = API.EntitySetVulnerablueFlag;
 
@@ -750,8 +750,11 @@ SetModel = API.EntitySetModel;
 --
 function API.GroupCountSoldiers(_Entity)
     local EntityID = GetID(_Entity);
-    if EntityID == 0 and Logic.IsLeader(EntityID) == 0 then
-        error("API.GroupCountSoldiers: _Entity (" ..tostring(_Entity).. ") must be a leader!");
+    if EntityID == 0 then
+        error("API.GroupCountSoldiers: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    if Logic.IsLeader(EntityID) == 0 then
         return 0;
     end
     local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
@@ -770,8 +773,11 @@ CoundSoldiers = API.GroupCountSoldiers;
 --
 function API.GroupGetSoldiers(_Entity)
     local EntityID = GetID(_Entity);
-    if EntityID == 0 or Logic.IsLeader(EntityID) == 0 then
-        error("API.GroupGetSoldiers: _Entity (" ..tostring(_Entity).. ") must be a leader!");
+    if EntityID == 0 then
+        error("API.GroupGetSoldiers: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return {};
+    end
+    if Logic.IsLeader(EntityID) == 0 then
         return {};
     end
     local SoldierTable = {Logic.GetSoldiersAttachedToLeader(EntityID)};
@@ -791,8 +797,11 @@ GetSoldiers = API.GroupGetSoldiers;
 --
 function API.GroupGetLeader(_Entity)
     local EntityID = GetID(_Entity);
-    if EntityID == 0 or Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then
-        error("API.GroupGetLeader: _Entity (" ..tostring(_Entity).. ") must be a soldier!");
+    if EntityID == 0 then
+        error("API.GroupGetLeader: _Entity (" ..tostring(_Entity).. ") does not exist!");
+        return 0;
+    end
+    if Logic.IsEntityInCategory(EntityID, EntityCategories.Soldier) == 0 then 
         return 0;
     end
     return Logic.SoldierGetLeaderEntityID(EntityID);
@@ -942,7 +951,7 @@ end
 -- @local
 --
 function BundleEntityProperties.Shared:GetValueAsFloat(_Entity, _Index)
-    return Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(GetID(_Entity), _index));
+    return Core:ScriptingValueIntegerToFloat(Logic.GetEntityScriptingValue(GetID(_Entity), _Index));
 end
 
 -- -------------------------------------------------------------------------- --
