@@ -702,7 +702,7 @@ end
 --
 function AddOnCastleStore.Global.CastleStore:ActivateTemporaryMode()
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
-    Logic.ExecuteInLocalLuaState([[
+    Logic.ExecuteInLuaLocalState([[
         QSB.CastleStore.OnStorehouseTabClicked(QSB.CastleStore, ]] ..self.Data.PlayerID.. [[)
     ]])
     return self;
@@ -719,7 +719,7 @@ end
 --
 function AddOnCastleStore.Global.CastleStore:ActivateStockMode()
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
-    Logic.ExecuteInLocalLuaState([[
+    Logic.ExecuteInLuaLocalState([[
         QSB.CastleStore.OnCityTabClicked(QSB.CastleStore, ]] ..self.Data.PlayerID.. [[)
     ]])
     return self;
@@ -736,7 +736,7 @@ end
 --
 function AddOnCastleStore.Global.CastleStore:ActivateOutsourceMode()
     assert(self ~= AddOnCastleStore.Global.CastleStore, "Can not be used in static context!");
-    Logic.ExecuteInLocalLuaState([[
+    Logic.ExecuteInLuaLocalState([[
         QSB.CastleStore.OnMultiTabClicked(QSB.CastleStore, ]] ..self.Data.PlayerID.. [[)
     ]])
     return self;

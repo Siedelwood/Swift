@@ -735,5 +735,221 @@ end
 
 -- -------------------------------------------------------------------------- --
 
+---
+-- Erstellt einen fliegenden Händler für den angegebenen Spieler.
+--
+-- Der fliegende Händler kann bis zu 4 Angebote haben. Schiffe werden im
+-- angegeben Interall anlegen und nach Ablauf der Aufenthaltsdauer wieder
+-- abfahren.
+--
+-- @param _PlayerID      ID des Spielers
+-- @param _Interval      Interval in Monaten
+-- @param _Duration      Anlegezeit in Sekunden
+-- @param _OfferCount1   Menge Angebot 1
+-- @param _OfferType1    Typ Angebot 1
+-- @param _OfferCount2   Menge Angebot 2
+-- @param _OfferType2    Typ Angebot 2
+-- @param _OfferCount3   Menge Angebot 3
+-- @param _OfferType3    Typ Angebot 3
+-- @param _OfferCount4   Menge Angebot 4
+-- @param _OfferType4    Typ Angebot 4
+-- @param _Path          Präfix der Path Entities
+-- @param _YieldIce      Wenn Wasser gefriert pausieren
+--
+-- @within Reward
+--
+function Reward_TravelingSalesman(...)
+    return b_Reward_TravelingSalesman:new(...)
+end
+
+b_Reward_TravelingSalesman = {
+    Name = "Reward_TravelingSalesman",
+    Description = {
+        en = "Reward: Creates or overrides the player as traveling salesman with up to 4 offers. Ships will come in the defined interval and leave after the duration is up.",
+        de = "Lohn: Erstellt oder überschreibt den Spieler als fahrenden Händler mit bis zu 4 Angeboten. Schiffe werden im angegeben Interall anlegen und nach Ablauf der Aufenthaltsdauer wieder abfahren.",
+    },
+    Parameter = {
+        { ParameterType.PlayerID, en = "PlayerID", de = "PlayerID" },
+        { ParameterType.Number, en = "Interval", de= "Interval" },
+        { ParameterType.Number, en = "Duration", de= "Aufenthaltsdauer" },
+        { ParameterType.Custom, en = "Amount 1", de = "Menge 1" },
+        { ParameterType.Custom, en = "Offer 1", de = "Angebot 1" },
+        { ParameterType.Custom, en = "Amount 2", de = "Menge 2" },
+        { ParameterType.Custom, en = "Offer 2", de = "Angebot 2" },
+        { ParameterType.Custom, en = "Amount 3", de = "Menge 3" },
+        { ParameterType.Custom, en = "Offer 3", de = "Angebot 3" },
+        { ParameterType.Custom, en = "Amount 4", de = "Menge 4" },
+        { ParameterType.Custom, en = "Offer 4", de = "Angebot 4" },
+        { ParameterType.Default, en = "Prefix of waypoints", de = "Präfix der Wegpunkte" },
+        { ParameterType.Custom, en = "Not in winter", de = "Nicht im Winter" },
+    },
+}
+
+function b_Reward_TravelingSalesman:GetRewardTable()
+    return { Reward.Custom,{self, self.CustomFunction} };
+end
+
+function b_Reward_TravelingSalesman:AddParameter(_Index, _Parameter)
+    if (_Index == 0) then 
+        self.PlayerID = _Parameter*1;
+    elseif (_Index == 1) then
+        self.Interval = _Parameter*1;
+    elseif (_Index == 2) then
+        self.Duration = _Parameter*1;
+    elseif (_Index == 3) then
+        self.AmountOffer1 = _Parameter*1;
+    elseif (_Index == 4) then
+        self.Offer1 = _Parameter;
+    elseif (_Index == 5) then
+        self.AmountOffer2 = _Parameter*1;
+    elseif (_Index == 6) then
+        self.Offer2 = _Parameter;
+    elseif (_Index == 7) then
+        self.AmountOffer3 = _Parameter*1;
+    elseif (_Index == 8) then
+        self.Offer3 = _Parameter;
+    elseif (_Index == 9) then
+        self.AmountOffer4 = _Parameter*1;
+    elseif (_Index == 10) then
+        self.Offer4 = _Parameter;
+    elseif (_Index == 11) then
+        self.Path = _Parameter;
+    elseif (_Index == 12) then
+        self.NotInWinter = AcceptAlternativeBoolean(_Parameter);
+    end
+end
+
+function b_Reward_TravelingSalesman:GetCustomData(_Index)
+    local Boolean = { "No", "Yes" }
+    local Offers = {
+        "-",
+        "G_Beer",
+        "G_Bow",
+        "G_Bread",
+        "G_Broom",
+        "G_Candle",
+        "G_Carcass",
+        "G_Cheese",
+        "G_Clothes",
+        "G_Cow",
+        "G_Grain",
+        "G_Herb",
+        "G_Honeycomb",
+        "G_Iron",
+        "G_Leather",
+        "G_Medicine",
+        "G_Milk",
+        "G_RawFish",
+        "G_Sausage",
+        "G_Sheep",
+        "G_SmokedFish",
+        "G_Soap",
+        "G_Stone",
+        "G_Sword",
+        "G_Wood",
+        "G_Wool",
+        "G_Salt",
+        "G_Dye",
+        "U_MilitaryBandit_Melee_ME",
+        "U_MilitaryBandit_Melee_SE",
+        "U_MilitaryBandit_Melee_NA",
+        "U_MilitaryBandit_Melee_NE",
+        "U_MilitaryBandit_Ranged_ME",
+        "U_MilitaryBandit_Ranged_NA",
+        "U_MilitaryBandit_Ranged_NE",
+        "U_MilitaryBandit_Ranged_SE",
+        "U_Entertainer_NA_FireEater",
+        "U_Entertainer_NA_StiltWalker",
+        "U_Entertainer_NE_StrongestMan_Barrel",
+        "U_Entertainer_NE_StrongestMan_Stone",
+    };
+    if g_GameExtraNo and g_GameExtraNo >= 1 then
+        table.insert(Offers, "G_Gems");
+        table.insert(Offers, "G_Olibanum");
+        table.insert(Offers, "G_MusicalInstrument");
+        table.insert(Offers, "G_MilitaryBandit_Ranged_AS");
+        table.insert(Offers, "G_MilitaryBandit_Melee_AS");
+    end
+    if (_Index == 3 or _Index == 5 or _Index == 7 or _Index == 9) then
+        return {0,1,2,3,4,5,6,7,8,9};
+    elseif (_Index == 4 or _Index == 6 or _Index == 8 or _Index == 10) then
+        return Offers;
+    elseif (_Index == 12) then
+        return {"false", "true"};
+    end
+end
+
+function b_Reward_TravelingSalesman:CustomFunction(_Quest)
+    local OfferData = self:GetOffers(_Quest);
+    assert(#OfferData > 0 and #OfferData < 5);
+
+    local TraderDescription = {
+        PlayerID   = self.PlayerID,
+        Path       = self.Path,
+        Duration   = self.Duration,
+        Interval   = self.Interval,
+        OfferCount = #OfferData,
+        NoIce      = self.NotInWinter,
+        Offers     = OfferData,
+    };
+    API.TravelingSalesmanCreate(TraderDescription);
+end
+
+function b_Reward_TravelingSalesman:GetOffers(_Quest)
+    local OfferData = {};
+    if self.Offer1 and self.Offer1 ~= "-" and self.AmountOffer1 and self.AmountOffer1 > 0 then
+        table.insert(OfferData, {self.Offer1, self.AmountOffer1});
+    end
+    if self.Offer2 and self.Offer2 ~= "-" and self.AmountOffer2 and self.AmountOffer2 > 0 then
+        table.insert(OfferData, {self.Offer1, self.AmountOffer1});
+    end
+    if self.Offer3 and self.Offer3 ~= "-" and self.AmountOffer3 and self.AmountOffer3 > 0 then
+        table.insert(OfferData, {self.Offer1, self.AmountOffer1});
+    end
+    if self.Offer4 and self.Offer4 ~= "-" and self.AmountOffer4 and self.AmountOffer4 > 0 then
+        table.insert(OfferData, {self.Offer1, self.AmountOffer1});
+    end
+    return OfferData;
+end
+
+function b_Reward_TravelingSalesman:Debug(_Quest)
+    local OfferData = self:GetOffers(_Quest);
+    if (#OfferData > 0 and #OfferData < 5) then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": Too few or too many offers!");
+        return true;
+    end
+    for i= 1, #OfferData, 1 do
+        if not OfferData[i][1] or (OfferData[i][1] ~= "-" and (Goods[OfferData[i][1]] == nil or Entities[OfferData[i][1]] == nil)) then
+            error(_Quest.Identifier.. ": " ..self.Name .. ": offer " ..i.. " is neither good nor entity type!");
+            return true;
+        end
+        if type(OfferData[i][2]) ~= "number" or OfferData[i][2] < 0 then
+            error(_Quest.Identifier.. ": " ..self.Name .. ": offer " ..i.. " has invalid amount!");
+            return true;
+        end
+    end
+    if type(self.PlayerID) ~= "number" or self.PlayerID < 1 or self.PlayerID > 8 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": player id must be between 1 and 8!");
+        return true;
+    end
+    if type(self.Interval) ~= "number" or self.Interval < 1 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": interval must be greater than 0!");
+        return true;
+    end
+    if type(self.Duration) ~= "number" or self.Duration < 1 then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": duration must be greater than 0!");
+        return true;
+    end
+    if (self.Path == nil) then
+        error(_Quest.Identifier.. ": " ..self.Name .. ": missing the path!");
+        return true;
+    end
+    return false;
+end
+
+Core:RegisterBehavior(b_Reward_TravelingSalesman);
+
+-- -------------------------------------------------------------------------- --
+
 Core:RegisterBundle("BundleTravelingSalesman");
 
