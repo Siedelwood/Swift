@@ -361,7 +361,7 @@ function SymfoniaLoader:ConcatSources(_External)
     -- fh:write(ActiveBundles.. "\n");
     -- fh:close();
 
-    table.insert(QsbContent, self:LoadSource(BasePath.. "../core/module_selfload.lua"));
+    -- table.insert(QsbContent, self:LoadSource(BasePath.. "../core/module_selfload.lua"));
     return QsbContent;
 end
 

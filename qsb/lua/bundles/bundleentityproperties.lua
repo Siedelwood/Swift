@@ -572,7 +572,7 @@ function API.EntitySetVulnerablueFlag(_Entity, _Flag)
         return;
     end
     local EntityID = GetID(_Entity);
-    local VulnerabilityFlag = (_Flag == true and 1) or 0;
+    local VulnerabilityFlag = (_Flag == true and 0) or 1;
     if EntityID > 0 then
         if API.GroupCountSoldiers(EntityID) > 0 then
             for k, v in pairs(API.GroupGetSoldiers(EntityID)) do
@@ -582,7 +582,7 @@ function API.EntitySetVulnerablueFlag(_Entity, _Flag)
         Logic.SetEntityInvulnerabilityFlag(EntityID, VulnerabilityFlag);
         -- Unverwundbarkeitsüberwachung
         if type(_Entity) == "string" then
-            if VulnerabilityFlag == 1 then
+            if _Flag == true then
                 BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = EntityID;
             else
                 BundleEntityProperties.Global.Data.InvulnerableEntityNames[_Entity] = nil;
