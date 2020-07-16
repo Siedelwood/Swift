@@ -642,12 +642,12 @@ function AddOnQuestStages.Global.SetQuestState(_Data, _Flag)
     if _Flag == 1 then
         if API.ForwardMainQuest(FoundQuests[1]) > 0 then
             API.Note("forwarded quest '" ..FoundQuests[1].. "'");
-            return "forwarded quest '" ..FoundQuests[1].. "'"
+            return "forwarded quest '" ..FoundQuests[1].. "'";
         end
     elseif _Flag == 2 then
         if API.RevertMainQuest(FoundQuests[1]) > 0 then
             API.Note("reverted quest '" ..FoundQuests[1].. "'");
-            return "reverted quest '" ..FoundQuests[1].. "'"
+            return "reverted quest '" ..FoundQuests[1].. "'";
         end
     end
 end

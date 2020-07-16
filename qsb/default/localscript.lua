@@ -46,3 +46,12 @@ function Mission_LocalOnMapStart()
     
 end
 
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Mission_LocalOnQsbLoaded
+----------------------------------
+-- Die QSB ist im lokalen Skript initialisiert.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function Mission_LocalOnQsbLoaded()
+
+end
+

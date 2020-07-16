@@ -96,6 +96,20 @@ function API.CutsceneStart(_Cutscene)
             _Cutscene[i].Text = API.Localize(_Cutscene[i].Text);
         end
         _Cutscene[i].Text = API.ConvertPlaceholders(_Cutscene[i].Text);
+
+        if _Cutscene[i].Lines then
+            for j= 1, #_Cutscene[i].Lines, 1 do
+                if _Cutscene[i].Lines[j].Title and type(_Cutscene[i].Lines[j].Title) == "table" then
+                    _Cutscene[i].Lines[j].Title = API.Localize(_Cutscene[i].Lines[j].Title);
+                end
+                _Cutscene[i].Lines[j].Title = API.ConvertPlaceholders(_Cutscene[i].Lines[j].Title);
+        
+                if _Cutscene[i].Lines[j].Text and type(_Cutscene[i].Lines[j].Text) == "table" then
+                    _Cutscene[i].Lines[j].Text = API.Localize(_Cutscene[i].Lines[j].Text);
+                end
+                _Cutscene[i].Lines[j].Text = API.ConvertPlaceholders(_Cutscene[i].Lines[j].Text);
+            end
+        end
     end
 
     return AddOnCutsceneSystem.Global:StartCutscene(_Cutscene);
@@ -543,6 +557,28 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         -- Führe Action aus
         if Action then
             API.Bridge("AddOnCutsceneSystem.Global.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
+        end
+
+        -- Wechselnder Text eines Flights
+        if CurrentFlight.Lines then
+            local TextDurationMs = (_Duration *100) / #CurrentFlight.Lines;
+            local SwitchTime = 1;
+            for i= 1, #CurrentFlight.Lines, 1 do
+                StartSimpleHiResJobEx(
+                    function(_StartTime, _ExchangeTime, _Title, _Text)
+                        if Logic.GetTimeMs() >= _StartTime + _ExchangeTime then
+                            AddOnCutsceneSystem.Local:PrintCutsceneHeadline(_Title);
+                            AddOnCutsceneSystem.Local:PrintCutsceneText(_Text);
+                            return true;
+                        end
+                    end,
+                    Logic.GetTimeMs(),
+                    SwitchTime,
+                    CurrentFlight.Lines[i].Title or "",
+                    CurrentFlight.Lines[i].Text or ""
+                );
+                SwitchTime = SwitchTime + TextDurationMs;
+            end
         end
 
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", (self.Data.CurrentCutscene.FastForward and 1) or 0);
