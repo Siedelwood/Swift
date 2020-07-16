@@ -8797,7 +8797,7 @@ end
 -- @local
 --
 function BundleClassicBehaviors.Global:OverrideQuestMarkers()
-    function QuestTemplate:RemoveQuestMarkers()
+    QuestTemplate.RemoveQuestMarkers = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
                 if self.Objectives[i].Data[4] then
@@ -8807,7 +8807,7 @@ function BundleClassicBehaviors.Global:OverrideQuestMarkers()
         end
     end
 
-    function QuestTemplate:ShowQuestMarkers()
+    QuestTemplate.ShowQuestMarkers = function(self)
         for i=1, self.Objectives[0] do
             if self.Objectives[i].Type == Objective.Distance then
                 if self.Objectives[i].Data[4] then

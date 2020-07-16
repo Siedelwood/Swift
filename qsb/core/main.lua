@@ -27,67 +27,78 @@ Core.Data.InitalizedBundles = {};
 -- @local
 --
 function Core:InitalizeBundles()
-    if not GUI then
-        QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-
-        self:OverwriteBasePricesAndRefreshRates();
-        self:CreateRandomSeedBySystemTime();
-        self:SetupGobal_HackCreateQuest();
-        self:SetupGlobal_HackQuestSystem();
-        self:IdentifyHistoryEdition();
-
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_DIPLOMACY_CHANGED, "", "CoreEventJob_OnDiplomacyChanged", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "CoreEventJob_OnEntityCreated", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY, "", "CoreEventJob_OnEntityInRangeOfEntity", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "CoreEventJob_OnEverySecond", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "CoreEventJob_OnEveryTurn", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_GOODS_TRADED, "", "CoreEventJob_OnGoodsTraded", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_PLAYER_DIED, "", "CoreEventJob_OnPlayerDied", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_RESEARCH_DONE, "", "CoreEventJob_OnResearchDone", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_TRIBUTE_PAID, "", "CoreEventJob_OnTributePaied", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
-        
-        StartSimpleJobEx(Core.EventJob_EventOnEveryRealTimeSecond);
-    else
-        QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
-
-        self:CreateRandomSeedBySystemTime();
-        self:SetupLocal_HackRegisterHotkey();
-        self:SetupLocal_HistoryEditionAutoSave();
-
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_DIPLOMACY_CHANGED, "", "CoreEventJob_OnDiplomacyChanged", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "CoreEventJob_OnEntityCreated", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY, "", "CoreEventJob_OnEntityInRangeOfEntity", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "CoreEventJob_OnEverySecond", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "CoreEventJob_OnEveryTurn", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_GOODS_TRADED, "", "CoreEventJob_OnGoodsTraded", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_PLAYER_DIED, "", "CoreEventJob_OnPlayerDied", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_RESEARCH_DONE, "", "CoreEventJob_OnResearchDone", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_TRIBUTE_PAID, "", "CoreEventJob_OnTributePaied", 1); 
-        Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
-
-        StartSimpleJobEx(Core.EventJob_EventOnEveryRealTimeSecond);
-    end
-
-    for k,v in pairs(self.Data.BundleInitializerList) do
-        local Bundle = _G[v];
+    if not QSB.InitializationFinished then
+        -- Initialisierung
         if not GUI then
-            if Bundle.Global ~= nil and Bundle.Global.Install ~= nil then
-                Bundle.Global:Install();
-                Bundle.Local = nil;
-            end
+            QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+
+            self:OverwriteBasePricesAndRefreshRates();
+            self:CreateRandomSeedBySystemTime();
+            self:SetupGobal_HackCreateQuest();
+            self:SetupGlobal_HackQuestSystem();
+            self:IdentifyHistoryEdition();
+
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_DIPLOMACY_CHANGED, "", "CoreEventJob_OnDiplomacyChanged", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "CoreEventJob_OnEntityCreated", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY, "", "CoreEventJob_OnEntityInRangeOfEntity", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "CoreEventJob_OnEverySecond", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "CoreEventJob_OnEveryTurn", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_GOODS_TRADED, "", "CoreEventJob_OnGoodsTraded", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_PLAYER_DIED, "", "CoreEventJob_OnPlayerDied", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_RESEARCH_DONE, "", "CoreEventJob_OnResearchDone", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_TRIBUTE_PAID, "", "CoreEventJob_OnTributePaied", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
+            
+            StartSimpleJobEx(Core.EventJob_EventOnEveryRealTimeSecond);
         else
-            if Bundle.Local ~= nil and Bundle.Local.Install ~= nil then
-                Bundle.Local:Install();
-                Bundle.Global = nil;
-            end
+            QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
+
+            self:CreateRandomSeedBySystemTime();
+            self:SetupLocal_HackRegisterHotkey();
+            self:SetupLocal_HistoryEditionAutoSave();
+
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_DIPLOMACY_CHANGED, "", "CoreEventJob_OnDiplomacyChanged", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_CREATED, "", "CoreEventJob_OnEntityCreated", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_DESTROYED, "", "CoreEventJob_OnEntityDestroyed", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_HURT_ENTITY, "", "CoreEventJob_OnEntityHurtEntity", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_ENTITY_IN_RANGE_OF_ENTITY, "", "CoreEventJob_OnEntityInRangeOfEntity", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_SECOND, "", "CoreEventJob_OnEverySecond", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_EVERY_TURN, "", "CoreEventJob_OnEveryTurn", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_GOODS_TRADED, "", "CoreEventJob_OnGoodsTraded", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_PLAYER_DIED, "", "CoreEventJob_OnPlayerDied", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_RESEARCH_DONE, "", "CoreEventJob_OnResearchDone", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_TRIBUTE_PAID, "", "CoreEventJob_OnTributePaied", 1); 
+            Trigger.RequestTrigger(Events.LOGIC_EVENT_WEATHER_STATE_CHANGED, "", "CoreEventJob_OnWatherChanged", 1);
+
+            StartSimpleJobEx(Core.EventJob_EventOnEveryRealTimeSecond);
         end
-        self.Data.InitalizedBundles[v] = true;
-        collectgarbage();
+
+        -- Aufruf der Module
+        for k,v in pairs(self.Data.BundleInitializerList) do
+            local Bundle = _G[v];
+            if not GUI then
+                if Bundle.Global ~= nil and Bundle.Global.Install ~= nil then
+                    Bundle.Global:Install();
+                    Bundle.Local = nil;
+                end
+            else
+                if Bundle.Local ~= nil and Bundle.Local.Install ~= nil then
+                    Bundle.Local:Install();
+                    Bundle.Global = nil;
+                end
+            end
+            self.Data.InitalizedBundles[v] = true;
+            collectgarbage();
+        end
+
+        -- QSB wurde lokal geladen
+        if Mission_LocalOnQsbLoaded then
+            Mission_LocalOnQsbLoaded();
+        end
+
+        QSB.InitializationFinished = true;
     end
 end
 

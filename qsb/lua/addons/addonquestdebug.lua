@@ -478,42 +478,41 @@ Core:RegisterBehavior(b_Reward_DEBUG);
 -- @local
 --
 function AddOnQuestDebug.Global:Install()
-
-    AddOnQuestDebug.Global.Data.DebugCommands = {
+    self.Data.DebugCommands = {
         -- groupless commands
-        {"clear",       AddOnQuestDebug.Global.Clear,},
-        {"diplomacy",   AddOnQuestDebug.Global.Diplomacy,},
-        {"restartmap",  AddOnQuestDebug.Global.RestartMap,},
-        {"reveal",      AddOnQuestDebug.Global.ShareView,                1},
-        {"conceal",     AddOnQuestDebug.Global.ShareView,                0},
-        {"setposition", AddOnQuestDebug.Global.SetPosition,},
-        {"version",     AddOnQuestDebug.Global.ShowVersion,},
+        {"clear",       self.Clear,},
+        {"diplomacy",   self.Diplomacy,},
+        {"restartmap",  self.RestartMap,},
+        {"reveal",      self.ShareView,                1},
+        {"conceal",     self.ShareView,                0},
+        {"setposition", self.SetPosition,},
+        {"version",     self.ShowVersion,},
         -- quest control
-        {"win",         AddOnQuestDebug.Global.SetQuestState,            1},
-        {"fail",        AddOnQuestDebug.Global.SetQuestState,            2},
-        {"stop",        AddOnQuestDebug.Global.SetQuestState,            3},
-        {"start",       AddOnQuestDebug.Global.SetQuestState,            4},
-        {"restart",     AddOnQuestDebug.Global.SetQuestState,            5},
-        {"won",         AddOnQuestDebug.Global.FindQuestsByState,        1},
-        {"failed",      AddOnQuestDebug.Global.FindQuestsByState,        2},
-        {"stoped",      AddOnQuestDebug.Global.FindQuestsByState,        3},
-        {"active",      AddOnQuestDebug.Global.FindQuestsByState,        4},
-        {"waiting",     AddOnQuestDebug.Global.FindQuestsByState,        5},
-        {"find",        AddOnQuestDebug.Global.FindQuestsByState,        6},
+        {"win",         self.SetQuestState,            1},
+        {"fail",        self.SetQuestState,            2},
+        {"stop",        self.SetQuestState,            3},
+        {"start",       self.SetQuestState,            4},
+        {"restart",     self.SetQuestState,            5},
+        {"won",         self.FindQuestsByState,        1},
+        {"failed",      self.FindQuestsByState,        2},
+        {"stoped",      self.FindQuestsByState,        3},
+        {"active",      self.FindQuestsByState,        4},
+        {"waiting",     self.FindQuestsByState,        5},
+        {"find",        self.FindQuestsByState,        6},
         -- loading scripts into running game and execute them
-        {"<<",          AddOnQuestDebug.Global.LoadScript,               true},
-        {"<",           AddOnQuestDebug.Global.LoadScript,               false},
+        {"<<",          self.LoadScript,               true},
+        {"<",           self.LoadScript,               false},
         -- execute short lua commands
-        {">>",          AddOnQuestDebug.Global.ExecuteLuaCommand,        true},
-        {">",           AddOnQuestDebug.Global.ExecuteLuaCommand,        false},
+        {">>",          self.ExecuteLuaCommand,        true},
+        {">",           self.ExecuteLuaCommand,        false},
         -- old shit -> "inoffical commands"
-        {"shareview",   AddOnQuestDebug.Global.ShareView,                -1},
-        {"printequal",  AddOnQuestDebug.Global.FindQuestsByState,        6},
-        {"printactive", AddOnQuestDebug.Global.FindQuestsByState,        4},
-        {"lexec",       AddOnQuestDebug.Global.ExecuteLuaCommand,        true},
-        {"gexec",       AddOnQuestDebug.Global.ExecuteLuaCommand,        false},
-        {"lload",       AddOnQuestDebug.Global.LoadScript,               true},
-        {"gload",       AddOnQuestDebug.Global.LoadScript,               false},
+        {"shareview",   self.ShareView,                -1},
+        {"printequal",  self.FindQuestsByState,        6},
+        {"printactive", self.FindQuestsByState,        4},
+        {"lexec",       self.ExecuteLuaCommand,        true},
+        {"gexec",       self.ExecuteLuaCommand,        false},
+        {"lload",       self.LoadScript,               true},
+        {"gload",       self.LoadScript,               false},
     }
 
     for k,v in pairs(_G) do
@@ -590,7 +589,18 @@ end
 --
 function AddOnQuestDebug.Global:ActivateDevelopingCheats()
     if self.Data.DevelopingCheats then
-        Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:ActivateDevelopingCheats()");
+        Logic.ExecuteInLuaLocalState([[
+            if not AddOnQuestDebug then
+                StartSimpleJobEx(function()
+                    if AddOnQuestDebug then
+                        AddOnQuestDebug.Local:ActivateDevelopingCheats();
+                        return true;
+                    end
+                end);
+            else
+                AddOnQuestDebug.Local:ActivateDevelopingCheats();
+            end
+        ]]);
     end
 end
 
@@ -605,7 +615,18 @@ end
 --
 function AddOnQuestDebug.Global:ActivateDevelopingShell()
     if self.Data.DevelopingShell then
-        Logic.ExecuteInLuaLocalState("AddOnQuestDebug.Local:ActivateDevelopingShell()");
+        Logic.ExecuteInLuaLocalState([[
+            if not AddOnQuestDebug then
+                StartSimpleJobEx(function()
+                    if AddOnQuestDebug then
+                        AddOnQuestDebug.Local:ActivateDevelopingShell();
+                        return true;
+                    end
+                end);
+            else
+                AddOnQuestDebug.Local:ActivateDevelopingShell();
+            end
+        ]]);
     end
 end
 

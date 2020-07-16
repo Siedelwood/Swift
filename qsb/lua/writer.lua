@@ -124,8 +124,8 @@ local Externals = {};
 -- Argumente auslesen
 for i= 1, #arg, 1 do
     if string.find(arg[i], "^-.*$") then
-        if string.find(arg[i], "^-loadorder=.*$") then
-            dofile(string.sub(arg[i], 12));
+        if string.find(arg[i], "loadorder") then
+            dofile(string.sub(arg[i], 12, #arg[i]));
             SymfoniaLoader.Data.LoadOrder = LoadOrder[1];
             SymfoniaLoader.Data.AddOnLoadOrder = LoadOrder[2];
         end

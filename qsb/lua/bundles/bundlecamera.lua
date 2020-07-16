@@ -166,7 +166,16 @@ end
 --
 function BundleCamera.Global:InitExtendedZoomHotkeyFunction()
     API.Bridge([[
-        BundleCamera.Local:ActivateExtendedZoomHotkey()
+        if not BundleCamera then
+            StartSimpleJobEx(function()
+                if BundleCamera then
+                    BundleCamera.Local:ActivateExtendedZoomHotkey();
+                    return true;
+                end
+            end)
+        else
+            BundleCamera.Local:ActivateExtendedZoomHotkey();
+        end
     ]]);
 end
 
@@ -178,7 +187,16 @@ end
 --
 function BundleCamera.Global:InitExtendedZoomHotkeyDescription()
     API.Bridge([[
-        BundleCamera.Local:RegisterExtendedZoomHotkey()
+        if not BundleCamera then
+            StartSimpleJobEx(function()
+                if BundleCamera then
+                    BundleCamera.Local:RegisterExtendedZoomHotkey();
+                    return true;
+                end
+            end)
+        else
+            BundleCamera.Local:RegisterExtendedZoomHotkey()
+        end
     ]]);
 end
 

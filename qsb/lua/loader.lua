@@ -60,7 +60,7 @@
 -- Eine eigene Load Order wird erstellt, indem ein Lua-Skript angelegt wird,
 -- in dem es eine globale Variable LoadOrder gibt. Diese Variable beinhaltet
 -- 2 Tables. Der erste ist die Load Order der Bundles, die zweite die der
--- AddOns. Die Load Order wird mit -l übergeben.
+-- AddOns. Die Load Order wird mit -loadorder="path" übergeben.
 -- 
 -- Beispiel für eine Load Order mit der nur Grundmodule geladen werden:
 -- <pre>
@@ -82,14 +82,14 @@
 --
 -- Aufruf des Skriptes:
 -- <pre>cd bin
--- ./make.sh -l"path/to/loadorder.lua"</pre>
+-- bin/build -loadorder="path/to/loadorder.lua"</pre>
 --
 -- <h4>Eigene Bundles</h4>
 -- Als letztes gibt es noch die Möglichkeit, eigene Bundles zu schreiben und
--- in einer exklusiven persönlichen QSB zu nutzen. Dazu wird wieder die make.sh
+-- in einer exklusiven persönlichen QSB zu nutzen. Dazu wird wieder die build.sh
 -- im bin-Verzeichnis genutzt.
 -- <pre>cd bin
---./make.sh Path/to/Bundle Path/to/another/Bundle</pre>
+--bin/build Path/to/Bundle Path/to/another/Bundle</pre>
 -- Dabei wird die Dateiendung *.lua nicht mit angegeben!
 --
 -- @set sort=true
@@ -298,6 +298,7 @@ function SymfoniaLoader:ConcatCoreSources()
         self:LoadSource(BasePath.. "../core/module_entity.lua"),
         self:LoadSource(BasePath.. "../core/module_placeholder.lua"),
         self:LoadSource(BasePath.. "../core/main.lua"),
+        --self:LoadSource(BasePath.. "../core/module_selfload.lua"),
     };
     return QsbContent;
 end
@@ -361,6 +362,7 @@ function SymfoniaLoader:ConcatSources(_External)
     -- fh:write(ActiveBundles.. "\n");
     -- fh:close();
 
+    table.insert(QsbContent, self:LoadSource(BasePath.. "../core/selfload.lua"));
     return QsbContent;
 end
 

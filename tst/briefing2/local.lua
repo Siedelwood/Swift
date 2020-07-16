@@ -19,7 +19,7 @@ g_Mission = {
 
 -- Läd die Kartenskripte der Mission.
 function Mission_LoadFiles()
-    Script.Load("E:/Repositories/symfonia/var/qsb.lua");
+    
 
     -- Füge hier weitere Skriptdateien hinzu.
 end
@@ -30,9 +30,6 @@ end
 
 -- Wird aufgerufen, wenn das Spiel gestartet wird.
 function Mission_LocalOnMapStart()
-    Mission_LoadFiles();
-    API.Install();
-    InitKnightTitleTables();
 
     -- Hier kannst Du Deine Funktionen aufrufen:
 

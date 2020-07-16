@@ -15,7 +15,7 @@ g_Mission = {};
 
 -- Läd die Kartenskripte der Mission.
 function Mission_LoadFiles()
-    Script.Load("E:/Repositories/symfonia/var/qsb.lua");
+    
 
     -- Füge hier weitere Skriptdateien hinzu.
 end
@@ -36,9 +36,7 @@ end
 
 -- Wird aufgerufen, wenn das Spiel gestartet wird.
 function Mission_FirstMapAction()
-    Mission_LoadFiles();
-    API.Install();
-    InitKnightTitleTables();
+    Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName().. "/questsystembehavior.lua");
 
     -- Mapeditor-Einstellungen werden geladen
     if Framework.IsNetworkGame() ~= true then

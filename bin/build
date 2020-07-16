@@ -16,6 +16,10 @@ if [ $# -gt 0 ]; then
             if [[ $var == "-userdoc" ]]; then
                 createUserDoc=1
             fi
+            # Loadorder erzeugen
+            if [[ $var != ^-loadorder*$ ]]; then
+                scriptArguments+=($var)
+            fi
         else
             scriptArguments+=($var)
         fi
