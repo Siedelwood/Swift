@@ -1187,6 +1187,32 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
         &#x3C;pre class="example"&#x3E;API.CastleStoreSetOutsourceBoundary(&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, Goods.G_Milk, &#x3C;span class="number"&#x3E;50&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundleentityproperties_API.ChangeEntityHealth" class="result method"><a href="html/bundleentityproperties.lua.html#API.ChangeEntityHealth">API.ChangeEntityHealth</a><br>Setzt die Gesundheit des Entity.<span class="docInvisibleContent">
+    Setzt die Gesundheit des Entity.  Optional kann die Gesundheit relativ zur
+ maximalen Gesundheit geändert werden.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetHealth
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+           Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Health&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+           Neue aktuelle Gesundheit
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Relative&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (Optional) Relativ zur maximalen Gesundheit
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
 </span></div><div id="bundleterrainandwater_API.ChangeTerrainHeightInSquare" class="result method"><a href="html/bundleterrainandwater.lua.html#API.ChangeTerrainHeightInSquare">API.ChangeTerrainHeightInSquare</a><br>Ändert die Landhöhe in einem Quadrat.<span class="docInvisibleContent">
     Ändert die Landhöhe in einem Quadrat.  Offset bestimmt die Abstände
  der Eckpunkte zum Zentralpunkt.
@@ -1426,6 +1452,28 @@ API.AddSaveGameAction(SaveGame)&#x3C;/pre&#x3E;
     &#x3C;ul&#x3E;
          &#x3C;a href="core.lua.html#QSB.Placeholders.Colors"&#x3E;QSB.Placeholders.Colors&#x3C;/a&#x3E;
     &#x3C;/ul&#x3E;
+
+
+</span></div><div id="bundleentityproperties_API.CountSoldiersOfGroup" class="result method"><a href="html/bundleentityproperties.lua.html#API.CountSoldiersOfGroup">API.CountSoldiersOfGroup</a><br>Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen<span class="docInvisibleContent">
+    Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen  &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CoundSoldiers
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Skriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Menge an Soldaten
+    &#x3C;/ol&#x3E;
+
+
 
 
 </span></div><div id="addoninteractivesites_API.CreateIOBuildingSite" class="result method"><a href="html/addoninteractivesites.lua.html#API.CreateIOBuildingSite">API.CreateIOBuildingSite</a><br>Erzeugt eine Baustelle eines beliebigen Gebäudetyps an der Position.<span class="docInvisibleContent">
@@ -2665,78 +2713,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
 
 
 
-</span></div><div id="bundleentityproperties_API.EntityChangeHealth" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityChangeHealth">API.EntityChangeHealth</a><br>Setzt die Gesundheit des Entity.<span class="docInvisibleContent">
-    Setzt die Gesundheit des Entity.  Optional kann die Gesundheit relativ zur
- maximalen Gesundheit geändert werden.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetHealth
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-           Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Health&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-           Neue aktuelle Gesundheit
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Relative&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         (Optional) Relativ zur maximalen Gesundheit
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityGetHealth" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetHealth">API.EntityGetHealth</a><br>Gibt die Gesundheit des Entity zurück.<span class="docInvisibleContent">
-    Gibt die Gesundheit des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetHealth
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Aktuelle Gesundheit
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityGetMovementTarget" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetMovementTarget">API.EntityGetMovementTarget</a><br>Gibt das Bewegungsziel des Entity zurück.<span class="docInvisibleContent">
-    Gibt das Bewegungsziel des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetDestination
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-        Positionstabelle
-    &#x3C;/ol&#x3E;
-
-
-
-
 </span></div><div id="bundleentityhelperfunctions_API.EntityGetName" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.EntityGetName">API.EntityGetName</a><br>Gibt den Skriptnamen des Entity zurück.<span class="docInvisibleContent">
     Gibt den Skriptnamen des Entity zurück.
 &#x3C;p&#x3E; &#x3C;p&#x3E;&#x3C;b&#x3E;Alias:&#x3C;/b&#x3E; GetEntityName&#x3C;/p&#x3E;
@@ -2764,302 +2740,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Name = API.EntityGetName(SomeEntityID);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
-
-</span></div><div id="bundleentityproperties_API.EntityGetOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetOrientation">API.EntityGetOrientation</a><br>Gibt die Ausrichtung des Entity zurück.<span class="docInvisibleContent">
-    Gibt die Ausrichtung des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetOrientation
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-          Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Ausrichtung in Grad
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityGetPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetPlayer">API.EntityGetPlayer</a><br>Gibt den Besitzer des Entity zurück.<span class="docInvisibleContent">
-    Gibt den Besitzer des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetPlayer
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-         Scriptname des Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Besitzer des Entity
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityGetScale" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetScale">API.EntityGetScale</a><br>Gibt den Größenfaktor des Entity zurück.<span class="docInvisibleContent">
-    Gibt den Größenfaktor des Entity zurück.
-&#x3C;p&#x3E; Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
- Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetScale
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Größenfaktor des Entity
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityGetTaskList" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetTaskList">API.EntityGetTaskList</a><br>Gibt die aktuelle Tasklist des Entity zurück.<span class="docInvisibleContent">
-    Gibt die aktuelle Tasklist des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetTask
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Tasklist
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityGetType" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetType">API.EntityGetType</a><br>Gibt den Typen des Entity zurück.<span class="docInvisibleContent">
-    Gibt den Typen des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetType
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Typ des Entity
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityGetTypeName" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityGetTypeName">API.EntityGetTypeName</a><br>Gibt den Typnamen des Entity zurück.<span class="docInvisibleContent">
-    Gibt den Typnamen des Entity zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetTypeName
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-        Typname des Entity
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityIsActiveNpc" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityIsActiveNpc">API.EntityIsActiveNpc</a><br>Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.<span class="docInvisibleContent">
-    Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsNpc
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Ist NPC
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityIsBuildingBurning" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityIsBuildingBurning">API.EntityIsBuildingBurning</a><br>Gibt zurück, ob das Gebäude brennt.<span class="docInvisibleContent">
-    Gibt zurück, ob das Gebäude brennt.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsBurning
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Gebäude steht in Flammen
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityIsIll" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityIsIll">API.EntityIsIll</a><br>Prüft, ob das Entity krank ist.<span class="docInvisibleContent">
-    Prüft, ob das Entity krank ist.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsIll
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Entity ist krank
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityIsVisible" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityIsVisible">API.EntityIsVisible</a><br>Gibt zurück, ob das Entity sichtbar ist.<span class="docInvisibleContent">
-    Gibt zurück, ob das Entity sichtbar ist.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsVisible
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Ist sichtbar
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntityMakeIll" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntityMakeIll">API.EntityMakeIll</a><br>Macht das Entity krank.<span class="docInvisibleContent">
-    Macht das Entity krank.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: MakeIll
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntitySetBuildingBurning" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetBuildingBurning">API.EntitySetBuildingBurning</a><br>Steckt ein Gebäude in Brand.<span class="docInvisibleContent">
-    Steckt ein Gebäude in Brand.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetBurning
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-           Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_FireSize&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         (Optional) Neue aktuelle Gesundheit
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntitySetModel" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetModel">API.EntitySetModel</a><br>Weist dem Entity ein Neues Model zu.<span class="docInvisibleContent">
-    Weist dem Entity ein Neues Model zu.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetModel
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-          Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewModel&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Neues Model
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_AnimSet&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-          (optional) Animation Set
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
 
 </span></div><div id="bundleentityhelperfunctions_API.EntitySetName" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.EntitySetName">API.EntitySetName</a><br>Setzt den Skriptnamen des Entity.<span class="docInvisibleContent">
     Setzt den Skriptnamen des Entity.
@@ -3092,156 +2772,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.EntitySetName(SomeEntityID, &#x3C;span class="string"&#x3E;"myEntity"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
-
-</span></div><div id="bundleentityproperties_API.EntitySetOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetOrientation">API.EntitySetOrientation</a><br>Setzt die Ausrichtung des Entity.<span class="docInvisibleContent">
-    Setzt die Ausrichtung des Entity.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetOrientation
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-          Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Orientation&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Neue Ausrichtung
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntitySetPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetPlayer">API.EntitySetPlayer</a><br>Setzt den Besitzer des Entity.<span class="docInvisibleContent">
-    Setzt den Besitzer des Entity.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetPlayer
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-          Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         ID des Besitzers
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntitySetScale" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetScale">API.EntitySetScale</a><br>Setzt die Größe des Entity.<span class="docInvisibleContent">
-    Setzt die Größe des Entity.  Wenn es sich um einen Siedler handelt, wird
- versucht einen neuen Speed Factor zu setzen.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetScale
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Scale&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Neuer Größenfaktor
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntitySetTaskList" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetTaskList">API.EntitySetTaskList</a><br>Setzt die aktuelle Tasklist des Entity.<span class="docInvisibleContent">
-    Setzt die aktuelle Tasklist des Entity.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetTask
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-          Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewTask&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         (optional) Neuer Task
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntitySetType" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetType">API.EntitySetType</a><br>Setzt den Typen des Entity.<span class="docInvisibleContent">
-    Setzt den Typen des Entity.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetType
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-          Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewType&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Typ neues Entity
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntitySetVisible" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetVisible">API.EntitySetVisible</a><br>Ändert die Sichtbarkeit des Entity.<span class="docInvisibleContent">
-    Ändert die Sichtbarkeit des Entity.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetVisible
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-           Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Visible&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         (Optional) Sichtbarkeit ändern
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
-</span></div><div id="bundleentityproperties_API.EntitySetVulnerablueFlag" class="result method"><a href="html/bundleentityproperties.lua.html#API.EntitySetVulnerablueFlag">API.EntitySetVulnerablueFlag</a><br>Setzt das Entity oder das Battalion verwundbar oder unverwundbar.<span class="docInvisibleContent">
-    Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
-&#x3C;p&#x3E; Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
- ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetVulnerable
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Verwundbar
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
 
 </span></div><div id="core_API.FailQuest" class="result method"><a href="html/core.lua.html#API.FailQuest">API.FailQuest</a><br>Lässt den Quest fehlschlagen.<span class="docInvisibleContent">
     Lässt den Quest fehlschlagen.
@@ -3617,6 +3147,52 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Found = API.GetEntitiesOfCategoryInTerritory(&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, EntityCategories.Hero, &#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundleentityproperties_API.GetEntityHealth" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityHealth">API.GetEntityHealth</a><br>Gibt die Gesundheit des Entity zurück.<span class="docInvisibleContent">
+    Gibt die Gesundheit des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetHealth
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Aktuelle Gesundheit
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GetEntityMovementTarget" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityMovementTarget">API.GetEntityMovementTarget</a><br>Gibt das Bewegungsziel des Entity zurück.<span class="docInvisibleContent">
+    Gibt das Bewegungsziel des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetDestination
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Positionstabelle
+    &#x3C;/ol&#x3E;
+
+
+
+
 </span></div><div id="bundleentityhelperfunctions_API.GetEntityNearby" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.GetEntityNearby">API.GetEntityNearby</a><br>Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity am nächsten ist.<span class="docInvisibleContent">
     Ermittelt aus einer liste von Entity-IDs das Entity, dass dem Basis-Entity
  am nächsten ist.
@@ -3651,6 +3227,193 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; EntityList = API.GetEntitiesOfCategoriesInTerritories({&#x3C;span class="number"&#x3E;1&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;2&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;3&#x3C;/span&#x3E;}, EntityCategories.Hero, {&#x3C;span class="number"&#x3E;5&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;12&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;23&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;24&#x3C;/span&#x3E;});
 &#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; Knight = API.GetEntityNearby(GetID(&#x3C;span class="string"&#x3E;"IO1"&#x3C;/span&#x3E;), EntityList);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
+
+</span></div><div id="bundleentityproperties_API.GetEntityOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityOrientation">API.GetEntityOrientation</a><br>Gibt die Ausrichtung des Entity zurück.<span class="docInvisibleContent">
+    Gibt die Ausrichtung des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetOrientation
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Ausrichtung in Grad
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GetEntityPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityPlayer">API.GetEntityPlayer</a><br>Gibt den Besitzer des Entity zurück.<span class="docInvisibleContent">
+    Gibt den Besitzer des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetPlayer
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+         Scriptname des Entity
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Besitzer des Entity
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GetEntityScale" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityScale">API.GetEntityScale</a><br>Gibt den Größenfaktor des Entity zurück.<span class="docInvisibleContent">
+    Gibt den Größenfaktor des Entity zurück.
+&#x3C;p&#x3E; Der Faktor gibt an, um wie viel die Größe des Entity verändert wurde, im
+ Vergleich zur normalen Größe. Faktor 1 entspricht der normalen Größe.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetScale
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Größenfaktor des Entity
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GetEntityTaskList" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityTaskList">API.GetEntityTaskList</a><br>Gibt die aktuelle Tasklist des Entity zurück.<span class="docInvisibleContent">
+    Gibt die aktuelle Tasklist des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetTask
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Tasklist
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GetEntityType" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityType">API.GetEntityType</a><br>Gibt den Typen des Entity zurück.<span class="docInvisibleContent">
+    Gibt den Typen des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetType
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Typ des Entity
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GetEntityTypeName" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetEntityTypeName">API.GetEntityTypeName</a><br>Gibt den Typnamen des Entity zurück.<span class="docInvisibleContent">
+    Gibt den Typnamen des Entity zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetTypeName
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4"&#x3E;string&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Typname des Entity
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GetGroupLeader" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetGroupLeader">API.GetGroupLeader</a><br>Gibt den Leader des Soldaten zurück.<span class="docInvisibleContent">
+    Gibt den Leader des Soldaten zurück.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetLeader
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Skriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Menge an Soldaten
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.GetGroupSoldiers" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetGroupSoldiers">API.GetGroupSoldiers</a><br>Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.<span class="docInvisibleContent">
+    Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetSoldiers
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Skriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
+        Liste aller Soldaten
+    &#x3C;/ol&#x3E;
+
+
+
 
 </span></div><div id="bundleclassicbehaviors_API.GetInputNumberFromQuest" class="result method"><a href="html/bundleclassicbehaviors.lua.html#API.GetInputNumberFromQuest">API.GetInputNumberFromQuest</a><br>Gibt das im Quest gespeicherte Resultat von Goal_InputDialog Als Zahl zurück.<span class="docInvisibleContent">
     Gibt das im Quest gespeicherte Resultat von Goal_InputDialog Als Zahl zurück.
@@ -3833,6 +3596,30 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; RelativePostion = API.GetRelativePosition(&#x3C;span class="string"&#x3E;"pos1"&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;1000&#x3C;/span&#x3E;, &#x3C;span class="number"&#x3E;32&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
+</span></div><div id="bundleentityproperties_API.GetResourceAmount" class="result method"><a href="html/bundleentityproperties.lua.html#API.GetResourceAmount">API.GetResourceAmount</a><br>Gibt die Menge an Rohstoffen des Entity zurück.<span class="docInvisibleContent">
+    Gibt die Menge an Rohstoffen des Entity zurück.  Optional kann
+ eine neue Menge gesetzt werden.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetResource
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Menge an Rohstoffen
+    &#x3C;/ol&#x3E;
+
+
+
+
 </span></div><div id="addoninteractivetrebuchets_API.GetReturningCartByTrebuchetConstructionSite" class="result method"><a href="html/addoninteractivetrebuchets.lua.html#API.GetReturningCartByTrebuchetConstructionSite">API.GetReturningCartByTrebuchetConstructionSite</a><br>Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.<span class="docInvisibleContent">
     Gibt die EntityID des Anforderungswagens der Trebuchet-Baustelle zurück.
  Sollte kein Anforderungswagen unterwegs sein, wird 0 zurückgegeben.
@@ -3954,74 +3741,6 @@ API.DialogSelectBox(&#x3C;span class="string"&#x3E;"Auswahl"&#x3C;/span&#x3E;, &
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;&#x3C;span class="keyword"&#x3E;local&#x3C;/span&#x3E; ID = API.GetTrebuchetByTrebuchetConstructionSite(&#x3C;span class="string"&#x3E;"trebuchetSite1"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
-
-</span></div><div id="bundleentityproperties_API.GroupCountSoldiers" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupCountSoldiers">API.GroupCountSoldiers</a><br>Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen<span class="docInvisibleContent">
-    Gibt die Mänge an Soldaten zurück, die dem Entity unterstehen  &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: CoundSoldiers
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Skriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Menge an Soldaten
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.GroupGetLeader" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupGetLeader">API.GroupGetLeader</a><br>Gibt den Leader des Soldaten zurück.<span class="docInvisibleContent">
-    Gibt den Leader des Soldaten zurück.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetLeader
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Skriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Menge an Soldaten
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.GroupGetSoldiers" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupGetSoldiers">API.GroupGetSoldiers</a><br>Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.<span class="docInvisibleContent">
-    Gibt die IDs aller Soldaten zurück, die zum Battalion gehören.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetSoldiers
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-         Entity (Skriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5"&#x3E;table&#x3C;/a&#x3E;&#x3C;/span&#x3E;
-        Liste aller Soldaten
-    &#x3C;/ol&#x3E;
-
-
-
 
 </span></div><div id="bundleentityproperties_API.GroupHeal" class="result method"><a href="html/bundleentityproperties.lua.html#API.GroupHeal">API.GroupHeal</a><br>Heilt das Entity um die angegebene Menge an Gesundheit.<span class="docInvisibleContent">
     Heilt das Entity um die angegebene Menge an Gesundheit.
@@ -4715,6 +4434,75 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
 
 
 
+</span></div><div id="bundleentityproperties_API.IsBuildingBurning" class="result method"><a href="html/bundleentityproperties.lua.html#API.IsBuildingBurning">API.IsBuildingBurning</a><br>Gibt zurück, ob das Gebäude brennt.<span class="docInvisibleContent">
+    Gibt zurück, ob das Gebäude brennt.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsBurning
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Gebäude steht in Flammen
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.IsEntityActiveNpc" class="result method"><a href="html/bundleentityproperties.lua.html#API.IsEntityActiveNpc">API.IsEntityActiveNpc</a><br>Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.<span class="docInvisibleContent">
+    Gibt zurück, ob eine NPC-Interaktion mit dem Siedler möglich ist.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsNpc
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Ist NPC
+    &#x3C;/ol&#x3E;
+
+
+
+
+</span></div><div id="bundleentityproperties_API.IsEntityIll" class="result method"><a href="html/bundleentityproperties.lua.html#API.IsEntityIll">API.IsEntityIll</a><br>Prüft, ob das Entity krank ist.<span class="docInvisibleContent">
+    Prüft, ob das Entity krank ist.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsIll
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Entity ist krank
+    &#x3C;/ol&#x3E;
+
+
+
+
 </span></div><div id="bundleentityselection_API.IsEntityInSelection" class="result method"><a href="html/bundleentityselection.lua.html#API.IsEntityInSelection">API.IsEntityInSelection</a><br>Prüpft ob das Entity selektiert ist.<span class="docInvisibleContent">
     Prüpft ob das Entity selektiert ist.
 
@@ -4741,6 +4529,29 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
     &#x3C;span class="comment"&#x3E;-- Do something
 &#x3C;/span&#x3E;&#x3C;span class="keyword"&#x3E;end&#x3C;/span&#x3E;&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
+
+</span></div><div id="bundleentityproperties_API.IsEntityVisible" class="result method"><a href="html/bundleentityproperties.lua.html#API.IsEntityVisible">API.IsEntityVisible</a><br>Gibt zurück, ob das Entity sichtbar ist.<span class="docInvisibleContent">
+    Gibt zurück, ob das Entity sichtbar ist.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: IsVisible
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
+    &#x3C;ol&#x3E;
+
+           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+        Ist sichtbar
+    &#x3C;/ol&#x3E;
+
+
+
 
 </span></div><div id="core_API.IsValidQuest" class="result method"><a href="html/core.lua.html#API.IsValidQuest">API.IsValidQuest</a><br>Prüft, ob zu der angegebenen ID ein Quest existiert.<span class="docInvisibleContent">
     Prüft, ob zu der angegebenen ID ein Quest existiert.  Wird ein Questname
@@ -4866,6 +4677,23 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.LookAt(&#x3C;span class="string"&#x3E;"Hakim"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"Alandra"&#x3C;/span&#x3E;)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
+
+</span></div><div id="bundleentityproperties_API.MakeEntityIll" class="result method"><a href="html/bundleentityproperties.lua.html#API.MakeEntityIll">API.MakeEntityIll</a><br>Macht das Entity krank.<span class="docInvisibleContent">
+    Macht das Entity krank.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: MakeIll
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
 
 </span></div><div id="core_API.Message" class="result method"><a href="html/core.lua.html#API.Message">API.Message</a><br>Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.<span class="docInvisibleContent">
     Schreibt eine Nachricht in das Nachrichtenfenster unten in der Mitte.
@@ -5654,51 +5482,6 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
         &#x3C;pre class="example"&#x3E;API.ReplaceEntity(&#x3C;span class="string"&#x3E;"Stein"&#x3C;/span&#x3E;, Entities.XD_ScriptEntity)&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
 
-</span></div><div id="bundleentityproperties_API.ResourceGetAmount" class="result method"><a href="html/bundleentityproperties.lua.html#API.ResourceGetAmount">API.ResourceGetAmount</a><br>Gibt die Menge an Rohstoffen des Entity zurück.<span class="docInvisibleContent">
-    Gibt die Menge an Rohstoffen des Entity zurück.  Optional kann
- eine neue Menge gesetzt werden.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: GetResource
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-          Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-    &#x3C;h3&#x3E;Returns:&#x3C;/h3&#x3E;
-    &#x3C;ol&#x3E;
-
-           &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-        Menge an Rohstoffen
-    &#x3C;/ol&#x3E;
-
-
-
-
-</span></div><div id="bundleentityproperties_API.ResourceSetAmount" class="result method"><a href="html/bundleentityproperties.lua.html#API.ResourceSetAmount">API.ResourceSetAmount</a><br>Setzt die Menge an Rohstoffen des Entity.<span class="docInvisibleContent">
-    Setzt die Menge an Rohstoffen des Entity.
-&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetResource
-
-
-
-    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
-    &#x3C;ul&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
-          Entity (Scriptname oder ID)
-        &#x3C;/li&#x3E;
-        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
-            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
-         Menge an Rohstoffen
-        &#x3C;/li&#x3E;
-    &#x3C;/ul&#x3E;
-
-
-
-
-
 </span></div><div id="core_API.RestartQuest" class="result method"><a href="html/core.lua.html#API.RestartQuest">API.RestartQuest</a><br>Startet den Quest neu.<span class="docInvisibleContent">
     Startet den Quest neu.
 &#x3C;p&#x3E; Der Quest muss beendet sein um ihn wieder neu zu starten. Wird ein Quest
@@ -5974,6 +5757,202 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
 
 
 
+</span></div><div id="bundleentityproperties_API.SetEntityBuildingBurning" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityBuildingBurning">API.SetEntityBuildingBurning</a><br>Steckt ein Gebäude in Brand.<span class="docInvisibleContent">
+    Steckt ein Gebäude in Brand.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetBurning
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+           Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_FireSize&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (Optional) Neue aktuelle Gesundheit
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.SetEntityModel" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityModel">API.SetEntityModel</a><br>Weist dem Entity ein Neues Model zu.<span class="docInvisibleContent">
+    Weist dem Entity ein Neues Model zu.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetModel
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewModel&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Neues Model
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_AnimSet&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+          (optional) Animation Set
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.SetEntityOrientation" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityOrientation">API.SetEntityOrientation</a><br>Setzt die Ausrichtung des Entity.<span class="docInvisibleContent">
+    Setzt die Ausrichtung des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetOrientation
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Orientation&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Neue Ausrichtung
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.SetEntityPlayer" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityPlayer">API.SetEntityPlayer</a><br>Setzt den Besitzer des Entity.<span class="docInvisibleContent">
+    Setzt den Besitzer des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetPlayer
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_PlayerID&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         ID des Besitzers
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.SetEntityScale" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityScale">API.SetEntityScale</a><br>Setzt die Größe des Entity.<span class="docInvisibleContent">
+    Setzt die Größe des Entity.  Wenn es sich um einen Siedler handelt, wird
+ versucht einen neuen Speed Factor zu setzen.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetScale
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Scale&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Neuer Größenfaktor
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.SetEntityTaskList" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityTaskList">API.SetEntityTaskList</a><br>Setzt die aktuelle Tasklist des Entity.<span class="docInvisibleContent">
+    Setzt die aktuelle Tasklist des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetTask
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewTask&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (optional) Neuer Task
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.SetEntityType" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityType">API.SetEntityType</a><br>Setzt den Typen des Entity.<span class="docInvisibleContent">
+    Setzt den Typen des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetType
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_NewType&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Typ neues Entity
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.SetEntityVisible" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityVisible">API.SetEntityVisible</a><br>Ändert die Sichtbarkeit des Entity.<span class="docInvisibleContent">
+    Ändert die Sichtbarkeit des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetVisible
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+           Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Visible&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         (Optional) Sichtbarkeit ändern
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
+</span></div><div id="bundleentityproperties_API.SetEntityVulnerablueFlag" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetEntityVulnerablueFlag">API.SetEntityVulnerablueFlag</a><br>Setzt das Entity oder das Battalion verwundbar oder unverwundbar.<span class="docInvisibleContent">
+    Setzt das Entity oder das Battalion verwundbar oder unverwundbar.
+&#x3C;p&#x3E; Wenn ein Skriptname angegeben wird, wird fortlaufend geprüft, ob sich die
+ ID geändert hat und das Ziel erneut unverwundbar gemacht werden muss.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetVulnerable
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+         Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Flag&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;boolean&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Verwundbar
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
+
 </span></div><div id="bundleplayerhelperfunctions_API.SetNeedSatisfaction" class="result method"><a href="html/bundleplayerhelperfunctions.lua.html#API.SetNeedSatisfaction">API.SetNeedSatisfaction</a><br>Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude des angegebenen Spielers.<span class="docInvisibleContent">
     Setzt den Befriedigungsstatus eines Bedürfnisses für alle Gebäude
  des angegebenen Spielers.  Der Befriedigungsstatus ist eine Zahl
@@ -6025,6 +6004,27 @@ API.InteractiveObjectSetName(&#x3C;span class="string"&#x3E;"D_X_ChestOpenEmpty"
     &#x3C;ul&#x3E;
         &#x3C;pre class="example"&#x3E;API.SetPostion(&#x3C;span class="string"&#x3E;"hakim"&#x3C;/span&#x3E;, &#x3C;span class="string"&#x3E;"hakimPos1"&#x3C;/span&#x3E;);&#x3C;/pre&#x3E;
     &#x3C;/ul&#x3E;
+
+</span></div><div id="bundleentityproperties_API.SetResourceAmount" class="result method"><a href="html/bundleentityproperties.lua.html#API.SetResourceAmount">API.SetResourceAmount</a><br>Setzt die Menge an Rohstoffen des Entity.<span class="docInvisibleContent">
+    Setzt die Menge an Rohstoffen des Entity.
+&#x3C;p&#x3E; &#x3C;b&#x3E;Alias&#x3C;/b&#x3E;: SetResource
+
+
+
+    &#x3C;h3&#x3E;Parameters:&#x3C;/h3&#x3E;
+    &#x3C;ul&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Entity&#x3C;/span&#x3E;
+          Entity (Scriptname oder ID)
+        &#x3C;/li&#x3E;
+        &#x3C;li&#x3E;&#x3C;span class="parameter"&#x3E;_Amount&#x3C;/span&#x3E;
+            &#x3C;span class="types"&#x3E;&#x3C;span class="type"&#x3E;number&#x3C;/span&#x3E;&#x3C;/span&#x3E;
+         Menge an Rohstoffen
+        &#x3C;/li&#x3E;
+    &#x3C;/ul&#x3E;
+
+
+
+
 
 </span></div><div id="bundleentityhelperfunctions_API.SetResourceAmount" class="result method"><a href="html/bundleentityhelperfunctions.lua.html#API.SetResourceAmount">API.SetResourceAmount</a><br>Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge in einer Mine.<span class="docInvisibleContent">
     Setzt die Menge an Rohstoffen und die durchschnittliche Auffüllmenge
