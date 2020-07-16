@@ -5,19 +5,6 @@
 -- ########################################################################## --
 -- -------------------------------------------------------------------------- --
 
--- Trage hier den Pfad ein, wo Deine Inhalte liegen.
-g_ContentPath = "maps/externalmap/" ..Framework.GetCurrentMapName() .. "/";
-
--- Globaler Namespace für Deine Variablen
-gvMission = {};
-
--- Lade Inhalte aus dem Testpfad. Auf true setzen zum aktivieren.
-if false then
-    -- Trage hier den Pfad zu Deinem Mapverzeichnis ein. Achte darauf / statt \
-    -- zu verwenden. Der Pfad muss mit einem / enden.
-    g_ContentPath = "C:/Maps/MapName/";
-end
-
 -- -------------------------------------------------------------------------- --
 -- Basisfunktionen                                                            --
 -- -------------------------------------------------------------------------- --
@@ -25,30 +12,51 @@ end
 --      Map. Hier kannst du Spielerfarben, Handelsangebote und KI-Einstellungen
 --      setzen, Funktionen aufrufen und Deine Skripte laden.
 
--- Läd die Kartenskripte der Mission.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Mission_LoadFiles
+----------------------------------
+-- Läd zusätzliche Dateien aus der Map. Die Dateien
+-- werden in der angegebenen Reihenfolge geladen.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_LoadFiles()
-    -- Die Quest-Bibliothek wird geladen
-    Script.Load(g_ContentPath.. "questsystembehavior.lua");
     -- Optional: Füge der Map ein Skript mit namen knighttitlerequirements.lua
     -- hinzu, wenn die Aufstiegsbedingungen geändert werden sollen. 
-    Script.Load(g_ContentPath.. "knighttitlerequirements.lua");
-
-    -- Füge hier weitere Skriptdateien hinzu.
+    return {
+        gvMission.ContentPath.. "knighttitlerequirements.lua",
+        -- Füge hier weitere Skriptdateien hinzu.
+        -- z.B.: 
+        -- gvMission.ContentPath.. "chapter1.lua",
+        -- gvMission.ContentPath.. "chapter2.lua",
+        -- gvMission.ContentPath.. "chapter3.lua",
+    };
 end
 
--- Setzt Voreinstellungen für KI-Spieler.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Mission_InitPlayers
+----------------------------------
+-- Diese Funktion kann benutzt werden um für die AI
+-- Vereinbarungen zu treffen.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_InitPlayers()
     -- Beispiel: KI-Skripte für Spieler 2 deaktivieren (nicht im Editor möglich)
     --
     -- DoNotStartAIForPlayer(2);
 end
 
--- Setzt den Monat, mit dem das Spiel beginnt.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Mission_SetStartingMonth
+----------------------------------
+-- Diese Funktion setzt einzig den Startmonat.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_SetStartingMonth()
     Logic.SetMonthOffset(3);
 end
 
--- Setzt Handelsangebote der Nichtspielerparteien.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Mission_InitMerchants
+----------------------------------
+-- Hier kannst du Hдndler und Handelsposten vereinbaren.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_InitMerchants()
     -- Beispiel: Setzt Handelsangebote für Spieler 3
     --
@@ -68,11 +76,14 @@ function Mission_InitMerchants()
     -- Logic.TradePost_SetTradeDefinition(TPID, 2, Goods.G_RawFish, 24, Goods.G_Salt, 12);
 end
 
--- Wird aufgerufen, wenn das Spiel gestartet wird.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Mission_FirstMapAction
+----------------------------------
+-- Die FirstMapAction wird am Spielstart aufgerufen.
+-- Starte von hier aus deine Funktionen.
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Mission_LoadFiles();
-    API.Install();
-    InitKnightTitleTables();
+    Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName().. "/questsystembehavior.lua");
 
     -- Mapeditor-Einstellungen werden geladen
     if Framework.IsNetworkGame() ~= true then
@@ -85,6 +96,7 @@ function Mission_FirstMapAction()
     -- API.ActivateDebugMode(true, false, true, true);
 
     -- Erzeugt im Assistenten erstellte Quests
+    -- (Falls nicht gebraucht, löschen)
     CreateQuests();
 
     -- Startet Quests, die im Skript erzeugt werden

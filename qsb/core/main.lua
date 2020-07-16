@@ -28,6 +28,7 @@ Core.Data.InitalizedBundles = {};
 --
 function Core:InitalizeBundles()
     if not QSB.InitializationFinished then
+        -- Initialisierung
         if not GUI then
             QSB.Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
 
@@ -74,6 +75,7 @@ function Core:InitalizeBundles()
             StartSimpleJobEx(Core.EventJob_EventOnEveryRealTimeSecond);
         end
 
+        -- Aufruf der Module
         for k,v in pairs(self.Data.BundleInitializerList) do
             local Bundle = _G[v];
             if not GUI then
@@ -90,6 +92,12 @@ function Core:InitalizeBundles()
             self.Data.InitalizedBundles[v] = true;
             collectgarbage();
         end
+
+        -- QSB wurde lokal geladen
+        if Mission_LocalOnQsbLoaded then
+            Mission_LocalOnQsbLoaded();
+        end
+
         QSB.InitializationFinished = true;
     end
 end

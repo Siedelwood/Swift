@@ -21,6 +21,9 @@ cp qsb/default/localscript.lua release-sources/sources/localmapscript.lua &>/dev
 cp -r qsb/lua/bundles release-sources/sources/bundles &>/dev/null
 cp -r qsb/lua/addons release-sources/sources/addons &>/dev/null
 cp -r qsb/lua/external release-sources/sources/external &>/dev/null
+
+cp qsb/core/selfload.lua release-sources/sources/bundles/selfload.lua &>/dev/null
+
 cp -r qsb/doc release-sources/sources/doc &>/dev/null
 echo "Fertig!"
 

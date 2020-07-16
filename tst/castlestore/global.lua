@@ -25,15 +25,24 @@ function Mission_InitMerchants()
 end
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Mission_LoadFiles
+----------------------------------
+-- Läd zusätzliche Dateien
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function Mission_LoadFiles()
+    return {
+        "E:/Repositories/symfonia/tst/castlestore/knighttitlerequirements.lua",
+    };
+end
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Mission_FirstMapAction
 ----------------------------------
 -- Die FirstMapAction wird am Spielstart aufgerufen.
 -- Starte von hier aus deine Funktionen.
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Mission_FirstMapAction()
-    Script.Load("E:/Repositories/symfonia/var/qsb.lua");
-    InitKnightTitleTables();
-    API.Install();
+    Script.Load("maps/externalmap/" ..Framework.GetCurrentMapName().. "/questsystembehavior.lua");
 
     if Framework.IsNetworkGame() ~= true then
         Startup_Player()
@@ -51,7 +60,7 @@ function Mission_FirstMapAction()
 
     SetEntityName(Logic.GetHeadquarters(1), "HQ1");
     
-    -----
+    -- -----
 
     API.CastleStoreCreate(1);
 
@@ -73,13 +82,13 @@ function Mission_FirstMapAction()
         end,
     }
 
-    API.CreateQuest {
-        Name = "TestQuest",
-        Visible = true,
-        EndMessage = true,
-        Goal_ActivateObject("IORR3"),
-        Trigger_Time(5)
-    }
+    -- API.CreateQuest {
+    --     Name = "TestQuest",
+    --     Visible = true,
+    --     EndMessage = true,
+    --     Goal_NPC("fatPat"),
+    --     Trigger_Time(5)
+    -- }
 
     local TraderDescription = {
         PlayerID   = 2,       -- Partei des Hafen
