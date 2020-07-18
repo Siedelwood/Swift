@@ -3,27 +3,6 @@
 -- API Stuff --
 
 ---
--- Schickt einen Skriptbefehl an die jeweils andere Skriptumgebung.
---
--- Wird diese Funktion als dem globalen Skript aufgerufen, sendet sie den
--- Befehl an das lokale Skript. Wird diese Funktion im lokalen Skript genutzt,
--- wird der Befehl an das globale Skript geschickt.
---
--- @param[type=string]  _Command Lua-Befehl als String
--- @param[type=boolean] _Flag FIXME Optional für GUI.SendScriptCommand benötigt. 
---                      Was macht das Flag?
--- @within Anwenderfunktionen
--- @local
---
-function API.Bridge(_Command, _Flag)
-    if not GUI then
-        Logic.ExecuteInLuaLocalState(_Command)
-    else
-        GUI.SendScriptCommand(_Command, _Flag)
-    end
-end
-
----
 -- Wandelt underschiedliche Darstellungen einer Boolean in eine echte um.
 --
 -- Jeder String, der mit j, t, y oder + beginnt, wird als true interpretiert.
@@ -60,8 +39,7 @@ AcceptAlternativeBoolean = API.ToBoolean;
 --
 function API.AddSaveGameAction(_Function)
     if GUI then
-        Core:LogToFile("API.AddSaveGameAction: Can not be used from the local script!", LEVEL_ERROR);
-        Core:LogToScreen("API.AddSaveGameAction: Can not be used from the local script!", LEVEL_ERROR);
+        log("API.AddSaveGameAction: Can not be used from the local script!", LEVEL_ERROR);
         return;
     end
     return Core:AppendFunction("Mission_OnSaveGameLoaded", _Function)

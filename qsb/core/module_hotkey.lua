@@ -32,8 +32,7 @@ function API.RemoveHotKey(_Index)
         return;
     end
     if type(_Index) ~= "number" or _Index > #Core.Data.HotkeyDescriptions then
-        Core:LogToFile("API.RemoveHotKey: No candidate found or Index is nil!", LEVEL_ERROR);
-        Core:LogToScreen("API.RemoveHotKey: No candidate found or Index is nil!", LEVEL_ERROR);
+        log("API.RemoveHotKey: No candidate found or Index is nil!", LEVEL_ERROR);
         return;
     end
     Core.Data.HotkeyDescriptions[_Index] = nil;

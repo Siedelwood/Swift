@@ -106,6 +106,15 @@ function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreR
         orientation = Logic.GetEntityOrientation(eID)-90;
     end
 
+    info("API.SendCart: Creating cart ("..
+        tostring(_position) ..","..
+        tostring(_player) ..","..
+        Logic.GetGoodTypeName(_good) ..","..
+        tostring(_amount) ..","..
+        tostring(_cartOverlay) ..","..
+        tostring(_ignoreReservation) ..
+    ")");
+
     if resCat == GoodCategories.GC_Resource then
         ID = Logic.CreateEntityOnUnblockedLand(Entities.U_ResourceMerchant, x, y,orientation,_player)
     elseif _good == Goods.G_Medicine then
@@ -119,7 +128,9 @@ function API.SendCart(_position, _player, _good, _amount, _cartOverlay, _ignoreR
     else
         ID = Logic.CreateEntityOnUnblockedLand(Entities.U_Marketer, x, y,orientation,_player)
     end
+    info("API.SendCart: Executing hire merchant...");
     Logic.HireMerchant( ID, _player, _good, _amount, _player, _ignoreReservation)
+    info("API.SendCart: Cart has been send successfully.");
     return ID
 end
 SendCart = API.SendCart;
@@ -224,6 +235,7 @@ function API.GetDistance( _pos1, _pos2 )
         _pos2 = GetPosition(_pos2);
     end
     if type(_pos1) ~= "table" or type(_pos2) ~= "table" then
+        warn("API.GetDistance: Distance could not be calculated!");
         return -1;
     end
     local xDistance = (_pos1.X - _pos2.X);
@@ -278,6 +290,7 @@ function API.LocateEntity(_Entity)
         return _Entity;
     end
     if (not IsExisting(_Entity)) then
+        warn("API.LocateEntity: Entity (" ..tostring(_Entity).. ") does not exist!");
         return {X= 0, Y= 0, Z= 0};
     end
     local x, y, z = Logic.EntityGetPos(GetID(_Entity));
@@ -307,7 +320,8 @@ function API.ActivateIO(_ScriptName, _State)
         return;
     end
     if not IsExisting(_ScriptName) then
-        return
+        error("API.ActivateIO: Entity (" ..tostring(_ScriptName).. ") does not exist!");
+        return;
     end
     Logic.InteractiveObjectSetAvailability(GetID(_ScriptName), true);
     for i = 1, 8 do
@@ -332,6 +346,7 @@ function API.DeactivateIO(_ScriptName)
         return;
     end
     if not IsExisting(_ScriptName) then
+        error("API.DeactivateIO: Entity (" ..tostring(_ScriptName).. ") does not exist!");
         return;
     end
     Logic.InteractiveObjectSetAvailability(GetID(_ScriptName), false);

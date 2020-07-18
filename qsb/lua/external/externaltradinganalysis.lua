@@ -117,7 +117,7 @@ end
 --
 function API.RemoveTradeOffer(_PlayerID, _GoodOrEntityType)
     if GUI then
-        API.Bridge("API.RemoveTradeOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ")");
+        GUI.SendScriptCommand("API.RemoveTradeOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ")");
         return;
     end
     return ExternalTradingAnalysis.Global:RemoveTradeOffer(_PlayerID, _GoodOrEntityType);
@@ -145,7 +145,7 @@ end
 --
 function API.ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount)
     if GUI then
-        API.Bridge("API.ModifyTradeOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ", " .._NewAmount.. ")");
+        GUI.SendScriptCommand("API.ModifyTradeOffer(" .._PlayerID.. ", " .._GoodOrEntityType.. ", " .._NewAmount.. ")");
         return;
     end
     return ExternalTradingAnalysis.Global:ModifyTradeOffer(_PlayerID, _GoodOrEntityType, _NewAmount);

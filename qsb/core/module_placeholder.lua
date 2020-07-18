@@ -94,8 +94,7 @@ end
 --
 function API.AddNamePlaceholder(_Name, _Replacement)
     if type(_Replacement) == "function" or type(_Replacement) == "thread" then
-        Core:LogToFile("API.AddNamePlaceholder: Only strings, numbers, or tables are allowed!", LEVEL_ERROR);
-        Core:LogToScreen("API.AddNamePlaceholder: Only strings, numbers, or tables are allowed!", LEVEL_ERROR);
+        log("API.AddNamePlaceholder: Only strings, numbers, or tables are allowed!", LEVEL_ERROR);
         return;
     end
     QSB.Placeholders.Names[_Name] = _Replacement;
@@ -115,8 +114,7 @@ end
 --
 function API.AddEntityTypePlaceholder(_Type, _Replacement)
     if Entities[_Type] == nil then
-        Core:LogToFile("API.AddEntityTypePlaceholder: EntityType does not exist!", LEVEL_ERROR);
-        Core:LogToScreen("API.AddEntityTypePlaceholder: EntityType does not exist!", LEVEL_ERROR);
+        log("API.AddEntityTypePlaceholder: EntityType does not exist!", LEVEL_ERROR);
         return;
     end
     QSB.Placeholders.EntityTypes[_Type] = _Replacement;

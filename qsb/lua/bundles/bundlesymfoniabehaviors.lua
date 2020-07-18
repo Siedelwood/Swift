@@ -1673,7 +1673,7 @@ function b_Reward_VictoryWithParty:CustomFunction(_Quest)
                 GUI_Window.ContinuePlayingClicked_Orig_Reward_VictoryWithParty()
                 
                 local PlayerID = GUI.GetPlayerID()
-                API.Bridge("b_Reward_VictoryWithParty:ClearParty(" ..PlayerID.. ")")
+                GUI.SendScriptCommand("b_Reward_VictoryWithParty:ClearParty(" ..PlayerID.. ")")
 
                 CameraAnimation.AllowAbort = true
                 CameraAnimation.Abort()

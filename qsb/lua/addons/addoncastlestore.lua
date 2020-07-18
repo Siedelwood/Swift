@@ -919,8 +919,8 @@ end
 -- @local
 --
 function AddOnCastleStore.Global.OnSaveGameLoaded()
-    API.Bridge("AddOnCastleStore.Local:OverwriteGetStringTableText()")
-    API.Bridge("AddOnCastleStore.Local.CastleStore:ActivateHotkeys()")
+    Logic.ExecuteInLuaLocalState("AddOnCastleStore.Local:OverwriteGetStringTableText()")
+    Logic.ExecuteInLuaLocalState("AddOnCastleStore.Local.CastleStore:ActivateHotkeys()")
 end
 
 ---
@@ -1090,7 +1090,7 @@ function AddOnCastleStore.Global:InteractiveObjectPayStep1(_ScriptName)
         end
     end
     -- Objektinteraktion ausführen
-    API.Bridge(string.format("AddOnCastleStore.Local:InteractiveObjectPayStep2('%s')", _ScriptName));
+    Logic.ExecuteInLuaLocalState(string.format("AddOnCastleStore.Local:InteractiveObjectPayStep2('%s')", _ScriptName));
 end
 
 ---
@@ -1832,7 +1832,7 @@ function AddOnCastleStore.Local:OverwriteInteractiveObject()
             if CanBuyBoolean then
                 GUI_Interaction.InteractiveObjectClicked_Orig_BundleInteractiveObjects();
             else
-                API.Bridge(string.format("AddOnCastleStore.Global:InteractiveObjectPayStep1('%s')", ScriptName));
+                GUI.SendScriptCommand(string.format("AddOnCastleStore.Global:InteractiveObjectPayStep1('%s')", ScriptName));
             end
         end
     end
@@ -2271,7 +2271,7 @@ function AddOnCastleStore.Local:InteractiveObjectPayStep2(_ScriptName)
         return;
     end
     GUI.ExecuteObjectInteraction(GetID(_ScriptName), GUI.GetPlayerID())
-    API.Bridge(string.format("AddOnCastleStore.Global:InteractiveObjectPayStep3('%s')", _ScriptName));
+    GUI.SendScriptCommand(string.format("AddOnCastleStore.Global:InteractiveObjectPayStep3('%s')", _ScriptName));
 end
 
 -- -------------------------------------------------------------------------- --

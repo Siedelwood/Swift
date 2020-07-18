@@ -41,7 +41,7 @@ QSB = QSB or {};
 
 function API.Campaign_Initalize()
 	if not GUI then
-		API.Bridge("API.Campaign_Initalize()");
+		Logic.ExecuteInLuaLocalState("API.Campaign_Initalize()");
 		return;
 	end
 	ExternalMapLoader.Local:Initalize();
@@ -49,7 +49,7 @@ end
 
 function API.Campaign_StartSelection()
 	if not GUI then
-		API.Bridge("API.Campaign_StartSelection()");
+		Logic.ExecuteInLuaLocalState("API.Campaign_StartSelection()");
 		return;
 	end
 	StartSimpleHiResJobEx(function()
@@ -415,7 +415,7 @@ end
 --
 function ExternalMapLoader.Local:CopyDataToGlobalScript()
 	local Campaign = API.ConvertTableToString(self.Data.Campaign);
-	API.Bridge(string.format([[
+	GUI.SendScriptCommand(string.format([[
 		local Campaign = %s
 		for k, v in pairs(Campaign) do
 			if type(v) == "table" then

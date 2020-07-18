@@ -111,8 +111,8 @@ function Core:IdentifyHistoryEdition()
     local EntityID = Logic.CreateEntity(Entities.U_NPC_Amma_NE, 100, 100, 0, 8);
     MakeInvulnerable(EntityID);
     if Logic.GetEntityScriptingValue(EntityID, -68) == 8 then
-        API.Bridge("QSB.HistoryEdition = true");
-        API.Bridge("QSB.ScriptingValues.Game = 'HistoryEdition'");
+        Logic.ExecuteInLuaLocalState("QSB.HistoryEdition = true");
+        Logic.ExecuteInLuaLocalState("QSB.ScriptingValues.Game = 'HistoryEdition'");
         QSB.HistoryEdition = true;
         QSB.ScriptingValues.Game = "HistoryEdition";
     end

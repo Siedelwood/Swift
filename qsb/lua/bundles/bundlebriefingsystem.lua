@@ -189,7 +189,7 @@ function API.SetAnswerAvailability(_Page, _Answer, _Visible)
             error("Page '" ..tostring(_Page).. "' does not exist!");
             return;
         end
-        API.Bridge(string.format("API.SetAnswerAvailability(%d, %d, %s)", PageID, _Answer, tostring(not _Visible)));
+        Logic.ExecuteInLuaLocalState(string.format("API.SetAnswerAvailability(%d, %d, %s)", PageID, _Answer, tostring(not _Visible)));
         return;
     end
     BundleBriefingSystem.Local:SetMCAnswerState(_Page, _Answer, _Visible);
@@ -585,7 +585,7 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
     end
     -- Kopieren ins lokale Skript
     local Briefing = API.ConvertTableToString(self.Data.CurrentBriefing);
-    API.Bridge("BundleBriefingSystem.Local:StartBriefing(" ..Briefing.. ")");
+    Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local:StartBriefing(" ..Briefing.. ")");
     
     self.Data.BriefingActive = true;
     if self.Data.CurrentBriefing.Starting then
@@ -603,7 +603,7 @@ end
 --
 function BundleBriefingSystem.Global:FinishBriefing()
     Logic.SetGlobalInvulnerability(0);
-    API.Bridge("BundleBriefingSystem.Local:FinishBriefing()");
+    Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local:FinishBriefing()");
 
     if self.Data.CurrentBriefing.Finished then
         self.Data.CurrentBriefing:Finished();
@@ -656,14 +656,14 @@ function BundleBriefingSystem.Global:PageStarted()
                 end
                 self.Data.CurrentPage = self.Data.CurrentBriefing[PageID];
                 self.Data.CurrentPage.Started = Logic.GetTime();
-                API.Bridge("BundleBriefingSystem.Local:PageStarted()");
+                Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local:PageStarted()");
             end
 
         elseif type(self.Data.CurrentBriefing[PageID]) == "string" then
             PageID = self:GetPageIDByName(self.Data.CurrentBriefing[PageID]);
             if PageID > 0 then
                 self.Data.CurrentBriefing.Page = PageID;
-                API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..PageID);
+                Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..PageID);
                 self:PageStarted();
             else
                 self:FinishBriefing();
@@ -671,7 +671,7 @@ function BundleBriefingSystem.Global:PageStarted()
 
         elseif type(self.Data.CurrentBriefing[PageID]) == "number" and self.Data.CurrentBriefing[PageID] > 0 then
             self.Data.CurrentBriefing.Page = self.Data.CurrentBriefing[PageID];
-            API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
+            Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
             self:PageStarted();
 
         else
@@ -687,7 +687,7 @@ end
 --
 function BundleBriefingSystem.Global:PageFinished()
     local PageID = self.Data.CurrentBriefing.Page;
-    API.Bridge("BundleBriefingSystem.Local:PageFinished()");
+    Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local:PageFinished()");
     self.Data.CurrentBriefing.Page = (self.Data.CurrentBriefing.Page or 0) +1;
     local PageID = self.Data.CurrentBriefing.Page;
     if not self.Data.CurrentBriefing[PageID] or PageID > #self.Data.CurrentBriefing then
@@ -763,7 +763,7 @@ function BundleBriefingSystem.Global:OnMCConfirmed(_Selected)
         else
             self.Data.CurrentBriefing.Page = self:GetPageIDByName(JumpData[2])-1;
         end
-        API.Bridge("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
+        Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local.Data.CurrentBriefing.Page = " ..self.Data.CurrentBriefing.Page);
         self:PageFinished();
     end
 end
@@ -804,7 +804,7 @@ function BundleBriefingSystem.Global.BriefingExecutionController()
                 if Logic.GetTime() > BundleBriefingSystem.Global.Data.CurrentPage.Started + Duration then
                     local PageID = BundleBriefingSystem.Global.Data.CurrentBriefing.Page;
                     if not BundleBriefingSystem.Global.Data.CurrentPage.NoHistory then
-                        API.Bridge("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
+                        Logic.ExecuteInLuaLocalState("table.insert(BundleBriefingSystem.Local.Data.CurrentBriefing.PageHistory, " ..PageID.. ")");
                     end
                     BundleBriefingSystem.Global:PageFinished();
                 end
@@ -858,7 +858,7 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:PushBriefingNote(_Text)
-    API.Bridge("BundleBriefingSystem.Local:PushBriefingNote('" .._Text.. "')");
+    Logic.ExecuteInLuaLocalState("BundleBriefingSystem.Local:PushBriefingNote('" .._Text.. "')");
 end
 
 -- Local Script ------------------------------------------------------------- --
@@ -1056,7 +1056,7 @@ function BundleBriefingSystem.Local:LocalOnMCConfirmed()
                 self.Data.CurrentPage.MC[i].Invisible = true;
             end
         end
-        API.Bridge("BundleBriefingSystem.Global:OnMCConfirmed(" ..AnswerID.. ")");
+        GUI.SendScriptCommand("BundleBriefingSystem.Global:OnMCConfirmed(" ..AnswerID.. ")");
     end
 end
 
@@ -1332,7 +1332,7 @@ function BundleBriefingSystem.Local:ThroneRoomLeftClick()
     else
         -- Klick auf Entity
         local EntityID = GUI.GetMouseOverEntity();
-        API.Bridge([[
+        GUI.SendScriptCommand([[
             local CurrentPage = BundleBriefingSystem.Global.CurrentPage;
             if CurrentPage and CurrentPage.LeftClickOnEntity then
                 BundleBriefingSystem.Global.CurrentPage:LeftClickOnEntity(]] ..tostring(EntityID).. [[)
@@ -1340,7 +1340,7 @@ function BundleBriefingSystem.Local:ThroneRoomLeftClick()
         ]]);
         -- Klick in die Spielwelt
         local x,y = GUI.Debug_GetMapPositionUnderMouse();
-        API.Bridge([[
+        GUI.SendScriptCommand([[
             local CurrentPage = BundleBriefingSystem.Global.CurrentPage;
             if CurrentPage and CurrentPage.LeftClickOnPosition then
                 BundleBriefingSystem.Global.CurrentPage:LeftClickOnPosition(]] ..tostring(x).. [[, ]] ..tostring(y).. [[)
@@ -1348,7 +1348,7 @@ function BundleBriefingSystem.Local:ThroneRoomLeftClick()
         ]]);
         -- Klick auf den Bildschirm
         local x,y = GUI.GetMousePosition();
-        API.Bridge([[
+        GUI.SendScriptCommand([[
             local CurrentPage = BundleBriefingSystem.Global.CurrentPage;
             if CurrentPage and CurrentPage.LeftClickOnScreen then
                 BundleBriefingSystem.Global.CurrentPage:LeftClickOnScreen(]] ..tostring(x).. [[, ]] ..tostring(y).. [[)
@@ -1378,9 +1378,9 @@ function BundleBriefingSystem.Local:NextButtonPressed()
                 table.insert(self.Data.CurrentBriefing.PageHistory, self.Data.CurrentBriefing.Page);
             end
             if self.Data.CurrentPage.OnForward then
-                API.Bridge("BundleBriefingSystem.Global.CurrentPage:OnForward()");
+                GUI.SendScriptCommand("BundleBriefingSystem.Global.CurrentPage:OnForward()");
             end
-            API.Bridge("BundleBriefingSystem.Global:PageFinished()");
+            GUI.SendScriptCommand("BundleBriefingSystem.Global:PageFinished()");
         end
     end
 end
@@ -1409,10 +1409,10 @@ function BundleBriefingSystem.Local:PrevButtonPressed()
             end
 
             if self.Data.CurrentPage.OnReturn then
-                API.Bridge("BundleBriefingSystem.Global.CurrentPage:OnReturn()");
+                GUI.SendScriptCommand("BundleBriefingSystem.Global.CurrentPage:OnReturn()");
             end
             BundleBriefingSystem.Local.Data.CurrentBriefing.Page = LastPageID -1;
-            API.Bridge([[
+            GUI.SendScriptCommand([[
                 BundleBriefingSystem.Global.Data.CurrentBriefing.Page = ]] ..(LastPageID -1).. [[
                 BundleBriefingSystem.Global:PageFinished()
             ]]);

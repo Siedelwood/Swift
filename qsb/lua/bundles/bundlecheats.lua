@@ -89,7 +89,7 @@ end
 --
 function BundleCheats.Global:KillCheats()
     self.Data.CheatsForbidden = true;
-    API.Bridge("BundleCheats.Local:KillCheats()");
+    Logic.ExecuteInLuaLocalState("BundleCheats.Local:KillCheats()");
 end
 
 ---
@@ -100,7 +100,7 @@ end
 --
 function BundleCheats.Global:RessurectCheats()
     self.Data.CheatsForbidden = false;
-    API.Bridge("BundleCheats.Local:RessurectCheats()");
+    Logic.ExecuteInLuaLocalState("BundleCheats.Local:RessurectCheats()");
 end
 
 -- -------------------------------------------------------------------------- --

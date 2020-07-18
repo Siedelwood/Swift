@@ -146,7 +146,7 @@ function API.PrintCutsceneHeadline(_Text)
         _Text = API.Localize(_Text);
     end
     if not GUI then
-        API.Bridge([[API.PrintCutsceneHeadline("]].._Text..[[")]]);
+        Logic.ExecuteInLuaLocalState([[API.PrintCutsceneHeadline("]].._Text..[[")]]);
         return;
     end
     AddOnCutsceneSystem.Local:PrintCutsceneHeadline(_Text);
@@ -166,7 +166,7 @@ function API.PrintCutsceneText(_Text)
         _Text = API.Localize(_Text);
     end
     if not GUI then
-        API.Bridge([[API.PrintCutsceneText("]].._Text..[[")]]);
+        Logic.ExecuteInLuaLocalState([[API.PrintCutsceneText("]].._Text..[[")]]);
         return;
     end
     AddOnCutsceneSystem.Local:PrintCutsceneText(_Text);
@@ -186,7 +186,7 @@ end
 --
 function API.CutsceneSetFastForwardSpeed(_Speed)
     if not GUI then
-        API.Bridge("API.CutsceneSetFastForwardSpeed(" .._Speed.. ")");
+        Logic.ExecuteInLuaLocalState("API.CutsceneSetFastForwardSpeed(" .._Speed.. ")");
         return;
     end
     if type(_Speed) ~= "number" or _Speed < 1 then
@@ -340,7 +340,7 @@ function AddOnCutsceneSystem.Global:StartCutscene(_Cutscene, _ID)
         self.Data.CurrentCutscene.BigBars = false;
     end
     local Cutscene = API.ConvertTableToString(self.Data.CurrentCutscene);
-    API.Bridge("AddOnCutsceneSystem.Local:StartCutscene(" ..Cutscene.. ")");
+    Logic.ExecuteInLuaLocalState("AddOnCutsceneSystem.Local:StartCutscene(" ..Cutscene.. ")");
     self.Data.CutsceneActive = true;
     BundleBriefingSystem.Global.Data.BriefingActive = true;
     BundleBriefingSystem.Global.Data.DisplayIngameCutscene = true;
@@ -365,7 +365,7 @@ function AddOnCutsceneSystem.Global:StopCutscene()
 
     local CutsceneID = self.Data.CurrentCutscene.ID;
     BundleBriefingSystem.Global.Data.FinishedBriefings[CutsceneID] = true;
-    API.Bridge("AddOnCutsceneSystem.Local:StopCutscene()");
+    Logic.ExecuteInLuaLocalState("AddOnCutsceneSystem.Local:StopCutscene()");
 
     if self.Data.CurrentCutscene.Finished then
         self.Data.CurrentCutscene:Finished();
@@ -556,7 +556,7 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         self:PrintCutsceneText(Text);
         -- Führe Action aus
         if Action then
-            API.Bridge("AddOnCutsceneSystem.Global.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
+            GUI.SendScriptCommand("AddOnCutsceneSystem.Global.Data.CurrentCutscene[" ..FlightIndex.. "]:Action()");
         end
 
         -- Wechselnder Text eines Flights
@@ -612,7 +612,7 @@ function AddOnCutsceneSystem.Local:FlightFinished()
     if self:IsCutsceneActive() then
         local FlightIndex = self.Data.CurrentFlight;
         if FlightIndex == #self.Data.CurrentCutscene then
-            API.Bridge("AddOnCutsceneSystem.Global:StopCutscene()");
+            GUI.SendScriptCommand("AddOnCutsceneSystem.Global:StopCutscene()");
             return true;
         end
         self.Data.CurrentFlight = self.Data.CurrentFlight +1;

@@ -145,7 +145,7 @@ function API.SimpleTextWindow(_Caption, _Content)
     _Caption = API.ConvertPlaceholders(API.Localize(_Caption));
     _Content = API.ConvertPlaceholders(API.Localize(_Content));
     if not GUI then
-        API.Bridge("API.SimpleTextWindow('" .._Caption.. "', '" .._Content.. "')");
+        Logic.ExecuteInLuaLocalState("API.SimpleTextWindow('" .._Caption.. "', '" .._Content.. "')");
         return;
     end
     QSB.TextWindow:New(_Caption, _Content):Show();
@@ -290,7 +290,7 @@ function QSB.SimpleTypewriter:Play()
     end
     self.m_InitialWaittime = self.m_Delay;
     self:TokenizeText();
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         if BundleBriefingSystem then
             BundleBriefingSystem.Local.Data.BriefingActive = true
         end
@@ -317,7 +317,7 @@ function QSB.SimpleTypewriter:Stop()
     if BundleBriefingSystem then
         BundleBriefingSystem.Global.Data.BriefingActive = false
     end
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         if BundleBriefingSystem then
             BundleBriefingSystem.Local.Data.BriefingActive = false
         end
@@ -453,7 +453,7 @@ function QSB.SimpleTypewriter.ControllerJob(_Data)
         for i= 1, Index, 1 do
             Text = Text .. _Data.m_Tokens[i];
         end
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             GUI.ClearNotes()
             GUI.AddNote("]] ..Text.. [[");
         ]])
@@ -805,7 +805,7 @@ end
 --
 function BundleDialogWindows.Global:Install()
     API.AddSaveGameAction(function ()
-        API.Bridge("BundleDialogWindows.Local.DialogAltF4Hotkey()");
+        Logic.ExecuteInLuaLocalState("BundleDialogWindows.Local.DialogAltF4Hotkey()");
     end);
 end
 
@@ -823,7 +823,7 @@ function BundleDialogWindows.Local:Install()
 
     StartSimpleHiResJobEx(function()
         if XGUIEng.IsWidgetShownEx("/LoadScreen/LoadScreen") == 0 then
-            API.Bridge("BundleDialogWindows.Global.Data.Loadscreen = false");
+            GUI.SendScriptCommand("BundleDialogWindows.Global.Data.Loadscreen = false");
             return true;
         end
     end);

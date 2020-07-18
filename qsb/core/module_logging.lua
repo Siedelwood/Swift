@@ -409,7 +409,7 @@ function Core:LogToFile(_Text, _Level, _Env)
     end
     if not GUI then
         _Env = "Global";
-        API.Bridge(string.format([[Core:LogToFile("%s", "%d", "%s")]], _Text, _Level, _Env));
+        Logic.ExecuteInLuaLocalState(string.format([[Core:LogToFile("%s", "%d", "%s")]], _Text, _Level, _Env));
         return;
     end
     if QSB.Logging.FileLoggingLevel <= _Level then
@@ -436,7 +436,7 @@ function Core:LogToScreen(_Text, _Level, _Env)
     end
     if not GUI then
         _Env = "Global";
-        API.Bridge(string.format([[Core:LogToScreen("%s", "%d", "%s")]], _Text, _Level, _Env));
+        Logic.ExecuteInLuaLocalState(string.format([[Core:LogToScreen("%s", "%d", "%s")]], _Text, _Level, _Env));
         return;
     end
     if QSB.Logging.DisplayLoggingLevel <= _Level then

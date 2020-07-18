@@ -29,7 +29,7 @@ QSB = QSB or {};
 --
 function API.DisableReleaseThieves(_Flag)
     if not GUI then
-        API.Bridge("API.DisableReleaseThieves(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.DisableReleaseThieves(" ..tostring(_Flag).. ")");
         return;
     end
     BundleEntitySelection.Local.Data.ThiefRelease = not _Flag;
@@ -45,7 +45,7 @@ end
 --
 function API.DisableReleaseSiegeEngines(_Flag)
     if not GUI then
-        API.Bridge("API.DisableReleaseSiegeEngines(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.DisableReleaseSiegeEngines(" ..tostring(_Flag).. ")");
         return;
     end
     BundleEntitySelection.Local.Data.SiegeEngineRelease = not _Flag;
@@ -61,7 +61,7 @@ end
 --
 function API.DisableReleaseSoldiers(_Flag)
     if not GUI then
-        API.Bridge("API.DisableReleaseSoldiers(" ..tostring(_Flag).. ")");
+        Logic.ExecuteInLuaLocalState("API.DisableReleaseSoldiers(" ..tostring(_Flag).. ")");
         return;
     end
     BundleEntitySelection.Local.Data.MilitaryRelease = not _Flag;
@@ -364,7 +364,7 @@ function BundleEntitySelection.Local.OnSelectionCanged(_Source)
 
     -- Schreibe die selektierten Entities ins globale Skript
     local SelectedEntitiesString = API.ConvertTableToString(SelectedEntities);
-    API.Bridge("BundleEntitySelection.Global.Data.SelectedEntities = " ..SelectedEntitiesString);
+    GUI.SendScriptCommand("BundleEntitySelection.Global.Data.SelectedEntities = " ..SelectedEntitiesString);
 
     if EntityID ~= nil then
         if EntityType == Entities.U_SiegeEngineCart then

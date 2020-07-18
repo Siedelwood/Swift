@@ -144,7 +144,7 @@ end
 --
 function BundleCamera.Global:ActivateExtendedZoom()
     self.Data.ExtendedZoomActive = true;
-    API.Bridge("BundleCamera.Local:ActivateExtendedZoom()");
+    Logic.ExecuteInLuaLocalState("BundleCamera.Local:ActivateExtendedZoom()");
 end
 
 ---
@@ -155,7 +155,7 @@ end
 --
 function BundleCamera.Global:DeactivateExtendedZoom()
     self.Data.ExtendedZoomActive = false;
-    API.Bridge("BundleCamera.Local:DeactivateExtendedZoom()");
+    Logic.ExecuteInLuaLocalState("BundleCamera.Local:DeactivateExtendedZoom()");
 end
 
 ---
@@ -165,7 +165,7 @@ end
 -- @local
 --
 function BundleCamera.Global:InitExtendedZoomHotkeyFunction()
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         if not BundleCamera then
             StartSimpleJobEx(function()
                 if BundleCamera then
@@ -186,7 +186,7 @@ end
 -- @local
 --
 function BundleCamera.Global:InitExtendedZoomHotkeyDescription()
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         if not BundleCamera then
             StartSimpleJobEx(function()
                 if BundleCamera then
@@ -287,7 +287,7 @@ end
 -- @local
 --
 function BundleCamera.Local:ToggleExtendedZoom()
-    API.Bridge("BundleCamera.Global:ToggleExtendedZoom()");
+    GUI.SendScriptCommand("BundleCamera.Global:ToggleExtendedZoom()");
 end
 
 ---

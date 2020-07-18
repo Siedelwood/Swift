@@ -32,7 +32,7 @@ CS = CS or {};
 --
 function CS.StartCutscene(_cutscene)
     if not GUI then
-        API.Bridge("CS.StartCutscene('".._cutscene.."')")
+        Logic.ExecuteInLuaLocalState("CS.StartCutscene('".._cutscene.."')")
         return
     end
     if not CS.IsCutsceneActive() then
@@ -76,7 +76,7 @@ end
 --
 function CS.CreateCutscene_DEV_ONLY()
     if GUI then
-        API.Bridge("CS.CreateCutscene_DEV_ONLY()")
+        GUI.SendScriptCommand("CS.CreateCutscene_DEV_ONLY()")
         return
     end
     ExternalGameCutscenes.Global:StartCutsceneMaker()
@@ -89,11 +89,11 @@ end
 --
 function CS.CreateCutsceneRealtime_DEV_ONLY()
     if GUI then
-        API.Bridge("CS.CreateCutsceneRealtime_DEV_ONLY()")
+        GUI.SendScriptCommand("CS.CreateCutsceneRealtime_DEV_ONLY()")
         return
     end
     ExternalGameCutscenes.Global.Data.csMaker.realtime = true
-    API.Bridge("ExternalGameCutscenes.Local.Data.csMakerRealtime = true")
+    Logic.ExecuteInLuaLocalState("ExternalGameCutscenes.Local.Data.csMakerRealtime = true")
     ExternalGameCutscenes.Global:StartCutsceneMaker()
 end
 
@@ -170,7 +170,7 @@ function ExternalGameCutscenes.Global:StartCutsceneMaker()
         self.Data.csMaker.lastTime = Logic.GetTime()
     end
 	self.Data.csMaker.job = StartSimpleHiResJob("ExternalGameCutscenes_Global_CutsceneMaker_MouseJob")
-    API.Bridge("ExternalGameCutscenes.Local:StartCutsceneMaker()")
+    Logic.ExecuteInLuaLocalState("ExternalGameCutscenes.Local:StartCutsceneMaker()")
 end
 
 ---
@@ -184,7 +184,7 @@ function ExternalGameCutscenes.Global:EndCutsceneMaker()
 end
 
 function ExternalGameCutscenes.Global:CurrentMousePosition()
-    API.Bridge("ExternalGameCutscenes.Local:CurrentMousePosition()")
+    Logic.ExecuteInLuaLocalState("ExternalGameCutscenes.Local:CurrentMousePosition()")
 end
 
 -- checks the change in the mouse position to put it on display
@@ -316,8 +316,8 @@ function ExternalGameCutscenes.Global:Refresh()
 	self.Data.csMaker.coord.yCam = y2
 	self.Data.csMaker.coord.zCam = z2
 
-	API.Bridge('Camera.ThroneRoom_SetLookAt('..x..', '..y..', '..z..')')
-	API.Bridge('Camera.ThroneRoom_SetPosition('..x2..', '..y2..', '..z2..')')
+	Logic.ExecuteInLuaLocalState('Camera.ThroneRoom_SetLookAt('..x..', '..y..', '..z..')')
+	Logic.ExecuteInLuaLocalState('Camera.ThroneRoom_SetPosition('..x2..', '..y2..', '..z2..')')
 end
 
 -- makes the movement speed bigger
@@ -439,13 +439,13 @@ function ExternalGameCutscenes.Global:PressedFly()
 end
 
 function ExternalGameCutscenes.Global:SavePageToProfile(_pageData)
-	API.Bridge("ExternalGameCutscenes.Local:SavePageToProfile('".._pageData.."')")
+	Logic.ExecuteInLuaLocalState("ExternalGameCutscenes.Local:SavePageToProfile('".._pageData.."')")
 end
 
 --creates a preview of the created cutscene
 function ExternalGameCutscenes.Global:PressedPreview()
 	self:EndCutsceneMaker()
-    API.Bridge("ExternalGameCutscenes.Local:EndCutsceneMaker()")
+    Logic.ExecuteInLuaLocalState("ExternalGameCutscenes.Local:EndCutsceneMaker()")
 	local cutscene = {
         barStyle = "small",
         restoreCamera = true,
@@ -750,9 +750,9 @@ function ExternalGameCutscenes.Local:StartCutsceneMaker()
 
     local x, y = Camera.RTS_GetLookAtPosition()
     local z = Display.GetTerrainHeight(x, y) + 1000
-    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.coord.xLook = "..x)
-    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.coord.yLook = "..y)
-    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.coord.zLook = "..z)
+    GUI.SendScriptCommand("ExternalGameCutscenes.Global.Data.csMaker.coord.xLook = "..x)
+    GUI.SendScriptCommand("ExternalGameCutscenes.Global.Data.csMaker.coord.yLook = "..y)
+    GUI.SendScriptCommand("ExternalGameCutscenes.Global.Data.csMaker.coord.zLook = "..z)
 
     Display.SetUserOptionOcclusionEffect(0)
     Display.SetRenderSky(1)
@@ -763,37 +763,37 @@ function ExternalGameCutscenes.Local:StartCutsceneMaker()
     GUI.ActivateCutSceneState()
 
     local width, height = GUI.GetScreenSize()
-    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.mouse.maxX = "..width.." - 5")
-    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.mouse.maxY = "..height.." - 5")
+    GUI.SendScriptCommand("ExternalGameCutscenes.Global.Data.csMaker.mouse.maxX = "..width.." - 5")
+    GUI.SendScriptCommand("ExternalGameCutscenes.Global.Data.csMaker.mouse.maxY = "..height.." - 5")
 
-    Input.KeyBindDown( Keys.Up,       'API.Bridge("ExternalGameCutscenes.Global:PressedUp()")',       2, true)
-    Input.KeyBindDown( Keys.Down,     'API.Bridge("ExternalGameCutscenes.Global:PressedDown()")',     2, true)
-    Input.KeyBindDown( Keys.Left,     'API.Bridge("ExternalGameCutscenes.Global:PressedLeft()")',     2, true)
-    Input.KeyBindDown( Keys.Right,    'API.Bridge("ExternalGameCutscenes.Global:PressedRight()")',    2, true)
-    Input.KeyBindDown( Keys.W,        'API.Bridge("ExternalGameCutscenes.Global:PressedUp()")',       2, true)
-    Input.KeyBindDown( Keys.S,        'API.Bridge("ExternalGameCutscenes.Global:PressedDown()")',     2, true)
-    Input.KeyBindDown( Keys.A,        'API.Bridge("ExternalGameCutscenes.Global:PressedLeft()")',     2, true)
-    Input.KeyBindDown( Keys.D,        'API.Bridge("ExternalGameCutscenes.Global:PressedRight()")',    2, true)
-    Input.KeyBindDown( Keys.Add,      'API.Bridge("ExternalGameCutscenes.Global:PressedAdd()")',      2, true)
-    Input.KeyBindDown( Keys.Subtract, 'API.Bridge("ExternalGameCutscenes.Global:PressedSubtract()")', 2, true)
-    Input.KeyBindDown( Keys.Space,    'API.Bridge("ExternalGameCutscenes.Global:PressedSpace()")',    2, true)
-    Input.KeyBindDown( Keys.Y,        'API.Bridge("ExternalGameCutscenes.Global:PressedGoDown()")',   2, true)
-    Input.KeyBindDown( Keys.J,        'API.Bridge("ExternalGameCutscenes.Global:PressedJump()")',     2, true)
-    Input.KeyBindDown( Keys.F,        'API.Bridge("ExternalGameCutscenes.Global:PressedFly()")',      2, true)
-    Input.KeyBindDown( Keys.P,        'API.Bridge("ExternalGameCutscenes.Global:PressedPreview()")',  2, true)
+    Input.KeyBindDown( Keys.Up,       'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedUp()")',       2, true)
+    Input.KeyBindDown( Keys.Down,     'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedDown()")',     2, true)
+    Input.KeyBindDown( Keys.Left,     'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedLeft()")',     2, true)
+    Input.KeyBindDown( Keys.Right,    'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedRight()")',    2, true)
+    Input.KeyBindDown( Keys.W,        'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedUp()")',       2, true)
+    Input.KeyBindDown( Keys.S,        'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedDown()")',     2, true)
+    Input.KeyBindDown( Keys.A,        'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedLeft()")',     2, true)
+    Input.KeyBindDown( Keys.D,        'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedRight()")',    2, true)
+    Input.KeyBindDown( Keys.Add,      'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAdd()")',      2, true)
+    Input.KeyBindDown( Keys.Subtract, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedSubtract()")', 2, true)
+    Input.KeyBindDown( Keys.Space,    'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedSpace()")',    2, true)
+    Input.KeyBindDown( Keys.Y,        'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedGoDown()")',   2, true)
+    Input.KeyBindDown( Keys.J,        'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedJump()")',     2, true)
+    Input.KeyBindDown( Keys.F,        'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedFly()")',      2, true)
+    Input.KeyBindDown( Keys.P,        'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedPreview()")',  2, true)
 
     if not ExternalGameCutscenes.Local.Data.csMakerRealtime then
-        Input.KeyBindDown( Keys.Back,    'API.Bridge("ExternalGameCutscenes.Global:PressedEmptyDuration()")', 2, true)
-        Input.KeyBindDown( Keys.NumPad0, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(0)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad1, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(1)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad2, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(2)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad3, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(3)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad4, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(4)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad5, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(5)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad6, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(6)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad7, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(7)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad8, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(8)")',  2, true)
-        Input.KeyBindDown( Keys.NumPad9, 'API.Bridge("ExternalGameCutscenes.Global:PressedAddDuration(9)")',  2, true)
+        Input.KeyBindDown( Keys.Back,    'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedEmptyDuration()")', 2, true)
+        Input.KeyBindDown( Keys.NumPad0, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(0)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad1, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(1)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad2, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(2)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad3, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(3)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad4, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(4)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad5, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(5)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad6, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(6)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad7, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(7)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad8, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(8)")',  2, true)
+        Input.KeyBindDown( Keys.NumPad9, 'GUI.SendScriptCommand("ExternalGameCutscenes.Global:PressedAddDuration(9)")',  2, true)
     end
 
     XGUIEng.ShowWidget("/InGame/Root/Normal/AlignBottomRight/MapFrame/Minimap/MinimapOverlay", 0)
@@ -847,8 +847,8 @@ end
 
 function ExternalGameCutscenes.Local:CurrentMousePosition()
     local x, y = GUI.GetMousePosition()
-    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.mouse.currentX = "..x)
-    API.Bridge("ExternalGameCutscenes.Global.Data.csMaker.mouse.currentY = "..y)
+    GUI.SendScriptCommand("ExternalGameCutscenes.Global.Data.csMaker.mouse.currentX = "..x)
+    GUI.SendScriptCommand("ExternalGameCutscenes.Global.Data.csMaker.mouse.currentY = "..y)
 end
 
 function ExternalGameCutscenes.Local:SavePageToProfile(_pageData)

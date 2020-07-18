@@ -892,7 +892,7 @@ end
 -- @local
 --
 function AddOnQuestDebug.Global.ShowVersion()
-    API.Bridge("GUI.ClearNotes(); GUI.AddStaticNote(QSB.Version)");
+    Logic.ExecuteInLuaLocalState("GUI.ClearNotes(); GUI.AddStaticNote(QSB.Version)");
     return QSB.Version;
 end
 

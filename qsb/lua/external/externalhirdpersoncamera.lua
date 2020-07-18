@@ -34,7 +34,7 @@ QSB = QSB or {};
 function API.ThirdPersonActivate(_Hero, _MaxZoom)
     if GUI then
         local Target = (type(_Hero) == "string" and "'".._Hero.."'") or _Hero;
-        API.Bridge("API.ThirdPersonActivate(".. Target ..", ".. _MaxZoom ..")");
+        GUI.SendScriptCommand("API.ThirdPersonActivate(".. Target ..", ".. _MaxZoom ..")");
         return;
     end
     return ExternalThirdPersonCamera.Global:ThirdPersonActivate(_Hero, _MaxZoom);
@@ -50,7 +50,7 @@ HeroCameraActivate = API.ThirdPersonActivate;
 --
 function API.ThirdPersonDeactivate()
     if GUI then
-        API.Bridge("API.ThirdPersonDeactivate()");
+        GUI.SendScriptCommand("API.ThirdPersonDeactivate()");
         return;
     end
     return ExternalThirdPersonCamera.Global:ThirdPersonDeactivate();

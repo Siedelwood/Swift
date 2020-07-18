@@ -145,7 +145,7 @@ function API.WeatherEventAbort()
     if GUI then
         return;
     end
-    API.Bridge("Display.StopAllEnvironmentSettingsSequences()");
+    GUI.SendScriptCommand("Display.StopAllEnvironmentSettingsSequences()");
     BundleWeatherManipulation.Global:StopEvent();
 end
 
@@ -162,7 +162,7 @@ function API.WeatherEventPurge()
         return;
     end
     BundleWeatherManipulation.Global:PurgeAllEvents();
-    API.Bridge("Display.StopAllEnvironmentSettingsSequences()");
+    GUI.SendScriptCommand("Display.StopAllEnvironmentSettingsSequences()");
     BundleWeatherManipulation.Global:StopEvent();
 end
 
@@ -266,7 +266,7 @@ function BundleWeatherManipulation.Global:ActivateEvent()
 
     local Event = table.remove(self.Data.EventQueue, 1);
     self.Data.ActiveEvent = Event;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         BundleWeatherManipulation.Local.Data.ActiveEvent = ]] ..API.ConvertTableToString(Event).. [[
         BundleWeatherManipulation.Local:DisplayEvent()
     ]]);
@@ -300,7 +300,7 @@ end
 -- @local
 --
 function BundleWeatherManipulation.Global:StopEvent()
-    API.Bridge("BundleWeatherManipulation.Local.Data.ActiveEvent = nil");
+    Logic.ExecuteInLuaLocalState("BundleWeatherManipulation.Local.Data.ActiveEvent = nil");
     BundleWeatherManipulation.Global.Data.ActiveEvent = nil;
     Logic.DeactivateWeatherEvent();
 end
@@ -337,7 +337,7 @@ end
 --
 function BundleWeatherManipulation.Global.OnSaveGameLoaded()
     if BundleWeatherManipulation.Global:IsEventActive() then
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             Display.StopAllEnvironmentSettingsSequences()
             BundleWeatherManipulation.Local:DisplayEvent(]] ..BundleWeatherManipulation.Global:GetEventRemainingTime().. [[)
         ]]);

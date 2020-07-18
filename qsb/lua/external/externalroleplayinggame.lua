@@ -439,7 +439,7 @@ function ExternalRolePlayingGame.Global:UpgradeHeroStatus(_Idx, _EntityID)
         HeroInstance.Learnpoints = HeroInstance.Learnpoints - Costs;
         HeroInstance.Unit.Magic = HeroInstance.Unit.Magic +1;
     end
-    API.Bridge('ExternalRolePlayingGame.HeroList["' ..ScriptName.. '"].Learnpoints = '..HeroInstance.Learnpoints);
+    Logic.ExecuteInLuaLocalState('ExternalRolePlayingGame.HeroList["' ..ScriptName.. '"].Learnpoints = '..HeroInstance.Learnpoints);
 end
 
 ---
@@ -482,7 +482,7 @@ end
 -- @local
 --
 function ExternalRolePlayingGame.Global:OpenCraftingDialog(_HeroName, _SiteName)
-    API.Bridge("ExternalRolePlayingGame.Local:OpenCraftingDialog('" .._HeroName.. "', '" .._SiteName.. "')");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.Local:OpenCraftingDialog('" .._HeroName.. "', '" .._SiteName.. "')");
 end
 
 ---
@@ -533,7 +533,7 @@ end
 -- @local
 --
 function ExternalRolePlayingGame.Global:OpenArmoryDialog(_HeroName, _SiteName)
-    API.Bridge("ExternalRolePlayingGame.Local:OpenArmoryDialog('" .._HeroName.. "', '" .._SiteName.. "')");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.Local:OpenArmoryDialog('" .._HeroName.. "', '" .._SiteName.. "')");
 end
 
 ---
@@ -551,7 +551,7 @@ function ExternalRolePlayingGame.Global:ToggleInventory(_SelectedEntity)
     if not Hero or Hero.Inventory == nil then
         return;
     end
-    API.Bridge("ExternalRolePlayingGame.Local:DisplayInventory('" ..Hero.Inventory.Identifier.. "', false)");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.Local:DisplayInventory('" ..Hero.Inventory.Identifier.. "', false)");
 end
 
 ---
@@ -569,7 +569,7 @@ function ExternalRolePlayingGame.Global:ToggleEffects(_SelectedEntity)
     if not Hero then
         return;
     end
-    API.Bridge("ExternalRolePlayingGame.Local:DisplayEffects('" ..Hero.ScriptName.. "', false)");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.Local:DisplayEffects('" ..Hero.ScriptName.. "', false)");
 end
 
 ---
@@ -681,8 +681,8 @@ end
 -- @local
 --
 function ExternalRolePlayingGame.Global.OnSaveGameLoaded()
-    API.Bridge("ExternalRolePlayingGame.Local:CreateHotkeys()");
-    API.Bridge("ExternalRolePlayingGame.Local:OverrideStringKeys()");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.Local:CreateHotkeys()");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.Local:OverrideStringKeys()");
 end
 
 -- Events --
@@ -941,7 +941,7 @@ function ExternalRolePlayingGame.Local.OpenCraftingWindow(_Idx)
 
     local function CraftCallback(_Data)
         Game.GameTimeSetFactor(GUI.GetPlayerID(), 1);
-        API.Bridge("ExternalRolePlayingGame.Global:CraftItem('" .._Data.ScriptName.. "', '" ..Station.. "', '" ..Data.Receip.. "')");
+        GUI.SendScriptCommand("ExternalRolePlayingGame.Global:CraftItem('" .._Data.ScriptName.. "', '" ..Station.. "', '" ..Data.Receip.. "')");
     end
     local Text = ExternalRolePlayingGame.Texts.CraftingWindow;
     local Window = TextWindow:New();
@@ -1062,7 +1062,7 @@ function ExternalRolePlayingGame.Local.ChangeArmorAction(_Idx)
     if not Item then
         return;
     end
-    API.Bridge('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipArmor("' ..Item.. '")');
+    GUI.SendScriptCommand('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipArmor("' ..Item.. '")');
 end
 
 ---
@@ -1078,7 +1078,7 @@ function ExternalRolePlayingGame.Local.ChangeWeaponAction(_Idx)
     if not Item then
         return;
     end
-    API.Bridge('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipWeapon("' ..Item.. '")');
+    GUI.SendScriptCommand('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipWeapon("' ..Item.. '")');
 end
 
 ---
@@ -1094,7 +1094,7 @@ function ExternalRolePlayingGame.Local.ChangeJewelleryAction(_Idx)
     if not Item then
         return;
     end
-    API.Bridge('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipJewellery("' ..Item.. '")');
+    GUI.SendScriptCommand('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipJewellery("' ..Item.. '")');
 end
 
 ---
@@ -1110,7 +1110,7 @@ function ExternalRolePlayingGame.Local.ChangeBeltAction(_Idx)
     if not Item then
         return;
     end
-    API.Bridge('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipBelt("' ..Item.. '")');
+    GUI.SendScriptCommand('local Hero = ExternalRolePlayingGame.Hero:GetInstance("' ..Hero.. '"):EquipBelt("' ..Item.. '")');
 end
 
 ---
@@ -1426,7 +1426,7 @@ function ExternalRolePlayingGame.Local:OverrideKnightCommands()
         if EntityID == nil or EntityID == 0 then
             return;
         end
-        API.Bridge("ExternalRolePlayingGame.Global:UpgradeHeroStatus(" .._Idx.. ", "..EntityID..")");
+        GUI.SendScriptCommand("ExternalRolePlayingGame.Global:UpgradeHeroStatus(" .._Idx.. ", "..EntityID..")");
     end
 
     Mission_SupportUpdateTimer = function()
@@ -1613,7 +1613,7 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         if HeroInstance.Belt ~= nil and ExternalRolePlayingGame.Local.Data.ToggleBeltItemAbility then
             local Amount = ExternalRolePlayingGame.InventoryList[Inventory].Items[HeroInstance.Belt] or 0;
             if Amount > 0 and not HeroInstance.BeltDisabled then
-                API.Bridge([[
+                GUI.SendScriptCommand([[
                     local ItemInstance = ExternalRolePlayingGame.Item:GetInstance("]] ..HeroInstance.Belt.. [[")
                     local HeroInstance = ExternalRolePlayingGame.Hero:GetInstance("]] ..KnightName.. [[")
                     if HeroInstance and HeroInstance.Inventory and ItemInstance and ItemInstance.OnConsumed then
@@ -1636,7 +1636,7 @@ function ExternalRolePlayingGame.Local:OverrideActiveAbility()
         -- Doppelklick vermeiden
         ExternalRolePlayingGame.HeroList[KnightName].ActionPoints = 0;
         -- Fähigkeit ausführen
-        API.Bridge([[
+        GUI.SendScriptCommand([[
             local AbilityInstance = ExternalRolePlayingGame.Ability:GetInstance("]] ..HeroInstance.Ability.. [[")
             if AbilityInstance then
                 AbilityInstance:Callback("]] ..KnightName.. [[")
@@ -1803,9 +1803,9 @@ end
 --
 function ExternalRolePlayingGame.Local:CreateHotkeys()
     -- Inventar anzeigen
-    Input.KeyBindDown(Keys.I, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('ExternalRolePlayingGame.Global:ToggleInventory(' ..Sel.. ')');", 2, false);
+    Input.KeyBindDown(Keys.I, "local Sel = GUI.GetSelectedEntity() or 0; GUI.SendScriptCommand('ExternalRolePlayingGame.Global:ToggleInventory(' ..Sel.. ')');", 2, false);
     -- Effekte anzeigen
-    Input.KeyBindDown(Keys.K, "local Sel = GUI.GetSelectedEntity() or 0; API.Bridge('ExternalRolePlayingGame.Global:ToggleEffects(' ..Sel.. ')');", 2, false);
+    Input.KeyBindDown(Keys.K, "local Sel = GUI.GetSelectedEntity() or 0; GUI.SendScriptCommand('ExternalRolePlayingGame.Global:ToggleEffects(' ..Sel.. ')');", 2, false);
     -- Charackter anzeigen
     Input.KeyBindDown(Keys.C, "local Sel = Logic.GetEntityName(GUI.GetSelectedEntity()); ExternalRolePlayingGame.Local:DisplayCharacter(Sel);", 2, false);
     -- Fähigkeit umschalten
@@ -1851,7 +1851,7 @@ end
 -- @local
 --
 function ExternalRolePlayingGame.Local.OnSermonFinished(_PlayerID, _NumSettlers)
-    API.Bridge("ExternalRolePlayingGame.Global.OnSermonFinished(" .._PlayerID.. ", " .._NumSettlers.. ")");
+    GUI.SendScriptCommand("ExternalRolePlayingGame.Global.OnSermonFinished(" .._PlayerID.. ", " .._NumSettlers.. ")");
 end
 
 -- -------------------------------------------------------------------------- --
@@ -2109,7 +2109,7 @@ function ExternalRolePlayingGame.Hero:New(_ScriptName)
     assert(self == ExternalRolePlayingGame.Hero);
 
     -- Hotkeys erst mit ersten Helden eintragen.
-    API.Bridge("ExternalRolePlayingGame.Local:DescribeHotkeys()");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.Local:DescribeHotkeys()");
 
     local hero = API.InstanceTable(self, {});
     hero.Unit         = ExternalRolePlayingGame.Unit:New(_ScriptName);
@@ -2138,7 +2138,7 @@ function ExternalRolePlayingGame.Hero:New(_ScriptName)
     -- Basisschaden setzen
     hero.Unit.BaseDamage = 25;
 
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["]         = {}
         ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].Vices   = {}
         ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].Virtues = {}
@@ -2171,11 +2171,11 @@ function ExternalRolePlayingGame.Hero:Dispose()
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Hero);
     self.Unit:Dispose();
-    API.Bridge("ExternalRolePlayingGame.HeroList['" ..self.Identifier.. "'] = nil");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.HeroList['" ..self.Identifier.. "'] = nil");
     ExternalRolePlayingGame.HeroList[self.Identifier] = nil;
 
     -- Speicher freigeben
-    API.Bridge("collectgarbage();");
+    Logic.ExecuteInLuaLocalState("collectgarbage();");
     collectgarbage();
 end
 
@@ -2199,7 +2199,7 @@ function ExternalRolePlayingGame.Hero:ActivateVirtue(_EventName, _Flag)
         if v then VirtuesString = VirtuesString .. "'" .. k .. "', "; end
     end
     local CommandString = "ExternalRolePlayingGame.HeroList['%s'].Virtues = {%s}";
-    API.Bridge(string.format(CommandString, self.ScriptName, VirtuesString));
+    Logic.ExecuteInLuaLocalState(string.format(CommandString, self.ScriptName, VirtuesString));
     return self;
 end
 
@@ -2223,7 +2223,7 @@ function ExternalRolePlayingGame.Hero:ActivateVice(_EventName, _Flag)
         if v then VicesString = VicesString .. "'" .. k .. "', "; end
     end
     local CommandString = "ExternalRolePlayingGame.HeroList['%s'].Vices = {%s}";
-    API.Bridge(string.format(CommandString, self.ScriptName, VicesString));
+    Logic.ExecuteInLuaLocalState(string.format(CommandString, self.ScriptName, VicesString));
     return self;
 end
 
@@ -2390,7 +2390,7 @@ function ExternalRolePlayingGame.Hero:EquipBelt(_ItemType)
         if Item ~= nil then 
             CommandString = "ExternalRolePlayingGame.HeroList['" ..self.ScriptName.. "'].Belt = '" .._ItemType.. "'";
         end
-        API.Bridge(CommandString);
+        Logic.ExecuteInLuaLocalState(CommandString);
     end
     return Equipped;
 end
@@ -2437,7 +2437,7 @@ function ExternalRolePlayingGame.Hero:SetCaption(_Text)
     assert(self ~= ExternalRolePlayingGame.Hero);
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     self.Caption = (type(_Text) == "table" and _Text[Language]) or _Text;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.HeroList["]] ..self.ScriptName.. [["].Caption  = "]] ..self.Caption.. [["
     ]]);
     return self;
@@ -2454,7 +2454,7 @@ function ExternalRolePlayingGame.Hero:SetDescription(_Text)
     assert(self ~= ExternalRolePlayingGame.Hero);
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     self.Description = (type(_Text) == "table" and _Text[Language]) or _Text;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.HeroList["]] ..self.ScriptName.. [["].Description  = "]] ..self.Description.. [["
     ]]);
     return self;
@@ -2497,7 +2497,7 @@ function ExternalRolePlayingGame.Hero.UpdateStatus(_ScriptName)
         return true;
     end
 
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].Learnpoints       = ]] ..ExternalRolePlayingGame.HeroList[_ScriptName].Learnpoints.. [[
         ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].Strength          = ]] ..ExternalRolePlayingGame.HeroList[_ScriptName].Unit.Strength.. [[
         ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].StrengthCosts     = ]] ..(ExternalRolePlayingGame.HeroList[_ScriptName].StrengthCosts or 1).. [[
@@ -2530,11 +2530,11 @@ function ExternalRolePlayingGame.Hero.UpdateStatus(_ScriptName)
             if Hero.Inventory then
                 CommandString = "ExternalRolePlayingGame.HeroList['" .._ScriptName.. "'].Inventory = '" ..Hero.Inventory.Identifier.. "'";
             end
-            API.Bridge(CommandString);
+            Logic.ExecuteInLuaLocalState(CommandString);
 
             -- Aktualisiere Aktionspunkte
             if Hero.Ability then
-                API.Bridge([[
+                Logic.ExecuteInLuaLocalState([[
                     ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].Ability = "]] ..Hero.Ability.Identifier.. [["
                     ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].ActionPoints = ]] ..ExternalRolePlayingGame.HeroList[_ScriptName].ActionPoints.. [[
                     ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].RechargeTime = ]] ..ExternalRolePlayingGame.HeroList[_ScriptName].Ability.RechargeTime.. [[
@@ -2548,7 +2548,7 @@ function ExternalRolePlayingGame.Hero.UpdateStatus(_ScriptName)
                     ExternalRolePlayingGame.Global:InvokeEvent({Hero}, "Trigger_ActionPointsRegenerated", Hero:GetAbilityRecharge());
                 end
             else
-                API.Bridge([[
+                Logic.ExecuteInLuaLocalState([[
                     ExternalRolePlayingGame.HeroList["]] .._ScriptName.. [["].Ability = nil
                 ]]);
             end
@@ -2583,7 +2583,7 @@ function ExternalRolePlayingGame.Ability:New(_Identifier)
     ability.RechargeTime = 4*60;
 
     ExternalRolePlayingGame.AbilityList[_Identifier] = ability;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.AbilityList["]] .._Identifier.. [["] = {}
     ]]);
     return ability;
@@ -2609,11 +2609,11 @@ end
 function ExternalRolePlayingGame.Ability:Dispose()
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Ability);
-    API.Bridge("ExternalRolePlayingGame.AbilityList['" ..self.Identifier.. "'] = nil");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.AbilityList['" ..self.Identifier.. "'] = nil");
     ExternalRolePlayingGame.AbilityList[self.Identifier] = nil;
 
     -- Speicher freigeben
-    API.Bridge("collectgarbage();");
+    Logic.ExecuteInLuaLocalState("collectgarbage();");
     collectgarbage();
 end
 
@@ -2658,7 +2658,7 @@ function ExternalRolePlayingGame.Ability:SetIcon(_Icon)
         Icon = "'" .._Icon .. "'";
     end
 
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.AbilityList["]] ..self.Identifier.. [["].Icon = ]] ..Icon.. [[
     ]]);
     return self;
@@ -2675,7 +2675,7 @@ function ExternalRolePlayingGame.Ability:SetCaption(_Text)
     assert(self ~= ExternalRolePlayingGame.Ability);
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     self.Caption = (type(_Text) == "table" and _Text[Language]) or _Text;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.AbilityList["]] ..self.Identifier.. [["].Caption  = "]] ..self.Caption.. [["
     ]]);
     return self;
@@ -2692,7 +2692,7 @@ function ExternalRolePlayingGame.Ability:SetDescription(_Text)
     assert(self ~= ExternalRolePlayingGame.Ability);
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     self.Description = (type(_Text) == "table" and _Text[Language]) or _Text;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.AbilityList["]] ..self.Identifier.. [["].Description  = "]] ..self.Description.. [["
     ]]);
     return self;
@@ -2726,7 +2726,7 @@ function ExternalRolePlayingGame.Inventory:New(_Identifier, _Owner)
     inventory.Equipped     = {};
 
     ExternalRolePlayingGame.InventoryList[_Identifier] = inventory;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.InventoryList["]] .._Identifier.. [["]          = {}
         ExternalRolePlayingGame.InventoryList["]] .._Identifier.. [["].Items    = {}
         ExternalRolePlayingGame.InventoryList["]] .._Identifier.. [["].Equipped = {}
@@ -2754,11 +2754,11 @@ end
 function ExternalRolePlayingGame.Inventory:Dispose()
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Inventory);
-    API.Bridge("ExternalRolePlayingGame.InventoryList['" ..self.Identifier.. "'] = nil");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.InventoryList['" ..self.Identifier.. "'] = nil");
     ExternalRolePlayingGame.InventoryList[self.Identifier] = nil;
 
     -- Speicher freigeben
-    API.Bridge("collectgarbage();");
+    Logic.ExecuteInLuaLocalState("collectgarbage();");
     collectgarbage();
 end
 
@@ -2798,7 +2798,7 @@ function ExternalRolePlayingGame.Inventory:Equip(_ItemType, _DontRemove)
             if not _DontRemove then
                 self:Remove(_ItemType, 1);
             end
-            API.Bridge([[
+            Logic.ExecuteInLuaLocalState([[
                 ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = true
             ]]);
             self.Equipped[_ItemType] = true;
@@ -2827,7 +2827,7 @@ function ExternalRolePlayingGame.Inventory:Unequip(_ItemType, _DontAdd)
         if not _DontAdd then
             self:Insert(_ItemType, 1);
         end
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Equipped["]] .._ItemType.. [["] = nil
         ]]);
         self.Equipped[_ItemType] = nil;
@@ -2857,7 +2857,7 @@ function ExternalRolePlayingGame.Inventory:Insert(_ItemType, _Amount)
         self.Items[_ItemType] = (self.Items[_ItemType] or 0) + _Amount;
 
         local CurrentAmount = self.Items[_ItemType];
-        API.Bridge([[
+        Logic.ExecuteInLuaLocalState([[
             ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["] = ]] ..CurrentAmount.. [[
         ]]);
         if Item.OnInserted then
@@ -2884,12 +2884,12 @@ function ExternalRolePlayingGame.Inventory:Remove(_ItemType, _Amount)
         self.Items[_ItemType] = (self.Items[_ItemType] or 0) - _Amount;
         if self.Items[_ItemType] <= 0 then
             self.Items[_ItemType] = nil;
-            API.Bridge([[
+            Logic.ExecuteInLuaLocalState([[
                 ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["] = nil
             ]]);
         else
             local CurrentAmount = self.Items[_ItemType];
-            API.Bridge([[
+            Logic.ExecuteInLuaLocalState([[
                 ExternalRolePlayingGame.InventoryList["]] ..self.Identifier.. [["].Items["]] .._ItemType.. [["] = ]] ..CurrentAmount.. [[
             ]]);
         end
@@ -2963,7 +2963,7 @@ function ExternalRolePlayingGame.Item:New(_Identifier)
     item.OnConsumed   = nil;
 
     ExternalRolePlayingGame.ItemList[_Identifier] = item;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.ItemList["]] .._Identifier.. [["] = {}
         ExternalRolePlayingGame.ItemList["]] .._Identifier.. [["].Categories = {}
         ExternalRolePlayingGame.ItemList["]] .._Identifier.. [["].Materials = {}
@@ -2992,11 +2992,11 @@ end
 function ExternalRolePlayingGame.Item:Dispose()
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Item);
-    API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'] = nil");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'] = nil");
     ExternalRolePlayingGame.ItemList[self.Identifier] = nil;
 
     -- Speicher freigeben
-    API.Bridge("collectgarbage();");
+    Logic.ExecuteInLuaLocalState("collectgarbage();");
     collectgarbage();
 end
 
@@ -3023,7 +3023,7 @@ function ExternalRolePlayingGame.Item:AddMaterial(_Material, _Amount)
     -- Material hinzufügen
     table.insert(self.Materials, {_Material, _Amount});
     local TableString = API.ConvertTableToString(self.Materials);
-    API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Materials = " ..TableString);
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Materials = " ..TableString);
     return self;
 end
 
@@ -3050,7 +3050,7 @@ function ExternalRolePlayingGame.Item:AddProduct(_Product, _Amount)
     -- Material hinzufügen
     table.insert(self.Products, {_Product, _Amount});
     local TableString = API.ConvertTableToString(self.Products);
-    API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Products = " ..TableString);
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Products = " ..TableString);
     return self;
 end
 
@@ -3069,7 +3069,7 @@ function ExternalRolePlayingGame.Item:AddCategory(_Category)
 
     -- Update in local script
     local TableString = API.ConvertTableToString(self.Categories);
-    API.Bridge("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Categories = " ..TableString);
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Categories = " ..TableString);
     return self;
 end
 
@@ -3096,7 +3096,7 @@ function ExternalRolePlayingGame.Item:SetCaption(_Text)
     assert(self ~= ExternalRolePlayingGame.Item);
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     self.Caption = (type(_Text) == "table" and _Text[Language]) or _Text;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.ItemList["]] ..self.Identifier.. [["].Caption  = "]] ..self.Caption.. [["
     ]]);
     return self;
@@ -3113,7 +3113,7 @@ function ExternalRolePlayingGame.Item:SetDescription(_Text)
     assert(self ~= ExternalRolePlayingGame.Item);
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     self.Description = (type(_Text) == "table" and _Text[Language]) or _Text;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.ItemList["]] ..self.Identifier.. [["].Description  = "]] ..self.Description.. [["
     ]]);
     return self;
@@ -3140,7 +3140,7 @@ function ExternalRolePlayingGame.Item:SetIcon(_Icon)
         LocalIcon = (LocalIcon:find("{") and LocalIcon) or "'" ..LocalIcon.. "'";
         CommandString = "ExternalRolePlayingGame.ItemList['" ..self.Identifier.. "'].Icon  = " ..LocalIcon;
     end
-    API.Bridge(CommandString);
+    Logic.ExecuteInLuaLocalState(CommandString);
     return self;
 end
 
@@ -3171,7 +3171,7 @@ function ExternalRolePlayingGame.Event:New(_Identifier)
     event.Action      = nil;
 
     ExternalRolePlayingGame.EventList[_Identifier] = event;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.EventList[']] .._Identifier.. [[']          = {}
         ExternalRolePlayingGame.EventList[']] .._Identifier.. [['].Triggers = {}
     ]]);
@@ -3199,10 +3199,10 @@ function ExternalRolePlayingGame.Event:Dispose()
     assert(not GUI);
     assert(self ~= ExternalRolePlayingGame.Event);
     ExternalRolePlayingGame.EventList[self.Identifier] = nil;
-    API.Bridge("ExternalRolePlayingGame.EventList['" ..self.Identifier.. "'] = nil");
+    Logic.ExecuteInLuaLocalState("ExternalRolePlayingGame.EventList['" ..self.Identifier.. "'] = nil");
 
     -- Speicher freigeben
-    API.Bridge("collectgarbage();");
+    Logic.ExecuteInLuaLocalState("collectgarbage();");
     collectgarbage();
 end
 
@@ -3217,7 +3217,7 @@ function ExternalRolePlayingGame.Event:SetCaption(_Text)
     assert(self ~= ExternalRolePlayingGame.Event);
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     self.Caption = (type(_Text) == "table" and _Text[Language]) or _Text;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.EventList["]] ..self.Identifier.. [["].Caption  = "]] ..self.Caption.. [["
     ]]);
     return self;
@@ -3234,7 +3234,7 @@ function ExternalRolePlayingGame.Event:SetDescription(_Text)
     assert(self ~= ExternalRolePlayingGame.Event);
     local Language = (Network.GetDesiredLanguage() == "de" and "de") or "en";
     self.Description = (type(_Text) == "table" and _Text[Language]) or _Text;
-    API.Bridge([[
+    Logic.ExecuteInLuaLocalState([[
         ExternalRolePlayingGame.EventList["]] ..self.Identifier.. [["].Description  = "]] ..self.Description.. [["
     ]]);
     return self;
@@ -3277,7 +3277,7 @@ function ExternalRolePlayingGame.Event:AddTrigger(_Event)
         EventTrigger = EventTrigger .. "'" .. v .. "', ";
     end
     local CommandString = "ExternalRolePlayingGame.EventList['%s'].Triggers = {%s}";
-    API.Bridge(string.format(CommandString, self.Identifier, EventTrigger));
+    Logic.ExecuteInLuaLocalState(string.format(CommandString, self.Identifier, EventTrigger));
     return self;
 end
 

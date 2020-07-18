@@ -627,7 +627,7 @@ function ExternalCampaignMap.Local:SetKnightAbilityAction()
 	end
 	
 	if Hero then
-		API.Bridge("ExternalCampaignMap.Global:UseCustomKnightAbility('" ..KnightName.."')");
+		GUI.SendScriptCommand("ExternalCampaignMap.Global:UseCustomKnightAbility('" ..KnightName.."')");
 		self.Data[Hero].ActionPoints = 0;
 		return true;
 	end

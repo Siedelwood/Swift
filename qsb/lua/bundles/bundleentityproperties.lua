@@ -918,7 +918,7 @@ function BundleEntityProperties.Global:TriggerEntityKilledCallbacks(_Entity, _Da
     local AttType     = Logic.EntityGetType(AttackerID);
 
     GameCallback_EntityKilled(DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType);
-    API.Bridge(string.format(
+    Logic.ExecuteInLuaLocalState(string.format(
         "GameCallback_Feedback_EntityKilled(%d, %d, %d, %d,%d, %d, %f, %f)",
         DefenderID, DefPlayerID, AttackerID, AttPlayerID, DefType, AttType, x, y
     ));
