@@ -2568,7 +2568,7 @@ function b_Goal_MapScriptFunction:Debug(_Quest)
         error(_Quest.Identifier.. ": " ..self.Name..": function reference is invalid!");
         return true;
     end
-    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+    if type(self.FuncName) ~= "function" and not _G[self.FuncName] then
         error(_Quest.Identifier.. ": " ..self.Name..": function does not exist!");
         return true;
     end
@@ -2699,8 +2699,8 @@ Core:RegisterBehavior(b_Goal_CustomVariables)
 -- müssen also immer mit Ja oder Nein beantwortbar sein oder auf Okay und
 -- Abbrechen passen.
 --
--- @param _Title  Fenstertitel
 -- @param _Text   Fenstertext
+-- @param _Title  Fenstertitel
 -- @param _Labels Label der Buttons
 --
 -- @within Goal
@@ -2767,10 +2767,6 @@ function b_Goal_Decide:CustomFunction(_Quest)
     end
 end
 
-function b_Goal_Decide:Reset()
-    self.LocalExecuted = nil;
-end
-
 function b_Goal_Decide:GetIcon()
     return {4,12}
 end
@@ -2781,13 +2777,17 @@ function b_Goal_Decide:GetCustomData(_Index)
     end
 end
 
+function b_Goal_Decide:Reset()
+    self.LocalExecuted = nil;
+end
+
 Core:RegisterBehavior(b_Goal_Decide);
 
 -- -------------------------------------------------------------------------- --
 
 ---
 -- Der Spieler kann durch regelmäßiges Begleichen eines Tributes bessere
--- Diplomatie zu einen Spieler erreichen.
+-- Diplomatie zu einem Spieler erreichen.
 --
 -- Die Zeit zum Bezahlen des Tributes muss immer kleiner sein als die
 -- Wiederholungsperiode.
@@ -4195,7 +4195,7 @@ function b_Reprisal_MapScriptFunction:Debug(_Quest)
         error(_Quest.Identifier.. ": " ..self.Name..": function reference is invalid!");
         return true;
     end
-    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+    if type(self.FuncName) ~= "function" and not _G[self.FuncName] then
         error(_Quest.Identifier.. ": " ..self.Name..": function does not exist!");
         return true;
     end
@@ -8394,7 +8394,7 @@ function b_Trigger_MapScriptFunction:Debug(_Quest)
         error(_Quest.Identifier.. ": " ..self.Name..": function reference is invalid!");
         return true;
     end
-    if type(self.FuncName) == "string" and not _G[self.FuncName] then
+    if type(self.FuncName) ~= "function" and not _G[self.FuncName] then
         error(_Quest.Identifier.. ": " ..self.Name..": function does not exist!");
         return true;
     end

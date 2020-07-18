@@ -176,8 +176,8 @@ function Briefing03()
     end
     AP {
         Name         = "ChoicePage1",
-        position     = CastleID,
-        title        = "Auswahl",
+        Position     = CastleID,
+        Title        = "Auswahl",
         Text         = "Eine wichtige Entscheidung muss getroffen werden!",
         DialogCamera = false,
         NoRethink    = true,
@@ -272,6 +272,109 @@ function Briefing04()
         Action   = function(_Data)
         end
     }
+
+    Briefing.Starting = function(_Data)
+    end
+    Briefing.Finished = function(_Data)
+    end
+    return API.StartBriefing(Briefing)
+end
+
+function Briefing05()
+    local Briefing = {
+        HideBorderPins = true,
+        ShowSky = true,
+        RestoreGameSpeed = true,
+        RestoreCamera = true,
+        SkippingAllowed = true,
+    }
+    local AP, ASP = API.AddPages(Briefing);
+
+    AP {
+        Title       = "Page 1",
+        Text        = "This is page 1!",
+        Duration    = 10,
+        Animations  = {
+            {
+                Duration = 2 * 60,
+                Start = {
+                    Position = {"pos4", 0},
+                    Rotation = -60,
+                    Zoom     = 2000,
+                    Angle    = 35,
+                },
+                End   = {
+                    Position = {"pos3", 0},
+                    Rotation = -30,
+                    Zoom     = 2000,
+                    Angle    = 25,
+                }
+            },
+        }
+    }
+
+    AP {
+        Title       = "Page 2",
+        Text        = "This is page 2!",
+        Duration    = 10,
+    }
+
+    AP {
+        Title       = "Page 3",
+        Text        = "This is page 3!",
+        Duration    = 10,
+        Animations  = {
+            PurgeOld = true,
+            {
+                Duration = 2 * 60,
+                Start = {
+                    Position = {"pos2", 0},
+                    Rotation = -45,
+                    Zoom     = 6000,
+                    Angle    = 35,
+                },
+                End   = {
+                    Position = {"pos2", 0},
+                    Rotation = -45,
+                    Zoom     = 3000,
+                    Angle    = 35,
+                }
+            },
+        }
+    }
+
+    Briefing.Starting = function(_Data)
+    end
+    Briefing.Finished = function(_Data)
+    end
+    return API.StartBriefing(Briefing)
+end
+
+function Briefing06()
+    local Briefing = {
+        HideBorderPins = true,
+        ShowSky = true,
+        RestoreGameSpeed = true,
+        RestoreCamera = true,
+        SkippingAllowed = true,
+    }
+    local AP, ASP = API.AddPages(Briefing);
+
+    ASP("pos4", "Page 1", "This is page 1!", false)
+    ASP("pos4", "Page 2", "This is page 2!", false);
+    ASP("pos4", "Page 3", "This is page 3!", false);
+    ASP("pos4", "Page 4", "This is page 4!", false);
+    ASP("pos4", "Page 5", "This is page 5!", false);
+
+    -- Briefing.PageAnimations = {
+    --     [1] = {
+    --         {"pos4", -60, 2000, 35, "pos4", -30, 2000, 25, 30}
+    --     },
+    --     [3] = {
+    --         PurgeOld = true,
+    --         {"pos2", -45, 6000, 35, "pos2", -45, 3000, 35, 30},
+    --     }
+    -- }
 
     Briefing.Starting = function(_Data)
     end

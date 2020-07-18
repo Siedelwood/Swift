@@ -238,23 +238,21 @@ function API.AddPages(_Briefing)
                 _Page.Position = {_Page.Position, 0}
             end
             -- Dialogkamera
-            if _Page.DialogCamera == true then
-                _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
-                _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.DLGCAMERA_ZOOMDEFAULT;
-                _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.DLGCAMERA_FOVDEFAULT;
-                _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.DLGCAMERA_ROTATIONDEFAULT;
-            else
-                _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
-                _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
-                _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.CAMERA_FOVDEFAULT;
-                _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.CAMERA_ROTATIONDEFAULT;
-            end
-            -- FlyTo Animation für MC entfernen
-            if _Page.FlyTo and _Page.MC then
-                _Page.FlyTo = nil;
+            if not _Page.Animations then
+                if _Page.DialogCamera == true then
+                    _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
+                    _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.DLGCAMERA_ZOOMDEFAULT;
+                    _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.DLGCAMERA_FOVDEFAULT;
+                    _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.DLGCAMERA_ROTATIONDEFAULT;
+                else
+                    _Page.Angle = _Page.Angle or BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
+                    _Page.Zoom = _Page.Zoom or BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
+                    _Page.FOV = _Page.FOV or BundleBriefingSystem.Global.Data.CAMERA_FOVDEFAULT;
+                    _Page.Rotation = _Page.Rotation or BundleBriefingSystem.Global.Data.CAMERA_ROTATIONDEFAULT;
+                end
             end
             -- Anzeigezeit setzen
-            if not _Page.Duration then
+            if not _Page.Duration and not _Page.Animations then
                 if _Page.FlyTo then
                     _Page.Duration = _Page.FlyTo.Duration;
                 else
@@ -277,7 +275,6 @@ function API.AddPages(_Briefing)
                 end
                 return self.MC.Selected;
             end
-
             table.insert(_Briefing, _Page);
         else
             table.insert(_Briefing, (_Page ~= nil and _Page) or -1);
@@ -291,29 +288,12 @@ function API.AddPages(_Briefing)
             PageName = table.remove(arg, 1);
         end
         -- Position angleichen
-        local TargetID = GetID(arg[1]);
-        local TargetType = Logic.GetEntityType(TargetID);
-        local Position = {table.remove(arg, 1), 0};
-        if Logic.IsSettler(TargetID) == 1 then
-            Position[2] = 120;
-            if Logic.IsKnight(TargetID) then
-                Position[2] = 160;
-            end
-        end
-        if TargetType == Entities.XD_ScriptEntity then
-            Position[2] = 160;
-        end
+        local Position = BundleBriefingSystem.Global:NormalizeZPosForEntity(table.remove(arg, 1));
         -- Rotation angleichen
-        local Rotation;
-        if IsExisting(Position[1]) then
-            Rotation =  Logic.GetEntityOrientation(GetID(Position[1]));
-            if Logic.IsSettler(GetID(Position[1])) == 1 then
-                Rotation = Rotation + 90;
-            end
-        end
+        local Rotation = BundleBriefingSystem.Global:NormalizeRotationForEntity(Position[1]);
         -- Größe abgleichen
         local SizeSV = QSB.ScriptingValues[QSB.ScriptingValues.Game].Size;
-        local Size = Logic.GetEntityScriptingValue(TargetID, SizeSV);
+        local Size = Logic.GetEntityScriptingValue(GetID(Position[1]), SizeSV);
         Position[2] = Position[2] * Core:ScriptingValueIntegerToFloat(Size);
 
         local Title  = table.remove(arg, 1);
@@ -323,172 +303,23 @@ function API.AddPages(_Briefing)
         if type(arg[1]) == "function" then
             Action = table.remove(arg, 1);
         end
-
         -- Animierte Page Basiswerte
-        local x1, y1, z1, x2, y2, z2, o1, o2, a1, a2, d1, d2, t = API.IncludePageAnimation(arg, DlgCam, Position, Rotation);
-
+        -- Seite erstellen
         return AP {
             Name         = PageName,
             Title        = Title,
             Text         = Text,
-            Position     = {X= x1, Y= y1, Z= z1},
-            Zoom         = d1,
-            Angle        = a1,
-            Rotation     = o1,
-            Duration     = 100 * 12 * 4 * 7 * 24 * 60 * 60, -- ~ 100 Jahre
-            Action       = Action,
-            FlyTo        = {
-                Position = {X= x2, Y= y2, Z= z2},
-                Zoom     = d2,
-                Rotation = o2,
-                Angle    = a2,
-                Duration = t,
-            }
+            Position     = Position,
+            Zoom         = (DlgCam and 1000) or BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT,
+            Angle        = (DlgCam and 27) or BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT,
+            Rotation     = Rotation,
+            Duration     = -1,
+            Action       = Action
         }
     end
     return AP, ASP;
 end
 AddPages = API.AddPages;
-
----
--- Berechnet die Kamerawerte für ASP.
---
--- @param[type=table]   _Data     Animationsdaten
--- @param[type=boolean] _Dialog   Dialogkamera
--- @param[type=table]   _Position Position
--- @param[type=number]  _Rotation Ausrichtung
--- @return[type=number] Kamerawerte (13 Numbers)
--- @within Anwenderfunktionen
--- @local
---
-function API.IncludePageAnimation(_Data, _Dialog, _Position, _Rotation)
-    local x1, y1, z1, x2, y2, z2, o1, o2, a1, a2, d1, d2, t;
-    x1, y1, z1 = Logic.EntityGetPos(GetID(_Position[1]));
-    z1 = z1 + _Position[2];
-    x2, y2, z2 = x1, y1, z1;
-    o1, o2 = _Rotation, _Rotation;
-    d1 = BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
-    d2 = BundleBriefingSystem.Global.Data.CAMERA_ZOOMDEFAULT;
-    a1 = BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
-    a2 = BundleBriefingSystem.Global.Data.CAMERA_ANGLEDEFAULT;
-    if _Dialog == true then
-        d1 = 1000;
-        d2 = 1000;
-        a1 = BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
-        a2 = BundleBriefingSystem.Global.Data.DLGCAMERA_ANGLEDEFAULT;
-    end
-    t = 2 * 60;
-
-    while #_Data > 0 do
-        local Type = table.remove(_Data, 1);
-
-        if Type == QSB.DialogAnimations.Random then
-            if math.random(1, 2) == 1 then
-                x1 = x1 + (math.random(-12, 12) * 10);
-                y1 = y1 + (math.random(-12, 12) * 10);
-            end
-            if math.random(1, 2) == 1 then
-                z1 = z1 + math.random(-5, 15);
-            end
-            if math.random(1, 2) == 1 then
-                x2 = x2 + (math.random(-12, 12) * 10);
-                y2 = y2 + (math.random(-12, 12) * 10);
-            end
-            if math.random(1, 2) == 1 then
-                z2 = z2 + math.random(-5, 15);
-            end
-            if math.random(1, 2) == 1 then
-                if math.random(1, 2) == 1 then
-                    o1 = o1 - math.random(5, 10);
-                    o2 = o2 + math.random(5, 10);
-                else
-                    o1 = o1 + math.random(5, 10);
-                    o2 = o2 - math.random(5, 10);
-                end
-            end
-            if math.random(1, 2) == 1 then
-                if math.random(1, 2) == 1 then
-                    a1 = a1 - math.random(1, 3);
-                    a2 = a2 + math.random(1, 3);
-                else
-                    a1 = a1 + math.random(1, 3);
-                    a2 = a2 - math.random(1, 3);
-                end
-            end
-            if math.random(1, 2) == 1 then
-                if math.random(1, 2) == 1 then
-                    d1 = d1 - math.random(math.floor(d1 * (0.01)), math.floor(d1 * (0.05)));
-                    d2 = d2 + math.random(math.floor(d2 * (0.01)), math.floor(d2 * (0.05)));
-                else
-                    d1 = d1 + math.random(math.floor(d1 * (0.01)), math.floor(d1 * (0.05)));
-                    d2 = d2 - math.random(math.floor(d2 * (0.01)), math.floor(d2 * (0.05)));
-                end
-            end
-            if math.random(1, 2) == 1 then
-                t = t + math.random(-30, 30);
-            end
-            return x1, y1, z1, x2, y2, z2, o1, o2, a1, a2, d1, d2, t;
-
-        elseif Type == QSB.DialogAnimations.Override then
-            local Value = table.remove(_Data, 1);
-            x1 = (Value ~= false and Value) or x1;
-            local Value = table.remove(_Data, 1);
-            y1 = (Value ~= false and Value) or y1;
-            local Value = table.remove(_Data, 1);
-            z1 = (Value ~= false and Value) or z1;
-            local Value = table.remove(_Data, 1);
-            x2 = (Value ~= false and Value) or x2;
-            local Value = table.remove(_Data, 1);
-            y2 = (Value ~= false and Value) or y2;
-            local Value = table.remove(_Data, 1);
-            z2 = (Value ~= false and Value) or z2;
-            local Value = table.remove(_Data, 1);
-            o1 = (Value ~= false and Value) or o1;
-            local Value = table.remove(_Data, 1);
-            o2 = (Value ~= false and Value) or o2;
-            local Value = table.remove(_Data, 1);
-            a1 = (Value ~= false and Value) or a1;
-            local Value = table.remove(_Data, 1);
-            a2 = (Value ~= false and Value) or a2;
-            local Value = table.remove(_Data, 1);
-            d1 = (Value ~= false and Value) or d1;
-            local Value = table.remove(_Data, 1);
-            d2 = (Value ~= false and Value) or d2;
-
-        elseif Type == QSB.DialogAnimations.Time then
-            t = table.remove(_Data, 1);
-
-        elseif Type == QSB.DialogAnimations.Rotate then
-            o1 = o1 + table.remove(_Data, 1);
-            o2 = o2 + table.remove(_Data, 1);
-
-        elseif Type == QSB.DialogAnimations.Height then
-            z1 = z1 + table.remove(_Data, 1);
-            z2 = z2 + table.remove(_Data, 1);
-
-        elseif Type == QSB.DialogAnimations.Zoom then
-            d1 = d1 + table.remove(_Data, 1);
-            d2 = d2 + table.remove(_Data, 1);
-
-        elseif Type == QSB.DialogAnimations.Pitch then
-            a1 = a1 + table.remove(_Data, 1);
-            a2 = a2 + table.remove(_Data, 1);
-
-        elseif Type == QSB.DialogAnimations.Move then
-            local Distance1 = table.remove(_Data, 1);
-            local Angle1    = table.remove(_Data, 1);
-            local Distance2 = table.remove(_Data, 1);
-            local Angle2    = table.remove(_Data, 1);
-            local Pos1 = BundleBriefingSystem:GetRelativePos({X= x1, Y= y1, Z= z1}, Distance1, Angle1);
-            local Pos2 = BundleBriefingSystem:GetRelativePos({X= x2, Y= y2, Z= z2}, Distance2, Angle2);
-            x1 = Pos1.X;
-            y1 = Pos1.Y;
-            x2 = Pos2.X;
-            y2 = Pos2.Y;
-        end
-    end
-    return x1, y1, z1, x2, y2, z2, o1, o2, a1, a2, d1, d2, t;
-end
 
 ---
 -- Erstellt eine Seite für ein Dialog-Briefing.
@@ -684,60 +515,6 @@ function BundleBriefingSystem.Global:Install()
 end
 
 ---
--- Konvertiert eine Briefing-Table des alten Formats in das neue. Diese
--- Funktion ist auf Zeit im Skript und wird später wieder entfernt.
--- @param[type=table] _Briefing Briefing Definition
--- @return[type=number] ID des Briefing
--- @within Internal
--- @local
---
-function BundleBriefingSystem.Global:ConvertBriefingTable(_Briefing)
-    _Briefing.DisableGlobalInvulnerability = _Briefing.disableGlobalInvulnerability or _Briefing.DisableGlobalInvulnerability;
-    _Briefing.HideBorderPins = _Briefing.hideBorderPins or _Briefing.HideBorderPins;
-    _Briefing.ShowSky = _Briefing.showSky or _Briefing.ShowSky;
-    _Briefing.RestoreGameSpeed = _Briefing.restoreGameSpeed or _Briefing.RestoreGameSpeed;
-    _Briefing.RestoreCamera = _Briefing.restoreCamera or _Briefing.RestoreCamera;
-    _Briefing.SkippingAllowed = (_Briefing.skipPerPage or _Briefing.skipAll) or _Briefing.SkippingAllowed;
-    _Briefing.ReturnForbidden = _Briefing.returnForbidden or _Briefing.ReturnForbidden;
-    _Briefing.Finished = _Briefing.finished or _Briefing.Finished;
-    _Briefing.Starting = _Briefing.starting or _Briefing.Starting;
-    
-    for k, v in pairs(_Briefing) do
-        if type(v) == "table" then
-            -- Normale Optionen
-            _Briefing[k].Title = v.title or _Briefing[k].Title;
-            _Briefing[k].Text = v.text or _Briefing[k].Text;
-            _Briefing[k].Position = (v.position and {v.position, 0}) or _Briefing[k].Position;
-            _Briefing[k].Angle = v.angle or _Briefing[k].Angle;
-            _Briefing[k].Rotation = v.rotation or _Briefing[k].Rotation;
-            _Briefing[k].Zoom = v.zoom or _Briefing[k].Zoom;
-            _Briefing[k].Action = v.action or _Briefing[k].Action;
-            _Briefing[k].FadeIn = v.fadeIn or _Briefing[k].FadeIn;
-            _Briefing[k].FadeOut = v.fadeOut or _Briefing[k].FadeOut;
-            _Briefing[k].FaderAlpha = v.faderAlpha or _Briefing[k].FaderAlpha;
-            _Briefing[k].DialogCamera = v.dialogCamera or _Briefing[k].DialogCamera;
-            _Briefing[k].Portrait = v.portrait or _Briefing[k].Portrait;
-            _Briefing[k].NoRethink = v.noRethink or _Briefing[k].NoRethink;
-            _Briefing[k].NoHistory = v.noHistory or _Briefing[k].NoHistory;
-            -- Splashscreen
-            if v.splashscreen then
-                v.Splashscreen = v.splashscreen;
-                if type(v.Splashscreen) == "table" then
-                    v.Splashscreen = v.Splashscreen.image;
-                end
-            end
-            -- Multiple Choice
-            if v.mc then
-                _Briefing[k].Title = v.mc.title;
-                _Briefing[k].Text = v.mc.title;
-                _Briefing[k].MC = v.mc.answers;
-            end
-        end
-    end
-    return _Briefing;
-end
-
----
 -- Startet ein Briefing.
 -- @param[type=table] _Briefing Briefing Definition
 -- @param[type=number] _ID      ID aus Queue
@@ -746,7 +523,6 @@ end
 -- @local
 --
 function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
-    _Briefing = self:ConvertBriefingTable(_Briefing);
     if _Briefing.ReturnForbidden == nil then
         _Briefing.ReturnForbidden = true;
     end
@@ -769,13 +545,45 @@ function BundleBriefingSystem.Global:StartBriefing(_Briefing, _ID)
     self.Data.CurrentBriefing.PageHistory = {};
     self.Data.CurrentBriefing.ID = _ID;
     self.Data.CurrentBriefing.BarOpacity = self.Data.CurrentBriefing.BarOpacity or 1;
+
+    -- Animationen übertragen
+    if self.Data.CurrentBriefing.PageAnimations then
+        for k, v in pairs(self.Data.CurrentBriefing.PageAnimations) do
+            local PageID = self:GetPageIDByName(k);
+            self.Data.CurrentBriefing[PageID].Animations = self.Data.CurrentBriefing[PageID].Animations or {};
+            self.Data.CurrentBriefing[PageID].Animations.PurgeOld = v.PurgeOld == true;
+            for i= 1, #v, 1 do
+                table.insert(self.Data.CurrentBriefing[PageID].Animations, {
+                    Duration = v[i][9] or 2 * 60,
+
+                    Start = {
+                        Position = (type(v[i][1]) ~= "table" and {v[i][1],0}) or v[i][1],
+                        Rotation = v[i][2],
+                        Zoom     = v[i][3],
+                        Angle    = v[i][4],
+                    },
+                    End = {
+                        Position = (type(v[i][5]) ~= "table" and {v[i][5],0}) or v[i][5],
+                        Rotation = v[i][6],
+                        Zoom     = v[i][7],
+                        Angle    = v[i][8],
+                    },
+                });
+            end
+        end
+        self.Data.CurrentBriefing.PageAnimations = nil;
+    end
+    -- Bars Default setzen
     if self.Data.CurrentBriefing.BigBars == nil then
         self.Data.CurrentBriefing.BigBars = true;
     end
+    -- Multiple Choice vorbereiten
     self:DisableMCAnswers();
+    -- Globale Unverwundbarkeit
     if self.Data.CurrentBriefing.DisableGlobalInvulnerability ~= false then
         Logic.SetGlobalInvulnerability(1);
     end
+    -- Kopieren ins lokale Skript
     local Briefing = API.ConvertTableToString(self.Data.CurrentBriefing);
     API.Bridge("BundleBriefingSystem.Local:StartBriefing(" ..Briefing.. ")");
     
@@ -897,6 +705,47 @@ end
 --
 function BundleBriefingSystem.Global:IsBriefingActive()
     return self.Data.BriefingActive == true;
+end
+
+---
+-- Gibt für das Entity eine Tabelle mit Skriptnamen und Z-Offset zurück.
+--
+-- @param[type=string] _Entity Skriptname des Entity
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:NormalizeZPosForEntity(_Entity)
+    local TargetID = GetID(_Entity);
+    local TargetType = Logic.GetEntityType(TargetID);
+    local Position = {_Entity, 0};
+    if Logic.IsSettler(TargetID) == 1 then
+        Position[2] = 120;
+        if Logic.IsKnight(TargetID) then
+            Position[2] = 160;
+        end
+    end
+    if TargetType == Entities.XD_ScriptEntity then
+        Position[2] = 160;
+    end
+    return Position;
+end
+
+---
+-- Gibt die Rotation für das Entity zurück.
+--
+-- @param[type=string] _Entity Skriptname des Entity
+-- @within Internal
+-- @local
+--
+function BundleBriefingSystem.Global:NormalizeRotationForEntity(_Entity)
+    local Rotation = 0;
+    if IsExisting(_Entity) then
+        Rotation = Logic.GetEntityOrientation(GetID(_Entity));
+        if Logic.IsSettler(GetID(_Entity)) == 1 then
+            Rotation = Rotation + 90;
+        end
+    end
+    return Rotation;
 end
 
 ---
@@ -1039,6 +888,8 @@ function BundleBriefingSystem.Local:StartBriefing(_Briefing)
     self.Data.SelectedEntities = {GUI.GetSelectedEntities()};
     self.Data.CurrentBriefing.Page = 1;
     self.Data.CurrentBriefing = _Briefing;
+    self.Data.CurrentBriefing.CurrentAnimation = nil;
+    self.Data.CurrentBriefing.AnimationQueue = {};
     if self.Data.CurrentBriefing.HideBorderPins then
         Display.SetRenderBorderPins(0);
     end
@@ -1115,13 +966,15 @@ function BundleBriefingSystem.Local:PageStarted()
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", SkipFlag);
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/StartButton", BackFlag);
 
-        -- Rotation an Rotation des Ziels anpassen
-        if IsExisting(self.Data.CurrentPage.Position[1]) then
-            if self.Data.CurrentPage.Rotation == nil then
-                self.Data.CurrentPage.Rotation =  Logic.GetEntityOrientation(GetID(self.Data.CurrentPage.Position[1]));
-                if Logic.IsSettler(GetID(self.Data.CurrentPage.Position[1])) == 1 then
-                    self.Data.CurrentPage.Rotation = self.Data.CurrentPage.Rotation + 90;
-                end
+        -- Animationen
+        if self.Data.CurrentPage.Animations then
+            if self.Data.CurrentPage.Animations.PurgeOld then
+                self.Data.CurrentBriefing.CurrentAnimation = nil;
+                self.Data.CurrentBriefing.AnimationQueue = {};
+            end
+            for i= 1, #self.Data.CurrentPage.Animations, 1 do
+                local Animation = API.InstanceTable(self.Data.CurrentPage.Animations[i]);
+                table.insert(self.Data.CurrentBriefing.AnimationQueue, Animation);
             end
         end
 
@@ -1208,7 +1061,7 @@ function BundleBriefingSystem.Local:LocalOnMCConfirmed()
 end
 
 ---
--- Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing
+-- Ändert die Sichtbarkeit einer Antwort im aktuellen Briefing.
 -- @param[type=number] _Page ID der Page
 -- @param[type=number] _Answer ID der Antwort
 -- @param[type=boolean] _Visible Sichtbarkeit
@@ -1241,17 +1094,34 @@ function BundleBriefingSystem.Local:ThroneRoomCameraControl()
         end
     else
         if type(self.Data.CurrentPage) == "table" then
+            -- Animation invalidieren
+            if self.Data.CurrentBriefing.CurrentAnimation then
+                local CurrentTime = Logic.GetTime();
+                local Animation = self.Data.CurrentBriefing.CurrentAnimation;
+                if CurrentTime > Animation.Started + Animation.Duration then
+                    if #self.Data.CurrentBriefing.AnimationQueue > 0 then
+                        self.Data.CurrentBriefing.CurrentAnimation = nil;
+                    end
+                end
+            end
+            -- Nächste Animation
+            if self.Data.CurrentBriefing.CurrentAnimation == nil then
+                if self.Data.CurrentBriefing.AnimationQueue and #self.Data.CurrentBriefing.AnimationQueue > 0 then
+                    local Next = table.remove(self.Data.CurrentBriefing.AnimationQueue, 1);
+                    Next.Started = Logic.GetTime();
+                    self.Data.CurrentBriefing.CurrentAnimation = Next;
+                end
+            end
+
             -- Kamera
             local PX, PY, PZ = self:GetPagePosition();
             local LX, LY, LZ = self:GetPageLookAt();
-            local PageFOV = self.Data.CurrentPage.FOV or 42.0;
-            
             if PX and not LX then
                 LX, LY, LZ, PX, PY, PZ = self:GetCameraProperties();
             end
             Camera.ThroneRoom_SetPosition(PX, PY, PZ);
             Camera.ThroneRoom_SetLookAt(LX, LY, LZ);
-            Camera.ThroneRoom_SetFOV(PageFOV);
+            Camera.ThroneRoom_SetFOV(42.0);
 
             -- Bar Style
             BundleBriefingSystem.Local:SetBarStyle(self.Data.CurrentBriefing.BarOpacity, self.Data.CurrentBriefing.BigBars);
@@ -1299,11 +1169,15 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:GetCameraProperties()
-    local CurrPage = self.Data.CurrentPage;
-    local FlyTo = self.Data.CurrentPage.FlyTo;
+    local CurrPage, FlyTo;
+    if self.Data.CurrentBriefing.CurrentAnimation then
+        CurrPage = self.Data.CurrentBriefing.CurrentAnimation.Start;
+        FlyTo = self.Data.CurrentBriefing.CurrentAnimation.End;
+    else
+        CurrPage = self.Data.CurrentPage;
+        FlyTo = self.Data.CurrentPage.FlyTo;
+    end
 
-    local startTime = CurrPage.Started;
-    local flyTime = CurrPage.FlyTime;
     local startPosition = CurrPage.Position;
     local endPosition = (FlyTo and FlyTo.Position) or CurrPage.Position;
     local startRotation = CurrPage.Rotation;
@@ -1343,9 +1217,16 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:GetPagePosition()
-    local Position = self.Data.CurrentPage.Position;
+    local Position, FlyTo;
+    if self.Data.CurrentBriefing.CurrentAnimation then
+        Position = self.Data.CurrentBriefing.CurrentAnimation.Start.Position;
+        FlyTo = self.Data.CurrentBriefing.CurrentAnimation.End;
+    else
+        Position = self.Data.CurrentPage.Position;
+        FlyTo = self.Data.CurrentPage.FlyTo;
+    end
+
     local x, y, z = self:ConvertPosition(Position);
-    local FlyTo = self.Data.CurrentPage.FlyTo;
     if FlyTo then
         local lX, lY, lZ = self:ConvertPosition(FlyTo.Position);
         if lX then
@@ -1366,9 +1247,16 @@ end
 -- @local
 --
 function BundleBriefingSystem.Local:GetPageLookAt()
-    local LookAt = self.Data.CurrentPage.LookAt;
+    local LookAt, FlyTo;
+    if self.Data.CurrentBriefing.CurrentAnimation then
+        LookAt = self.Data.CurrentBriefing.CurrentAnimation.Start.LookAt;
+        FlyTo = self.Data.CurrentBriefing.CurrentAnimation.End;
+    else
+        LookAt = self.Data.CurrentPage.LookAt;
+        FlyTo = self.Data.CurrentPage.FlyTo;
+    end
+
     local x, y, z = self:ConvertPosition(LookAt);
-    local FlyTo = self.Data.CurrentPage.FlyTo;
     if FlyTo and x then
         local lX, lY, lZ = self:ConvertPosition(FlyTo.LookAt);
         if lX then
@@ -1407,14 +1295,20 @@ end
 --
 function BundleBriefingSystem.Local:GetLERP()
     local Current = Logic.GetTime();
-    local Started = self.Data.CurrentPage.Started;
-    local FlyTime = self.Data.CurrentPage.Duration;
-    if self.Data.CurrentPage.FlyTo then
-        FlyTime = self.Data.CurrentPage.FlyTo.Duration;
+    local Started, FlyTime;
+    if self.Data.CurrentBriefing.CurrentAnimation then
+        Started = self.Data.CurrentBriefing.CurrentAnimation.Started;
+        FlyTime = self.Data.CurrentBriefing.CurrentAnimation.Duration;
+    else
+        Started = self.Data.CurrentPage.Started;
+        FlyTime = self.Data.CurrentPage.Duration;
+        if self.Data.CurrentPage.FlyTo then
+            FlyTime = self.Data.CurrentPage.FlyTo.Duration;
+        end
     end
 
     local Factor = 1.0;
-    if FlyTime then
+    if FlyTime and FlyTime > 0 then
         if Started + FlyTime > Current then
             Factor = (Current - Started) / FlyTime;
             if Factor > 1 then
@@ -1612,7 +1506,10 @@ function BundleBriefingSystem.Local:SetOptionsDialog()
         local wSize = {XGUIEng.GetWidgetScreenSize(Widget)};
         local xFactor = (Screen[1]/1920);
         local xFix = math.ceil((Screen[1] /2) - (wSize[1] /2));
-        local yFix = math.ceil((Screen[2] /2) - ((wSize[2] /2)-20));
+        local yFix = math.ceil(Screen[2] - (wSize[2]-20));
+        if self.Data.CurrentPage.Text ~= nil and self.Data.CurrentPage.Text ~= "" then
+            yFix = math.ceil((Screen[2] /2) - ((wSize[2] /2)-20));
+        end
         XGUIEng.SetWidgetScreenPosition(Widget, xFix, yFix);
         XGUIEng.PushPage(Widget, false);
         XGUIEng.ShowWidget(Widget, 1);
