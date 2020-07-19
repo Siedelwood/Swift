@@ -274,6 +274,7 @@ AddOnCutsceneSystem = {
                 Speed = 15,
             },
             Fader = {
+                Animation = {},
                 From = 1.0,
                 To = 0.0,
                 TimeStamp = 0,
@@ -584,8 +585,6 @@ function AddOnCutsceneSystem.Local:FlightStarted(_Duration)
         XGUIEng.ShowWidget("/InGame/ThroneRoom/Main/Skip", (self.Data.CurrentCutscene.FastForward and 1) or 0);
 
         -- Handle fader
-        self.Data.Fader.To = 0;
-        self:SetFaderAlpha(0);
         if CurrentFlight.FadeIn then
             self:FadeIn(CurrentFlight.FadeIn);
         end
@@ -710,9 +709,7 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:InitializeFader()
-    self.Data.Fader.Duration = 0;
-    self.Data.Fader.To = 0;
-    self:SetFaderAlpha(1.0);
+    self.Data.Fader.Animation = {};
     XGUIEng.PushPage(self.Data.Fader.Page, false);
 end
 
@@ -723,7 +720,7 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:IsFading()
-	return self.Data.Fader.Duration ~= 0;
+	return self.Data.CutsceneActive and #self.Data.Fader.Animation > 0;
 end
 
 ---
@@ -734,21 +731,13 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:FadeOut(_Duration, _Callback)
-	if self:IsFading() then
-        local time = Logic.GetTimeMs();
-        local progress = (time - self.Data.Fader.TimeStamp) / (self.Data.Fader.Duration * 1000);
-        local alpha = self:LERP(self.Data.Fader.From, self.Data.Fader.To, progress);
-		self.Data.Fader.From = alpha;
-		self.Data.Fader.To = 1;
-		self.Data.Fader.Duration = _Duration * (self.Data.Fader.To - self.Data.Fader.From);
-		
-	else
-        self.Data.Fader.From = 0;
-        self.Data.Fader.To = 1;
-        self.Data.Fader.Duration = _Duration;
-	end
-    self.Data.Fader.Callback = _Callback;
-    self.Data.Fader.TimeStamp = Logic.GetTimeMs();
+    table.insert(self.Data.Fader.Animation, {
+        From = 0,
+        To = 1,
+        TimeStamp = Logic.GetTimeMs(),
+        Duration = _Duration,
+        Callback = _Callback,
+    });
 end
 
 ---
@@ -759,14 +748,13 @@ end
 -- @local
 --
 function AddOnCutsceneSystem.Local:FadeIn(_Duration, _Callback)
-	if self:IsFading() then
-		return;
-	end
-    self.Data.Fader.Callback = _Callback;
-    self.Data.Fader.Duration = _Duration;
-    self.Data.Fader.From = 1;
-    self.Data.Fader.To = 0;
-    self.Data.Fader.TimeStamp = Logic.GetTimeMs();
+    table.insert(self.Data.Fader.Animation, {
+        From = 1,
+        To = 0,
+        TimeStamp = Logic.GetTimeMs(),
+        Duration = _Duration,
+        Callback = _Callback,
+    });
 end
 
 ---
@@ -835,20 +823,20 @@ end
 --
 function AddOnCutsceneSystem.Local:UpdateFader()
     if self.Data.CutsceneActive == true then
-        if self.Data.Fader.Duration > 0 then
-            local time = Logic.GetTimeMs();
-            local progress = (time - self.Data.Fader.TimeStamp) / (self.Data.Fader.Duration * 1000);
-            local alpha = self:LERP(self.Data.Fader.From, self.Data.Fader.To, progress);
-            self:SetFaderAlpha(alpha);
-            if time > self.Data.Fader.TimeStamp + (self.Data.Fader.Duration * 1000)  then
-                self.Data.Fader.Duration = 0;
-                if self.Data.Fader.Callback ~= nil then
-                    self.Data.Fader:Callback();
-                    return false;
+        local Animation = self.Data.Fader.Animation[1];
+        if Animation then
+            local Time = Logic.GetTimeMs();
+            local Progress = (Time - Animation.TimeStamp) / (Animation.Duration * 1000);
+            local Alpha = self:LERP(Animation.From, Animation.To, Progress);
+            self:SetFaderAlpha(Alpha);
+            if Time >= Animation.TimeStamp + (Animation.Duration * 1000)  then
+                if Animation.Callback ~= nil then
+                    Animation:Callback();
                 end
+                table.remove(self.Data.Fader.Animation, 1);
             end
         else
-            self:SetFaderAlpha(self.Data.Fader.To);
+            self:SetFaderAlpha(0);
         end
     end
 end
