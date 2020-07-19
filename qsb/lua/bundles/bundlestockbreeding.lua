@@ -450,7 +450,7 @@ end
 -- @local
 --
 function BundleStockbreeding.Global:BreedingTimeTillNext(_Animals)
-    if self.Data.MinAmountNearby >= _Animals then
+    if self.Data.MinAmountNearby <= _Animals then
         local Time = 240 - (_Animals * 15);
         if Time < 30 then
             Time = 30;
