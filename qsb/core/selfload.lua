@@ -11,9 +11,8 @@ if not MapEditor and not GUI then
         MapTypeFolder = "development";
     end
 
-    gvMission = {
-        ContentPath = "maps/" ..MapTypeFolder.. "/" ..Framework.GetCurrentMapName() .. "/"
-    };
+    gvMission = gvMission or {};
+    gvMission.ContentPath = "maps/" ..MapTypeFolder.. "/" ..Framework.GetCurrentMapName() .. "/";
 
     if Mission_LoadFiles then
         local Files = Mission_LoadFiles();
@@ -29,10 +28,9 @@ if not MapEditor and not GUI then
     end
 
     Logic.ExecuteInLuaLocalState([[
-        gvMission = {
-            GlobalVariables = Logic.CreateReferenceToTableInGlobaLuaState("gvMission"),
-            ContentPath = "maps/]] ..MapTypeFolder.. [[/" ..Framework.GetCurrentMapName() .. "/",
-        };
+        gvMission = gvMission or {};
+        gvMission.GlobalVariables = Logic.CreateReferenceToTableInGlobaLuaState("gvMission");
+        gvMission.ContentPath = "maps/]] ..MapTypeFolder.. [[/" ..Framework.GetCurrentMapName() .. "/";
 
         Script.Load(gvMission.ContentPath.. "questsystembehavior.lua");
         if Mission_LoadFiles then
